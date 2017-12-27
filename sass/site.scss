@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css?family=Material+Icons|Open+Sans:300,400');
+
+// Import bootstrap variables first
+@import "settings/bootstrap_variables"; 
+
+// Then import boostrap
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
+
+// Font awesome
+ $fa-font-path: "../fonts";
+ @import "../node_modules/font-awesome/scss/font-awesome";
+
+// Adding scss extra
+@import "settings/extra_scss";
+
+// And your hacks and extra css
+@import "settings/extra_css";

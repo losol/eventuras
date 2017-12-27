@@ -1,0 +1,302 @@
+/* Some extra straight forward css here? */
+
+/* HEADER */
+#navbar-site-title{
+    font-weight: 100;
+}
+
+/* FRONT PAGE */
+/* Top stories
+*/
+
+h1, h2, h3 {
+    word-break: normal;
+    hyphens: auto;
+}
+
+.level-2 h3 {
+    font-size:1.7rem;
+}
+
+.fa-1_2x {
+    font-size: 1.2em;
+}
+
+.text-inverse.text-muted p {
+	color:#909090;
+}
+
+.text-inverse.text-muted a {
+	color:#909090;
+}
+
+/* Background gradient
+*/
+
+body {
+    background: rgba(255,255,255,1);
+    background: -moz-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 71%, rgba(219,215,219,1) 100%);
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, rgba(255,255,255,1)), color-stop(71%, rgba(246,246,246,1)), color-stop(100%, rgba(219,215,219,1)));
+    background: -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 71%, rgba(219,215,219,1) 100%);
+    background: -o-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 71%, rgba(219,215,219,1) 100%);
+    background: -ms-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 71%, rgba(219,215,219,1) 100%);
+    background: radial-gradient(ellipse at center, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 71%, rgba(219,215,219,1) 100%);
+}
+h1, h2 {
+    padding-top:2rem;
+}
+.flex-grow {
+  flex: 1;
+}
+
+ .pingback {
+	list-style-type: none;
+	margin-bottom:0.5rem;
+}
+
+.badge a
+{
+  color: #ececec;
+  text-decoration: none;
+  font-weight: normal;
+}
+
+.font-weight-normal b, .font-weight-normal strong {
+    font-weight: normal!important;
+}
+
+h1,h2 {
+    word-break: break-word;
+}
+
+
+.position-relative {
+    position: relative!important;
+}
+
+.position-absolute {
+    position: absolute!important;
+}
+.top-left {
+    left: 0px;
+    top: 0px;
+}
+
+.left {
+    left: 0px;
+}
+
+.pl-10
+ {
+    padding-left:5rem;
+}
+
+
+.bg-cover{
+   background-size: cover!important;
+}
+
+.bg-featured-grid {
+    background-color: #cfd8dc;
+}
+.footer h2{padding-top:0;}
+
+.footer-contact i {
+    background-color: #33383b;
+    color: #ffffff;
+    font-size: 25px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 42px;
+    vertical-align: middle;
+}
+
+.footer-contact p {
+    display: inline-block;
+    color: #ffffff;
+    vertical-align: middle;
+    margin: 0;
+}
+
+
+
+.footer-contact p a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.black-marker {float:left;clear:left;background: rgba(44, 44, 44, 0.4); padding:2px;}
+
+.bg-opa10 {
+background-color: rgba(44, 44, 44, 0.1);
+background: rgba(44, 44, 44, 0.1);
+}
+.bg-opa20 {
+background-color: rgba(44, 44, 44, 0.2);
+background: rgba(44, 44, 44, 0.2);
+}
+.bg-opa30 {
+background-color: rgba(44, 44, 44, 0.3);
+background: rgba(44, 44, 44, 0.3);
+}
+.bg-opa40 {
+background-color: rgba(44, 44, 44, 0.4);
+background: rgba(44, 44, 44, 0.4);
+}
+.bg-circle
+{
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  padding: 14px 4px;
+  color: #ececec;
+  text-align: center;
+  border-radius: 50%;
+}
+
+.bg-circle-outline
+{
+  width: 50px;
+  height: 50px;
+  color:smoke;
+  padding: 8px 2px;
+  border: 2px solid;
+  border-color: smoke;
+  border-radius: 50%;
+}
+
+
+.bg-circle a, .bg-circle a:hover, .media a:focus
+{
+  text-decoration: none !important;
+  outline: none;
+  color: #ececec;
+}
+.bg-circle-outline a, .bg-circle-outline a:hover, .media a:focus
+{
+  text-decoration: none !important;
+  outline: none;
+  color: #ececec;
+}
+
+
+.bg-dimmed {
+  background: rgba(0, 0, 0, 0.7);
+}
+.card-badge {
+    text-transform: uppercase;
+    font-family: "Open Sans", Helvetica, Arial, sans-serif;
+}
+.card-grey {
+    background-color: #ccc;
+    border-color: #ccc;
+}
+
+.display-1 .text-white {color: #fff;}
+
+.redtop {
+  border-top: 10px solid #ed1c24; }
+
+.redbottom {
+  border-bottom: 0.4pt dotted #ed1c24; }
+
+.bluetop {
+  border-top: 10px solid #355E7C;
+}
+
+.bluebottom {
+  border-bottom: 5px solid #355E7C;
+}
+.text-shadow {
+    text-shadow: 1px 1px 0 #fff;
+}
+
+    
+/* Some links should not have any decoration */
+h1 a, h2 a, h3 a, h4 a {
+    text-decoration: none;
+}
+
+    .link-no-decoration {
+        text-decoration: none !important;
+    }
+
+    .link-no-decoration * {
+        text-decoration: none !important;
+    }
+
+
+/* Breadcrumb */
+.breadcrumb {
+    margin-bottom: 0rem;
+}
+
+ul.breadcrumb {
+    margin-left: 0px;
+    padding-left: 1rem;
+}
+
+.breadcrumb > li + li::before {
+    content: ">";
+}
+
+.white-space-normal {
+    white-space: normal;
+}
+
+.word-break-break-all {
+    word-break: break-all;
+}
+
+
+/* Image captions overlay effect */
+div.caption-overlay {
+    background-color: #000;
+    bottom: 0;
+    color: #fff;
+    left: 0;
+    opacity: 0.5;
+    position: absolute;
+    width: 100%;
+}
+
+/* Authorcards TODO -should move margins to pt-classes*/
+.authorcard {
+    margin-top: 60px;
+}
+
+img.authorcard-profilephoto {
+    height: 100px;
+    width: 100px;
+    margin-top: -75px;
+}
+
+
+    /* Nice blockquote */
+    blockquote {
+        background: #f9f9f9;
+        border-left: 10px solid #ccc;
+        margin: 1.5em 10px;
+        padding: 0.5em 10px;
+        quotes: "\201C""\201D""\2018""\2019";
+    }
+
+    blockquote:before {
+        color: #ccc;
+        content: open-quote;
+        font-size: 4em;
+        line-height: 0.1em;
+        margin-right: 0.25em;
+        vertical-align: -0.4em;
+    }
+    blockquote:after {
+        content: no-close-quote;
+    }
+
+    blockquote p {
+        display: inline;
+    }
+   
+  

@@ -1,0 +1,114 @@
+// Colors
+//
+// Grayscale and brand colors for use across Bootstrap.
+
+// Colors
+//
+// Grayscale and brand colors for use across Bootstrap.
+
+// Start with assigning color names to specific hex values.
+$white:  #ececec;
+$black:  #101010;
+$red:    #CC0000;
+$orange: #f0ad4e;
+$yellow: #CECE00;
+$green:  #3C643C;
+$blue:   #3F7DAB;
+$teal:   #355E7C;
+$pink:   #CC99A2;
+$purple: #613d7c;
+
+// Create grayscale
+$gray-dark:                 #263238;
+$gray:                      #55595c;
+$gray-light:                #cecece;
+$gray-lighter:              #dedede;
+$gray-lightest:             #eee;
+
+// Reassign color vars to semantic color scheme
+$brand-primary:             $gray-dark;
+$brand-success:             $green;
+$brand-info:                $teal;
+$brand-warning:             $orange;
+$brand-danger:              $red;
+$brand-inverse:             $gray-dark;
+
+
+// Options
+//
+// Quickly modify global styling by enabling or disabling optional features.
+
+$enable-rounded:            false;
+$enable-shadows:            true;
+$enable-gradients:          true;
+$enable-transitions:        true;
+$enable-hover-media-query:  true;
+$enable-grid-classes:       true;
+$enable-print-styles:       true;
+
+
+
+// Typography
+//
+// Font, line-height, and color for body text, headings, and more.
+
+$font-family-sans-serif: "Luto", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-family-serif: Georgia, "Times New Roman", Times, serif;
+$font-family-monospace: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+$font-family-base: $font-family-sans-serif;
+
+
+// Pixel value used to responsively scale all typography. Applied to the `<html>` element.
+$font-size-root: 16px ;
+
+$font-size-base: 1.1rem ;
+$font-size-lg:   1.25rem ;
+$font-size-sm:   .775rem ;
+$font-size-xs:   .7rem ;
+
+$line-height-base: 1.5 ;
+
+$font-size-h1: 3rem ;
+$font-size-h2: 2rem ;
+$font-size-h3: 1.5rem ;
+$font-size-h4: 1.2rem ;
+$font-size-h5: 1rem ;
+$font-size-h6: 1rem ;
+
+$display1-size: 4rem ;
+$display2-size: 3rem ;
+$display3-size: 2.5rem ;
+$display4-size: 2rem ;
+
+$display1-weight: 300 ;
+$display2-weight: 300 ;
+$display3-weight: 300 ;
+$display4-weight: 300 ;
+
+$headings-font-family:  "Luto", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$headings-font-weight:   300;
+$headings-line-height:   1.1 ;
+$headings-color:         inherit ;
+
+$lead-font-size:   1.25rem;
+$lead-font-weight: 300;
+
+$small-font-size: 80% ;
+
+$text-muted: $gray ;
+
+
+// Links
+//
+// Style anchor elements.
+
+$link-color:            $brand-primary;
+$link-decoration:       underline dotted;
+$link-hover-color:      darken($link-color, 15%);
+$link-hover-decoration: underline;
+
+
+// Jumbotron
+
+$jumbotron-padding: 2rem ;
+$jumbotron-bg: $gray-lighter ;

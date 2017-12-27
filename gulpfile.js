@@ -1,6 +1,6 @@
 "use strict";
 // Project configuration
-var project 	    = 'EventManager', // Project name, used for build zip.
+var project 	    = 'EventManagement', // Project name, used for build zip.
     version         = '0.1.0', // Version for stylesheets and scripts
 	url 		    = 'localhost:5000' // Local Development URL for BrowserSync. Change as-needed.
 ;
