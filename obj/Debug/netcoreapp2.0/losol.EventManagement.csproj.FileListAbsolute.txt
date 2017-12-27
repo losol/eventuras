@@ -1,0 +1,4 @@
+/Users/ole/Documents/Programmering/losol.EventManagement/obj/Debug/netcoreapp2.0/losol.EventManagement.csproj.CoreCompileInputs.cache
+/Users/ole/Documents/Programmering/losol.EventManagement/obj/Debug/netcoreapp2.0/UserSecretsAssemblyInfo.cs
+/Users/ole/Documents/Programmering/losol.EventManagement/obj/Debug/netcoreapp2.0/losol.EventManagement.AssemblyInfoInputs.cache
+/Users/ole/Documents/Programmering/losol.EventManagement/obj/Debug/netcoreapp2.0/losol.EventManagement.AssemblyInfo.cs
