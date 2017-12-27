@@ -1,0 +1,5 @@
+
+
+    Set Sendgrid-settings by setting environment variables or in terminal: 
+    > dotnet user-secrets set SendGridUser asdf1234
+    > dotnet user-secrets set SendGridKey asdf1234

@@ -1,0 +1,25 @@
+
+
+In the root folder, run these commands: 
+
+dotnet add package Microsoft.AspNetCore.Server.Kestrel.Https
+
+Create sertificate:
+* openssl genrsa -out key.pem 2048
+* openssl req -new -sha256 -key key.pem -out csr.csr
+* openssl req -x509 -sha256 -days 365 -key key.pem -in csr.csr -out certificate.pem
+* openssl pkcs12 -export -out certificate.pfx -inkey key.pem -in certificate.pem  
+
+program.cs:
+WebHost.CreateDefaultBuilder(args)
+    .UseKestrel(options =>
+    {
+        options.Listen(IPAddress.Loopback, 5000);  // http:localhost:5000
+        options.Listen(IPAddress.Any, 80);         // http:*:80
+        options.Listen(IPAddress.Loopback, 443, listenOptions =>
+        {
+            listenOptions.UseHttps("certificate.pfx", "password");
+        });
+    })
+    .UseStartup<Startup>()
+    .Build();
