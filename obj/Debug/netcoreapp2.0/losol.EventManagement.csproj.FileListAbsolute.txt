@@ -1,12 +1,12 @@
-/Users/ole/Documents/Programmering/losol.EventManagement/obj/Debug/netcoreapp2.0/losol.EventManagement.csproj.CoreCompileInputs.cache
-/Users/ole/Documents/Programmering/losol.EventManagement/obj/Debug/netcoreapp2.0/UserSecretsAssemblyInfo.cs
-/Users/ole/Documents/Programmering/losol.EventManagement/obj/Debug/netcoreapp2.0/losol.EventManagement.AssemblyInfoInputs.cache
-/Users/ole/Documents/Programmering/losol.EventManagement/obj/Debug/netcoreapp2.0/losol.EventManagement.AssemblyInfo.cs
-/Users/ole/Documents/Programmering/losol.EventManagement/bin/Debug/netcoreapp2.0/app.db
 /Users/ole/Documents/Programmering/losol.EventManagement/bin/Debug/netcoreapp2.0/losol.EventManagement.deps.json
 /Users/ole/Documents/Programmering/losol.EventManagement/bin/Debug/netcoreapp2.0/losol.EventManagement.runtimeconfig.json
 /Users/ole/Documents/Programmering/losol.EventManagement/bin/Debug/netcoreapp2.0/losol.EventManagement.runtimeconfig.dev.json
 /Users/ole/Documents/Programmering/losol.EventManagement/bin/Debug/netcoreapp2.0/losol.EventManagement.dll
 /Users/ole/Documents/Programmering/losol.EventManagement/bin/Debug/netcoreapp2.0/losol.EventManagement.pdb
+/Users/ole/Documents/Programmering/losol.EventManagement/obj/Debug/netcoreapp2.0/losol.EventManagement.csproj.CoreCompileInputs.cache
+/Users/ole/Documents/Programmering/losol.EventManagement/obj/Debug/netcoreapp2.0/UserSecretsAssemblyInfo.cs
+/Users/ole/Documents/Programmering/losol.EventManagement/obj/Debug/netcoreapp2.0/losol.EventManagement.AssemblyInfoInputs.cache
+/Users/ole/Documents/Programmering/losol.EventManagement/obj/Debug/netcoreapp2.0/losol.EventManagement.AssemblyInfo.cs
 /Users/ole/Documents/Programmering/losol.EventManagement/obj/Debug/netcoreapp2.0/losol.EventManagement.dll
 /Users/ole/Documents/Programmering/losol.EventManagement/obj/Debug/netcoreapp2.0/losol.EventManagement.pdb
+/Users/ole/Documents/Programmering/losol.EventManagement/bin/Debug/netcoreapp2.0/app.db

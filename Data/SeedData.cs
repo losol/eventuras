@@ -10,6 +10,8 @@ namespace losol.EventManagement.Data
 	{
         public static void Initialize(ApplicationDbContext context)
 		{
+            context.Database.EnsureCreated();
+            
 			// Look for any events.
 			if (context.EventInfos.Any())
 			{
@@ -28,6 +30,7 @@ namespace losol.EventManagement.Data
             }
 
             context.SaveChanges();
+            
 
 
 		}

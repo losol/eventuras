@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
-namespace losol.EventManagement.Data.Migrations
+namespace losol.EventManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20171227201848_init")]
+    [Migration("20171227205418_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
