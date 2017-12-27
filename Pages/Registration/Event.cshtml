@@ -1,0 +1,80 @@
+﻿@page "{id:int}"
+@model losol.EventManagement.Pages.Registration.EventRegistrationModel
+@{
+    ViewData["Title"] = "CourseRegistration";
+    
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+<h2>@Model.EventTitle <br><small> - Course registration</small></h2>
+<p>@Model.EventDescription</p>
+
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <input type="hidden" asp-for="" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Registration.EventId" class="control-label"></label>
+                <input asp-for="Registration.EventId" class="form-control" />
+                <span asp-validation-for="Registration.EventId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.UserId" class="control-label"></label>
+                <select asp-for="Registration.UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.RegistrationType" class="control-label"></label>
+                <input asp-for="Registration.RegistrationType" class="form-control" />
+                <span asp-validation-for="Registration.RegistrationType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        Fix this
+                        @* <input asp-for="Registration.Attended" /> @Html.DisplayNameFor(model => model.Attended)) *@
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        Fix this
+                        @* 
+                        <input asp-for="Registration.Diploma" /> @Html.DisplayNameFor(model => model.Diploma))
+                        *@
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.Notes" class="control-label"></label>
+                <input asp-for="Registration.Notes" class="form-control" />
+                <span asp-validation-for="Registration.Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.RegistrationTime" class="control-label"></label>
+                <input asp-for="Registration.RegistrationTime" class="form-control" />
+                <span asp-validation-for="Registration.RegistrationTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.RegistrationBy" class="control-label"></label>
+                <input asp-for="Registration.RegistrationBy" class="form-control" />
+                <span asp-validation-for="Registration.RegistrationBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

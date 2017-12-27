@@ -1,0 +1,36 @@
+{
+	"name": "EventManager",
+	"version": "0.1.0",
+	"description": "",
+	"author": "Ole Kristian Losvik",
+	"license": "GPL-2.0",
+	"dependencies": {
+	  "jquery":"^3.2.1",
+	  "bootstrap": "^4.0.0-beta.2",
+	  "font-awesome": "^4.7.0",
+	  "popper.js": "^1.11.1",
+	  "moment": "^2.17.1",
+	  "material-design-icons":"^3.0.1"
+	},
+	"devDependencies": {
+	  "gulp": "^3.9.1",
+	  "gulp-concat": "^2.6.0",
+	  "gulp-cssmin": "0.1.7",
+	  "gulp-uglify": "1.2.0",
+	  "rimraf": "2.2.8",
+	  "path": "^0.12.7",
+	  "gulp-clean": "^0.3.2",
+	  "fs": "^0.0.2",
+	  "gulp-sass": "2.3.2",
+	  "gulp-rename": "^1.2.2",
+	  "gulp-plumber": "^1.1.0",
+	  "gulp-sourcemaps": "^1.9.1",
+	  "gulp-clone": "^1.0.0",
+	  "gulp-cssnano": "^2.1.2",
+	  "gulp-merge": "^0.1.1",
+	  "gulp-wp-pot":"^2.0.4",
+	  "gulp-zip":"^4.0.0",
+	  "gulp-notify": "^3.0.0",
+	  "gulp-sequence":"^0.4.6"
+	}
+  }
