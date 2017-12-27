@@ -12,7 +12,7 @@ namespace losol.EventManagement.Data
                 public string Name {get; set; }
         
 
-        public ICollection<Registration> Registrations { get; set; }
+        public ICollection<Models.Registration> Registrations { get; set; }
         
     }
 }

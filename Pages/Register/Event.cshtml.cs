@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using losol.EventManagement.Data;
 using losol.EventManagement.Models;
 
-namespace losol.EventManagement.Pages.Registration
+namespace losol.EventManagement.Pages.Register
 {
     public class EventRegistrationModel : PageModel
     {
