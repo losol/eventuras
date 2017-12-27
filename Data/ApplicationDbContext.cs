@@ -14,9 +14,7 @@ namespace losol.EventManagement.Data
         {
         }
 
-        public DbSet<losol.EventManagement.Data.ApplicationUser> ApplicationUsers { get; set; }
-        public DbSet<losol.EventManagement.Models.EventInfo> EventInfos { get; set; }
-        public DbSet<losol.EventManagement.Models.Registration> Registrations { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -27,5 +25,9 @@ namespace losol.EventManagement.Data
             // Add your customizations after calling base.OnModelCreating(builder);
 
         }
+
+        public DbSet<losol.EventManagement.Data.ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<losol.EventManagement.Models.EventInfo> EventInfos { get; set; }
+        public DbSet<losol.EventManagement.Models.Registration> Registrations { get; set; }
     }
 }

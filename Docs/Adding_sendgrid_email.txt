@@ -6,7 +6,8 @@ dotnet restore
 Add EmailSender.cs and EmailSenderOptions.cs to Services folder
 
 Add this in startup.cs before 'services.AddMvc();'
-         services.Configure<EmailSenderOptions>(Configuration);
+    services.AddTransient<IEmailSender, EmailSender>();
+    services.Configure<EmailSenderOptions>(Configuration);
 
 Add SendGridUser and SendGridKey with user secrets
 
