@@ -102,10 +102,22 @@ namespace losol.EventManagement.Pages.Register
                 return Page();
             }
 
+            _logger.LogInformation("Model valid");
+            var submitted_user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, PhoneNumber = Input.Phone };
+            
+            bool userexist = false;
+            var userexistcheck = await _userManager.FindByEmailAsync(Input.Email);
+            if (userexistcheck != null) { userexist = true; };
+            _logger.LogInformation(userexist.ToString());
+
+            
+            //var result = await _userManager.CreateAsync(user, Input.Password);
+                
+
             //_context.Registrations.Add(Registration);
             //await _context.SaveChangesAsync();
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("/Index");
         }
     }
 }
