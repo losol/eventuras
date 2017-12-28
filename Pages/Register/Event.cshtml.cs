@@ -105,12 +105,35 @@ namespace losol.EventManagement.Pages.Register
             _logger.LogInformation("Model valid");
             var submitted_user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, PhoneNumber = Input.Phone };
             
+            // Checkt if user exists with email registered
             bool userexist = false;
             var userexistcheck = await _userManager.FindByEmailAsync(Input.Email);
             if (userexistcheck != null) { userexist = true; };
             _logger.LogInformation(userexist.ToString());
 
+            // Create user if user does not exist
+            var result = await _userManager.CreateAsync(submitted_user);
+            _logger.LogInformation("UserCreation result: " + userexist.ToString());
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User created a new account with password.");
+
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(submitted_user);
+                var callbackUrl = Url.EmailConfirmationLink(submitted_user.Id, code, Request.Scheme);
+                await _emailSender.SendEmailConfirmationAsync(Input.Email, callbackUrl);
+
+                return RedirectToPage("Register/Confirmed");
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
             
+
+
+
             //var result = await _userManager.CreateAsync(user, Input.Password);
                 
 
