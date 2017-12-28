@@ -26,9 +26,17 @@ namespace losol.EventManagement.Pages.Register
         public string EventTitle;
         public string EventDescription;
 
-        public EventRegistrationModel(ApplicationDbContext context)
+        public EventRegistrationModel(
+            ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager,
+            ILogger<LoginModel> logger,
+            IEmailSender emailSender
+            )
         {
             _context = context;
+            _userManager = userManager;
+            _logger = logger;
+            _emailSender = emailSender;
         }
 
         [BindProperty]
@@ -84,6 +92,8 @@ namespace losol.EventManagement.Pages.Register
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
+              _logger.LogInformation("*** START REGISTER ***.");
+
             if (!ModelState.IsValid)
             {
                 var eventinfo = await _context.EventInfos.FirstOrDefaultAsync(m => m.EventInfoId == id);
