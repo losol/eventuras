@@ -192,8 +192,7 @@ namespace losol.EventManagement.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Attended = table.Column<bool>(type: "INTEGER", nullable: false),
                     Diploma = table.Column<bool>(type: "INTEGER", nullable: false),
-                    EventId = table.Column<int>(type: "INTEGER", nullable: false),
-                    EventInfoId = table.Column<int>(type: "INTEGER", nullable: true),
+                    EventInfoId = table.Column<int>(type: "INTEGER", nullable: false),
                     Notes = table.Column<string>(type: "TEXT", nullable: true),
                     RegistrationBy = table.Column<string>(type: "TEXT", nullable: true),
                     RegistrationTime = table.Column<DateTime>(type: "TEXT", nullable: true),
@@ -208,7 +207,7 @@ namespace losol.EventManagement.Migrations
                         column: x => x.EventInfoId,
                         principalTable: "EventInfos",
                         principalColumn: "EventInfoId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Registrations_AspNetUsers_UserId",
                         column: x => x.UserId,

@@ -12,8 +12,8 @@ using System;
 namespace losol.EventManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20171229201010_fix")]
-    partial class fix
+    [Migration("20171229230506_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

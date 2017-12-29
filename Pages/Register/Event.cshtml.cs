@@ -97,33 +97,37 @@ namespace losol.EventManagement.Pages.Register
         public async Task<IActionResult> OnPostAsync(int? id)
         {
               _logger.LogInformation("*** START REGISTER ***.");
-
-            if (!ModelState.IsValid)
-            {
-                var eventinfo = await _context.EventInfos.FirstOrDefaultAsync(m => m.EventInfoId == id);
+            var eventinfo = await _context.EventInfos.FirstOrDefaultAsync(m => m.EventInfoId == id);
                Registration.EventInfoId = eventinfo.EventInfoId;
                Registration.EventInfoTitle = eventinfo.Title;
                Registration.EventInfoDescription = eventinfo.Description;
+
+            if (!ModelState.IsValid)
+            {
+
                 return Page();
             }
 
             _logger.LogInformation(" Model valid ");
             
             // Check if user exists with email registered
-            bool userexist = false;
-            var userexistcheck = await _userManager.FindByEmailAsync(Registration.Email);
-            if (userexistcheck != null) { userexist = true; };
-            _logger.LogInformation(userexist.ToString());
+           // bool userexist = false;
+            var user = await _userManager.FindByEmailAsync(Registration.Email);
 
-            // Create user if user does not exist
-            if (!userexist) {
+            if (user != null) 
+            { 
+              Registration.UserId = user.Id;  
+            }
+            else
+            {
                 var newUser = new ApplicationUser { UserName = Registration.Email, Email = Registration.Email, PhoneNumber = Registration.Phone };
                 var result = await _userManager.CreateAsync(newUser);
-                _logger.LogInformation("UserCreation result: " + userexist.ToString());
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    Registration.UserId = newUser.Id;
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
                     var callbackUrl = Url.EmailConfirmationLink(newUser.Id, code, Request.Scheme);
@@ -133,14 +137,16 @@ namespace losol.EventManagement.Pages.Register
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-            }
+            };
+
+            _logger.LogCritical("***" + Registration.UserId +"---" + Registration.EventInfoId);
 
 
             var entry = _context.Add(new Registration());
             entry.CurrentValues.SetValues(Registration);            
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("Register/Confirmed");
+            return RedirectToPage("/Register/Confirmed");
         }
     }
 }
