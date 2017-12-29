@@ -23,7 +23,7 @@ namespace losol.EventManagement.Models
     public class Registration
     {
         public int RegistrationId { get; set; }
-        public int EventId { get; set; }
+        public int EventInfoId { get; set; }
         public string UserId { get; set; }
 
         public RegistrationType? RegistrationType { get; set; }

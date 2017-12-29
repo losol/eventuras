@@ -23,9 +23,6 @@ namespace losol.EventManagement.Pages.Register
         private readonly ILogger<LoginModel> _logger;
         private readonly IEmailSender _emailSender;
 
-        public string EventTitle;
-        public string EventDescription;
-
         public EventRegistrationModel(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
@@ -40,10 +37,15 @@ namespace losol.EventManagement.Pages.Register
         }
 
         [BindProperty]
-        public InputModel Input { get; set; }
+        public RegisterVM RegistrationVM { get; set; }
 
-        public class InputModel
+        public class RegisterVM
         {
+            public int EventInfoId {get;set;}
+            public string EventInfoTitle {get;set;}
+            public string EventInfoDescription {get;set;}
+            public string UserId {get;set;}
+
             [Required]
             [StringLength(100)]
             [Display(Name = "Navn")]
@@ -82,9 +84,9 @@ namespace losol.EventManagement.Pages.Register
             }
             else 
             {
-            EventTitle = eventinfo.Title;
-            EventDescription = eventinfo.Description;
-            // this.Registration.EventId = eventinfo.EventInfoId;
+               RegistrationVM.EventInfoId = eventinfo.EventInfoId;
+               RegistrationVM.EventInfoTitle = eventinfo.Title;
+               RegistrationVM.EventInfoDescription = eventinfo.Description;
             }
             return Page();
         }
@@ -102,27 +104,27 @@ namespace losol.EventManagement.Pages.Register
                 return Page();
             }
 
-            _logger.LogInformation("Model valid");
-            var submitted_user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, PhoneNumber = Input.Phone };
+            _logger.LogInformation(" Model valid ");
             
-            // Checkt if user exists with email registered
+            // Check if user exists with email registered
             bool userexist = false;
-            var userexistcheck = await _userManager.FindByEmailAsync(Input.Email);
+            var userexistcheck = await _userManager.FindByEmailAsync(RegistrationVM.Email);
             if (userexistcheck != null) { userexist = true; };
             _logger.LogInformation(userexist.ToString());
 
             // Create user if user does not exist
             if (!userexist) {
-                var result = await _userManager.CreateAsync(submitted_user);
+                var newUser = new ApplicationUser { UserName = RegistrationVM.Email, Email = RegistrationVM.Email, PhoneNumber = RegistrationVM.Phone };
+                var result = await _userManager.CreateAsync(newUser);
                 _logger.LogInformation("UserCreation result: " + userexist.ToString());
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(submitted_user);
-                    var callbackUrl = Url.EmailConfirmationLink(submitted_user.Id, code, Request.Scheme);
-                    await _emailSender.SendEmailConfirmationAsync(Input.Email, callbackUrl);
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+                    var callbackUrl = Url.EmailConfirmationLink(newUser.Id, code, Request.Scheme);
+                    await _emailSender.SendEmailConfirmationAsync(RegistrationVM.Email, callbackUrl);
                 }
                 foreach (var error in result.Errors)
                 {
@@ -130,34 +132,11 @@ namespace losol.EventManagement.Pages.Register
                 }
             }
 
+
             var entry = _context.Add(new Registration());
-            entry.CurrentValues.SetValues(Input);
-            // entry.CurrentValues.SetValues()
-            _logger.LogInformation(
-                "********************* UserId: " + submitted_user.Id +
-                "EventId: " + id
-                );
-
-            //Input.EventId = 1; //TODO fix
-            //newRegistration.UserId = submitted_user.Id;
-            //newRegistration.RegistrationTime = DateTime.Now;
-            //newRegistration.RegistrationBy = "Web";
-
-           // await TryUpdateModelAsync<Registration>(
-             //    newRegistration, "register",
-               //  s => s.EventId,
-                // s => s.UserId
-               //  );
-
-
-            var register = await _context.Registrations.AddAsync(newRegistration);
+            entry.CurrentValues.SetValues(RegistrationVM);            
             await _context.SaveChangesAsync();
 
-            //var result = await _userManager.CreateAsync(user, Input.Password);
-                
-
-            //_context.Registrations.Add(Registration);
-            //await _context.SaveChangesAsync();
             return RedirectToPage("Register/Confirmed");
         }
     }

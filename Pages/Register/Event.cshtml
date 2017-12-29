@@ -1,12 +1,12 @@
 ﻿@page "{id:int}"
 @model losol.EventManagement.Pages.Register.EventRegistrationModel
 @{
-    ViewData["Title"] = "CourseRegistration";
+    ViewData["Title"] = "CourseRegistrationVM";
     
     Layout = "~/Pages/_Layout.cshtml";
 }
 <div class="container">
-<h2>@Model.EventTitle <br><small> - Course registration</small></h2>
+<h2>@Model. <br><small> - Course RegistrationVM</small></h2>
 <p>@Model.EventDescription</p>
 
 <div class="row">
@@ -14,33 +14,33 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Input.Name"></label>
-                <input asp-for="Input.Name" class="form-control" />
-                <span asp-validation-for="Input.Name" class="text-danger"></span>
+                <label asp-for="RegistrationVM.Name"></label>
+                <RegistrationVM asp-for="RegistrationVM.Name" class="form-control" />
+                <span asp-validation-for="RegistrationVM.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.Email"></label>
-                <input asp-for="Input.Email" class="form-control" />
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                <label asp-for="RegistrationVM.Email"></label>
+                <RegistrationVM asp-for="RegistrationVM.Email" class="form-control" />
+                <span asp-validation-for="RegistrationVM.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.Phone"></label>
-                <input asp-for="Input.Phone" class="form-control" />
-                <span asp-validation-for="Input.Phone" class="text-danger"></span>
+                <label asp-for="RegistrationVM.Phone"></label>
+                <RegistrationVM asp-for="RegistrationVM.Phone" class="form-control" />
+                <span asp-validation-for="RegistrationVM.Phone" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.Employer"></label>
-                <input asp-for="Input.Employer" class="form-control" />
-                <span asp-validation-for="Input.Employer" class="text-danger"></span>
+                <label asp-for="RegistrationVM.Employer"></label>
+                <RegistrationVM asp-for="RegistrationVM.Employer" class="form-control" />
+                <span asp-validation-for="RegistrationVM.Employer" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.VatNumber"></label>
-                <input asp-for="Input.VatNumber" class="form-control" />
-                <span asp-validation-for="Input.VatNumber" class="text-danger"></span>
+                <label asp-for="RegistrationVM.VatNumber"></label>
+                <RegistrationVM asp-for="RegistrationVM.VatNumber" class="form-control" />
+                <span asp-validation-for="RegistrationVM.VatNumber" class="text-danger"></span>
             </div>
             
             <div class="form-group">
-                <input type="submit" value="Register" class="btn btn-success" />
+                <RegistrationVM type="submit" value="RegistrationVM" class="btn btn-success" />
             </div>
         </form>
     </div>
