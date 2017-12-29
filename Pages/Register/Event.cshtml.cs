@@ -37,7 +37,7 @@ namespace losol.EventManagement.Pages.Register
         }
 
         [BindProperty]
-        public RegisterVM RegistrationVM { get; set; }
+        public RegisterVM Registration { get; set; }
 
         public class RegisterVM
         {
@@ -76,6 +76,8 @@ namespace losol.EventManagement.Pages.Register
             {
                 return RedirectToPage("./Index");
             }
+    
+            Registration = new RegisterVM();
 
             var eventinfo = await _context.EventInfos.FirstOrDefaultAsync(m => m.EventInfoId == id);
             if (eventinfo == null)
@@ -84,11 +86,11 @@ namespace losol.EventManagement.Pages.Register
             }
             else 
             {
-               RegistrationVM.EventInfoId = eventinfo.EventInfoId;
-               RegistrationVM.EventInfoTitle = eventinfo.Title;
-               RegistrationVM.EventInfoDescription = eventinfo.Description;
+               Registration.EventInfoId = eventinfo.EventInfoId;
+               Registration.EventInfoTitle = eventinfo.Title;
+               Registration.EventInfoDescription = eventinfo.Description;
             }
-            return Page();
+            return Page() ;
         }
 
 
@@ -99,8 +101,9 @@ namespace losol.EventManagement.Pages.Register
             if (!ModelState.IsValid)
             {
                 var eventinfo = await _context.EventInfos.FirstOrDefaultAsync(m => m.EventInfoId == id);
-                EventTitle = eventinfo.Title;
-                EventDescription = eventinfo.Description;
+               Registration.EventInfoId = eventinfo.EventInfoId;
+               Registration.EventInfoTitle = eventinfo.Title;
+               Registration.EventInfoDescription = eventinfo.Description;
                 return Page();
             }
 
@@ -108,13 +111,13 @@ namespace losol.EventManagement.Pages.Register
             
             // Check if user exists with email registered
             bool userexist = false;
-            var userexistcheck = await _userManager.FindByEmailAsync(RegistrationVM.Email);
+            var userexistcheck = await _userManager.FindByEmailAsync(Registration.Email);
             if (userexistcheck != null) { userexist = true; };
             _logger.LogInformation(userexist.ToString());
 
             // Create user if user does not exist
             if (!userexist) {
-                var newUser = new ApplicationUser { UserName = RegistrationVM.Email, Email = RegistrationVM.Email, PhoneNumber = RegistrationVM.Phone };
+                var newUser = new ApplicationUser { UserName = Registration.Email, Email = Registration.Email, PhoneNumber = Registration.Phone };
                 var result = await _userManager.CreateAsync(newUser);
                 _logger.LogInformation("UserCreation result: " + userexist.ToString());
 
@@ -124,7 +127,7 @@ namespace losol.EventManagement.Pages.Register
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
                     var callbackUrl = Url.EmailConfirmationLink(newUser.Id, code, Request.Scheme);
-                    await _emailSender.SendEmailConfirmationAsync(RegistrationVM.Email, callbackUrl);
+                    await _emailSender.SendEmailConfirmationAsync(Registration.Email, callbackUrl);
                 }
                 foreach (var error in result.Errors)
                 {
@@ -134,7 +137,7 @@ namespace losol.EventManagement.Pages.Register
 
 
             var entry = _context.Add(new Registration());
-            entry.CurrentValues.SetValues(RegistrationVM);            
+            entry.CurrentValues.SetValues(Registration);            
             await _context.SaveChangesAsync();
 
             return RedirectToPage("Register/Confirmed");
