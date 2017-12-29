@@ -7,7 +7,7 @@
 }
 <div class="container">
 <h2>@Model.Registration.EventInfoTitle <br><small> - Course Registration</small></h2>
-<p></p>
+<p>@Model.Registration.EventInfoDescription</p>
 
 <div class="row">
     <div class="col-md-4">
@@ -15,32 +15,32 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Registration.Name"></label>
-                <Registration asp-for="Registration.Name" class="form-control" />
+                <input asp-for="Registration.Name" class="form-control" />
                 <span asp-validation-for="Registration.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Registration.Email"></label>
-                <Registration asp-for="Registration.Email" class="form-control" />
+                <input asp-for="Registration.Email" class="form-control" />
                 <span asp-validation-for="Registration.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Registration.Phone"></label>
-                <Registration asp-for="Registration.Phone" class="form-control" />
+                <input asp-for="Registration.Phone" class="form-control" />
                 <span asp-validation-for="Registration.Phone" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Registration.Employer"></label>
-                <Registration asp-for="Registration.Employer" class="form-control" />
+                <input asp-for="Registration.Employer" class="form-control" />
                 <span asp-validation-for="Registration.Employer" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Registration.VatNumber"></label>
-                <Registration asp-for="Registration.VatNumber" class="form-control" />
+                <input asp-for="Registration.VatNumber" class="form-control" />
                 <span asp-validation-for="Registration.VatNumber" class="text-danger"></span>
             </div>
             
             <div class="form-group">
-                <Registration type="submit" value="Registration" class="btn btn-success" />
+                <input type="submit" value="Registration" class="btn btn-success" />
             </div>
         </form>
     </div>
