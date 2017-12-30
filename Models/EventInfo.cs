@@ -6,14 +6,6 @@ using System.Threading.Tasks;
 
 namespace losol.EventManagement.Models
 {
-    public enum EventType
-    {
-        Course,
-        Conference,
-        Online,
-        Blended
-
-    }
    
     public class EventInfo
     {
@@ -26,14 +18,25 @@ namespace losol.EventManagement.Models
         [Display(Name = "Kode for kurset")]
         public string Code {get; set;}
 
-        public EventType? EventType { get; set; }
+        public string Category { get; set; }
 
         [Display(Name = "Kort beskrivelse av kurset")]
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
+        [Display(Name = "Mer informasjon")]
+        [DataType(DataType.MultilineText)]
+        public string MoreInformation { get; set; }
+
+        [Display(Name = "Program")]
+        [DataType(DataType.MultilineText)]
+        public string Program { get; set; }
+
+        [Display(Name = "Nettkurs?")]
+        public bool OnDemand { get; set; } = false;
+
         [Display(Name = "Klart til publisering?")]
-        public bool Publish { get; set; } = false;
+        public bool Published { get; set; } = false;
 
         [Display(Name = "Hvilket hotell?")]
         public string Location { get; set; }
@@ -42,12 +45,10 @@ namespace losol.EventManagement.Models
         public string City { get; set; }
 
         [Display(Name = "Dato start")]
-        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}", ApplyFormatInEditMode = false)]
         [DataType(DataType.Date)]
         public DateTime? DateStart { get; set; }
 
         [Display(Name = "Dato slutt")]
-        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}", ApplyFormatInEditMode = false)]
         [DataType(DataType.Date)]
         public DateTime? DateEnd { get; set; }
 
@@ -58,10 +59,6 @@ namespace losol.EventManagement.Models
         [Display(Name = "Avmeldingsfrist", Description = "Frist for å melde seg av arrangementet", GroupName = "Frister")]
         [DataType(DataType.Date)]
         public DateTime? LastCancellationDate { get; set; }
-
-        [Display(Name = "Dato for fakturautsending", Description = "Frist for å melde seg av arrangementet", GroupName = "Frister")]
-        [DataType(DataType.Date)]
-        public DateTime? InvoiceDate { get; set; }
 
         [Display(Name = "Antall deltakere", Description = "Maksimalt antall deltakere")]
         public int MaxParticipants { get; set; } = 0; //maks antall deltakere
@@ -74,17 +71,9 @@ namespace losol.EventManagement.Models
         [DisplayFormat(DataFormatString = "{0:0}", ApplyFormatInEditMode = true)]
         public decimal VatPercent { get; set; } = 0;  //ie0% or 25%
 
-        [Display(Name = "Mer informasjon")]
-        [DataType(DataType.MultilineText)]
-        public string MoreInformation { get; set; }
-
-        [Display(Name = "Velkomstbrev")]
-        [DataType(DataType.MultilineText)]
-        public string WelcomeLetter { get; set; } //Text to send to all attendees
-
         [Display(Name = "Diplomtekst")]
         [DataType(DataType.MultilineText)]
-        public string DiplomaDescription { get; set; } //Text to present on the Diploma
+        public string CertificateDescription { get; set; } //Text for the certificate if issued.
 
         // Add code for attendees here
         public List<Registration> Registrations { get; set; }
