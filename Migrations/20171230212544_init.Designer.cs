@@ -12,14 +12,15 @@ using System;
 namespace losol.EventManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20171229230506_init")]
+    [Migration("20171230212544_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.0-rtm-26452");
+                .HasAnnotation("ProductVersion", "2.0.0-rtm-26452")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("losol.EventManagement.Data.ApplicationUser", b =>
                 {
@@ -68,7 +69,8 @@ namespace losol.EventManagement.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex");
+                        .HasName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -77,6 +79,10 @@ namespace losol.EventManagement.Migrations
                 {
                     b.Property<int>("EventInfoId")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Category");
+
+                    b.Property<string>("CertificateDescription");
 
                     b.Property<string>("City");
 
@@ -89,12 +95,6 @@ namespace losol.EventManagement.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<string>("DiplomaDescription");
-
-                    b.Property<int?>("EventType");
-
-                    b.Property<DateTime?>("InvoiceDate");
-
                     b.Property<DateTime?>("LastCancellationDate");
 
                     b.Property<DateTime?>("LastRegistrationDate");
@@ -105,15 +105,17 @@ namespace losol.EventManagement.Migrations
 
                     b.Property<string>("MoreInformation");
 
+                    b.Property<bool>("OnDemand");
+
                     b.Property<decimal>("Price");
 
-                    b.Property<bool>("Publish");
+                    b.Property<string>("Program");
+
+                    b.Property<bool>("Published");
 
                     b.Property<string>("Title");
 
                     b.Property<decimal>("VatPercent");
-
-                    b.Property<string>("WelcomeLetter");
 
                     b.HasKey("EventInfoId");
 
@@ -168,7 +170,8 @@ namespace losol.EventManagement.Migrations
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex");
+                        .HasName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
                 });
