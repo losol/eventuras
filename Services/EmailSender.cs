@@ -30,7 +30,7 @@ namespace losol.EventManagement.Services
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("Joe@contoso.com", "Joe Smith"),
+                From = new EmailAddress("ikke-svar@nordland-legeforening.no", "Kursinord.no"),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message
