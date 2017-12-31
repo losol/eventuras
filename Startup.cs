@@ -62,7 +62,7 @@ namespace losol.EventManagement
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AdministratorRole", policy => policy.RequireRole("Administrator"));
+                options.AddPolicy("AdministratorRole", policy => policy.RequireRole("Admin", "SuperAdmin"));
             });
 
             // Register no-op EmailSender used by account confirmation and password reset during development
