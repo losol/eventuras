@@ -1,7 +1,10 @@
 # Scaffolding 
 
 dotnet restore
-dotnet aspnet-codegenerator razorpage -m EventInfo -dc ApplicationDbContext -udl -outDir Pages\Events --referenceScriptLibraries
+dotnet build
+(dotnet ef migrations add migration_name)
+(dotnet ef database update)
+dotnet aspnet-codegenerator razorpage -m EventInfo -dc ApplicationDbContext -udl -outDir Pages/Admin/Events --referenceScriptLibraries
 
 Parameter	Description
 -m	The name of the model.

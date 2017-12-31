@@ -1,0 +1,122 @@
+@page
+@model losol.EventManagement.Pages.Admin.Events.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+<div class="container">
+<h1>Opprett nytt kurs</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="EventInfo.Title" class="control-label"></label>
+                <input asp-for="EventInfo.Title" class="form-control" />
+                <span asp-validation-for="EventInfo.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventInfo.Code" class="control-label"></label>
+                <input asp-for="EventInfo.Code" class="form-control" />
+                <span asp-validation-for="EventInfo.Code" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventInfo.Category" class="control-label"></label>
+                <input asp-for="EventInfo.Category" class="form-control" />
+                <span asp-validation-for="EventInfo.Category" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventInfo.Description" class="control-label"></label>
+                <input asp-for="EventInfo.Description" class="form-control" />
+                <span asp-validation-for="EventInfo.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventInfo.MoreInformation" class="control-label"></label>
+                <input asp-for="EventInfo.MoreInformation" class="form-control" />
+                <span asp-validation-for="EventInfo.MoreInformation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventInfo.Program" class="control-label"></label>
+                <input asp-for="EventInfo.Program" class="form-control" />
+                <span asp-validation-for="EventInfo.Program" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="EventInfo.OnDemand" /> @Html.DisplayNameFor(model => model.EventInfo.OnDemand))
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="EventInfo.Published" /> @Html.DisplayNameFor(model => model.EventInfo.Published))
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventInfo.Location" class="control-label"></label>
+                <input asp-for="EventInfo.Location" class="form-control" />
+                <span asp-validation-for="EventInfo.Location" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventInfo.City" class="control-label"></label>
+                <input asp-for="EventInfo.City" class="form-control" />
+                <span asp-validation-for="EventInfo.City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventInfo.DateStart" class="control-label"></label>
+                <input asp-for="EventInfo.DateStart" class="form-control" />
+                <span asp-validation-for="EventInfo.DateStart" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventInfo.DateEnd" class="control-label"></label>
+                <input asp-for="EventInfo.DateEnd" class="form-control" />
+                <span asp-validation-for="EventInfo.DateEnd" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventInfo.LastRegistrationDate" class="control-label"></label>
+                <input asp-for="EventInfo.LastRegistrationDate" class="form-control" />
+                <span asp-validation-for="EventInfo.LastRegistrationDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventInfo.LastCancellationDate" class="control-label"></label>
+                <input asp-for="EventInfo.LastCancellationDate" class="form-control" />
+                <span asp-validation-for="EventInfo.LastCancellationDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventInfo.MaxParticipants" class="control-label"></label>
+                <input asp-for="EventInfo.MaxParticipants" class="form-control" />
+                <span asp-validation-for="EventInfo.MaxParticipants" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventInfo.Price" class="control-label"></label>
+                <input asp-for="EventInfo.Price" class="form-control" />
+                <span asp-validation-for="EventInfo.Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventInfo.VatPercent" class="control-label"></label>
+                <input asp-for="EventInfo.VatPercent" class="form-control" />
+                <span asp-validation-for="EventInfo.VatPercent" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventInfo.CertificateDescription" class="control-label"></label>
+                <input asp-for="EventInfo.CertificateDescription" class="form-control" />
+                <span asp-validation-for="EventInfo.CertificateDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

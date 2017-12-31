@@ -1,0 +1,138 @@
+@page
+@model losol.EventManagement.Pages.Admin.Events.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.EventInfo[0].Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EventInfo[0].Code)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EventInfo[0].Category)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EventInfo[0].Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EventInfo[0].MoreInformation)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EventInfo[0].Program)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EventInfo[0].OnDemand)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EventInfo[0].Published)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EventInfo[0].Location)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EventInfo[0].City)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EventInfo[0].DateStart)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EventInfo[0].DateEnd)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EventInfo[0].LastRegistrationDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EventInfo[0].LastCancellationDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EventInfo[0].MaxParticipants)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EventInfo[0].Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EventInfo[0].VatPercent)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EventInfo[0].CertificateDescription)
+                </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.EventInfo) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MoreInformation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Program)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OnDemand)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Published)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Location)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateStart)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateEnd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastRegistrationDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastCancellationDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaxParticipants)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VatPercent)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CertificateDescription)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.EventInfoId">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.EventInfoId">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.EventInfoId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
