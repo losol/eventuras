@@ -1,0 +1,16 @@
+# Scaffolding 
+
+dotnet restore
+dotnet aspnet-codegenerator razorpage -m EventInfo -dc ApplicationDbContext -udl -outDir Pages\Events --referenceScriptLibraries
+
+Parameter	Description
+-m	The name of the model.
+-dc	The data context.
+-udl	Use the default layout.
+-outDir	The relative output folder path to create the views.
+--referenceScriptLibraries	Adds _ValidationScriptsPartial to Edit and Create pages
+
+
+Read more: 
+Microsoft docs: https://docs.microsoft.com/en-us/aspnet/core/tutorials/razor-pages/model
+
