@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using losol.EventManagement.Data;
 using losol.EventManagement.Services;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Rewrite;
 
 namespace losol.EventManagement
 {
@@ -96,9 +97,9 @@ namespace losol.EventManagement
 
             app.UseAuthentication();
 
-            // var options = new RewriteOptions()
-            //    .AddRedirectToHttps();
-            // app.UseRewriter(options);
+            var options = new RewriteOptions()
+               .AddRedirectToHttps();
+            app.UseRewriter(options);
 
             app.UseMvc(routes =>
             {
