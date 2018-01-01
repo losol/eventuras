@@ -37,6 +37,7 @@ namespace losol.EventManagement.Data
                 var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables() 
                 .Build();
 
                 var _user = await userManager.FindByEmailAsync(config.GetSection("Admin")["Email"]);
