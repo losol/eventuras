@@ -38,7 +38,12 @@
                 <input asp-for="Registration.VatNumber" class="form-control" />
                 <span asp-validation-for="Registration.VatNumber" class="text-danger"></span>
             </div>
-            
+            <div class="form-group"><!-- Payment method -->
+                <label asp-for="Registration.PaymentMethod"></label>
+                <select asp-for="Registration.PaymentMethod" asp-items="Html.GetEnumSelectList<Model.Registration.PaymentMethod>()">
+                    <option value="" selected>--select--</option>  
+                </select>
+            </div>
             <div class="form-group">
                 <input type="submit" value="Registration" class="btn btn-success" />
             </div>
