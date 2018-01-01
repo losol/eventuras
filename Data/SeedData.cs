@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using losol.EventManagement.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace losol.EventManagement.Data
@@ -15,16 +17,45 @@ namespace losol.EventManagement.Data
             context.Database.EnsureCreated();
 
             // Add administrator role if it does not exist
-            var RoleManager = service.GetRequiredService<RoleManager<IdentityRole>>();
+            var roleManager = service.GetRequiredService<RoleManager<IdentityRole>>();
             string[] roleNames = { "Admin", "SuperAdmin" };
             IdentityResult roleResult;
             foreach (var roleName in roleNames)
             {
-                var roleExist = await RoleManager.RoleExistsAsync(roleName);
+                var roleExist = await roleManager.RoleExistsAsync(roleName);
                 if (!roleExist)
                 {
-                    roleResult = await RoleManager.CreateAsync(new IdentityRole(roleName));
+                    roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
                 }
+            }
+
+            // Add super-admin if none exists
+            var userManager = service.GetRequiredService<UserManager<ApplicationUser>>();
+            if (!userManager.GetUsersInRoleAsync("SuperAdmin").Result.Any()) {
+
+                var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+                var _user = await userManager.FindByEmailAsync(config.GetSection("Admin")["Email"]);
+
+                if (_user == null)
+                {
+                    var superadmin = new ApplicationUser
+                    {
+                        UserName = config.GetSection("Admin")["Email"],
+                        Email = config.GetSection("Admin")["Email"],
+                        EmailConfirmed = true
+                    };
+                    string UserPassword = config.GetSection("Admin")["Password"];
+                    var createSuperAdmin = await userManager.CreateAsync(superadmin, UserPassword);
+                    if (createSuperAdmin.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(superadmin, "SuperAdmin");
+                    }
+                }
+        
             }
             
 			// Seed test events if no events exist. 

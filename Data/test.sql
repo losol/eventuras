@@ -1,2 +1,5 @@
+USE master
+GO
 DROP DATABASE EventDb
-CREATE DATABASE EventDbdotne
+CREATE DATABASE EventDb
+GO

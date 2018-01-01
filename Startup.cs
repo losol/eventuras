@@ -49,6 +49,13 @@ namespace losol.EventManagement
                 options.Password.RequireUppercase = true;
             });
 
+            
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdministratorRole", policy => policy.RequireRole("Admin", "SuperAdmin"));
+            });
+            
+
 
             services.AddMvc()
                 .AddRazorPagesOptions(options =>
@@ -60,15 +67,11 @@ namespace losol.EventManagement
                 });
 
 
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("AdministratorRole", policy => policy.RequireRole("Admin", "SuperAdmin"));
-            });
-
             // Register no-op EmailSender used by account confirmation and password reset during development
             // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=532713
             services.Configure<EmailSenderOptions>(Configuration);
             services.AddSingleton<IEmailSender, EmailSender>();
+
 
         }
 

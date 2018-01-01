@@ -15,8 +15,13 @@ namespace losol.EventManagement.Models
     }
     public enum PaymentMethod
     {
+        [Display(Name = "Kort")]
         Card, 
-        E_mail_invoice, 
+
+        [Display(Name = "E-postfaktura")]
+        Email_invoice, 
+        
+        [Display(Name = "EHF-faktura")]
         EHF_invoice
     }
 
@@ -40,6 +45,12 @@ namespace losol.EventManagement.Models
 
         public DateTime? RegistrationTime { get; set; }
         public string RegistrationBy { get; set; }
+
+        [Display(Name = "Gratisdeltaker?")]
+        public bool FreeRegistration { get; set; } = false;
+
+        [Display(Name = "Betalingsmetode")]
+        public PaymentMethod? PaymentMethod {get; set;}
 
         // Navigation properties
         public EventInfo EventInfo { get; set; }
