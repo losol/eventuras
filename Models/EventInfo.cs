@@ -24,6 +24,9 @@ namespace losol.EventManagement.Models
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
+        [Display(Name = "Fremhevet på forsiden?")]
+        public bool Featured { get; set; } = false;
+
         [Display(Name = "Mer informasjon")]
         [DataType(DataType.MultilineText)]
         public string MoreInformation { get; set; }

@@ -6,15 +6,19 @@
 
     <environment include="Development">
         <link rel="stylesheet" href="~/assets/css/site.css" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="~/assets/css/site.min.css" asp-append-version="true" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
     </environment>
 </head>
 <body>
 <header>
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-        <a asp-page="/Index"  class="navbar-brand link-decoration-none">kursinord.no</a>
+        <a asp-page="/Index" class="navbar-brand link-decoration-none">kursinord.no</a>
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -22,8 +26,9 @@
 
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
+                
         @await Html.PartialAsync("_LoginPartial")
+        @await Html.PartialAsync("_NavAdminPartial")
                 </li>
         
             </ul>
@@ -33,11 +38,7 @@
 <main>
 @RenderBody()
 </main>
-<footer class="footer">
-    <div class="container">
-    <p>&copy; 2017 - kursinord.no</p>
-    </div>
-</footer>
+@await Html.PartialAsync("_PartFooter")
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>

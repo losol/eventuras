@@ -12,7 +12,7 @@ using System;
 namespace losol.EventManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20171230212544_init")]
+    [Migration("20180101222148_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -95,6 +95,8 @@ namespace losol.EventManagement.Migrations
 
                     b.Property<string>("Description");
 
+                    b.Property<bool>("Featured");
+
                     b.Property<DateTime?>("LastCancellationDate");
 
                     b.Property<DateTime?>("LastRegistrationDate");
@@ -122,6 +124,24 @@ namespace losol.EventManagement.Migrations
                     b.ToTable("EventInfos");
                 });
 
+            modelBuilder.Entity("losol.EventManagement.Models.PaymentMethod", b =>
+                {
+                    b.Property<int>("PaymentMethodId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("Active");
+
+                    b.Property<string>("Code");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(75);
+
+                    b.HasKey("PaymentMethodId");
+
+                    b.ToTable("PaymentMethods");
+                });
+
             modelBuilder.Entity("losol.EventManagement.Models.Registration", b =>
                 {
                     b.Property<int>("RegistrationId")
@@ -133,7 +153,11 @@ namespace losol.EventManagement.Migrations
 
                     b.Property<int>("EventInfoId");
 
+                    b.Property<bool>("FreeRegistration");
+
                     b.Property<string>("Notes");
+
+                    b.Property<int>("PaymentMethodId");
 
                     b.Property<string>("RegistrationBy");
 
@@ -146,6 +170,8 @@ namespace losol.EventManagement.Migrations
                     b.HasKey("RegistrationId");
 
                     b.HasIndex("EventInfoId");
+
+                    b.HasIndex("PaymentMethodId");
 
                     b.HasIndex("UserId");
 
@@ -265,6 +291,11 @@ namespace losol.EventManagement.Migrations
                     b.HasOne("losol.EventManagement.Models.EventInfo", "EventInfo")
                         .WithMany("Registrations")
                         .HasForeignKey("EventInfoId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("losol.EventManagement.Models.PaymentMethod", "PaymentMethod")
+                        .WithMany()
+                        .HasForeignKey("PaymentMethodId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("losol.EventManagement.Data.ApplicationUser", "User")

@@ -18,10 +18,11 @@ namespace losol.EventManagement.Pages.Register
 {
     public class EventRegistrationModel : PageModel
     {
-        private readonly losol.EventManagement.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly IEmailSender _emailSender;
+        
 
         public EventRegistrationModel(
             ApplicationDbContext context,
@@ -67,7 +68,9 @@ namespace losol.EventManagement.Pages.Register
             public string VatNumber { get; set; }
 
             [Display(Name = "Betalingsmetode")]
-            public PaymentMethod? PaymentMethod { get; set; }
+            public IEnumerable<PaymentMethod> PaymentMethods { get; set; }
+
+            public int PaymentMethodId {get;set;}
         }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -89,6 +92,8 @@ namespace losol.EventManagement.Pages.Register
                Registration.EventInfoId = eventinfo.EventInfoId;
                Registration.EventInfoTitle = eventinfo.Title;
                Registration.EventInfoDescription = eventinfo.Description;
+
+               Registration.PaymentMethods = _context.PaymentMethods.ToList();
             }
             return Page() ;
         }
@@ -129,9 +134,9 @@ namespace losol.EventManagement.Pages.Register
 
                     Registration.UserId = newUser.Id;
 
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
-                    var callbackUrl = Url.EmailConfirmationLink(newUser.Id, code, Request.Scheme);
-                    await _emailSender.SendEmailConfirmationAsync(Registration.Email, callbackUrl);
+                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+                    //var callbackUrl = Url.EmailConfirmationLink(newUser.Id, code, Request.Scheme);
+                    //await _emailSender.SendEmailConfirmationAsync(Registration.Email, callbackUrl);
                 }
                 foreach (var error in result.Errors)
                 {
@@ -139,12 +144,30 @@ namespace losol.EventManagement.Pages.Register
                 }
             };
 
-            _logger.LogCritical("***" + Registration.UserId +"---" + Registration.EventInfoId);
-
-
             var entry = _context.Add(new Registration());
             entry.CurrentValues.SetValues(Registration);            
             await _context.SaveChangesAsync();
+
+            string message = string.Format(
+            @"Navn: {0}
+            Epost: {1}
+            Mobil: {2}
+            Arbeidsgiver: {3}
+            Orgnr: {4}
+            Betaling: {5}
+            Arrangement: {6} {7}
+            ",
+            Registration.Name,
+            Registration.Email,
+            Registration.Phone,
+            Registration.Employer,
+            Registration.VatNumber,
+            Registration.PaymentMethodId,
+            Registration.EventInfoId,
+            Registration.EventInfoTitle
+            );
+
+            await _emailSender.SendEmailAsync("losvik@gmail.com","kursinord.no notifikasjon", message);
 
             return RedirectToPage("/Register/Confirmed");
         }

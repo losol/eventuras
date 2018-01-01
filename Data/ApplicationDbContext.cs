@@ -29,5 +29,6 @@ namespace losol.EventManagement.Data
         public DbSet<losol.EventManagement.Data.ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<losol.EventManagement.Models.EventInfo> EventInfos { get; set; }
         public DbSet<losol.EventManagement.Models.Registration> Registrations { get; set; }
+        public DbSet<losol.EventManagement.Models.PaymentMethod> PaymentMethods { get; set; }
     }
 }

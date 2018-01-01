@@ -62,6 +62,7 @@ namespace losol.EventManagement.Migrations
                     DateEnd = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DateStart = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Featured = table.Column<bool>(type: "bit", nullable: false),
                     LastCancellationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastRegistrationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -77,6 +78,21 @@ namespace losol.EventManagement.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EventInfos", x => x.EventInfoId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PaymentMethods",
+                columns: table => new
+                {
+                    PaymentMethodId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Active = table.Column<bool>(type: "bit", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(75)", maxLength: 75, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentMethods", x => x.PaymentMethodId);
                 });
 
             migrationBuilder.CreateTable(
@@ -194,7 +210,9 @@ namespace losol.EventManagement.Migrations
                     Attended = table.Column<bool>(type: "bit", nullable: false),
                     Diploma = table.Column<bool>(type: "bit", nullable: false),
                     EventInfoId = table.Column<int>(type: "int", nullable: false),
+                    FreeRegistration = table.Column<bool>(type: "bit", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PaymentMethodId = table.Column<int>(type: "int", nullable: false),
                     RegistrationBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RegistrationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RegistrationType = table.Column<int>(type: "int", nullable: true),
@@ -208,6 +226,12 @@ namespace losol.EventManagement.Migrations
                         column: x => x.EventInfoId,
                         principalTable: "EventInfos",
                         principalColumn: "EventInfoId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Registrations_PaymentMethods_PaymentMethodId",
+                        column: x => x.PaymentMethodId,
+                        principalTable: "PaymentMethods",
+                        principalColumn: "PaymentMethodId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Registrations_AspNetUsers_UserId",
@@ -262,6 +286,11 @@ namespace losol.EventManagement.Migrations
                 column: "EventInfoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Registrations_PaymentMethodId",
+                table: "Registrations",
+                column: "PaymentMethodId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Registrations_UserId",
                 table: "Registrations",
                 column: "UserId");
@@ -292,6 +321,9 @@ namespace losol.EventManagement.Migrations
 
             migrationBuilder.DropTable(
                 name: "EventInfos");
+
+            migrationBuilder.DropTable(
+                name: "PaymentMethods");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

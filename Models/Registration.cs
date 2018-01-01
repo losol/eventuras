@@ -13,12 +13,7 @@ namespace losol.EventManagement.Models
         Learner, 
         Volunteer
     }
-    public enum PaymentMethod
-    {
-        Card, 
-        E_mail_invoice, 
-        EHF_invoice
-    }
+
 
     public class Registration
     {
@@ -41,9 +36,16 @@ namespace losol.EventManagement.Models
         public DateTime? RegistrationTime { get; set; }
         public string RegistrationBy { get; set; }
 
+        [Display(Name = "Gratisdeltaker?")]
+        public bool FreeRegistration { get; set; } = false;
+
+        [Display(Name = "Betalingsmetode")]
+        public int PaymentMethodId {get; set;}
+
         // Navigation properties
         public EventInfo EventInfo { get; set; }
         public ApplicationUser User { get; set; }
+        public PaymentMethod PaymentMethod {get;set;}
 
     }
 }
