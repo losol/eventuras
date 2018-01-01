@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using losol.EventManagement.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,7 +15,7 @@ namespace losol.EventManagement.Data
 	{
         public static async Task Initialize(ApplicationDbContext context, IServiceProvider service)
 		{
-            context.Database.EnsureCreated();
+            context.Database.Migrate();
 
             // Add administrator role if it does not exist
             var roleManager = service.GetRequiredService<RoleManager<IdentityRole>>();
@@ -56,6 +57,22 @@ namespace losol.EventManagement.Data
                     }
                 }
         
+            }
+
+            // Seed payment methods
+            if (!context.PaymentMethods.Any()) {
+                var paymentMethods = new PaymentMethod[] {
+                    new PaymentMethod {Code="Card", Name="Kortbetaling", Active=false},
+                    new PaymentMethod {Code="Email_invoice", Name="E-postfaktura", Active=true}, 
+                    new PaymentMethod {Code="EHF_invoice", Name="EHF-faktura", Active=true}
+                };
+                
+                foreach (var item in paymentMethods)
+                {
+                    await context.PaymentMethods.AddAsync(item);
+                }
+
+                context.SaveChanges();
             }
             
 			// Seed test events if no events exist. 

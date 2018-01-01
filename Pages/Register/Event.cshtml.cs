@@ -18,10 +18,11 @@ namespace losol.EventManagement.Pages.Register
 {
     public class EventRegistrationModel : PageModel
     {
-        private readonly losol.EventManagement.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly IEmailSender _emailSender;
+        
 
         public EventRegistrationModel(
             ApplicationDbContext context,
@@ -67,7 +68,9 @@ namespace losol.EventManagement.Pages.Register
             public string VatNumber { get; set; }
 
             [Display(Name = "Betalingsmetode")]
-            public PaymentMethod? PaymentMethod { get; set; }
+            public IEnumerable<PaymentMethod> PaymentMethods { get; set; }
+
+            public int PaymentMethodId {get;set;}
         }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -89,6 +92,8 @@ namespace losol.EventManagement.Pages.Register
                Registration.EventInfoId = eventinfo.EventInfoId;
                Registration.EventInfoTitle = eventinfo.Title;
                Registration.EventInfoDescription = eventinfo.Description;
+
+               Registration.PaymentMethods = _context.PaymentMethods.ToList();
             }
             return Page() ;
         }
