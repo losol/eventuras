@@ -40,7 +40,7 @@
     <tbody>
 @foreach (var item in Model.EventInfo) {
         <tr>
-                    <td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Code)
             </td>
             <td>
@@ -62,9 +62,9 @@
                 @Html.DisplayFor(modelItem => item.DateEnd)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.EventInfoId">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.EventInfoId">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.EventInfoId">Delete</a>
+                <a asp-page="./Edit" asp-route-id="@item.EventInfoId">Rediger</a> |
+                <a asp-page="./Details" asp-route-id="@item.EventInfoId">Vis</a> |
+                <a asp-page="./Delete" asp-route-id="@item.EventInfoId">Slett</a>
             </td>
         </tr>
 }
