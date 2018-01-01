@@ -1,3 +1,4 @@
 
 
 * Add localization
+* Include material icons in base css

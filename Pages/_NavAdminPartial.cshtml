@@ -4,8 +4,10 @@
 @if (SignInManager.IsSignedIn(User))
 {
     // is the current user authorized to see the next part of the page?
-    if (User.IsInRole("Administrator"))
+    if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin") )
     {
-        <li><a asp-page="/Admin" class="navbar-link link-decoration-none">kursinord.no</a></li>
+        <li class="nav-item">
+        <a asp-page="/Admin/Events/Index" class="nav-link link-decoration-none"><i class="material-icons">supervisor_account</i> Admin</a>
+   </li>
     }
 }
