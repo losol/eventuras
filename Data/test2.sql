@@ -1,1 +1,1 @@
-SELECT * FROM Paymentmethods
+SELECT * FROM EventInfos

@@ -38,11 +38,7 @@
 <main>
 @RenderBody()
 </main>
-<footer class="footer">
-    <div class="container">
-    <p>&copy; 2017 - kursinord.no</p>
-    </div>
-</footer>
+@await Html.PartialAsync("_PartFooter")
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>

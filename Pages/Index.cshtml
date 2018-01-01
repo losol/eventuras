@@ -14,17 +14,14 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
-            <h2>Nettkurs EKG</h2>
-            <p>Hvorfor ikke gjenoppfriske ekg-kunnskapene litt? </p>
-            <p><a class="btn btn-secondary link-decoration-none" href="https://kursinord.talentlms.com/catalog/info/id:126" role="button">Vis kurset »</a></p>
+    @foreach (var item in Model.FeaturedEvents)
+        {
+            <div class="col-md-6">
+                <h2>@item.Title</h2>
+                <p>@item.Description</p>
+                <p><a asp-page="./Register/Event" asp-route-id="@item.EventInfoId" class="btn btn-secondary link-decoration-none" role="button">Vis kurset »</a></p>
+            </div>
+        
+        }
         </div>
-        <div class="col-md-6">
-            <h2>Nettkurs Diabetes</h2>
-            <p>Diabeteskurset er godkjent med 6 timer, men vi jobber med å få det som 8. </p>
-            <p><a class="btn btn-secondary link-decoration-none" href="/Registrations/DiabetesCourse" role="button">Vis kurset »</a></p>
-        </div>
-    </div>
-
- 
 </div>

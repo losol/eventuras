@@ -5,12 +5,14 @@
     ViewData["Title"] = "Edit";
 }
 
+<div class="container">
+
 <h2>Edit</h2>
 
 <h4>EventInfo</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="EventInfo.EventInfoId" />
@@ -25,13 +27,18 @@
                 <span asp-validation-for="EventInfo.Code" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="EventInfo.Featured" class="control-label"></label>
+                <input asp-for="EventInfo.Featured" class="form-control" />
+                <span asp-validation-for="EventInfo.Featured" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="EventInfo.Category" class="control-label"></label>
                 <input asp-for="EventInfo.Category" class="form-control" />
                 <span asp-validation-for="EventInfo.Category" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="EventInfo.Description" class="control-label"></label>
-                <input asp-for="EventInfo.Description" class="form-control" />
+                <textarea asp-for="EventInfo.Description" class="form-control" rows="6"></textarea>
                 <span asp-validation-for="EventInfo.Description" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -47,14 +54,14 @@
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input asp-for="EventInfo.OnDemand" /> @Html.DisplayNameFor(model => model.OnDemand)
+                        <input asp-for="EventInfo.OnDemand" /> @Html.DisplayNameFor(model => model.EventInfo.OnDemand)
                     </label>
                 </div>
             </div>
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input asp-for="EventInfo.Published" /> @Html.DisplayNameFor(model => model.Published)
+                        <input asp-for="EventInfo.Published" /> @Html.DisplayNameFor(model => model.EventInfo.Published)
                     </label>
                 </div>
             </div>
@@ -118,7 +125,7 @@
 <div>
     <a asp-page="./Index">Back to List</a>
 </div>
-
+</div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
