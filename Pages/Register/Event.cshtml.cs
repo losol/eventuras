@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using losol.EventManagement.Services;
 using losol.EventManagement.Pages.Account;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Options;
 
 namespace losol.EventManagement.Pages.Register
 {
@@ -22,19 +23,22 @@ namespace losol.EventManagement.Pages.Register
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly AppSettings _appSettings;
         
 
         public EventRegistrationModel(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<LoginModel> logger,
-            IEmailSender emailSender
+            IEmailSender emailSender,
+            IOptions<AppSettings> appSettings
             )
         {
             _context = context;
             _userManager = userManager;
             _logger = logger;
             _emailSender = emailSender;
+            _appSettings = appSettings.Value;
         }
 
         [BindProperty]
@@ -101,7 +105,9 @@ namespace losol.EventManagement.Pages.Register
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
+            //TODO REMOVE
               _logger.LogInformation("*** START REGISTER ***.");
+              _logger.LogCritical(_appSettings.Hello);
             var eventinfo = await _context.EventInfos.FirstOrDefaultAsync(m => m.EventInfoId == id);
                Registration.EventInfoId = eventinfo.EventInfoId;
                Registration.EventInfoTitle = eventinfo.Title;

@@ -13,16 +13,19 @@ using losol.EventManagement.Data;
 using losol.EventManagement.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.Mvc;
 
 namespace losol.EventManagement
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
+            HostingEnvironment = env;
         }
 
+        public IHostingEnvironment HostingEnvironment { get; }
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -39,6 +42,16 @@ namespace losol.EventManagement
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            // Require SSL
+            if (HostingEnvironment.IsProduction())
+            {
+                services.Configure<MvcOptions>(options =>
+                {
+                    options.Filters.Add(new RequireHttpsAttribute());
+                });
+            }
+            
 
             // Set password requirements
             services.Configure<IdentityOptions>(options =>
@@ -68,8 +81,11 @@ namespace losol.EventManagement
                 });
 
 
-            // Register no-op EmailSender used by account confirmation and password reset during development
-            // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=532713
+            // AppSettings
+            var appSettings = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettings);
+
+            // Email configuration
             services.Configure<EmailSenderOptions>(Configuration);
             services.AddSingleton<IEmailSender, EmailSender>();
 
@@ -97,9 +113,11 @@ namespace losol.EventManagement
 
             app.UseAuthentication();
 
-            var options = new RewriteOptions()
-               .AddRedirectToHttps();
-            app.UseRewriter(options);
+            if (env.IsProduction()) {
+                var options = new RewriteOptions()
+                .AddRedirectToHttps();
+                app.UseRewriter(options);
+            }
 
             app.UseMvc(routes =>
             {
