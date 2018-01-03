@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using losol.EventManagement.Services;
 using losol.EventManagement.Pages.Account;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Options;
 
 namespace losol.EventManagement.Pages.Register
 {
@@ -22,19 +23,22 @@ namespace losol.EventManagement.Pages.Register
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly AppSettings _appSettings;
         
 
         public EventRegistrationModel(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             ILogger<LoginModel> logger,
-            IEmailSender emailSender
+            IEmailSender emailSender,
+            IOptions<AppSettings> appSettings
             )
         {
             _context = context;
             _userManager = userManager;
             _logger = logger;
             _emailSender = emailSender;
+            _appSettings = appSettings.Value;
         }
 
         [BindProperty]
@@ -79,7 +83,7 @@ namespace losol.EventManagement.Pages.Register
             {
                 return RedirectToPage("./Index");
             }
-    
+            
             Registration = new RegisterVM();
 
             var eventinfo = await _context.EventInfos.FirstOrDefaultAsync(m => m.EventInfoId == id);
@@ -92,6 +96,7 @@ namespace losol.EventManagement.Pages.Register
                Registration.EventInfoId = eventinfo.EventInfoId;
                Registration.EventInfoTitle = eventinfo.Title;
                Registration.EventInfoDescription = eventinfo.Description;
+               
 
                Registration.PaymentMethods = _context.PaymentMethods.ToList();
             }
@@ -101,7 +106,6 @@ namespace losol.EventManagement.Pages.Register
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-              _logger.LogInformation("*** START REGISTER ***.");
             var eventinfo = await _context.EventInfos.FirstOrDefaultAsync(m => m.EventInfoId == id);
                Registration.EventInfoId = eventinfo.EventInfoId;
                Registration.EventInfoTitle = eventinfo.Title;
@@ -109,14 +113,10 @@ namespace losol.EventManagement.Pages.Register
 
             if (!ModelState.IsValid)
             {
-
                 return Page();
             }
-
-            _logger.LogInformation(" Model valid ");
             
             // Check if user exists with email registered
-           // bool userexist = false;
             var user = await _userManager.FindByEmailAsync(Registration.Email);
 
             if (user != null) 
@@ -125,6 +125,7 @@ namespace losol.EventManagement.Pages.Register
             }
             else
             {
+                // Create new user
                 var newUser = new ApplicationUser { UserName = Registration.Email, Email = Registration.Email, PhoneNumber = Registration.Phone };
                 var result = await _userManager.CreateAsync(newUser);
 
@@ -133,6 +134,8 @@ namespace losol.EventManagement.Pages.Register
                     _logger.LogInformation("User created a new account with password.");
 
                     Registration.UserId = newUser.Id;
+
+                    // Uncomment to enable email verifcation
 
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
                     //var callbackUrl = Url.EmailConfirmationLink(newUser.Id, code, Request.Scheme);
