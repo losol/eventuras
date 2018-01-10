@@ -14,6 +14,9 @@ using losol.EventManagement.Services;
 using losol.EventManagement.Pages.Account;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using MimeKit;
 
 namespace losol.EventManagement.Pages.Register
 {
@@ -24,6 +27,7 @@ namespace losol.EventManagement.Pages.Register
         private readonly ILogger<LoginModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly AppSettings _appSettings;
+        private IHostingEnvironment _env; 
         
 
         public EventRegistrationModel(
@@ -31,14 +35,15 @@ namespace losol.EventManagement.Pages.Register
             UserManager<ApplicationUser> userManager,
             ILogger<LoginModel> logger,
             IEmailSender emailSender,
-            IOptions<AppSettings> appSettings
-            )
+            IOptions<AppSettings> appSettings,
+            IHostingEnvironment env)  
         {
             _context = context;
             _userManager = userManager;
             _logger = logger;
             _emailSender = emailSender;
             _appSettings = appSettings.Value;
+            _env = env;
         }
 
         [BindProperty]
@@ -135,6 +140,8 @@ namespace losol.EventManagement.Pages.Register
 
                     Registration.UserId = newUser.Id;
 
+                    
+
                     // Uncomment to enable email verifcation
 
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
@@ -150,8 +157,50 @@ namespace losol.EventManagement.Pages.Register
             var entry = _context.Add(new Registration());
             entry.CurrentValues.SetValues(Registration);            
             await _context.SaveChangesAsync();
+            
+            // NEW EMAIL WITH TEMPLATE START
+            var webRoot = _env.WebRootPath; //get wwwroot Folder
+            var templatePath = _env.WebRootPath  
+                + Path.DirectorySeparatorChar.ToString()  
+                + "Templates"  
+                + Path.DirectorySeparatorChar.ToString()  
+                + "Email"  
+                + Path.DirectorySeparatorChar.ToString()  
+                + "Confirm_Registration.html"; 
+            
+            
+            var builder = new BodyBuilder();
+            using (StreamReader SourceReader = System.IO.File.OpenText(templatePath))
+            {
+            builder.HtmlBody = SourceReader.ReadToEnd();
+            }
 
-            string message = string.Format(
+            /*  Navn: {0}
+                Epost: {1}
+                Mobil: {2}
+                Arbeidsgiver: {3}
+                Orgnr: {4}
+                Betaling: {5}
+                Arrangement: {6}
+                CallBackUrl: {7}
+            */
+            string subject = "Bekreft påmelding på kurs";
+            string messageBody = builder.HtmlBody;/* string.Format(builder.HtmlBody,   
+                        Registration.Name,  
+                        String.Format("{0:dddd, d MMMM yyyy}", DateTime.Now),  
+                        Registration.Email,   
+                        Registration.Email,   
+                        "passordet hemmelig",   
+                        "En beskjed her",  
+                        "Arrangement",
+                        "https://callbackurl"
+                        ); */
+
+            await _emailSender.SendEmailAsync(Registration.Email, subject, messageBody);  
+            
+            // NEW EMAIL WITH TEMPLATE END
+
+            /* string message = string.Format(
             @"Navn: {0}
             Epost: {1}
             Mobil: {2}
@@ -171,7 +220,7 @@ namespace losol.EventManagement.Pages.Register
             );
 
             await _emailSender.SendEmailAsync("losvik@gmail.com","kursinord.no notifikasjon", message);
-
+            */ 
             return RedirectToPage("/Register/Confirmed");
         }
     }
