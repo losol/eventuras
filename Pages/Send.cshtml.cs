@@ -26,7 +26,7 @@ namespace losol.EventManagement.Pages
         {
 			Console.WriteLine("*********^^^^^^^^^^^^^^^^^^vvvvvvvvvvv");
 			var viewModel = new IndexModel(_context);
-			var result = await _pageRenderService.RenderPageToStringAsync("/Index", viewModel);
+			var result = await _pageRenderService.RenderPageToStringAsync("Index", viewModel);
 			Console.WriteLine(result);
 
         }

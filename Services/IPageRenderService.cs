@@ -49,10 +49,10 @@ namespace losol.EventManagement.Services
 		{
 			var tempData = new TempDataDictionary(_httpContext.HttpContext, _tempDataProvider);
 
-			var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-			{
-				Model = model
-			};
+			//var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+			//{
+			//	Model = model
+			//};
 
 			var actionContext = new ActionContext(
 				_httpContext.HttpContext, 
@@ -61,13 +61,18 @@ namespace losol.EventManagement.Services
 			);
 
 			var page = _razorViewEngine.FindPage(actionContext, pageName).Page;
-	
+			page.ViewContext.ViewData.Model = model;
+			if (page == null)
+			{
+				throw new ArgumentNullException($"Sorry. {pageName} does not match any available page");
+			}
+
 			using (var sw = new StringWriter())
             {
 				page.ViewContext = new ViewContext(
 						actionContext,
 						page.ViewContext.View, 
-						viewDictionary,
+						page.ViewContext.ViewData,
 						tempData,
 						sw,
 						new HtmlHelperOptions()
@@ -77,72 +82,8 @@ namespace losol.EventManagement.Services
 
 				await page.ExecuteAsync();
 			}
-			
-	
-			Console.WriteLine("*********");
-			Console.WriteLine("0:" + page);
 				
-			if (page == null)
-			{
-				throw new ArgumentNullException($"Sorry. {pageName} does not match any available page");
-			}
-			await page.ExecuteAsync();
-
 			return page.BodyContent.ToString();
-			/*
-				//var getPage = _razorViewEngine.GetPage("/Pages/" + pageName, "/Pages/" + pageName);
-				var tempData = new TempDataDictionary(actionContext.HttpContext, _tempDataProvider);
-
-				var viewContext = new ViewContext(
-					actionContext,
-					page.ViewContext.View, 
-					viewDictionary,
-					tempData,
-					sw,
-					new HtmlHelperOptions());
-
-				await page.ExecuteAsync();
-
-				Console.WriteLine("4:" + page.BodyContent);
-				return page.BodyContent.ToString();
-
-			*/
-
-				/*
-				var tempData = new TempDataDictionary(_httpContext, _tempDataProvider);
-				var htmlHelper = new HtmlHelperOptions();
-				if (pageResult.Page == null)
-				{
-					throw new ArgumentNullException($"{pageName} does not match any available page");
-				}
-				Console.WriteLine("1:" + pageResult.Page);
-				Console.WriteLine("2:" + pageResult.Page.BodyContent);
-
-				var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-                {
-                    Model = model
-                };
-
-
-				await page.ExecuteAsync();
-
-				Console.WriteLine("3:" + pageResult.Page);
-			 */ 
-
-
-				//await viewRenderAsync(viewContext);
-
-				/*	actionContext,
-					pageResult.Page.ViewContext.View,
-					viewDictionary,
-					tempData,
-					sw,
-					htmlHelper
-				);*/
-
-				
-				
-				
 			
 		}
 	}
