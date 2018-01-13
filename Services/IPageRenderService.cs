@@ -49,10 +49,10 @@ namespace losol.EventManagement.Services
 		{
 			var tempData = new TempDataDictionary(_httpContext.HttpContext, _tempDataProvider);
 
-			//var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-			//{
-			//	Model = model
-			//};
+			var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+			{
+				Model = model
+			};
 
 			var actionContext = new ActionContext(
 				_httpContext.HttpContext, 
@@ -61,25 +61,23 @@ namespace losol.EventManagement.Services
 			);
 
 			var page = _razorViewEngine.FindPage(actionContext, pageName).Page;
-			page.ViewContext.ViewData.Model = model;
 			if (page == null)
 			{
-				throw new ArgumentNullException($"Sorry. {pageName} does not match any available page");
+				throw new ArgumentNullException($"Sorry! {pageName} does not match any available page");
 			}
 
 			using (var sw = new StringWriter())
             {
+				// TODO seemingly the page.ViewContext.View is empty and results in a nullreferenceexception
 				page.ViewContext = new ViewContext(
 						actionContext,
 						page.ViewContext.View, 
-						page.ViewContext.ViewData,
+						viewDictionary,
 						tempData,
 						sw,
 						new HtmlHelperOptions()
 				);
-				Console.WriteLine("*********");
-				Console.WriteLine(page.BodyContent);
-
+				page.ViewContext.ViewData = viewDictionary;
 				await page.ExecuteAsync();
 			}
 				
