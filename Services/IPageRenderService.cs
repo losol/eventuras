@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Routing;
  
 namespace losol.EventManagement.Services
 {
+	// With inspiration from https://ppolyzos.com/2016/09/09/asp-net-core-render-view-to-string/
     public interface IPageRenderService
     {
         Task<string> RenderPageToStringAsync(string pageName, object model);
@@ -77,7 +78,6 @@ namespace losol.EventManagement.Services
 						sw,
 						new HtmlHelperOptions()
 				);
-				page.ViewContext.ViewData = viewDictionary;
 				await page.ExecuteAsync();
 			}
 				
