@@ -14,6 +14,7 @@ using losol.EventManagement.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace losol.EventManagement
 {
@@ -89,6 +90,15 @@ namespace losol.EventManagement
             services.Configure<EmailSenderOptions>(Configuration);
             services.AddSingleton<IEmailSender, EmailSender>();
 
+
+            // Add Page render Service
+            //services.AddScoped<IViewRenderService, ViewRenderService>();
+            services.AddScoped<IPageRenderService, PageRenderService>();
+
+
+            // Added for the renderpage service
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
         }
 

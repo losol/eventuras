@@ -68,7 +68,7 @@ namespace losol.EventManagement.Models
 
         [Display(Name = "Pris")]
         [DisplayFormat(DataFormatString = "{0:0}", ApplyFormatInEditMode = true)]
-        public decimal Price { get; set; } = 0;
+        public decimal? Price { get; set; }
 
         [Display(Name = "Mva-sats")]
         [DisplayFormat(DataFormatString = "{0:0}", ApplyFormatInEditMode = true)]
