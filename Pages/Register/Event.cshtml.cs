@@ -145,13 +145,6 @@ namespace losol.EventManagement.Pages.Register
 
                     Registration.UserId = newUser.Id;
 
-                    
-
-                    // Uncomment to enable email verifcation
-
-                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
-                    //var callbackUrl = Url.EmailConfirmationLink(newUser.Id, code, Request.Scheme);
-                    //await _emailSender.SendEmailConfirmationAsync(Registration.Email, callbackUrl);
                 }
                 foreach (var error in result.Errors)
                 {
@@ -165,22 +158,23 @@ namespace losol.EventManagement.Pages.Register
 
             Console.WriteLine("*********^^^^^^^^^^^^^^^^^^vvvvvvvvvvv");
 			var confirmEmail = new ConfirmEventRegistration() {
-                Name = "Test Person",
-                Phone = "123123",
-                Email = "losvik@gmail.com",
-                PaymentMethod = "CARD HELL YEAH",
-                EventTitle = "Moroevent",
-                EventDescription = "Midt i januar",
-                EventDate = "01.01.2018",
-                EventUrl = "Https://vg.no"
+                Name = Registration.Name,
+                Phone = Registration.Phone,
+                Email = Registration.Email,
+                PaymentMethod = Registration.PaymentMethodId.ToString(),
+                EventTitle = Registration.EventInfoTitle,
+                EventDescription = Registration.EventInfoDescription,
+                //EventDate = "01.01.2018",
+                //EventUrl = "Https://vg.no"
             };
 
-            confirmEmail.VerificationUrl = "/Register/Confirm/1";
+            confirmEmail.VerificationUrl = Url.GetLocalUrl("/Register/Confirm/1");
+            Console.WriteLine(Url.RouteUrl("/Register/Confirm/1"));
 			var email = await _pageRenderService.RenderPageToStringAsync("Templates/Email/ConfirmEventRegistration", confirmEmail);
-            await _emailSender.SendEmailAsync("losvik@gmail.com","Test45",email);
+            await _emailSender.SendEmailAsync(Registration.Email, "Bekreft påmelding" ,email);
 			Console.WriteLine(email);
             
-            return RedirectToPage("/Register/Confirmed");
+            return RedirectToPage("/Register/EmailSent");
         }
     }
 }
