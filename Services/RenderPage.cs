@@ -18,12 +18,8 @@ using Microsoft.AspNetCore.Routing;
 namespace losol.EventManagement.Services
 {
 	// With inspiration from https://ppolyzos.com/2016/09/09/asp-net-core-render-view-to-string/
-    public interface IPageRenderService
-    {
-        Task<string> RenderPageToStringAsync(string pageName, object model);
-    }
  
-    public class PageRenderService : IPageRenderService
+    public class RenderPage
     {
         private readonly IRazorViewEngine _razorViewEngine;
         private readonly ITempDataProvider _tempDataProvider;
@@ -31,7 +27,7 @@ namespace losol.EventManagement.Services
 		private readonly IHttpContextAccessor _httpContext;
 		private readonly IActionContextAccessor _actionContext;
  
-        public PageRenderService(
+        public RenderPage(
 			IRazorViewEngine razorViewEngine,
             ITempDataProvider tempDataProvider,
             IServiceProvider serviceProvider,
@@ -60,10 +56,8 @@ namespace losol.EventManagement.Services
 				_httpContext.HttpContext.GetRouteData(), 
 				_actionContext.ActionContext.ActionDescriptor
 			);
-			var viewResult = _razorViewEngine.FindView(actionContext, pageName, false);
-			var page = _razorViewEngine.FindPage(actionContext, pageName).Page;
 
-			Console.WriteLine("^^^^" + viewResult);
+			var page = _razorViewEngine.FindPage(actionContext, pageName).Page;
 			if (page == null)
 			{
 				throw new ArgumentNullException($"Sorry! {pageName} does not match any available page");
@@ -74,18 +68,18 @@ namespace losol.EventManagement.Services
 				// TODO seemingly the page.ViewContext.View is empty and results in a nullreferenceexception
 				page.ViewContext = new ViewContext(
 						actionContext,
-						viewResult.View, 
+						page.ViewContext.View, 
 						viewDictionary,
 						tempData,
 						sw,
 						new HtmlHelperOptions()
 				);
 				await page.ExecuteAsync();
-				Console.WriteLine(sw.ToString());
 			}
-			
+				
 			return page.BodyContent.ToString();
 			
 		}
+
 	}
 }
