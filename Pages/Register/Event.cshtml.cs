@@ -17,6 +17,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using MimeKit;
+using losol.EventManagement.ViewModels;
 
 namespace losol.EventManagement.Pages.Register
 {
@@ -28,6 +29,7 @@ namespace losol.EventManagement.Pages.Register
         private readonly IEmailSender _emailSender;
         private readonly AppSettings _appSettings;
         private IHostingEnvironment _env; 
+        private IPageRenderService _pageRenderService;
         
 
         public EventRegistrationModel(
@@ -36,7 +38,9 @@ namespace losol.EventManagement.Pages.Register
             ILogger<LoginModel> logger,
             IEmailSender emailSender,
             IOptions<AppSettings> appSettings,
-            IHostingEnvironment env)  
+            IHostingEnvironment env,
+            IPageRenderService pageRenderService
+            )  
         {
             _context = context;
             _userManager = userManager;
@@ -44,6 +48,7 @@ namespace losol.EventManagement.Pages.Register
             _emailSender = emailSender;
             _appSettings = appSettings.Value;
             _env = env;
+            _pageRenderService = pageRenderService;
         }
 
         [BindProperty]
@@ -157,70 +162,24 @@ namespace losol.EventManagement.Pages.Register
             var entry = _context.Add(new Registration());
             entry.CurrentValues.SetValues(Registration);            
             await _context.SaveChangesAsync();
-            
-            // NEW EMAIL WITH TEMPLATE START
-            var webRoot = _env.WebRootPath; //get wwwroot Folder
-            var templatePath = _env.WebRootPath  
-                + Path.DirectorySeparatorChar.ToString()  
-                + "Templates"  
-                + Path.DirectorySeparatorChar.ToString()  
-                + "Email"  
-                + Path.DirectorySeparatorChar.ToString()  
-                + "Confirm_Registration.html"; 
-            
-            
-            var builder = new BodyBuilder();
-            using (StreamReader SourceReader = System.IO.File.OpenText(templatePath))
-            {
-            builder.HtmlBody = SourceReader.ReadToEnd();
-            }
 
-            /*  Navn: {0}
-                Epost: {1}
-                Mobil: {2}
-                Arbeidsgiver: {3}
-                Orgnr: {4}
-                Betaling: {5}
-                Arrangement: {6}
-                CallBackUrl: {7}
-            */
-            string subject = "Bekreft påmelding på kurs";
-            string messageBody = builder.HtmlBody;/* string.Format(builder.HtmlBody,   
-                        Registration.Name,  
-                        String.Format("{0:dddd, d MMMM yyyy}", DateTime.Now),  
-                        Registration.Email,   
-                        Registration.Email,   
-                        "passordet hemmelig",   
-                        "En beskjed her",  
-                        "Arrangement",
-                        "https://callbackurl"
-                        ); */
+            Console.WriteLine("*********^^^^^^^^^^^^^^^^^^vvvvvvvvvvv");
+			var confirmEmail = new ConfirmEventRegistration() {
+                Name = "Test Person",
+                Phone = "123123",
+                Email = "losvik@gmail.com",
+                PaymentMethod = "CARD HELL YEAH",
+                EventTitle = "Moroevent",
+                EventDescription = "Midt i januar",
+                EventDate = "01.01.2018",
+                EventUrl = "Https://vg.no"
+            };
 
-            await _emailSender.SendEmailAsync(Registration.Email, subject, messageBody);  
+            confirmEmail.VerificationUrl = "/Register/Confirm/1";
+			var email = await _pageRenderService.RenderPageToStringAsync("Templates/Email/ConfirmEventRegistration", confirmEmail);
+            await _emailSender.SendEmailAsync("losvik@gmail.com","Test45",email);
+			Console.WriteLine(email);
             
-            // NEW EMAIL WITH TEMPLATE END
-
-            /* string message = string.Format(
-            @"Navn: {0}
-            Epost: {1}
-            Mobil: {2}
-            Arbeidsgiver: {3}
-            Orgnr: {4}
-            Betaling: {5}
-            Arrangement: {6} {7}
-            ",
-            Registration.Name,
-            Registration.Email,
-            Registration.Phone,
-            Registration.Employer,
-            Registration.VatNumber,
-            Registration.PaymentMethodId,
-            Registration.EventInfoId,
-            Registration.EventInfoTitle
-            );
-
-            await _emailSender.SendEmailAsync("losvik@gmail.com","kursinord.no notifikasjon", message);
-            */ 
             return RedirectToPage("/Register/Confirmed");
         }
     }

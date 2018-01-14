@@ -14,10 +14,10 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using Microsoft.AspNetCore.Routing;
- 
+using System.Linq;
+
 namespace losol.EventManagement.Services
 {
-	// With inspiration from https://ppolyzos.com/2016/09/09/asp-net-core-render-view-to-string/
     public interface IPageRenderService
     {
         Task<string> RenderPageToStringAsync(string pageName, object model);
@@ -25,67 +25,85 @@ namespace losol.EventManagement.Services
  
     public class PageRenderService : IPageRenderService
     {
-        private readonly IRazorViewEngine _razorViewEngine;
+        private readonly IRazorViewEngine _viewEngine;
         private readonly ITempDataProvider _tempDataProvider;
         private readonly IServiceProvider _serviceProvider;
-		private readonly IHttpContextAccessor _httpContext;
-		private readonly IActionContextAccessor _actionContext;
  
         public PageRenderService(
-			IRazorViewEngine razorViewEngine,
+			IRazorViewEngine viewEngine,
             ITempDataProvider tempDataProvider,
-            IServiceProvider serviceProvider,
-			IHttpContextAccessor httpContext,
-			IActionContextAccessor actionContext
+            IServiceProvider serviceProvider
 			)
         {
-            _razorViewEngine = razorViewEngine;
+            _viewEngine = viewEngine;
             _tempDataProvider = tempDataProvider;
             _serviceProvider = serviceProvider;
-			_httpContext = httpContext;
-			_actionContext = actionContext;
         }
  
 		public async Task<string> RenderPageToStringAsync(string pageName, object model)
 		{
-			var tempData = new TempDataDictionary(_httpContext.HttpContext, _tempDataProvider);
 
-			var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-			{
-				Model = model
-			};
-
-			var actionContext = new ActionContext(
-				_httpContext.HttpContext, 
-				_httpContext.HttpContext.GetRouteData(), 
-				_actionContext.ActionContext.ActionDescriptor
-			);
-			var viewResult = _razorViewEngine.FindView(actionContext, pageName, false);
-			var page = _razorViewEngine.FindPage(actionContext, pageName).Page;
-
-			Console.WriteLine("^^^^" + viewResult);
-			if (page == null)
-			{
-				throw new ArgumentNullException($"Sorry! {pageName} does not match any available page");
-			}
+			var actionContext = GetActionContext();
+			var view = FindView(actionContext, pageName);
+		
+			//var pageResult = _viewEngine.GetPage(null, "/Pages/" + pageName);
+			//var page = pageResult.Page;
 
 			using (var sw = new StringWriter())
             {
-				// TODO seemingly the page.ViewContext.View is empty and results in a nullreferenceexception
-				page.ViewContext = new ViewContext(
+				var viewContext = new ViewContext(
 						actionContext,
-						viewResult.View, 
-						viewDictionary,
-						tempData,
+						view,
+						new ViewDataDictionary<object>(
+                        metadataProvider: new EmptyModelMetadataProvider(),
+                        modelState: new ModelStateDictionary())
+							{
+								Model = model
+							},
+					    new TempDataDictionary(
+                        actionContext.HttpContext,
+                        _tempDataProvider),
 						sw,
 						new HtmlHelperOptions()
-				);
-				await page.ExecuteAsync();
+				); 
+				
+				await view.RenderAsync(viewContext);
 				Console.WriteLine(sw.ToString());
+				return sw.ToString();
 			}
 			
-			return page.BodyContent.ToString();
+			
 			
 		}
+		
+		private IView FindView(ActionContext actionContext, string viewName)
+        {
+            var getViewResult = _viewEngine.GetView(executingFilePath: null, viewPath: viewName, isMainPage: true);
+            if (getViewResult.Success)
+            {
+                return getViewResult.View;
+            }
+
+            var findViewResult = _viewEngine.FindView(actionContext, viewName, isMainPage: true);
+            if (findViewResult.Success)
+            {
+                return findViewResult.View;
+            }
+
+            var searchedLocations = getViewResult.SearchedLocations.Concat(findViewResult.SearchedLocations);
+            var errorMessage = string.Join(
+                Environment.NewLine,
+                new[] { $"Unable to find view '{viewName}'. The following locations were searched:" }.Concat(searchedLocations)); ;
+
+            throw new InvalidOperationException(errorMessage);
+        }
+
+		private ActionContext GetActionContext()
+        {
+            var httpContext = new DefaultHttpContext();
+			httpContext.RequestServices = _serviceProvider;
+            
+            return new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
+        }
 	}
 }
