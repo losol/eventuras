@@ -43,14 +43,16 @@ namespace losol.EventManagement.Pages.Register
                 return NotFound();
             }
 
-            // Message = HttpContext.Request.Query["auth"].ToString(); 
             if (HttpContext.Request.Query["auth"] == Registration.VerificationCode) 
             {
                 Message += " success";
                 Registration.Verified = true;
                 await  _context.SaveChangesAsync();
+                return RedirectToPage("/Register/Confirmed");
             }
-            return Page();
+
+            // If we came here, something has went wrong.
+            return RedirectToPage("/Register/Failed");
         }
     }
 }
