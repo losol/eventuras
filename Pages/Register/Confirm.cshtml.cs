@@ -51,7 +51,7 @@ namespace losol.EventManagement.Pages.Register
 
                 await _emailSender.SendEmailAsync("losvik@gmail.com",
                 "Påmelding kurs",
-                $@"{Registration.UserId} har meldt seg på kurset {Registration.EventInfo}
+                $@"{Registration.UserId} har meldt seg på kurset {Registration.EventInfoId}
                 Bare så du vet det");
                 return RedirectToPage("/Register/Confirmed");
             }
