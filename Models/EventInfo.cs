@@ -38,8 +38,11 @@ namespace losol.EventManagement.Models
         [Display(Name = "Nettkurs?")]
         public bool OnDemand { get; set; } = false;
 
-        [Display(Name = "Klart til publisering?")]
+        [Display(Name = "Publisert?")]
         public bool Published { get; set; } = false;
+
+        [Display(Name = "Håndter påmeldinger for dettekurset?")]
+        public bool ManageRegistrations { get; set; } = false;
 
         [Display(Name = "Hvilket hotell?")]
         public string Location { get; set; }

@@ -151,6 +151,7 @@ namespace losol.EventManagement.Pages.Register
 			};
 
 			var newRegistration = new Models.Registration();
+			newRegistration.VerificationCode = GenerateRandomPassword(6);
 			var entry = _context.Add(newRegistration);
 			entry.CurrentValues.SetValues(Registration);
 			await _context.SaveChangesAsync();
@@ -168,7 +169,7 @@ namespace losol.EventManagement.Pages.Register
 				//EventUrl = "Https://vg.no"
 			};
 
-			confirmEmail.VerificationUrl = Url.Action("Confirm", "Register", new { id = newRegistration.RegistrationId, auth = "123-123-123" }, protocol: Request.Scheme);
+			confirmEmail.VerificationUrl = Url.Action("Confirm", "Register", new { id = newRegistration.RegistrationId, auth = newRegistration.VerificationCode }, protocol: Request.Scheme);
 			Console.WriteLine("^^^*****" +GenerateRandomPassword() + confirmEmail.VerificationUrl);
 			var email = await _renderService.RenderViewToStringAsync("Templates/Email/ConfirmEventRegistration", confirmEmail);
 			await _emailSender.SendEmailAsync(Registration.Email, "Bekreft påmelding", email);
