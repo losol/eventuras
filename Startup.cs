@@ -93,7 +93,7 @@ namespace losol.EventManagement
 
             // Add Page render Service
             //services.AddScoped<IViewRenderService, ViewRenderService>();
-            services.AddScoped<IPageRenderService, PageRenderService>();
+            services.AddScoped<IRenderService, ViewRenderService>();
 
 
             // Added for the renderpage service

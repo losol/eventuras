@@ -18,18 +18,18 @@ using System.Linq;
 
 namespace losol.EventManagement.Services
 {
-    public interface IPageRenderService
+    public interface IRenderService
     {
-        Task<string> RenderPageToStringAsync(string pageName, object model);
+        Task<string> RenderViewToStringAsync(string pageName, object model);
     }
  
-    public class PageRenderService : IPageRenderService
+    public class ViewRenderService : IRenderService
     {
         private readonly IRazorViewEngine _viewEngine;
         private readonly ITempDataProvider _tempDataProvider;
         private readonly IServiceProvider _serviceProvider;
  
-        public PageRenderService(
+        public ViewRenderService(
 			IRazorViewEngine viewEngine,
             ITempDataProvider tempDataProvider,
             IServiceProvider serviceProvider
@@ -40,7 +40,7 @@ namespace losol.EventManagement.Services
             _serviceProvider = serviceProvider;
         }
  
-		public async Task<string> RenderPageToStringAsync(string pageName, object model)
+		public async Task<string> RenderViewToStringAsync(string pageName, object model)
 		{
 
 			var actionContext = GetActionContext();

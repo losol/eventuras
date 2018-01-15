@@ -21,160 +21,180 @@ using losol.EventManagement.ViewModels;
 
 namespace losol.EventManagement.Pages.Register
 {
-    public class EventRegistrationModel : PageModel
-    {
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ILogger<LoginModel> _logger;
-        private readonly IEmailSender _emailSender;
-        private readonly AppSettings _appSettings;
-        private IHostingEnvironment _env; 
-        private IPageRenderService _pageRenderService;
-        
-
-        public EventRegistrationModel(
-            ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager,
-            ILogger<LoginModel> logger,
-            IEmailSender emailSender,
-            IOptions<AppSettings> appSettings,
-            IHostingEnvironment env,
-            IPageRenderService pageRenderService
-            )  
-        {
-            _context = context;
-            _userManager = userManager;
-            _logger = logger;
-            _emailSender = emailSender;
-            _appSettings = appSettings.Value;
-            _env = env;
-            _pageRenderService = pageRenderService;
-        }
-
-        [BindProperty]
-        public RegisterVM Registration { get; set; }
-
-        public class RegisterVM
-        {
-            public int EventInfoId {get;set;}
-            public string EventInfoTitle {get;set;}
-            public string EventInfoDescription {get;set;}
-            public string UserId {get;set;}
-
-            [Required]
-            [StringLength(100)]
-            [Display(Name = "Navn")]
-            public string Name { get; set; }
-
-            [Required]
-            [EmailAddress]
-            [Display(Name = "E-post")]
-            public string Email { get; set; }
-
-            [Required]
-            [Display(Name = "Mobiltelefon")]
-            public string Phone { get; set; }
-
-            [Display(Name = "Arbeidsplass")]
-            public string Employer { get; set; }
-
-            [Display(Name = "Organisasjonsnummer")]
-            public string VatNumber { get; set; }
-
-            [Display(Name = "Betalingsmetode")]
-            public IEnumerable<PaymentMethod> PaymentMethods { get; set; }
-
-            public int PaymentMethodId {get;set;}
-        }
-
-        public async Task<IActionResult> OnGetAsync(int? id)
-        {
-            if (id == null)
-            {
-                return RedirectToPage("./Index");
-            }
-            
-            Registration = new RegisterVM();
-
-            var eventinfo = await _context.EventInfos.FirstOrDefaultAsync(m => m.EventInfoId == id);
-            if (eventinfo == null)
-            {
-                return NotFound(); 
-            }
-            else 
-            {
-               Registration.EventInfoId = eventinfo.EventInfoId;
-               Registration.EventInfoTitle = eventinfo.Title;
-               Registration.EventInfoDescription = eventinfo.Description;
-               
-
-               Registration.PaymentMethods = _context.PaymentMethods.ToList();
-            }
-            return Page() ;
-        }
+	public class EventRegistrationModel : PageModel
+	{
+		private readonly ApplicationDbContext _context;
+		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly ILogger<LoginModel> _logger;
+		private readonly IEmailSender _emailSender;
+		private readonly AppSettings _appSettings;
+		private IHostingEnvironment _env;
+		private IRenderService _renderService;
 
 
-        public async Task<IActionResult> OnPostAsync(int? id)
-        {
-            var eventinfo = await _context.EventInfos.FirstOrDefaultAsync(m => m.EventInfoId == id);
-               Registration.EventInfoId = eventinfo.EventInfoId;
-               Registration.EventInfoTitle = eventinfo.Title;
-               Registration.EventInfoDescription = eventinfo.Description;
+		public EventRegistrationModel(
+			ApplicationDbContext context,
+			UserManager<ApplicationUser> userManager,
+			ILogger<LoginModel> logger,
+			IEmailSender emailSender,
+			IOptions<AppSettings> appSettings,
+			IHostingEnvironment env,
+			IRenderService renderService
+			)
+		{
+			_context = context;
+			_userManager = userManager;
+			_logger = logger;
+			_emailSender = emailSender;
+			_appSettings = appSettings.Value;
+			_env = env;
+			_renderService = renderService;
+		}
 
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-            
-            // Check if user exists with email registered
-            var user = await _userManager.FindByEmailAsync(Registration.Email);
+		[BindProperty]
+		public RegisterVM Registration { get; set; }
 
-            if (user != null) 
-            { 
-              Registration.UserId = user.Id;  
-            }
-            else
-            {
-                // Create new user
-                var newUser = new ApplicationUser { UserName = Registration.Email, Email = Registration.Email, PhoneNumber = Registration.Phone };
-                var result = await _userManager.CreateAsync(newUser);
+		public class RegisterVM
+		{
+			public int EventInfoId { get; set; }
+			public string EventInfoTitle { get; set; }
+			public string EventInfoDescription { get; set; }
+			public string UserId { get; set; }
 
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User created a new account with password.");
+			[Required]
+			[StringLength(100)]
+			[Display(Name = "Navn")]
+			public string Name { get; set; }
 
-                    Registration.UserId = newUser.Id;
+			[Required]
+			[EmailAddress]
+			[Display(Name = "E-post")]
+			public string Email { get; set; }
 
-                }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+			[Required]
+			[Display(Name = "Mobiltelefon")]
+			public string Phone { get; set; }
+
+			[Display(Name = "Arbeidsplass")]
+			public string Employer { get; set; }
+
+			[Display(Name = "Organisasjonsnummer")]
+			public string VatNumber { get; set; }
+
+			[Display(Name = "Betalingsmetode")]
+			public IEnumerable<PaymentMethod> PaymentMethods { get; set; }
+
+			public int PaymentMethodId { get; set; }
+		}
+
+		public async Task<IActionResult> OnGetAsync(int? id)
+		{
+			if (id == null)
+			{
+				return RedirectToPage("./Index");
+			}
+
+			Registration = new RegisterVM();
+
+			var eventinfo = await _context.EventInfos.FirstOrDefaultAsync(m => m.EventInfoId == id);
+			if (eventinfo == null)
+			{
+				return NotFound();
+			}
+			else
+			{
+				Registration.EventInfoId = eventinfo.EventInfoId;
+				Registration.EventInfoTitle = eventinfo.Title;
+				Registration.EventInfoDescription = eventinfo.Description;
+				Registration.PaymentMethods = _context.PaymentMethods.ToList();
+			}
+			return Page();
+		}
+
+
+		public async Task<IActionResult> OnPostAsync(int? id)
+		{
+			var eventinfo = await _context.EventInfos.FirstOrDefaultAsync(m => m.EventInfoId == id);
+			Registration.EventInfoId = eventinfo.EventInfoId;
+			Registration.EventInfoTitle = eventinfo.Title;
+			Registration.EventInfoDescription = eventinfo.Description;
+
+			if (!ModelState.IsValid)
+			{
+				return Page();
+			}
+
+			// Check if user exists with email registered
+			var user = await _userManager.FindByEmailAsync(Registration.Email);
+
+			if (user != null)
+			{
+				Registration.UserId = user.Id;
+			}
+			else
+			{
+				// Create new user
+				var newUser = new ApplicationUser { UserName = Registration.Email, Email = Registration.Email, PhoneNumber = Registration.Phone };
+				var result = await _userManager.CreateAsync(newUser);
+
+				if (result.Succeeded)
+				{
+					_logger.LogInformation("User created a new account with password.");
+
+					Registration.UserId = newUser.Id;
+
+				}
+				foreach (var error in result.Errors)
+				{
+					ModelState.AddModelError(string.Empty, error.Description);
+				}
+			};
+
+			var newRegistration = new Models.Registration();
+			var entry = _context.Add(newRegistration);
+			entry.CurrentValues.SetValues(Registration);
+			await _context.SaveChangesAsync();
+
+			Console.WriteLine("*********^^^^^^^^^^^^^^^^^^vvvvvvvvvvv");
+			var confirmEmail = new ConfirmEventRegistration()
+			{
+				Name = Registration.Name,
+				Phone = Registration.Phone,
+				Email = Registration.Email,
+				PaymentMethod = Registration.PaymentMethodId.ToString(),
+				EventTitle = Registration.EventInfoTitle,
+				EventDescription = Registration.EventInfoDescription,
+				//EventDate = "01.01.2018",
+				//EventUrl = "Https://vg.no"
+			};
+
+			confirmEmail.VerificationUrl = Url.Action("Confirm", "Register", new { id = newRegistration.RegistrationId, auth = "123-123-123" }, protocol: Request.Scheme);
+			Console.WriteLine("^^^*****" +GenerateRandomPassword() + confirmEmail.VerificationUrl);
+			var email = await _renderService.RenderViewToStringAsync("Templates/Email/ConfirmEventRegistration", confirmEmail);
+			await _emailSender.SendEmailAsync(Registration.Email, "Bekreft påmelding", email);
+
+			return RedirectToPage("/Register/EmailSent");
+		}
+    
+		public static string GenerateRandomPassword(int length = 6)
+		{
+			string[] randomChars = new[] {
+                "ABCDEFGHJKLMNOPQRSTUVWXYZ",    // uppercase 
+                "abcdefghijkmnopqrstuvwxyz",    // lowercase
+                "0123456789"                   // digits
             };
+			Random rand = new Random(Environment.TickCount);
 
-            var entry = _context.Add(new Registration());
-            entry.CurrentValues.SetValues(Registration);            
-            await _context.SaveChangesAsync();
+			List<char> chars = new List<char>();
 
-            Console.WriteLine("*********^^^^^^^^^^^^^^^^^^vvvvvvvvvvv");
-			var confirmEmail = new ConfirmEventRegistration() {
-                Name = Registration.Name,
-                Phone = Registration.Phone,
-                Email = Registration.Email,
-                PaymentMethod = Registration.PaymentMethodId.ToString(),
-                EventTitle = Registration.EventInfoTitle,
-                EventDescription = Registration.EventInfoDescription,
-                //EventDate = "01.01.2018",
-                //EventUrl = "Https://vg.no"
-            };
+			for (int i = chars.Count; i < length; i++)
+			{
+				string rcs = randomChars[rand.Next(0, randomChars.Length)];
+				chars.Insert(rand.Next(0, chars.Count),
+					rcs[rand.Next(0, rcs.Length)]);
+			}
 
-            confirmEmail.VerificationUrl = Url.GetLocalUrl("/Register/Confirm/1");
-            Console.WriteLine(Url.RouteUrl("/Register/Confirm/1"));
-			var email = await _pageRenderService.RenderPageToStringAsync("Templates/Email/ConfirmEventRegistration", confirmEmail);
-            await _emailSender.SendEmailAsync(Registration.Email, "Bekreft påmelding" ,email);
-			Console.WriteLine(email);
-            
-            return RedirectToPage("/Register/EmailSent");
-        }
-    }
+			return new string(chars.ToArray());
+		}
+	}
 }
