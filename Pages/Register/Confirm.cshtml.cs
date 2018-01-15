@@ -48,6 +48,11 @@ namespace losol.EventManagement.Pages.Register
                 Message += " success";
                 Registration.Verified = true;
                 await  _context.SaveChangesAsync();
+
+                await _emailSender.SendEmailAsync("losvik@gmail.com",
+                "Påmelding kurs",
+                $@"{Registration.UserId} har meldt seg på kurset {Registration.EventInfo}
+                Bare så du vet det");
                 return RedirectToPage("/Register/Confirmed");
             }
 
