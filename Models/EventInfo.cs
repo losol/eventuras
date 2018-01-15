@@ -38,8 +38,11 @@ namespace losol.EventManagement.Models
         [Display(Name = "Nettkurs?")]
         public bool OnDemand { get; set; } = false;
 
-        [Display(Name = "Klart til publisering?")]
+        [Display(Name = "Publisert?")]
         public bool Published { get; set; } = false;
+
+        [Display(Name = "Håndter påmeldinger for dettekurset?")]
+        public bool ManageRegistrations { get; set; } = false;
 
         [Display(Name = "Hvilket hotell?")]
         public string Location { get; set; }
@@ -68,7 +71,7 @@ namespace losol.EventManagement.Models
 
         [Display(Name = "Pris")]
         [DisplayFormat(DataFormatString = "{0:0}", ApplyFormatInEditMode = true)]
-        public decimal Price { get; set; } = 0;
+        public decimal? Price { get; set; }
 
         [Display(Name = "Mva-sats")]
         [DisplayFormat(DataFormatString = "{0:0}", ApplyFormatInEditMode = true)]

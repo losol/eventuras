@@ -42,6 +42,12 @@ namespace losol.EventManagement.Models
         [Display(Name = "Betalingsmetode")]
         public int PaymentMethodId {get; set;}
 
+        [Display(Name = "Verifisert påmelding?")]
+        public bool Verified { get; set; } = false;
+
+        [Display(Name = "Verifiseringskode")]
+        public string VerificationCode { get; set; }
+
         // Navigation properties
         public EventInfo EventInfo { get; set; }
         public ApplicationUser User { get; set; }

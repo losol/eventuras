@@ -1,5 +1,18 @@
 /* Some extra straight forward css here? */
 
+/* Min heights */
+.min-height-33 {
+    min-height: 33vh;
+}
+.min-height-66 {
+    min-height: 66vh;
+}
+.min-height-50 {
+    min-height: 50vh;
+}
+.min-height-100 {
+    min-height: 100vh;
+}
 /* HEADER */
 #navbar-site-title{
     font-weight: 100;
@@ -32,7 +45,9 @@ h1, h2, h3 {
 
 /* Background gradient
 */
-
+html {
+    min-height: 100vh;
+}
 body {
     min-height: 100vh; 
     background: rgba(255,255,255,1);
@@ -46,7 +61,7 @@ body {
 h1, h2 {
     padding-top:2rem;
 }
-.flex-grow {
+.flex-1 {
   flex: 1;
 }
 
