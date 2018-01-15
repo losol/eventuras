@@ -1,10 +1,20 @@
 @page "{id:int}"
+@model ConfirmModel
 @{
     ViewData["Title"] = "Confirmed";
     Layout = "~/Pages/_Layout.cshtml";
 }
 
-<div class="container py-5">
-    <h1 class="pt-5">Vellykket påmelding!</h1>
-	<p>Vi sender deg instrukser for å komme i gang i løpet av et par dager</p>
+<div class="jumbotron jumbotron-fluid min-height-33">
+  <div class="container">
+    <h1 class="display-2">Vi sjekker bare litt...</h1>
+    <p class="lead">For &aring; v&aelig;re p&aring; den sikre siden.</p>
+  </div>
+</div>
+<div class="container min-height-50">
+	<div class="row">
+		<div class="col-6">
+		<p><strong>Tregt system?</strong> Dette burde ikke ta lang tid.</p>
+		</div>
+	</div>
 </div>

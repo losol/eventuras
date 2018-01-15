@@ -106,7 +106,7 @@ namespace losol.EventManagement.Pages.Register
 				Registration.EventInfoId = eventinfo.EventInfoId;
 				Registration.EventInfoTitle = eventinfo.Title;
 				Registration.EventInfoDescription = eventinfo.Description;
-				Registration.PaymentMethods = _context.PaymentMethods.ToList();
+				Registration.PaymentMethods = _context.PaymentMethods.Where(m => m.Active == true ).ToList();
 			}
 			return Page();
 		}
@@ -180,9 +180,9 @@ namespace losol.EventManagement.Pages.Register
 		public static string GenerateRandomPassword(int length = 6)
 		{
 			string[] randomChars = new[] {
-                "ABCDEFGHJKLMNOPQRSTUVWXYZ",    // uppercase 
-                "abcdefghijkmnopqrstuvwxyz",    // lowercase
-                "0123456789"                   // digits
+                "ABCDEFGHJKLMNPQRSTUVWXYZ",    // uppercase 
+                "abcdefghijkmnpqrstuvwxyz",    // lowercase
+                "123456789"                   // digits
             };
 			Random rand = new Random(Environment.TickCount);
 
