@@ -78,7 +78,7 @@ namespace losol.EventManagement.Pages.Register
 			[Display(Name = "Arbeidsplass")]
 			public string Employer { get; set; }
 
-			[Display(Name = "Organisasjonsnummer")]
+			[Display(Name = "Organisasjonsnummer (må fylles ut for EHF-faktura)")]
 			public string VatNumber { get; set; }
 
 			[Display(Name = "Betalingsmetode")]
