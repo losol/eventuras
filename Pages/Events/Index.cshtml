@@ -1,0 +1,17 @@
+@page
+@model losol.EventManagement.Pages.Admin.Events.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container">
+<h1>Kursoversikt</h1>
+
+@foreach (var item in Model.EventInfo) {
+    @item.EventInfoTitle
+    <a asp-page="./Details" asp-route-id="@item.EventInfoId">Se mer info</a>
+}
+    </tbody>
+</table>
+</div>
