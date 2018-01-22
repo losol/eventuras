@@ -5,7 +5,7 @@
 	"author": "Ole Kristian Losvik",
 	"license": "GPL-2.0",
 	"dependencies": {
-	  "jquery":"^3.2.1",
+	  "jquery":"^3.3.1",
 	  "bootstrap": "^4.0.0",
 	  "font-awesome": "^4.7.0",
 	  "popper.js": "^1.11.1",
