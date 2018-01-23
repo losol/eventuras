@@ -6,8 +6,10 @@
     // is the current user authorized to see the next part of the page?
     if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin") )
     {
-        <li class="nav-item">
-        <a asp-page="/Admin/Events/Index" class="nav-link link-decoration-none"><i class="material-icons">supervisor_account</i> Admin</a>
-   </li>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item">
+                <a asp-page="/Admin/Events/Index" class="nav-link link-decoration-none"><i class="material-icons align-top">supervisor_account</i> Admin</a>
+            </li>
+        </ul>
     }
 }
