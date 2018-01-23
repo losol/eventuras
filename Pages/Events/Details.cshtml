@@ -2,30 +2,63 @@
 @model losol.EventManagement.Pages.Admin.Events.DetailsModel
 
 @{
-    ViewData["Title"] = "@Model.EventInfo.Title";
+    ViewData["Title"] = @Model.EventInfo.Title;
 }
 
 <div class="jumbotron jumbotron-fluid min-height-33">
   <div class="container">
     <h1 class="display-1">@Model.EventInfo.Title</h1>
-    <p class="lead">@Model.EventInfo.Description</p>
+    <p class="lead pb-5">@Model.EventInfo.Description</p>
+     @{ // Location
+        if(Model.EventInfo.DateStart != null) 
+        {
+            <div class="py-1">
+            <i class="material-icons  align-top">date_range</i> @Model.EventInfo.DateStart.Value.ToString("d")
+                
+                    @if(Model.EventInfo.DateEnd != null) {
+                    <text>- @Model.EventInfo.DateEnd.Value.ToString("d")</text>
+                    }
+            </div>
+        }
+    
+     }
+    @{ // Location
+        if(Model.EventInfo.Location != null) 
+        {
+            <div class="py-1">
+                <i class="material-icons align-top">location_on</i> @Model.EventInfo.Location
+            </div>
+        }
+    }
+    
+    <div class="">
+        <i class="material-icons align-top">credit_card</i> @Model.EventInfo.Price.Value.ToString("0 kr")
+    </div>
+
   </div>
 </div>
 <div class="container min-height-50">
 	<div class="row">
-		<div class="col-6">
-		    <p>@Model.EventInfo.MoreInformation</p>
+		<div class="col-md-9">
+            <a class="btn btn-light link-decoration-none w-25" href="#info"><i class="material-icons align-middle">apps</i> Info</a>
+            <a class="btn btn-light link-decoration-none w-25" href="#program"><i class="material-icons align-middle">speaker_notes</i> Program</a>
+            <a class="btn btn-light link-decoration-none w-25" href="#practical"><i class="material-icons align-middle">hotel</i> Praktisk</a>
+
 
             <h2>Program</h2>
             @Model.EventInfo.Program
-            @Model.EventInfo.Location
-            @Model.EventInfo.DateStart
-            @Model.EventInfo.DateEnd
-            @Model.EventInfo.Price
 		</div>
+        <div class="col-md-3">
+            <p><a asp-page="../Register/Event" asp-route-id="@Model.EventInfo.EventInfoId" class="btn btn-lg btn-success link-decoration-none">Meld deg p&aring;</a>  </p>
+
+        </div>
 	</div>
-    <div class="row pt-5">    
-        <a asp-page="./Index" class="btn btn-info">Vis alle kurs</a>
+    <div class="row pt-5">
+        <div class="col-md-12"> 
+        
+        <p><a asp-page="./Index" class=""><i class="material-icons">keyboard_arrow_left</i> Vis alle kurs</a></p>
+        </div>
+        
     </div>
 </div>
 

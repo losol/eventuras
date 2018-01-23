@@ -29,7 +29,7 @@ namespace losol.EventManagement.Pages.Events
                 .Where(a => a.DateStart >= DateTime.Now)
                 .OrderByDescending(a => a.DateStart)
                 .ToListAsync();
-
+            
             OnDemandList = await _context.EventInfos
                 .Where(a => a.OnDemand == true)
                 .ToListAsync();
