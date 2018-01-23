@@ -22,9 +22,6 @@
     <thead>
         <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.EventInfo[0].Code)
-                </th>
-                <th>
                     @Html.DisplayNameFor(model => model.EventInfo[0].Title)
                 </th>
                 <th>
@@ -48,9 +45,6 @@
 @foreach (var item in Model.EventInfo) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Code)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
@@ -69,8 +63,7 @@
                 @Html.DisplayFor(modelItem => item.DateEnd)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.EventInfoId" class="btn btn-sm btn-info link-decoration-none">Endre</a>
-                <a asp-page="./Details" asp-route-id="@item.EventInfoId" class="btn btn-sm btn-info link-decoration-none">Live</a>
+                <a asp-page="./Edit" asp-route-id="@item.EventInfoId" class="btn btn-info link-decoration-none">Endre</a>
             </td>
         </tr>
 }

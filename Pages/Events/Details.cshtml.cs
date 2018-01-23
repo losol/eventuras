@@ -34,6 +34,7 @@ namespace losol.EventManagement.Pages.Events
             {
                 return NotFound();
             }
+            //EventInfo.
             
             return Page();
         }

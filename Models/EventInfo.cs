@@ -35,14 +35,21 @@ namespace losol.EventManagement.Models
         [DataType(DataType.MultilineText)]
         public string Program { get; set; }
 
+        [Display(Name = "Praktisk informasjon")]
+        [DataType(DataType.MultilineText)]
+        public string PracticalInformation { get; set; }
+
         [Display(Name = "Nettkurs?")]
         public bool OnDemand { get; set; } = false;
 
         [Display(Name = "Publisert?")]
         public bool Published { get; set; } = false;
 
-        [Display(Name = "Håndter påmeldinger for dettekurset?")]
+        [Display(Name = "Påmeldinger på kursinord.no?")]
         public bool ManageRegistrations { get; set; } = false;
+
+        [Display(Name = "Lenke for ekstern påmelding")]
+        public string RegistrationsUrl { get; set; }
 
         [Display(Name = "Hvilket hotell?")]
         public string Location { get; set; }
