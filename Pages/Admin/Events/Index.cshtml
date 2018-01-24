@@ -5,18 +5,22 @@
     ViewData["Title"] = "Index";
 }
 
-<div class="container">
-<h1>Kursoversikt</h1>
+<div class="bg-gray-300">
+    <div class="container py-2">
+        <h1>Kursoversikt</h1>
 
-<p>
-    <a asp-page="Create">Opprett nytt</a>
-</p>
-<table class="table">
+        <p>
+            <a asp-page="Create" class="btn btn-success link-decoration-none py-2 my-3">Opprett nytt</a>
+        </p>
+    </div>
+</div>
+<div class="container py-5">
+
+
+
+<table class="table table-striped table-hover">
     <thead>
         <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.EventInfo[0].Code)
-                </th>
                 <th>
                     @Html.DisplayNameFor(model => model.EventInfo[0].Title)
                 </th>
@@ -41,9 +45,6 @@
 @foreach (var item in Model.EventInfo) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Code)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
@@ -62,9 +63,7 @@
                 @Html.DisplayFor(modelItem => item.DateEnd)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.EventInfoId">Rediger</a> |
-                <a asp-page="./Details" asp-route-id="@item.EventInfoId">Vis</a> |
-                <a asp-page="./Delete" asp-route-id="@item.EventInfoId">Slett</a>
+                <a asp-page="./Edit" asp-route-id="@item.EventInfoId" class="btn btn-info link-decoration-none">Endre</a>
             </td>
         </tr>
 }

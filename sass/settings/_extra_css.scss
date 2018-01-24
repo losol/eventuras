@@ -1,5 +1,9 @@
 /* Some extra straight forward css here? */
 
+.w-33 {
+    width: 33.33%;
+}
+
 /* Min heights */
 .min-height-33 {
     min-height: 33vh;
@@ -232,6 +236,10 @@ background: rgba(44, 44, 44, 0.4);
     
 /* Some links should not have any decoration */
 h1 a, h2 a, h3 a, h4 a {
+    text-decoration: none;
+}
+
+.nav-link {
     text-decoration: none;
 }
 

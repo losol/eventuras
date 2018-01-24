@@ -1,0 +1,94 @@
+@page
+@model losol.EventManagement.Pages.Admin.Events.DetailsModel
+
+@{
+    ViewData["Title"] = @Model.EventInfo.Title;
+}
+
+<div class="jumbotron jumbotron-fluid min-height-33">
+  <div class="container">
+    <h1 class="display-1">@Model.EventInfo.Title</h1>
+    <p class="lead pb-5">@Model.EventInfo.Description</p>
+     @{ // Dates
+        if(Model.EventInfo.DateStart != null) 
+        {
+            <div class="py-1">
+            <i class="material-icons  align-top">date_range</i> @Model.EventInfo.DateStart.Value.ToString("d")
+                
+                    @if(Model.EventInfo.DateEnd != null) {
+                    <text>- @Model.EventInfo.DateEnd.Value.ToString("d")</text>
+                    }
+            </div>
+        }
+    
+     }
+    @{ // City
+        if(Model.EventInfo.City != null) 
+        {
+            <div class="py-1">
+                <i class="material-icons align-top">location_on</i> @Model.EventInfo.City
+            </div>
+        }
+    }
+
+  </div>
+</div>
+<div class="container min-height-50">
+	<div class="row">
+		<div class="col-md-9" id="info">
+          
+            @Html.Raw(Model.EventInfo.MoreInformation)
+
+            @if (!String.IsNullOrEmpty(Model.EventInfo.Program) && Model.EventInfo.Program.Length > 20 ) {
+                <h2 id="program">Program</h2>
+                @Html.Raw(Model.EventInfo.Program)
+            }
+
+            @if (!String.IsNullOrEmpty(Model.EventInfo.PracticalInformation) && Model.EventInfo.PracticalInformation.Length > 20 ) {
+                <h2 id="practical">Praktisk informasjon</h2>
+                @Html.Raw(Model.EventInfo.PracticalInformation)
+            }
+            
+		</div>
+        <div class="col-md-3">
+                @{ // Location
+        if(Model.EventInfo.Location != null) 
+        {
+            <div class="py-3">
+                <i class="material-icons align-top">hotel</i> @Model.EventInfo.Location
+            </div>
+        }
+    }
+            @* Price *@
+            <div class="py-3">
+                @if (Model.EventInfo.Price.HasValue) {
+                <i class="material-icons align-top">credit_card</i> @Model.EventInfo.Price.Value.ToString("0 kr")
+                }
+            </div>
+            
+            
+            <a class="btn btn-block btn-light link-decoration-none" href="#program"><i class="material-icons align-middle">speaker_notes</i> Program</a>
+            <a class="btn btn-block btn-light link-decoration-none" href="#practical"><i class="material-icons align-middle">hotel</i> Praktisk</a>
+
+            <p>
+            @{ // Registration link 
+                if (String.IsNullOrEmpty(Model.EventInfo.RegistrationsUrl)) {
+                    <a asp-page="../Register/Event" asp-route-id="@Model.EventInfo.EventInfoId" class="btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>  
+                }
+                else {
+                    <a href="@Model.EventInfo.RegistrationsUrl" class="btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>
+                }
+            }
+            </p>
+
+        </div>
+	</div>
+    <div class="row pt-5">
+        <div class="col-md-12"> 
+        
+        <p><a asp-page="./Index" class=""><i class="material-icons">keyboard_arrow_left</i> Vis alle kurs</a></p>
+        </div>
+        
+    </div>
+</div>
+
