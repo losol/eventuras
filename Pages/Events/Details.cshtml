@@ -59,7 +59,7 @@
             </div>
         }
     }
-    
+            @* Price *@
             <div class="py-3">
                 @if (Model.EventInfo.Price.HasValue) {
                 <i class="material-icons align-top">credit_card</i> @Model.EventInfo.Price.Value.ToString("0 kr")
@@ -70,8 +70,15 @@
             <a class="btn btn-block btn-light link-decoration-none" href="#program"><i class="material-icons align-middle">speaker_notes</i> Program</a>
             <a class="btn btn-block btn-light link-decoration-none" href="#practical"><i class="material-icons align-middle">hotel</i> Praktisk</a>
 
-            <p><a asp-page="../Register/Event" asp-route-id="@Model.EventInfo.EventInfoId" class="btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>  
-            
+            <p>
+            @{ // Registration link 
+                if (String.IsNullOrEmpty(Model.EventInfo.RegistrationsUrl)) {
+                    <a asp-page="../Register/Event" asp-route-id="@Model.EventInfo.EventInfoId" class="btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>  
+                }
+                else {
+                    <a href="@Model.EventInfo.RegistrationsUrl" class="btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>
+                }
+            }
             </p>
 
         </div>
