@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using System.Globalization;
 
 namespace losol.EventManagement
 {
@@ -63,6 +64,11 @@ namespace losol.EventManagement
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = true;
             });
+
+            // Set culture info
+            var cultureInfo = new CultureInfo("nb-NO");
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
             
             services.AddAuthorization(options =>
