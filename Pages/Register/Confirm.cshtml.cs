@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using losol.EventManagement.Data;
 using losol.EventManagement.Models;
 using losol.EventManagement.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -15,16 +16,19 @@ namespace losol.EventManagement.Pages.Register
     {
         private readonly ApplicationDbContext _context;
 		private readonly IEmailSender _emailSender;
+		private readonly UserManager<ApplicationUser> _userManager;
 
         public string Message { get; set; }
 
         public ConfirmModel(
 			ApplicationDbContext context,
-			IEmailSender emailSender
+			IEmailSender emailSender,
+			UserManager<ApplicationUser> userManager
 			)
 		{
 			_context = context;
 			_emailSender = emailSender;
+			_userManager = userManager;
 		}
 
         public Registration Registration {get;set;}
@@ -49,9 +53,12 @@ namespace losol.EventManagement.Pages.Register
                 Registration.Verified = true;
                 await  _context.SaveChangesAsync();
 
+                var user = await _userManager.FindByIdAsync(Registration.UserId);
+
+
                 await _emailSender.SendEmailAsync("losvik@gmail.com",
                 "Påmelding kurs",
-                $@"{Registration.UserId} har meldt seg på kurset {Registration.EventInfoId}
+                $@"{Registration.UserId}, {user.Email}  har meldt seg på kurset {Registration.EventInfoId}
                 Bare så du vet det");
                 return RedirectToPage("/Register/Confirmed");
             }
