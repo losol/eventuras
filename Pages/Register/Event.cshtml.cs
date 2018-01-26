@@ -134,7 +134,7 @@ namespace losol.EventManagement.Pages.Register
 			else
 			{
 				// Create new user
-				var newUser = new ApplicationUser { UserName = Registration.Email, Email = Registration.Email, PhoneNumber = Registration.Phone };
+				var newUser = new ApplicationUser { UserName = Registration.Email, Name = Registration.Name, Email = Registration.Email, PhoneNumber = Registration.Phone };
 				var result = await _userManager.CreateAsync(newUser);
 
 				if (result.Succeeded)
