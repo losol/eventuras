@@ -64,7 +64,7 @@ namespace losol.EventManagement.Pages.Register
 			[Required]
 			[StringLength(100)]
 			[Display(Name = "Navn")]
-			public string Name { get; set; }
+			public string ParticipantName { get; set; }
 
 			[Required]
 			[EmailAddress]
@@ -76,13 +76,23 @@ namespace losol.EventManagement.Pages.Register
 			public string Phone { get; set; }
 
 			[Display(Name = "Arbeidsplass")]
-			public string Employer { get; set; }
+			public string ParticipantEmployer { get; set; }
 
 			[Display(Name = "Organisasjonsnummer (må fylles ut for EHF-faktura)")]
-			public string VatNumber { get; set; }
+			public string CustomerVatNumber { get; set; }
 
-			[Display(Name = "Betalingsmetode")]
+			[Display(Name = "Betaling")]
 			public IEnumerable<PaymentMethod> PaymentMethods { get; set; }
+
+			// Who pays for it?
+			[Display(Name = "Fakturamottakers firmanavn")]
+			public string CustomerName {get; set;}
+
+			[Display(Name = "Fakturamottakers epost")]
+			public string CustomerEmail {get; set;}
+
+			[Display(Name = "Fakturareferanse")]
+			public string CustomerInvoiceReference {get;set;}
 
 			public int PaymentMethodId { get; set; }
 		}
@@ -134,7 +144,7 @@ namespace losol.EventManagement.Pages.Register
 			else
 			{
 				// Create new user
-				var newUser = new ApplicationUser { UserName = Registration.Email, Name = Registration.Name, Email = Registration.Email, PhoneNumber = Registration.Phone };
+				var newUser = new ApplicationUser { UserName = Registration.Email, Name = Registration.ParticipantName, Email = Registration.Email, PhoneNumber = Registration.Phone };
 				var result = await _userManager.CreateAsync(newUser);
 
 				if (result.Succeeded)
@@ -156,17 +166,14 @@ namespace losol.EventManagement.Pages.Register
 			entry.CurrentValues.SetValues(Registration);
 			await _context.SaveChangesAsync();
 
-			Console.WriteLine("*********^^^^^^^^^^^^^^^^^^vvvvvvvvvvv");
 			var confirmEmail = new ConfirmEventRegistration()
 			{
-				Name = Registration.Name,
+				Name = Registration.ParticipantName,
 				Phone = Registration.Phone,
 				Email = Registration.Email,
 				PaymentMethod = Registration.PaymentMethodId.ToString(),
 				EventTitle = Registration.EventInfoTitle,
-				EventDescription = Registration.EventInfoDescription,
-				//EventDate = "01.01.2018",
-				//EventUrl = "Https://vg.no"
+				EventDescription = Registration.EventInfoDescription
 			};
 
 			confirmEmail.VerificationUrl = Url.Action("Confirm", "Register", new { id = newRegistration.RegistrationId, auth = newRegistration.VerificationCode }, protocol: Request.Scheme);

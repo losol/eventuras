@@ -76,6 +76,9 @@ namespace losol.EventManagement.Models
         [Display(Name = "Antall deltakere", Description = "Maksimalt antall deltakere")]
         public int MaxParticipants { get; set; } = 0; //maks antall deltakere
 
+        [Display(Name = "Gratis?")]
+        public bool Free { get; set; } = false;
+
         [Display(Name = "Pris")]
         [DisplayFormat(DataFormatString = "{0:0}", ApplyFormatInEditMode = true)]
         public decimal? Price { get; set; }

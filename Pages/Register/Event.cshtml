@@ -1,22 +1,23 @@
 ﻿@page "{id:int}"
 @model losol.EventManagement.Pages.Register.EventRegistrationModel
 @{
-    ViewData["Title"] = "@Model.Registration.EventInfoTitle - Påmelding";
+    ViewData["Title"] = Model.Registration.EventInfoTitle + "- Påmelding";
     
     Layout = "~/Pages/_Layout.cshtml";
 }
 <div class="container">
-<h2>@Model.Registration.EventInfoTitle</h2>
+<h1 class="display-2 pt-5">@Model.Registration.EventInfoTitle - p&aring;melding</h1>
 <p class="lead">@Model.Registration.EventInfoDescription</p>
 
-<div class="row">
-    <div class="col-md-6">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<form method="post">
+    <div class="row justify-content-between pt-5">
+        <div class="col-md-6"> 
             <div class="form-group">
-                <label asp-for="Registration.Name"></label>
-                <input asp-for="Registration.Name" class="form-control" />
-                <span asp-validation-for="Registration.Name" class="text-danger"></span>
+                <label asp-for="Registration.ParticipantName"></label>
+                <input asp-for="Registration.ParticipantName" class="form-control" />
+                <span asp-validation-for="Registration.ParticipantName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Registration.Email"></label>
@@ -29,14 +30,9 @@
                 <span asp-validation-for="Registration.Phone" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Registration.Employer"></label>
-                <input asp-for="Registration.Employer" class="form-control" />
-                <span asp-validation-for="Registration.Employer" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Registration.VatNumber"></label>
-                <input asp-for="Registration.VatNumber" class="form-control" />
-                <span asp-validation-for="Registration.VatNumber" class="text-danger"></span>
+                <label asp-for="Registration.ParticipantEmployer"></label>
+                <input asp-for="Registration.ParticipantEmployer" class="form-control" />
+                <span asp-validation-for="Registration.ParticipantEmployer" class="text-danger"></span>
             </div>
             <div class="form-group"><!-- Payment method -->
                 <label asp-for="Registration.PaymentMethods"></label><br>
@@ -44,20 +40,57 @@
                 @foreach (var item in Model.Registration.PaymentMethods)
                 {
                     <label class="radio-inline pr-3">  
-                     <input asp-for="Registration.PaymentMethodId" type="radio" value="@item.PaymentMethodId" /> @item.Name  
+                    <input asp-for="Registration.PaymentMethodId" id="Registration_PaymentMethodId_@item.PaymentMethodId" type="radio" value="@item.PaymentMethodId" onclick="paymentMethod()"/> @item.Name  
                     </label>
-               
+            
                 }
                 </div>
             </div>
-            <div class="form-group">
+                <button class="btn  btn-link" type="button" data-toggle="collapse" data-target="#customerdetails" aria-expanded="false" aria-controls="customerdetails">
+                    <i class="material-icons align-top">reorder</i> Vis fakturadetaljer
+                </button>
+                </p>
+                <div class="collapse" id="customerdetails">
+                    <div class="form-group">
+                        <label asp-for="Registration.CustomerVatNumber"></label>
+                        <input asp-for="Registration.CustomerVatNumber" class="form-control" />
+                        <span asp-validation-for="Registration.CustomerVatNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Registration.CustomerName"></label>
+                        <input asp-for="Registration.CustomerName" class="form-control" />
+                        <span asp-validation-for="Registration.CustomerName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Registration.CustomerEmail"></label>
+                        <input asp-for="Registration.CustomerEmail" class="form-control" />
+                        <span asp-validation-for="Registration.CustomerEmail" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Registration.CustomerInvoiceReference"></label>
+                        <input asp-for="Registration.CustomerInvoiceReference" class="form-control" />
+                        <span asp-validation-for="Registration.CustomerInvoiceReference" class="text-danger"></span>
+                    </div>
+
+ 
+            </div>
+                       <div class="form-group">
                 <input type="submit" value="Registrer meg" class="btn btn-success" />
             </div>
-        </form>
+
+                </div>
+        </div>
     </div>
-</div>
+</form>
 
 </div>
+<script>
+    function paymentMethod() {
+        if (document.getElementById('Registration_PaymentMethodId_3').checked) {
+            $('#customerdetails').collapse('show');
+        };   
+    }
+</script>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

@@ -29,6 +29,16 @@ namespace losol.EventManagement.Models
         [Display(Name = "Skal ha kursdiplom?")]
         public bool Diploma { get; set; } = true;
 
+        // The participant
+        public string ParticipantName { get; set; }
+        public string ParticipantEmployer {get;set;}
+
+        // Who pays for it?
+        public string CustomerName {get; set;}
+        public string CustomerEmail {get; set;}
+        public string CustomerVatNumber {get;set;}
+        public string CustomerInvoiceReference {get;set;}
+
         [Display(Name = "Kommentar")]
         [DataType(DataType.MultilineText)]
         public string Notes { get; set; }

@@ -26,6 +26,7 @@ namespace losol.EventManagement.Pages.Admin.Events
         public string Name { set;get;}
         public string Email { set;get;}
         public string Phone { set;get;}
+        public string Employer {get;set;}
         }
 
         public async Task<IActionResult> OnGetAsync(int? id)
