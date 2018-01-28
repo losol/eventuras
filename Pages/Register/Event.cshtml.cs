@@ -160,6 +160,45 @@ namespace losol.EventManagement.Pages.Register
 				}
 			};
 
+			// Any registrations for this user on this event?
+			var registered = await _context.Registrations
+				.Where(a => 
+					a.UserId == Registration.UserId &&
+					a.EventInfoId == Registration.EventInfoId)
+				.FirstOrDefaultAsync();
+
+			// If registration found
+			if (registered != null) {
+				// Prepare an email to send out
+				var emailVM = new EmailMessage()
+				{
+					Name = Registration.ParticipantName,
+					Email = Registration.Email,
+					Subject = "Du var allerede påmeldt!",
+					Message = @"Vi hadde allerede registrert deg i systemet.
+								Ta kontakt med ole@nordland-legeforening hvis du tror det er skjedd noe feil her!
+								"
+				};
+
+				// If registered but not verified, just send reminder of verification. 
+				if (registered.Verified == false) {
+					var verificationUrl = Url.Action("Confirm", "Register", new { id = registered.RegistrationId, auth = registered.VerificationCode }, protocol: Request.Scheme);
+					emailVM.Subject = "En liten bekreftelse bare...";
+					emailVM.Message = $@"Vi hadde allerede registrert deg i systemet, men du har ikke bekreftet enda
+								Ta kontakt med ole@nordland-legeforening hvis du tror det er skjedd noe feil her!
+								<p><a href='{verificationUrl}'>Bekreft her</a></p>
+								<p></p>
+								<p>Hvis lenken ikke virker, så kan du kopiere inn teksten under i nettleseren:
+								{verificationUrl} </p>";
+				}
+
+				var emailString = await _renderService.RenderViewToStringAsync("Templates/Email/StandardEmail", emailVM);
+				await _emailSender.SendEmailAsync(emailVM.Email, emailVM.Subject, emailString);
+
+				return RedirectToPage("/Register/EmailSent");
+			}
+
+			// If we came here, we should enter our new participant into our database!
 			var newRegistration = new Models.Registration();
 			newRegistration.VerificationCode = GenerateRandomPassword(6);
 			var entry = _context.Add(newRegistration);
@@ -177,7 +216,7 @@ namespace losol.EventManagement.Pages.Register
 			};
 
 			confirmEmail.VerificationUrl = Url.Action("Confirm", "Register", new { id = newRegistration.RegistrationId, auth = newRegistration.VerificationCode }, protocol: Request.Scheme);
-			Console.WriteLine("^^^*****" +GenerateRandomPassword() + confirmEmail.VerificationUrl);
+		
 			var email = await _renderService.RenderViewToStringAsync("Templates/Email/ConfirmEventRegistration", confirmEmail);
 			await _emailSender.SendEmailAsync(Registration.Email, "Bekreft påmelding", email);
 

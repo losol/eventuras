@@ -50,25 +50,35 @@
 <div class="container min-height-50">
 	<div class="row">
 		<div class="col-md-9">
-          
 
-
-
-<table 
-    data-toggle="table" 
-    data-url="/Admin/Events/Participants?id=@Model.EventInfo.EventInfoId&handler=Participants"
-    data-pagination="false"
-    data-search="true"
-    data-advanced-search="true"
-    data-id-table="advancedTable">
-    <thead>
-        <tr>
-            <th data-field="name">Navn</th>
-            <th data-field="email">Epost</th>
-            <th data-field="phone">Telefon</th>
-        </tr>
-    </thead>
-</table>
+            <table  
+                data-toggle="table" 
+                data-url="/Admin/Events/Participants?id=@Model.EventInfo.EventInfoId&handler=Participants"
+                data-pagination="false"
+                data-show-columns="true"
+                data-show-export="true"
+                data-sort-name="name"
+                data-sort-order="asc"
+                data-icons-prefix="fa"
+                data-icons="icons"
+                data-search="true"
+                data-advanced-search="true"
+                data-search-align="left"
+                data-show-refresh="true"
+                data-click-to-select="true"
+                data-id-table="advancedTable"
+                data-export-options='{
+                    "fileName": "Deltakere-@Model.EventInfo.Code-@DateTime.Now.ToString("yyyy-MM-dd")", 
+                    "ignoreColumn": ["asdf"]
+                }'>
+                <thead>
+                    <tr>
+                        <th data-field="name" data-sortable="true">Navn</th>
+                        <th data-field="email" data-sortable="true">Epost</th>
+                        <th data-field="phone">Telefon</th>
+                    </tr>
+                </thead>
+            </table>
 
 
 
@@ -81,6 +91,25 @@
 </div>
 
 @section scripts { 
+    <script>
+    $(function () {
+	var $table = $('#table');
+	$('#toolbar').find('select').change(function () {
+    $table.bootstrapTable('refreshOptions', {
+      exportDataType: $(this).val()
+    });
+  });
+});
+
+    window.icons = {
+  refresh: 'fa-refresh',
+  toggle: 'fa-toggle-on',
+  columns: 'fa-th-list',
+  export: 'fa-download'
+};
+</script>
+    
     @await Html.PartialAsync("_CompBootstrapTable")
+    <script src="//rawgit.com/hhurz/tableExport.jquery.plugin/master/tableExport.js"></script>
 }
 
