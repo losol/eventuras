@@ -34,11 +34,9 @@
                     @Html.DisplayNameFor(model => model.EventInfo[0].City)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.EventInfo[0].DateStart)
+                   Datoer
                 </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.EventInfo[0].DateEnd)
-            <th></th>
+                <th></th>
         </tr>
     </thead>
     <tbody>
@@ -57,12 +55,13 @@
                 @Html.DisplayFor(modelItem => item.City)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DateStart)
+                @Html.DisplayFor(modelItem => item.DateStart) - @Html.DisplayFor(modelItem => item.DateEnd)
             </td>
+            
             <td>
-                @Html.DisplayFor(modelItem => item.DateEnd)
-            </td>
-            <td>
+            @if (item.ManageRegistrations) {
+                <a asp-page="./Participants" asp-route-id="@item.EventInfoId" class="btn btn-info link-decoration-none">Deltakere</a>
+                }
                 <a asp-page="./Edit" asp-route-id="@item.EventInfoId" class="btn btn-info link-decoration-none">Endre</a>
             </td>
         </tr>

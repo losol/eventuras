@@ -87,6 +87,9 @@ namespace losol.EventManagement
                     options.Conventions.AuthorizeFolder("/Admin", "AdministratorRole");
                 });
 
+            // For sending antiforgery in ajax?
+            // services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
+
 
             // AppSettings
             var appSettings = Configuration.GetSection("AppSettings");
