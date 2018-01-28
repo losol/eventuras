@@ -124,6 +124,15 @@ gulp.task('make:js', function () {
     ])
         .pipe(concat('site.js'))
         .pipe(gulp.dest(paths.jsDest));
+
+    gulp.src([
+            paths.libSrc + 'bootstrap-table/dist/bootstrap-table.min.js',
+            paths.libSrc + 'bootstrap-table/extensions/toolbar/bootstrap-table-toolbar.min.js',
+            paths.libSrc + 'bootstrap-table/extensions/filter/bootstrap-table-filter.min.js',
+            paths.libSrc + 'bootstrap-table/locale/filter/bootstrap-table-nb_NO.min.js'
+        ])
+            .pipe(concat('bootstrap-table.min.js'))
+            .pipe(gulp.dest(paths.jsDest));
 });
 
  gulp.task('build', gulpSequence('clean:temp', 'make:css', 'build:pot', 'build:theme', 'build:zip'));
