@@ -114,10 +114,8 @@ gulp.task('make:css', function () {
 gulp.task('make:js', function () {
     gulp.src([
         paths.libSrc + 'jquery/dist/jquery.min.js',
-        paths.libSrc + 'popper.js/dist/popper.min.js',
-        paths.libSrc + 'bootstrap/dist/js/bootstrap.min.js',
-        paths.libSrc + 'moment/min/moment.min.js',
-        paths.libSrc + 'moment/locale/nb.js'
+        paths.libSrc + 'popper.js/dist/umd/popper.min.js',
+        paths.libSrc + 'bootstrap/dist/js/bootstrap.min.js'
 
     ])
         .pipe(concat('site.min.js'))
@@ -127,9 +125,7 @@ gulp.task('make:js', function () {
     gulp.src([
         paths.libSrc + 'jquery/dist/jquery.js',
         paths.libSrc + 'popper.js/dist/umd/popper.js',
-        paths.libSrc + 'bootstrap/dist/js/bootstrap.js',
-        paths.libSrc + 'moment/moment.js',
-        paths.libSrc + 'moment/locale/nb.js'
+        paths.libSrc + 'bootstrap/dist/js/bootstrap.js'
     ])
         .pipe(concat('site.js'))
         .pipe(gulp.dest(paths.jsDest));
@@ -138,7 +134,7 @@ gulp.task('make:js', function () {
             paths.libSrc + 'bootstrap-table/dist/bootstrap-table.min.js',
             paths.libSrc + 'bootstrap-table/extensions/toolbar/bootstrap-table-toolbar.min.js',
             paths.libSrc + 'bootstrap-table/extensions/filter/bootstrap-table-filter.min.js',
-            paths.libSrc + 'bootstrap-table/locale/filter/bootstrap-table-nb_NO.min.js'
+            paths.libSrc + 'bootstrap-table/dist/locale/bootstrap-table-nb-NO.min.js'
         ])
             .pipe(concat('bootstrap-table.min.js'))
             .pipe(gulp.dest(paths.jsDest));
