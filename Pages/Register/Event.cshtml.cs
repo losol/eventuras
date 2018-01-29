@@ -195,7 +195,7 @@ namespace losol.EventManagement.Pages.Register
 				var emailString = await _renderService.RenderViewToStringAsync("Templates/Email/StandardEmail", emailVM);
 				await _emailSender.SendEmailAsync(emailVM.Email, emailVM.Subject, emailString);
 
-				return RedirectToPage("/Register/EmailSent");
+				return RedirectToPage("/Info/EmailSent");
 			}
 
 			// If we came here, we should enter our new participant into our database!
@@ -220,7 +220,7 @@ namespace losol.EventManagement.Pages.Register
 			var email = await _renderService.RenderViewToStringAsync("Templates/Email/ConfirmEventRegistration", confirmEmail);
 			await _emailSender.SendEmailAsync(Registration.Email, "Bekreft påmelding", email);
 
-			return RedirectToPage("/Register/EmailSent");
+			return RedirectToPage("/Info/EmailSent");
 		}
     
 		public static string GenerateRandomPassword(int length = 6)
