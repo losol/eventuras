@@ -1,8 +1,9 @@
+# Roadmap
 
-
+High priority
 * Add localization
-* Include material icons in base css
 
-Bootstrap table
-* https://www.codeproject.com/Articles/1166225/NET-Core-Datagrid
-* http://issues.wenzhixin.net.cn/bootstrap-table/
+Low priority
+* Open badges
+
+[x]Bootstrap table
