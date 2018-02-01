@@ -6,4 +6,4 @@ High priority
 Low priority
 * Open badges
 
-[x]Bootstrap table
+[x] Bootstrap table
