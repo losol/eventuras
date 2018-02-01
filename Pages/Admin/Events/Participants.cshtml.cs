@@ -27,6 +27,7 @@ namespace losol.EventManagement.Pages.Admin.Events
         public string Email { set;get;}
         public string Phone { set;get;}
         public string Employer {get;set;}
+        public bool Attended {get;set;}
         }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -60,7 +61,8 @@ namespace losol.EventManagement.Pages.Admin.Events
                 .Select ( x=> new RegistrationsVm{
                     Name = x.User.Name,
                     Email = x.User.Email,
-                    Phone = x.User.PhoneNumber
+                    Phone = x.User.PhoneNumber,
+                    Attended = x.Attended
                     })
                 .ToListAsync();
 

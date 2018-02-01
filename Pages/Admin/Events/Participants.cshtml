@@ -168,6 +168,7 @@
                         <th data-field="name" data-sortable="true">Navn</th>
                         <th data-field="email" data-sortable="true">Epost</th>
                         <th data-field="phone">Telefon</th>
+                        <th data-formatter="Attended">M&oslash;tt</th>
                         <th data-formatter="RowActions">Meny</th>
                     </tr>
                 </thead>
@@ -194,9 +195,14 @@
         });
     });
 
-    function RowActions(value, row, index, field) {
+    function Attended(value, row, index, field) {
             actions = [
                 '<button type="button" class="btn btn-success mr-1">Møtt</button>',
+          ].join('');
+            return actions;
+        }
+    function RowActions(value, row, index, field) {
+            actions = [
                 '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary mr-1" data-toggle="modal" data-target="#smsModal">SMS</button>', 
                 '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary mr-1" data-toggle="modal" data-target="#emailModal">Epost</button>', 
             ].join('');
