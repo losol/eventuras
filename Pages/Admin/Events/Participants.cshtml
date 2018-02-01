@@ -50,7 +50,7 @@
                 <!-- COMMUNICATE MENU -->
                 <div class="btn-group">
                 <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Epost/SMS
+                    Send info til alle
                 </button>
                 <div class="dropdown-menu">
                     <a class="dropdown-item link-decoration-none" href="#" data-toggle="modal" data-target="#emailModal" role="button">Epost</a>
@@ -108,7 +108,28 @@
                     &Oslash;konomi
                 </button>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item link-decoration-none" href="#">Fakturerer kurset</a>
+                    <a class="dropdown-item link-decoration-none" href="#" data-toggle="modal" data-target="#economyModal" role="button">Fakturerer kurset</a>
+                </div>
+                </div>
+
+                <!-- ECONOMY Modal -->
+                <div class="modal fade" id="economyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Send faktura til deltakerne</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Koden ikke ferdig. Fakturer kurs?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Lukk</button>
+                        <button type="button" class="btn btn-primary">Send</button>
+                    </div>
+                    </div>
                 </div>
                 </div>
 
@@ -147,6 +168,7 @@
                         <th data-field="name" data-sortable="true">Navn</th>
                         <th data-field="email" data-sortable="true">Epost</th>
                         <th data-field="phone">Telefon</th>
+                        <th data-formatter="RowActions">Meny</th>
                     </tr>
                 </thead>
             </table>
@@ -164,20 +186,30 @@
 @section scripts { 
     <script>
     $(function () {
-	var $table = $('#table');
-	$('#toolbar').find('select').change(function () {
-    $table.bootstrapTable('refreshOptions', {
-      exportDataType: $(this).val()
+        var $table = $('#table');
+        $('#toolbar').find('select').change(function () {
+            $table.bootstrapTable('refreshOptions', {
+                exportDataType: $(this).val()
+            });
+        });
     });
-  });
-});
+
+    function RowActions(value, row, index, field) {
+            actions = [
+                '<button type="button" class="btn btn-success mr-1">Møtt</button>',
+                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary mr-1" data-toggle="modal" data-target="#smsModal">SMS</button>', 
+                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary mr-1" data-toggle="modal" data-target="#emailModal">Epost</button>', 
+            ].join('');
+            return actions;
+        }
 
     window.icons = {
-  refresh: 'fa-refresh',
-  toggle: 'fa-toggle-on',
-  columns: 'fa-th-list',
-  export: 'fa-download'
-};
+        refresh: 'fa-refresh',
+        toggle: 'fa-toggle-on',
+        columns: 'fa-th-list',
+        export: 'fa-download'
+    };
+
 </script>
     
     @await Html.PartialAsync("_CompBootstrapTable")
