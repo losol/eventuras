@@ -54,7 +54,7 @@ namespace losol.EventManagement.Models
         public bool FreeRegistration { get; set; } = false;
 
         [Display(Name = "Betalingsmetode")]
-        public int PaymentMethodId {get; set;}
+        public int? PaymentMethodId {get; set;}
 
         [Display(Name = "Verifisert påmelding?")]
         public bool Verified { get; set; } = false;
