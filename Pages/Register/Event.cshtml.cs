@@ -100,6 +100,7 @@ namespace losol.EventManagement.Pages.Register
 			public int? PaymentMethodId { get; set; }
 
 			// Navigational properties
+			// Eventinfo is readonly
 			public EventInfo EventInfo {get;set;}
 		}
 
@@ -207,7 +208,7 @@ namespace losol.EventManagement.Pages.Register
 				return RedirectToPage("/Info/EmailSent");
 			}
 
-			// If we came here, we should enter our new participant into our database!
+			// If we came here, we should enter our new participant into the database!
 			var newRegistration = new Models.Registration();
 			newRegistration.VerificationCode = GenerateRandomPassword(6);
 			var entry = _context.Add(newRegistration);

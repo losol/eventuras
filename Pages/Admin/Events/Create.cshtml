@@ -7,7 +7,7 @@
 
 <div class="container">
 
-<h1>Opprett kurs</h1><hr />
+<h1>Rediger kurs</h1><hr />
 <div class="row">
     <div class="col-12">
 
@@ -60,6 +60,11 @@
                 <span asp-validation-for="EventInfo.RegistrationsUrl" class="text-danger"></span>
             </div>
                         <div class="row">
+                <div class="form-check form-check-inline">
+                    <label>
+                        <input asp-for="EventInfo.Free" /> @Html.DisplayNameFor(model => model.EventInfo.Free)
+                    </label>
+                </div>
                 <div class="form-group col-md-6">
                     <label asp-for="EventInfo.Price" class="control-label"></label>
                     <input asp-for="EventInfo.Price" class="form-control" />
@@ -88,6 +93,16 @@
                 <label asp-for="EventInfo.PracticalInformation" class="control-label"></label>
                 <textarea asp-for="EventInfo.PracticalInformation" class="form-control" rows="6"></textarea>
                 <span asp-validation-for="EventInfo.PracticalInformation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventInfo.WelcomeLetter" class="control-label"></label>
+                <textarea asp-for="EventInfo.WelcomeLetter" class="form-control" rows="6"></textarea>
+                <span asp-validation-for="EventInfo.WelcomeLetter" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventInfo.InformationRequest" class="control-label"></label>
+                <textarea asp-for="EventInfo.InformationRequest" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="EventInfo.InformationRequest" class="text-danger"></span>
             </div>
 
             <hr>
@@ -196,6 +211,15 @@ $("#EventInfo_Title").keyup(function(){
         } );
     ClassicEditor
         .create( document.querySelector( '#EventInfo_PracticalInformation' ) ) 
+        .then( editor => {
+            console.log( editor );
+        } )
+        .catch( error => {
+            console.error( error );
+        } );
+
+            ClassicEditor
+        .create( document.querySelector( '#EventInfo_WelcomeLetter' ) ) 
         .then( editor => {
             console.log( editor );
         } )

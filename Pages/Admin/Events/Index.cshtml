@@ -44,6 +44,7 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
+                <a href="/Events/Details?id=@item.EventInfoId"><i class="fa fa-globe"></i><span class="sr-only">Vis infosiden</span></a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.OnDemand)
