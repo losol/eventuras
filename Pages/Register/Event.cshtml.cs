@@ -175,7 +175,7 @@ namespace losol.EventManagement.Pages.Register
 				.Where(a => 
 					a.UserId == Registration.UserId &&
 					a.EventInfoId == Registration.EventInfoId)
-				.FirstAsync();
+				.FirstOrDefaultAsync();
 
 			// If registration found
 			if (registered != null) {
