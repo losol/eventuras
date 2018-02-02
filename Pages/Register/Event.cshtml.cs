@@ -133,11 +133,11 @@ namespace losol.EventManagement.Pages.Register
 
 		public async Task<IActionResult> OnPostAsync(int? id)
 		{
-			var eventinfo = await _context.EventInfos.FirstOrDefaultAsync(m => m.EventInfoId == id);
-			Registration.EventInfo = eventinfo;
-			Registration.EventInfoId = eventinfo.EventInfoId;
-			Registration.EventInfoTitle = eventinfo.Title;
-			Registration.EventInfoDescription = eventinfo.Description;
+			var eventInfo = await _context.EventInfos.FirstOrDefaultAsync(m => m.EventInfoId == id);
+			Registration.EventInfo = eventInfo;
+			Registration.EventInfoId = eventInfo.EventInfoId;
+			Registration.EventInfoTitle = eventInfo.Title;
+			Registration.EventInfoDescription = eventInfo.Description;
 
 			if (!ModelState.IsValid)
 			{
@@ -175,7 +175,7 @@ namespace losol.EventManagement.Pages.Register
 				.Where(a => 
 					a.UserId == Registration.UserId &&
 					a.EventInfoId == Registration.EventInfoId)
-				.FirstOrDefaultAsync();
+				.FirstAsync();
 
 			// If registration found
 			if (registered != null) {
