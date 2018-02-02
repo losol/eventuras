@@ -124,7 +124,7 @@ namespace losol.EventManagement.Pages.Register
 				Registration.EventInfoId = eventinfo.EventInfoId;
 				Registration.EventInfoTitle = eventinfo.Title;
 				Registration.EventInfoDescription = eventinfo.Description;
-				Registration.PaymentMethodId = 2;  // TODO: Dirty quickfix
+				Registration.PaymentMethodId = 2;  // TODO: Dirty
 				Registration.PaymentMethods = _context.PaymentMethods.Where(m => m.Active == true ).ToList();
 			}
 			return Page();
@@ -150,6 +150,7 @@ namespace losol.EventManagement.Pages.Register
 			if (user != null)
 			{
 				Registration.UserId = user.Id;
+				_logger.LogInformation("Found existing user.");
 			}
 			else
 			{
@@ -179,6 +180,7 @@ namespace losol.EventManagement.Pages.Register
 
 			// If registration found
 			if (registered != null) {
+				_logger.LogWarning("Found existing registration:" + registered.RegistrationId );
 				// Prepare an email to send out
 				var emailVM = new EmailMessage()
 				{
@@ -209,6 +211,7 @@ namespace losol.EventManagement.Pages.Register
 			}
 
 			// If we came here, we should enter our new participant into the database!
+			_logger.LogWarning("Starting new registration:" );
 			var newRegistration = new Models.Registration();
 			newRegistration.VerificationCode = GenerateRandomPassword(6);
 			var entry = _context.Add(newRegistration);
