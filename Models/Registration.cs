@@ -43,6 +43,10 @@ namespace losol.EventManagement.Models
         [DataType(DataType.MultilineText)]
         public string Notes { get; set; }
 
+        [Display(Name = "Logg")]
+        [DataType(DataType.MultilineText)]
+        public string Log { get; set; }
+
         public DateTime? RegistrationTime { get; set; }
         public string RegistrationBy { get; set; }
 

@@ -61,6 +61,11 @@
                 <span asp-validation-for="EventInfo.RegistrationsUrl" class="text-danger"></span>
             </div>
                         <div class="row">
+                <div class="form-check form-check-inline">
+                    <label>
+                        <input asp-for="EventInfo.Free" /> @Html.DisplayNameFor(model => model.EventInfo.Free)
+                    </label>
+                </div>
                 <div class="form-group col-md-6">
                     <label asp-for="EventInfo.Price" class="control-label"></label>
                     <input asp-for="EventInfo.Price" class="form-control" />
