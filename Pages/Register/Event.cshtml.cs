@@ -216,7 +216,14 @@ namespace losol.EventManagement.Pages.Register
 			newRegistration.VerificationCode = GenerateRandomPassword(6);
 			var entry = _context.Add(newRegistration);
 			entry.CurrentValues.SetValues(Registration);
-			await _context.SaveChangesAsync();
+
+			// Save changes
+			try {
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateException ex){
+				_logger.LogError(ex.Message + ex.InnerException);
+			}
 
 			var confirmEmail = new ConfirmEventRegistration()
 			{
