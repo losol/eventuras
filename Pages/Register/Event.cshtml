@@ -35,22 +35,25 @@
                 <span asp-validation-for="Registration.ParticipantEmployer" class="text-danger"></span>
             </div>
 
-            
-            <div class="form-group"><!-- Payment method -->
-                <label asp-for="Registration.PaymentMethods"></label><br>
-                <div>
-                @foreach (var item in Model.Registration.PaymentMethods)
-                {
-                    <label class="radio-inline pr-3">  
-                    <input asp-for="Registration.PaymentMethodId" id="Registration_PaymentMethodId_@item.PaymentMethodId" type="radio" value="@item.PaymentMethodId" onclick="paymentMethod()"/> @item.Name  
-                    </label>
-            
-                }
+            @* START PAYMENT  *@
+            @if (!Model.Registration.EventInfo.Free) {
+            <div id="payment" > 
+                <div class="form-group"><!-- Payment method -->
+                    <label asp-for="Registration.PaymentMethods"></label><br>
+                    <div>
+                    @foreach (var item in Model.Registration.PaymentMethods)
+                    {
+                        <label class="radio-inline pr-3">  
+                        <input asp-for="Registration.PaymentMethodId" id="Registration_PaymentMethodId_@item.PaymentMethodId" type="radio" value="@item.PaymentMethodId" onclick="paymentMethod()"/> @item.Name  
+                        </label>
+                
+                    }
+                    </div>
                 </div>
-            </div>
-                <button class="btn  btn-link" type="button" data-toggle="collapse" data-target="#customerdetails" aria-expanded="false" aria-controls="customerdetails">
-                    <i class="material-icons align-top">reorder</i> Vis fakturadetaljer
-                </button>
+                <p>
+                    <button class="btn  btn-link" type="button" data-toggle="collapse" data-target="#customerdetails" aria-expanded="false" aria-controls="customerdetails">
+                        <i class="material-icons align-top">reorder</i> Vis fakturadetaljer
+                    </button>
                 </p>
                 <div class="collapse" id="customerdetails">
                     <div class="form-group">
@@ -73,10 +76,19 @@
                         <input asp-for="Registration.CustomerInvoiceReference" class="form-control" />
                         <span asp-validation-for="Registration.CustomerInvoiceReference" class="text-danger"></span>
                     </div>
-
- 
+                </div>
             </div>
-                       <div class="form-group">
+            }
+
+            @if (Model.Registration.EventInfo.InformationRequest != null ) {
+                    <div class="form-group">
+                        <label asp-for="Registration.Notes">@Model.Registration.EventInfo.InformationRequest</label>
+                        <textarea asp-for="Registration.Notes" class="form-control"></textarea>
+                        <span asp-validation-for="Registration.CustomerInvoiceReference" class="text-danger"></span>
+                    </div>
+            }
+
+            <div class="form-group">
                 <input type="submit" value="Registrer meg" class="btn btn-success" />
             </div>
 
@@ -87,6 +99,7 @@
 
 </div>
 <script>
+
     function paymentMethod() {
         if (document.getElementById('Registration_PaymentMethodId_3').checked) {
             $('#customerdetails').collapse('show');

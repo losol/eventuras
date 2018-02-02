@@ -39,6 +39,10 @@ namespace losol.EventManagement.Models
         [DataType(DataType.MultilineText)]
         public string PracticalInformation { get; set; }
 
+        [Display(Name = "Velkomstbrev")]
+        [DataType(DataType.MultilineText)]
+        public string WelcomeLetter { get; set; }
+
         [Display(Name = "Nettkurs?")]
         public bool OnDemand { get; set; } = false;
 
@@ -50,6 +54,10 @@ namespace losol.EventManagement.Models
 
         [Display(Name = "Lenke for ekstern påmelding")]
         public string RegistrationsUrl { get; set; }
+
+        [Display(Name = "Spør deltaker om ekstra informasjon ved påmelding?")]
+        [DataType(DataType.MultilineText)]
+        public string InformationRequest { get; set; }
 
         [Display(Name = "Hvilket hotell?")]
         public string Location { get; set; }

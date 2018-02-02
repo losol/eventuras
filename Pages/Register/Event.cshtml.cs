@@ -78,6 +78,9 @@ namespace losol.EventManagement.Pages.Register
 			[Display(Name = "Arbeidsplass")]
 			public string ParticipantEmployer { get; set; }
 
+			[Display(Name = "Kommentar til påmelding. ")]
+			public string Notes { get; set; }
+
 			[Display(Name = "Organisasjonsnummer (må fylles ut for EHF-faktura)")]
 			public string CustomerVatNumber { get; set; }
 
@@ -94,7 +97,10 @@ namespace losol.EventManagement.Pages.Register
 			[Display(Name = "Fakturareferanse")]
 			public string CustomerInvoiceReference {get;set;}
 
-			public int PaymentMethodId { get; set; }
+			public int? PaymentMethodId { get; set; }
+
+			// Navigational properties
+			public EventInfo EventInfo {get;set;}
 		}
 
 		public async Task<IActionResult> OnGetAsync(int? id)
@@ -113,9 +119,11 @@ namespace losol.EventManagement.Pages.Register
 			}
 			else
 			{
+				Registration.EventInfo = eventinfo;
 				Registration.EventInfoId = eventinfo.EventInfoId;
 				Registration.EventInfoTitle = eventinfo.Title;
 				Registration.EventInfoDescription = eventinfo.Description;
+				Registration.PaymentMethodId = 2;  // TODO: Dirty quickfix
 				Registration.PaymentMethods = _context.PaymentMethods.Where(m => m.Active == true ).ToList();
 			}
 			return Page();
@@ -125,6 +133,7 @@ namespace losol.EventManagement.Pages.Register
 		public async Task<IActionResult> OnPostAsync(int? id)
 		{
 			var eventinfo = await _context.EventInfos.FirstOrDefaultAsync(m => m.EventInfoId == id);
+			Registration.EventInfo = eventinfo;
 			Registration.EventInfoId = eventinfo.EventInfoId;
 			Registration.EventInfoTitle = eventinfo.Title;
 			Registration.EventInfoDescription = eventinfo.Description;

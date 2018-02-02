@@ -12,9 +12,10 @@ using System;
 namespace losol.EventManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180202063944_extra_info")]
+    partial class extra_info
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,6 +80,8 @@ namespace losol.EventManagement.Migrations
                     b.Property<int>("EventInfoId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("AdditionInformationRequest");
+
                     b.Property<string>("Category");
 
                     b.Property<string>("CertificateDescription");
@@ -97,8 +100,6 @@ namespace losol.EventManagement.Migrations
                     b.Property<bool>("Featured");
 
                     b.Property<bool>("Free");
-
-                    b.Property<string>("InformationRequest");
 
                     b.Property<DateTime?>("LastCancellationDate");
 
