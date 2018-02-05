@@ -80,6 +80,8 @@ namespace losol.EventManagement.Pages.Admin.Events
 
         public async Task<JsonResult> OnGetAttendance(int? registrationId, bool? attended)
         {
+            // TODO this should not use GET, but POST?
+            
             if (registrationId == null) {
                 return new JsonResult(new { success = false, responseText = "No registrationId submitted" });
             }
