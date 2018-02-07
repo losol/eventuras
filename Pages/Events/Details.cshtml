@@ -1,5 +1,6 @@
 @page
-@model losol.EventManagement.Pages.Admin.Events.DetailsModel
+@namespace losol.EventManagement.Pages.Admin.Events
+@model DetailsModel
 
 @{
     ViewData["Title"] = @Model.EventInfo.Title;
@@ -35,6 +36,7 @@
 </div>
 <div class="container min-height-50">
 	<div class="row">
+        @Model.Message
 		<div class="col-md-9" id="info">
           
             @Html.Raw(Model.EventInfo.MoreInformation)

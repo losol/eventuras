@@ -20,6 +20,8 @@ namespace losol.EventManagement.Pages.Events
         }
 
         public EventInfo EventInfo { get; set; }
+        public bool HasFeaturedImage {get;set;} = false;
+        public string Message {get;set;} ="asdf";
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -34,7 +36,15 @@ namespace losol.EventManagement.Pages.Events
             {
                 return NotFound();
             }
-            //EventInfo.
+
+            if (!string.IsNullOrWhiteSpace(EventInfo.FeaturedImageUrl)) {
+                HasFeaturedImage = true;
+                Message += ".has featured";
+            }
+            else
+            {
+                HasFeaturedImage = false;
+            }
             
             return Page();
         }

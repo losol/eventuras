@@ -16,6 +16,7 @@ namespace losol.EventManagement.Pages.Admin.Users
         private readonly losol.EventManagement.Data.ApplicationDbContext _context;
 		private readonly UserManager<ApplicationUser> _userManager;
 
+
         public IndexModel(
 			losol.EventManagement.Data.ApplicationDbContext context, 
 			UserManager<ApplicationUser> userManager
@@ -30,6 +31,7 @@ namespace losol.EventManagement.Pages.Admin.Users
 
         public async Task OnGetAsync()
         {
+			var zzz = await _userManager.Users.ToListAsync();
             // Nothing special?
         }
     }
