@@ -1,25 +1,59 @@
 # Registration
 Registration of users is a main focus of the solution. It should be simple, and have an attractive layout. 
 
+## User stories
+* As a web site visitor I could register for an event so that I may attend it.
+* As a web site visitor I could overview over extra products
+* As a web site visitor I may book extra products as dinners and adventures so that I have a great time when attending the course
 
-## Registration form
+## Success criteria
+* The user fills out necessary information
+* The user has satisfactory information to order an event
+* Registration is simple and intuitive
+
+## Acceptance criteria
+* Entering data results in proper validation and registration.
+* The user is able to complete registration, including email validation.
+* No user could register twice for the same event.
+
+## Default fields
 The registration of users should be as simple as possible, to enhance conversions from interest to decision. When an user registers, fields for this information should be provided:
-* Name  (string 100 characters) - required
-* Email (string 100 characters, validated as email) - required
-* Mobile phone: (string 100 charaters, only +()0-9 allowed) - required
-* Occupation/Position
-* Employer
-* Permission to be shown on public attendant list
-* Comments to registration
+
+Field   | Description               | Comments
+---     | ---                       | ---
+Name    | String 100 characters)    | required. Only alphanumerics
+Email   | String 100 characters     | required, validate as email
+Phone   | string 50 characters      | only +()0-9 allowed)
+Occupation/Position | String 100 characters | Only alphanumerics
+Employer| string 50 characters      | only +()0-9 allowed)
+Public | Bool | Permission to be shown on public attendant list
+Comments | Textarea 500 characters  | only alphanumerics
 
 ## Products / add-ons
-All events could have extra products which may be free or priced. The extra products are associated with the event in the admin interface. For the user registering, the products should be shown as options, with the possibility of adding them to the order. Some products may be mandatory, as conference fee (dagpakke?) or registration fee.
+All events could have extra products which may be free or priced. The extra products are associated with the event in the admin interface. For the user registering, the products with pricing should be shown as options, with the possibility of adding them to the order. Some products may be mandatory, as conference fee (dagpakke?) or registration fee.
 
 The total price of the order should be updated as soon as the user changes product selection.
 
-## Later development
-In later stages of development we would like the possibility of providing supplemental information after the confirmation of registration, which should be stored in the user profile. 
+## Flow after registration
+After the information is validated and submitted into the database, an email should be sent to the user at the provided email address. 
+
+The email sent should provide information about the whole order, including event and extra products.
+
+A link should be provided for the user to confirm registration, as well as an fallback option to copy the link into a browser window. 
+
+## Supplemental information
+* Event administrator and global administratiors should have the possibility of registering users for event, both paid and free registrations. Admin interface is described as a separate part. 
+
+---
+## Later development plans
+The information below is being considered for future expansion.
+
+### Supplement user profile
+When the user has confirmed hos attendance my verifying email, he/she could provide supplemental information to his/her user profile. 
 * Date of Birth
 * Municipality
 * Biography / information about the user
 * Website /Social media profile links
+
+### Custom fields on registration
+The admin could provide custom fields which should be filled out by the user registering. The fields might be volountary or mandatory. Some fields may alter the price for the user. The fields may be text fields, text area, checkbox and/or date/time pickers.
