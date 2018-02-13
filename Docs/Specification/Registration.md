@@ -11,6 +11,21 @@ Registration of users is a main focus of the solution. It should be simple, and 
 * As a web site visitor I receive an email with a link to confirm my registration so that nobody else is registering with my email.
 * As a web site visitor I receive an final email confirmation on my order so that I know I could attend the event.
 
+## Flow
+1. User fills out information needed for registration, and submits
+1. Valdition clientside and serverside, return to 1 if validation fails
+1. If user does not exist, a new user should be created with the supplied name, email and phone number. 
+1. If user is already registered to the event
+    - If registered and not verified: Send new verification email 
+    - If registered and verified: Send email about allready registered.
+1. If user is not registered then register the new registration into database.
+1. If succesful redirect visitor to the /Pages/Register/Confirm which shows information that the user needs to confirm in email.
+1. Send email with confirmation link
+1. Validate confirmation link from email. 
+1. Redirect to /Pages/Register/Confirmed
+1. Send email confirmation with whole order.
+
+
 ## Success criteria
 * The user fills out all necessary information
 * The user has satisfactory information to order an event
