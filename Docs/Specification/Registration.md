@@ -46,7 +46,7 @@ Email   | String 100 characters     | required, validate as email
 Phone   | string 50 characters      | only +()0-9 allowed)
 Occupation/Position | String 100 characters | Only alphanumerics
 Employer| string 50 characters      | only +()0-9 allowed)
-Public | Bool | Permission to be shown on public attendant list
+Show registration public | Bool | Permission to be shown on public attendant list
 Comments | Textarea 500 characters  | only alphanumerics
 
 ## Products / add-ons
