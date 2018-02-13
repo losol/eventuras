@@ -1,4 +1,4 @@
-# losol.EventManagement
+# Eventer - Event Management Solution
 Asp.net core event management solution. In development now, using agile development. 
 
 
