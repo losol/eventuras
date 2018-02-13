@@ -10,7 +10,7 @@ Registration of users is a main focus of the solution. It should be simple, and 
 * As a web site visitor I may book extra products as dinners and adventures so that I have a great time when attending the course
 
 ## Success criteria
-* The user fills out necessary information
+* The user fills out all necessary information
 * The user has satisfactory information to order an event
 * Registration is simple and intuitive
 
