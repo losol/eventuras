@@ -1,6 +1,9 @@
 # Registration
 Registration of users is a main focus of the solution. It should be simple, and have an attractive layout. 
 
+## Business user story
+* As a web site visitor I find information about events and extra products and may register for attending events, so that I could enhance my knowledge. 
+
 ## User stories
 * As a web site visitor I could register for an event so that I may attend it.
 * As a web site visitor I could overview over extra products
@@ -45,8 +48,11 @@ A link should be provided for the user to confirm registration, as well as an fa
 * Event administrator and global administratiors should have the possibility of registering users for event, both paid and free registrations. Admin interface is described as a separate part. 
 
 ---
-## Later development plans
+## Future development options
 The information below is being considered for future expansion.
+
+### Registration of multiple persons
+There may later be requested the option for registering multiple persons at once, with one order/invoice for multiple persons.
 
 ### Supplement user profile
 When the user has confirmed hos attendance my verifying email, he/she could provide supplemental information to his/her user profile. 
