@@ -5,11 +5,11 @@ Registration of users is a main focus of the solution. It should be simple, and 
 * As a web site visitor I find information about events and extra products and may register for attending events, so that I could enhance my knowledge.
 
 ## User stories
-* As a web site visitor I could register for an event so that I may attend it.
-* As a web site visitor I could overview over extra products
-* As a web site visitor I may book extra products as dinners and adventures so that I have a great time when attending the course
-* As a web site visitor I receive an email with a link to confirm my registration so that nobody else is registering with my email.
-* As a web site visitor I receive an final email confirmation on my order so that I know I could attend the event.
+- [x] As a web site visitor I could register for an event so that I may attend it.
+- [ ] As a web site visitor I could overview over extra products
+- [ ] As a web site visitor I may book extra products as dinners and adventures so that I have a great time when attending the course
+- [x] As a web site visitor I receive an email with a link to confirm my registration so that nobody else is registering with my email.
+- [ ] As a web site visitor I receive an final email confirmation on my order so that I know I could attend the event.
 
 ## Flow
 1. User fills out information needed for registration, and submits
@@ -23,7 +23,7 @@ Registration of users is a main focus of the solution. It should be simple, and 
 1. Send email with confirmation link
 1. Validate confirmation link from email. 
 1. Redirect to /Pages/Register/Confirmed
-1. Send email confirmation with whole order.
+1. Send email confirmation with whole order. 
 
 
 ## Success criteria
