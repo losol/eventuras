@@ -2,7 +2,9 @@
 
 SQL Server runs on running on Linux based on Ubuntu 16.04. It can be used with the Docker Engine 1.8+ on Linux or on Docker for Mac/Windows.
 
-Install by running commands in terminal: 
+Install [https://www.docker.com/community-edition](Docker Community Edition)
+
+Install Sql Server by running commands in terminal: 
 1. sudo docker pull microsoft/mssql-server-linux:2017-latest
 2. sudo docker run -e 'ACCEPT_EULA=Y' -e 'MSSQL_SA_PASSWORD=<Strong!Passw0rd>' \
    -p 1401:1433 --name sql1 \
