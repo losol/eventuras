@@ -14,14 +14,14 @@ Set environment variables before first run:
 
 ## Development
 
-To start building .NET apps you just need to download and install the [https://www.microsoft.com/net/learn/get-started/](.NET SDK)
+To start building .NET apps you just need to download and install the [.NET SDK](https://www.microsoft.com/net/learn/get-started/)
 
 Clone this app to your computer
-* [https://github.com/losol/Eventer/archive/master.zip]Stable version
-* [https://github.com/losol/Eventer/archive/dev.zip](Development version)
+* [Stable version](https://github.com/losol/Eventer/archive/master.zip)
+* [Development version](https://github.com/losol/Eventer/archive/dev.zip)
 
 You will need an sql server to get this solution functional. Recommended solution is sql server in docker.
-[Install_docker_sql_server] relative link](Instruction for installing Docker and Sql Server)
+[Install_docker _sql_server] relative link](Instruction for installing Docker and Sql Server)
 
 Set database connection string
 
