@@ -24,6 +24,8 @@ You will need an sql server to get this solution functional. Recommended solutio
 [Instructions for installing Docker and Sql Server](./Install_docker_sql_server.md)
 
 ### Configure your app
+In development mode it is recommended to set options by dotnet user-secrets. In a terminal window at your root folder you may: 
+
 Set database connection string
 ```
 dotnet user-secrets set DefaultConnection "Server=127.0.0.1;Port=1401;Database=EventDb;User=sa;Password=<Apples345#$%>;"
