@@ -21,7 +21,7 @@ Clone this app to your computer
 * [Development version](https://github.com/losol/Eventer/archive/dev.zip)
 
 You will need an sql server to get this solution functional. Recommended solution is sql server in docker.
-[Install_docker _sql_server] relative link](Instruction for installing Docker and Sql Server)
+[Instructions for installing Docker and Sql Server](./Install_docker _sql_server)
 
 Set database connection string
 
