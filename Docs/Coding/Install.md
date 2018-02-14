@@ -23,13 +23,19 @@ Clone this app to your computer
 You will need an sql server to get this solution functional. Recommended solution is sql server in docker.
 [Instructions for installing Docker and Sql Server](./Install_docker _sql_server.md)
 
+### Configure your app
 Set database connection string
-
+```
+dotnet user-secrets set DefaultConnection "Server=127.0.0.1;Port=1401;Database=EventDb;User=sa;Password=<Apples345#$%>;"
+```
 
 Set admin user email and password
-> dotnet user-secrets set AdminEmail asdf@email.com
-> dotnet user-secrets set AdminPassword Pa$$w0rd
+> `dotnet user-secrets set AdminEmail asdf@email.com`
+> `dotnet user-secrets set AdminPassword Pa$$w0rd`
 
 Set Sendgrid-settings by setting environment variables or in terminal: 
-> dotnet user-secrets set SendGridUser asdf1234
-> dotnet user-secrets set SendGridKey asdf1234
+> `dotnet user-secrets set SendGridUser asdf1234`
+> `dotnet user-secrets set SendGridKey asdf1234`
+
+### Run your app!
+`dotnet run` 
