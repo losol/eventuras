@@ -27,7 +27,7 @@ Create a database for the app:
 * CREATE DATABASE EventDB
 * GO
 
-Set the connectionstring in your app: 
+The connectionstring for use in your app will now be: 
 'dotnet user-secrets set DefaultConnection "Server=127.0.0.1;Port=1401;Database=EventDb;User=sa;Password=<Apples345#$%>;"'
 
 An alternative for running commands is to download the SQL Server Command line tools:
