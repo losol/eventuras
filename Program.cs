@@ -20,8 +20,9 @@ namespace losol.EventManagement
             var scope = host.Services.CreateScope();
             var services = scope.ServiceProvider;
             var context = services.GetRequiredService<ApplicationDbContext>();
+            var config = host.Services.GetRequiredService<IConfiguration>();
             
-            SeedData.Initialize(context, services).Wait();;
+            SeedData.Initialize(context, services, config).Wait();;
 
             BuildWebHost(args).Run();
         }
