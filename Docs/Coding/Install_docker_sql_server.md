@@ -16,7 +16,7 @@ Check that the docker is up with 'sudo docker ps -a'.
 
 Change password for the sa user: 
 sudo docker exec -it sql1 /opt/mssql-tools/bin/sqlcmd \
-   -S localhost -U SA -P 'Strong!Passw0rd>' \
+   -S localhost -U SA -P '<Strong!Passw0rd>' \
    -Q 'ALTER LOGIN SA WITH PASSWORD="<Apples345#$%>"'
 
 Connect to the server: 
@@ -28,7 +28,7 @@ Create a database for the app:
 * GO
 
 The connectionstring for use in your app will now be: 
-'dotnet user-secrets set DefaultConnection "Server=127.0.0.1;Port=1401;Database=EventDb;User=sa;Password=<Apples345#$%>;"'
+'dotnet user-secrets set ConnectionStrings:DefaultConnection "Server=127.0.0.1,1401;Database=EventDB;User=sa;Password=<Apples345#$%>;"'
 
 An alternative for running commands is to download the SQL Server Command line tools:
 * Mac OS https://blogs.technet.microsoft.com/dataplatforminsider/2017/04/03/sql-server-command-line-tools-for-mac-preview-now-available/ 

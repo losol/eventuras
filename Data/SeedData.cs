@@ -13,7 +13,7 @@ namespace losol.EventManagement.Data
 {
 	public class SeedData
 	{
-        public static async Task Initialize(ApplicationDbContext context, IServiceProvider service)
+        public static async Task Initialize(ApplicationDbContext context, IServiceProvider service, IConfiguration config)
 		{
             context.Database.Migrate();
 
@@ -34,23 +34,25 @@ namespace losol.EventManagement.Data
             var userManager = service.GetRequiredService<UserManager<ApplicationUser>>();
             if (!userManager.GetUsersInRoleAsync("SuperAdmin").Result.Any()) {
 
-                var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables() 
-                .Build();
+                if (String.IsNullOrEmpty(config.GetSection("SuperAdmin")["Email"])) {
+                    throw new System.ArgumentException("SuperAdmin email not set. Please check install documentation");
+                }
 
-                var _user = await userManager.FindByEmailAsync(config.GetSection("Admin")["Email"]);
+                if (String.IsNullOrEmpty(config.GetSection("SuperAdmin")["Password"])) {
+                    throw new System.ArgumentException("SuperAdmin password not set. Please check install documentation");
+                }
+
+                var _user = await userManager.FindByEmailAsync(config.GetSection("SuperAdmin")["Email"]);
 
                 if (_user == null)
                 {
                     var superadmin = new ApplicationUser
                     {
-                        UserName = config.GetSection("Admin")["Email"],
-                        Email = config.GetSection("Admin")["Email"],
+                        UserName = config.GetSection("SuperAdmin")["Email"],
+                        Email = config.GetSection("SuperAdmin")["Email"],
                         EmailConfirmed = true
                     };
-                    string UserPassword = config.GetSection("Admin")["Password"];
+                    string UserPassword = config.GetSection("SuperAdmin")["Password"];
                     var createSuperAdmin = await userManager.CreateAsync(superadmin, UserPassword);
                     if (createSuperAdmin.Succeeded)
                     {

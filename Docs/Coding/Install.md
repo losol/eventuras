@@ -32,12 +32,12 @@ dotnet user-secrets set DefaultConnection "Server=127.0.0.1;Port=1401;Database=E
 ```
 
 Set admin user email and password
-> `dotnet user-secrets set AdminEmail asdf@email.com`
-> `dotnet user-secrets set AdminPassword Pa$$w0rd`
+> `dotnet user-secrets set SuperAdmin:Email asdf@email.com`
+> `dotnet user-secrets set SuperAdmin:Password Pa$$w0rd`
 
 Set Sendgrid-settings by setting environment variables or in terminal: 
-> `dotnet user-secrets set SendGridUser asdf1234`
-> `dotnet user-secrets set SendGridKey asdf1234`
+> `dotnet user-secrets set SendGrid:User asdf1234`
+> `dotnet user-secrets set SendGrid:Key asdf1234`
 
 ### Run your app!
 `dotnet run` 
