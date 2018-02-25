@@ -12,3 +12,8 @@ Products is an important part of the registration system. Both the event ticket 
 - [ ] As an event organizer I could add tickets in several variants, and showing them on the event registration page so that the event attendee could see the optioons and order the right ticket.
 - [ ] As an event organizer I could add extra products associated with an event so that the event attendee.
 - [ ] As an event organizer I could add mandatory extra products with a mandatory order of a number so that I could specify need extra products for example for hotel fees.
+
+
+## Draft database model
+
+![Draft database model](Database-model-draft.png "Draft database model")
