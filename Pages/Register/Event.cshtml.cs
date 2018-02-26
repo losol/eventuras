@@ -78,6 +78,12 @@ namespace losol.EventManagement.Pages.Register
 			[Display(Name = "Arbeidsplass")]
 			public string ParticipantEmployer { get; set; }
 
+			[Display(Name = "Stilling")]
+			public string ParticipantJobTitle { get; set; }	
+					
+			[Display(Name = "Sted/by")]
+			public string ParticipantCity { get; set; }
+
 			[Display(Name = "Kommentar til påmelding. ")]
 			public string Notes { get; set; }
 
