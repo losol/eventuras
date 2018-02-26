@@ -31,7 +31,9 @@ namespace losol.EventManagement.Models
 
         // The participant
         public string ParticipantName { get; set; }
+        public string ParticipantJobTitle {get;set;}
         public string ParticipantEmployer {get;set;}
+        public string ParticipantCity {get;set;}
 
         // Who pays for it?
         public string CustomerName {get; set;}
