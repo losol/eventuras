@@ -1,3 +1,6 @@
 obj/
 bin/
 node_modules/
+ .DS_Store
+Docs/.DS_Store
+Docs/Specification/Database-model.mwb.bak

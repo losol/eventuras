@@ -30,9 +30,19 @@
                 <span asp-validation-for="Registration.Phone" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Registration.ParticipantJobTitle"></label>
+                <input asp-for="Registration.ParticipantJobTitle" class="form-control" />
+                <span asp-validation-for="Registration.ParticipantJobTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Registration.ParticipantEmployer"></label>
                 <input asp-for="Registration.ParticipantEmployer" class="form-control" />
                 <span asp-validation-for="Registration.ParticipantEmployer" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.ParticipantCity"></label>
+                <input asp-for="Registration.ParticipantCity" class="form-control" />
+                <span asp-validation-for="Registration.ParticipantCity" class="text-danger"></span>
             </div>
 
             @* START PAYMENT  *@

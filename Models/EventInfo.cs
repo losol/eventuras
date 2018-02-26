@@ -99,8 +99,16 @@ namespace losol.EventManagement.Models
         [DataType(DataType.MultilineText)]
         public string CertificateDescription { get; set; } //Text for the certificate if issued.
 
-        // Add code for attendees here
+        [Display(Name = "Url til bilde for arrangementet")]
+        public string FeaturedImageUrl { get; set; } 
+
+        [Display(Name = "Bildetekst for arrangementet (Husk fotokreditering)")]
+        public string FeaturedImageCaption { get; set; } 
+
+
+        // Navigational properties
         public List<Registration> Registrations { get; set; }
+        public List<Product> Products {get;set;}
 
     }
 }

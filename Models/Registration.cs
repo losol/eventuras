@@ -7,13 +7,6 @@ using losol.EventManagement.Data;
 
 namespace losol.EventManagement.Models
 {
-    public enum RegistrationType
-    {
-        Instructor, 
-        Learner, 
-        Volunteer
-    }
-
 
     public class Registration
     {
@@ -21,7 +14,6 @@ namespace losol.EventManagement.Models
         public int EventInfoId { get; set; }
         public string UserId { get; set; }
 
-        public RegistrationType? RegistrationType { get; set; }
 
         [Display(Name = "Møtt?")]
         public bool Attended { get; set; } = false;
@@ -31,7 +23,9 @@ namespace losol.EventManagement.Models
 
         // The participant
         public string ParticipantName { get; set; }
+        public string ParticipantJobTitle {get;set;}
         public string ParticipantEmployer {get;set;}
+        public string ParticipantCity {get;set;}
 
         // Who pays for it?
         public string CustomerName {get; set;}
