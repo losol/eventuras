@@ -22,11 +22,6 @@
                 <select asp-for="Registration.UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="Registration.RegistrationType" class="control-label"></label>
-                <input asp-for="Registration.RegistrationType" class="form-control" />
-                <span asp-validation-for="Registration.RegistrationType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <div class="checkbox">
                     <label>
                         <input asp-for="Registration.Attended" /> @Html.DisplayNameFor(model => model.Registration.Attended))

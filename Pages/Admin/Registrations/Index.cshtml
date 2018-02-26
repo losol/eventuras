@@ -14,9 +14,6 @@
     <thead>
         <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Registration[0].RegistrationType)
-                </th>
-                <th>
                     @Html.DisplayNameFor(model => model.Registration[0].Attended)
                 </th>
                 <th>
@@ -49,9 +46,6 @@
     <tbody>
 @foreach (var item in Model.Registration) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.RegistrationType)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Attended)
             </td>
