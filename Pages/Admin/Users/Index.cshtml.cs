@@ -27,11 +27,11 @@ namespace losol.EventManagement.Pages.Admin.Users
 			_userManager = userManager;
         }
 
-        public IList<EventInfo> EventInfo { get;set; }
+        public List<ApplicationUser> Users { get;set; }
 
         public async Task OnGetAsync()
         {
-			var zzz = await _userManager.Users.ToListAsync();
+			var users = await _userManager.Users.ToListAsync();
             // Nothing special?
         }
     }
