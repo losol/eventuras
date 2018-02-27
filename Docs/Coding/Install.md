@@ -27,17 +27,24 @@ You will need an sql server to get this solution functional. Recommended solutio
 In development mode it is recommended to set options by dotnet user-secrets. In a terminal window at your root folder you may: 
 
 Set database connection string
-```
-dotnet user-secrets set DefaultConnection "Server=127.0.0.1;Port=1401;Database=EventDb;User=sa;Password=<Apples345#$%>;"
+```bash
+dotnet user-secrets set ConnectionStrings:DefaultConnection "Server=127.0.0.1,1401;Initial Catalog=EventDb;User ID=sa;Password=<Apples345#$%>"
 ```
 
 Set admin user email and password
-> `dotnet user-secrets set SuperAdmin:Email asdf@email.com`
-> `dotnet user-secrets set SuperAdmin:Password Pa$$w0rd`
+```bash
+dotnet user-secrets set SuperAdmin:Email asdf@email.com
+dotnet user-secrets set SuperAdmin:Password Pa$$w0rd
+```
 
 Set Sendgrid-settings by setting environment variables or in terminal: 
-> `dotnet user-secrets set SendGrid:User asdf1234`
-> `dotnet user-secrets set SendGrid:Key asdf1234`
+```
+dotnet user-secrets set SendGrid:User asdf1234
+dotnet user-secrets set SendGrid:Key asdf1234
+```
 
 ### Run your app!
-`dotnet run` 
+
+```
+dotnet run
+```
