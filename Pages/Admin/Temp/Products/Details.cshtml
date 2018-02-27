@@ -1,0 +1,37 @@
+@page
+@model losol.EventManagement.Pages.Admin.Temp.Products.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Product</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Product.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.MandatoryCount)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Product.MandatoryCount)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.Eventinfo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Product.Eventinfo.Code)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Product.ProductId">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>
