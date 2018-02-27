@@ -24,7 +24,7 @@ namespace losol.EventManagement
             
             SeedData.Initialize(context, services, config).Wait();;
 
-            BuildWebHost(args).Run();
+            host.Run();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>
