@@ -3,9 +3,6 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <UserSecretsId>aspnet-losol.EventManagement-74C0FE44-3444-4386-9785-6815A715D4AB</UserSecretsId>
   </PropertyGroup>
-   <PropertyGroup>
-    <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
-  </PropertyGroup>
   <ItemGroup>
     <None Update="app.db" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
