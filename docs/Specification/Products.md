@@ -38,6 +38,7 @@ Acceptance criteria
 * Vistors options are saved when submitting form.
 
 ## Draft database model
+Summary of current database model:
 
 ![Draft database model](Database-model-draft.png "Draft database model")
 
