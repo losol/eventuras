@@ -28,7 +28,7 @@ namespace losol.EventManagement.Pages.Admin.Temp.Products
                 return NotFound();
             }
 
-            Product = await _context.Product
+            Product = await _context.Products
                 .Include(p => p.Eventinfo).SingleOrDefaultAsync(m => m.ProductId == id);
 
             if (Product == null)

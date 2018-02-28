@@ -19,7 +19,8 @@ namespace losol.EventManagement.Models
         public string Code {get; set;}
 
         public string Category { get; set; }
-
+        
+        [StringLength(300, ErrorMessage = "Beskrivelsen kan bare være 300 tegn.")]
         [Display(Name = "Kort beskrivelse av kurset")]
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }

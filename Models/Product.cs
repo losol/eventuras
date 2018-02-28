@@ -12,9 +12,26 @@ namespace losol.EventManagement.Models
     public class Product
     {
         public int ProductId { get; set; }
+        
+        [Required]
         public string Name {get;set;}
 
+        [StringLength(300, ErrorMessage = "Beskrivelsen kan bare være 300 tegn.")]
+        [Display(Name = "Kort beskrivelse av kurset")]
+        [DataType(DataType.MultilineText)]
+        public string Description { get; set; }
+
+        [Display(Name = "Mer informasjon")]
+        [DataType(DataType.MultilineText)]
+        public string MoreInformation { get; set; }
+
+        [Display(Name = "Må deltaker bestille et antall av produktet?")]
         public int MandatoryCount {get;set;} = 0;
+
+        public decimal Price {get;set;}
+        public int VatPercent {get;set;} = 0;
+
+        public int MaxAttendees {get;set;}
 
         // Navigational properties
         // "Child" of an eventinfo.

@@ -37,7 +37,7 @@ namespace losol.EventManagement.Pages.Admin.Temp.Productvariants
             {
                 return NotFound();
             }
-           ViewData["ProductId"] = new SelectList(_context.Product, "ProductId", "ProductId");
+           ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductId");
             return Page();
         }
 

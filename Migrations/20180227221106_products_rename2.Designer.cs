@@ -11,9 +11,10 @@ using System;
 namespace losol.EventManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180227221106_products_rename2")]
+    partial class products_rename2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,23 +163,11 @@ namespace losol.EventManagement.Migrations
                     b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(300);
-
                     b.Property<int>("EventInfoId");
 
                     b.Property<int>("MandatoryCount");
 
-                    b.Property<int>("MaxAttendees");
-
-                    b.Property<string>("MoreInformation");
-
-                    b.Property<string>("Name")
-                        .IsRequired();
-
-                    b.Property<decimal>("Price");
-
-                    b.Property<int>("VatPercent");
+                    b.Property<string>("Name");
 
                     b.HasKey("ProductId");
 
@@ -193,9 +182,6 @@ namespace losol.EventManagement.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<bool>("AdminOnly");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(300);
 
                     b.Property<string>("Name");
 

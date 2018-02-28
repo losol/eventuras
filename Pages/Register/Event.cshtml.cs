@@ -110,8 +110,22 @@ namespace losol.EventManagement.Pages.Register
 			public EventInfo EventInfo {get;set;}
 		}
 
+		public void PopulateProducts(ApplicationDbContext context, EventInfo eventinfo) {
+			//var products = context.Products.Where(m => m.EventInfoId == eventinfo.EventInfoId);
+			var productOptions = context.Products
+				.Where(m => m.EventInfoId == eventinfo.EventInfoId)
+				.Include(m => m.ProductVariants);
+				
+			_logger.LogError(productOptions.ToString());
+			
+
+
+
+		}
+
 		public async Task<IActionResult> OnGetAsync(int? id)
 		{
+			
 			if (id == null)
 			{
 				return RedirectToPage("./Index");
@@ -126,6 +140,8 @@ namespace losol.EventManagement.Pages.Register
 			}
 			else
 			{
+				PopulateProducts(_context, eventinfo);
+
 				Registration.EventInfo = eventinfo;
 				Registration.EventInfoId = eventinfo.EventInfoId;
 				Registration.EventInfoTitle = eventinfo.Title;

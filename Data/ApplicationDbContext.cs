@@ -31,7 +31,7 @@ namespace losol.EventManagement.Data
         public DbSet<losol.EventManagement.Models.EventInfo> EventInfos { get; set; }
         public DbSet<losol.EventManagement.Models.Registration> Registrations { get; set; }
         public DbSet<losol.EventManagement.Models.PaymentMethod> PaymentMethods { get; set; }
-        public DbSet<losol.EventManagement.Models.Product> Product { get; set; }
+        public DbSet<losol.EventManagement.Models.Product> Products { get; set; }
         public DbSet<losol.EventManagement.Models.ProductVariant> ProductVariant { get; set; }
     }
 }
