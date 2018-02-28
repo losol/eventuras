@@ -9,11 +9,34 @@ Products is an important part of the registration system. Both the event ticket 
 
 ## User stories
 
-- [ ] As an event organizer I could add tickets in several variants, and showing them on the event registration page so that the event attendee could see the optioons and order the right ticket.
-- [ ] As an event organizer I could add extra products associated with an event so that the event attendee.
-- [ ] As an event organizer I could add mandatory extra products with a mandatory count so that I could specify need extra products for example for hotel fees.
-- [ ] As an web site visitor I could see all products with variants so I could decide which ones I want.
-- [ ] As an web site visitor I could choose which products and variants I would like to order. 
+[ ] As an administrator I could *add products* to an event so that I can offer extra value for the customer.
+
+Acceptance criteria
+
+* Administrator can add products with prices.
+* Visitors sees products on event info and register page
+
+[ ] As an administrator I could add *product variations* to a product so that I can offer extra options for the customer.
+
+Acceptance criteria
+
+* Administrator can add product variations.
+* Visitors sees product variations on event info and register page
+
+[ ] As an administrator I could set some products to be mandatory so that I could order for mandatory services
+
+Acceptance criteria
+
+* Administrator can set mandatory products with nubmer.
+* Visitor sees the mandatory products as added when they order
+
+[ ] As an web site visitor I could choose which products and variants I would like to order so that I get what I want.
+
+Acceptance criteria
+
+* Visitor may choose among all available options
+* Vistors options are saved when submitting form.
+
 
 
 ## Draft database model
@@ -24,4 +47,14 @@ Products is an important part of the registration system. Both the event ticket 
 
 We would like you to evaluate if it is suitable to use AJAX for saving variants to the backend, with jquery on the frontend updating the list of variants.
 
+## Wireframes
 
+![UI Admin](../Prototype/Products%20Admin%20UI.png)
+
+![UI Visitor](../Prototype/Products%20Guest%20UI.png)
+
+
+## Relevant models
+* [EventInfo](../../Models/EventInfo.cs) - information about the event
+* [Product](../../Models/Product.cs) - information about the event
+* [ProductVariant](../../Models/ProductVariant.cs) - information about the event
