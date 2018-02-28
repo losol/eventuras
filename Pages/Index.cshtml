@@ -4,15 +4,19 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="jumbotron">
-    <div class="container">
-        <h1 class="display-3">Det er gøy med kurs!</h1>
-        <p>Her finner du p&aring;melding for tilstedekursene.</p>
-        <p><a class="btn btn-primary btn-lg link-decoration-none" href="http://booking.kursinord.no/kursoversikt" role="button">Finn tilstedekurs »</a></p>
+<div class="jumbotron" style="
+    background: url('/assets/images/svolvaer.jpg') no-repeat center center;
+    background-position: 0% 33%;
+    background-size: cover;
+    background-repeat: no-repeat;
+">
+    <div class="container text-white">
+        <h1 class="display-3">Ta kurs i Nordland!</h1>
+        <p>Nordland Legeforening satser på fag, kvalitet og opplevelser! </p>
     </div>
 </div>
 
-<div class="container">
+<div class="container" id="featured">
     <div class="row">
     @foreach (var item in Model.FeaturedEvents)
         {
