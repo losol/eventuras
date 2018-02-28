@@ -13,6 +13,11 @@ namespace losol.EventManagement.Models
     {
         public int ProductVariantId { get; set; }
         public string Name {get;set;}
+        
+        [StringLength(300, ErrorMessage = "Beskrivelsen kan bare være 300 tegn.")]
+        [Display(Name = "Kort beskrivelse av varianten")]
+        [DataType(DataType.MultilineText)]
+        public string Description { get; set; }
 
         public float Price {get;set;} = 0;
         public int VatPercent {get;set;} = 0;
