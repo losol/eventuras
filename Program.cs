@@ -15,7 +15,7 @@ namespace losol.EventManagement
     public class Program
     {
         public static void Main(string[] args)
-        {
+        { 
             var host = BuildWebHost(args);
             var scope = host.Services.CreateScope();
             var services = scope.ServiceProvider;
