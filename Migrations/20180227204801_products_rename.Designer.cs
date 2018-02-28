@@ -11,9 +11,10 @@ using System;
 namespace losol.EventManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180227204801_products_rename")]
+    partial class products_rename
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -172,7 +173,7 @@ namespace losol.EventManagement.Migrations
 
                     b.HasIndex("EventInfoId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Product");
                 });
 
             modelBuilder.Entity("losol.EventManagement.Models.ProductVariant", b =>

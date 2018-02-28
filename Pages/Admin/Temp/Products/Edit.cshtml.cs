@@ -30,7 +30,7 @@ namespace losol.EventManagement.Pages.Admin.Temp.Products
                 return NotFound();
             }
 
-            Product = await _context.Product
+            Product = await _context.Products
                 .Include(p => p.Eventinfo).SingleOrDefaultAsync(m => m.ProductId == id);
 
             if (Product == null)
@@ -71,7 +71,7 @@ namespace losol.EventManagement.Pages.Admin.Temp.Products
 
         private bool ProductExists(int id)
         {
-            return _context.Product.Any(e => e.ProductId == id);
+            return _context.Products.Any(e => e.ProductId == id);
         }
     }
 }
