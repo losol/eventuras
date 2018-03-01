@@ -19,10 +19,6 @@ var gulp = require("gulp"),
     clone = require('gulp-clone'),
     cssnano = require('gulp-cssnano'),
     merge = require('gulp-merge'),
-    zip  = require('gulp-zip'),
-    wpPot = require('gulp-wp-pot'),
-    notify = require('gulp-notify'),
-    gulpSequence = require('gulp-sequence')
 ;
 
 var paths = {
@@ -73,14 +69,6 @@ gulp.task("copy:lib", () => {
         .pipe(gulp.dest(paths.libDest));
 });
 
-
-// gulp sass - Compiles SCSS files in CSS
-gulp.task('sass', function () {
-    gulp.src('./sass/*.scss')
-        .pipe(plumber())
-        .pipe(sass())
-        .pipe(gulp.dest(paths.cssDest));
-});
 
 // gulp make:css - Make both minified and unminified css from scss. 
 gulp.task('make:css', function () {
@@ -143,4 +131,6 @@ gulp.task('make:js', function () {
             .pipe(gulp.dest(paths.jsDest));
 });
 
- gulp.task('build', gulpSequence('clean:temp', 'make:css', 'build:pot', 'build:theme', 'build:zip'));
+// The default gulp task
+// Run "gulp" to invoke this
+gulp.task('default', ['copy:lib', 'make:css', 'make:js']);
