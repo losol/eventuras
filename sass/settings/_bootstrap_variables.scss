@@ -26,9 +26,9 @@ $gray-lighter:              #dedede;
 $gray-lightest:             #eee;
 
 // Reassign color vars to semantic color scheme
-$brand-primary:             $gray-dark;
+$brand-primary:             $teal;
 $brand-success:             $green;
-$brand-info:                $teal;
+$brand-info:                $blue;
 $brand-warning:             $orange;
 $brand-danger:              $red;
 $brand-inverse:             $gray-dark;
@@ -103,7 +103,7 @@ $text-muted: $gray ;
 // Style anchor elements.
 
 $link-color:            $brand-primary;
-$link-decoration:       underline dotted;
+$link-decoration:       underline;
 $link-hover-color:      darken($link-color, 15%);
 $link-hover-decoration: underline;
 
