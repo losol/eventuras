@@ -1,5 +1,5 @@
 @page
-@model losol.EventManagement.Pages.Admin.Temp.Productvariants.DetailsModel
+@model losol.EventManagement.Pages.Admin.Temp.ProductVariants.DetailsModel
 
 @{
     ViewData["Title"] = "Details";
@@ -16,6 +16,12 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.ProductVariant.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ProductVariant.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProductVariant.Description)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.ProductVariant.Price)
@@ -39,7 +45,7 @@
             @Html.DisplayNameFor(model => model.ProductVariant.Product)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.ProductVariant.Product.ProductId)
+            @Html.DisplayFor(model => model.ProductVariant.Product.Name)
         </dd>
     </dl>
 </div>

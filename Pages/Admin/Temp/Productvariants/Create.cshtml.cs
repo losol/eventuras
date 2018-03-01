@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using losol.EventManagement.Data;
 using losol.EventManagement.Models;
 
-namespace losol.EventManagement.Pages.Admin.Temp.Productvariants
+namespace losol.EventManagement.Pages.Admin.Temp.ProductVariants
 {
     public class CreateModel : PageModel
     {
@@ -21,7 +21,7 @@ namespace losol.EventManagement.Pages.Admin.Temp.Productvariants
 
         public IActionResult OnGet()
         {
-        ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductId");
+        ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "Name");
             return Page();
         }
 

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using losol.EventManagement.Data;
 using losol.EventManagement.Models;
 
-namespace losol.EventManagement.Pages.Admin.Temp.Productvariants
+namespace losol.EventManagement.Pages.Admin.Temp.ProductVariants
 {
     public class DeleteModel : PageModel
     {

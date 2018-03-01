@@ -17,7 +17,22 @@
                     @Html.DisplayNameFor(model => model.Product[0].Name)
                 </th>
                 <th>
+                    @Html.DisplayNameFor(model => model.Product[0].Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product[0].MoreInformation)
+                </th>
+                <th>
                     @Html.DisplayNameFor(model => model.Product[0].MandatoryCount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product[0].Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product[0].VatPercent)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product[0].MaxAttendees)
                 </th>
             <th>
                 @Html.DisplayNameFor(model => model.Product[0].Eventinfo)
@@ -32,7 +47,22 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MoreInformation)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.MandatoryCount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VatPercent)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaxAttendees)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Eventinfo.Code)

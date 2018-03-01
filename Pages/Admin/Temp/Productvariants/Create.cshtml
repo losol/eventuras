@@ -1,5 +1,5 @@
 @page
-@model losol.EventManagement.Pages.Admin.Temp.Productvariants.CreateModel
+@model losol.EventManagement.Pages.Admin.Temp.ProductVariants.CreateModel
 
 @{
     ViewData["Title"] = "Create";
@@ -17,6 +17,11 @@
                 <label asp-for="ProductVariant.Name" class="control-label"></label>
                 <input asp-for="ProductVariant.Name" class="form-control" />
                 <span asp-validation-for="ProductVariant.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductVariant.Description" class="control-label"></label>
+                <input asp-for="ProductVariant.Description" class="form-control" />
+                <span asp-validation-for="ProductVariant.Description" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ProductVariant.Price" class="control-label"></label>
