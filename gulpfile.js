@@ -18,7 +18,7 @@ var gulp = require("gulp"),
     sourcemaps = require('gulp-sourcemaps'),
     clone = require('gulp-clone'),
     cssnano = require('gulp-cssnano'),
-    merge = require('gulp-merge'),
+    merge = require('gulp-merge')
 ;
 
 var paths = {
