@@ -4,7 +4,7 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="jumbotron" style="
+<div class="jumbotron min-height-25" style="
     background: url('/assets/images/svolvaer.jpg') no-repeat center center;
     background-position: 0% 33%;
     background-size: cover;
@@ -16,7 +16,7 @@
     </div>
 </div>
 
-<div class="container" id="featured">
+<div class="container min-height-50" id="featured">
     <div class="row">
     @foreach (var item in Model.FeaturedEvents)
         {
