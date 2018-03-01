@@ -45,6 +45,28 @@
                 <span asp-validation-for="Registration.ParticipantCity" class="text-danger"></span>
             </div>
 
+            <h4>Products</h4>
+
+            @for(int i = 0; i < Model.Products.Count; i++)
+            {
+                var product = Model.Products[i];
+
+                <div class="form-group">
+                    <span>@product.Name</span><br />
+                    <span>@product.Description</span><br />
+                    <span>@product.Price</span><br />
+                    <input type="checkbox" asp-for="Registration.Products[i].IsSelected" />
+                    @*@if(product.ProductVariants != null)
+                    {
+                        foreach(var varient in product.ProductVariants)
+                        {
+                            <span>@varient.Name</span><br />
+                        }
+                    }*@
+                    
+                </div>
+            }
+
             @* START PAYMENT  *@
             @if (!Model.Registration.EventInfo.Free) {
             <div id="payment" > 

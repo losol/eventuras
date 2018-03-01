@@ -53,6 +53,13 @@ namespace losol.EventManagement.Pages.Register
 
 		[BindProperty]
 		public RegisterVM Registration { get; set; }
+		public List<Product> Products { get; set; }
+
+		public class CheckboxVM
+		{
+			public bool IsSelected { get; set; } = false;
+			public int Value { get; set; }
+		}
 
 		public class RegisterVM
 		{
@@ -105,27 +112,22 @@ namespace losol.EventManagement.Pages.Register
 
 			public int? PaymentMethodId { get; set; }
 
+			public CheckboxVM[] Products { get; set; }
 			// Navigational properties
 			// Eventinfo is readonly
 			public EventInfo EventInfo {get;set;}
 		}
 
-		public void PopulateProducts(ApplicationDbContext context, EventInfo eventinfo) {
-			//var products = context.Products.Where(m => m.EventInfoId == eventinfo.EventInfoId);
-			var productOptions = context.Products
-				.Where(m => m.EventInfoId == eventinfo.EventInfoId)
-				.Include(m => m.ProductVariants);
-				
-			_logger.LogError(productOptions.ToString());
-			
-
-
-
+		public async Task PopulateProducts(EventInfo eventinfo) 
+		{
+			this.Products = await _context.Products.Where(m => m.EventInfoId == eventinfo.EventInfoId)
+				.ToListAsync();
+			this.Registration.Products = new CheckboxVM[Products.Count];
 		}
 
 		public async Task<IActionResult> OnGetAsync(int? id)
 		{
-			
+
 			if (id == null)
 			{
 				return RedirectToPage("./Index");
@@ -140,7 +142,7 @@ namespace losol.EventManagement.Pages.Register
 			}
 			else
 			{
-				PopulateProducts(_context, eventinfo);
+				await PopulateProducts(eventinfo);
 
 				Registration.EventInfo = eventinfo;
 				Registration.EventInfoId = eventinfo.EventInfoId;
