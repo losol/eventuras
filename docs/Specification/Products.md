@@ -1,6 +1,17 @@
 # Products
 
-Products is an important part of the registration system. Both the event ticket in it self, as well as add-ons as dinners, sightseeing and so on are considered products in this solution.
+Products is an important part of the registration system. All events may have one or many products, and it might be conference tickets, dinners, sightseeings or other things.
+
+Some of the products have variants (large dinner 50$ or small dinner 25$), while other have only one variant. Each event might have from 0-5 products.
+
+We need an administration UI, and some code to show the products on both the event info page (/Pages/Events/Details). On the visitor registration page (/Pages/Register/Event) we need to show the products, and make it possible to register for the event with the product options that the visitor wants. 
+
+We expext that the registration form will have  checkboxes for the products, and radio buttons below if there are options.
+
+(checkbox) Product 1
+(checkbok) Product 2
+(radio) large dinner , (radio) small dinner
+(checkbox) Product 3
 
 ## Business user story
 
