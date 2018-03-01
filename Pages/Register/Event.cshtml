@@ -52,10 +52,20 @@
                 var product = Model.Products[i];
 
                 <div class="form-group">
-                    <span>@product.Name</span><br />
-                    <span>@product.Description</span><br />
-                    <span>@product.Price</span><br />
-                    <input type="checkbox" asp-for="Registration.Products[i].IsSelected" />
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-1" style="margin-top:5px">
+                                    <input asp-for="Registration.Products[i].IsSelected" type="checkbox" class="form-check" />
+                                </div>
+                                <div class="col">
+                                    <h5 class="card-title">@product.Name</h5>
+                                    <p class="card-text">@product.Description</p>
+                                    <h6 class="card-subtitle mb-2 text-muted">@product.Price kr</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     @*@if(product.ProductVariants != null)
                     {
                         foreach(var varient in product.ProductVariants)
@@ -63,7 +73,6 @@
                             <span>@varient.Name</span><br />
                         }
                     }*@
-                    
                 </div>
             }
 
