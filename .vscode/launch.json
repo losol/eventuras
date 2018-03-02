@@ -6,14 +6,14 @@
    "configurations": [
        
         {
-            "name": ".NET Core Launch (web)",
+            "name": "EventManagement Web",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/bin/Debug/netcoreapp2.0/losol.EventManagement.dll",
+            "program": "${workspaceFolder}/src/EventManagement.Web/bin/Debug/netcoreapp2.0/losol.EventManagement.dll",
             "args": [],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/src/EventManagement.Web",
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart",
             "launchBrowser": {
