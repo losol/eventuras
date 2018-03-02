@@ -53,6 +53,15 @@ namespace losol.EventManagement.Pages.Register
 
 		[BindProperty]
 		public RegisterVM Registration { get; set; }
+		public List<Product> Products { get; set; }
+
+		public class ProductVM
+		{
+			public bool IsSelected { get; set; } = false;
+			public int Value { get; set; }
+			public bool IsMandatory { get; set; } = false;
+			public int? SelectedVariantId { get; set; } = null;
+		}
 
 		public class RegisterVM
 		{
@@ -105,43 +114,51 @@ namespace losol.EventManagement.Pages.Register
 
 			public int? PaymentMethodId { get; set; }
 
+			public ProductVM[] Products { get; set; }
 			// Navigational properties
 			// Eventinfo is readonly
 			public EventInfo EventInfo {get;set;}
 		}
 
-		public void PopulateProducts(ApplicationDbContext context, EventInfo eventinfo) {
-			//var products = context.Products.Where(m => m.EventInfoId == eventinfo.EventInfoId);
-			var productOptions = context.Products
-				.Where(m => m.EventInfoId == eventinfo.EventInfoId)
-				.Include(m => m.ProductVariants);
-				
-			_logger.LogError(productOptions.ToString());
-			
-
-
-
+		public async Task PopulateProducts(EventInfo eventinfo) 
+		{
+			this.Products = await _context.Products.Where(m => m.EventInfoId == eventinfo.EventInfoId)
+				.Include(p => p.ProductVariants)
+				.ToListAsync();
+			this.Registration.Products = new ProductVM[Products.Count];
+			for(int i = 0; i < Registration.Products.Length; i++) 
+			{
+				var currentProduct = Products[i];
+				Registration.Products[i] = new ProductVM {
+					Value = currentProduct.ProductId,
+					IsMandatory = currentProduct.MandatoryCount > 0,
+					IsSelected = currentProduct.MandatoryCount > 0,
+					SelectedVariantId = currentProduct
+						.ProductVariants
+						.Select(pv => pv.ProductVariantId as int?)
+						.FirstOrDefault()
+				};
+			}
 		}
 
 		public async Task<IActionResult> OnGetAsync(int? id)
 		{
-			
+
 			if (id == null)
 			{
 				return RedirectToPage("./Index");
 			}
 
 			Registration = new RegisterVM();
-
 			var eventinfo = await _context.EventInfos.FirstOrDefaultAsync(m => m.EventInfoId == id);
+			await PopulateProducts(eventinfo);
+
 			if (eventinfo == null)
 			{
 				return NotFound();
 			}
 			else
 			{
-				PopulateProducts(_context, eventinfo);
-
 				Registration.EventInfo = eventinfo;
 				Registration.EventInfoId = eventinfo.EventInfoId;
 				Registration.EventInfoTitle = eventinfo.Title;
@@ -161,8 +178,21 @@ namespace losol.EventManagement.Pages.Register
 			Registration.EventInfoTitle = eventInfo.Title;
 			Registration.EventInfoDescription = eventInfo.Description;
 
+			var registeredProducts = await (from p in _context.Products
+				where Registration.Products
+						.Where(rp => rp.IsSelected)
+						.Select(rp => rp.Value)
+						.Contains(p.ProductId)
+				select p)
+				.Union(_context.Products.Where(rp => rp.MandatoryCount > 0))
+				.ToListAsync();
+			Registration.Notes = String.Join(", ", 
+					registeredProducts.Select(rp => $"{rp.ProductId}.{Registration.Products.Where(p => rp.ProductId == p.Value).Select(p=>p.SelectedVariantId).FirstOrDefault()}) {rp.Name}")
+				);
+
 			if (!ModelState.IsValid)
 			{
+				await PopulateProducts(eventInfo);
 				return Page();
 			}
 

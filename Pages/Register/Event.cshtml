@@ -45,6 +45,59 @@
                 <span asp-validation-for="Registration.ParticipantCity" class="text-danger"></span>
             </div>
 
+            <h4>Products</h4>
+
+            @for(int i = 0; i < Model.Products.Count; i++)
+            {
+                var product = Model.Products[i];
+                var productModel = Model.Registration.Products[i];
+
+                <div class="form-group">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-1" style="margin-top:5px">
+                                @if(productModel.IsMandatory)
+                                {
+                                    <input asp-for="Registration.Products[i].IsSelected" type="hidden" />
+                                    @: ✅
+                                }
+                                else{
+                                    <input asp-for="Registration.Products[i].IsSelected" type="checkbox" class="form-check" />
+                                }
+                                    <input asp-for="Registration.Products[i].Value" type="hidden" value="@product.ProductId" />
+                                </div>
+                                <div class="col">
+                                    <h5 class="card-title">@product.Name</h5>
+                                    <p class="card-text">@product.Description</p>
+                                    @if(product.ProductVariants == null || product.ProductVariants.Count == 0)
+                                    {
+                                        <h6 class="card-subtitle mb-2 text-muted">@product.Price kr</h6>
+                                    }
+                                    else
+                                    {
+                                        <div class="row">
+                                            @foreach(var variant in product.ProductVariants)
+                                            {
+                                                <div class="col">
+                                                <div class="form-check">
+                                                    <input asp-for="Registration.Products[i].SelectedVariantId" type="radio" value="@variant.ProductVariantId" class="form-check-input" />
+                                                    <label class="form-check-label" for="Registration.Products[i].SelectedVariantId">
+                                                        @variant.Name
+                                                    </label>
+                                                    <h6 class="card-subtitle mb-2 text-muted" style="margin-top:5px">@variant.Price kr</h6>
+                                                </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
             @* START PAYMENT  *@
             @if (!Model.Registration.EventInfo.Free) {
             <div id="payment" > 
