@@ -1,0 +1,142 @@
+@page
+@model losol.EventManagement.Pages.Admin.Temp.Registrations.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Registration</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.Attended)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.Attended)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.Diploma)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.Diploma)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.ParticipantName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.ParticipantName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.ParticipantJobTitle)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.ParticipantJobTitle)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.ParticipantEmployer)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.ParticipantEmployer)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.ParticipantCity)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.ParticipantCity)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.CustomerName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.CustomerName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.CustomerEmail)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.CustomerEmail)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.CustomerVatNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.CustomerVatNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.CustomerInvoiceReference)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.CustomerInvoiceReference)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.Notes)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.Notes)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.Log)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.Log)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.RegistrationTime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.RegistrationTime)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.RegistrationBy)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.RegistrationBy)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.FreeRegistration)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.FreeRegistration)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.Verified)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.Verified)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.VerificationCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.VerificationCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.EventInfo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.EventInfo.Code)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.PaymentMethod)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.PaymentMethod.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.User)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration.User.Id)
+        </dd>
+    </dl>
+    
+    <form method="post">
+        <input type="hidden" asp-for="Registration.RegistrationId" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-page="./Index">Back to List</a>
+    </form>
+</div>

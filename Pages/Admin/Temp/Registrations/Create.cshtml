@@ -1,0 +1,134 @@
+@page
+@model losol.EventManagement.Pages.Admin.Temp.Registrations.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+
+<h4>Registration</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Registration.EventInfoId" class="control-label"></label>
+                <select asp-for="Registration.EventInfoId" class ="form-control" asp-items="ViewBag.EventInfoId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.UserId" class="control-label"></label>
+                <select asp-for="Registration.UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Registration.Attended" /> @Html.DisplayNameFor(model => model.Attended))
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Registration.Diploma" /> @Html.DisplayNameFor(model => model.Diploma))
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.ParticipantName" class="control-label"></label>
+                <input asp-for="Registration.ParticipantName" class="form-control" />
+                <span asp-validation-for="Registration.ParticipantName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.ParticipantJobTitle" class="control-label"></label>
+                <input asp-for="Registration.ParticipantJobTitle" class="form-control" />
+                <span asp-validation-for="Registration.ParticipantJobTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.ParticipantEmployer" class="control-label"></label>
+                <input asp-for="Registration.ParticipantEmployer" class="form-control" />
+                <span asp-validation-for="Registration.ParticipantEmployer" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.ParticipantCity" class="control-label"></label>
+                <input asp-for="Registration.ParticipantCity" class="form-control" />
+                <span asp-validation-for="Registration.ParticipantCity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.CustomerName" class="control-label"></label>
+                <input asp-for="Registration.CustomerName" class="form-control" />
+                <span asp-validation-for="Registration.CustomerName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.CustomerEmail" class="control-label"></label>
+                <input asp-for="Registration.CustomerEmail" class="form-control" />
+                <span asp-validation-for="Registration.CustomerEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.CustomerVatNumber" class="control-label"></label>
+                <input asp-for="Registration.CustomerVatNumber" class="form-control" />
+                <span asp-validation-for="Registration.CustomerVatNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.CustomerInvoiceReference" class="control-label"></label>
+                <input asp-for="Registration.CustomerInvoiceReference" class="form-control" />
+                <span asp-validation-for="Registration.CustomerInvoiceReference" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.Notes" class="control-label"></label>
+                <input asp-for="Registration.Notes" class="form-control" />
+                <span asp-validation-for="Registration.Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.Log" class="control-label"></label>
+                <input asp-for="Registration.Log" class="form-control" />
+                <span asp-validation-for="Registration.Log" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.RegistrationTime" class="control-label"></label>
+                <input asp-for="Registration.RegistrationTime" class="form-control" />
+                <span asp-validation-for="Registration.RegistrationTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.RegistrationBy" class="control-label"></label>
+                <input asp-for="Registration.RegistrationBy" class="form-control" />
+                <span asp-validation-for="Registration.RegistrationBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Registration.FreeRegistration" /> @Html.DisplayNameFor(model => model.FreeRegistration))
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.PaymentMethodId" class="control-label"></label>
+                <select asp-for="Registration.PaymentMethodId" class ="form-control" asp-items="ViewBag.PaymentMethodId"></select>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Registration.Verified" /> @Html.DisplayNameFor(model => model.Verified))
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Registration.VerificationCode" class="control-label"></label>
+                <input asp-for="Registration.VerificationCode" class="form-control" />
+                <span asp-validation-for="Registration.VerificationCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

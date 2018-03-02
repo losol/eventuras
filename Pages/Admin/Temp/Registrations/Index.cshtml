@@ -1,0 +1,150 @@
+@page
+@model losol.EventManagement.Pages.Admin.Temp.Registrations.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Registration[0].Attended)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Registration[0].Diploma)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Registration[0].ParticipantName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Registration[0].ParticipantJobTitle)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Registration[0].ParticipantEmployer)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Registration[0].ParticipantCity)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Registration[0].CustomerName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Registration[0].CustomerEmail)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Registration[0].CustomerVatNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Registration[0].CustomerInvoiceReference)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Registration[0].Notes)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Registration[0].Log)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Registration[0].RegistrationTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Registration[0].RegistrationBy)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Registration[0].FreeRegistration)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Registration[0].Verified)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Registration[0].VerificationCode)
+                </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Registration[0].EventInfo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Registration[0].PaymentMethod)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Registration[0].User)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Registration) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Attended)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Diploma)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ParticipantName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ParticipantJobTitle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ParticipantEmployer)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ParticipantCity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerVatNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerInvoiceReference)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Notes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Log)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegistrationTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegistrationBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FreeRegistration)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Verified)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VerificationCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EventInfo.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentMethod.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Id)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.RegistrationId">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.RegistrationId">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.RegistrationId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
