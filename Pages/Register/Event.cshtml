@@ -60,7 +60,7 @@
                                 @if(productModel.IsMandatory)
                                 {
                                     <input asp-for="Registration.Products[i].IsSelected" type="hidden" />
-                                    @: ✅
+                                    <i class="material-icons" style="color: #00ad3d">&#xE5CA;</i>
                                 }
                                 else{
                                     <input asp-for="Registration.Products[i].IsSelected" type="checkbox" class="form-check" />
