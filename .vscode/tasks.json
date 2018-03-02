@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/EventManagement.Web/losol.EventManagement.csproj"
+                "${workspaceFolder}/src/EventManagement.Web/EventManagement.Web.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
