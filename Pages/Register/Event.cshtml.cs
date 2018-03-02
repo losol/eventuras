@@ -123,6 +123,12 @@ namespace losol.EventManagement.Pages.Register
 			this.Products = await _context.Products.Where(m => m.EventInfoId == eventinfo.EventInfoId)
 				.ToListAsync();
 			this.Registration.Products = new CheckboxVM[Products.Count];
+			for(int i = 0; i < Registration.Products.Length; i++) 
+			{
+				Registration.Products[i] = new CheckboxVM {
+					Value = Products[i].ProductId
+				};
+			}
 		}
 
 		public async Task<IActionResult> OnGetAsync(int? id)
@@ -134,16 +140,15 @@ namespace losol.EventManagement.Pages.Register
 			}
 
 			Registration = new RegisterVM();
-
 			var eventinfo = await _context.EventInfos.FirstOrDefaultAsync(m => m.EventInfoId == id);
+			await PopulateProducts(eventinfo);
+
 			if (eventinfo == null)
 			{
 				return NotFound();
 			}
 			else
 			{
-				await PopulateProducts(eventinfo);
-
 				Registration.EventInfo = eventinfo;
 				Registration.EventInfoId = eventinfo.EventInfoId;
 				Registration.EventInfoTitle = eventinfo.Title;
@@ -163,8 +168,19 @@ namespace losol.EventManagement.Pages.Register
 			Registration.EventInfoTitle = eventInfo.Title;
 			Registration.EventInfoDescription = eventInfo.Description;
 
+			var registeredProducts = await (from p in _context.Products
+				where Registration.Products
+						.Where(rp => rp.IsSelected)
+						.Select(rp => rp.Value)
+						.Contains(p.ProductId)
+				select p).ToListAsync();
+			Registration.Notes = String.Join(", ", 
+					registeredProducts.Select(rp => $"{rp.ProductId}. {rp.Name}")
+				);
+
 			if (!ModelState.IsValid)
 			{
+				await PopulateProducts(eventInfo);
 				return Page();
 			}
 

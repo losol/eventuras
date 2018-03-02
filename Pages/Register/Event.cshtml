@@ -57,6 +57,7 @@
                             <div class="row">
                                 <div class="col-1" style="margin-top:5px">
                                     <input asp-for="Registration.Products[i].IsSelected" type="checkbox" class="form-check" />
+                                    <input asp-for="Registration.Products[i].Value" type="hidden" value="@product.ProductId" />
                                 </div>
                                 <div class="col">
                                     <h5 class="card-title">@product.Name</h5>
