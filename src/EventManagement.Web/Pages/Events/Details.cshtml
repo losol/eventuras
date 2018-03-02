@@ -6,9 +6,21 @@
     ViewData["Title"] = @Model.EventInfo.Title;
 }
 
-<div class="jumbotron jumbotron-fluid min-height-33">
-  <div class="container">
-    <h1 class="display-1">@Model.EventInfo.Title</h1>
+ @{
+    var heroStyle = "";
+    if (!string.IsNullOrWhiteSpace(Model.EventInfo.FeaturedImageUrl))
+    {
+    heroStyle = $@"
+        background: url('{Model.EventInfo.FeaturedImageUrl}');
+        background-size: cover;
+        background-position: center center;
+        ";
+    }
+}   
+
+<div class="bg-img min-height-33 hero center-both mb-5" style="@heroStyle">
+      <div class="container hero-text">
+     <h1 class="display-1">@Model.EventInfo.Title</h1>
     <p class="lead pb-5">@Model.EventInfo.Description</p>
      @{ // Dates
         if(Model.EventInfo.DateStart != null) 
@@ -22,17 +34,16 @@
             </div>
         }
     
-     }
-    @{ // City
-        if(Model.EventInfo.City != null) 
-        {
-            <div class="py-1">
-                <i class="material-icons align-top">location_on</i> @Model.EventInfo.City
+                }
+                @{ // City
+                    if(Model.EventInfo.City != null) 
+                    {
+                        <div class="py-1">
+                            <i class="material-icons align-top">location_on</i> @Model.EventInfo.City
+                        </div>
+                    }
+                }           
             </div>
-        }
-    }
-
-  </div>
 </div>
 <div class="container min-height-50">
 	<div class="row">

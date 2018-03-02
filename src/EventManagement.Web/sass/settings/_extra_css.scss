@@ -1,3 +1,38 @@
+/* Hero */
+.center-both {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .hero {
+    min-height:30vh;
+  }
+  .hero-text {
+    z-index:2;
+    color:#eee;
+    text-align:center;
+    text-shadow: 5px 5px 100px #333;
+  }
+  
+  .bg-img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: url('https://losol.no/wp-content/uploads/2018/03/saltstraumen.jpg') center center no-repeat;
+    background-size: cover;
+    
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-image: linear-gradient(to bottom right,#998899,#ad3244);
+      opacity: .6; 
+    }
+  }
 
 /* Some extra straight forward css here? */
 
@@ -6,6 +41,9 @@
 }
 
 /* Min heights */
+.min-height-25 {
+    min-height: 25vh;
+}
 .min-height-33 {
     min-height: 33vh;
 }
@@ -22,6 +60,8 @@
 #navbar-site-title{
     font-weight: 100;
 }
+
+
 
 /* FRONT PAGE */
 /* Top stories
@@ -115,7 +155,13 @@ h1,h2 {
 
 .bg-cover{
    background-size: cover!important;
-}
+    background-size: cover;
+    color: white;
+    background-position: center center;
+    position: relative;
+    z-index: -2;
+  }
+
 
 .bg-featured-grid {
     background-color: #cfd8dc;
