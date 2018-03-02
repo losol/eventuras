@@ -59,6 +59,7 @@ namespace losol.EventManagement.Pages.Register
 		{
 			public bool IsSelected { get; set; } = false;
 			public int Value { get; set; }
+			public bool IsMandatory { get; set; } = false;
 		}
 
 		public class RegisterVM
@@ -126,7 +127,9 @@ namespace losol.EventManagement.Pages.Register
 			for(int i = 0; i < Registration.Products.Length; i++) 
 			{
 				Registration.Products[i] = new CheckboxVM {
-					Value = Products[i].ProductId
+					Value = Products[i].ProductId,
+					IsMandatory = Products[i].MandatoryCount > 0,
+					IsSelected = Products[i].MandatoryCount > 0
 				};
 			}
 		}

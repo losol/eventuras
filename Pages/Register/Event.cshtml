@@ -50,13 +50,21 @@
             @for(int i = 0; i < Model.Products.Count; i++)
             {
                 var product = Model.Products[i];
+                var productModel = Model.Registration.Products[i];
 
                 <div class="form-group">
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-1" style="margin-top:5px">
+                                @if(productModel.IsMandatory)
+                                {
+                                    <input asp-for="Registration.Products[i].IsSelected" type="hidden" />
+                                    @: ✅
+                                }
+                                else{
                                     <input asp-for="Registration.Products[i].IsSelected" type="checkbox" class="form-check" />
+                                }
                                     <input asp-for="Registration.Products[i].Value" type="hidden" value="@product.ProductId" />
                                 </div>
                                 <div class="col">
