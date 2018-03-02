@@ -176,7 +176,9 @@ namespace losol.EventManagement.Pages.Register
 						.Where(rp => rp.IsSelected)
 						.Select(rp => rp.Value)
 						.Contains(p.ProductId)
-				select p).ToListAsync();
+				select p)
+				.Union(_context.Products.Where(rp => rp.MandatoryCount > 0))
+				.ToListAsync();
 			Registration.Notes = String.Join(", ", 
 					registeredProducts.Select(rp => $"{rp.ProductId}. {rp.Name}")
 				);
