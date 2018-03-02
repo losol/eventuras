@@ -70,15 +70,23 @@
                                 <div class="col">
                                     <h5 class="card-title">@product.Name</h5>
                                     <p class="card-text">@product.Description</p>
-                                    <h6 class="card-subtitle mb-2 text-muted">@product.Price kr</h6>
-                                    @if(product.ProductVariants != null)
+                                    @if(product.ProductVariants == null || product.ProductVariants.Count == 0)
+                                    {
+                                        <h6 class="card-subtitle mb-2 text-muted">@product.Price kr</h6>
+                                    }
+                                    else
                                     {
                                         <div class="row">
-                                            @foreach(var varient in product.ProductVariants)
+                                            @foreach(var variant in product.ProductVariants)
                                             {
                                                 <div class="col">
-                                                    <input asp-for="Registration.Products[i].SelectedVariantId" type="radio" value="@varient.ProductVariantId" class="form-check" />
-                                                    <span class="form-inline">@varient.Name</span><br />
+                                                <div class="form-check">
+                                                    <input asp-for="Registration.Products[i].SelectedVariantId" type="radio" value="@variant.ProductVariantId" class="form-check-input" />
+                                                    <label class="form-check-label" for="Registration.Products[i].SelectedVariantId">
+                                                        @variant.Name
+                                                    </label>
+                                                    <h6 class="card-subtitle mb-2 text-muted" style="margin-top:5px">@variant.Price kr</h6>
+                                                </div>
                                                 </div>
                                             }
                                         </div>
