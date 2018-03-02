@@ -71,17 +71,22 @@
                                     <h5 class="card-title">@product.Name</h5>
                                     <p class="card-text">@product.Description</p>
                                     <h6 class="card-subtitle mb-2 text-muted">@product.Price kr</h6>
+                                    @if(product.ProductVariants != null)
+                                    {
+                                        <div class="row">
+                                            @foreach(var varient in product.ProductVariants)
+                                            {
+                                                <div class="col">
+                                                    <input asp-for="Registration.Products[i].SelectedVariantId" type="radio" value="@varient.ProductVariantId" class="form-check" />
+                                                    <span class="form-inline">@varient.Name</span><br />
+                                                </div>
+                                            }
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
                     </div>
-                    @*@if(product.ProductVariants != null)
-                    {
-                        foreach(var varient in product.ProductVariants)
-                        {
-                            <span>@varient.Name</span><br />
-                        }
-                    }*@
                 </div>
             }
 

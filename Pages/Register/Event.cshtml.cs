@@ -55,11 +55,12 @@ namespace losol.EventManagement.Pages.Register
 		public RegisterVM Registration { get; set; }
 		public List<Product> Products { get; set; }
 
-		public class CheckboxVM
+		public class ProductVM
 		{
 			public bool IsSelected { get; set; } = false;
 			public int Value { get; set; }
 			public bool IsMandatory { get; set; } = false;
+			public int? SelectedVariantId { get; set; } = null;
 		}
 
 		public class RegisterVM
@@ -113,7 +114,7 @@ namespace losol.EventManagement.Pages.Register
 
 			public int? PaymentMethodId { get; set; }
 
-			public CheckboxVM[] Products { get; set; }
+			public ProductVM[] Products { get; set; }
 			// Navigational properties
 			// Eventinfo is readonly
 			public EventInfo EventInfo {get;set;}
@@ -122,14 +123,20 @@ namespace losol.EventManagement.Pages.Register
 		public async Task PopulateProducts(EventInfo eventinfo) 
 		{
 			this.Products = await _context.Products.Where(m => m.EventInfoId == eventinfo.EventInfoId)
+				.Include(p => p.ProductVariants)
 				.ToListAsync();
-			this.Registration.Products = new CheckboxVM[Products.Count];
+			this.Registration.Products = new ProductVM[Products.Count];
 			for(int i = 0; i < Registration.Products.Length; i++) 
 			{
-				Registration.Products[i] = new CheckboxVM {
-					Value = Products[i].ProductId,
-					IsMandatory = Products[i].MandatoryCount > 0,
-					IsSelected = Products[i].MandatoryCount > 0
+				var currentProduct = Products[i];
+				Registration.Products[i] = new ProductVM {
+					Value = currentProduct.ProductId,
+					IsMandatory = currentProduct.MandatoryCount > 0,
+					IsSelected = currentProduct.MandatoryCount > 0,
+					SelectedVariantId = currentProduct
+						.ProductVariants
+						.Select(pv => pv.ProductVariantId as int?)
+						.FirstOrDefault()
 				};
 			}
 		}
@@ -180,7 +187,7 @@ namespace losol.EventManagement.Pages.Register
 				.Union(_context.Products.Where(rp => rp.MandatoryCount > 0))
 				.ToListAsync();
 			Registration.Notes = String.Join(", ", 
-					registeredProducts.Select(rp => $"{rp.ProductId}. {rp.Name}")
+					registeredProducts.Select(rp => $"{rp.ProductId}.{Registration.Products.Where(p => rp.ProductId == p.Value).Select(p=>p.SelectedVariantId).FirstOrDefault()}) {rp.Name}")
 				);
 
 			if (!ModelState.IsValid)
