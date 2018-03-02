@@ -7,6 +7,9 @@ dotnet build
 dotnet aspnet-codegenerator razorpage -m Product -dc ApplicationDbContext -udl -outDir Pages/Admin/Temp/Products --referenceScriptLibraries
 dotnet aspnet-codegenerator razorpage -m ProductVariant -dc ApplicationDbContext -udl -outDir Pages/Admin/Temp/ProductVariants --referenceScriptLibraries
 
+dotnet aspnet-codegenerator razorpage -m Registration -dc ApplicationDbContext -udl -outDir Pages/Admin/Temp/Registrations --referenceScriptLibraries
+
+
 Parameter	Description
 -m	The name of the model.
 -dc	The data context.

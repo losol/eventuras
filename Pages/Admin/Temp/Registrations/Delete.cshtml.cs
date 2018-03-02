@@ -29,7 +29,7 @@ namespace losol.EventManagement.Pages.Admin.Temp.Registrations
                 return NotFound();
             }
 
-            Registration = await _context.Registration
+            Registration = await _context.Registrations
                 .Include(r => r.EventInfo)
                 .Include(r => r.PaymentMethod)
                 .Include(r => r.User).SingleOrDefaultAsync(m => m.RegistrationId == id);
@@ -48,11 +48,11 @@ namespace losol.EventManagement.Pages.Admin.Temp.Registrations
                 return NotFound();
             }
 
-            Registration = await _context.Registration.FindAsync(id);
+            Registration = await _context.Registrations.FindAsync(id);
 
             if (Registration != null)
             {
-                _context.Registration.Remove(Registration);
+                _context.Registrations.Remove(Registration);
                 await _context.SaveChangesAsync();
             }
 

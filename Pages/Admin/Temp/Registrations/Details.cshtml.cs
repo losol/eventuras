@@ -28,7 +28,7 @@ namespace losol.EventManagement.Pages.Admin.Temp.Registrations
                 return NotFound();
             }
 
-            Registration = await _context.Registration
+            Registration = await _context.Registrations
                 .Include(r => r.EventInfo)
                 .Include(r => r.PaymentMethod)
                 .Include(r => r.User).SingleOrDefaultAsync(m => m.RegistrationId == id);

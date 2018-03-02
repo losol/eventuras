@@ -23,7 +23,7 @@ namespace losol.EventManagement.Pages.Admin.Temp.Registrations
 
         public async Task OnGetAsync()
         {
-            Registration = await _context.Registration
+            Registration = await _context.Registrations
                 .Include(r => r.EventInfo)
                 .Include(r => r.PaymentMethod)
                 .Include(r => r.User).ToListAsync();

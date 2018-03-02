@@ -37,7 +37,7 @@ namespace losol.EventManagement.Pages.Admin.Temp.Registrations
                 return Page();
             }
 
-            _context.Registration.Add(Registration);
+            _context.Registrations.Add(Registration);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
