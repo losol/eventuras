@@ -37,6 +37,15 @@
 <div class="container min-height-50">
 	<div class="row">
 		<div class="col-md-9" id="info">
+
+            @{ // Registration link on top for mobile
+                if (String.IsNullOrEmpty(Model.EventInfo.RegistrationsUrl)) {
+                    <a asp-page="../Register/Event" asp-route-id="@Model.EventInfo.EventInfoId" class="d-block d-md-none btn btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>  
+                }
+                else {
+                    <a href="@Model.EventInfo.RegistrationsUrl" class="d-block d-md-none btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>
+                }
+            }
           
             @Html.Raw(Model.EventInfo.MoreInformation)
 
@@ -52,6 +61,7 @@
             
 		</div>
         <div class="col-md-3">
+            <div id="fixed-info" class="position-sticky fixed-top">
                 @{ // Location
         if(Model.EventInfo.Location != null) 
         {
@@ -81,6 +91,7 @@
                 }
             }
             </p>
+            </div>
 
         </div>
 	</div>
