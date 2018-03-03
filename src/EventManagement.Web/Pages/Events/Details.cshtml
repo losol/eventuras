@@ -18,34 +18,34 @@
     }
 }   
 
-<div class="bg-img min-height-33 hero center-both mb-5" style="@heroStyle">
-      <div class="container hero-text">
-     <h1 class="display-1">@Model.EventInfo.Title</h1>
-    <p class="lead pb-5">@Model.EventInfo.Description</p>
-     @{ // Dates
-        if(Model.EventInfo.DateStart != null) 
-        {
-            <div class="py-1">
-            <i class="material-icons  align-top">date_range</i> @Model.EventInfo.DateStart.Value.ToString("d")
-                
-                    @if(Model.EventInfo.DateEnd != null) {
-                    <text>- @Model.EventInfo.DateEnd.Value.ToString("d")</text>
-                    }
-            </div>
-        }
+<div class="bg-img min-height-33 hero center-both py-3 mb-5" style="@heroStyle">
+    <div class="container hero-text">
+        <h1 class="display-1">@Model.EventInfo.Title</h1>
+        <p class="lead pb-5">@Model.EventInfo.Description</p>
+        @{ // Dates
+            if(Model.EventInfo.DateStart != null) 
+            {
+                <div class="py-1">
+                <i class="material-icons  align-top">date_range</i> @Model.EventInfo.DateStart.Value.ToString("d")
+                    
+                        @if(Model.EventInfo.DateEnd != null) {
+                        <text>- @Model.EventInfo.DateEnd.Value.ToString("d")</text>
+                        }
+                </div>
+            }
     
-                }
-                @{ // City
-                    if(Model.EventInfo.City != null) 
-                    {
-                        <div class="py-1">
-                            <i class="material-icons align-top">location_on</i> @Model.EventInfo.City
-                        </div>
-                    }
-                }           
-            </div>
+        }
+        @{ // City
+            if(Model.EventInfo.City != null) 
+            {
+                <div class="py-1">
+                    <i class="material-icons align-top">location_on</i> @Model.EventInfo.City
+                </div>
+            }
+        }           
+    </div>
 </div>
-<div class="container min-height-50">
+<div class="container py-3 min-height-50">
 	<div class="row">
 		<div class="col-md-9" id="info">
 
