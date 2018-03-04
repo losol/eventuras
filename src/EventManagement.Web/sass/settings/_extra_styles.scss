@@ -39,7 +39,9 @@ h1,h2 {
     word-break: break-word;
 }
 
-/* Hero */
+
+/* 2. Main parts of site */
+/* 2.1 Hero */
 .center-both {
     display: flex;
     align-items: center;
@@ -76,6 +78,8 @@ h1,h2 {
   }
 
 /* 9.0 TOOLS AND UTILITIES */
+
+/* 9.1 Width and height */
 .w-33 {
     width: 33.33%;
 }
@@ -114,30 +118,8 @@ h1,h2 {
     left: 0px;
 }
 
-/* FRONT PAGE */
-/* Top stories
-*/
 
-h1, h2, h3 {
-    word-break: normal;
-    hyphens: auto;
-}
-
-.level-2 h3 {
-    font-size:1.7rem;
-}
-
-
-
-
-.pl-10
- {
-    padding-left:5rem;
-}
-
-
-.bg-cover{
-   background-size: cover!important;
+.background-size-cover{
     background-size: cover;
     color: white;
     background-position: center center;
@@ -145,12 +127,7 @@ h1, h2, h3 {
     z-index: -2;
   }
 
-
-.bg-featured-grid {
-    background-color: #cfd8dc;
-}
-.footer h2{padding-top:0;}
-
+// Footer
 .footer-contact i {
     background-color: #33383b;
     color: #ffffff;
@@ -302,18 +279,6 @@ ul.breadcrumb {
 
 .word-break-break-all {
     word-break: break-all;
-}
-
-
-/* Image captions overlay effect */
-div.caption-overlay {
-    background-color: #000;
-    bottom: 0;
-    color: #fff;
-    left: 0;
-    opacity: 0.5;
-    position: absolute;
-    width: 100%;
 }
 
 
