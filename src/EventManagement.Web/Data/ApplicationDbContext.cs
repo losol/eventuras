@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using losol.EventManagement.Models;
+using losol.EventManagement.Domain;
 
 namespace losol.EventManagement.Data
 {
@@ -27,11 +27,11 @@ namespace losol.EventManagement.Data
 
         }
 
-        public DbSet<losol.EventManagement.Data.ApplicationUser> ApplicationUsers { get; set; }
-        public DbSet<losol.EventManagement.Models.EventInfo> EventInfos { get; set; }
-        public DbSet<losol.EventManagement.Models.Registration> Registrations { get; set; }
-        public DbSet<losol.EventManagement.Models.PaymentMethod> PaymentMethods { get; set; }
-        public DbSet<losol.EventManagement.Models.Product> Products { get; set; }
-        public DbSet<losol.EventManagement.Models.ProductVariant> ProductVariant { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<EventInfo> EventInfos { get; set; }
+        public DbSet<Registration> Registrations { get; set; }
+        public DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductVariant> ProductVariant { get; set; }
     }
 }

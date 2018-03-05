@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using losol.EventManagement.Data;
-using losol.EventManagement.Models;
+using losol.EventManagement.Domain;
 using losol.EventManagement.Services;
 using losol.EventManagement.ViewModels;
 using Microsoft.AspNetCore.Identity;

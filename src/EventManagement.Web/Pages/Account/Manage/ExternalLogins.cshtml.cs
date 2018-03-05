@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using losol.EventManagement.Data;
+using losol.EventManagement.Domain;
 
 namespace losol.EventManagement.Pages.Account.Manage
 {
