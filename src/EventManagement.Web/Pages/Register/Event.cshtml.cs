@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using losol.EventManagement.Data;
 using losol.EventManagement.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
