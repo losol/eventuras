@@ -74,13 +74,13 @@
         <div class="col-md-3">
             <div id="fixed-info" class="position-sticky fixed-top">
                 @{ // Location
-        if(Model.EventInfo.Location != null) 
-        {
-            <div class="py-3">
-                <i class="material-icons align-top">hotel</i> @Model.EventInfo.Location
-            </div>
-        }
-    }
+                    if(Model.EventInfo.Location != null) 
+                    {
+                        <div class="py-3">
+                            <i class="material-icons align-top">hotel</i> @Model.EventInfo.Location
+                        </div>
+                    }
+                }
             @* Price *@
             <div class="py-3">
                 @if (Model.EventInfo.Price.HasValue) {
