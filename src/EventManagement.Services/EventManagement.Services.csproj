@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>losol.EventManagement.Services</RootNamespace>
+    <AssemblyName>losol.EventManagement.Services</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
