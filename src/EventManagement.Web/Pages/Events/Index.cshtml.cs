@@ -8,16 +8,19 @@ using Microsoft.EntityFrameworkCore;
 using losol.EventManagement.Domain;
 using System.Globalization;
 using losol.EventManagement.Infrastructure;
+using losol.EventManagement.Services;
 
 namespace losol.EventManagement.Pages.Events
 {
     public class IndexModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+		private readonly IEventInfoService _eventInfoService;
 
-        public IndexModel(ApplicationDbContext context)
+		public IndexModel(ApplicationDbContext context, IEventInfoService eventInfoService)
         {
             _context = context;
+			_eventInfoService = eventInfoService;
         }
 
         public IList<EventInfo> OnDemandList { get;set; }
