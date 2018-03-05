@@ -15,7 +15,7 @@ namespace losol.EventManagement
 {
     public class Program
     { 
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         { 
             var host = BuildWebHost(args);
             var scope = host.Services.CreateScope();
@@ -23,7 +23,7 @@ namespace losol.EventManagement
             var context = services.GetRequiredService<ApplicationDbContext>();
             var config = host.Services.GetRequiredService<IConfiguration>();
             
-			new DbInitializer(context, services, config).Seed().Wait();;
+			await new DbInitializer(context, services, config).SeedAsync();
 
             host.Run();
         }

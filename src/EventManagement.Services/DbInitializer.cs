@@ -23,7 +23,7 @@ namespace losol.EventManagement.Services
 			_config = config;
 		}
 
-		public async Task Seed()
+		public async Task SeedAsync()
 		{
 			_db.Database.Migrate();
 
@@ -89,7 +89,7 @@ namespace losol.EventManagement.Services
 					await _db.PaymentMethods.AddAsync(item);
 				}
 
-				_db.SaveChanges();
+				await _db.SaveChangesAsync();
 			}
 
 			// Seed test events if no events exist. 
@@ -106,7 +106,7 @@ namespace losol.EventManagement.Services
 					await _db.EventInfos.AddAsync(item);
 				}
 
-				_db.SaveChanges();
+				await _db.SaveChangesAsync();
 			}
 		}
 	}

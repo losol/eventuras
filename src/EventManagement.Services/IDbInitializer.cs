@@ -4,6 +4,6 @@ namespace losol.EventManagement.Services
 {
 	public interface IDbInitializer
 	{
-		Task Seed();
+		Task SeedAsync();
 	}
 }
