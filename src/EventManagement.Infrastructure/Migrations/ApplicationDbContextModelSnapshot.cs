@@ -72,7 +72,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("losol.EventManagement.Models.EventInfo", b =>
+            modelBuilder.Entity("losol.EventManagement.Domain.EventInfo", b =>
                 {
                     b.Property<int>("EventInfoId")
                         .ValueGeneratedOnAdd();
@@ -138,7 +138,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.ToTable("EventInfos");
                 });
 
-            modelBuilder.Entity("losol.EventManagement.Models.PaymentMethod", b =>
+            modelBuilder.Entity("losol.EventManagement.Domain.PaymentMethod", b =>
                 {
                     b.Property<int>("PaymentMethodId")
                         .ValueGeneratedOnAdd();
@@ -156,7 +156,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.ToTable("PaymentMethods");
                 });
 
-            modelBuilder.Entity("losol.EventManagement.Models.Product", b =>
+            modelBuilder.Entity("losol.EventManagement.Domain.Product", b =>
                 {
                     b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd();
@@ -186,7 +186,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("losol.EventManagement.Models.ProductVariant", b =>
+            modelBuilder.Entity("losol.EventManagement.Domain.ProductVariant", b =>
                 {
                     b.Property<int>("ProductVariantId")
                         .ValueGeneratedOnAdd();
@@ -211,7 +211,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.ToTable("ProductVariant");
                 });
 
-            modelBuilder.Entity("losol.EventManagement.Models.Registration", b =>
+            modelBuilder.Entity("losol.EventManagement.Domain.Registration", b =>
                 {
                     b.Property<int>("RegistrationId")
                         .ValueGeneratedOnAdd();
@@ -375,30 +375,30 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("losol.EventManagement.Models.Product", b =>
+            modelBuilder.Entity("losol.EventManagement.Domain.Product", b =>
                 {
-                    b.HasOne("losol.EventManagement.Models.EventInfo", "Eventinfo")
+                    b.HasOne("losol.EventManagement.Domain.EventInfo", "Eventinfo")
                         .WithMany("Products")
                         .HasForeignKey("EventInfoId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("losol.EventManagement.Models.ProductVariant", b =>
+            modelBuilder.Entity("losol.EventManagement.Domain.ProductVariant", b =>
                 {
-                    b.HasOne("losol.EventManagement.Models.Product", "Product")
+                    b.HasOne("losol.EventManagement.Domain.Product", "Product")
                         .WithMany("ProductVariants")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("losol.EventManagement.Models.Registration", b =>
+            modelBuilder.Entity("losol.EventManagement.Domain.Registration", b =>
                 {
-                    b.HasOne("losol.EventManagement.Models.EventInfo", "EventInfo")
+                    b.HasOne("losol.EventManagement.Domain.EventInfo", "EventInfo")
                         .WithMany("Registrations")
                         .HasForeignKey("EventInfoId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("losol.EventManagement.Models.PaymentMethod", "PaymentMethod")
+                    b.HasOne("losol.EventManagement.Domain.PaymentMethod", "PaymentMethod")
                         .WithMany()
                         .HasForeignKey("PaymentMethodId");
 
