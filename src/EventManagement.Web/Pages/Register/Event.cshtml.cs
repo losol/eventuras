@@ -178,17 +178,19 @@ namespace losol.EventManagement.Pages.Register
 			Registration.EventInfoTitle = eventInfo.Title;
 			Registration.EventInfoDescription = eventInfo.Description;
 
-			var registeredProducts = await (from p in _context.Products
-				where Registration.Products
-						.Where(rp => rp.IsSelected)
-						.Select(rp => rp.Value)
-						.Contains(p.ProductId)
-				select p)
-				.Union(_context.Products.Where(rp => rp.MandatoryCount > 0))
-				.ToListAsync();
-			Registration.Notes = String.Join(", ", 
-					registeredProducts.Select(rp => $"{rp.ProductId}.{Registration.Products.Where(p => rp.ProductId == p.Value).Select(p=>p.SelectedVariantId).FirstOrDefault()}) {rp.Name}")
-				);
+			if (eventInfo.Products != null) {
+				var registeredProducts = await (from p in _context.Products
+					where Registration.Products
+							.Where(rp => rp.IsSelected)
+							.Select(rp => rp.Value)
+							.Contains(p.ProductId)
+					select p)
+					.Union(_context.Products.Where(rp => rp.MandatoryCount > 0))
+					.ToListAsync();
+				Registration.Notes = String.Join(", ", 
+						registeredProducts.Select(rp => $"{rp.ProductId}.{Registration.Products.Where(p => rp.ProductId == p.Value).Select(p=>p.SelectedVariantId).FirstOrDefault()}) {rp.Name}")
+					);
+			}
 
 			if (!ModelState.IsValid)
 			{
