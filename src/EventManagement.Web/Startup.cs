@@ -100,6 +100,8 @@ namespace losol.EventManagement
             services.Configure<EmailSenderOptions>(Configuration);
             services.AddSingleton<IEmailSender, EmailSender>();
 
+			// Register our application services
+			services.AddScoped<IEventInfoService, EventInfoService>();
 
             // Add Page render Service
             //services.AddScoped<IViewRenderService, ViewRenderService>();
