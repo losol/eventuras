@@ -1,4 +1,47 @@
-/* Hero */
+/* Extra styles 
+ * Will be added after the Boootstrap 4 CSS. 
+ * Feel free to clean unused styles...
+ */
+
+/* 1.0 BODY and HTML */
+
+/* Background gradient
+*/
+
+html {
+    min-height: 100vh;
+}
+body {
+    min-height: 100vh; 
+    background: rgba(255,255,255,1);
+    background: -moz-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 71%, rgba(219,215,219,1) 100%);
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, rgba(255,255,255,1)), color-stop(71%, rgba(246,246,246,1)), color-stop(100%, rgba(219,215,219,1)));
+    background: -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 71%, rgba(219,215,219,1) 100%);
+    background: -o-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 71%, rgba(219,215,219,1) 100%);
+    background: -ms-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 71%, rgba(219,215,219,1) 100%);
+    background: radial-gradient(ellipse at center, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 71%, rgba(219,215,219,1) 100%);
+}
+
+
+/* 1.1 HEADINGS  */
+h1, h2 {
+    padding-top:2rem;
+}
+
+.badge a
+{
+  color: #ececec;
+  text-decoration: none;
+  font-weight: normal;
+}
+
+h1,h2 {
+    word-break: break-word;
+}
+
+
+/* 2. Main parts of site */
+/* 2.1 Hero */
 .center-both {
     display: flex;
     align-items: center;
@@ -34,8 +77,9 @@
     }
   }
 
-/* Some extra straight forward css here? */
+/* 9.0 TOOLS AND UTILITIES */
 
+/* 9.1 Width and height */
 .w-33 {
     width: 33.33%;
 }
@@ -56,79 +100,6 @@
 .min-height-100 {
     min-height: 100vh;
 }
-/* HEADER */
-#navbar-site-title{
-    font-weight: 100;
-}
-
-
-
-/* FRONT PAGE */
-/* Top stories
-*/
-
-h1, h2, h3 {
-    word-break: normal;
-    hyphens: auto;
-}
-
-.level-2 h3 {
-    font-size:1.7rem;
-}
-
-.fa-1_2x {
-    font-size: 1.2em;
-}
-
-.text-inverse.text-muted p {
-	color:#909090;
-}
-
-.text-inverse.text-muted a {
-	color:#909090;
-}
-
-/* Background gradient
-*/
-html {
-    min-height: 100vh;
-}
-body {
-    min-height: 100vh; 
-    background: rgba(255,255,255,1);
-    background: -moz-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 71%, rgba(219,215,219,1) 100%);
-    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, rgba(255,255,255,1)), color-stop(71%, rgba(246,246,246,1)), color-stop(100%, rgba(219,215,219,1)));
-    background: -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 71%, rgba(219,215,219,1) 100%);
-    background: -o-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 71%, rgba(219,215,219,1) 100%);
-    background: -ms-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 71%, rgba(219,215,219,1) 100%);
-    background: radial-gradient(ellipse at center, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 71%, rgba(219,215,219,1) 100%);
-}
-h1, h2 {
-    padding-top:2rem;
-}
-.flex-1 {
-  flex: 1;
-}
-
- .pingback {
-	list-style-type: none;
-	margin-bottom:0.5rem;
-}
-
-.badge a
-{
-  color: #ececec;
-  text-decoration: none;
-  font-weight: normal;
-}
-
-.font-weight-normal b, .font-weight-normal strong {
-    font-weight: normal!important;
-}
-
-h1,h2 {
-    word-break: break-word;
-}
 
 
 .position-relative {
@@ -147,14 +118,8 @@ h1,h2 {
     left: 0px;
 }
 
-.pl-10
- {
-    padding-left:5rem;
-}
 
-
-.bg-cover{
-   background-size: cover!important;
+.background-size-cover{
     background-size: cover;
     color: white;
     background-position: center center;
@@ -162,12 +127,7 @@ h1,h2 {
     z-index: -2;
   }
 
-
-.bg-featured-grid {
-    background-color: #cfd8dc;
-}
-.footer h2{padding-top:0;}
-
+// Footer
 .footer-contact i {
     background-color: #33383b;
     color: #ffffff;
@@ -322,29 +282,6 @@ ul.breadcrumb {
 }
 
 
-/* Image captions overlay effect */
-div.caption-overlay {
-    background-color: #000;
-    bottom: 0;
-    color: #fff;
-    left: 0;
-    opacity: 0.5;
-    position: absolute;
-    width: 100%;
-}
-
-/* Authorcards TODO -should move margins to pt-classes*/
-.authorcard {
-    margin-top: 60px;
-}
-
-img.authorcard-profilephoto {
-    height: 100px;
-    width: 100px;
-    margin-top: -75px;
-}
-
-
     /* Nice blockquote */
     blockquote {
         background: #f9f9f9;
@@ -371,3 +308,57 @@ img.authorcard-profilephoto {
     }
    
   
+
+
+
+// Background colors
+.bg {
+    &-white { background-color: $white; }
+    &-black { background-color: $black; }
+    &-red { background-color: $red; }
+    &-orange { background-color: $orange; }
+    &-green { background-color: $green; }
+    &-blue { background-color: $blue; }
+    &-teal { background-color: $teal; }
+    &-pink { background-color: $pink; }
+    &-purple { background-color: $purple; }
+    &-gray { background-color: $gray; }
+}
+
+.bg-gray{
+    &-050 { background-color: #fafafa; }
+    &-100 { background-color: #f5f5f5; }
+    &-200 { background-color: #eeeeee; }
+    &-300 { background-color: #e0e0e0; }
+    &-400 { background-color: #bdbdbd; }
+    &-500 { background-color: #9e9e9e; }
+    &-600 { background-color: #757575; }
+    &-700 { background-color: #616161; }
+    &-800 { background-color: #424242; }
+    &-900 { background-color: #121212; }
+}
+
+.font-weight{
+    &-100 { font-weight: 100; }
+    &-200 { font-weight: 200; }
+    &-300 { font-weight: 300; }
+    &-400 { font-weight: 400; }
+    &-500 { font-weight: 500; }
+    &-600 { font-weight: 600; }
+    &-700 { font-weight: 700; }
+    &-800 { font-weight: 800; }
+    &-900 { font-weight: 900; }
+}
+
+.text {
+    &-white { color: $white; }
+    &-black { color: $black; }
+    &-red { color: $red; }
+    &-orange { color: $orange; }
+    &-green { color: $green; }
+    &-blue { color: $blue; }
+    &-teal { color: $teal; }
+    &-pink { color: $pink; }
+    &-purple { color: $purple; }
+    &-gray { color: $gray; }
+}

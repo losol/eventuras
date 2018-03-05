@@ -86,11 +86,8 @@ gulp.task('make:css', function () {
         .pipe(rename({ suffix: '.min' }))
         .pipe(gulp.dest(paths.cssDest));
     
-    gulp.src([
-            paths.libSrc + 'bootstrap-table/dist/bootstrap-table.min.css',
-        ])
+    gulp.src([paths.libSrc + 'bootstrap-table/dist/bootstrap-table.min.css'])
             .pipe(concat('bootstrap-table.min.css'))
-            //.pipe(uglify())
             .pipe(gulp.dest(paths.cssDest));
 
     return merge(pipe1, pipe2);
