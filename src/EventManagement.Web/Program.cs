@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using losol.EventManagement.Data;
 using losol.EventManagement.Infrastructure;
+using losol.EventManagement.Services;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,7 +23,7 @@ namespace losol.EventManagement
             var context = services.GetRequiredService<ApplicationDbContext>();
             var config = host.Services.GetRequiredService<IConfiguration>();
             
-            SeedData.Initialize(context, services, config).Wait();;
+			new DbInitializer(context, services, config).Seed().Wait();;
 
             host.Run();
         }
