@@ -23,5 +23,13 @@ namespace losol.EventManagement.Services
 					  .ToListAsync();
 		}
 
+		public async Task<List<EventInfo>> GetUpcomingEventsAsync()
+		{
+			return await _db.EventInfos
+				.Where(a => a.DateStart >= DateTime.Now)
+				.OrderByDescending(a => a.DateStart)
+				.ToListAsync();
+		}
+
 	}
 }

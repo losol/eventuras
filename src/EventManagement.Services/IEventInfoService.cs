@@ -8,5 +8,6 @@ namespace losol.EventManagement.Services
 	public interface IEventInfoService
 	{
 		Task<List<EventInfo>> GetFeaturedEventsAsync();
+		Task<List<EventInfo>> GetUpcomingEventsAsync();
 	}
 }
