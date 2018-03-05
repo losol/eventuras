@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using losol.EventManagement.Data;
 using losol.EventManagement.Domain;
+using losol.EventManagement.Infrastructure;
 
 namespace losol.EventManagement.Pages.Admin.Events
 {
     public class ParticipantsModel : PageModel
     {
-        private readonly losol.EventManagement.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public ParticipantsModel(losol.EventManagement.Data.ApplicationDbContext context)
+        public ParticipantsModel(ApplicationDbContext context)
         {
             _context = context;
         }

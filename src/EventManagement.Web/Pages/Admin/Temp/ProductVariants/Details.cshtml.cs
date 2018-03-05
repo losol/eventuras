@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using losol.EventManagement.Data;
 using losol.EventManagement.Domain;
+using losol.EventManagement.Infrastructure;
 
 namespace losol.EventManagement.Pages.Admin.Temp.ProductVariants
 {
     public class DetailsModel : PageModel
     {
-        private readonly losol.EventManagement.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public DetailsModel(losol.EventManagement.Data.ApplicationDbContext context)
+        public DetailsModel(ApplicationDbContext context)
         {
             _context = context;
         }

@@ -2,14 +2,14 @@
 using System;
 using System.Collections.Generic;
 
-namespace losol.EventManagement.Migrations
+namespace losol.EventManagement.Infrastructure.Migrations
 {
-    public partial class externalreg : Migration
+    public partial class practical_info : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "RegistrationsUrl",
+                name: "PracticalInformation",
                 table: "EventInfos",
                 nullable: true);
         }
@@ -17,7 +17,7 @@ namespace losol.EventManagement.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "RegistrationsUrl",
+                name: "PracticalInformation",
                 table: "EventInfos");
         }
     }

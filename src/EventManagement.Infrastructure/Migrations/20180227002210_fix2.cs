@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace losol.EventManagement.Migrations
+namespace losol.EventManagement.Infrastructure.Migrations
 {
     public partial class fix2 : Migration
     {

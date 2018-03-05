@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using losol.EventManagement.Data;
 using losol.EventManagement.Domain;
+using losol.EventManagement.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 

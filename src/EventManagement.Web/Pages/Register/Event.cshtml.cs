@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using MimeKit;
 using losol.EventManagement.ViewModels;
+using losol.EventManagement.Infrastructure;
 
 namespace losol.EventManagement.Pages.Register
 {

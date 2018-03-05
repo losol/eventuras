@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Globalization;
+using losol.EventManagement.Infrastructure;
 
 namespace losol.EventManagement
 {

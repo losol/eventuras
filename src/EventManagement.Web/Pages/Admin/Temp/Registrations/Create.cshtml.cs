@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using losol.EventManagement.Data;
 using losol.EventManagement.Domain;
+using losol.EventManagement.Infrastructure;
 
 namespace losol.EventManagement.Pages.Admin.Temp.Registrations
 {
     public class CreateModel : PageModel
     {
-        private readonly losol.EventManagement.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public CreateModel(losol.EventManagement.Data.ApplicationDbContext context)
+        public CreateModel(ApplicationDbContext context)
         {
             _context = context;
         }
