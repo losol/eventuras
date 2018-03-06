@@ -181,24 +181,47 @@ namespace losol.EventManagement.Pages.Register
 			Registration.EventInfoTitle = eventInfo.Title;
 			Registration.EventInfoDescription = eventInfo.Description;
 
-			if (eventInfo.Products != null) {
-				var registeredProducts = (from p in eventInfo.Products
-												where Registration.Products
-														.Where(rp => rp.IsSelected)
-														.Select(rp => rp.Value)
-														.Contains(p.ProductId)
-												select p)
-							.Union(_context.Products.Where(rp => rp.MandatoryCount > 0));
-
-				Registration.Notes = String.Join(", ", 
-						registeredProducts.Select(rp => $"{rp.ProductId}.{Registration.Products.Where(p => rp.ProductId == p.Value).Select(p=>p.SelectedVariantId).FirstOrDefault()}) {rp.Name}")
-					);
-			}
-
 			if (!ModelState.IsValid)
 			{
 				await PopulateProducts(eventInfo);
 				return Page();
+			}
+
+			if (eventInfo.Products != null) {
+				await PopulateProducts(eventInfo);
+				var selectedProductIds = Registration.Products
+				                                     .Where(rp => rp.IsSelected)
+				                                     .Select(p => p.Value)
+				                                     .ToList();
+				
+				var registeredProducts = eventInfo.Products
+				                                  .Where(x => selectedProductIds.Contains(x.ProductId))
+				                                  .ToList();		
+
+				// Get the list of product names along with id and variants ...
+				var productNames = registeredProducts.Select(product => {
+					var variantId = Registration.Products
+					                          .Where(p => product.ProductId == p.Value)
+					                          .Select(p => p.SelectedVariantId)
+					                          .FirstOrDefault();
+
+					var variantString = "";
+					if(variantId != null) 
+					{
+						var variantName = Products.Where(p => p.ProductId == product.ProductId)
+											  .SelectMany(p => p.ProductVariants)
+											  .Where(v => v.ProductVariantId == variantId)
+											  .Select(v => v.Name)
+											  .Single();
+
+						variantString = $" ({variantId}. {variantName})";
+					}
+
+					return $"{product.ProductId}. {product.Name}{variantString}";
+				});
+
+				// ... and concatenate them together into the notes field
+				Registration.Notes = String.Join(", ", productNames);
 			}
 
 			// Check if user exists with email registered
