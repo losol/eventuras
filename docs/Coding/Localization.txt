@@ -1,2 +1,0 @@
-Tutorial:
-https://joonasw.net/view/aspnet-core-localization-deep-dive
