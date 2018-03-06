@@ -60,5 +60,10 @@ namespace losol.EventManagement.Domain
         public ApplicationUser User { get; set; }
         public PaymentMethod PaymentMethod {get;set;}
 
+
+		public void Verify()
+		{
+			Verified = true;
+		}
     }
 }
