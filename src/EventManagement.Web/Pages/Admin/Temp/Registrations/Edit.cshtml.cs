@@ -6,16 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using losol.EventManagement.Data;
-using losol.EventManagement.Models;
+using losol.EventManagement.Domain;
+using losol.EventManagement.Infrastructure;
 
 namespace losol.EventManagement.Pages.Admin.Temp.Registrations
 {
     public class EditModel : PageModel
     {
-        private readonly losol.EventManagement.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public EditModel(losol.EventManagement.Data.ApplicationDbContext context)
+        public EditModel(ApplicationDbContext context)
         {
             _context = context;
         }

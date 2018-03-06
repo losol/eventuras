@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
     <RootNamespace>losol.EventManagement.Web</RootNamespace>
     <AssemblyName>losol.EventManagement.Web</AssemblyName>
     <UserSecretsId>aspnet-losol.EventManagement-74C0FE44-3444-4386-9785-6815A715D4AB</UserSecretsId>
@@ -17,5 +18,10 @@
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
     <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EventManagement.Services\EventManagement.Services.csproj" />
+    <ProjectReference Include="..\EventManagement.Infrastructure\EventManagement.Infrastructure.csproj" />
+    <ProjectReference Include="..\EventManagement.Domain\EventManagement.Domain.csproj" />
   </ItemGroup>
 </Project>

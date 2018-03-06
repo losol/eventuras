@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using losol.EventManagement.Data;
+using losol.EventManagement.Infrastructure;
+using losol.EventManagement.Services;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -14,7 +15,7 @@ namespace losol.EventManagement
 {
     public class Program
     { 
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         { 
             var host = BuildWebHost(args);
             var scope = host.Services.CreateScope();
@@ -22,7 +23,7 @@ namespace losol.EventManagement
             var context = services.GetRequiredService<ApplicationDbContext>();
             var config = host.Services.GetRequiredService<IConfiguration>();
             
-            SeedData.Initialize(context, services, config).Wait();;
+			await new DbInitializer(context, services, config).SeedAsync();
 
             host.Run();
         }

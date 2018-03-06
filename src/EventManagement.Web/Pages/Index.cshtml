@@ -1,7 +1,8 @@
 ﻿@page
-@model IndexModel
+@inject IEventInfoService events
 @{
     ViewData["Title"] = "Home page";
+    var featuredEvents = await events.GetFeaturedEventsAsync();
 }
 
 <div class="jumbotron min-height-25" style="
@@ -18,7 +19,7 @@
 
 <div class="container min-height-50" id="featured">
     <div class="row">
-    @foreach (var item in Model.FeaturedEvents)
+    @foreach (var item in featuredEvents)
         {
             <div class="col-md-6">
                 <h2>@item.Title</h2>

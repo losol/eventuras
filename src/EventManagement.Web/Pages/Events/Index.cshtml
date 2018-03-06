@@ -1,15 +1,16 @@
 @page
-@model losol.EventManagement.Pages.Events.IndexModel
+@inject IEventInfoService events
 
 @{
     ViewData["Title"] = "Index";
+    var upcomingEvents = await events.GetUpcomingEventsAsync();
 }
 
 <div class="container">
 <h1>Kursoversikt</h1>
 
     <div class="row">
-        @foreach (var item in Model.EventList) {
+        @foreach (var item in upcomingEvents) {
             <div class="col-md-4 d-flex align-items-stretch">
                 <div class="card w-100" >
                     <div class="card-body">

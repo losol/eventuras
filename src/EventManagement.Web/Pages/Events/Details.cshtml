@@ -1,5 +1,4 @@
 @page
-@namespace losol.EventManagement.Pages.Events
 @model DetailsModel
 
 @{
@@ -8,7 +7,7 @@
 
  @{
     var heroStyle = "";
-    if (!string.IsNullOrWhiteSpace(Model.EventInfo.FeaturedImageUrl))
+    if (Model.EventInfo.HasFeaturedImage)
     {
     heroStyle = $@"
         background: url('{Model.EventInfo.FeaturedImageUrl}');

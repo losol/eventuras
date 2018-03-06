@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using losol.EventManagement.Data;
-using losol.EventManagement.Models;
+using losol.EventManagement.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using losol.EventManagement.Services;
@@ -18,6 +17,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using MimeKit;
 using losol.EventManagement.ViewModels;
+using losol.EventManagement.Infrastructure;
 
 namespace losol.EventManagement.Pages.Register
 {
@@ -266,7 +266,7 @@ namespace losol.EventManagement.Pages.Register
 
 			// If we came here, we should enter our new participant into the database!
 			_logger.LogWarning("Starting new registration:" );
-			var newRegistration = new Models.Registration();
+			var newRegistration = new Registration();
 			newRegistration.VerificationCode = GenerateRandomPassword(6);
 			var entry = _context.Add(newRegistration);
 			entry.CurrentValues.SetValues(Registration);

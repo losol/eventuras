@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using losol.EventManagement.Data;
-using losol.EventManagement.Models;
+using losol.EventManagement.Domain;
+using losol.EventManagement.Infrastructure;
 
 namespace losol.EventManagement.Pages.Admin.Temp.Registrations
 {
     public class DeleteModel : PageModel
     {
-        private readonly losol.EventManagement.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public DeleteModel(losol.EventManagement.Data.ApplicationDbContext context)
+        public DeleteModel(ApplicationDbContext context)
         {
             _context = context;
         }

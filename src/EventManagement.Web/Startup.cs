@@ -9,13 +9,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using losol.EventManagement.Data;
+using losol.EventManagement.Domain;
 using losol.EventManagement.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Globalization;
+using losol.EventManagement.Infrastructure;
 
 namespace losol.EventManagement
 {
@@ -99,6 +100,8 @@ namespace losol.EventManagement
             services.Configure<EmailSenderOptions>(Configuration);
             services.AddSingleton<IEmailSender, EmailSender>();
 
+			// Register our application services
+			services.AddScoped<IEventInfoService, EventInfoService>();
 
             // Add Page render Service
             //services.AddScoped<IViewRenderService, ViewRenderService>();

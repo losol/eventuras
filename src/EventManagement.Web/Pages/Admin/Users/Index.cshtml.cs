@@ -5,20 +5,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using losol.EventManagement.Data;
-using losol.EventManagement.Models;
+using losol.EventManagement.Domain;
 using Microsoft.AspNetCore.Identity;
+using losol.EventManagement.Infrastructure;
 
 namespace losol.EventManagement.Pages.Admin.Users
 {
     public class IndexModel : PageModel
     {
-        private readonly losol.EventManagement.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 		private readonly UserManager<ApplicationUser> _userManager;
 
 
         public IndexModel(
-			losol.EventManagement.Data.ApplicationDbContext context, 
+			ApplicationDbContext context, 
 			UserManager<ApplicationUser> userManager
 			)
         
