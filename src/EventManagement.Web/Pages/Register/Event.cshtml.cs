@@ -172,21 +172,24 @@ namespace losol.EventManagement.Pages.Register
 
 		public async Task<IActionResult> OnPostAsync(int? id)
 		{
-			var eventInfo = await _context.EventInfos.FirstOrDefaultAsync(m => m.EventInfoId == id);
+			var eventInfo = await _context.EventInfos
+			                              .Include(e=>e.Products)
+			                              .FirstOrDefaultAsync(m => m.EventInfoId == id);
+
 			Registration.EventInfo = eventInfo;
 			Registration.EventInfoId = eventInfo.EventInfoId;
 			Registration.EventInfoTitle = eventInfo.Title;
 			Registration.EventInfoDescription = eventInfo.Description;
 
 			if (eventInfo.Products != null) {
-				var registeredProducts = await (from p in _context.Products
-					where Registration.Products
-							.Where(rp => rp.IsSelected)
-							.Select(rp => rp.Value)
-							.Contains(p.ProductId)
-					select p)
-					.Union(_context.Products.Where(rp => rp.MandatoryCount > 0))
-					.ToListAsync();
+				var registeredProducts = (from p in eventInfo.Products
+												where Registration.Products
+														.Where(rp => rp.IsSelected)
+														.Select(rp => rp.Value)
+														.Contains(p.ProductId)
+												select p)
+							.Union(_context.Products.Where(rp => rp.MandatoryCount > 0));
+
 				Registration.Notes = String.Join(", ", 
 						registeredProducts.Select(rp => $"{rp.ProductId}.{Registration.Products.Where(p => rp.ProductId == p.Value).Select(p=>p.SelectedVariantId).FirstOrDefault()}) {rp.Name}")
 					);
