@@ -21,7 +21,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
                 .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("losol.EventManagement.Data.ApplicationUser", b =>
+            modelBuilder.Entity("losol.EventManagement.Domain.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -327,7 +327,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
                         .HasForeignKey("PaymentMethodId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("losol.EventManagement.Data.ApplicationUser", "User")
+                    b.HasOne("losol.EventManagement.Domain.ApplicationUser", "User")
                         .WithMany("Registrations")
                         .HasForeignKey("UserId");
                 });
@@ -342,7 +342,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("losol.EventManagement.Data.ApplicationUser")
+                    b.HasOne("losol.EventManagement.Domain.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -350,7 +350,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("losol.EventManagement.Data.ApplicationUser")
+                    b.HasOne("losol.EventManagement.Domain.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -363,7 +363,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("losol.EventManagement.Data.ApplicationUser")
+                    b.HasOne("losol.EventManagement.Domain.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -371,7 +371,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("losol.EventManagement.Data.ApplicationUser")
+                    b.HasOne("losol.EventManagement.Domain.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
