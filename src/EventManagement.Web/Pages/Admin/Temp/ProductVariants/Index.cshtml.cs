@@ -23,7 +23,7 @@ namespace losol.EventManagement.Pages.Admin.Temp.ProductVariants
 
         public async Task OnGetAsync()
         {
-            ProductVariant = await _context.ProductVariant
+            ProductVariant = await _context.ProductVariants
                 .Include(p => p.Product).ToListAsync();
         }
     }

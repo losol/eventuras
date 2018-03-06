@@ -28,7 +28,7 @@ namespace losol.EventManagement.Pages.Admin.Temp.ProductVariants
                 return NotFound();
             }
 
-            ProductVariant = await _context.ProductVariant
+            ProductVariant = await _context.ProductVariants
                 .Include(p => p.Product).SingleOrDefaultAsync(m => m.ProductVariantId == id);
 
             if (ProductVariant == null)

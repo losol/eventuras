@@ -32,6 +32,6 @@ namespace losol.EventManagement.Infrastructure
         public DbSet<Registration> Registrations { get; set; }
         public DbSet<PaymentMethod> PaymentMethods { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<ProductVariant> ProductVariant { get; set; }
+        public DbSet<ProductVariant> ProductVariants { get; set; }
     }
 }

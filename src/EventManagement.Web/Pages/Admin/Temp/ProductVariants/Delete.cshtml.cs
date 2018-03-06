@@ -29,7 +29,7 @@ namespace losol.EventManagement.Pages.Admin.Temp.ProductVariants
                 return NotFound();
             }
 
-            ProductVariant = await _context.ProductVariant
+            ProductVariant = await _context.ProductVariants
                 .Include(p => p.Product).SingleOrDefaultAsync(m => m.ProductVariantId == id);
 
             if (ProductVariant == null)
@@ -46,11 +46,11 @@ namespace losol.EventManagement.Pages.Admin.Temp.ProductVariants
                 return NotFound();
             }
 
-            ProductVariant = await _context.ProductVariant.FindAsync(id);
+            ProductVariant = await _context.ProductVariants.FindAsync(id);
 
             if (ProductVariant != null)
             {
-                _context.ProductVariant.Remove(ProductVariant);
+                _context.ProductVariants.Remove(ProductVariant);
                 await _context.SaveChangesAsync();
             }
 

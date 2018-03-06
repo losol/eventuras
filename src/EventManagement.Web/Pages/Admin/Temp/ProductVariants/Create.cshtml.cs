@@ -35,7 +35,7 @@ namespace losol.EventManagement.Pages.Admin.Temp.ProductVariants
                 return Page();
             }
 
-            _context.ProductVariant.Add(ProductVariant);
+            _context.ProductVariants.Add(ProductVariant);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
