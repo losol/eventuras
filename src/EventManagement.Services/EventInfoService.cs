@@ -31,5 +31,11 @@ namespace losol.EventManagement.Services
 				.ToListAsync();
 		}
 
+		public async Task<EventInfo> GetAsync(int id)
+		{
+			return await _db.EventInfos
+				            .SingleOrDefaultAsync(m => m.EventInfoId == id);
+		}
+
 	}
 }

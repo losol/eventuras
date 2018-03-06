@@ -111,5 +111,8 @@ namespace losol.EventManagement.Domain
         public List<Registration> Registrations { get; set; }
         public List<Product> Products {get;set;}
 
+
+		public bool HasFeaturedImage => !string.IsNullOrWhiteSpace(FeaturedImageUrl);
+
     }
 }
