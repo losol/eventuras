@@ -26,8 +26,8 @@ namespace losol.EventManagement.Pages.Register
 		private readonly ILogger<LoginModel> _logger;
 		private readonly IEmailSender _emailSender;
 		private readonly AppSettings _appSettings;
-		private IHostingEnvironment _env;
-		private IRenderService _renderService;
+		private readonly IHostingEnvironment _env;
+		private readonly IRenderService _renderService;
 
 
 		public EventRegistrationModel(
