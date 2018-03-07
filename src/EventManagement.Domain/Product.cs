@@ -39,5 +39,7 @@ namespace losol.EventManagement.Domain
 
         // Has a list of productvariants.
         public List<ProductVariant> ProductVariants {get;set;}
+
+		public bool IsMandatory => MandatoryCount > 0;
     }
 }
