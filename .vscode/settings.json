@@ -7,6 +7,7 @@
         "**/.DS_Store": true,
         "**/bin": true,
         "**/obj": true,
-        "*.userprefs": true
+        "*.userprefs": true,
+        ".vs": true,
     }
 }
