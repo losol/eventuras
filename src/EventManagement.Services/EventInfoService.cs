@@ -41,7 +41,7 @@ namespace losol.EventManagement.Services
 		{
 			return await _db.EventInfos
 				            .Include(ei => ei.Products)
-				            	.ThenInclude(products => products.Select(p => p.ProductVariants))
+				            	.ThenInclude(products => products.ProductVariants)
 							.SingleOrDefaultAsync(m => m.EventInfoId == id);
 		}
 	}
