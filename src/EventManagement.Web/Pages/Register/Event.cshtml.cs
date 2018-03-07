@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using losol.EventManagement.Domain;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using losol.EventManagement.Services;
-using losol.EventManagement.Pages.Account;
-using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Hosting;
-using System.IO;
-using MimeKit;
-using losol.EventManagement.ViewModels;
+
+using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
+using losol.EventManagement.Pages.Account;
+using losol.EventManagement.Services;
+using losol.EventManagement.ViewModels;
 
 namespace losol.EventManagement.Pages.Register
 {
@@ -55,81 +53,17 @@ namespace losol.EventManagement.Pages.Register
 		public RegisterVM Registration { get; set; }
 		public List<Product> Products { get; set; }
 
-		public class ProductVM
-		{
-			public bool IsSelected { get; set; } = false;
-			public int Value { get; set; }
-			public bool IsMandatory { get; set; } = false;
-			public int? SelectedVariantId { get; set; } = null;
-		}
-
-		public class RegisterVM
-		{
-			public int EventInfoId { get; set; }
-			public string EventInfoTitle { get; set; }
-			public string EventInfoDescription { get; set; }
-			public string UserId { get; set; }
-
-			[Required]
-			[StringLength(100)]
-			[Display(Name = "Navn")]
-			public string ParticipantName { get; set; }
-
-			[Required]
-			[EmailAddress]
-			[Display(Name = "E-post")]
-			public string Email { get; set; }
-
-			[Required]
-			[Display(Name = "Mobiltelefon")]
-			public string Phone { get; set; }
-
-			[Display(Name = "Arbeidsplass")]
-			public string ParticipantEmployer { get; set; }
-
-			[Display(Name = "Stilling")]
-			public string ParticipantJobTitle { get; set; }	
-					
-			[Display(Name = "Sted/by")]
-			public string ParticipantCity { get; set; }
-
-			[Display(Name = "Kommentar til påmelding. ")]
-			public string Notes { get; set; }
-
-			[Display(Name = "Organisasjonsnummer (må fylles ut for EHF-faktura)")]
-			public string CustomerVatNumber { get; set; }
-
-			[Display(Name = "Betaling")]
-			public IEnumerable<PaymentMethod> PaymentMethods { get; set; }
-
-			// Who pays for it?
-			[Display(Name = "Fakturamottakers firmanavn")]
-			public string CustomerName {get; set;}
-
-			[Display(Name = "Fakturamottakers epost")]
-			public string CustomerEmail {get; set;}
-
-			[Display(Name = "Fakturareferanse")]
-			public string CustomerInvoiceReference {get;set;}
-
-			public int? PaymentMethodId { get; set; }
-
-			public ProductVM[] Products { get; set; }
-			// Navigational properties
-			// Eventinfo is readonly
-			public EventInfo EventInfo {get;set;}
-		}
-
-		public async Task PopulateProducts(EventInfo eventinfo) 
+		public async Task PopulateProducts(EventInfo eventinfo)
 		{
 			this.Products = await _context.Products.Where(m => m.EventInfoId == eventinfo.EventInfoId)
 				.Include(p => p.ProductVariants)
 				.ToListAsync();
 			this.Registration.Products = new ProductVM[Products.Count];
-			for(int i = 0; i < Registration.Products.Length; i++) 
+			for (int i = 0; i < Registration.Products.Length; i++)
 			{
 				var currentProduct = Products[i];
-				Registration.Products[i] = new ProductVM {
+				Registration.Products[i] = new ProductVM
+				{
 					Value = currentProduct.ProductId,
 					IsMandatory = currentProduct.MandatoryCount > 0,
 					IsSelected = currentProduct.MandatoryCount > 0,
@@ -164,7 +98,7 @@ namespace losol.EventManagement.Pages.Register
 				Registration.EventInfoTitle = eventinfo.Title;
 				Registration.EventInfoDescription = eventinfo.Description;
 				Registration.PaymentMethodId = 2;  // TODO: Dirty
-				Registration.PaymentMethods = _context.PaymentMethods.Where(m => m.Active == true ).ToList();
+				Registration.PaymentMethods = _context.PaymentMethods.Where(m => m.Active == true).ToList();
 			}
 			return Page();
 		}
@@ -173,8 +107,8 @@ namespace losol.EventManagement.Pages.Register
 		public async Task<IActionResult> OnPostAsync(int? id)
 		{
 			var eventInfo = await _context.EventInfos
-			                              .Include(e=>e.Products)
-			                              .FirstOrDefaultAsync(m => m.EventInfoId == id);
+										  .Include(e => e.Products)
+										  .FirstOrDefaultAsync(m => m.EventInfoId == id);
 
 			Registration.EventInfo = eventInfo;
 			Registration.EventInfoId = eventInfo.EventInfoId;
@@ -187,26 +121,28 @@ namespace losol.EventManagement.Pages.Register
 				return Page();
 			}
 
-			if (eventInfo.Products != null) {
+			if (eventInfo.Products != null)
+			{
 				await PopulateProducts(eventInfo);
 				var selectedProductIds = Registration.Products
-				                                     .Where(rp => rp.IsSelected)
-				                                     .Select(p => p.Value)
-				                                     .ToList();
-				
+													 .Where(rp => rp.IsSelected)
+													 .Select(p => p.Value)
+													 .ToList();
+
 				var registeredProducts = eventInfo.Products
-				                                  .Where(x => selectedProductIds.Contains(x.ProductId))
-				                                  .ToList();		
+												  .Where(x => selectedProductIds.Contains(x.ProductId))
+												  .ToList();
 
 				// Get the list of product names along with id and variants ...
-				var productNames = registeredProducts.Select(product => {
+				var productNames = registeredProducts.Select(product =>
+				{
 					var variantId = Registration.Products
-					                          .Where(p => product.ProductId == p.Value)
-					                          .Select(p => p.SelectedVariantId)
-					                          .FirstOrDefault();
+											  .Where(p => product.ProductId == p.Value)
+											  .Select(p => p.SelectedVariantId)
+											  .FirstOrDefault();
 
 					var variantString = "";
-					if(variantId != null) 
+					if (variantId != null)
 					{
 						var variantName = Products.Where(p => p.ProductId == product.ProductId)
 											  .SelectMany(p => p.ProductVariants)
@@ -253,14 +189,15 @@ namespace losol.EventManagement.Pages.Register
 
 			// Any registrations for this user on this event?
 			var registered = await _context.Registrations
-				.Where(a => 
+				.Where(a =>
 					a.UserId == Registration.UserId &&
 					a.EventInfoId == Registration.EventInfoId)
 				.FirstOrDefaultAsync();
 
 			// If registration found
-			if (registered != null) {
-				_logger.LogWarning("Found existing registration:" + registered.RegistrationId );
+			if (registered != null)
+			{
+				_logger.LogWarning("Found existing registration:" + registered.RegistrationId);
 				// Prepare an email to send out
 				var emailVM = new EmailMessage()
 				{
@@ -273,7 +210,8 @@ namespace losol.EventManagement.Pages.Register
 				};
 
 				// If registered but not verified, just send reminder of verification. 
-				if (registered.Verified == false) {
+				if (registered.Verified == false)
+				{
 					var verificationUrl = Url.Action("Confirm", "Register", new { id = registered.RegistrationId, auth = registered.VerificationCode }, protocol: Request.Scheme);
 					emailVM.Subject = "En liten bekreftelse bare...";
 					emailVM.Message = $@"Vi hadde allerede registrert deg i systemet, men du har ikke bekreftet enda
@@ -291,17 +229,19 @@ namespace losol.EventManagement.Pages.Register
 			}
 
 			// If we came here, we should enter our new participant into the database!
-			_logger.LogWarning("Starting new registration:" );
+			_logger.LogWarning("Starting new registration:");
 			var newRegistration = new Registration();
 			newRegistration.VerificationCode = GenerateRandomPassword(6);
 			var entry = _context.Add(newRegistration);
 			entry.CurrentValues.SetValues(Registration);
 
 			// Save changes
-			try {
+			try
+			{
 				await _context.SaveChangesAsync();
 			}
-			catch (DbUpdateException ex){
+			catch (DbUpdateException ex)
+			{
 				_logger.LogError(ex.Message + ex.InnerException);
 			}
 
@@ -316,17 +256,17 @@ namespace losol.EventManagement.Pages.Register
 			};
 
 			confirmEmail.VerificationUrl = Url.Action("Confirm", "Register", new { id = newRegistration.RegistrationId, auth = newRegistration.VerificationCode }, protocol: Request.Scheme);
-		
+
 			var email = await _renderService.RenderViewToStringAsync("Templates/Email/ConfirmEventRegistration", confirmEmail);
 			await _emailSender.SendEmailAsync(Registration.Email, "Bekreft påmelding", email);
 
 			return RedirectToPage("/Info/EmailSent");
 		}
-    
+
 		public static string GenerateRandomPassword(int length = 6)
 		{
 			string[] randomChars = new[] {
-                "ABCDEFGHJKLMNPQRSTUVWXYZ",    // uppercase 
+				"ABCDEFGHJKLMNPQRSTUVWXYZ",    // uppercase 
                 "abcdefghijkmnpqrstuvwxyz",    // lowercase
                 "123456789"                   // digits
             };
@@ -343,5 +283,72 @@ namespace losol.EventManagement.Pages.Register
 
 			return new string(chars.ToArray());
 		}
+
+		#region View Models
+		public class ProductVM
+		{
+			public bool IsSelected { get; set; } = false;
+			public int Value { get; set; }
+			public bool IsMandatory { get; set; } = false;
+			public int? SelectedVariantId { get; set; } = null;
+		}
+
+		public class RegisterVM
+		{
+			public int EventInfoId { get; set; }
+			public string EventInfoTitle { get; set; }
+			public string EventInfoDescription { get; set; }
+			public string UserId { get; set; }
+
+			[Required]
+			[StringLength(100)]
+			[Display(Name = "Navn")]
+			public string ParticipantName { get; set; }
+
+			[Required]
+			[EmailAddress]
+			[Display(Name = "E-post")]
+			public string Email { get; set; }
+
+			[Required]
+			[Display(Name = "Mobiltelefon")]
+			public string Phone { get; set; }
+
+			[Display(Name = "Arbeidsplass")]
+			public string ParticipantEmployer { get; set; }
+
+			[Display(Name = "Stilling")]
+			public string ParticipantJobTitle { get; set; }
+
+			[Display(Name = "Sted/by")]
+			public string ParticipantCity { get; set; }
+
+			[Display(Name = "Kommentar til påmelding. ")]
+			public string Notes { get; set; }
+
+			[Display(Name = "Organisasjonsnummer (må fylles ut for EHF-faktura)")]
+			public string CustomerVatNumber { get; set; }
+
+			[Display(Name = "Betaling")]
+			public IEnumerable<PaymentMethod> PaymentMethods { get; set; }
+
+			// Who pays for it?
+			[Display(Name = "Fakturamottakers firmanavn")]
+			public string CustomerName { get; set; }
+
+			[Display(Name = "Fakturamottakers epost")]
+			public string CustomerEmail { get; set; }
+
+			[Display(Name = "Fakturareferanse")]
+			public string CustomerInvoiceReference { get; set; }
+
+			public int? PaymentMethodId { get; set; }
+
+			public ProductVM[] Products { get; set; }
+			// Navigational properties
+			// Eventinfo is readonly
+			public EventInfo EventInfo { get; set; }
+		}
+		#endregion
 	}
 }
