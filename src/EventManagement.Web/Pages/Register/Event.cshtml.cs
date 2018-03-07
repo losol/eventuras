@@ -109,7 +109,7 @@ namespace losol.EventManagement.Pages.Register
 				return Page();
 			}
 
-			if (EventInfo.Products != null)
+			if (Registration.Products != null)
 			{
 				var selectedProductIds = Registration.Products
 													 .Where(rp => rp.IsSelected)
