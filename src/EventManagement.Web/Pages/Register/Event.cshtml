@@ -1,13 +1,13 @@
 ﻿@page "{id:int}"
 @model losol.EventManagement.Pages.Register.EventRegistrationModel
 @{
-    ViewData["Title"] = Model.Registration.EventInfoTitle + "- Påmelding";
+    ViewData["Title"] = Model.EventInfo.Title + "- Påmelding";
     
     Layout = "~/Pages/_Layout.cshtml";
 }
 <div class="container">
-<h1 class="display-2 pt-5">@Model.Registration.EventInfoTitle - p&aring;melding</h1>
-<p class="lead">@Model.Registration.EventInfoDescription</p>
+<h1 class="display-2 pt-5">@Model.EventInfo.Title - p&aring;melding</h1>
+<p class="lead">@Model.EventInfo.Description</p>
 <p><a asp-page="../Events/Details" asp-route-id="@Model.Registration.EventInfoId" class="btn  my-3 btn btn-info link-decoration-none">Se program og mer informasjon</a>  </p>
     
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -48,12 +48,12 @@
 
 
                @* START PAYMENT  *@
-            @if (!Model.Registration.EventInfo.Free) {
+            @if (!Model.EventInfo.Free) {
             <div id="payment py-5" > 
                 <div class="form-group"><!-- Payment method -->
-                    <label asp-for="Registration.PaymentMethods"></label><br>
+                    <label asp-for="Registration.PaymentMethodId"></label><br>
                     <div>
-                    @foreach (var item in Model.Registration.PaymentMethods)
+                    @foreach (var item in Model.PaymentMethods)
                     {
                         <label class="radio-inline pr-3">  
                         <input asp-for="Registration.PaymentMethodId" id="Registration_PaymentMethodId_@item.PaymentMethodId" type="radio" value="@item.PaymentMethodId" onclick="paymentMethod()"/> @item.Name  
@@ -92,9 +92,9 @@
             </div>
             }
 
-            @if (Model.Registration.EventInfo.InformationRequest != null ) {
+            @if (Model.EventInfo.InformationRequest != null ) {
                     <div class="form-group">
-                        <label asp-for="Registration.Notes">@Model.Registration.EventInfo.InformationRequest</label>
+                        <label asp-for="Registration.Notes">@Model.EventInfo.InformationRequest</label>
                         <textarea asp-for="Registration.Notes" class="form-control"></textarea>
                         <span asp-validation-for="Registration.CustomerInvoiceReference" class="text-danger"></span>
                     </div>
@@ -108,7 +108,7 @@
                 @for(int i = 0; i < Model.Products.Count; i++)
                 {
                     var product = Model.Products[i];
-                    var productModel = Model.Registration.Products[i];
+                    var productModel = Model.Products[i];
 
                     <div class="form-group">
                         <div class="card">

@@ -28,6 +28,8 @@ namespace losol.EventManagement.Pages.Register
 		private readonly AppSettings _appSettings;
 		private readonly IHostingEnvironment _env;
 		private readonly IRenderService _renderService;
+		private readonly IEventInfoService _eventsService;
+		private readonly IPaymentMethodService _paymentMethodService;
 
 
 		public EventRegistrationModel(
@@ -37,7 +39,9 @@ namespace losol.EventManagement.Pages.Register
 			IEmailSender emailSender,
 			IOptions<AppSettings> appSettings,
 			IHostingEnvironment env,
-			IRenderService renderService
+			IRenderService renderService,
+			IEventInfoService eventsService,
+			IPaymentMethodService paymentMethodService
 			)
 		{
 			_context = context;
@@ -47,89 +51,67 @@ namespace losol.EventManagement.Pages.Register
 			_appSettings = appSettings.Value;
 			_env = env;
 			_renderService = renderService;
+			_eventsService = eventsService;
+			_paymentMethodService = paymentMethodService;
 		}
 
 		[BindProperty]
 		public RegisterVM Registration { get; set; }
-		public List<Product> Products { get; set; }
-
-		public async Task PopulateProducts(EventInfo eventinfo)
-		{
-			this.Products = await _context.Products.Where(m => m.EventInfoId == eventinfo.EventInfoId)
-				.Include(p => p.ProductVariants)
-				.ToListAsync();
-			this.Registration.Products = new ProductVM[Products.Count];
-			for (int i = 0; i < Registration.Products.Length; i++)
-			{
-				var currentProduct = Products[i];
-				Registration.Products[i] = new ProductVM
-				{
-					Value = currentProduct.ProductId,
-					IsMandatory = currentProduct.MandatoryCount > 0,
-					IsSelected = currentProduct.MandatoryCount > 0,
-					SelectedVariantId = currentProduct
-						.ProductVariants
-						.Select(pv => pv.ProductVariantId as int?)
-						.FirstOrDefault()
-				};
-			}
-		}
+		public EventInfo EventInfo { get; set; }
+		public List<Product> Products => EventInfo.Products;
+		public List<PaymentMethod> PaymentMethods { get; set; }
 
 		public async Task<IActionResult> OnGetAsync(int? id)
 		{
-
 			if (id == null)
 			{
 				return RedirectToPage("./Index");
 			}
 
-			Registration = new RegisterVM();
-			var eventinfo = await _context.EventInfos.FirstOrDefaultAsync(m => m.EventInfoId == id);
-			await PopulateProducts(eventinfo);
+			EventInfo = await _eventsService.GetWithProductsAsync(id.Value);
 
-			if (eventinfo == null)
+			if (EventInfo == null)
 			{
 				return NotFound();
 			}
-			else
-			{
-				Registration.EventInfo = eventinfo;
-				Registration.EventInfoId = eventinfo.EventInfoId;
-				Registration.EventInfoTitle = eventinfo.Title;
-				Registration.EventInfoDescription = eventinfo.Description;
-				Registration.PaymentMethodId = 2;  // TODO: Dirty
-				Registration.PaymentMethods = _context.PaymentMethods.Where(m => m.Active == true).ToList();
-			}
+
+			PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
+			var defaultPaymentMethod = _paymentMethodService.GetDefaultPaymentMethodId();
+			Registration = new RegisterVM(EventInfo, defaultPaymentMethod);
+
 			return Page();
 		}
 
 
 		public async Task<IActionResult> OnPostAsync(int? id)
 		{
-			var eventInfo = await _context.EventInfos
-										  .Include(e => e.Products)
-										  .FirstOrDefaultAsync(m => m.EventInfoId == id);
+			if (id == null)
+			{
+				return RedirectToPage("./Index");
+			}
 
-			Registration.EventInfo = eventInfo;
-			Registration.EventInfoId = eventInfo.EventInfoId;
-			Registration.EventInfoTitle = eventInfo.Title;
-			Registration.EventInfoDescription = eventInfo.Description;
+			EventInfo = await _eventsService.GetWithProductsAsync(id.Value);
+
+			if (EventInfo == null)
+			{
+				return NotFound();
+			}
+
+			Registration.EventInfoId = EventInfo.EventInfoId;
 
 			if (!ModelState.IsValid)
 			{
-				await PopulateProducts(eventInfo);
 				return Page();
 			}
 
-			if (eventInfo.Products != null)
+			if (EventInfo.Products != null)
 			{
-				await PopulateProducts(eventInfo);
 				var selectedProductIds = Registration.Products
 													 .Where(rp => rp.IsSelected)
 													 .Select(p => p.Value)
 													 .ToList();
 
-				var registeredProducts = eventInfo.Products
+				var registeredProducts = EventInfo.Products
 												  .Where(x => selectedProductIds.Contains(x.ProductId))
 												  .ToList();
 
@@ -251,8 +233,8 @@ namespace losol.EventManagement.Pages.Register
 				Phone = Registration.Phone,
 				Email = Registration.Email,
 				PaymentMethod = Registration.PaymentMethodId.ToString(),
-				EventTitle = Registration.EventInfoTitle,
-				EventDescription = Registration.EventInfoDescription
+				EventTitle = EventInfo.Title,
+				EventDescription = EventInfo.Description
 			};
 
 			confirmEmail.VerificationUrl = Url.Action("Confirm", "Register", new { id = newRegistration.RegistrationId, auth = newRegistration.VerificationCode }, protocol: Request.Scheme);
@@ -296,8 +278,6 @@ namespace losol.EventManagement.Pages.Register
 		public class RegisterVM
 		{
 			public int EventInfoId { get; set; }
-			public string EventInfoTitle { get; set; }
-			public string EventInfoDescription { get; set; }
 			public string UserId { get; set; }
 
 			[Required]
@@ -329,9 +309,6 @@ namespace losol.EventManagement.Pages.Register
 			[Display(Name = "Organisasjonsnummer (må fylles ut for EHF-faktura)")]
 			public string CustomerVatNumber { get; set; }
 
-			[Display(Name = "Betaling")]
-			public IEnumerable<PaymentMethod> PaymentMethods { get; set; }
-
 			// Who pays for it?
 			[Display(Name = "Fakturamottakers firmanavn")]
 			public string CustomerName { get; set; }
@@ -342,12 +319,33 @@ namespace losol.EventManagement.Pages.Register
 			[Display(Name = "Fakturareferanse")]
 			public string CustomerInvoiceReference { get; set; }
 
+			[Display(Name = "Betaling")]
 			public int? PaymentMethodId { get; set; }
 
 			public ProductVM[] Products { get; set; }
-			// Navigational properties
-			// Eventinfo is readonly
-			public EventInfo EventInfo { get; set; }
+
+			public RegisterVM() { }
+			public RegisterVM(EventInfo eventinfo, int? defaultPaymentMethod = null) 
+			{
+				EventInfoId = eventinfo.EventInfoId;
+				PaymentMethodId = defaultPaymentMethod;
+
+				Products = new ProductVM[eventinfo.Products.Count];
+				for (int i = 0; i < Products.Length; i++)
+				{
+					var currentProduct = eventinfo.Products[i];
+					Products[i] = new ProductVM
+					{
+						Value = currentProduct.ProductId,
+						IsMandatory = currentProduct.MandatoryCount > 0,
+						IsSelected = currentProduct.MandatoryCount > 0,
+						SelectedVariantId = currentProduct
+							.ProductVariants
+							.Select(pv => pv.ProductVariantId as int?)
+							.FirstOrDefault()
+					};
+				}
+			}
 		}
 		#endregion
 	}
