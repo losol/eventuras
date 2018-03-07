@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Mapster;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +31,7 @@ namespace losol.EventManagement.Pages.Register
 		private readonly IRenderService _renderService;
 		private readonly IEventInfoService _eventsService;
 		private readonly IPaymentMethodService _paymentMethodService;
+		private readonly IRegistrationService _registrationService;
 
 
 		public EventRegistrationModel(
@@ -41,7 +43,8 @@ namespace losol.EventManagement.Pages.Register
 			IHostingEnvironment env,
 			IRenderService renderService,
 			IEventInfoService eventsService,
-			IPaymentMethodService paymentMethodService
+			IPaymentMethodService paymentMethodService,
+			IRegistrationService registrationService
 			)
 		{
 			_context = context;
@@ -53,6 +56,7 @@ namespace losol.EventManagement.Pages.Register
 			_renderService = renderService;
 			_eventsService = eventsService;
 			_paymentMethodService = paymentMethodService;
+			_registrationService = registrationService;
 		}
 
 		[BindProperty]
@@ -162,6 +166,7 @@ namespace losol.EventManagement.Pages.Register
 					_logger.LogInformation("User created a new account with password.");
 
 					Registration.UserId = newUser.Id;
+					user = newUser;
 
 				}
 				foreach (var error in result.Errors)
@@ -171,11 +176,7 @@ namespace losol.EventManagement.Pages.Register
 			};
 
 			// Any registrations for this user on this event?
-			var registered = await _context.Registrations
-				.Where(a =>
-					a.UserId == Registration.UserId &&
-					a.EventInfoId == Registration.EventInfoId)
-				.FirstOrDefaultAsync();
+			var registered = await _registrationService.GetAsync(user.Id, Registration.EventInfoId);
 
 			// If registration found
 			if (registered != null)
@@ -213,20 +214,12 @@ namespace losol.EventManagement.Pages.Register
 
 			// If we came here, we should enter our new participant into the database!
 			_logger.LogWarning("Starting new registration:");
-			var newRegistration = new Registration();
-			newRegistration.VerificationCode = generateRandomPassword(6);
-			var entry = _context.Add(newRegistration);
-			entry.CurrentValues.SetValues(Registration);
 
-			// Save changes
-			try
-			{
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateException ex)
-			{
-				_logger.LogError(ex.Message + ex.InnerException);
-			}
+
+			var newRegistration = Registration.Adapt<Registration>();
+			newRegistration.VerificationCode = generateRandomPassword(6);
+			await _registrationService.CreateRegistrationForUser(newRegistration);
+
 
 			var confirmEmail = new ConfirmEventRegistration()
 			{

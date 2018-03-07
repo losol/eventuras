@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace losol.EventManagement.Services
@@ -22,12 +23,32 @@ namespace losol.EventManagement.Services
 				            .FindAsync(id);
 		}
 
+		public Task<Registration> GetAsync(string userId, int eventId)
+		{
+			return _db.Registrations.Where(a => a.UserId == userId && a.EventInfoId == eventId)
+				      .SingleOrDefaultAsync();
+		}
+
 		public async Task<Registration> GetWithEventInfoAsync(int id)
 		{
 			return await _db.Registrations
 				            .Where(x => x.RegistrationId == id)
 							.Include(r => r.EventInfo)
 			       		    .SingleOrDefaultAsync();
+		}
+
+		public async Task<int> CreateRegistrationForUser(Registration registration)
+		{
+			// Check if registration exists
+			var existingRegistration = await GetAsync(registration.UserId, registration.EventInfoId);
+			if(existingRegistration != null)
+			{
+				throw new InvalidOperationException("The user can only register once!");
+			}
+
+			// Create the registration
+			await _db.Registrations.AddAsync(registration);
+			return await _db.SaveChangesAsync();
 		}
 
 		public async Task<int> SetRegistrationAsVerified(int id)
