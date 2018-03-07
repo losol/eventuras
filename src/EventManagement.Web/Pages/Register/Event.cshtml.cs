@@ -101,6 +101,7 @@ namespace losol.EventManagement.Pages.Register
 
 			if (!ModelState.IsValid)
 			{
+				PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
 				return Page();
 			}
 
