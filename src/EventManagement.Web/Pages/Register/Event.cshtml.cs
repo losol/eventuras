@@ -214,7 +214,7 @@ namespace losol.EventManagement.Pages.Register
 			// If we came here, we should enter our new participant into the database!
 			_logger.LogWarning("Starting new registration:");
 			var newRegistration = new Registration();
-			newRegistration.VerificationCode = GenerateRandomPassword(6);
+			newRegistration.VerificationCode = generateRandomPassword(6);
 			var entry = _context.Add(newRegistration);
 			entry.CurrentValues.SetValues(Registration);
 
@@ -246,7 +246,7 @@ namespace losol.EventManagement.Pages.Register
 			return RedirectToPage("/Info/EmailSent");
 		}
 
-		public static string GenerateRandomPassword(int length = 6)
+		private static string generateRandomPassword(int length = 6)
 		{
 			string[] randomChars = new[] {
 				"ABCDEFGHJKLMNPQRSTUVWXYZ",    // uppercase 
