@@ -224,7 +224,7 @@
 
 <!--The product template-->
 <template id="product-template">
-<div class="card">
+<div class="card product-card">
     <div class="card-body">
         <div class="row">
             <div class="col">
@@ -235,7 +235,7 @@
             </div>
             <div class="col-2">
                 <small>
-                    <a class="text-muted">Delete</a>
+                    <a class="text-muted delete-product-link">Delete</a>
                     <br /><br />
                     <a class="text-primary">Add Variant</a>
                 </small>
@@ -278,6 +278,7 @@ $("#EventInfo_Title").keyup(function(){
     $("#EventInfo_Code").val(eventcode);    
 });
 
+// IIFE to initialize the products section
 (function () {
     const $modal = $('#add-product-modal');
     const $productName = $($modal).find('#input-product-name');
@@ -291,17 +292,31 @@ $("#EventInfo_Title").keyup(function(){
 
     let i = 0; // tracks the number of added products
     
-    // On Click
+    function bindLatestProductLinks() {
+        // The delete link
+        $('.delete-product-link').last().bind('click', function(e) {
+            // Remove the product card from DOM
+            $(this).closest('.product-card').remove();
+        });
+    }
+    
+    // Event handler for the modal submit button
     $('#btn-add-product').bind('click', function(e) {
+        // TODO: validate the inputs!
+
+        // Clone the product template
         let clone = productsTemplate.cloneNode(true);
+        // And populate it with values from the modal
         clone.querySelector('.product-name').innerText = $productName.val();
         clone.querySelector('.product-description').innerText = $productDescription.val();
         clone.querySelector('.product-price').innerText = $productPrice.val() + ' kr';
-        console.log($productMandatoryCount.val());
+        console.log($productMandatoryCount.val()); // TODO: incorporate this in the template somewhere
 
+        // Add the cloned template to the DOM
         productsWrapper.appendChild(clone);
-        // console.log(productsWrapper);
+        // console.log(productsWrapper); // TODO: Remove this later
 
+        // Add the modal inputs as hidden product fields
         var input = document.createElement("input");
         input.setAttribute("type", "hidden");
         input.setAttribute("name", "EventInfo.Products[" + i + "].Name");
@@ -323,10 +338,14 @@ $("#EventInfo_Title").keyup(function(){
         input.setAttribute("value", $productMandatoryCount.val());
         mainForm.appendChild(input);
 
+        // Set event handlers to the newly added product actions
+        bindLatestProductLinks();
+        // Increment the counter for the next product
         i++;
+        // Hide the modal
         $modal.modal('hide');
     });
-    
+
 })();
 
 </script>
