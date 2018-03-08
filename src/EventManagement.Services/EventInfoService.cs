@@ -44,5 +44,11 @@ namespace losol.EventManagement.Services
 				            	.ThenInclude(products => products.ProductVariants)
 							.SingleOrDefaultAsync(m => m.EventInfoId == id);
 		}
+
+		public async Task<bool> AddAsync(EventInfo info)
+		{
+			await _db.EventInfos.AddAsync(info);
+			return await _db.SaveChangesAsync() > 0;
+		}
 	}
 }
