@@ -176,20 +176,20 @@
                   <div class="modal-body">
                     <div class="form-group">
                         <label class="control-label">Product Name</label>
-                        <input id="input-product-name" class="form-control" />
+                        <input id="input-product-name" class="form-control" required />
                         @*<span asp-validation-for="EventInfo.FeaturedImageUrl" class="text-danger"></span>*@
                     </div>
                     <div class="form-group">
                         <label class="control-label">Product Description</label>
-                        <input id="input-product-description" class="form-control" />
+                        <input id="input-product-description" class="form-control" required />
                     </div>
                     <div class="form-group">
                         <label class="control-label">Mandatory Number</label>
-                        <input id="input-product-m-number" value="0" class="form-control" />
+                        <input id="input-product-m-number" type="number" value="0" class="form-control" required />
                     </div>
                     <div class="form-group">
                         <label class="control-label">Price</label>
-                        <input id="input-product-price" class="form-control" />
+                        <input id="input-product-price" type="number" class="form-control" required />
                     </div>
                   </div>
                   <div class="modal-footer">
