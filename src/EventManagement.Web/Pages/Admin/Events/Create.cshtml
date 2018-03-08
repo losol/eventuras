@@ -232,6 +232,7 @@
                 <p class="card-text product-description"></p>
                 <!--If no variants exist-->
                 <h6 class="card-subtitle mb-2 text-muted product-price"></h6>
+                <input class="product-m-count" type="hidden" value="0" />
             </div>
             <div class="col-2">
                 <small>
@@ -289,11 +290,9 @@ $("#EventInfo_Title").keyup(function(){
     const mainForm = document.getElementById('main-form');
     const productsTemplate = document.querySelector('#product-template').content;
     const productsWrapper = document.querySelector('#product-wrapper');
-
-    let i = 0; // tracks the number of added products
     
     function bindLatestProductLinks() {
-        // The delete link
+        // Event handler for the delete link
         $('.delete-product-link').last().bind('click', function(e) {
             // Remove the product card from DOM
             $(this).closest('.product-card').remove();
@@ -310,41 +309,43 @@ $("#EventInfo_Title").keyup(function(){
         clone.querySelector('.product-name').innerText = $productName.val();
         clone.querySelector('.product-description').innerText = $productDescription.val();
         clone.querySelector('.product-price').innerText = $productPrice.val() + ' kr';
-        console.log($productMandatoryCount.val()); // TODO: incorporate this in the template somewhere
+        clone.querySelector('.product-m-count').value = $productMandatoryCount.val();
 
         // Add the cloned template to the DOM
         productsWrapper.appendChild(clone);
-        // console.log(productsWrapper); // TODO: Remove this later
-
-        // Add the modal inputs as hidden product fields
-        var input = document.createElement("input");
-        input.setAttribute("type", "hidden");
-        input.setAttribute("name", "EventInfo.Products[" + i + "].Name");
-        input.setAttribute("value", $productName.val());
-        mainForm.appendChild(input);
-        input = document.createElement("input");
-        input.setAttribute("type", "hidden");
-        input.setAttribute("name", "EventInfo.Products[" + i + "].Description");
-        input.setAttribute("value", $productDescription.val());
-        mainForm.appendChild(input);
-        input = document.createElement("input");
-        input.setAttribute("type", "hidden");
-        input.setAttribute("name", "EventInfo.Products[" + i + "].Price");
-        input.setAttribute("value", $productPrice.val());
-        mainForm.appendChild(input);
-        input = document.createElement("input");
-        input.setAttribute("type", "hidden");
-        input.setAttribute("name", "EventInfo.Products[" + i + "].MandatoryCount");
-        input.setAttribute("value", $productMandatoryCount.val());
-        mainForm.appendChild(input);
 
         // Set event handlers to the newly added product actions
         bindLatestProductLinks();
-        // Increment the counter for the next product
-        i++;
         // Hide the modal
         $modal.modal('hide');
     });
+
+    // Event handler executed when the form is submitted
+    mainForm.onsubmit = function() {
+        // Add hidden-inputs to the DOM here.
+        $('.product-card').each(function(i, el){
+            var input = document.createElement("input");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("name", "EventInfo.Products[" + i + "].Name");
+            input.setAttribute("value", $(this).find('.product-name').first().text());
+            mainForm.appendChild(input);
+            input = document.createElement("input");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("name", "EventInfo.Products[" + i + "].Description");
+            input.setAttribute("value", $(this).find('.product-description').first().text());
+            mainForm.appendChild(input);
+            input = document.createElement("input");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("name", "EventInfo.Products[" + i + "].Price");
+            input.setAttribute("value", $(this).find('.product-price').first().text());
+            mainForm.appendChild(input);
+            input = document.createElement("input");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("name", "EventInfo.Products[" + i + "].MandatoryCount");
+            input.setAttribute("value", $(this).find('.product-m-count').first().val());
+            mainForm.appendChild(input);    
+        });
+    };
 
 })();
 
