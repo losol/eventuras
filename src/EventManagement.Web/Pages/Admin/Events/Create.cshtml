@@ -176,20 +176,20 @@
                   <div class="modal-body">
                     <div class="form-group">
                         <label class="control-label">Product Name</label>
-                        <input class="form-control" />
+                        <input id="input-product-name" class="form-control" />
                         @*<span asp-validation-for="EventInfo.FeaturedImageUrl" class="text-danger"></span>*@
                     </div>
                     <div class="form-group">
                         <label class="control-label">Product Description</label>
-                        <input class="form-control" />
+                        <input id="input-product-description" class="form-control" />
                     </div>
                     <div class="form-group">
                         <label class="control-label">Mandatory Number</label>
-                        <input class="form-control" />
+                        <input id="input-product-m-number" class="form-control" />
                     </div>
                     <div class="form-group">
                         <label class="control-label">Price</label>
-                        <input class="form-control" />
+                        <input id="input-product-price" class="form-control" />
                     </div>
                   </div>
                   <div class="modal-footer">
@@ -273,18 +273,25 @@ $("#EventInfo_Title").keyup(function(){
 
 (function () {
     const $modal = $('#add-product-modal');
+    const $productName = $($modal).find('#input-product-name');
+    const $productDescription = $($modal).find('#input-product-description');
+    const $productPrice = $($modal).find('#input-product-price');
+    const $productMandatoryCount = $($modal).find('#input-product-m-number');
+
     const productsTemplate = document.querySelector('#product-template').content;
     const productsWrapper = document.querySelector('#product-wrapper');
     
     // On Click
     $('#btn-add-product').bind('click', function(e) {
         let clone = productsTemplate.cloneNode(true);
-        clone.querySelector('.product-name').innerText = 'Dinner';
-        clone.querySelector('.product-description').innerText = 'A sumptuous dinner for you.';
-        clone.querySelector('.product-price').innerText = '1000 kr';
+        clone.querySelector('.product-name').innerText = $productName.val();
+        clone.querySelector('.product-description').innerText = $productDescription.val();
+        clone.querySelector('.product-price').innerText = $productPrice.val() + ' kr';
+        console.log($productMandatoryCount.val());
 
         productsWrapper.appendChild(clone);
-        console.log(productsWrapper);
+        // console.log(productsWrapper);
+        console.log()
         $modal.modal('hide');
     });
     
