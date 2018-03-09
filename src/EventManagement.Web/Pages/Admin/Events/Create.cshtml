@@ -291,9 +291,18 @@
 <!-- The product variant template -->
 <template id="variant-template">
 <div class="card variant-card">
-    <h5 class="card-title variant-name"></h5>
-    <p class="card-text variant-description"></p>
-    <h6 class="card-subtitle mb-2 text-muted variant-price"></h6>
+    <div class="row">
+        <div class="col">
+            <h5 class="card-title variant-name"></h5>
+            <p class="card-text variant-description"></p>
+            <h6 class="card-subtitle mb-2 text-muted variant-price"></h6>
+        </div>
+        <div class="col-2">
+            <small>
+                <a href="#" onclick="$(this).closest('.variant-card').remove()" class="text-muted delete-variant-link">Delete</a>
+            </small>
+        </div>
+    </div>
 </div>
 </template>
 
