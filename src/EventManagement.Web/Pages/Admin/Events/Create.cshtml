@@ -290,7 +290,7 @@
 
 <!-- The product variant template -->
 <template id="variant-template">
-<div class="card">
+<div class="card variant-card">
     <h5 class="card-title variant-name"></h5>
     <p class="card-text variant-description"></p>
     <h6 class="card-subtitle mb-2 text-muted variant-price"></h6>
@@ -388,9 +388,7 @@ $("#EventInfo_Title").keyup(function(){
         clone.querySelector('.variant-price').innerText = $variantPrice.val() + ' kr';
 
         // Add the cloned template to the DOM
-        console.log($currentProduct);
         const $variantsWrapper = $currentProduct.find('.variant-wrapper');
-        console.log($variantsWrapper);
         $variantsWrapper[0].appendChild(clone);
 
         // Hide the modal
@@ -401,7 +399,7 @@ $("#EventInfo_Title").keyup(function(){
     mainForm.onsubmit = function() {
         // Add hidden-inputs to the DOM here.
         $('.product-card').each(function(i, el){
-            var input = document.createElement("input");
+            let input = document.createElement("input");
             input.setAttribute("type", "hidden");
             input.setAttribute("name", "EventInfo.Products[" + i + "].Name");
             input.setAttribute("value", $(this).find('.product-name').first().text());
@@ -421,6 +419,26 @@ $("#EventInfo_Title").keyup(function(){
             input.setAttribute("name", "EventInfo.Products[" + i + "].MandatoryCount");
             input.setAttribute("value", $(this).find('.product-m-count').first().val());
             mainForm.appendChild(input);    
+
+            $(el).find('.variant-card').each(function(j, vel){
+                input = document.createElement("input");
+                input.setAttribute("type", "hidden");
+                input.setAttribute("name", "EventInfo.Products[" + i + "].ProductVariants[" + j + "].Name");
+                input.setAttribute("value", $(this).find('.variant-name').first().text());
+                mainForm.appendChild(input);
+
+                input = document.createElement("input");
+                input.setAttribute("type", "hidden");
+                input.setAttribute("name", "EventInfo.Products[" + i + "].ProductVariants[" + j + "].Description");
+                input.setAttribute("value", $(this).find('.variant-description').first().text());
+                mainForm.appendChild(input);
+
+                input = document.createElement("input");
+                input.setAttribute("type", "hidden");
+                input.setAttribute("name", "EventInfo.Products[" + i + "].ProductVariants[" + j + "].Price");
+                input.setAttribute("value", $(this).find('.variant-price').first().text());
+                mainForm.appendChild(input);
+            });
         });
     };
 
