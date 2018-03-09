@@ -364,7 +364,7 @@ $("#EventInfo_Title").keyup(function(){
         // And populate it with values from the modal
         clone.querySelector('.product-name').innerText = $productName.val();
         clone.querySelector('.product-description').innerText = $productDescription.val();
-        clone.querySelector('.product-price').innerText = $productPrice.val() + ' kr';
+        clone.querySelector('.product-price').innerText = $productPrice.val();
         clone.querySelector('.product-m-count').value = $productMandatoryCount.val();
 
         // Add the cloned template to the DOM
@@ -385,7 +385,7 @@ $("#EventInfo_Title").keyup(function(){
         // And populate it with values from the modal
         clone.querySelector('.variant-name').innerText = $variantName.val();
         clone.querySelector('.variant-description').innerText = $variantDescription.val();
-        clone.querySelector('.variant-price').innerText = $variantPrice.val() + ' kr';
+        clone.querySelector('.variant-price').innerText = $variantPrice.val();
 
         // Add the cloned template to the DOM
         const $variantsWrapper = $currentProduct.find('.variant-wrapper');
