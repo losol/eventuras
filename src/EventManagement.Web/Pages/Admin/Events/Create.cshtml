@@ -456,12 +456,27 @@ $("#EventInfo_Title").keyup(function(){
 </script>
 <script src="https://cdn.ckeditor.com/ckeditor5/1.0.0-alpha.2/classic/ckeditor.js"></script>
 <script>
-    document.querySelectorAll('textarea').forEach(function(el){
-        ClassicEditor
-        .create(el)
-        .catch(error => {
+    ClassicEditor
+        .create( document.querySelector( '#EventInfo_MoreInformation' ) )
+        .catch( error => {
             console.error( error );
-        });
-    });
+        } );
+        
+    ClassicEditor
+        .create( document.querySelector( '#EventInfo_Program' ) ) 
+        .catch( error => {
+            console.error( error );
+        } );
+    ClassicEditor
+        .create( document.querySelector( '#EventInfo_PracticalInformation' ) ) 
+        .catch( error => {
+            console.error( error );
+        } );
+
+            ClassicEditor
+        .create( document.querySelector( '#EventInfo_WelcomeLetter' ) ) 
+        .catch( error => {
+            console.error( error );
+        } );
 </script>
 }
