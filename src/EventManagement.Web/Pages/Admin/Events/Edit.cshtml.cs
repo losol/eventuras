@@ -8,16 +8,17 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
+using losol.EventManagement.Services;
 
 namespace losol.EventManagement.Pages.Admin.Events
 {
     public class EditModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IEventInfoService _eventsService;
 
-        public EditModel(ApplicationDbContext context)
+        public EditModel(IEventInfoService eventsService)
         {
-            _context = context;
+            _eventsService = eventsService;
         }
 
         [BindProperty]
@@ -30,7 +31,7 @@ namespace losol.EventManagement.Pages.Admin.Events
                 return NotFound();
             }
 
-            EventInfo = await _context.EventInfos.SingleOrDefaultAsync(m => m.EventInfoId == id);
+            EventInfo = await _eventsService.GetAsync(id.Value);
 
             if (EventInfo == null)
             {
@@ -46,16 +47,7 @@ namespace losol.EventManagement.Pages.Admin.Events
                 return Page();
             }
 
-            _context.Attach(EventInfo).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                
-            }
+            await _eventsService.UpdateAsync(EventInfo);
 
             return RedirectToPage("./Index");
         }

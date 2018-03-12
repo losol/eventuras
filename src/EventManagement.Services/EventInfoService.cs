@@ -50,5 +50,11 @@ namespace losol.EventManagement.Services
 			await _db.EventInfos.AddAsync(info);
 			return await _db.SaveChangesAsync() > 0;
 		}
+
+		public async Task<bool> UpdateAsync(EventInfo info)
+		{
+			_db.EventInfos.Update(info);
+			return await _db.SaveChangesAsync() > 0;
+		}
 	}
 }
