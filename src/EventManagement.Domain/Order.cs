@@ -18,8 +18,12 @@ namespace losol.EventManagement.Domain
         public DateTime OrderTime {get;set;}
 
         // Navigational properties
+        
         public int RegistrationId {get;set;}
         public Registration Registration {get;set;}
+
+        public int PaymentMethodId {get;set;}
+        public PaymentMethod PaymentMethod {get;set;}
 
         public List<OrderLine> OrderLines {get;set;}
 
