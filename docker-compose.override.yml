@@ -7,7 +7,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__DefaultConnection=Server=mssql;Database=EventDB;User Id=sa;Password=Passw0rd!
       - SuperAdmin__Email=asdf@email.com
-      - SuperAdmin__Password Pa$$w0rd
+      - SuperAdmin__Password=Pa$$w0rd
     ports:
       - "5100:80"
 
