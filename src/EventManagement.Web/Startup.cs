@@ -35,7 +35,10 @@ namespace losol.EventManagement
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+			{
+				options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+				options.EnableSensitiveDataLogging(HostingEnvironment.IsDevelopment());
+			});
 
                 // sqlite: options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))); 
 

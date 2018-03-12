@@ -31,7 +31,7 @@ namespace losol.EventManagement.Pages.Admin.Events
                 return NotFound();
             }
 
-            EventInfo = await _eventsService.GetAsync(id.Value);
+            EventInfo = await _eventsService.GetWithProductsAsync(id.Value);
 
             if (EventInfo == null)
             {
@@ -47,7 +47,7 @@ namespace losol.EventManagement.Pages.Admin.Events
                 return Page();
             }
 
-            await _eventsService.UpdateAsync(EventInfo);
+            await _eventsService.UpdateEventWithProductsAsync(EventInfo);
 
             return RedirectToPage("./Index");
         }
