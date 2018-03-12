@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+
+  web:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=mssql;Database=EventDB;User Id=sa;Password=Passw0rd!
+      - SuperAdmin__Email=asdf@email.com
+      - SuperAdmin__Password Pa$$w0rd
+    ports:
+      - "5100:80"
+
+  mssql:
+    environment:
+      - MSSQL_SA_PASSWORD=Passw0rd!
+      - ACCEPT_EULA=Y
+      - MSSQL_PID=Developer
+    ports:
+      - "6433:1433"
