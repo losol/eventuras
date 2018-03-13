@@ -3,6 +3,8 @@ Asp.net core event management solution. In development now, using agile developm
 
 ## Quickstart
 
+**Prerequisites:** `docker-compose`, 4GB RAM allocated to docker.
+
 ```bash
 # Clone the repository
 git clone https://github.com/losol/EventManagement.git
@@ -20,7 +22,5 @@ Username: asdf@email.com
 Password: PaSsw0rd
 ```
 
-_<small>*Requires docker compose setup and at least 4GB RAM allocated to docker.</small>_
-
-Credits
+## Credits
 * Email templates from [https://www.sendwithus.com/resources/templates/neopolitan](SendWithUs.com)
