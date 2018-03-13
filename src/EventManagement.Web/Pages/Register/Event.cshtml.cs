@@ -22,12 +22,9 @@ namespace losol.EventManagement.Pages.Register
 {
 	public class EventRegistrationModel : PageModel
 	{
-		private readonly ApplicationDbContext _context;
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly ILogger<LoginModel> _logger;
 		private readonly IEmailSender _emailSender;
-		private readonly AppSettings _appSettings;
-		private readonly IHostingEnvironment _env;
 		private readonly IRenderService _renderService;
 		private readonly IEventInfoService _eventsService;
 		private readonly IPaymentMethodService _paymentMethodService;
@@ -35,24 +32,18 @@ namespace losol.EventManagement.Pages.Register
 
 
 		public EventRegistrationModel(
-			ApplicationDbContext context,
 			UserManager<ApplicationUser> userManager,
 			ILogger<LoginModel> logger,
 			IEmailSender emailSender,
-			IOptions<AppSettings> appSettings,
-			IHostingEnvironment env,
 			IRenderService renderService,
 			IEventInfoService eventsService,
 			IPaymentMethodService paymentMethodService,
 			IRegistrationService registrationService
 			)
 		{
-			_context = context;
 			_userManager = userManager;
 			_logger = logger;
 			_emailSender = emailSender;
-			_appSettings = appSettings.Value;
-			_env = env;
 			_renderService = renderService;
 			_eventsService = eventsService;
 			_paymentMethodService = paymentMethodService;
