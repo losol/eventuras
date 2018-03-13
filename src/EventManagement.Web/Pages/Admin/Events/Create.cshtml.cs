@@ -7,16 +7,17 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
+using losol.EventManagement.Services;
 
 namespace losol.EventManagement.Pages.Admin.Events
 {
     public class CreateModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IEventInfoService _eventsService;
 
-        public CreateModel(ApplicationDbContext context)
+		public CreateModel(IEventInfoService eventsService)
         {
-            _context = context;
+			_eventsService = eventsService;
         }
 
         public IActionResult OnGet()
@@ -34,8 +35,7 @@ namespace losol.EventManagement.Pages.Admin.Events
                 return Page();
             }
 
-            _context.EventInfos.Add(EventInfo);
-            await _context.SaveChangesAsync();
+			await _eventsService.AddAsync(EventInfo);
 
             return RedirectToPage("./Index");
         }
