@@ -102,19 +102,18 @@ namespace losol.EventManagement
             services.AddSingleton<IEmailSender, EmailSender>();
 
             // Register the Database Seed initializer
-            if(HostingEnvironment.IsProduction())
+            switch(HostingEnvironment)
             {
-                services.AddScoped<IDbInitializer, ProductionDbInitializer>();
+                case var env when env.IsProduction():
+                    services.AddScoped<IDbInitializer, ProductionDbInitializer>();
+                    break;
+                case var env when env.IsDevelopment():
+                    services.AddScoped<IDbInitializer, DevelopmentDbInitializer>();
+                    break;
+                default:
+                    services.AddScoped<IDbInitializer, DefaultDbInitializer>();
+                    break;
             }
-            else if(HostingEnvironment.IsDevelopment())
-            {
-                services.AddScoped<IDbInitializer, DevelopmentDbInitializer>();
-            }
-            else 
-            {
-                services.AddScoped<IDbInitializer, DefaultDbInitializer>();
-            }
-            
 
 			// Register our application services
 			services.AddScoped<IEventInfoService, EventInfoService>();
