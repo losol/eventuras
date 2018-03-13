@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace losol.EventManagement.Services
+namespace losol.EventManagement.Services.DbInitializers
 {
 	public interface IDbInitializer
 	{
