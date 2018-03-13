@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services;
+using losol.EventManagement.Services.DbInitializers;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -17,14 +18,17 @@ namespace losol.EventManagement
     { 
         public static async Task Main(string[] args)
         { 
+            // Build the application host
             var host = BuildWebHost(args);
-            var scope = host.Services.CreateScope();
-            var services = scope.ServiceProvider;
-            var context = services.GetRequiredService<ApplicationDbContext>();
-            var config = host.Services.GetRequiredService<IConfiguration>();
-            
-			await new DbInitializer(context, services, config).SeedAsync();
 
+            // Get a dbinitializer and use it to seed the database
+            using(var scope = host.Services.CreateScope())
+            {
+                var initializer = scope.ServiceProvider.GetService<IDbInitializer>();
+			    await initializer.SeedAsync();
+            }
+
+            // Run the application
             host.Run();
         }
 
