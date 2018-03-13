@@ -15,4 +15,7 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\EventManagement.Domain\EventManagement.Domain.csproj" />
+  </ItemGroup>
 </Project>
