@@ -15,6 +15,16 @@ namespace losol.EventManagement.Domain
     
         public string UserId {get;set;}
 
+        // From registration, should be Participant details, if Customer details
+        // does not exist.
+        public string CustomerName {get; set;}
+        public string CustomerEmail {get; set;}
+        public string CustomerVatNumber {get;set;}
+        public string CustomerInvoiceReference {get;set;}
+        public int? PaymentMethodId {get;set;}
+
+        public bool FreeRegistration { get; set; } = false;
+
         public DateTime OrderTime {get;set;}
 
         // Navigational properties
@@ -22,9 +32,9 @@ namespace losol.EventManagement.Domain
         public int RegistrationId {get;set;}
         public Registration Registration {get;set;}
 
-        public int PaymentMethodId {get;set;}
         public PaymentMethod PaymentMethod {get;set;}
 
+        // Navigational properties
         public List<OrderLine> OrderLines {get;set;}
 
     }

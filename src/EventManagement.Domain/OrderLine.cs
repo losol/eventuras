@@ -22,20 +22,17 @@ namespace losol.EventManagement.Domain
 
         public decimal Number {get;set;} = 1;
 
-        public string Title {get;set;}
-        public string Description {get;set;}
+        public string ProductName {get;set;}
+        public string ProductDescription {get;set;}
+
+        public string ProductVariationName {get;set;}
+        public string ProductVariationDescription {get;set;}
 
         public decimal Price {get;set;}
         public int VatPercent {get;set;} = 0;
 
         // Navigational properties
-        // "Child" of an eventinfo.
-
         public Order Order {get;set;}
-
-
-        
-
         public Product Product {get;set;}
 
 
