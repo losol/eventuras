@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+
+  web:
+    image: losol/event-management-web:${TAG:-latest}
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    depends_on:
+      - mssql
+
+  mssql:
+    image: microsoft/mssql-server-linux:2017-latest

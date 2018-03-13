@@ -11,8 +11,19 @@ Set environment variables before first run:
 * SendGridUser
 * SendGridKey
 
+## Docker
+
+Run the following to get the up and running on `localhost:5100`:
+```bash
+docker-compose build
+docker-compose up
+```
+
+Ensure you got docker compose installed. You may need to allocate 4GB to docker to get SQL Server working.
 
 ## Development
+
+### Using Docker
 
 To start building .NET apps you just need to download and install the [.NET SDK](https://www.microsoft.com/net/learn/get-started/)
 
