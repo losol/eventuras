@@ -13,14 +13,16 @@ namespace losol.EventManagement.Services.DbInitializers
 	public class DbInitializer : IDbInitializer
 	{
 		private readonly ApplicationDbContext _db;
-		private readonly IServiceProvider _serviceProvider;
+		private readonly RoleManager<IdentityRole> _roleManager;
+		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly IConfiguration _config;
 
-		public DbInitializer(ApplicationDbContext db, IServiceProvider service, IConfiguration config)
+		public DbInitializer(ApplicationDbContext db, RoleManager<IdentityRole> roleManager,  UserManager<ApplicationUser> userManager, IConfiguration config)
 		{
 			_db = db;
-			_serviceProvider = service;
 			_config = config;
+			_roleManager = roleManager;
+			_userManager = userManager;
 		}
 
 		public async Task SeedAsync()
@@ -28,21 +30,19 @@ namespace losol.EventManagement.Services.DbInitializers
 			_db.Database.Migrate();
 
 			// Add administrator role if it does not exist
-			var roleManager = _serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 			string[] roleNames = { "Admin", "SuperAdmin" };
 			IdentityResult roleResult;
 			foreach (var roleName in roleNames)
 			{
-				var roleExist = await roleManager.RoleExistsAsync(roleName);
+				var roleExist = await _roleManager.RoleExistsAsync(roleName);
 				if (!roleExist)
 				{
-					roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+					roleResult = await _roleManager.CreateAsync(new IdentityRole(roleName));
 				}
 			}
 
 			// Add super-admin if none exists
-			var userManager = _serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-			if (!userManager.GetUsersInRoleAsync("SuperAdmin").Result.Any())
+			if (!_userManager.GetUsersInRoleAsync("SuperAdmin").Result.Any())
 			{
 
 				if (String.IsNullOrEmpty(_config.GetSection("SuperAdmin")["Email"]))
@@ -55,21 +55,21 @@ namespace losol.EventManagement.Services.DbInitializers
 					throw new System.ArgumentException("SuperAdmin password not set. Please check install documentation");
 				}
 
-				var _user = await userManager.FindByEmailAsync(_config.GetSection("SuperAdmin")["Email"]);
+				var _user = await _userManager.FindByEmailAsync(_config.GetSection("SuperAdmin")["Email"]);
 
 				if (_user == null)
 				{
 					var superadmin = new ApplicationUser
-					{
+                    {
 						UserName = _config.GetSection("SuperAdmin")["Email"],
 						Email = _config.GetSection("SuperAdmin")["Email"],
 						EmailConfirmed = true
 					};
 					string UserPassword = _config.GetSection("SuperAdmin")["Password"];
-					var createSuperAdmin = await userManager.CreateAsync(superadmin, UserPassword);
+					var createSuperAdmin = await _userManager.CreateAsync(superadmin, UserPassword);
 					if (createSuperAdmin.Succeeded)
 					{
-						await userManager.AddToRoleAsync(superadmin, "SuperAdmin");
+						await _userManager.AddToRoleAsync(superadmin, "SuperAdmin");
 					}
 				}
 
