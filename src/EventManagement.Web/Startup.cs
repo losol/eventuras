@@ -100,6 +100,9 @@ namespace losol.EventManagement
             services.Configure<EmailSenderOptions>(Configuration);
             services.AddSingleton<IEmailSender, EmailSender>();
 
+            // Register the Database Seed initializer
+            services.AddScoped<IDbInitializer, DbInitializer>();
+
 			// Register our application services
 			services.AddScoped<IEventInfoService, EventInfoService>();
 			services.AddScoped<IPaymentMethodService, PaymentMethodService>();
