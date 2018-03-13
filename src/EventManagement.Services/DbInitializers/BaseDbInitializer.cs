@@ -1,7 +1,8 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
@@ -13,12 +14,15 @@ namespace losol.EventManagement.Services.DbInitializers
         protected readonly ApplicationDbContext _db;
 		private readonly RoleManager<IdentityRole> _roleManager;
 		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly IConfiguration _config;
+		private readonly DbInitializerOptions _config;
 
-		public BaseDbInitializer(ApplicationDbContext db, RoleManager<IdentityRole> roleManager,  UserManager<ApplicationUser> userManager, IConfiguration config)
+		public BaseDbInitializer(ApplicationDbContext db, 
+		                         RoleManager<IdentityRole> roleManager,  
+		                         UserManager<ApplicationUser> userManager, 
+		                         IOptions<DbInitializerOptions> config)
 		{
 			_db = db;
-			_config = config;
+			_config = config.Value ?? throw new ArgumentNullException(nameof(config));
 			_roleManager = roleManager;
 			_userManager = userManager;
 		}
@@ -40,28 +44,20 @@ namespace losol.EventManagement.Services.DbInitializers
 			// Add super-admin if none exists
 			if (!_userManager.GetUsersInRoleAsync("SuperAdmin").Result.Any())
 			{
+				_ = _config?.SuperAdmin?.Email ?? throw new ArgumentException("SuperAdmin email not set. Please check install documentation");
+				_ = _config?.SuperAdmin?.Password ?? throw new ArgumentException("SuperAdmin password not set. Please check install documentation");
 
-				if (string.IsNullOrEmpty(_config.GetSection("SuperAdmin")["Email"]))
-				{
-					throw new System.ArgumentException("SuperAdmin email not set. Please check install documentation");
-				}
+				var user = await _userManager.FindByEmailAsync(_config.SuperAdmin.Email);
 
-				if (string.IsNullOrEmpty(_config.GetSection("SuperAdmin")["Password"]))
-				{
-					throw new System.ArgumentException("SuperAdmin password not set. Please check install documentation");
-				}
-
-				var _user = await _userManager.FindByEmailAsync(_config.GetSection("SuperAdmin")["Email"]);
-
-				if (_user == null)
+				if (user == null)
 				{
 					var superadmin = new ApplicationUser
                     {
-						UserName = _config.GetSection("SuperAdmin")["Email"],
-						Email = _config.GetSection("SuperAdmin")["Email"],
+						UserName = _config.SuperAdmin.Email,
+						Email = _config.SuperAdmin.Email,
 						EmailConfirmed = true
 					};
-					string UserPassword = _config.GetSection("SuperAdmin")["Password"];
+					string UserPassword = _config.SuperAdmin.Password;
 					var createSuperAdmin = await _userManager.CreateAsync(superadmin, UserPassword);
 					if (createSuperAdmin.Succeeded)
 					{

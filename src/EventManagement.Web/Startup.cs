@@ -35,7 +35,7 @@ namespace losol.EventManagement
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
+			services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
                 // sqlite: options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))); 
@@ -102,6 +102,7 @@ namespace losol.EventManagement
             services.AddSingleton<IEmailSender, EmailSender>();
 
             // Register the Database Seed initializer
+            services.Configure<DbInitializerOptions>(Configuration);
             switch(HostingEnvironment)
             {
                 case var env when env.IsProduction():
