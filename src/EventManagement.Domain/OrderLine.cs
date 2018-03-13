@@ -31,6 +31,8 @@ namespace losol.EventManagement.Domain
         public decimal Price {get;set;}
         public int VatPercent {get;set;} = 0;
 
+        public string Comments {get;set;}
+
         // Navigational properties
         public Order Order {get;set;}
         public Product Product {get;set;}

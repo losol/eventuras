@@ -23,9 +23,9 @@ namespace losol.EventManagement.Domain
         public string CustomerInvoiceReference {get;set;}
         public int? PaymentMethodId {get;set;}
 
-        public bool FreeRegistration { get; set; } = false;
-
         public DateTime OrderTime {get;set;}
+
+        public string Comments {get;set;}
 
         // Navigational properties
         
