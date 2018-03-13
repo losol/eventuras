@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Globalization;
 using losol.EventManagement.Infrastructure;
+using losol.EventManagement.Services.DbInitializers;
 
 namespace losol.EventManagement
 {
@@ -99,6 +100,20 @@ namespace losol.EventManagement
             // Email configuration
             services.Configure<EmailSenderOptions>(Configuration);
             services.AddSingleton<IEmailSender, EmailSender>();
+
+            // Register the Database Seed initializer
+            switch(HostingEnvironment)
+            {
+                case var env when env.IsProduction():
+                    services.AddScoped<IDbInitializer, ProductionDbInitializer>();
+                    break;
+                case var env when env.IsDevelopment():
+                    services.AddScoped<IDbInitializer, DevelopmentDbInitializer>();
+                    break;
+                default:
+                    services.AddScoped<IDbInitializer, DefaultDbInitializer>();
+                    break;
+            }
 
 			// Register our application services
 			services.AddScoped<IEventInfoService, EventInfoService>();
