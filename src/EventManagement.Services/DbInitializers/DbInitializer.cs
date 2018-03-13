@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace losol.EventManagement.Services
+namespace losol.EventManagement.Services.DbInitializers
 {
 	public class DbInitializer : IDbInitializer
 	{

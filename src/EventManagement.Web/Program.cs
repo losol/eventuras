@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services;
+using losol.EventManagement.Services.DbInitializers;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
