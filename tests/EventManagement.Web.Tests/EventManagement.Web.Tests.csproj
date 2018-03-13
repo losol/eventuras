@@ -14,9 +14,16 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.0.1" />
+    <PackageReference Include="Moq" Version="4.8.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\EventManagement.Web\EventManagement.Web.csproj" />
+    <ProjectReference Include="..\..\src\EventManagement.Infrastructure\EventManagement.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\EventManagement.Services\EventManagement.Services.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Pages\" />
+    <Folder Include="Pages\Register\" />
   </ItemGroup>
 </Project>
