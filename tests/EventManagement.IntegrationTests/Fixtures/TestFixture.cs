@@ -52,7 +52,7 @@ namespace losol.EventManagement.IntegrationTests.Fixtures
             manager.FeatureProviders.Add(new ControllerFeatureProvider());
             manager.FeatureProviders.Add(new ViewComponentFeatureProvider());
             services.AddSingleton(manager);
-            services.AddDbContext<ApplicationDbContext>(Utilities.TestingDbContextOptions());
+            services.AddDbContext<ApplicationDbContext>(options => Utilities.TestingDbContextOptions());
         }
     }
 }
