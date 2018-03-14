@@ -9,11 +9,7 @@
     var heroStyle = "";
     if (Model.EventInfo.HasFeaturedImage)
     {
-    heroStyle = $@"
-        background: url('{Model.EventInfo.FeaturedImageUrl}');
-        background-size: cover;
-        background-position: center center;
-        ";
+        <div class="container-fluid"><img src="@Model.EventInfo.FeaturedImageUrl" class="w-100"></div>
     }
 }   
 
