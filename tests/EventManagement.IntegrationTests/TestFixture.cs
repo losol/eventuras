@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using losol.EventManagement.Infrastructure;
 
-namespace losol.EventManagement.Web.Tests
+namespace losol.EventManagement.IntegrationTests
 {
     // A test fixture which hosts the target project (project we wish to test) in an in-memory server.
     public class TestFixture<TStartup> : IDisposable

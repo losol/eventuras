@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace losol.EventManagement.Web.Tests.Pages.Register
+namespace losol.EventManagement.IntegrationTests.Pages.Register
 {
     public class EventPageTests : IClassFixture<TestFixture<Startup>>
     {

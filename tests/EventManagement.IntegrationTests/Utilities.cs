@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using losol.EventManagement.Infrastructure;
 
-namespace losol.EventManagement.Web.Tests
+namespace losol.EventManagement.IntegrationTests
 {
 	public static class Utilities
 	{
