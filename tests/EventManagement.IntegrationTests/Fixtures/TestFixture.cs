@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 
 using losol.EventManagement.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace losol.EventManagement.IntegrationTests.Fixtures
 {
@@ -18,25 +19,24 @@ namespace losol.EventManagement.IntegrationTests.Fixtures
     {
         private readonly TestServer _server;
         public HttpClient Client { get; }
+        public IServiceProvider Services => _server.Host.Services;
 
-        public TestFixture() : this(Path.Combine("src"))
+		public TestFixture()
         {
+			var startupAssembly = typeof(TStartup).GetTypeInfo().Assembly;
+
+			var builder = new WebHostBuilder()
+				.UseContentRoot("../../../../../src/EventManagement.Web")
+				.ConfigureServices(InitializeServices)
+				.UseEnvironment("Development")
+				.UseStartup(typeof(TStartup));
+
+			_server = new TestServer(builder);
+
+			Client = _server.CreateClient();
+			Client.BaseAddress = _server.BaseAddress;
         }
 
-        protected TestFixture(string relativeTargetProjectParentDir)
-        {
-            var startupAssembly = typeof(TStartup).GetTypeInfo().Assembly;
-
-            var builder = new WebHostBuilder()
-                .ConfigureServices(InitializeServices)
-                .UseEnvironment("Development")
-                .UseStartup(typeof(TStartup));
-
-            _server = new TestServer(builder);
-
-            Client = _server.CreateClient();
-            Client.BaseAddress = _server.BaseAddress;
-        }
 
         public void Dispose()
         {
@@ -46,13 +46,18 @@ namespace losol.EventManagement.IntegrationTests.Fixtures
 
         protected virtual void InitializeServices(IServiceCollection services)
         {
+			services.AddEntityFrameworkInMemoryDatabase().BuildServiceProvider();
+			services.AddDbContext<ApplicationDbContext>(options => {
+				options.UseInMemoryDatabase("losol-eventmanagement-itests");
+			});
+
             var startupAssembly = typeof(TStartup).GetTypeInfo().Assembly;
             var manager = new ApplicationPartManager();
             manager.ApplicationParts.Add(new AssemblyPart(startupAssembly));
             manager.FeatureProviders.Add(new ControllerFeatureProvider());
             manager.FeatureProviders.Add(new ViewComponentFeatureProvider());
             services.AddSingleton(manager);
-            services.AddDbContext<ApplicationDbContext>(options => Utilities.TestingDbContextOptions());
         }
+
     }
 }
