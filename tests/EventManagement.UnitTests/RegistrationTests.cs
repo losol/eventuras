@@ -1,5 +1,7 @@
 ﻿using Xunit;
 
+using losol.EventManagement.Domain;
+
 namespace losol.EventManagement.UnitTests
 {
 	public class RegistrationTests
