@@ -25,7 +25,11 @@ namespace losol.EventManagement.Domain
 
         public DateTime OrderTime {get;set;}
 
+        // Comments are from the user registered
         public string Comments {get;set;}
+
+        // Log is information from the system. Ie registration time and user.
+        public string Log {get;set;}
 
         // Navigational properties
         public Registration Registration {get;set;}
