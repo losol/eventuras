@@ -12,5 +12,8 @@ namespace losol.EventManagement.Services
 
 		Task<List<EventInfo>> GetFeaturedEventsAsync();
 		Task<List<EventInfo>> GetUpcomingEventsAsync();
+
+		Task<bool> AddAsync(EventInfo info);
+		Task<bool> UpdateEventWithProductsAsync(EventInfo info);
 	}
 }

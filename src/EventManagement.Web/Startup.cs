@@ -35,8 +35,12 @@ namespace losol.EventManagement
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-			services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+              options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+              options.EnableSensitiveDataLogging(HostingEnvironment.IsDevelopment());
+            });
+
 
                 // sqlite: options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))); 
 
@@ -120,6 +124,7 @@ namespace losol.EventManagement
 			services.AddScoped<IEventInfoService, EventInfoService>();
 			services.AddScoped<IPaymentMethodService, PaymentMethodService>();
 			services.AddScoped<IRegistrationService, RegistrationService>();
+			services.AddScoped<IProductsService, ProductsService>();
 
             // Add Page render Service
             //services.AddScoped<IViewRenderService, ViewRenderService>();
