@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace losol.EventManagement.Domain
 {
-
-
     public class Order
     {
         [Required]
         public int OrderId { get; set; }
-    
         public string UserId {get;set;}
+        public int RegistrationId {get;set;}
+        public int EventInfoId {get;set;}
+        public int OrderStatusId {get;set;}
 
         // From registration, should be Participant details, if Customer details
         // does not exist.
@@ -28,13 +28,11 @@ namespace losol.EventManagement.Domain
         public string Comments {get;set;}
 
         // Navigational properties
-        
-        public int RegistrationId {get;set;}
         public Registration Registration {get;set;}
-
         public PaymentMethod PaymentMethod {get;set;}
+        public EventInfo EventInfo {get;set;}
+        public OrderStatus OrderStatus {get;set;}
 
-        // Navigational properties
         public List<OrderLine> OrderLines {get;set;}
 
     }

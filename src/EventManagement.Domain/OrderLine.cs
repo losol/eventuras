@@ -12,15 +12,12 @@ namespace losol.EventManagement.Domain
     {
         [Required]
         public int OrderLineId { get; set;}
-        
         [Required]
         public int OrderId {get;set;}
 
         public int ProductId {get;set;}
-
         public int ProductVariantId {get;set;}
-
-        public decimal Number {get;set;} = 1;
+        public decimal Quantity {get;set;} = 1;
 
         public string ProductName {get;set;}
         public string ProductDescription {get;set;}
@@ -29,7 +26,7 @@ namespace losol.EventManagement.Domain
         public string ProductVariationDescription {get;set;}
 
         public decimal Price {get;set;}
-        public int VatPercent {get;set;} = 0;
+        public decimal VatPercent {get;set;} = 0;
 
         public string Comments {get;set;}
 
