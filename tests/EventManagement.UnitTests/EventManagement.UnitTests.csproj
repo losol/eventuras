@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <RootNamespace>losol.EventManagement.Domain.Tests</RootNamespace>
-    <AssemblyName>losol.EventManagement.Domain.Tests</AssemblyName>
+    <RootNamespace>losol.EventManagement.UnitTests</RootNamespace>
+    <AssemblyName>losol.EventManagement.UnitTests</AssemblyName>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
