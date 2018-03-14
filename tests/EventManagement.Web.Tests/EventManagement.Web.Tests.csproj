@@ -6,6 +6,7 @@
     <RootNamespace>losol.EventManagement.Web.Tests</RootNamespace>
     <AssemblyName>losol.EventManagement.Web.Tests</AssemblyName>
     <IsPackable>false</IsPackable>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
   </PropertyGroup>
 
   <ItemGroup>
