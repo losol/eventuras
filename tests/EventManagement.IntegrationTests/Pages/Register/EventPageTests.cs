@@ -18,11 +18,10 @@ namespace losol.EventManagement.IntegrationTests.Pages.Register
         private readonly HttpClient _client;
 		private readonly TestFixture<Startup> _fixture;
 
-		public EventPageTests(TestFixture<Startup> fixture, Xunit.Abstractions.ITestOutputHelper output)
+		public EventPageTests(TestFixture<Startup> fixture)
         {
             _client = fixture.Client;
 			_fixture = fixture;
-			_output = output;
         }
 
         [Fact]
@@ -49,34 +48,13 @@ namespace losol.EventManagement.IntegrationTests.Pages.Register
         public async Task Request_ReturnsEventDetails_WhenEventidIsValid()
         {
             // Arrange
-            var info = new EventInfo { 
-                EventInfoId = 1,
-                Title = "Just another event",
-                Description = "With free food and swag",
-                DateStart = DateTime.UtcNow.AddDays(3),
-                DateEnd = DateTime.UtcNow.AddDays(5),
-                Published = true
-            };
-
-			var _db = _fixture.Services.GetRequiredService<ApplicationDbContext>();
-            _db.EventInfos.Add(info);
-            await _db.SaveChangesAsync();
-            
 
             // Act
             var response = await _client.GetAsync("/Register/Event/1");
 
-
-			var responseString = await response.Content.ReadAsStringAsync();
-			_output.WriteLine(responseString);
-			_output.WriteLine(_db.EventInfos.Count()+"");
-
-
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
-
-		private readonly Xunit.Abstractions.ITestOutputHelper _output;
 
     }
 }
