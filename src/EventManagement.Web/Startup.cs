@@ -33,13 +33,14 @@ namespace losol.EventManagement
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public virtual void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-			{
-				options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-				options.EnableSensitiveDataLogging(HostingEnvironment.IsDevelopment());
-			});
+            {
+              options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+              options.EnableSensitiveDataLogging(HostingEnvironment.IsDevelopment());
+            });
+
 
                 // sqlite: options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))); 
 
@@ -105,6 +106,7 @@ namespace losol.EventManagement
             services.AddSingleton<IEmailSender, EmailSender>();
 
             // Register the Database Seed initializer
+            services.Configure<DbInitializerOptions>(Configuration);
             switch(HostingEnvironment)
             {
                 case var env when env.IsProduction():
@@ -136,7 +138,7 @@ namespace losol.EventManagement
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
