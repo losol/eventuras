@@ -17,7 +17,7 @@ namespace losol.EventManagement.Domain
 
         public int ProductId {get;set;}
         public int ProductVariantId {get;set;}
-        public decimal Quantity {get;set;} = 1;
+        public int Quantity {get;set;} = 1;
 
         public string ProductName {get;set;}
         public string ProductDescription {get;set;}

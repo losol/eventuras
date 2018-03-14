@@ -8,6 +8,15 @@ namespace losol.EventManagement.Domain
 {
     public class Order
     {
+        public enum OrderStatus
+        {
+        Draft,
+        Verified,
+        Invoiced,
+        Paid,
+        Refunded
+        }
+
         [Required]
         public int OrderId { get; set; }
         public string UserId {get;set;}
@@ -35,7 +44,7 @@ namespace losol.EventManagement.Domain
         public Registration Registration {get;set;}
         public PaymentMethod PaymentMethod {get;set;}
         public EventInfo EventInfo {get;set;}
-        public OrderStatus OrderStatus {get;set;}
+        public OrderStatus Status { get; set; } = OrderStatus.Draft;
 
         public List<OrderLine> OrderLines {get;set;}
 
