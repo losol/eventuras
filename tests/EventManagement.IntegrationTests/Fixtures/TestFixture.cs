@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using losol.EventManagement.Infrastructure;
 
-namespace losol.EventManagement.IntegrationTests
+namespace losol.EventManagement.IntegrationTests.Fixtures
 {
     // A test fixture which hosts the target project (project we wish to test) in an in-memory server.
     public class TestFixture<TStartup> : IDisposable
@@ -52,6 +52,7 @@ namespace losol.EventManagement.IntegrationTests
             manager.FeatureProviders.Add(new ControllerFeatureProvider());
             manager.FeatureProviders.Add(new ViewComponentFeatureProvider());
             services.AddSingleton(manager);
+            services.AddDbContext<ApplicationDbContext>(Utilities.TestingDbContextOptions());
         }
     }
 }
