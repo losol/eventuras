@@ -33,7 +33,7 @@ namespace losol.EventManagement.Domain
 		// Navigational properties
 		public Order Order { get; set; }
 		public Product Product { get; set; }
-
+		public ProductVariant ProductVariant { get; set; }
 
 	}
 }
