@@ -7,22 +7,23 @@
     <UserSecretsId>aspnet-losol.EventManagement-74C0FE44-3444-4386-9785-6815A715D4AB</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MailKit" Version="2.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.2" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" PrivateAssets="All" />
-    <PackageReference Include="Sendgrid" Version="9.9.0" />
-    <PackageReference Include="Mapster" Version="3.1.8" />
+    <PackageReference Include="MailKit" Version="2.0.1"/>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.2" PrivateAssets="All"/>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" PrivateAssets="All"/>
+    <PackageReference Include="Sendgrid" Version="9.9.0"/>
+    <PackageReference Include="Mapster" Version="3.1.8"/>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.7.0"/>
   </ItemGroup>
   <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.2" />
-    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.1" />
-    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
-    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.1" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.2"/>
+    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.1"/>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3"/>
+    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.1"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EventManagement.Services\EventManagement.Services.csproj" />
-    <ProjectReference Include="..\EventManagement.Infrastructure\EventManagement.Infrastructure.csproj" />
-    <ProjectReference Include="..\EventManagement.Domain\EventManagement.Domain.csproj" />
+    <ProjectReference Include="..\EventManagement.Services\EventManagement.Services.csproj"/>
+    <ProjectReference Include="..\EventManagement.Infrastructure\EventManagement.Infrastructure.csproj"/>
+    <ProjectReference Include="..\EventManagement.Domain\EventManagement.Domain.csproj"/>
   </ItemGroup>
 </Project>
