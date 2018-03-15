@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -65,6 +65,79 @@ namespace losol.EventManagement.Domain
 		public void Verify()
 		{
 			Verified = true;
+		}
+
+		public bool HasOrder => Order == null;
+
+		public void CreateOrder(IEnumerable<Product> products, IEnumerable<ProductVariant> variants)
+		{
+			_ = products ?? throw new ArgumentNullException(nameof(products));
+			if(Order != null)
+			{
+				throw new InvalidOperationException("This registration already has an order.");
+			}
+
+
+			if(products.Where(p => p.EventInfoId != EventInfoId).Any())
+			{
+				throw new ArgumentException(
+					message: "All the products must belong to the event being registered for.", 
+					paramName: nameof(products)
+				);
+			}
+			if(variants != null)
+			{
+				if (variants.Where(v => !products.Select(p => p.ProductId).Contains(v.ProductId)).Any())
+				{
+					throw new ArgumentException(
+						message: "All the product-variants must belong to ",
+						paramName: nameof(products)
+					);
+				}	
+			}
+
+			var orderLines = products.Select(p =>
+			{
+				var v = variants?.Where(var => var.ProductId == p.ProductId).SingleOrDefault();
+				return new OrderLine
+				{
+					ProductId = p.ProductId,
+					ProductVariantId = v?.ProductVariantId,
+					Price = v?.Price ?? p.Price,
+					VatPercent = v?.VatPercent ?? p.VatPercent,
+
+					ProductName = p.Name,
+					ProductDescription = p.Description,
+
+					ProductVariantName = v?.Name,
+					ProductVariantDescription = v?.Description,
+
+					// Comments
+					// Quantity
+				};
+			}).ToList();
+
+			var order = new Order
+			{
+				CustomerName = CustomerName ?? ParticipantName,
+
+				CustomerEmail = CustomerEmail,
+				CustomerVatNumber = CustomerVatNumber,
+				CustomerInvoiceReference = CustomerInvoiceReference,
+
+				PaymentMethodId = PaymentMethodId,
+				RegistrationId = RegistrationId,
+
+				OrderLines = orderLines
+			};
+			order.AddLog();
+			this.Order = order;
+		}
+		public void CreateOrder(IEnumerable<Product> products) => CreateOrder(products, null);
+
+		public void CreateRefund()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
