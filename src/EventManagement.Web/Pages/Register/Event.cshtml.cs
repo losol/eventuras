@@ -211,15 +211,26 @@ namespace losol.EventManagement.Pages.Register
 
 			var newRegistration = Registration.Adapt<Registration>();
 			newRegistration.VerificationCode = generateRandomPassword(6);
-			await _registrationService.CreateRegistrationForUser(
-				newRegistration,
-				registeredProducts.Select(rp => rp.ProductId)
-								  .ToArray(),
-				Registration.Products
-							.Where(p => p.SelectedVariantId.HasValue)
-							.Select(p => p.SelectedVariantId.Value)
-							.ToArray()
-			);
+
+			// If the eventinfo has products, then register and make order
+			if (EventInfo.Products.Any()) {
+				await _registrationService.CreateRegistrationWithOrder(
+					newRegistration,
+					registeredProducts.Select(rp => rp.ProductId)
+									.ToArray(),
+					Registration.Products
+								.Where(p => p.SelectedVariantId.HasValue)
+								.Select(p => p.SelectedVariantId.Value)
+								.ToArray()
+				);
+			} 
+
+			// Else the eventinfo has no products, just register
+			else {
+				await _registrationService.CreateRegistration(
+					newRegistration
+				);
+			}
 
 			var confirmEmail = new ConfirmEventRegistration()
 			{

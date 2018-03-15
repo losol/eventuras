@@ -38,7 +38,21 @@ namespace losol.EventManagement.Services
 			       		    .SingleOrDefaultAsync();
 		}
 
-		public async Task<int> CreateRegistrationForUser(Registration registration, int[] productIds, int[] variantIds)
+		public async Task<int> CreateRegistration(Registration registration)
+		{
+			// Check if registration exists
+			var existingRegistration = await GetAsync(registration.UserId, registration.EventInfoId);
+			if(existingRegistration != null)
+			{
+				throw new InvalidOperationException("The user can only register once!");
+			}
+
+			// Create the registration
+			await _db.Registrations.AddAsync(registration);
+			return await _db.SaveChangesAsync();
+		}
+
+		public async Task<int> CreateRegistrationWithOrder(Registration registration, int[] productIds, int[] variantIds)
 		{
 			// Check if registration exists
 			var existingRegistration = await GetAsync(registration.UserId, registration.EventInfoId);
@@ -65,8 +79,8 @@ namespace losol.EventManagement.Services
 			return await _db.SaveChangesAsync();
 		}
 
-		public Task<int> CreateRegistrationForUser(Registration registration, int[] productIds) =>
-			CreateRegistrationForUser(registration, productIds, null);
+		public Task<int> CreateRegistrationWithOrder(Registration registration, int[] productIds) =>
+			CreateRegistrationWithOrder(registration, productIds, null);
 
 		public async Task<int> SetRegistrationAsVerified(int id)
 		{

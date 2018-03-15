@@ -85,16 +85,9 @@ namespace losol.EventManagement.Domain
 		[Display(Name = "Antall deltakere", Description = "Maksimalt antall deltakere")]
 		public int MaxParticipants { get; set; } = 0; //maks antall deltakere
 
-		[Display(Name = "Gratis?")]
-		public bool Free { get; set; } = false;
-
 		[Display(Name = "Pris")]
 		[DisplayFormat(DataFormatString = "{0:0}", ApplyFormatInEditMode = true)]
 		public decimal? Price { get; set; }
-
-		[Display(Name = "Mva-sats")]
-		[DisplayFormat(DataFormatString = "{0:0}", ApplyFormatInEditMode = true)]
-		public decimal VatPercent { get; set; } = 0;  //ie0% or 25%
 
 		[Display(Name = "Diplomtekst")]
 		[DataType(DataType.MultilineText)]
@@ -106,11 +99,9 @@ namespace losol.EventManagement.Domain
 		[Display(Name = "Bildetekst for arrangementet (Husk fotokreditering)")]
 		public string FeaturedImageCaption { get; set; }
 
-
 		// Navigational properties
 		public List<Registration> Registrations { get; set; }
 		public List<Product> Products { get; set; }
-
 
 		public bool HasFeaturedImage => !string.IsNullOrWhiteSpace(FeaturedImageUrl);
 
