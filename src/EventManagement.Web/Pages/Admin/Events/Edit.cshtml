@@ -493,41 +493,12 @@ $("#EventInfo_Title").keyup(function(){
 
 })();
 </script>
-<script src="https://cdn.ckeditor.com/ckeditor5/1.0.0-alpha.2/classic/ckeditor.js"></script>
+<script src="/assets/lib/ckeditor/ckeditor.js"></script>
 <script>
-    ClassicEditor
-        .create( document.querySelector( '#EventInfo_MoreInformation' ) )
-        .then( editor => {
-            console.log( editor );
-        } )
-        .catch( error => {
-            console.error( error );
-        } );
-        
-    ClassicEditor
-        .create( document.querySelector( '#EventInfo_Program' ) ) 
-        .then( editor => {
-            console.log( editor );
-        } )
-        .catch( error => {
-            console.error( error );
-        } );
-    ClassicEditor
-        .create( document.querySelector( '#EventInfo_PracticalInformation' ) ) 
-        .then( editor => {
-            console.log( editor );
-        } )
-        .catch( error => {
-            console.error( error );
-        } );
+    CKEDITOR.replace( 'EventInfo_MoreInformation' );
+    CKEDITOR.replace( 'EventInfo_Program' );
+    CKEDITOR.replace( 'EventInfo_PracticalInformation' );
+    CKEDITOR.replace( 'EventInfo_WelcomeLetter' );
 
-            ClassicEditor
-        .create( document.querySelector( '#EventInfo_WelcomeLetter' ) ) 
-        .then( editor => {
-            console.log( editor );
-        } )
-        .catch( error => {
-            console.error( error );
-        } );
 </script>
 }
