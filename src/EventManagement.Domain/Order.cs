@@ -44,5 +44,16 @@ namespace losol.EventManagement.Domain
 
 		public List<OrderLine> OrderLines { get; set; }
 
+
+		public void AddLog(string text = null)
+		{
+			var logText = $"{OrderTime.ToString("u")}: {Status}";
+			if(!string.IsNullOrWhiteSpace(text))
+			{
+				text += $": {text}";
+			}
+			Log += logText + "\n";
+		}
+
 	}
 }
