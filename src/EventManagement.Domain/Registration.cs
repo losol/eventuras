@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -59,6 +59,7 @@ namespace losol.EventManagement.Domain
 		public EventInfo EventInfo { get; set; }
 		public ApplicationUser User { get; set; }
 		public PaymentMethod PaymentMethod { get; set; }
+		public Order Order { get; set; }
 
 
 		public void Verify()
