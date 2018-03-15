@@ -33,5 +33,11 @@ namespace losol.EventManagement.Services
 					  .AsNoTracking()
 					  .ToListAsync();
 		}
+
+		public Task<List<ApplicationUser>> GetUsersByProduct(int productId)
+		{
+			// TODO JUST TESTING
+			return _db.ApplicationUsers.ToListAsync();
+		}
 	}
 }
