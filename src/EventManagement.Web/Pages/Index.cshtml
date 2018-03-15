@@ -17,17 +17,36 @@
     </div>
 </div>
 
-<div class="container min-height-50" id="featured">
-    <div class="row">
-    @foreach (var item in featuredEvents)
-        {
-            <div class="col-md-6">
-                <h2>@item.Title</h2>
-                <p>@item.Description</p>
-                <p class="small">@item.DateStart.ToString()</p>
-                <p><a asp-page="./Events/Details" asp-route-id="@item.EventInfoId" class="btn btn-secondary link-decoration-none" role="button">Vis kurset »</a></p>
+<div class="bg-gray-300"></div>
+    <div class="container min-height-50" id="featured">
+        <div class="row">
+        @foreach (var item in featuredEvents)
+            {
+                <div class="col-md-6 p-1">
+                    <div class="card bg-white border-0 h-100">
+                        <div class="card-body">
+                        <h3>@item.Title</h3>
+                        <p>@item.Description
+                        <p class="text-muted">
+                            @* Location *@
+                            @if (item.Location != null) {
+                                <span> <i class="material-icons align-top">location_on</i>  @item.Location</span>
+                            }
+                            
+                            @* Dates *@
+                            @if (item.DateStart != null) {
+                                <i class="material-icons align-top">date_range</i>
+                                @String.Format("{0:dd/MM/yyyy}", item.DateStart)
+                            }
+                            @if (item.DateEnd != null) {
+                                    <span> - @String.Format("{0:dd/MM/yyyy}", item.DateEnd)</span>
+                                }
+                            </p>
+                        <p><a asp-page="./Events/Details" asp-route-id="@item.EventInfoId" class="btn btn-secondary link-decoration-none" role="button">Vis kurset »</a></p>
+                    </div>
+                </div>  
             </div>
-        
-        }
-        </div>
+            }
+            </div>
+    </div>
 </div>
