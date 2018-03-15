@@ -27,14 +27,14 @@ namespace losol.EventManagement.Infrastructure
 
         }
 
-        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-        public DbSet<EventInfo> EventInfos { get; set; }
-        public DbSet<Registration> Registrations { get; set; }
-        public DbSet<PaymentMethod> PaymentMethods { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<ProductVariant> ProductVariants { get; set; }
-		public DbSet<Order> Orders { get; set; }
-		public DbSet<OrderLine> OrderLines { get; set; }
+        public DbSet<losol.EventManagement.Domain.ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<losol.EventManagement.Domain.EventInfo> EventInfos { get; set; }
+        public DbSet<losol.EventManagement.Domain.Registration> Registrations { get; set; }
+        public DbSet<losol.EventManagement.Domain.PaymentMethod> PaymentMethods { get; set; }
+        public DbSet<losol.EventManagement.Domain.Product> Products { get; set; }
+        public DbSet<losol.EventManagement.Domain.ProductVariant> ProductVariants { get; set; }
+		public DbSet<losol.EventManagement.Domain.Order> Orders { get; set; }
+		public DbSet<losol.EventManagement.Domain.OrderLine> OrderLines { get; set; }
 
 		public void DetachAllEntities()
 		{
