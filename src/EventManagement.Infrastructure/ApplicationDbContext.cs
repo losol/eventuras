@@ -33,6 +33,8 @@ namespace losol.EventManagement.Infrastructure
         public DbSet<PaymentMethod> PaymentMethods { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductVariant> ProductVariants { get; set; }
+		public DbSet<Order> Orders { get; set; }
+		public DbSet<OrderLine> OrderLines { get; set; }
 
 		public void DetachAllEntities()
 		{
