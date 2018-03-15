@@ -12,6 +12,7 @@ namespace losol.EventManagement.Services
 	{
 		private readonly ApplicationDbContext _db;
 
+
 		public RegistrationService(ApplicationDbContext db)
 		{
 			_db = db;
@@ -37,7 +38,7 @@ namespace losol.EventManagement.Services
 			       		    .SingleOrDefaultAsync();
 		}
 
-		public async Task<int> CreateRegistrationForUser(Registration registration)
+		public async Task<int> CreateRegistration(Registration registration)
 		{
 			// Check if registration exists
 			var existingRegistration = await GetAsync(registration.UserId, registration.EventInfoId);
@@ -51,11 +52,42 @@ namespace losol.EventManagement.Services
 			return await _db.SaveChangesAsync();
 		}
 
+		public async Task<int> CreateRegistrationWithOrder(Registration registration, int[] productIds, int[] variantIds)
+		{
+			// Check if registration exists
+			var existingRegistration = await GetAsync(registration.UserId, registration.EventInfoId);
+			if(existingRegistration != null)
+			{
+				throw new InvalidOperationException("The user can only register once!");
+			}
+
+			var products = await _db.Products
+									.Where(p => productIds.Contains(p.ProductId))
+									.Include(p => p.ProductVariants)
+									.AsNoTracking()
+									.ToListAsync();
+
+			// Create an order for the registration
+			registration.CreateOrder(
+				products,
+				products.SelectMany(p => p.ProductVariants)
+						.Where(v => variantIds?.Contains(v.ProductVariantId) ?? false)
+			);
+
+			// Create the registration
+			await _db.Registrations.AddAsync(registration);
+			return await _db.SaveChangesAsync();
+		}
+
+		public Task<int> CreateRegistrationWithOrder(Registration registration, int[] productIds) =>
+			CreateRegistrationWithOrder(registration, productIds, null);
+
 		public async Task<int> SetRegistrationAsVerified(int id)
 		{
 			var registration = await GetAsync(id);
 			registration.Verify();
 			return await _db.SaveChangesAsync();
 		}
+
 	}
 }

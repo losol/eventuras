@@ -46,9 +46,17 @@
                 <span asp-validation-for="Registration.ParticipantCity" class="text-danger"></span>
             </div>
 
+            @if (Model.EventInfo.InformationRequest != null ) {
+                    <div class="form-group">
+                        <label asp-for="Registration.Notes">@Model.EventInfo.InformationRequest</label>
+                        <textarea asp-for="Registration.Notes" class="form-control"></textarea>
+                        <span asp-validation-for="Registration.CustomerInvoiceReference" class="text-danger"></span>
+                    </div>
+            }
 
-               @* START PAYMENT  *@
-            @if (!Model.EventInfo.Free) {
+
+            @* START PAYMENT  *@
+            @if (Model.EventInfo.Products.Any()) {
             <div id="payment py-5" > 
                 <div class="form-group"><!-- Payment method -->
                     <label asp-for="Registration.PaymentMethodId"></label><br>
@@ -91,16 +99,6 @@
                 </div>
             </div>
             }
-
-            @if (Model.EventInfo.InformationRequest != null ) {
-                    <div class="form-group">
-                        <label asp-for="Registration.Notes">@Model.EventInfo.InformationRequest</label>
-                        <textarea asp-for="Registration.Notes" class="form-control"></textarea>
-                        <span asp-validation-for="Registration.CustomerInvoiceReference" class="text-danger"></span>
-                    </div>
-            }
-
-
 
             
             @if(Model.Products.Any()){

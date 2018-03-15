@@ -19,7 +19,6 @@ namespace losol.EventManagement.IntegrationTests
 					Published = true,
 					OnDemand = true,
 					Price = 1000,
-					VatPercent = 5,
 					City = "Bodø",
 					Products = new List<Product> 
 					{
@@ -72,7 +71,6 @@ namespace losol.EventManagement.IntegrationTests
 					Published = true,
 					OnDemand = true,
 					Price = 1000,
-					VatPercent = 5,
 					City = "Bodø",
 					Products = new List<Product>
 					{
@@ -106,7 +104,6 @@ namespace losol.EventManagement.IntegrationTests
 					Published = true,
 					OnDemand = true,
 					Price = 1000,
-					VatPercent = 5,
 					City = "Bodø",
 				},
 

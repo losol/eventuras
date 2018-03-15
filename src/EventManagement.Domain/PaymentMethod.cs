@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace losol.EventManagement.Domain
 {
-    public class PaymentMethod
-    {
-        public int PaymentMethodId { get; set; }
+	public class PaymentMethod
+	{
+		public int PaymentMethodId { get; set; }
 
-		public string Code {get;set;}
+		public string Code { get; set; }
 
-        [Required]
-        [StringLength(75)]
-        [Display(Name = "Navn på betalingsmetode")]
-        public string Name { get; set; }
+		[Required]
+		[StringLength(75)]
+		[Display(Name = "Navn på betalingsmetode")]
+		public string Name { get; set; }
 
-		public bool Active {get;set;} = false;
+		public bool Active { get; set; } = false;
 
-    }
+	}
 }

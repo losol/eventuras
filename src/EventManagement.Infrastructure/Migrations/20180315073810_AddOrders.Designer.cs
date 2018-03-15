@@ -12,9 +12,10 @@ using System;
 namespace losol.EventManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180315073810_AddOrders")]
+    partial class AddOrders
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,6 +102,8 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.Property<string>("FeaturedImageUrl");
 
+                    b.Property<bool>("Free");
+
                     b.Property<string>("InformationRequest");
 
                     b.Property<DateTime?>("LastCancellationDate");
@@ -128,6 +131,8 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.Property<string>("RegistrationsUrl");
 
                     b.Property<string>("Title");
+
+                    b.Property<decimal>("VatPercent");
 
                     b.Property<string>("WelcomeLetter");
 
@@ -167,8 +172,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.HasIndex("PaymentMethodId");
 
-                    b.HasIndex("RegistrationId")
-                        .IsUnique();
+                    b.HasIndex("RegistrationId");
 
                     b.ToTable("Orders");
                 });
@@ -455,8 +459,8 @@ namespace losol.EventManagement.Infrastructure.Migrations
                         .HasForeignKey("PaymentMethodId");
 
                     b.HasOne("losol.EventManagement.Domain.Registration", "Registration")
-                        .WithOne("Order")
-                        .HasForeignKey("losol.EventManagement.Domain.Order", "RegistrationId")
+                        .WithMany()
+                        .HasForeignKey("RegistrationId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
