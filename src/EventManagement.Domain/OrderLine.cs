@@ -15,8 +15,8 @@ namespace losol.EventManagement.Domain
 		[Required]
 		public int OrderId { get; set; }
 
-		public int ProductId { get; set; }
-		public int ProductVariantId { get; set; }
+		public int? ProductId { get; set; }
+		public int? ProductVariantId { get; set; }
 		public int Quantity { get; set; } = 1;
 
 		public string ProductName { get; set; }
