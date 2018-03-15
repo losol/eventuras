@@ -100,8 +100,11 @@ namespace losol.EventManagement.Pages.Register
 				return Page();
 			}
 
-			if (Registration.Products != null)
+			if (Registration.Products == null)
 			{
+				return new BadRequestResult();
+			}
+
 				var selectedProductIds = Registration.Products
 													 .Where(rp => rp.IsSelected)
 													 .Select(p => p.Value)
@@ -110,7 +113,7 @@ namespace losol.EventManagement.Pages.Register
 				var registeredProducts = EventInfo.Products
 												  .Where(x => selectedProductIds.Contains(x.ProductId))
 												  .ToList();
-
+				
 				// Get the list of product names along with id and variants ...
 				var productNames = registeredProducts.Select(product =>
 				{
@@ -136,7 +139,7 @@ namespace losol.EventManagement.Pages.Register
 
 				// ... and concatenate them together into the notes field
 				Registration.Notes = String.Join(", ", productNames);
-			}
+			
 
 			// Check if user exists with email registered
 			var user = await _userManager.FindByEmailAsync(Registration.Email);
@@ -206,11 +209,17 @@ namespace losol.EventManagement.Pages.Register
 			// If we came here, we should enter our new participant into the database!
 			_logger.LogWarning("Starting new registration:");
 
-
 			var newRegistration = Registration.Adapt<Registration>();
 			newRegistration.VerificationCode = generateRandomPassword(6);
-			await _registrationService.CreateRegistrationForUser(newRegistration);
-
+			await _registrationService.CreateRegistrationForUser(
+				newRegistration,
+				registeredProducts.Select(rp => rp.ProductId)
+								  .ToArray(),
+				Registration.Products
+							.Where(p => p.SelectedVariantId.HasValue)
+							.Select(p => p.SelectedVariantId.Value)
+							.ToArray()
+			);
 
 			var confirmEmail = new ConfirmEventRegistration()
 			{
