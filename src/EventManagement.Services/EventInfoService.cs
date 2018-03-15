@@ -21,8 +21,10 @@ namespace losol.EventManagement.Services
 
 		public async Task<List<EventInfo>> GetFeaturedEventsAsync() 
 		{
-			return await _db.EventInfos.Where(i => i.Published && i.Featured)
-					  .ToListAsync();
+			return await _db.EventInfos
+				.Where(i => i.Published && i.Featured)
+				.OrderBy(s => s.DateStart)
+				.ToListAsync();
 		}
 
 		public async Task<List<EventInfo>> GetUpcomingEventsAsync()

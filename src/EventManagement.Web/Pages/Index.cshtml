@@ -24,6 +24,7 @@
             <div class="col-md-6">
                 <h2>@item.Title</h2>
                 <p>@item.Description</p>
+                <p class="small">@item.DateStart.ToString()</p>
                 <p><a asp-page="./Events/Details" asp-route-id="@item.EventInfoId" class="btn btn-secondary link-decoration-none" role="button">Vis kurset »</a></p>
             </div>
         
