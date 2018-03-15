@@ -1,39 +1,87 @@
 # Installing SQL Server Linux in docker
 
-SQL Server runs on running on Linux based on Ubuntu 16.04. It can be used with the Docker Engine 1.8+ on Linux or on Docker for Mac/Windows.
+## Prerequisites
 
-## Docker Community Edition
-Install [Docker Community Edition](https://www.docker.com/community-edition)
+Docker for Mac, Docker for Windows or Docker Engine 1.8+ for Linux.
 
-## Sql Server in Docker
-Install Sql Server by running commands in terminal: 
-1. sudo docker pull microsoft/mssql-server-linux:2017-latest
-2. sudo docker run -e 'ACCEPT_EULA=Y' -e 'MSSQL_SA_PASSWORD=<Strong!Passw0rd>' \
-   -p 1401:1433 --name sql1 \
+## Setting up mssql on Docker
+
+1. Start Docker.
+2. Setup an `mssql` container.
+
+```bash
+# Create mssql and install SQL Server 2017 for Linux
+docker pull microsoft/mssql-server-linux:2017-latest
+docker run -e 'ACCEPT_EULA=Y' -e 'MSSQL_SA_PASSWORD=<Strong!Passw0rd>' \
+   -p 1401:1433 --name mssql \
    -d microsoft/mssql-server-linux:2017-latest
+```
 
-Check that the docker is up with 'sudo docker ps -a'.
 
-Change password for the sa user: 
-sudo docker exec -it sql1 /opt/mssql-tools/bin/sqlcmd \
-   -S localhost -U SA -P '<Strong!Passw0rd>' \
-   -Q 'ALTER LOGIN SA WITH PASSWORD="<Apples345#$%>"'
 
-Connect to the server: 
-* sudo docker exec -it sql1 "bash"
-* /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P '<Apples345#$%>'
+3. Create our database
+```bash
+# Connect to the mssql container
+docker exec -it mssql "bash"
+# Connect to SQL Server
+/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P '<Strong!Passw0rd>'
+```
 
-Create a database for the app: 
-* CREATE DATABASE EventDB
-* GO
+```sql
+-- Create the EventDB database for the app
+CREATE DATABASE EventDB
+GO
+```
 
-The connectionstring for use in your app will now be: 
-'dotnet user-secrets set ConnectionStrings:DefaultConnection "Server=127.0.0.1,1401;Database=EventDB;User=sa;Password=<Apples345#$%>;"'
+4. Change the password (optional)
 
-An alternative for running commands is to download the SQL Server Command line tools:
-* Mac OS https://blogs.technet.microsoft.com/dataplatforminsider/2017/04/03/sql-server-command-line-tools-for-mac-preview-now-available/ 
+```sql
+-- Change the password to <Apples345#$%>
+ALTER LOGIN SA WITH PASSWORD="<Apples345#$%>"
+GO
+```
+
+You may now exit the SQL session using `quit` and then the bash session using `exit`.
+
+The connection string will now be:
+```
+Server=127.0.0.1,1401;Database=EventDB;User=sa;Password=<Apples345#$%>;
+```
+
+## Using the mssql container
+
+You now can start this container anytime using:
+
+```bash
+docker start mssql
+```
+
+To stop use:
+
+```bash
+docker stop mssql
+```
+
+To see the running containers:
+
+```
+docker ps
+```
+
+To see all containers:
+
+```
+docker ps -a
+```
+
+To remove `mssql` container (and its data):
+
+```bash
+docker rm mssql
+```
+
+## Related links
+
+* Docker: https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker
+* Mac OS: https://blogs.technet.microsoft.com/dataplatforminsider/2017/04/03/sql-server-command-line-tools-for-mac-preview-now-available/
 * Windows: https://www.microsoft.com/en-us/download/details.aspx?id=53591
-
-
-Source: Microsoft docs. Run the SQL Server 2017 container image with Docker. 
-https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker

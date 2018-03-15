@@ -18,7 +18,7 @@ namespace losol.EventManagement.Domain
 		[DataType(DataType.MultilineText)]
 		public string Description { get; set; }
 
-		public float Price { get; set; } = 0;
+		public decimal Price { get; set; } = 0;
 		public int VatPercent { get; set; } = 0;
 
 		public bool AdminOnly { get; set; } = false;
