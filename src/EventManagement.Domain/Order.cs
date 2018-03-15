@@ -22,7 +22,8 @@ namespace losol.EventManagement.Domain
 		public string UserId { get; set; }
 		public int RegistrationId { get; set; }
 		public int EventInfoId { get; set; }
-		public int OrderStatusId { get; set; }
+
+		public OrderStatus Status { get; set; } = OrderStatus.Draft;
 
 		// From registration, should be Participant details, if Customer details
 		// does not exist.
@@ -44,7 +45,6 @@ namespace losol.EventManagement.Domain
 		public Registration Registration { get; set; }
 		public PaymentMethod PaymentMethod { get; set; }
 		public EventInfo EventInfo { get; set; }
-		public OrderStatus Status { get; set; } = OrderStatus.Draft;
 
 		public List<OrderLine> OrderLines { get; set; }
 
