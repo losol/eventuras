@@ -22,8 +22,8 @@ namespace losol.EventManagement.Domain
 		public string ProductName { get; set; }
 		public string ProductDescription { get; set; }
 
-		public string ProductVariationName { get; set; }
-		public string ProductVariationDescription { get; set; }
+		public string ProductVariantName { get; set; }
+		public string ProductVariantDescription { get; set; }
 
 		public decimal Price { get; set; }
 		public decimal VatPercent { get; set; } = 0;
