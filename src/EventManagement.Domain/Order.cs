@@ -30,7 +30,7 @@ namespace losol.EventManagement.Domain
 		public string CustomerInvoiceReference { get; set; }
 		public int? PaymentMethodId { get; set; }
 
-		public DateTime OrderTime { get; set; }
+		public DateTime OrderTime { get; set; } = DateTime.UtcNow;
 
 		// Comments are from the user registered
 		public string Comments { get; set; }
