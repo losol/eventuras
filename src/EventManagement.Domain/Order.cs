@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace losol.EventManagement.Domain
 {
@@ -21,7 +19,6 @@ namespace losol.EventManagement.Domain
 		public int OrderId { get; set; }
 		public string UserId { get; set; }
 		public int RegistrationId { get; set; }
-		public int EventInfoId { get; set; }
 
 		public OrderStatus Status { get; set; } = OrderStatus.Draft;
 
@@ -44,7 +41,6 @@ namespace losol.EventManagement.Domain
 		// Navigational properties
 		public Registration Registration { get; set; }
 		public PaymentMethod PaymentMethod { get; set; }
-		public EventInfo EventInfo { get; set; }
 
 		public List<OrderLine> OrderLines { get; set; }
 
