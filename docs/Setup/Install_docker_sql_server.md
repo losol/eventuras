@@ -19,7 +19,7 @@ docker run -e 'ACCEPT_EULA=Y' -e 'MSSQL_SA_PASSWORD=<Strong!Passw0rd>' \
 
 
 
-3. Create our database
+3. Create our database and change sa password
 ```bash
 # Connect to the mssql container
 docker exec -it mssql "bash"
@@ -54,6 +54,14 @@ You now can start this container anytime using:
 
 ```bash
 docker start mssql
+```
+
+To run interactive sql
+```bash
+# Connect to the mssql container
+docker exec -it mssql "bash"
+# Connect to SQL Server
+/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P '<Apples345#$%>'
 ```
 
 To stop use:
