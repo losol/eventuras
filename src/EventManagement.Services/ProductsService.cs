@@ -46,14 +46,13 @@ namespace losol.EventManagement.Services
 
 		public Task<List<Registration>> GetVerifiedRegistrationsAsync(int productId)
 		{
-			return _db.Products
-			          .Where(p => p.ProductId == productId)
-			          .SelectMany(p => p.Eventinfo.Registrations.Where(r => r.Verified))
-			          .Include(r => r.User)
-			          .Include(r => r.Order)
-				      	.ThenInclude(o => o.OrderLines)
-			          .AsNoTracking()
-			          .ToListAsync();
+			return _db.Registrations
+				.Where(r => r.Verified && r.Order.OrderLines.Any(l => l.ProductId == productId))
+				.Include(r => r.User)
+				.Include(r => r.Order)
+					.ThenInclude(o => o.OrderLines)
+				.AsNoTracking()
+				.ToListAsync();
 		}
 	}
 }

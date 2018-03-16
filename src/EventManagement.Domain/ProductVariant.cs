@@ -26,5 +26,6 @@ namespace losol.EventManagement.Domain
 		// Navigational properties
 		public int ProductId { get; set; }
 		public Product Product { get; set; }
+		public List<OrderLine> OrderLines { get; set; }
 	}
 }
