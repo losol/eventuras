@@ -41,6 +41,14 @@ namespace losol.EventManagement.Services
 				            .SingleOrDefaultAsync(m => m.EventInfoId == id);
 		}
 
+		public async Task<int> GetVerifiedRegistrationCount(int eventId)
+		{
+			return await _db.EventInfos
+							.Where(e => e.EventInfoId == eventId)
+				            .Select(e => e.Registrations.Where(r => r.Verified).Count())
+				            .SingleAsync();
+		}
+
 		public async Task<EventInfo> GetWithProductsAsync(int id)
 		{
 			return await _db.EventInfos
