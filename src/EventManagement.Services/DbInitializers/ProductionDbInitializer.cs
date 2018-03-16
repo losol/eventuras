@@ -10,15 +10,15 @@ using System.Linq;
 
 namespace losol.EventManagement.Services.DbInitializers
 {
-    public class ProductionDbInitializer : BaseDbInitializer, IDbInitializer
-    {
-        public ProductionDbInitializer(ApplicationDbContext db, RoleManager<IdentityRole> roleManager,  UserManager<ApplicationUser> userManager, IOptions<DbInitializerOptions> config)
-            : base(db, roleManager, userManager, config)
-         { }
-        
-        public override async Task SeedAsync()
-        {
-            _db.Database.Migrate(); // FIXME: Do not do this in production!
+	public class ProductionDbInitializer : BaseDbInitializer, IDbInitializer
+	{
+		public ProductionDbInitializer(ApplicationDbContext db, RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, IOptions<DbInitializerOptions> config)
+			: base(db, roleManager, userManager, config)
+		{ }
+
+		public override async Task SeedAsync()
+		{
+			_db.Database.Migrate(); // FIXME: Do not do this in production!
 			await base.SeedAsync();
 
 			// Seed test events if no events exist. 
@@ -31,13 +31,9 @@ namespace losol.EventManagement.Services.DbInitializers
 					new EventInfo{Title="Test event 02", Code="Test02", Description="Another test event."}
 				};
 
-				foreach (var item in eventInfos)
-				{
-					await _db.EventInfos.AddAsync(item);
-				}
-
+				await _db.EventInfos.AddRangeAsync(eventInfos);
 				await _db.SaveChangesAsync();
 			}
-        }
-    }
+		}
+	}
 }
