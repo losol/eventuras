@@ -39,6 +39,9 @@ namespace losol.EventManagement.Services
 			return await _db.Products
 				            .Where(p => p.ProductId == productId)
 				            .SelectMany(p => p.Eventinfo.Registrations.Where(r => r.Verified))
+				            .Include(r => r.User)
+				            .Include(r => r.Order)
+				            .AsNoTracking()
 				            .ToListAsync();
 		}
 	}
