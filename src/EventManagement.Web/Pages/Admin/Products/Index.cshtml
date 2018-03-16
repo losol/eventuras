@@ -1,0 +1,51 @@
+﻿@page "{id:int}"
+@inject IProductsService productsService
+@{
+    var id = Convert.ToInt32(RouteData.Values["id"]);
+    var product = await productsService.GetAsync(id);
+    var registrations = await productsService.GetVerifiedRegistrationsAsync(id);
+}
+
+<div class="container">
+	<div class="row">
+		<div class="col-6">
+            <h2>@product.Name (@product.Eventinfo.Title)</h2>
+            <strong>Registration Count:</strong> @registrations.Count()
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-9">
+            @await Html.PartialAsync("_registrationTable", Tuple.Create(registrations, id, true))
+		</div>
+	</div>
+
+    @foreach(var v in product.ProductVariants)
+    {
+        var varRegistrations = registrations.Where(r => r.Order?.OrderLines.Any(l => l.ProductVariantId == v.ProductVariantId) == true).ToList();
+        <div class="row">
+            <div class="col-md-9">
+                <h3>@v.Name</h3>
+                <strong>Registration Count: </strong>@varRegistrations.Count()
+                @await Html.PartialAsync("_registrationTable", Tuple.Create(varRegistrations, id, false))
+            </div>
+        </div>
+    }
+</div>
+
+
+@section scripts { 
+    <script>
+    $(function () {
+        var $table = $('table');
+        window.icons = {
+            toggle: 'fa-toggle-on',
+            columns: 'fa-th-list',
+            export: 'fa-download'
+        };
+    });
+</script>
+</script>
+    @await Html.PartialAsync("_CompBootstrapTable")
+    <script src="//rawgit.com/hhurz/tableExport.jquery.plugin/master/tableExport.js"></script>
+}

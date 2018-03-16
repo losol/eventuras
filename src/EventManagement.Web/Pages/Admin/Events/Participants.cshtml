@@ -238,6 +238,20 @@
 
         </div>
 	</div>
+    <div class="row">
+        <div class="col">
+            @if(@Model.EventInfo.Products.Any())
+            {
+                <br />
+                <strong>Products: </strong>
+                @foreach(var p in @Model.EventInfo.Products)
+                {
+                    @: <a href="/Admin/Products/@p.ProductId">@p.Name</a>  &nbsp;
+                }
+            }
+            
+        </div>
+    </div>
 </div>
 
 @section scripts { 

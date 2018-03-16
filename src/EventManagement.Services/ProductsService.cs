@@ -25,6 +25,16 @@ namespace losol.EventManagement.Services
 				      .ToListAsync();
 		}
 
+		public Task<Product> GetAsync(int id)
+		{
+			return _db.Products
+					  .Where(p => p.ProductId == id)
+				      .Include(p => p.ProductVariants)
+				      .Include(p => p.Eventinfo)
+				      .AsNoTracking()
+				      .SingleOrDefaultAsync();
+		}
+
 		public Task<List<Product>> GetForEventAsync(int eventId)
 		{
 			return _db.Products
@@ -34,10 +44,16 @@ namespace losol.EventManagement.Services
 					  .ToListAsync();
 		}
 
-		public Task<List<ApplicationUser>> GetUsersByProduct(int productId)
+		public Task<List<Registration>> GetVerifiedRegistrationsAsync(int productId)
 		{
-			// TODO JUST TESTING
-			return _db.ApplicationUsers.ToListAsync();
+			return _db.Products
+			          .Where(p => p.ProductId == productId)
+			          .SelectMany(p => p.Eventinfo.Registrations.Where(r => r.Verified))
+			          .Include(r => r.User)
+			          .Include(r => r.Order)
+				      	.ThenInclude(o => o.OrderLines)
+			          .AsNoTracking()
+			          .ToListAsync();
 		}
 	}
 }

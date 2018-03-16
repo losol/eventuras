@@ -40,7 +40,7 @@ namespace losol.EventManagement.Pages.Admin.Events
                 return NotFound();
             }
 
-            EventInfo = await _context.EventInfos.SingleOrDefaultAsync(m => m.EventInfoId == id);
+            EventInfo = await _context.EventInfos.Include(e => e.Products).SingleOrDefaultAsync(m => m.EventInfoId == id);
 
             if (EventInfo == null)
             {
