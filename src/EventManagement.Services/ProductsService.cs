@@ -34,10 +34,12 @@ namespace losol.EventManagement.Services
 					  .ToListAsync();
 		}
 
-		public Task<List<ApplicationUser>> GetUsersByProduct(int productId)
+		public async Task<List<Registration>> GetVerifiedRegistrationsAsync(int productId)
 		{
-			// TODO JUST TESTING
-			return _db.ApplicationUsers.ToListAsync();
+			return await _db.Products
+				            .Where(p => p.ProductId == productId)
+				            .SelectMany(p => p.Eventinfo.Registrations.Where(r => r.Verified))
+				            .ToListAsync();
 		}
 	}
 }

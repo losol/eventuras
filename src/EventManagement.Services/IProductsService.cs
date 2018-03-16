@@ -9,6 +9,6 @@ namespace losol.EventManagement.Services
 	{
 		Task<List<Product>> GetAsync();
 		Task<List<Product>> GetForEventAsync(int eventId);
-		Task<List<ApplicationUser>> GetUsersByProduct(int productId);
+		Task<List<Registration>> GetVerifiedRegistrationsAsync(int productId);
 	}
 }
