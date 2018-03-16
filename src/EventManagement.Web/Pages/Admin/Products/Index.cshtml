@@ -38,6 +38,7 @@
                         <th data-field="name" data-sortable="true">Participant Name</th>
                         <th data-field="phone" data-sortable="true">Phone Number</th>
                         <th data-field="email" data-sortable="true">Email</th>
+                        <th data-field="variant" data-sortable="true">Variant</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,6 +48,7 @@
                             <td data-field="name" data-sortable="true">@r.ParticipantName</td>
                             <td data-field="phone" data-sortable="true">@r.User.PhoneNumber</td>
                             <td data-field="email" data-sortable="true">@r.User.Email</td>
+                            <td data-field="variant" data-sortable="true">@r.Order?.OrderLines.Where(l => l.ProductId == id).FirstOrDefault()?.ProductVariantName</td>
                         </tr>
                     }
                 </tbody>

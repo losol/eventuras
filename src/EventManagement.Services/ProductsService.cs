@@ -51,6 +51,7 @@ namespace losol.EventManagement.Services
 			          .SelectMany(p => p.Eventinfo.Registrations.Where(r => r.Verified))
 			          .Include(r => r.User)
 			          .Include(r => r.Order)
+				      	.ThenInclude(o => o.OrderLines)
 			          .AsNoTracking()
 			          .ToListAsync();
 		}
