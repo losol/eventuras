@@ -1,0 +1,13 @@
+﻿@page "{id:int}"
+@inject IProductsService productsService
+@{
+    var id = Convert.ToInt32(RouteData.Values["id"]);
+    var registrations = await productsService.GetVerifiedRegistrationsAsync(id);
+}
+
+Heya Test
+<br /><br />
+
+The product is @id
+<br />
+Registration count is @registrations.Count()
