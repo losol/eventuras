@@ -83,23 +83,6 @@ namespace losol.EventManagement.Services.DbInitializers
 
 				await _db.SaveChangesAsync();
 			}
-
-			// Seed test events if no events exist. 
-			if (!_db.EventInfos.Any())
-			{
-				var eventInfos = new EventInfo[]
-				{
-					new EventInfo{Title="Test event 01", Code="Test01", Description="A test event."},
-					new EventInfo{Title="Test event 02", Code="Test02", Description="Another test event."}
-				};
-
-				foreach (var item in eventInfos)
-				{
-					await _db.EventInfos.AddAsync(item);
-				}
-
-				await _db.SaveChangesAsync();
-			}
         }
     }
 }
