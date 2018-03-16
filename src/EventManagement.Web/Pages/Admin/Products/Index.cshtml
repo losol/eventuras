@@ -2,15 +2,15 @@
 @inject IProductsService productsService
 @{
     var id = Convert.ToInt32(RouteData.Values["id"]);
+    var product = await productsService.GetAsync(id);
     var registrations = await productsService.GetVerifiedRegistrationsAsync(id);
 }
 
 <div class="container">
 	<div class="row">
 		<div class="col-6">
-            The product is @id
-            <br />
-            Registration count is @registrations.Count()
+            <h2>@product.Name (@product.Eventinfo.Title)</h2>
+            <strong>Registration Count:</strong> @registrations.Count()
 		</div>
 	</div>
 

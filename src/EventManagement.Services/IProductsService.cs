@@ -8,6 +8,8 @@ namespace losol.EventManagement.Services
 	public interface IProductsService
 	{
 		Task<List<Product>> GetAsync();
+		Task<Product> GetAsync(int id);
+
 		Task<List<Product>> GetForEventAsync(int eventId);
 		Task<List<Registration>> GetVerifiedRegistrationsAsync(int productId);
 	}
