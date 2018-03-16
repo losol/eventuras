@@ -9,6 +9,7 @@ namespace losol.EventManagement.Services
 	{
 		Task<EventInfo> GetAsync(int id);
 		Task<EventInfo> GetWithProductsAsync(int id);
+		Task<int> GetVerifiedRegistrationCount(int eventId);
 
 		Task<List<EventInfo>> GetFeaturedEventsAsync();
 		Task<List<EventInfo>> GetUpcomingEventsAsync();
