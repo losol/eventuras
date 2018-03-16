@@ -19,6 +19,18 @@
             @await Html.PartialAsync("_registrationTable", Tuple.Create(registrations, id, true))
 		</div>
 	</div>
+
+    @foreach(var v in product.ProductVariants)
+    {
+        var varRegistrations = registrations.Where(r => r.Order?.OrderLines.Any(l => l.ProductVariantId == v.ProductVariantId) == true).ToList();
+        <div class="row">
+            <div class="col-md-9">
+                <h3>@v.Name</h3>
+                <strong>Registration Count: </strong>@varRegistrations.Count()
+                @await Html.PartialAsync("_registrationTable", Tuple.Create(varRegistrations, id, false))
+            </div>
+        </div>
+    }
 </div>
 
 
