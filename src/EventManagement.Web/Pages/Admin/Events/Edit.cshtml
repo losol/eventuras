@@ -496,16 +496,21 @@ $("#EventInfo_Title").keyup(function(){
 
         // Clone the product template
         let clone = variantsTemplate.cloneNode(true);
+        if(isEdit === true) {
+            clone = $currentVariant[0];
+        }
         // And populate it with values from the modal
         clone.querySelector('.variant-name').innerText = $variantName.val();
         clone.querySelector('.variant-description').innerText = $variantDescription.val();
         clone.querySelector('.variant-price').innerText = $variantPrice.val();
 
-        // Add the cloned template to the DOM
-        const $variantsWrapper = $currentProduct.find('.variant-wrapper');
-        $variantsWrapper[0].appendChild(clone);
+        if(isEdit != true) {
+            // Add the cloned template to the DOM
+            const $variantsWrapper = $currentProduct.find('.variant-wrapper');
+            $variantsWrapper[0].appendChild(clone);
+        }
 
-        // Hide the modal
+        isEdit = false;
         $variantModal.modal('hide');
     });
 
