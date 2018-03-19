@@ -401,6 +401,28 @@ $("#EventInfo_Title").keyup(function(){
     const variantsTemplate = document.querySelector('#variant-template').content;
     const productsWrapper = document.querySelector('#product-wrapper');
 
+    $('.edit-product-link').bind('click', function(e) {
+        let $card = $(this).closest('.product-card');
+        
+        $productName.val($card.find('.product-name').text())
+        $productDescription.val($card.find('.product-description').text())
+        $productPrice.val($card.find('.product-price').text())
+        $productMandatoryCount.val($card.find('.product-m-count').val())
+
+        $modal.modal('show');
+    });
+
+    $('.edit-variant-link').bind('click', function(e) {
+        let $card = $(this).closest('.variant-card');
+
+        $variantName.val($card.find('.variant-name').text());
+        $variantDescription.val($card.find('.variant-description').text());
+        $variantPrice.val($card.find('.variant-price').text());
+
+        $currentProduct = $(this).closest('.product-card');
+        $variantModal.modal('show');
+    });
+
     // Bind the delete product and add variant links
     $('.delete-product-link').bind('click', function(e) {
         // Remove the product card from DOM
