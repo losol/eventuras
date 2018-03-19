@@ -7,6 +7,7 @@ using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services;
 using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.ViewModels;
+using losol.EventManagement.Web.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

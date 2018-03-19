@@ -19,6 +19,7 @@ using System.Globalization;
 using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services.DbInitializers;
 using losol.EventManagement.Services.Messaging;
+using losol.EventManagement.Web.Services;
 
 namespace losol.EventManagement
 {
@@ -123,7 +124,6 @@ namespace losol.EventManagement
 			services.AddScoped<IProductsService, ProductsService>();
 
             // Add Page render Service
-            //services.AddScoped<IViewRenderService, ViewRenderService>();
             services.AddScoped<IRenderService, ViewRenderService>();
 
 

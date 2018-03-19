@@ -11,6 +11,7 @@ using losol.EventManagement.Domain;
 using losol.EventManagement.Services;
 using losol.EventManagement.ViewModels;
 using losol.EventManagement.Services.Messaging;
+using losol.EventManagement.Web.Services;
 
 namespace losol.EventManagement.Pages.Account
 {

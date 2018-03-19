@@ -9,6 +9,7 @@ using losol.EventManagement.Pages.Account;
 using losol.EventManagement.Services;
 using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.ViewModels;
+using losol.EventManagement.Web.Services;
 using Mapster;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
