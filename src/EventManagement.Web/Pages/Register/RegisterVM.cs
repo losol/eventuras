@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using losol.EventManagement.Domain;
@@ -76,5 +77,11 @@ namespace losol.EventManagement.Web.Pages.Register
 				};
 			}
 		}
+
+		public bool HasProducts => Products != null && Products.Length > 0;
+		public List<int> SelectedProducts => 
+			Products.Where(rp => rp.IsSelected)
+					.Select(p => p.Value)
+					.ToList();
 	}
 }
