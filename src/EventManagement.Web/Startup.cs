@@ -97,11 +97,6 @@ namespace losol.EventManagement
             // For sending antiforgery in ajax?
             // services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
 
-
-            // AppSettings
-            var appSettings = Configuration.GetSection("AppSettings");
-            services.Configure<AppSettings>(appSettings);
-
             // Email configuration
 			services.Configure<SendGridOptions>(Configuration.GetSection("SendGrid"));
             services.AddSingleton<IEmailSender, SendGridEmailSender>();
