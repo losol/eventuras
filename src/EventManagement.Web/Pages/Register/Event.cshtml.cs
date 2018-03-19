@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Pages.Account;
 using losol.EventManagement.Services;
-using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
 
@@ -100,7 +99,7 @@ namespace losol.EventManagement.Web.Pages.Register {
 				foreach (var error in result.Errors) {
 					ModelState.AddModelError (string.Empty, error.Description);
 				}
-			};
+			}
 
 			// Any registrations for this user on this event?
 			var registered = await _registrationService.GetAsync (user.Id, Registration.EventInfoId);
@@ -194,21 +193,25 @@ namespace losol.EventManagement.Web.Pages.Register {
 
 			var confirmEmail = new ConfirmEventRegistration {
 				Name = Registration.ParticipantName,
-					Phone = Registration.Phone,
-					Email = Registration.Email,
-					PaymentMethod = Registration.PaymentMethodId.ToString (),
-					EventTitle = EventInfo.Title,
-					EventDescription = EventInfo.Description
+				Phone = Registration.Phone,
+				Email = Registration.Email,
+				PaymentMethod = Registration.PaymentMethodId.ToString (),
+				EventTitle = EventInfo.Title,
+				EventDescription = EventInfo.Description,
+				VerificationUrl = Url.Action("Confirm", "Register", 
+	                new { 
+						id = newRegistration.RegistrationId, 
+						auth = newRegistration.VerificationCode 
+					}, 
+	             	protocol: Request.Scheme)
 			};
-
-			confirmEmail.VerificationUrl = Url.Action("Confirm", "Register", new { id = newRegistration.RegistrationId, auth = newRegistration.VerificationCode }, protocol : Request.Scheme);
 			await _confirmationEmailSender.SendAsync(Registration.Email, "Bekreft påmelding", confirmEmail);
 
 			return RedirectToPage ("/Info/EmailSent");
 		}
 
 		private static string generateRandomPassword (int length = 6) {
-			string[] randomChars = new [] {
+			string[] randomChars = {
 				"ABCDEFGHJKLMNPQRSTUVWXYZ", // uppercase 
 				"abcdefghijkmnpqrstuvwxyz", // lowercase
 				"123456789" // digits
