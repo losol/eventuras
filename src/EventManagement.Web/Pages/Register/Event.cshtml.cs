@@ -124,11 +124,16 @@ namespace losol.EventManagement.Web.Pages.Register
 
 			var newRegistration = Registration.Adapt<Registration>();
 			newRegistration.VerificationCode = generateRandomPassword(6);
+			int[] selectedProductIds = null;
+			int[] selectedVariantIds = null;
 
 			// If the eventinfo has products, then register and make order
 			if (Registration.HasProducts)
 			{
-				var selectedProductIds = Registration.SelectedProducts;
+				// Populate the ids required to create the registration
+				selectedProductIds = Registration.SelectedProducts.ToArray();
+				selectedVariantIds = Registration.SelectedVariants.ToArray();
+				
 				var registeredProducts = EventInfo.Products
 					.Where(x => selectedProductIds.Contains(x.ProductId))
 					.ToList();
@@ -158,24 +163,8 @@ namespace losol.EventManagement.Web.Pages.Register
 
 				// ... and concatenate them together into the notes field
 				Registration.Notes = String.Join(", ", productNames);
-
-				await _registrationService.CreateRegistrationWithOrder(
-					newRegistration,
-					selectedProductIds.ToArray(),
-					Registration.Products
-								.Where(p => p.SelectedVariantId.HasValue)
-								.Select(p => p.SelectedVariantId.Value)
-								.ToArray()
-				);
 			}
-
-			// Else the eventinfo has no products, just register
-			else
-			{
-				await _registrationService.CreateRegistration(
-					newRegistration
-				);
-			}
+			await _registrationService.CreateRegistration(newRegistration, selectedProductIds, selectedVariantIds);
 
 			var confirmEmail = new ConfirmEventRegistration
 			{
@@ -194,7 +183,6 @@ namespace losol.EventManagement.Web.Pages.Register
 					 protocol: Request.Scheme)
 			};
 			await _confirmationEmailSender.SendAsync(Registration.Email, "Bekreft påmelding", confirmEmail);
-
 			return RedirectToPage("/Info/EmailSent");
 		}
 
