@@ -394,21 +394,25 @@ $("#EventInfo_Title").keyup(function(){
     const $variantName = $($variantModal).find('#input-variant-name');
     const $variantDescription = $($variantModal).find('#input-variant-description');
     const $variantPrice = $($variantModal).find('#input-variant-price');
-    var $currentProduct; // Used to keep track of the product to add the variant too
+    var $currentProduct; // Used to keep track of the product to edit/to add the variant to.
+    var $currentVariant; // Used to keep track of the variant to apply the edit to.
 
     const mainForm = document.getElementById('main-form');
     const productsTemplate = document.querySelector('#product-template').content;
     const variantsTemplate = document.querySelector('#variant-template').content;
     const productsWrapper = document.querySelector('#product-wrapper');
+    let isEdit = false; // Add / Edit flag
 
     $('.edit-product-link').bind('click', function(e) {
         let $card = $(this).closest('.product-card');
-        
+
         $productName.val($card.find('.product-name').text())
         $productDescription.val($card.find('.product-description').text())
         $productPrice.val($card.find('.product-price').text())
         $productMandatoryCount.val($card.find('.product-m-count').val())
 
+        isEdit = true;
+        $currentProduct = $card;
         $modal.modal('show');
     });
 
@@ -419,7 +423,9 @@ $("#EventInfo_Title").keyup(function(){
         $variantDescription.val($card.find('.variant-description').text());
         $variantPrice.val($card.find('.variant-price').text());
 
+        isEdit = true;
         $currentProduct = $(this).closest('.product-card');
+        $currentVariant = $card;
         $variantModal.modal('show');
     });
 
@@ -464,18 +470,23 @@ $("#EventInfo_Title").keyup(function(){
 
         // Clone the product template
         let clone = productsTemplate.cloneNode(true);
+        if(isEdit === true) {
+            clone = $currentProduct[0];
+        }
         // And populate it with values from the modal
         clone.querySelector('.product-name').innerText = $productName.val();
         clone.querySelector('.product-description').innerText = $productDescription.val();
         clone.querySelector('.product-price').innerText = $productPrice.val();
         clone.querySelector('.product-m-count').value = $productMandatoryCount.val();
 
-        // Add the cloned template to the DOM
-        productsWrapper.appendChild(clone);
+        if(isEdit != true) {
+            // Add the cloned template to the DOM
+            productsWrapper.appendChild(clone);
+            // Set event handlers to the newly added product actions
+            bindLatestProductLinks();
+        }
 
-        // Set event handlers to the newly added product actions
-        bindLatestProductLinks();
-        // Hide the modal
+        isEdit = false;        
         $modal.modal('hide');
     });
 
