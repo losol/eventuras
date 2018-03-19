@@ -1,6 +1,7 @@
 public class EmailSenderOptions
-{
-    
-    public string SendGridUser { get; set; }
-    public string SendGridKey { get; set; }
+{  
+	public string User { get; set; }
+    public string Key { get; set; }
+	public string EmailAddress { get; set; }
+	public string Name { get; set; }
 }

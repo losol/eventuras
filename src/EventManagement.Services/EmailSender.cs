@@ -18,11 +18,11 @@ namespace losol.EventManagement.Services
             Options = optionsAccessor.Value;
         }
 
-        public EmailSenderOptions Options { get; } //set only via Secret Manager
+        public EmailSenderOptions Options { get; }
 
         public Task SendEmailAsync(string email, string subject, string message)
         {
-            return Execute(Options.SendGridKey, subject, message, email);
+            return Execute(Options.Key, subject, message, email);
         }
 
         public Task Execute(string apiKey, string subject, string message, string email)
@@ -30,7 +30,7 @@ namespace losol.EventManagement.Services
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("ikke-svar@nordland-legeforening.no", "Kursinord.no"),
+				From = new EmailAddress(email: Options.EmailAddress, name: Options.Name),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message
