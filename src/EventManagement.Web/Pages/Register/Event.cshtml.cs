@@ -51,12 +51,9 @@ namespace losol.EventManagement.Web.Pages.Register {
 		public List<Product> Products => EventInfo.Products;
 		public List<PaymentMethod> PaymentMethods { get; set; }
 
-		public async Task<IActionResult> OnGetAsync (int? id) {
-			if (id == null) {
-				return RedirectToPage ("./Index");
-			}
+		public async Task<IActionResult> OnGetAsync (int id) {
 
-			EventInfo = await _eventsService.GetWithProductsAsync (id.Value);
+			EventInfo = await _eventsService.GetWithProductsAsync (id);
 
 			if (EventInfo == null) {
 				return NotFound ();
@@ -69,12 +66,9 @@ namespace losol.EventManagement.Web.Pages.Register {
 			return Page ();
 		}
 
-		public async Task<IActionResult> OnPostAsync (int? id) {
-			if (id == null) {
-				return RedirectToPage ("./Index");
-			}
+		public async Task<IActionResult> OnPostAsync (int id) {
 
-			EventInfo = await _eventsService.GetWithProductsAsync (id.Value);
+			EventInfo = await _eventsService.GetWithProductsAsync (id);
 
 			if (EventInfo == null) {
 				return NotFound ();
