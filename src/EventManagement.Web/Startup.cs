@@ -100,7 +100,9 @@ namespace losol.EventManagement
 
             // Email configuration
 			services.Configure<SendGridOptions>(Configuration.GetSection("SendGrid"));
-            services.AddSingleton<IEmailSender, SendGridEmailSender>();
+			services.AddTransient<IEmailSender, SendGridEmailSender>();
+			services.AddTransient<StandardEmailSender>();
+			services.AddTransient<ConfirmationEmailSender>();
 
             // Register the Database Seed initializer
             services.Configure<DbInitializerOptions>(Configuration);
