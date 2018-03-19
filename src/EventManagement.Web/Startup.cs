@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Globalization;
 using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services.DbInitializers;
+using losol.EventManagement.Services.Messaging;
 
 namespace losol.EventManagement
 {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Services;
+using losol.EventManagement.Services.Messaging;
 using Microsoft.AspNetCore.Mvc;
 
 namespace losol.EventManagement.Web.Api.Controllers
@@ -13,10 +14,19 @@ namespace losol.EventManagement.Web.Api.Controllers
 	public class EventsController : Controller
 	{
 		private readonly IEventInfoService _eventsService;
+		private readonly IEmailSender _emailSender;
 
-		public EventsController(IEventInfoService eventsService)
+		public EventsController(IEventInfoService eventsService, IEmailSender emailSender)
 		{
 			_eventsService = eventsService;
+			_emailSender = emailSender;
+		}
+
+		[Route("test")]
+		public async Task<IActionResult> TestEmail() 
+		{
+			await _emailSender.SendEmailAsync("test@test.com", "Subject", "Hey there delilah!");
+			return Ok();
 		}
 
 		[HttpGet, Route("upcoming")]

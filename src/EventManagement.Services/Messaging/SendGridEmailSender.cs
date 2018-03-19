@@ -7,7 +7,7 @@ using SendGrid;
 using SendGrid.Helpers.Mail;
 
 
-namespace losol.EventManagement.Services
+namespace losol.EventManagement.Services.Messaging
 {
     // This class is used by the application to send email for account confirmation and password reset.
     // For more details see https://go.microsoft.com/fwlink/?LinkID=532713

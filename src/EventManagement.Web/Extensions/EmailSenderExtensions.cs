@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using losol.EventManagement.Services;
+using losol.EventManagement.Services.Messaging;
 
 namespace losol.EventManagement.Services
 {
