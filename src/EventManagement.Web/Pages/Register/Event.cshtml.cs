@@ -1,47 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Mapster;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
+
 using losol.EventManagement.Domain;
-using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Pages.Account;
 using losol.EventManagement.Services;
 using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
-using Mapster;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace losol.EventManagement.Web.Pages.Register {
 	public class EventRegistrationModel : PageModel {
 		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly ConfirmationEmailSender _confirmationEmailSender;
+		private readonly StandardEmailSender _standardEmailSender;
 		private readonly ILogger<LoginModel> _logger;
-		private readonly IEmailSender _emailSender;
-		private readonly IRenderService _renderService;
 		private readonly IEventInfoService _eventsService;
 		private readonly IPaymentMethodService _paymentMethodService;
 		private readonly IRegistrationService _registrationService;
 
 		public EventRegistrationModel (
 			UserManager<ApplicationUser> userManager,
+			ConfirmationEmailSender confirmationEmailSender,
+			StandardEmailSender standardEmailSender,
 			ILogger<LoginModel> logger,
-			IEmailSender emailSender,
-			IRenderService renderService,
 			IEventInfoService eventsService,
 			IPaymentMethodService paymentMethodService,
 			IRegistrationService registrationService
 		) {
 			_userManager = userManager;
+			_confirmationEmailSender = confirmationEmailSender;
+			_standardEmailSender = standardEmailSender;
 			_logger = logger;
-			_emailSender = emailSender;
-			_renderService = renderService;
 			_eventsService = eventsService;
 			_paymentMethodService = paymentMethodService;
 			_registrationService = registrationService;
@@ -132,9 +128,7 @@ namespace losol.EventManagement.Web.Pages.Register {
 								{verificationUrl} </p>";
 				}
 
-				var emailString = await _renderService.RenderViewToStringAsync ("Templates/Email/StandardEmail", emailVM);
-				await _emailSender.SendEmailAsync (emailVM.Email, emailVM.Subject, emailString);
-
+				await _standardEmailSender.SendAsync(emailVM);
 				return RedirectToPage ("/Info/EmailSent");
 			}
 
@@ -198,7 +192,7 @@ namespace losol.EventManagement.Web.Pages.Register {
 				);
 			}
 
-			var confirmEmail = new ConfirmEventRegistration () {
+			var confirmEmail = new ConfirmEventRegistration {
 				Name = Registration.ParticipantName,
 					Phone = Registration.Phone,
 					Email = Registration.Email,
@@ -207,10 +201,8 @@ namespace losol.EventManagement.Web.Pages.Register {
 					EventDescription = EventInfo.Description
 			};
 
-			confirmEmail.VerificationUrl = Url.Action ("Confirm", "Register", new { id = newRegistration.RegistrationId, auth = newRegistration.VerificationCode }, protocol : Request.Scheme);
-
-			var email = await _renderService.RenderViewToStringAsync ("Templates/Email/ConfirmEventRegistration", confirmEmail);
-			await _emailSender.SendEmailAsync (Registration.Email, "Bekreft påmelding", email);
+			confirmEmail.VerificationUrl = Url.Action("Confirm", "Register", new { id = newRegistration.RegistrationId, auth = newRegistration.VerificationCode }, protocol : Request.Scheme);
+			await _confirmationEmailSender.SendAsync(Registration.Email, "Bekreft påmelding", confirmEmail);
 
 			return RedirectToPage ("/Info/EmailSent");
 		}
