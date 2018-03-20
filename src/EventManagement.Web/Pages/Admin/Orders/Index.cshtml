@@ -1,11 +1,71 @@
 @page "{p:int?}"
+@inject IOrderService orderService
 @{
     int pageNumber = 1;
     if(RouteData.Values["p"] != null)
     {
         pageNumber = Convert.ToInt32(RouteData.Values["p"]);
     }
-    
+    var orders = await orderService.GetAsync();
 }
 
-The page is @pageNumber
+<div class="container">
+	<div class="row">
+        <div class="col">
+            <h2>All Orders</h2>
+            <table  
+                data-toggle="table" 
+                data-pagination="false"
+                data-show-columns="true"
+                data-show-export="true"
+                data-sort-name="name"
+                data-sort-order="asc"
+                data-icons-prefix="fa"
+                data-icons="icons"
+                data-search="true"
+                data-advanced-search="true"
+                data-search-align="left"
+                data-click-to-select="true"
+                data-id-table="advancedTable"
+                data-export-options='{
+                    "fileName": "orders@id-@DateTime.Now.ToString("yyyy-MM-dd")"
+                }'>
+                <thead>
+                    <tr>
+                        <th data-field="id" data-sortable="true">ID</th>
+                        <th data-field="regid" data-sortable="true">Registration</th>
+                        <th data-field="status" data-sortable="true">Status</th>
+                        <th data-field="name" data-sortable="true">Customer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var o in orders)
+                    {
+                        <tr>
+                            <td data-field="id" data-sortable="true">@o.OrderId</td>
+                            <td data-field="regid" data-sortable="true">@o.RegistrationId</td>
+                            <td data-field="status" data-sortable="true">@o.Status</td>
+                            <td data-field="name" data-sortable="true">@o.CustomerName</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts { 
+    <script>
+    $(function () {
+        var $table = $('table');
+        window.icons = {
+            toggle: 'fa-toggle-on',
+            columns: 'fa-th-list',
+            export: 'fa-download'
+        };
+    });
+</script>
+</script>
+    @await Html.PartialAsync("_CompBootstrapTable")
+    <script src="//rawgit.com/hhurz/tableExport.jquery.plugin/master/tableExport.js"></script>
+}
