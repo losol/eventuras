@@ -36,6 +36,7 @@
                         <th data-field="regid" data-sortable="true">Registration</th>
                         <th data-field="status" data-sortable="true">Status</th>
                         <th data-field="name" data-sortable="true">Customer</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,6 +47,10 @@
                             <td data-field="regid" data-sortable="true">@o.RegistrationId</td>
                             <td data-field="status" data-sortable="true">@o.Status</td>
                             <td data-field="name" data-sortable="true">@o.CustomerName</td>
+                            <td>
+                                <a asp-page="./Details" asp-route-id="@o.OrderId">View</a> | 
+                                <a href="#">Edit</a>
+                            </td>
                         </tr>
                     }
                 </tbody>
