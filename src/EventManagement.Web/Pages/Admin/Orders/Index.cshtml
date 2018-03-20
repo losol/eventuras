@@ -1,0 +1,11 @@
+@page "{p:int?}"
+@{
+    int pageNumber = 1;
+    if(RouteData.Values["p"] != null)
+    {
+        pageNumber = Convert.ToInt32(RouteData.Values["p"]);
+    }
+    
+}
+
+The page is @pageNumber
