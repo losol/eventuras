@@ -48,8 +48,9 @@ namespace losol.EventManagement.Web.Pages.Register
 		[BindProperty]
 		public RegisterVM Registration { get; set; }
 		public EventInfo EventInfo { get; set; }
-		public List<Product> Products => EventInfo.Products;
 		public List<PaymentMethod> PaymentMethods { get; set; }
+		public List<Product> Products => EventInfo.Products;
+		public int DefaultPaymentMethod => _paymentMethodService.GetDefaultPaymentMethodId();
 
 		public async Task<IActionResult> OnGetAsync(int id)
 		{
@@ -62,8 +63,7 @@ namespace losol.EventManagement.Web.Pages.Register
 			}
 
 			PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
-			var defaultPaymentMethod = _paymentMethodService.GetDefaultPaymentMethodId();
-			Registration = new RegisterVM(EventInfo, defaultPaymentMethod);
+			Registration = new RegisterVM(EventInfo, DefaultPaymentMethod);
 
 			return Page();
 		}
