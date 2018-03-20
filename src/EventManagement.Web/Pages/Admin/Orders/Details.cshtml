@@ -1,12 +1,23 @@
 @page "{id:int}"
+@inject IOrderService orderService
 @{
     var id = Convert.ToInt32(RouteData.Values["id"]);
-    
+    var order = await orderService.GetByIdAsync(id);
 }
 <div class="container">
 	<div class="row">
         <div class="col">
             <h2>Heya</h2>
+            Customer Name: @order.CustomerName <br>
+            Customer Email: @order.CustomerEmail <br>
+            Customer Invoice Reference: @order.CustomerInvoiceReference <br>
+            Order ID: @order.OrderId <br>
+            User ID: @order.UserId <br>
+            Registration ID: @order.RegistrationId <br>
+            Order Status: @order.Status <br>
+            Order Time: @order.OrderTime <br>
+            Comments: @order.Comments <br>
+            Log: @order.Log <br>
         </div>
     </div>
 </div>
