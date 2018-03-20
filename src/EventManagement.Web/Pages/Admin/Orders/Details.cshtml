@@ -7,7 +7,10 @@
 <div class="container">
 	<div class="row">
         <div class="col">
-            <h2>Order #@order.OrderId</h2>
+            <h2>
+                Order #@order.OrderId 
+                <small><order-status value="@order.Status" /></small>
+            </h2>
 
             <h4>Customer Information</h4>
             <dl class="row">
@@ -57,7 +60,7 @@
                 <dt class="col-3 text-right">Registration ID</dt>
                 <dd class="col-9">@order.RegistrationId</dd>
                 <dt class="col-3 text-right">Order Status</dt>
-                <dd class="col-9">@order.Status</dd>
+                <dd class="col-9"><order-status value="@order.Status" /></dd>
                 <dt class="col-3 text-right">Order Time</dt>
                 <dd class="col-9">@order.OrderTime</dd>
             </dl>
