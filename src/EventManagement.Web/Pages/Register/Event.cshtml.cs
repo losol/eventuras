@@ -21,7 +21,7 @@ namespace losol.EventManagement.Web.Pages.Register
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly ConfirmationEmailSender _confirmationEmailSender;
 		private readonly StandardEmailSender _standardEmailSender;
-		private readonly ILogger<LoginModel> _logger;
+		private readonly ILogger<EventRegistrationModel> _logger;
 		private readonly IEventInfoService _eventsService;
 		private readonly IPaymentMethodService _paymentMethodService;
 		private readonly IRegistrationService _registrationService;
@@ -30,7 +30,7 @@ namespace losol.EventManagement.Web.Pages.Register
 			UserManager<ApplicationUser> userManager,
 			ConfirmationEmailSender confirmationEmailSender,
 			StandardEmailSender standardEmailSender,
-			ILogger<LoginModel> logger,
+			ILogger<EventRegistrationModel> logger,
 			IEventInfoService eventsService,
 			IPaymentMethodService paymentMethodService,
 			IRegistrationService registrationService
