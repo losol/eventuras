@@ -125,6 +125,7 @@ namespace losol.EventManagement
 			services.AddScoped<IPaymentMethodService, PaymentMethodService>();
 			services.AddScoped<IRegistrationService, RegistrationService>();
 			services.AddScoped<IProductsService, ProductsService>();
+			services.AddScoped<IOrderService, OrderService>();
 
             // Add Page render Service
             //services.AddScoped<IViewRenderService, ViewRenderService>();
