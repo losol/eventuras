@@ -17,21 +17,24 @@ namespace losol.EventManagement.Services
 			_db = db;
 		}
 
-		public Task<List<Order>> GetAsync()
-		{
-			return _db.Orders
-				      .OrderByDescending(o => o.OrderTime)
-					  .ToListAsync();
-		}
+		public Task<List<Order>> GetAsync() =>
+			_db.Orders
+		       .OrderByDescending(o => o.OrderTime)
+		       .ToListAsync();
 
-		public Task<List<Order>> GetAsync(int count, int offset)
-		{
-			return _db.Orders
-				      .Skip(offset)
-				      .Take(count)
-				      .OrderByDescending(o => o.OrderTime)
-					  .ToListAsync();
-		}
-		public Task<List<Order>> GetAsync(int count) => GetAsync(0, count);
+		public Task<List<Order>> GetAsync(int count, int offset) =>
+			_db.Orders
+		       .Skip(offset)
+		       .Take(count)
+		       .OrderByDescending(o => o.OrderTime)
+		       .ToListAsync();
+
+		public Task<List<Order>> GetAsync(int count) => GetAsync(count, 0);
+
+		public Task<Order> GetByIdAsync(int orderId) =>
+			_db.Orders
+			   .Where(o => o.OrderId == orderId)
+			   .Include(o => o.OrderLines)
+			   .SingleOrDefaultAsync();
 	}
 }

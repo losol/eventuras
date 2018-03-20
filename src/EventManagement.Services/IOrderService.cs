@@ -10,5 +10,6 @@ namespace losol.EventManagement.Services
 		Task<List<Order>> GetAsync();
 		Task<List<Order>> GetAsync(int count, int offset);
 		Task<List<Order>> GetAsync(int count);
+		Task<Order> GetByIdAsync(int orderId);
 	}
 }
