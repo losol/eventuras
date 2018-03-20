@@ -7,17 +7,66 @@
 <div class="container">
 	<div class="row">
         <div class="col">
-            <h2>Heya</h2>
-            Customer Name: @order.CustomerName <br>
-            Customer Email: @order.CustomerEmail <br>
-            Customer Invoice Reference: @order.CustomerInvoiceReference <br>
-            Order ID: @order.OrderId <br>
-            User ID: @order.UserId <br>
-            Registration ID: @order.RegistrationId <br>
-            Order Status: @order.Status <br>
-            Order Time: @order.OrderTime <br>
-            Comments: @order.Comments <br>
-            Log: @order.Log <br>
+            <h2>Order #@order.OrderId</h2>
+
+            <h4>Customer Information</h4>
+            <dl class="row">
+                <dt class="col-3 text-right">Customer Name</dt>
+                <dd class="col-9">@order.CustomerName</dd>
+                <dt class="col-3 text-right">Customer Email</dt>
+                <dd class="col-9">@order.CustomerEmail</dd>
+                <dt class="col-3 text-right">Customer Invoice Reference</dt>
+                <dd class="col-9">@order.CustomerInvoiceReference</dd>
+            </dl>
+            
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Line#</th>
+                        <th>Product ID</th>
+                        <th>Product Name</th>
+                        <th>Variant ID</th>
+                        <th>Variant Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var line in order.OrderLines)
+                    {
+                        <tr>
+                            <td>@line.OrderLineId</td>
+                            <td>@line.ProductId</td>
+                            <td>@line.ProductName</td>
+                            <td>@(line.ProductVariantId?.ToString() ?? "NA")</td>
+                            <td>@(line.ProductVariantName ?? "NA")</td>
+                            <td>@line.Quantity</td>
+                            <td>@line.Price</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <h4>Order Information</h4>
+            <dl class="row">
+                <dt class="col-3 text-right">Order ID</dt>
+                <dd class="col-9">@order.OrderId</dd>
+                <dt class="col-3 text-right">User ID</dt>
+                <dd class="col-9">@order.UserId</dd>
+                <dt class="col-3 text-right">Registration ID</dt>
+                <dd class="col-9">@order.RegistrationId</dd>
+                <dt class="col-3 text-right">Order Status</dt>
+                <dd class="col-9">@order.Status</dd>
+                <dt class="col-3 text-right">Order Time</dt>
+                <dd class="col-9">@order.OrderTime</dd>
+            </dl>
+
+            <strong>Comments</strong><br />
+            <pre>@order.Comments</pre>
+
+            <strong>Log</strong><br />
+            <pre>@order.Log</pre>
         </div>
     </div>
 </div>
