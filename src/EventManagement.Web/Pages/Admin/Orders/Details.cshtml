@@ -68,7 +68,15 @@
                             <td>@line.Price</td>
                             @if(order.CanEdit)
                             {
-                                <td><button class="btn btn-sm btn-danger"><i class="material-icons md-light md-18">delete</i></button></td>
+                                <td>
+                                    <a tabindex="0" class="btn btn-sm btn-danger" role="button"       
+                                        data-toggle="popover" 
+                                        data-trigger="focus" 
+                                        title="Delete line?" 
+                                        data-content="<button class='btn btn-sm btn-danger'>Yes</button><button class='btn btn-sm btn-success'>No</button>">
+                                        <i class="material-icons md-light md-18">delete</i>
+                                    </a>
+                                </td>
                             }
                         </tr>
                     }
@@ -102,6 +110,10 @@
 
 @section scripts { 
     <script>
-
+        $(function () {
+            $('[data-toggle="popover"]').popover({
+                html: true
+            })
+        })
     </script>
 }
