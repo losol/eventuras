@@ -12,27 +12,27 @@
                 <small><order-status value="@order.Status" /></small>
             </h2>
 
-            <h4>Participant Information</h4>
+            <h4>Participant</h4>
             <dl class="row">
-                <dt class="col-3 text-right">Participant Name</dt>
-                <dd class="col-9">@(order.User?.Name ?? "NIL")</dd>
-                <dt class="col-3 text-right">Participant Email</dt>
-                <dd class="col-9">@(order.User?.Email ?? "NIL")</dd>
-                <dt class="col-3 text-right">Participant Phone</dt>
-                <dd class="col-9">@(order.User?.PhoneNumber ?? "NIL")</dd>
+                <dt class="col-6 col-md-3 col-lg-2 text-right">Participant Name</dt>
+                <dd class="col-6 col-md-9 col-lg-10">@(order.User?.Name ?? "NIL")</dd>
+                <dt class="col-6 col-md-3 col-lg-2 text-right">Participant Email</dt>
+                <dd class="col-6 col-md-9 col-lg-10">@(order.User?.Email ?? "NIL")</dd>
+                <dt class="col-6 col-md-3 col-lg-2 text-right">Participant Phone</dt>
+                <dd class="col-6 col-md-9 col-lg-10">@(order.User?.PhoneNumber ?? "NIL")</dd>
             </dl>
 
-            <h4>Customer Information</h4>
+            <h4>Customer</h4>
             <dl class="row">
-                <dt class="col-3 text-right">Customer Name</dt>
-                <dd class="col-9">@order.CustomerName</dd>
-                <dt class="col-3 text-right">Customer Email</dt>
-                <dd class="col-9">@order.CustomerEmail</dd>
-                <dt class="col-3 text-right">Customer Invoice Reference</dt>
-                <dd class="col-9">@order.CustomerInvoiceReference</dd>
+                <dt class="col-6 col-md-3 col-lg-2 text-right">Customer Name</dt>
+                <dd class="col-6 col-md-9 col-lg-10">@order.CustomerName</dd>
+                <dt class="col-6 col-md-3 col-lg-2 text-right">Customer Email</dt>
+                <dd class="col-6 col-md-9 col-lg-10">@order.CustomerEmail</dd>
+                <dt class="col-6 col-md-3 col-lg-2 text-right">Customer Invoice Reference</dt>
+                <dd class="col-6 col-md-9 col-lg-10">@order.CustomerInvoiceReference</dd>
             </dl>
             
-            
+            <h4>Order Lines</h4>
             <table class="table">
                 <thead>
                     <tr>
@@ -63,16 +63,16 @@
 
             <h4>Order Information</h4>
             <dl class="row">
-                <dt class="col-3 text-right">Order ID</dt>
-                <dd class="col-9">@order.OrderId</dd>
-                <dt class="col-3 text-right">User ID</dt>
-                <dd class="col-9"><code>@(order.UserId ?? "Unavailable")</code></dd>
-                <dt class="col-3 text-right">Registration ID</dt>
-                <dd class="col-9">@order.RegistrationId</dd>
-                <dt class="col-3 text-right">Order Status</dt>
-                <dd class="col-9"><order-status value="@order.Status" /></dd>
-                <dt class="col-3 text-right">Order Time</dt>
-                <dd class="col-9">@order.OrderTime</dd>
+                <dt class="col-6 col-md-3 col-lg-2 text-right">Order ID</dt>
+                <dd class="col-6 col-md-9 col-lg-10">@order.OrderId</dd>
+                <dt class="col-6 col-md-3 col-lg-2 text-right">User ID</dt>
+                <dd class="col-6 col-md-9 col-lg-10"><code>@(order.UserId ?? "Unavailable")</code></dd>
+                <dt class="col-6 col-md-3 col-lg-2 text-right">Registration ID</dt>
+                <dd class="col-6 col-md-9 col-lg-10">@order.RegistrationId</dd>
+                <dt class="col-6 col-md-3 col-lg-2 text-right">Order Status</dt>
+                <dd class="col-6 col-md-9 col-lg-10"><order-status value="@order.Status" /></dd>
+                <dt class="col-6 col-md-3 col-lg-2 text-right">Order Time</dt>
+                <dd class="col-6 col-md-9 col-lg-10">@order.OrderTime</dd>
             </dl>
 
             <strong>Comments</strong><br />
