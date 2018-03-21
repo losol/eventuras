@@ -55,5 +55,8 @@ namespace losol.EventManagement.Domain
 			Log += logText + "\n";
 		}
 
+		public bool CanEdit => 
+			Status == OrderStatus.Draft || Status == OrderStatus.Verified;
+
 	}
 }
