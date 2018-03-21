@@ -32,7 +32,13 @@
                 <dd class="col-6 col-md-9 col-lg-10">@order.CustomerInvoiceReference</dd>
             </dl>
             
-            <h4>Order Lines</h4>
+            <h4>
+                Order Lines 
+                @if(order.CanEdit)
+                {
+                    <button class="btn btn-default">Add Line</button>
+                }
+            </h4>
             <table class="table">
                 <thead>
                     <tr>
@@ -43,6 +49,10 @@
                         <th>Variant Name</th>
                         <th>Quantity</th>
                         <th>Price</th>
+                        @if(order.CanEdit)
+                        {
+                            <th></th>
+                        }
                     </tr>
                 </thead>
                 <tbody>
@@ -56,6 +66,10 @@
                             <td>@(line.ProductVariantName ?? "NA")</td>
                             <td>@line.Quantity</td>
                             <td>@line.Price</td>
+                            @if(order.CanEdit)
+                            {
+                                <td><button class="btn btn-sm btn-danger"><i class="material-icons md-light md-18">delete</i></button></td>
+                            }
                         </tr>
                     }
                 </tbody>
@@ -83,3 +97,11 @@
         </div>
     </div>
 </div>
+
+
+
+@section scripts { 
+    <script>
+
+    </script>
+}
