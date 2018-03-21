@@ -35,6 +35,7 @@ namespace losol.EventManagement.Services
 			_db.Orders
 			   .Where(o => o.OrderId == orderId)
 			   .Include(o => o.OrderLines)
+			   .Include(o => o.User)
 			   .SingleOrDefaultAsync();
 	}
 }

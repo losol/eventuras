@@ -41,7 +41,7 @@ namespace losol.EventManagement.Domain
 		// Navigational properties
 		public Registration Registration { get; set; }
 		public PaymentMethod PaymentMethod { get; set; }
-
+		public ApplicationUser User { get; set; }
 		public List<OrderLine> OrderLines { get; set; }
 
 
