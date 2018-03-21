@@ -25,6 +25,7 @@ namespace losol.EventManagement.Web.Api.Controllers
 			var events = await _eventsService.GetUpcomingEventsAsync();
 			var list = events.Select(s => new
 			{
+				Id = s.EventInfoId,
 				s.Title,
 				s.Description,
 				s.Location,
