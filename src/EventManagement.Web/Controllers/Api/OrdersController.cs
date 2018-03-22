@@ -27,7 +27,7 @@ namespace losol.EventManagement.Web.Controllers.Api
 			try
 			{
 				await _orderService.UpdateOrderDetailsAsync(id, 
-				                                            vm.Customername, 
+				                                            vm.CustomerName, 
 				                                            vm.CustomerEmail, 
 				                                            vm.InvoiceReference, 
 				                                            vm.Comments);
@@ -90,7 +90,7 @@ namespace losol.EventManagement.Web.Controllers.Api
 
 		public class UpdateOrderDetailsVM
 		{
-			public string Customername { get; set; }
+			public string CustomerName { get; set; }
 			[DataType(DataType.EmailAddress)]
 			public string CustomerEmail { get; set; }
 			public string InvoiceReference { get; set; }
