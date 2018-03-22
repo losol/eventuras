@@ -158,14 +158,27 @@ Gotta do it in a better way later. *@
 
 @section scripts { 
     <script>
+        // helper function
+        $.postJSON = function(url, data, callback) {
+            return jQuery.ajax({
+                headers: { 
+                    'Content-Type': 'application/json' 
+                },
+                'type': 'POST',
+                'url': url,
+                'data': JSON.stringify(data)
+            });
+        };
+
         $(function () {
             const variants = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(variants));
             const $sVariants = $('#selected-variant');
+            const $sProducts = $("#selected-product");
 
             $('[data-toggle="popover"]').popover({
                 html: true
             })
-            $("#selected-product").change(function() {
+            $sProducts.change(function() {
                 // Remove existing options
                 $sVariants.empty();
 
@@ -190,10 +203,24 @@ Gotta do it in a better way later. *@
             const $disabler = $('#input-disabler');
             const $spinner = $('.fa-spinner');
             $('#btn-add-orderline').bind('click', function() {
+
+                if($sProducts.val() == null) return;
+
                 $spinner.show();
                 $disabler.show();
-                // Perform an ajax request here
-                // and hide the spinner and disabler when done
+                const data = {
+                    orderId: "@order.OrderId",
+                    productId: $sProducts.val(),
+                    variantId: $sVariants.val()
+                };
+
+                $.postJSON('/api/v0/orders/line/add', data).done(function(x) {
+                    location.reload();
+                }).fail(function(){
+                    $spinner.hide();
+                    $disabler.hide();
+                })
+
             })
         })
 
