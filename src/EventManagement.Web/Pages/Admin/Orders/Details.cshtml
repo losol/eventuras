@@ -217,20 +217,20 @@
         <div class="modal-body">
         <div class="form-group">
             <label class="control-label">Customer Name</label>
-            <input id="input-edit-customer-name" class="form-control" />
+            <input id="input-edit-customer-name" class="form-control" value="@order.CustomerName" />
         </div>
         <div class="form-group">
             <label class="control-label">Customer Email</label>
-            <input id="input-edit-customer-email" class="form-control" />
+            <input id="input-edit-customer-email" class="form-control" value="@order.CustomerEmail" />
         </div>
         <div class="form-group">
             <label class="control-label">Customer Invoice Reference </label>
-            <input id="input-edit-customer-email" class="form-control" />
+            <input id="input-edit-customer-invoiceref" class="form-control" value="@order.CustomerInvoiceReference" />
         </div>
         <hr>
         <div class="form-group">
             <label class="control-label">Comments </label>
-            <textarea id="input-edit-comments" class="form-control"></textarea>
+            <textarea id="input-edit-comments" class="form-control">@order.Comments</textarea>
         </div>
         </div>
         <div class="modal-footer">
@@ -339,7 +339,20 @@ Gotta do it in a better way later. *@
             })
 
             $('#btn-edit-order').on('click', function() {
-                
+                const postData = {
+                    customerName: $('#input-edit-customer-name').val(),
+                    customerEmail: $('#input-edit-customer-email').val(),
+                    invoiceReference: $('#input-edit-customer-invoiceref').val(),
+                    comments: $('#input-edit-comments').val()
+                }
+                $spinner.show();
+                $disabler.show();
+                $.postJSON('/api/v0/orders/update/@order.OrderId', postData).done(function() {
+                    location.reload();
+                }).fail(function(){
+                    $spinner.hide();
+                    $disabler.hide();
+                })
             })
         })
 

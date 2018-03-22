@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using losol.EventManagement.Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace losol.EventManagement.Web.Controllers.Api
 {
@@ -17,6 +18,25 @@ namespace losol.EventManagement.Web.Controllers.Api
 		public OrdersController(IOrderService orderService)
 		{
 			_orderService = orderService;
+		}
+
+		[HttpPost("update/{id}")]
+		public async Task<ActionResult> UpdateOrder([FromRoute]int id, [FromBody]UpdateOrderDetailsVM vm)
+		{
+			if (!ModelState.IsValid) return BadRequest();
+			try
+			{
+				await _orderService.UpdateOrderDetailsAsync(id, 
+				                                            vm.Customername, 
+				                                            vm.CustomerEmail, 
+				                                            vm.InvoiceReference, 
+				                                            vm.Comments);
+			}
+			catch (ArgumentException)
+			{
+				return BadRequest();
+			}
+			return Ok();
 		}
 
 		[HttpPost("line/delete/{lineid}")]
@@ -66,6 +86,15 @@ namespace losol.EventManagement.Web.Controllers.Api
 				return BadRequest();
 			}
 			return Ok();
+		}
+
+		public class UpdateOrderDetailsVM
+		{
+			public string Customername { get; set; }
+			[DataType(DataType.EmailAddress)]
+			public string CustomerEmail { get; set; }
+			public string InvoiceReference { get; set; }
+			public string Comments { get; set; }
 		}
 
 		public class OrderLineVM

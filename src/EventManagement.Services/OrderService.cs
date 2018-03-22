@@ -100,5 +100,18 @@ namespace losol.EventManagement.Services
 			_db.Update(line);
 			return await _db.SaveChangesAsync() > 0;
 		}
+
+		public async Task<bool> UpdateOrderDetailsAsync(int id, string customername, string customerEmail, string invoiceReference, string comments)
+		{
+			var order = await _db.Orders.FindAsync(id);
+
+			order.CustomerName = customername;
+			order.CustomerEmail = customerEmail;
+			order.CustomerInvoiceReference = invoiceReference;
+			order.Comments = comments;
+
+			_db.Orders.Update(order);
+			return await _db.SaveChangesAsync() > 0;
+		}
 	}
 }
