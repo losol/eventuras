@@ -14,7 +14,8 @@
             <h2>
                 Order #@order.OrderId 
                 <small><order-status value="@order.Status" /></small>
-            </h2>
+            </h2><small><a href="#" data-toggle="modal" 
+                        data-target="#edit-order-modal">Edit</a></small>
 
             <h4>Participant</h4>
             <dl class="row">
@@ -197,6 +198,49 @@
     </div>
 </div>
 
+<!-- Edit Order (customer/comments) Modal -->
+<div class="modal fade" 
+    id="edit-order-modal" 
+    tabindex="-1" 
+    role="dialog" 
+    data-keyboard="false"
+    aria-labelledby="edit-order-modal-title" 
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="edit-order-modal-title">Edit Order Information</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+        <div class="form-group">
+            <label class="control-label">Customer Name</label>
+            <input id="input-edit-customer-name" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">Customer Email</label>
+            <input id="input-edit-customer-email" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">Customer Invoice Reference </label>
+            <input id="input-edit-customer-email" class="form-control" />
+        </div>
+        <hr>
+        <div class="form-group">
+            <label class="control-label">Comments </label>
+            <textarea id="input-edit-comments" class="form-control"></textarea>
+        </div>
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button id="btn-edit-order" type="button" class="btn btn-primary">Save <i class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true" style="display:none"></i></button>
+        </div>
+    </div>
+    </div>
+</div>
+
 @* Div to disable inputs.
 Gotta do it in a better way later. *@
 <div id="input-disabler" style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; color: transparent; z-index:2000; display: none"></div>
@@ -292,6 +336,10 @@ Gotta do it in a better way later. *@
                     })
                     $(this).off('click');
                 });
+            })
+
+            $('#btn-edit-order').on('click', function() {
+                
             })
         })
 
