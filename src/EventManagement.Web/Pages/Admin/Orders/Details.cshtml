@@ -40,7 +40,9 @@
                 Order Lines 
                 @if(order.CanEdit)
                 {
-                    <button class="btn btn-default" data-toggle="modal" data-target="#add-orderline-modal">Add Line</button>
+                    <button class="btn btn-default" 
+                        data-toggle="modal" 
+                        data-target="#add-orderline-modal">Add Line</button>
                 }
             </h4>
             <table class="table">
@@ -73,6 +75,15 @@
                             @if(order.CanEdit)
                             {
                                 <td>
+                                    <a tabindex="0" 
+                                        class="btn btn-sm btn-primary btn-edit-line" 
+                                        role="button"    
+                                        data-quantity="@line.Quantity"
+                                        data-id="@line.OrderId"
+                                        data-price='@line.Price.ToString("F",System.Globalization.CultureInfo.InvariantCulture)'
+                                        data-trigger="focus">
+                                        <i class="material-icons md-light md-18">edit</i>
+                                    </a>
                                     <a tabindex="0" class="btn btn-sm btn-danger" role="button"       
                                         data-toggle="popover" 
                                         data-trigger="focus" 
@@ -152,6 +163,40 @@
     </div>
 </div>
 
+<!-- Edit OrderLine Modal -->
+<div class="modal fade" 
+    id="edit-orderline-modal" 
+    tabindex="-1" 
+    role="dialog" 
+    data-keyboard="false"
+    aria-labelledby="edit-orderline-modal-title" 
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="edit-orderline-modal-title">Edit Order Line</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+        <div class="form-group">
+            <label class="control-label">Quantity</label>
+            <input id="input-edit-quantity" class="form-control" type="number" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">Price</label>
+            <input id="input-edit-price" class="form-control" type="number" min="0" step="any" />
+        </div>
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button id="btn-edit-orderline" type="button" class="btn btn-primary">Save <i class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true" style="display:none"></i></button>
+        </div>
+    </div>
+    </div>
+</div>
+
 @* Div to disable inputs.
 Gotta do it in a better way later. *@
 <div id="input-disabler" style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; color: transparent; z-index:2000; display: none"></div>
@@ -222,10 +267,21 @@ Gotta do it in a better way later. *@
                 })
 
             })
+
+            $('.btn-edit-line').bind('click', function() {
+                const id = $(this).data('id');
+                const $inputQuantity = $('#input-edit-quantity');
+                const $inputPrice = $('#input-edit-price');
+                const $editModal = $('#edit-orderline-modal')
+
+                $inputQuantity.val($(this).data('quantity'));
+                $inputPrice.val($(this).data('price'));
+                $editModal.modal('show');
+            })
         })
 
         function deleteOrderLine(lineid) {
-            $.post('/api/v0/orders/line/delete/'+lineid, function() {
+            $.post('/api/v0/orders/line/delete/' + lineid, function() {
                 location.reload();
             })
         }
