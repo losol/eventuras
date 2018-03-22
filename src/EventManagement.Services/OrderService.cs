@@ -48,12 +48,44 @@ namespace losol.EventManagement.Services
 		public async Task<bool> DeleteOrderLineAsync(int lineId)
 		{
 			var line = await GetOrderLineAsync(lineId);
+			if(line == null)
+			{
+				throw new ArgumentException("Invalid lineId", nameof(lineId));
+			}
+
 			if(!line.Order.CanEdit)
 			{
 				throw new InvalidOperationException("The order line cannot be edited anymore.");
 			}
 
 			_db.OrderLines.Remove(line);
+			return await _db.SaveChangesAsync() > 0;
+		}
+
+		public async Task<bool> AddOrderLineAsync(int orderId, int productId, int? variantId)
+		{
+			var order = await _db.Orders.FindAsync(orderId);
+			var product = await _db.Products.FindAsync(productId);
+			var variant = variantId.HasValue ? await _db.Products.FindAsync(variantId) : null;
+
+			_ = order ?? throw new ArgumentException("Invalid orderId", nameof(orderId));
+			_ = product ?? throw new ArgumentException("Invalid productId", nameof(productId));
+
+			var line = new OrderLine
+			{
+				OrderId = orderId,
+				ProductId = productId,
+				ProductVariantId = variantId,
+
+				Price = variant?.Price ?? product.Price,
+				VatPercent = variant?.VatPercent ?? product.VatPercent,
+
+				ProductName = product.Name,
+				ProductDescription = product.Description,
+				ProductVariantName = variant?.Name,
+				ProductVariantDescription = variant?.Description
+			};
+			await _db.OrderLines.AddAsync(line);
 			return await _db.SaveChangesAsync() > 0;
 		}
 	}

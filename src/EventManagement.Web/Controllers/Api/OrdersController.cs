@@ -37,5 +37,27 @@ namespace losol.EventManagement.Web.Controllers.Api
 			return await _orderService.DeleteOrderLineAsync(lineid) ? 
 				                      Ok() : StatusCode(StatusCodes.Status500InternalServerError);
 		}
+
+		[HttpPost("line/add")]
+		public async Task<IActionResult> AddOrderLine([FromBody]OrderLineVM vm) 
+		{
+			if (!ModelState.IsValid) return BadRequest();
+			try
+			{
+				await _orderService.AddOrderLineAsync(vm.OrderId, vm.ProductId, vm.VariantId);
+			}
+			catch(ArgumentException)
+			{
+				return BadRequest();
+			}
+			return Ok();
+		}
+
+		public class OrderLineVM
+		{
+			public int OrderId { get; set; }
+			public int ProductId { get; set; }
+			public int? VariantId { get; set; }
+		}
 	}
 }
