@@ -79,7 +79,7 @@
                                         class="btn btn-sm btn-primary btn-edit-line" 
                                         role="button"    
                                         data-quantity="@line.Quantity"
-                                        data-id="@line.OrderId"
+                                        data-id="@line.OrderLineId"
                                         data-price='@line.Price.ToString("F",System.Globalization.CultureInfo.InvariantCulture)'
                                         data-trigger="focus">
                                         <i class="material-icons md-light md-18">edit</i>
@@ -244,13 +244,11 @@ Gotta do it in a better way later. *@
                     $sVariants.prop('disabled', true);
                 }
             });
-
+            
             const $disabler = $('#input-disabler');
             const $spinner = $('.fa-spinner');
             $('#btn-add-orderline').bind('click', function() {
-
                 if($sProducts.val() == null) return;
-
                 $spinner.show();
                 $disabler.show();
                 const data = {
@@ -268,8 +266,8 @@ Gotta do it in a better way later. *@
 
             })
 
-            $('.btn-edit-line').bind('click', function() {
-                const id = $(this).data('id');
+            $('.btn-edit-line').on('click', function() {
+                let editId = $(this).data('id');
                 const $inputQuantity = $('#input-edit-quantity');
                 const $inputPrice = $('#input-edit-price');
                 const $editModal = $('#edit-orderline-modal')
@@ -277,8 +275,26 @@ Gotta do it in a better way later. *@
                 $inputQuantity.val($(this).data('quantity'));
                 $inputPrice.val($(this).data('price'));
                 $editModal.modal('show');
+
+                $('#btn-edit-orderline').on('click', function() {
+                    const postdata = {
+                        quantity: $inputQuantity.val(),
+                        price: $inputPrice.val()
+                    };
+                    $spinner.show();
+                    $disabler.show();
+                    $.postJSON('/api/v0/orders/line/update/' + editId, postdata)
+                    .done(function(){
+                        location.reload();
+                    }).fail(function(){
+                        $spinner.hide();
+                        $disabler.hide();
+                    })
+                    $(this).off('click');
+                });
             })
         })
+
 
         function deleteOrderLine(lineid) {
             $.post('/api/v0/orders/line/delete/' + lineid, function() {
