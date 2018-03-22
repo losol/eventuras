@@ -77,7 +77,7 @@
                                         data-toggle="popover" 
                                         data-trigger="focus" 
                                         title="Delete line?" 
-                                        data-content="<button class='btn btn-sm btn-danger'>Yes</button><button class='btn btn-sm btn-success'>No</button>">
+                                        data-content="<button class='btn btn-sm btn-danger btn-delete-line' onclick='deleteOrderLine(@line.OrderLineId)'>Yes</button><button class='btn btn-sm btn-success'>No</button>">
                                         <i class="material-icons md-light md-18">delete</i>
                                     </a>
                                 </td>
@@ -196,5 +196,11 @@ Gotta do it in a better way later. *@
                 // and hide the spinner and disabler when done
             })
         })
+
+        function deleteOrderLine(lineid) {
+            $.post('/api/v0/orders/line/delete/'+lineid, function() {
+                location.reload();
+            })
+        }
     </script>
 }
