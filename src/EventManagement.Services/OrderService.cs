@@ -88,5 +88,17 @@ namespace losol.EventManagement.Services
 			await _db.OrderLines.AddAsync(line);
 			return await _db.SaveChangesAsync() > 0;
 		}
+
+		public async Task<bool> UpdateOrderLine(int lineId, int quantity, decimal price)
+		{
+			var line = await _db.OrderLines.FindAsync(lineId);
+			_ = line ?? throw new ArgumentException("Invalid lineId", nameof(lineId));
+
+			line.Quantity = quantity;
+			line.Price = price;
+
+			_db.Update(line);
+			return await _db.SaveChangesAsync() > 0;
+		}
 	}
 }

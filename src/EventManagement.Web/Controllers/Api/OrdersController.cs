@@ -53,11 +53,32 @@ namespace losol.EventManagement.Web.Controllers.Api
 			return Ok();
 		}
 
+		[HttpPost("line/update/{lineId}")]
+		public async Task<IActionResult> UpdateOrderLine([FromRoute]int lineId, [FromBody] OrderLineUpdateVM vm)
+		{
+			if (!ModelState.IsValid) return BadRequest();
+			try 
+			{
+				await _orderService.UpdateOrderLine(lineId, vm.Quantity, vm.Price);	
+			}
+			catch(ArgumentException)
+			{
+				return BadRequest();
+			}
+			return Ok();
+		}
+
 		public class OrderLineVM
 		{
 			public int OrderId { get; set; }
 			public int ProductId { get; set; }
 			public int? VariantId { get; set; }
+		}
+
+		public class OrderLineUpdateVM
+		{
+			public int Quantity { get; set; }
+			public decimal Price { get; set; }
 		}
 	}
 }
