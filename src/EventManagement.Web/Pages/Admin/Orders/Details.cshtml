@@ -125,6 +125,7 @@
         <div class="form-group">
             <label class="control-label">Product</label>
             <select id="selected-product" class="form-control">
+                <option selected disabled>Select Product</option>   
                 @foreach(var p in products) 
                 {
                     <option value="@p.ProductId">@p.Name</option>
