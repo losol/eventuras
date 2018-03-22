@@ -38,5 +38,23 @@ namespace losol.EventManagement.Services
 			   .Include(o => o.User)
 		       .Include(o => o.Registration)
 			   .SingleOrDefaultAsync();
+
+		public Task<OrderLine> GetOrderLineAsync(int lineId) =>
+			_db.OrderLines
+			   .Where(l => l.OrderLineId == lineId)
+		       .Include(l => l.Order)
+			   .SingleOrDefaultAsync();
+
+		public async Task<bool> DeleteOrderLineAsync(int lineId)
+		{
+			var line = await GetOrderLineAsync(lineId);
+			if(!line.Order.CanEdit)
+			{
+				throw new InvalidOperationException("The order line cannot be edited anymore.");
+			}
+
+			_db.OrderLines.Remove(line);
+			return await _db.SaveChangesAsync() > 0;
+		}
 	}
 }
