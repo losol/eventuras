@@ -112,7 +112,13 @@
 
 
 <!-- Add OrderLine Modal -->
-<div class="modal fade" id="add-orderline-modal" tabindex="-1" role="dialog" aria-labelledby="add-orderline-modal-title" aria-hidden="true">
+<div class="modal fade" 
+    id="add-orderline-modal" 
+    tabindex="-1" 
+    role="dialog" 
+    data-keyboard="false"
+    aria-labelledby="add-orderline-modal-title" 
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
     <div class="modal-content">
         <div class="modal-header">
@@ -140,11 +146,15 @@
         </div>
         <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button id="btn-add-orderline" type="button" class="btn btn-primary">Add Line</button>
+        <button id="btn-add-orderline" type="button" class="btn btn-primary">Add Line <i class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true" style="display:none"></i></button>
         </div>
     </div>
     </div>
 </div>
+
+@* Div to disable inputs.
+Gotta do it in a better way later. *@
+<div id="input-disabler" style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; color: transparent; z-index:2000; display: none"></div>
 
 @section scripts { 
     <script>
@@ -176,6 +186,15 @@
                     $sVariants.prop('disabled', true);
                 }
             });
+
+            const $disabler = $('#input-disabler');
+            const $spinner = $('.fa-spinner');
+            $('#btn-add-orderline').bind('click', function() {
+                $spinner.show();
+                $disabler.show();
+                // Perform an ajax request here
+                // and hide the spinner and disabler when done
+            })
         })
     </script>
 }
