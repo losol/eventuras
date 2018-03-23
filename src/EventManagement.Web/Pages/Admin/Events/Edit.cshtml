@@ -181,6 +181,7 @@
                                     </div>
                                     <div class="col-2">
                                         <small>
+                                            <a href="#/" class="edit-product-link">Edit</a> | 
                                             <a href="#/" class="text-muted delete-product-link">Delete</a>
                                             <br /><br />
                                             <a href="#/" class="text-primary add-variant-link">Add Variant</a>
@@ -205,6 +206,7 @@
                                             </div>
                                             <div class="col-2">
                                                 <small>
+                                                    <a href="#/" class="edit-variant-link">Edit</a> | 
                                                     <a href="#/" onclick="$(this).closest('.variant-card').remove()" class="text-muted delete-variant-link">Delete</a>
                                                 </small>
                                             </div>
@@ -392,12 +394,40 @@ $("#EventInfo_Title").keyup(function(){
     const $variantName = $($variantModal).find('#input-variant-name');
     const $variantDescription = $($variantModal).find('#input-variant-description');
     const $variantPrice = $($variantModal).find('#input-variant-price');
-    var $currentProduct; // Used to keep track of the product to add the variant too
+    var $currentProduct; // Used to keep track of the product to edit/to add the variant to.
+    var $currentVariant; // Used to keep track of the variant to apply the edit to.
 
     const mainForm = document.getElementById('main-form');
     const productsTemplate = document.querySelector('#product-template').content;
     const variantsTemplate = document.querySelector('#variant-template').content;
     const productsWrapper = document.querySelector('#product-wrapper');
+    let isEdit = false; // Add / Edit flag
+
+    $('.edit-product-link').bind('click', function(e) {
+        let $card = $(this).closest('.product-card');
+
+        $productName.val($card.find('.product-name').text())
+        $productDescription.val($card.find('.product-description').text())
+        $productPrice.val($card.find('.product-price').text())
+        $productMandatoryCount.val($card.find('.product-m-count').val())
+
+        isEdit = true;
+        $currentProduct = $card;
+        $modal.modal('show');
+    });
+
+    $('.edit-variant-link').bind('click', function(e) {
+        let $card = $(this).closest('.variant-card');
+
+        $variantName.val($card.find('.variant-name').text());
+        $variantDescription.val($card.find('.variant-description').text());
+        $variantPrice.val($card.find('.variant-price').text());
+
+        isEdit = true;
+        $currentProduct = $(this).closest('.product-card');
+        $currentVariant = $card;
+        $variantModal.modal('show');
+    });
 
     // Bind the delete product and add variant links
     $('.delete-product-link').bind('click', function(e) {
@@ -440,18 +470,23 @@ $("#EventInfo_Title").keyup(function(){
 
         // Clone the product template
         let clone = productsTemplate.cloneNode(true);
+        if(isEdit === true) {
+            clone = $currentProduct[0];
+        }
         // And populate it with values from the modal
         clone.querySelector('.product-name').innerText = $productName.val();
         clone.querySelector('.product-description').innerText = $productDescription.val();
         clone.querySelector('.product-price').innerText = $productPrice.val();
         clone.querySelector('.product-m-count').value = $productMandatoryCount.val();
 
-        // Add the cloned template to the DOM
-        productsWrapper.appendChild(clone);
+        if(isEdit != true) {
+            // Add the cloned template to the DOM
+            productsWrapper.appendChild(clone);
+            // Set event handlers to the newly added product actions
+            bindLatestProductLinks();
+        }
 
-        // Set event handlers to the newly added product actions
-        bindLatestProductLinks();
-        // Hide the modal
+        isEdit = false;        
         $modal.modal('hide');
     });
 
@@ -461,16 +496,21 @@ $("#EventInfo_Title").keyup(function(){
 
         // Clone the product template
         let clone = variantsTemplate.cloneNode(true);
+        if(isEdit === true) {
+            clone = $currentVariant[0];
+        }
         // And populate it with values from the modal
         clone.querySelector('.variant-name').innerText = $variantName.val();
         clone.querySelector('.variant-description').innerText = $variantDescription.val();
         clone.querySelector('.variant-price').innerText = $variantPrice.val();
 
-        // Add the cloned template to the DOM
-        const $variantsWrapper = $currentProduct.find('.variant-wrapper');
-        $variantsWrapper[0].appendChild(clone);
+        if(isEdit != true) {
+            // Add the cloned template to the DOM
+            const $variantsWrapper = $currentProduct.find('.variant-wrapper');
+            $variantsWrapper[0].appendChild(clone);
+        }
 
-        // Hide the modal
+        isEdit = false;
         $variantModal.modal('hide');
     });
 
