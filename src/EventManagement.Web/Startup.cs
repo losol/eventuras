@@ -82,8 +82,6 @@ namespace losol.EventManagement
                 options.AddPolicy("AdministratorRole", policy => policy.RequireRole("Admin", "SuperAdmin"));
             });
             
-
-
             services.AddMvc()
                 .AddRazorPagesOptions(options =>
                 {
@@ -102,18 +100,28 @@ namespace losol.EventManagement
             {
                 case var env when env.IsProduction():
                     services.AddScoped<IDbInitializer, ProductionDbInitializer>();
-					services.Configure<SendGridOptions>(Configuration.GetSection("SendGrid"));
-					services.AddTransient<IEmailSender, SendGridEmailSender>();
                     break;
                 case var env when env.IsDevelopment():
                     services.AddScoped<IDbInitializer, DevelopmentDbInitializer>();
-					services.AddTransient<IEmailSender, FileEmailWriter>();
                     break;
                 default:
                     services.AddScoped<IDbInitializer, DefaultDbInitializer>();
-					services.AddTransient<IEmailSender, FileEmailWriter>();
                     break;
             }
+
+            var appsettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
+
+			// Register the correct email provider depending on the config
+			switch(appsettings.EmailProvider)
+			{
+				case EmailProvider.SendGrid:
+					services.Configure<SendGridOptions>(Configuration.GetSection("SendGrid"));
+					services.AddTransient<IEmailSender, SendGridEmailSender>();
+					break;
+				case EmailProvider.File:
+					services.AddTransient<IEmailSender, FileEmailWriter>();
+					break;
+			}
 
 			// Register email services
 			services.AddTransient<StandardEmailSender>();
