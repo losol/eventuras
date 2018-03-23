@@ -551,3 +551,4 @@ $RECYCLE.BIN/
 # End of https://www.gitignore.io/api/node,linux,macos,windows,aspnetcore,visualstudio,visualstudiocode
 
 Docs/Specification/Database-model.mwb.bak
+emails/
