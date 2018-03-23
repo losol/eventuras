@@ -80,10 +80,10 @@ namespace losol.EventManagement.Web.Pages.Register
 
 		public bool HasProducts => Products != null && Products.Length > 0;
 		public IEnumerable<int> SelectedProducts => 
-			Products.Where(rp => rp.IsSelected)
+			Products?.Where(rp => rp.IsSelected)
 					.Select(p => p.Value);
 		public IEnumerable<int> SelectedVariants =>
-			Products.Where(p => p.SelectedVariantId.HasValue)
+			Products?.Where(p => p.SelectedVariantId.HasValue)
 					.Select(p => p.SelectedVariantId.Value);
 	}
 }
