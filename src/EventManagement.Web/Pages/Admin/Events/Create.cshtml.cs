@@ -48,7 +48,6 @@ namespace losol.EventManagement.Pages.Admin.Events
             }
 
 			var eventId = await _eventsService.AddAsync(EventInfo);
-            Console.WriteLine("************************ " + EventInfo.EventInfoId + "," + eventId);
             return RedirectToPage("./Edit", new {id=EventInfo.EventInfoId});
         }
     }
