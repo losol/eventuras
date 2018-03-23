@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Globalization;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
@@ -9,14 +7,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using losol.EventManagement.Domain;
-using losol.EventManagement.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using System.Globalization;
+
+using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
+using losol.EventManagement.Services;
 using losol.EventManagement.Services.DbInitializers;
 using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.Web.Services;
@@ -84,8 +82,6 @@ namespace losol.EventManagement
                 options.AddPolicy("AdministratorRole", policy => policy.RequireRole("Admin", "SuperAdmin"));
             });
             
-
-
             services.AddMvc()
                 .AddRazorPagesOptions(options =>
                 {
@@ -98,13 +94,7 @@ namespace losol.EventManagement
             // For sending antiforgery in ajax?
             // services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
 
-            // Email configuration
-			services.Configure<SendGridOptions>(Configuration.GetSection("SendGrid"));
-			services.AddTransient<IEmailSender, SendGridEmailSender>();
-			services.AddTransient<StandardEmailSender>();
-			services.AddTransient<ConfirmationEmailSender>();
-
-            // Register the Database Seed initializer
+            // Register the Database Seed initializer & email sender services
             services.Configure<DbInitializerOptions>(Configuration);
             switch(HostingEnvironment)
             {
@@ -118,6 +108,27 @@ namespace losol.EventManagement
                     services.AddScoped<IDbInitializer, DefaultDbInitializer>();
                     break;
             }
+
+            var appsettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
+
+			// Register the correct email provider depending on the config
+			switch(appsettings.EmailProvider)
+			{
+				case EmailProvider.SendGrid:
+					services.Configure<SendGridOptions>(Configuration.GetSection("SendGrid"));
+					services.AddTransient<IEmailSender, SendGridEmailSender>();
+					break;
+				case EmailProvider.File:
+					services.AddTransient<IEmailSender, FileEmailWriter>();
+					break;
+				case EmailProvider.Mock:
+					services.AddTransient<IEmailSender, MockEmailSender>();
+					break;
+			}
+
+			// Register email services
+			services.AddTransient<StandardEmailSender>();
+			services.AddTransient<ConfirmationEmailSender>();
 
 			// Register our application services
 			services.AddScoped<IEventInfoService, EventInfoService>();
