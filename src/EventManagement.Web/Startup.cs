@@ -121,6 +121,9 @@ namespace losol.EventManagement
 				case EmailProvider.File:
 					services.AddTransient<IEmailSender, FileEmailWriter>();
 					break;
+				case EmailProvider.Mock:
+					services.AddTransient<IEmailSender, MockEmailSender>();
+					break;
 			}
 
 			// Register email services
