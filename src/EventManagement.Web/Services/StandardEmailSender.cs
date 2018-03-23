@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using losol.EventManagement.Services;
 using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.ViewModels;
 
