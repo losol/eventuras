@@ -119,6 +119,7 @@ namespace losol.EventManagement.Domain
 
 			var order = new Order
 			{
+				UserId = UserId,
 				CustomerName = CustomerName ?? ParticipantName,
 
 				CustomerEmail = CustomerEmail,

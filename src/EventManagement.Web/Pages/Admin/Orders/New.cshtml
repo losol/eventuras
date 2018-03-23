@@ -1,0 +1,35 @@
+@page 
+@{
+
+}
+
+<div class="container">
+	<div class="row">
+        <div class="col">
+            <h2>New Order</h2>
+
+            <form>
+                <select class="selectpicker show-tick" data-live-search="true">
+                    <option data-subtext="galdin@email.com">Galdin Raphael</option>
+                    <option data-subtext="blossom@email.com">Blossom Coelho</option>
+                </select>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section HeadScripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+}
+
+@section scripts { 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $selects = $('.selectpicker')
+            $selects.selectpicker();
+            $selects.selectpicker('refresh');
+        });
+    </script>
+}

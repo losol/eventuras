@@ -41,7 +41,7 @@ namespace losol.EventManagement.Domain
 		// Navigational properties
 		public Registration Registration { get; set; }
 		public PaymentMethod PaymentMethod { get; set; }
-
+		public ApplicationUser User { get; set; }
 		public List<OrderLine> OrderLines { get; set; }
 
 
@@ -54,6 +54,9 @@ namespace losol.EventManagement.Domain
 			}
 			Log += logText + "\n";
 		}
+
+		public bool CanEdit => 
+			Status == OrderStatus.Draft || Status == OrderStatus.Verified;
 
 	}
 }
