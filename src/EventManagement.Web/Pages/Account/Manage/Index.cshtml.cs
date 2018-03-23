@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Services;
+using losol.EventManagement.Services.Messaging;
 
 namespace losol.EventManagement.Pages.Account.Manage
 {

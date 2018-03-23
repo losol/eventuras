@@ -10,8 +10,7 @@ namespace losol.EventManagement.Services
 		Task<Registration> GetWithEventInfoAsync(int id);
 
 		Task<int> CreateRegistration(Registration registration);
-		Task<int> CreateRegistrationWithOrder(Registration registration, int[] productIds);
-		Task<int> CreateRegistrationWithOrder(Registration registration, int[] productIds, int[] variantIds);
+		Task<int> CreateRegistration(Registration registration, int[] productIds, int[] variantIds);
 		
 		Task<int> SetRegistrationAsVerified(int id);
 	}

@@ -14,4 +14,7 @@
   <ItemGroup>
     <PackageReference Include="Sendgrid" Version="9.9.0" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Messaging\" />
+  </ItemGroup>
 </Project>

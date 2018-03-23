@@ -7,22 +7,22 @@ using SendGrid;
 using SendGrid.Helpers.Mail;
 
 
-namespace losol.EventManagement.Services
+namespace losol.EventManagement.Services.Messaging
 {
     // This class is used by the application to send email for account confirmation and password reset.
     // For more details see https://go.microsoft.com/fwlink/?LinkID=532713
-    public class EmailSender : IEmailSender
+    public class SendGridEmailSender : IEmailSender
     {
-        public EmailSender(IOptions<EmailSenderOptions> optionsAccessor)
+        public SendGridEmailSender(IOptions<SendGridOptions> optionsAccessor)
         {
             Options = optionsAccessor.Value;
         }
 
-        public EmailSenderOptions Options { get; } //set only via Secret Manager
+        public SendGridOptions Options { get; }
 
         public Task SendEmailAsync(string email, string subject, string message)
         {
-            return Execute(Options.SendGridKey, subject, message, email);
+            return Execute(Options.Key, subject, message, email);
         }
 
         public Task Execute(string apiKey, string subject, string message, string email)
@@ -30,7 +30,7 @@ namespace losol.EventManagement.Services
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("ikke-svar@nordland-legeforening.no", "Kursinord.no"),
+				From = new EmailAddress(email: Options.EmailAddress, name: Options.Name),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message

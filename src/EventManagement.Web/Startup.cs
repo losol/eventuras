@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Globalization;
 using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services.DbInitializers;
+using losol.EventManagement.Services.Messaging;
+using losol.EventManagement.Web.Services;
 
 namespace losol.EventManagement
 {
@@ -96,14 +98,11 @@ namespace losol.EventManagement
             // For sending antiforgery in ajax?
             // services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
 
-
-            // AppSettings
-            var appSettings = Configuration.GetSection("AppSettings");
-            services.Configure<AppSettings>(appSettings);
-
             // Email configuration
-            services.Configure<EmailSenderOptions>(Configuration);
-            services.AddSingleton<IEmailSender, EmailSender>();
+			services.Configure<SendGridOptions>(Configuration.GetSection("SendGrid"));
+			services.AddTransient<IEmailSender, SendGridEmailSender>();
+			services.AddTransient<StandardEmailSender>();
+			services.AddTransient<ConfirmationEmailSender>();
 
             // Register the Database Seed initializer
             services.Configure<DbInitializerOptions>(Configuration);
@@ -127,7 +126,6 @@ namespace losol.EventManagement
 			services.AddScoped<IProductsService, ProductsService>();
 
             // Add Page render Service
-            //services.AddScoped<IViewRenderService, ViewRenderService>();
             services.AddScoped<IRenderService, ViewRenderService>();
 
 
