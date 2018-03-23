@@ -48,16 +48,10 @@
                     </label>
                 </div>
             </div>
-
             <div class="form-group">
                 <label asp-for="EventInfo.Description" class="control-label"></label>
                 <textarea asp-for="EventInfo.Description" class="form-control" rows="6"></textarea>
                 <span asp-validation-for="EventInfo.Description" class="text-danger"></span>
-            </div>
-             <div class="form-group">
-                <label asp-for="EventInfo.RegistrationsUrl" class="control-label"></label>
-                <input asp-for="EventInfo.RegistrationsUrl" class="form-control" />
-                <span asp-validation-for="EventInfo.RegistrationsUrl" class="text-danger"></span>
             </div>
              <div class="row">
                 <div class="form-group col-md-6">
@@ -71,33 +65,10 @@
                     <span asp-validation-for="EventInfo.MaxParticipants" class="text-danger"></span>
                 </div>
             </div>
-
-            <hr>
-            <h2>Utfyllende opplysninger</h2>
             <div class="form-group">
                 <label asp-for="EventInfo.MoreInformation" class="control-label"></label>
                 <textarea asp-for="EventInfo.MoreInformation" class="form-control" rows="6"></textarea>
                 <span asp-validation-for="EventInfo.MoreInformation" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EventInfo.Program" class="control-label"></label>
-                <textarea asp-for="EventInfo.Program" class="form-control" rows="12"></textarea>
-                <span asp-validation-for="EventInfo.Program" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EventInfo.PracticalInformation" class="control-label"></label>
-                <textarea asp-for="EventInfo.PracticalInformation" class="form-control" rows="6"></textarea>
-                <span asp-validation-for="EventInfo.PracticalInformation" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EventInfo.WelcomeLetter" class="control-label"></label>
-                <textarea asp-for="EventInfo.WelcomeLetter" class="form-control" rows="6"></textarea>
-                <span asp-validation-for="EventInfo.WelcomeLetter" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EventInfo.InformationRequest" class="control-label"></label>
-                <textarea asp-for="EventInfo.InformationRequest" class="form-control" rows="4"></textarea>
-                <span asp-validation-for="EventInfo.InformationRequest" class="text-danger"></span>
             </div>
 
             <hr>
@@ -113,7 +84,7 @@
                 <span asp-validation-for="EventInfo.City" class="text-danger"></span>
             </div>
                    <hr>
-                <h2>Datoer</h2>
+            <h2>Datoer</h2>
             <div class="row">
                 <div class="form-group col-md-6">
                     <label asp-for="EventInfo.DateStart" class="control-label"></label>
@@ -139,35 +110,11 @@
                 </div>
             </div>
             <hr>
-            <h2>Diplom</h2>
-            <div class="form-group">
-                <label asp-for="EventInfo.CertificateDescription" class="control-label"></label>
-                <textarea asp-for="EventInfo.CertificateDescription" class="form-control" rows="6"></textarea>
-                <span asp-validation-for="EventInfo.CertificateDescription" class="text-danger"></span>
-            </div>
-
-            <h2>Bilde</h2>
-            <div class="form-group">
-                <label asp-for="EventInfo.FeaturedImageUrl" class="control-label"></label>
-                <input asp-for="EventInfo.FeaturedImageUrl" class="form-control" />
-                <span asp-validation-for="EventInfo.FeaturedImageUrl" class="text-danger"></span>
-            </div>            
-            <div class="form-group">
-                <label asp-for="EventInfo.FeaturedImageCaption" class="control-label"></label>
-                <input asp-for="EventInfo.FeaturedImageCaption" class="form-control" />
-                <span asp-validation-for="EventInfo.FeaturedImageCaption" class="text-danger"></span>
-            </div>
-
-            <h2>Products</h2>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-product-modal">
-              Add Product
-            </button>
-            <div id="product-wrapper" class="form-group">
-                @*Added products will be listed here.*@
-            </div>
-                
             <div class="form-group">
                 <input type="submit" value="Lagre" class="btn btn-default" />
+                <input type="submit" asp-page-handler="SaveAndEdit" value="Lagre og legg til mer info" class="btn btn-success" />
+
+                
             </div>
         </form>
     </div>
@@ -178,128 +125,8 @@
 </div>
 </div>
 
-<!-- Add product modal -->
-<div class="modal fade" id="add-product-modal" tabindex="-1" role="dialog" aria-labelledby="add-product-modal-title" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-        <h5 class="modal-title" id="add-product-modal-title">Add Product</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        </div>
-        <div class="modal-body">
-        <div class="form-group">
-            <label class="control-label">Product Name</label>
-            <input id="input-product-name" class="form-control" required />
-            @*<span asp-validation-for="EventInfo.FeaturedImageUrl" class="text-danger"></span>*@
-        </div>
-        <div class="form-group">
-            <label class="control-label">Product Description</label>
-            <input id="input-product-description" class="form-control" required />
-        </div>
-        <div class="form-group">
-            <label class="control-label">Mandatory Number</label>
-            <input id="input-product-m-number" type="number" value="0" class="form-control" required />
-        </div>
-        <div class="form-group">
-            <label class="control-label">Price</label>
-            <input id="input-product-price" type="number" class="form-control" required />
-        </div>
-        </div>
-        <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button id="btn-add-product" type="button" class="btn btn-primary">Save Product</button>
-        </div>
-    </div>
-    </div>
-</div>
-
-<!-- Add variant modal -->
-<div class="modal fade" id="add-variant-modal" tabindex="-1" role="dialog" aria-labelledby="add-variant-modal-title" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-        <h5 class="modal-title" id="add-variant-modal-title">Add Product Variant</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        </div>
-        <div class="modal-body">
-        <div class="form-group">
-            <label class="control-label">Name</label>
-            <input id="input-variant-name" class="form-control" required />
-            @*<span asp-validation-for="EventInfo.FeaturedImageUrl" class="text-danger"></span>*@
-        </div>
-        <div class="form-group">
-            <label class="control-label">Description</label>
-            <input id="input-variant-description" class="form-control" required />
-        </div>
-        <div class="form-group">
-            <label class="control-label">Price</label>
-            <input id="input-variant-price" type="number" class="form-control" required />
-        </div>
-        </div>
-        <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button id="btn-add-variant" type="button" class="btn btn-primary">Save Product</button>
-        </div>
-    </div>
-    </div>
-</div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
-<!--The product template-->
-<template id="product-template">
-<div class="product-card">
-    <div class="card">
-        <div class="card-body">
-            <div class="row">
-                <div class="col">
-                    <h5 class="card-title product-name"></h5>
-                    <p class="card-text product-description"></p>
-                    <!--If no variants exist-->
-                    <h6 class="card-subtitle mb-2 text-muted product-price"></h6>
-                    <input class="product-m-count" type="hidden" value="0" />
-                </div>
-                <div class="col-2">
-                    <small>
-                        <a href="#" class="text-muted delete-product-link">Delete</a>
-                        <br /><br />
-                        <a href="#" class="text-primary add-variant-link">Add Variant</a>
-                    </small>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-1"></div>
-        <div class="col variant-wrapper">
-            
-        </div>
-    </div>
-</div>
-</template>
-
-<!-- The product variant template -->
-<template id="variant-template">
-<div class="card variant-card">
-    <div class="row">
-        <div class="col">
-            <h5 class="card-title variant-name"></h5>
-            <p class="card-text variant-description"></p>
-            <h6 class="card-subtitle mb-2 text-muted variant-price"></h6>
-        </div>
-        <div class="col-2">
-            <small>
-                <a href="#" onclick="$(this).closest('.variant-card').remove()" class="text-muted delete-variant-link">Delete</a>
-            </small>
-        </div>
-    </div>
-</div>
-</template>
 
     <script>
 
@@ -325,107 +152,6 @@ $("#EventInfo_Title").keyup(function(){
     var eventcode = slug($("#EventInfo_Title").val())
     $("#EventInfo_Code").val(eventcode);    
 });
-
-// IIFE to setup the products section
-(function () {
-    const $modal = $('#add-product-modal');
-    const $productName = $($modal).find('#input-product-name');
-    const $productDescription = $($modal).find('#input-product-description');
-    const $productPrice = $($modal).find('#input-product-price');
-    const $productMandatoryCount = $($modal).find('#input-product-m-number');
-
-    const $variantModal = $('#add-variant-modal');
-    const $variantName = $($variantModal).find('#input-variant-name');
-    const $variantDescription = $($variantModal).find('#input-variant-description');
-    const $variantPrice = $($variantModal).find('#input-variant-price');
-    var $currentProduct; // Used to keep track of the product to add the variant too
-
-    const mainForm = document.getElementById('main-form');
-    const productsTemplate = document.querySelector('#product-template').content;
-    const variantsTemplate = document.querySelector('#variant-template').content;
-    const productsWrapper = document.querySelector('#product-wrapper');
-    
-    function bindLatestProductLinks() {
-        // Event handler for the delete link
-        $('.delete-product-link').last().bind('click', function(e) {
-            // Remove the product card from DOM
-            $(this).closest('.product-card').remove();
-        });
-
-        $('.add-variant-link').last().bind('click', function(e) {
-            // Show the modal
-            $variantModal.modal('show');
-            $currentProduct = $(this).closest('.product-card');
-        })
-    }
-
-    function addInputToMainForm(name, value) {
-        let input = document.createElement("input");
-        input.setAttribute("type", "hidden");
-        input.setAttribute("name", name);
-        input.setAttribute("value", value);
-        mainForm.appendChild(input);
-    }
-    
-    // Event handler for the product modal submit button
-    $('#btn-add-product').bind('click', function(e) {
-        // TODO: validate the inputs!
-
-        // Clone the product template
-        let clone = productsTemplate.cloneNode(true);
-        // And populate it with values from the modal
-        clone.querySelector('.product-name').innerText = $productName.val();
-        clone.querySelector('.product-description').innerText = $productDescription.val();
-        clone.querySelector('.product-price').innerText = $productPrice.val();
-        clone.querySelector('.product-m-count').value = $productMandatoryCount.val();
-
-        // Add the cloned template to the DOM
-        productsWrapper.appendChild(clone);
-
-        // Set event handlers to the newly added product actions
-        bindLatestProductLinks();
-        // Hide the modal
-        $modal.modal('hide');
-    });
-
-    // Event handler for the variant modal submit button
-    $('#btn-add-variant').bind('click', function(e) {
-        // TODO: validate the inputs!
-
-        // Clone the product template
-        let clone = variantsTemplate.cloneNode(true);
-        // And populate it with values from the modal
-        clone.querySelector('.variant-name').innerText = $variantName.val();
-        clone.querySelector('.variant-description').innerText = $variantDescription.val();
-        clone.querySelector('.variant-price').innerText = $variantPrice.val();
-
-        // Add the cloned template to the DOM
-        const $variantsWrapper = $currentProduct.find('.variant-wrapper');
-        $variantsWrapper[0].appendChild(clone);
-
-        // Hide the modal
-        $variantModal.modal('hide');
-    });
-
-    // Event handler executed when the form is submitted
-    mainForm.onsubmit = function() {
-        // Add hidden-inputs to the DOM here.
-        $('.product-card').each(function(i, el){
-
-            addInputToMainForm("EventInfo.Products[" + i + "].Name", $(this).find('.product-name').first().text());
-            addInputToMainForm("EventInfo.Products[" + i + "].Description", $(this).find('.product-description').first().text());
-            addInputToMainForm("EventInfo.Products[" + i + "].Price", $(this).find('.product-price').first().text());
-            addInputToMainForm("EventInfo.Products[" + i + "].MandatoryCount", $(this).find('.product-m-count').first().val());
-
-            $(el).find('.variant-card').each(function(j, vel){
-                addInputToMainForm("EventInfo.Products[" + i + "].ProductVariants[" + j + "].Name", $(this).find('.variant-name').first().text());
-                addInputToMainForm("EventInfo.Products[" + i + "].ProductVariants[" + j + "].Description", $(this).find('.variant-description').first().text());
-                addInputToMainForm("EventInfo.Products[" + i + "].ProductVariants[" + j + "].Price", $(this).find('.variant-price').first().text());
-            });
-        });
-    };
-
-})();
 
 </script>
 <script src="https://cdn.ckeditor.com/ckeditor5/1.0.0-alpha.2/classic/ckeditor.js"></script>

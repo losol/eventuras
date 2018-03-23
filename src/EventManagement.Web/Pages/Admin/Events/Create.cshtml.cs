@@ -39,5 +39,17 @@ namespace losol.EventManagement.Pages.Admin.Events
 
             return RedirectToPage("./Index");
         }
+
+        public async Task<IActionResult> OnPostSaveAndEditAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+			var eventId = await _eventsService.AddAsync(EventInfo);
+            Console.WriteLine("************************ " + EventInfo.EventInfoId + "," + eventId);
+            return RedirectToPage("./Edit", new {id=EventInfo.EventInfoId});
+        }
     }
 }
