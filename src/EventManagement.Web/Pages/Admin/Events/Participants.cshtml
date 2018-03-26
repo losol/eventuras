@@ -59,7 +59,7 @@
                 </div>
 
                 <!-- EMAIL Modal -->
-                <div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="email-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                         <div class="modal-header">
@@ -68,24 +68,22 @@
                             <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form>
-                            <div class="modal-body">
+                        <div class="modal-body">
 
                             <div class="form-group">
-                                <label for="emailSubject">Email Subject</label>
-                                <input class="form-control" id="emailSubject" />
+                                <label for="email-subject">Email Subject</label>
+                                <input class="form-control" id="email-subject" />
                             </div>
 
                             <div class="form-group">
-                                <label for="emailText">Email Text</label>
-                                <textarea class="form-control" id="emailText" rows="8"></textarea>
+                                <label for="email-text">Email Text</label>
+                                <textarea class="form-control" id="email-text" rows="8"></textarea>
                             </div>
 
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Send</button>
+                                <button type="submit" onclick="sendEmail()" class="btn btn-primary">Send</button>
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Lukk</button>   
                             </div>
-                        </form>
                         </div>
                         </div>
                     </div>
@@ -237,7 +235,7 @@
                         <th data-field="employer" data-visible="false">Arbeidsplass</th>
                         <th data-field="city">Sted</th>
                         <th data-formatter="Attended">M&oslash;tt</th>
-                        <th data-formatter="RowActions">Meny</th>
+                        <th data-formatter="RowActions" data-events="operateEvents">Meny</th>
                     </tr>
                 </thead>
             </table>
@@ -268,6 +266,19 @@
 
 @section scripts { 
     <script>
+
+    // Helper function
+    $.postJSON = function(url, data, callback) {
+        return jQuery.ajax({
+            headers: { 
+                'Content-Type': 'application/json' 
+            },
+            'type': 'POST',
+            'url': url,
+            'data': JSON.stringify(data)
+        });
+    };
+
     $(function () {
         var $table = $('#table');
         $('#toolbar').find('select').change(function () {
@@ -286,7 +297,7 @@
     function RowActions(value, row, index, field) {
             actions = [
                 '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary mr-1" data-toggle="modal" data-target="#smsModal">SMS</button>', 
-                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary mr-1" data-toggle="modal" data-target="#emailModal">Epost</button>', 
+                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-email mr-1">Epost</button>', 
             ].join('');
             return actions;
         }
@@ -298,9 +309,37 @@
         export: 'fa-download'
     };
 
+    let recipients = []
+    window.operateEvents = {
+        'click .btn-send-email': function (e, value, row, index) {
+            recipients = [{
+                name: row.name,
+                email: row.email
+            }];
+            $('#email-modal').modal('show');
+        }
+    };
+
+    function sendAll() {
+
+    }
+
+    function sendEmail() {
+        const subject = $('#email-subject').val();
+        const text = $('#email-text').val();
+        const email = {
+            to: recipients,
+            subject: subject,
+            message: text
+        };
+        $.postJSON('/api/v0/email/send', email)
+            .done(function(){
+                console.log("It's done!");
+            });
+        $('#email-modal').modal('hide');
+    }
+
 </script>
-    
     @await Html.PartialAsync("_CompBootstrapTable")
     <script src="//rawgit.com/hhurz/tableExport.jquery.plugin/master/tableExport.js"></script>
 }
-
