@@ -63,7 +63,7 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Send epost til alle deltakere</h5>
+                            <h5 class="modal-title" id="email-modal-title">Send epost til alle deltakere</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                             </button>
@@ -316,12 +316,13 @@
                 name: row.name,
                 email: row.email
             }];
+            $('#email-modal-title').text('Send epost til ' + row.name);
             $('#email-modal').modal('show');
         }
     };
 
     function sendAll() {
-
+        $('#email-modal-title').text('Send epost til alle deltakere');
     }
 
     function sendEmail() {
