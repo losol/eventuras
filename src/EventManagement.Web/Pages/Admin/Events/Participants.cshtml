@@ -53,7 +53,7 @@
                     Send info til alle
                 </button>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item link-decoration-none" href="#" data-toggle="modal" data-target="#emailModal" role="button">Epost</a>
+                    <a class="dropdown-item link-decoration-none" href="#" onclick="sendAll(); return false;" role="button">Epost</a>
                     <a class="dropdown-item link-decoration-none" href="#" data-toggle="modal" data-target="#smsModal" role="button">Tekstmelding</a>
                 </div>
                 </div>
@@ -207,6 +207,7 @@
 		<div class="col-md-9">
 
             <table  
+                id="table"
                 data-toggle="table" 
                 data-url="/Admin/Events/Participants?id=@Model.EventInfo.EventInfoId&handler=Participants"
                 data-pagination="false"
@@ -221,7 +222,6 @@
                 data-search-align="left"
                 data-show-refresh="true"
                 data-click-to-select="true"
-                data-id-table="advancedTable"
                 data-export-options='{
                     "fileName": "Deltakere-@Model.EventInfo.Code-@DateTime.Now.ToString("yyyy-MM-dd")", 
                     "ignoreColumn": ["asdf"]
@@ -279,12 +279,10 @@
         });
     };
 
-    $(function () {
-        var $table = $('#table');
-        $('#toolbar').find('select').change(function () {
-            $table.bootstrapTable('refreshOptions', {
-                exportDataType: $(this).val()
-            });
+    const $table = $('#table');
+    $('#toolbar').find('select').change(function () {
+        $table.bootstrapTable('refreshOptions', {
+            exportDataType: $(this).val()
         });
     });
 
@@ -322,7 +320,12 @@
     };
 
     function sendAll() {
+        const data = $table.bootstrapTable('getData', {useCurrentPage: false});
+        recipients = data.map(function(x){ 
+            return { name: x.name, email: x.email } 
+        });
         $('#email-modal-title').text('Send epost til alle deltakere');
+        $('#email-modal').modal('show');
     }
 
     function sendEmail() {
