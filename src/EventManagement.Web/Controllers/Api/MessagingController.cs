@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using losol.EventManagement.Services;
 using losol.EventManagement.Web.Services;
 using losol.EventManagement.ViewModels;
+using losol.EventManagement.Services.Messaging.Sms;
 
 namespace losol.EventManagement.Web.Controllers.Api
 {
@@ -18,10 +19,14 @@ namespace losol.EventManagement.Web.Controllers.Api
 	public class MessagingController : Controller
 	{
 		private readonly StandardEmailSender _emailSender;
+        private readonly ISmsSender _smsSender;
 
-		public MessagingController(StandardEmailSender emailSender)
+		public MessagingController(
+            StandardEmailSender emailSender, 
+            ISmsSender smsSender)
 		{
 			_emailSender = emailSender;
+            _smsSender = smsSender;
 		}
 
 		[HttpPost("email")]
@@ -40,6 +45,23 @@ namespace losol.EventManagement.Web.Controllers.Api
             await Task.WhenAll(emailTasks);
 			return Ok();
 		}
+
+        [HttpPost("sms")]
+		public async Task<IActionResult> SendSms([FromBody]SmsVM vm) 
+		{
+			if (!ModelState.IsValid) return BadRequest();
+            var smsTasks = vm.To.Select(t => _smsSender.SendSmsAsync(t, vm.Text));
+            await Task.WhenAll(smsTasks);
+			return Ok();
+		}
+
+        public class SmsVM
+        {
+            [Required]
+            public IEnumerable<string> To { get; set; }
+            [Required]
+            public string Text { get; set; }
+        }
 
 		public class EmailVM
 		{
