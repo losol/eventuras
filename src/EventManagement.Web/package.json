@@ -11,7 +11,8 @@
 		"jquery": "^3.3.1",
 		"moment": "^2.21.0",
 		"popper.js": "^1.14.1",
-		"tableexport": "hhurz/tableExport.jquery.plugin"
+		"tableexport": "hhurz/tableExport.jquery.plugin",
+		"toastr": "^2.1.4"
 	},
 	"devDependencies": {
 		"gulp": "^3.9.1",
