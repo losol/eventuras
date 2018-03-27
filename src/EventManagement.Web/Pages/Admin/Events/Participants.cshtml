@@ -336,7 +336,7 @@
             subject: subject,
             message: text
         };
-        $.postJSON('/api/v0/email/send', email)
+        $.postJSON('/api/v0/messaging/email', email)
             .done(function(){
                 console.log("It's done!");
             });

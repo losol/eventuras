@@ -14,17 +14,17 @@ using losol.EventManagement.ViewModels;
 namespace losol.EventManagement.Web.Controllers.Api
 {
     [Authorize]
-	[Route("/api/v0/email")]
-	public class EmailController : Controller
+	[Route("/api/v0/messaging")]
+	public class MessagingController : Controller
 	{
 		private readonly StandardEmailSender _emailSender;
 
-		public EmailController(StandardEmailSender emailSender)
+		public MessagingController(StandardEmailSender emailSender)
 		{
 			_emailSender = emailSender;
 		}
 
-		[HttpPost("send")]
+		[HttpPost("email")]
 		public async Task<IActionResult> SendEmail([FromBody]EmailVM vm) 
 		{
 			if (!ModelState.IsValid) return BadRequest();
