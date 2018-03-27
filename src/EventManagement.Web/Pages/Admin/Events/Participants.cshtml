@@ -91,21 +91,24 @@
 
 
                 <!-- SMS Modal -->
-                <div class="modal fade" id="smsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="sms-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Send SMS til deltakerne</h5>
+                        <h5 id="sms-modal-title" class="modal-title" id="exampleModalLabel">Send SMS til deltakerne</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        Koden ikke ferdig.
+                        <div class="form-group">
+                            <label for="sms-text">SMS Text</label>
+                            <textarea class="form-control" id="sms-text" rows="6"></textarea>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Lukk</button>
-                        <button type="button" class="btn btn-primary">Send</button>
+                        <button type="button" onclick="sendSms()" class="btn btn-primary">Send</button>
                     </div>
                     </div>
                 </div>
@@ -294,7 +297,7 @@
         }
     function RowActions(value, row, index, field) {
             actions = [
-                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary mr-1" data-toggle="modal" data-target="#smsModal">SMS</button>', 
+                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-sms mr-1">SMS</button>', 
                 '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-email mr-1">Epost</button>', 
             ].join('');
             return actions;
@@ -316,6 +319,11 @@
             }];
             $('#email-modal-title').text('Send epost til ' + row.name);
             $('#email-modal').modal('show');
+        },
+        'click .btn-send-sms': function(e, value, row, index) {
+            recipients = [row.phone];
+            $('#sms-modal-title').text('Send SMS til ' + row.name);
+            $('#sms-modal').modal('show');
         }
     };
 
@@ -341,6 +349,19 @@
                 console.log("It's done!");
             });
         $('#email-modal').modal('hide');
+    }
+
+    function sendSms() {
+        const text = $('#sms-text').val();
+        const sms = {
+            to: recipients,
+            text: text
+        }
+        $.postJSON('/api/v0/messaging/sms', sms)
+            .done(function(){
+                console.log("It's done!");
+            });
+        $('#sms-modal').modal('hide');
     }
 
 </script>
