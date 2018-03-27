@@ -16,5 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Messaging\" />
+    <Folder Include="Messaging\Sms\" />
   </ItemGroup>
 </Project>
