@@ -54,7 +54,7 @@
                 </button>
                 <div class="dropdown-menu">
                     <a class="dropdown-item link-decoration-none" href="#" onclick="sendAll(); return false;" role="button">Epost</a>
-                    <a class="dropdown-item link-decoration-none" href="#" data-toggle="modal" data-target="#smsModal" role="button">Tekstmelding</a>
+                    <a class="dropdown-item link-decoration-none" href="#" onclick="smsAll();return false;" role="button">Tekstmelding</a>
                 </div>
                 </div>
 
@@ -349,6 +349,13 @@
                 console.log("It's done!");
             });
         $('#email-modal').modal('hide');
+    }
+
+    function smsAll() {
+        const data = $table.bootstrapTable('getData', {useCurrentPage: false});
+        recipients = data.map(function(x){ return x.phone });
+        $('#sms-modal-title').text('Send SMS til alle deltakere');
+        $('#sms-modal').modal('show');
     }
 
     function sendSms() {
