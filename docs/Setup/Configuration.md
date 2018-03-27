@@ -5,7 +5,8 @@ The JSON structure defines the configuration for the application.
 ```json
 {
   "AppSettings": {
-    "EmailProvider": "SendGrid|File|Mock"
+    "EmailProvider": "SendGrid|File|Mock",
+    "SmsProvider": "Twilio|Mock"
   },
   "Logging": {
     "IncludeScopes": false,
@@ -25,6 +26,11 @@ The JSON structure defines the configuration for the application.
   "SuperAdmin": {
     "Email": "admin@email.com",
     "Password": "Pa5sw0rd"
+  },
+  "Twilio":  {
+    "From": "+15017250604",
+    "Sid": "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "AuthToken": "auth_token"
   }
 }
 ```
