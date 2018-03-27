@@ -65,14 +65,19 @@ namespace losol.EventManagement.Web.Controllers.Api
 
 		public class EmailVM
 		{
+            [Required]
             public IEnumerable<EmailRecipientVM> To { get; set; }
+            [Required]
             public string Subject { get; set; }
+            [Required]
             public string Message { get; set; }
 		}
 
         public class EmailRecipientVM
         {
+            [Required]
             public string Name { get; set; }
+            [Required, EmailAddress]
             public string Email { get; set; }
         }
 	}
