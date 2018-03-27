@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace losol.EventManagement.Web.Controllers.Api
 {
-	[Authorize]
+	[Authorize(Policy = "AdministratorRole")]
 	[Route("/api/v0/orders")]
 	public class OrdersController : Controller
 	{

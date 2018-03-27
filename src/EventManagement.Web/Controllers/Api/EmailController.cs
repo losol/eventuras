@@ -13,7 +13,7 @@ using losol.EventManagement.ViewModels;
 
 namespace losol.EventManagement.Web.Controllers.Api
 {
-    [Authorize]
+    [Authorize(Policy = "AdministratorRole")]
 	[Route("/api/v0/email")]
 	public class EmailController : Controller
 	{

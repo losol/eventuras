@@ -14,19 +14,10 @@ namespace losol.EventManagement.Web.Api.Controllers
 	public class EventsController : Controller
 	{
 		private readonly IEventInfoService _eventsService;
-		private readonly IEmailSender _emailSender;
 
-		public EventsController(IEventInfoService eventsService, IEmailSender emailSender)
+		public EventsController(IEventInfoService eventsService)
 		{
 			_eventsService = eventsService;
-			_emailSender = emailSender;
-		}
-
-		[Route("test")]
-		public async Task<IActionResult> TestEmail() 
-		{
-			await _emailSender.SendEmailAsync("test@test.com", "Subject", "Hey there delilah!");
-			return Ok();
 		}
 
 		[HttpGet, Route("upcoming")]
