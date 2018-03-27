@@ -16,7 +16,7 @@ namespace losol.EventManagement.Web.Controllers.Api
 {
     [Authorize(Policy = "AdministratorRole")]
 	[Route("/api/v0/email")]
-	public class EmailController : Controller
+	public class MessagingController : Controller
 	{
 		private readonly StandardEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
