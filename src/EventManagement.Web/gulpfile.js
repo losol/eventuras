@@ -44,14 +44,6 @@ gulp.task("clean:temp", function (cb) {
 
 gulp.task("clean", ["clean:js", "clean:css", "clean:lib", "clean:temp"]);
 
-// Minify javascript
-gulp.task("minify:js", function () {
-    return gulp.src([paths.js, "!" + paths.minJs], { base: "." })
-        .pipe(concat(paths.concatJsDest))
-        .pipe(uglify())
-        .pipe(gulp.dest("."));
-});
-
 // Copy libs to wwwroot/lib folder
 gulp.task("copy:lib", () => {
     gulp.src([
