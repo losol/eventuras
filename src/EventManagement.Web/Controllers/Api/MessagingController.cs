@@ -15,7 +15,7 @@ using losol.EventManagement.Services.Messaging.Sms;
 namespace losol.EventManagement.Web.Controllers.Api
 {
     [Authorize(Policy = "AdministratorRole")]
-	[Route("/api/v0/email")]
+	[Route("/api/v0/messaging")]
 	public class MessagingController : Controller
 	{
 		private readonly StandardEmailSender _emailSender;
