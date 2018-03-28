@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 using losol.EventManagement.Infrastructure;
+using Microsoft.Extensions.Configuration;
 
 namespace losol.EventManagement.IntegrationTests.Fixtures
 {
@@ -25,6 +26,7 @@ namespace losol.EventManagement.IntegrationTests.Fixtures
 			var builder = new WebHostBuilder()
 				.UseContentRoot("../../../../../src/EventManagement.Web")
 				.UseEnvironment("Development")
+				.ConfigureAppConfiguration((b, c) => c.AddJsonFile("appsettings.json"))
 				.UseStartup<TestStartup>()
 				.ConfigureServices(ConfigureServices);
 
