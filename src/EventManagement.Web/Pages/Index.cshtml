@@ -23,10 +23,7 @@
         
         @foreach(var group in groups)
         {
-            <!--
-                Year: @group.Key.Year
-                Month: @group.Key.Month
-            -->
+            <h3>@group.Key.Month, @group.Key.Year</h3>
             <div class="row">
             @foreach(var item in group) {
                 <div class="col-md-6 p-1">
