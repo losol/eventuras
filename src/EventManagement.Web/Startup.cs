@@ -18,6 +18,7 @@ using losol.EventManagement.Services;
 using losol.EventManagement.Services.DbInitializers;
 using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.Web.Services;
+using losol.EventManagement.Services.Messaging.Sms;
 
 namespace losol.EventManagement
 {
@@ -129,6 +130,17 @@ namespace losol.EventManagement
 			// Register email services
 			services.AddTransient<StandardEmailSender>();
 			services.AddTransient<ConfirmationEmailSender>();
+
+			switch(appsettings.SmsProvider)
+			{
+				case SmsProvider.Twilio:
+					services.Configure<TwilioOptions>(Configuration.GetSection("Twilio"));
+					services.AddTransient<ISmsSender, TwilioSmsSender>();
+					break;
+				case SmsProvider.Mock:
+					services.AddTransient<ISmsSender, MockSmsSender>();
+					break;
+			}
 
 			// Register our application services
 			services.AddScoped<IEventInfoService, EventInfoService>();

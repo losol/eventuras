@@ -13,8 +13,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Sendgrid" Version="9.9.0" />
+    <PackageReference Include="Twilio" Version="5.10.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Messaging\" />
+    <Folder Include="Messaging\Sms\" />
   </ItemGroup>
 </Project>
