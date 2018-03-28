@@ -346,7 +346,13 @@
         };
         $.postJSON('/api/v0/messaging/email', email)
             .done(function(){
-                console.log("It's done!");
+                if(recipients.length == 1){
+                    toastr.success('Email sent to ' + recipients[0].name + '.');
+                } 
+                toastr.success('Email sent to ' + recipients.length + ' participants.');
+            })
+            .fail(function(){
+                toastr.error('Could not send the Email.');;
             });
         $('#email-modal').modal('hide');
     }
@@ -366,7 +372,10 @@
         }
         $.postJSON('/api/v0/messaging/sms', sms)
             .done(function(){
-                console.log("It's done!");
+                toastr.success('SMS sent to ' + recipients.length + ' participants.');
+            })
+            .fail(function(){
+                toastr.error('Could not send the SMS.');
             });
         $('#sms-modal').modal('hide');
     }
