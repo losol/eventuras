@@ -349,7 +349,9 @@
                 if(recipients.length == 1){
                     toastr.success('Email sent to ' + recipients[0].name + '.');
                 } 
-                toastr.success('Email sent to ' + recipients.length + ' participants.');
+                else {
+                    toastr.success('Email sent to ' + recipients.length + ' participants.');
+                }
             })
             .fail(function(){
                 toastr.error('Could not send the Email.');;
