@@ -29,7 +29,14 @@
     <ProjectReference Include="..\EventManagement.Infrastructure\EventManagement.Infrastructure.csproj" />
     <ProjectReference Include="..\EventManagement.Domain\EventManagement.Domain.csproj" />
   </ItemGroup>
+  
   <ItemGroup>
     <Folder Include="Pages\Admin\Products\" />
   </ItemGroup>
+
+  <Target Name="BuildWebAssets" BeforeTargets="Build">
+    <Exec Command="npm install" />
+    <Exec Command="gulp" />
+  </Target>
+  
 </Project>

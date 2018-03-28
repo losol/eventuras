@@ -1,16 +1,10 @@
 "use strict";
-// Project configuration
-var project 	    = 'EventManagement', // Project name, used for build zip.
-    version         = '0.1.0', // Version for stylesheets and scripts
-	url 		    = 'localhost:5000' // Local Development URL for BrowserSync. Change as-needed.
-;
 
-var gulp = require("gulp"),
+const gulp = require("gulp"),
     rimraf = require("rimraf"),
     concat = require("gulp-concat"),
     cssmin = require("gulp-cssmin"),
     uglify = require("gulp-uglify"),
-    gulp = require('gulp'),
     clean = require('gulp-clean'),
     sass = require('gulp-sass'),
     rename = require('gulp-rename'),
@@ -21,7 +15,7 @@ var gulp = require("gulp"),
     merge = require('gulp-merge')
 ;
 
-var paths = {
+const paths = {
     jsSrc: "js/source/",
     jsDest: "wwwroot/assets/js/",
     cssDest: "wwwroot/assets/css/",
@@ -49,14 +43,6 @@ gulp.task("clean:temp", function (cb) {
 });
 
 gulp.task("clean", ["clean:js", "clean:css", "clean:lib", "clean:temp"]);
-
-// Minify javascript
-gulp.task("minify:js", function () {
-    return gulp.src([paths.js, "!" + paths.minJs], { base: "." })
-        .pipe(concat(paths.concatJsDest))
-        .pipe(uglify())
-        .pipe(gulp.dest("."));
-});
 
 // Copy libs to wwwroot/lib folder
 gulp.task("copy:lib", () => {
@@ -100,8 +86,8 @@ gulp.task('make:js', function () {
     gulp.src([
         paths.libSrc + 'jquery/dist/jquery.min.js',
         paths.libSrc + 'popper.js/dist/umd/popper.min.js',
-        paths.libSrc + 'bootstrap/dist/js/bootstrap.min.js'
-
+        paths.libSrc + 'bootstrap/dist/js/bootstrap.min.js',
+        paths.libSrc + 'toastr/toastr.js'
     ])
         .pipe(concat('site.min.js'))
         //.pipe(uglify())
@@ -110,7 +96,8 @@ gulp.task('make:js', function () {
     gulp.src([
         paths.libSrc + 'jquery/dist/jquery.js',
         paths.libSrc + 'popper.js/dist/umd/popper.js',
-        paths.libSrc + 'bootstrap/dist/js/bootstrap.js'
+        paths.libSrc + 'bootstrap/dist/js/bootstrap.js',
+        paths.libSrc + 'toastr/toastr.js'
     ])
         .pipe(concat('site.js'))
         .pipe(gulp.dest(paths.jsDest));
