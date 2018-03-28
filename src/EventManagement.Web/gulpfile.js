@@ -1,11 +1,10 @@
 "use strict";
 
-var gulp = require("gulp"),
+const gulp = require("gulp"),
     rimraf = require("rimraf"),
     concat = require("gulp-concat"),
     cssmin = require("gulp-cssmin"),
     uglify = require("gulp-uglify"),
-    gulp = require('gulp'),
     clean = require('gulp-clean'),
     sass = require('gulp-sass'),
     rename = require('gulp-rename'),
@@ -16,7 +15,7 @@ var gulp = require("gulp"),
     merge = require('gulp-merge')
 ;
 
-var paths = {
+const paths = {
     jsSrc: "js/source/",
     jsDest: "wwwroot/assets/js/",
     cssDest: "wwwroot/assets/css/",
