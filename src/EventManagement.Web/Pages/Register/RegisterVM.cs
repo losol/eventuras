@@ -21,6 +21,11 @@ namespace losol.EventManagement.Web.Pages.Register
 		[Display(Name = "E-post")]
 		public string Email { get; set; }
 
+
+		[Required]
+		[Display(Name = "Landkode")]
+		public string PhoneCountryCode { get; set; }
+		
 		[Required]
 		[Phone]
 		[Display(Name = "Mobiltelefon")]
