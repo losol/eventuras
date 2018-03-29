@@ -25,17 +25,30 @@ namespace losol.EventManagement.Services
 				.Where(
 					i => i.Published && 
 					i.Featured &&
-					i.DateEnd >= DateTime.Now
+					i.DateStart >= DateTime.Now
 					)
 				.OrderBy(s => s.DateStart)
 				.ToListAsync();
 		}
 
-		public async Task<List<EventInfo>> GetUpcomingEventsAsync()
+		public async Task<List<EventInfo>> GetOnDemandEventsAsync() 
 		{
 			return await _db.EventInfos
-				.Where(a => a.DateEnd >= DateTime.Now)
-				.OrderByDescending(a => a.DateStart)
+				.Where(i => 
+					i.Published && 
+					i.OnDemand 
+					)
+				.OrderBy(s => s.Title)
+				.ToListAsync();
+		}
+
+		public async Task<List<EventInfo>> GetEventsAsync()
+		{
+			return await _db.EventInfos
+				.Where(a => 
+					a.Published &&
+					a.DateStart >= DateTime.Now)
+				.OrderBy(a => a.DateStart)
 				.ToListAsync();
 		}
 

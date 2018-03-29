@@ -23,7 +23,7 @@ namespace losol.EventManagement.Web.Api.Controllers
 		[HttpGet, Route("upcoming")]
 		public async Task<IActionResult> Get()
 		{
-			var events = await _eventsService.GetUpcomingEventsAsync();
+			var events = await _eventsService.GetEventsAsync();
 			var list = events.Select(s => new
 			{
 				Id = s.EventInfoId,

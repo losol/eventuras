@@ -3,9 +3,12 @@
 @{
     ViewData["Title"] = "Home page";
     var featuredEvents = await events.GetFeaturedEventsAsync();
+    var onDemandEvents = await events.GetOnDemandEventsAsync();
+    var upcomingEvents = await events.GetEventsAsync();
+    var eventsByMonth =  upcomingEvents.GroupBy(e => new { e.DateStart?.Year, e.DateStart?.Month });
 }
 
-<div class="jumbotron min-height-25" style="
+<div class="jumbotron min-height-25 m-0" style="
     background: url('/assets/images/svolvaer.jpg') no-repeat center center;
     background-position: 0% 33%;
     background-size: cover;
@@ -17,7 +20,42 @@
     </div>
 </div>
 
-<div class="bg-gray-300"></div>
+<div class="bg-gray-100 py-3">
+    <div class="container" id="ondemand">
+        <div class="row">
+        @foreach (var item in onDemandEvents)
+            {
+            <div class="col-md-6 p-1">
+                <div class="card bg-white border-0 h-100">
+                    <div class="card-body">
+                    <h3>@item.Title</h3>
+                    <p>@item.Description
+                    <p class="text-muted">
+                        @* Location *@
+                        @if (item.Location != null) {
+                            <span> <i class="material-icons align-top">location_on</i>  @item.Location</span>
+                        }
+                        
+                        @* Dates *@
+                        @if (item.DateStart != null) {
+                            <i class="material-icons align-top">date_range</i>
+                            @String.Format("{0:dd/MM/yyyy}", item.DateStart)
+                        }
+                        @if (item.DateEnd != null) {
+                                <span> - @String.Format("{0:dd/MM/yyyy}", item.DateEnd)</span>
+                            }
+                        </p>
+                    <p><a asp-page="./Events/Details" asp-route-id="@item.EventInfoId" class="btn btn-secondary link-decoration-none" role="button">Vis kurset »</a></p>
+                    </div>
+                </div>  
+            </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<div class="bg-gray-100">
     <div class="container min-height-50" id="featured">
         <div class="row">
         @foreach (var item in featuredEvents)
@@ -43,10 +81,51 @@
                                 }
                             </p>
                         <p><a asp-page="./Events/Details" asp-route-id="@item.EventInfoId" class="btn btn-secondary link-decoration-none" role="button">Vis kurset »</a></p>
-                    </div>
-                </div>  
-            </div>
+                        </div>
+                    </div>  
+                </div>
             }
-            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="bg-gray-300 my-0 py-5">
+    <div class="container min-height-50" id="bymonth">
+        <h1>M&aring;ned for m&aring;ned</h1>
+        <div class="row">
+            @foreach(var group in eventsByMonth)
+            {
+                <div class="col-md-4 p-1">    
+                    <div class="card bg-white border-0 h-100">
+                        <div class="card-body">
+                            <h3>@group.Key.Month/@group.Key.Year</h3>
+
+                            @foreach(var item in group) {
+                                <p><strong>@item.Title</strong> - @item.Description
+                                <span class="text-muted">
+                                    @* Location *@
+                                    @if (item.Location != null) {
+                                        <span>@item.Location</span>
+                                    }
+                                    
+                                    @* Dates *@
+                                    @if (item.DateStart != null) {
+                                        @String.Format("{0:dd/MM/yyyy}", item.DateStart)
+                                    }
+                                    @if (item.DateEnd != null) {
+                                            <span> - @String.Format("{0:dd/MM/yyyy}", item.DateEnd)</span>
+                                        }
+                                    </span>
+                                    <br>
+                                <a asp-page="./Events/Details" asp-route-id="@item.EventInfoId" class="link-decoration-none">Vis kurset »</a></p>
+  
+                    
+                }
+                                      </div>
+                    </div>
+                 </div>     
+            }
+        </div>
     </div>
 </div>
