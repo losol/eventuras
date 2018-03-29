@@ -48,7 +48,8 @@ gulp.task("clean", ["clean:js", "clean:css", "clean:lib", "clean:temp"]);
 gulp.task("copy:lib", () => {
     gulp.src([
         'moment/min/*.js',
-        'font-awesome/fonts'
+        'font-awesome/fonts',
+        'intl-tel-input/build/**'
     ], {
         cwd: paths.libSrc + "/**"
     })
@@ -87,10 +88,9 @@ gulp.task('make:js', function () {
         paths.libSrc + 'jquery/dist/jquery.min.js',
         paths.libSrc + 'popper.js/dist/umd/popper.min.js',
         paths.libSrc + 'bootstrap/dist/js/bootstrap.min.js',
-        paths.libSrc + 'toastr/toastr.js'
+        paths.libSrc + 'toastr/toastr.min.js'
     ])
         .pipe(concat('site.min.js'))
-        //.pipe(uglify())
         .pipe(gulp.dest(paths.jsDest));
 
     gulp.src([
