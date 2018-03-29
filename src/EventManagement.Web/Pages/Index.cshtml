@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Home page";
     var featuredEvents = await events.GetFeaturedEventsAsync();
+    var groups = featuredEvents.GroupBy(e => new { e.DateStart?.Year, e.DateStart?.Month });
 }
 
 <div class="jumbotron min-height-25" style="
@@ -19,9 +20,12 @@
 
 <div class="bg-gray-300"></div>
     <div class="container min-height-50" id="featured">
-        <div class="row">
-        @foreach (var item in featuredEvents)
-            {
+        
+        @foreach(var group in groups)
+        {
+            <h3>@group.Key.Month, @group.Key.Year</h3>
+            <div class="row">
+            @foreach(var item in group) {
                 <div class="col-md-6 p-1">
                     <div class="card bg-white border-0 h-100">
                         <div class="card-body">
@@ -43,10 +47,12 @@
                                 }
                             </p>
                         <p><a asp-page="./Events/Details" asp-route-id="@item.EventInfoId" class="btn btn-secondary link-decoration-none" role="button">Vis kurset »</a></p>
-                    </div>
-                </div>  
-            </div>
+                        </div>
+                    </div>  
+                </div>
             }
             </div>
+        }
+            
     </div>
 </div>
