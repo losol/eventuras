@@ -24,7 +24,7 @@ namespace losol.EventManagement.Web.Pages.Register
 
 		[Required]
 		[Display(Name = "Landkode")]
-		public string PhoneCountryCode { get; set; }
+		public string PhoneCountryCode { get; set; } = "+47";
 		
 		[Required]
 		[Phone]
