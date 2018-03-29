@@ -22,6 +22,7 @@ namespace losol.EventManagement.Web.Pages.Register
 		public string Email { get; set; }
 
 		[Required]
+		[Phone]
 		[Display(Name = "Mobiltelefon")]
 		public string Phone { get; set; }
 
