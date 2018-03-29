@@ -22,7 +22,11 @@ namespace losol.EventManagement.Services
 		public async Task<List<EventInfo>> GetFeaturedEventsAsync() 
 		{
 			return await _db.EventInfos
-				.Where(i => i.Published && i.Featured)
+				.Where(
+					i => i.Published && 
+					i.Featured &&
+					i.DateEnd >= DateTime.Now
+					)
 				.OrderBy(s => s.DateStart)
 				.ToListAsync();
 		}
@@ -30,7 +34,7 @@ namespace losol.EventManagement.Services
 		public async Task<List<EventInfo>> GetUpcomingEventsAsync()
 		{
 			return await _db.EventInfos
-				.Where(a => a.DateStart >= DateTime.Now)
+				.Where(a => a.DateEnd >= DateTime.Now)
 				.OrderByDescending(a => a.DateStart)
 				.ToListAsync();
 		}
