@@ -151,7 +151,8 @@
         columns: 'fa-th-list',
         export: 'fa-download'
     };
-        let recipients = []
+    
+    let recipients = []
     window.operateEvents = {
         'click .btn-send-email': function (e, value, row, index) {
             recipients = [{
@@ -208,5 +209,4 @@
     }
     </script>
     @await Html.PartialAsync("_CompBootstrapTable")
-    <script src="//rawgit.com/hhurz/tableExport.jquery.plugin/master/tableExport.js"></script>
-}
+    }
