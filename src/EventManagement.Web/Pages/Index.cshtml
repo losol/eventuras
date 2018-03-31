@@ -102,11 +102,14 @@
                             <h3>@group.Key.Month/@group.Key.Year</h3>
 
                             @foreach(var item in group) {
-                                <p><strong>@item.Title</strong> - @item.Description
+                                <p><strong>@item.Title</strong> - 
                                 <span class="text-muted">
                                     @* Location *@
+                                    @if (item.City != null) {
+                                        <span>@item.City</span>
+                                    }
                                     @if (item.Location != null) {
-                                        <span>@item.Location</span>
+                                        <span> @item.Location</span>
                                     }
                                     
                                     @* Dates *@

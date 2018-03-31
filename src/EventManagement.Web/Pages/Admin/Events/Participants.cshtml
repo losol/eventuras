@@ -179,7 +179,7 @@
                 </div>
                 </div>
 
-                <!-- CERTIFICATES Preview Modal -->
+                <!-- CERTIFICATES Send Modal -->
                 <div class="modal fade" id="sendCertificatesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -226,8 +226,7 @@
                 data-show-refresh="true"
                 data-click-to-select="true"
                 data-export-options='{
-                    "fileName": "Deltakere-@Model.EventInfo.Code-@DateTime.Now.ToString("yyyy-MM-dd")", 
-                    "ignoreColumn": ["asdf"]
+                    "fileName": "Deltakere-@Model.EventInfo.Code-@DateTime.Now.ToString("yyyy-MM-dd")"
                 }'>
                 <thead>
                     <tr>
@@ -384,5 +383,4 @@
 
 </script>
     @await Html.PartialAsync("_CompBootstrapTable")
-    <script src="//rawgit.com/hhurz/tableExport.jquery.plugin/master/tableExport.js"></script>
 }
