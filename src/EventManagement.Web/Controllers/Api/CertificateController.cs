@@ -16,5 +16,11 @@ namespace losol.EventManagement.Web.Controllers.Api
 			var result = await writer.Write($"{DateTime.Now.ToString("u")}.pdf");
 			return Ok(result);
 		}
+
+		[HttpGet("/certificate/view")]
+		public IActionResult ViewCertificate()
+		{
+			return View("Templates/Certificates/CourseCertificate");
+		}
 	}
 }
