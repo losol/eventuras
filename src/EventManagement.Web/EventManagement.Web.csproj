@@ -33,6 +33,7 @@
   
   <ItemGroup>
     <Folder Include="Pages\Admin\Products\" />
+    <Folder Include="Views\Shared\Templates\Certificates\" />
   </ItemGroup>
 
   <Target Name="BuildWebAssets" BeforeTargets="Build">
