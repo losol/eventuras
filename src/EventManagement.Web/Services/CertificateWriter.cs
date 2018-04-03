@@ -32,7 +32,7 @@ namespace losol.EventManagement.Web.Services
 		{
 			var filepath  = Path.Combine(filePath, filename);
 			var html = await _renderService.RenderViewToStringAsync(TEMPLATE, vm);
-			var options = new { format = "Letter" }; // options passed to html-pdf
+			var options = new { format = "A4" }; // options passed to html-pdf
 
 			return await _nodeServices.InvokeAsync<bool>(
 				SCRIPT,
