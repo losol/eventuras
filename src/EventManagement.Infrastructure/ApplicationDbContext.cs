@@ -12,13 +12,7 @@ namespace losol.EventManagement.Infrastructure
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
-        {
-        }
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-        }
+        { }
 
         public DbSet<losol.EventManagement.Domain.ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<losol.EventManagement.Domain.EventInfo> EventInfos { get; set; }
@@ -28,6 +22,13 @@ namespace losol.EventManagement.Infrastructure
         public DbSet<losol.EventManagement.Domain.ProductVariant> ProductVariants { get; set; }
 		public DbSet<losol.EventManagement.Domain.Order> Orders { get; set; }
 		public DbSet<losol.EventManagement.Domain.OrderLine> OrderLines { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.Entity<Certificate>()
+                   .OwnsOne<Certificate.CertificateIssuer>(c => c.Issuer);
+        }
 
 		public void DetachAllEntities()
 		{
