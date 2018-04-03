@@ -18,9 +18,6 @@ namespace losol.EventManagement.Infrastructure
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            builder.Entity<CourseCertificate>()
-                .OwnsOne<CourseCertificate.CertificateIssuer>(c => c.Issuer);
         }
 
         public DbSet<losol.EventManagement.Domain.ApplicationUser> ApplicationUsers { get; set; }
@@ -31,7 +28,6 @@ namespace losol.EventManagement.Infrastructure
         public DbSet<losol.EventManagement.Domain.ProductVariant> ProductVariants { get; set; }
 		public DbSet<losol.EventManagement.Domain.Order> Orders { get; set; }
 		public DbSet<losol.EventManagement.Domain.OrderLine> OrderLines { get; set; }
-        public DbSet<losol.EventManagement.Domain.CourseCertificate> Certificates { get; set; }
 
 		public void DetachAllEntities()
 		{

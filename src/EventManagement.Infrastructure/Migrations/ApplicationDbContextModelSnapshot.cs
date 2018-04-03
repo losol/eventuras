@@ -74,32 +74,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("losol.EventManagement.Domain.CourseCertificate", b =>
-                {
-                    b.Property<int>("CourseCertificateId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid>("AuthCode")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid>("CertificateGuid")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Description")
-                        .IsRequired();
-
-                    b.Property<string>("RecipientName");
-
-                    b.Property<string>("RecipientUserId");
-
-                    b.Property<string>("Title")
-                        .IsRequired();
-
-                    b.HasKey("CourseCertificateId");
-
-                    b.ToTable("Certificates");
-                });
-
             modelBuilder.Entity("losol.EventManagement.Domain.EventInfo", b =>
                 {
                     b.Property<int>("EventInfoId")
@@ -474,37 +448,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("losol.EventManagement.Domain.CourseCertificate", b =>
-                {
-                    b.OwnsOne("losol.EventManagement.Domain.CourseCertificate+CertificateIssuer", "Issuer", b1 =>
-                        {
-                            b1.Property<int>("CourseCertificateId");
-
-                            b1.Property<string>("IssuedByName");
-
-                            b1.Property<string>("IssuedByUserId");
-
-                            b1.Property<int>("OrganizationId");
-
-                            b1.Property<string>("OrganizationLogoUrl");
-
-                            b1.Property<string>("OrganizationName");
-
-                            b1.HasIndex("IssuedByUserId");
-
-                            b1.ToTable("Certificates");
-
-                            b1.HasOne("losol.EventManagement.Domain.CourseCertificate")
-                                .WithOne("Issuer")
-                                .HasForeignKey("losol.EventManagement.Domain.CourseCertificate+CertificateIssuer", "CourseCertificateId")
-                                .OnDelete(DeleteBehavior.Cascade);
-
-                            b1.HasOne("losol.EventManagement.Domain.ApplicationUser", "IssuedByUser")
-                                .WithMany()
-                                .HasForeignKey("IssuedByUserId");
-                        });
                 });
 
             modelBuilder.Entity("losol.EventManagement.Domain.Order", b =>
