@@ -1,3 +1,5 @@
+@using losol.EventManagement.Web.ViewModels.Templates.Certificates
+@model CourseCertificateVM
 @{
     Layout = null;
 }
@@ -59,8 +61,8 @@
         </div>
 
         <div class="container text-center py-3">
-        <h1 class="py-3">CERTIFICATE NAME</h1>
-        <div class="text-center">PARTICIPANT NAME</div>
+        <h1 class="py-3">@Model.Title</h1>
+        <div class="text-center">@Model.RecipientName</div>
         <div class="text-center">REQUIREMENTS PASSED (WITH DATES)</div>
         </div>
 
@@ -69,7 +71,7 @@
             <div class="col-md-4 offset-md-4">
             <figure class="figure">
                 <img src="/assets/images/logos/logo-nordland_legeforening-small-transparent.png" class="figure-img img-fluid" alt="nordland legeforening logo">
-                <figcaption class="figure-caption">Arranged by Organization.Name</figcaption>
+                <figcaption class="figure-caption">Arranged by @Model.IssuerOrganizationName</figcaption>
             </figure>
             </div>
         </div>
@@ -82,11 +84,11 @@
         </div>
 
         <div class="container py-3 text-center">
-        <div class="pb-3">EventInfo.City, EventInfo.DateEnd </div>
-        <div class="handwriting">Name of the user issuing the certificates</div>
+        <div class="pb-3">@Model.City, @Model.Date </div>
+        <div class="handwriting">@Model.IssuerPersonName</div>
         <hr class="w-25 p-0" />
         <div class="text-center">Navn på den som er kursleder</div>
-        <div class="text-center">Digitally signed with signature (GUID)</div>
+        <div class="text-center">Digitally signed with signature (@Model.CertificateGuid)</div>
         </div>
     </body>
 </html>

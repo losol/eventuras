@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using losol.EventManagement.Web.ViewModels.Templates.Certificates;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.NodeServices;
 using Microsoft.AspNetCore.NodeServices.HostingModels;
@@ -27,10 +28,10 @@ namespace losol.EventManagement.Web.Services
 			_renderService = renderService;
 		}
 
-		public async Task<bool> Write(string filename)
+		public async Task<bool> Write(string filename, CourseCertificateVM vm)
 		{
 			var filepath  = Path.Combine(filePath, filename);
-			var html = await _renderService.RenderViewToStringAsync(TEMPLATE, null);
+			var html = await _renderService.RenderViewToStringAsync(TEMPLATE, vm);
 			var options = new { format = "Letter" }; // options passed to html-pdf
 
 			return await _nodeServices.InvokeAsync<bool>(
