@@ -1,8 +1,8 @@
 using System;
 
-namespace losol.EventManagement.Web.ViewModels.Templates.Certificates
+namespace losol.EventManagement.Web.ViewModels.Templates
 {
-    public class CourseCertificateVM
+    public class CertificateVM
     {
         public string CertificateGuid { get; set; }
 
@@ -17,7 +17,7 @@ namespace losol.EventManagement.Web.ViewModels.Templates.Certificates
         public string City { get; set; }
         public string Date { get; set; }
 
-        public static CourseCertificateVM Mock => new CourseCertificateVM 
+        public static CertificateVM Mock => new CertificateVM 
         {
             RecipientName = "Angela Moss",
             IssuerOrganizationName = "E Corp",
