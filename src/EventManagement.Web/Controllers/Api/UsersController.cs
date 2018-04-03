@@ -25,7 +25,7 @@ namespace losol.EventManagement.Web.Controllers.Api
 		public async Task<IActionResult> GetUsers() 
 		{
 			var users = await _db.Users
-			                     .Select(u => new { Name = u.Name, Email = u.Email, Phone = u.PhoneNumber })
+			                     .Select(u => new { Id = u.Id, Name = u.Name, Email = u.Email, Phone = u.PhoneNumber })
 			                     .ToListAsync();
 			return Ok(users);
 		}

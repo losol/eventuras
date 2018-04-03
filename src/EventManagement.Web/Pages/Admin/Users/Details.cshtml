@@ -1,0 +1,18 @@
+@page "{id}"
+@model losol.EventManagement.Pages.Admin.Users.DetailsModel
+@{
+    ViewData["Title"] = "Endre passord";
+    Layout = "~/Pages/_Layout.cshtml";
+}
+<div class="container py-5">
+<h1>@Model.UserProfile.Name</h1>
+<p class="lead">
+    <i class="material-icons">phone</i> @Model.UserProfile.Phone <span class="mr-5"></span>
+    <i class="material-icons">email</i> @Model.UserProfile.Email
+</p>
+<a asp-page="delete" route-id="@Model.UserProfile.UserId">Slett bruker</a>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
