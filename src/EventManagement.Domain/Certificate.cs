@@ -6,7 +6,7 @@ namespace losol.EventManagement.Domain
 {
     public class Certificate
     {
-        [Key]
+        [Key, ForeignKey("Registration")]
         public int CertificateId { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -23,6 +23,8 @@ namespace losol.EventManagement.Domain
         // The person receiving the certificate
         public string RecipientUserId { get; set; }
         public string RecipientName { get; set; }
+        public ApplicationUser RecipientUser { get; set; }
+        public Registration Registration { get; set; }
 
 
         public CertificateIssuer Issuer { get; set; }

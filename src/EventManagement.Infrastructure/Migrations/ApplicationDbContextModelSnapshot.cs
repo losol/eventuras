@@ -76,8 +76,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("losol.EventManagement.Domain.Certificate", b =>
                 {
-                    b.Property<int>("CertificateId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("CertificateId");
 
                     b.Property<Guid>("AuthCode")
                         .ValueGeneratedOnAdd();
@@ -95,6 +94,8 @@ namespace losol.EventManagement.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasKey("CertificateId");
+
+                    b.HasIndex("RecipientUserId");
 
                     b.ToTable("Certificate");
                 });
@@ -477,6 +478,15 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("losol.EventManagement.Domain.Certificate", b =>
                 {
+                    b.HasOne("losol.EventManagement.Domain.Registration", "Registration")
+                        .WithOne("Certificate")
+                        .HasForeignKey("losol.EventManagement.Domain.Certificate", "CertificateId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("losol.EventManagement.Domain.ApplicationUser", "RecipientUser")
+                        .WithMany("Certificates")
+                        .HasForeignKey("RecipientUserId");
+
                     b.OwnsOne("losol.EventManagement.Domain.Certificate+CertificateIssuer", "Issuer", b1 =>
                         {
                             b1.Property<int>("CertificateId");
