@@ -8,9 +8,11 @@ using Microsoft.Extensions.Logging;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Web.ViewModels.Templates;
 using losol.EventManagement.Web.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EventManagement.Web.Controllers
 {
+    [Authorize] // TODO: ensure that only the relevant user / course admin can access these routes
     [Route("certificate")]
     public class CertificateController : Controller
     {
