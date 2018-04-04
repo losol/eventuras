@@ -30,7 +30,7 @@ namespace losol.EventManagement.Web.Services
 
 		public async Task<bool> Write(string filename, CertificateVM vm)
 		{
-			var filepath  = Path.Combine(filePath, filename);
+			var filepath = GetPathForFile(filename);
 			var html = await _renderService.RenderViewToStringAsync(TEMPLATE, vm);
 			var options = new { format = "A4" }; // options passed to html-pdf
 
@@ -40,6 +40,11 @@ namespace losol.EventManagement.Web.Services
 				html,
 				options
 			);
+		}
+
+		public string GetPathForFile(string filename)
+		{
+			return Path.Combine(filePath, filename);
 		}
 	}
 }
