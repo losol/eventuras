@@ -10,7 +10,8 @@
     <i class="material-icons">phone</i> @Model.UserProfile.Phone <span class="mr-5"></span>
     <i class="material-icons">email</i> @Model.UserProfile.Email
 </p>
-<a asp-page="delete" route-id="@Model.UserProfile.UserId">Slett bruker</a>
+<a asp-page="edit" route-id="@Model.UserProfile.UserId" class="btn btn-warning link-decoration-none">Endre bruker</a>
+<a asp-page="delete" route-id="@Model.UserProfile.UserId" class="btn btn-danger link-decoration-none">Slett bruker</a>
 </div>
 
 @section Scripts {

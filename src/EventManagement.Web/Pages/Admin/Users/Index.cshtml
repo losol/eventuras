@@ -140,6 +140,7 @@
         function RowActions(value, row, index, field) {
             actions = [
                 '<a class="btn btn-secondary mr-1 link-decoration-none" href="/Admin/Users/Details/' + row.id + '" >Vis</a>', 
+                '<a class="btn btn-secondary mr-1 link-decoration-none" href="/Admin/Users/Edit/' + row.id + '" >Endre</a>', 
                 '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-sms mr-1">SMS</button>', 
                 '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-email mr-1">Epost</button>', 
             ].join('');
