@@ -87,6 +87,10 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.Property<string>("Description");
 
+                    b.Property<string>("RecipientName");
+
+                    b.Property<string>("RecipientUserId");
+
                     b.Property<string>("Title")
                         .IsRequired();
 
@@ -477,8 +481,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
                         {
                             b1.Property<int>("CertificateId");
 
-                            b1.Property<string>("IssuedByName")
-                                .IsRequired();
+                            b1.Property<string>("IssuedByName");
 
                             b1.Property<string>("IssuedByUserId");
 
@@ -500,37 +503,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
                             b1.HasOne("losol.EventManagement.Domain.ApplicationUser", "IssuedByUser")
                                 .WithMany()
                                 .HasForeignKey("IssuedByUserId");
-                        });
-
-                    b.OwnsOne("losol.EventManagement.Domain.Certificate+CertificateRecipient", "Recipient", b1 =>
-                        {
-                            b1.Property<int>("CertificateId");
-
-                            b1.Property<string>("Name");
-
-                            b1.Property<int>("RegistrationId");
-
-                            b1.Property<string>("UserId");
-
-                            b1.HasIndex("RegistrationId");
-
-                            b1.HasIndex("UserId");
-
-                            b1.ToTable("Certificate");
-
-                            b1.HasOne("losol.EventManagement.Domain.Certificate")
-                                .WithOne("Recipient")
-                                .HasForeignKey("losol.EventManagement.Domain.Certificate+CertificateRecipient", "CertificateId")
-                                .OnDelete(DeleteBehavior.Cascade);
-
-                            b1.HasOne("losol.EventManagement.Domain.Registration", "Registration")
-                                .WithMany()
-                                .HasForeignKey("RegistrationId")
-                                .OnDelete(DeleteBehavior.Cascade);
-
-                            b1.HasOne("losol.EventManagement.Domain.ApplicationUser", "User")
-                                .WithMany()
-                                .HasForeignKey("UserId");
                         });
                 });
 

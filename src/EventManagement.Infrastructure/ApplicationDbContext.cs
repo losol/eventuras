@@ -28,9 +28,6 @@ namespace losol.EventManagement.Infrastructure
             base.OnModelCreating(builder);
             builder.Entity<Certificate>()
                    .OwnsOne<Certificate.CertificateIssuer>(c => c.Issuer);
-            builder.Entity<Certificate>()
-                    .OwnsOne<Certificate.CertificateRecipient>(c => c.Recipient);
-            
         }
 
 		public void DetachAllEntities()
