@@ -20,12 +20,10 @@ namespace losol.EventManagement.Domain
 
         public string Description { get; set; }
 
-        // The person receiving the certificate
-        public string RecipientUserId { get; set; }
-        public string RecipientName { get; set; }
-
 
         public CertificateIssuer Issuer { get; set; }
+        public CertificateRecipient Recipient { get; set; }
+
 
         [ComplexType]
         public class CertificateIssuer
@@ -35,8 +33,21 @@ namespace losol.EventManagement.Domain
             public string OrganizationLogoUrl { get; set; }
 
             public string IssuedByUserId { get; set; }
+            [Required]
             public string IssuedByName { get; set; }
             public ApplicationUser IssuedByUser { get; set; }
+        }
+
+        [ComplexType]
+        public class CertificateRecipient
+        {
+            public string UserId { get; set; }
+            public string Name { get; set; }
+
+            public int RegistrationId { get; set; }
+
+            public Registration Registration { get; set; }
+            public ApplicationUser User { get; set; }
         }
     }
 }
