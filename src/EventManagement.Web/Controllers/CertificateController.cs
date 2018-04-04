@@ -30,6 +30,10 @@ namespace EventManagement.Web.Controllers
             [FromServices]IEventInfoService eventInfoService)
         {
             var eventInfo = await eventInfoService.GetAsync(id);
+            if(eventInfo == null)
+            {
+                return NotFound();
+            }
             var vm = CertificateVM.Mock;
             vm.Title = eventInfo.Title;
             vm.Date = eventInfo.DateEnd?.ToString("dd.MM.yyyy");
