@@ -15,9 +15,8 @@ namespace losol.EventManagement.Web.Services
 		) : base(emailSender, renderService)
 		{ }
 
-		public async Task SendAsync(EmailMessage vm)
-		{
-			await base.SendAsync(vm.Email, vm.Subject, vm);
-		}
+		public Task SendAsync(EmailMessage vm) =>
+			SendAsync(vm.Email, vm.Subject, vm, vm.Attachment);
+
 	}
 }

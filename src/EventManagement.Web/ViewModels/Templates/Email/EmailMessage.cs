@@ -1,4 +1,5 @@
 using System;
+using losol.EventManagement.Services.Messaging;
 
 namespace losol.EventManagement.ViewModels
 {
@@ -8,5 +9,6 @@ namespace losol.EventManagement.ViewModels
 		public string Email { get; set; }
 		public string Subject { get; set; }
 		public string Message { get; set; }
+		public Attachment Attachment { get; set; }
 	}
 }

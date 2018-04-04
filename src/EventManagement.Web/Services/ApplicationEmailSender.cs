@@ -21,10 +21,10 @@ namespace losol.EventManagement.Web.Services
 			_renderService = renderService;
 		}
 
-		protected async Task SendAsync(string emailAddress, string subject, object vm)
+		protected async Task SendAsync(string emailAddress, string subject, object vm, Attachment attachment)
 		{
 			var email = await _renderService.RenderViewToStringAsync(Template, vm);
-			await _emailSender.SendEmailAsync(emailAddress, subject, email);
+			await _emailSender.SendEmailAsync(emailAddress, subject, email, attachment);
 		}
 	}
 }
