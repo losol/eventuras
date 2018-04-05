@@ -13,11 +13,11 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace losol.EventManagement.Web.Controllers.Api
 {
-    [Authorize]
+    [Authorize(Policy = "AdministratorRole")]
     [Route("api/participants")]
     public class ParticipantsController : Controller
     {
-        [HttpGet("email_certificates/for_event/{eventId}")]
+        [HttpPost("email_certificates/for_event/{eventId}")]
         public async Task<IActionResult> GenerateCertificatesAndSendEmails([FromRoute]int eventId,
             [FromServices] IRegistrationService registrationService,
             [FromServices] CertificateWriter writer, 
