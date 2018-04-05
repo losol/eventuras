@@ -22,6 +22,7 @@ namespace losol.EventManagement.Infrastructure
         public DbSet<losol.EventManagement.Domain.ProductVariant> ProductVariants { get; set; }
 		public DbSet<losol.EventManagement.Domain.Order> Orders { get; set; }
 		public DbSet<losol.EventManagement.Domain.OrderLine> OrderLines { get; set; }
+        public DbSet<losol.EventManagement.Domain.Certificate> Certificates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
