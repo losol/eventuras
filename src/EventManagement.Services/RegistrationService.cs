@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using losol.EventManagement.Domain;
@@ -36,6 +37,14 @@ namespace losol.EventManagement.Services
 				            .Where(x => x.RegistrationId == id)
 							.Include(r => r.EventInfo)
 			       		    .SingleOrDefaultAsync();
+		}
+
+		public async Task<List<Registration>> GetVerifiedRegistrations(int eventId)
+		{
+			return await _db.Registrations
+							.Where(r => r.EventInfoId == eventId && r.Verified)
+							.Include(r => r.EventInfo)
+							.ToListAsync();
 		}
 
 		public async Task<int> CreateRegistration(Registration registration, int[] productIds, int[] variantIds)
@@ -79,5 +88,46 @@ namespace losol.EventManagement.Services
 			return await _db.SaveChangesAsync();
 		}
 
-	}
+        public async Task<List<Certificate>> CreateNewCertificates(int eventId, string issuedByUsername)
+        {
+			_ = issuedByUsername ?? throw new ArgumentNullException(paramName:nameof(issuedByUsername));
+            var infoQueryable = _db.EventInfos
+						.Where(e => e.EventInfoId == eventId);
+			var eventInfo = await infoQueryable.AsNoTracking().SingleOrDefaultAsync();
+			_ = eventInfo ?? throw new ArgumentException("Not event corresponds to that eventId", paramName: nameof(eventId));
+
+			var user = await _db.ApplicationUsers
+								.Where(u => issuedByUsername == u.UserName)
+								.SingleOrDefaultAsync();
+			_ = user ?? throw new ArgumentException("Invalid userId", paramName: nameof(issuedByUsername));
+
+			var certs = await infoQueryable.SelectMany(i => i.Registrations)
+								.Where(r => r.Verified && r.Attended && r.Certificate == null)
+								.Select(r => new Certificate {
+									CertificateId = r.RegistrationId,
+									RecipientName = r.ParticipantName,
+									RecipientUserId = r.UserId,
+
+									Title = eventInfo.Title,
+									Description = eventInfo.CertificateDescription,
+
+									Issuer = new Certificate.CertificateIssuer {
+										OrganizationId = 0,
+										OrganizationName = null,
+										OrganizationLogoUrl = null,
+										IssuedByUserId = user.Id,
+										IssuedByName = user.Name,
+										IssuedInCity = eventInfo.City
+									}
+								}).ToListAsync();
+			_db.Certificates.AddRange(certs);
+			await _db.SaveChangesAsync();
+			
+			var newIds = certs.Select(c => c.CertificateId);
+			return await _db.Certificates
+							.Where(c => newIds.Contains(c.CertificateId))
+							.Include(c => c.RecipientUser)
+							.ToListAsync();
+        }
+    }
 }

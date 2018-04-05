@@ -1,4 +1,5 @@
 using System;
+using losol.EventManagement.Domain;
 
 namespace losol.EventManagement.Web.ViewModels.Templates
 {
@@ -30,5 +31,19 @@ namespace losol.EventManagement.Web.ViewModels.Templates
 
             Title = "Nettkurs Diabetes mellitus type 2"
         };
+
+        public static CertificateVM From(Certificate c) =>
+            new CertificateVM 
+            {
+                RecipientName = c.RecipientName,
+                Title = c.Title,
+                CertificateGuid = c.CertificateGuid.ToString(),
+                Date = c.CreatedOn.ToString("dd.MMM.yyyy"),
+                IssuerOrganizationName = c.Issuer.OrganizationName,
+                IssuerPersonName = c.Issuer.IssuedByName,
+                IssuerOrganizationLogoUrl = c.Issuer.OrganizationLogoUrl,
+                City = c.Issuer.IssuedInCity
+            };
+
     }
 }
