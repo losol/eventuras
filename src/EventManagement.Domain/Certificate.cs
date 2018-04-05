@@ -10,10 +10,10 @@ namespace losol.EventManagement.Domain
         public int CertificateId { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid CertificateGuid { get; set; }
+        public Guid CertificateGuid { get; set; } = Guid.NewGuid();
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid AuthCode { get; set; }
+        public Guid AuthCode { get; set; } = Guid.NewGuid();
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
 
         [Required]
