@@ -64,7 +64,7 @@ namespace losol.EventManagement.Pages.Admin.Users
                 return Page();
             }
             
-            var user = new ApplicationUser { Name = Input.Name, UserName = Input.Email, Email = Input.Email, PhoneNumber = Input.PhoneNumber};
+            var user = new ApplicationUser { Name = Input.Name, UserName = Input.Email, Email = Input.Email, PhoneNumber = (Input.PhoneCountryCode + Input.PhoneNumber)};
             var result = await _userManager.CreateAsync(user);
             return RedirectToPage("./Index");
         }
