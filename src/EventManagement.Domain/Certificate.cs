@@ -14,6 +14,7 @@ namespace losol.EventManagement.Domain
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid AuthCode { get; set; }
+        public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
 
         [Required]
         public string Title { get; set; }
@@ -38,6 +39,7 @@ namespace losol.EventManagement.Domain
 
             public string IssuedByUserId { get; set; }
             public string IssuedByName { get; set; }
+            public string IssuedInCity { get; set; }
             public ApplicationUser IssuedByUser { get; set; }
         }
     }
