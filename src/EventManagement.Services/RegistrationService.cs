@@ -129,5 +129,10 @@ namespace losol.EventManagement.Services
 							.Include(c => c.RecipientUser)
 							.ToListAsync();
         }
+
+        public Task<Certificate> GetCertificateAsync(int id)
+        {
+            return _db.Certificates.FindAsync(id);
+        }
     }
 }

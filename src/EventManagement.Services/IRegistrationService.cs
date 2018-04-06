@@ -10,6 +10,7 @@ namespace losol.EventManagement.Services
 		Task<Registration> GetAsync(string userId, int eventId);
 		Task<Registration> GetWithEventInfoAsync(int id);
 		Task<List<Registration>> GetVerifiedRegistrations(int eventId);
+		Task<Certificate> GetCertificateAsync(int id);
 
 		/// <summary>
 		/// Creates new certificates for registrants with no existing certificates

@@ -38,16 +38,26 @@ namespace EventManagement.Web.Controllers
             vm.Title = eventInfo.Title;
             vm.Date = eventInfo.DateEnd?.ToString("dd.MM.yyyy");
             vm.City = eventInfo.City;
+            vm.Accreditation = eventInfo.CertificateDescription;
+            // TODO: Add organizer details
+            
             return View("Templates/Certificates/CourseCertificate", vm);
         }
 
         [HttpGet("{id}/download")]
         public async Task<IActionResult> DownloadCertificate(
-            [FromServices]CertificateWriter writer, 
-            [FromRoute]int id)
+            [FromServices] CertificateWriter writer, 
+            [FromServices] IRegistrationService registrationService,
+            [FromRoute] int id)
         {
-            string filename = $"{DateTime.Now.ToString("u")}.pdf";
-            var result = await writer.Write(filename, CertificateVM.Mock);
+            var certificate = await registrationService.GetCertificateAsync(id);
+            if(certificate == null)
+            {
+                return NotFound();
+            }
+            
+            string filename = $"{certificate.CertificateId}-{DateTime.Now.ToString("u")}.pdf";
+            var result = await writer.Write(filename, CertificateVM.From(certificate));
             var bytes = await System.IO.File.ReadAllBytesAsync(writer.GetPathForFile(filename));
             return File(bytes, "application/pdf");
         }
