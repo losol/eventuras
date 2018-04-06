@@ -14,6 +14,7 @@ namespace losol.EventManagement.Web.ViewModels.Templates
         public string IssuerOrganizationName {get;set;}
         public string IssuerOrganizationLogoUrl {get;set;}
         public string IssuerPersonName {get;set;}
+        public string Accreditation { get; set; }
 
         public string City { get; set; }
         public string Date { get; set; }
@@ -29,7 +30,9 @@ namespace losol.EventManagement.Web.ViewModels.Templates
             City = "San Diego",
             Date = DateTime.Now.ToString("dd.MM.yyyy"),
 
-            Title = "Nettkurs Diabetes mellitus type 2"
+            Title = "Nettkurs Diabetes mellitus type 2",
+
+            Accreditation = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempor interdum purus, at egestas lectus rutrum at. Phasellus semper volutpat ipsum ac bibendum. Nulla placerat interdum nulla nec consequat. Maecenas dictum mattis arcu, sed sagittis risus ornare et. Nunc in tortor et tortor molestie molestie"
         };
 
         public static CertificateVM From(Certificate c) =>
@@ -42,7 +45,8 @@ namespace losol.EventManagement.Web.ViewModels.Templates
                 IssuerOrganizationName = c.Issuer.OrganizationName,
                 IssuerPersonName = c.Issuer.IssuedByName,
                 IssuerOrganizationLogoUrl = c.Issuer.OrganizationLogoUrl,
-                City = c.Issuer.IssuedInCity
+                City = c.Issuer.IssuedInCity,
+                Accreditation = c.Description
             };
 
     }

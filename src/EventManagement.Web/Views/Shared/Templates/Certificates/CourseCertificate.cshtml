@@ -4,91 +4,133 @@
     Layout = null;
 }
 <html>
-    <head>
-        <title></title>
-        <meta charset="utf8" />
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Material+Icons|Reenie+Beanie" rel="stylesheet">
-        <style>
-            body {
-                background: #eee;
-            }
-            
-            .handwriting {
-                font-size: 48px;
-                font-family: 'Reenie Beanie';
-                padding-bottom:0;
-            }
+  <head>
+    <meta charset="utf8">
+    <title>Certificate</title>
+    <link 
+      href="https://fonts.googleapis.com/css?family=Material+Icons|Reenie+Beanie|Carrois+Gothic+SC|Libre+Baskerville" 
+      rel="stylesheet" />
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Carrois Gothic SC';
+        font-weight: 500;
+        font-size: 16px;
+        background: rgb(241,241,241);
+        -webkit-print-color-adjust: exact;
+        box-sizing: border-box;
+      }
+      .page {
+        position: relative;
+        height: 297mm;
+        width: 210mm;
+        text-align: center;
+        display: block;
+        background: #eee;
+        color: black;
+        page-break-after: auto;
+        margin: 50px;
+        overflow: hidden;
+      }
+      @@media print {
+        body {
+          background: #eee;
+        }
+        .page {
+          margin: 0;
+          height: 100%;
+          width: 100%;
+        }
+      }
+      .page.first {
+        border-left: 5px solid green;
+      }
+      .bottom {
+        position: absolute;
+        left: 5mm;
+        right: 5mm;
+        bottom: 5mm;
+      }
+      .group {
+        padding: 0 25mm;
+        margin: 5mm;
+      }
+      .line {
+        position: relative;
+      }
+      .center {
+        text-align: center;
+      }
+      .logo {
+        position: relative;
+        width: 80%;
+        top: 15%;
+        max-width: 280px;
+      }
+      .handwriting {
+        font-size: 48px;
+        font-family: 'Reenie Beanie';
+        padding-bottom:0;
+        text-decoration: underline;
+      }
 
-            .bg-blue {
-                background-color: #336699;
-            }
+      .featured {
+        padding: 25mm 0 10mm 0;
+        background-color: #336699;
+        color: white;
+      }
 
+      .title {
+        font-size: 32px
+      }
 
-            .material-icons {
-                font-family: 'Material Icons';
-                font-weight: normal;
-                font-style: normal;
-                font-size: 48px;  /* Preferred icon size */
-                display: inline-block;
-                line-height: 1;
-                text-transform: none;
-                letter-spacing: normal;
-                word-wrap: normal;
-                white-space: nowrap;
-                direction: ltr;
+      .subtitle {
+        font-size: 28px
+      }
 
-                /* Support for all WebKit browsers. */
-                -webkit-font-smoothing: antialiased;
-                /* Support for Safari and Chrome. */
-                text-rendering: optimizeLegibility;
+      .text {
+        font-family: 'Libre Baskerville', serif;
+        font-size: 14px
+      }
 
-                /* Support for Firefox. */
-                -moz-osx-font-smoothing: grayscale;
+      .light {
+        color: #555
+      }
 
-                /* Support for IE. */
-                font-feature-settings: 'liga';
-            }
-        </style>
-    </head>
-    <body>
-        <div class="bg-blue">
-        <div class="container pt-5 pb-3 text-center text-light">
-            <h1 class="display-2">Certificate</h1>
-            <i class="material-icons">linear_scale</i>
+    </style>
+  </head>
+  <body>
+    <div class="page">
+
+        <div class="featured">
+          <div class="line title">Certificate</div>
+          <div class="line subtitle">@Model.Title</div>          
         </div>
+
+        <div class="group">
+          <div class="line">@Model.RecipientName</div>
+          <div class="line">Events with Dates</div>
         </div>
 
-        <div class="container text-center py-3">
-        <h1 class="py-3">@Model.Title</h1>
-        <div class="text-center">@Model.RecipientName</div>
-        <div class="text-center">REQUIREMENTS PASSED (WITH DATES)</div>
+        <div class="group">
+          <img class="logo" src="@Model.IssuerOrganizationLogoUrl" alt="@Model.IssuerOrganizationName">
+          <div class="line">Organized by @Model.IssuerOrganizationName</div>
         </div>
 
-        <div class="container py-5">
-        <div class="row text-center">
-            <div class="col-md-4 offset-md-4">
-            <figure class="figure">
-                <img src="@Model.IssuerOrganizationLogoUrl" class="figure-img img-fluid" alt="@Model.IssuerOrganizationName Logo">
-                <figcaption class="figure-caption">Arranged by @Model.IssuerOrganizationName</figcaption>
-            </figure>
-            </div>
-        </div>
+        <div class="group">
+          <div class="line"><strong>Accreditations</strong></div>
+          <div class="line text">@Model.Accreditation</div>
         </div>
 
-        <div class="container py-5">
-        <div class="text-center"><strong>Accreditations</strong> </div>
-        <div class="text-center">- First accrediation for one group of doctors</div>
-        <div class="text-center">- And maybe one accrediation for another group of doctors</div>
+        <div class="group">
+          <div class="line">@Model.City, @Model.Date</div>
+          <div class="line handwriting">@Model.IssuerPersonName</div>
+          <div class="line"><small>Navn på den som er kursleder</small></div>
         </div>
-
-        <div class="container py-3 text-center">
-        <div class="pb-3">@Model.City, @Model.Date </div>
-        <div class="handwriting">@Model.IssuerPersonName</div>
-        <hr class="w-25 p-0" />
-        <div class="text-center">Navn på den som er kursleder</div>
-        <div class="text-center">Digitally signed with signature (@Model.CertificateGuid)</div>
+        <div class="bottom">
+          <div class="line text light">Digitally signed with signature <code>@Model.CertificateGuid</code></div>
         </div>
-    </body>
+    </div>
+  </body>
 </html>
