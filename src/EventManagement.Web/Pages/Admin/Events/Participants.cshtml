@@ -275,9 +275,13 @@
     function RowActions(value, row, index, field) {
             actions = [
                 '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-sms mr-1">SMS</button>', 
-                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-email mr-1">Epost</button>', 
-            ].join('');
-            return actions;
+                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-email mr-1">Epost</button>'
+            ];
+            if(row.hasCertificate)
+            {
+                actions.push('<a class="btn btn-secondary" href="/certificate/' + row.registrationId + '/download" target="_blank">Certificate</a>')
+            }
+            return actions.join('');
         }
 
     window.icons = {
