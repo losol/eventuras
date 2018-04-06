@@ -119,6 +119,10 @@ namespace losol.EventManagement
 					services.Configure<SendGridOptions>(Configuration.GetSection("SendGrid"));
 					services.AddTransient<IEmailSender, SendGridEmailSender>();
 					break;
+                case EmailProvider.SMTP:
+					services.Configure<SmtpOptions>(Configuration.GetSection("Smtp"));
+					services.AddTransient<IEmailSender, SmtpEmailSender>();
+					break;
 				case EmailProvider.File:
 					services.AddTransient<IEmailSender, FileEmailWriter>();
 					break;

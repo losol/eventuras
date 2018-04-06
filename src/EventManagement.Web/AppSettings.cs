@@ -10,6 +10,7 @@ namespace losol.EventManagement
 	internal enum EmailProvider 
 	{
 		SendGrid,
+		SMTP,
 		File,
 		Mock
 	}
