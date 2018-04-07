@@ -8,5 +8,10 @@ namespace losol.EventManagement.Services.Messaging
 		{
 			await Task.FromResult(0);
 		}
-	}
+
+        public async Task SendEmailAsync(string email, string subject, string message, Attachment attachment)
+        {
+            await Task.FromResult(0);
+        }
+    }
 }

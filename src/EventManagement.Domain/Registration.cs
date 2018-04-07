@@ -60,6 +60,7 @@ namespace losol.EventManagement.Domain
 		public ApplicationUser User { get; set; }
 		public PaymentMethod PaymentMethod { get; set; }
 		public Order Order { get; set; }
+		public Certificate Certificate { get; set; }
 
 
 		public void Verify()

@@ -12,9 +12,10 @@ using System;
 namespace losol.EventManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180403135838_AddUserToOrders")]
+    partial class AddUserToOrders
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,34 +73,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("losol.EventManagement.Domain.Certificate", b =>
-                {
-                    b.Property<int>("CertificateId");
-
-                    b.Property<Guid>("AuthCode")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid>("CertificateGuid")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("CreatedOn");
-
-                    b.Property<string>("Description");
-
-                    b.Property<string>("RecipientName");
-
-                    b.Property<string>("RecipientUserId");
-
-                    b.Property<string>("Title")
-                        .IsRequired();
-
-                    b.HasKey("CertificateId");
-
-                    b.HasIndex("RecipientUserId");
-
-                    b.ToTable("Certificates");
                 });
 
             modelBuilder.Entity("losol.EventManagement.Domain.EventInfo", b =>
@@ -476,48 +449,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("losol.EventManagement.Domain.Certificate", b =>
-                {
-                    b.HasOne("losol.EventManagement.Domain.Registration", "Registration")
-                        .WithOne("Certificate")
-                        .HasForeignKey("losol.EventManagement.Domain.Certificate", "CertificateId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("losol.EventManagement.Domain.ApplicationUser", "RecipientUser")
-                        .WithMany("Certificates")
-                        .HasForeignKey("RecipientUserId");
-
-                    b.OwnsOne("losol.EventManagement.Domain.Certificate+CertificateIssuer", "Issuer", b1 =>
-                        {
-                            b1.Property<int>("CertificateId");
-
-                            b1.Property<string>("IssuedByName");
-
-                            b1.Property<string>("IssuedByUserId");
-
-                            b1.Property<string>("IssuedInCity");
-
-                            b1.Property<int>("OrganizationId");
-
-                            b1.Property<string>("OrganizationLogoUrl");
-
-                            b1.Property<string>("OrganizationName");
-
-                            b1.HasIndex("IssuedByUserId");
-
-                            b1.ToTable("Certificates");
-
-                            b1.HasOne("losol.EventManagement.Domain.Certificate")
-                                .WithOne("Issuer")
-                                .HasForeignKey("losol.EventManagement.Domain.Certificate+CertificateIssuer", "CertificateId")
-                                .OnDelete(DeleteBehavior.Cascade);
-
-                            b1.HasOne("losol.EventManagement.Domain.ApplicationUser", "IssuedByUser")
-                                .WithMany()
-                                .HasForeignKey("IssuedByUserId");
-                        });
                 });
 
             modelBuilder.Entity("losol.EventManagement.Domain.Order", b =>

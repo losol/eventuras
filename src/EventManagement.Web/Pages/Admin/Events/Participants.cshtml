@@ -146,36 +146,14 @@
                 </div>
                 </div>
 
-
                  <!-- CERTIFICATES MENU -->
                 <div class="btn-group">
                 <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Kursbevis
                 </button>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item link-decoration-none" href="#" data-toggle="modal" data-target="#previewCertificatesModal" role="button">Forh&aring;ndsvis kursbevis</a>
+                    <a class="dropdown-item link-decoration-none" href="/certificate/for_event/@Model.EventInfo.EventInfoId" target="_blank" role="button">Forh&aring;ndsvis kursbevis</a>
                     <a class="dropdown-item link-decoration-none" href="#" data-toggle="modal" data-target="#sendCertificatesModal" role="button">Send ut kursbevis</a>
-                </div>
-                </div>
-
-                <!-- CERTIFICATES Preview Modal -->
-                <div class="modal fade" id="previewCertificatesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Forhåndsvis kursbevis</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        Viser et sertifikat når ferdig.
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Lukk</button>
-                        <button type="button" class="btn btn-primary">Send</button>
-                    </div>
-                    </div>
                 </div>
                 </div>
 
@@ -194,7 +172,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Lukk</button>
-                        <button type="button" class="btn btn-primary">Send</button>
+                        <button type="button" onclick="sendCertificate()" class="btn btn-primary">Send</button>
                     </div>
                     </div>
                 </div>
@@ -297,9 +275,13 @@
     function RowActions(value, row, index, field) {
             actions = [
                 '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-sms mr-1">SMS</button>', 
-                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-email mr-1">Epost</button>', 
-            ].join('');
-            return actions;
+                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-email mr-1">Epost</button>'
+            ];
+            if(row.hasCertificate)
+            {
+                actions.push('<a class="btn btn-secondary" href="/certificate/' + row.registrationId + '/download" target="_blank">Certificate</a>')
+            }
+            return actions.join('');
         }
 
     window.icons = {
@@ -379,6 +361,18 @@
                 toastr.error('Could not send the SMS.');
             });
         $('#sms-modal').modal('hide');
+    }
+
+    function sendCertificate() {
+        toastr.info("Please wait. This may take some time.");
+        $.postJSON('/api/participants/email_certificates/for_event/@Model.EventInfo.EventInfoId', null)
+        .done(function(data){
+            $('#sendCertificatesModal').modal('hide');
+            toastr.success('Sent certificates to ' + data.length + ' participants.')
+        })
+        .fail(function(){
+            toastr.error('Generating/emailing certificates failed.')
+        })
     }
 
 </script>

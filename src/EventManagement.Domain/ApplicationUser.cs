@@ -13,6 +13,6 @@ namespace losol.EventManagement.Domain
 
 
 		public ICollection<Registration> Registrations { get; set; }
-
+		public ICollection<Certificate> Certificates { get; set; }
 	}
 }

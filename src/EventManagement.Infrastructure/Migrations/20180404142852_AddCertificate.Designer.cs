@@ -12,9 +12,10 @@ using System;
 namespace losol.EventManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180404142852_AddCertificate")]
+    partial class AddCertificate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,8 +85,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.Property<Guid>("CertificateGuid")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("CreatedOn");
-
                     b.Property<string>("Description");
 
                     b.Property<string>("RecipientName");
@@ -99,7 +98,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.HasIndex("RecipientUserId");
 
-                    b.ToTable("Certificates");
+                    b.ToTable("Certificate");
                 });
 
             modelBuilder.Entity("losol.EventManagement.Domain.EventInfo", b =>
@@ -497,8 +496,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                             b1.Property<string>("IssuedByUserId");
 
-                            b1.Property<string>("IssuedInCity");
-
                             b1.Property<int>("OrganizationId");
 
                             b1.Property<string>("OrganizationLogoUrl");
@@ -507,7 +504,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                             b1.HasIndex("IssuedByUserId");
 
-                            b1.ToTable("Certificates");
+                            b1.ToTable("Certificate");
 
                             b1.HasOne("losol.EventManagement.Domain.Certificate")
                                 .WithOne("Issuer")

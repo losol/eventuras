@@ -12,9 +12,10 @@ using System;
 namespace losol.EventManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180405055513_AddDateAndCityFieldsToCertificate")]
+    partial class AddDateAndCityFieldsToCertificate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,7 +100,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.HasIndex("RecipientUserId");
 
-                    b.ToTable("Certificates");
+                    b.ToTable("Certificate");
                 });
 
             modelBuilder.Entity("losol.EventManagement.Domain.EventInfo", b =>
@@ -507,7 +508,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                             b1.HasIndex("IssuedByUserId");
 
-                            b1.ToTable("Certificates");
+                            b1.ToTable("Certificate");
 
                             b1.HasOne("losol.EventManagement.Domain.Certificate")
                                 .WithOne("Issuer")
