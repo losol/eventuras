@@ -6,48 +6,64 @@
 }
 
 <div class="jumbotron jumbotron-fluid">
-  <div class="container">
-    <h1 class="display-4">@Model.EventInfo.Title</h1>
-    <p class="lead pb-5">@Model.EventInfo.Description</p>
-     @{ // Dates
-        if(Model.EventInfo.DateStart != null) 
-        {
-            <div class="col-md-3">
-            <i class="material-icons  align-top">date_range</i> @Model.EventInfo.DateStart.Value.ToString("d")
-                
-                    @if(Model.EventInfo.DateEnd != null) {
-                    <text>- @Model.EventInfo.DateEnd.Value.ToString("d")</text>
-                    }
-            </div>
-        }
-    
-     }
-    @{ // City
-        if(Model.EventInfo.City != null) 
-        {
-            <div class="col-md-3">
-                <i class="material-icons align-top">location_on</i> @Model.EventInfo.City
-            </div>
-        }
-    }
-
-     @{ // Location
-            if(Model.EventInfo.Location != null) 
-            {
-                <div class="col-md-3">
-                    <i class="material-icons align-top">hotel</i> @Model.EventInfo.Location
-                </div>
-            }
-            @* Price *@
-            <div class="col-md-3">
-                @if (Model.EventInfo.Price.HasValue) {
-                <i class="material-icons align-top">credit_card</i> @Model.EventInfo.Price.Value.ToString("0 kr")
+    <div class="container">
+        <div>
+            <h1 class="display-4">@Model.EventInfo.Title</h1>
+            <p class="lead pb-5">@Model.EventInfo.Description</p>
+            @{ // Dates
+                if(Model.EventInfo.DateStart != null) 
+                {
+                    <div class="col-md-3">
+                    <i class="material-icons  align-top">date_range</i> @Model.EventInfo.DateStart.Value.ToString("d")
+                        
+                            @if(Model.EventInfo.DateEnd != null) {
+                            <text>- @Model.EventInfo.DateEnd.Value.ToString("d")</text>
+                            }
+                    </div>
                 }
-            </div>
-     }
-        <div id="communicate" class="py-3">
+            
+            }
+            @{ // City
+                if(Model.EventInfo.City != null) 
+                {
+                    <div class="col-md-3">
+                        <i class="material-icons align-top">location_on</i> @Model.EventInfo.City
+                    </div>
+                }
+            }
 
-                <!-- COMMUNICATE MENU -->
+            @{ // Location
+                    if(Model.EventInfo.Location != null) 
+                    {
+                        <div class="col-md-3">
+                            <i class="material-icons align-top">hotel</i> @Model.EventInfo.Location
+                        </div>
+                    }
+                    @* Price *@
+                    <div class="col-md-3">
+                        @if (Model.EventInfo.Price.HasValue) {
+                        <i class="material-icons align-top">credit_card</i> @Model.EventInfo.Price.Value.ToString("0 kr")
+                        }
+                    </div>
+            }
+        </div>
+
+        <div class="row">
+            <div class="col">
+            @if(@Model.EventInfo.Products.Any())
+            {
+                <br />
+                <strong>Products: </strong>
+                @foreach(var p in @Model.EventInfo.Products)
+                {
+                    @: <a href="/Admin/Products/@p.ProductId">@p.Name</a>  &nbsp;
+                }
+            }
+            
+        </div>
+    </div>
+        <div id="communicate" class="py-3">
+                 <!-- COMMUNICATE MENU -->
                 <div class="btn-group">
                 <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Send info til alle
@@ -183,10 +199,10 @@
     </div>
     </div>
 </div>
+ 
 <div class="container min-height-50">
 	<div class="row">
-		<div class="col-md-9">
-
+		<div class="col">
             <table  
                 id="table"
                 data-toggle="table" 
@@ -218,30 +234,9 @@
                         <th data-formatter="RowActions" data-events="operateEvents">Meny</th>
                     </tr>
                 </thead>
-            </table>
-
-
-
-            
+            </table> 
 		</div>
-        <div class="col-md-3">
-
-        </div>
 	</div>
-    <div class="row">
-        <div class="col">
-            @if(@Model.EventInfo.Products.Any())
-            {
-                <br />
-                <strong>Products: </strong>
-                @foreach(var p in @Model.EventInfo.Products)
-                {
-                    @: <a href="/Admin/Products/@p.ProductId">@p.Name</a>  &nbsp;
-                }
-            }
-            
-        </div>
-    </div>
 </div>
 
 @section scripts { 
