@@ -40,12 +40,10 @@ namespace losol.EventManagement.Pages.Admin.Users
             public string Email { get; set; }
 
             [Display(Name = "Landkode", Description = "Landkode")]
-            [Required]
             [StringLength(10, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
             public string PhoneCountryCode { get; set; } = "+47";
 
             [Display(Name = "Mobiltelefon", Description = "Epost til bruker")]
-            [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 5)]
             public string PhoneNumber { get; set; }
 
