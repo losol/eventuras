@@ -104,32 +104,31 @@
     <div class="page">
 
         <div class="featured">
-          <div class="line title">Certificate</div>
+          <div class="line title">Kursbevis</div>
           <div class="line subtitle">@Model.Title</div>          
         </div>
 
         <div class="group">
           <div class="line">@Model.RecipientName</div>
-          <div class="line">Events with Dates</div>
         </div>
 
         <div class="group">
           <img class="logo" src="@Model.IssuerOrganizationLogoUrl" alt="@Model.IssuerOrganizationName">
-          <div class="line">Organized by @Model.IssuerOrganizationName</div>
+          <div class="line">Arrangert av @Model.IssuerOrganizationName</div>
         </div>
 
         <div class="group">
-          <div class="line"><strong>Accreditations</strong></div>
+          <div class="line"><strong>Godkjenninger</strong></div>
           <div class="line text">@Model.Accreditation</div>
         </div>
 
         <div class="group">
           <div class="line">@Model.City, @Model.Date</div>
           <div class="line handwriting">@Model.IssuerPersonName</div>
-          <div class="line"><small>Navn på den som er kursleder</small></div>
+          <div class="line"><small>Kursansvarlig</small></div>
         </div>
         <div class="bottom">
-          <div class="line text light">Digitally signed with signature <code>@Model.CertificateGuid</code></div>
+          <div class="line text light">Digitalt signer med kode <code>@Model.CertificateGuid</code></div>
         </div>
     </div>
   </body>

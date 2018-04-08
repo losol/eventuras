@@ -21,13 +21,13 @@ namespace losol.EventManagement.Web.ViewModels.Templates
 
         public static CertificateVM Mock => new CertificateVM 
         {
-            RecipientName = "Angela Moss",
-            IssuerOrganizationName = "E Corp",
-            IssuerOrganizationLogoUrl = "http://www.ecorpclient.com/newlogo.png",
-            IssuerPersonName = "Phillip Price",
+            RecipientName = "Evigunge Losvik",
+            IssuerOrganizationName = "Nordland Legeforening",
+            IssuerOrganizationLogoUrl = "/assets/images/logos/logo-nordland_legeforening-small-transparent.png",
+            IssuerPersonName = "Tove Myrbakk",
 
             CertificateGuid = Guid.NewGuid().ToString(),
-            City = "San Diego",
+            City = "Bodø",
             Date = DateTime.Now.ToString("dd.MM.yyyy"),
 
             Title = "Nettkurs Diabetes mellitus type 2",
