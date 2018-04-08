@@ -37,6 +37,7 @@ namespace losol.EventManagement.Services
 			   .Include(o => o.OrderLines)
 			   .Include(o => o.User)
 		       .Include(o => o.Registration)
+			   .Include(o => o.PaymentMethod)
 			   .SingleOrDefaultAsync();
 
 		public Task<OrderLine> GetOrderLineAsync(int lineId) =>
