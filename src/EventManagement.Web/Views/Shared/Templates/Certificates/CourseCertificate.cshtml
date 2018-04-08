@@ -53,7 +53,7 @@
         bottom: 5mm;
       }
       .group {
-        padding: 0 25mm;
+        padding: 3mm 25mm;
         margin: 5mm;
       }
       .line {
@@ -123,12 +123,12 @@
         </div>
 
         <div class="group">
-          <div class="line">@Model.City, @Model.Date</div>
+          <div class="line">@Model.City  @Model.Date</div>
           <div class="line handwriting">@Model.IssuerPersonName</div>
           <div class="line"><small>Kursansvarlig</small></div>
         </div>
         <div class="bottom">
-          <div class="line text light">Digitalt signer med kode <code>@Model.CertificateGuid</code></div>
+          <div class="line text light">Digitalt signert med kode <code>@Model.CertificateGuid</code></div>
         </div>
     </div>
   </body>
