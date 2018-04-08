@@ -56,24 +56,24 @@
         </div>
             
             <h2>
-                Order Lines 
+                Ordrelinjer 
                 @if(order.CanEdit)
                 {
-                    <button class="btn btn-default" 
+                    <button class="ml-3 btn btn-success" 
                         data-toggle="modal" 
-                        data-target="#add-orderline-modal">Add Line</button>
+                        data-target="#add-orderline-modal">Ny ordrelinje</button>
                 }
             </h2>
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Line#</th>
-                        <th>Product ID</th>
-                        <th>Product Name</th>
+                        <th>Linje#</th>
+                        <th>Produkt ID</th>
+                        <th>Produktnav</th>
                         <th>Variant ID</th>
-                        <th>Variant Name</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
+                        <th>Variant navn</th>
+                        <th>Antall</th>
+                        <th>Pris</th>
                         @if(order.CanEdit)
                         {
                             <th></th>
@@ -117,7 +117,13 @@
                 </tbody>
             </table>
 
-            <h4>Order Information</h4>
+            <strong>Kommentarer</strong><br />
+            <pre>@order.Comments</pre>
+
+            <strong>Logg</strong><br />
+            <pre>@order.Log</pre>
+
+            <h4>Ordreinformasjon</h4>
             <dl class="row">
                 <dt class="col-6 col-md-3 col-lg-2 text-right">Order ID</dt>
                 <dd class="col-6 col-md-9 col-lg-10">@order.OrderId</dd>
@@ -130,12 +136,6 @@
                 <dt class="col-6 col-md-3 col-lg-2 text-right">Order Time</dt>
                 <dd class="col-6 col-md-9 col-lg-10">@order.OrderTime</dd>
             </dl>
-
-            <strong>Comments</strong><br />
-            <pre>@order.Comments</pre>
-
-            <strong>Log</strong><br />
-            <pre>@order.Log</pre>
         </div>
     </div>
 </div>
