@@ -137,6 +137,8 @@ namespace losol.EventManagement.Domain
 		}
 		public void CreateOrder(IEnumerable<Product> products) => CreateOrder(products, null);
 
+		public void CreateOrder() => CreateOrder(null, null);
+
 		public void CreateRefund()
 		{
 			throw new NotImplementedException();

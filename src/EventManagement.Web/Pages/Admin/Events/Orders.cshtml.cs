@@ -31,5 +31,14 @@ namespace losol.EventManagement.Pages.Admin.Events
 
             return Page();
         }
+
+        public async Task<IActionResult> OnPostEnsureOrdersAsync(int id)
+        {
+
+            // Get orders for
+            var result = await _orders.EnsureOrdersForAllRegistrations(id);
+            Orders = await _orders.GetOrdersForEventAsync(id);
+            return Page();
+        }
     }
 }
