@@ -40,6 +40,16 @@ namespace losol.EventManagement.Services
 			   .Include(o => o.PaymentMethod)
 			   .SingleOrDefaultAsync();
 
+		
+		public Task<List<Order>> GetOrdersForEventAsync(int eventId) =>
+			_db.Orders
+				.Include(o => o.OrderLines)
+				.Include(o => o.Registration)
+				.Where(o => o.Registration.EventInfoId == eventId)
+				.AsNoTracking()
+				.ToListAsync(); 
+		
+
 		public Task<OrderLine> GetOrderLineAsync(int lineId) =>
 			_db.OrderLines
 			   .Where(l => l.OrderLineId == lineId)

@@ -11,6 +11,7 @@ namespace losol.EventManagement.Services
 		Task<List<Order>> GetAsync(int count, int offset);
 		Task<List<Order>> GetAsync(int count);
 		Task<Order> GetByIdAsync(int orderId);
+		Task<List<Order>> GetOrdersForEventAsync(int orderId);
 
 		Task<OrderLine> GetOrderLineAsync(int lineId);
 		Task<bool> DeleteOrderLineAsync(int lineId);

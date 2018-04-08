@@ -1,0 +1,26 @@
+@page "{id:int}"
+@model losol.EventManagement.Pages.Admin.Events.OrdersModel
+
+@{
+    ViewData["Title"] = "Ordrer for arrangement";
+}
+
+<div class="container py-5 min-height-75">
+<h2>Ordrer for arrangement</h2>
+@{
+    foreach (var order in Model.Orders) {
+        <div class="card p-3">
+        <h3>@order.Registration.ParticipantName</h3>
+        <p>
+        <ul>
+        @foreach (var orderline in order.OrderLines) {
+            <li>@orderline.ProductName</li>
+        }
+        </ul>
+        <a asp-page="../Orders/Details" asp-route-id="@order.OrderId" class="btn btn-secondary link-decoration-none">Vis ordre</a>
+        </p>
+        </div>
+
+    }
+}
+</div>
