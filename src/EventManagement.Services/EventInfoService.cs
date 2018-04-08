@@ -58,7 +58,7 @@ namespace losol.EventManagement.Services
 				            .SingleOrDefaultAsync(m => m.EventInfoId == id);
 		}
 
-		public async Task<int> GetVerifiedRegistrationCount(int eventId)
+		public async Task<int> GetRegistrationCount(int eventId)
 		{
 			return await _db.EventInfos
 							.Where(e => e.EventInfoId == eventId)

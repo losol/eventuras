@@ -9,7 +9,7 @@ namespace losol.EventManagement.Services
 		Task<Registration> GetAsync(int id);
 		Task<Registration> GetAsync(string userId, int eventId);
 		Task<Registration> GetWithEventInfoAsync(int id);
-		Task<List<Registration>> GetVerifiedRegistrations(int eventId);
+		Task<List<Registration>> GetRegistrations(int eventId);
 		Task<Certificate> GetCertificateAsync(int id);
 
 		/// <summary>
