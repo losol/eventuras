@@ -61,6 +61,7 @@ namespace losol.EventManagement.Services
 				.Include(o => o.OrderLines)
 				.Include(o => o.Registration)
 				.Where(o => o.Registration.EventInfoId == eventId)
+				.OrderBy(o => o.Registration.ParticipantName)
 				.AsNoTracking()
 				.ToListAsync(); 
 		

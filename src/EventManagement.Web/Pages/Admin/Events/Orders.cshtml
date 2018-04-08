@@ -6,7 +6,8 @@
 }
 <div class="bg-gray-300 py-3">
     <div class="container">
-        <h1>Ordrer for arrangement</h1>
+        <h1>Ordre for arrangement</h1>
+        <p> Totalt: @Model.Orders.Count()</p>
         <form method="post">       
             <button type="submit" asp-page-handler="EnsureOrders" class="btn">Lag ordre for alle registrerte</button>
         </form>
@@ -18,13 +19,14 @@
     foreach (var order in Model.Orders) {
         <div class="card my-2 p-3 border-0">
         <h3>@order.Registration.ParticipantName</h3>
-        <p>
+        
         <ul>
         @foreach (var orderline in order.OrderLines) {
-            <li>@orderline.ProductName</li>
+            <li>@orderline.ProductName - kr @orderline.Price</li>
         }
         </ul>
-        <a asp-page="../Orders/Details" asp-route-id="@order.OrderId" class="btn btn-secondary link-decoration-none">Vis ordre</a>
+        <p>
+            <a asp-page="../Orders/Details" asp-route-id="@order.OrderId" class="btn btn-secondary link-decoration-none">Vis ordre</a>
         </p>
         </div>
 

@@ -13,22 +13,23 @@ namespace losol.EventManagement.Pages.Admin.Events
 {
     public class OrdersModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
         private readonly IOrderService _orders;
+        private readonly IEventInfoService _eventInfos;
 
-        public OrdersModel(ApplicationDbContext context, IOrderService orders)
+        public OrdersModel(IOrderService orders, IEventInfoService eventInfos)
         {
-            _context = context;
+            _eventInfos = eventInfos;
             _orders = orders;
         }
 
         public List<Order> Orders { get; set; }
+        public EventInfo EventInfo { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
             // Get orders for
             Orders = await _orders.GetOrdersForEventAsync(id);
-
+            EventInfo = await _eventInfos.GetAsync(id);
             return Page();
         }
 
@@ -37,8 +38,8 @@ namespace losol.EventManagement.Pages.Admin.Events
 
             // Get orders for
             var result = await _orders.EnsureOrdersForAllRegistrations(id);
-            Orders = await _orders.GetOrdersForEventAsync(id);
-            return Page();
+
+            return RedirectToPage("Orders");
         }
     }
 }
