@@ -68,7 +68,7 @@ namespace losol.EventManagement.Domain
 			Verified = true;
 		}
 
-		public bool HasOrder => Order == null;
+		public bool HasOrder => Order != null;
 
 		public void CreateOrder(IEnumerable<Product> products, IEnumerable<ProductVariant> variants)
 		{
