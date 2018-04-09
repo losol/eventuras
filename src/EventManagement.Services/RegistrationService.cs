@@ -47,6 +47,14 @@ namespace losol.EventManagement.Services
 							.ToListAsync();
 		}
 
+		public async Task<List<Registration>> GetRegistrationsWithOrders(int eventId) =>
+             await _db.Registrations
+				.Where(r => r.EventInfoId == eventId && r.Verified)
+				.Include(r => r.Order)
+					.ThenInclude(o => o.OrderLines)
+				.Include(r => r.User)
+				.ToListAsync();
+
 		public async Task<int> CreateRegistration(Registration registration, int[] productIds, int[] variantIds)
 		{
 			// Check if registration exists
