@@ -244,10 +244,14 @@
     });
 
     function Attended(value, row, index, field) {
-            actions = [
-                '<button type="button" class="btn btn-success mr-1">Møtt</button>',
-          ].join('');
-            return actions;
+            let actions = [];
+            if(!row.attended) {
+                actions.push('<button type="button" onclick="markAsAttended(' + row.registrationId + ', \'' + row.name + '\')" class="btn btn-success mr-1">Møtt</button>');
+            }
+            else {
+                actions.push('<button type="button" class="btn btn-success" disabled>Attended</button>')
+            }
+            return actions.join('');
         }
     function RowActions(value, row, index, field) {
             actions = [
@@ -350,6 +354,16 @@
         .fail(function(){
             toastr.error('Generating/emailing certificates failed.')
         })
+    }
+
+    function markAsAttended(id, name) {
+        $.postJSON("/api/participants/mark_as_attended/" + id, null)
+            .done(function(){
+                toastr.success('Attendance marked for  ' + name + '.')
+            })
+            .fail(function(){
+                toastr.error('Couldnt set attendance for ' + name + '. ')
+            })
     }
 
 </script>
