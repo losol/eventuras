@@ -67,6 +67,10 @@ namespace losol.EventManagement.Domain
 		{
 			Verified = true;
 		}
+		public void RegisterAttendance() 
+		{
+			Attended = true;
+		}
 
 		public bool HasOrder => Order == null;
 
