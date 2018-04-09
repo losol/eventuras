@@ -124,7 +124,7 @@ namespace losol.EventManagement.Services
 			_ = user ?? throw new ArgumentException("Invalid userId", paramName: nameof(issuedByUsername));
 
 			var certs = await infoQueryable.SelectMany(i => i.Registrations)
-								.Where(r => r.Verified && r.Attended && r.Certificate == null)
+								.Where(r => r.Attended && r.Certificate == null)
 								.Select(r => new Certificate {
 									CertificateId = r.RegistrationId,
 									RecipientName = r.ParticipantName,

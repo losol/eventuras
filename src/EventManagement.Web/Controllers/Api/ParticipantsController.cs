@@ -33,9 +33,9 @@ namespace losol.EventManagement.Web.Controllers.Api {
                 var bytes = await F.ReadAllBytesAsync (writer.GetPathForFile (filename));
                 return emailSender.SendAsync (new EmailMessage {
                     Email = c.RecipientUser.Email,
-                        Subject = $"Certificate for {c.Title}",
-                        Message = "Here's your certificate! Congratulations!", // TODO: Get this right
-                        Attachment = new Attachment { Filename = "certificate.pdf", Bytes = bytes }
+                        Subject = $"Kursbevis for {c.Title}",
+                        Message = "Her er kursbeviset! Gratulere!", // TODO: Get this right
+                        Attachment = new Attachment { Filename = "kursbevis.pdf", Bytes = bytes }
                 });
             });
             await Task.WhenAll (emailTasks);
@@ -55,7 +55,7 @@ namespace losol.EventManagement.Web.Controllers.Api {
                 if (r.HasOrder) {
                     StringBuilder builder = new StringBuilder ();
                     builder.AppendLine ("<br>");
-                    builder.AppendLine ("<h4>Your Order</h4>");
+                    builder.AppendLine ("<h4>Ordre</h4>");
                     r.Order.OrderLines?.ForEach ((line) => builder.AppendLine ($"<br>{line.ProductName}"));
 
                     message.Message += builder.ToString ();
