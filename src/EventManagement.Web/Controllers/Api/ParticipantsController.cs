@@ -17,13 +17,18 @@ namespace losol.EventManagement.Web.Controllers.Api
     [Route("api/participants")]
     public class ParticipantsController : Controller
     {
+        private readonly IRegistrationService _registrationService;
+        public ParticipantsController(IRegistrationService registrationService)
+        {
+            _registrationService = registrationService;
+        }
+
         [HttpPost("email_certificates/for_event/{eventId}")]
         public async Task<IActionResult> GenerateCertificatesAndSendEmails([FromRoute]int eventId,
-            [FromServices] IRegistrationService registrationService,
             [FromServices] CertificateWriter writer, 
             [FromServices] StandardEmailSender emailSender)
         {
-            var certificates = await registrationService.CreateNewCertificates(eventId, User.Identity.Name);
+            var certificates = await _registrationService.CreateNewCertificates(eventId, User.Identity.Name);
             var emailTasks = certificates.Select(async c => {
                 string filename = $"{DateTime.Now.ToString("u")}.pdf";
                 var result = await writer.Write(filename, CertificateVM.From(c));
@@ -37,6 +42,20 @@ namespace losol.EventManagement.Web.Controllers.Api
             });
             await Task.WhenAll(emailTasks);
             return Ok(certificates.Select(c => new { c.CertificateId }));
+        }
+
+        [HttpPost("mark_as_attended/{id}")]
+        public async Task<IActionResult> MarkAsAttended([FromRoute] int id)
+        {
+            await _registrationService.SetRegistrationAsAttended(id);
+            return Ok();
+        }
+
+        [HttpPost("mark_as_notattended/{id}")]
+        public async Task<IActionResult> MarkAsNotAttended([FromRoute] int id)
+        {
+            await _registrationService.SetRegistrationAsNotAttended(id);
+            return Ok();
         }
 
     }
