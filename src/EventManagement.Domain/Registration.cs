@@ -72,6 +72,11 @@ namespace losol.EventManagement.Domain
 			Attended = true;
 		}
 
+		public void RemoveAttendance() 
+		{
+			Attended = false;
+		}
+
 		public bool HasOrder => Order == null;
 
 		public void CreateOrder(IEnumerable<Product> products, IEnumerable<ProductVariant> variants)

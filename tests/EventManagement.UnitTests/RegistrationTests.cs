@@ -224,5 +224,32 @@ namespace losol.EventManagement.UnitTests
 				Assert.Equal(expected, actual);
 			}
 		}
+
+		public class RemoveAttendance_Should
+		{
+			[Fact]
+			public void SucceedWhenNotAttended()
+			{
+				Registration registration = new Registration();
+				var expected = false;
+
+				registration.RemoveAttendance();
+				var actual = registration.Attended;
+
+				Assert.Equal(expected, actual);
+			}
+
+			[Fact]
+			public void SucceedWhenAlreadyAttended()
+			{
+				Registration registration = new Registration { Attended = true };
+				var expected = false;
+
+				registration.RemoveAttendance();
+				var actual = registration.Attended;
+
+				Assert.Equal(expected, actual);
+			}
+		}
 	}
 }
