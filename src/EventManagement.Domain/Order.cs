@@ -16,20 +16,19 @@ namespace losol.EventManagement.Domain
 			Refunded
 		}
 
-		/**
-
-Draft -> Cancelled
-Draft -> Verified -> Cancelled
-Draft -> Verified -> Invoiced -> Paid
-Draft -> Verified -> Invoiced -> Refunded
-
-		 */
 
 		[Required]
 		public int OrderId { get; set; }
 		public string UserId { get; set; }
 		public int RegistrationId { get; set; }
 
+		/**
+			Allowed transitions:
+			Draft -> Cancelled
+			Draft -> Verified -> Cancelled
+			Draft -> Verified -> Invoiced -> Paid
+			Draft -> Verified -> Invoiced -> Refunded
+		 */
 		public OrderStatus Status { get; set; } = OrderStatus.Draft;
 
 		// From registration, should be Participant details, if Customer details
