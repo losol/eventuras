@@ -11,9 +11,19 @@ namespace losol.EventManagement.Domain
 			Draft,
 			Verified,
 			Invoiced,
+			Cancelled,
 			Paid,
 			Refunded
 		}
+
+		/**
+
+Draft -> Cancelled
+Draft -> Verified -> Cancelled
+Draft -> Verified -> Invoiced -> Paid
+Draft -> Verified -> Invoiced -> Refunded
+
+		 */
 
 		[Required]
 		public int OrderId { get; set; }
@@ -57,6 +67,32 @@ namespace losol.EventManagement.Domain
 
 		public bool CanEdit => 
 			Status == OrderStatus.Draft || Status == OrderStatus.Verified;
+
+
+		public void MarkAsVerified()
+		{
+			Status = OrderStatus.Verified;
+		}
+
+		public void MarkAsCancelled()
+		{
+			Status = OrderStatus.Cancelled;
+		}
+
+		public void MarkAsInvoiced()
+		{
+			Status = OrderStatus.Invoiced;
+		}
+
+		public void MarkAsPaid()
+		{
+			Status = OrderStatus.Paid;
+		}
+
+		public void MarkAsRefunded()
+		{
+			Status = OrderStatus.Refunded;
+		}
 
 	}
 }
