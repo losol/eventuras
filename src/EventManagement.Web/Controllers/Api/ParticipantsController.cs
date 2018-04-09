@@ -51,5 +51,12 @@ namespace losol.EventManagement.Web.Controllers.Api
             return Ok();
         }
 
+        [HttpPost("mark_as_notattended/{id}")]
+        public async Task<IActionResult> MarkAsNotAttended([FromRoute] int id)
+        {
+            await _registrationService.SetRegistrationAsNotAttended(id);
+            return Ok();
+        }
+
     }
 }

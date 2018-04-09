@@ -25,5 +25,6 @@ namespace losol.EventManagement.Services
 		
 		Task<int> SetRegistrationAsVerified(int id);
 		Task<int> SetRegistrationAsAttended(int id);
+		Task<int> SetRegistrationAsNotAttended(int id);
 	}
 }
