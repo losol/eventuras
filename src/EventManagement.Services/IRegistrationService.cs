@@ -24,5 +24,6 @@ namespace losol.EventManagement.Services
 		Task<int> CreateRegistration(Registration registration, int[] productIds, int[] variantIds);
 		
 		Task<int> SetRegistrationAsVerified(int id);
+		Task<int> SetRegistrationAsAttended(int id);
 	}
 }

@@ -88,6 +88,13 @@ namespace losol.EventManagement.Services
 			return await _db.SaveChangesAsync();
 		}
 
+		public async Task<int> SetRegistrationAsAttended(int id)
+		{
+			var registration = await GetAsync(id);
+			registration.RegisterAttendance();
+			return await _db.SaveChangesAsync();
+		}
+
         public async Task<List<Certificate>> CreateNewCertificates(int eventId, string issuedByUsername)
         {
 			_ = issuedByUsername ?? throw new ArgumentNullException(paramName:nameof(issuedByUsername));
