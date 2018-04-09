@@ -99,6 +99,13 @@
                                 <textarea class="form-control" id="email-text" rows="8"></textarea>
                             </div>
 
+                            <div class="form-group" id="group-order-checkbox">
+                                <input type="checkbox" value="" id="include-orders">
+                                <label for="include-orders">
+                                    Check this to include order list in the email.
+                                </label>
+                            </div>
+
                             <div class="modal-footer">
                                 <button type="submit" onclick="sendEmail()" class="btn btn-primary">Send</button>
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Lukk</button>   
@@ -277,6 +284,9 @@
             }];
             $('#email-modal-title').text('Send epost til ' + row.name);
             $('#email-modal').modal('show');
+            $('#include-orders').prop('checked', false);
+            $('#group-order-checkbox').hide();
+            
         },
         'click .btn-send-sms': function(e, value, row, index) {
             recipients = [row.phone];
@@ -291,6 +301,7 @@
             return { name: x.name, email: x.email } 
         });
         $('#email-modal-title').text('Send epost til alle deltakere');
+        $('#group-order-checkbox').show();
         $('#email-modal').modal('show');
     }
 
@@ -302,18 +313,30 @@
             subject: subject,
             message: text
         };
-        $.postJSON('/api/v0/messaging/email', email)
-            .done(function(){
-                if(recipients.length == 1){
-                    toastr.success('Email sent to ' + recipients[0].name + '.');
-                } 
-                else {
-                    toastr.success('Email sent to ' + recipients.length + ' participants.');
-                }
-            })
-            .fail(function(){
-                toastr.error('Could not send the Email.');;
-            });
+        if(!$('#include-orders').is(":checked")) {
+            $.postJSON('/api/v0/messaging/email', email)
+                .done(function(){
+                    if(recipients.length == 1){
+                        toastr.success('Email sent to ' + recipients[0].name + '.');
+                    } 
+                    else {
+                        toastr.success('Email sent to ' + recipients.length + ' participants.');
+                    }
+                })
+                .fail(function(){
+                    toastr.error('Could not send the Email.');
+                });    
+        }
+        else {
+            $.postJSON('/api/participants/order_emails/@Model.EventInfo.EventInfoId', email)
+                .done(function(){
+                    toastr.success('Email sent.')
+                })
+                .fail(function(){
+                    toastr.error('Could not send the Email.');
+                });
+        }
+        $('#group-order-checkbox').hide();
         $('#email-modal').modal('hide');
     }
 

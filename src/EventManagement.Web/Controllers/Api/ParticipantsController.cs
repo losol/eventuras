@@ -10,6 +10,7 @@ using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
 using losol.EventManagement.Web.ViewModels.Templates;
 using Microsoft.AspNetCore.Authorization;
+using System.Text;
 
 namespace losol.EventManagement.Web.Controllers.Api
 {
@@ -39,5 +40,42 @@ namespace losol.EventManagement.Web.Controllers.Api
             return Ok(certificates.Select(c => new { c.CertificateId }));
         }
 
+        [HttpPost("order_emails/{eventId}")]
+        public async Task<IActionResult> OrderEmails([FromRoute]int eventId, 
+        [FromServices] StandardEmailSender emailSender, 
+        [FromServices]IRegistrationService registrationService,
+        [FromBody]EmailVm vm)
+        {
+            var registrations = await registrationService.GetRegistrationsWithOrders(eventId);
+            var emailTasks = registrations.Select(r => {
+                    var message = new EmailMessage
+                    {
+                        Name = r.ParticipantName,
+                        Email = r.User.Email,
+                        Subject = vm.Subject,
+                        Message = vm.Message
+                    };
+                    if(r.HasOrder)
+                    {
+                        StringBuilder builder = new StringBuilder();
+                        builder.AppendLine("<br>");
+                        builder.AppendLine("<h4>Your Order</h4>");
+                        r.Order.OrderLines?.ForEach((line) => builder.AppendLine($"<br>{line.ProductName}"));
+
+                        message.Message += builder.ToString();
+                    }
+                    return emailSender.SendAsync(message);
+                }
+            );
+            await Task.WhenAll(emailTasks);
+			return Ok();
+        }
+
+    }
+
+    public class EmailVm 
+    {
+        public string Subject { get; set; }
+        public string Message { get; set; }
     }
 }
