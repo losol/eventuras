@@ -5,7 +5,7 @@ The JSON structure defines the configuration for the application.
 ```json
 {
   "AppSettings": {
-    "EmailProvider": "SendGrid|File|Mock",
+    "EmailProvider": "SendGrid|SMTP|File|Mock",
     "SmsProvider": "Twilio|Mock"
   },
   "Logging": {
@@ -22,6 +22,13 @@ The JSON structure defines the configuration for the application.
     "Name": "Jane Doe",
     "User": "asdf1234",
     "Key": "asdf1234"
+  },
+  "Smtp": {
+    "Host": "smtp.sendgrid.net",
+    "Port": 587,
+    "From": "hello@its.me",
+    "Username": "janedoe",
+    "Password": "XUzTNrZm"
   },
   "SuperAdmin": {
     "Email": "admin@email.com",
