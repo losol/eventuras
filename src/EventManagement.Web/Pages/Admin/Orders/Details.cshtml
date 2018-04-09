@@ -8,54 +8,72 @@
     var variants = products.SelectMany(p => p.ProductVariants)
                            .Select(x => new { id = x.ProductVariantId, pid = x.ProductId, name = x.Name });
 }
-<div class="container">
+<div class="container"> 
 	<div class="row">
         <div class="col">
             <h2>
-                Order #@order.OrderId 
-                <small><order-status value="@order.Status" /></small>
-            </h2><small><a href="#" data-toggle="modal" 
-                        data-target="#edit-order-modal">Edit</a></small>
-
-            <h4>Participant</h4>
-            <dl class="row">
-                <dt class="col-6 col-md-3 col-lg-2 text-right">Participant Name</dt>
-                <dd class="col-6 col-md-9 col-lg-10">@(order.User?.Name ?? "NIL")</dd>
-                <dt class="col-6 col-md-3 col-lg-2 text-right">Participant Email</dt>
-                <dd class="col-6 col-md-9 col-lg-10">@(order.User?.Email ?? "NIL")</dd>
-                <dt class="col-6 col-md-3 col-lg-2 text-right">Participant Phone</dt>
-                <dd class="col-6 col-md-9 col-lg-10">@(order.User?.PhoneNumber ?? "NIL")</dd>
-            </dl>
-
-            <h4>Customer</h4>
-            <dl class="row">
-                <dt class="col-6 col-md-3 col-lg-2 text-right">Customer Name</dt>
-                <dd class="col-6 col-md-9 col-lg-10">@order.CustomerName</dd>
-                <dt class="col-6 col-md-3 col-lg-2 text-right">Customer Email</dt>
-                <dd class="col-6 col-md-9 col-lg-10">@order.CustomerEmail</dd>
-                <dt class="col-6 col-md-3 col-lg-2 text-right">Customer Invoice Reference</dt>
-                <dd class="col-6 col-md-9 col-lg-10">@order.CustomerInvoiceReference</dd>
-            </dl>
+                Ordre #@order.OrderId 
+                <order-status value="@order.Status" />
+            </h2>
+        <div class="row justify-content-between">
+            <div class="card col-md-5 m-2">
+                <div class="card-body">
+                <h4 class="card-title">Deltaker</h4>
+                <hr />
+                <dl class="">
+                    <dt>Navn</dt>
+                    <dd>@(order.User?.Name ?? "-")</dd>
+                    <dt>Epost</dt>
+                    <dd>@(order.User?.Email ?? "-")</dd>
+                    <dt>Telefon</dt>
+                    <dd>@(order.User?.PhoneNumber ?? "-")</dd>
+                </dl>
+                </div>
+            </div>
             
-            <h4>
-                Order Lines 
+            <div class="card col-md-5 m-2">
+                <div class="card-body">
+                    <h4 class="card-title">Betalingsinformasjon</h4>
+                    <hr />
+                    <dl class=""> 
+                        <dt class="">Kundenavn</dt>
+                        <dd class="">@order.CustomerName &nbsp;</dd>
+                        <dt class="">Epost for faktura</dt>
+                        <dd class="">@order.CustomerEmail &nbsp;</dd>
+                        <dt class="">Organisasjonsnummer</dt>
+                        <dd class="">@order.CustomerVatNumber &nbsp;</dd>
+                        <dt class="">Fakturareferanse</dt>
+                        <dd class="">@order.CustomerInvoiceReference &nbsp;</dd>
+                        <dt class="">Betalingsmetode</dt>
+                        <dd class=""> @order.PaymentMethod.Name</dd>
+               
+                    </dl>
+
+            <a href="#" data-toggle="modal" 
+                data-target="#edit-order-modal">Endre detaljer</a>
+                </div>
+            </div>
+        </div>
+            
+            <h2>
+                Ordrelinjer 
                 @if(order.CanEdit)
                 {
-                    <button class="btn btn-default" 
+                    <button class="ml-3 btn btn-success" 
                         data-toggle="modal" 
-                        data-target="#add-orderline-modal">Add Line</button>
+                        data-target="#add-orderline-modal">Ny ordrelinje</button>
                 }
-            </h4>
+            </h2>
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Line#</th>
-                        <th>Product ID</th>
-                        <th>Product Name</th>
+                        <th>Linje#</th>
+                        <th>Produkt ID</th>
+                        <th>Produktnav</th>
                         <th>Variant ID</th>
-                        <th>Variant Name</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
+                        <th>Variant navn</th>
+                        <th>Antall</th>
+                        <th>Pris</th>
                         @if(order.CanEdit)
                         {
                             <th></th>
@@ -99,7 +117,13 @@
                 </tbody>
             </table>
 
-            <h4>Order Information</h4>
+            <strong>Kommentarer</strong><br />
+            <pre>@order.Comments</pre>
+
+            <strong>Logg</strong><br />
+            <pre>@order.Log</pre>
+
+            <h4>Ordreinformasjon</h4>
             <dl class="row">
                 <dt class="col-6 col-md-3 col-lg-2 text-right">Order ID</dt>
                 <dd class="col-6 col-md-9 col-lg-10">@order.OrderId</dd>
@@ -112,12 +136,6 @@
                 <dt class="col-6 col-md-3 col-lg-2 text-right">Order Time</dt>
                 <dd class="col-6 col-md-9 col-lg-10">@order.OrderTime</dd>
             </dl>
-
-            <strong>Comments</strong><br />
-            <pre>@order.Comments</pre>
-
-            <strong>Log</strong><br />
-            <pre>@order.Log</pre>
         </div>
     </div>
 </div>

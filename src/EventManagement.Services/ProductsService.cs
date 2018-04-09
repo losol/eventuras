@@ -44,10 +44,10 @@ namespace losol.EventManagement.Services
 					  .ToListAsync();
 		}
 
-		public Task<List<Registration>> GetVerifiedRegistrationsAsync(int productId)
+		public Task<List<Registration>> GetRegistrationsAsync(int productId)
 		{
 			return _db.Registrations
-				.Where(r => r.Verified && r.Order.OrderLines.Any(l => l.ProductId == productId))
+				.Where(r => r.Order.OrderLines.Any(l => l.ProductId == productId))
 				.Include(r => r.User)
 				.Include(r => r.Order)
 					.ThenInclude(o => o.OrderLines)

@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="MailKit" Version="2.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="2.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" PrivateAssets="All" />
     <PackageReference Include="Sendgrid" Version="9.9.0" />
@@ -32,6 +33,7 @@
   
   <ItemGroup>
     <Folder Include="Pages\Admin\Products\" />
+    <Folder Include="Views\Shared\Templates\Certificates\" />
   </ItemGroup>
 
   <Target Name="BuildWebAssets" BeforeTargets="Build">

@@ -60,6 +60,7 @@ namespace losol.EventManagement.Domain
 		public ApplicationUser User { get; set; }
 		public PaymentMethod PaymentMethod { get; set; }
 		public Order Order { get; set; }
+		public Certificate Certificate { get; set; }
 
 
 		public void Verify()
@@ -135,6 +136,8 @@ namespace losol.EventManagement.Domain
 			this.Order = order;
 		}
 		public void CreateOrder(IEnumerable<Product> products) => CreateOrder(products, null);
+
+		public void CreateOrder() => CreateOrder(null, null);
 
 		public void CreateRefund()
 		{

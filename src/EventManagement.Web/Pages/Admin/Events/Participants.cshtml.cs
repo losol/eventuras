@@ -31,6 +31,7 @@ namespace losol.EventManagement.Pages.Admin.Events
         public bool Attended {get;set;}
         public string JobTitle {get;set;}
         public string City {get;set;}
+        public bool HasCertificate { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -69,7 +70,8 @@ namespace losol.EventManagement.Pages.Admin.Events
                     Attended = x.Attended,
                     JobTitle = x.ParticipantJobTitle,
                     Employer = x.ParticipantEmployer,
-                    City = x.ParticipantCity
+                    City = x.ParticipantCity,
+                    HasCertificate = x.Certificate != null
                     })
                 .ToListAsync();
 

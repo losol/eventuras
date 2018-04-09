@@ -40,7 +40,7 @@ namespace losol.EventManagement.Pages.Admin.Users
 
         }
 
-        public IActionResult OnGet(string code = null)
+        public IActionResult OnGet()
         {
 			return Page();
         }

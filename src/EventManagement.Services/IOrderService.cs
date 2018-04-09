@@ -7,15 +7,22 @@ namespace losol.EventManagement.Services
 {
 	public interface IOrderService
 	{
+		// Orders
 		Task<List<Order>> GetAsync();
-		Task<List<Order>> GetAsync(int count, int offset);
 		Task<List<Order>> GetAsync(int count);
+		Task<List<Order>> GetAsync(int count, int offset);
+		
 		Task<Order> GetByIdAsync(int orderId);
+		Task<List<Order>> GetOrdersForEventAsync(int orderId);
+		Task<bool> EnsureOrdersForAllRegistrations(int eventInfoId);
 
+		// Order details
+		Task<bool> UpdateOrderDetailsAsync(int id, string customername, string customerEmail, string invoiceReference, string comments);
+
+		// Order lines
 		Task<OrderLine> GetOrderLineAsync(int lineId);
 		Task<bool> DeleteOrderLineAsync(int lineId);
 		Task<bool> AddOrderLineAsync(int orderId, int productId, int? variantId);
 		Task<bool> UpdateOrderLine(int lineId, int quantity, decimal price);
-		Task<bool> UpdateOrderDetailsAsync(int id, string customername, string customerEmail, string invoiceReference, string comments);
 	}
 }

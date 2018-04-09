@@ -19,15 +19,11 @@ namespace losol.EventManagement.Services.Messaging
         }
 
         public SendGridOptions Options { get; }
+    
 
-        public Task SendEmailAsync(string email, string subject, string message)
+        public Task SendEmailAsync(string email, string subject, string message, Attachment attachment)
         {
-            return Execute(Options.Key, subject, message, email);
-        }
-
-        public Task Execute(string apiKey, string subject, string message, string email)
-        {
-            var client = new SendGridClient(apiKey);
+            var client = new SendGridClient(Options.Key);
             var msg = new SendGridMessage()
             {
 				From = new EmailAddress(email: Options.EmailAddress, name: Options.Name),
@@ -36,7 +32,14 @@ namespace losol.EventManagement.Services.Messaging
                 HtmlContent = message
             };
             msg.AddTo(new EmailAddress(email));
+            if(attachment != null) 
+            {
+                msg.AddAttachment(attachment.Filename, Convert.ToBase64String(attachment.Bytes));
+            }
             return client.SendEmailAsync(msg);
         }
+
+        public Task SendEmailAsync(string email, string subject, string message) =>
+            SendEmailAsync(email, subject, message, null);
     }
 }

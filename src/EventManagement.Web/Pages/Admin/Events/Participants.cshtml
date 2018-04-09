@@ -6,48 +6,67 @@
 }
 
 <div class="jumbotron jumbotron-fluid">
-  <div class="container">
-    <h1 class="display-4">@Model.EventInfo.Title</h1>
-    <p class="lead pb-5">@Model.EventInfo.Description</p>
-     @{ // Dates
-        if(Model.EventInfo.DateStart != null) 
-        {
-            <div class="col-md-3">
-            <i class="material-icons  align-top">date_range</i> @Model.EventInfo.DateStart.Value.ToString("d")
-                
-                    @if(Model.EventInfo.DateEnd != null) {
-                    <text>- @Model.EventInfo.DateEnd.Value.ToString("d")</text>
-                    }
-            </div>
-        }
-    
-     }
-    @{ // City
-        if(Model.EventInfo.City != null) 
-        {
-            <div class="col-md-3">
-                <i class="material-icons align-top">location_on</i> @Model.EventInfo.City
-            </div>
-        }
-    }
-
-     @{ // Location
-            if(Model.EventInfo.Location != null) 
-            {
-                <div class="col-md-3">
-                    <i class="material-icons align-top">hotel</i> @Model.EventInfo.Location
-                </div>
-            }
-            @* Price *@
-            <div class="col-md-3">
-                @if (Model.EventInfo.Price.HasValue) {
-                <i class="material-icons align-top">credit_card</i> @Model.EventInfo.Price.Value.ToString("0 kr")
+    <div class="container">
+        <div>
+            <h1 class="display-4">@Model.EventInfo.Title</h1>
+            <p class="lead pb-5">@Model.EventInfo.Description</p>
+            @{ // Dates
+                if(Model.EventInfo.DateStart != null) 
+                {
+                    <div class="col-md-3">
+                    <i class="material-icons  align-top">date_range</i> @Model.EventInfo.DateStart.Value.ToString("d")
+                        
+                            @if(Model.EventInfo.DateEnd != null) {
+                            <text>- @Model.EventInfo.DateEnd.Value.ToString("d")</text>
+                            }
+                    </div>
                 }
-            </div>
-     }
-        <div id="communicate" class="py-3">
+            
+            }
+            @{ // City
+                if(Model.EventInfo.City != null) 
+                {
+                    <div class="col-md-3">
+                        <i class="material-icons align-top">location_on</i> @Model.EventInfo.City
+                    </div>
+                }
+            }
 
-                <!-- COMMUNICATE MENU -->
+            @{ // Location
+                    if(Model.EventInfo.Location != null) 
+                    {
+                        <div class="col-md-3">
+                            <i class="material-icons align-top">hotel</i> @Model.EventInfo.Location
+                        </div>
+                    }
+                    @* Price *@
+                    <div class="col-md-3">
+                        @if (Model.EventInfo.Price.HasValue) {
+                        <i class="material-icons align-top">credit_card</i> @Model.EventInfo.Price.Value.ToString("0 kr")
+                        }
+                    </div>
+            }
+        </div>
+
+        <div class="row">
+            <div class="col">
+            @if(@Model.EventInfo.Products.Any())
+            {
+                <br />
+                <strong>Produkter: </strong>
+                @foreach(var p in @Model.EventInfo.Products)
+                {
+                    @: <a href="/Admin/Products/@p.ProductId">@p.Name</a>  &nbsp;
+                }
+            }
+            
+        </div>
+
+        
+    </div>
+        <div id="event-menu" class="py-3">
+  
+                 <!-- COMMUNICATE MENU -->
                 <div class="btn-group">
                 <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Send info til alle
@@ -121,31 +140,9 @@
                     &Oslash;konomi
                 </button>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item link-decoration-none" href="#" data-toggle="modal" data-target="#economyModal" role="button">Fakturerer kurset</a>
+                    <a asp-page="./Orders" asp-route-id="@Model.EventInfo.EventInfoId" class="dropdown-item link-decoration-none">Vis alle ordre</a>
                 </div>
                 </div>
-
-                <!-- ECONOMY Modal -->
-                <div class="modal fade" id="economyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Send faktura til deltakerne</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        Koden ikke ferdig. Fakturer kurs?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Lukk</button>
-                        <button type="button" class="btn btn-primary">Send</button>
-                    </div>
-                    </div>
-                </div>
-                </div>
-
 
                  <!-- CERTIFICATES MENU -->
                 <div class="btn-group">
@@ -153,29 +150,8 @@
                     Kursbevis
                 </button>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item link-decoration-none" href="#" data-toggle="modal" data-target="#previewCertificatesModal" role="button">Forh&aring;ndsvis kursbevis</a>
+                    <a class="dropdown-item link-decoration-none" href="/certificate/for_event/@Model.EventInfo.EventInfoId" target="_blank" role="button">Forh&aring;ndsvis kursbevis</a>
                     <a class="dropdown-item link-decoration-none" href="#" data-toggle="modal" data-target="#sendCertificatesModal" role="button">Send ut kursbevis</a>
-                </div>
-                </div>
-
-                <!-- CERTIFICATES Preview Modal -->
-                <div class="modal fade" id="previewCertificatesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Forhåndsvis kursbevis</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        Viser et sertifikat når ferdig.
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Lukk</button>
-                        <button type="button" class="btn btn-primary">Send</button>
-                    </div>
-                    </div>
                 </div>
                 </div>
 
@@ -194,7 +170,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Lukk</button>
-                        <button type="button" class="btn btn-primary">Send</button>
+                        <button type="button" onclick="sendCertificate()" class="btn btn-primary">Send</button>
                     </div>
                     </div>
                 </div>
@@ -205,10 +181,10 @@
     </div>
     </div>
 </div>
+ 
 <div class="container min-height-50">
 	<div class="row">
-		<div class="col-md-9">
-
+		<div class="col">
             <table  
                 id="table"
                 data-toggle="table" 
@@ -231,7 +207,7 @@
                 <thead>
                     <tr>
                         <th data-field="name" data-sortable="true">Navn</th>
-                        <th data-field="email" data-sortable="true">Epost</th>
+                        <th data-field="email" data-sortable="true" data-visible="false">Epost</th>
                         <th data-field="phone">Telefon</th>
                         <th data-field="jobtitle">Stilling</th>
                         <th data-field="employer" data-visible="false">Arbeidsplass</th>
@@ -240,30 +216,9 @@
                         <th data-formatter="RowActions" data-events="operateEvents">Meny</th>
                     </tr>
                 </thead>
-            </table>
-
-
-
-            
+            </table> 
 		</div>
-        <div class="col-md-3">
-
-        </div>
 	</div>
-    <div class="row">
-        <div class="col">
-            @if(@Model.EventInfo.Products.Any())
-            {
-                <br />
-                <strong>Products: </strong>
-                @foreach(var p in @Model.EventInfo.Products)
-                {
-                    @: <a href="/Admin/Products/@p.ProductId">@p.Name</a>  &nbsp;
-                }
-            }
-            
-        </div>
-    </div>
 </div>
 
 @section scripts { 
@@ -297,9 +252,13 @@
     function RowActions(value, row, index, field) {
             actions = [
                 '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-sms mr-1">SMS</button>', 
-                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-email mr-1">Epost</button>', 
-            ].join('');
-            return actions;
+                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-email mr-1">Epost</button>'
+            ];
+            if(row.hasCertificate)
+            {
+                actions.push('<a class="btn btn-secondary" href="/certificate/' + row.registrationId + '/download" target="_blank">Certificate</a>')
+            }
+            return actions.join('');
         }
 
     window.icons = {
@@ -379,6 +338,18 @@
                 toastr.error('Could not send the SMS.');
             });
         $('#sms-modal').modal('hide');
+    }
+
+    function sendCertificate() {
+        toastr.info("Please wait. This may take some time.");
+        $.postJSON('/api/participants/email_certificates/for_event/@Model.EventInfo.EventInfoId', null)
+        .done(function(data){
+            $('#sendCertificatesModal').modal('hide');
+            toastr.success('Sent certificates to ' + data.length + ' participants.')
+        })
+        .fail(function(){
+            toastr.error('Generating/emailing certificates failed.')
+        })
     }
 
 </script>

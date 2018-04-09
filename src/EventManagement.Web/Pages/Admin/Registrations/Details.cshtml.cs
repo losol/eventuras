@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 
-namespace losol.EventManagement.Pages.Admin.Temp.Registrations
+namespace losol.EventManagement.Pages.Admin.Registrations
 {
     public class DetailsModel : PageModel
     {

@@ -1,0 +1,135 @@
+@using losol.EventManagement.Web.ViewModels.Templates
+@model CertificateVM
+@{
+    Layout = null;
+}
+<html>
+  <head>
+    <meta charset="utf8">
+    <title>Certificate</title>
+    <link 
+      href="https://fonts.googleapis.com/css?family=Material+Icons|Reenie+Beanie|Carrois+Gothic+SC|Libre+Baskerville" 
+      rel="stylesheet" />
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Carrois Gothic SC';
+        font-weight: 500;
+        font-size: 16px;
+        background: rgb(241,241,241);
+        -webkit-print-color-adjust: exact;
+        box-sizing: border-box;
+      }
+      .page {
+        position: relative;
+        height: 297mm;
+        width: 210mm;
+        text-align: center;
+        display: block;
+        background: #eee;
+        color: black;
+        page-break-after: auto;
+        margin: 50px;
+        overflow: hidden;
+      }
+      @@media print {
+        body {
+          background: #eee;
+        }
+        .page {
+          margin: 0;
+          height: 100%;
+          width: 100%;
+        }
+      }
+      .page.first {
+        border-left: 5px solid green;
+      }
+      .bottom {
+        position: absolute;
+        left: 5mm;
+        right: 5mm;
+        bottom: 5mm;
+      }
+      .group {
+        padding: 3mm 25mm;
+        margin: 5mm;
+      }
+      .line {
+        position: relative;
+      }
+      .center {
+        text-align: center;
+      }
+      .logo {
+        position: relative;
+        width: 80%;
+        top: 15%;
+        max-width: 280px;
+      }
+      .handwriting {
+        font-size: 48px;
+        font-family: 'Reenie Beanie';
+        padding-bottom:0;
+        text-decoration: underline;
+      }
+
+      .featured {
+        padding: 25mm 0 10mm 0;
+        background-color: #336699;
+        color: white;
+      }
+
+      .title {
+        font-size: 32px
+      }
+
+      .subtitle {
+        font-size: 28px
+      }
+
+      .text {
+        font-family: 'Libre Baskerville', serif;
+        font-size: 14px
+      }
+
+      .light {
+        color: #555
+      }
+
+    </style>
+  </head>
+  <body>
+    <div class="page">
+
+        <div class="featured">
+          <div class="line title">Kursbevis</div>
+          <div class="line subtitle">@Model.Title</div>          
+        </div>
+
+        <div class="group">
+          <div class="line">@Model.RecipientName</div>
+        </div>
+
+        <div class="group">
+          <img class="logo" src="@Model.IssuerOrganizationLogoUrl" alt="@Model.IssuerOrganizationName">
+          <div class="line">Arrangert av @Model.IssuerOrganizationName</div>
+        </div>
+
+        <div class="group">
+          <div class="line"><strong>Godkjenninger</strong></div>
+          <div class="line text">@Model.Accreditation</div>
+        </div>
+
+        <div class="group">
+          <div class="line">@Model.City  @Model.Date</div>
+          <div class="line handwriting">@Model.IssuerPersonName</div>
+          <div class="line"><small>Kursansvarlig</small></div>
+        </div>
+        <div class="bottom">
+          <div class="line text light">Digitalt signert med kode <code>@Model.CertificateGuid</code></div>
+        </div>
+    </div>
+  </body>
+</html>

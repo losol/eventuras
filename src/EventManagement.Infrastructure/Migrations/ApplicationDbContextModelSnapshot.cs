@@ -18,7 +18,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
+                .HasAnnotation("ProductVersion", "2.0.2-rtm-10011")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("losol.EventManagement.Domain.ApplicationUser", b =>
@@ -72,6 +72,34 @@ namespace losol.EventManagement.Infrastructure.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("losol.EventManagement.Domain.Certificate", b =>
+                {
+                    b.Property<int>("CertificateId");
+
+                    b.Property<Guid>("AuthCode")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("CertificateGuid")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("RecipientName");
+
+                    b.Property<string>("RecipientUserId");
+
+                    b.Property<string>("Title")
+                        .IsRequired();
+
+                    b.HasKey("CertificateId");
+
+                    b.HasIndex("RecipientUserId");
+
+                    b.ToTable("Certificates");
                 });
 
             modelBuilder.Entity("losol.EventManagement.Domain.EventInfo", b =>
@@ -169,6 +197,8 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.HasIndex("RegistrationId")
                         .IsUnique();
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
@@ -448,6 +478,48 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("losol.EventManagement.Domain.Certificate", b =>
+                {
+                    b.HasOne("losol.EventManagement.Domain.Registration", "Registration")
+                        .WithOne("Certificate")
+                        .HasForeignKey("losol.EventManagement.Domain.Certificate", "CertificateId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("losol.EventManagement.Domain.ApplicationUser", "RecipientUser")
+                        .WithMany("Certificates")
+                        .HasForeignKey("RecipientUserId");
+
+                    b.OwnsOne("losol.EventManagement.Domain.Certificate+CertificateIssuer", "Issuer", b1 =>
+                        {
+                            b1.Property<int>("CertificateId");
+
+                            b1.Property<string>("IssuedByName");
+
+                            b1.Property<string>("IssuedByUserId");
+
+                            b1.Property<string>("IssuedInCity");
+
+                            b1.Property<int>("OrganizationId");
+
+                            b1.Property<string>("OrganizationLogoUrl");
+
+                            b1.Property<string>("OrganizationName");
+
+                            b1.HasIndex("IssuedByUserId");
+
+                            b1.ToTable("Certificates");
+
+                            b1.HasOne("losol.EventManagement.Domain.Certificate")
+                                .WithOne("Issuer")
+                                .HasForeignKey("losol.EventManagement.Domain.Certificate+CertificateIssuer", "CertificateId")
+                                .OnDelete(DeleteBehavior.Cascade);
+
+                            b1.HasOne("losol.EventManagement.Domain.ApplicationUser", "IssuedByUser")
+                                .WithMany()
+                                .HasForeignKey("IssuedByUserId");
+                        });
+                });
+
             modelBuilder.Entity("losol.EventManagement.Domain.Order", b =>
                 {
                     b.HasOne("losol.EventManagement.Domain.PaymentMethod", "PaymentMethod")
@@ -458,6 +530,10 @@ namespace losol.EventManagement.Infrastructure.Migrations
                         .WithOne("Order")
                         .HasForeignKey("losol.EventManagement.Domain.Order", "RegistrationId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("losol.EventManagement.Domain.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("losol.EventManagement.Domain.OrderLine", b =>
@@ -468,11 +544,11 @@ namespace losol.EventManagement.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("losol.EventManagement.Domain.Product", "Product")
-                        .WithMany()
+                        .WithMany("OrderLines")
                         .HasForeignKey("ProductId");
 
                     b.HasOne("losol.EventManagement.Domain.ProductVariant", "ProductVariant")
-                        .WithMany()
+                        .WithMany("OrderLines")
                         .HasForeignKey("ProductVariantId");
                 });
 

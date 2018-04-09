@@ -1,11 +1,11 @@
 @page
-@model losol.EventManagement.Pages.Admin.Temp.Registrations.EditModel
+@model losol.EventManagement.Pages.Admin.Registrations.CreateModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Create";
 }
 
-<h2>Edit</h2>
+<h2>Create</h2>
 
 <h4>Registration</h4>
 <hr />
@@ -13,28 +13,25 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Registration.RegistrationId" />
             <div class="form-group">
                 <label asp-for="Registration.EventInfoId" class="control-label"></label>
-                <select asp-for="Registration.EventInfoId" class="form-control" asp-items="ViewBag.EventInfoId"></select>
-                <span asp-validation-for="Registration.EventInfoId" class="text-danger"></span>
+                <select asp-for="Registration.EventInfoId" class ="form-control" asp-items="ViewBag.EventInfoId"></select>
             </div>
             <div class="form-group">
                 <label asp-for="Registration.UserId" class="control-label"></label>
-                <select asp-for="Registration.UserId" class="form-control" asp-items="ViewBag.UserId"></select>
-                <span asp-validation-for="Registration.UserId" class="text-danger"></span>
+                <select asp-for="Registration.UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
             </div>
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input asp-for="Registration.Attended" /> @Html.DisplayNameFor(model => model.Registration.Attended)
+                        <input asp-for="Registration.Attended" /> @Html.DisplayNameFor(model => model.Registration.Attended))
                     </label>
                 </div>
             </div>
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input asp-for="Registration.Diploma" /> @Html.DisplayNameFor(model => model.Registration.Diploma)
+                        <input asp-for="Registration.Diploma" /> @Html.DisplayNameFor(model => model.Registration.Diploma))
                     </label>
                 </div>
             </div>
@@ -101,19 +98,18 @@
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input asp-for="Registration.FreeRegistration" /> @Html.DisplayNameFor(model => model.Registration.FreeRegistration)
+                        <input asp-for="Registration.FreeRegistration" /> @Html.DisplayNameFor(model => model.Registration.FreeRegistration))
                     </label>
                 </div>
             </div>
             <div class="form-group">
                 <label asp-for="Registration.PaymentMethodId" class="control-label"></label>
-                <select asp-for="Registration.PaymentMethodId" class="form-control" asp-items="ViewBag.PaymentMethodId"></select>
-                <span asp-validation-for="Registration.PaymentMethodId" class="text-danger"></span>
+                <select asp-for="Registration.PaymentMethodId" class ="form-control" asp-items="ViewBag.PaymentMethodId"></select>
             </div>
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input asp-for="Registration.Verified" /> @Html.DisplayNameFor(model => model.Registration.Verified)
+                        <input asp-for="Registration.Verified" /> @Html.DisplayNameFor(model => model.Registration.Verified))
                     </label>
                 </div>
             </div>
@@ -123,14 +119,14 @@
                 <span asp-validation-for="Registration.VerificationCode" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-default" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-page="./Index">Back to List</a>
+    <a asp-page="Index">Back to List</a>
 </div>
 
 @section Scripts {

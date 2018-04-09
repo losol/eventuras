@@ -32,7 +32,6 @@ namespace losol.EventManagement.Pages.Admin.Users
         public async Task OnGetAsync()
         {
 			var users = await _userManager.Users.ToListAsync();
-            // Nothing special?
         }
     }
 }

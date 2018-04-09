@@ -36,7 +36,12 @@ namespace losol.EventManagement.Services.Messaging
 				await outputFile.WriteLineAsync(message);
 			}
 		}
-	}
+
+        public Task SendEmailAsync(string email, string subject, string message, Attachment attachment)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
 	// Code borrowed from: https://stackoverflow.com/a/2921135
 	internal static class StringExtensions

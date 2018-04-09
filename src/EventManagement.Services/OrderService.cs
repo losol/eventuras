@@ -31,13 +31,40 @@ namespace losol.EventManagement.Services
 
 		public Task<List<Order>> GetAsync(int count) => GetAsync(count, 0);
 
+		public async Task<bool> EnsureOrdersForAllRegistrations(int eventInfoId) {
+			var attenders = await _db.Registrations
+				.Where(r => r.EventInfoId == eventInfoId)
+				.ToListAsync();
+			
+			foreach (var attendant in attenders) {
+				if (!attendant.HasOrder) {
+					// Create an order
+					attendant.CreateOrder();
+				}
+			}
+
+			return true;
+		}
+
 		public Task<Order> GetByIdAsync(int orderId) =>
 			_db.Orders
 			   .Where(o => o.OrderId == orderId)
 			   .Include(o => o.OrderLines)
 			   .Include(o => o.User)
 		       .Include(o => o.Registration)
+			   .Include(o => o.PaymentMethod)
 			   .SingleOrDefaultAsync();
+
+		
+		public Task<List<Order>> GetOrdersForEventAsync(int eventId) =>
+			_db.Orders
+				.Include(o => o.OrderLines)
+				.Include(o => o.Registration)
+				.Where(o => o.Registration.EventInfoId == eventId)
+				.OrderBy(o => o.Registration.ParticipantName)
+				.AsNoTracking()
+				.ToListAsync(); 
+		
 
 		public Task<OrderLine> GetOrderLineAsync(int lineId) =>
 			_db.OrderLines

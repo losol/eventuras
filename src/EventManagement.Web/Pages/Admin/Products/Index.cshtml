@@ -3,7 +3,7 @@
 @{
     var id = Convert.ToInt32(RouteData.Values["id"]);
     var product = await productsService.GetAsync(id);
-    var registrations = await productsService.GetVerifiedRegistrationsAsync(id);
+    var registrations = await productsService.GetRegistrationsAsync(id);
 }
 
 <div class="container">
