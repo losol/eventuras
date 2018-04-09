@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
@@ -15,7 +16,10 @@ namespace losol.EventManagement.Services.Messaging
             this.options = options.Value;
         }
 
-        public Task SendEmailAsync(string email, string subject, string message)
+        public Task SendEmailAsync(string email, string subject, string message) =>
+            SendEmailAsync(email, subject, message, attachment: null);
+
+        public Task SendEmailAsync(string email, string subject, string message, Attachment attachment)
         {
             MailMessage mailMsg = new MailMessage();
 
@@ -26,6 +30,11 @@ namespace losol.EventManagement.Services.Messaging
             mailMsg.Body = message;
             string html = message;
             mailMsg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(html, null, MediaTypeNames.Text.Html));
+
+            if(attachment != null) 
+            {
+                mailMsg.Attachments.Add(new System.Net.Mail.Attachment(new MemoryStream(attachment.Bytes), attachment.Filename));
+            }
 
             SmtpClient smtpClient = new SmtpClient(options.Host, options.Port);
             System.Net.NetworkCredential credentials = new System.Net.NetworkCredential(options.Username, options.Password);
