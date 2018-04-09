@@ -212,7 +212,7 @@
                         <th data-field="jobtitle">Stilling</th>
                         <th data-field="employer" data-visible="false">Arbeidsplass</th>
                         <th data-field="city">Sted</th>
-                        <th data-formatter="Attended">M&oslash;tt</th>
+                        <th data-formatter="Attended" data-events="attendedEvents">M&oslash;tt</th>
                         <th data-formatter="RowActions" data-events="operateEvents">Meny</th>
                     </tr>
                 </thead>
@@ -246,10 +246,10 @@
     function Attended(value, row, index, field) {
             let actions = [];
             if(!row.attended) {
-                actions.push('<button type="button" onclick="markAsAttended(' + row.registrationId + ', \'' + row.name + '\')" class="btn btn-success mr-1">Møtt</button>');
+                actions.push('<button type="button" class="btn btn-success btn-attended mr-1">Møtt</button>');
             }
             else {
-                actions.push('<button type="button" class="btn btn-success" onclick="markAsNotAttended(' + row.registrationId + ', \'' + row.name + '\')">Attended</button>')
+                actions.push('<button type="button" class="btn btn-success btn-not-attended" >Attended</button>')
             }
             return actions.join('');
         }
@@ -286,6 +286,27 @@
             recipients = [row.phone];
             $('#sms-modal-title').text('Send SMS til ' + row.name);
             $('#sms-modal').modal('show');
+        }
+    };
+
+    window.attendedEvents = {
+        'click .btn-attended': function(e, value, row, index) {
+            $.postJSON("/api/participants/mark_as_attended/" + row.registrationId, null)
+            .done(function(){
+                toastr.success('Attendance marked for  ' + row.name + '.')
+            })
+            .fail(function(){
+                toastr.error('Couldnt set attendance for ' + row.name + '. ')
+            })
+        },
+        'click .btn-not-attended': function(e, value, row, index) {
+            $.postJSON("/api/participants/mark_as_notattended/" + row.registrationId, null)
+            .done(function(){
+                toastr.success('Attendance removed for  ' + row.name + '.')
+            })
+            .fail(function(){
+                toastr.error('Couldnt remove attendance for ' + row.name + '. ')
+            })
         }
     };
 
@@ -355,26 +376,6 @@
             toastr.error('Generating/emailing certificates failed.')
         })
     }
-
-    function markAsAttended(id, name) {
-        $.postJSON("/api/participants/mark_as_attended/" + id, null)
-            .done(function(){
-                toastr.success('Attendance marked for  ' + name + '.')
-            })
-            .fail(function(){
-                toastr.error('Couldnt set attendance for ' + name + '. ')
-            })
-    }
-    function markAsNotAttended(id, name) {
-        $.postJSON("/api/participants/mark_as_notattended/" + id, null)
-            .done(function(){
-                toastr.success('Attendance removed for  ' + name + '.')
-            })
-            .fail(function(){
-                toastr.error('Couldnt remove attendance for ' + name + '. ')
-            })
-    }
-
 </script>
     @await Html.PartialAsync("_CompBootstrapTable")
 }
