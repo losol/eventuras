@@ -249,7 +249,7 @@
                 actions.push('<button type="button" onclick="markAsAttended(' + row.registrationId + ', \'' + row.name + '\')" class="btn btn-success mr-1">Møtt</button>');
             }
             else {
-                actions.push('<button type="button" class="btn btn-success" disabled>Attended</button>')
+                actions.push('<button type="button" class="btn btn-success" onclick="markAsNotAttended(' + row.registrationId + ', \'' + row.name + '\')">Attended</button>')
             }
             return actions.join('');
         }
@@ -363,6 +363,15 @@
             })
             .fail(function(){
                 toastr.error('Couldnt set attendance for ' + name + '. ')
+            })
+    }
+    function markAsNotAttended(id, name) {
+        $.postJSON("/api/participants/mark_as_notattended/" + id, null)
+            .done(function(){
+                toastr.success('Attendance removed for  ' + name + '.')
+            })
+            .fail(function(){
+                toastr.error('Couldnt remove attendance for ' + name + '. ')
             })
     }
 
