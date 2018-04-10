@@ -8,9 +8,12 @@
     <div class="container">
         <h1>Ordre for arrangement</h1>
         <p> Totalt: @Model.Orders.Count()</p>
+        @if (Request.IsAuthenticated && User.IsInRole("SuperAdmin"))
+        {
         <form method="post">       
             <button type="submit" asp-page-handler="EnsureOrders" class="btn">Lag ordre for alle registrerte</button>
         </form>
+        }
     </div>
 </div>
 
