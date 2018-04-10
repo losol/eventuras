@@ -1,6 +1,7 @@
 @page "{id:int}"
 @inject IOrderService orderService
 @inject IProductsService productsService
+@using losol.EventManagement.Web.Pages.Admin.Orders
 @{
     var id = Convert.ToInt32(RouteData.Values["id"]);
     var order = await orderService.GetByIdAsync(id);
@@ -14,6 +15,20 @@
             <h2>
                 Ordre #@order.OrderId 
                 <order-status value="@order.Status" />
+                <div class="btn-group btn-group-sm" role="group">
+                    @if(order.GetNextStatus() != null)
+                    {
+                        <button type="button" class="btn btn-primary">@order.GetOrderStatusActionText()</button>
+
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            </button>
+                            <div class="dropdown-menu">
+                                <button class="dropdown-item text-danger">Cancel</button>
+                            </div>
+                        </div>
+                    }
+                </div>
             </h2>
         <div class="row justify-content-between">
             <div class="card col-md-5 m-2">
