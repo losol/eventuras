@@ -81,12 +81,11 @@ namespace losol.EventManagement.Domain
 
 		public void CreateOrder(IEnumerable<Product> products, IEnumerable<ProductVariant> variants)
 		{
-			_ = products ?? throw new ArgumentNullException(nameof(products));
+			// _ = products ?? throw new ArgumentNullException(nameof(products));
 			if(Order != null)
 			{
 				throw new InvalidOperationException("This registration already has an order.");
 			}
-
 
 			if(products.Where(p => p.EventInfoId != EventInfoId).Any())
 			{
@@ -106,27 +105,28 @@ namespace losol.EventManagement.Domain
 				}	
 			}
 
-			var orderLines = products.Select(p =>
-			{
-				var v = variants?.Where(var => var.ProductId == p.ProductId).SingleOrDefault();
-				return new OrderLine
+			if (products != null) {
+				var orderLines = products.Select(p =>
 				{
-					ProductId = p.ProductId,
-					ProductVariantId = v?.ProductVariantId,
-					Price = v?.Price ?? p.Price,
-					VatPercent = v?.VatPercent ?? p.VatPercent,
+					var v = variants?.Where(var => var.ProductId == p.ProductId).SingleOrDefault();
+					return new OrderLine
+					{
+						ProductId = p.ProductId,
+						ProductVariantId = v?.ProductVariantId,
+						Price = v?.Price ?? p.Price,
+						VatPercent = v?.VatPercent ?? p.VatPercent,
 
-					ProductName = p.Name,
-					ProductDescription = p.Description,
+						ProductName = p.Name,
+						ProductDescription = p.Description,
 
-					ProductVariantName = v?.Name,
-					ProductVariantDescription = v?.Description,
+						ProductVariantName = v?.Name,
+						ProductVariantDescription = v?.Description,
 
-					// Comments
-					// Quantity
-				};
-			}).ToList();
-
+						// Comments
+						// Quantity
+					};
+				}).ToList();
+			}
 			var order = new Order
 			{
 				UserId = UserId,
