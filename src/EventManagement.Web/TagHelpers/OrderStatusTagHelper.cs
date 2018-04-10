@@ -29,8 +29,8 @@ namespace losol.EventManagement.Web.TagHelpers
 				case OrderStatus.Verified:
 					badgeClass = new TagHelperAttribute("class", "badge badge-info");
 					break;
-				case OrderStatus.Paid:
-					badgeClass = new TagHelperAttribute("class", "badge badge-success");
+				case OrderStatus.Cancelled:
+					badgeClass = new TagHelperAttribute("class", "badge badge-warning");
 					break;
 				default:
 					badgeClass = new TagHelperAttribute("class", "badge badge-secondary");
