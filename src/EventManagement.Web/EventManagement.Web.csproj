@@ -36,6 +36,11 @@
     <Folder Include="Views\Shared\Templates\Certificates\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="Node\writeToPdf.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Target Name="BuildWebAssets" BeforeTargets="Build">
     <Exec Command="npm install" />
     <Exec Command="gulp" />
