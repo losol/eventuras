@@ -80,13 +80,8 @@ namespace losol.EventManagement.Domain
 		public bool HasOrder => Order != null;
 
 		public void CreateOrder(IEnumerable<Product> products, IEnumerable<ProductVariant> variants)
-		{
-			// _ = products ?? throw new ArgumentNullException(nameof(products));
-			if(Order != null)
-			{
-				throw new InvalidOperationException("This registration already has an order.");
-			}
-
+		{	
+			// Check if products belnongs to the event	
 			if(products.Where(p => p.EventInfoId != EventInfoId).Any())
 			{
 				throw new ArgumentException(
@@ -94,6 +89,9 @@ namespace losol.EventManagement.Domain
 					paramName: nameof(products)
 				);
 			}
+
+
+			// Check that variants have products
 			if(variants != null)
 			{
 				if (variants.Where(v => !products.Select(p => p.ProductId).Contains(v.ProductId)).Any())
@@ -104,6 +102,20 @@ namespace losol.EventManagement.Domain
 					);
 				}	
 			}
+
+			// Create order.
+			var order = new Order
+			{
+				UserId = UserId,
+
+				CustomerName = CustomerName ?? ParticipantName,
+				CustomerEmail = CustomerEmail ?? CustomerEmail,
+				CustomerVatNumber = CustomerVatNumber,
+				CustomerInvoiceReference = CustomerInvoiceReference,
+
+				PaymentMethodId = PaymentMethodId,
+				RegistrationId = RegistrationId
+			};
 
 			if (products != null) {
 				var orderLines = products.Select(p =>
@@ -126,21 +138,9 @@ namespace losol.EventManagement.Domain
 						// Quantity
 					};
 				}).ToList();
+				order.OrderLines = orderLines;
 			}
-			var order = new Order
-			{
-				UserId = UserId,
-				CustomerName = CustomerName ?? ParticipantName,
-
-				CustomerEmail = CustomerEmail,
-				CustomerVatNumber = CustomerVatNumber,
-				CustomerInvoiceReference = CustomerInvoiceReference,
-
-				PaymentMethodId = PaymentMethodId,
-				RegistrationId = RegistrationId,
-
-				OrderLines = orderLines
-			};
+	
 			order.AddLog();
 			this.Order = order;
 		}
