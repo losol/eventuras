@@ -38,7 +38,7 @@ namespace losol.EventManagement.UnitTests
 				
 				// Assert
 				Assert.NotNull(registration.Order);
-				Assert.Equal(products[0].Price, registration.Order.OrderLines[0].Price);
+				Assert.Equal(products[0].Price, registration.Order[0].OrderLines[0].Price);
 			}
 
 			[Fact]
@@ -87,7 +87,7 @@ namespace losol.EventManagement.UnitTests
 				// 
 				// Assert
 				Assert.NotNull(registration.Order);
-				Assert.Equal(variants[0].Price, registration.Order.OrderLines[0].Price);
+				Assert.Equal(variants[0].Price, registration.Order[0].OrderLines[0].Price);
 			}
 
 			[Fact]
