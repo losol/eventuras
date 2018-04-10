@@ -23,8 +23,10 @@ namespace losol.EventManagement.Web.TagHelpers
 			switch (Value)
 			{
 				case OrderStatus.Draft:
-				case OrderStatus.Invoiced:
 					badgeClass = new TagHelperAttribute("class", "badge badge-light");
+					break;
+				case OrderStatus.Invoiced:
+					badgeClass = new TagHelperAttribute("class", "badge badge-success");
 					break;
 				case OrderStatus.Verified:
 					badgeClass = new TagHelperAttribute("class", "badge badge-info");
