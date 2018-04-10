@@ -13,7 +13,7 @@
             @{ // Dates
                 if(Model.EventInfo.DateStart != null) 
                 {
-                    <div class="col-md-3">
+                    <div>
                     <i class="material-icons  align-top">date_range</i> @Model.EventInfo.DateStart.Value.ToString("d")
                         
                             @if(Model.EventInfo.DateEnd != null) {
@@ -26,7 +26,7 @@
             @{ // City
                 if(Model.EventInfo.City != null) 
                 {
-                    <div class="col-md-3">
+                    <div>
                         <i class="material-icons align-top">location_on</i> @Model.EventInfo.City
                     </div>
                 }
@@ -35,17 +35,21 @@
             @{ // Location
                     if(Model.EventInfo.Location != null) 
                     {
-                        <div class="col-md-3">
+                        <div>
                             <i class="material-icons align-top">hotel</i> @Model.EventInfo.Location
                         </div>
                     }
                     @* Price *@
-                    <div class="col-md-3">
+                    <div>
                         @if (Model.EventInfo.Price.HasValue) {
                         <i class="material-icons align-top">credit_card</i> @Model.EventInfo.Price.Value.ToString("0 kr")
                         }
                     </div>
             }
+
+            <div>
+                Påmeldte: @Model.EventInfo.Registrations.Count().ToString()
+            </div>
         </div>
 
         <div class="row">
@@ -195,7 +199,7 @@
             <table  
                 id="table"
                 data-toggle="table" 
-                data-url="/Admin/Events/Participants?id=@Model.EventInfo.EventInfoId&handler=Participants"
+                data-url="/Admin/Events/Details/@Model.EventInfo.EventInfoId?handler=Participants"
                 data-pagination="false"
                 data-show-columns="true"
                 data-show-export="true"
