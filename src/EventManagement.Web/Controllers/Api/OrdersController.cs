@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using losol.EventManagement.Services;
 using System.ComponentModel.DataAnnotations;
+using static losol.EventManagement.Domain.Order;
 
 namespace losol.EventManagement.Web.Controllers.Api
 {
@@ -37,6 +38,27 @@ namespace losol.EventManagement.Web.Controllers.Api
 				return BadRequest();
 			}
 			return Ok();
+		}
+
+		[HttpPost("update/{id}/{status}")]
+		public async Task<ActionResult> UpdateOrderStatus([FromRoute]int id, [FromRoute]OrderStatus status)
+		{
+			if(status == OrderStatus.Draft) return BadRequest();
+			try{
+				switch(status)
+				{
+					case OrderStatus.Verified: await _orderService.MarkAsVerifiedAsync(id);
+						break;
+					case OrderStatus.Invoiced: await _orderService.MarkAsInvoicedAsync(id);
+						break;
+					case OrderStatus.Cancelled: await _orderService.MarkAsCancelledAsync(id);
+						break;
+				}
+				return Ok();
+			}
+			catch(Exception e) when (e is InvalidOperationException || e is ArgumentException) {
+				return BadRequest();
+			}
 		}
 
 		[HttpPost("line/delete/{lineid}")]

@@ -24,5 +24,10 @@ namespace losol.EventManagement.Services
 		Task<bool> DeleteOrderLineAsync(int lineId);
 		Task<bool> AddOrderLineAsync(int orderId, int productId, int? variantId);
 		Task<bool> UpdateOrderLine(int lineId, int quantity, decimal price);
+
+		// Statuses
+		Task<bool> MarkAsVerifiedAsync(int orderId);
+		Task<bool> MarkAsInvoicedAsync(int orderId);
+		Task<bool> MarkAsCancelledAsync(int orderId);
 	}
 }
