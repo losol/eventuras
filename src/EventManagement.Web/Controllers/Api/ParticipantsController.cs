@@ -56,7 +56,11 @@ namespace losol.EventManagement.Web.Controllers.Api {
                     StringBuilder builder = new StringBuilder ();
                     builder.AppendLine ("<br>");
                     builder.AppendLine ("<h4>Ordre</h4>");
-                    r.Order.OrderLines?.ForEach ((line) => builder.AppendLine ($"<br>{line.ProductName}"));
+					r.Order.ForEach(
+						(o) => o.OrderLines?.ForEach (
+							(line) => builder.AppendLine ($"<br>{line.ProductName}")
+						)
+					);
 
                     message.Message += builder.ToString ();
                 }
