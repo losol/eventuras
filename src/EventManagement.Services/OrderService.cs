@@ -140,5 +140,29 @@ namespace losol.EventManagement.Services
 			_db.Orders.Update(order);
 			return await _db.SaveChangesAsync() > 0;
 		}
-	}
+
+        public async Task<bool> MarkAsVerifiedAsync(int orderId)
+        {
+            var order = await _db.Orders.FindAsync(orderId);
+			order.MarkAsVerified();
+			_db.Orders.Update(order);
+			return await _db.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> MarkAsInvoicedAsync(int orderId)
+        {
+            var order = await _db.Orders.FindAsync(orderId);
+			order.MarkAsInvoiced();
+			_db.Orders.Update(order);
+			return await _db.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> MarkAsCancelledAsync(int orderId)
+        {
+            var order = await _db.Orders.FindAsync(orderId);
+			order.MarkAsCancelled();
+			_db.Orders.Update(order);
+			return await _db.SaveChangesAsync() > 0;
+        }
+    }
 }
