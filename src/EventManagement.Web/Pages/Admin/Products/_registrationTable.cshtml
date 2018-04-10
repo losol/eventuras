@@ -42,7 +42,7 @@
                 @if(shouldShowVariants)
                 {
                     <td data-field="variant" data-sortable="true">
-                    @r.Order.Last().OrderLines.Where(l => l.ProductId == id).FirstOrDefault()?.ProductVariantName
+                    @r.Orders.Last().OrderLines.Where(l => l.ProductId == id).FirstOrDefault()?.ProductVariantName
                     </td>
                 }
             </tr>

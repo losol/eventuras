@@ -22,7 +22,7 @@
 
     @foreach(var v in product.ProductVariants)
     {
-        var varRegistrations = registrations.Where(r => r.Order.Any(o => o.OrderLines.Any(l => l.ProductVariantId == v.ProductVariantId) == true)).ToList();
+        var varRegistrations = registrations.Where(r => r.Orders.Any(o => o.OrderLines.Any(l => l.ProductVariantId == v.ProductVariantId) == true)).ToList();
         <div class="row">
             <div class="col-md-9">
                 <h3>@v.Name</h3>

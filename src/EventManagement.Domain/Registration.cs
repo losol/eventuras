@@ -59,7 +59,7 @@ namespace losol.EventManagement.Domain
 		public EventInfo EventInfo { get; set; }
 		public ApplicationUser User { get; set; }
 		public PaymentMethod PaymentMethod { get; set; }
-		public List<Order> Order { get; set; }
+		public List<Order> Orders { get; set; }
 		public Certificate Certificate { get; set; }
 
 
@@ -77,12 +77,12 @@ namespace losol.EventManagement.Domain
 			Attended = false;
 		}
 
-		public bool HasOrder => Order == null || Order.Count == 0;
+		public bool HasOrder => Orders == null || Orders.Count == 0;
 
 		public void CreateOrder(IEnumerable<Product> products, IEnumerable<ProductVariant> variants)
 		{
 			_ = products ?? throw new ArgumentNullException(nameof(products));
-			if(Order != null)
+			if(Orders != null)
 			{
 				throw new InvalidOperationException("This registration already has an order.");
 			}
@@ -142,8 +142,8 @@ namespace losol.EventManagement.Domain
 				OrderLines = orderLines
 			};
 			order.AddLog();
-			this.Order = this.Order ?? new List<Order>();
-			this.Order.Add(order);
+			this.Orders = this.Orders ?? new List<Order>();
+			this.Orders.Add(order);
 		}
 		public void CreateOrder(IEnumerable<Product> products) => CreateOrder(products, null);
 
