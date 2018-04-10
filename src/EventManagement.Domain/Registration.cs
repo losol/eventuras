@@ -82,14 +82,13 @@ namespace losol.EventManagement.Domain
 		public void CreateOrder(IEnumerable<Product> products, IEnumerable<ProductVariant> variants)
 		{	
 			// Check if products belnongs to the event	
-			if(products.Where(p => p.EventInfoId != EventInfoId).Any())
+			if(products != null && products.Where(p => p.EventInfoId != EventInfoId).Any())
 			{
 				throw new ArgumentException(
 					message: "All the products must belong to the event being registered for.", 
 					paramName: nameof(products)
 				);
 			}
-
 
 			// Check that variants have products
 			if(variants != null)
