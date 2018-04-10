@@ -18,8 +18,8 @@
 @{
     foreach (var order in Model.Orders) {
         <div class="card my-2 p-3 border-0">
-        <h3>@order.Registration.ParticipantName</h3>
-        
+        <h3>@order.Registration.ParticipantName &nbsp;<order-status value="@order.Status" /></h3>
+        <p>Fakturamottaker: @order.CustomerName</p>
         <ul>
         @foreach (var orderline in order.OrderLines) {
             <li>@orderline.ProductName - kr @orderline.Price</li>
