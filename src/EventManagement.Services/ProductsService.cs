@@ -47,7 +47,7 @@ namespace losol.EventManagement.Services
 		public Task<List<Registration>> GetRegistrationsAsync(int productId)
 		{
 			return _db.Registrations
-				.Where(r => r.Order.OrderLines.Any(l => l.ProductId == productId))
+				.Where(r => r.Order.Any(o => o.OrderLines.Any(l => l.ProductId == productId)))
 				.Include(r => r.User)
 				.Include(r => r.Order)
 					.ThenInclude(o => o.OrderLines)
