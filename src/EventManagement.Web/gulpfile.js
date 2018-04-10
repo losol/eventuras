@@ -88,7 +88,8 @@ gulp.task('make:js', function () {
         paths.libSrc + 'jquery/dist/jquery.min.js',
         paths.libSrc + 'popper.js/dist/umd/popper.min.js',
         paths.libSrc + 'bootstrap/dist/js/bootstrap.min.js',
-        paths.libSrc + 'toastr/toastr.js'
+        paths.libSrc + 'toastr/toastr.js',
+        paths.libSrc + 'select2/dist/js/select2.min.js'
     ])
         .pipe(concat('site.min.js'))
         .pipe(gulp.dest(paths.jsDest));
