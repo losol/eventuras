@@ -61,7 +61,7 @@
             
             <td>
             @if (item.ManageRegistrations) {
-                <a asp-page="./Participants" asp-route-id="@item.EventInfoId" class="btn btn-info link-decoration-none">Deltakere</a>
+                <a asp-page="./Details" asp-route-id="@item.EventInfoId" class="btn btn-success link-decoration-none">Vis</a>
                 }
                 <a asp-page="./Edit" asp-route-id="@item.EventInfoId" class="btn btn-info link-decoration-none">Endre</a>
             </td>
