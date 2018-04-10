@@ -18,16 +18,19 @@
                 <div class="btn-group btn-group-sm" role="group">
                     @if(order.GetNextStatus() != null)
                     {
-                        <button type="button" class="btn btn-primary">@order.GetOrderStatusActionText()</button>
-
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            </button>
-                            <div class="dropdown-menu">
-                                <button class="dropdown-item text-danger">Cancel</button>
-                            </div>
-                        </div>
+                        <button type="button" class="btn btn-primary" onclick="updateOrderStatus('@order.GetNextStatus()')">
+                            @order.GetOrderStatusActionText()
+                        </button>
                     }
+
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        </button>
+                        <div class="dropdown-menu">
+                            <button class="dropdown-item text-danger" onclick="updateOrderStatus('Cancelled')">Cancel</button>
+                        </div>
+                    </div>
+                    
                 </div>
             </h2>
         <div class="row justify-content-between">
@@ -394,6 +397,12 @@ Gotta do it in a better way later. *@
             $.post('/api/v0/orders/line/delete/' + lineid, function() {
                 location.reload();
             })
+        }
+
+        function updateOrderStatus(status) {
+            $.post('/api/v0/orders/update/@id/' + status, function() {
+                location.reload();
+            })            
         }
     </script>
 }
