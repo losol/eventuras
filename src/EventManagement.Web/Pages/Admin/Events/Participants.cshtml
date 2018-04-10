@@ -307,6 +307,7 @@
                 e.delegateTarget.innerText = 'Attended';
                 e.delegateTarget.classList.remove('btn-secondary');
                 e.delegateTarget.classList.add('btn-success');
+                e.delegateTarget.setAttribute('disabled', '');
             })
             .fail(function(){
                 toastr.error('Couldnt set attendance for ' + row.name + '. ')
@@ -319,6 +320,7 @@
                 e.delegateTarget.innerText = 'Not Attended';
                 e.delegateTarget.classList.remove('btn-success');
                 e.delegateTarget.classList.add('btn-secondary');
+                e.delegateTarget.setAttribute('disabled', '');
             })
             .fail(function(){
                 toastr.error('Couldnt remove attendance for ' + row.name + '. ')
