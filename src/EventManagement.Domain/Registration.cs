@@ -140,7 +140,8 @@ namespace losol.EventManagement.Domain
 		public void CreateOrUpdateOrder(IEnumerable<Product> products, IEnumerable<ProductVariant> variants)
 		{
 			// Check if the product already exists in one of this registration's orders
-			var existingProductIds = Orders.SelectMany(o => o.OrderLines
+			var existingProductIds = Orders.Where(o => o.Status != OrderStatus.Cancelled)
+											.SelectMany(o => o.OrderLines
 											.Where(l => l.ProductId.HasValue)
 											.Select(l => l.ProductId.Value)
 										);
