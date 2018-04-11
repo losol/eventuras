@@ -14,7 +14,6 @@ namespace losol.EventManagement.Services
 		
 		Task<Order> GetByIdAsync(int orderId);
 		Task<List<Order>> GetOrdersForEventAsync(int orderId);
-		Task<bool> EnsureOrdersForAllRegistrations(int eventInfoId);
 
 		// Order details
 		Task<bool> UpdateOrderDetailsAsync(int id, string customername, string customerEmail, string invoiceReference, string comments);

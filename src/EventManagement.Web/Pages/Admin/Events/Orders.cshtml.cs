@@ -4,9 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using losol.EventManagement.Domain;
-using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services;
 
 namespace losol.EventManagement.Pages.Admin.Events
@@ -33,11 +31,12 @@ namespace losol.EventManagement.Pages.Admin.Events
             return Page();
         }
 
-        public async Task<IActionResult> OnPostEnsureOrdersAsync(int id)
+		// TODO: Remove this IF it is not being used anywhere
+        public IActionResult OnPostEnsureOrdersAsync(int id)
         {
 
             // Get orders for
-            var result = await _orders.EnsureOrdersForAllRegistrations(id);
+            // var result = await _orders.EnsureOrdersForAllRegistrations(id);
 
             return RedirectToPage("Orders");
         }

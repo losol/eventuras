@@ -31,22 +31,6 @@ namespace losol.EventManagement.Services
 
 		public Task<List<Order>> GetAsync(int count) => GetAsync(count, 0);
 
-		// TODO REMOVE THIS
-		public async Task<bool> EnsureOrdersForAllRegistrations(int eventInfoId) {
-			var attenders = await _db.Registrations
-				.Where(r => r.EventInfoId == eventInfoId)
-				.ToListAsync();
-			
-			foreach (var attendant in attenders) {
-				if (attendant.Order == null) {
-					// Create an order
-					attendant.CreateOrder();
-				}
-			}
-
-			return await _db.SaveChangesAsync() > 0;
-		}
-
 		public Task<Order> GetByIdAsync(int orderId) =>
 			_db.Orders
 			   .Where(o => o.OrderId == orderId)

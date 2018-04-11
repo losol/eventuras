@@ -41,7 +41,9 @@
                 <td data-field="email" data-sortable="true">@r.User.Email</td>
                 @if(shouldShowVariants)
                 {
-                    <td data-field="variant" data-sortable="true">@r.Order?.OrderLines.Where(l => l.ProductId == id).FirstOrDefault()?.ProductVariantName</td>
+                    <td data-field="variant" data-sortable="true">
+                    @r.Orders.Last().OrderLines.Where(l => l.ProductId == id).FirstOrDefault()?.ProductVariantName
+                    </td>
                 }
             </tr>
         }
