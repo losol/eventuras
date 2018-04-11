@@ -57,7 +57,9 @@ namespace losol.EventManagement.Pages.Admin.Events
 
 			if (!ModelState.IsValid)
 			{
+                EventInfo = await _eventsService.GetWithProductsAsync(id);
 				PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
+                Registration = new Web.Pages.Register.RegisterVM(EventInfo, DefaultPaymentMethod);
 				return Page();
 			}
 
@@ -88,7 +90,7 @@ namespace losol.EventManagement.Pages.Admin.Events
 			}
 
             // Any registrations for this user on this event?
-            var registration = await _registrations.GetAsync(user.Id, Registration.EventInfoId);
+            var registration = await _registrations.GetAsync(user.Id, id);
             if (registration != null)
             {
                 ModelState.AddModelError(string.Empty, "Bruker var allerede registrert");
@@ -97,18 +99,8 @@ namespace losol.EventManagement.Pages.Admin.Events
 
 			// Create registration for our user
 			var newRegistration = Registration.Adapt<Registration>();
-            
-			int[] selectedProductIds = null;
-			int[] selectedVariantIds = null;
 
-			// If the eventinfo has products, then register and make order
-			if (Registration.HasProducts)
-			{
-				selectedProductIds = Registration.SelectedProducts.ToArray();
-				selectedVariantIds = Registration.SelectedVariants.ToArray();
-			}
-
-			await _registrations.CreateRegistration(newRegistration, selectedProductIds, selectedVariantIds);
+			await _registrations.CreateRegistration(newRegistration);
 
 			return RedirectToPage();
 		}
