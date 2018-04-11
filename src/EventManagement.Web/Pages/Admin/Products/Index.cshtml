@@ -11,7 +11,7 @@
 		<div class="col-6">
             <h2>@product.Name (@product.Eventinfo.Title)</h2>
             <strong>Registration Count:</strong> @registrations.Count()
-            <button class="btn btn-default" data-toggle="modal" data-target="#add-user-modal">Add User</button>
+            <button class="btn btn-secondary" data-toggle="modal" data-target="#add-user-modal">Add User</button>
 		</div>
 	</div>
 
@@ -47,6 +47,17 @@
         <div class="form-group">
             <label class="control-label">User Email</label>
             <input id="input-email" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">Variant</label>
+            <select id="input-variant" 
+                class="form-control" 
+                @(product.ProductVariants.Any() ? "" : "disabled") >
+                @foreach(var v in product.ProductVariants)
+                {
+                    <option value="@v.ProductVariantId">@v.Name</option>    
+                }
+            </select>
         </div>
       </div>
       <div class="modal-footer">
