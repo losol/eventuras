@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using static losol.EventManagement.Domain.Order;
 
 namespace losol.EventManagement.Domain
 {
@@ -119,7 +120,60 @@ namespace losol.EventManagement.Domain
 			};
 
 			if (products != null) {
-				var orderLines = products.Select(p =>
+				order.OrderLines = _createOrderLines(products, variants);
+			}
+	
+			order.AddLog();
+			this.Orders = this.Orders ?? new List<Order>();
+			this.Orders.Add(order);
+		}
+		public void CreateOrder(IEnumerable<Product> products) => CreateOrder(products, null);
+
+		public void CreateOrder() => CreateOrder(null, null);
+
+		/// <summary>
+		/// Updates an existing order if it's not already been invoiced.
+		/// Else creates a new order.
+		/// </summary>
+		/// <param name="products"></param>
+		/// <param name="variants"></param>
+		public void CreateOrUpdateOrder(IEnumerable<Product> products, IEnumerable<ProductVariant> variants)
+		{
+			// Check if the product already exists in one of this registration's orders
+			var existingProductIds = Orders.SelectMany(o => o.OrderLines
+											.Where(l => l.ProductId.HasValue)
+											.Select(l => l.ProductId.Value)
+										);
+			if(existingProductIds.Intersect(products.Select(p => p.ProductId)).Any())
+			{
+				throw new InvalidOperationException("The same product cannot be added twice");
+			}
+
+			// Check if any uninvoiced orders exist (excluding the cancelled ofcourse)
+			var uninvoicedOrders = Orders.Where(o => o.Status != OrderStatus.Invoiced && o.Status != OrderStatus.Cancelled);
+
+			if(!uninvoicedOrders.Any())
+			{
+				// No uninvoiced orders exist
+				// Create a new order
+				CreateOrder(products, variants);
+				return;
+			}
+			
+			var orderToUpdate = uninvoicedOrders.First();
+			orderToUpdate.OrderLines.AddRange(_createOrderLines(products, variants));
+		}
+		public void CreateOrUpdateOrder(IEnumerable<Product> products) =>
+			CreateOrUpdateOrder(products, null);
+
+		public void CreateRefund()
+		{
+			throw new NotImplementedException();
+		}
+
+		private List<OrderLine> _createOrderLines(IEnumerable<Product> products, IEnumerable<ProductVariant> variants)
+		{
+			var orderLines = products.Select(p =>
 				{
 					var v = variants?.Where(var => var.ProductId == p.ProductId).SingleOrDefault();
 					return new OrderLine
@@ -138,21 +192,8 @@ namespace losol.EventManagement.Domain
 						// Comments
 						// Quantity
 					};
-				}).ToList();
-				order.OrderLines = orderLines;
-			}
-	
-			order.AddLog();
-			this.Orders = this.Orders ?? new List<Order>();
-			this.Orders.Add(order);
-		}
-		public void CreateOrder(IEnumerable<Product> products) => CreateOrder(products, null);
-
-		public void CreateOrder() => CreateOrder(null, null);
-
-		public void CreateRefund()
-		{
-			throw new NotImplementedException();
+				});
+			return orderLines.ToList();
 		}
 	}
 }

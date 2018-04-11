@@ -3,6 +3,8 @@
 using losol.EventManagement.Domain;
 using System;
 using System.Collections.Generic;
+using static losol.EventManagement.Domain.Order;
+using System.Linq;
 
 namespace losol.EventManagement.UnitTests
 {
@@ -250,6 +252,82 @@ namespace losol.EventManagement.UnitTests
 
 				Assert.Equal(expected, actual);
 			}
+		}
+
+		public class CreateOrUpdateOrder_Should
+		{
+			[Fact]
+			public void ThrowExceptionIfProductAlreadyOrdered()
+			{
+				// Arrange
+				var registration = new Registration 
+				{
+					Orders = new List<Order> {
+						new Order { 
+							OrderLines = new List<OrderLine> {
+								new OrderLine { ProductId = 1 }
+							}
+						}
+					}
+				};
+				var products = new List<Product> { new Product { ProductId = 1 } };
+
+				// Act & assert
+				Assert.Throws<InvalidOperationException>(() => registration.CreateOrUpdateOrder(products));
+			}
+
+			[Fact]
+			public void CreateNewOrderIfExistingOrdersAreInvoiced()
+			{
+				// Arrange
+				var registration = new Registration 
+				{
+					Orders = new List<Order> {
+						new Order { 
+							OrderLines = new List<OrderLine> {
+								new OrderLine { ProductId = 1 }
+							}
+						}
+					}
+				};
+				foreach(var o in registration.Orders)
+				{
+					o.MarkAsVerified();
+					o.MarkAsInvoiced();
+				}
+				var products = new List<Product> { new Product { ProductId = 2 } };
+
+				// Act
+				registration.CreateOrUpdateOrder(products);
+
+				// Assert
+				Assert.Equal(2, registration.Orders.Count);
+			}
+
+			[Fact]
+			public void UpdateOrderIfExistingOrdersAreNotInvoiced()
+			{
+				// Arrange
+				var registration = new Registration 
+				{
+					Orders = new List<Order> {
+						new Order { 
+							OrderLines = new List<OrderLine> {
+								new OrderLine { ProductId = 1 }
+							}
+						}
+					}
+				};
+				var products = new List<Product> { new Product { ProductId = 2 } };
+
+				// Act
+				registration.CreateOrUpdateOrder(products);
+
+				// Assert
+				Assert.Equal(1, registration.Orders.Count);
+				Assert.Equal(2, registration.Orders.First().OrderLines.Count);
+			}
+
 		}
 	}
 }
