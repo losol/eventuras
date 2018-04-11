@@ -48,8 +48,7 @@ gulp.task("clean", ["clean:js", "clean:css", "clean:lib", "clean:temp"]);
 gulp.task("copy:lib", () => {
     gulp.src([
         'moment/min/*.js',
-        'font-awesome/fonts',
-        'intl-tel-input/build/**'
+        'font-awesome/fonts'
     ], {
         cwd: paths.libSrc + "/**"
     })
@@ -74,8 +73,8 @@ gulp.task('make:css', function () {
         .pipe(gulp.dest(paths.cssDest));
     
     gulp.src([paths.libSrc + 'bootstrap-table/dist/bootstrap-table.min.css'])
-            .pipe(concat('bootstrap-table.min.css'))
-            .pipe(gulp.dest(paths.cssDest));
+        .pipe(concat('bootstrap-table.min.css'))
+        .pipe(gulp.dest(paths.cssDest));
 
     return merge(pipe1, pipe2);
 
@@ -84,36 +83,41 @@ gulp.task('make:css', function () {
 
 // gulp make:js - Uglifies and concat all JS files into one
 gulp.task('make:js', function () {
+
+    // Minified files for production
     gulp.src([
         paths.libSrc + 'jquery/dist/jquery.min.js',
         paths.libSrc + 'popper.js/dist/umd/popper.min.js',
         paths.libSrc + 'bootstrap/dist/js/bootstrap.min.js',
-        paths.libSrc + 'toastr/toastr.js'
+        paths.libSrc + 'toastr/toastr.js',
+        './js/admin.js'
     ])
         .pipe(concat('site.min.js'))
         .pipe(gulp.dest(paths.jsDest));
 
+    // Full files for development
     gulp.src([
         paths.libSrc + 'jquery/dist/jquery.js',
         paths.libSrc + 'popper.js/dist/umd/popper.js',
         paths.libSrc + 'bootstrap/dist/js/bootstrap.js',
-        paths.libSrc + 'toastr/toastr.js'
+        paths.libSrc + 'toastr/toastr.js',
+        './js/admin.js'
     ])
         .pipe(concat('site.js'))
         .pipe(gulp.dest(paths.jsDest));
 
+    // Bootstrap table Javascript
     gulp.src([
-            paths.libSrc + 'bootstrap-table/dist/bootstrap-table.min.js',
-            paths.libSrc + 'bootstrap-table/extensions/toolbar/bootstrap-table-toolbar.min.js',
-            paths.libSrc + 'bootstrap-table/extensions/filter/bootstrap-table-filter.min.js',
-            paths.libSrc + 'bootstrap-table/extensions/filter-control/bootstrap-table-filter-control.min.js',
-            paths.libSrc + 'tableexport.jquery.plugin/tableExport.js',
-            paths.libSrc + 'bootstrap-table/src/extensions/export/bootstrap-table-export.js',
-            paths.libSrc + 'bootstrap-table/dist/locale/bootstrap-table-nb-NO.min.js',
-            paths.libDest + 'site.js'
+        paths.libSrc + 'bootstrap-table/dist/bootstrap-table.min.js',
+        paths.libSrc + 'bootstrap-table/extensions/toolbar/bootstrap-table-toolbar.min.js',
+        paths.libSrc + 'bootstrap-table/extensions/filter/bootstrap-table-filter.min.js',
+        paths.libSrc + 'bootstrap-table/extensions/filter-control/bootstrap-table-filter-control.min.js',
+        paths.libSrc + 'tableexport.jquery.plugin/tableExport.js',
+        paths.libSrc + 'bootstrap-table/src/extensions/export/bootstrap-table-export.js',
+        paths.libSrc + 'bootstrap-table/dist/locale/bootstrap-table-nb-NO.min.js'
         ])
-            .pipe(concat('bootstrap-table.min.js'))
-            .pipe(gulp.dest(paths.jsDest));
+        .pipe(concat('bootstrap-table.min.js'))
+        .pipe(gulp.dest(paths.jsDest));
 });
 
 // The default gulp task
