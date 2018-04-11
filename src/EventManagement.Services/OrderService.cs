@@ -106,6 +106,7 @@ namespace losol.EventManagement.Services
 
 				Price = variant?.Price ?? product.Price,
 				VatPercent = variant?.VatPercent ?? product.VatPercent,
+				Quantity = variant?.MandatoryCount ?? product.MandatoryCount,
 
 				ProductName = product.Name,
 				ProductDescription = product.Description,
