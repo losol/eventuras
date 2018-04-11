@@ -186,6 +186,7 @@ namespace losol.EventManagement.Web.Pages.Register
 			return RedirectToPage("/Info/EmailSent");
 		}
 
+		// TODO: Move to registrationservice
 		private async Task<IActionResult> userAlreadyRegisteredResult(Registration registration)
 		{
 			// Prepare an email to send out

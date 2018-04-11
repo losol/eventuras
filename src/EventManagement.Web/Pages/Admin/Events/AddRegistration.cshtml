@@ -1,0 +1,191 @@
+@page "{id:int}"
+@model losol.EventManagement.Pages.Admin.Events.AddRegistrationModel
+
+@{
+    ViewData["Title"] = "Legg til deltaker på arrangement";
+}
+<div class="bg-gray-300 py-3">
+    <div class="container">
+        <h1>Legg til deltaker</h1>
+        <p>Arrangement: @Model.EventInfo.Title</p>
+    </div>
+</div>
+<div class="container py-3 min-height-75">
+
+        
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <form method="post">
+        <div class="row justify-content-between py-3">
+            <div class="col-md-9"> 
+                <div class="form-group">
+                    <label asp-for="Registration.ParticipantName"></label>
+                    <input asp-for="Registration.ParticipantName" class="form-control" />
+                    <span asp-validation-for="Registration.ParticipantName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Registration.Email"></label>
+                    <input asp-for="Registration.Email" class="form-control" />
+                    <span asp-validation-for="Registration.Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-sm-3">
+                        <label asp-for="Registration.PhoneCountryCode"></label>
+                        <input asp-for="Registration.PhoneCountryCode" class="form-control" />
+                        <span asp-validation-for="Registration.PhoneCountryCode" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-sm-9">
+                        <label asp-for="Registration.Phone"></label>
+                        <input asp-for="Registration.Phone" class="form-control" />
+                        <span asp-validation-for="Registration.Phone" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Registration.ParticipantJobTitle"></label>
+                    <input asp-for="Registration.ParticipantJobTitle" class="form-control" />
+                    <span asp-validation-for="Registration.ParticipantJobTitle" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Registration.ParticipantCity"></label>
+                    <input asp-for="Registration.ParticipantCity" class="form-control" />
+                    <span asp-validation-for="Registration.ParticipantCity" class="text-danger"></span>
+                </div>
+
+                @if (Model.EventInfo.InformationRequest != null ) {
+                        <div class="form-group">
+                            <label asp-for="Registration.Notes">@Model.EventInfo.InformationRequest</label>
+                            <textarea asp-for="Registration.Notes" class="form-control"></textarea>
+                            <span asp-validation-for="Registration.CustomerInvoiceReference" class="text-danger"></span>
+                        </div>
+                }
+
+
+                @* START PAYMENT  *@
+                @if (Model.EventInfo.Products.Any()) {
+                <div id="payment py-5" > 
+                    <div class="form-group"><!-- Payment method -->
+                        <label asp-for="Registration.PaymentMethodId"></label><br>
+                        <div>
+                        @foreach (var item in Model.PaymentMethods)
+                        {
+                            <label class="radio-inline pr-3">  
+                            <input asp-for="Registration.PaymentMethodId" id="Registration_PaymentMethodId_@item.PaymentMethodId" type="radio" value="@item.PaymentMethodId" onclick="paymentMethod()"/> @item.Name  
+                            </label>
+                    
+                        }
+                        </div>
+                    </div>
+                    <p>
+                        <button class="btn  btn-link" type="button" data-toggle="collapse" data-target="#customerdetails" aria-expanded="false" aria-controls="customerdetails">
+                            <i class="material-icons align-top">reorder</i> Vis fakturadetaljer
+                        </button>
+                    </p>
+                    <div class="collapse" id="customerdetails">
+                        <div class="form-group">
+                            <label asp-for="Registration.CustomerVatNumber"></label>
+                            <input asp-for="Registration.CustomerVatNumber" class="form-control" />
+                            <span asp-validation-for="Registration.CustomerVatNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Registration.CustomerName"></label>
+                            <input asp-for="Registration.CustomerName" class="form-control" />
+                            <span asp-validation-for="Registration.CustomerName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Registration.CustomerEmail"></label>
+                            <input asp-for="Registration.CustomerEmail" class="form-control" />
+                            <span asp-validation-for="Registration.CustomerEmail" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Registration.CustomerInvoiceReference"></label>
+                            <input asp-for="Registration.CustomerInvoiceReference" class="form-control" />
+                            <span asp-validation-for="Registration.CustomerInvoiceReference" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                }
+
+                
+                @if(Model.Products.Any()){
+                    <h4 class="pt-5 pb-3">Tilpass bestillingen</h4>
+                    @for(int i = 0; i < Model.Products.Count; i++)
+                    {
+                        var product = Model.Products[i];
+                        var productModel = Model.Products[i];
+
+                        <div class="form-group">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-1" style="margin-top:5px">
+                                        @if(productModel.IsMandatory)
+                                        {
+                                            <input asp-for="Registration.Products[i].IsSelected" type="hidden" />
+                                            <i class="material-icons" style="color: #00ad3d">&#xE5CA;</i>
+                                        }
+                                        else{
+                                            <input asp-for="Registration.Products[i].IsSelected" type="checkbox" class="form-check" />
+                                        }
+                                            <input asp-for="Registration.Products[i].Value" type="hidden" value="@product.ProductId" />
+                                        </div>
+                                        <div class="col">
+                                            <h5 class="card-title">@product.Name</h5>
+                                            <p class="card-text">@product.Description</p>
+                                            @if(product.ProductVariants == null || product.ProductVariants.Count == 0)
+                                            {
+                                                <h6 class="card-subtitle mb-2 text-muted">@product.Price kr</h6>
+                                            }
+                                            else
+                                            {
+                                                <div class="row">
+                                                    @foreach(var variant in product.ProductVariants)
+                                                    {
+                                                        <div class="col">
+                                                        <div class="form-check">
+                                                            <input asp-for="Registration.Products[i].SelectedVariantId" type="radio" value="@variant.ProductVariantId" class="form-check-input" />
+                                                            <label class="form-check-label" for="Registration.Products[i].SelectedVariantId">
+                                                                @variant.Name
+                                                            </label>
+                                                            <h6 class="card-subtitle mb-2 text-muted" style="margin-top:5px">@variant.Price kr</h6>
+                                                        </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+
+            
+
+                <div class="form-group py-3">
+                    <input type="submit" value="Registrer meg" class="btn btn-lg btn-success" />
+                </div>
+
+                    </div>
+            </div>
+        </div>
+    </form>
+
+    </div>
+    <script>
+
+        function paymentMethod() {
+            if (document.getElementById('Registration_PaymentMethodId_3').checked) {
+                $('#customerdetails').collapse('show');
+            };   
+        }
+    </script>
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+
+
+    
+</div>

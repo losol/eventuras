@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace losol.EventManagement.Services
 {
-	public class RegistrationService : IRegistrationService
+    public class RegistrationService : IRegistrationService
 	{
 		private readonly ApplicationDbContext _db;
-
 
 		public RegistrationService(ApplicationDbContext db)
 		{
@@ -156,5 +156,36 @@ namespace losol.EventManagement.Services
         {
             return _db.Certificates.FindAsync(id);
         }
+
+		/*
+		private async Task<bool> ConfirmRegistrationEmail(Registration registration)
+		{
+			// Prepare an email to send out
+			var emailVM = new EmailMessage()
+			{
+				Name = Registration.ParticipantName,
+				Email = Registration.Email,
+				Subject = "Du var allerede påmeldt!",
+				Message = @"Vi hadde allerede registrert deg i systemet.
+								Ta kontakt med ole@nordland-legeforening hvis du tror det er skjedd noe feil her!
+								"
+			};
+
+			// If registered but not verified, just send reminder of verification. 
+			if (registration.Verified == false)
+			{
+				var verificationUrl = Url.Action("Confirm", "Register", new { id = registration.RegistrationId, auth = registration.VerificationCode }, protocol: Request.Scheme);
+				emailVM.Subject = "En liten bekreftelse bare...";
+				emailVM.Message = $@"Vi hadde allerede registrert deg i systemet, men du har ikke bekreftet enda.
+								<p><a href='{verificationUrl}'>Bekreft her</a></p>
+								<p></p>
+								<p>Hvis lenken ikke virker, så kan du kopiere inn teksten under i nettleseren:
+								{verificationUrl} </p>";
+			}
+
+			await _standardEmailSender.SendAsync(emailVM);
+			return RedirectToPage("/Info/EmailSent");
+		}
+		 */
     }
 }
