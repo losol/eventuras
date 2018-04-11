@@ -56,7 +56,7 @@ namespace EventManagement.Web.Controllers
                 return NotFound();
             }
             
-            string filename = $"{certificate.CertificateId}-{DateTime.Now.ToString("u")}.pdf";
+            string filename = $"{certificate.CertificateId}-{Guid.NewGuid().ToString()}.pdf";
             var result = await writer.Write(filename, CertificateVM.From(certificate));
             var bytes = await System.IO.File.ReadAllBytesAsync(writer.GetPathForFile(filename));
             return File(bytes, "application/pdf");
