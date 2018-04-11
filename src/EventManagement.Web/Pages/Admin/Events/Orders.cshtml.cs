@@ -32,6 +32,7 @@ namespace losol.EventManagement.Pages.Admin.Events
             Orders = await _orders.GetOrdersForEventAsync(id);
             EventInfo = await _eventInfos.GetAsync(id);
             Registrations = await _registrations.GetRegistrationsWithOrders(id);
+            Registrations.OrderBy (m => m.ParticipantName);
             return Page();
         }
     }
