@@ -49,5 +49,19 @@ namespace losol.EventManagement.Web.Api.Controllers
 				})
 			});
 		}
+
+		[HttpPost("add-user")]
+		public async Task<IActionResult> AddUserToProduct([FromBody]AddUserToProductVM vm)
+		{
+			await Task.FromResult(0);
+			return Ok();
+		}
+
+		public class AddUserToProductVM
+		{
+			public string Email { get; set; }
+			public int ProductId { get; set; }
+			public int? VariantId { get; set; }
+		}
 	}
 }
