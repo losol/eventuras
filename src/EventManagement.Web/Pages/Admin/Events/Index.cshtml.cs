@@ -23,7 +23,10 @@ namespace losol.EventManagement.Pages.Admin.Events
 
         public async Task OnGetAsync()
         {
-            EventInfo = await _context.EventInfos.ToListAsync();
+            EventInfo = await _context.EventInfos
+                .Include(e => e.Registrations)
+                .OrderBy(e => e.DateStart)
+                .ToListAsync();
         }
     }
 }

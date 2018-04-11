@@ -31,19 +31,20 @@ namespace losol.EventManagement.Services
 
 		public Task<List<Order>> GetAsync(int count) => GetAsync(count, 0);
 
+		// TODO REMOVE THIS
 		public async Task<bool> EnsureOrdersForAllRegistrations(int eventInfoId) {
 			var attenders = await _db.Registrations
 				.Where(r => r.EventInfoId == eventInfoId)
 				.ToListAsync();
 			
 			foreach (var attendant in attenders) {
-				if (!attendant.HasOrder) {
+				if (attendant.Order == null) {
 					// Create an order
 					attendant.CreateOrder();
 				}
 			}
 
-			return true;
+			return await _db.SaveChangesAsync() > 0;
 		}
 
 		public Task<Order> GetByIdAsync(int orderId) =>
@@ -106,6 +107,7 @@ namespace losol.EventManagement.Services
 
 				Price = variant?.Price ?? product.Price,
 				VatPercent = variant?.VatPercent ?? product.VatPercent,
+				Quantity = variant?.MandatoryCount ?? product.MandatoryCount,
 
 				ProductName = product.Name,
 				ProductDescription = product.Description,
@@ -140,5 +142,29 @@ namespace losol.EventManagement.Services
 			_db.Orders.Update(order);
 			return await _db.SaveChangesAsync() > 0;
 		}
-	}
+
+        public async Task<bool> MarkAsVerifiedAsync(int orderId)
+        {
+            var order = await _db.Orders.FindAsync(orderId);
+			order.MarkAsVerified();
+			_db.Orders.Update(order);
+			return await _db.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> MarkAsInvoicedAsync(int orderId)
+        {
+            var order = await _db.Orders.FindAsync(orderId);
+			order.MarkAsInvoiced();
+			_db.Orders.Update(order);
+			return await _db.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> MarkAsCancelledAsync(int orderId)
+        {
+            var order = await _db.Orders.FindAsync(orderId);
+			order.MarkAsCancelled();
+			_db.Orders.Update(order);
+			return await _db.SaveChangesAsync() > 0;
+        }
+    }
 }

@@ -1,0 +1,22 @@
+<div class="modal fade" id="sms-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 id="sms-modal-title" class="modal-title" id="exampleModalLabel">Send SMS til deltakerne</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="sms-text">SMS Text</label>
+                <textarea class="form-control" id="sms-text" rows="6"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Lukk</button>
+            <button type="button" onclick="sendSms()" class="btn btn-primary">Send</button>
+        </div>
+        </div>
+    </div>
+</div>

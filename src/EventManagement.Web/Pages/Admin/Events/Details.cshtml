@@ -1,121 +1,336 @@
-@page
+@page "{id:int}"
 @model losol.EventManagement.Pages.Admin.Events.DetailsModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = @Model.EventInfo.Title;
 }
 
-<h2>Details</h2>
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <div>
+            <h1 class="display-4">@Model.EventInfo.Title</h1>
+            <p class="lead pb-5">@Model.EventInfo.Description</p>
+            @{ // Dates
+                if(Model.EventInfo.DateStart != null) 
+                {
+                    <div>
+                    <i class="material-icons  align-top">date_range</i> @Model.EventInfo.DateStart.Value.ToString("d")
+                        
+                            @if(Model.EventInfo.DateEnd != null) {
+                            <text>- @Model.EventInfo.DateEnd.Value.ToString("d")</text>
+                            }
+                    </div>
+                }
+            
+            }
+            @{ // City
+                if(Model.EventInfo.City != null) 
+                {
+                    <div>
+                        <i class="material-icons align-top">location_on</i> @Model.EventInfo.City
+                    </div>
+                }
+            }
 
-<div>
-    <h4>EventInfo</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.EventInfo.Title)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EventInfo.Title)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EventInfo.Code)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EventInfo.Code)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EventInfo.Category)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EventInfo.Category)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EventInfo.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EventInfo.Description)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EventInfo.MoreInformation)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EventInfo.MoreInformation)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EventInfo.Program)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EventInfo.Program)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EventInfo.OnDemand)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EventInfo.OnDemand)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EventInfo.Published)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EventInfo.Published)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EventInfo.Location)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EventInfo.Location)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EventInfo.City)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EventInfo.City)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EventInfo.DateStart)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EventInfo.DateStart)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EventInfo.DateEnd)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EventInfo.DateEnd)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EventInfo.LastRegistrationDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EventInfo.LastRegistrationDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EventInfo.LastCancellationDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EventInfo.LastCancellationDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EventInfo.MaxParticipants)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EventInfo.MaxParticipants)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EventInfo.Price)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EventInfo.Price)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.EventInfo.CertificateDescription)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EventInfo.CertificateDescription)
-        </dd>
-    </dl>
+            @{ // Location
+                    if(Model.EventInfo.Location != null) 
+                    {
+                        <div>
+                            <i class="material-icons align-top">hotel</i> @Model.EventInfo.Location
+                        </div>
+                    }
+                    @* Price *@
+                    <div>
+                        @if (Model.EventInfo.Price.HasValue) {
+                        <i class="material-icons align-top">credit_card</i> @Model.EventInfo.Price.Value.ToString("0 kr")
+                        }
+                    </div>
+            }
+
+            <div>
+                Påmeldte: @Model.EventInfo.Registrations.Count().ToString()
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+            @if(@Model.EventInfo.Products.Any())
+            {
+                <br />
+                <strong>Produkter: </strong>
+                @foreach(var p in @Model.EventInfo.Products)
+                {
+                    @: <a href="/Admin/Products/@p.ProductId">@p.Name</a>  &nbsp;
+                }
+            }
+            
+        </div>
+
+        
+    </div>
+        <div id="event-menu" class="py-3">
+  
+                 <!-- COMMUNICATE MENU -->
+                <div class="btn-group">
+                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Send info til alle
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item link-decoration-none" href="#" onclick="sendAll(); return false;" role="button">Epost</a>
+                    <a class="dropdown-item link-decoration-none" href="#" onclick="smsAll();return false;" role="button">Tekstmelding</a>
+                </div>
+                </div>
+
+                @Html.Partial("Partials/_EmailModal")
+                @Html.Partial("Partials/_SmsModal")
+
+
+                <!-- ECONOMY MENU -->
+                <div class="btn-group">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    &Oslash;konomi
+                </button>
+                <div class="dropdown-menu">
+                    <a asp-page="./Orders" asp-route-id="@Model.EventInfo.EventInfoId" class="dropdown-item link-decoration-none">Vis alle ordre</a>
+                </div>
+                </div>
+
+                 <!-- CERTIFICATES MENU -->
+                <div class="btn-group">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Kursbevis
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item link-decoration-none" href="/certificate/for_event/@Model.EventInfo.EventInfoId" target="_blank" role="button">Forh&aring;ndsvis kursbevis</a>
+                    <a class="dropdown-item link-decoration-none" href="#" data-toggle="modal" data-target="#sendCertificatesModal" role="button">Send ut kursbevis</a>
+                </div>
+                </div>
+
+                <!-- CERTIFICATES Send Modal -->
+                <div class="modal fade" id="sendCertificatesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Send kursbevis til deltakerne</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Sertifikatet går til alle deltakere som er møtt. 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Lukk</button>
+                        <button type="button" onclick="sendCertificate()" class="btn btn-primary">Send</button>
+                    </div>
+                    </div>
+                </div>
+                </div>
+
+
+        </div>
+    </div>
+    </div>
 </div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.EventInfo.EventInfoId">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
+ 
+<div class="container min-height-50">
+	<div class="row">
+		<div class="col">
+            <table  
+                id="table"
+                data-toggle="table" 
+                data-url="/Admin/Events/Details/@Model.EventInfo.EventInfoId?handler=Participants"
+                data-pagination="false"
+                data-show-columns="true"
+                data-show-export="true"
+                data-sort-name="name"
+                data-sort-order="asc"
+                data-icons-prefix="fa"
+                data-icons="icons"
+                data-search="true"
+                data-advanced-search="true"
+                data-search-align="left"
+                data-show-refresh="true"
+                data-click-to-select="true"
+                data-export-options='{
+                    "fileName": "Deltakere-@Model.EventInfo.Code-@DateTime.Now.ToString("yyyy-MM-dd")"
+                }'>
+                <thead>
+                    <tr>
+                        <th data-field="name" data-sortable="true">Navn</th>
+                        <th data-field="email" data-sortable="true" data-visible="false">Epost</th>
+                        <th data-field="phone">Telefon</th>
+                        <th data-field="jobtitle">Stilling</th>
+                        <th data-field="employer" data-visible="false">Arbeidsplass</th>
+                        <th data-field="city">Sted</th>
+                        <th data-formatter="Attended" data-events="attendedEvents">M&oslash;tt</th>
+                        <th data-formatter="RowActions" data-events="operateEvents">Meny</th>
+                    </tr>
+                </thead>
+            </table> 
+		</div>
+	</div>
 </div>
+
+@section scripts { 
+    <script>
+
+    const $table = $('#table');
+    $('#toolbar').find('select').change(function () {
+        $table.bootstrapTable('refreshOptions', {
+            exportDataType: $(this).val()
+        });
+    });
+
+    function Attended(value, row, index, field) {
+            let actions = [];
+            if(!row.attended) {
+                actions.push('<button type="button" class="btn btn-secondary btn-attended mr-1">Not Attended</button>');
+            }
+            else {
+                actions.push('<button type="button" class="btn btn-success btn-not-attended" >Attended</button>')
+            }
+            return actions.join('');
+        }
+    function RowActions(value, row, index, field) {
+            actions = [
+                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-sms mr-1">SMS</button>', 
+                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-email mr-1">Epost</button>'
+            ];
+            if(row.hasCertificate)
+            {
+                actions.push('<a class="btn btn-secondary" href="/certificate/' + row.registrationId + '/download" target="_blank">Certificate</a>')
+            }
+            return actions.join('');
+        }
+
+    window.icons = {
+        refresh: 'fa-refresh',
+        toggle: 'fa-toggle-on',
+        columns: 'fa-th-list',
+        export: 'fa-download'
+    };
+
+    let recipients = []
+    window.operateEvents = {
+        'click .btn-send-email': function (e, value, row, index) {
+            recipients = [{
+                name: row.name,
+                email: row.email
+            }];
+            $('#email-modal-title').text('Send epost til ' + row.name);
+            $('#email-modal').modal('show');
+            $('#include-orders').prop('checked', false);
+            $('#group-order-checkbox').hide();
+            
+        },
+        'click .btn-send-sms': function(e, value, row, index) {
+            recipients = [row.phone];
+            $('#sms-modal-title').text('Send SMS til ' + row.name);
+            $('#sms-modal').modal('show');
+        }
+    };
+
+window.attendedEvents = {
+        'click .btn-attended': function(e, value, row, index) {
+            $.postJSON("/api/participants/mark_as_attended/" + row.registrationId, null)
+            .done(function(){
+                toastr.success('Attendance marked for  ' + row.name + '.')
+            })
+            .fail(function(){
+                toastr.error('Couldnt set attendance for ' + row.name + '. ')
+            })
+        },
+        'click .btn-not-attended': function(e, value, row, index) {
+            $.postJSON("/api/participants/mark_as_notattended/" + row.registrationId, null)
+            .done(function(){
+                toastr.success('Attendance removed for  ' + row.name + '.')
+            })
+            .fail(function(){
+                toastr.error('Couldnt remove attendance for ' + row.name + '. ')
+            })
+        }
+    };
+
+    function sendAll() {
+        const data = $table.bootstrapTable('getData', {useCurrentPage: false});
+        recipients = data.map(function(x){ 
+            return { name: x.name, email: x.email } 
+        });
+        $('#email-modal-title').text('Send epost til alle deltakere');
+        $('#group-order-checkbox').show();
+        $('#email-modal').modal('show');
+    }
+
+    function sendEmail() {
+        const subject = $('#email-subject').val();
+        const text = $('#email-text').val();
+        const email = {
+            to: recipients,
+            subject: subject,
+            message: text
+        };
+        if(!$('#include-orders').is(":checked")) {
+            $.postJSON('/api/v0/messaging/email', email)
+                .done(function(){
+                    if(recipients.length == 1){
+                        toastr.success('Email sent to ' + recipients[0].name + '.');
+                    } 
+                    else {
+                        toastr.success('Email sent to ' + recipients.length + ' participants.');
+                    }
+                })
+                .fail(function(){
+                    toastr.error('Could not send the Email.');
+                });    
+        }
+        else {
+            $.postJSON('/api/participants/order_emails/@Model.EventInfo.EventInfoId', email)
+                .done(function(){
+                    toastr.success('Email sent.')
+                })
+                .fail(function(){
+                    toastr.error('Could not send the Email.');
+                });
+        }
+        $('#group-order-checkbox').hide();
+        $('#email-modal').modal('hide');
+    }
+
+    function smsAll() {
+        const data = $table.bootstrapTable('getData', {useCurrentPage: false});
+        recipients = data.map(function(x){ return x.phone });
+        $('#sms-modal-title').text('Send SMS til alle deltakere');
+        $('#sms-modal').modal('show');
+    }
+
+    function sendSms() {
+        const text = $('#sms-text').val();
+        const sms = {
+            to: recipients,
+            text: text
+        }
+        $.postJSON('/api/v0/messaging/sms', sms)
+            .done(function(){
+                toastr.success('SMS sent to ' + recipients.length + ' participants.');
+            })
+            .fail(function(){
+                toastr.error('Could not send the SMS.');
+            });
+        $('#sms-modal').modal('hide');
+    }
+
+    function sendCertificate() {
+        toastr.info("Please wait. This may take some time.");
+        $.postJSON('/api/participants/email_certificates/for_event/@Model.EventInfo.EventInfoId', null)
+        .done(function(data){
+            $('#sendCertificatesModal').modal('hide');
+            toastr.success('Sent certificates to ' + data.length + ' participants.')
+        })
+        .fail(function(){
+            toastr.error('Generating/emailing certificates failed.')
+        })
+    }
+</script>
+    @await Html.PartialAsync("_CompBootstrapTable")
+}

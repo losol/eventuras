@@ -1,5 +1,6 @@
 ﻿@page "{id:int}"
 @inject IProductsService productsService
+@using Newtonsoft.Json
 @{
     var id = Convert.ToInt32(RouteData.Values["id"]);
     var product = await productsService.GetAsync(id);
@@ -12,6 +13,8 @@
             <h2>@product.Name (@product.Eventinfo.Title)</h2>
             <strong>Registration Count:</strong> @registrations.Count()
             <button class="btn btn-secondary" data-toggle="modal" data-target="#add-user-modal">Add User</button>
+            <button class="btn btn-secondary" id="btn-send-emails">Email</button>
+            <button class="btn btn-secondary" id="btn-send-sms">SMS</button>
 		</div>
 	</div>
 
@@ -34,43 +37,11 @@
     }
 </div>
 
-<div id="add-user-modal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Add User</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-            <label class="control-label">User Email</label>
-            <input id="input-email" class="form-control" />
-        </div>
-        <div class="form-group">
-            <label class="control-label">Variant</label>
-            <select id="input-variant" 
-                class="form-control" 
-                @(product.ProductVariants.Any() ? "" : "disabled") >
-                @foreach(var v in product.ProductVariants)
-                {
-                    <option value="@v.ProductVariantId">@v.Name</option>    
-                }
-            </select>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Add Order</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
+@Html.Partial("Partials/_EmailModal")
+@Html.Partial("Partials/_SmsModal")
 
 @section scripts { 
-    <script>
+<script>
     $(function () {
         var $table = $('table');
         window.icons = {
@@ -80,7 +51,23 @@
         };
     });
 </script>
+<script>
+(function () {
+    const emails = @Html.Raw(JsonConvert.SerializeObject(@registrations.Select(r => new {name = r.ParticipantName, email = r.User.Email})));
+    const phones = @Html.Raw(JsonConvert.SerializeObject(@registrations.Select(r => r.User.PhoneNumber )));
+    let recipients = []; @*used by the email and sms scripts*@
+    $('#btn-send-emails').bind('click', function() {
+        recipients = emails;
+        showEmailModal('all');
+    })
+    $('#btn-send-sms').bind('click', function() {
+        recipients = phones;
+        showSmsModal('all');
+    })
+})();
 </script>
-    @await Html.PartialAsync("_CompBootstrapTable")
-    <script src="//rawgit.com/hhurz/tableExport.jquery.plugin/master/tableExport.js"></script>
+@Html.Partial("Partials/_EmailModalScripts")
+@Html.Partial("Partials/_SmsModalScripts")
+@await Html.PartialAsync("_CompBootstrapTable")
+<script src="//rawgit.com/hhurz/tableExport.jquery.plugin/master/tableExport.js"></script>
 }

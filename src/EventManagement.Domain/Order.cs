@@ -11,16 +11,50 @@ namespace losol.EventManagement.Domain
 			Draft,
 			Verified,
 			Invoiced,
-			Paid,
-			Refunded
+			Cancelled
 		}
+
 
 		[Required]
 		public int OrderId { get; set; }
 		public string UserId { get; set; }
 		public int RegistrationId { get; set; }
 
-		public OrderStatus Status { get; set; } = OrderStatus.Draft;
+		/**
+			Allowed transitions:
+			Draft
+			Draft -> Cancelled
+			Draft -> Verified -> Cancelled
+			Draft -> Verified -> Invoiced -> Cancelled
+		 */
+		private OrderStatus _status = OrderStatus.Draft;
+		public OrderStatus Status { 
+			get => _status; 
+			set {
+				switch(value) {
+					case OrderStatus.Draft:
+						throw new InvalidOperationException("Orders cannot be set as draft.");
+					case OrderStatus.Verified:
+						if(_status != OrderStatus.Draft)
+						{
+							throw new InvalidOperationException("Only draft orders can be verified.");
+						}
+						break;
+					case OrderStatus.Invoiced:
+						if(_status != OrderStatus.Verified)
+						{
+							throw new InvalidOperationException("Only verified orders can be invoiced.");
+						}
+						break;
+
+					case OrderStatus.Cancelled:
+						// Anything can be cancelled
+						break;
+
+				}
+				_status = value;
+			} 
+		}
 
 		// From registration, should be Participant details, if Customer details
 		// does not exist.
@@ -57,6 +91,22 @@ namespace losol.EventManagement.Domain
 
 		public bool CanEdit => 
 			Status == OrderStatus.Draft || Status == OrderStatus.Verified;
+
+
+		public void MarkAsVerified()
+		{
+			Status = OrderStatus.Verified;
+		}
+
+		public void MarkAsCancelled()
+		{
+			Status = OrderStatus.Cancelled;
+		}
+
+		public void MarkAsInvoiced()
+		{
+			Status = OrderStatus.Invoiced;
+		}
 
 	}
 }

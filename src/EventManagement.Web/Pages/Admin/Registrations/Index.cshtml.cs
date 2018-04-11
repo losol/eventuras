@@ -19,11 +19,11 @@ namespace losol.EventManagement.Pages.Admin.Registrations
             _context = context;
         }
 
-        public IList<Registration> Registration { get;set; }
+        public IList<Registration> Registrations { get;set; }
 
         public async Task OnGetAsync()
         {
-            Registration = await _context.Registrations
+            Registrations = await _context.Registrations
                 .Include(r => r.EventInfo)
                 .Include(r => r.PaymentMethod)
                 .Include(r => r.User).ToListAsync();

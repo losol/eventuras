@@ -82,19 +82,17 @@ namespace losol.EventManagement.Domain
 		public void CreateOrder(IEnumerable<Product> products, IEnumerable<ProductVariant> variants)
 		{
 			_ = products ?? throw new ArgumentNullException(nameof(products));
-			if(Orders != null)
-			{
-				throw new InvalidOperationException("This registration already has an order.");
-			}
 
-
-			if(products.Where(p => p.EventInfoId != EventInfoId).Any())
+			// Check if products belnongs to the event	
+			if(products != null && products.Where(p => p.EventInfoId != EventInfoId).Any())
 			{
 				throw new ArgumentException(
 					message: "All the products must belong to the event being registered for.", 
 					paramName: nameof(products)
 				);
 			}
+
+			// Check that variants have products
 			if(variants != null)
 			{
 				if (variants.Where(v => !products.Select(p => p.ProductId).Contains(v.ProductId)).Any())
@@ -106,41 +104,44 @@ namespace losol.EventManagement.Domain
 				}	
 			}
 
-			var orderLines = products.Select(p =>
-			{
-				var v = variants?.Where(var => var.ProductId == p.ProductId).SingleOrDefault();
-				return new OrderLine
-				{
-					ProductId = p.ProductId,
-					ProductVariantId = v?.ProductVariantId,
-					Price = v?.Price ?? p.Price,
-					VatPercent = v?.VatPercent ?? p.VatPercent,
-
-					ProductName = p.Name,
-					ProductDescription = p.Description,
-
-					ProductVariantName = v?.Name,
-					ProductVariantDescription = v?.Description,
-
-					// Comments
-					// Quantity
-				};
-			}).ToList();
-
+			// Create order.
 			var order = new Order
 			{
 				UserId = UserId,
-				CustomerName = CustomerName ?? ParticipantName,
 
-				CustomerEmail = CustomerEmail,
+				CustomerName = CustomerName ?? ParticipantName,
+				CustomerEmail = CustomerEmail ?? CustomerEmail,
 				CustomerVatNumber = CustomerVatNumber,
 				CustomerInvoiceReference = CustomerInvoiceReference,
 
 				PaymentMethodId = PaymentMethodId,
-				RegistrationId = RegistrationId,
-
-				OrderLines = orderLines
+				RegistrationId = RegistrationId
 			};
+
+			if (products != null) {
+				var orderLines = products.Select(p =>
+				{
+					var v = variants?.Where(var => var.ProductId == p.ProductId).SingleOrDefault();
+					return new OrderLine
+					{
+						ProductId = p.ProductId,
+						ProductVariantId = v?.ProductVariantId,
+						Price = v?.Price ?? p.Price,
+						VatPercent = v?.VatPercent ?? p.VatPercent,
+
+						ProductName = p.Name,
+						ProductDescription = p.Description,
+
+						ProductVariantName = v?.Name,
+						ProductVariantDescription = v?.Description,
+
+						// Comments
+						// Quantity
+					};
+				}).ToList();
+				order.OrderLines = orderLines;
+			}
+	
 			order.AddLog();
 			this.Orders = this.Orders ?? new List<Order>();
 			this.Orders.Add(order);

@@ -8,9 +8,12 @@
     <div class="container">
         <h1>Ordre for arrangement</h1>
         <p> Totalt: @Model.Orders.Count()</p>
+        @if (User.IsInRole("SuperAdmin"))
+        {
         <form method="post">       
             <button type="submit" asp-page-handler="EnsureOrders" class="btn">Lag ordre for alle registrerte</button>
         </form>
+        }
     </div>
 </div>
 
@@ -18,8 +21,8 @@
 @{
     foreach (var order in Model.Orders) {
         <div class="card my-2 p-3 border-0">
-        <h3>@order.Registration.ParticipantName</h3>
-        
+        <h3>@order.Registration.ParticipantName &nbsp;<order-status value="@order.Status" /></h3>
+        <p>Fakturamottaker: @order.CustomerName</p>
         <ul>
         @foreach (var orderline in order.OrderLines) {
             <li>@orderline.ProductName - kr @orderline.Price</li>
