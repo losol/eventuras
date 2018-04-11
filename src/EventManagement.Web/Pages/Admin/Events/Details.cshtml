@@ -81,68 +81,8 @@
                 </div>
                 </div>
 
-                <!-- EMAIL Modal -->
-                <div class="modal fade" id="email-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="email-modal-title">Send epost til alle deltakere</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-
-                            <div class="form-group">
-                                <label for="email-subject">Email Subject</label>
-                                <input class="form-control" id="email-subject" />
-                            </div>
-
-                            <div class="form-group">
-                                <label for="email-text">Email Text</label>
-                                <textarea class="form-control" id="email-text" rows="8"></textarea>
-                            </div>
-
-                            <div class="form-group" id="group-order-checkbox">
-                                <input type="checkbox" value="" id="include-orders">
-                                <label for="include-orders">
-                                    Check this to include order list in the email.
-                                </label>
-                            </div>
-
-                            <div class="modal-footer">
-                                <button type="submit" onclick="sendEmail()" class="btn btn-primary">Send</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Lukk</button>   
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- SMS Modal -->
-                <div class="modal fade" id="sms-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 id="sms-modal-title" class="modal-title" id="exampleModalLabel">Send SMS til deltakerne</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="sms-text">SMS Text</label>
-                            <textarea class="form-control" id="sms-text" rows="6"></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Lukk</button>
-                        <button type="button" onclick="sendSms()" class="btn btn-primary">Send</button>
-                    </div>
-                    </div>
-                </div>
-                </div>
+                @Html.Partial("Partials/_EmailModal")
+                @Html.Partial("Partials/_SmsModal")
 
 
                 <!-- ECONOMY MENU -->
@@ -235,18 +175,6 @@
 @section scripts { 
     <script>
 
-    // Helper function
-    $.postJSON = function(url, data, callback) {
-        return jQuery.ajax({
-            headers: { 
-                'Content-Type': 'application/json' 
-            },
-            'type': 'POST',
-            'url': url,
-            'data': JSON.stringify(data)
-        });
-    };
-
     const $table = $('#table');
     $('#toolbar').find('select').change(function () {
         $table.bootstrapTable('refreshOptions', {
@@ -303,15 +231,11 @@
         }
     };
 
-    window.attendedEvents = {
+window.attendedEvents = {
         'click .btn-attended': function(e, value, row, index) {
             $.postJSON("/api/participants/mark_as_attended/" + row.registrationId, null)
             .done(function(){
-                toastr.success('Attendance marked for  ' + row.name + '.');
-                e.delegateTarget.innerText = 'Attended';
-                e.delegateTarget.classList.remove('btn-secondary');
-                e.delegateTarget.classList.add('btn-success');
-                e.delegateTarget.setAttribute('disabled', '');
+                toastr.success('Attendance marked for  ' + row.name + '.')
             })
             .fail(function(){
                 toastr.error('Couldnt set attendance for ' + row.name + '. ')
@@ -320,11 +244,7 @@
         'click .btn-not-attended': function(e, value, row, index) {
             $.postJSON("/api/participants/mark_as_notattended/" + row.registrationId, null)
             .done(function(){
-                toastr.success('Attendance removed for  ' + row.name + '.');
-                e.delegateTarget.innerText = 'Not Attended';
-                e.delegateTarget.classList.remove('btn-success');
-                e.delegateTarget.classList.add('btn-secondary');
-                e.delegateTarget.setAttribute('disabled', '');
+                toastr.success('Attendance removed for  ' + row.name + '.')
             })
             .fail(function(){
                 toastr.error('Couldnt remove attendance for ' + row.name + '. ')
