@@ -6,22 +6,27 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Services;
+using Microsoft.AspNetCore.Identity;
+using Mapster;
 
 namespace losol.EventManagement.Pages.Admin.Events
 {
     public class AddRegistrationModel : PageModel
     {
-        private readonly IEventInfoService _eventInfos;
+        private readonly IEventInfoService _eventsService;
         private readonly IRegistrationService _registrations;
         private readonly IOrderService _orders;
         private readonly IPaymentMethodService _paymentMethodService;
+		private readonly UserManager<ApplicationUser> _userManager;
+        
 
-        public AddRegistrationModel(IOrderService orders, IEventInfoService eventInfos, IRegistrationService registrations, IPaymentMethodService paymentMethods)
+        public AddRegistrationModel(IOrderService orders, IEventInfoService eventInfos, IRegistrationService registrations, IPaymentMethodService paymentMethods, UserManager<ApplicationUser> userManager)
         {
-            _eventInfos = eventInfos;
+            _eventsService = eventInfos;
             _orders = orders;
             _registrations = registrations;
             _paymentMethodService = paymentMethods;
+            _userManager = userManager;
         }
 
 		[BindProperty]
@@ -34,7 +39,7 @@ namespace losol.EventManagement.Pages.Admin.Events
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-			EventInfo = await _eventInfos.GetWithProductsAsync(id);
+			EventInfo = await _eventsService.GetWithProductsAsync(id);
 
 			if (EventInfo == null)
 			{
@@ -46,5 +51,66 @@ namespace losol.EventManagement.Pages.Admin.Events
 
             return Page();
         }
+
+        public async Task<IActionResult> OnPostAsync(int id)
+		{
+
+			if (!ModelState.IsValid)
+			{
+				PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
+				return Page();
+			}
+
+			EventInfo = await _eventsService.GetWithProductsAsync(id);
+			if (EventInfo == null) return NotFound();
+
+			Registration.EventInfoId = id;
+
+			// Check if user exists with email registered, and create new user if not.
+			var user = await _userManager.FindByEmailAsync(Registration.Email);
+			if (user == null)
+			{
+                user = new ApplicationUser { 
+                    UserName = Registration.Email, 
+                    Name = Registration.ParticipantName, 
+                    Email = Registration.Email, 
+                    PhoneNumber = (Registration.PhoneCountryCode + Registration.Phone) 
+                };
+
+				var result = await _userManager.CreateAsync(user);
+                if (!result.Succeeded) {
+                    foreach (var error in result.Errors)
+					{
+						ModelState.AddModelError(string.Empty, error.Description);
+					}
+                    return Page();
+                }
+			}
+
+            // Any registrations for this user on this event?
+            var registration = await _registrations.GetAsync(user.Id, Registration.EventInfoId);
+            if (registration != null)
+            {
+                ModelState.AddModelError(string.Empty, "Bruker var allerede registrert");
+                return Page();
+            }
+
+			// Create registration for our user
+			var newRegistration = Registration.Adapt<Registration>();
+            
+			int[] selectedProductIds = null;
+			int[] selectedVariantIds = null;
+
+			// If the eventinfo has products, then register and make order
+			if (Registration.HasProducts)
+			{
+				selectedProductIds = Registration.SelectedProducts.ToArray();
+				selectedVariantIds = Registration.SelectedVariants.ToArray();
+			}
+
+			await _registrations.CreateRegistration(newRegistration, selectedProductIds, selectedVariantIds);
+
+			return RedirectToPage();
+		}
     }
 }

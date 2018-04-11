@@ -157,7 +157,7 @@ namespace losol.EventManagement.Services
             return _db.Certificates.FindAsync(id);
         }
 
-		/*
+		/* 
 		private async Task<bool> ConfirmRegistrationEmail(Registration registration)
 		{
 			// Prepare an email to send out
