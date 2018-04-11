@@ -109,7 +109,8 @@ gulp.task('make:js', function () {
             paths.libSrc + 'bootstrap-table/extensions/filter-control/bootstrap-table-filter-control.min.js',
             paths.libSrc + 'tableexport.jquery.plugin/tableExport.js',
             paths.libSrc + 'bootstrap-table/src/extensions/export/bootstrap-table-export.js',
-            paths.libSrc + 'bootstrap-table/dist/locale/bootstrap-table-nb-NO.min.js'
+            paths.libSrc + 'bootstrap-table/dist/locale/bootstrap-table-nb-NO.min.js',
+            paths.libDest + 'site.js'
         ])
             .pipe(concat('bootstrap-table.min.js'))
             .pipe(gulp.dest(paths.jsDest));
