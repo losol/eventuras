@@ -1,0 +1,28 @@
+<script>
+    function showEmailModal(name) {
+        $('#email-modal-title').text('Send epost til ' + name);
+        $('#email-modal').modal('show');
+    }
+    function sendEmail() {
+        const subject = $('#email-subject').val();
+        const text = $('#email-text').val();
+        const email = {
+            to: recipients,
+            subject: subject,
+            message: text
+        };
+        $.postJSON('/api/v0/messaging/email', email)
+            .done(function(){
+                if(recipients.length == 1){
+                    toastr.success('Email sent to ' + recipients[0].name + '.');
+                } 
+                else {
+                    toastr.success('Email sent to ' + recipients.length + ' participants.');
+                }
+            })
+            .fail(function(){
+                toastr.error('Could not send the Email.');;
+            });
+        $('#email-modal').modal('hide');
+    }
+</script>
