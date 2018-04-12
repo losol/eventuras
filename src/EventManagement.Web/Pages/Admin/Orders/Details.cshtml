@@ -35,6 +35,10 @@
                         
                     </div>
                 }
+                <button class="btn btn-small btn-danger" data-toggle="popover" 
+                                        data-trigger="focus" 
+                                        title="Delete order?" 
+                                        data-content="<button class='btn btn-sm btn-danger btn-delete-line' onclick='deleteOrder()'>Yes</button><button class='btn btn-sm btn-success'>No</button>">Delete</button>
             </h2>
         <div class="row justify-content-between">
             <div class="card col-md-5 m-2">
@@ -293,7 +297,7 @@ Gotta do it in a better way later. *@
             const $sProducts = $("#selected-product");
 
             $('[data-toggle="popover"]').popover({
-                html: true
+               html: true
             })
             $sProducts.change(function() {
                 // Remove existing options
@@ -396,5 +400,15 @@ Gotta do it in a better way later. *@
                 location.reload();
             })            
         }
+
+        function deleteOrder() {
+            $.post('/api/v0/orders/delete/@id').done(function() {
+                toastr.success('Order deleted. Redirecting.')
+                window.setTimeout(function(){
+                    window.location.href = "/Admin/Orders";
+                }, 3000);
+            })
+        }
     </script>
+    
 }
