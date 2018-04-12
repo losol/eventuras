@@ -183,15 +183,15 @@ namespace losol.EventManagement.Domain
 						ProductVariantId = v?.ProductVariantId,
 						Price = v?.Price ?? p.Price,
 						VatPercent = v?.VatPercent ?? p.VatPercent,
+						Quantity = Math.Max(1, p.MandatoryCount), 
 
 						ProductName = p.Name,
 						ProductDescription = p.Description,
 
 						ProductVariantName = v?.Name,
-						ProductVariantDescription = v?.Description,
+						ProductVariantDescription = v?.Description
 
 						// Comments
-						// Quantity
 					};
 				});
 			return orderLines.ToList();
