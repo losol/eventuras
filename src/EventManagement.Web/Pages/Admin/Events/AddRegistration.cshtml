@@ -142,11 +142,14 @@
             $('#userselect').select2({
                 ajax: {
                     url: '/api/v0/users',
-                    dataType: 'json'
                     processResults: function (data) {
-                        // Tranforms the top-level key of the response object from 'items' to 'results'
                         return {
-                            results: name
+                            results: $.map(data, function (item) {
+                                return {
+                                    text: item.name,
+                                    id: item.id
+                                }
+                            })
                         };
                     }
                 }
