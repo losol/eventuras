@@ -91,6 +91,7 @@
         $('#btn-add-user').on('click', function(){
             const data = {
                 email: inputEmail.val(),
+                eventId: @product.EventInfoId,
                 productId: @product.ProductId,
                 productVariantId: inputVariant.val()
             }
