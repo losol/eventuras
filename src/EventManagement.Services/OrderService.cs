@@ -61,6 +61,11 @@ namespace losol.EventManagement.Services
 			_db.Orders.Remove(order);
 			return _db.SaveChangesAsync();
 		}
+		public async Task<int> DeleteOrderAsync(int orderId)
+		{
+			var order = await _db.Orders.FindAsync(orderId);
+			return await DeleteOrderAsync(order);
+		}
 		
 		
 		public Task<OrderLine> GetOrderLineAsync(int lineId) =>
