@@ -24,13 +24,14 @@ namespace losol.EventManagement.Pages.Admin.Events
 
         public List<Order> Orders { get; set; }
         public EventInfo EventInfo { get; set; }
+        public List<Product> Products => EventInfo?.Products;
         public List<Registration> Registrations{ get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
             // Get orders for
             Orders = await _orders.GetOrdersForEventAsync(id);
-            EventInfo = await _eventInfos.GetAsync(id);
+            EventInfo = await _eventInfos.GetWithProductsAsync(id);
             Registrations = await _registrations.GetRegistrationsWithOrders(id);
             Registrations.OrderBy (m => m.ParticipantName);
             return Page();

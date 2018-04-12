@@ -19,7 +19,8 @@
             <div class="card my-2 p-3 border-0">
                 <h3 class="py-1">
                     @registration.ParticipantName 
-                    <button class="btn btn-default">@Model.GetOrderButtonText(registration)</button>
+                    <button data-target="#add-order-modal" data-toggle="modal"
+                        class="btn btn-default">@Model.GetOrderButtonText(registration)</button>
                 </h3>
 
                 @foreach (var order in registration.Orders) 
@@ -41,5 +42,107 @@
             </div>
         }
     }
-
 </div>
+
+
+<div id="add-order-modal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Order</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+            @if(Model.Products.Any())
+            {
+                @for(int i = 0; i < Model.Products.Count; i++)
+                {
+                    var product = Model.Products[i];
+                    var productModel = Model.Products[i];
+
+                    <div class="form-group">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-1" style="margin-top:5px">
+                                        <input class="input-product" value="@product.ProductId" type="checkbox" class="form-check" />
+                                    </div>
+                                    <div class="col">
+                                        <h5 class="card-title">@product.Name</h5>
+                                        <p class="card-text">@product.Description</p>
+                                        @if(product.ProductVariants == null || product.ProductVariants.Count == 0)
+                                        {
+                                            <h6 class="card-subtitle mb-2 text-muted">@product.Price kr</h6>
+                                        }
+                                        else
+                                        {
+                                            <div class="row">
+                                                @foreach(var variant in product.ProductVariants)
+                                                {
+                                                    <div class="col">
+                                                        <div class="form-check">
+                                                            <input name="product-@product.ProductId" 
+                                                            type="radio" value="@variant.ProductVariantId" 
+                                                            data-product="@product.ProductId"
+                                                            class="form-check-input input-variant" />
+                                                            <label class="form-check-label">
+                                                                @variant.Name
+                                                            </label>
+                                                            <h6 class="card-subtitle mb-2 text-muted" style="margin-top:5px">@variant.Price kr</h6>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-add-order" type="button" class="btn btn-primary">Add Order</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+@section scripts
+{
+    <script>
+        
+        // DOM cache
+        const $inputProducts = $('.input-product');
+        const $inputVariants = $('.input-variant');
+
+        $('#btn-add-order').on('click', function(){
+            
+            const $products = $inputProducts.filter(':checked')
+                                    .map(function(){ 
+                                        return this.value 
+                                    })
+                                    .get();
+
+            const $variants = $inputVariants.filter(':checked')
+                                            .map(function(){ 
+                                                return { 
+                                                    id: this.value, 
+                                                    product: this.product 
+                                                } 
+                                            })
+                                            .get();
+
+            console.log($products)
+            console.log($variants)
+
+        })
+    </script>
+}
