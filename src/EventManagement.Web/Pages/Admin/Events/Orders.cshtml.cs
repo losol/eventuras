@@ -35,5 +35,14 @@ namespace losol.EventManagement.Pages.Admin.Events
             Registrations.OrderBy (m => m.ParticipantName);
             return Page();
         }
+
+        public string GetOrderButtonText(Registration registration)
+        {
+            if(!registration.Orders.Any(o => o.Status != Order.OrderStatus.Invoiced))
+            {
+                return "New Order";
+            }
+            return "Update Order";
+        }
     }
 }
