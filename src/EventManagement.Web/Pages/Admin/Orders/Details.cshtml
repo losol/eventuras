@@ -15,23 +15,26 @@
             <h2>
                 Ordre #@order.OrderId 
                 <order-status value="@order.Status" />
-                <div class="btn-group btn-group-sm" role="group">
-                    @if(order.GetNextStatus() != null)
-                    {
-                        <button type="button" class="btn btn-primary" onclick="updateOrderStatus('@order.GetNextStatus()')">
-                            @order.GetOrderStatusActionText()
-                        </button>
-                    }
+                @if(order.Status != Order.OrderStatus.Cancelled)
+                {
+                    <div class="btn-group btn-group-sm" role="group">
+                        @if(order.GetNextStatus() != null)
+                        {
+                            <button type="button" class="btn btn-primary" onclick="updateOrderStatus('@order.GetNextStatus()')">
+                                @order.GetOrderStatusActionText()
+                            </button>
+                        }
 
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        </button>
-                        <div class="dropdown-menu">
-                            <button class="dropdown-item text-danger" onclick="updateOrderStatus('Cancelled')">Cancel</button>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            </button>
+                            <div class="dropdown-menu">
+                                <button class="dropdown-item text-danger" onclick="updateOrderStatus('Cancelled')">Cancel</button>
+                            </div>
                         </div>
+                        
                     </div>
-                    
-                </div>
+                }
             </h2>
         <div class="row justify-content-between">
             <div class="card col-md-5 m-2">
