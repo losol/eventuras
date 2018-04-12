@@ -98,6 +98,7 @@
             $.postJSON('/api/v0/products/add-user', data)
              .done(function(){
                  toastr.success('User added!')
+                 location.reload()
              }).fail(function(){
                  toastr.error('Error adding user.')
              });
