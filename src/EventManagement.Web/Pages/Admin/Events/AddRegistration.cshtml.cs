@@ -66,8 +66,6 @@ namespace losol.EventManagement.Pages.Admin.Events
 			EventInfo = await _eventsService.GetWithProductsAsync(id);
 			if (EventInfo == null) return NotFound();
 
-			Registration.EventInfoId = id;
-
 			// Check if user exists with email registered, and create new user if not.
 			var user = await _userManager.FindByEmailAsync(Registration.Email);
 			if (user == null)
@@ -89,8 +87,11 @@ namespace losol.EventManagement.Pages.Admin.Events
                 }
 			}
 
+            Registration.EventInfoId = id;
+            Registration.UserId = user.Id;
+
             // Any registrations for this user on this event?
-            var registration = await _registrations.GetAsync(user.Id, id);
+            var registration = await _registrations.GetAsync(Registration.UserId, Registration.EventInfoId);
             if (registration != null)
             {
                 ModelState.AddModelError(string.Empty, "Bruker var allerede registrert");
