@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using static losol.EventManagement.Domain.Order;
 
 namespace losol.EventManagement.Services
 {
@@ -49,8 +50,24 @@ namespace losol.EventManagement.Services
 				.OrderBy(o => o.Registration.ParticipantName)
 				.AsNoTracking()
 				.ToListAsync(); 
-		
 
+
+		public Task<int> DeleteOrderAsync(Order order)
+		{
+			if(order.Status == OrderStatus.Invoiced)
+			{
+				throw new InvalidOperationException("Invoiced orders cannot be deleted.");
+			}
+			_db.Orders.Remove(order);
+			return _db.SaveChangesAsync();
+		}
+		public async Task<int> DeleteOrderAsync(int orderId)
+		{
+			var order = await _db.Orders.FindAsync(orderId);
+			return await DeleteOrderAsync(order);
+		}
+		
+		
 		public Task<OrderLine> GetOrderLineAsync(int lineId) =>
 			_db.OrderLines
 			   .Where(l => l.OrderLineId == lineId)

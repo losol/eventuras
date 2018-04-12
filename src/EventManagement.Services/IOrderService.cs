@@ -18,6 +18,8 @@ namespace losol.EventManagement.Services
 		// Order details
 		Task<bool> UpdateOrderDetailsAsync(int id, string customername, string customerEmail, string invoiceReference, string comments);
 		Task<int> MakeOrderFreeAsync(int id);
+		Task<int> DeleteOrderAsync(Order order);
+		Task<int> DeleteOrderAsync(int orderId);
 
 		// Order lines
 		Task<OrderLine> GetOrderLineAsync(int lineId);

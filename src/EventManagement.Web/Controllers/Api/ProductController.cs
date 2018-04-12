@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace losol.EventManagement.Web.Api.Controllers
@@ -51,14 +53,30 @@ namespace losol.EventManagement.Web.Api.Controllers
 		}
 
 		[HttpPost("add-user")]
-		public async Task<IActionResult> AddUserToProduct([FromBody]AddUserToProductVM vm)
+		public async Task<IActionResult> AddUserToProduct([FromBody]AddUserToProductVM vm,
+			[FromServices]IRegistrationService registrationService)
 		{
-			await Task.FromResult(0);
+			if(!ModelState.IsValid)
+			{
+				return BadRequest();
+			}
+			try{
+				await registrationService.AddRegistrationToProduct(vm.Email, vm.EventId, vm.ProductId, vm.VariantId);
+			}
+			catch(InvalidOperationException)
+			{
+				return StatusCode(StatusCodes.Status409Conflict);
+			}
+			catch(ArgumentException)
+			{
+				return BadRequest();
+			}
 			return Ok();
 		}
 
 		public class AddUserToProductVM
 		{
+			public int EventId { get; set; }
 			public string Email { get; set; }
 			public int ProductId { get; set; }
 			public int? VariantId { get; set; }

@@ -117,6 +117,13 @@ namespace losol.EventManagement.Web.Controllers.Api
 			return Ok();
 		}
 
+		[HttpPost("delete/{id}")]
+		public async Task<IActionResult> DeleteOrder([FromRoute]int id)
+		{
+			await _orderService.DeleteOrderAsync(id);
+			return Ok();
+		}
+
 		public class UpdateOrderDetailsVM
 		{
 			public string CustomerName { get; set; }
