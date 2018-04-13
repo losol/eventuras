@@ -144,6 +144,15 @@ namespace losol.EventManagement.Services
 			return await _db.SaveChangesAsync() > 0;
 		}
 
+		public async Task<int> MakeOrderFreeAsync(int id)
+		{
+			var order = await _db.Orders
+								 .Include(o => o.OrderLines)
+								 .SingleOrDefaultAsync(o => o.OrderId == id);
+			order.OrderLines.ForEach((l) => l.Price = 0);
+			return await _db.SaveChangesAsync();
+		}
+
         public async Task<bool> MarkAsVerifiedAsync(int orderId)
         {
             var order = await _db.Orders.FindAsync(orderId);

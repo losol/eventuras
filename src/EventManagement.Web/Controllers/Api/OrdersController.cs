@@ -61,6 +61,13 @@ namespace losol.EventManagement.Web.Controllers.Api
 			}
 		}
 
+		[HttpPost("update/{id}/make-free")]
+		public async Task<ActionResult> MakeOrderFree([FromRoute]int id)
+		{
+			await _orderService.MakeOrderFreeAsync(id);
+			return Ok();
+		}
+
 		[HttpPost("line/delete/{lineid}")]
 		public async Task<IActionResult> DeleteOrderLine(int lineid)
 		{
