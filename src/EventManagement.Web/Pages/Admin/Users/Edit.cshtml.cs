@@ -87,7 +87,12 @@ namespace losol.EventManagement.Pages.Admin.Users
 
             if (Input.Email != user.Email)
             {
+                // Set new email address
                 var setEmailResult = await _userManager.SetEmailAsync(user, Input.Email);
+
+                // Change username to the new address
+                user.UserName = Input.Email;
+                var setNameResult = await _userManager.UpdateAsync(user);
                 if (!setEmailResult.Succeeded)
                 {
                     throw new ApplicationException($"Unexpected error occurred setting email for user with ID '{user.Id}'.");
