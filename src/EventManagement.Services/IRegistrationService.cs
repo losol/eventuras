@@ -23,7 +23,8 @@ namespace losol.EventManagement.Services
 
 		Task<int> CreateRegistration(Registration registration);
 		Task<int> CreateRegistration(Registration registration, int[] productIds, int[] variantIds);
-		Task<bool> AddRegistrationToProduct(string email, int eventId, int productId, int? variantId);
+		Task<bool> AddProductToRegistration(string email, int eventId, int productId, int? variantId);
+		Task<bool> CreateOrUpdateOrder(int registrationId, int[] products, int[] variants);
 		
 		Task<int> SetRegistrationAsVerified(int id);
 		Task<int> SetRegistrationAsAttended(int id);

@@ -61,7 +61,7 @@ namespace losol.EventManagement.Web.Api.Controllers
 				return BadRequest();
 			}
 			try{
-				await registrationService.AddRegistrationToProduct(vm.Email, vm.EventId, vm.ProductId, vm.VariantId);
+				await registrationService.AddProductToRegistration(vm.Email, vm.EventId, vm.ProductId, vm.VariantId);
 			}
 			catch(InvalidOperationException)
 			{

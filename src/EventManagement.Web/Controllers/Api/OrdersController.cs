@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using losol.EventManagement.Services;
 using System.ComponentModel.DataAnnotations;
 using static losol.EventManagement.Domain.Order;
+using System.Collections.Generic;
 
 namespace losol.EventManagement.Web.Controllers.Api
 {
@@ -122,6 +123,38 @@ namespace losol.EventManagement.Web.Controllers.Api
 		{
 			await _orderService.DeleteOrderAsync(id);
 			return Ok();
+		}
+
+		[HttpPost("create-order")]
+		public async Task<IActionResult> CreateOrder([FromBody]CreateOrderVM vm,
+			[FromServices]IRegistrationService registrationService)
+		{
+			if(!ModelState.IsValid) return BadRequest();
+
+			try
+			{
+				await registrationService.CreateOrUpdateOrder(vm.RegistrationId, vm.ProductIds, vm.VariantIds);
+				return Ok();
+			}
+			catch(ArgumentException)
+			{
+				return BadRequest();
+			}
+			catch(InvalidOperationException)
+			{
+				return StatusCode(StatusCodes.Status409Conflict);
+			}
+			catch {
+				return StatusCode(StatusCodes.Status500InternalServerError);
+			}			
+		}
+
+
+		public class CreateOrderVM
+		{
+			public int RegistrationId { get; set; }
+			public int[] ProductIds { get; set; }
+			public int[] VariantIds { get; set; }
 		}
 
 		public class UpdateOrderDetailsVM
