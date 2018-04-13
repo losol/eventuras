@@ -157,7 +157,7 @@ namespace losol.EventManagement.Services
             return _db.Certificates.FindAsync(id);
         }
 
-        public async Task<bool> AddRegistrationToProduct(string email, int eventId, int productId, int? variantId)
+        public async Task<bool> AddProductToRegistration(string email, int eventId, int productId, int? variantId)
         {
 			var userId = await _db.Users.Where(u => u.Email == email)
 							.Select(u => u.Id)
@@ -171,23 +171,10 @@ namespace losol.EventManagement.Services
 				      			  .SingleOrDefaultAsync();
 			_ = registration ?? throw new ArgumentException(message: "Invalid eventId or the user is not registered for the event", paramName: nameof(eventId));
 
-			// Get lists with a single product & variant in them
-			var products = await _db.Products
-										.Where(p => p.ProductId == productId)
-										.Include(p => p.ProductVariants)
-										.AsNoTracking()
-										.ToListAsync();
-			if(!products.Any())
-			{
-				throw new ArgumentException(message: "Invalid productId", paramName: nameof(productId));
-			}
-			var variants = products.First().ProductVariants.Where(v => v.ProductVariantId == variantId);
+			
 
-			// Create/update an order as needed
-			registration.CreateOrUpdateOrder(products, variants);
 
-			// Persist the changes
-			return await _db.SaveChangesAsync() > 0;
+			return await _createOrUpdateOrderAsync(registration, new int[] { productId }, new int[] { variantId.Value });
         }
 
 		public async Task<bool> CreateOrUpdateOrder(int registrationId, int[] products, int[] variants)
