@@ -124,9 +124,22 @@ namespace losol.EventManagement.Web.Controllers.Api
 		{
 			if(!ModelState.IsValid) return BadRequest();
 
-			await registrationService.CreateOrUpdateOrder(vm.RegistrationId, vm.ProductIds, vm.VariantIds);
-
-			return Ok();
+			try
+			{
+				await registrationService.CreateOrUpdateOrder(vm.RegistrationId, vm.ProductIds, vm.VariantIds);
+				return Ok();
+			}
+			catch(ArgumentException)
+			{
+				return BadRequest();
+			}
+			catch(InvalidOperationException)
+			{
+				return StatusCode(StatusCodes.Status409Conflict);
+			}
+			catch {
+				return StatusCode(StatusCodes.Status500InternalServerError);
+			}			
 		}
 
 

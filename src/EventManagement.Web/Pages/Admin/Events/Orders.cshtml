@@ -159,6 +159,8 @@
             }
             $.postJSON('/api/v0/orders/create-order', body).done(function(){
                 location.reload();
+            }).fail(function(){
+                toastr.error('Looks like some of the products have already been ordered.')
             })
         })
     })();
