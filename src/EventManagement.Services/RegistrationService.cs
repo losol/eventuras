@@ -190,6 +190,41 @@ namespace losol.EventManagement.Services
 			return await _db.SaveChangesAsync() > 0;
         }
 
+		public async Task<bool> CreateOrUpdateOrder(int registrationId, int[] products, int[] variants)
+		{
+			var registration = await _db.Registrations
+								  .Where(a => a.RegistrationId == registrationId)
+								  .Include(r => r.Orders)
+								  	.ThenInclude(o => o.OrderLines)
+				      			  .SingleOrDefaultAsync();
+			_ = registration ?? throw new ArgumentException(message: "Invalid registration id.", paramName: nameof(registrationId));
+
+			return await _createOrUpdateOrderAsync(registration, products, variants);
+		}
+
+
+		private async Task<bool> _createOrUpdateOrderAsync(Registration registration, int[] productIds, int[] variantIds)
+		{
+			// Get lists with a single product & variant in them
+			var products = await _db.Products
+										.Where(p => productIds.Contains(p.ProductId))
+										.Include(p => p.ProductVariants)
+										.AsNoTracking()
+										.ToListAsync();
+			if(products?.Count != productIds.Count())
+			{
+				throw new ArgumentException(message: "Couldnt find all the products. Check the ids.", paramName: nameof(productIds));
+			}
+			var variants = products.First().ProductVariants.Where(v => variantIds.Contains(v.ProductVariantId));
+
+			// Create/update an order as needed
+			registration.CreateOrUpdateOrder(products, variants);
+
+			// Persist the changes
+			return await _db.SaveChangesAsync() > 0;
+		}
+
+
         /* 
 		private async Task<bool> ConfirmRegistrationEmail(Registration registration)
 		{

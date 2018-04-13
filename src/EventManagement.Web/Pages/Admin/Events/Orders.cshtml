@@ -19,8 +19,8 @@
             <div class="card my-2 p-3 border-0">
                 <h3 class="py-1">
                     @registration.ParticipantName 
-                    <button data-target="#add-order-modal" data-toggle="modal"
-                        class="btn btn-default">@Model.GetOrderButtonText(registration)</button>
+                    <button data-id="@registration.RegistrationId"
+                        class="btn btn-order btn-default">@Model.GetOrderButtonText(registration)</button>
                 </h3>
 
                 @foreach (var order in registration.Orders) 
@@ -87,7 +87,7 @@
                                                             <input name="product-@product.ProductId" 
                                                             type="radio" value="@variant.ProductVariantId" 
                                                             data-product="@product.ProductId"
-                                                            class="form-check-input input-variant" />
+                                                            class="form-check-input input-variant" checked />
                                                             <label class="form-check-label">
                                                                 @variant.Name
                                                             </label>
@@ -118,31 +118,49 @@
 @section scripts
 {
     <script>
-        
+    (function () {
+
         // DOM cache
         const $inputProducts = $('.input-product');
         const $inputVariants = $('.input-variant');
+        const $modal = $('#add-order-modal');
+
+
+        let registrationId = -1;
+        $('.btn-order').on('click', function(){
+            registrationId = $(this).data('id');
+            $modal.modal('show');
+        })
+        
 
         $('#btn-add-order').on('click', function(){
             
-            const $products = $inputProducts.filter(':checked')
+            const products = $inputProducts.filter(':checked')
                                     .map(function(){ 
                                         return this.value 
                                     })
                                     .get();
 
-            const $variants = $inputVariants.filter(':checked')
-                                            .map(function(){ 
+            const variants = $inputVariants.filter(':checked')
+                                            .map(function(i, e){ 
                                                 return { 
                                                     id: this.value, 
-                                                    product: this.product 
+                                                    isSelected: $(e).closest('.card-body').find('input.input-product').is(':checked')
                                                 } 
                                             })
-                                            .get();
+                                            .get()
+                                            .filter(function(x) { return x.isSelected } )
+                                            .map(function(x){ return x.id; });
 
-            console.log($products)
-            console.log($variants)
-
+            const body = {
+                registrationId: registrationId,
+                variantIds: variants,
+                productIds: products
+            }
+            $.postJSON('/api/v0/orders/create-order', body).done(function(){
+                location.reload();
+            })
         })
+    })();
     </script>
 }
