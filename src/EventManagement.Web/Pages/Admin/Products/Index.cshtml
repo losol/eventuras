@@ -106,6 +106,8 @@
 </script>
 <script>
 let recipients = []; @*used by the email and sms scripts*@
+let includeOrders = true;
+let eventId = @product.EventInfoId;
 (function () {
     const emails = @Html.Raw(JsonConvert.SerializeObject(@registrations.Select(r => new {name = r.ParticipantName, email = r.User.Email})));
     const phones = @Html.Raw(JsonConvert.SerializeObject(@registrations.Select(r => r.User.PhoneNumber )));
