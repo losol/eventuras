@@ -177,6 +177,12 @@
 
 @section scripts { 
     <script>
+    let recipients = [];
+    let includeOrders = false;
+    let eventId = @Model.EventInfo.EventInfoId;
+    </script>
+    @Html.Partial("Partials/_EmailModalScripts")
+    <script>
 
     const $table = $('#table');
     $('#toolbar').find('select').change(function () {
@@ -214,18 +220,15 @@
         export: 'fa-download'
     };
 
-    let recipients = []
     window.operateEvents = {
         'click .btn-send-email': function (e, value, row, index) {
             recipients = [{
                 name: row.name,
                 email: row.email
             }];
-            $('#email-modal-title').text('Send epost til ' + row.name);
-            $('#email-modal').modal('show');
-            $('#include-orders').prop('checked', false);
-            $('#group-order-checkbox').hide();
-            
+            includeOrders = false;
+            showEmailModal(row.name);
+            hideOrderCheckbox();
         },
         'click .btn-send-sms': function(e, value, row, index) {
             recipients = [row.phone];
@@ -234,7 +237,7 @@
         }
     };
 
-window.attendedEvents = {
+    window.attendedEvents = {
         'click .btn-attended': function(e, value, row, index) {
             $.postJSON("/api/participants/mark_as_attended/" + row.registrationId, null)
             .done(function(){
@@ -260,44 +263,9 @@ window.attendedEvents = {
         recipients = data.map(function(x){ 
             return { name: x.name, email: x.email } 
         });
-        $('#email-modal-title').text('Send epost til alle deltakere');
-        $('#group-order-checkbox').show();
-        $('#email-modal').modal('show');
-    }
-
-    function sendEmail() {
-        const subject = $('#email-subject').val();
-        const text = $('#email-text').val();
-        const email = {
-            to: recipients,
-            subject: subject,
-            message: text
-        };
-        if(!$('#include-orders').is(":checked")) {
-            $.postJSON('/api/v0/messaging/email', email)
-                .done(function(){
-                    if(recipients.length == 1){
-                        toastr.success('Email sent to ' + recipients[0].name + '.');
-                    } 
-                    else {
-                        toastr.success('Email sent to ' + recipients.length + ' participants.');
-                    }
-                })
-                .fail(function(){
-                    toastr.error('Could not send the Email.');
-                });    
-        }
-        else {
-            $.postJSON('/api/participants/order_emails/@Model.EventInfo.EventInfoId', email)
-                .done(function(){
-                    toastr.success('Email sent.')
-                })
-                .fail(function(){
-                    toastr.error('Could not send the Email.');
-                });
-        }
-        $('#group-order-checkbox').hide();
-        $('#email-modal').modal('hide');
+        includeOrders = true;
+        showEmailModal('alle deltakere');
+        showOrderCheckbox();
     }
 
     function smsAll() {

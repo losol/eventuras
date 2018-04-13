@@ -3,6 +3,15 @@
         $('#email-modal-title').text('Send epost til ' + name);
         $('#email-modal').modal('show');
     }
+    function hideEmailModal() {
+        $('#email-modal').modal('hide');
+    }
+    function hideOrderCheckbox() {
+        $('#group-order-checkbox').hide();
+    }
+    function showOrderCheckbox() {
+        $('#group-order-checkbox').show();
+    }
     function sendEmail() {
         const subject = $('#email-subject').val();
         const text = $('#email-text').val();
@@ -11,18 +20,33 @@
             subject: subject,
             message: text
         };
-        $.postJSON('/api/v0/messaging/email', email)
-            .done(function(){
-                if(recipients.length == 1){
-                    toastr.success('Email sent to ' + recipients[0].name + '.');
-                } 
-                else {
-                    toastr.success('Email sent to ' + recipients.length + ' participants.');
-                }
-            })
-            .fail(function(){
-                toastr.error('Could not send the Email.');;
-            });
-        $('#email-modal').modal('hide');
+
+        let isChecked = $('#include-orders').is(':checked');
+        if(includeOrders === true && isChecked) {
+            $.postJSON('/api/participants/order_emails/' + eventId, email)
+                .done(function(){
+                    toastr.success('Email sent.')
+                })
+                .fail(function(){
+                    toastr.error('Could not send the Email.');
+                });
+        }
+        else {
+            $.postJSON('/api/v0/messaging/email', email)
+                .done(function(){
+                    if(recipients.length == 1){
+                        toastr.success('Email sent to ' + recipients[0].name + '.');
+                    } 
+                    else {
+                        toastr.success('Email sent to ' + recipients.length + ' participants.');
+                    }
+                })
+                .fail(function(){
+                    toastr.error('Could not send the Email.');
+                });    
+        }
+
+        hideOrderCheckbox();
+        hideEmailModal();
     }
 </script>
