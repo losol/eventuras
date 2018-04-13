@@ -353,5 +353,33 @@ namespace losol.EventManagement.UnitTests
 			}
 
 		}
+
+		public class HasOrder_Should
+		{
+			[Fact]
+			public void ReturnFalseIfNull()
+			{
+				var registration = new Registration { };
+				Assert.False(registration.HasOrder);
+			}
+
+			[Fact]
+			public void ReturnFalseIfZero()
+			{
+				var registration = new Registration { Orders = new List<Order>() };
+				Assert.False(registration.HasOrder);
+			}
+
+			[Fact]
+			public void ReturnTrueIfHasOrder()
+			{
+				var registration = new Registration { 
+					Orders = new List<Order>() {
+						new Order()
+					}
+				};
+				Assert.True(registration.HasOrder);
+			}
+		}
 	}
 }
