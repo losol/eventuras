@@ -78,7 +78,7 @@ namespace losol.EventManagement.Domain
 			Attended = false;
 		}
 
-		public bool HasOrder => Orders == null || Orders.Count == 0;
+		public bool HasOrder => Orders != null && Orders.Count > 0;
 
 		public void CreateOrder(IEnumerable<Product> products, IEnumerable<ProductVariant> variants)
 		{
