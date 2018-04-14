@@ -163,7 +163,7 @@
                 <dt class="col-6 col-md-3 col-lg-2 text-right">User ID</dt>
                 <dd class="col-6 col-md-9 col-lg-10"><code>@(order.UserId ?? "Unavailable")</code></dd>
                 <dt class="col-6 col-md-3 col-lg-2 text-right">Registration ID</dt>
-                <dd class="col-6 col-md-9 col-lg-10">@order.RegistrationId</dd>
+                <dd class="col-6 col-md-9 col-lg-10"><a asp-page="../Registrations/Details" asp-route-id="@order.RegistrationId">@order.RegistrationId</a></dd>
                 <dt class="col-6 col-md-3 col-lg-2 text-right">Order Status</dt>
                 <dd class="col-6 col-md-9 col-lg-10"><order-status value="@order.Status" /></dd>
                 <dt class="col-6 col-md-3 col-lg-2 text-right">Order Time</dt>
