@@ -188,10 +188,10 @@
     function Attended(value, row, index, field) {
             let actions = [];
             if(!row.attended) {
-                actions.push('<button type="button" class="btn btn-secondary btn-attended mr-1">Not Attended</button>');
+                actions.push('<button type="button" class="btn btn-secondary btn-attended mr-1">Registrer</button>');
             }
             else {
-                actions.push('<button type="button" class="btn btn-success btn-not-attended" >Attended</button>')
+                actions.push('<button type="button" class="btn btn-success btn-not-attended" >Møtt</button>')
             }
             return actions.join('');
         }
@@ -238,7 +238,9 @@ window.attendedEvents = {
         'click .btn-attended': function(e, value, row, index) {
             $.postJSON("/api/participants/mark_as_attended/" + row.registrationId, null)
             .done(function(){
-                toastr.success('Attendance marked for  ' + row.name + '.')
+                toastr.success('Attendance marked for  ' + row.name + '.');
+                location.reload();
+                
             })
             .fail(function(){
                 toastr.error('Couldnt set attendance for ' + row.name + '. ')
@@ -247,7 +249,8 @@ window.attendedEvents = {
         'click .btn-not-attended': function(e, value, row, index) {
             $.postJSON("/api/participants/mark_as_notattended/" + row.registrationId, null)
             .done(function(){
-                toastr.success('Attendance removed for  ' + row.name + '.')
+                toastr.success('Attendance removed for  ' + row.name + '.');
+                location.reload();
             })
             .fail(function(){
                 toastr.error('Couldnt remove attendance for ' + row.name + '. ')
