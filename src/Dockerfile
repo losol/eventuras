@@ -19,9 +19,13 @@ RUN curl -SL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-lin
     && rm nodejs.tar.gz \
     && ln -s /usr/local/bin/node /usr/local/bin/nodejs
 
-# Copy the package.json file & restore from it
+# Copy the package.json file
+# The restoring will be done by the dotnet publish command
 COPY ./EventManagement.Web/package*.json ./EventManagement.Web/
-RUN npm --prefix ./EventManagement.Web install ./EventManagement.Web
+
+# This is needed for PhantomJS to successfully install
+RUN apt-get update
+RUN apt-get install bzip2
 
 # copy everything else and build
 COPY . ./
@@ -41,6 +45,6 @@ RUN curl -SL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-lin
     && tar -xzf "nodejs.tar.gz" -C /usr/local --strip-components=1 \
     && rm nodejs.tar.gz \
     && ln -s /usr/local/bin/node /usr/local/bin/nodejs
-RUN npm install html-pdf
+# RUN npm install html-pdf
 
 ENTRYPOINT ["dotnet", "losol.EventManagement.Web.dll"]
