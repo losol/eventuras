@@ -19,25 +19,29 @@ RUN curl -SL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-lin
     && rm nodejs.tar.gz \
     && ln -s /usr/local/bin/node /usr/local/bin/nodejs
 
-# Copy the package.json file
-# The restoring will be done by the dotnet publish command
-COPY ./EventManagement.Web/package*.json ./EventManagement.Web/
-
 # This is needed for PhantomJS to successfully install
 RUN apt-get update
 RUN apt-get install bzip2
+
+# Copy the package.json file
+COPY ./EventManagement.Web/package*.json ./EventManagement.Web/
+RUN npm --prefix ./EventManagement.Web install ./EventManagement.Web
 
 # copy everything else and build
 COPY . ./
 RUN dotnet publish ./EventManagement.Web/EventManagement.Web.csproj -c Release -o /app/out
 
+# Install html-pdf in the publish directory
+WORKDIR /app/out
+RUN npm install html-pdf
+
 # Stage 1
-# Build runtime image
+# Copy the built files over
 FROM microsoft/dotnet:2.1-aspnetcore-runtime
 WORKDIR /app
 COPY --from=build-env /app/out .
 
-# Install node
+# Install node (required for NodeServices)
 ENV NODE_VERSION 8.9.4
 ENV NODE_DOWNLOAD_SHA 21fb4690e349f82d708ae766def01d7fec1b085ce1f5ab30d9bda8ee126ca8fc
 RUN curl -SL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz" --output nodejs.tar.gz \
@@ -45,6 +49,5 @@ RUN curl -SL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-lin
     && tar -xzf "nodejs.tar.gz" -C /usr/local --strip-components=1 \
     && rm nodejs.tar.gz \
     && ln -s /usr/local/bin/node /usr/local/bin/nodejs
-# RUN npm install html-pdf
 
 ENTRYPOINT ["dotnet", "losol.EventManagement.Web.dll"]
