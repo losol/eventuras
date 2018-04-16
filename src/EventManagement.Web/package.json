@@ -4,6 +4,7 @@
 	"description": "",
 	"author": "Ole Kristian Losvik",
 	"license": "GPL-2.0",
+	"private": true,
 	"dependencies": {
 		"bootstrap": "^4.1.0",
 		"bootstrap-table": "1.12.1",
