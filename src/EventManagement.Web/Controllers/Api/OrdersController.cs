@@ -8,6 +8,7 @@ using losol.EventManagement.Services;
 using System.ComponentModel.DataAnnotations;
 using static losol.EventManagement.Domain.Order;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace losol.EventManagement.Web.Controllers.Api
 {
@@ -39,6 +40,17 @@ namespace losol.EventManagement.Web.Controllers.Api
 				return BadRequest();
 			}
 			return Ok();
+		}
+
+		[HttpGet("for-registration/{registrationId}")]
+		public async Task<IActionResult> GetProductIdsForRegistration([FromRoute]int registrationId,
+			[FromServices]IRegistrationService registrationService)
+		{
+			var orders = (await registrationService.GetWithOrdersAsync(registrationId))
+                .Orders
+                .SelectMany(o => o.OrderLines)
+                .Select(ol => ol.ProductId);
+			return Ok(orders);
 		}
 
 		[HttpPost("update/{id}/{status}")]
