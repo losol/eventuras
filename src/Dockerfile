@@ -10,6 +10,10 @@ COPY ./EventManagement.Infrastructure/*.csproj ./EventManagement.Infrastructure/
 COPY ./EventManagement.Domain/*.csproj ./EventManagement.Domain/
 RUN dotnet restore EventManagement.Web/EventManagement.Web.csproj
 
+# Copy the package.json file & restore from it
+COPY ./EventManagement.Web/package*.json ./EventManagement.Web/
+RUN npm --prefix ./EventManagement.Web install ./EventManagement.Web
+
 # copy everything else and build
 COPY . ./
 RUN dotnet publish ./EventManagement.Web/EventManagement.Web.csproj -c Release -o /app/out
