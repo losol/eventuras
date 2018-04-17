@@ -7,7 +7,7 @@
  * @param {*} options 
  */
 module.exports = function (result, html, options) {
-    pdf.create(html).toStream(function(err, stream){
+    pdf.create(html, options).toStream(function(err, stream){
         stream.pipe(result.stream);
     });
 }; 
