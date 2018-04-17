@@ -50,4 +50,7 @@ RUN curl -SL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-lin
     && rm nodejs.tar.gz \
     && ln -s /usr/local/bin/node /usr/local/bin/nodejs
 
+# Install libfontconfig (required by PhantomJS)
+RUN apt-get -qq update && apt-get --assume-yes install libfontconfig
+
 ENTRYPOINT ["dotnet", "losol.EventManagement.Web.dll"]
