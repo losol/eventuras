@@ -27,7 +27,8 @@ namespace losol.EventManagement.Web.Services
 			var html = await _renderService.RenderViewToStringAsync(TEMPLATE, vm);
 			var options = new // options passed to html-pdf
 			{ 
-				format = "A4"
+				format = "A4",
+				timeout = 50_000
 			}; 
 
 			return await _nodeServices.InvokeAsync<Stream>(
