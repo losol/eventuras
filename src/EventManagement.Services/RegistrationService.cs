@@ -31,6 +31,14 @@ namespace losol.EventManagement.Services
 				      .SingleOrDefaultAsync();
 		}
 
+		public Task<Registration> GetWithOrdersAsync(int id)
+		{
+			return _db.Registrations.Where(r => r.RegistrationId == id)
+					.Include(r => r.Orders)
+						.ThenInclude(o => o.OrderLines)
+					.SingleOrDefaultAsync();
+		}
+
 		public async Task<Registration> GetWithEventInfoAsync(int id)
 		{
 			return await _db.Registrations

@@ -37,6 +37,16 @@ namespace losol.EventManagement.Pages.Admin.Events
             return Page();
         }
 
+        public async Task<IActionResult> OnGetOrdersAsync(int? id) {
+            if(id == null) return NotFound();
+            
+            var orders = (await _registrations.GetAsync(id.Value))
+                .Orders
+                .SelectMany(o => o.OrderLines)
+                .Select(ol => ol.OrderLineId);
+            return new JsonResult(orders);
+        }
+
         public string GetOrderButtonText(Registration registration)
         {
             if(!registration.Orders.Any(o => o.Status != Order.OrderStatus.Invoiced))

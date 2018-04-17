@@ -68,7 +68,9 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-1" style="margin-top:5px">
-                                        <input class="input-product" value="@product.ProductId" type="checkbox" class="form-check" />
+                                        <input id="product-@product.ProductId"
+                                            value="@product.ProductId" 
+                                            type="checkbox" class="form-check prod" />
                                     </div>
                                     <div class="col">
                                         <h5 class="card-title">@product.Name</h5>
@@ -84,7 +86,7 @@
                                                 {
                                                     <div class="col">
                                                         <div class="form-check">
-                                                            <input name="product-@product.ProductId" 
+                                                <input id="variant-@variant.ProductVariantId" name="product-@product.ProductId" 
                                                             type="radio" value="@variant.ProductVariantId" 
                                                             data-product="@product.ProductId"
                                                             class="form-check-input input-variant" checked />
@@ -121,10 +123,8 @@
     (function () {
 
         // DOM cache
-        const $inputProducts = $('.input-product');
-        const $inputVariants = $('.input-variant');
+        $productInputs = $('@Html.Raw(String.Join(",", Model.Products.Select(p => "#product-" + p.ProductId)))');
         const $modal = $('#add-order-modal');
-
 
         let registrationId = -1;
         $('.btn-order').on('click', function(){
@@ -132,37 +132,69 @@
             $modal.modal('show');
         })
         
-
         $('#btn-add-order').on('click', function(){
-            
-            const products = $inputProducts.filter(':checked')
+            const products = $('.input-product').filter(':checked')
                                     .map(function(){ 
                                         return this.value 
                                     })
                                     .get();
-
-            const variants = $inputVariants.filter(':checked')
+            const variants = $('.input-variant').filter(':checked')
                                             .map(function(i, e){ 
                                                 return { 
                                                     id: this.value, 
-                                                    isSelected: $(e).closest('.card-body').find('input.input-product').is(':checked')
+                                                    isSelected: (function(){
+                                                        const el = $(e).closest('.card-body').find('input.prod');
+                                                        return el.is(':checked') && el.hasClass
+                                                    })()
                                                 } 
                                             })
                                             .get()
                                             .filter(function(x) { return x.isSelected } )
                                             .map(function(x){ return x.id; });
-
             const body = {
                 registrationId: registrationId,
                 variantIds: variants,
                 productIds: products
             }
-            $.postJSON('/api/v0/orders/create-order', body).done(function(){
-                location.reload();
-            }).fail(function(){
-                toastr.error('Looks like some of the products have already been ordered.')
-            })
+            if(body.productIds.length == 0) {
+                toastr.info('Nothing to add.');
+                $($modal).modal('hide');
+            }
+            else {
+                $.postJSON('/api/v0/orders/create-order', body).done(function(){
+                    location.reload();
+                }).fail(function(){
+                    toastr.error('Looks like some of the products have already been ordered.')
+                })
+            }
         })
+
+        function resetDialog() {
+            // Add an 'input-product' class to all items
+            $($productInputs).addClass('input-product');
+            $($productInputs).removeClass('text-muted');
+            $($productInputs).prop( "disabled", false );
+        }
+
+        $($modal).on('show.bs.modal', function (e) {
+            resetDialog();
+            console.log(e);
+            $.getJSON('/api/v0/orders/for-registration/' + registrationId, function(data) {
+                console.log(data)
+                const elementIds = data.map(function(id) { 
+                    return '#product-' + id; 
+                }).join();
+                const $selectedProducts = $(elementIds);
+                console.log(elementIds)
+                console.log($selectedProducts.get());
+
+                $($selectedProducts).removeClass('input-product');
+                $($selectedProducts).addClass('text-muted');
+                $($selectedProducts).select();
+                $($selectedProducts).prop("disabled", true);
+            });
+
+        });
     })();
     </script>
 }
