@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using losol.EventManagement.Web.ViewModels.Templates;
@@ -13,7 +13,6 @@ namespace losol.EventManagement.Web.Services
 		private const string SCRIPT = "./Node/writeToPdf";
 		private const string TEMPLATE = "Templates/Certificates/CourseCertificate";
 		private readonly string filePath;
-		private readonly string scriptPath;
 		private readonly INodeServices _nodeServices;
 		private readonly IRenderService _renderService;
 		public CertificateWriter(INodeServices nodeServices, 
@@ -22,7 +21,6 @@ namespace losol.EventManagement.Web.Services
 		{
 			_nodeServices = nodeServices;
 			filePath = Path.Combine(environment.ContentRootPath, "certificates");
-			scriptPath = Path.Combine(environment.ContentRootPath, "Node", "pdf-a4-portrait.js");
 			if(!Directory.Exists(filePath))
 			{
 				Directory.CreateDirectory(filePath);
