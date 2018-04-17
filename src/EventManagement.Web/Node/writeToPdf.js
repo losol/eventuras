@@ -1,8 +1,13 @@
-﻿var pdf = require('html-pdf');
+﻿const pdf = require('html-pdf');
 
-module.exports = function (callback, filepath, html, options) {
-    pdf.create(html, options).toFile(filepath, function(err, res) {
-        if (err) callback(false);
-        callback(null, true);
+/**
+ * 
+ * @param {stream.Duplex} result
+ * @param {string} html 
+ * @param {*} options 
+ */
+module.exports = function (result, html, options) {
+    pdf.create(html, options).toStream(function(err, stream){
+        stream.pipe(result.stream);
     });
 }; 

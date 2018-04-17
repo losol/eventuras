@@ -11,6 +11,7 @@ using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
 using losol.EventManagement.Web.ViewModels.Templates;
 using Microsoft.AspNetCore.Authorization;
+using System.IO;
 
 namespace losol.EventManagement.Web.Controllers.Api {
 
@@ -29,13 +30,14 @@ namespace losol.EventManagement.Web.Controllers.Api {
             var certificates = await _registrationService.CreateNewCertificates (eventId, User.Identity.Name);
             var emailTasks = certificates.Select (async c => {
                 string filename = $"{DateTime.Now.ToString("u")}.pdf";
-                var result = await writer.Write (filename, CertificateVM.From (c));
-                var bytes = await F.ReadAllBytesAsync (writer.GetPathForFile (filename));
+                var result = await writer.Write (CertificateVM.From (c));
+                var memoryStream = new MemoryStream();
+                await result.CopyToAsync(memoryStream);
                 return emailSender.SendAsync (new EmailMessage {
                     Email = c.RecipientUser.Email,
                         Subject = $"Kursbevis for {c.Title}",
                         Message = "Her er kursbeviset! Gratulere!", // TODO: Get this right
-                        Attachment = new Attachment { Filename = "kursbevis.pdf", Bytes = bytes }
+                        Attachment = new Attachment { Filename = "kursbevis.pdf", Bytes = memoryStream.ToArray() }
                 });
             });
             await Task.WhenAll (emailTasks);

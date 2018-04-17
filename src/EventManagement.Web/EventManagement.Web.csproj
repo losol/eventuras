@@ -43,7 +43,7 @@
   </ItemGroup>
   <Target Name="BuildWebAssets" BeforeTargets="Build">
     <Exec Command="npm install" />
-    <Exec Command="gulp" />
+    <Exec Command="./node_modules/.bin/gulp" />
   </Target>
   
 </Project>
