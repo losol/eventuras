@@ -7,5 +7,6 @@ namespace losol.EventManagement.Services.PowerOffice
         public string ApplicationKey { get; set; }
         public string ClientKey { get; set; }
         public EndPointMode Mode { get; set; }
+        public string TokenStoreName { get; set; }
     }
 }

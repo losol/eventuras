@@ -43,7 +43,8 @@ The JSON structure defines the configuration for the application.
   "PowerOffice": {
     "ApplicationKey": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
     "ClientKey": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-    "Mode": "Production|Test|Beta|Demo|Debug"
+    "Mode": "Production|Test|Beta|Demo|Debug",
+    "TokenStoreName": "name.tokenstore"
   }
 }
 ```
