@@ -26,11 +26,11 @@ namespace losol.EventManagement.Web.Controllers.Api {
         }
 
         [HttpPost ("email_certificates/for_event/{eventId}")]
-        public async Task<IActionResult> GenerateCertificatesAndSendEmails ([FromRoute] int eventId, [FromServices] CertificateWriter writer, [FromServices] StandardEmailSender emailSender) {
+        public async Task<IActionResult> GenerateCertificatesAndSendEmails ([FromRoute] int eventId, [FromServices] CertificatePdfRenderer writer, [FromServices] StandardEmailSender emailSender) {
             var certificates = await _registrationService.CreateNewCertificates (eventId, User.Identity.Name);
             var emailTasks = certificates.Select (async c => {
                 string filename = $"{DateTime.Now.ToString("u")}.pdf";
-                var result = await writer.Write (CertificateVM.From (c));
+                var result = await writer.RenderAsync (CertificateVM.From (c));
                 var memoryStream = new MemoryStream();
                 await result.CopyToAsync(memoryStream);
                 return emailSender.SendAsync (new EmailMessage {
