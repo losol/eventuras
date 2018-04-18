@@ -5,6 +5,6 @@ namespace losol.EventManagement.Services.PowerOffice
 {
     public class MockPowerOfficeService : IPowerOfficeService
     {
-        public void CreateInvoice(Order order) { }
+        public async Task CreateInvoiceAsync(Order order) => await Task.FromResult(0);
     }
 }

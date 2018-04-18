@@ -176,7 +176,7 @@ namespace losol.EventManagement.Services
 		{
 			var order = await _db.Orders.Include(o => o.OrderLines)
 								 .SingleOrDefaultAsync(o => o.OrderId == orderId);
-			_powerOfficeService.CreateInvoice(order);
+			await _powerOfficeService.CreateInvoiceAsync(order);
 
 			order.MarkAsInvoiced();
 			_db.Orders.Update(order);

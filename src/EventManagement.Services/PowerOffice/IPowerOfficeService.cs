@@ -5,6 +5,6 @@ namespace losol.EventManagement.Services.PowerOffice
 {
     public interface IPowerOfficeService
     {
-        void CreateInvoice(Order order);
+        Task CreateInvoiceAsync(Order order);
     }
 }

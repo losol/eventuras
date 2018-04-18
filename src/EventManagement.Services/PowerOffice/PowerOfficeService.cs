@@ -6,6 +6,8 @@ using GoApi.Common;
 using GoApi.Core;
 
 using losol.EventManagement.Domain;
+using System.Linq;
+using GoApi.Party;
 
 namespace losol.EventManagement.Services.PowerOffice
 {
@@ -25,28 +27,15 @@ namespace losol.EventManagement.Services.PowerOffice
             api = new Go(authorization);
         }
 
-        public void CreateInvoice(Order order)
+        public async Task CreateInvoiceAsync(Order order)
         {
+            var customer = await createCustomerIfNotExists(order);
             var invoice = new OutgoingInvoice 
             {    
                 Status = OutgoingInvoiceStatus.Approved, // DOES NOT ACTUALLY SEND IT
                 OrderDate = order.OrderTime,
                 CustomerReference = order.CustomerInvoiceReference,
-
-                // BrandingThemeCode = "",
-                // ContractNo = "",
-                // CurrencyCode = "",
-                // CustomerCode = null,
-                
-                // DeliveryAddressId = 0,
-                // DeliveryDate = null,
-                // DepartmentCode = "",
-                // ImportedOrderNo = null,
-                
-                // OurReferenceEmployeeCode = null,
-                // PaymentTerms = null,
-                // ProjectCode = "",
-                // PurchaseOrderNo = null
+                CustomerCode = customer.Code,
             };
             foreach(var orderline in order.OrderLines)
             {
@@ -57,20 +46,32 @@ namespace losol.EventManagement.Services.PowerOffice
                     Quantity = orderline.Quantity,
                     Description = orderline.ProductVariantDescription ?? orderline.ProductDescription,
                     UnitPrice = orderline.Price,
-
-                    // ExemptVat = null,
-                    // IsDeleted = null,                    
-                    // ProjectCode = null,
-                    // DepartmentCode = null,
-                    // DiscountPercent = null,
-                    // SalesPersonEmployeeCode = null,
-                    // SortOrder = 0,
-                    // UnitOfMeasure = ""
                 };
                 invoice.OutgoingInvoiceLines.Add(invoiceLine);
             }
             
             api.OutgoingInvoice.Save(invoice);
+        }
+
+        private async Task<Customer> createCustomerIfNotExists(Order order) 
+        {
+            var existingCustomer = api.Customer.Get()
+                              .FirstOrDefault(c => c.VatNumber == order.CustomerVatNumber)
+                ?? api.Customer.Get().FirstOrDefault(c => c.EmailAddress == order.CustomerEmail);
+
+            if(existingCustomer != null)
+            {
+                return existingCustomer;
+            }
+
+            // Create the customer
+            var customer = new Customer
+            {
+                EmailAddress = order.CustomerEmail,
+                Name = order.CustomerName,
+                VatNumber = order.CustomerVatNumber
+            };
+            return await api.Customer.SaveAsync(customer);
         }
     }
 }
