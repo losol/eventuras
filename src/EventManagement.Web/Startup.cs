@@ -19,6 +19,7 @@ using losol.EventManagement.Services.DbInitializers;
 using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.Web.Services;
 using losol.EventManagement.Services.Messaging.Sms;
+using losol.EventManagement.Services.PowerOffice;
 
 namespace losol.EventManagement
 {
@@ -145,6 +146,18 @@ namespace losol.EventManagement
 					services.AddTransient<ISmsSender, MockSmsSender>();
 					break;
 			}
+
+            // Register PowerOffice
+            if(appsettings.UsePowerOffice)
+            {
+                services.Configure<PowerOfficeOptions>(Configuration.GetSection("PowerOffice"));
+                services.AddTransient<IPowerOfficeService, PowerOfficeService>();
+            }
+            else
+            {
+                services.AddTransient<IPowerOfficeService, MockPowerOfficeService>();
+            }
+            
 
 			// Register our application services
 			services.AddScoped<IEventInfoService, EventInfoService>();
