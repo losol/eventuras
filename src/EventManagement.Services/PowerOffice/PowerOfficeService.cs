@@ -44,8 +44,9 @@ namespace losol.EventManagement.Services.PowerOffice
                     LineType = VoucherLineType.Normal,
                     ProductCode = $"{orderline.ProductId}-{orderline.ProductVariantId}",
                     Quantity = orderline.Quantity,
-                    Description = orderline.ProductVariantDescription ?? orderline.ProductDescription,
-                    UnitPrice = orderline.Price,
+                    
+                    Description = orderline.ProductVariantId.HasValue? $"{orderline.ProductName} ({orderline.ProductVariantName})" : orderline.ProductName,
+                    UnitPrice = orderline.Price
                 };
                 invoice.OutgoingInvoiceLines.Add(invoiceLine);
             }
