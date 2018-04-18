@@ -1,14 +1,7 @@
+# 
 # Stage 0
 # Build the project
 FROM microsoft/dotnet:2.1-sdk AS build-env
-WORKDIR /app
-
-# copy csproj and restore as distinct layers
-COPY ./EventManagement.Web/*.csproj ./EventManagement.Web/
-COPY ./EventManagement.Services/*.csproj ./EventManagement.Services/
-COPY ./EventManagement.Infrastructure/*.csproj ./EventManagement.Infrastructure/
-COPY ./EventManagement.Domain/*.csproj ./EventManagement.Domain/
-RUN dotnet restore EventManagement.Web/EventManagement.Web.csproj
 
 # Install node
 ENV NODE_VERSION 8.11.1
@@ -23,6 +16,18 @@ RUN curl -SL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-lin
 RUN apt-get update
 RUN apt-get install bzip2
 
+# Install html-pdf
+WORKDIR /app/packages
+RUN npm install html-pdf
+
+# copy csproj and restore dependencies
+WORKDIR /app/src
+COPY ./EventManagement.Web/*.csproj ./EventManagement.Web/
+COPY ./EventManagement.Services/*.csproj ./EventManagement.Services/
+COPY ./EventManagement.Infrastructure/*.csproj ./EventManagement.Infrastructure/
+COPY ./EventManagement.Domain/*.csproj ./EventManagement.Domain/
+RUN dotnet restore EventManagement.Web/EventManagement.Web.csproj
+
 # Copy the package.json file
 COPY ./EventManagement.Web/package*.json ./EventManagement.Web/
 RUN npm --prefix ./EventManagement.Web install ./EventManagement.Web
@@ -33,13 +38,12 @@ RUN dotnet publish ./EventManagement.Web/EventManagement.Web.csproj -c Release -
 
 # Install html-pdf in the publish directory
 WORKDIR /app/out
-RUN npm install html-pdf
+RUN cp -r /app/packages/node_modules .
 
+# 
 # Stage 1
 # Copy the built files over
 FROM microsoft/dotnet:2.1-aspnetcore-runtime
-WORKDIR /app
-COPY --from=build-env /app/out .
 
 # Install node (required for NodeServices)
 ENV NODE_VERSION 8.11.1
@@ -52,5 +56,9 @@ RUN curl -SL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-lin
 
 # Install libfontconfig (required by PhantomJS)
 RUN apt-get -qq update && apt-get --assume-yes install libfontconfig
+
+# Copy files over from the build-env stage
+WORKDIR /app
+COPY --from=build-env /app/out .
 
 ENTRYPOINT ["dotnet", "losol.EventManagement.Web.dll"]
