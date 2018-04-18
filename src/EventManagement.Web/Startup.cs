@@ -53,13 +53,15 @@ namespace losol.EventManagement
                 .AddDefaultTokenProviders();
 
             // Require SSL
-            if (HostingEnvironment.IsProduction())
+            // TODO Re-enable
+            /* if (HostingEnvironment.IsProduction())
             {
                 services.Configure<MvcOptions>(options =>
                 {
                     options.Filters.Add(new RequireHttpsAttribute());
                 });
             }
+            */
             
 
             // Set password requirements
@@ -186,11 +188,14 @@ namespace losol.EventManagement
 
             app.UseAuthentication();
 
+            // TODO reenable
+            /*
             if (env.IsProduction()) {
                 var options = new RewriteOptions()
-                .AddRedirectToHttps();
+                .AddRedirectToHttps(); 
                 app.UseRewriter(options);
             }
+             */
 
             app.UseMvc(routes =>
             {
