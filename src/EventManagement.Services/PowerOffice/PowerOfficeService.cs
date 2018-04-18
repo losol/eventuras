@@ -25,7 +25,7 @@ namespace losol.EventManagement.Services.PowerOffice
             api = new Go(authorization);
         }
 
-        public void SendInvoice(Order order)
+        public void CreateInvoice(Order order)
         {
             var invoice = new OutgoingInvoice 
             {    

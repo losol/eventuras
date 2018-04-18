@@ -62,7 +62,7 @@ namespace losol.EventManagement.Web.Controllers.Api
 				{
 					case OrderStatus.Verified: await _orderService.MarkAsVerifiedAsync(id);
 						break;
-					case OrderStatus.Invoiced: await _orderService.SendInvoiceAsync(id);
+					case OrderStatus.Invoiced: await _orderService.CreateInvoiceAsync(id);
 						break;
 					case OrderStatus.Cancelled: await _orderService.MarkAsCancelledAsync(id);
 						break;

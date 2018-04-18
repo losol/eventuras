@@ -172,11 +172,11 @@ namespace losol.EventManagement.Services
 			return await _db.SaveChangesAsync() > 0;
         }
 
-		public async Task<bool> SendInvoiceAsync(int orderId)
+		public async Task<bool> CreateInvoiceAsync(int orderId)
 		{
 			var order = await _db.Orders.Include(o => o.OrderLines)
 								 .SingleOrDefaultAsync(o => o.OrderId == orderId);
-			_powerOfficeService.SendInvoice(order);
+			_powerOfficeService.CreateInvoice(order);
 
 			order.MarkAsInvoiced();
 			_db.Orders.Update(order);

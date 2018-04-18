@@ -29,7 +29,7 @@ namespace losol.EventManagement.Services
 
 		// Statuses
 		Task<bool> MarkAsVerifiedAsync(int orderId);
-		Task<bool> SendInvoiceAsync(int orderId);
+		Task<bool> CreateInvoiceAsync(int orderId);
 		Task<bool> MarkAsCancelledAsync(int orderId);
 	}
 }
