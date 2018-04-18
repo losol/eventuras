@@ -46,7 +46,7 @@ namespace EventManagement.Web.Controllers
 
         [HttpGet("{id}/download")]
         public async Task<IActionResult> DownloadCertificate(
-            [FromServices] CertificateWriter writer, 
+            [FromServices] CertificatePdfRenderer writer, 
             [FromServices] IRegistrationService registrationService,
             [FromRoute] int id)
         {
@@ -56,7 +56,7 @@ namespace EventManagement.Web.Controllers
                 return NotFound();
             }
             
-            var stream = await writer.Write(CertificateVM.From(certificate));
+            var stream = await writer.RenderAsync(CertificateVM.From(certificate));
             return File(stream, "application/pdf");
         }
     }

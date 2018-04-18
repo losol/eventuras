@@ -8,13 +8,14 @@ using Microsoft.AspNetCore.NodeServices.HostingModels;
 
 namespace losol.EventManagement.Web.Services
 {
-	public class CertificateWriter
+	public class CertificatePdfRenderer
 	{
 		private const string SCRIPT = "./Node/writeToPdf";
 		private const string TEMPLATE = "Templates/Certificates/CourseCertificate";
+		private readonly object OPTIONS = new { format = "A4", timeout = 50_000 }; // options passed to html-pdf 
 		private readonly INodeServices _nodeServices;
 		private readonly IRenderService _renderService;
-		public CertificateWriter(INodeServices nodeServices, 
+		public CertificatePdfRenderer(INodeServices nodeServices, 
 			IHostingEnvironment environment,
 			IRenderService renderService)
 		{
@@ -22,19 +23,13 @@ namespace losol.EventManagement.Web.Services
 			_renderService = renderService;
 		}
 
-		public async Task<Stream> Write(CertificateVM vm)
+		public async Task<Stream> RenderAsync(CertificateVM vm)
 		{
 			var html = await _renderService.RenderViewToStringAsync(TEMPLATE, vm);
-			var options = new // options passed to html-pdf
-			{ 
-				format = "A4",
-				timeout = 50_000
-			}; 
-
 			return await _nodeServices.InvokeAsync<Stream>(
 				SCRIPT,
 				html,
-				options
+				OPTIONS
 			);
 		}
 	}
