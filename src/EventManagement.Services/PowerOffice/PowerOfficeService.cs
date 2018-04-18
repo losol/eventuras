@@ -55,9 +55,11 @@ namespace losol.EventManagement.Services.PowerOffice
 
         private async Task<Customer> createCustomerIfNotExists(Order order) 
         {
-            var existingCustomer = api.Customer.Get()
+            var existingCustomer = !string.IsNullOrWhiteSpace(order.CustomerVatNumber?.Trim()) ? 
+                                api.Customer.Get()
                               .FirstOrDefault(c => c.VatNumber == order.CustomerVatNumber)
-                ?? api.Customer.Get().FirstOrDefault(c => c.EmailAddress == order.CustomerEmail);
+                              : null;
+            existingCustomer = existingCustomer ?? api.Customer.Get().FirstOrDefault(c => c.EmailAddress == order.CustomerEmail);
 
             if(existingCustomer != null)
             {
