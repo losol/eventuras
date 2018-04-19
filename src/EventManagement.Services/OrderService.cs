@@ -175,6 +175,9 @@ namespace losol.EventManagement.Services
 		public async Task<bool> CreateInvoiceAsync(int orderId)
 		{
 			var order = await _db.Orders.Include(o => o.OrderLines)
+								.Include(o => o.User)
+								.Include(o => o.Registration)
+									.ThenInclude(r => r.EventInfo)
 								 .SingleOrDefaultAsync(o => o.OrderId == orderId);
 			await _powerOfficeService.CreateInvoiceAsync(order);
 

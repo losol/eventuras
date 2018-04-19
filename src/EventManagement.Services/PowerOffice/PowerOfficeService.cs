@@ -51,7 +51,11 @@ namespace losol.EventManagement.Services.PowerOffice
                 };
                 invoice.OutgoingInvoiceLines.Add(invoiceLine);
             }
-            
+            invoice.OutgoingInvoiceLines.Add(new OutgoingInvoiceLine
+            {
+                LineType = VoucherLineType.Text,
+                Description = $"Participation for {order.Registration.ParticipantName} at {order.Registration.EventInfo.Title}, {order.Registration.EventInfo.DateStart}"
+            });
             api.OutgoingInvoice.Save(invoice);
         }
 
@@ -71,9 +75,10 @@ namespace losol.EventManagement.Services.PowerOffice
             // Create the customer
             var customer = new Customer
             {
-                EmailAddress = order.CustomerEmail,
+                EmailAddress = order.CustomerEmail ?? order.User.Email,
                 Name = order.CustomerName,
                 VatNumber = order.CustomerVatNumber,
+                InvoiceEmailAddress = order.CustomerEmail ?? order.User.Email,
                 InvoiceDeliveryType = string.IsNullOrWhiteSpace(order.CustomerVatNumber) ? InvoiceDeliveryType.PdfByEmail : InvoiceDeliveryType.EHF
             };
             return await api.Customer.SaveAsync(customer);
