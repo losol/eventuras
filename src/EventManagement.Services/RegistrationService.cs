@@ -165,6 +165,13 @@ namespace losol.EventManagement.Services
             return _db.Certificates.FindAsync(id);
         }
 
+		public Task<Certificate> GetCertificateWithUserAsync(int id)
+        {
+            return _db.Certificates
+					.Include(c => c.RecipientUser)
+					.SingleOrDefaultAsync(c => c.CertificateId == id);
+        }
+
         public async Task<bool> AddProductToRegistration(string email, int eventId, int productId, int? variantId)
         {
 			var userId = await _db.Users.Where(u => u.Email == email)
