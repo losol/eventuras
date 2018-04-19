@@ -245,7 +245,15 @@
             $('#sms-modal').modal('show');
         },
         'click .btn-send-certificate-again': function(e, value, row, index) {
-            console.log(row.registrationId)
+            toastr.info("Please wait.");
+            $.postJSON('/api/participants/email_certificate/to_registrant/' + row.registrationId)
+            .done(function(data) {
+                $('#sendCertificatesModal').modal('hide');
+                toastr.success('Emailed to ' + row.name + '.')
+            })
+            .fail(function() {
+                toastr.error('Generating/emailing certificate failed.')
+            })
         }
     };
 
