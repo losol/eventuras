@@ -19,6 +19,8 @@ using losol.EventManagement.Services.DbInitializers;
 using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.Web.Services;
 using losol.EventManagement.Services.Messaging.Sms;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 
 namespace losol.EventManagement
 {
@@ -165,6 +167,9 @@ namespace losol.EventManagement
 
 			services.AddNodeServices();
 			services.AddTransient<CertificatePdfRenderer>();
+
+            // PDF Generator
+            services.AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
