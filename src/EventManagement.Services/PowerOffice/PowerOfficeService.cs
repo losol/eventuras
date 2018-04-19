@@ -36,6 +36,7 @@ namespace losol.EventManagement.Services.PowerOffice
                 OrderDate = order.OrderTime,
                 CustomerReference = order.CustomerInvoiceReference,
                 CustomerCode = customer.Code,
+                
             };
             foreach(var orderline in order.OrderLines)
             {
@@ -72,7 +73,8 @@ namespace losol.EventManagement.Services.PowerOffice
             {
                 EmailAddress = order.CustomerEmail,
                 Name = order.CustomerName,
-                VatNumber = order.CustomerVatNumber
+                VatNumber = order.CustomerVatNumber,
+                InvoiceDeliveryType = string.IsNullOrWhiteSpace(order.CustomerVatNumber) ? InvoiceDeliveryType.PdfByEmail : InvoiceDeliveryType.EHF
             };
             return await api.Customer.SaveAsync(customer);
         }
