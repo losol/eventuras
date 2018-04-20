@@ -72,6 +72,9 @@
 
                 <!-- ADD PARTICIPANT -->
                 <a asp-page="AddRegistration" class="btn btn-success link-decoration-none">Ny deltaker</a>
+
+                <!-- EDIT EVENT -->
+                <a asp-page="Edit" asp-route-id="@Model.EventInfo.EventInfoId" class="btn btn-warning link-decoration-none">Rediger</a>
   
                 <!-- COMMUNICATE MENU -->
                 <div class="btn-group">
@@ -209,12 +212,12 @@
             if(row.hasCertificate)
             {
                 const dropdownMarkup = '<div class="btn-group" role="group">' +
-                        '<a class="btn btn-secondary" href="/certificate/' + 
-                        row.registrationId + '/download" target="_blank">Certificate</a>' +
+                        '<a class="btn btn-secondary link-decoration-none" href="/certificate/' + 
+                        row.registrationId + '/download" target="_blank">Kursbevis</a>' +
                         '<button type="button" class="btn btn-secondary dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
                         '</button>' +
                         '<div class="dropdown-menu">' +
-                            '<button class="dropdown-item btn-send-certificate-again">Send Again</button>' +
+                            '<button class="dropdown-item btn-send-certificate-again">Send igjen</button>' +
                         '</div>' +
                     '</div>';
                 actions.push(dropdownMarkup);
