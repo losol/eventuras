@@ -151,11 +151,11 @@ namespace losol.EventManagement
             if(appsettings.UsePowerOffice)
             {
                 services.Configure<PowerOfficeOptions>(Configuration.GetSection("PowerOffice"));
-                services.AddScoped<IPowerOfficeService, PowerOfficeService>();
+                services.AddScoped<IInvoicingService, PowerOfficeService>();
             }
             else
             {
-                services.AddTransient<IPowerOfficeService, MockPowerOfficeService>();
+                services.AddTransient<IInvoicingService, MockInvoicingService>();
             }
             
 

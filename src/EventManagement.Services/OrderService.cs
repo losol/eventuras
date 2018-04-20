@@ -13,9 +13,9 @@ namespace losol.EventManagement.Services
 	public class OrderService : IOrderService
 	{
 		private readonly ApplicationDbContext _db;
-		private readonly IPowerOfficeService _powerOfficeService;
+		private readonly IInvoicingService _powerOfficeService;
 
-		public OrderService(ApplicationDbContext db, IPowerOfficeService powerOfficeService)
+		public OrderService(ApplicationDbContext db, IInvoicingService powerOfficeService)
 		{
 			_db = db;
 			_powerOfficeService = powerOfficeService;

@@ -11,7 +11,7 @@ using GoApi.Party;
 
 namespace losol.EventManagement.Services.PowerOffice
 {
-    public class PowerOfficeService : IPowerOfficeService
+    public class PowerOfficeService : IInvoicingService
     {
         private readonly Go api;
         public PowerOfficeService(IOptions<PowerOfficeOptions> options)
