@@ -95,16 +95,19 @@ namespace losol.EventManagement.Domain
 
 		public void MarkAsVerified()
 		{
+			this.AddLog();
 			Status = OrderStatus.Verified;
 		}
 
 		public void MarkAsCancelled()
 		{
+			this.AddLog();
 			Status = OrderStatus.Cancelled;
 		}
 
 		public void MarkAsInvoiced()
 		{
+			this.AddLog();
 			Status = OrderStatus.Invoiced;
 		}
 
