@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
+using losol.EventManagement.Services.PowerOffice;
 using Microsoft.EntityFrameworkCore;
 using static losol.EventManagement.Domain.Order;
 
@@ -12,10 +13,12 @@ namespace losol.EventManagement.Services
 	public class OrderService : IOrderService
 	{
 		private readonly ApplicationDbContext _db;
+		private readonly IInvoicingService _powerOfficeService;
 
-		public OrderService(ApplicationDbContext db)
+		public OrderService(ApplicationDbContext db, IInvoicingService powerOfficeService)
 		{
 			_db = db;
+			_powerOfficeService = powerOfficeService;
 		}
 
 		public Task<List<Order>> GetAsync() =>
@@ -161,14 +164,6 @@ namespace losol.EventManagement.Services
 			return await _db.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> MarkAsInvoicedAsync(int orderId)
-        {
-            var order = await _db.Orders.FindAsync(orderId);
-			order.MarkAsInvoiced();
-			_db.Orders.Update(order);
-			return await _db.SaveChangesAsync() > 0;
-        }
-
         public async Task<bool> MarkAsCancelledAsync(int orderId)
         {
             var order = await _db.Orders.FindAsync(orderId);
@@ -176,5 +171,19 @@ namespace losol.EventManagement.Services
 			_db.Orders.Update(order);
 			return await _db.SaveChangesAsync() > 0;
         }
+
+		public async Task<bool> CreateInvoiceAsync(int orderId)
+		{
+			var order = await _db.Orders.Include(o => o.OrderLines)
+								.Include(o => o.User)
+								.Include(o => o.Registration)
+									.ThenInclude(r => r.EventInfo)
+								 .SingleOrDefaultAsync(o => o.OrderId == orderId);
+			await _powerOfficeService.CreateInvoiceAsync(order);
+
+			order.MarkAsInvoiced();
+			_db.Orders.Update(order);
+			return await _db.SaveChangesAsync() > 0; // what if power office succeeds but this fails?
+		}
     }
 }

@@ -25,6 +25,11 @@ namespace losol.EventManagement.Domain
 		public string ProductVariantName { get; set; }
 		public string ProductVariantDescription { get; set; }
 
+		/// <summary>
+		/// A string that uniquely identifies a product-variant combination
+		/// </summary>
+		public string ItemCode => ProductVariantId.HasValue ? $"K{ProductId}-{ProductVariantId}" : $"K{ProductId}";
+
 		public decimal Price { get; set; }
 		public decimal VatPercent { get; set; } = 0;
 

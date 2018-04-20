@@ -404,6 +404,7 @@ Gotta do it in a better way later. *@
         }
 
         function updateOrderStatus(status) {
+            toastr.info('Please wait.', null, { timeOut: 0 });
             $.post('/api/v0/orders/update/@id/' + status, function() {
                 location.reload();
             })            

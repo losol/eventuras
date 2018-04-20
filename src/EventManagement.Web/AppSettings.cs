@@ -5,6 +5,7 @@ namespace losol.EventManagement
 	{
 		public EmailProvider EmailProvider { get; set; }
 		public SmsProvider SmsProvider { get; set; }
+		public bool UsePowerOffice { get; set; }
 	}
 
 	internal enum EmailProvider 
