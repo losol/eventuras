@@ -1,4 +1,5 @@
 @using losol.EventManagement.Web.ViewModels.Templates
+@using System.Globalization;
 @model CertificateVM
 @{
     Layout = null;
@@ -16,7 +17,7 @@
         padding: 0;
         font-family: 'Carrois Gothic SC';
         font-weight: 500;
-        font-size: 16px;
+        font-size: 12px;
         background: rgb(241,241,241);
         -webkit-print-color-adjust: exact;
         box-sizing: border-box;
@@ -69,7 +70,7 @@
         max-width: 280px;
       }
       .handwriting {
-        font-size: 48px;
+        font-size: 24px;
         font-family: 'Reenie Beanie';
         padding-bottom:0;
         text-decoration: underline;
@@ -113,22 +114,35 @@
         </div>
 
         <div class="group">
-          <img class="logo" src="@Model.IssuerOrganizationLogoUrl" alt="@Model.IssuerOrganizationName">
           <div class="line">Arrangert av @Model.IssuerOrganizationName</div>
+          <div class="line">
+            @if(Model.EventDateStart.HasValue) {
+              <span>@String.Format("{0:d/M/yyyy}", Model.EventDateStart)</span>
+            }
+            
+            @if(Model.EventDateEnd.HasValue) {
+              <span> - @String.Format("{0:d/M/yyyy}", Model.EventDateEnd)</span>
+            }
+          </div>
         </div>
 
-        <div class="group">
-          <div class="line"><strong>Godkjenninger</strong></div>
-          <div class="line text">@Model.Accreditation</div>
-        </div>
+          @if(Model.Accreditation != null) {
+              <div class="group">
+                <div class="line"><strong>Godkjenninger</strong></div>
+                <div class="line text">@Model.Accreditation</div>
+              </div>
+            }
+        
 
         <div class="group">
           <div class="line">@Model.City  @Model.Date</div>
           <div class="line handwriting">@Model.IssuerPersonName</div>
-          <div class="line"><small>Kursansvarlig</small></div>
-        </div>
-        <div class="bottom">
-          <div class="line text light">Digitalt signert med kode <code>@Model.CertificateGuid</code></div>
+          <div class="line">
+            Kursansvarlig<br />
+            <br />
+            <br />
+            <small>Digitalt signert med kode <code>@Model.CertificateGuid</code></small>
+          </div>
         </div>
     </div>
   </body>

@@ -9,12 +9,14 @@ namespace losol.EventManagement.Web.ViewModels.Templates
 
         public string Title {get;set;} 
 
-
         public string RecipientName {get;set;}
         public string IssuerOrganizationName {get;set;}
         public string IssuerOrganizationLogoUrl {get;set;}
         public string IssuerPersonName {get;set;}
         public string Accreditation { get; set; }
+
+        public DateTime? EventDateStart { get;set; }
+        public DateTime? EventDateEnd { get;set; }
 
         public string City { get; set; }
         public string Date { get; set; }
@@ -26,6 +28,7 @@ namespace losol.EventManagement.Web.ViewModels.Templates
             IssuerOrganizationLogoUrl = "/assets/images/logos/logo-nordland_legeforening-small-transparent.png",
             IssuerPersonName = "Tove Myrbakk",
 
+            EventDateStart = DateTime.Now.AddDays(-7),
             CertificateGuid = Guid.NewGuid().ToString(),
             City = "Bodø",
             Date = DateTime.Now.ToString("dd.MM.yyyy"),

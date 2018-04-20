@@ -144,8 +144,8 @@ namespace losol.EventManagement.Services
 
 									Issuer = new Certificate.CertificateIssuer {
 										OrganizationId = 0,
-										OrganizationName = null,
-										OrganizationLogoUrl = null,
+										OrganizationName = "Nordland legeforening", // TODO should not be hardcoded
+										OrganizationLogoUrl = "/assets/images/logos/logo-nordland_legeforening-small-transparent.png",
 										IssuedByUserId = user.Id,
 										IssuedByName = user.Name,
 										IssuedInCity = eventInfo.City
