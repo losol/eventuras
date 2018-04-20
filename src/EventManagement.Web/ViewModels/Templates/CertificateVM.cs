@@ -43,8 +43,8 @@ namespace losol.EventManagement.Web.ViewModels.Templates
             {
                 RecipientName = c.RecipientName,
                 Title = c.Title,
-                EventDateStart = c.EventInfo.DateStart,
-                EventDateEnd = c.EventInfo.DateEnd,
+                EventDateStart = c.EventInfo?.DateStart ?? null,
+                EventDateEnd = c.EventInfo?.DateEnd ?? null,
                 CertificateGuid = c.CertificateGuid.ToString(),
                 Date = c.CreatedOn.ToString("dd.MMM.yyyy"),
                 IssuerOrganizationName = c.Issuer.OrganizationName,

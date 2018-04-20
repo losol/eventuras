@@ -130,8 +130,8 @@ namespace losol.EventManagement.Services {
 						Title = eventInfo.Title,
 						Description = eventInfo.CertificateDescription,
 
-						EventInfo = r.EventInfo,
-
+						EventInfoId = eventInfo.EventInfoId,
+						
 						Issuer = new Certificate.CertificateIssuer {
 							OrganizationId = 0,
 								OrganizationName = "Nordland legeforening", // TODO should not be hardcoded
@@ -148,11 +148,15 @@ namespace losol.EventManagement.Services {
 			return await _db.Certificates
 				.Where (c => newIds.Contains (c.CertificateId))
 				.Include (c => c.RecipientUser)
+				.Include (c => c.EventInfo)
 				.ToListAsync ();
 		}
 
 		public Task<Certificate> GetCertificateAsync (int id) {
-			return _db.Certificates.FindAsync (id);
+			return _db.Certificates
+				.Include (c => c.EventInfo)
+				.Include (c => c.RecipientUser)
+				.SingleOrDefaultAsync (c => c.CertificateId == id );
 		}
 
 		public Task<Certificate> GetCertificateWithUserAsync (int id) {
