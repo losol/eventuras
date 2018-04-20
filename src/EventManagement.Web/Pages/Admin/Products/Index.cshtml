@@ -87,8 +87,7 @@
 <script>
     $(function () {
 
-        const users = @Html.Raw(JsonConvert.SerializeObject(eventRegistrations.Select(r => new { id = r.RegistrationId, name = r.ParticipantName })));
-        console.log(users);
+        const users = @Html.Raw(JsonConvert.SerializeObject(eventRegistrations.Select(r => new { id = r.RegistrationId, name = $"{r.ParticipantName} {r.User.PhoneNumber} {r.User.Email}" })));
         const $inputUser = $('#input-user').typeahead({ 
             source: users,
             fitToElement: true,
@@ -109,7 +108,6 @@
                 productId: @product.ProductId,
                 productVariantId: inputVariant.val()
             };
-            console.log(data);
             $.postJSON('/api/v0/products/add-user', data)
              .done(function(){
                  toastr.success('User added!')

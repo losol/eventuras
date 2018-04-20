@@ -52,6 +52,7 @@ namespace losol.EventManagement.Services
 			return await _db.Registrations
 							.Where(r => r.EventInfoId == eventId)
 							.Include(r => r.EventInfo)
+							.Include(r => r.User)
 							.ToListAsync();
 		}
 
