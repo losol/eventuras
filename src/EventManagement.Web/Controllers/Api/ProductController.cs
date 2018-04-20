@@ -61,7 +61,7 @@ namespace losol.EventManagement.Web.Api.Controllers
 				return BadRequest();
 			}
 			try{
-				await registrationService.AddProductToRegistration(vm.Email, vm.EventId, vm.ProductId, vm.VariantId);
+				await registrationService.CreateOrUpdateOrder(vm.RegistrationId, vm.ProductId, vm.VariantId);
 			}
 			catch(InvalidOperationException)
 			{
@@ -76,8 +76,7 @@ namespace losol.EventManagement.Web.Api.Controllers
 
 		public class AddUserToProductVM
 		{
-			public int EventId { get; set; }
-			public string Email { get; set; }
+			public int RegistrationId { get; set; }
 			public int ProductId { get; set; }
 			public int? VariantId { get; set; }
 		}

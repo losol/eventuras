@@ -203,6 +203,16 @@ namespace losol.EventManagement.Services
 
 			return await _createOrUpdateOrderAsync(registration, products, variants);
 		}
+		public Task<bool> CreateOrUpdateOrder(int registrationId, int productId, int? productVariantId)
+		{
+			var productIds = new int[] { productId };
+			int[] variantIds = null;
+			if(productVariantId.HasValue)
+			{
+				variantIds = new int[] { productVariantId.Value };
+			}
+			return CreateOrUpdateOrder(registrationId, productIds, variantIds);
+		}
 
 
 		private async Task<bool> _createOrUpdateOrderAsync(Registration registration, int[] productIds, int[] variantIds)
