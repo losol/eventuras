@@ -22,7 +22,12 @@
         <div class="row justify-content-between py-3">
             <div class="col-md-9"> 
                 <div class="form-group">
-                    <select id="userselect" data-placeholder="Finn bruker" class="w-100"></select>
+                    <label>User</label>
+                    <input id="input-user"
+                        type="text" class="typeahead form-control" 
+                        placeholder="Finn bruker"
+                        autocomplete="off"
+                        data-provide="typeahead">
                 </div>
                 <div class="form-group">
                     <label asp-for="Registration.ParticipantName"></label>
@@ -139,26 +144,15 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js"></script>
     
         <script>
-            $('#userselect').select2({
-                ajax: {
-                    url: '/api/v0/users',
-                    delay: 250,
-                    processResults: function (data) {
-                        return {
-                            results: $.map(data, function (item) {
-                                return {
-                                    text: item.name + ' (' + item.phone + ' / ' + item.email + ')',
-                                    id: item.id
-                                }
-                            })
-                        };
-                    }
-                }
+            const $inputUser = $('#input-user');
+            $.get("/api/v0/users").done(function(response){
+                $inputUser.typeahead({ 
+                    source: response.map(function(x) { return { id: x.id, name: x.name + ' ' + x.email + ' ' + x.phone } }),
+                    fitToElement: true,
+                    showHintOnFocus: true
+                });
             });
-            $('#userselect').on('select2:select', function (e) {
-                var data = e.params.data;
-                alert(data.name);
-            });
+            
         </script>
     }
 
