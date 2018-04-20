@@ -59,8 +59,7 @@
                 type="text" class="typeahead form-control" 
                 placeholder="Name, email or phone."
                 autocomplete="off"
-                data-provide="typeahead"
-            >
+                data-provide="typeahead">
         </div>
         <div class="form-group">
             <label class="control-label">Variant</label>
@@ -87,7 +86,7 @@
 <script>
     $(function () {
 
-        const users = @Html.Raw(JsonConvert.SerializeObject(eventRegistrations.Select(r => new { id = r.RegistrationId, name = $"{r.ParticipantName} {r.User.PhoneNumber} {r.User.Email}" })));
+        const users = @Html.Raw(JsonConvert.SerializeObject(eventRegistrations.Select(r => new { id = r.RegistrationId, name = $"{r.ParticipantName} {r.User?.PhoneNumber} {r.User?.Email}" })));
         const $inputUser = $('#input-user').typeahead({ 
             source: users,
             fitToElement: true,
