@@ -43,7 +43,7 @@ namespace losol.EventManagement.Services.PowerOffice
                 var invoiceLine = new OutgoingInvoiceLine
                 {
                     LineType = VoucherLineType.Normal,
-                    ProductCode = $"{orderline.ProductId}-{orderline.ProductVariantId}",
+                    ProductCode = orderline.ItemCode,
                     Quantity = orderline.Quantity,
                     
                     Description = orderline.ProductVariantId.HasValue? $"{orderline.ProductName} ({orderline.ProductVariantName})" : orderline.ProductName,
