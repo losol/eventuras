@@ -20,6 +20,10 @@ namespace losol.EventManagement.Domain
         public string Title { get; set; }
         public string Description { get; set; }
 
+        // The event
+        public int? EventInfoId { get; set; }
+        public EventInfo EventInfo { get; set; }
+
         // The person receiving the certificate
         public string RecipientUserId { get; set; }
         public string RecipientName { get; set; }

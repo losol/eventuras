@@ -104,8 +104,10 @@ namespace losol.EventManagement.Services {
 		}
 
 		public async Task<List<Certificate>> CreateNewCertificates (int eventId, string issuedByUsername) {
+
 			_ = issuedByUsername ??
 				throw new ArgumentNullException (paramName: nameof (issuedByUsername));
+
 			var infoQueryable = _db.EventInfos
 				.Where (e => e.EventInfoId == eventId);
 			var eventInfo = await infoQueryable.AsNoTracking ().SingleOrDefaultAsync ();
@@ -128,12 +130,14 @@ namespace losol.EventManagement.Services {
 						Title = eventInfo.Title,
 						Description = eventInfo.CertificateDescription,
 
+						EventInfo = r.EventInfo,
+
 						Issuer = new Certificate.CertificateIssuer {
 							OrganizationId = 0,
 								OrganizationName = "Nordland legeforening", // TODO should not be hardcoded
 								OrganizationLogoUrl = "/assets/images/logos/logo-nordland_legeforening-small-transparent.png",
 								IssuedByUserId = user.Id,
-								IssuedByName = user.Name,
+								IssuedByName = "Anette Holand-Nilsen",
 								IssuedInCity = eventInfo.City
 						}
 				}).ToListAsync ();
@@ -186,6 +190,7 @@ namespace losol.EventManagement.Services {
 
 			return await _createOrUpdateOrderAsync (registration, products, variants);
 		}
+
 		public Task<bool> CreateOrUpdateOrder (int registrationId, int productId, int? productVariantId) {
 			var productIds = new int[] { productId };
 			int[] variantIds = null;
