@@ -9,9 +9,11 @@ using Microsoft.EntityFrameworkCore;
 namespace losol.EventManagement.Services {
 	public class RegistrationService : IRegistrationService {
 		private readonly ApplicationDbContext _db;
+		private readonly PaymentMethodService _paymentMethods;
 
-		public RegistrationService (ApplicationDbContext db) {
+		public RegistrationService (ApplicationDbContext db, PaymentMethodService paymentMethods) {
 			_db = db;
+			_paymentMethods = paymentMethods;
 		}
 
 		public async Task<Registration> GetAsync (int id) {
@@ -131,7 +133,7 @@ namespace losol.EventManagement.Services {
 						Description = eventInfo.CertificateDescription,
 
 						EventInfoId = eventInfo.EventInfoId,
-						
+
 						Issuer = new Certificate.CertificateIssuer {
 							OrganizationId = 0,
 								OrganizationName = "Nordland legeforening", // TODO should not be hardcoded
@@ -156,7 +158,7 @@ namespace losol.EventManagement.Services {
 			return _db.Certificates
 				.Include (c => c.EventInfo)
 				.Include (c => c.RecipientUser)
-				.SingleOrDefaultAsync (c => c.CertificateId == id );
+				.SingleOrDefaultAsync (c => c.CertificateId == id);
 		}
 
 		public Task<Certificate> GetCertificateWithUserAsync (int id) {
@@ -216,8 +218,13 @@ namespace losol.EventManagement.Services {
 			}
 			var variants = products.First ().ProductVariants.Where (v => variantIds.Contains (v.ProductVariantId));
 
-			// Create/update an order as needed
+			// Create/update an order as needed.
 			registration.CreateOrUpdateOrder (products, variants);
+
+			// Set paymentmethod to default method if null.
+			if (registration.PaymentMethodId == null) {
+				registration.PaymentMethodId = _paymentMethods.GetDefaultPaymentMethodId();
+			}
 
 			// Persist the changes
 			return await _db.SaveChangesAsync () > 0;
