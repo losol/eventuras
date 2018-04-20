@@ -419,7 +419,6 @@ Gotta do it in a better way later. *@
         }
 
         function makeFree() {
-            console.log('heya')
             $.post('/api/v0/orders/update/@id/make-free').done(function() {
                 location.reload();
             })

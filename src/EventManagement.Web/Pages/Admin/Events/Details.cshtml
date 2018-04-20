@@ -208,7 +208,16 @@
             ];
             if(row.hasCertificate)
             {
-                actions.push('<a class="btn btn-secondary" href="/certificate/' + row.registrationId + '/download" target="_blank">Certificate</a>')
+                const dropdownMarkup = '<div class="btn-group" role="group">' +
+                        '<a class="btn btn-secondary" href="/certificate/' + 
+                        row.registrationId + '/download" target="_blank">Certificate</a>' +
+                        '<button type="button" class="btn btn-secondary dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+                        '</button>' +
+                        '<div class="dropdown-menu">' +
+                            '<button class="dropdown-item btn-send-certificate-again">Send Again</button>' +
+                        '</div>' +
+                    '</div>';
+                actions.push(dropdownMarkup);
             }
             return actions.join('');
         }
@@ -234,6 +243,17 @@
             recipients = [row.phone];
             $('#sms-modal-title').text('Send SMS til ' + row.name);
             $('#sms-modal').modal('show');
+        },
+        'click .btn-send-certificate-again': function(e, value, row, index) {
+            toastr.info("Please wait.");
+            $.postJSON('/api/participants/email_certificate/to_registrant/' + row.registrationId)
+            .done(function(data) {
+                $('#sendCertificatesModal').modal('hide');
+                toastr.success('Emailed to ' + row.name + '.')
+            })
+            .fail(function() {
+                toastr.error('Generating/emailing certificate failed.')
+            })
         }
     };
 
