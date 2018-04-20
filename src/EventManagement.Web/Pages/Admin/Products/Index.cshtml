@@ -105,7 +105,7 @@
         const inputVariant = $('#input-variant');
         $('#btn-add-user').on('click', function(){
             const data = {
-                registrationId: $inputUser.val(),
+                registrationId: $inputUser.typeahead("getActive").id,
                 productId: @product.ProductId,
                 productVariantId: inputVariant.val()
             };
