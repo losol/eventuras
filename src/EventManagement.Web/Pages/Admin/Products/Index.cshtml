@@ -6,7 +6,7 @@
     var id = Convert.ToInt32(RouteData.Values["id"]);
     var product = await productsService.GetAsync(id);
     var registrations = await productsService.GetRegistrationsAsync(id);
-    var eventRegistrations = await registrationService.GetRegistrations(product.EventInfoId);
+    var eventRegistrations = await registrationService.GetRegistrations(product.EventInfoId) ?? new List<Registration>();
 }
 
 <div class="container">
