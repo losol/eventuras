@@ -9,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 namespace losol.EventManagement.Services {
 	public class RegistrationService : IRegistrationService {
 		private readonly ApplicationDbContext _db;
-		private readonly PaymentMethodService _paymentMethods;
+		private readonly IPaymentMethodService _paymentMethods;
 
-		public RegistrationService (ApplicationDbContext db, PaymentMethodService paymentMethods) {
+		public RegistrationService (ApplicationDbContext db, IPaymentMethodService paymentMethods) {
 			_db = db;
 			_paymentMethods = paymentMethods;
 		}
