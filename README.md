@@ -9,6 +9,7 @@ Asp.net core event management solution. In development now, using agile developm
 # Clone the repository
 git clone https://github.com/losol/EventManagement.git
 cd EventManagement
+
 # Build and run the application
 docker-compose build
 docker-compose up
