@@ -50,7 +50,7 @@ namespace losol.EventManagement.Services
 		public async Task<List<Registration>> GetRegistrations(int eventId)
 		{
 			return await _db.Registrations
-							.Where(r => r.EventInfoId == eventId && r.Verified)
+							.Where(r => r.EventInfoId == eventId)
 							.Include(r => r.EventInfo)
 							.ToListAsync();
 		}
