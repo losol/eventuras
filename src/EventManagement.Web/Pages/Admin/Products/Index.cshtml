@@ -1,10 +1,12 @@
 ﻿@page "{id:int}"
 @inject IProductsService productsService
+@inject IRegistrationService registrationService
 @using Newtonsoft.Json
 @{
     var id = Convert.ToInt32(RouteData.Values["id"]);
     var product = await productsService.GetAsync(id);
     var registrations = await productsService.GetRegistrationsAsync(id);
+    var eventRegistrations = await registrationService.GetRegistrations(product.EventInfoId) ?? new List<Registration>();
 }
 
 <div class="container">
@@ -52,7 +54,12 @@
       <div class="modal-body">
         <div class="form-group">
             <label class="control-label">User Email</label>
-            <input id="input-email" class="form-control" />
+            <!-- <input id="input-email" class="form-control" /> -->
+            <input id="input-user"
+                type="text" class="typeahead form-control" 
+                placeholder="Name, email or phone."
+                autocomplete="off"
+                data-provide="typeahead">
         </div>
         <div class="form-group">
             <label class="control-label">Variant</label>
@@ -78,6 +85,14 @@
 @section scripts { 
 <script>
     $(function () {
+
+        const users = @Html.Raw(JsonConvert.SerializeObject(eventRegistrations.Select(r => new { id = r.RegistrationId, name = $"{r.ParticipantName} {r.User?.PhoneNumber} {r.User?.Email}" })));
+        const $inputUser = $('#input-user').typeahead({ 
+            source: users,
+            fitToElement: true,
+            showHintOnFocus: "all"
+        });
+
         var $table = $('table');
         window.icons = {
             toggle: 'fa-toggle-on',
@@ -85,15 +100,13 @@
             export: 'fa-download'
         };
 
-        const inputEmail = $('#input-email');
         const inputVariant = $('#input-variant');
         $('#btn-add-user').on('click', function(){
             const data = {
-                email: inputEmail.val(),
-                eventId: @product.EventInfoId,
+                registrationId: $inputUser.typeahead("getActive").id,
                 productId: @product.ProductId,
                 productVariantId: inputVariant.val()
-            }
+            };
             $.postJSON('/api/v0/products/add-user', data)
              .done(function(){
                  toastr.success('User added!')

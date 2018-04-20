@@ -50,8 +50,9 @@ namespace losol.EventManagement.Services
 		public async Task<List<Registration>> GetRegistrations(int eventId)
 		{
 			return await _db.Registrations
-							.Where(r => r.EventInfoId == eventId && r.Verified)
+							.Where(r => r.EventInfoId == eventId)
 							.Include(r => r.EventInfo)
+							.Include(r => r.User)
 							.ToListAsync();
 		}
 
@@ -202,6 +203,16 @@ namespace losol.EventManagement.Services
 			_ = registration ?? throw new ArgumentException(message: "Invalid registration id.", paramName: nameof(registrationId));
 
 			return await _createOrUpdateOrderAsync(registration, products, variants);
+		}
+		public Task<bool> CreateOrUpdateOrder(int registrationId, int productId, int? productVariantId)
+		{
+			var productIds = new int[] { productId };
+			int[] variantIds = null;
+			if(productVariantId.HasValue)
+			{
+				variantIds = new int[] { productVariantId.Value };
+			}
+			return CreateOrUpdateOrder(registrationId, productIds, variantIds);
 		}
 
 

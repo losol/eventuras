@@ -89,6 +89,7 @@ gulp.task('make:js', function () {
         paths.libSrc + 'jquery/dist/jquery.min.js',
         paths.libSrc + 'popper.js/dist/umd/popper.min.js',
         paths.libSrc + 'bootstrap/dist/js/bootstrap.min.js',
+        paths.libSrc + 'bootstrap-3-typeahead/bootstrap3-typeahead.min.js',
         paths.libSrc + 'toastr/toastr.js',
         './js/admin.js'
     ])
@@ -100,6 +101,7 @@ gulp.task('make:js', function () {
         paths.libSrc + 'jquery/dist/jquery.js',
         paths.libSrc + 'popper.js/dist/umd/popper.js',
         paths.libSrc + 'bootstrap/dist/js/bootstrap.js',
+        paths.libSrc + 'bootstrap-3-typeahead/bootstrap3-typeahead.js',
         paths.libSrc + 'toastr/toastr.js',
         './js/admin.js'
     ])
