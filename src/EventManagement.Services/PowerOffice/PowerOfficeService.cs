@@ -30,6 +30,7 @@ namespace losol.EventManagement.Services.PowerOffice
         public async Task CreateInvoiceAsync(Order order)
         {
             var customer = await createCustomerIfNotExists(order);
+            await createProductsIfNotExists(order);
             var invoice = new OutgoingInvoice 
             {    
                 Status = OutgoingInvoiceStatus.Approved, // DOES NOT ACTUALLY SEND IT
@@ -82,6 +83,28 @@ namespace losol.EventManagement.Services.PowerOffice
                 InvoiceDeliveryType = string.IsNullOrWhiteSpace(order.CustomerVatNumber) ? InvoiceDeliveryType.PdfByEmail : InvoiceDeliveryType.EHF
             };
             return await api.Customer.SaveAsync(customer);
+        }
+
+        private async Task createProductIfNotExists(OrderLine line)
+        {
+            var exists = api.Product.Get().FirstOrDefault(p => p.Code == line.ItemCode) != null;
+            if(!exists)
+            {
+                GoApi.Products.Product product = new GoApi.Products.Product 
+                {
+                    Code = line.ItemCode,
+                    Name = line.ProductVariantId.HasValue ? $"{line.ProductName} ({line.ProductVariantName})" : line.ProductName,
+                    Description = line.ProductVariantDescription ?? line.ProductDescription,
+                    SalesPrice = line.Price
+                };
+                await api.Product.SaveAsync(product);
+            }
+        }
+
+        private async Task createProductsIfNotExists(Order order)
+        {
+            var tasks = order.OrderLines.Select(l => createProductIfNotExists(l));
+            await Task.WhenAll(tasks);
         }
     }
 }
