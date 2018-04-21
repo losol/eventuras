@@ -58,6 +58,10 @@ namespace losol.EventManagement.Services {
 				.Include(e => e.User)
 				.Where(e => e.RegistrationId == registrationId)
 				.SingleOrDefaultAsync();
+			
+
+			Console.WriteLine("**** ADD REG");
+			Console.WriteLine(registration.RegistrationId);
 
 			var certificate = new Certificate {
 				Title = registration.EventInfo.Title,
@@ -67,11 +71,14 @@ namespace losol.EventManagement.Services {
 				RecipientUserId = registration.User.Id,
 			};
 
-			certificate.Evidence.Add(registration);
+			// certificate.Evidence.Add(registration);
 
 			// Save the new certificate
 			_db.Certificates.Add(certificate);
-			await _db.SaveChangesAsync();
+			Console.WriteLine(await _db.SaveChangesAsync());
+
+			Console.WriteLine("**** SAVED CERT");
+			Console.WriteLine(registration.RegistrationId);
 
 			// Update the registration
 			registration.CertificateId = certificate.CertificateId;
@@ -87,14 +94,23 @@ namespace losol.EventManagement.Services {
 				.Include(m => m.Registrations)
 				.Where(m => m.EventInfoId == eventInfoId)
 				.SingleOrDefaultAsync();
+			
+			if (eventInfo == null) {
+				throw new ArgumentException("No event found") ;
+			}
 
 			var result = new List<Certificate>();
 			var newRegistrations = eventInfo.Registrations
 				.Where (m => m.Attended == true && m.HasCertificate == false)
 				.ToList();
 			
-			foreach (var registration in newRegistrations ) {
-				result.Add( await AddCertificate( registration.RegistrationId ) ) ; 
+			if (newRegistrations != null) {
+				foreach (var registration in newRegistrations ) {
+					Console.WriteLine("****");
+					Console.WriteLine(registration.RegistrationId);
+					
+					result.Add( await AddCertificate( registration.RegistrationId ) ) ; 
+				}
 			}
 
 			return result;

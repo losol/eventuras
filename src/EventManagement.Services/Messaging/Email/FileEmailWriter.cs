@@ -37,9 +37,16 @@ namespace losol.EventManagement.Services.Messaging
 			}
 		}
 
-        public Task SendEmailAsync(string email, string subject, string message, Attachment attachment)
+        public async Task SendEmailAsync(string email, string subject, string message, Attachment attachment)
         {
-            throw new NotImplementedException();
+            // filename: {datetime}-{email}-{subject}.html
+			string filename = $"{DateTime.UtcNow.ToString("u")}-{email.GenerateSlug()}-{subject.GenerateSlug()}.html";
+
+			// Write the message to the file
+			using (StreamWriter outputFile = new StreamWriter(Path.Combine(filePath, filename)))
+			{
+				await outputFile.WriteLineAsync(message);
+			}
         }
     }
 

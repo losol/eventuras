@@ -73,8 +73,8 @@ namespace losol.EventManagement.Pages.Admin.Events
                     Attended = x.Attended,
                     JobTitle = x.ParticipantJobTitle,
                     Employer = x.ParticipantEmployer,
-                    City = x.ParticipantCity 
-                    // HasCertificate = x.Certificate != null
+                    City = x.ParticipantCity,
+                    HasCertificate = x.HasCertificate
                     })
                 .ToListAsync();
 
