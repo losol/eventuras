@@ -25,7 +25,7 @@ namespace EventManagement.Web.Controllers
             return View("Templates/Certificates/CourseCertificate", CertificateVM.Mock);
         }
 
-        [HttpGet("for_event/{id}")]
+        [HttpGet("preview/event/{id}")]
         public async Task<IActionResult> ViewCertificateForEvent([FromRoute]int id,
             [FromServices]IEventInfoService eventInfoService)
         {
