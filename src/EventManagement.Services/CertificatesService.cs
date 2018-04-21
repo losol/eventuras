@@ -51,6 +51,30 @@ namespace losol.EventManagement.Services {
 				.ToListAsync();
 		}
 
+		public async Task CreateCertificate (int registrationId) {
+
+			var registration = await _db.Registrations
+				.Include(e => e.EventInfo)
+				.Include(e => e.User)
+				.Where(e => e.RegistrationId == registrationId)
+				.SingleOrDefaultAsync();
+
+			var certificate = new Certificate {
+				Title = registration.EventInfo.Title,
+				Description = registration.EventInfo.DateStart.ToString(),
+				RecipientName = registration.ParticipantName,
+				RecipientEmail = registration.User.Email,
+				RecipientUserId = registration.User.Id,
+
+
+
+			};
+
+			certificate.Evidence.Add(registration);
+			
+
+		}
+
 
 
 

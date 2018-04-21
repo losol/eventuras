@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -98,6 +99,14 @@ namespace losol.EventManagement.Domain
 
 		[Display(Name = "Bildetekst for arrangementet (Husk fotokreditering)")]
 		public string FeaturedImageCaption { get; set; }
+
+		public string OrganizerUserId {get;set;}
+		[ForeignKey("OrganizerUserId")]
+		public ApplicationUser OrganizerUser {get;set;}
+
+		public int? OrganizationId {get;set;}
+		[ForeignKey("OrganizationId")]
+		public Organization Organization {get;set;}
 
 		// Navigational properties
 		public List<Registration> Registrations { get; set; }

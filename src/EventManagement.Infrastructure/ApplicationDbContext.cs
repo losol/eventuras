@@ -23,12 +23,11 @@ namespace losol.EventManagement.Infrastructure
 		public DbSet<losol.EventManagement.Domain.Order> Orders { get; set; }
 		public DbSet<losol.EventManagement.Domain.OrderLine> OrderLines { get; set; }
         public DbSet<losol.EventManagement.Domain.Certificate> Certificates { get; set; }
+        public DbSet<losol.EventManagement.Domain.Organization> Organizations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<Certificate>()
-                   .OwnsOne<Certificate.CertificateIssuer>(c => c.Issuer);
         }
 
 		public void DetachAllEntities()

@@ -19,29 +19,23 @@ namespace losol.EventManagement.Domain {
         [Required]
         public string Title { get; set; }
         public string Description { get; set; }
-        public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
 
         // Why this certificate was issued
         public List<Registration> Evidence { get; set; }
 
+        // The recipient of the certificate
         public string RecipientName { get; set; }
         public string RecipientEmail { get; set; }
         public string RecipientUserId { get; set; }
         public ApplicationUser RecipientUser { get; set; }
 
-        public CertificateIssuer Issuer { get; set; }
+        // Issued by
+        /*
+        public int? OrganizationId {get;set;}
+        public Organization IssuingOrganization {get;set;}
+         */
+        public string IssuedByName {get;set;}
+        public DateTime IssuedDate { get; set; } = DateTime.UtcNow;
 
-        [ComplexType]
-        public class CertificateIssuer {
-            public int OrganizationId { get; set; }
-            public string OrganizationName { get; set; }
-            public string OrganizationUrl { get; set; }
-            public string OrganizationLogoUrl { get; set; }
-
-            public string IssuedByUserId { get; set; }
-            public string IssuedByName { get; set; }
-            public string IssuedInCity { get; set; }
-            public ApplicationUser IssuedByUser { get; set; }
-        }
     }
 }

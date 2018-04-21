@@ -45,11 +45,11 @@ namespace losol.EventManagement.Web.ViewModels
                 RecipientName = c.RecipientName,
                 Title = c.Title,
                 CertificateGuid = c.CertificateGuid.ToString(),
-                Date = c.CreatedOn.ToString("dd.MMM.yyyy"),
-                IssuerOrganizationName = c.Issuer.OrganizationName,
-                IssuerPersonName = c.Issuer.IssuedByName,
-                IssuerOrganizationLogoUrl = c.Issuer.OrganizationLogoUrl,
-                City = c.Issuer.IssuedInCity,
+                Date = c.IssuedDate.ToString("dd.MMM.yyyy"),
+                //IssuerOrganizationName = c.IssuingOrganization?.Name,
+                IssuerPersonName = c.IssuedByName,
+                //IssuerOrganizationLogoUrl = c.IssuingOrganization?.LogoUrl,
+                //City = c.Issuer.IssuedInCity,
                 Accreditation = c.Description
             };
 
