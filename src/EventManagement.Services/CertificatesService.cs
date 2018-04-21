@@ -71,7 +71,7 @@ namespace losol.EventManagement.Services {
 				RecipientUserId = registration.User.Id,
 			};
 
-			// certificate.Evidence.Add(registration);
+			certificate.Evidence.Add(registration);
 
 			// Save the new certificate
 			_db.Certificates.Add(certificate);

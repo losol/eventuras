@@ -48,7 +48,7 @@ namespace losol.EventManagement.Web.Controllers.Api {
 
         [HttpPost ("registration/{regId}/email")]
         public async Task<IActionResult> EmailCertificate ([FromRoute] int regId, [FromServices] CertificatePdfRenderer writer, [FromServices] StandardEmailSender emailSender) {
-            var c = await _certificatesService.GetAsync (regId);
+            var c = await _certificatesService.GetForRegistrationAsync (regId);
             var result = await writer.RenderAsync (CertificateVM.From (c));
             var memoryStream = new MemoryStream ();
             await result.CopyToAsync (memoryStream);
