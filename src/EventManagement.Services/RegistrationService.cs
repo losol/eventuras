@@ -163,6 +163,7 @@ namespace losol.EventManagement.Services {
 
 		public Task<Certificate> GetCertificateWithUserAsync (int id) {
 			return _db.Certificates
+				.Include (c => c.EventInfo)
 				.Include (c => c.RecipientUser)
 				.SingleOrDefaultAsync (c => c.CertificateId == id);
 		}

@@ -26,46 +26,7 @@ namespace losol.EventManagement.Web.Controllers.Api {
             _registrationService = registrationService;
         }
 
-        [HttpPost ("email_certificates/for_event/{eventId}")]
-        public async Task<IActionResult> GenerateCertificatesAndSendEmails ([FromRoute] int eventId, [FromServices] CertificatePdfRenderer writer, [FromServices] StandardEmailSender emailSender) {
-            var certificates = await _registrationService.CreateNewCertificates (eventId, User.Identity.Name);
-            var emailTasks = certificates.Select (async c => {
-                var result = await writer.RenderAsync (CertificateVM.From (c));
-                var memoryStream = new MemoryStream();
-                await result.CopyToAsync(memoryStream);
-                return emailSender.SendAsync (new EmailMessage {
-                    Email = c.RecipientUser.Email,
-                        Subject = $"Kursbevis for {c.Title}",
-                        Message = "Her er kursbeviset! Gratulere!",
-                        Attachment = new Attachment { Filename = "kursbevis.pdf", Bytes = memoryStream.ToArray() }
-                });
-            });
-            await Task.WhenAll (emailTasks);
-            return Ok (certificates.Select (c => new { c.CertificateId }));
-        }
-
-        [HttpPost ("email_certificate/to_registrant/{regId}")]
-        public async Task<IActionResult> ResendCertificate ([FromRoute] int regId, [FromServices] CertificatePdfRenderer writer, [FromServices] StandardEmailSender emailSender) 
-        {
-            var c = await _registrationService.GetCertificateWithUserAsync(regId);
-            var result = await writer.RenderAsync (CertificateVM.From(c));
-            var memoryStream = new MemoryStream();
-            await result.CopyToAsync(memoryStream);
-            var emailMessage = new EmailMessage 
-            {
-                Email = c.RecipientUser.Email,
-                Subject = $"Kursbevis for {c.Title}",
-                Message = "Her er kursbeviset! Gratulere!",
-                Attachment = new Attachment 
-                { 
-                    Filename = "kursbevis.pdf", 
-                    Bytes = memoryStream.ToArray() 
-                }
-            };
-            await emailSender.SendAsync(emailMessage);
-            return Ok();
-        }
-
+        
         [HttpPost ("order_emails/{eventId}")]
         public async Task<IActionResult> OrderEmails ([FromRoute] int eventId, [FromServices] StandardEmailSender emailSender, [FromServices] IRegistrationService registrationService, [FromBody] EmailVm vm) {
             var registrations = await registrationService.GetRegistrationsWithOrders (eventId);

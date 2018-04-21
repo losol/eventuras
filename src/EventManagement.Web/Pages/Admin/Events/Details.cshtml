@@ -249,7 +249,7 @@
         },
         'click .btn-send-certificate-again': function(e, value, row, index) {
             toastr.info("Please wait.");
-            $.postJSON('/api/participants/email_certificate/to_registrant/' + row.registrationId)
+            $.postJSON('/api/certificates/registration/' + row.registrationId + '/email/')
             .done(function(data) {
                 $('#sendCertificatesModal').modal('hide');
                 toastr.success('Emailed to ' + row.name + '.')
@@ -319,7 +319,7 @@
 
     function sendCertificate() {
         toastr.info("Please wait. This may take some time.");
-        $.postJSON('/api/participants/email_certificates/for_event/@Model.EventInfo.EventInfoId', null)
+        $.postJSON('/api/certificates/email_certificates/for_event/@Model.EventInfo.EventInfoId', null)
         .done(function(data){
             $('#sendCertificatesModal').modal('hide');
             toastr.success('Sent certificates to ' + data.length + ' participants.')

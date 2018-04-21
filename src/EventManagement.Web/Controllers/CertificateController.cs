@@ -15,7 +15,7 @@ using losol.EventManagement.Services;
 
 namespace EventManagement.Web.Controllers
 {
-    [Authorize] // TODO: ensure that only the relevant user / course admin can access these routes
+    [Authorize (Policy = "AdministratorRole")]
     [Route("certificate")]
     public class CertificateController : Controller
     {
@@ -36,7 +36,8 @@ namespace EventManagement.Web.Controllers
             }
             var vm = CertificateVM.Mock;
             vm.Title = eventInfo.Title;
-            vm.Date = eventInfo.DateEnd?.ToString("dd.MM.yyyy");
+            vm.EventDateStart = eventInfo.DateStart;
+            vm.EventDateEnd = eventInfo.DateEnd;
             vm.City = eventInfo.City;
             vm.Accreditation = eventInfo.CertificateDescription;
             // TODO: Add organizer details
