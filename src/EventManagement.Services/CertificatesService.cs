@@ -90,7 +90,8 @@ namespace losol.EventManagement.Services {
 
 			var result = new List<Certificate>();
 			var newRegistrations = eventInfo.Registrations
-				.Where (m => m.Attended == true && m.HasCertificate == false)
+				.Where (m => m.Attended == true)
+				//.Where (m => m.Attended == true && m.HasCertificate == false)
 				.ToList();
 			
 			foreach (var registration in newRegistrations ) {
