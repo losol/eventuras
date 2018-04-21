@@ -318,14 +318,13 @@
     }
 
     function sendCertificate() {
-        toastr.info("Please wait. This may take some time.");
-        $.postJSON('/api/certificates/email_certificates/for_event/@Model.EventInfo.EventInfoId', null)
-        .done(function(data){
-            $('#sendCertificatesModal').modal('hide');
-            toastr.success('Sent certificates to ' + data.length + ' participants.')
+        toastr.info("Vær tålmodig, det kan ta litt tid.");
+        $.postJSON('/event/@Model.EventInfo.EventInfoId/email', null)
+        .done(function(){
+            toastr.success('Kursbevisene er på vei!')
         })
         .fail(function(){
-            toastr.error('Generating/emailing certificates failed.')
+            toastr.error('Nåkka gikk galt. Sorry.')
         })
     }
 </script>

@@ -27,7 +27,7 @@ namespace losol.EventManagement.Services
 		/// </summary>
 		/// <param name="eventId">The eventId to create certificates for.</param>
 		/// <returns></returns>
-		Task<List<Certificate>> CreateNewCertificates(int eventId, string issuedByUsername);
+		Task<List<Certificate>> CreateCertificatesForEvent(int eventId);
 
 	}
 }

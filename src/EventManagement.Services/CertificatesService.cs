@@ -51,7 +51,7 @@ namespace losol.EventManagement.Services {
 				.ToListAsync();
 		}
 
-		public async Task<int> AddCertificate (int registrationId) {
+		public async Task<Certificate> AddCertificate (int registrationId) {
 
 			var registration = await _db.Registrations
 				.Include(e => e.EventInfo)
@@ -69,83 +69,35 @@ namespace losol.EventManagement.Services {
 
 			certificate.Evidence.Add(registration);
 
+			// Save the new certificate
+			_db.Certificates.Add(certificate);
+			await _db.SaveChangesAsync();
 
-			var result = await _db.Certificates.AddAsync(certificate);
+			// Update the registration
+			//registration.CertificateId = certificate.CertificateId;
+			//_db.Registrations.Update(registration);
+			await _db.SaveChangesAsync();
 
-			//registration.certificateId = 
-
-	
-			return certificate.CertificateId;
-
+			return certificate;
 		}
 
 
-		public async Task<bool> CreateCertificatesForCourse (int eventInfoId) {
+		public async Task<List<Certificate>> CreateCertificatesForEvent (int eventInfoId) {
 			var eventInfo = await _db.EventInfos
 				.Include(m => m.Registrations)
 				.Where(m => m.EventInfoId == eventInfoId)
 				.SingleOrDefaultAsync();
 
-			var registrations = eventInfo.Registrations
-				.Where (m => m.Attended == true)
+			var result = new List<Certificate>();
+			var newRegistrations = eventInfo.Registrations
+				.Where (m => m.Attended == true && m.HasCertificate == false)
 				.ToList();
 			
-			foreach (var registration in registrations) {
-				
+			foreach (var registration in newRegistrations ) {
+				result.Add( await AddCertificate( registration.RegistrationId ) ) ; 
 			}
 
-			return true;
+			return result;
 		}
-
-		public async Task<List<Certificate>> CreateNewCertificates (int eventId, string issuedByUsername) {
-
-			_ = issuedByUsername ??
-				throw new ArgumentNullException (paramName: nameof (issuedByUsername));
-
-			var infoQueryable = _db.EventInfos
-				.Where (e => e.EventInfoId == eventId);
-			var eventInfo = await infoQueryable.AsNoTracking ().SingleOrDefaultAsync ();
-			_ = eventInfo ??
-				throw new ArgumentException ("Not event corresponds to that eventId", paramName : nameof (eventId));
-
-			var user = await _db.ApplicationUsers
-				.Where (u => issuedByUsername == u.UserName)
-				.SingleOrDefaultAsync ();
-			_ = user ??
-				throw new ArgumentException ("Invalid userId", paramName : nameof (issuedByUsername));
-
-			/*var certs = await infoQueryable.SelectMany (i => i.Registrations)
-				.Where (r => r.Attended && r.Certificate == null)
-				.Select (r => new Certificate {
-					CertificateId = r.RegistrationId,
-						Recipient.Name = r.ParticipantName,
-						Recipient.UserId = r.UserId,
-
-						Title = eventInfo.Title,
-						Description = eventInfo.CertificateDescription,
-
-						EventInfoId = eventInfo.EventInfoId,
-
-						Issuer = new Certificate.CertificateIssuer {
-							OrganizationId = 0,
-								OrganizationName = "Nordland legeforening", // TODO should not be hardcoded
-								OrganizationLogoUrl = "/assets/images/logos/logo-nordland_legeforening-small-transparent.png",
-								IssuedByUserId = user.Id,
-								IssuedByName = "Anette Holand-Nilsen",
-								IssuedInCity = eventInfo.City
-						}
-				}).ToListAsync ();
-			_db.Certificates.AddRange (certs);
-			*/
-			await _db.SaveChangesAsync ();
-
-			//var newIds = certs.Select (c => c.CertificateId);
-			return await _db.Certificates
-				//.Where (c => newIds.Contains (c.CertificateId))
-				//.Include (c => c.RecipientUser)
-				//.Include (c => c.EventInfo)
-				.ToListAsync ();
-		}
-
 	}
 }

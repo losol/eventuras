@@ -28,22 +28,22 @@ namespace losol.EventManagement.Web.Controllers.Api {
             _certificatesService = certificatesService;
         }
 
-        [HttpPost ("email_certificates/for_event/{eventId}")]
+        [HttpPost ("/event/{eventId}/email")]
         public async Task<IActionResult> GenerateCertificatesAndSendEmails ([FromRoute] int eventId, [FromServices] CertificatePdfRenderer writer, [FromServices] StandardEmailSender emailSender) {
-            var certificates = await _certificatesService.CreateNewCertificates (eventId, User.Identity.Name);
-            var emailTasks = certificates.Select (async c => {
-                var result = await writer.RenderAsync (CertificateVM.From (c));
+            var certificates = await _certificatesService.CreateCertificatesForEvent(eventId);
+
+            foreach( var certificate in certificates ) {
+                var result = await writer.RenderAsync( CertificateVM.From ( certificate ) );
                 var memoryStream = new MemoryStream ();
                 await result.CopyToAsync (memoryStream);
-                return emailSender.SendAsync (new EmailMessage {
-                    Email = c.RecipientEmail,
-                        Subject = $"Kursbevis for {c.Title}",
+                await emailSender.SendAsync (new EmailMessage {
+                    Email = certificate.RecipientEmail,
+                        Subject = $"Kursbevis for {certificate.Title}",
                         Message = "Her er kursbeviset! Gratulere!",
                         Attachment = new Attachment { Filename = "kursbevis.pdf", Bytes = memoryStream.ToArray () }
                 });
-            });
-            await Task.WhenAll (emailTasks);
-            return Ok (certificates.Select (c => new { c.CertificateId }));
+            }
+            return Ok ();
         }
 
         [HttpPost ("registration/{regId}/email")]
