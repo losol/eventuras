@@ -105,69 +105,6 @@ namespace losol.EventManagement.Services {
 			return await _db.SaveChangesAsync ();
 		}
 
-		public async Task<List<Certificate>> CreateNewCertificates (int eventId, string issuedByUsername) {
-
-			_ = issuedByUsername ??
-				throw new ArgumentNullException (paramName: nameof (issuedByUsername));
-
-			var infoQueryable = _db.EventInfos
-				.Where (e => e.EventInfoId == eventId);
-			var eventInfo = await infoQueryable.AsNoTracking ().SingleOrDefaultAsync ();
-			_ = eventInfo ??
-				throw new ArgumentException ("Not event corresponds to that eventId", paramName : nameof (eventId));
-
-			var user = await _db.ApplicationUsers
-				.Where (u => issuedByUsername == u.UserName)
-				.SingleOrDefaultAsync ();
-			_ = user ??
-				throw new ArgumentException ("Invalid userId", paramName : nameof (issuedByUsername));
-
-			var certs = await infoQueryable.SelectMany (i => i.Registrations)
-				.Where (r => r.Attended && r.Certificate == null)
-				.Select (r => new Certificate {
-					CertificateId = r.RegistrationId,
-						RecipientName = r.ParticipantName,
-						RecipientUserId = r.UserId,
-
-						Title = eventInfo.Title,
-						Description = eventInfo.CertificateDescription,
-
-						EventInfoId = eventInfo.EventInfoId,
-
-						Issuer = new Certificate.CertificateIssuer {
-							OrganizationId = 0,
-								OrganizationName = "Nordland legeforening", // TODO should not be hardcoded
-								OrganizationLogoUrl = "/assets/images/logos/logo-nordland_legeforening-small-transparent.png",
-								IssuedByUserId = user.Id,
-								IssuedByName = "Anette Holand-Nilsen",
-								IssuedInCity = eventInfo.City
-						}
-				}).ToListAsync ();
-			_db.Certificates.AddRange (certs);
-			await _db.SaveChangesAsync ();
-
-			var newIds = certs.Select (c => c.CertificateId);
-			return await _db.Certificates
-				.Where (c => newIds.Contains (c.CertificateId))
-				.Include (c => c.RecipientUser)
-				.Include (c => c.EventInfo)
-				.ToListAsync ();
-		}
-
-		public Task<Certificate> GetCertificateAsync (int id) {
-			return _db.Certificates
-				.Include (c => c.EventInfo)
-				.Include (c => c.RecipientUser)
-				.SingleOrDefaultAsync (c => c.CertificateId == id);
-		}
-
-		public Task<Certificate> GetCertificateWithUserAsync (int id) {
-			return _db.Certificates
-				.Include (c => c.EventInfo)
-				.Include (c => c.RecipientUser)
-				.SingleOrDefaultAsync (c => c.CertificateId == id);
-		}
-
 		public async Task<bool> AddProductToRegistration (string email, int eventId, int productId, int? variantId) {
 			var userId = await _db.Users.Where (u => u.Email == email)
 				.Select (u => u.Id)

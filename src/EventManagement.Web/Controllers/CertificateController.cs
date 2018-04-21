@@ -48,10 +48,10 @@ namespace EventManagement.Web.Controllers
         [HttpGet("{id}/download")]
         public async Task<IActionResult> DownloadCertificate(
             [FromServices] CertificatePdfRenderer writer, 
-            [FromServices] IRegistrationService registrationService,
+            [FromServices] ICertificatesService certificatesService,
             [FromRoute] int id)
         {
-            var certificate = await registrationService.GetCertificateAsync(id);
+            var certificate = await certificatesService.GetAsync(id);
             if(certificate == null)
             {
                 return NotFound();

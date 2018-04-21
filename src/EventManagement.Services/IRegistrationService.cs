@@ -13,17 +13,7 @@ namespace losol.EventManagement.Services
 		Task<Registration> GetWithEventInfoAsync(int id);
 		Task<List<Registration>> GetRegistrations(int eventId);
 		Task<List<Registration>> GetRegistrationsWithOrders(int eventId);
-		Task<Certificate> GetCertificateAsync(int id);
-		Task<Certificate> GetCertificateWithUserAsync(int id);
-
-		/// <summary>
-		/// Creates new certificates for registrants with no existing certificates
-		/// and returns the newly created certificates.
-		/// </summary>
-		/// <param name="eventId">The eventId to create certificates for.</param>
-		/// <returns></returns>
-		Task<List<Certificate>> CreateNewCertificates(int eventId, string issuedByUsername);
-
+		
 		Task<int> CreateRegistration(Registration registration);
 		Task<int> CreateRegistration(Registration registration, int[] productIds, int[] variantIds);
 		[Obsolete]

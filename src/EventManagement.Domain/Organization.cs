@@ -36,7 +36,8 @@ namespace losol.EventManagement.Domain
 
         [StringLength(300, ErrorMessage = "Url kan bare være 300 tegn.")]
         [Display(Name = "Lenke til profilbilde for organisasjonen.")]
-        public string LogoImageUrl { get; set; }
+        public string LogoUrl { get; set; }
+        public string LogoBase64 { get;set; }
 
         public string VatId { get; set; }
  
