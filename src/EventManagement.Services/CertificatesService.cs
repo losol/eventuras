@@ -51,7 +51,7 @@ namespace losol.EventManagement.Services {
 				.ToListAsync();
 		}
 
-		public async Task CreateCertificate (int registrationId) {
+		public async Task<int> AddCertificate (int registrationId) {
 
 			var registration = await _db.Registrations
 				.Include(e => e.EventInfo)
@@ -65,19 +65,37 @@ namespace losol.EventManagement.Services {
 				RecipientName = registration.ParticipantName,
 				RecipientEmail = registration.User.Email,
 				RecipientUserId = registration.User.Id,
-
-
-
 			};
 
 			certificate.Evidence.Add(registration);
-			
+
+
+			var result = await _db.Certificates.AddAsync(certificate);
+
+			//registration.certificateId = 
+
+	
+			return certificate.CertificateId;
 
 		}
 
 
+		public async Task<bool> CreateCertificatesForCourse (int eventInfoId) {
+			var eventInfo = await _db.EventInfos
+				.Include(m => m.Registrations)
+				.Where(m => m.EventInfoId == eventInfoId)
+				.SingleOrDefaultAsync();
 
+			var registrations = eventInfo.Registrations
+				.Where (m => m.Attended == true)
+				.ToList();
+			
+			foreach (var registration in registrations) {
+				
+			}
 
+			return true;
+		}
 
 		public async Task<List<Certificate>> CreateNewCertificates (int eventId, string issuedByUsername) {
 
