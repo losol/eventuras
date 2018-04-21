@@ -28,7 +28,7 @@ namespace losol.EventManagement.Web.Controllers.Api {
             _certificatesService = certificatesService;
         }
 
-        [HttpPost ("/event/{eventId}/email")]
+        [HttpPost ("event/{eventId}/email")]
         public async Task<IActionResult> GenerateCertificatesAndSendEmails ([FromRoute] int eventId, [FromServices] CertificatePdfRenderer writer, [FromServices] StandardEmailSender emailSender) {
             var certificates = await _certificatesService.CreateCertificatesForEvent(eventId);
 

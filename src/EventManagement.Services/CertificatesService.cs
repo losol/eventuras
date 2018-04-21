@@ -74,8 +74,8 @@ namespace losol.EventManagement.Services {
 			await _db.SaveChangesAsync();
 
 			// Update the registration
-			//registration.CertificateId = certificate.CertificateId;
-			//_db.Registrations.Update(registration);
+			registration.CertificateId = certificate.CertificateId;
+			_db.Registrations.Update(registration);
 			await _db.SaveChangesAsync();
 
 			return certificate;
@@ -90,8 +90,7 @@ namespace losol.EventManagement.Services {
 
 			var result = new List<Certificate>();
 			var newRegistrations = eventInfo.Registrations
-				.Where (m => m.Attended == true)
-				//.Where (m => m.Attended == true && m.HasCertificate == false)
+				.Where (m => m.Attended == true && m.HasCertificate == false)
 				.ToList();
 			
 			foreach (var registration in newRegistrations ) {

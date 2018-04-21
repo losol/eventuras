@@ -319,7 +319,7 @@
 
     function sendCertificate() {
         toastr.info("Vær tålmodig, det kan ta litt tid.");
-        $.postJSON('/event/@Model.EventInfo.EventInfoId/email', null)
+        $.postJSON('/api/certificates/event/@Model.EventInfo.EventInfoId/email', null)
         .done(function(){
             toastr.success('Kursbevisene er på vei!')
         })
