@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using losol.EventManagement.Domain;
-using losol.EventManagement.Web.ViewModels.Templates;
 using losol.EventManagement.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.ViewModels;
+using losol.EventManagement.Web.ViewModels;
 using losol.EventManagement.Services;
 
 namespace EventManagement.Web.Controllers

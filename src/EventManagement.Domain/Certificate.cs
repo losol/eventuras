@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace losol.EventManagement.Domain
-{
-    public class Certificate
-    {
+namespace losol.EventManagement.Domain {
+
+    public class Certificate {
+        
         [Key]
-        public int Id {get;set;}
         public int CertificateId { get; set; }
-        
+
         // Keys
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid PublicGuid { get; set; } = Guid.NewGuid();
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid SecretGuid { get; set; } = Guid.NewGuid();
-        
+        [DatabaseGenerated (DatabaseGeneratedOption.Identity)]
+        public Guid CertificateGuid { get; set; } = Guid.NewGuid ();
+        [DatabaseGenerated (DatabaseGeneratedOption.Identity)]
+        public Guid Auth { get; set; } = Guid.NewGuid ();
+
         [Required]
         public string Title { get; set; }
         public string Description { get; set; }
@@ -24,16 +23,16 @@ namespace losol.EventManagement.Domain
 
         // Why this certificate was issued
         public List<Registration> Evidence { get; set; }
-        
+
         public string RecipientName { get; set; }
         public string RecipientEmail { get; set; }
         public string RecipientUserId { get; set; }
         public ApplicationUser RecipientUser { get; set; }
 
         public CertificateIssuer Issuer { get; set; }
+
         [ComplexType]
-        public class CertificateIssuer
-        {
+        public class CertificateIssuer {
             public int OrganizationId { get; set; }
             public string OrganizationName { get; set; }
             public string OrganizationUrl { get; set; }

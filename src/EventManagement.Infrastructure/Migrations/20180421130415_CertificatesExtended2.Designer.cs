@@ -12,9 +12,10 @@ using System;
 namespace losol.EventManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180421130415_CertificatesExtended2")]
+    partial class CertificatesExtended2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,18 +77,15 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("losol.EventManagement.Domain.Certificate", b =>
                 {
-                    b.Property<int>("CertificateId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid>("Auth")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid>("CertificateGuid")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedOn");
 
                     b.Property<string>("Description");
+
+                    b.Property<Guid>("Guid")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("RecipientEmail");
 
@@ -95,10 +93,13 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.Property<string>("RecipientUserId");
 
+                    b.Property<Guid>("SecretGuid")
+                        .ValueGeneratedOnAdd();
+
                     b.Property<string>("Title")
                         .IsRequired();
 
-                    b.HasKey("CertificateId");
+                    b.HasKey("Id");
 
                     b.HasIndex("RecipientUserId");
 

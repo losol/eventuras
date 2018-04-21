@@ -1,13 +1,14 @@
 using System;
 using losol.EventManagement.Domain;
 
-namespace losol.EventManagement.Web.ViewModels.Templates
+namespace losol.EventManagement.Web.ViewModels
 {
     public class CertificateVM
     {
         public string CertificateGuid { get; set; }
 
-        public string Title {get;set;} 
+        public string Title { get;set; } 
+        public string Description { get;set; }
 
         public string RecipientName {get;set;}
         public string IssuerOrganizationName {get;set;}
@@ -23,7 +24,7 @@ namespace losol.EventManagement.Web.ViewModels.Templates
 
         public static CertificateVM Mock => new CertificateVM 
         {
-            RecipientName = "Evigunge Losvik",
+            RecipientName = "Ole Kristian Losvik",
             IssuerOrganizationName = "Nordland Legeforening",
             IssuerOrganizationLogoUrl = "/assets/images/logos/logo-nordland_legeforening-small-transparent.png",
             IssuerPersonName = "Tove Myrbakk",
@@ -43,7 +44,7 @@ namespace losol.EventManagement.Web.ViewModels.Templates
             {
                 RecipientName = c.RecipientName,
                 Title = c.Title,
-                CertificateGuid = c.PublicGuid.ToString(),
+                CertificateGuid = c.CertificateGuid.ToString(),
                 Date = c.CreatedOn.ToString("dd.MMM.yyyy"),
                 IssuerOrganizationName = c.Issuer.OrganizationName,
                 IssuerPersonName = c.Issuer.IssuedByName,

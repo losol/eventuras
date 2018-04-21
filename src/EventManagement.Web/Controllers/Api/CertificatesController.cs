@@ -11,7 +11,7 @@ using losol.EventManagement.Services;
 using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
-using losol.EventManagement.Web.ViewModels.Templates;
+using losol.EventManagement.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 
 namespace losol.EventManagement.Web.Controllers.Api {

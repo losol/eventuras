@@ -9,7 +9,6 @@ using losol.EventManagement.Services;
 using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
-using losol.EventManagement.Web.ViewModels.Templates;
 using Microsoft.AspNetCore.Authorization;
 using System.IO;
 using losol.EventManagement.Domain;
