@@ -22,7 +22,7 @@ namespace losol.EventManagement.Services {
 			var certificate = await _db.Certificates
 				.Include (c => c.Evidence)
 					.ThenInclude (c => c.EventInfo)
-				.Include (c => c.Recipient.User)
+				.Include (c => c.RecipientUser)
 				.SingleOrDefaultAsync (c => c.CertificateId == certificateId);
 
 			return certificate;
@@ -33,7 +33,7 @@ namespace losol.EventManagement.Services {
 				.Where( c => c.Evidence.Any(d => d.RegistrationId == registrationId) ) 
 				.Include (c => c.Evidence)
 					.ThenInclude (c => c.EventInfo)
-				.Include (c => c.Recipient.User)
+				.Include (c => c.RecipientUser)
 				.SingleOrDefaultAsync ();
 
 			return certificate;

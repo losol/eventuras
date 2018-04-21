@@ -8,8 +8,9 @@ namespace losol.EventManagement.Domain
     public class Certificate
     {
         [Key]
+        public int Id {get;set;}
         public int CertificateId { get; set; }
-
+        
         // Keys
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid PublicGuid { get; set; } = Guid.NewGuid();
@@ -23,10 +24,10 @@ namespace losol.EventManagement.Domain
 
         // Why this certificate was issued
         public List<Registration> Evidence { get; set; }
-
-        public string RecipientUserId { get; set; }
+        
         public string RecipientName { get; set; }
         public string RecipientEmail { get; set; }
+        public string RecipientUserId { get; set; }
         public ApplicationUser RecipientUser { get; set; }
 
         public CertificateIssuer Issuer { get; set; }

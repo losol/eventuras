@@ -36,7 +36,7 @@ namespace losol.EventManagement.Web.Controllers.Api {
                 var memoryStream = new MemoryStream ();
                 await result.CopyToAsync (memoryStream);
                 return emailSender.SendAsync (new EmailMessage {
-                    Email = c.Recipient.Email,
+                    Email = c.RecipientEmail,
                         Subject = $"Kursbevis for {c.Title}",
                         Message = "Her er kursbeviset! Gratulere!",
                         Attachment = new Attachment { Filename = "kursbevis.pdf", Bytes = memoryStream.ToArray () }
@@ -53,7 +53,7 @@ namespace losol.EventManagement.Web.Controllers.Api {
             var memoryStream = new MemoryStream ();
             await result.CopyToAsync (memoryStream);
             var emailMessage = new EmailMessage {
-                Email = c.Recipient.Email,
+                Email = c.RecipientEmail,
                 Subject = $"Kursbevis for {c.Title}",
                 Message = "Her er kursbeviset! Gratulere!",
                 Attachment = new Attachment {

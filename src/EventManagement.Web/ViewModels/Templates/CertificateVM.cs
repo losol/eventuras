@@ -41,7 +41,7 @@ namespace losol.EventManagement.Web.ViewModels.Templates
         public static CertificateVM From(Certificate c) =>
             new CertificateVM 
             {
-                RecipientName = c.Recipient.Name,
+                RecipientName = c.RecipientName,
                 Title = c.Title,
                 CertificateGuid = c.PublicGuid.ToString(),
                 Date = c.CreatedOn.ToString("dd.MMM.yyyy"),
