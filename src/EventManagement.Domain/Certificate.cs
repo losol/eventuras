@@ -30,10 +30,11 @@ namespace losol.EventManagement.Domain {
         public ApplicationUser RecipientUser { get; set; }
 
         // Issued by
-        /*
-        public int? OrganizationId {get;set;}
+        public int? IssuingOrganizationId {get;set;}
+        [ForeignKey("IssuingOrganizationId")]
         public Organization IssuingOrganization {get;set;}
-         */
+        
+
         public string IssuedByName {get;set;}
         public DateTime IssuedDate { get; set; } = DateTime.UtcNow;
 
