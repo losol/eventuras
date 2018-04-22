@@ -20,9 +20,17 @@ namespace EventManagement.Web.Controllers
     public class CertificateController : Controller
     {
         [HttpGet("{id}")]
-        public IActionResult ViewCertificate([FromRoute]int id)
+        public async Task<IActionResult> ViewCertificate(
+            [FromRoute]int id,
+            [FromServices] ICertificatesService certificatesService)
+
         {
-            return View("Templates/Certificates/CourseCertificate", CertificateVM.Mock);
+            var certificate = await certificatesService.GetAsync(id);
+            if(certificate == null)
+            {
+                return NotFound();
+            }
+            return View("Templates/Certificates/CourseCertificate", certificate);
         }
 
         [HttpGet("preview/event/{id}")]
@@ -35,11 +43,13 @@ namespace EventManagement.Web.Controllers
                 return NotFound();
             }
             var vm = CertificateVM.Mock;
+            
             vm.Title = eventInfo.Title;
-            vm.EventDateStart = eventInfo.DateStart;
-            vm.EventDateEnd = eventInfo.DateEnd;
+            vm.Description = eventInfo.CertificateDescription;
+            // vm.EventDateStart = eventInfo.DateStart;
+            //vm.EventDateEnd = eventInfo.DateEnd;
             vm.City = eventInfo.City;
-            vm.Accreditation = eventInfo.CertificateDescription;
+            vm.Description = eventInfo.CertificateDescription;
             // TODO: Add organizer details
             
             return View("Templates/Certificates/CourseCertificate", vm);

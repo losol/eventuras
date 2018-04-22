@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using losol.EventManagement.Domain;
 
 namespace losol.EventManagement.Web.ViewModels
@@ -14,10 +15,8 @@ namespace losol.EventManagement.Web.ViewModels
         public string IssuerOrganizationName {get;set;}
         public string IssuerOrganizationLogoUrl {get;set;}
         public string IssuerPersonName {get;set;}
-        public string Accreditation { get; set; }
 
-        public DateTime? EventDateStart { get;set; }
-        public DateTime? EventDateEnd { get;set; }
+        public List<Registration> Evidence {get;set;}
 
         public string City { get; set; }
         public string Date { get; set; }
@@ -29,14 +28,13 @@ namespace losol.EventManagement.Web.ViewModels
             IssuerOrganizationLogoUrl = "/assets/images/logos/logo-nordland_legeforening-small-transparent.png",
             IssuerPersonName = "Tove Myrbakk",
 
-            EventDateStart = DateTime.Now.AddDays(-7),
+            //EventDateStart = DateTime.Now.AddDays(-7),
             CertificateGuid = Guid.NewGuid().ToString(),
             City = "Bodø",
             Date = DateTime.Now.ToString("dd.MM.yyyy"),
 
             Title = "Nettkurs Diabetes mellitus type 2",
-
-            Accreditation = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempor interdum purus, at egestas lectus rutrum at. Phasellus semper volutpat ipsum ac bibendum. Nulla placerat interdum nulla nec consequat. Maecenas dictum mattis arcu, sed sagittis risus ornare et. Nunc in tortor et tortor molestie molestie"
+            Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempor interdum purus, at egestas lectus rutrum at. Phasellus semper volutpat ipsum ac bibendum. Nulla placerat interdum nulla nec consequat. Maecenas dictum mattis arcu, sed sagittis risus ornare et. Nunc in tortor et tortor molestie molestie"
         };
 
         public static CertificateVM From(Certificate c) =>
@@ -46,11 +44,12 @@ namespace losol.EventManagement.Web.ViewModels
                 Title = c.Title,
                 CertificateGuid = c.CertificateGuid.ToString(),
                 Date = c.IssuedDate.ToString("dd.MMM.yyyy"),
-                //IssuerOrganizationName = c.IssuingOrganization?.Name,
-                IssuerPersonName = c.IssuedByName,
+                IssuerOrganizationName = "Nordland legeforening",
+                IssuerPersonName = "Anette Holand-Nilsen",
+                Evidence = c.Evidence,
                 //IssuerOrganizationLogoUrl = c.IssuingOrganization?.LogoUrl,
                 //City = c.Issuer.IssuedInCity,
-                Accreditation = c.Description
+                Description = c.Description
             };
 
     }

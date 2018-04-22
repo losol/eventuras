@@ -65,10 +65,13 @@ namespace losol.EventManagement.Services {
 
 			var certificate = new Certificate {
 				Title = registration.EventInfo.Title,
-				Description = registration.EventInfo.DateStart.ToString(),
+				Description = registration.EventInfo.CertificateDescription,
 				RecipientName = registration.ParticipantName,
 				RecipientEmail = registration.User.Email,
 				RecipientUserId = registration.User.Id,
+
+				IssuedByName = "Anette Holand-Nilsen"
+				
 			};
 
 			certificate.Evidence.Add(registration);
