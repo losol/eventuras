@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace losol.EventManagement.Services {
 
@@ -12,17 +13,20 @@ namespace losol.EventManagement.Services {
 
 		private readonly ApplicationDbContext _db;
 		private readonly IPaymentMethodService _paymentMethods;
+		// private readonly ILogger _logger;
 
-		public CertificatesService (ApplicationDbContext db, IPaymentMethodService paymentMethods) {
+		public CertificatesService (ApplicationDbContext db, IPaymentMethodService paymentMethods /*, ILogger logger */) {
 			_db = db;
 			_paymentMethods = paymentMethods;
+			//_logger = logger;
 		}
 
 		public async Task<Certificate> GetAsync (int certificateId) {
 			var certificate = await _db.Certificates
 				.Include (c => c.Evidence)
-					.ThenInclude (c => c.EventInfo)
+				.ThenInclude (c => c.EventInfo)
 				.Include (c => c.RecipientUser)
+				.AsNoTracking ()
 				.SingleOrDefaultAsync (c => c.CertificateId == certificateId);
 
 			return certificate;
@@ -30,38 +34,28 @@ namespace losol.EventManagement.Services {
 
 		public async Task<Certificate> GetForRegistrationAsync (int registrationId) {
 			var certificate = await _db.Certificates
-				.Where( c => c.Evidence.Any(d => d.RegistrationId == registrationId) ) 
+				.Where (c => c.Evidence.Any (d => d.RegistrationId == registrationId))
 				.Include (c => c.Evidence)
-					.ThenInclude (c => c.EventInfo)
+				.ThenInclude (c => c.EventInfo)
 				.Include (c => c.RecipientUser)
+				.AsNoTracking ()
 				.SingleOrDefaultAsync ();
 
 			return certificate;
 		}
 
-
-		public Task<List<Registration>> GetRegistrationsAsync(int productId)
-		{
-			return _db.Registrations
-				.Where(r => r.Orders.Any(o => o.OrderLines.Any(l => l.ProductId == productId)))
-				.Include(r => r.User)
-				.Include(r => r.Orders)
-					.ThenInclude(o => o.OrderLines)
-				.AsNoTracking()
-				.ToListAsync();
-		}
-
 		public async Task<Certificate> AddCertificate (int registrationId) {
 
 			var registration = await _db.Registrations
-				.Include(e => e.EventInfo)
-				.Include(e => e.User)
-				.Where(e => e.RegistrationId == registrationId)
-				.SingleOrDefaultAsync();
-			
+				.Include (e => e.EventInfo)
+				.Include (e => e.User)
+				.Include (e => e.Certificate)
+				.Where (e => e.RegistrationId == registrationId)
+				.SingleOrDefaultAsync ();
 
-			Console.WriteLine("**** ADD REG");
-			Console.WriteLine(registration.RegistrationId);
+			if (registration == null) {
+				throw new ArgumentNullException ("Could not find registration.");
+			}
 
 			var certificate = new Certificate {
 				Title = registration.EventInfo.Title,
@@ -71,48 +65,40 @@ namespace losol.EventManagement.Services {
 				RecipientUserId = registration.User.Id,
 
 				IssuedByName = "Anette Holand-Nilsen"
-				
+
 			};
 
-			certificate.Evidence.Add(registration);
+			_db.Certificates.Add (certificate);
+			var result = await _db.SaveChangesAsync ();
 
-			// Save the new certificate
-			_db.Certificates.Add(certificate);
-			Console.WriteLine(await _db.SaveChangesAsync());
+			registration.Certificate = certificate;
+			await _db.SaveChangesAsync ();
 
-			Console.WriteLine("**** SAVED CERT");
-			Console.WriteLine(registration.RegistrationId);
-
-			// Update the registration
-			registration.CertificateId = certificate.CertificateId;
-			_db.Registrations.Update(registration);
-			await _db.SaveChangesAsync();
+			// _logger.LogInformation($"* Added certificate (id {certificate.CertificateId}. Result code: {result} ***");
 
 			return certificate;
 		}
 
-
 		public async Task<List<Certificate>> CreateCertificatesForEvent (int eventInfoId) {
 			var eventInfo = await _db.EventInfos
-				.Include(m => m.Registrations)
-				.Where(m => m.EventInfoId == eventInfoId)
-				.SingleOrDefaultAsync();
-			
+				.Include (m => m.Registrations)
+				.Where (m => m.EventInfoId == eventInfoId)
+				.SingleOrDefaultAsync ();
+
 			if (eventInfo == null) {
-				throw new ArgumentException("No event found") ;
+				throw new ArgumentException ("No event found");
 			}
 
-			var result = new List<Certificate>();
+			var result = new List<Certificate> ();
 			var newRegistrations = eventInfo.Registrations
-				.Where (m => m.Attended == true && m.HasCertificate == false)
-				.ToList();
-			
+				.Where (m => m.Attended && m.CertificateId == null)
+				.ToList ();
+
+			// Add certificates
 			if (newRegistrations != null) {
-				foreach (var registration in newRegistrations ) {
-					Console.WriteLine("****");
-					Console.WriteLine(registration.RegistrationId);
-					
-					result.Add( await AddCertificate( registration.RegistrationId ) ) ; 
+				foreach (var registration in newRegistrations) {
+					// _logger.LogInformation($"*** Adding certificate for registration: {registration.RegistrationId} ***");
+					result.Add (await AddCertificate (registration.RegistrationId));
 				}
 			}
 

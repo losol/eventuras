@@ -51,7 +51,6 @@ namespace losol.EventManagement.Pages.Admin.Events
             {
                 return NotFound();
             }
-            //EventInfo.
             
             return Page();
         }

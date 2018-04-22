@@ -56,15 +56,14 @@ namespace losol.EventManagement.Domain
 		[Display(Name = "Verifiseringskode")]
 		public string VerificationCode { get; set; }
 
-		public int? CertificateId { get;set; }
-		public Certificate Certificate { get;set; }
+		public int? CertificateId {get;set;}
+		public Certificate Certificate {get;set;}
  
 		// Navigation properties
 		public EventInfo EventInfo { get; set; }
 		public ApplicationUser User { get; set; }
 		public PaymentMethod PaymentMethod { get; set; }
 		public List<Order> Orders { get; set; }
-
 
 		public void Verify()
 		{
