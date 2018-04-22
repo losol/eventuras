@@ -80,6 +80,7 @@ namespace losol.EventManagement.Domain
 		}
 
 		public bool HasOrder => Orders != null && Orders.Count > 0;
+		public bool HasCertificate => Certificate != null;
 
 		public void CreateOrder(IEnumerable<Product> products, IEnumerable<ProductVariant> variants)
 		{
