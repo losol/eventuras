@@ -51,7 +51,6 @@ namespace losol.EventManagement.Pages.Admin.Events
             {
                 return NotFound();
             }
-            //EventInfo.
             
             return Page();
         }
@@ -74,8 +73,9 @@ namespace losol.EventManagement.Pages.Admin.Events
                     Attended = x.Attended,
                     JobTitle = x.ParticipantJobTitle,
                     Employer = x.ParticipantEmployer,
-                    City = x.ParticipantCity
-                    //HasCertificate = x.HasCertificate
+                    City = x.ParticipantCity,
+                    HasCertificate = x.HasCertificate,
+                    CertificateId = x.CertificateId
                     })
                 .ToListAsync();
 

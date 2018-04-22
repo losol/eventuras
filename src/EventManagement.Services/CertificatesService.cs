@@ -49,6 +49,7 @@ namespace losol.EventManagement.Services {
 			var registration = await _db.Registrations
 				.Include (e => e.EventInfo)
 				.Include (e => e.User)
+				.Include (e => e.Certificate)
 				.Where (e => e.RegistrationId == registrationId)
 				.SingleOrDefaultAsync ();
 
@@ -58,17 +59,20 @@ namespace losol.EventManagement.Services {
 
 			var certificate = new Certificate {
 				Title = registration.EventInfo.Title,
-					Description = registration.EventInfo.CertificateDescription,
-					RecipientName = registration.ParticipantName,
-					RecipientEmail = registration.User.Email,
-					RecipientUserId = registration.User.Id,
+				Description = registration.EventInfo.CertificateDescription,
+				RecipientName = registration.ParticipantName,
+				RecipientEmail = registration.User.Email,
+				RecipientUserId = registration.User.Id,
 
-					IssuedByName = "Anette Holand-Nilsen"
+				IssuedByName = "Anette Holand-Nilsen"
 
 			};
 
 			_db.Certificates.Add (certificate);
 			var result = await _db.SaveChangesAsync ();
+
+			registration.Certificate = certificate;
+			await _db.SaveChangesAsync ();
 
 			// _logger.LogInformation($"* Added certificate (id {certificate.CertificateId}. Result code: {result} ***");
 
@@ -87,7 +91,7 @@ namespace losol.EventManagement.Services {
 
 			var result = new List<Certificate> ();
 			var newRegistrations = eventInfo.Registrations
-				.Where (m => m.Attended && m.CertificateId != null)
+				.Where (m => m.Attended && m.CertificateId == null)
 				.ToList ();
 
 			// Add certificates

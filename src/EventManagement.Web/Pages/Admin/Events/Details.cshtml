@@ -127,7 +127,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Lukk</button>
-                        <button type="button" onclick="sendCertificate()" class="btn btn-primary">Send</button>
+                        <button type="button" onclick="emailCertificatesToAll()" class="btn btn-primary">Send</button>
                     </div>
                     </div>
                 </div>
@@ -317,11 +317,13 @@
         $('#sms-modal').modal('hide');
     }
 
-    function sendCertificate() {
+    function emailCertificatesToAll() {
         toastr.info("Vær tålmodig, det kan ta litt tid.");
         $.postJSON('/api/certificates/event/@Model.EventInfo.EventInfoId/email', null)
         .done(function(){
-            toastr.success('Kursbevisene er på vei!')
+            toastr.success('Kursbevisene er på vei!');
+            $('#sendCertificatesModal').modal('hide');
+            $('#table').bootstrapTable('refresh', null);
         })
         .fail(function(){
             toastr.error('Nåkka gikk galt. Sorry.')
