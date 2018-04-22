@@ -16,7 +16,7 @@ namespace losol.EventManagement.Web.ViewModels
         public string IssuerOrganizationLogoUrl {get;set;}
         public string IssuerPersonName {get;set;}
 
-        public List<Registration> Evidence {get;set;}
+        public ICollection<Registration> Evidence {get;set;}
 
         public string City { get; set; }
         public string Date { get; set; }
@@ -46,7 +46,7 @@ namespace losol.EventManagement.Web.ViewModels
                 Date = c.IssuedDate.ToString("dd.MMM.yyyy"),
                 IssuerOrganizationName = "Nordland legeforening",
                 IssuerPersonName = "Anette Holand-Nilsen",
-                Evidence = c.Evidence,
+                //Evidence = c.Registrations,
                 //IssuerOrganizationLogoUrl = c.IssuingOrganization?.LogoUrl,
                 //City = c.Issuer.IssuedInCity,
                 Description = c.Description

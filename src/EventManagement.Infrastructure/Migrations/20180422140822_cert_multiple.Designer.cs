@@ -12,9 +12,10 @@ using System;
 namespace losol.EventManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180422140822_cert_multiple")]
+    partial class cert_multiple
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,9 +80,11 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.Property<int>("CertificateId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("Auth");
+                    b.Property<Guid>("Auth")
+                        .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("CertificateGuid");
+                    b.Property<Guid>("CertificateGuid")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Description");
 
@@ -97,6 +100,8 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.Property<string>("RecipientUserId");
 
+                    b.Property<int?>("RegistrationId");
+
                     b.Property<string>("Title")
                         .IsRequired();
 
@@ -106,7 +111,22 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.HasIndex("RecipientUserId");
 
+                    b.HasIndex("RegistrationId");
+
                     b.ToTable("Certificates");
+                });
+
+            modelBuilder.Entity("losol.EventManagement.Domain.CertificateRegistration", b =>
+                {
+                    b.Property<int>("CertificateId");
+
+                    b.Property<int>("RegistrationId");
+
+                    b.HasKey("CertificateId", "RegistrationId");
+
+                    b.HasIndex("RegistrationId");
+
+                    b.ToTable("CertificateRegistrations");
                 });
 
             modelBuilder.Entity("losol.EventManagement.Domain.EventInfo", b =>
@@ -369,8 +389,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.Property<bool>("Attended");
 
-                    b.Property<int?>("CertificateId");
-
                     b.Property<string>("CustomerEmail");
 
                     b.Property<string>("CustomerInvoiceReference");
@@ -410,8 +428,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.Property<bool>("Verified");
 
                     b.HasKey("RegistrationId");
-
-                    b.HasIndex("CertificateId");
 
                     b.HasIndex("EventInfoId");
 
@@ -539,6 +555,23 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.HasOne("losol.EventManagement.Domain.ApplicationUser", "RecipientUser")
                         .WithMany("Certificates")
                         .HasForeignKey("RecipientUserId");
+
+                    b.HasOne("losol.EventManagement.Domain.Registration")
+                        .WithMany("Certificates")
+                        .HasForeignKey("RegistrationId");
+                });
+
+            modelBuilder.Entity("losol.EventManagement.Domain.CertificateRegistration", b =>
+                {
+                    b.HasOne("losol.EventManagement.Domain.Certificate", "Certificate")
+                        .WithMany()
+                        .HasForeignKey("CertificateId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("losol.EventManagement.Domain.Registration", "Registration")
+                        .WithMany()
+                        .HasForeignKey("RegistrationId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("losol.EventManagement.Domain.EventInfo", b =>
@@ -602,10 +635,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("losol.EventManagement.Domain.Registration", b =>
                 {
-                    b.HasOne("losol.EventManagement.Domain.Certificate", "Certificate")
-                        .WithMany("Evidence")
-                        .HasForeignKey("CertificateId");
-
                     b.HasOne("losol.EventManagement.Domain.EventInfo", "EventInfo")
                         .WithMany("Registrations")
                         .HasForeignKey("EventInfoId")

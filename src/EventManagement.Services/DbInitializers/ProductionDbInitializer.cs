@@ -17,7 +17,7 @@ namespace losol.EventManagement.Services.DbInitializers
         
         public override Task SeedAsync()
         {
-            _db.Database.Migrate(); // FIXME: Do not do this in production!
+            _db.Database.Migrate(); // TODO: Do not do this in production!
             return base.SeedAsync();
         }
     }
