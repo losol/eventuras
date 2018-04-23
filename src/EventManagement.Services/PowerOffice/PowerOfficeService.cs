@@ -1,3 +1,5 @@
+using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using GoApi;
@@ -6,14 +8,16 @@ using GoApi.Core;
 using GoApi.Invoices;
 using GoApi.Party;
 using losol.EventManagement.Domain;
+using losol.EventManagement.Infrastructure;
 using Microsoft.Extensions.Options;
 
 namespace losol.EventManagement.Services.PowerOffice {
     public class PowerOfficeService : IInvoicingService {
 
         private readonly Go api;
+        private readonly ApplicationDbContext _db;
 
-        public PowerOfficeService (IOptions<PowerOfficeOptions> options) {
+        public PowerOfficeService (IOptions<PowerOfficeOptions> options, ApplicationDbContext db) {
             GoApi.Global.Settings.Mode = options.Value.Mode;
             var authorizationSettings = new AuthorizationSettings {
                 ApplicationKey = options.Value.ApplicationKey,
@@ -22,17 +26,18 @@ namespace losol.EventManagement.Services.PowerOffice {
             };
             var authorization = new Authorization (authorizationSettings);
             api = new Go (authorization);
+            _db = db;
         }
 
         public async Task CreateInvoiceAsync (Order order) {
             var customer = await createCustomerIfNotExists (order);
             await createProductsIfNotExists (order);
+            
             var invoice = new OutgoingInvoice {
                 Status = OutgoingInvoiceStatus.Draft, 
                 OrderDate = order.OrderTime,
                 CustomerReference = order.CustomerInvoiceReference,
                 CustomerCode = customer.Code,
-
             };
 
             foreach (var orderline in order.OrderLines) {
@@ -47,12 +52,24 @@ namespace losol.EventManagement.Services.PowerOffice {
                 invoice.OutgoingInvoiceLines.Add (invoiceLine);
             }
 
+            var invoiceDescription = $"Deltakelse for {order.Registration.ParticipantName} på {order.Registration.EventInfo.Title} ";
+            if (order.Registration.EventInfo.DateStart != null) {
+                invoiceDescription += String.Format("{0:d}", order.Registration.EventInfo.DateStart);
+            }
+            if (order.Registration.EventInfo.DateEnd != null) {
+                invoiceDescription += "-" + String.Format("{0:d}", order.Registration.EventInfo.DateEnd);
+            }
+
             invoice.OutgoingInvoiceLines.Add (
                 new OutgoingInvoiceLine {
                     LineType = VoucherLineType.Text,
-                    Description = $"Participation for {order.Registration.ParticipantName} at {order.Registration.EventInfo.Title}, {order.Registration.EventInfo.DateStart}"
+                    Description = invoiceDescription
                 });
-            api.OutgoingInvoice.Save (invoice);
+
+            var result = api.OutgoingInvoice.Save (invoice);
+            order.AddLog("Sendte fakturautkast til PowerOffice");
+            _db.Orders.Update(order);
+            await _db.SaveChangesAsync();
             }
 
         private async Task<Customer> createCustomerIfNotExists (Order order) {
@@ -67,6 +84,7 @@ namespace losol.EventManagement.Services.PowerOffice {
 
             // If we found a customer, return him!
             if (existingCustomer != null) {
+                order.AddLog($"Kunden {existingCustomer.Name} med epost {existingCustomer.EmailAddress} fantes allerede.");
                 return existingCustomer;
             }
 
@@ -84,6 +102,8 @@ namespace losol.EventManagement.Services.PowerOffice {
             else {
                 customer.InvoiceDeliveryType = InvoiceDeliveryType.PdfByEmail;
             }
+
+            order.AddLog($"Kunden {customer.Name} med epost {customer.EmailAddress} ble opprettet.");
             return await api.Customer.SaveAsync (customer);
         }
 
@@ -94,15 +114,17 @@ namespace losol.EventManagement.Services.PowerOffice {
                     Code = line.ItemCode,
                     Name = line.ProductVariantId.HasValue ? $"{line.ProductName} ({line.ProductVariantName})" : line.ProductName,
                     Description = line.ProductVariantDescription ?? line.ProductDescription,
-                    SalesPrice = line.Price
+                    SalesPrice = line.Price,
+                    SalesAccount = 3100
                 };
                 await api.Product.SaveAsync (product);
             }
         }
 
         private async Task createProductsIfNotExists (Order order) {
-            var tasks = order.OrderLines.Select (l => createProductIfNotExists (l));
-            await Task.WhenAll (tasks);
+            foreach (var line in order.OrderLines) {
+                await createProductIfNotExists(line);
+            }
         }
     }
 }

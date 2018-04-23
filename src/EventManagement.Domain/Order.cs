@@ -81,10 +81,12 @@ namespace losol.EventManagement.Domain
 
 		public void AddLog(string text = null)
 		{
-			var logText = $"{DateTime.UtcNow.ToString("u")}: {Status}";
+			var logText = $"{DateTime.UtcNow.ToString("u")}: ";
 			if(!string.IsNullOrWhiteSpace(text))
 			{
-				text += $": {text}";
+				logText += $"{text}";
+			} else {
+				logText += $"{Status}";
 			}
 			Log += logText + "\n";
 		}
