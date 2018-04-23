@@ -84,7 +84,7 @@ namespace losol.EventManagement.Domain
 			var logText = $"{DateTime.UtcNow.ToString("u")}: {Status}";
 			if(!string.IsNullOrWhiteSpace(text))
 			{
-				text += $": {text}";
+				logText += $": {text}";
 			}
 			Log += logText + "\n";
 		}

@@ -14,9 +14,10 @@ namespace losol.EventManagement.Services.PowerOffice {
     public class PowerOfficeService : IInvoicingService {
 
         private readonly Go api;
-        private readonly ApplicationDbContext _db;
+        // private readonly ApplicationDbContext _db;
 
-        public PowerOfficeService (IOptions<PowerOfficeOptions> options, ApplicationDbContext db) {
+        public PowerOfficeService (IOptions<PowerOfficeOptions> options /*, ApplicationDbContext db */) {
+
             GoApi.Global.Settings.Mode = options.Value.Mode;
             var authorizationSettings = new AuthorizationSettings {
                 ApplicationKey = options.Value.ApplicationKey,
@@ -25,13 +26,14 @@ namespace losol.EventManagement.Services.PowerOffice {
             };
             var authorization = new Authorization (authorizationSettings);
             api = new Go (authorization);
-            _db = db;
+            //_db = db;
         }
 
         public async Task CreateInvoiceAsync (Order order) {
+            Console.WriteLine("************** CREATE INVOICE ******************");
             var customer = await createCustomerIfNotExists (order);
             await createProductsIfNotExists (order);
-            Console.WriteLine("*** STARTING ***");
+            
             var invoice = new OutgoingInvoice {
                 Status = OutgoingInvoiceStatus.Draft, 
                 OrderDate = order.OrderTime,
@@ -60,11 +62,11 @@ namespace losol.EventManagement.Services.PowerOffice {
 
             Console.WriteLine("*** STARTING SAVING ***");
             var result = api.OutgoingInvoice.Save (invoice);
-            Console.WriteLine(result);
+            Console.WriteLine("** RESULT **: " + result);
 
             order.AddLog("Sendte fakturautkast til PowerOffice");
-            _db.Orders.Update(order);
-            await _db.SaveChangesAsync();
+            // _db.Orders.Update(order);
+            // await _db.SaveChangesAsync();
             }
 
         private async Task<Customer> createCustomerIfNotExists (Order order) {
