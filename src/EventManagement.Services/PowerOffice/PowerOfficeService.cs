@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using GoApi;
@@ -6,14 +7,16 @@ using GoApi.Core;
 using GoApi.Invoices;
 using GoApi.Party;
 using losol.EventManagement.Domain;
+using losol.EventManagement.Infrastructure;
 using Microsoft.Extensions.Options;
 
 namespace losol.EventManagement.Services.PowerOffice {
     public class PowerOfficeService : IInvoicingService {
 
         private readonly Go api;
+        private readonly ApplicationDbContext _db;
 
-        public PowerOfficeService (IOptions<PowerOfficeOptions> options) {
+        public PowerOfficeService (IOptions<PowerOfficeOptions> options, ApplicationDbContext db) {
             GoApi.Global.Settings.Mode = options.Value.Mode;
             var authorizationSettings = new AuthorizationSettings {
                 ApplicationKey = options.Value.ApplicationKey,
@@ -22,11 +25,13 @@ namespace losol.EventManagement.Services.PowerOffice {
             };
             var authorization = new Authorization (authorizationSettings);
             api = new Go (authorization);
+            _db = db;
         }
 
         public async Task CreateInvoiceAsync (Order order) {
             var customer = await createCustomerIfNotExists (order);
             await createProductsIfNotExists (order);
+            Console.WriteLine("*** STARTING ***");
             var invoice = new OutgoingInvoice {
                 Status = OutgoingInvoiceStatus.Draft, 
                 OrderDate = order.OrderTime,
@@ -52,7 +57,14 @@ namespace losol.EventManagement.Services.PowerOffice {
                     LineType = VoucherLineType.Text,
                     Description = $"Participation for {order.Registration.ParticipantName} at {order.Registration.EventInfo.Title}, {order.Registration.EventInfo.DateStart}"
                 });
-            api.OutgoingInvoice.Save (invoice);
+
+            Console.WriteLine("*** STARTING SAVING ***");
+            var result = api.OutgoingInvoice.Save (invoice);
+            Console.WriteLine(result);
+
+            order.AddLog("Sendte fakturautkast til PowerOffice");
+            _db.Orders.Update(order);
+            await _db.SaveChangesAsync();
             }
 
         private async Task<Customer> createCustomerIfNotExists (Order order) {
@@ -67,6 +79,7 @@ namespace losol.EventManagement.Services.PowerOffice {
 
             // If we found a customer, return him!
             if (existingCustomer != null) {
+                order.AddLog($"Kunden {existingCustomer.Name} med epost {existingCustomer.EmailAddress} fantes allerede i PowerOffice");
                 return existingCustomer;
             }
 
@@ -84,6 +97,8 @@ namespace losol.EventManagement.Services.PowerOffice {
             else {
                 customer.InvoiceDeliveryType = InvoiceDeliveryType.PdfByEmail;
             }
+
+            order.AddLog($"Kunden {customer.Name} med epost {customer.EmailAddress} fantes allerede i PowerOffice");
             return await api.Customer.SaveAsync (customer);
         }
 
