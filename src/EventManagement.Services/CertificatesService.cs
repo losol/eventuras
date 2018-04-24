@@ -24,6 +24,7 @@ namespace losol.EventManagement.Services {
 		public async Task<Certificate> GetAsync (int certificateId) {
 			var certificate = await _db.Certificates
 				.Include (c => c.Evidence)
+				.ThenInclude (c => c.Registration)
 				.ThenInclude (c => c.EventInfo)
 				.Include (c => c.RecipientUser)
 				.AsNoTracking ()
@@ -36,6 +37,7 @@ namespace losol.EventManagement.Services {
 			var certificate = await _db.Certificates
 				.Where (c => c.Evidence.Any (d => d.RegistrationId == registrationId))
 				.Include (c => c.Evidence)
+				.ThenInclude (c => c.Registration)
 				.ThenInclude (c => c.EventInfo)
 				.Include (c => c.RecipientUser)
 				.AsNoTracking ()

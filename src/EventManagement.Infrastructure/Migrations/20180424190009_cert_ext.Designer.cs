@@ -12,9 +12,10 @@ using System;
 namespace losol.EventManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180424190009_cert_ext")]
+    partial class cert_ext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,13 +80,11 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.Property<int>("CertificateId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("Auth")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid>("CertificateGuid")
-                        .ValueGeneratedOnAdd();
+                    b.Property<Guid>("Auth");
 
                     b.Property<string>("Description");
+
+                    b.Property<Guid>("Guid");
 
                     b.Property<string>("IssuedByName");
 

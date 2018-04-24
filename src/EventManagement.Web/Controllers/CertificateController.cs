@@ -48,7 +48,7 @@ namespace EventManagement.Web.Controllers
             vm.Description = eventInfo.CertificateDescription;
             // vm.EventDateStart = eventInfo.DateStart;
             //vm.EventDateEnd = eventInfo.DateEnd;
-            vm.City = eventInfo.City;
+            vm.IssuedInCity = eventInfo.City;
             vm.Description = eventInfo.CertificateDescription;
             // TODO: Add organizer details
             
