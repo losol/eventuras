@@ -29,6 +29,11 @@ namespace losol.EventManagement.Pages.Events
                 return NotFound();
             }
 
+            if(EventInfo.Code != slug)
+            {
+                return RedirectToPage("./Details", new { id, slug = EventInfo.Code });
+            }
+
             return Page();
         }
     }
