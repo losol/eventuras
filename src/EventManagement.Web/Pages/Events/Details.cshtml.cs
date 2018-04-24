@@ -20,11 +20,9 @@ namespace losol.EventManagement.Pages.Events
 
         public EventInfo EventInfo { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string slug)
+        public async Task<IActionResult> OnGetAsync(int id, string slug)
         {
-            if (string.IsNullOrWhiteSpace(slug)) return NotFound();
-
-			EventInfo = await _eventsService.GetBySlugAsync(slug);
+			EventInfo = await _eventsService.GetAsync(id);
 
             if (EventInfo == null)
             {
