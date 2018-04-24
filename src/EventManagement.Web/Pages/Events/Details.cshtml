@@ -1,4 +1,4 @@
-@page
+@page "{id}/{slug?}"
 @model DetailsModel
 
 @{
@@ -46,7 +46,7 @@
 
             @{ // Registration link on top for mobile
                 if (String.IsNullOrEmpty(Model.EventInfo.RegistrationsUrl)) {
-                    <a asp-page="../Register/Event" asp-route-id="@Model.EventInfo.EventInfoId" class="d-block d-md-none btn btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>  
+                    <a asp-page="./Register/Index" asp-route-id="@Model.EventInfo.EventInfoId" class="d-block d-md-none btn btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>  
                 }
                 else {
                     <a href="@Model.EventInfo.RegistrationsUrl" class="d-block d-md-none btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>
@@ -90,7 +90,7 @@
             <p>
             @{ // Registration link 
                 if (String.IsNullOrEmpty(Model.EventInfo.RegistrationsUrl)) {
-                    <a asp-page="../Register/Event" asp-route-id="@Model.EventInfo.EventInfoId" class="btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>  
+                    <a asp-page="./Register/Index" asp-route-id="@Model.EventInfo.EventInfoId" class="btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>  
                 }
                 else {
                     <a href="@Model.EventInfo.RegistrationsUrl" class="btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>

@@ -1,5 +1,5 @@
 ﻿using System;
-namespace losol.EventManagement.Web.Pages.Register
+namespace losol.EventManagement.Web.Pages.Events.Register
 {
 	public class ProductVM
 	{

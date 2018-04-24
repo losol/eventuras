@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
-namespace losol.EventManagement.Pages.Register
+namespace losol.EventManagement.Pages.Events.Register
 {
     public class ConfirmModel : PageModel
     {
@@ -90,11 +90,11 @@ namespace losol.EventManagement.Pages.Register
 
 				var participantEmailString = await _renderService.RenderViewToStringAsync("Templates/Email/StandardEmail", participantEmail);
 				await _emailSender.SendEmailAsync(participantEmail.Email, participantEmail.Subject, participantEmailString);
-				return RedirectToPage("/Register/Confirmed");
+				return RedirectToPage("./Confirmed");
 			}
 
 			// If we came here, something has went wrong.
-			return RedirectToPage("/Register/Failed");
+			return RedirectToPage("./Failed");
         }
     }
 }

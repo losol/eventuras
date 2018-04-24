@@ -45,7 +45,7 @@
                                 <span> - @String.Format("{0:dd/MM/yyyy}", item.DateEnd)</span>
                             }
                         </p>
-                    <p><a asp-page="./Events/Details" asp-route-id="@item.EventInfoId" class="btn btn-secondary link-decoration-none" role="button">Vis kurset »</a></p>
+                    <p><a asp-page="./Events/Details" asp-route-id="@item.EventInfoId" asp-route-slug="@item.Code" class="btn btn-secondary link-decoration-none" role="button">Vis kurset »</a></p>
                     </div>
                 </div>  
             </div>
@@ -80,7 +80,7 @@
                                     <span> - @String.Format("{0:dd/MM/yyyy}", item.DateEnd)</span>
                                 }
                             </p>
-                        <p><a asp-page="./Events/Details" asp-route-id="@item.EventInfoId" class="btn btn-secondary link-decoration-none" role="button">Vis kurset »</a></p>
+                        <p><a asp-page="./Events/Details" asp-route-id="@item.EventInfoId" asp-route-slug="@item.Code" class="btn btn-secondary link-decoration-none" role="button">Vis kurset »</a></p>
                         </div>
                     </div>  
                 </div>
@@ -121,7 +121,7 @@
                                         }
                                     </span>
                                     <br>
-                                <a asp-page="./Events/Details" asp-route-id="@item.EventInfoId" class="link-decoration-none">Vis kurset »</a></p>
+                                <a asp-page="./Events/Details" asp-route-id="@item.EventInfoId" asp-route-slug="@item.Code" class="link-decoration-none">Vis kurset »</a></p>
   
                     
                 }

@@ -14,7 +14,7 @@ using losol.EventManagement.Services;
 using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
 
-namespace losol.EventManagement.Web.Pages.Register
+namespace losol.EventManagement.Web.Pages.Events.Register
 {
 	public class EventRegistrationModel : PageModel
 	{
@@ -174,14 +174,17 @@ namespace losol.EventManagement.Web.Pages.Register
 				PaymentMethod = Registration.PaymentMethodId.ToString(),
 				EventTitle = EventInfo.Title,
 				EventDescription = EventInfo.Description,
-				VerificationUrl = Url.Action("Confirm", "Register",
-					new
-					{
+				VerificationUrl = Url.Page(
+					pageName: "/Events/Register/Confirm", 
+					pageHandler:"get", 
+					values: new {
 						id = newRegistration.RegistrationId,
 						auth = newRegistration.VerificationCode
 					},
-					 protocol: Request.Scheme)
+					protocol: Request.Scheme
+				)
 			};
+			
 			await _confirmationEmailSender.SendAsync(Registration.Email, "Bekreft påmelding", confirmEmail);
 			return RedirectToPage("/Info/EmailSent");
 		}

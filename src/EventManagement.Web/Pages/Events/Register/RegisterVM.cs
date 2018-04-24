@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using losol.EventManagement.Domain;
 
-namespace losol.EventManagement.Web.Pages.Register
+namespace losol.EventManagement.Web.Pages.Events.Register
 {
 	public class RegisterVM
 	{
