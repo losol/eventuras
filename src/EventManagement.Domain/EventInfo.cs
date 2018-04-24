@@ -90,7 +90,10 @@ namespace losol.EventManagement.Domain
 		[DisplayFormat(DataFormatString = "{0:0}", ApplyFormatInEditMode = true)]
 		public decimal? Price { get; set; }
 
-		[Display(Name = "Diplomtekst")]
+		[Display(Name = "Diplomtittel - typisk type kurs, f eks Grunnkurs A Allmennmedisin")]
+		public string CertificateTitle { get; set; } //Text for the certificate if issued.
+
+		[Display(Name = "Diplomtekst. Inkluder kursnummer og godkjenninger her!")]
 		[DataType(DataType.MultilineText)]
 		public string CertificateDescription { get; set; } //Text for the certificate if issued.
 
