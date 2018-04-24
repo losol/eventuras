@@ -14,18 +14,19 @@ namespace losol.EventManagement.Domain
 		{
 			Draft = 1,
 			Verified = 2,
-			Attended = 3,
-			Finished = 4,
-			Cancelled = 0
+			NotAttended = 3,
+			Attended = 4,
+			Finished = 5,
+			Cancelled = 9
 		}
 
 		public enum RegistrationType
 		{
-			Participant,
-			Student,
-			Staff,
-			Lecturer,
-			Artist
+			Participant = 0,
+			Student = 1,
+			Staff = 2,
+			Lecturer = 3,
+			Artist = 4
 		}
 
 		public int RegistrationId { get; set; }
@@ -87,16 +88,19 @@ namespace losol.EventManagement.Domain
 
 		public void Verify()
 		{
-			Verified = true;
+			Status = RegistrationStatus.Verified;
+			AddLog();
 		}
-		public void RegisterAttendance() 
+		public void MarkAsAttended() 
 		{
-			Attended = true;
+			Status = RegistrationStatus.Attended;
+			AddLog();
 		}
 
-		public void RemoveAttendance() 
+		public void MarkAsNotAttended() 
 		{
-			Attended = false;
+			Status = RegistrationStatus.NotAttended;
+			AddLog();
 		}
 
 		public bool HasOrder => Orders != null && Orders.Count > 0;
