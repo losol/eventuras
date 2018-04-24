@@ -10,10 +10,30 @@ namespace losol.EventManagement.Domain
 
 	public class Registration
 	{
+		public enum RegistrationStatus
+		{
+			Draft = 1,
+			Verified = 2,
+			Attended = 3,
+			Finished = 4,
+			Cancelled = 0
+		}
+
+		public enum RegistrationType
+		{
+			Participant,
+			Student,
+			Staff,
+			Lecturer,
+			Artist
+		}
+
 		public int RegistrationId { get; set; }
 		public int EventInfoId { get; set; }
 		public string UserId { get; set; }
 
+		public RegistrationStatus Status { get; set; }
+		public RegistrationStatus Type { get; set; }
 
 		[Display(Name = "Møtt?")]
 		public bool Attended { get; set; } = false;
@@ -81,6 +101,18 @@ namespace losol.EventManagement.Domain
 
 		public bool HasOrder => Orders != null && Orders.Count > 0;
 		public bool HasCertificate => CertificateId != null;
+				
+		public void AddLog(string text = null)
+		{
+			var logText = $"{DateTime.UtcNow.ToString("u")}: ";
+			if(!string.IsNullOrWhiteSpace(text))
+			{
+				logText += $"{text}";
+			} else {
+				logText += $"{Status}";
+			}
+			Log += logText + "\n";
+		}
 
 		public void CreateOrder(IEnumerable<Product> products, IEnumerable<ProductVariant> variants)
 		{
