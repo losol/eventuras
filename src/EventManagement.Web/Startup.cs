@@ -91,8 +91,9 @@ namespace losol.EventManagement
                 {
                     options.Conventions.AuthorizeFolder("/Account/Manage");
                     options.Conventions.AuthorizePage("/Account/Logout");
-
+                    
                     options.Conventions.AuthorizeFolder("/Admin", "AdministratorRole");
+                    options.Conventions.AddPageRoute("/Events/Details", "events/{slug}");
                 });
 
             // For sending antiforgery in ajax?
