@@ -30,7 +30,7 @@ namespace losol.EventManagement.Pages.Admin.Events
         }
 
 		[BindProperty]
-		public Web.Pages.Register.RegisterVM Registration { get; set; } // TODO change this?
+		public Web.Pages.Events.Register.RegisterVM Registration { get; set; } // TODO change this?
 
 		public EventInfo EventInfo { get; set; }
 		public List<PaymentMethod> PaymentMethods { get; set; }
@@ -47,7 +47,7 @@ namespace losol.EventManagement.Pages.Admin.Events
 			}
             
             PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
-			Registration = new Web.Pages.Register.RegisterVM(EventInfo, DefaultPaymentMethod);
+			Registration = new Web.Pages.Events.Register.RegisterVM(EventInfo, DefaultPaymentMethod);
 
             return Page();
         }
@@ -59,7 +59,7 @@ namespace losol.EventManagement.Pages.Admin.Events
 			{
                 EventInfo = await _eventsService.GetWithProductsAsync(id);
 				PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
-                Registration = new Web.Pages.Register.RegisterVM(EventInfo, DefaultPaymentMethod);
+                Registration = new Web.Pages.Events.Register.RegisterVM(EventInfo, DefaultPaymentMethod);
 				return Page();
 			}
 

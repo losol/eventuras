@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
-namespace losol.EventManagement.Pages.Register
+namespace losol.EventManagement.Pages.Events.Register
 {
     public class ConfirmModel : PageModel
     {

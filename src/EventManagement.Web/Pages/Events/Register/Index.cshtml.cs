@@ -14,7 +14,7 @@ using losol.EventManagement.Services;
 using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
 
-namespace losol.EventManagement.Web.Pages.Register
+namespace losol.EventManagement.Web.Pages.Events.Register
 {
 	public class EventRegistrationModel : PageModel
 	{
