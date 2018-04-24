@@ -70,6 +70,12 @@ namespace losol.EventManagement.Services {
 
 			};
 
+			var evidence = new CertificateEvidence{
+				RegistrationId = registration.RegistrationId
+			};
+
+			certificate.Evidence.Add(evidence);
+
 			_db.Certificates.Add (certificate);
 			var result = await _db.SaveChangesAsync ();
 
