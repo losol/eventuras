@@ -1,5 +1,5 @@
 ﻿using System;
-namespace losol.EventManagement
+namespace losol.EventManagement.Config
 {
 	internal class AppSettings
 	{

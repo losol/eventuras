@@ -20,6 +20,7 @@ using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.Web.Services;
 using losol.EventManagement.Services.Messaging.Sms;
 using losol.EventManagement.Services.PowerOffice;
+using losol.EventManagement.Config;
 
 namespace losol.EventManagement
 {
