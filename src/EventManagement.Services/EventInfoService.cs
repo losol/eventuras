@@ -58,6 +58,12 @@ namespace losol.EventManagement.Services
 				            .SingleOrDefaultAsync(m => m.EventInfoId == id);
 		}
 
+		public async Task<EventInfo> GetBySlugAsync(string slug)
+        {
+            return await _db.EventInfos
+				            .SingleOrDefaultAsync(e => e.Code == slug);
+        }
+
 		public async Task<int> GetRegistrationCount(int eventId)
 		{
 			return await _db.EventInfos
@@ -114,5 +120,5 @@ namespace losol.EventManagement.Services
 
 			return result;
 		}
-	}
+    }
 }
