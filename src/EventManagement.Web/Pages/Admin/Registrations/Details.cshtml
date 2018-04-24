@@ -6,13 +6,25 @@
 }
 <div class="bg-gray-300">
     <div class="container py-5">
-        <h1>Registrering #@Model.Registration.RegistrationId</h1>   
+        <h1>Registrering #@Model.Registration.RegistrationId</h1>
     </div>
 </div>
 
 <div class="container py-5">
     <div>
         <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Registration.Status)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Registration.Status)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Registration.Type)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Registration.Type)
+            </dd>
             <dt>
                 @Html.DisplayNameFor(model => model.Registration.Attended)
             </dt>
@@ -138,6 +150,12 @@
             </dt>
             <dd>
                 @Html.DisplayFor(model => model.Registration.CertificateId)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Registration.Log)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Registration.Log)
             </dd>
         </dl>
     </div>
