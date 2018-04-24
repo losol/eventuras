@@ -12,12 +12,13 @@ namespace losol.EventManagement.Domain
 	{
 		public enum RegistrationStatus
 		{
-			Draft = 1,
+			Draft = 0,
+			Cancelled = 1,
 			Verified = 2,
 			NotAttended = 3,
 			Attended = 4,
 			Finished = 5,
-			Cancelled = 9
+			
 		}
 
 		public enum RegistrationType
