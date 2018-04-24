@@ -12,28 +12,30 @@ namespace losol.EventManagement.Domain
 	{
 		public enum RegistrationStatus
 		{
-			Draft = 1,
+			Draft = 0,
+			Cancelled = 1,
 			Verified = 2,
-			Attended = 3,
-			Finished = 4,
-			Cancelled = 0
+			NotAttended = 3,
+			Attended = 4,
+			Finished = 5,
+			
 		}
 
 		public enum RegistrationType
 		{
-			Participant,
-			Student,
-			Staff,
-			Lecturer,
-			Artist
+			Participant = 0,
+			Student = 1,
+			Staff = 2,
+			Lecturer = 3,
+			Artist = 4
 		}
 
 		public int RegistrationId { get; set; }
 		public int EventInfoId { get; set; }
 		public string UserId { get; set; }
 
-		public RegistrationStatus Status { get; set; }
-		public RegistrationStatus Type { get; set; }
+		public RegistrationStatus Status { get; set; } = RegistrationStatus.Draft;
+		public RegistrationType Type { get; set; } = RegistrationType.Participant;
 
 		[Display(Name = "Møtt?")]
 		public bool Attended { get; set; } = false;
@@ -87,16 +89,19 @@ namespace losol.EventManagement.Domain
 
 		public void Verify()
 		{
-			Verified = true;
+			Status = RegistrationStatus.Verified;
+			AddLog();
 		}
-		public void RegisterAttendance() 
+		public void MarkAsAttended() 
 		{
-			Attended = true;
+			Status = RegistrationStatus.Attended;
+			AddLog();
 		}
 
-		public void RemoveAttendance() 
+		public void MarkAsNotAttended() 
 		{
-			Attended = false;
+			Status = RegistrationStatus.NotAttended;
+			AddLog();
 		}
 
 		public bool HasOrder => Orders != null && Orders.Count > 0;

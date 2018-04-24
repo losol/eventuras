@@ -95,13 +95,13 @@ namespace losol.EventManagement.Services {
 
 		public async Task<int> SetRegistrationAsAttended (int id) {
 			var registration = await GetAsync (id);
-			registration.RegisterAttendance ();
+			registration.MarkAsAttended ();
 			return await _db.SaveChangesAsync ();
 		}
 
 		public async Task<int> SetRegistrationAsNotAttended (int id) {
 			var registration = await GetAsync (id);
-			registration.RemoveAttendance ();
+			registration.MarkAsNotAttended ();
 			return await _db.SaveChangesAsync ();
 		}
 

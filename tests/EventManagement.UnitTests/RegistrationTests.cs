@@ -208,7 +208,7 @@ namespace losol.EventManagement.UnitTests
 				Registration registration = new Registration();
 				var expected = true;
 
-				registration.RegisterAttendance();
+				registration.MarkAsAttended();
 				var actual = registration.Attended;
 
 				Assert.Equal(expected, actual);
@@ -220,7 +220,7 @@ namespace losol.EventManagement.UnitTests
 				Registration registration = new Registration { Attended = true };
 				var expected = true;
 
-				registration.RegisterAttendance();
+				registration.MarkAsAttended();
 				var actual = registration.Attended;
 
 				Assert.Equal(expected, actual);
@@ -235,7 +235,7 @@ namespace losol.EventManagement.UnitTests
 				Registration registration = new Registration();
 				var expected = false;
 
-				registration.RemoveAttendance();
+				registration.MarkAsNotAttended();
 				var actual = registration.Attended;
 
 				Assert.Equal(expected, actual);
@@ -247,7 +247,7 @@ namespace losol.EventManagement.UnitTests
 				Registration registration = new Registration { Attended = true };
 				var expected = false;
 
-				registration.RemoveAttendance();
+				registration.MarkAsNotAttended();
 				var actual = registration.Attended;
 
 				Assert.Equal(expected, actual);

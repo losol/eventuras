@@ -169,7 +169,7 @@
                         <th data-field="jobTitle">Stilling</th>
                         <th data-field="employer" data-visible="false">Arbeidsplass</th>
                         <th data-field="city">Sted</th>
-                        <th data-formatter="Attended" data-events="attendedEvents">M&oslash;tt</th>
+                        <th data-formatter="Attended" data-events="attendedEvents">Status</th>
                         <th data-formatter="RowActions" data-events="operateEvents">Meny</th>
                     </tr>
                 </thead>
@@ -196,7 +196,7 @@
 
     function Attended(value, row, index, field) {
             let actions = [];
-            if(!row.attended) {
+            if(!(row.status == 'Attended')) {
                 actions.push('<button type="button" class="btn btn-secondary btn-attended mr-1">Registrer</button>');
             }
             else {
@@ -206,7 +206,7 @@
         }
     function RowActions(value, row, index, field) {
             actions = [
-                '<a href="/Admin/Registrations/Details/' + row.registrationId + '" class="mr-1"><i class="fa fa-registered" aria-hidden="true"></i></a>', 
+                '<a href="/Admin/Registrations/Details/' + row.registrationId + '" alt="Vis registrering" class="mr-1"><i class="fa fa-id-card-o" aria-hidden="true"></i></a>', 
                 '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-sms mr-1">SMS</button>', 
                 '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-email mr-1">Epost</button>'
             ];
@@ -265,12 +265,12 @@
         'click .btn-attended': function(e, value, row, index) {
             $.postJSON("/api/participants/mark_as_attended/" + row.registrationId, null)
             .done(function(){
-                toastr.success('Attendance marked for  ' + row.name + '.');
+                toastr.success('Da va følgende registrert ombord ' + row.name + '.');
                 location.reload();
                 
             })
             .fail(function(){
-                toastr.error('Couldnt set attendance for ' + row.name + '. ')
+                toastr.error('Faen, fikk ikke registrert ' + row.name + '. ')
             })
         },
         'click .btn-not-attended': function(e, value, row, index) {
