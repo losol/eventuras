@@ -90,11 +90,11 @@ namespace losol.EventManagement.Pages.Events.Register
 
 				var participantEmailString = await _renderService.RenderViewToStringAsync("Templates/Email/StandardEmail", participantEmail);
 				await _emailSender.SendEmailAsync(participantEmail.Email, participantEmail.Subject, participantEmailString);
-				return RedirectToPage("/Register/Confirmed");
+				return RedirectToPage("./Confirmed");
 			}
 
 			// If we came here, something has went wrong.
-			return RedirectToPage("/Register/Failed");
+			return RedirectToPage("./Failed");
         }
     }
 }
