@@ -13,12 +13,12 @@ namespace losol.EventManagement.Services {
 
 		private readonly ApplicationDbContext _db;
 		private readonly IPaymentMethodService _paymentMethods;
-		// private readonly ILogger _logger;
+		private readonly ILogger _logger;
 
-		public CertificatesService (ApplicationDbContext db, IPaymentMethodService paymentMethods /*, ILogger logger */) {
+		public CertificatesService (ApplicationDbContext db, IPaymentMethodService paymentMethods, ILogger<CertificatesService> logger) {
 			_db = db;
 			_paymentMethods = paymentMethods;
-			//_logger = logger;
+			_logger = logger;
 		}
 
 		public async Task<Certificate> GetAsync (int certificateId) {
@@ -81,9 +81,9 @@ namespace losol.EventManagement.Services {
 			};
 			registration.Certificate = certificate;
 			_db.CertificateEvidences.Add(evidence);
-			await _db.SaveChangesAsync ();
+			var result = await _db.SaveChangesAsync ();
 
-			// _logger.LogInformation($"* Added certificate (id {certificate.CertificateId}. Result code: {result} ***");
+			_logger.LogInformation($"* Added certificate (id {certificate.CertificateId}. Result code: {result} ***");
 
 			return certificate;
 		}
@@ -106,7 +106,7 @@ namespace losol.EventManagement.Services {
 			// Add certificates
 			if (newRegistrations != null) {
 				foreach (var registration in newRegistrations) {
-					// _logger.LogInformation($"*** Adding certificate for registration: {registration.RegistrationId} ***");
+					_logger.LogInformation($"*** Trying to add certificate for registration: {registration.RegistrationId} ***");
 					result.Add (await AddCertificate (registration.RegistrationId));
 				}
 			}
