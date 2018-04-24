@@ -12,9 +12,10 @@ using System;
 namespace losol.EventManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180424191136_cert_ext2")]
+    partial class cert_ext2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -118,7 +119,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.Property<int>("CertificateEvidenceId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("CertificateId");
+                    b.Property<int?>("CertificateId");
 
                     b.Property<int>("RegistrationId");
 
@@ -128,7 +129,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.HasIndex("RegistrationId");
 
-                    b.ToTable("CertificateEvidences");
+                    b.ToTable("CertificateEvidence");
                 });
 
             modelBuilder.Entity("losol.EventManagement.Domain.EventInfo", b =>
@@ -139,8 +140,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.Property<string>("Category");
 
                     b.Property<string>("CertificateDescription");
-
-                    b.Property<string>("CertificateTitle");
 
                     b.Property<string>("City");
 
@@ -573,8 +572,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
                 {
                     b.HasOne("losol.EventManagement.Domain.Certificate")
                         .WithMany("Evidence")
-                        .HasForeignKey("CertificateId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CertificateId");
 
                     b.HasOne("losol.EventManagement.Domain.Registration", "Registration")
                         .WithMany()

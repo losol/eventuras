@@ -9,19 +9,14 @@ namespace losol.EventManagement.Domain {
         
         [Key]
         public int CertificateId { get; set; }
-
-        // Keys
-        //[DatabaseGenerated (DatabaseGeneratedOption.Identity)]
+        [DatabaseGenerated (DatabaseGeneratedOption.Identity)]
         public Guid CertificateGuid { get; set; } = Guid.NewGuid ();
-        //[DatabaseGenerated (DatabaseGeneratedOption.Identity)]
+        [DatabaseGenerated (DatabaseGeneratedOption.Identity)]
         public Guid Auth { get; set; } = Guid.NewGuid ();
 
         [Required]
         public string Title { get; set; }
         public string Description { get; set; }
-
-        // Why this certificate was issued
-		public List<Registration> Evidence {get;set;}
 
         // The recipient of the certificate
         public string RecipientName { get; set; }
@@ -29,12 +24,14 @@ namespace losol.EventManagement.Domain {
         public string RecipientUserId { get; set; }
         public ApplicationUser RecipientUser { get; set; }
 
+        // Evidence for the certificate
+        public List<CertificateEvidence> Evidence {get;set;}
+
         // Issued by
         public int? IssuingOrganizationId {get;set;}
-       // [ForeignKey("IssuingOrganizationId")]
         public Organization IssuingOrganization {get;set;}
-        
         public string IssuedByName {get;set;}
+        public string IssuedInCity {get;set;}
         public DateTime IssuedDate { get; set; } = DateTime.UtcNow;
 
     }

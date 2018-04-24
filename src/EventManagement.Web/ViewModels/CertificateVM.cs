@@ -16,10 +16,10 @@ namespace losol.EventManagement.Web.ViewModels
         public string IssuerOrganizationLogoUrl {get;set;}
         public string IssuerPersonName {get;set;}
 
-        public List<Registration> Evidence {get;set;}
+        public List<CertificateEvidence> Evidence {get;set;}
 
-        public string City { get; set; }
-        public string Date { get; set; }
+        public string IssuedInCity { get; set; }
+        public string IssuingDate { get; set; }
 
         public static CertificateVM Mock => new CertificateVM 
         {
@@ -30,8 +30,8 @@ namespace losol.EventManagement.Web.ViewModels
 
             //EventDateStart = DateTime.Now.AddDays(-7),
             CertificateGuid = Guid.NewGuid().ToString(),
-            City = "Bodø",
-            Date = DateTime.Now.ToString("dd.MM.yyyy"),
+            IssuedInCity = "Bodø",
+            IssuingDate = DateTime.Now.ToString("dd.MM.yyyy"),
 
             Title = "Nettkurs Diabetes mellitus type 2",
             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempor interdum purus, at egestas lectus rutrum at. Phasellus semper volutpat ipsum ac bibendum. Nulla placerat interdum nulla nec consequat. Maecenas dictum mattis arcu, sed sagittis risus ornare et. Nunc in tortor et tortor molestie molestie"
@@ -43,12 +43,12 @@ namespace losol.EventManagement.Web.ViewModels
                 RecipientName = c.RecipientName,
                 Title = c.Title,
                 CertificateGuid = c.CertificateGuid.ToString(),
-                Date = c.IssuedDate.ToString("dd.MMM.yyyy"),
+                
                 IssuerOrganizationName = "Nordland legeforening",
                 IssuerPersonName = "Anette Holand-Nilsen",
+                IssuingDate = c.IssuedDate.ToString("dd.MMM.yyyy"),
+                IssuedInCity = "Bodø",
                 Evidence = c.Evidence,
-                //IssuerOrganizationLogoUrl = c.IssuingOrganization?.LogoUrl,
-                //City = c.Issuer.IssuedInCity,
                 Description = c.Description
             };
 

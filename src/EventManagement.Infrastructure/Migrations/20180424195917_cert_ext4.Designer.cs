@@ -12,9 +12,10 @@ using System;
 namespace losol.EventManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180424195917_cert_ext4")]
+    partial class cert_ext4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,8 +140,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.Property<string>("Category");
 
                     b.Property<string>("CertificateDescription");
-
-                    b.Property<string>("CertificateTitle");
 
                     b.Property<string>("City");
 

@@ -13,17 +13,18 @@ namespace losol.EventManagement.Services {
 
 		private readonly ApplicationDbContext _db;
 		private readonly IPaymentMethodService _paymentMethods;
-		// private readonly ILogger _logger;
+		private readonly ILogger _logger;
 
-		public CertificatesService (ApplicationDbContext db, IPaymentMethodService paymentMethods /*, ILogger logger */) {
+		public CertificatesService (ApplicationDbContext db, IPaymentMethodService paymentMethods, ILogger<CertificatesService> logger) {
 			_db = db;
 			_paymentMethods = paymentMethods;
-			//_logger = logger;
+			_logger = logger;
 		}
 
 		public async Task<Certificate> GetAsync (int certificateId) {
 			var certificate = await _db.Certificates
 				.Include (c => c.Evidence)
+				.ThenInclude (c => c.Registration)
 				.ThenInclude (c => c.EventInfo)
 				.Include (c => c.RecipientUser)
 				.AsNoTracking ()
@@ -36,6 +37,7 @@ namespace losol.EventManagement.Services {
 			var certificate = await _db.Certificates
 				.Where (c => c.Evidence.Any (d => d.RegistrationId == registrationId))
 				.Include (c => c.Evidence)
+				.ThenInclude (c => c.Registration)
 				.ThenInclude (c => c.EventInfo)
 				.Include (c => c.RecipientUser)
 				.AsNoTracking ()
@@ -68,13 +70,20 @@ namespace losol.EventManagement.Services {
 
 			};
 
+			// Save cetificate
 			_db.Certificates.Add (certificate);
-			var result = await _db.SaveChangesAsync ();
-
-			registration.Certificate = certificate;
 			await _db.SaveChangesAsync ();
 
-			// _logger.LogInformation($"* Added certificate (id {certificate.CertificateId}. Result code: {result} ***");
+			// Add and save evidence
+			var evidence = new CertificateEvidence{
+				CertificateId = certificate.CertificateId,
+				RegistrationId = registration.RegistrationId
+			};
+			registration.Certificate = certificate;
+			_db.CertificateEvidences.Add(evidence);
+			var result = await _db.SaveChangesAsync ();
+
+			_logger.LogInformation($"* Added certificate (id {certificate.CertificateId}. Result code: {result} ***");
 
 			return certificate;
 		}
@@ -97,7 +106,7 @@ namespace losol.EventManagement.Services {
 			// Add certificates
 			if (newRegistrations != null) {
 				foreach (var registration in newRegistrations) {
-					// _logger.LogInformation($"*** Adding certificate for registration: {registration.RegistrationId} ***");
+					_logger.LogInformation($"*** Trying to add certificate for registration: {registration.RegistrationId} ***");
 					result.Add (await AddCertificate (registration.RegistrationId));
 				}
 			}
