@@ -34,16 +34,15 @@ namespace losol.EventManagement.Services {
 		}
 
 		public async Task<Certificate> GetForRegistrationAsync (int registrationId) {
-			var certificate = await _db.Certificates
-				.Where (c => c.Evidence.Any (d => d.RegistrationId == registrationId))
-				.Include (c => c.Evidence)
-				.ThenInclude (c => c.Registration)
-				.ThenInclude (c => c.EventInfo)
-				.Include (c => c.RecipientUser)
-				.AsNoTracking ()
-				.SingleOrDefaultAsync ();
+			var registration = await _db.Registrations
+				.Where( m => m.RegistrationId == registrationId )
+				.FirstOrDefaultAsync();
 
-			return certificate;
+			if (registration.CertificateId != null) {
+				return await GetAsync((int)registration.CertificateId);
+			} else {
+				return null;
+			}
 		}
 
 		public async Task<Certificate> AddCertificate (int registrationId) {
