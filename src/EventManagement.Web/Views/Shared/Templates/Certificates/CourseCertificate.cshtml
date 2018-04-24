@@ -103,20 +103,20 @@
   </head>
   <body>
     <div class="page">
-
         <div class="featured">
           <div class="line title">Kursbevis</div>
           <div class="line subtitle">@Model.Title</div>          
         </div>
 
         <div class="group">
-          <div class="line">For</div>
+          <div class="line">Tildelt</div>
           <div class="subtitle">@Model.RecipientName</div>
         </div>
 
+        @if (Model.Evidence.Any()) {
         <div class="group">
-          <div class="line">Arrangert av @Model.IssuerOrganizationName</div>
-          @if (Model.Evidence.Any()) {
+          <div class="line">Basert p&aring; deltakelse p&aring;</div>
+          
             @foreach (var item in Model.Evidence) {
               <div class="line">
                 @if(item.Registration.EventInfo.DateStart != null) {
@@ -128,9 +128,10 @@
                 }
               </div>
             }
-          }
-         
+          
+          <div class="line">Arrangert av @Model.IssuerOrganizationName</div>
         </div>
+        }
 
           @if(Model.Description != null) {
               <div class="group">
@@ -138,7 +139,6 @@
                 <div class="line text">@Model.Description</div>
               </div>
             }
-        
 
         <div class="group">
           <div class="line">@Model.IssuedInCity @Model.IssuingDate</div>
