@@ -32,8 +32,8 @@ namespace losol.EventManagement.Domain
 		public int EventInfoId { get; set; }
 		public string UserId { get; set; }
 
-		public RegistrationStatus Status { get; set; }
-		public RegistrationStatus Type { get; set; }
+		public RegistrationStatus Status { get; set; } = RegistrationStatus.Draft;
+		public RegistrationType Type { get; set; } = RegistrationType.Participant;
 
 		[Display(Name = "Møtt?")]
 		public bool Attended { get; set; } = false;
