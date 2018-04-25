@@ -23,12 +23,14 @@ namespace losol.EventManagement.Web.Controllers.Api {
         public async Task<ActionResult> UpdateParticipantInfo ([FromRoute] int id, [FromBody] ParticipantInfoVM vm) {
             if (!ModelState.IsValid) return BadRequest ();
             try {
-                await _registrationsService.UpdateParticipantInfo (id,
+                await _registrationsService.UpdateParticipantInfo (
+                    id,
                     vm.ParticipantName,
                     vm.ParticipantJobTitle,
                     vm.ParticipantCity,
                     vm.ParticipantEmployer);
-            } catch (ArgumentException) {
+            } 
+            catch (ArgumentException) {
                 return BadRequest ();
             }
             return Ok ();
