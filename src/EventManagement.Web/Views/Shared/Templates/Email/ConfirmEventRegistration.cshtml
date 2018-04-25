@@ -24,6 +24,14 @@
               Hvis knappen ikke virker, s&aring; kan du fors&oslash;ke &aring; lime inn nettadressen i en nettleser: @Model.VerificationUrl
             </td>
           </tr>
+          @if(!string.IsNullOrWhiteSpace(Model.OrdersHtml))
+          {
+            <tr>
+              <td class="free-text">
+                @Html.Raw(Model.OrdersHtml)
+              </td>
+            </tr>
+          }
           <tr>
             <td class="button">
               <div><!--[if mso]>
