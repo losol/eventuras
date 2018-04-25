@@ -9,9 +9,7 @@ namespace losol.EventManagement.Domain {
         
         [Key]
         public int CertificateId { get; set; }
-        [DatabaseGenerated (DatabaseGeneratedOption.Identity)]
         public Guid CertificateGuid { get; set; } = Guid.NewGuid ();
-        [DatabaseGenerated (DatabaseGeneratedOption.Identity)]
         public Guid Auth { get; set; } = Guid.NewGuid ();
 
         [Required]

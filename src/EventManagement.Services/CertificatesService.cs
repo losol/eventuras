@@ -6,6 +6,7 @@ using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using static losol.EventManagement.Domain.Registration;
 
 namespace losol.EventManagement.Services {
 
@@ -99,7 +100,7 @@ namespace losol.EventManagement.Services {
 
 			var result = new List<Certificate> ();
 			var newRegistrations = eventInfo.Registrations
-				.Where (m => m.Attended && m.CertificateId == null)
+				.Where (m => m.Status == RegistrationStatus.Attended && m.CertificateId == null)
 				.ToList ();
 
 			// Add certificates
