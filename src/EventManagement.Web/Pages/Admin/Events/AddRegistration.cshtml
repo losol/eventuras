@@ -138,7 +138,7 @@
 
     </script>
     @section Scripts {
-        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+        @Html.Partial("_ValidationScriptsPartial");
     
         <script>
             const $inputUser = $('#input-user');
