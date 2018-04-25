@@ -7,36 +7,22 @@
 <div class="bg-gray-300">
     <div class="container py-5">
         <h1>Registrering #@Model.Registration.RegistrationId</h1>
+        <p class="lead">Arrangement: @Model.Registration.EventInfo.Title</p>
+
+        <select asp-for="Registration.Status" asp-items="Html.GetEnumSelectList<Registration.RegistrationStatus>()">
+        </select>
+        <select asp-for="Registration.Type" asp-items="Html.GetEnumSelectList<Registration.RegistrationType>()">
+        </select>
+
     </div>
 </div>
+
 
 <div class="container py-5">
     <div>
         <dl class="dl-horizontal">
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.Status)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.Status)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.Type)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.Type)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.Attended)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.Attended)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.Diploma)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.Diploma)
-            </dd>
+         
+          
             <dt>
                 @Html.DisplayNameFor(model => model.Registration.ParticipantName)
             </dt>
