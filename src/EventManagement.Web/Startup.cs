@@ -21,6 +21,7 @@ using losol.EventManagement.Web.Services;
 using losol.EventManagement.Services.Messaging.Sms;
 using losol.EventManagement.Services.PowerOffice;
 using losol.EventManagement.Config;
+using losol.EventManagement.Services.TalentLms;
 
 namespace losol.EventManagement
 {
@@ -163,7 +164,16 @@ namespace losol.EventManagement
             {
                 services.AddTransient<IInvoicingService, MockInvoicingService>();
             }
-            
+
+            if(appsettings.UseTalentLms)
+            {
+                services.Configure<TalentLmsOptions>(Configuration.GetSection("TalentLms"));
+                services.AddScoped<ITalentLmsService, TalentLmsService>();
+            }
+            else
+            {
+                services.AddTransient<ITalentLmsService, MockTalentLmsService>();
+            }
 
 			// Register our application services
 			services.AddScoped<IEventInfoService, EventInfoService>();
