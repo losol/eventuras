@@ -28,7 +28,7 @@ namespace losol.EventManagement.IntegrationTests.Pages.Register
         public async Task Request_ReturnsNotFound_WhenEventIdIsMissing()
         {
             // Act
-            var response = await _client.GetAsync("/Register/Event");
+            var response = await _client.GetAsync("/Event/Register");
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -38,7 +38,7 @@ namespace losol.EventManagement.IntegrationTests.Pages.Register
         public async Task Request_ReturnsNotFound_WhenEventIdIsInvalid()
         {
             // Act
-            var response = await _client.GetAsync("/Register/Event/1000");
+            var response = await _client.GetAsync("/Event/Register/1000");
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -50,7 +50,7 @@ namespace losol.EventManagement.IntegrationTests.Pages.Register
             // Arrange
 
             // Act
-            var response = await _client.GetAsync("/Register/Event/1");
+            var response = await _client.GetAsync("/Event/2/Register/");
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
