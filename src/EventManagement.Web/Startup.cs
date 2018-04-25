@@ -21,6 +21,7 @@ using losol.EventManagement.Web.Services;
 using losol.EventManagement.Services.Messaging.Sms;
 using losol.EventManagement.Services.PowerOffice;
 using losol.EventManagement.Config;
+using losol.EventManagement.Web.Config;
 
 namespace losol.EventManagement
 {
@@ -117,6 +118,8 @@ namespace losol.EventManagement
                     break;
             }
 
+            var siteConfig = Configuration.GetSection("Site").Get<Site>();
+            services.AddSingleton(siteConfig);
             var appsettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
 
 			// Register the correct email provider depending on the config
