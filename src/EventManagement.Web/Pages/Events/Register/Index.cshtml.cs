@@ -13,6 +13,7 @@ using losol.EventManagement.Pages.Account;
 using losol.EventManagement.Services;
 using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
+using EventManagement.Web.Extensions;
 using System.Text;
 
 namespace losol.EventManagement.Web.Pages.Events.Register
@@ -124,7 +125,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 			_logger.LogInformation("Starting new registration:");
 
 			var newRegistration = Registration.Adapt<Registration>();
-			newRegistration.VerificationCode = generateRandomPassword(6);
+			newRegistration.VerificationCode = PasswordHelper.GeneratePassword(length: 6);
 			int[] selectedProductIds = null;
 			int[] selectedVariantIds = null;
 
@@ -234,25 +235,5 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 			return RedirectToPage("/Info/EmailSent");
 		}
 
-		private static string generateRandomPassword(int length = 6)
-		{
-			string[] randomChars = {
-				"ABCDEFGHJKLMNPQRSTUVWXYZ", // uppercase 
-				"abcdefghijkmnpqrstuvwxyz", // lowercase
-				"123456789" // digits
-			};
-			Random rand = new Random(Environment.TickCount);
-
-			List<char> chars = new List<char>();
-
-			for (int i = chars.Count; i < length; i++)
-			{
-				string rcs = randomChars[rand.Next(0, randomChars.Length)];
-				chars.Insert(rand.Next(0, chars.Count),
-					rcs[rand.Next(0, rcs.Length)]);
-			}
-
-			return new string(chars.ToArray());
-		}
 	}
 }
