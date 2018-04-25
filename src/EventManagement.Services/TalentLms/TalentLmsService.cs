@@ -6,7 +6,7 @@ using RestSharp;
 
 namespace losol.EventManagement.Services.TalentLms
 {
-    public class TalentLmsService
+    public class TalentLmsService : ITalentLmsService
     {
 
         private readonly TalentLmsOptions _options;
