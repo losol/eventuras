@@ -168,6 +168,60 @@ namespace losol.EventManagement.Services {
 			return await _db.SaveChangesAsync () > 0;
 		}
 
+		public async Task<bool> UpdateParticipantInfo(int registrationId, string name, string jobTitle, string city, string Employer) {
+			var reg = await _db.Registrations
+				.Where( m => m.RegistrationId == registrationId)
+				.FirstOrDefaultAsync();
+			
+			reg.ParticipantName = name;
+			reg.ParticipantJobTitle =  jobTitle;
+			reg.ParticipantCity = city;
+			reg.ParticipantEmployer = Employer;
+			_db.Update(reg);
+			return await _db.SaveChangesAsync() > 0;
+		}
+
+		public async Task<bool> UpdateRegistrationStatus(int registrationId, int orderStatus) {
+			var reg = await _db.Registrations
+				.Where( m => m.RegistrationId == registrationId)
+				.FirstOrDefaultAsync();
+			
+			reg.Status = (Registration.RegistrationStatus)orderStatus;
+			_db.Update(reg);
+			return await _db.SaveChangesAsync() > 0;
+		}
+
+		public async Task<bool> UpdateRegistrationStatus(int registrationId, string orderStatus) {
+			var reg = await _db.Registrations
+				.Where( m => m.RegistrationId == registrationId)
+				.FirstOrDefaultAsync();
+			
+			reg.Status = (Registration.RegistrationStatus) Enum.Parse(typeof(Registration.RegistrationStatus), orderStatus);;
+			_db.Update(reg);
+			return await _db.SaveChangesAsync() > 0;
+		}
+
+		public async Task<bool> UpdateRegistrationType(int registrationId, int orderType) {
+			var reg = await _db.Registrations
+				.Where( m => m.RegistrationId == registrationId)
+				.FirstOrDefaultAsync();
+			
+			reg.Status = (Registration.RegistrationStatus) orderType;
+			_db.Update(reg);
+			return await _db.SaveChangesAsync() > 0;
+		}
+
+		public async Task<bool> UpdateRegistrationType(int registrationId, string orderType) {
+			var reg = await _db.Registrations
+				.Where( m => m.RegistrationId == registrationId)
+				.FirstOrDefaultAsync();
+			
+			reg.Type = (Registration.RegistrationType) Enum.Parse(typeof(Registration.RegistrationType), orderType);
+			_db.Update(reg);
+			return await _db.SaveChangesAsync() > 0;
+		}
+
+
 		/* 
 		private async Task<bool> ConfirmRegistrationEmail(Registration registration)
 		{

@@ -21,6 +21,14 @@ namespace losol.EventManagement.Services
 		Task<bool> CreateOrUpdateOrder(int registrationId, int[] products, int[] variants);
 		Task<bool> CreateOrUpdateOrder(int registrationId, int productId, int? variantId);
 		
+
+		Task<bool> UpdateParticipantInfo(int registrationId, string name, string JobTitle, string city, string Employer);
+		Task<bool> UpdateRegistrationStatus(int registrationId, int orderStatus);
+		Task<bool> UpdateRegistrationStatus(int registrationId, string orderStatus);
+
+		Task<bool> UpdateRegistrationType(int registrationId, int orderType);
+		Task<bool> UpdateRegistrationType(int registrationId, string orderType);
+		// Set status
 		Task<int> SetRegistrationAsVerified(int id);
 		Task<int> SetRegistrationAsAttended(int id);
 		Task<int> SetRegistrationAsNotAttended(int id);
