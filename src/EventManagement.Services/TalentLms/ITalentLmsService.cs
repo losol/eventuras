@@ -10,5 +10,6 @@ namespace losol.EventManagement.Services.TalentLms
     {
         Task<User> CreateUser(User user);
         Task EnrolUserToCourse(User user);
+        Task<string> GetCourseLink(int userId, int courseId);
     }
 }
