@@ -17,7 +17,7 @@ namespace losol.EventManagement.Services.TalentLms
 
         public async Task<User> CreateUser(User user)
         {
-            var client = new RestClient($"{_options.BaseUrl}/v1/usersignup");
+            var client = new RestClient($"{_options.BaseUrl}/usersignup");
             var request = new RestRequest(Method.POST);
             request.AddHeader("Authorization", $"Basic {_options.ApiKeySha}");
             request.AddHeader("Content-Type", "application/json");
@@ -28,7 +28,7 @@ namespace losol.EventManagement.Services.TalentLms
 
         public async Task EnrolUserToCourse(User user)
         {
-            var client = new RestClient($"{_options.BaseUrl}/v1/addusertocourse");
+            var client = new RestClient($"{_options.BaseUrl}/addusertocourse");
             var request = new RestRequest(Method.POST);
             request.AddHeader("Authorization", $"Basic {_options.ApiKeySha}");
             request.AddHeader("Content-Type", "application/json");
@@ -40,6 +40,20 @@ namespace losol.EventManagement.Services.TalentLms
             };
             request.AddBody(requestBody);
             await client.ExecuteAsync(request);
+        }
+
+        public async Task<string> GetCourseLink(int userId, int courseId)
+        {
+            var client = new RestClient($"{_options.BaseUrl}/gotocourse/user_id:{userId},course_id:{courseId}");
+            var request = new RestRequest(Method.GET);
+            request.AddHeader("Authorization", $"Basic {_options.ApiKeySha}");
+            var response = await client.ExecuteAsync<GetCourseLinkResponse>(request);
+            return response.Data.goto_url;
+        }
+
+        private class GetCourseLinkResponse 
+        {
+            public string goto_url { get; set; }
         }
     }
 }
