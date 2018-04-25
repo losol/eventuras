@@ -181,42 +181,23 @@ namespace losol.EventManagement.Services {
 			return await _db.SaveChangesAsync() > 0;
 		}
 
-		public async Task<bool> UpdateRegistrationStatus(int registrationId, int orderStatus) {
+		public async Task<bool> UpdateRegistrationStatus(int registrationId, Registration.RegistrationStatus status) {
 			var reg = await _db.Registrations
 				.Where( m => m.RegistrationId == registrationId)
 				.FirstOrDefaultAsync();
 			
-			reg.Status = (Registration.RegistrationStatus)orderStatus;
+			reg.Status = status;
 			_db.Update(reg);
 			return await _db.SaveChangesAsync() > 0;
 		}
 
-		public async Task<bool> UpdateRegistrationStatus(int registrationId, string orderStatus) {
-			var reg = await _db.Registrations
-				.Where( m => m.RegistrationId == registrationId)
-				.FirstOrDefaultAsync();
-			
-			reg.Status = (Registration.RegistrationStatus) Enum.Parse(typeof(Registration.RegistrationStatus), orderStatus);;
-			_db.Update(reg);
-			return await _db.SaveChangesAsync() > 0;
-		}
 
-		public async Task<bool> UpdateRegistrationType(int registrationId, int orderType) {
+		public async Task<bool> UpdateRegistrationType(int registrationId, Registration.RegistrationType type) {
 			var reg = await _db.Registrations
 				.Where( m => m.RegistrationId == registrationId)
 				.FirstOrDefaultAsync();
 			
-			reg.Status = (Registration.RegistrationStatus) orderType;
-			_db.Update(reg);
-			return await _db.SaveChangesAsync() > 0;
-		}
-
-		public async Task<bool> UpdateRegistrationType(int registrationId, string orderType) {
-			var reg = await _db.Registrations
-				.Where( m => m.RegistrationId == registrationId)
-				.FirstOrDefaultAsync();
-			
-			reg.Type = (Registration.RegistrationType) Enum.Parse(typeof(Registration.RegistrationType), orderType);
+			reg.Type = type;
 			_db.Update(reg);
 			return await _db.SaveChangesAsync() > 0;
 		}

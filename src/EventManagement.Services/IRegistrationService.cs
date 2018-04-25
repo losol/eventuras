@@ -23,11 +23,9 @@ namespace losol.EventManagement.Services
 		
 
 		Task<bool> UpdateParticipantInfo(int registrationId, string name, string JobTitle, string city, string Employer);
-		Task<bool> UpdateRegistrationStatus(int registrationId, int orderStatus);
-		Task<bool> UpdateRegistrationStatus(int registrationId, string orderStatus);
+		Task<bool> UpdateRegistrationStatus(int registrationId, Registration.RegistrationStatus registrationStatus);
 
-		Task<bool> UpdateRegistrationType(int registrationId, int orderType);
-		Task<bool> UpdateRegistrationType(int registrationId, string orderType);
+		Task<bool> UpdateRegistrationType(int registrationId, Registration.RegistrationType registrationType);
 		// Set status
 		Task<int> SetRegistrationAsVerified(int id);
 		Task<int> SetRegistrationAsAttended(int id);
