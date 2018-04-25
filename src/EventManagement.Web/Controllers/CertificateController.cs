@@ -12,6 +12,7 @@ using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.ViewModels;
 using losol.EventManagement.Services;
+using System.IO;
 
 namespace EventManagement.Web.Controllers
 {
@@ -68,7 +69,9 @@ namespace EventManagement.Web.Controllers
             }
             
             var stream = await writer.RenderAsync(CertificateVM.From(certificate));
-            return File(stream, "application/pdf");
+            MemoryStream memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            return File(memoryStream.ToArray(), "application/pdf");
         }
     }
 }
