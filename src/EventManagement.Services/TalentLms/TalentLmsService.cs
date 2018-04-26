@@ -16,6 +16,15 @@ namespace losol.EventManagement.Services.TalentLms
             _options = options.Value;
         }
 
+        public async Task<User> GetUserAsync(string email)
+        {
+            var client = new RestClient($"{_options.BaseUrl}/users/email:{email}");
+            var request = new RestRequest(Method.GET);
+            request.AddHeader("Authorization", $"Basic {_options.ApiKeySha}");
+            var response = await client.ExecuteAsync<User>(request);
+            return response.Data;
+        }
+
         public async Task<User> CreateUser(User user)
         {
             var client = new RestClient($"{_options.BaseUrl}/usersignup");
@@ -50,6 +59,16 @@ namespace losol.EventManagement.Services.TalentLms
             request.AddHeader("Authorization", $"Basic {_options.ApiKeySha}");
             var response = await client.ExecuteAsync<GetCourseLinkResponse>(request);
             return response.Data.goto_url;
+        }
+
+        public async Task<User> CreateUserIfNotExists(User user)
+        {
+            var u = await GetUserAsync(user.Email);
+            if(u == null)
+            {
+                u = await CreateUser(user);
+            }
+            return u;
         }
 
         private class GetCourseLinkResponse 
