@@ -9,6 +9,6 @@ namespace losol.EventManagement.Services.TalentLms
         public string ApiKey { get; set; }
         public string BaseUrl => $"https://{Domain}/api/v1";
         public string ApiKeySha => 
-            Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(ApiKey));
+            Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes($"{ApiKey}:"));
     }
 }
