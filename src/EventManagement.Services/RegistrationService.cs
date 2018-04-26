@@ -213,7 +213,9 @@ namespace losol.EventManagement.Services {
 		public async Task<List<Registration>> GetRegistrationsWithOrders(ApplicationUser user) {
 			var reg = await _db.Registrations
 				.Where( m => m.UserId == user.Id)
+				.Include( m => m.EventInfo)
 				.Include ( m=> m.Orders)
+				.ThenInclude (o => o.OrderLines)
 				.ToListAsync();
 			return reg;
 		}
