@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using RestSharp;
 
-namespace EventManagement.Services.Extensions
+namespace losol.EventManagement.Services.Extensions
 {
     internal static class RestClientExtensions
     {
