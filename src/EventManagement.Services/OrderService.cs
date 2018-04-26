@@ -169,5 +169,30 @@ namespace losol.EventManagement.Services {
 			_db.Orders.Update (order);
 			return await _db.SaveChangesAsync () > 0; // what if power office succeeds but this fails?
 		}
+
+		public async Task<Order> CreateDraftFromCancelledOrder(int orderId)
+		{
+			var order = await _db.Orders
+								.Include(o => o.OrderLines)
+								.SingleOrDefaultAsync(o => o.OrderId == orderId);
+
+			var newOrder = new Order
+			{
+				PaymentMethodId = order.PaymentMethodId,
+				RegistrationId = order.RegistrationId,
+				Comments = order.Comments,
+				CustomerEmail = order.CustomerEmail,
+				CustomerInvoiceReference = order.CustomerInvoiceReference,
+				CustomerName = order.CustomerName,
+				CustomerVatNumber = order.CustomerVatNumber,
+				UserId = order.UserId,
+				OrderLines = order.OrderLines.Select(l => { l.OrderLineId = 0; return l; }).ToList()
+			};
+			newOrder.AddLog($"New order created from cancelled order: #{order.OrderId}");
+			
+			await _db.AddAsync(newOrder);
+			await _db.SaveChangesAsync();
+			return newOrder;
+		}
 	}
 }
