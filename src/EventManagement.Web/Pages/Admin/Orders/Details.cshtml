@@ -35,6 +35,12 @@
                         
                     </div>
                 }
+                else 
+                {
+                    <button type="button" class="btn btn-primary" onclick="reopenOrder()">
+                        Reopen
+                    </button>
+                }
                 @if(order.Status != Order.OrderStatus.Invoiced)
                 {
                     <button class="btn btn-small btn-danger" data-toggle="popover" 
@@ -416,6 +422,13 @@ TODO: Gotta do it in a better way later. *@
                 window.setTimeout(function(){
                     window.location.href = "/Admin/Orders";
                 }, 3000);
+            })
+        }
+
+        function reopenOrder() {
+            $.post('/api/v0/orders/reopen/@id').done(function(id) {
+                console.log(id);
+                window.location.href = "/Admin/Orders/Details/"+id;
             })
         }
 
