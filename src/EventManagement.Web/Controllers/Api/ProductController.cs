@@ -39,7 +39,7 @@ namespace losol.EventManagement.Web.Api.Controllers
 				s.EventInfoId,
 				s.IsMandatory,
 				s.MandatoryCount,
-				s.MaxAttendees,
+				s.MaxOrdersCount,
 				s.Price,
 				Variants = s.ProductVariants.Select(v => new {
 					v.ProductVariantId,
@@ -50,6 +50,26 @@ namespace losol.EventManagement.Web.Api.Controllers
 					v.VatPercent
 				})
 			});
+		}
+
+		[HttpPost("{id}/published/{publish}")]
+		public async Task<IActionResult> UpdateProductPublishedStatus ([FromRoute]int id,[FromRoute]bool publish) {
+			if(!ModelState.IsValid)
+			{
+				return BadRequest();
+			}
+			var result = await _productsService.UpdateProductAsync(id, publish);
+			return Ok();
+		}
+
+		[HttpPost("variant/{id}/published/{publish}")]
+		public async Task<IActionResult> UpdateProductVariantPublishedStatus ([FromRoute]int id,[FromRoute]bool publish) {
+			if(!ModelState.IsValid)
+			{
+				return BadRequest();
+			}
+			var result = await _productsService.UpdateProductVariantAsync(id, publish);
+			return Ok();
 		}
 
 		[HttpPost("add-user")]

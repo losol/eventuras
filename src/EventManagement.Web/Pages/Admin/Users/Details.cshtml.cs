@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using losol.EventManagement.Domain;
+using losol.EventManagement.Services;
 
 namespace losol.EventManagement.Pages.Admin.Users
 {
     public class DetailsModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IRegistrationService _registrationService;
 
-        public DetailsModel(UserManager<ApplicationUser> userManager)
+
+        public DetailsModel(UserManager<ApplicationUser> userManager, IRegistrationService registrationService)
         {
             _userManager = userManager;
+            _registrationService = registrationService;
         }
 
         [BindProperty]
@@ -29,6 +33,8 @@ namespace losol.EventManagement.Pages.Admin.Users
             public string Email { get; set; }
             public string Phone { get; set; }
 
+            public List<Registration> Registrations { get; set; }
+
         }
 
         public async Task<IActionResult> OnGetAsync(string id)
@@ -40,6 +46,7 @@ namespace losol.EventManagement.Pages.Admin.Users
             }
 
             var user = await _userManager.FindByIdAsync(id);
+            // var userRegistrations = await _db.Registrations.
 
             UserProfile = new DetailsVM();
 
@@ -47,6 +54,7 @@ namespace losol.EventManagement.Pages.Admin.Users
             UserProfile.Name = user.Name;
             UserProfile.Email = user.Email;
             UserProfile.Phone = user.PhoneNumber;
+            // UserProfile.Registrations = _registrationService.GetRegistrations()
 
 			return Page();
         }

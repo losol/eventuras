@@ -68,6 +68,25 @@
                 <h2 id="practical">Praktisk informasjon</h2>
                 @Html.Raw(Model.EventInfo.PracticalInformation)
             }
+
+            @* PRODUCTS 
+
+            @if (Model.EventInfo.Products.Any())  {
+                <h2 id="practical">Ekstra</h2>
+                @foreach (var product in Model.EventInfo.Products.Where(m => m.Published == true))
+                {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">@product.Name</h5>
+                            <p class="card-text">@product.Description</p>
+                        </div>
+                    </div>
+                </div>
+                    
+                }
+            }
+            *@
             
 		</div>
         <div class="col-md-3">
