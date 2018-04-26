@@ -14,6 +14,7 @@ namespace losol.EventManagement.Services.TalentLms.Models
         public string Email { get; set; }
         [JsonProperty("login")]
         public string Login { get; set; }
-
+        [JsonProperty("password")]
+        public string Password { get; set; }
     }
 }
