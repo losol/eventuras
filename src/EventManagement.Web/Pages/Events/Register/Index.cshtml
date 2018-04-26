@@ -112,6 +112,7 @@
                     var product = Model.Products[i];
                     var productModel = Model.Products[i];
 
+                    if (product.Published) {
                     <div class="form-group">
                         <div class="card">
                             <div class="card-body">
@@ -139,15 +140,17 @@
                                             <div class="row">
                                                 @foreach(var variant in product.ProductVariants)
                                                 {
-                                                    <div class="col">
-                                                    <div class="form-check">
-                                                        <input asp-for="Registration.Products[i].SelectedVariantId" type="radio" value="@variant.ProductVariantId" class="form-check-input" />
-                                                        <label class="form-check-label" for="Registration.Products[i].SelectedVariantId">
-                                                            @variant.Name
-                                                        </label>
-                                                        <h6 class="card-subtitle mb-2 text-muted" style="margin-top:5px">@variant.Price kr</h6>
-                                                    </div>
-                                                    </div>
+                                                    @if (variant.Published == true) {
+                                                        <div class="col">
+                                                        <div class="form-check">
+                                                            <input asp-for="Registration.Products[i].SelectedVariantId" type="radio" value="@variant.ProductVariantId" class="form-check-input" />
+                                                            <label class="form-check-label" for="Registration.Products[i].SelectedVariantId">
+                                                                @variant.Name
+                                                            </label>
+                                                            <h6 class="card-subtitle mb-2 text-muted" style="margin-top:5px">@variant.Price kr</h6>
+                                                        </div>
+                                                        </div>
+                                                    }
                                                 }
                                             </div>
                                         }
@@ -156,6 +159,7 @@
                             </div>
                         </div>
                     </div>
+                    }
                 }
             }
 
