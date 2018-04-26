@@ -23,13 +23,13 @@ namespace losol.EventManagement.Infrastructure.Migrations
                 name: "Published",
                 table: "ProductVariants",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: true);
 
             migrationBuilder.AddColumn<bool>(
                 name: "Published",
                 table: "Products",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
