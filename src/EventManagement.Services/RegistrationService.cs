@@ -112,8 +112,13 @@ namespace losol.EventManagement.Services {
 
 			if(registration.EventInfo.OnDemand)
 			{
+				var spaceSeparatedName = registration.ParticipantName.Split(' ');
+				var lastName = spaceSeparatedName.Last();
+				spaceSeparatedName[spaceSeparatedName.Length-1] = "";
+				var firstName = string.Join(",", spaceSeparatedName);
 				var user = await _talentLms.CreateUserIfNotExists(new TalentLms.Models.User {
-					FirstName = registration.ParticipantName,
+					FirstName = firstName,
+					LastName = lastName,
 					Email = registration.User.Email,
 					Login = registration.User.Email,
 					Password =  PasswordHelper.GeneratePassword(length: 6)
