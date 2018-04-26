@@ -66,8 +66,8 @@ namespace losol.EventManagement.Services
 		}
 
 		public async Task<bool> UpdateProductVariantAsync(int productVariantId, bool published) {
-			var productVariant = await _db.Products
-				.Where( m => m.ProductId == productVariantId)
+			var productVariant = await _db.ProductVariants
+				.Where( m => m.ProductVariantId == productVariantId)
 				.FirstOrDefaultAsync();
 			
 			productVariant.Published = published;
