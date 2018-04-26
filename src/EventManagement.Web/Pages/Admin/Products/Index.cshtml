@@ -9,31 +9,46 @@
     var eventRegistrations = await registrationService.GetRegistrations(product.EventInfoId) ?? new List<Registration>();
 }
 
-<div class="container">
-	<div class="row">
-		<div class="col-6">
-            <h2>@product.Name (@product.Eventinfo.Title)</h2>
-            <strong>Registration Count:</strong> @registrations.Count()
-            <button class="btn btn-secondary" data-toggle="modal" data-target="#add-user-modal">Add User</button>
-            <button class="btn btn-secondary" id="btn-send-emails">Email</button>
+<div class="bg-gray-300">
+    <div class="container py-5">
+        <h1>@product.Name</h1>
+        <p class="lead">@product.Eventinfo.Title</p>
+        <p class"lead">Antall solgt: </strong> @registrations.Count()
+        <div id="menu">
+            <button class="btn btn-secondary" data-toggle="modal" data-target="#add-user-modal">Ny deltaker</button>
+            <button class="btn btn-secondary" id="btn-send-emails">Epost</button>
             <button class="btn btn-secondary" id="btn-send-sms">SMS</button>
-		</div>
-	</div>
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input asp-for="@product.Published" data-id="@product.ProductId" class="form-check-input" type="checkbox" value="">
+                    Publisert
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container py-5">
+    @await Html.PartialAsync("_registrationTable", Tuple.Create(registrations, id, true))
 
-	<div class="row">
-		<div class="col-md-9">
-            @await Html.PartialAsync("_registrationTable", Tuple.Create(registrations, id, true))
-		</div>
-	</div>
-
+    <h2>Varianter</h2>
     @foreach(var v in product.ProductVariants)
     {
+    
         var varRegistrations = registrations.Where(r => r.Orders.Any(o => o.OrderLines.Any(l => l.ProductVariantId == v.ProductVariantId) == true)).ToList();
-        <div class="row">
-            <div class="col-md-9">
-                <h3>@v.Name</h3>
-                <strong>Registration Count: </strong>@varRegistrations.Count()
-                @await Html.PartialAsync("_registrationTable", Tuple.Create(varRegistrations, id, false))
+        var publishchecked = (v.Published) ? "checked" : "";
+        <div class="py-5">
+            <div class="row">
+                <div class="col-12">
+                    <h3>@v.Name</h3>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input @publishchecked data-id="@v.ProductVariantId" class="form-check-input variant-published-status" type="checkbox">
+                            Publisert
+                        </label>
+                    </div>
+                    <strong>Registration Count: </strong>@varRegistrations.Count()
+                    @await Html.PartialAsync("_registrationTable", Tuple.Create(varRegistrations, id, false))
+                </div>  
             </div>
         </div>
     }
@@ -80,10 +95,42 @@
     </div>
   </div>
 </div>
-
+</div>
 
 @section scripts { 
 <script>
+
+    $('#product_Published').change(function() {
+        var productStatus = {
+            id : $(this).data('id'),
+            published : $(this).is(':checked')
+        };
+        $.postJSON('/api/v0/products/' + productStatus.id + '/published/' + productStatus.published, null)
+            .done(function(){
+                toastr.success('Oppdatert publiseringsstatus!')
+                location.reload()
+            })
+            .fail(function(){
+                toastr.error('Sorry.')
+            });
+    }); 
+
+    // variant-published-status  [HttpPost("/variant/{id}/published/{publish}")]
+    $('.variant-published-status').change(function() {
+        var productStatus = {
+            id : $(this).data('id'),
+            published : $(this).is(':checked')
+        };
+        $.postJSON('/api/v0/products/variant/' + productStatus.id + '/published/' + productStatus.published, null)
+            .done(function(){
+                toastr.success('Oppdatert publiseringsstatus!')
+                location.reload()
+            })
+            .fail(function(){
+                toastr.error('Sorry.')
+            });
+    }); 
+
     $(function () {
 
         const users = @Html.Raw(JsonConvert.SerializeObject(eventRegistrations.Select(r => new { id = r.RegistrationId, name = $"{r.ParticipantName} {r.User?.PhoneNumber} {r.User?.Email}" })));
