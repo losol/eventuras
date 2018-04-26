@@ -62,7 +62,7 @@ namespace losol.EventManagement.Web.Api.Controllers
 			return Ok();
 		}
 
-		[HttpPost("/variant/{id}/published/{publish}")]
+		[HttpPost("variant/{id}/published/{publish}")]
 		public async Task<IActionResult> UpdateProductVariantPublishedStatus ([FromRoute]int id,[FromRoute]bool publish) {
 			if(!ModelState.IsValid)
 			{
