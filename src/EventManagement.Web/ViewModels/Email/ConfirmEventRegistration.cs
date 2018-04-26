@@ -13,6 +13,7 @@ namespace losol.EventManagement.ViewModels
 		public string EventDescription { get; set; }
 		public string EventDate { get; set; }
 		public string EventUrl { get; set; }
+		public string OrdersHtml { get; set; }
 
 	}
 }

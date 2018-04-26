@@ -169,5 +169,44 @@ namespace losol.EventManagement.Services {
 			_db.Orders.Update (order);
 			return await _db.SaveChangesAsync () > 0; // what if power office succeeds but this fails?
 		}
+
+		public async Task<Order> CreateDraftFromCancelledOrder(int orderId)
+		{
+			var order = await _db.Orders
+								.Include(o => o.Registration)
+									.ThenInclude(r => r.Orders)
+										.ThenInclude(o => o.OrderLines)
+								.Include(o => o.OrderLines)
+								.AsNoTracking()
+								.SingleOrDefaultAsync(o => o.OrderId == orderId);
+
+			var newOrder = new Order
+			{
+				PaymentMethodId = order.PaymentMethodId,
+				RegistrationId = order.RegistrationId,
+				Comments = order.Comments,
+				CustomerEmail = order.CustomerEmail,
+				CustomerInvoiceReference = order.CustomerInvoiceReference,
+				CustomerName = order.CustomerName,
+				CustomerVatNumber = order.CustomerVatNumber,
+				UserId = order.UserId,
+				OrderLines = order.OrderLines.Select(l => { l.OrderLineId = 0; return l; }).ToList()
+			};
+			newOrder.AddLog($"New order created from cancelled order: #{order.OrderId}");
+
+			var existingProductIds = order.Registration.Orders.Where(o => o.Status != OrderStatus.Cancelled)
+											.SelectMany(o => o.OrderLines
+											.Where(l => l.ProductId.HasValue)
+											.Select(l => l.ProductId.Value)
+										);
+			if(existingProductIds.Intersect(newOrder.OrderLines.Where(l => l.ProductId.HasValue).Select(l => l.ProductId.Value)).Any())
+			{
+				throw new InvalidOperationException("Cannot recreate order because some of the products were already ordered.");
+			}
+			
+			await _db.AddAsync(newOrder);
+			await _db.SaveChangesAsync();
+			return newOrder;
+		}
 	}
 }

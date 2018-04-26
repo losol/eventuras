@@ -23,11 +23,7 @@
             <div class="col-md-9"> 
                 <div class="form-group">
                     <label>User</label>
-                    <input id="input-user"
-                        type="text" class="typeahead form-control" 
-                        placeholder="Finn bruker"
-                        autocomplete="off"
-                        data-provide="typeahead">
+                    @Html.Partial("Partials/_UserSelect")
                 </div>
                 <div class="form-group">
                     <label asp-for="Registration.ParticipantName"></label>
@@ -127,37 +123,17 @@
     </form>
 
     </div>
-    <script>
-
-        function paymentMethod() {
-            if (document.getElementById('Registration_PaymentMethodId_3').checked) {
-                $('#customerdetails').collapse('show');
-            };   
-        }
-        
-
-    </script>
-    @section Scripts {
-        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-        <!-- Select2  -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" rel="stylesheet" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js"></script>
     
+    @section Scripts {
+        @Html.Partial("_ValidationScriptsPartial");
+        @Html.Partial("Partials/_UserSelectScript");
         <script>
-            const $inputUser = $('#input-user');
-            $.get("/api/v0/users").done(function(response){
-                $inputUser.typeahead({ 
-                    source: response.map(function(x) { return { id: x.id, name: x.name + ' ' + x.email + ' ' + x.phone } }),
-                    fitToElement: true,
-                    showHintOnFocus: true
-                });
-            });
-            
+            function paymentMethod() {
+                if (document.getElementById('Registration_PaymentMethodId_3').checked) {
+                    $('#customerdetails').collapse('show');
+                };   
+            }
         </script>
-    }
-
-    @section HeadScripts {
- 
     }
     
 </div>
