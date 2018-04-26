@@ -174,6 +174,7 @@ namespace losol.EventManagement.Services {
 		{
 			var order = await _db.Orders
 								.Include(o => o.OrderLines)
+								.AsNoTracking()
 								.SingleOrDefaultAsync(o => o.OrderId == orderId);
 
 			var newOrder = new Order
