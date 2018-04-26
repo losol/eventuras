@@ -11,10 +11,37 @@
     </div>
 </div>
 <div class="container py-5 min-height-66">
-    <div class="card">
-        <div class="card-body">
-            <h4>My online courses</h4>
-            <button class="btn btn-success">Continue on my heart course</button>
+    <div class="row py-5">
+        <div class="card">
+            <div class="card-body">
+                <h4>My online courses</h4>
+                <button class="btn btn-success">Continue on my heart course</button>
+            </div>
         </div>
     </div>
+    <div class="row">
+        <h4>My registrations</h4>
+    </div>
+    <div class="row">
+        @foreach (var registration in Model.Registrations) {
+            <div class="col-md-4">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h5>@registration.EventInfo.Title</h5>
+                        @foreach (var order in registration.Orders) {
+                            <p>Ordre nr. @order.OrderId</p>
+                            <ul class="list-group list-group-flush bg-light">
+                                @foreach (var orderline in order.OrderLines) {
+                                     <li class="list-group-item bg-light">@orderline.ProductName</li>
+                                }
+                               
+                            </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+            
+    </div>
 </div>
+

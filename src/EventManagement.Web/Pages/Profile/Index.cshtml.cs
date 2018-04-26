@@ -16,14 +16,18 @@ namespace losol.EventManagement.Pages.Profile
     public partial class IndexModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IRegistrationService _registrationsService;
 
         public IndexModel(
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IRegistrationService registrationService )
         {
             _userManager = userManager;
+            _registrationsService = registrationService;
         }
 
         public ApplicationUser CurrentUser { get; set;}
+        public List<Registration> Registrations { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -34,6 +38,7 @@ namespace losol.EventManagement.Pages.Profile
             }
 
             CurrentUser = user;
+            Registrations = await _registrationsService.GetRegistrationsWithOrders(CurrentUser);
 
             return Page();
         }
