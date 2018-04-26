@@ -5,11 +5,15 @@
     ViewData["Title"] = @Model.EventInfo.Title;
 }
 
- @{
+@{
     var heroStyle = "";
     if (Model.EventInfo.HasFeaturedImage)
     {
-        <div><img src="@Model.EventInfo.FeaturedImageUrl" class="w-100"></div>
+    heroStyle = $@"
+        background: url('{Model.EventInfo.FeaturedImageUrl}');
+        background-size: cover;
+        background-position: center center;
+        ";
     }
 }   
 
@@ -110,3 +114,9 @@
     </div>
 </div>
 
+@section HeadScripts {
+    @if (Model.EventInfo.HasFeaturedImage)
+    {
+        <meta property="og:image" content="@Model.EventInfo.FeaturedImageUrl" />
+    }
+}
