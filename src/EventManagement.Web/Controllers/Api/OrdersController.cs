@@ -84,8 +84,15 @@ namespace losol.EventManagement.Web.Controllers.Api
 		[HttpPost("reopen/{id}")]
 		public async Task<ActionResult> Reopen([FromRoute]int id)
 		{
-			var order = await _orderService.CreateDraftFromCancelledOrder(id);
-			return Ok(order.OrderId);
+			try
+			{
+				var order = await _orderService.CreateDraftFromCancelledOrder(id);
+				return Ok(order.OrderId);
+			}
+			catch(InvalidOperationException)
+			{
+				return StatusCode(StatusCodes.Status409Conflict);
+			}
 		}
 
 		[HttpPost("line/delete/{lineid}")]
