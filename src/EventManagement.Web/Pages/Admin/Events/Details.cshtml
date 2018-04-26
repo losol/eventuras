@@ -320,7 +320,7 @@
 
     function emailCertificatesToAll() {
         toastr.info("Vær tålmodig, det kan ta litt tid.");
-        $.postJSON('/api/certificates/event/@Model.EventInfo.EventInfoId/email', null)
+        $.postJSON('@(Site.ApiBaseUrl)/api/certificates/event/@Model.EventInfo.EventInfoId/email', null)
         .done(function(){
             toastr.success('Kursbevisene er på vei!');
             $('#sendCertificatesModal').modal('hide');
