@@ -206,7 +206,7 @@
         }
     function RowActions(value, row, index, field) {
             actions = [
-                '<a href="/Admin/Registrations/Details/' + row.registrationId + '" alt="Vis registrering" class="mr-1"><i class="fa fa-id-card-o" aria-hidden="true"></i></a>', 
+                '<a href="/Admin/Registrations/Details/' + row.registrationId + '" alt="Vis registrering" class="btn btn-primary mr-1 link-decoration-none"><i class="fa fa-id-card-o" aria-hidden="true"></i> Info</a>', 
                 '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-sms mr-1">SMS</button>', 
                 '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-email mr-1">Epost</button>'
             ];
