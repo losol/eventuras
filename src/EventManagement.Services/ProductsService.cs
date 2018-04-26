@@ -54,5 +54,25 @@ namespace losol.EventManagement.Services
 				.AsNoTracking()
 				.ToListAsync();
 		}
+
+		public async Task<bool> UpdateProductAsync(int productId, bool published) {
+			var product = await _db.Products
+				.Where( m => m.ProductId == productId)
+				.FirstOrDefaultAsync();
+			
+			product.Published = published;
+			_db.Update(product);
+			return await _db.SaveChangesAsync() > 0;
+		}
+
+		public async Task<bool> UpdateProductVariantAsync(int productVariantId, bool published) {
+			var productVariant = await _db.Products
+				.Where( m => m.ProductId == productVariantId)
+				.FirstOrDefaultAsync();
+			
+			productVariant.Published = published;
+			_db.Update(productVariant);
+			return await _db.SaveChangesAsync() > 0;
+		}
 	}
 }
