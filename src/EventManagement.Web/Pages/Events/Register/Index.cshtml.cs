@@ -13,7 +13,7 @@ using losol.EventManagement.Pages.Account;
 using losol.EventManagement.Services;
 using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
-using EventManagement.Web.Extensions;
+using losol.EventManagement.Services.Extensions;
 using System.Text;
 
 namespace losol.EventManagement.Web.Pages.Events.Register

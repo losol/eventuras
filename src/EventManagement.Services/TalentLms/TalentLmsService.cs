@@ -1,8 +1,9 @@
 using System.Threading.Tasks;
-using EventManagement.Services.Extensions;
-using losol.EventManagement.Services.TalentLms.Models;
 using Microsoft.Extensions.Options;
 using RestSharp;
+
+using losol.EventManagement.Services.Extensions;
+using losol.EventManagement.Services.TalentLms.Models;
 
 namespace losol.EventManagement.Services.TalentLms
 {
