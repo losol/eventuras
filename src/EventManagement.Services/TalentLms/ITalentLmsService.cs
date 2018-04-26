@@ -8,7 +8,7 @@ namespace losol.EventManagement.Services.TalentLms
     public interface ITalentLmsService
     {
         Task<User> CreateUser(User user);
-        Task EnrolUserToCourse(User user);
+        Task EnrolUserToCourse(int userId, int courseId);
         Task<string> GetCourseLink(int userId, int courseId);
     }
 }

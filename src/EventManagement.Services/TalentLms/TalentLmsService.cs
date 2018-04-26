@@ -27,7 +27,7 @@ namespace losol.EventManagement.Services.TalentLms
             return response.Data;
         }
 
-        public async Task EnrolUserToCourse(User user)
+        public async Task EnrolUserToCourse(int userId, int courseId)
         {
             var client = new RestClient($"{_options.BaseUrl}/addusertocourse");
             var request = new RestRequest(Method.POST);
@@ -35,8 +35,8 @@ namespace losol.EventManagement.Services.TalentLms
             request.AddHeader("Content-Type", "application/json");
             var requestBody = new 
             {
-                user_id = 2,
-                course_id = 126,
+                user_id = userId,
+                course_id = courseId,
                 role = "learner"
             };
             request.AddBody(requestBody);
