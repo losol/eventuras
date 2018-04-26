@@ -119,7 +119,7 @@ namespace losol.EventManagement.Services {
 					Password =  PasswordHelper.GeneratePassword(length: 6)
 				});
 				var matches = Regex.Match(registration.EventInfo.RegistrationsUrl, @"id:(\d*)");
-				int courseId = int.Parse(matches.Groups[0].Value);
+				int courseId = int.Parse(matches.Groups[1].Value);
 				await _talentLms.EnrolUserToCourse(userId: user.Id.Value, courseId: courseId);
 			}
 			
