@@ -31,7 +31,7 @@ namespace losol.EventManagement.Domain
 		public int VatPercent { get; set; } = 0;
 
 		public int MaxOrdersCount { get; set; } = 0;
-		public bool Published {get;set;}
+		public bool Published {get;set;} = true;
 
 		// Navigational properties
 		// "Child" of an eventinfo.
