@@ -1,20 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
+using losol.EventManagement.Services.Extensions;
+using losol.EventManagement.Services.TalentLms;
 using Microsoft.EntityFrameworkCore;
 
 namespace losol.EventManagement.Services {
 	public class RegistrationService : IRegistrationService {
 		private readonly ApplicationDbContext _db;
 		private readonly IPaymentMethodService _paymentMethods;
+        private readonly ITalentLmsService _talentLms;
 
-		public RegistrationService (ApplicationDbContext db, IPaymentMethodService paymentMethods) {
+        public RegistrationService (
+				ApplicationDbContext db, 
+				IPaymentMethodService paymentMethods,
+				ITalentLmsService talentLms) {
 			_db = db;
 			_paymentMethods = paymentMethods;
-		}
+            _talentLms = talentLms;
+        }
 
 		public async Task<Registration> GetAsync (int id) {
 			return await _db.Registrations
@@ -96,8 +104,25 @@ namespace losol.EventManagement.Services {
 			CreateRegistration (registration, null, null);
 
 		public async Task<int> SetRegistrationAsVerified (int id) {
-			var registration = await GetAsync (id);
+			var registration = await _db.Registrations
+									.Include(r => r.User)
+									.Include(r => r.EventInfo)
+									.SingleOrDefaultAsync(r => r.RegistrationId == id);
 			registration.Verify ();
+
+			if(registration.EventInfo.OnDemand)
+			{
+				var user = await _talentLms.CreateUserIfNotExists(new TalentLms.Models.User {
+					FirstName = registration.ParticipantName,
+					Email = registration.User.Email,
+					Login = registration.User.Email,
+					Password =  PasswordHelper.GeneratePassword(length: 6)
+				});
+				var matches = Regex.Match(registration.EventInfo.RegistrationsUrl, @"course_id:(\d*)");
+				int courseId = int.Parse(matches.Groups[0].Value);
+				await _talentLms.EnrolUserToCourse(userId: user.Id.Value, courseId: courseId);
+			}
+			
 			return await _db.SaveChangesAsync ();
 		}
 
