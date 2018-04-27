@@ -48,6 +48,14 @@ namespace losol.EventManagement.Services {
 				.SingleOrDefaultAsync ();
 		}
 
+		public async Task<Registration> GetWithEventInfoAndOrders (int id) =>
+			await _db.Registrations
+			.Include (r => r.Orders)
+			.ThenInclude (o => o.OrderLines)
+			.Include (r => r.User)
+			.Include(r => r.EventInfo)
+			.SingleOrDefaultAsync(o => o.RegistrationId == id);
+
 		public async Task<List<Registration>> GetRegistrations (int eventId) {
 			return await _db.Registrations
 				.Where (r => r.EventInfoId == eventId)
@@ -199,5 +207,48 @@ namespace losol.EventManagement.Services {
 		}
 
 		
+		public async Task<bool> UpdateParticipantInfo(int registrationId, string name, string jobTitle, string city, string Employer) {
+			var reg = await _db.Registrations
+				.Where( m => m.RegistrationId == registrationId)
+				.FirstOrDefaultAsync();
+			
+			reg.ParticipantName = name;
+			reg.ParticipantJobTitle =  jobTitle;
+			reg.ParticipantCity = city;
+			reg.ParticipantEmployer = Employer;
+			_db.Update(reg);
+			return await _db.SaveChangesAsync() > 0;
+		}
+
+		public async Task<bool> UpdateRegistrationStatus(int registrationId, Registration.RegistrationStatus status) {
+			var reg = await _db.Registrations
+				.Where( m => m.RegistrationId == registrationId)
+				.FirstOrDefaultAsync();
+			
+			reg.Status = status;
+			_db.Update(reg);
+			return await _db.SaveChangesAsync() > 0;
+		}
+
+
+		public async Task<bool> UpdateRegistrationType(int registrationId, Registration.RegistrationType type) {
+			var reg = await _db.Registrations
+				.Where( m => m.RegistrationId == registrationId)
+				.FirstOrDefaultAsync();
+			
+			reg.Type = type;
+			_db.Update(reg);
+			return await _db.SaveChangesAsync() > 0;
+		}
+
+		public async Task<List<Registration>> GetRegistrationsWithOrders(ApplicationUser user) {
+			var reg = await _db.Registrations
+				.Where( m => m.UserId == user.Id)
+				.Include( m => m.EventInfo)
+				.Include ( m=> m.Orders)
+				.ThenInclude (o => o.OrderLines)
+				.ToListAsync();
+			return reg;
+		}
 	}
 }

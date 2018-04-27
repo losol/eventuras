@@ -12,5 +12,8 @@ namespace losol.EventManagement.Services
 
 		Task<List<Product>> GetForEventAsync(int eventId);
 		Task<List<Registration>> GetRegistrationsAsync(int productId);
+
+		Task<bool> UpdateProductAsync(int productId, bool published);
+		Task<bool> UpdateProductVariantAsync(int productVariantId, bool published);
 	}
 }

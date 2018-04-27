@@ -1,0 +1,9 @@
+<script>
+$.get("/api/v0/users").done(function(response){
+    $('#input-user').typeahead({ 
+        source: response.map(function(x) { return { id: x.id, name: x.name + ' ' + x.email + ' ' + x.phone } }),
+        fitToElement: true,
+        showHintOnFocus: true
+    });
+});
+</script>

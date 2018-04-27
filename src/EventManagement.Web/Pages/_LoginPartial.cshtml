@@ -7,7 +7,7 @@
     <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="">
         <ul class="navbar-nav navbar-right">
             <li class="nav-item">
-                <a asp-page="/Account/Manage/Index" class="nav-link" title="Manage">@UserManager.GetUserName(User)</a>
+                <a asp-page="/Profile/Index" class="nav-link" title="Manage">@UserManager.GetUserName(User)</a>
             </li>
             <li class="nav-item">
                 <button type="submit" class="btn btn-link navbar-btn nav-link">Logg ut</button>

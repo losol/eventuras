@@ -22,7 +22,7 @@ namespace losol.EventManagement.Pages.Events
 
         public async Task<IActionResult> OnGetAsync(int id, string slug)
         {
-			EventInfo = await _eventsService.GetAsync(id);
+			EventInfo = await _eventsService.GetWithProductsAsync(id);
 
             if (EventInfo == null)
             {

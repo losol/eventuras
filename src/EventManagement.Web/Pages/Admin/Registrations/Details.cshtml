@@ -7,36 +7,54 @@
 <div class="bg-gray-300">
     <div class="container py-5">
         <h1>Registrering #@Model.Registration.RegistrationId</h1>
+        <p class="lead">Arrangement: @Model.Registration.EventInfo.Title</p>
+
+        <select asp-for="Registration.Status" asp-items="Html.GetEnumSelectList<Registration.RegistrationStatus>()">
+        </select>
+        <select asp-for="Registration.Type" asp-items="Html.GetEnumSelectList<Registration.RegistrationType>()">
+        </select>
+
+    </div>
+</div>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card" id="participantinfocard">
+                <div class="card-body">
+                    <small>Navn</small>
+                    <div contenteditable="true" class="participantinfo" id="participant-name">
+                        @Html.DisplayFor(model => model.Registration.ParticipantName)
+                    </div>
+                    <br />
+
+                    <small>Stilling</small>
+                    <div contenteditable="true" class="participantinfo" id="participant-jobtitle">
+                        @Html.DisplayFor(model => model.Registration.ParticipantJobTitle)
+                    </div>
+                    <br />
+                    
+                    <small>Sted</small>
+                    <div contenteditable="true" class="participantinfo" id="participant-city">
+                        @Html.DisplayFor(model => model.Registration.ParticipantCity)
+                    </div>
+                    <br />
+
+                    <small>Arbeidsgiver</small>
+                    <div contenteditable="true" class="participantinfo" id="participant-employer">
+                        @Html.DisplayFor(model => model.Registration.ParticipantEmployer)
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <div class="container py-5">
     <div>
         <dl class="dl-horizontal">
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.Status)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.Status)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.Type)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.Type)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.Attended)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.Attended)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.Diploma)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.Diploma)
-            </dd>
+         
+          
             <dt>
                 @Html.DisplayNameFor(model => model.Registration.ParticipantName)
             </dt>
@@ -174,3 +192,62 @@
         <a asp-page="./Index">Back to List</a>
     </div>
 </div>
+
+@section scripts { 
+<script>
+    // *******PARTICIPANT INFO SCRIPTS *******
+    // Add change listener to all contenteditables
+    var contenteditables = document.querySelectorAll("[contenteditable=true]");
+    [].forEach.call(contenteditables, function (content) {
+        // Save inital text when entering
+        content.addEventListener("focus", function () {
+            content.setAttribute("data-initial-text", content.innerHTML);
+        });
+        // And check if it has changed
+        content.addEventListener("blur", function () {
+            if (content.getAttribute("data-initial-text") !== content.innerHTML) {
+                saveParticipantInfo();
+            }
+        });
+    });
+    function saveParticipantInfo() {
+        const postData = {
+            ParticipantName: $('#participant-name').text().trim(),
+            ParticipantJobTitle: $('#participant-jobtitle').text().trim(),
+            ParticipantCity: $('#participant-city').text().trim(),
+            ParticipantEmployer: $('#participant-employer').text().trim()
+        };
+        $.postJSON('/api/v0/registrations/participant/update/@Model.Registration.RegistrationId', postData)
+            .done(function() {
+                toastr.success('Lagret deltakerinfo');
+            })
+            .fail(function() {
+                toastr.error('Noe gikk galt... Sorry altså');
+            });
+    };
+
+    // ******* REGISTRATION STATUS SCRIPTS *******
+    $('#Registration_Status').on('change', function() {
+        var status = $("option:selected", this).text();
+        $.postJSON('/api/v0/registrations/status/update/@Model.Registration.RegistrationId/' + status, null)
+            .done(function() {
+                toastr.success('Lagret status');
+            })
+            .fail(function() {
+                toastr.error('Noe gikk galt... Sorry altså');
+            });
+    })
+
+    // ******* REGISTRATION TYPE SCRIPTS *******
+    $('#Registration_Type').on('change', function() {
+        var type = $("option:selected", this).text();
+        $.postJSON('/api/v0/registrations/type/update/@Model.Registration.RegistrationId/' + type, null)
+            .done(function() {
+                toastr.success('Lagret deltakertype');
+            })
+            .fail(function() {
+                toastr.error('Noe gikk galt... Sorry altså');
+            });
+    })
+</script>
+}

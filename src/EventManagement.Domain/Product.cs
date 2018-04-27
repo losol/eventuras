@@ -30,7 +30,8 @@ namespace losol.EventManagement.Domain
 		public decimal Price { get; set; }
 		public int VatPercent { get; set; } = 0;
 
-		public int MaxAttendees { get; set; }
+		public int MaxOrdersCount { get; set; } = 0;
+		public bool Published {get;set;} = true;
 
 		// Navigational properties
 		// "Child" of an eventinfo.

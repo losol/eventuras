@@ -14,6 +14,7 @@ using losol.EventManagement.Services;
 using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
 using losol.EventManagement.Services.Extensions;
+using System.Text;
 
 namespace losol.EventManagement.Web.Pages.Events.Register
 {
@@ -185,6 +186,20 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 					protocol: Request.Scheme
 				)
 			};
+
+			if(Registration.HasProducts)
+			{
+				var builder = new StringBuilder ();
+				builder.AppendLine ("<br>");
+				builder.AppendLine ("<h4>Ordre</h4>");
+				var registration = await _registrationService.GetWithEventInfoAndOrders(newRegistration.RegistrationId);
+				registration.Orders.ForEach(
+					(o) => o.OrderLines?.ForEach (
+						(line) => builder.AppendLine ($"<br>{line.ProductName}")
+					)
+				);
+				confirmEmail.OrdersHtml += builder.ToString ();
+			}
 			
 			await _confirmationEmailSender.SendAsync(Registration.Email, "Bekreft påmelding", confirmEmail);
 			return RedirectToPage("/Info/EmailSent");
