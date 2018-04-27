@@ -102,7 +102,7 @@ namespace losol.EventManagement.Pages.Account
                 if(user != null)
                 {
                     // Send the email only if the email exists
-                    await _magicLinkSender.SendAsync(Email);
+                    await _magicLinkSender.SendAsync(user);
                 }
                 
                 SuccessMessage = "Magic Link sent to your inbox!";
