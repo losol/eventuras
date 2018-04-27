@@ -47,7 +47,7 @@ namespace losol.EventManagement.Web.Services
                         values: new { token = token, email = user.Email });
             await base.SendAsync(
                 emailAddress: user.Email, 
-                subject: $"MagicLink to log into {_siteConfig.Title}",
+                subject: $"Magi fra {_siteConfig.Title}",
                 vm: new MagicLinkVM
                 {
                     MagicLink = magiclink
