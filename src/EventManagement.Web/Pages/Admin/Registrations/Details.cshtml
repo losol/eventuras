@@ -4,15 +4,26 @@
 @{
     ViewData["Title"] = "Details";
 }
-<div class="bg-gray-300">
-    <div class="container py-5">
+<div class="bg-gray-300 py-3">
+    <div class="container">
         <h1>Registrering #@Model.Registration.RegistrationId</h1>
         <p class="lead">Arrangement: @Model.Registration.EventInfo.Title</p>
 
-        <select asp-for="Registration.Status" asp-items="Html.GetEnumSelectList<Registration.RegistrationStatus>()">
-        </select>
-        <select asp-for="Registration.Type" asp-items="Html.GetEnumSelectList<Registration.RegistrationType>()">
-        </select>
+        <div class="clearfix">
+            <div class="mr-3 float-left">
+                Status: 
+                <select asp-for="Registration.Status" asp-items="Html.GetEnumSelectList<Registration.RegistrationStatus>()">
+                </select>
+            </div>
+            <div class="mr-3 float-left">
+                Type deltaker: 
+                <select asp-for="Registration.Type" asp-items="Html.GetEnumSelectList<Registration.RegistrationType>()">
+                </select>
+            </div>
+        </div>
+        <div class="py-3 clearfix">
+            <button class="btn btn-danger" onclick="CancelRegistration()">Meld av</button>
+        </div>
 
     </div>
 </div>
@@ -21,6 +32,7 @@
         <div class="col-md-4">
             <div class="card" id="participantinfocard">
                 <div class="card-body">
+                    <h4>Deltaker</h4>
                     <small>Navn</small>
                     <div contenteditable="true" class="participantinfo" id="participant-name">
                         @Html.DisplayFor(model => model.Registration.ParticipantName)
@@ -43,154 +55,63 @@
                     <div contenteditable="true" class="participantinfo" id="participant-employer">
                         @Html.DisplayFor(model => model.Registration.ParticipantEmployer)
                     </div>
+                </div>
+            </div>
+        </div>
+                <div class="col-md-4">
+            <div class="card" id="participantinfocard">
+                <div class="card-body">
+                    <h4>Betalingsinformasjon</h4>
+                    <p class="text-danger">Endringer her lagres ikke.</p>
+                    <small>Kundenavn</small>
+                    <div contenteditable="true" class="customerinfo" id="customer-name">
+                        @Html.DisplayFor(model => model.Registration.CustomerName)
+                    </div>
+                    <br />
 
+                    <small>Kundeepost</small>
+                    <div contenteditable="true" class="customerinfo" id="customer-email">
+                        @Html.DisplayFor(model => model.Registration.CustomerEmail)
+                    </div>
+                    <br />
+                    
+                    <small>Org.nr</small>
+                    <div contenteditable="true" class="customerinfo" id="participant-city">
+                        @Html.DisplayFor(model => model.Registration.CustomerVatNumber)
+                    </div>
+                    <br />
+
+                    <small>Fakturareferanse</small>
+                    <div contenteditable="true" class="customerinfo" id="participant-invoicereference">
+                        @Html.DisplayFor(model => model.Registration.CustomerInvoiceReference)
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="container py-5">
-    <div>
-        <dl class="dl-horizontal">
-         
-          
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.ParticipantName)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.ParticipantName)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.ParticipantJobTitle)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.ParticipantJobTitle)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.ParticipantEmployer)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.ParticipantEmployer)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.ParticipantCity)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.ParticipantCity)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.CustomerName)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.CustomerName)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.CustomerEmail)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.CustomerEmail)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.CustomerVatNumber)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.CustomerVatNumber)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.CustomerInvoiceReference)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.CustomerInvoiceReference)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.Notes)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.Notes)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.Log)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.Log)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.RegistrationTime)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.RegistrationTime)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.RegistrationBy)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.RegistrationBy)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.FreeRegistration)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.FreeRegistration)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.Verified)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.Verified)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.VerificationCode)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.VerificationCode)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.EventInfo)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.EventInfo.Code)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.PaymentMethod)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.PaymentMethod.Name)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.User)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.User.Id)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.Certificate)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.CertificateId)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Registration.Log)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Registration.Log)
-            </dd>
-        </dl>
-    </div>
+<div class="container">
+    <h2>Notater</h2>
+    @Model.Registration.Notes
 
-    <div class="py-5">
-        <h2>Ordre</h2>
+    <h2>Logg</h2>
+    @Model.Registration.Log
+
+     <h2>Ordre</h2>
         @{
             foreach (var order in Model.Registration.Orders) {
                 <span class="badge badge-default">@order.OrderId </span>
             }
         }
-    </div>
-    <div>
-        <a asp-page="./Edit" asp-route-id="@Model.Registration.RegistrationId">Edit</a> |
-        <a asp-page="./Delete" asp-route-id="@Model.Registration.RegistrationId">Delete</a> |
-        <a asp-page="./Index">Back to List</a>
-    </div>
+
+    <h2>Annet</h2>
+    <ul>
+        <li>Kursbevis: @Model.Registration.Certificate</li>
+        <li>Brukerid: @Model.Registration.UserId</li>
+        <li>Gratis? @Model.Registration.FreeRegistration</li>
+        <li>Betalingsmetode @Model.Registration.PaymentMethod.Name </li>
+    </ul>
 </div>
 
 @section scripts { 
@@ -235,6 +156,7 @@
             })
             .fail(function() {
                 toastr.error('Noe gikk galt... Sorry altså');
+                location.reload();
             });
     })
 
@@ -247,7 +169,17 @@
             })
             .fail(function() {
                 toastr.error('Noe gikk galt... Sorry altså');
+                location.reload();
             });
     })
+
+    // ******* CANCEL REGISTRATION BUTTON *******
+    function CancelRegistration() {
+        var val = 'Cancelled';
+        $('#Registration_Status option:contains(' + val + ')').prop({selected: true});
+        $('#Registration_Status').change();
+    };
+
+        
 </script>
 }

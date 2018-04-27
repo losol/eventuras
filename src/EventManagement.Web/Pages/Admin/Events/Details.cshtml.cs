@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
+using static losol.EventManagement.Domain.Registration;
 
 namespace losol.EventManagement.Pages.Admin.Events
 {
@@ -66,7 +67,7 @@ namespace losol.EventManagement.Pages.Admin.Events
             }
 
             var registrations = await _context.Registrations
-                .Where( r => r.EventInfoId == id)
+                .Where( r => r.EventInfoId == id && r.Status != RegistrationStatus.Cancelled)
                 .Select ( x=> new RegistrationsVm{
                     RegistrationId = x.RegistrationId,
                     Name = x.User.Name,
