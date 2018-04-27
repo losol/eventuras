@@ -16,4 +16,7 @@ Install and configure.
    :maxdepth: 2
    :caption: Contents:
 
+   Installation
+   Configuration
+
 
