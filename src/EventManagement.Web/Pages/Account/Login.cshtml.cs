@@ -26,6 +26,10 @@ namespace losol.EventManagement.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; }
 
+        [BindProperty]
+        [EmailAddress, Required]
+        public string Email { get; set; } = string.Empty;
+
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public string ReturnUrl { get; set; }
@@ -33,19 +37,8 @@ namespace losol.EventManagement.Pages.Account
         [TempData]
         public string ErrorMessage { get; set; }
 
-        public class InputModel
-        {
-            [Required]
-            [EmailAddress]
-            public string Email { get; set; }
-
-            [Required]
-            [DataType(DataType.Password)]
-            public string Password { get; set; }
-
-            [Display(Name = "Remember me?")]
-            public bool RememberMe { get; set; }
-        }
+        [TempData]
+        public string SuccessMessage { get; set; }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
@@ -65,8 +58,8 @@ namespace losol.EventManagement.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-
-            if (ModelState.IsValid)
+            ModelState.Clear();
+            if (TryValidateModel(Input))
             {
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
@@ -92,6 +85,33 @@ namespace losol.EventManagement.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
+        }
+
+        public IActionResult OnPostSendMagicLink()
+        {
+            ModelState.Clear();
+
+            if(TryValidateModel(Email))
+            {
+                // TODO: Send the actual magic link here
+                SuccessMessage = "Magic Link sent to your inbox!";
+                Email = string.Empty;
+            }
+            return Page();
+        }
+
+        public class InputModel
+        {
+            [Required]
+            [EmailAddress]
+            public string Email { get; set; }
+
+            [Required]
+            [DataType(DataType.Password)]
+            public string Password { get; set; }
+
+            [Display(Name = "Remember me?")]
+            public bool RememberMe { get; set; }
         }
     }
 }
