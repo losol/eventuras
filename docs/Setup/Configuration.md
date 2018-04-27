@@ -14,7 +14,6 @@ The JSON structure defines the configuration for the application.
     "UsePowerOffice": "false|true",
     "UseTalentLms": "false|true"
   },
-
   "Logging": {
     "IncludeScopes": false,
     "LogLevel": {
