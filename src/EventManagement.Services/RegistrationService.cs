@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using EventManagement.Services.Extensions;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services.Extensions;
@@ -112,17 +113,7 @@ namespace losol.EventManagement.Services {
 
 			if(registration.EventInfo.OnDemand)
 			{
-				var spaceSeparatedName = registration.ParticipantName.Split(' ');
-				var lastName = spaceSeparatedName.Last();
-				spaceSeparatedName[spaceSeparatedName.Length-1] = "";
-				var firstName = string.Join(",", spaceSeparatedName);
-				var user = await _talentLms.CreateUserIfNotExists(new TalentLms.Models.User {
-					FirstName = firstName,
-					LastName = lastName,
-					Email = registration.User.Email,
-					Login = registration.User.Email,
-					Password =  PasswordHelper.GeneratePassword(length: 6)
-				});
+				var user = await _talentLms.CreateUserIfNotExists(registration.User.NewTalentLmsUser());
 				var matches = Regex.Match(registration.EventInfo.RegistrationsUrl, @"id:(\d*)");
 				int courseId = int.Parse(matches.Groups[1].Value);
 				await _talentLms.EnrolUserToCourse(userId: user.Id.Value, courseId: courseId);

@@ -11,6 +11,7 @@ using losol.EventManagement.Domain;
 using losol.EventManagement.Services;
 using losol.EventManagement.Services.Messaging;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.RegularExpressions;
 
 namespace losol.EventManagement.Pages.Profile
 {
@@ -33,9 +34,11 @@ namespace losol.EventManagement.Pages.Profile
 
         public ApplicationUser CurrentUser { get; set;}
         public List<Registration> Registrations { get; set; }
-        public List<(int Id, string Title)> OnlineCourses =>
+        public List<(string Id, string Title)> OnlineCourses =>
             Registrations.Where(r => r.EventInfo.OnDemand && !string.IsNullOrWhiteSpace(r.EventInfo.RegistrationsUrl))
-                    .Select(r => (r.EventInfo.EventInfoId, r.EventInfo.Title))
+                    .Select(r => (
+                        Regex.Match(r.EventInfo.RegistrationsUrl, @"id:(\d*)").Groups[1].Value, 
+                        r.EventInfo.Title))
                     .ToList();
 
         public async Task<IActionResult> OnGetAsync()
