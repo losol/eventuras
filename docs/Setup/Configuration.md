@@ -4,10 +4,15 @@ The JSON structure defines the configuration for the application.
 
 ```json
 {
+  "Site": {
+    "Title": "Site Title",
+    "Description": "Site description text goes here."
+  },
   "AppSettings": {
     "EmailProvider": "SendGrid|SMTP|File|Mock",
     "SmsProvider": "Twilio|Mock",
-    "UsePowerOffice": "false|true"
+    "UsePowerOffice": "false|true",
+    "UseTalentLms": "false|true"
   },
   "Logging": {
     "IncludeScopes": false,
@@ -45,6 +50,10 @@ The JSON structure defines the configuration for the application.
     "ClientKey": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
     "Mode": "Production|Test|Beta|Demo|Debug",
     "TokenStoreName": "name.tokenstore"
+  },
+  "TalentLms": {
+    "Domain": "appname.talentlms.com",
+    "ApiKey": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
   }
 }
 ```

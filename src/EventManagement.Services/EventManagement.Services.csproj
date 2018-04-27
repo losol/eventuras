@@ -14,6 +14,7 @@
   <ItemGroup>
     <PackageReference Include="MailKit" Version="2.0.1" />
     <PackageReference Include="PowerOfficeGoSdk" Version="2.0.4" />
+    <PackageReference Include="RestSharp" Version="106.2.2" />
     <PackageReference Include="Sendgrid" Version="9.9.0" />
     <PackageReference Include="Twilio" Version="5.10.0" />
   </ItemGroup>
