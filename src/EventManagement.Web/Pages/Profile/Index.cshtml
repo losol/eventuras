@@ -13,9 +13,14 @@
 <div class="container py-5 min-height-66">
     <div class="row py-5">
         <div class="card">
-            <div class="card-body">
-                <h4>My online courses</h4>
-                <button class="btn btn-success">Continue on my heart course</button>
+                <div class="card-body">
+                    <h4>My online courses</h4>
+                    @foreach(var course in Model.OnlineCourses)
+                    {
+                        <button data-id="@course.Id"
+                            class="btn btn-success d-block btn-goto-course" 
+                            style="margin-bottom: 10px; width: 100%">@course.Title</button>
+                    }
             </div>
         </div>
     </div>

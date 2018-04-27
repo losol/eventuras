@@ -18,25 +18,33 @@ namespace losol.EventManagement.Pages.Profile
     public partial class IndexModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IRegistrationService _registrationsService;
 
         public IndexModel(
             UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
             IRegistrationService registrationService )
         {
             _userManager = userManager;
+            _signInManager = signInManager;
             _registrationsService = registrationService;
         }
 
         public ApplicationUser CurrentUser { get; set;}
         public List<Registration> Registrations { get; set; }
+        public List<(int Id, string Title)> OnlineCourses =>
+            Registrations.Where(r => r.EventInfo.OnDemand && !string.IsNullOrWhiteSpace(r.EventInfo.RegistrationsUrl))
+                    .Select(r => (r.EventInfo.EventInfoId, r.EventInfo.Title))
+                    .ToList();
 
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                await _signInManager.SignOutAsync();
+                return RedirectToPage("./Index");
             }
 
             CurrentUser = user;
