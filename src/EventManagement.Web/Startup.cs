@@ -48,8 +48,6 @@ namespace losol.EventManagement
             });
 
 
-                // sqlite: options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))); 
-
             services.AddIdentity<ApplicationUser, IdentityRole>(config =>
             {
                 config.SignIn.RequireConfirmedEmail = true;
