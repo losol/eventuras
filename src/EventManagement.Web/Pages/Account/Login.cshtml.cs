@@ -9,17 +9,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using losol.EventManagement.Domain;
+using losol.EventManagement.Web.Services;
 
 namespace losol.EventManagement.Pages.Account
 {
     public class LoginModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly MagicLinkSender _magicLinkSender;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<ApplicationUser> signInManager, 
+            MagicLinkSender magicLinkSender,
+            ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
+            _magicLinkSender = magicLinkSender;
             _logger = logger;
         }
 
@@ -87,13 +92,19 @@ namespace losol.EventManagement.Pages.Account
             return Page();
         }
 
-        public IActionResult OnPostSendMagicLink()
+        public async Task<IActionResult> OnPostSendMagicLinkAsync()
         {
             ModelState.Clear();
 
             if(TryValidateModel(Email))
             {
-                // TODO: Send the actual magic link here
+                var user = await _signInManager.UserManager.FindByEmailAsync(Email);
+                if(user != null)
+                {
+                    // Send the email only if the email exists
+                    await _magicLinkSender.SendAsync(Email);
+                }
+                
                 SuccessMessage = "Magic Link sent to your inbox!";
                 Email = string.Empty;
             }
