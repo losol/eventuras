@@ -36,6 +36,7 @@ namespace losol.EventManagement.Web.Services
         
         public async Task SendAsync(ApplicationUser user)
         {
+            await _userManager.UpdateSecurityStampAsync(user);
             var token = await _userManager.GenerateUserTokenAsync(
                 user: user,  
                 tokenProvider: "MagicLinkTokenProvider", 
