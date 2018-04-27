@@ -10,9 +10,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Services;
 using losol.EventManagement.Services.Messaging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace losol.EventManagement.Pages.Profile
 {
+    [Authorize]
     public partial class IndexModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
