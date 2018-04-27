@@ -23,6 +23,9 @@ using losol.EventManagement.Services.PowerOffice;
 using losol.EventManagement.Config;
 using losol.EventManagement.Web.Config;
 using losol.EventManagement.Services.TalentLms;
+using losol.EventManagement.Web.Extensions;
+
+
 namespace losol.EventManagement
 {
     public class Startup
@@ -53,7 +56,8 @@ namespace losol.EventManagement
                 config.SignIn.RequireConfirmedEmail = true;
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders()
+                .AddMagicLinkTokenProvider();
 
             // Require SSL
             // TODO Re-enable
