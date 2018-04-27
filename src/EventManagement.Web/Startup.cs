@@ -21,7 +21,9 @@ using losol.EventManagement.Web.Services;
 using losol.EventManagement.Services.Messaging.Sms;
 using losol.EventManagement.Services.PowerOffice;
 using losol.EventManagement.Config;
+using losol.EventManagement.Services.TalentLms;
 using losol.EventManagement.Web.Config;
+using losol.EventManagement.Web.Extensions;
 
 namespace losol.EventManagement
 {
@@ -53,20 +55,18 @@ namespace losol.EventManagement
                 config.SignIn.RequireConfirmedEmail = true;
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders()
+                .AddMagicLinkTokenProvider();
 
             // Require SSL
-            // TODO Re-enable
-            /* if (HostingEnvironment.IsProduction())
+            if (HostingEnvironment.IsProduction())
             {
                 services.Configure<MvcOptions>(options =>
                 {
                     options.Filters.Add(new RequireHttpsAttribute());
                 });
             }
-            */
             
-
             // Set password requirements
             services.Configure<IdentityOptions>(options =>
             {
@@ -144,7 +144,9 @@ namespace losol.EventManagement
 			// Register email services
 			services.AddTransient<StandardEmailSender>();
 			services.AddTransient<ConfirmationEmailSender>();
+            services.AddTransient<MagicLinkSender>();
 
+            // Register SMS services
 			switch(appsettings.SmsProvider)
 			{
 				case SmsProvider.Twilio:
@@ -166,7 +168,16 @@ namespace losol.EventManagement
             {
                 services.AddTransient<IInvoicingService, MockInvoicingService>();
             }
-            
+
+            if(appsettings.UseTalentLms)
+            {
+                services.Configure<TalentLmsOptions>(Configuration.GetSection("TalentLms"));
+                services.AddScoped<ITalentLmsService, TalentLmsService>();
+            }
+            else
+            {
+                services.AddTransient<ITalentLmsService, MockTalentLmsService>();
+            }
 
 			// Register our application services
 			services.AddScoped<IEventInfoService, EventInfoService>();
@@ -209,14 +220,12 @@ namespace losol.EventManagement
 
             app.UseAuthentication();
 
-            // TODO reenable
-            /*
+            // Redirect to Https
             if (env.IsProduction()) {
                 var options = new RewriteOptions()
                 .AddRedirectToHttps(); 
                 app.UseRewriter(options);
             }
-             */
 
             app.UseMvc(routes =>
             {
