@@ -59,17 +59,14 @@ namespace losol.EventManagement
                 .AddMagicLinkTokenProvider();
 
             // Require SSL
-            // TODO Re-enable
-            /* if (HostingEnvironment.IsProduction())
+            if (HostingEnvironment.IsProduction())
             {
                 services.Configure<MvcOptions>(options =>
                 {
                     options.Filters.Add(new RequireHttpsAttribute());
                 });
             }
-            */
             
-
             // Set password requirements
             services.Configure<IdentityOptions>(options =>
             {
@@ -223,14 +220,12 @@ namespace losol.EventManagement
 
             app.UseAuthentication();
 
-            // TODO reenable
-            /*
+            // Redirect to Https
             if (env.IsProduction()) {
                 var options = new RewriteOptions()
                 .AddRedirectToHttps(); 
                 app.UseRewriter(options);
             }
-             */
 
             app.UseMvc(routes =>
             {
