@@ -47,7 +47,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> EventManagement
+            <a href="index.html" class="icon icon-home"> EventManagement
           
 
           
@@ -80,7 +80,7 @@
               <!-- Local TOC -->
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">EventManagement – Helping with your events and courses!</a><ul>
-<li><a class="reference internal" href="#get-started">Get started</a></li>
+<li><a class="reference internal" href="#setting-up-environment">Setting up environment</a></li>
 </ul>
 </li>
 </ul>
@@ -97,7 +97,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">EventManagement</a>
+          <a href="index.html">EventManagement</a>
         
       </nav>
 
@@ -126,7 +126,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="#">Docs</a> &raquo;</li>
+      <li><a href="index.html">Docs</a> &raquo;</li>
         
       <li>EventManagement – Helping with your events and courses!</li>
     
@@ -134,7 +134,7 @@
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/Installation.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -149,11 +149,52 @@
             
   <div class="section" id="eventmanagement-helping-with-your-events-and-courses">
 <h1>EventManagement – Helping with your events and courses!<a class="headerlink" href="#eventmanagement-helping-with-your-events-and-courses" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="get-started">
-<h2>Get started<a class="headerlink" href="#get-started" title="Permalink to this headline">¶</a></h2>
-<p>Install and configure.</p>
-<div class="toctree-wrapper compound">
-</div>
+<div class="section" id="setting-up-environment">
+<h2>Setting up environment<a class="headerlink" href="#setting-up-environment" title="Permalink to this headline">¶</a></h2>
+<p>Production
+* Set up Microsoft Sql Server
+* Set up Azure web app
+* Get an sendgrid user and api key</p>
+<p>Set environment variables before first run:
+* AdminEmail
+* AdminPassword
+* SendGridUser
+* SendGridKey</p>
+<p>Docker</p>
+<p>Run the following to get the up and running on <cite>localhost:5100</cite>:
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">docker-compose</span> <span class="pre">build</span>
+<span class="pre">docker-compose</span> <span class="pre">up</span>
+<span class="pre">`</span></code></p>
+<p>Ensure you got docker compose installed. You may need to allocate 4GB to docker to get SQL Server working.</p>
+<p>## Development</p>
+<p>### Using Docker</p>
+<p>To start building .NET apps you just need to download and install the [.NET SDK](<a class="reference external" href="https://www.microsoft.com/net/learn/get-started/">https://www.microsoft.com/net/learn/get-started/</a>)</p>
+<p>Clone this app to your computer
+* [Stable version](<a class="reference external" href="https://github.com/losol/Eventer/archive/master.zip">https://github.com/losol/Eventer/archive/master.zip</a>)
+* [Development version](<a class="reference external" href="https://github.com/losol/Eventer/archive/dev.zip">https://github.com/losol/Eventer/archive/dev.zip</a>)</p>
+<p>You will need an sql server to get this solution functional. Recommended solution is sql server in docker.
+[Instructions for installing Docker and Sql Server](./Install_docker_sql_server.md)</p>
+<p>### Configure your app
+In development mode it is recommended to set options by dotnet user-secrets. In a terminal window at your root folder you may:</p>
+<p>Set database connection string
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">dotnet</span> <span class="pre">user-secrets</span> <span class="pre">set</span> <span class="pre">ConnectionStrings:DefaultConnection</span> <span class="pre">&quot;Server=127.0.0.1,1401;Initial</span> <span class="pre">Catalog=EventDb;User</span> <span class="pre">ID=sa;Password=&lt;Apples345#$%&gt;&quot;</span>
+<span class="pre">`</span></code></p>
+<p>Set admin user email and password</p>
+<p><code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">dotnet</span> <span class="pre">user-secrets</span> <span class="pre">set</span> <span class="pre">SuperAdmin:Email</span> <span class="pre">admin&#64;email.com</span>
+<span class="pre">dotnet</span> <span class="pre">user-secrets</span> <span class="pre">set</span> <span class="pre">SuperAdmin:Password</span> <span class="pre">Pa$$w0rd</span>
+<span class="pre">`</span></code></p>
+<p>Set Sendgrid-settings by setting environment variables or in terminal:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">dotnet</span> <span class="pre">user-secrets</span> <span class="pre">set</span> <span class="pre">SendGrid:User</span> <span class="pre">asdf1234</span>
+<span class="pre">dotnet</span> <span class="pre">user-secrets</span> <span class="pre">set</span> <span class="pre">SendGrid:Key</span> <span class="pre">asdf1234</span>
+<span class="pre">`</span></code></p>
+<p>### Run your app!</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">dotnet</span> <span class="pre">run</span>
+<span class="pre">`</span></code></p>
 </div>
 </div>
 
