@@ -144,7 +144,9 @@ namespace losol.EventManagement
 			// Register email services
 			services.AddTransient<StandardEmailSender>();
 			services.AddTransient<ConfirmationEmailSender>();
+            services.AddTransient<MagicLinkSender>();
 
+            // Register SMS services
 			switch(appsettings.SmsProvider)
 			{
 				case SmsProvider.Twilio:
