@@ -29,34 +29,5 @@ namespace losol.EventManagement.Controllers
             _logger.LogInformation("User logged out.");
             return RedirectToPage("/Index");
         }
-
-        [HttpGet("/magic/{email}/{token}", Name = "MagicLinkRoute")]
-        public async Task<IActionResult> MagicLogin([FromRoute]string token, [FromRoute]string email)
-        {
-            // Sign the user out if they're signed in
-            if(_signInManager.IsSignedIn(User))
-            {
-                await _signInManager.SignOutAsync();
-            }
-            
-            var user = await _signInManager.UserManager.FindByEmailAsync(email);
-            if(user != null)
-            {
-                token = token.Replace("%2F", "/");
-                var isValid = await _signInManager.UserManager.VerifyUserTokenAsync(
-                    user: user,
-                    tokenProvider: "MagicLinkTokenProvider",
-                    purpose: "magic-link",
-                    token: token
-                );
-                if(isValid)
-                {
-                    await _signInManager.UserManager.UpdateSecurityStampAsync(user);
-                    await _signInManager.SignInAsync(user, isPersistent: true);
-                }
-            }
-            
-            return RedirectToPage("/Index");
-        }
     }
 }
