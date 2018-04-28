@@ -35,21 +35,25 @@ namespace losol.EventManagement.Controllers
             public async Task<IActionResult> MagicLogin([FromRoute]string userid, [FromRoute]string token)
             {
             // Sign the user out if they're signed in
+            /* Removes this, as UpdateSecurityStamp logs user out later...
+            
             if(_signInManager.IsSignedIn(User))
             {
                 await _signInManager.SignOutAsync();
-            }
+            } */ 
             
             var user = await _signInManager.UserManager.FindByIdAsync(userid);
+            _logger.LogInformation("Trying to log in userid: " + user.Id + ", email: " + user.Email);
             if(user != null)
             {
-                // token = token.Replace("%2F", "/");
+                token = token.Replace("%2F", "/");
                 var isValid = await _signInManager.UserManager.VerifyUserTokenAsync(
                     user: user,
                     tokenProvider: "MagicLinkTokenProvider",
                     purpose: "magic-link",
                     token: token
                 );
+                _logger.LogInformation("Is valid? " + isValid);
                 if(isValid)
                 {
                     await _signInManager.UserManager.UpdateSecurityStampAsync(user);
