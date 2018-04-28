@@ -44,7 +44,7 @@ namespace losol.EventManagement.Web.Services
             );
             var magiclink = _urlHelper.Link(
                         routeName: "MagicLinkRoute", 
-                        values: new { token = token, email = user.Email });
+                        values: new { userId = user.Id, token = token });
             await base.SendAsync(
                 emailAddress: user.Email, 
                 subject: $"Magi fra {_siteConfig.Title}",
