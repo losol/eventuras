@@ -4,36 +4,12 @@
 @{
     ViewData["Title"] = "Log in";
 }
-<div class="container">
-<div class="row">
+<div class="container py-5">
+<div class="row min-height-75">
+
     <div class="col-md-6">
         <section>
-            <h2>Login</h2>
-            <form method="post">
-                <div asp-validation-summary="All" class="text-danger"></div>
-                @if(!string.IsNullOrWhiteSpace(Model.SuccessMessage))
-                {
-                    <div class="alert alert-success" role="alert">
-                    @Model.SuccessMessage
-                    </div>
-                }
-                
-                <div class="form-group">
-                    <br>
-                    <span>Enter your email address and we'll send you a magic link to login if you already have an account with us.</span>
-                    <br><br>
-                    <input asp-for="Email" class="form-control" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <button type="submit" asp-page-handler="SendMagicLink" class="btn btn-info">Send Magic Link</button>
-                </div>
-            </form>
-        </section>
-    </div>
-    <div class="col-md-4 col-md-offset-2">
-        <section>
-            <h2>Admin Login</h2>
+            <h2>Vanlig innlogging</h2>
             <form method="post">
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
@@ -55,12 +31,37 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-secondary">Log in</button>
+                    <button type="submit" class="btn btn-secondary">Logg inn</button>
                 </div>
                 <div class="form-group">
                     <p>
-                        <a asp-page="./ForgotPassword">Forgot your password?</a>
+                        <a asp-page="./ForgotPassword">Glemt passordet?</a>
                     </p>
+                </div>
+            </form>
+        </section>
+    </div>
+     <div class="col-md-4 offset-2">
+        <section class="card bg-light p-5">
+            <h2>Magisk innlogging (beta)</h2>
+            <form method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                @if(!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+                {
+                    <div class="alert alert-success" role="alert">
+                    @Model.SuccessMessage
+                    </div>
+                }
+                
+                <div class="form-group">
+                    <br>
+                    <span>Legg inn eposten din her, s&aring; sender vi deg en lenke for &aring; logge inn.</span>
+                    <br><br>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <button type="submit" asp-page-handler="SendMagicLink" class="btn btn-info">Send magisk lenke</button>
                 </div>
             </form>
         </section>
