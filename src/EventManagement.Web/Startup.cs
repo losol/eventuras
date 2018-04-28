@@ -78,11 +78,6 @@ namespace losol.EventManagement
                 options.Password.RequireUppercase = true;
             });
 
-            services.Configure<ForwardedHeadersOptions>(options =>
-            {
-              options.ForwardedHeaders = ForwardedHeaders.XForwardedProto;
-            });
-
             // Set culture info
             var cultureInfo = new CultureInfo("nb-NO");
             CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
