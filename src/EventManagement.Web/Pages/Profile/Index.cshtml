@@ -1,6 +1,7 @@
 @page
 @model IndexModel
 
+@* USER PROFILE HERO *@
 <div class="bg-gray-300">
     <div class="container py-5">
         <h1>@Model.CurrentUser.Name</h1>
@@ -10,48 +11,66 @@
         </p>
     </div>
 </div>
-<div class="container py-5 min-height-66">
-    <div class="row py-5">
-        <div class="card">
-                <div class="card-body">
-                    <h4>My online courses</h4>
-                    @foreach(var course in Model.OnlineCourses)
-                    {
-                        <button data-id="@course.Id"
-                            data-target="#modal-course" data-toggle="modal"
-                            class="btn btn-success d-block btn-goto-course" 
-                            style="margin-bottom: 10px; width: 100%">@course.Title</button>
-                    }
-            </div>
+
+@* ONLINE COURSES *@
+@if (Model.OnlineCourses.Any()) {
+    <div class="container py-3">
+        <h2>Nettkurs fra Nordland legeforening</h2>
+        <div class="row py-1">
+            @foreach(var course in Model.OnlineCourses)
+                {
+                    <div class="col-md-4">
+                    @course.Title
+                    <button data-id="@course.Id"
+                        data-target="#modal-course" data-toggle="modal"
+                        class="btn btn-success d-block btn-goto-course" 
+                        style="margin-bottom: 10px; width: 100%">Fortsett</button>
+                    </div>
+                }
         </div>
     </div>
-    <div class="row">
-        <h4>My registrations</h4>
-    </div>
-    <div class="row">
-        @foreach (var registration in Model.Registrations) {
-            <div class="col-md-4">
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <h5>@registration.EventInfo.Title</h5>
-                        @foreach (var order in registration.Orders) {
-                            <p>Ordre nr. @order.OrderId</p>
-                            <ul class="list-group list-group-flush bg-light">
-                                @foreach (var orderline in order.OrderLines) {
-                                     <li class="list-group-item bg-light">@orderline.ProductName</li>
-                                }
-                               
-                            </ul>
-                        }
+}
+
+@* REGISTRATIONS OVERVIEW *@
+@if (Model.Registrations.Any()) {
+    <div class="container py-5 min-height-50">
+        <h2>Kursregistreringer</h2>
+        <div class="row py-3">
+            @foreach (var registration in Model.Registrations) {
+                <div class="col-md-4 d-flex p-3">
+                    <div class="card bg-light h-100 w-100">
+                        <div class="card-body">
+                            <h4>@registration.EventInfo.Title</h4>
+                            @if(registration.EventInfo.DateStart != null) {
+                                <span class="text-muted"><i class="fa fa-calendar-o" aria-hidden="true"></i>
+                                    @registration.EventInfo.DateStart.Value.ToString("d")
+                                </span>
+                            }
+                            @if(registration.EventInfo.DateEnd != null) {
+                                <span class="text-muted">
+                                    - @registration.EventInfo.DateEnd.Value.ToString("d")
+                                </span>
+                            }
+                            <hr />
+                            @foreach (var order in registration.Orders) {
+                                <p>Ordre nr. @order.OrderId</p>
+                                <ul class="list-group list-group-flush bg-light">
+                                    @foreach (var orderline in order.OrderLines) {
+                                        <li class="list-group-item bg-light">@orderline.ProductName</li>
+                                    }
+                                
+                                </ul>
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-            
+            }   
+        </div>
     </div>
-</div>
 
+}
 
+@* ONLINE COURSE MODAL *@
 <div id="modal-course" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -73,6 +92,8 @@
     </div>
   </div>
 </div>
+
+@******** SCRIPTS **********@
 
 @section scripts {
 <script>
