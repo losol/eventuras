@@ -24,6 +24,7 @@ using losol.EventManagement.Config;
 using losol.EventManagement.Services.TalentLms;
 using losol.EventManagement.Web.Config;
 using losol.EventManagement.Web.Extensions;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace losol.EventManagement
 {
@@ -75,6 +76,11 @@ namespace losol.EventManagement
                 options.Password.RequireLowercase = true;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = true;
+            });
+
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+              options.ForwardedHeaders = ForwardedHeaders.XForwardedProto;
             });
 
             // Set culture info
@@ -221,11 +227,13 @@ namespace losol.EventManagement
             app.UseAuthentication();
 
             // Redirect to Https
+            /* Disable redirect
             if (env.IsProduction()) {
                 var options = new RewriteOptions()
                 .AddRedirectToHttps(); 
                 app.UseRewriter(options);
             }
+             */
 
             app.UseMvc(routes =>
             {
