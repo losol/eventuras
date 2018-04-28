@@ -7,22 +7,18 @@ using EventManagement.Services.Extensions;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services.Extensions;
-using losol.EventManagement.Services.TalentLms;
 using Microsoft.EntityFrameworkCore;
 
 namespace losol.EventManagement.Services {
 	public class RegistrationService : IRegistrationService {
 		private readonly ApplicationDbContext _db;
 		private readonly IPaymentMethodService _paymentMethods;
-        private readonly ITalentLmsService _talentLms;
 
         public RegistrationService (
 				ApplicationDbContext db, 
-				IPaymentMethodService paymentMethods,
-				ITalentLmsService talentLms) {
+				IPaymentMethodService paymentMethods) {
 			_db = db;
 			_paymentMethods = paymentMethods;
-            _talentLms = talentLms;
         }
 
 		public async Task<Registration> GetAsync (int id) {
@@ -110,14 +106,6 @@ namespace losol.EventManagement.Services {
 									.Include(r => r.EventInfo)
 									.SingleOrDefaultAsync(r => r.RegistrationId == id);
 			registration.Verify ();
-
-			if(registration.EventInfo.OnDemand)
-			{
-				var user = await _talentLms.CreateUserIfNotExists(registration.User.NewTalentLmsUser());
-				var matches = Regex.Match(registration.EventInfo.RegistrationsUrl, @"id:(\d*)");
-				int courseId = int.Parse(matches.Groups[1].Value);
-				await _talentLms.EnrolUserToCourse(userId: user.Id.Value, courseId: courseId);
-			}
 			
 			return await _db.SaveChangesAsync ();
 		}
