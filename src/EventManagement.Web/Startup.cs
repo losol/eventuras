@@ -56,7 +56,8 @@ namespace losol.EventManagement
                 .AddDefaultTokenProviders()
                 .AddMagicLinkTokenProvider();
 
-            // Require SSL
+            // Require SSL (TODO: Consider re-enable)
+            /*
             if (HostingEnvironment.IsProduction())
             {
                 services.Configure<MvcOptions>(options =>
@@ -64,6 +65,7 @@ namespace losol.EventManagement
                     options.Filters.Add(new RequireHttpsAttribute());
                 });
             }
+             */
             
             // Set password requirements
             services.Configure<IdentityOptions>(options =>
