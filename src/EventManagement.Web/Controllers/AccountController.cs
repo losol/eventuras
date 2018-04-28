@@ -31,9 +31,9 @@ namespace losol.EventManagement.Controllers
             return RedirectToPage("/Index");
         }
 
-        [HttpGet("/magic/{userid}/{token}", Name = "MagicLinkRoute")]
-        public async Task<IActionResult> MagicLogin([FromQuery]string userid, [FromQuery]string token)
-        {
+        [HttpGet("magic", Name = "MagicLinkRoute")]
+            public async Task<IActionResult> MagicLogin([FromQuery]string userid, [FromQuery]string token)
+            {
             // Sign the user out if they're signed in
             if(_signInManager.IsSignedIn(User))
             {
@@ -43,7 +43,7 @@ namespace losol.EventManagement.Controllers
             var user = await _signInManager.UserManager.FindByIdAsync(userid);
             if(user != null)
             {
-                token = token.Replace("%2F", "/");
+                // token = token.Replace("%2F", "/");
                 var isValid = await _signInManager.UserManager.VerifyUserTokenAsync(
                     user: user,
                     tokenProvider: "MagicLinkTokenProvider",
