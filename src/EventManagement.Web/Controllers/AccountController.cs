@@ -56,7 +56,7 @@ namespace losol.EventManagement.Controllers
                 }
             }
             
-            return RedirectToPage("/Index");
+            return RedirectToPage("/Profile/Index");
         }
     }
 }
