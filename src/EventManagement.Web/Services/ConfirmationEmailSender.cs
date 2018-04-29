@@ -13,8 +13,9 @@ namespace losol.EventManagement.Web.Services
 			: base(emailSender, renderService)
 		{ }
 
-		public  Task SendConfirmationAsync(string emailAddress, string subject, EventRegistration vm) =>
-			 SendAsync(emailAddress, subject, vm);
 
+		public async Task SendConfirmationAsync(string emailAddress, string subject, ConfirmEventRegistration vm) {
+			await SendAsync(emailAddress, subject, vm);
+		}
 	}
 }

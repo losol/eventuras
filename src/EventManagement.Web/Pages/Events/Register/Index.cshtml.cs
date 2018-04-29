@@ -96,7 +96,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 				if (registration != null)
 				{
 					// The user has already registered for the event.
-					await _registrationEmailSender.SendAsync(user.Email, "Velkommen på kurs!", registration.RegistrationId);
+					await _registrationEmailSender.SendRegistrationAsync(user.Email, "Velkommen på kurs!", registration.RegistrationId);
 					return RedirectToPage("/Info/EmailSent");		
 				}
 			}
@@ -170,7 +170,8 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 				Registration.Notes = String.Join(", ", productNames);
 			}
 			await _registrationService.CreateRegistration(newRegistration, selectedProductIds, selectedVariantIds);
-			await _registrationEmailSender.SendAsync(user.Email, "Velkommen på kurs!", newRegistration.RegistrationId);
+			await _registrationEmailSender.SendRegistrationAsync(user.Email, "Velkommen på kurs!", newRegistration.RegistrationId);
+
 			return RedirectToPage("/Info/EmailSent");
 		}
 
