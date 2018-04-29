@@ -36,36 +36,36 @@ namespace losol.EventManagement.Web.Services
             _requestScheme = actionContextAccessor.ActionContext.HttpContext.Request.Scheme;
 		}
 
-		public async Task SendAsync(string emailAddress, string subject, int registrationId) {
+		public async Task SendRegistrationAsync(string emailAddress, string subject, int registrationId) {
 
 			var registration = await _registrationService.GetWithEventInfoAndOrders(registrationId);
 
-					var eventRegistration = new EventRegistration {
-						EventInfo = registration.EventInfo,
-						Orders = registration.Orders,
-						Email = registration.User.Email
-					};
+				var eventRegistration = new EventRegistration {
+					EventInfo = registration.EventInfo,
+					Orders = registration.Orders,
+					Email = registration.User.Email
+				};
 
-					eventRegistration.VerificationUrl = _urlHelper.Page(
-							pageName: "/Events/Register/Confirm", 
-							pageHandler: null, 
-							values: new {
-								id = registration.RegistrationId,
-								auth = registration.VerificationCode
-							},
-							protocol: _requestScheme
-						);
+				eventRegistration.VerificationUrl = _urlHelper.Page(
+						pageName: "/Events/Register/Confirm", 
+						pageHandler: null, 
+						values: new {
+							id = registration.RegistrationId,
+							auth = registration.VerificationCode
+						},
+						protocol: _requestScheme
+					);
 
-					eventRegistration.EventUrl = _urlHelper.Page(
-							pageName: "/Events/Details", 
-							pageHandler: null, 
-							values: new {
-								id = registration.EventInfoId
-							},
-							protocol: _requestScheme
-						);
-						
-					await SendAsync(eventRegistration.Email, eventRegistration.EventInfo.Title, eventRegistration );
+				eventRegistration.EventUrl = _urlHelper.Page(
+						pageName: "/Events/Details", 
+						pageHandler: null, 
+						values: new {
+							id = registration.EventInfoId
+						},
+						protocol: _requestScheme
+					);
+					
+				await SendAsync(eventRegistration.Email, eventRegistration.EventInfo.Title, eventRegistration);
 		}
 
 	}

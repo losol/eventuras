@@ -8,12 +8,12 @@ namespace losol.EventManagement.Web.Services
 {
 	public sealed class ConfirmationEmailSender : ApplicationEmailSender
 	{
-		protected override string Template => "Templates/Email/ConfirmEventRegistration";
+		protected override string Template => "Templates/Email/EventRegistration";
 		public ConfirmationEmailSender(IEmailSender emailSender, IRenderService renderService) 
 			: base(emailSender, renderService)
 		{ }
 
-		public  Task SendAsync(string emailAddress, string subject, EventRegistration vm) =>
+		public  Task SendConfirmationAsync(string emailAddress, string subject, EventRegistration vm) =>
 			 SendAsync(emailAddress, subject, vm);
 
 	}
