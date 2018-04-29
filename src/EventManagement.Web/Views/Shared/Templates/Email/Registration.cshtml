@@ -55,8 +55,10 @@
                                         @if (orderline.Quantity != 1) {
                                             <span> @orderline.Quantity x </span>
                                         }
-                                        @orderline.ProductName 
-                                        @orderline.ProductVariantName
+                                        @orderline.ProductName @orderline.ProductDescription. 
+                                        @if(!string.IsNullOrEmpty(orderline.ProductVariantName)) {
+                                            <i>Variant: @orderline.ProductVariantName . @orderline.ProductVariantDescription</i>
+                                        } 
                                     </li>
                                     
                                 }
