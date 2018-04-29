@@ -8,22 +8,25 @@ using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services.Extensions;
 using losol.EventManagement.Services.TalentLms;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace losol.EventManagement.Services {
 	public class RegistrationService : IRegistrationService {
 		private readonly ApplicationDbContext _db;
 		private readonly IPaymentMethodService _paymentMethods;
-        private readonly ITalentLmsService _talentLms;
+    private readonly ITalentLmsService _talentLms;
+        
 
         public RegistrationService (
 				ApplicationDbContext db, 
+        ILogger<RegistrationService> logger,
 				IPaymentMethodService paymentMethods,
 				ITalentLmsService talentLms) {
 			_db = db;
 			_paymentMethods = paymentMethods;
             _talentLms = talentLms;
+        _logger = logger;
         }
-
 		public async Task<Registration> GetAsync (int id) {
 			return await _db.Registrations
 				.FindAsync (id);
@@ -71,6 +74,16 @@ namespace losol.EventManagement.Services {
 			.ThenInclude (o => o.OrderLines)
 			.Include (r => r.User)
 			.ToListAsync ();
+		
+		public async Task<List<Registration>> GetRegistrationsWithOrders(ApplicationUser user) {
+			var reg = await _db.Registrations
+				.Where( m => m.UserId == user.Id)
+				.Include( m => m.EventInfo)
+				.Include ( m=> m.Orders)
+				.ThenInclude (o => o.OrderLines)
+				.ToListAsync();
+			return reg;
+		}
 
 		public async Task<int> CreateRegistration (Registration registration, int[] productIds, int[] variantIds) {
 			// Check if registration exists
