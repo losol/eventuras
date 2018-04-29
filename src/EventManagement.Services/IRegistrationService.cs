@@ -14,6 +14,7 @@ namespace losol.EventManagement.Services
 		Task<Registration> GetWithEventInfoAndOrders (int id);
 		Task<List<Registration>> GetRegistrations(int eventId);
 		Task<List<Registration>> GetRegistrationsWithOrders(int eventId);
+		Task<List<Registration>> GetRegistrationsWithOrders(ApplicationUser user);
 		
 		Task<int> CreateRegistration(Registration registration);
 		Task<int> CreateRegistration(Registration registration, int[] productIds, int[] variantIds);
