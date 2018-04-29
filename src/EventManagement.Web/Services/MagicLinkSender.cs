@@ -34,7 +34,7 @@ namespace losol.EventManagement.Web.Services
 
         protected override string Template => "Templates/Email/MagicLinkEmail";
         
-        public async Task SendAsync(ApplicationUser user)
+        public async Task SendMagicLinkAsync(ApplicationUser user)
         {
             await _userManager.UpdateSecurityStampAsync(user);
             var token = await _userManager.GenerateUserTokenAsync(
