@@ -12,6 +12,7 @@ using losol.EventManagement.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.IO;
 using losol.EventManagement.Domain;
+using static losol.EventManagement.Domain.Registration;
 
 namespace losol.EventManagement.Web.Controllers.Api {
 
@@ -64,6 +65,12 @@ namespace losol.EventManagement.Web.Controllers.Api {
         [HttpPost ("mark_as_notattended/{id}")]
         public async Task<IActionResult> MarkAsNotAttended ([FromRoute] int id) {
             await _registrationService.SetRegistrationAsNotAttended (id);
+            return Ok ();
+        }
+
+       [HttpPost ("mark_as_finished/{id}")]
+        public async Task<IActionResult> MarkAsFinished ([FromRoute] int id) {
+            await _registrationService.UpdateRegistrationStatus (id, RegistrationStatus.Finished);
             return Ok ();
         }
 
