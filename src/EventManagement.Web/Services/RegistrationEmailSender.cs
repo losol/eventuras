@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Routing;
+using static losol.EventManagement.Domain.Registration;
 
 namespace losol.EventManagement.Web.Services
 {
@@ -38,13 +39,13 @@ namespace losol.EventManagement.Web.Services
 
 		public async Task SendRegistrationAsync(string emailAddress, string subject, int registrationId) {
 
-			var registration = await _registrationService.GetWithEventInfoAndOrders(registrationId);
+			var registration = await _registrationService.GetWithUserAndEventInfoAndOrders(registrationId);
 
 				var eventRegistration = new EventRegistration {
 					EventInfo = registration.EventInfo,
 					Orders = registration.Orders,
 					Email = registration.User.Email,
-					Verified =  registration.Verified,
+					Verified =  (registration.Status != RegistrationStatus.Draft) ? true : false,
 					HasOrder = registration.Orders.Count > 0
 				};
 

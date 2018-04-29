@@ -12,33 +12,33 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using static losol.EventManagement.Domain.Registration;
 
 namespace losol.EventManagement.Pages.Events.Register
 {
     public class ConfirmModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-		private readonly IEmailSender _emailSender;
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly IRegistrationService _registrationService;
-
-		private IRenderService _renderService;
+		private readonly RegistrationEmailSender _registrationEmailSender;
+		private readonly StandardEmailSender _standardEmailSender;
 
         public string Message { get; set; }
 
 		public ConfirmModel(
 			ApplicationDbContext context,
-			IEmailSender emailSender,
 			UserManager<ApplicationUser> userManager,
-			IRenderService renderService,
-			IRegistrationService registrationService
+			RegistrationEmailSender registrationEmailSender,
+			IRegistrationService registrationService,
+			StandardEmailSender standardEmailSender
 			)
 		{
 			_context = context;
-			_emailSender = emailSender;
+			_registrationEmailSender = registrationEmailSender;
 			_userManager = userManager;
-            _renderService = renderService;
 			_registrationService = registrationService;
+			_standardEmailSender = standardEmailSender;
 		}
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -48,7 +48,7 @@ namespace losol.EventManagement.Pages.Events.Register
                 return NotFound();
             }
 
-			var registration = await _registrationService.GetWithEventInfoAsync(id.Value);
+			var registration = await _registrationService.GetWithUserAndEventInfoAsync(id.Value);
 
             if (registration == null)
             {
@@ -57,39 +57,23 @@ namespace losol.EventManagement.Pages.Events.Register
 
 			if (HttpContext.Request.Query["auth"] == registration.VerificationCode)
 			{
-				// Set and save verified registration.
+				if (registration.Status == RegistrationStatus.Draft || registration.Status == RegistrationStatus.Cancelled)
 				await _registrationService.SetRegistrationAsVerified(id.Value);
 
-				// Get the user which has registered for the event.
-				var participant = await _userManager.FindByIdAsync(registration.UserId);
-
-				// Get the event which the user has registered for.
-				var eventinfo = registration.EventInfo;
-
-
-				// Send notification to admin
-				var adminEmail = new EmailMessage()
-				{
-					Name = registration.ParticipantName,
-					Email = "losvik@gmail.com",  // TODO: Get admin email from app settings.
-					Subject = $@"Kurspåmelding {eventinfo.Title}!",
-					Message = $@"{participant.Name} ({participant.Email}) har meldt seg på kurset {eventinfo.Title} (id {registration.EventInfoId}). 
-                    Bare så du vet det"
-				};
-				var adminEmailString = await _renderService.RenderViewToStringAsync("Templates/Email/StandardEmail", adminEmail);
-				await _emailSender.SendEmailAsync(adminEmail.Email, adminEmail.Subject, adminEmailString);
-
+				// Send a copy to admin TODO: Read from appsettings
+				await _registrationEmailSender.SendRegistrationAsync("kurs@nordland-legeforening.no", $"Påmelding {registration.EventInfo.Title}", registration.RegistrationId);
+				
 				// Send welcome letter to participant
 				var participantEmail = new EmailMessage()
 				{
 					Name = registration.ParticipantName,
-					Email = participant.Email,
-					Subject = $@"Velkommen til {eventinfo.Title}!",
-					Message = eventinfo.WelcomeLetter
+					Email = registration.User.Email,
+					Subject = $@"Velkommen til {registration.EventInfo.Title}!",
+					Message = registration.EventInfo.WelcomeLetter
 				};
 
-				var participantEmailString = await _renderService.RenderViewToStringAsync("Templates/Email/StandardEmail", participantEmail);
-				await _emailSender.SendEmailAsync(participantEmail.Email, participantEmail.Subject, participantEmailString);
+				await _standardEmailSender.SendStandardEmailAsync(participantEmail);
+
 				return RedirectToPage("./Confirmed");
 			}
 

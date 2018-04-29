@@ -49,7 +49,7 @@ namespace losol.EventManagement.Services {
 				.SingleOrDefaultAsync ();
 		}
 
-		public async Task<Registration> GetWithEventInfoAndOrders (int id) =>
+		public async Task<Registration> GetWithUserAndEventInfoAndOrders (int id) =>
 			await _db.Registrations
 			.Include (r => r.Orders)
 			.ThenInclude (o => o.OrderLines)
