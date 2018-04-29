@@ -69,7 +69,7 @@ namespace losol.EventManagement.Web.Services
 						protocol: _requestScheme
 					);
 					
-				await SendAsync(emailAddress, eventRegistration.EventInfo.Title, eventRegistration);
+				await SendAsync(emailAddress, subject, eventRegistration);
 		}
 
 	}
