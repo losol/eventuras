@@ -13,7 +13,7 @@ namespace losol.EventManagement.Web.Services
 			: base(emailSender, renderService)
 		{ }
 
-		public  Task SendAsync(string emailAddress, string subject, ConfirmEventRegistration vm) =>
+		public  Task SendAsync(string emailAddress, string subject, EventRegistration vm) =>
 			 SendAsync(emailAddress, subject, vm);
 
 	}
