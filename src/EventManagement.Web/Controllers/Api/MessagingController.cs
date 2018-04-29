@@ -33,7 +33,7 @@ namespace losol.EventManagement.Web.Controllers.Api
 		public async Task<IActionResult> SendEmail([FromBody]EmailVM vm) 
 		{
 			if (!ModelState.IsValid) return BadRequest();
-            var emailTasks = vm.To.Select(r => _emailSender.SendAsync(
+            var emailTasks = vm.To.Select(r => _emailSender.SendStandardEmailAsync(
                 new EmailMessage
                 {
                     Name = r.Name,

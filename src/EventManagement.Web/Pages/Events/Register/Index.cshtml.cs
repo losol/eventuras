@@ -106,6 +106,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 					_logger.LogInformation("User created a new account with password.");
 
 					Registration.UserId = newUser.Id;
+					user = newUser;
 				}
 				else
 				{

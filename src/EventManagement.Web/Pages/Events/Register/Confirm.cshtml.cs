@@ -73,7 +73,6 @@ namespace losol.EventManagement.Pages.Events.Register
 				};
 
 				await _standardEmailSender.SendStandardEmailAsync(participantEmail);
-
 				return RedirectToPage("./Confirmed");
 			}
 
