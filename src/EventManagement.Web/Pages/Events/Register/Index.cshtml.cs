@@ -13,6 +13,7 @@ using losol.EventManagement.Pages.Account;
 using losol.EventManagement.Services;
 using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
+using losol.EventManagement.Services.Extensions;
 using System.Text;
 
 namespace losol.EventManagement.Web.Pages.Events.Register
@@ -86,11 +87,11 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 				Registration.UserId = user.Id;
 				_logger.LogInformation("Found existing user.");
 				// Any registrations for this user on this event?
-				var registration = await _registrationService.GetAsync(user.Id, Registration.EventInfoId);
-				if (registration != null)
+				var existingRegistration = await _registrationService.GetAsync(user.Id, Registration.EventInfoId);
+				if (existingRegistration != null)
 				{
 					// The user has already registered for the event.
-					await _registrationEmailSender.SendRegistrationAsync(user.Email, "Velkommen på kurs!", registration.RegistrationId);
+					await _registrationEmailSender.SendRegistrationAsync(user.Email, "Du var allerede påmeldt!", existingRegistration.RegistrationId);
 					return RedirectToPage("/Info/EmailSent");		
 				}
 			}
@@ -105,7 +106,6 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 					_logger.LogInformation("User created a new account with password.");
 
 					Registration.UserId = newUser.Id;
-					user = newUser;
 				}
 				else
 				{
@@ -122,7 +122,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 			_logger.LogInformation("Starting new registration:");
 
 			var newRegistration = Registration.Adapt<Registration>();
-			newRegistration.VerificationCode = Guid.NewGuid().ToString();
+			newRegistration.VerificationCode = PasswordHelper.GeneratePassword(6);
 			int[] selectedProductIds = null;
 			int[] selectedVariantIds = null;
 
