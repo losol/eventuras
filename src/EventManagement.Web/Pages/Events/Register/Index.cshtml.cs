@@ -200,7 +200,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 				confirmEmail.OrdersHtml += builder.ToString ();
 			}
 			
-			await _confirmationEmailSender.SendAsync(Registration.Email, "Bekreft påmelding", confirmEmail);
+			await _confirmationEmailSender.SendConfirmationAsync(Registration.Email, "Bekreft påmelding", confirmEmail);
 			return RedirectToPage("/Info/EmailSent");
 		}
 
