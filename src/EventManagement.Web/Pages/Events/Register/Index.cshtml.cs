@@ -20,8 +20,6 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 	public class EventRegistrationModel : PageModel
 	{
 		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly ConfirmationEmailSender _confirmationEmailSender;// TODO REMOVE?
-		private readonly StandardEmailSender _standardEmailSender; // TODO REMOVE?
 		private readonly ILogger<EventRegistrationModel> _logger;
 		private readonly IEventInfoService _eventsService;
 		private readonly IPaymentMethodService _paymentMethodService;
@@ -30,8 +28,6 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 
 		public EventRegistrationModel(
 			UserManager<ApplicationUser> userManager,
-			ConfirmationEmailSender confirmationEmailSender, // REMOVE?
-			StandardEmailSender standardEmailSender, // REMOVE?
 			RegistrationEmailSender registrationEmailSender,
 			ILogger<EventRegistrationModel> logger,
 			IEventInfoService eventsService,
@@ -40,8 +36,6 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 		)
 		{
 			_userManager = userManager;
-			_confirmationEmailSender = confirmationEmailSender;
-			_standardEmailSender = standardEmailSender;
 			_logger = logger;
 			_eventsService = eventsService;
 			_paymentMethodService = paymentMethodService;
@@ -174,35 +168,5 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 
 			return RedirectToPage("/Info/EmailSent");
 		}
-
-		private async Task<IActionResult> userAlreadyRegisteredResult(Registration registration)
-		{
-			// Prepare an email to send out
-			var emailVM = new EmailMessage()
-			{
-				Name = Registration.ParticipantName,
-				Email = Registration.Email,
-				Subject = "Du var allerede påmeldt!",
-				Message = @"Vi hadde allerede registrert deg i systemet.
-								Ta kontakt med ole@nordland-legeforening hvis du tror det er skjedd noe feil her!
-								"
-			};
-
-			// If registered but not verified, just send reminder of verification. 
-			if (registration.Verified == false)
-			{
-				var verificationUrl = Url.Action("Confirm", "Register", new { id = registration.RegistrationId, auth = registration.VerificationCode }, protocol: Request.Scheme);
-				emailVM.Subject = "En liten bekreftelse bare...";
-				emailVM.Message = $@"Vi hadde allerede registrert deg i systemet, men du har ikke bekreftet enda.
-								<p><a href='{verificationUrl}'>Bekreft her</a></p>
-								<p></p>
-								<p>Hvis lenken ikke virker, så kan du kopiere inn teksten under i nettleseren:
-								{verificationUrl} </p>";
-			}
-
-			await _standardEmailSender.SendAsync(emailVM);
-			return RedirectToPage("/Info/EmailSent");
-		}
-
 	}
 }
