@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EventManagement.Services.Extensions;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +16,7 @@ namespace losol.EventManagement.Services {
 		public RegistrationService (
 			ApplicationDbContext db, 
 			IPaymentMethodService paymentMethods,
-			ILogger<RegistrationService> logger)
+			ILogger<RegistrationService> logger) 
 		{
 			_db = db;
 			_paymentMethods = paymentMethods;
@@ -116,17 +115,6 @@ namespace losol.EventManagement.Services {
 		public async Task<int> SetRegistrationAsVerified (int id) {
 			var registration = await GetAsync (id);
 			registration.Verify ();
-
-			/* 
-			if(registration.EventInfo.OnDemand)
-			{
-				var user = await _talentLms.CreateUserIfNotExists(registration.User.NewTalentLmsUser());
-				var matches = Regex.Match(registration.EventInfo.RegistrationsUrl, @"id:(\d*)");
-				int courseId = int.Parse(matches.Groups[1].Value);
-				await _talentLms.EnrolUserToCourse(userId: user.Id.Value, courseId: courseId);
-			}
-			 */
-			
 			return await _db.SaveChangesAsync ();
 		}
 
