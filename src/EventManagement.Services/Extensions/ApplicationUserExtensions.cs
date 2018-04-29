@@ -19,7 +19,7 @@ namespace EventManagement.Services.Extensions
                 LastName = lastName,
                 Email = user.Email,
                 Login = user.Email,
-                Password =  PasswordHelper.GeneratePassword(length: 6)
+                Password =  PasswordHelper.GeneratePassword(6)
             };
         }
     }
