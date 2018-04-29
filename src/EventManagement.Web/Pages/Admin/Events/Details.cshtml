@@ -196,11 +196,17 @@
 
     function Attended(value, row, index, field) {
             let actions = [];
-            if(!(row.status == 'Attended')) {
+            if((row.status == ('Draft' || 'Verified'))) {
                 actions.push('<button type="button" class="btn btn-secondary btn-attended mr-1">Registrer</button>');
             }
-            else {
-                actions.push('<button type="button" class="btn btn-success btn-not-attended" >Møtt</button>')
+            if((row.status == 'Attended')) {
+                actions.push('<button type="button" class="btn btn-secondary btn-finished mr-1">Fullført</button>');
+            }
+            if((row.status == 'Finished')) {
+                actions.push('<span class="badge badge-success mr-1">Fullført</span>');
+            }
+            if((row.status == 'NotAttended')) {
+                actions.push('<span class="badge badge-warning mr-1">Ikke møtt</span>');
             }
             return actions.join('');
         }
@@ -281,6 +287,17 @@
             })
             .fail(function(){
                 toastr.error('Fikk ikke til å gjøre noe med ' + row.name + '. ')
+            })
+        },
+        'click .btn-finished': function(e, value, row, index) {
+            $.postJSON("/api/participants/mark_as_finished/" + row.registrationId, null)
+            .done(function(){
+                toastr.success('Da va følgende registrert som fullført ' + row.name + '.');
+                $('#participants-table').bootstrapTable('refresh', null);
+                
+            })
+            .fail(function(){
+                toastr.error('Uuuups, fikk ikke registrert ' + row.name + '. ')
             })
         }
     };
