@@ -1,0 +1,97 @@
+@await Html.PartialAsync("_EmailHead")
+  <body class="">
+    <table border="0" cellpadding="0" cellspacing="0" class="body">
+      <tr>
+        <td>&nbsp;</td>
+        <td class="container">
+          <div class="content">
+
+            <!-- START CENTERED WHITE CONTAINER -->
+            <span class="preheader">Velkommen til @Model.EventInfo.Title!</span>
+            <table class="main">
+
+              <!-- START MAIN CONTENT AREA -->
+              <tr>
+                <td class="wrapper">
+                  <table border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td>
+                        <p>Heisann!</p>
+                        <p>Du er p&aring;meldt @Model.EventInfo.Title.</p>
+
+                        @if(Model.Verified == false){
+
+                            <p><strong>Viktig: </strong>For &aring; bekrefte p&aring;meldingen, s&aring; m&aring; du <a href="@Model.VerificationUrl">klikke her</a>. </p>
+
+                            <table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
+                            <tbody>
+                                <tr>
+                                <td align="left">
+                                    <table border="0" cellpadding="0" cellspacing="0">
+                                    <tbody>
+                                        <tr>
+                                        <td> <a href="@Model.VerificationUrl" target="_blank">Bekreft p&aring;meldingen</a> </td>
+                                        </tr>
+                                    </tbody>
+                                    </table>
+                                </td>
+                                </tr>
+                            </tbody>
+                            </table>
+
+                            <p><i>Virker ikke knappen? Da kan du bekrefte med &aring; kopiere inn denne lenken i nettleseren: @Model.VerificationUrl</i></p>
+                        }
+
+                        <p>Du finner oppdatert informasjon om arrangementet <a href="@Model.EventUrl">p&aring; nettsidene</a>.</p>
+
+                        @if(Model.HasOrder){
+                            <h2>Detaljer</h2>
+                            @foreach (var order in Model.Orders) {
+                                <p>Registrering #@order.OrderId</p>
+                                <ul>
+
+                                @foreach (var orderline in order.OrderLines) {
+                                    <li>
+                                        @if (orderline.Quantity != 1) {
+                                            <span> @orderline.Quantity x </span>
+                                        }
+                                        @orderline.ProductName @orderline.ProductDescription. 
+                                        @if(!string.IsNullOrEmpty(orderline.ProductVariantName)) {
+                                            <i>Variant: @orderline.ProductVariantName . @orderline.ProductVariantDescription</i>
+                                        } 
+                                    </li>
+                                    
+                                }
+                                </ul>
+                            }
+                        }
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+            <!-- END MAIN CONTENT AREA -->
+            </table>
+
+            <!-- START FOOTER -->
+            <div class="footer">
+              <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td class="content-block">
+                    <p>Nordland legeforening, Mørkvedsentret 17, 8028 Bodø <br />
+                    Telefon: 90026052 / 91179899</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <!-- END FOOTER -->
+
+          <!-- END CENTERED WHITE CONTAINER -->
+          </div>
+        </td>
+        <td>&nbsp;</td>
+      </tr>
+    </table>
+  </body>
+</html>

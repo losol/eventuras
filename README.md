@@ -24,4 +24,4 @@ Password: PaSsw0rd
 ```
 
 ## Credits
-* Email templates from [https://www.sendwithus.com/resources/templates/neopolitan](SendWithUs.com)
+* Email templates from [https://www.sendwithus.com/resources/templates/neopolitan](SendWithUs.com), and [https://github.com/leemunroe]

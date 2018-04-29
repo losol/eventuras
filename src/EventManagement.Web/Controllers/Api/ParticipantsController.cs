@@ -50,7 +50,7 @@ namespace losol.EventManagement.Web.Controllers.Api {
 
                     message.Message += builder.ToString ();
                 }
-                return emailSender.SendAsync (message);
+                return emailSender.SendStandardEmailAsync (message);
             });
             await Task.WhenAll (emailTasks);
             return Ok ();
