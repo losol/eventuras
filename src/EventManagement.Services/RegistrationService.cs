@@ -140,7 +140,7 @@ namespace losol.EventManagement.Services {
 				});
 			}
 
-
+			/*
 			if(registration.EventInfo.OnDemand)
 			{
 				var user = await _talentLms.CreateUserIfNotExists(registration.User.NewTalentLmsUser());
@@ -148,7 +148,7 @@ namespace losol.EventManagement.Services {
 				int courseId = int.Parse(matches.Groups[1].Value);
 				await _talentLms.EnrolUserToCourse(userId: user.Id.Value, courseId: courseId);
 			}
-
+			 */
 		
 			
 			return await _db.SaveChangesAsync ();
