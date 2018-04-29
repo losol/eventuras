@@ -13,7 +13,6 @@ using losol.EventManagement.Pages.Account;
 using losol.EventManagement.Services;
 using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
-using losol.EventManagement.Services.Extensions;
 using System.Text;
 
 namespace losol.EventManagement.Web.Pages.Events.Register
@@ -125,7 +124,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 			_logger.LogInformation("Starting new registration:");
 
 			var newRegistration = Registration.Adapt<Registration>();
-			newRegistration.VerificationCode = PasswordHelper.GeneratePassword(length: 6);
+			newRegistration.VerificationCode = Guid.NewGuid().ToString();
 			int[] selectedProductIds = null;
 			int[] selectedVariantIds = null;
 
