@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace EventManagement.Web.Extensions
+namespace losol.EventManagement.Services.Extensions
 {
     public static class PasswordHelper
     {
