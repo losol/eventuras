@@ -28,9 +28,11 @@ namespace losol.EventManagement.Services {
 				.FindAsync (id);
 		}
 
-		public Task<Registration> GetAsync (string userId, int eventId) {
-			return _db.Registrations.Where (a => a.UserId == userId && a.EventInfoId == eventId)
-				.SingleOrDefaultAsync ();
+		public async Task<Registration> GetAsync (string userId, int eventId) {
+			var registration = await _db.Registrations
+				.Where(a => (a.UserId == userId && a.EventInfoId == eventId))
+				.FirstOrDefaultAsync();
+			return registration;
 		}
 
 		public Task<Registration> GetWithOrdersAsync (int id) {

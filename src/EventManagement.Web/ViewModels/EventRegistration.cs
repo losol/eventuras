@@ -15,7 +15,7 @@ namespace losol.EventManagement.ViewModels
 		// TODO REMOVE HTML?
 		public string OrdersHtml { get; set; }
 		public string EventUrl { get; set; }
-
+		public bool Verified { get;set; }
 		public string VerificationUrl { get; set; }
 
 	}

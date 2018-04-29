@@ -43,7 +43,8 @@ namespace losol.EventManagement.Web.Services
 				var eventRegistration = new EventRegistration {
 					EventInfo = registration.EventInfo,
 					Orders = registration.Orders,
-					Email = registration.User.Email
+					Email = registration.User.Email,
+					Verified =  registration.Verified
 				};
 
 				eventRegistration.VerificationUrl = _urlHelper.Page(
