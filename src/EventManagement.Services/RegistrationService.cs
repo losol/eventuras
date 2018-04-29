@@ -8,17 +8,21 @@ using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace losol.EventManagement.Services {
 	public class RegistrationService : IRegistrationService {
 		private readonly ApplicationDbContext _db;
 		private readonly IPaymentMethodService _paymentMethods;
+		private readonly ILogger _logger;
 
         public RegistrationService (
 				ApplicationDbContext db, 
-				IPaymentMethodService paymentMethods) {
+				IPaymentMethodService paymentMethods,
+				ILogger<RegistrationService> logger) {
 			_db = db;
 			_paymentMethods = paymentMethods;
+			_logger = logger;
         }
 
 		public async Task<Registration> GetAsync (int id) {
@@ -70,6 +74,7 @@ namespace losol.EventManagement.Services {
 			.ToListAsync ();
 
 		public async Task<int> CreateRegistration (Registration registration, int[] productIds, int[] variantIds) {
+			_logger.LogInformation("Start new registration");
 			// Check if registration exists
 			var existingRegistration = await GetAsync (registration.UserId, registration.EventInfoId);
 			if (existingRegistration != null) {
@@ -78,6 +83,7 @@ namespace losol.EventManagement.Services {
 
 			// Create orders if productIds is not null
 			if (productIds != null) {
+				_logger.LogInformation("We have products!");
 				var products = await _db.Products
 					.Where (p => productIds.Contains (p.ProductId))
 					.Include (p => p.ProductVariants)
@@ -85,16 +91,20 @@ namespace losol.EventManagement.Services {
 					.ToListAsync ();
 
 				// Create an order for the registration
+				_logger.LogInformation("Create order");
 				registration.CreateOrder (
 					products,
 					products.SelectMany (p => p.ProductVariants)
 					.Where (v => variantIds?.Contains (v.ProductVariantId) ?? false)
 				);
+				// Create the registration
+				_logger.LogInformation("Save registration");
+				await _db.Registrations.AddAsync (registration);
+				await _db.SaveChangesAsync ();
 			}
 
-			// Create the registration
-			await _db.Registrations.AddAsync (registration);
-			return await _db.SaveChangesAsync ();
+
+			return registration.RegistrationId;
 		}
 
 		public Task<int> CreateRegistration (Registration registration) =>
@@ -102,9 +112,8 @@ namespace losol.EventManagement.Services {
 
 		public async Task<int> SetRegistrationAsVerified (int id) {
 			var registration = await _db.Registrations
-									.Include(r => r.User)
-									.Include(r => r.EventInfo)
-									.SingleOrDefaultAsync(r => r.RegistrationId == id);
+				.Where( m => m.RegistrationId == id)
+				.SingleOrDefaultAsync();
 			registration.Verify ();
 			
 			return await _db.SaveChangesAsync ();

@@ -144,7 +144,7 @@ namespace losol.EventManagement
 
 			// Register email services
 			services.AddTransient<StandardEmailSender>();
-			services.AddTransient<ConfirmationEmailSender>();
+			services.AddTransient<RegistrationEmailSender>();
             services.AddTransient<MagicLinkSender>();
 
             // Register SMS services

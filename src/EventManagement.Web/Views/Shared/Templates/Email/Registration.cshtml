@@ -1,0 +1,32 @@
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    }
+</style>
+
+<h1>Velkommen til @Model.EventInfo.Title!</h1>
+
+<p><strong>Viktig: </strong>For &aring; bekrefte p&aring;meldingen, s&aring; m&aring; du <a href="@Model.VerificationUrl">klikke her</a>. </p>
+<p><i>Eventuelt kopier inn lenken i nettleseren: @Model.VerificationUrl</i></p>
+
+<p>Du finner oppdatert informasjon om arrangementet <a href="@Model.EventUrl">p&aring; nettsidene</a>.</p>
+
+@if(Model.Orders.Any()){
+    <h2>Detaljer</h2>
+    @foreach (var order in Model.Orders) {
+        <p>Registrering #@order.OrderId</p>
+        <ul>
+
+        @foreach (var orderline in order.OrderLines) {
+            <li>
+                @if (orderline.Quantity != 1) {
+                    <span> @orderline.Quantity x </span>
+                }
+                @orderline.ProductName 
+                @orderline.ProductVariantName
+            </li>
+            
+        }
+        </ul>
+    }
+}

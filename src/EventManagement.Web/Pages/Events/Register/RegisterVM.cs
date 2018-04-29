@@ -9,6 +9,9 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 	public class RegisterVM
 	{
 		public int EventInfoId { get; set; }
+		public EventInfo EventInfo { get; set; }
+		public List<PaymentMethod> PaymentMethods { get; set; }
+
 		public string UserId { get; set; }
 
 		[Required]

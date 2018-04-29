@@ -1,13 +1,13 @@
 ﻿@page "{id:int}"
 @model losol.EventManagement.Web.Pages.Events.Register.EventRegistrationModel
 @{
-    ViewData["Title"] = Model.EventInfo.Title + "- Påmelding";
+    ViewData["Title"] = Model.Registration.EventInfo.Title + " - Påmelding";
     
     Layout = "~/Pages/_Layout.cshtml";
 }
 <div class="container">
-<h1 class="display-2 pt-5">@Model.EventInfo.Title - p&aring;melding</h1>
-<p class="lead">@Model.EventInfo.Description</p>
+<h1 class="display-2 pt-5">@Model.Registration.EventInfo.Title - p&aring;melding</h1>
+<p class="lead">@Model.Registration.EventInfo.Description</p>
 <p><a asp-page="../Details" asp-route-id="@Model.Registration.EventInfoId" class="btn  my-3 btn btn-info link-decoration-none">Se program og mer informasjon</a>  </p>
     
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -50,9 +50,9 @@
                 <span asp-validation-for="Registration.ParticipantCity" class="text-danger"></span>
             </div>
 
-            @if (Model.EventInfo.InformationRequest != null ) {
+            @if (Model.Registration.EventInfo.InformationRequest != null ) {
                     <div class="form-group">
-                        <label asp-for="Registration.Notes">@Model.EventInfo.InformationRequest</label>
+                        <label asp-for="Registration.Notes">@Model.Registration.EventInfo.InformationRequest</label>
                         <textarea asp-for="Registration.Notes" class="form-control"></textarea>
                         <span asp-validation-for="Registration.CustomerInvoiceReference" class="text-danger"></span>
                     </div>
@@ -60,12 +60,12 @@
 
 
             @* START PAYMENT  *@
-            @if (Model.EventInfo.Products.Any()) {
+            @if (Model.Registration.EventInfo.Products.Any()) {
             <div id="payment py-5" > 
                 <div class="form-group"><!-- Payment method -->
                     <label asp-for="Registration.PaymentMethodId"></label><br>
                     <div>
-                    @foreach (var item in Model.PaymentMethods)
+                    @foreach (var item in Model.Registration.PaymentMethods)
                     {
                         <label class="radio-inline pr-3">  
                         <input asp-for="Registration.PaymentMethodId" id="Registration_PaymentMethodId_@item.PaymentMethodId" type="radio" value="@item.PaymentMethodId" onclick="paymentMethod()"/> @item.Name  
@@ -173,17 +173,18 @@
         </div>
     </div>
 </form>
-
 </div>
-<script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
 
     function paymentMethod() {
         if (document.getElementById('Registration_PaymentMethodId_3').checked) {
             $('#customerdetails').collapse('show');
         };   
-    }
-</script>
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+        }
+    </script>
 }
 
