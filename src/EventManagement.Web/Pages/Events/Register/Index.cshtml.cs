@@ -13,6 +13,7 @@ using losol.EventManagement.Pages.Account;
 using losol.EventManagement.Services;
 using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
+using losol.EventManagement.Services.Extensions;
 using System.Text;
 
 namespace losol.EventManagement.Web.Pages.Events.Register
@@ -20,17 +21,15 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 	public class EventRegistrationModel : PageModel
 	{
 		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly ConfirmationEmailSender _confirmationEmailSender;
-		private readonly StandardEmailSender _standardEmailSender;
 		private readonly ILogger<EventRegistrationModel> _logger;
 		private readonly IEventInfoService _eventsService;
 		private readonly IPaymentMethodService _paymentMethodService;
 		private readonly IRegistrationService _registrationService;
+		private readonly RegistrationEmailSender _registrationEmailSender;
 
 		public EventRegistrationModel(
 			UserManager<ApplicationUser> userManager,
-			ConfirmationEmailSender confirmationEmailSender,
-			StandardEmailSender standardEmailSender,
+			RegistrationEmailSender registrationEmailSender,
 			ILogger<EventRegistrationModel> logger,
 			IEventInfoService eventsService,
 			IPaymentMethodService paymentMethodService,
@@ -38,12 +37,11 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 		)
 		{
 			_userManager = userManager;
-			_confirmationEmailSender = confirmationEmailSender;
-			_standardEmailSender = standardEmailSender;
 			_logger = logger;
 			_eventsService = eventsService;
 			_paymentMethodService = paymentMethodService;
 			_registrationService = registrationService;
+			_registrationEmailSender = registrationEmailSender;
 		}
 
 		[BindProperty]
@@ -89,11 +87,12 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 				Registration.UserId = user.Id;
 				_logger.LogInformation("Found existing user.");
 				// Any registrations for this user on this event?
-				var registration = await _registrationService.GetAsync(user.Id, Registration.EventInfoId);
-				if (registration != null)
+				var existingRegistration = await _registrationService.GetAsync(user.Id, Registration.EventInfoId);
+				if (existingRegistration != null)
 				{
 					// The user has already registered for the event.
-					return await userAlreadyRegisteredResult(registration);
+					await _registrationEmailSender.SendRegistrationAsync(user.Email, "Du var allerede påmeldt!", existingRegistration.RegistrationId);
+					return RedirectToPage("/Info/EmailSent");		
 				}
 			}
 			else
@@ -124,7 +123,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 			_logger.LogInformation("Starting new registration:");
 
 			var newRegistration = Registration.Adapt<Registration>();
-			newRegistration.VerificationCode = Guid.NewGuid().ToString();
+			newRegistration.VerificationCode = PasswordHelper.GeneratePassword(6);
 			int[] selectedProductIds = null;
 			int[] selectedVariantIds = null;
 
@@ -166,73 +165,9 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 				Registration.Notes = String.Join(", ", productNames);
 			}
 			await _registrationService.CreateRegistration(newRegistration, selectedProductIds, selectedVariantIds);
+			await _registrationEmailSender.SendRegistrationAsync(user.Email, "Velkommen på kurs!", newRegistration.RegistrationId);
 
-			var confirmEmail = new ConfirmEventRegistration
-			{
-				Name = Registration.ParticipantName,
-				Phone = Registration.Phone,
-				Email = Registration.Email,
-				PaymentMethod = Registration.PaymentMethodId.ToString(),
-				EventTitle = EventInfo.Title,
-				EventDescription = EventInfo.Description,
-				VerificationUrl = Url.Page(
-					pageName: "/Events/Register/Confirm", 
-					pageHandler:"get", 
-					values: new {
-						id = newRegistration.RegistrationId,
-						auth = newRegistration.VerificationCode
-					},
-					protocol: Request.Scheme
-				)
-			};
-
-			if(Registration.HasProducts)
-			{
-				var builder = new StringBuilder ();
-				builder.AppendLine ("<br>");
-				builder.AppendLine ("<h4>Ordre</h4>");
-				var registration = await _registrationService.GetWithEventInfoAndOrders(newRegistration.RegistrationId);
-				registration.Orders.ForEach(
-					(o) => o.OrderLines?.ForEach (
-						(line) => builder.AppendLine ($"<br>{line.ProductName}")
-					)
-				);
-				confirmEmail.OrdersHtml += builder.ToString ();
-			}
-			
-			await _confirmationEmailSender.SendConfirmationAsync(Registration.Email, "Bekreft påmelding", confirmEmail);
 			return RedirectToPage("/Info/EmailSent");
 		}
-
-		// TODO: Move to registrationservice
-		private async Task<IActionResult> userAlreadyRegisteredResult(Registration registration)
-		{
-			// Prepare an email to send out
-			var emailVM = new EmailMessage()
-			{
-				Name = Registration.ParticipantName,
-				Email = Registration.Email,
-				Subject = "Du var allerede påmeldt!",
-				Message = @"Vi hadde allerede registrert deg i systemet.
-								Ta kontakt med ole@nordland-legeforening hvis du tror det er skjedd noe feil her!
-								"
-			};
-
-			// If registered but not verified, just send reminder of verification. 
-			if (registration.Verified == false)
-			{
-				var verificationUrl = Url.Action("Confirm", "Register", new { id = registration.RegistrationId, auth = registration.VerificationCode }, protocol: Request.Scheme);
-				emailVM.Subject = "En liten bekreftelse bare...";
-				emailVM.Message = $@"Vi hadde allerede registrert deg i systemet, men du har ikke bekreftet enda.
-								<p><a href='{verificationUrl}'>Bekreft her</a></p>
-								<p></p>
-								<p>Hvis lenken ikke virker, så kan du kopiere inn teksten under i nettleseren:
-								{verificationUrl} </p>";
-			}
-
-			await _standardEmailSender.SendAsync(emailVM);
-			return RedirectToPage("/Info/EmailSent");
-		}
-
 	}
 }
