@@ -11,6 +11,7 @@ namespace losol.EventManagement.ViewModels
 		public string Email { get; set; }
 		public string Phone { get; set; }
 		public EventInfo EventInfo {get;set;}
+		public bool HasOrder {get;set;}
 		public List<Order> Orders {get;set;}
 		// TODO REMOVE HTML?
 		public string OrdersHtml { get; set; }

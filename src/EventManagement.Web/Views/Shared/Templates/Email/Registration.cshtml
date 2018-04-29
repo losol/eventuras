@@ -39,13 +39,12 @@
                             </tbody>
                             </table>
 
-                            <p><i>Virker ikke knappen? Da kan du bekrefte med &aring; kopiere inn denne lenken i nettleseren: <br />
-                            @Model.VerificationUrl</i></p>
+                            <p><i>Virker ikke knappen? Da kan du bekrefte med &aring; kopiere inn denne lenken i nettleseren: @Model.VerificationUrl</i></p>
                         }
 
                         <p>Du finner oppdatert informasjon om arrangementet <a href="@Model.EventUrl">p&aring; nettsidene</a>.</p>
 
-                        @if(Model.Orders.Any()){
+                        @if(Model.HasOrder){
                             <h2>Detaljer</h2>
                             @foreach (var order in Model.Orders) {
                                 <p>Registrering #@order.OrderId</p>

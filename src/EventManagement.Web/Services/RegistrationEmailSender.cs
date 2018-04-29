@@ -44,7 +44,8 @@ namespace losol.EventManagement.Web.Services
 					EventInfo = registration.EventInfo,
 					Orders = registration.Orders,
 					Email = registration.User.Email,
-					Verified =  registration.Verified
+					Verified =  registration.Verified,
+					HasOrder = registration.Orders.Count > 0
 				};
 
 				eventRegistration.VerificationUrl = _urlHelper.Page(
