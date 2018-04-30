@@ -32,7 +32,8 @@ namespace losol.EventManagement.Pages.Account
         public InputModel Input { get; set; }
 
         [BindProperty]
-        [EmailAddress, Required]
+        [EmailAddress]
+        [Display(Name = "Epostadresse?")]
         public string Email { get; set; } = string.Empty;
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
@@ -114,14 +115,16 @@ namespace losol.EventManagement.Pages.Account
         public class InputModel
         {
             [Required]
+            [Display(Name = "Epostadresse?")]
             [EmailAddress]
             public string Email { get; set; }
 
             [Required]
+            [Display(Name = "Passord?")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
-            [Display(Name = "Remember me?")]
+            [Display(Name = "Husk meg?")]
             public bool RememberMe { get; set; }
         }
     }
