@@ -80,11 +80,15 @@ namespace losol.EventManagement.Domain
 
 		public int? CertificateId {get;set;}
 		public Certificate Certificate {get;set;}
+
+		public List<RegistrationOption> RegistrationOptions { get; set; }
  
 		// Navigation properties
 		public EventInfo EventInfo { get; set; }
 		public ApplicationUser User { get; set; }
 		public PaymentMethod PaymentMethod { get; set; }
+
+		// Consider delete this after migration...
 		public List<Order> Orders { get; set; }
 
 		public void Verify()
