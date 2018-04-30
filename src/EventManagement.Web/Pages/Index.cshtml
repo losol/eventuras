@@ -1,7 +1,8 @@
 ﻿@page
 @inject IEventInfoService events
+
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = @Site.Title;
     var featuredEvents = await events.GetFeaturedEventsAsync();
     var onDemandEvents = await events.GetOnDemandEventsAsync();
     var upcomingEvents = await events.GetEventsAsync();
