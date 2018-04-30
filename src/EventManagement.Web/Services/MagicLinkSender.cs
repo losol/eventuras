@@ -42,13 +42,15 @@ namespace losol.EventManagement.Web.Services
                 tokenProvider: "MagicLinkTokenProvider", 
                 purpose: "magic-link"
             );
+
+            token = token.Replace("/", "%2F");
             var magiclink = _urlHelper.Link(
                         routeName: "MagicLinkRoute", 
                         values: new { userid = user.Id, token = token,  });
             
             await base.SendAsync(
                 emailAddress: user.Email, 
-                subject: $"Magisk innloggin {_siteConfig.Title}",
+                subject: $"Innloggingslenke {_siteConfig.Title}",
                 vm: new MagicLinkVM
                 {
                     MagicLink = magiclink
