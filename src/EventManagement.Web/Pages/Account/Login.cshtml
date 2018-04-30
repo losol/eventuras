@@ -2,71 +2,76 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Innlogging";
 }
-<div class="container">
-<div class="row">
-    <div class="col-md-6">
-        <section>
-            <h2>Login</h2>
-            <form method="post">
-                <div asp-validation-summary="All" class="text-danger"></div>
-                @if(!string.IsNullOrWhiteSpace(Model.SuccessMessage))
-                {
-                    <div class="alert alert-success" role="alert">
-                    @Model.SuccessMessage
-                    </div>
-                }
-                
-                <div class="form-group">
-                    <br>
-                    <span>Enter your email address and we'll send you a magic link to login if you already have an account with us.</span>
-                    <br><br>
-                    <input asp-for="Email" class="form-control" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <button type="submit" asp-page-handler="SendMagicLink" class="btn btn-info">Send Magic Link</button>
-                </div>
-            </form>
-        </section>
-    </div>
-    <div class="col-md-4 col-md-offset-2">
-        <section>
-            <h2>Admin Login</h2>
-            <form method="post">
-                <div asp-validation-summary="All" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Input.Email"></label>
-                    <input asp-for="Input.Email" class="form-control" />
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Input.Password"></label>
-                    <input asp-for="Input.Password" class="form-control" />
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <div class="checkbox">
-                        <label asp-for="Input.RememberMe">
-                            <input asp-for="Input.RememberMe" />
-                            @Html.DisplayNameFor(m => m.Input.RememberMe)
-                        </label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-secondary">Log in</button>
-                </div>
-                <div class="form-group">
-                    <p>
-                        <a asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                </div>
-            </form>
-        </section>
+<div class="bg-info py-5">
+    <div class="container min-height-75">
+        <div class="row justify-content-center">
+            <div class="col-md-6 bg-white shadow p-5">
+                <section>
+                    <h2>Vanlig innlogging</h2>
+                    <form method="post">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Input.Email"></label>
+                            <input asp-for="Input.Email" class="form-control" />
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Input.Password"></label>
+                            <input asp-for="Input.Password" class="form-control" />
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label asp-for="Input.RememberMe">
+                                    <input asp-for="Input.RememberMe" />
+                                    @Html.DisplayNameFor(m => m.Input.RememberMe)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-secondary">Logg inn</button>
+                        </div>
+                        <div class="form-group">
+                            <p>
+                                <a asp-page="./ForgotPassword">Glemt passordet?</a>
+                            </p>
+                        </div>
+                    </form>
+                </section>
+                <hr />
+                <section id="magiclink">
+                    <h2>Magisk lenke</h2>
+                    <form method="post">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        @if(!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+                        {
+                            <div class="alert alert-success" role="alert">
+                            @Model.SuccessMessage
+                            </div>
+                        }
+                        
+                        <div class="form-group">
+                            <br>
+                            <span>BETA: Legg inn eposten din her, så sender vi en magisk innloggingslenke.</span>
+                            <br><br>
+                             <div class="form-group">
+                                <label asp-for="Email"></label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" asp-page-handler="SendMagicLink" class="btn btn-info">Send magisk lenke</button>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
     </div>
 </div>
-</div>
+
 @section Scripts {
     @await  Html.PartialAsync("_ValidationScriptsPartial")
 }
