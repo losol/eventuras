@@ -76,6 +76,9 @@ namespace losol.EventManagement.Domain {
 
 		public List<RegistrationOption> RegistrationOptions { get; set; }
 
+		[Display(Name = "Møtt?")]
+		public bool Attended { get; set; } = false;
+
 		// Navigation properties
 		public EventInfo EventInfo { get; set; }
 		public ApplicationUser User { get; set; }
