@@ -9,7 +9,7 @@ namespace losol.EventManagement.Web.Providers
         {
             // update the defaults
             Name = "MagicLinkTokenProvider";
-            TokenLifespan = TimeSpan.FromMinutes(15);
+            TokenLifespan = TimeSpan.FromMinutes(10);
         }
     }
 }
