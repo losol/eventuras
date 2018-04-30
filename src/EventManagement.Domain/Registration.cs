@@ -37,9 +37,6 @@ namespace losol.EventManagement.Domain
 		public RegistrationStatus Status { get; set; } = RegistrationStatus.Draft;
 		public RegistrationType Type { get; set; } = RegistrationType.Participant;
 
-		[Display(Name = "Møtt?")]
-		public bool Attended { get; set; } = false;
-
 		[Display(Name = "Skal ha kursdiplom?")]
 		public bool Diploma { get; set; } = true;
 
