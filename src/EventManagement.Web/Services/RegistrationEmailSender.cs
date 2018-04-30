@@ -42,6 +42,7 @@ namespace losol.EventManagement.Web.Services
 			var registration = await _registrationService.GetWithUserAndEventInfoAndOrders(registrationId);
 
 				var eventRegistration = new EventRegistration {
+					ParticipantName = registration.ParticipantName,
 					EventInfo = registration.EventInfo,
 					Orders = registration.Orders,
 					Email = registration.User.Email,
@@ -68,7 +69,7 @@ namespace losol.EventManagement.Web.Services
 						protocol: _requestScheme
 					);
 					
-				await SendAsync(eventRegistration.Email, eventRegistration.EventInfo.Title, eventRegistration);
+				await SendAsync(emailAddress, subject, eventRegistration);
 		}
 
 	}

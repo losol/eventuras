@@ -100,7 +100,7 @@ namespace losol.EventManagement.Services {
 
 			var result = new List<Certificate> ();
 			var newRegistrations = eventInfo.Registrations
-				.Where (m => m.Status == RegistrationStatus.Attended && m.CertificateId == null)
+				.Where (m => m.Status == RegistrationStatus.Finished && m.CertificateId == null)
 				.ToList ();
 
 			// Add certificates

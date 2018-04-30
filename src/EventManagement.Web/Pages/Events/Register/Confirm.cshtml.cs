@@ -61,7 +61,7 @@ namespace losol.EventManagement.Pages.Events.Register
 				await _registrationService.SetRegistrationAsVerified(id.Value);
 
 				// Send a copy to admin TODO: Read from appsettings
-				await _registrationEmailSender.SendRegistrationAsync("kurs@nordland-legeforening.no", $"Påmelding {registration.EventInfo.Title}", registration.RegistrationId);
+				await _registrationEmailSender.SendRegistrationAsync("kurs@nordland-legeforening.no", $"KOPI: Påmelding {registration.EventInfo.Title}", registration.RegistrationId);
 				
 				// Send welcome letter to participant
 				var participantEmail = new EmailMessage()
