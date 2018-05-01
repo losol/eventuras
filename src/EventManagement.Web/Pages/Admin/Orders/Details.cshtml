@@ -382,7 +382,8 @@ TODO: Gotta do it in a better way later. *@
                 $('#btn-edit-orderline').on('click', function() {
                     const postdata = {
                         quantity: $inputQuantity.val(),
-                        price: $inputPrice.val()
+                        price: $inputPrice.val(),
+                        variantId: $inputVariants.val()
                     };
                     $spinner.show();
                     $disabler.show();
