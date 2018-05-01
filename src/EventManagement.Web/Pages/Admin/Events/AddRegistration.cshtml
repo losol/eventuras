@@ -1,8 +1,9 @@
 @page "{id:int}"
 @model losol.EventManagement.Pages.Admin.Events.AddRegistrationModel
-
+@using static losol.EventManagement.Domain.Registration;
 @{
     ViewData["Title"] = "Legg til deltaker på arrangement";
+    var registrationStatuses = (RegistrationStatus[])Enum.GetValues(typeof(RegistrationStatus));
 }
 <div class="bg-gray-300 py-3">
     <div class="container">
@@ -21,7 +22,19 @@
                     @Html.Partial("Partials/_UserSelect")
                 </div>
 
-                <h3 class="py-3"> REGISTRATION TYPE radios here</h3>
+                <div class="form-group">
+                    <label>Registration Type</label>
+                    @foreach(var status in registrationStatuses)
+                    {
+                        <div class="form-check">
+                            <input asp-for="Registration.Status"
+                                class="form-check-input" type="radio" value="@status">
+                            <label class="form-check-label">
+                                @status
+                            </label>
+                        </div>
+                    }
+                </div>
 
                 <h3 class="py-3"> WE WILL WAIT WITH PRODUCTS; MAYBE WE COULD REUSE A UPDATE ORDER MODAL?</h3>
 
