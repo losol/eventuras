@@ -400,7 +400,6 @@ TODO: Gotta do it in a better way later. *@
                 // Remove existing options
                 $inputVariants.empty();
                 const currentVariants = variants.filter(function(v){ return v.pid == productId });
-                console.log(currentVariants, 'current variants')
                 currentVariants.forEach(function(v){
                     $inputVariants.append($('<option>', {
                         value: v.id,
@@ -459,7 +458,6 @@ TODO: Gotta do it in a better way later. *@
 
         function reopenOrder() {
             $.post('/api/v0/orders/reopen/@id').done(function(id) {
-                console.log(id);
                 window.location.href = "/Admin/Orders/Details/"+id;
             }).fail(function(){
                 toastr.fail('Reopening failed. Create a new order manually instead.')
