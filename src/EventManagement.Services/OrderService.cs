@@ -86,7 +86,7 @@ namespace losol.EventManagement.Services {
 		public async Task<bool> AddOrderLineAsync (int orderId, int productId, int? variantId) {
 			var order = await _db.Orders.FindAsync (orderId);
 			var product = await _db.Products.FindAsync (productId);
-			var variant = variantId.HasValue ? await _db.Products.FindAsync (variantId) : null;
+			var variant = variantId.HasValue ? await _db.ProductVariants.FindAsync (variantId) : null;
 
 			_ = order ??
 				throw new ArgumentException ("Invalid orderId", nameof (orderId));
