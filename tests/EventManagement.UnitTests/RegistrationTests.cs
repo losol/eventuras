@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using static losol.EventManagement.Domain.Order;
 using System.Linq;
+using static losol.EventManagement.Domain.Registration;
 
 namespace losol.EventManagement.UnitTests
 {
@@ -206,10 +207,10 @@ namespace losol.EventManagement.UnitTests
 			public void SucceedWhenNotNotAttended()
 			{
 				Registration registration = new Registration();
-				var expected = true;
+				var expected = RegistrationStatus.Attended;
 
 				registration.MarkAsAttended();
-				var actual = registration.Attended;
+				var actual = registration.Status;
 
 				Assert.Equal(expected, actual);
 			}
@@ -217,42 +218,16 @@ namespace losol.EventManagement.UnitTests
 			[Fact]
 			public void SucceedWhenAlreadyAttended()
 			{
-				Registration registration = new Registration { Attended = true };
-				var expected = true;
+				Registration registration = new Registration { Status = RegistrationStatus.Attended };
+				var expected = RegistrationStatus.Attended;
 
 				registration.MarkAsAttended();
-				var actual = registration.Attended;
+				var actual = registration.Status;
 
 				Assert.Equal(expected, actual);
 			}
 		}
 
-		public class RemoveAttendance_Should
-		{
-			[Fact]
-			public void SucceedWhenNotAttended()
-			{
-				Registration registration = new Registration();
-				var expected = false;
-
-				registration.MarkAsNotAttended();
-				var actual = registration.Attended;
-
-				Assert.Equal(expected, actual);
-			}
-
-			[Fact]
-			public void SucceedWhenAlreadyAttended()
-			{
-				Registration registration = new Registration { Attended = true };
-				var expected = false;
-
-				registration.MarkAsNotAttended();
-				var actual = registration.Attended;
-
-				Assert.Equal(expected, actual);
-			}
-		}
 
 		public class CreateOrUpdateOrder_Should
 		{

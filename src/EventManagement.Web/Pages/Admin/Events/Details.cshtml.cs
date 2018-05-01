@@ -29,7 +29,6 @@ namespace losol.EventManagement.Pages.Admin.Events
         public string Email { set;get;}
         public string Phone { set;get;}
         public string Employer {get;set;}
-        public bool Attended {get;set;}
         public string JobTitle {get;set;}
         public string City {get;set;}
         public bool HasCertificate { get; set; }
@@ -73,7 +72,6 @@ namespace losol.EventManagement.Pages.Admin.Events
                     Name = x.User.Name,
                     Email = x.User.Email,
                     Phone = x.User.PhoneNumber,
-                    Attended = x.Attended,
                     JobTitle = x.ParticipantJobTitle,
                     Employer = x.ParticipantEmployer,
                     City = x.ParticipantCity,
@@ -92,31 +90,6 @@ namespace losol.EventManagement.Pages.Admin.Events
             }
 
             
-        }
-
-        public async Task<JsonResult> OnGetAttendance(int? registrationId, bool? attended)
-        {
-            // TODO this should not use GET, but POST?
-            
-            if (registrationId == null) {
-                return new JsonResult(new { success = false, responseText = "No registrationId submitted" });
-            }
-            
-            var registration = await _context.Registrations
-                .Where( r => r.RegistrationId == registrationId)
-                .FirstOrDefaultAsync();
-
-            if (attended == null && registration != null) {
-                return new JsonResult(new { success = true, responseText = registration.Attended });
-            }
-
-            if (attended != null && registration != null) {
-                registration.Attended = (bool)attended;
-                await _context.SaveChangesAsync();
-                return new JsonResult(new { success = true, responseText = registration.Attended });
-            }
-
-            return new JsonResult(new { success = false, responseText = "Something went wrong." });
         }
     }
 }
