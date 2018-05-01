@@ -3,7 +3,7 @@
 @using static losol.EventManagement.Domain.Registration;
 @{
     ViewData["Title"] = "Legg til deltaker på arrangement";
-    var registrationStatuses = (RegistrationStatus[])Enum.GetValues(typeof(RegistrationStatus));
+    var RegistrationTypes = (RegistrationType[])Enum.GetValues(typeof(RegistrationType));
 }
 <div class="bg-gray-300 py-3">
     <div class="container">
@@ -24,19 +24,19 @@
 
                 <div class="form-group">
                     <label>Registration Type</label>
-                    @foreach(var status in registrationStatuses)
+                    @foreach(var type in RegistrationTypes)
                     {
-                        <div class="form-check">
-                            <input asp-for="Registration.Status"
-                                class="form-check-input" type="radio" value="@status">
-                            <label class="form-check-label">
-                                @status
+                        <div class="form-check-inline">
+                        <label class="form-check-label">
+                            <input asp-for="Registration.Type"
+                                class="form-check-input" type="radio" value="@type">
+                            
+                                @type
                             </label>
                         </div>
                     }
                 </div>
 
-                <h3 class="py-3"> WE WILL WAIT WITH PRODUCTS; MAYBE WE COULD REUSE A UPDATE ORDER MODAL?</h3>
 
                 @* START PAYMENT  *@
                 @if (Model.EventInfo.Products.Any()) {

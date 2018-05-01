@@ -63,6 +63,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 		public ProductVM[] Products { get; set; }
 
 		public RegistrationStatus Status { get; set; } = RegistrationStatus.Draft;
+		public RegistrationType Type { get; set; } = RegistrationType.Participant;
 
 		public RegisterVM() { }
 		public RegisterVM(EventInfo eventinfo, int? defaultPaymentMethod = null)
