@@ -30,7 +30,7 @@ namespace losol.EventManagement.Controllers
             return RedirectToPage("/Index");
         }
 
-        [HttpGet("/magic/{userid}/{token}", Name = "MagicLinkRoute")]
+        [HttpGet("/magic", Name = "MagicLinkRoute")]
         public async Task<IActionResult> MagicLogin([FromQuery]string userid, [FromQuery]string token )
         {
             // Sign the user out if they're signed in
