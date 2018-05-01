@@ -181,6 +181,7 @@ namespace losol.EventManagement.Services {
 			if (products?.Count != productIds.Count ()) {
 				throw new ArgumentException (message: "Couldnt find all the products. Check the ids.", paramName : nameof (productIds));
 			}
+			_ = variantIds ?? new int[]{ };
 			var variants = products.First ().ProductVariants.Where (v => variantIds.Contains (v.ProductVariantId));
 
 			// Create/update an order as needed.

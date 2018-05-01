@@ -81,7 +81,7 @@ namespace losol.EventManagement.Web.Api.Controllers
 				return BadRequest();
 			}
 			try{
-				await registrationService.CreateOrUpdateOrder(vm.RegistrationId, vm.ProductId, vm.VariantId);
+				await registrationService.CreateOrUpdateOrder(vm.RegistrationId, vm.ProductId, vm.ProductVariantId);
 			}
 			catch(InvalidOperationException)
 			{
@@ -98,7 +98,7 @@ namespace losol.EventManagement.Web.Api.Controllers
 		{
 			public int RegistrationId { get; set; }
 			public int ProductId { get; set; }
-			public int? VariantId { get; set; }
+			public int? ProductVariantId { get; set; }
 		}
 	}
 }
