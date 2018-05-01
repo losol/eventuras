@@ -70,21 +70,9 @@ namespace losol.EventManagement.Pages.Admin.Events
 			var user = await _userManager.FindByEmailAsync(Registration.Email);
 			if (user == null)
 			{
-                user = new ApplicationUser { 
-                    UserName = Registration.Email, 
-                    Name = Registration.ParticipantName, 
-                    Email = Registration.Email, 
-                    PhoneNumber = (Registration.PhoneCountryCode + Registration.Phone) 
-                };
-
-				var result = await _userManager.CreateAsync(user);
-                if (!result.Succeeded) {
-                    foreach (var error in result.Errors)
-					{
-						ModelState.AddModelError(string.Empty, error.Description);
-					}
-                    return Page();
-                }
+                // This shouldn't happen, because a registration can only
+                // be created for existing users.
+                ModelState.AddModelError(string.Empty, "Invalid user selected.");
 			}
 
             Registration.EventInfoId = id;
