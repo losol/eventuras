@@ -43,7 +43,6 @@ namespace losol.EventManagement.Web.Services
                 purpose: "magic-link"
             );
 
-            token = token.Replace("/", "%2F");
             var magiclink = _urlHelper.Link(
                         routeName: "MagicLinkRoute", 
                         values: new { userid = user.Id, token = token,  });
