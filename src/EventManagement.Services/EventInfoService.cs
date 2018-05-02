@@ -58,6 +58,17 @@ namespace losol.EventManagement.Services
 				            .SingleOrDefaultAsync(m => m.EventInfoId == id);
 		}
 
+		public async Task<EventInfo> GetWithOrganizerAsync(int id)
+		{
+			var eventinfo = await _db.EventInfos
+				.Where(m => m.EventInfoId == id)
+				.Include ( m => m.OrganizerUser)
+				.Include ( m => m.Organization)
+				.SingleOrDefaultAsync();
+			return eventinfo;
+
+		}
+
 		public async Task<int> GetRegistrationCount(int eventId)
 		{
 			return await _db.EventInfos

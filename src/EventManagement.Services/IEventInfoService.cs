@@ -8,6 +8,7 @@ namespace losol.EventManagement.Services
 	public interface IEventInfoService
 	{
 		Task<EventInfo> GetAsync(int id);
+		Task<EventInfo> GetWithOrganizerAsync(int id);
 		Task<EventInfo> GetWithProductsAsync(int id);
 		Task<int> GetRegistrationCount(int eventId);
 
