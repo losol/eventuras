@@ -236,8 +236,13 @@
     function ProductsFormatter(products, row, index, field) {
         let outHtml = ['<ul>'];
         products.forEach(function(p) {
-            console.log(p);
-            outHtml.push('<li>' + p.item1.name);
+            p.quantity = p.item3;
+            if(p.quantity > 1) {
+                outHtml.push('<li>' + p.quantity + ' &times; '+ p.item1.name);
+            }
+            else {
+                outHtml.push('<li>' + p.item1.name);
+            }
             if(p.item2) {
                 outHtml.push('(' + p.item2.name + ')');
             }

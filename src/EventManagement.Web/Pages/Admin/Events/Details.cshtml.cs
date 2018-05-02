@@ -36,7 +36,7 @@ namespace losol.EventManagement.Pages.Admin.Events
         public int? CertificateId {get; set; }
         public string Status {get;set;}
         public string Type {get;set;}
-        public List<(Product, ProductVariant)> Products { get; set; }
+        public List<(Product, ProductVariant, int)> Products { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -79,7 +79,7 @@ namespace losol.EventManagement.Pages.Admin.Events
                     City = x.ParticipantCity,
                     Products = x.Orders.Where(o => o.Status != OrderStatus.Cancelled)
                         .SelectMany(o => o.OrderLines)
-                        .Select(l => ValueTuple.Create(l.Product, l.ProductVariant))
+                        .Select(l => ValueTuple.Create(l.Product, l.ProductVariant, l.Quantity))
                         .ToList(),
                     HasCertificate = x.HasCertificate,
                     CertificateId = x.CertificateId,
