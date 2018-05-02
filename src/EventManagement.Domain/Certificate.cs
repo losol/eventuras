@@ -28,6 +28,9 @@ namespace losol.EventManagement.Domain {
         // Issued by
         public int? IssuingOrganizationId {get;set;}
         public Organization IssuingOrganization {get;set;}
+        public string IssuingUserId {get;set;}
+        public ApplicationUser IssuingUser {get;set;}
+        
         public string IssuedByName {get;set;}
         public string IssuedInCity {get;set;}
         public DateTime IssuedDate { get; set; } = DateTime.UtcNow;
