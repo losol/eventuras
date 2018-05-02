@@ -16,8 +16,8 @@
         <p class"lead">Antall solgt: </strong> @registrations.Count()
         <div id="menu">
             <button class="btn btn-secondary" data-toggle="modal" data-target="#add-user-modal">Ny deltaker</button>
-            <button class="btn btn-secondary" id="btn-send-emails">Epost</button>
-            <button class="btn btn-secondary" id="btn-send-sms">SMS</button>
+            <button class="btn btn-secondary" id="btn-send-emails">Epost til alle</button>
+            <button class="btn btn-secondary" id="btn-send-sms">SMS til alle</button>
             <div class="form-check">
                 <label class="form-check-label">
                     <input asp-for="@product.Published" data-id="@product.ProductId" class="form-check-input" type="checkbox" value="">
@@ -61,7 +61,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add User</h5>
+        <h5 class="modal-title">Legg til bruker</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
