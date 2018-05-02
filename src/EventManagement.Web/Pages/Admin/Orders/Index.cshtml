@@ -35,8 +35,8 @@
                         <th data-field="id" data-sortable="true">ID</th>
                         <th data-field="regid" data-sortable="true">Registrering</th>
                         <th data-field="status" data-sortable="true">Status</th>
-                        <th data-field="name" data-sortable="true">Deltaker</th>
-                        <th data-field="name" data-sortable="true">Betaler</th>
+                        <th data-field="participant" data-sortable="true">Deltaker</th>
+                        <th data-field="customer" data-sortable="true">Betaler</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -47,8 +47,8 @@
                             <td data-field="id" data-sortable="true">@o.OrderId</td>
                             <td data-field="regid" data-sortable="true">@o.RegistrationId</td>
                             <td data-field="status" data-sortable="true"><order-status value="@o.Status" /></td>
-                            <td data-field="name" data-sortable="true">@o.Registration.ParticipantName</td>
-                            <td data-field="name" data-sortable="true">@o.CustomerName</td>
+                            <td data-field="participant" data-sortable="true">@o.Registration.ParticipantName</td>
+                            <td data-field="customer" data-sortable="true">@o.CustomerName</td>
                             <td>
                                 <a asp-page="./Details" asp-route-id="@o.OrderId">View</a>
                             </td>
