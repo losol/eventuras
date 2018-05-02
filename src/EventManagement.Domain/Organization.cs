@@ -13,6 +13,7 @@ namespace losol.EventManagement.Domain
         public int OrganizationId { get; set; }
         
         [Required]
+        [Display(Name = "Navn")]
         public string Name {get;set;} 
 
         [StringLength(300, ErrorMessage = "Beskrivelsen kan bare være 300 tegn.")]
