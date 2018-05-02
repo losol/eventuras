@@ -201,7 +201,9 @@
                     <h4>@product.Name</h4>
                     <p>@product.Description</p>
                     @foreach(var variant in product.ProductVariants) {
-                        <input type="radio" name="variant-radio" /> @variant.Name <br />
+                        <input type="radio" 
+                            name="variant-radio" 
+                            value="@variant.ProductVariantId" /> @variant.Name <br />
                     }
                 </div>
             </div>
@@ -325,7 +327,9 @@
             $('.input-quantity').val(0);
             row.products.forEach(function(p) {
                 $('#input-quantity-'+p.item1.productId).val(p.item3);
-                $('#content-' +p.item1.productId + ' input[name=variant-radio]').val([p.item2.productVariantId]);
+                if(p.item2) {
+                    $('#content-' +p.item1.productId + ' input[name=variant-radio]').val([p.item2.productVariantId]);
+                }
             });
             $('#modal-edit-products').modal('show');
         }
