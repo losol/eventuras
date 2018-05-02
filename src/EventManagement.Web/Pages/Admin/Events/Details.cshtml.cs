@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using static losol.EventManagement.Domain.Registration;
+using static losol.EventManagement.Domain.Order;
 
 namespace losol.EventManagement.Pages.Admin.Events
 {
@@ -35,6 +36,7 @@ namespace losol.EventManagement.Pages.Admin.Events
         public int? CertificateId {get; set; }
         public string Status {get;set;}
         public string Type {get;set;}
+        public List<(Product, ProductVariant)> Products { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -64,7 +66,7 @@ namespace losol.EventManagement.Pages.Admin.Events
             {
                return new JsonResult("No event id submitted.");
             }
-
+            
             var registrations = await _context.Registrations
                 .Where( r => r.EventInfoId == id && r.Status != RegistrationStatus.Cancelled)
                 .Select ( x=> new RegistrationsVm{
@@ -75,6 +77,10 @@ namespace losol.EventManagement.Pages.Admin.Events
                     JobTitle = x.ParticipantJobTitle,
                     Employer = x.ParticipantEmployer,
                     City = x.ParticipantCity,
+                    Products = x.Orders.Where(o => o.Status != OrderStatus.Cancelled)
+                        .SelectMany(o => o.OrderLines)
+                        .Select(l => ValueTuple.Create(l.Product, l.ProductVariant))
+                        .ToList(),
                     HasCertificate = x.HasCertificate,
                     CertificateId = x.CertificateId,
                     Status = x.Status.ToString(),

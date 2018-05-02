@@ -169,6 +169,7 @@
                         <th data-field="jobTitle">Stilling</th>
                         <th data-field="employer" data-visible="false">Arbeidsplass</th>
                         <th data-field="city">Sted</th>
+                        <th data-field="products" data-formatter="ProductsFormatter">Products</th>
                         <th data-formatter="Attended" data-events="attendedEvents">Status</th>
                         <th data-formatter="RowActions" data-events="operateEvents">Meny</th>
                     </tr>
@@ -231,6 +232,19 @@
             }
             return actions.join('');
         }
+
+    function ProductsFormatter(products, row, index, field) {
+        let outHtml = ['<ul>'];
+        products.forEach(function(p) {
+            console.log(p);
+            outHtml.push('<li>' + p.item1.name);
+            if(p.item2) {
+                outHtml.push('(' + p.item2.name + ')');
+            }
+        });
+        outHtml.push('</ul>');
+        return outHtml.join('');
+    }
 
     window.icons = {
         refresh: 'fa-refresh',
