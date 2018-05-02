@@ -141,6 +141,7 @@
                                         role="button"    
                                         data-quantity="@line.Quantity"
                                         data-id="@line.OrderLineId"
+                                        data-product-id="@line.ProductId"
                                         data-price='@line.Price.ToString("F",System.Globalization.CultureInfo.InvariantCulture)'
                                         data-trigger="focus">
                                         <i class="material-icons md-light md-18">edit</i>
@@ -248,6 +249,11 @@
         <div class="form-group">
             <label class="control-label">Price</label>
             <input id="input-edit-price" class="form-control" type="number" min="0" step="any" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">Variant</label>
+            <select id="input-edit-variant" class="form-control" disabled>
+            </select>
         </div>
         </div>
         <div class="modal-footer">
@@ -359,11 +365,15 @@ TODO: Gotta do it in a better way later. *@
 
             })
 
+
             $('.btn-edit-line').on('click', function() {
-                let editId = $(this).data('id');
+                const editId = $(this).data('id');
+                const productId = $(this).data('product-id');
+                
+                const $editModal = $('#edit-orderline-modal');
+                const $inputVariants = $('#input-edit-variant');
                 const $inputQuantity = $('#input-edit-quantity');
                 const $inputPrice = $('#input-edit-price');
-                const $editModal = $('#edit-orderline-modal')
 
                 $inputQuantity.val($(this).data('quantity'));
                 $inputPrice.val($(this).data('price'));
@@ -372,7 +382,8 @@ TODO: Gotta do it in a better way later. *@
                 $('#btn-edit-orderline').on('click', function() {
                     const postdata = {
                         quantity: $inputQuantity.val(),
-                        price: $inputPrice.val()
+                        price: $inputPrice.val(),
+                        variantId: $inputVariants.val()
                     };
                     $spinner.show();
                     $disabler.show();
@@ -385,6 +396,23 @@ TODO: Gotta do it in a better way later. *@
                     })
                     $(this).off('click');
                 });
+
+                // Remove existing options
+                $inputVariants.empty();
+                const currentVariants = variants.filter(function(v){ return v.pid == productId });
+                currentVariants.forEach(function(v){
+                    $inputVariants.append($('<option>', {
+                        value: v.id,
+                        text: v.name
+                    }));
+                });
+                if(currentVariants.length > 0) {
+                    // enable the input
+                    $inputVariants.prop('disabled', false);
+                } else {
+                    // Disable the input
+                    $inputVariants.prop('disabled', true);
+                }
             })
 
             $('#btn-edit-order').on('click', function() {
@@ -430,7 +458,6 @@ TODO: Gotta do it in a better way later. *@
 
         function reopenOrder() {
             $.post('/api/v0/orders/reopen/@id').done(function(id) {
-                console.log(id);
                 window.location.href = "/Admin/Orders/Details/"+id;
             }).fail(function(){
                 toastr.fail('Reopening failed. Create a new order manually instead.')

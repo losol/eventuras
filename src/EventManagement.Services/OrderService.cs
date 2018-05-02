@@ -111,13 +111,23 @@ namespace losol.EventManagement.Services {
 			return await _db.SaveChangesAsync () > 0;
 		}
 
-		public async Task<bool> UpdateOrderLine (int lineId, int quantity, decimal price) {
+		public async Task<bool> UpdateOrderLine (int lineId, int? variantId, int quantity, decimal price) {
 			var line = await _db.OrderLines.FindAsync (lineId);
 			_ = line ??
 				throw new ArgumentException ("Invalid lineId", nameof (lineId));
 
 			line.Quantity = quantity;
 			line.Price = price;
+			
+			line.ProductVariantId = variantId;
+			if(variantId != null)
+			{
+				var variant = await _db.ProductVariants
+									.AsNoTracking()
+									.SingleOrDefaultAsync(v => v.ProductVariantId == variantId);
+				line.ProductVariantName = variant.Name;
+				line.ProductVariantDescription = variant.Description;
+			}
 
 			_db.Update (line);
 			return await _db.SaveChangesAsync () > 0;

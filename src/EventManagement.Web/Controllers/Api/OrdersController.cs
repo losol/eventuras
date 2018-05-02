@@ -135,7 +135,7 @@ namespace losol.EventManagement.Web.Controllers.Api
 			if (!ModelState.IsValid) return BadRequest();
 			try 
 			{
-				await _orderService.UpdateOrderLine(lineId, vm.Quantity, vm.Price);	
+				await _orderService.UpdateOrderLine(lineId, vm.VariantId, vm.Quantity, vm.Price);	
 			}
 			catch(ArgumentException)
 			{
@@ -203,6 +203,7 @@ namespace losol.EventManagement.Web.Controllers.Api
 		{
 			public int Quantity { get; set; }
 			public decimal Price { get; set; }
+			public int? VariantId { get; set; }
 		}
 	}
 }
