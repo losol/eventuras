@@ -50,6 +50,9 @@ namespace losol.EventManagement.Services {
 
 			var registration = await _db.Registrations
 				.Include (e => e.EventInfo)
+				.ThenInclude (p => p.Organization)
+				.Include (e => e.EventInfo)
+				.ThenInclude (p => p.OrganizerUser)
 				.Include (e => e.User)
 				.Include (e => e.Certificate)
 				.Where (e => e.RegistrationId == registrationId)
@@ -62,13 +65,20 @@ namespace losol.EventManagement.Services {
 			var certificate = new Certificate {
 				Title = registration.EventInfo.Title,
 				Description = registration.EventInfo.CertificateDescription,
+
 				RecipientName = registration.ParticipantName,
 				RecipientEmail = registration.User.Email,
 				RecipientUserId = registration.User.Id,
-
-				IssuedByName = "Anette Holand-Nilsen"
-
 			};
+
+			if (registration.EventInfo.OrganizationId != null) {
+				certificate.IssuingOrganizationId = registration.EventInfo.OrganizationId;
+			}
+			
+			if (registration.EventInfo.OrganizerUserId != null) {
+				certificate.IssuedByName = registration.EventInfo.OrganizerUser.Name;
+				certificate.IssuingUserId = registration.EventInfo.OrganizerUserId;
+			} 
 
 			// Save cetificate
 			_db.Certificates.Add (certificate);

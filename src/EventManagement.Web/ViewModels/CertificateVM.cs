@@ -12,9 +12,6 @@ namespace losol.EventManagement.Web.ViewModels
         public string Description { get;set; }
 
         public string RecipientName {get;set;}
-        public string IssuerOrganizationName {get;set;}
-        public string IssuerOrganizationLogoUrl {get;set;}
-        public string IssuerPersonName {get;set;}
 
         public string EvidenceDescription { get; set;}
         public List<CertificateEvidence> Evidence {get;set;}
@@ -22,8 +19,12 @@ namespace losol.EventManagement.Web.ViewModels
         public string IssuedInCity { get; set; }
         public string IssuingDate { get; set; }
 
-        public string SignatureImageBase64 { get; set; }
-        public string OrganizerLogoBase64 { get; set; }
+        public string IssuerOrganizationName {get;set;}
+        public string IssuerOrganizationLogoBase64 { get; set; }
+        
+        public string IssuerPersonName {get;set;}
+        public string IssuerPersonSignatureImageBase64 { get; set; }
+        
 
         public static CertificateVM Mock => new CertificateVM 
         {
