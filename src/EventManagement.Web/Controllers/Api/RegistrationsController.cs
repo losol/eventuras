@@ -19,7 +19,7 @@ namespace losol.EventManagement.Web.Controllers.Api {
             _registrationsService = registrationsService;
         }
 
-        [HttpPost ("participant/update/{id}")]
+        [HttpPost ("{id}/participant/update")]
         public async Task<ActionResult> UpdateParticipantInfo ([FromRoute] int id, [FromBody] ParticipantInfoVM vm) {
             if (!ModelState.IsValid) return BadRequest ();
             try {
@@ -29,6 +29,37 @@ namespace losol.EventManagement.Web.Controllers.Api {
                     vm.ParticipantJobTitle,
                     vm.ParticipantCity,
                     vm.ParticipantEmployer);
+            } 
+            catch (ArgumentException) {
+                return BadRequest ();
+            }
+            return Ok ();
+        }
+
+        [HttpPost ("{id}/customer/update")]
+        public async Task<ActionResult> UpdateCustomerInfo ([FromRoute] int id, [FromBody] CustomerInfoVM vm) {
+            if (!ModelState.IsValid) return BadRequest ();
+            try {
+                await _registrationsService.UpdateCustomerInfo (
+                    id,
+                    vm.CustomerName,
+                    vm.CustomerEmail,
+                    vm.CustomerVatNumber,
+                    vm.CustomerInvoiceReference);
+            } 
+            catch (ArgumentException) {
+                return BadRequest ();
+            }
+            return Ok ();
+        }
+
+        [HttpPost ("{id}/paymentmethod/update/{paymentmethodId}")]
+        public async Task<ActionResult> SetPaymentMethod ([FromRoute] int id, [FromRoute] int paymentmethodId) {
+            if (!ModelState.IsValid) return BadRequest ();
+            try {
+                await _registrationsService.UpdatePaymentMethod (
+                    id,
+                    paymentmethodId);
             } 
             catch (ArgumentException) {
                 return BadRequest ();
@@ -58,11 +89,16 @@ namespace losol.EventManagement.Web.Controllers.Api {
 
         public class ParticipantInfoVM {
             public string ParticipantName { get; set; }
-
             public string ParticipantJobTitle { get; set; }
-
             public string ParticipantCity { get; set; }
             public string ParticipantEmployer { get; set; }
+        }
+
+        public class CustomerInfoVM {
+            public string CustomerName { get; set; }
+            public string CustomerEmail { get; set; }
+            public string CustomerVatNumber { get; set; }
+            public string CustomerInvoiceReference { get; set; }
         }
 
     }
