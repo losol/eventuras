@@ -94,7 +94,7 @@ namespace losol.EventManagement.Pages.Admin.Events
 			var newRegistration = Registration.Adapt<Registration>();
 			await _registrations.CreateRegistration(newRegistration);
 
-			return RedirectToPage();
+			return RedirectToPage("./Details", new { id = id });
 		}
     }
 }
