@@ -20,26 +20,25 @@ namespace losol.EventManagement.Domain
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
-        [Required]
         [StringLength(300, ErrorMessage = "Lenken kan bare være 300 tegn.")]
         [Display(Name = "Lenke til organisasjonens nettsted")]
         public string Url { get; set; }
         
-        [StringLength(300, ErrorMessage = "Telefonnummeret kan bare være 50 tegn.")]
+        [StringLength(100, ErrorMessage = "Telefonnummeret kan bare være 50 tegn.")]
         [Display(Name = "Telefon til organisasjonen.")]
         public string Phone { get; set; }
 
-        [Required]
         [StringLength(300, ErrorMessage = "Eposten kan bare være 300 tegn.")]
         [Display(Name = "Epost til organisasjonen.")]
         public string Email { get; set; }
 
-        [StringLength(300, ErrorMessage = "Url kan bare være 300 tegn.")]
+        [StringLength(300, ErrorMessage = "Logo-url kan bare være 300 tegn.")]
         [Display(Name = "Lenke til profilbilde for organisasjonen.")]
         public string LogoUrl { get; set; }
         public string LogoBase64 { get;set; }
 
         public string VatId { get; set; }
+        public string AccountNumber { get; set; }
  
        }
 }

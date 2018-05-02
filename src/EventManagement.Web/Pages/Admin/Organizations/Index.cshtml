@@ -1,0 +1,29 @@
+@page
+@model losol.EventManagement.Pages.Admin.Organizations.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="bg-gray-200 py-3">
+    <div class="container">
+        <h2>Organisasjonser</h2>
+
+        <p>
+            <a asp-page="Create" class="btn btn-success">Legg til ny</a>
+        </p>
+    </div>
+</div>
+
+<div class="container py-5">
+    @foreach (var item in Model.Organizations) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name) 
+                </td>
+                <td>
+                    <a asp-page="./Details" asp-route-id="@item.OrganizationId">Vis</a>
+                </td>
+            </tr>
+    }
+</div>
