@@ -45,16 +45,23 @@ namespace losol.EventManagement.Web.ViewModels
         public static CertificateVM From(Certificate c) =>
             new CertificateVM 
             {
-                RecipientName = c.RecipientName,
-                Title = c.Title,
                 CertificateGuid = c.CertificateGuid.ToString(),
-                
-                IssuerOrganizationName = "Nordland legeforening",
-                IssuerPersonName = "Anette Holand-Nilsen",
-                IssuingDate = c.IssuedDate.ToString("dd.MMM.yyyy"),
-                IssuedInCity = "Bodø",
+
+                Title = c.Title,
+                Description = c.Description,
+
+                RecipientName = c.RecipientName,
+
                 Evidence = c.Evidence,
-                Description = c.Description
+
+                IssuedInCity = c.IssuedInCity,
+                IssuingDate = c.IssuedDate.ToString("dd.MMM.yyyy"),
+                
+                IssuerOrganizationName = c.IssuingOrganization.Name,
+                IssuerOrganizationLogoBase64 = c.IssuingOrganization.LogoBase64,
+                
+                IssuerPersonName = c.IssuedByName,
+                IssuerPersonSignatureImageBase64 = c.IssuingUser.SignatureImageBase64
             };
 
     }
