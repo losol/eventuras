@@ -10,12 +10,16 @@
         <h2>Organisasjonser</h2>
 
         <p>
-            <a asp-page="Create" class="btn btn-success">Legg til ny</a>
+            <a asp-page="Create" class="btn btn-success link-decoration-none">Legg til ny</a>
         </p>
     </div>
 </div>
 
-<div class="container py-5">
+<div class="container py-5 min-height-75">
+    @if (!Model.Organizations.Any()) {
+            <h1>Ingen organisasjoner enda...</h1>
+            <p class="lead">Fortvil ikke, trykk p&aring; den gr&oslash;nne knappen over for &aring; opprette en ny.</p>
+    }
     @foreach (var item in Model.Organizations) {
             <tr>
                 <td>
