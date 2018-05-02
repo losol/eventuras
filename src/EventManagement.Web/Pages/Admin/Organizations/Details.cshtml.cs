@@ -19,6 +19,7 @@ namespace losol.EventManagement.Pages.Admin.Organizations
             _context = context;
         }
 
+        [BindProperty]
         public Organization Organization { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -36,6 +37,18 @@ namespace losol.EventManagement.Pages.Admin.Organizations
                 return NotFound();
             }
             return Page();
+        }
+
+         public async Task<IActionResult> OnPostAsync(int? id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            _context.Organizations.Update(Organization);
+            await _context.SaveChangesAsync();
+            return RedirectToPage("./Index");
         }
     }
 }
