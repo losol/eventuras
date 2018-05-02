@@ -36,6 +36,37 @@ namespace losol.EventManagement.Web.Controllers.Api {
             return Ok ();
         }
 
+        [HttpPost ("{id}/customer/update")]
+        public async Task<ActionResult> UpdateCustomerInfo ([FromRoute] int id, [FromBody] CustomerInfoVM vm) {
+            if (!ModelState.IsValid) return BadRequest ();
+            try {
+                await _registrationsService.UpdateCustomerInfo (
+                    id,
+                    vm.CustomerName,
+                    vm.CustomerEmail,
+                    vm.CustomerVatNumber,
+                    vm.CustomerInvoiceReference);
+            } 
+            catch (ArgumentException) {
+                return BadRequest ();
+            }
+            return Ok ();
+        }
+
+        [HttpPost ("{id}/paymentmethod/update/{paymentmethodId}")]
+        public async Task<ActionResult> SetPaymentMethod ([FromRoute] int id, [FromRoute] int paymentmethodId) {
+            if (!ModelState.IsValid) return BadRequest ();
+            try {
+                await _registrationsService.UpdatePaymentMethod (
+                    id,
+                    paymentmethodId);
+            } 
+            catch (ArgumentException) {
+                return BadRequest ();
+            }
+            return Ok ();
+        }
+
         [HttpPost ("status/update/{id}/{status}")]
         public async Task<ActionResult> UpdateRegistrationStatus ([FromRoute] int id, [FromRoute] RegistrationStatus status) {
             try {
@@ -58,11 +89,16 @@ namespace losol.EventManagement.Web.Controllers.Api {
 
         public class ParticipantInfoVM {
             public string ParticipantName { get; set; }
-
             public string ParticipantJobTitle { get; set; }
-
             public string ParticipantCity { get; set; }
             public string ParticipantEmployer { get; set; }
+        }
+
+        public class CustomerInfoVM {
+            public string CustomerName { get; set; }
+            public string CustomerEmail { get; set; }
+            public string CustomerVatNumber { get; set; }
+            public string CustomerInvoiceReference { get; set; }
         }
 
     }
