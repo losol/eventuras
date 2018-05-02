@@ -19,7 +19,7 @@ namespace losol.EventManagement.Web.Controllers.Api {
             _registrationsService = registrationsService;
         }
 
-        [HttpPost ("participant/update/{id}")]
+        [HttpPost ("{id}/participant/update")]
         public async Task<ActionResult> UpdateParticipantInfo ([FromRoute] int id, [FromBody] ParticipantInfoVM vm) {
             if (!ModelState.IsValid) return BadRequest ();
             try {

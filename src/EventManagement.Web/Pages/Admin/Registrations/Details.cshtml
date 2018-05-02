@@ -29,8 +29,8 @@
 </div>
 <div class="container py-5">
     <div class="row">
-        <div class="col-md-4">
-            <div class="card" id="participantinfocard">
+        <div class="col-md-6">
+            <div class="card" id="participantinfo-card">
                 <div class="card-body">
                     <h4>Deltaker</h4>
                     <small>Navn</small>
@@ -58,11 +58,10 @@
                 </div>
             </div>
         </div>
-                <div class="col-md-4">
-            <div class="card" id="participantinfocard">
+            <div class="col-md-6">
+            <div class="card" id="customerinfo-card">
                 <div class="card-body">
                     <h4>Betalingsinformasjon</h4>
-                    <p class="text-danger">Endringer her lagres ikke.</p>
                     <small>Kundenavn</small>
                     <div contenteditable="true" class="customerinfo" id="customer-name">
                         @Html.DisplayFor(model => model.Registration.CustomerName)
@@ -76,15 +75,24 @@
                     <br />
                     
                     <small>Org.nr</small>
-                    <div contenteditable="true" class="customerinfo" id="participant-city">
+                    <div contenteditable="true" class="customerinfo" id="customer-vatnumber">
                         @Html.DisplayFor(model => model.Registration.CustomerVatNumber)
                     </div>
                     <br />
 
                     <small>Fakturareferanse</small>
-                    <div contenteditable="true" class="customerinfo" id="participant-invoicereference">
+                    <div contenteditable="true" class="customerinfo" id="customer-invoicereference">
                         @Html.DisplayFor(model => model.Registration.CustomerInvoiceReference)
                     </div>
+                    <br />
+
+                    <small>Betalingsmetode</small><br />
+                    <select asp-for="Registration.PaymentMethodId">
+                        @foreach(var paymethod in Model.PaymentMethods) {
+                            <option value="@paymethod.PaymentMethodId">@paymethod.Name</option>
+                        }
+                    </select>
+              
                 </div>
             </div>
         </div>
@@ -118,7 +126,7 @@
 <script>
     // *******PARTICIPANT INFO SCRIPTS *******
     // Add change listener to all contenteditables
-    var contenteditables = document.querySelectorAll("[contenteditable=true]");
+    var contenteditables = document.querySelectorAll(".participantinfo");
     [].forEach.call(contenteditables, function (content) {
         // Save inital text when entering
         content.addEventListener("focus", function () {
@@ -138,9 +146,41 @@
             ParticipantCity: $('#participant-city').text().trim(),
             ParticipantEmployer: $('#participant-employer').text().trim()
         };
-        $.postJSON('/api/v0/registrations/participant/update/@Model.Registration.RegistrationId', postData)
+        $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/participant/update', postData)
             .done(function() {
                 toastr.success('Lagret deltakerinfo');
+            })
+            .fail(function() {
+                toastr.error('Noe gikk galt... Sorry altså');
+            });
+    };
+
+
+    // *******CUSTOMER INFO SCRIPTS *******
+    var contenteditables = document.querySelectorAll(".customerinfo");
+    [].forEach.call(contenteditables, function (content) {
+        // Save inital text when entering
+        content.addEventListener("focus", function () {
+            content.setAttribute("data-initial-text", content.innerHTML);
+        });
+        // And check if it has changed, and save it
+        content.addEventListener("blur", function () {
+            if (content.getAttribute("data-initial-text") !== content.innerHTML) {
+                saveCustomerInfo();
+            }
+        });
+    });
+
+    function saveCustomerInfo() {
+        const customerPostData = {
+            CustomerName: $('#customer-name').text().trim(),
+            CustomerEmail: $('#customer-email').text().trim(),
+            CustomerVatNumber: $('#customer-vatnumber').text().trim(),
+            CustomerInvoiceReference: $('#customer-invoicereference').text().trim()
+        };
+        $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/customer/update', customerPostData)
+            .done(function() {
+                toastr.success('Lagret kundeinfo');
             })
             .fail(function() {
                 toastr.error('Noe gikk galt... Sorry altså');
@@ -179,6 +219,20 @@
         $('#Registration_Status option:contains(' + val + ')').prop({selected: true});
         $('#Registration_Status').change();
     };
+
+
+    // ******* PAYMENTMETHOD UPDATE  SCRIPTS *******
+    $('#Registration_PaymentMethodId').on('change', function() {
+        var paymentMethodId = $("option:selected", this).val();
+        $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/paymentmethod/update/' + paymentMethodId, null)
+            .done(function() {
+                toastr.success('Lagret status');
+            })
+            .fail(function() {
+                toastr.error('Noe gikk galt... Sorry altså');
+                location.reload();
+            });
+    })
 
         
 </script>
