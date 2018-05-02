@@ -23,6 +23,13 @@ namespace losol.EventManagement.Services {
 			.OrderByDescending (o => o.OrderTime)
 			.ToListAsync ();
 
+		public Task<List<Order>> GetWithRegistrationsAsync () =>
+			_db.Orders
+			.Include ( o => o.Registration)
+			.ThenInclude ( r => r.User)
+			.OrderByDescending (o => o.OrderTime)
+			.ToListAsync ();
+
 		public Task<List<Order>> GetAsync (int count, int offset) =>
 			_db.Orders
 			.Skip (offset)
