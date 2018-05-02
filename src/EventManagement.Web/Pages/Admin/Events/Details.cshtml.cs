@@ -48,6 +48,7 @@ namespace losol.EventManagement.Pages.Admin.Events
 
             EventInfo = await _context.EventInfos
                 .Include(e => e.Products)
+                    .ThenInclude(p => p.ProductVariants)
                 .Include(e => e.Registrations)
                 .SingleOrDefaultAsync(m => m.EventInfoId == id);
 

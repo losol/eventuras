@@ -179,6 +179,42 @@
 	</div>
 </div>
 
+<!-- Edit products modal -->
+<div id="modal-edit-products" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        @foreach(var product in Model.EventInfo.Products) {
+            <div class="row">
+                <div class="col-2">
+                    <input id="input-quantity-@product.ProductId" 
+                        class="input-quantity"
+                        style="width: 100%" />
+                </div>
+                <div class="col-10" id="content-@product.ProductId">
+                    <h4>@product.Name</h4>
+                    <p>@product.Description</p>
+                    @foreach(var variant in product.ProductVariants) {
+                        <input type="radio" name="variant-radio" /> @variant.Name <br />
+                    }
+                </div>
+            </div>
+        }
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 @section scripts { 
     <script>
     let recipients = [];
@@ -215,7 +251,8 @@
             actions = [
                 '<a href="/Admin/Registrations/Details/' + row.registrationId + '" alt="Vis registrering" class="btn btn-primary mr-1 link-decoration-none"><i class="fa fa-id-card-o" aria-hidden="true"></i> Info</a>', 
                 '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-sms mr-1">SMS</button>', 
-                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-email mr-1">Epost</button>'
+                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-email mr-1">Epost</button>',
+                '<button type="button" class="btn btn-secondary btn-edit-products">Edit Products</button>',
             ];
             if(row.hasCertificate)
             {
@@ -283,6 +320,14 @@
             .fail(function() {
                 toastr.error('Generating/emailing certificate failed.')
             })
+        },
+        'click .btn-edit-products': function(e, value, row, index) {
+            $('.input-quantity').val(0);
+            row.products.forEach(function(p) {
+                $('#input-quantity-'+p.item1.productId).val(p.item3);
+                $('#content-' +p.item1.productId + ' input[name=variant-radio]').val([p.item2.productVariantId]);
+            });
+            $('#modal-edit-products').modal('show');
         }
     };
 
