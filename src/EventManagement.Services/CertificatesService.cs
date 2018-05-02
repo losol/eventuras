@@ -28,6 +28,8 @@ namespace losol.EventManagement.Services {
 				.ThenInclude (c => c.Registration)
 				.ThenInclude (c => c.EventInfo)
 				.Include (c => c.RecipientUser)
+				.Include (c => c.IssuingOrganization)
+				.Include (c => c.IssuingUser)
 				.AsNoTracking ()
 				.SingleOrDefaultAsync (c => c.CertificateId == certificateId);
 
