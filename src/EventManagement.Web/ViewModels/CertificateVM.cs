@@ -16,16 +16,19 @@ namespace losol.EventManagement.Web.ViewModels
         public string IssuerOrganizationLogoUrl {get;set;}
         public string IssuerPersonName {get;set;}
 
+        public string EvidenceDescription { get; set;}
         public List<CertificateEvidence> Evidence {get;set;}
 
         public string IssuedInCity { get; set; }
         public string IssuingDate { get; set; }
 
+        public string SignatureImageBase64 { get; set; }
+        public string OrganizerLogoBase64 { get; set; }
+
         public static CertificateVM Mock => new CertificateVM 
         {
-            RecipientName = "Ole Kristian Losvik",
+            RecipientName = "Gerhard Henrik Armauer Hansen",
             IssuerOrganizationName = "Nordland Legeforening",
-            IssuerOrganizationLogoUrl = "/assets/images/logos/logo-nordland_legeforening-small-transparent.png",
             IssuerPersonName = "Tove Myrbakk",
 
             //EventDateStart = DateTime.Now.AddDays(-7),
@@ -34,8 +37,9 @@ namespace losol.EventManagement.Web.ViewModels
             IssuingDate = DateTime.Now.ToString("dd.MM.yyyy"),
 
             Title = "Nettkurs Diabetes mellitus type 2",
-            Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tempor interdum purus, at egestas lectus rutrum at. Phasellus semper volutpat ipsum ac bibendum. Nulla placerat interdum nulla nec consequat. Maecenas dictum mattis arcu, sed sagittis risus ornare et. Nunc in tortor et tortor molestie molestie"
-        };
+            Description = "Lorem ipsum dolor amet master cleanse ennui brunch truffaut copper mug, roof party skateboard chillwave live-edge activated charcoal ethical schlitz next level tumeric.",
+            
+             };
 
         public static CertificateVM From(Certificate c) =>
             new CertificateVM 
