@@ -5,9 +5,9 @@ using losol.EventManagement.Domain;
 
 namespace losol.EventManagement.Services
 {
-	public interface IOrganizationsService
+	public interface IOrganizationService
 	{
-		Task<Registration> GetAsync(int id);
+		Task<Organization> GetAsync(int id);
 		Task<int> Add(Organization organization);
 		Task<bool> Update(Organization organization);	
 	}
