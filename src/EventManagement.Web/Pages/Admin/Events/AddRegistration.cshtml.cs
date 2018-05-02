@@ -39,12 +39,8 @@ namespace losol.EventManagement.Pages.Admin.Events
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-			EventInfo = await _eventsService.GetWithProductsAsync(id);
-
-			if (EventInfo == null)
-			{
-				return NotFound();
-			}
+			EventInfo = EventInfo ?? await _eventsService.GetWithProductsAsync(id);
+			if (EventInfo == null) return NotFound();
             
             PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
 			Registration = new Web.Pages.Events.Register.RegisterVM(EventInfo, DefaultPaymentMethod);
@@ -54,26 +50,27 @@ namespace losol.EventManagement.Pages.Admin.Events
 
         public async Task<IActionResult> OnPostAsync(int id)
 		{
-
-			if (!ModelState.IsValid)
-			{
-                EventInfo = await _eventsService.GetWithProductsAsync(id);
-				PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
-                Registration = new Web.Pages.Events.Register.RegisterVM(EventInfo, DefaultPaymentMethod);
-				return Page();
-			}
-
-			EventInfo = await _eventsService.GetWithProductsAsync(id);
-			if (EventInfo == null) return NotFound();
-
-			// Check if user exists with email registered, and create new user if not.
-			var user = await _userManager.FindByEmailAsync(Registration.Email);
+            ModelState.Clear(); // Clear the validation errors, will validate manually later.
+            if(string.IsNullOrWhiteSpace(Registration.UserId))
+            {
+                ModelState.AddModelError("UserId", "User field is required.");
+                return await OnGetAsync(id);
+            }
+            // Check if user exists with email registered, and create new user if not.
+			var user = await _userManager.FindByIdAsync(Registration.UserId);
 			if (user == null)
 			{
                 // This shouldn't happen, because a registration can only
                 // be created for existing users.
                 ModelState.AddModelError(string.Empty, "Invalid user selected.");
+                return await OnGetAsync(id);
 			}
+            Registration.ParticipantName = user.Name;
+            Registration.Email = user.Email;
+            Registration.Phone = user.PhoneNumber;
+
+			EventInfo = await _eventsService.GetWithProductsAsync(id);
+			if (EventInfo == null) return NotFound();
 
             Registration.EventInfoId = id;
             Registration.UserId = user.Id;
@@ -83,12 +80,18 @@ namespace losol.EventManagement.Pages.Admin.Events
             if (registration != null)
             {
                 ModelState.AddModelError(string.Empty, "Bruker var allerede registrert");
-                return Page();
+                return await OnGetAsync(id);
             }
+
+            // Validate the VM
+			if (!TryValidateModel(Registration))
+			{
+                ModelState.AddModelError(string.Empty, "Please check the form before submitting.");
+                return await OnGetAsync(id);
+			}
 
 			// Create registration for our user
 			var newRegistration = Registration.Adapt<Registration>();
-
 			await _registrations.CreateRegistration(newRegistration);
 
 			return RedirectToPage();
