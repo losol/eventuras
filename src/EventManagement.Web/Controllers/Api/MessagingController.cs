@@ -21,13 +21,16 @@ namespace losol.EventManagement.Web.Controllers.Api
 	{
 		private readonly StandardEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
+        private readonly IMessageLogService _messageLog;
 
 		public MessagingController(
             StandardEmailSender emailSender, 
-            ISmsSender smsSender)
+            ISmsSender smsSender,
+            IMessageLogService messageLog)
 		{
 			_emailSender = emailSender;
             _smsSender = smsSender;
+            _messageLog = messageLog;
 		}
 
 		[HttpPost("email")]
@@ -59,17 +62,18 @@ namespace losol.EventManagement.Web.Controllers.Api
             }  
             catch(Exception exc)  
             {  
-                foreach(Task faulted in smsTasks)  
-                {  
-                    errors += exc.Message + "<br />" ;
-                }  
+                errors += exc.Message + Environment.NewLine;
             }  
+            var result = "";
             if (errors == "") {
-                return Ok("Alle SMS sendt!");
+                result = "Alle SMS sendt!";
             } else {
-                return Ok("Sendte SMS. Men fikk noen feil: " + "<br />" + errors);
+                result = "Sendte SMS. Men fikk noen feil: " + Environment.NewLine + errors;
             }
-			
+
+            await _messageLog.AddAsync(vm.EventInfoId,  string.Join(";", vm.To), vm.Text, "SMS", "Twilio", result);
+            
+            return Ok(result.Replace(Environment.NewLine, "<br />"));
 		}
 
         public class SmsVM
@@ -78,6 +82,7 @@ namespace losol.EventManagement.Web.Controllers.Api
             public IEnumerable<string> To { get; set; }
             [Required]
             public string Text { get; set; }
+            public int EventInfoId { get; set; }
         }
 
 		public class EmailVM
@@ -88,6 +93,7 @@ namespace losol.EventManagement.Web.Controllers.Api
             public string Subject { get; set; }
             [Required]
             public string Message { get; set; }
+            public int EventInfoId { get; set; }
 		}
 
         public class EmailRecipientVM

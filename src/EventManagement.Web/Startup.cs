@@ -179,6 +179,7 @@ namespace losol.EventManagement
 			services.AddScoped<IProductsService, ProductsService>();
 			services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ICertificatesService, CertificatesService>();
+            services.AddScoped<IMessageLogService, MessageLogService>();
 
             // Add Page render Service
             services.AddScoped<IRenderService, ViewRenderService>();
