@@ -1,0 +1,23 @@
+@page "{id:int}"
+@model losol.EventManagement.Pages.Admin.Events.MessagingModel
+
+@{
+    ViewData["Title"] = "Meldinger – " + @Model.EventInfo.Title;
+}
+
+<div class="jumbotron jumbotron-fluid">
+    <div class="container"> 
+        <div>
+            <h1 class="display-4">Meldinger @Model.EventInfo.Title</h1>
+            <p class="lead pb-5">Beskjeder sendt ut. Pr nå bare sms...</p>
+        </div>
+    </div>
+</div>
+<div class="container">
+    @foreach (var message in Model.Messages) {
+        <h3>@message.MessageType &nbsp;&nbsp;<i class="fa fa-clock-o" aria-hidden="true"></i> @message.TimeStamp</h3>
+        <p>Til: @message.Recipients.ToString()</p>
+        <p>Innhold: @message.MessageContent</p>
+        <p>Resultat: @message.Result</p>
+    }
+</div>
