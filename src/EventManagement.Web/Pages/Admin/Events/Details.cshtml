@@ -176,7 +176,82 @@
             </table> 
 		</div>
 	</div>
+    <div class="row">
+        <div class="col">
+            <h2>Andre deltakere/stab</h2>
+            <table  
+                id="participants-table"
+                data-toggle="table" 
+                data-url="/Admin/Events/Details/@Model.EventInfo.EventInfoId?handler=OtherAttendees"
+                data-pagination="false"
+                data-show-columns="true"
+                data-show-export="true"
+                data-sort-name="name"
+                data-sort-order="asc"
+                data-icons-prefix="fa"
+                data-icons="icons"
+                data-search="true"
+                data-advanced-search="true"
+                data-search-align="left"
+                data-show-refresh="true"
+                data-click-to-select="true"
+                data-export-options='{
+                    "fileName": "Deltakere-@Model.EventInfo.Code-@DateTime.Now.ToString("yyyy-MM-dd")"
+                }'>
+                <thead>
+                    <tr>
+                        <th data-field="name" data-sortable="true">Navn</th>
+                        <th data-field="email" data-sortable="true" data-visible="false">Epost</th>
+                        <th data-field="phone">Telefon</th>
+                        <th data-field="type">Type</th>
+                        <th data-formatter="Attended" data-events="attendedEvents">Status</th>
+                        <th data-formatter="RowActions" data-events="operateEvents">Meny</th>
+                    </tr>
+                </thead>
+            </table> 
+        </div>
+    </div>
+
+     <div class="row">
+        <div class="col">
+            <h2>Avmeldte</h2>
+            <table  
+                id="participants-table"
+                data-toggle="table" 
+                data-url="/Admin/Events/Details/@Model.EventInfo.EventInfoId?handler=Cancelled"
+                data-pagination="false"
+                data-show-columns="true"
+                data-show-export="true"
+                data-sort-name="name"
+                data-sort-order="asc"
+                data-icons-prefix="fa"
+                data-icons="icons"
+                data-search="true"
+                data-advanced-search="true"
+                data-search-align="left"
+                data-show-refresh="true"
+                data-click-to-select="true"
+                data-export-options='{
+                    "fileName": "Deltakere-@Model.EventInfo.Code-@DateTime.Now.ToString("yyyy-MM-dd")"
+                }'>
+                <thead>
+                    <tr>
+                        <th data-field="name" data-sortable="true">Navn</th>
+                        <th data-field="email" data-sortable="true" data-visible="false">Epost</th>
+                        <th data-field="phone">Telefon</th>
+                        <th data-field="jobTitle">Stilling</th>
+                        <th data-field="employer" data-visible="false">Arbeidsplass</th>
+                        <th data-field="city">Sted</th>
+                        <th data-formatter="Attended" data-events="attendedEvents">Status</th>
+                        <th data-formatter="RowActions" data-events="operateEvents">Meny</th>
+                    </tr>
+                </thead>
+            </table> 
+        </div>
+    </div>
 </div>
+
+
 
 @section scripts { 
     <script>
@@ -196,7 +271,7 @@
 
     function Attended(value, row, index, field) {
             let actions = [];
-            if((row.status == ('Draft' || 'Verified'))) {
+            if(row.status == 'Draft' || row.status == 'Verified') {
                 actions.push('<button type="button" class="btn btn-secondary btn-attended mr-1">Registrer</button>');
             }
             if((row.status == 'Attended')) {
