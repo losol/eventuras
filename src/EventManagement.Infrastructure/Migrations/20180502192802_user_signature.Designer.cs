@@ -12,9 +12,10 @@ using System;
 namespace losol.EventManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180502192802_user_signature")]
+    partial class user_signature
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,8 +88,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<string>("EvidenceDescription");
-
                     b.Property<string>("IssuedByName");
 
                     b.Property<DateTime>("IssuedDate");
@@ -96,10 +95,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.Property<string>("IssuedInCity");
 
                     b.Property<int?>("IssuingOrganizationId");
-
-                    b.Property<string>("IssuingOrganizationName");
-
-                    b.Property<string>("IssuingUserId");
 
                     b.Property<string>("RecipientEmail");
 
@@ -113,8 +108,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.HasKey("CertificateId");
 
                     b.HasIndex("IssuingOrganizationId");
-
-                    b.HasIndex("IssuingUserId");
 
                     b.HasIndex("RecipientUserId");
 
@@ -576,12 +569,8 @@ namespace losol.EventManagement.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("IssuingOrganizationId");
 
-                    b.HasOne("losol.EventManagement.Domain.ApplicationUser", "IssuingUser")
-                        .WithMany()
-                        .HasForeignKey("IssuingUserId");
-
                     b.HasOne("losol.EventManagement.Domain.ApplicationUser", "RecipientUser")
-                        .WithMany()
+                        .WithMany("Certificates")
                         .HasForeignKey("RecipientUserId");
                 });
 

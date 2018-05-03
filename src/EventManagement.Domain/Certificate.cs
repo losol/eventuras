@@ -23,12 +23,18 @@ namespace losol.EventManagement.Domain {
         public ApplicationUser RecipientUser { get; set; }
 
         // Evidence for the certificate
+        public string EvidenceDescription { get; set;}
         public List<CertificateEvidence> Evidence {get;set;}
 
         // Issued by
+        public string IssuingOrganizationName {get;set;}
         public int? IssuingOrganizationId {get;set;}
         public Organization IssuingOrganization {get;set;}
+
         public string IssuedByName {get;set;}
+        public string IssuingUserId {get;set;}
+        public ApplicationUser IssuingUser {get;set;}
+        
         public string IssuedInCity {get;set;}
         public DateTime IssuedDate { get; set; } = DateTime.UtcNow;
 

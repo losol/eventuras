@@ -1,4 +1,6 @@
 @page "{id}"
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
 @model losol.EventManagement.Pages.Admin.Users.EditModel
 @{
     ViewData["Title"] = "Endre brukeropplysninger";
@@ -29,6 +31,17 @@
                 <input asp-for="Input.Email" class="form-control" />
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
+
+            @* SHOW SIGNATURE FIELD ONLY TO SUPERADMIN *@
+            @if (SignInManager.IsSignedIn(User)) { 
+                @if ( User.IsInRole("SuperAdmin") ) {
+                    <div class="form-group">
+                        <label asp-for="Input.SignatureImageBase64"></label>
+                        <input asp-for="Input.SignatureImageBase64" class="form-control" />
+                        <span asp-validation-for="Input.SignatureImageBase64" class="text-danger"></span>
+                    </div>
+                }
+            }
             <button type="submit" class="btn btn-success">Lagre</button>
         </form>
     </div>
