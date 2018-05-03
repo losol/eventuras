@@ -29,7 +29,6 @@ namespace losol.EventManagement.Domain {
         public int? IssuingOrganizationId {get;set;}
         public Organization IssuingOrganization {get;set;}
         public string IssuingUserId {get;set;}
-        [NotMapped]
         public ApplicationUser IssuingUser {get;set;}
 
         public string IssuedByName {get;set;}
