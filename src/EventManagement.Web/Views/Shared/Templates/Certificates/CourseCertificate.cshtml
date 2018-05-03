@@ -114,7 +114,7 @@
         </div>
 
         <div class="group">
-          <div class="line">Basert p&aring; deltakelse p&aring;</div>
+          <div class="line">Basert p&aring;</div>
             @if (Model.Evidence != null && Model.Evidence.Any()) {
                 @foreach (var item in Model.Evidence) {
                   <div class="line">
@@ -131,7 +131,9 @@
                     }
                   </div>
                 }
-            }   
+            } else {
+              <div class="line">@Model.EvidenceDescription</div></p>
+            }  
         </div>
 
 
