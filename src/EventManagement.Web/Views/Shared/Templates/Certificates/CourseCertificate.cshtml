@@ -66,6 +66,9 @@
       .logo {
         padding: 3mm;
       }
+      .w-50 {
+        width: 50%;
+      }
       .handwriting {
         font-size: 24px;
         font-family: 'Reenie Beanie';
@@ -112,9 +115,6 @@
 
         <div class="group">
           <div class="line">Basert p&aring; deltakelse p&aring;</div>
-            <div class="line">
-              @Model.EvidenceDescription
-            </div>
             @if (Model.Evidence != null && Model.Evidence.Any()) {
                 @foreach (var item in Model.Evidence) {
                   <div class="line">
@@ -132,12 +132,14 @@
                   </div>
                 }
             }   
+        </div>
+
 
         @if (Model.IssuerOrganizationName != null) {
         <div class="group">
           <div class="logo">
             @if(!string.IsNullOrEmpty(Model.IssuerOrganizationLogoBase64)) {
-                <img src="@Model.IssuerOrganizationLogoBase64" alt="signatur" class="center" />
+                <img src="@Model.IssuerOrganizationLogoBase64" alt="signatur" class="center w-50" />
               } 
           </div>
           <div class="line">
