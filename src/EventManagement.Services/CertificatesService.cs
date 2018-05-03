@@ -73,14 +73,28 @@ namespace losol.EventManagement.Services {
 				RecipientUserId = registration.User.Id,
 			};
 
+			// Add evidence description
+			certificate.EvidenceDescription = $"{registration.EventInfo.Title} {registration.EventInfo.City}";
+            if (registration.EventInfo.DateStart.HasValue) 
+                { certificate.EvidenceDescription += " – " + registration.EventInfo.DateStart.Value.ToString("d");};
+            if (registration.EventInfo.DateEnd.HasValue) 
+                { certificate.EvidenceDescription += "-" + registration.EventInfo.DateEnd.Value.ToString("d");};
+
+			// Add organization
 			if (registration.EventInfo.OrganizationId != null) {
 				certificate.IssuingOrganizationId = registration.EventInfo.OrganizationId;
+			} else {
+				certificate.IssuingOrganizationName = "Nordland legeforening";
 			}
 			
+			// Add organizer user
 			if (registration.EventInfo.OrganizerUserId != null) {
 				certificate.IssuedByName = registration.EventInfo.OrganizerUser.Name;
 				certificate.IssuingUserId = registration.EventInfo.OrganizerUserId;
-			} 
+			} else {
+				certificate.IssuedByName = "Tove Myrbakk";
+			}
+
 
 			// Save cetificate
 			_db.Certificates.Add (certificate);

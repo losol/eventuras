@@ -42,8 +42,8 @@ namespace losol.EventManagement.Web.ViewModels
             
              };
 
-        public static CertificateVM From(Certificate c) =>
-            new CertificateVM 
+        public static CertificateVM From(Certificate c) {
+            var cert = new CertificateVM 
             {
                 CertificateGuid = c.CertificateGuid.ToString(),
 
@@ -51,18 +51,34 @@ namespace losol.EventManagement.Web.ViewModels
                 Description = c.Description,
 
                 RecipientName = c.RecipientName,
-
+                
+                EvidenceDescription = c.EvidenceDescription,
                 Evidence = c.Evidence,
 
                 IssuedInCity = c.IssuedInCity,
                 IssuingDate = c.IssuedDate.ToString("dd.MMM.yyyy"),
                 
-                IssuerOrganizationName = c.IssuingOrganization.Name,
-                IssuerOrganizationLogoBase64 = c.IssuingOrganization.LogoBase64,
-                
-                IssuerPersonName = c.IssuedByName,
-                IssuerPersonSignatureImageBase64 = c.IssuingUser.SignatureImageBase64
             };
+
+
+            // Issuing organization
+            if (c.IssuingOrganization != null) {
+                cert.IssuerOrganizationName = c.IssuingOrganization.Name;
+                cert.IssuerOrganizationLogoBase64 = c.IssuingOrganization.LogoBase64;
+            } else {
+                cert.IssuerOrganizationName = c.IssuingOrganizationName;
+            }
+
+            // Issuing person
+            if (c.IssuingUser != null) {
+                cert.IssuerPersonName = c.IssuingUser.Name;
+                cert.IssuerPersonSignatureImageBase64 = c.IssuingUser.SignatureImageBase64;
+            } else {
+                cert.IssuerPersonName = c.IssuedByName;
+            }
+
+            return cert;
+         }
 
     }
 }

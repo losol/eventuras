@@ -115,35 +115,36 @@
             <div class="line">
               @Model.EvidenceDescription
             </div>
-        @if (Model.Evidence != null && Model.Evidence.Any()) {
-            @foreach (var item in Model.Evidence) {
-              <div class="line">
-                @item.Registration.EventInfo.Title 
-                @if(item.Registration.EventInfo.City != null) {
-                  <span> - @item.Registration.EventInfo.City</span>
+            @if (Model.Evidence != null && Model.Evidence.Any()) {
+                @foreach (var item in Model.Evidence) {
+                  <div class="line">
+                    @item.Registration.EventInfo.Title 
+                    @if(item.Registration.EventInfo.City != null) {
+                      <span> - @item.Registration.EventInfo.City</span>
+                    }
+                    @if(item.Registration.EventInfo.DateStart != null) {
+                      <span> - @String.Format("{0:d/M/yyyy}", item.Registration.EventInfo.DateStart)</span>
+                    }
+                    
+                    @if(item.Registration.EventInfo.DateEnd != null) {
+                      <span> - @String.Format("{0:d/M/yyyy}", item.Registration.EventInfo.DateEnd)</span>
+                    }
+                  </div>
                 }
-                @if(item.Registration.EventInfo.DateStart != null) {
-                  <span> - @String.Format("{0:d/M/yyyy}", item.Registration.EventInfo.DateStart)</span>
-                }
-                
-                @if(item.Registration.EventInfo.DateEnd != null) {
-                  <span> - @String.Format("{0:d/M/yyyy}", item.Registration.EventInfo.DateEnd)</span>
-                }
-              </div>
-            }
-          <br />
+            }   
 
-        }
+        @if (Model.IssuerOrganizationName != null) {
         <div class="group">
           <div class="logo">
-          @if(!string.IsNullOrEmpty(Model.IssuerOrganizationLogoBase64)) {
-              <img src="@Model.IssuerOrganizationLogoBase64" alt="signatur" class="center" />
-            } 
+            @if(!string.IsNullOrEmpty(Model.IssuerOrganizationLogoBase64)) {
+                <img src="@Model.IssuerOrganizationLogoBase64" alt="signatur" class="center" />
+              } 
           </div>
           <div class="line">
-        Arrangert av @Model.IssuerOrganizationName</div>
+            Arrangert av @Model.IssuerOrganizationName  
           </div>
         </div>
+        }
 
           @if(Model.Description != null) {
               <div class="group">
