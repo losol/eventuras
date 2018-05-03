@@ -401,8 +401,8 @@
             text: text
         }
         $.postJSON('/api/v0/messaging/sms', sms)
-            .done(function(){
-                toastr.success('SMS sent to ' + recipients.length + ' participants.');
+            .done(function(response){
+                toastr.success(response, 'SMS til alle', {timeOut: 60000});
             })
             .fail(function(){
                 toastr.error('Could not send the SMS.');

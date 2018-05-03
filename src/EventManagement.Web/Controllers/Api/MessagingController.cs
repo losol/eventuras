@@ -11,6 +11,7 @@ using losol.EventManagement.Services;
 using losol.EventManagement.Web.Services;
 using losol.EventManagement.ViewModels;
 using losol.EventManagement.Services.Messaging.Sms;
+using GoApi.Core;
 
 namespace losol.EventManagement.Web.Controllers.Api
 {
@@ -51,8 +52,24 @@ namespace losol.EventManagement.Web.Controllers.Api
 		{
 			if (!ModelState.IsValid) return BadRequest();
             var smsTasks = vm.To.Select(t => _smsSender.SendSmsAsync(t, vm.Text));
-            await Task.WhenAll(smsTasks);
-			return Ok();
+            var errors = "";
+            try  
+            {  
+                await Task.WhenAll(smsTasks);
+            }  
+            catch(Exception exc)  
+            {  
+                foreach(Task faulted in smsTasks)  
+                {  
+                    errors += exc.Message + "<br />" ;
+                }  
+            }  
+            if (errors == "") {
+                return Ok("Alle SMS sendt!");
+            } else {
+                return Ok("Sendte SMS. Men fikk noen feil: " + "<br />" + errors);
+            }
+			
 		}
 
         public class SmsVM
