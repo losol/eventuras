@@ -109,7 +109,7 @@
      <h2>Ordre</h2>
         @{
             foreach (var order in Model.Registration.Orders) {
-                <span class="badge badge-default">@order.OrderId </span>
+                <a asp-page="../Orders/Details" asp-route-id="@order.OrderId" class="btn btn-secondary link-decoration-none">Vis ordre @order.OrderId </a>
             }
         }
 
