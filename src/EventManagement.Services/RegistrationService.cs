@@ -11,15 +11,18 @@ namespace losol.EventManagement.Services {
 	public class RegistrationService : IRegistrationService {
 		private readonly ApplicationDbContext _db;
 		private readonly IPaymentMethodService _paymentMethods;
+		private readonly IOrderService _orderService;
 		private readonly ILogger _logger;
 
 		public RegistrationService (
 			ApplicationDbContext db, 
 			IPaymentMethodService paymentMethods,
+			IOrderService orderService,
 			ILogger<RegistrationService> logger) 
 		{
 			_db = db;
 			_paymentMethods = paymentMethods;
+			_orderService = orderService;
 			_logger = logger;
 		}
 
@@ -224,9 +227,13 @@ namespace losol.EventManagement.Services {
 		public async Task<bool> UpdatePaymentMethod(int registrationId, int paymentMethodId) {
 			var reg = await _db.Registrations
 				.Where( m => m.RegistrationId == registrationId)
+				.Include( m => m.Orders )
 				.FirstOrDefaultAsync();
 
 			reg.PaymentMethodId = paymentMethodId;
+			foreach (var order in reg.Orders.Where( s => s.CanEdit == true)) {
+				order.PaymentMethodId = paymentMethodId;
+			}
 			_db.Update(reg);
 			return await _db.SaveChangesAsync() > 0;
 		}

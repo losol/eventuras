@@ -75,6 +75,7 @@ namespace losol.EventManagement.Web.Controllers.Api {
             try {
                 await _registrationsService.UpdateRegistrationStatus(id, status);
 
+                // TODO Move to services project?
                 if ( status == RegistrationStatus.Cancelled ) {
                     var registration = await _registrationsService.GetWithOrdersAsync(id);
                     foreach (var order in registration.Orders) {
