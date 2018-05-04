@@ -258,6 +258,7 @@ namespace losol.EventManagement.Services {
 				.FirstOrDefaultAsync();
 			
 			reg.Status = status;
+			reg.AddLog();
 			_db.Update(reg);
 			return await _db.SaveChangesAsync() > 0;
 		}
@@ -269,6 +270,7 @@ namespace losol.EventManagement.Services {
 				.FirstOrDefaultAsync();
 			
 			reg.Type = type;
+			reg.AddLog($"Satte deltakertype til {reg.Type} ");
 			_db.Update(reg);
 			return await _db.SaveChangesAsync() > 0;
 		}
