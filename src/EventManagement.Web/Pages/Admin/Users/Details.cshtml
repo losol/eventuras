@@ -33,6 +33,10 @@
                                 <span> - @registration.EventInfo.DateEnd.Value.ToString("d")</span>
                             }
                             </p>
+                            <p>
+                                <span class="badge badge-info">@registration.Status</span>
+                                <span class="badge badge-info">@registration.Type</span>
+                            </p>
                             <a asp-page="../Registrations/Details" asp-route-id="@registration.RegistrationId" class="btn btn-secondary link-decoration-none">Vis registrering</a>
                         </div>
                     </div>
