@@ -14,9 +14,11 @@ namespace losol.EventManagement.Web.Controllers.Api {
     [Route ("/api/v0/registrations")]
     public class RegistrationsController : Controller {
         private readonly IRegistrationService _registrationsService;
+        private readonly IOrderService _orderService;
 
-        public RegistrationsController (IRegistrationService registrationsService) {
+        public RegistrationsController (IRegistrationService registrationsService, IOrderService orderService) {
             _registrationsService = registrationsService;
+            _orderService = orderService;
         }
 
         [HttpPost ("{id}/participant/update")]
@@ -69,9 +71,19 @@ namespace losol.EventManagement.Web.Controllers.Api {
 
         [HttpPost ("status/update/{id}/{status}")]
         public async Task<ActionResult> UpdateRegistrationStatus ([FromRoute] int id, [FromRoute] RegistrationStatus status) {
+            var cancelled = "";
             try {
                 await _registrationsService.UpdateRegistrationStatus(id, status);
-                return Ok ();
+
+                // TODO Move to services project?
+                if ( status == RegistrationStatus.Cancelled ) {
+                    var registration = await _registrationsService.GetWithOrdersAsync(id);
+                    foreach (var order in registration.Orders) {
+                        await _orderService.MarkAsCancelledAsync(order.OrderId);
+                        cancelled += $" Ordre {order.OrderId} er kansellert. ";
+                }
+            }
+                return Ok ("Registreringen slettet. " + cancelled);
             } catch (Exception e) when (e is InvalidOperationException || e is ArgumentException) {
                 return BadRequest ();
             }

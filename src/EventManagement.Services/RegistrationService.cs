@@ -11,15 +11,18 @@ namespace losol.EventManagement.Services {
 	public class RegistrationService : IRegistrationService {
 		private readonly ApplicationDbContext _db;
 		private readonly IPaymentMethodService _paymentMethods;
+		private readonly IOrderService _orderService;
 		private readonly ILogger _logger;
 
 		public RegistrationService (
 			ApplicationDbContext db, 
 			IPaymentMethodService paymentMethods,
+			IOrderService orderService,
 			ILogger<RegistrationService> logger) 
 		{
 			_db = db;
 			_paymentMethods = paymentMethods;
+			_orderService = orderService;
 			_logger = logger;
 		}
 
@@ -212,22 +215,40 @@ namespace losol.EventManagement.Services {
 		public async Task<bool> UpdateCustomerInfo(int registrationId, string customerName, string customerEmail, string customerVatNumber, string customerInvoiceReference) {
 			var reg = await _db.Registrations
 				.Where( m => m.RegistrationId == registrationId)
+				.Include ( m => m.Orders)
 				.FirstOrDefaultAsync();
 
+				// Update customer details in registration. 
 				reg.CustomerName = customerName;
 				reg.CustomerEmail =  customerEmail;
 				reg.CustomerVatNumber = customerVatNumber;
 				reg.CustomerInvoiceReference = customerInvoiceReference;
 				_db.Update(reg);
+
+				// Update customer details in editable orders. 
+				foreach (var order in reg.Orders.Where( s => s.CanEdit == true)) {
+					order.CustomerName = customerName;
+					order.CustomerEmail =  customerEmail;
+					order.CustomerVatNumber = customerVatNumber;
+					order.CustomerInvoiceReference = customerInvoiceReference;
+				}
 			return await _db.SaveChangesAsync() > 0;
 		}
 		public async Task<bool> UpdatePaymentMethod(int registrationId, int paymentMethodId) {
 			var reg = await _db.Registrations
 				.Where( m => m.RegistrationId == registrationId)
+				.Include( m => m.Orders )
 				.FirstOrDefaultAsync();
 
+			// Update payment method in registration. 
 			reg.PaymentMethodId = paymentMethodId;
 			_db.Update(reg);
+
+			// Update payment method in editable orders
+			foreach (var order in reg.Orders.Where( s => s.CanEdit == true)) {
+				order.PaymentMethodId = paymentMethodId;
+			}
+			
 			return await _db.SaveChangesAsync() > 0;
 		}
 
@@ -237,6 +258,7 @@ namespace losol.EventManagement.Services {
 				.FirstOrDefaultAsync();
 			
 			reg.Status = status;
+			reg.AddLog();
 			_db.Update(reg);
 			return await _db.SaveChangesAsync() > 0;
 		}
@@ -248,6 +270,7 @@ namespace losol.EventManagement.Services {
 				.FirstOrDefaultAsync();
 			
 			reg.Type = type;
+			reg.AddLog($"Satte deltakertype til {reg.Type} ");
 			_db.Update(reg);
 			return await _db.SaveChangesAsync() > 0;
 		}
