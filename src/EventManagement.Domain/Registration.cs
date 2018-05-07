@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -202,11 +202,6 @@ namespace losol.EventManagement.Domain
 		}
 		public void CreateOrUpdateOrder(IEnumerable<Product> products) =>
 			CreateOrUpdateOrder(products, null);
-
-		public void CreateRefund()
-		{
-			throw new NotImplementedException();
-		}
 
 		private List<OrderLine> _createOrderLines(IEnumerable<Product> products, IEnumerable<ProductVariant> variants)
 		{
