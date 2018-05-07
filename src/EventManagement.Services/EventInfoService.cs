@@ -42,6 +42,17 @@ namespace losol.EventManagement.Services
 				.ToListAsync();
 		}
 
+		// TODO: Add events which is spanning over several days.
+		public async Task<List<EventInfo>> GetOngoingEventsAsync() 
+		{
+			return await _db.EventInfos
+				.Where(i => 
+					i.Published && 
+					i.DateStart.Value.Date == DateTime.Now.Date)
+				.OrderBy(s => s.DateStart)
+				.ToListAsync();
+		}
+
 		public async Task<List<EventInfo>> GetEventsAsync()
 		{
 			return await _db.EventInfos
