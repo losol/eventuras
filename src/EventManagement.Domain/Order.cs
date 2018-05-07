@@ -11,7 +11,8 @@ namespace losol.EventManagement.Domain
 			Draft,
 			Verified,
 			Invoiced,
-			Cancelled
+			Cancelled,
+			Refunded
 		}
 
 
@@ -26,6 +27,7 @@ namespace losol.EventManagement.Domain
 			Draft -> Cancelled
 			Draft -> Verified -> Cancelled
 			Draft -> Verified -> Invoiced -> Cancelled
+			Draft -> Verified -> Invoiced -> Refunded
 		 */
 		private OrderStatus _status = OrderStatus.Draft;
 		public OrderStatus Status { 
@@ -44,6 +46,13 @@ namespace losol.EventManagement.Domain
 						if(_status != OrderStatus.Verified)
 						{
 							throw new InvalidOperationException("Only verified orders can be invoiced.");
+						}
+						break;
+
+					case OrderStatus.Refunded:
+						if(_status != OrderStatus.Invoiced)
+						{
+							throw new InvalidOperationException("Only invoiced orders can be refunded.");
 						}
 						break;
 
@@ -110,6 +119,12 @@ namespace losol.EventManagement.Domain
 		public void MarkAsInvoiced()
 		{
 			Status = OrderStatus.Invoiced;
+			this.AddLog();
+		}
+
+		public void MarkAsRefunded()
+		{
+			Status = OrderStatus.Refunded;
 			this.AddLog();
 		}
 
