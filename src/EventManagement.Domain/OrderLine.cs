@@ -52,7 +52,7 @@ namespace losol.EventManagement.Domain
 			{
 				RefundOrderId = forOrder.OrderId,
 				ProductName = $"Refund for Order #{forOrder.OrderId}",
-				Price = -forOrder.OrderLines.Sum(l => (l.Price + l.Price * l.VatPercent * 0.01m) * l.Quantity)
+				Price = -forOrder.TotalAmount
 			};
 		}
 

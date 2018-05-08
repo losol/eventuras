@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace losol.EventManagement.Domain
 {
@@ -103,6 +104,9 @@ namespace losol.EventManagement.Domain
 		public bool CanEdit => 
 			Status == OrderStatus.Draft || Status == OrderStatus.Verified;
 
+		// TODO: Write tests for this
+		public decimal TotalAmount => 
+			OrderLines.Sum(l => (l.Price + l.Price * l.VatPercent * 0.01m) * l.Quantity);
 
 		public void MarkAsVerified()
 		{
