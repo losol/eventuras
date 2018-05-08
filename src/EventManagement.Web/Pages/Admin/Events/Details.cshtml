@@ -191,18 +191,19 @@
       </div>
       <div class="modal-body">
         @foreach(var product in Model.EventInfo.Products) {
-            <div class="row">
+            <div class="row product-input-group">
                 <div class="col-2">
                     <input id="input-quantity-@product.ProductId" 
                         class="input-quantity"
                         style="width: 100%" />
+                    <input type="hidden" value="@product.ProductId" class="input-prodid" />
                 </div>
                 <div class="col-10" id="content-@product.ProductId">
                     <h4>@product.Name</h4>
                     <p>@product.Description</p>
                     @foreach(var variant in product.ProductVariants) {
                         <input type="radio" 
-                            name="variant-radio" 
+                            name="variant-radio-@product.ProductId" 
                             value="@variant.ProductVariantId" /> @variant.Name <br />
                     }
                 </div>
@@ -210,7 +211,7 @@
         }
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button id="btn-save-product-changes" type="button" class="btn btn-primary">Save changes</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -226,6 +227,7 @@
     @Html.Partial("Partials/_EmailModalScripts")
     <script>
 
+    let registrationId = 0;
     const $table = $('#participants-table');
     $('#toolbar').find('select').change(function () {
         $table.bootstrapTable('refreshOptions', {
@@ -328,9 +330,10 @@
             row.products.forEach(function(p) {
                 $('#input-quantity-'+p.item1.productId).val(p.item3);
                 if(p.item2) {
-                    $('#content-' +p.item1.productId + ' input[name=variant-radio]').val([p.item2.productVariantId]);
+                    $('#content-' +p.item1.productId + ' input[name=variant-radio-'+p.item1.productId+']').val([p.item2.productVariantId]);
                 }
             });
+            registrationId = row.registrationId;
             $('#modal-edit-products').modal('show');
         }
     };
@@ -370,6 +373,22 @@
         }
     };
 
+    $('#btn-save-product-changes').on('click', function(){
+        const data = {
+            registrationId: registrationId,
+            products: $('.product-input-group').get()
+                        .map(function(d) { 
+                            const productId = $(d).find('.input-prodid').first().val();
+                            return {
+                                id: productId, 
+                                quantity: $(d).find('.input-quantity').first().val(),
+                                variant: $(d).find('input[name="variant-radio-'+ productId +'"]:checked').val()
+                            }
+                        })
+        };
+        console.log(JSON.stringify(data))
+    })
+    
     function sendAll() {
         const data = $table.bootstrapTable('getData', {useCurrentPage: false});
         recipients = data.map(function(x){ 
