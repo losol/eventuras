@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace losol.EventManagement.Domain
 			NotAttended = 3,
 			Attended = 4,
 			Finished = 5,
-			
+
 		}
 
 		public enum RegistrationType
@@ -77,7 +77,7 @@ namespace losol.EventManagement.Domain
 
 		public int? CertificateId {get;set;}
 		public Certificate Certificate {get;set;}
- 
+
 		// Navigation properties
 		public EventInfo EventInfo { get; set; }
 		public ApplicationUser User { get; set; }
@@ -89,13 +89,13 @@ namespace losol.EventManagement.Domain
 			Status = RegistrationStatus.Verified;
 			AddLog();
 		}
-		public void MarkAsAttended() 
+		public void MarkAsAttended()
 		{
 			Status = RegistrationStatus.Attended;
 			AddLog();
 		}
 
-		public void MarkAsNotAttended() 
+		public void MarkAsNotAttended()
 		{
 			Status = RegistrationStatus.NotAttended;
 			AddLog();
@@ -103,7 +103,7 @@ namespace losol.EventManagement.Domain
 
 		public bool HasOrder => Orders != null && Orders.Count > 0;
 		public bool HasCertificate => CertificateId != null;
-				
+
 		public void AddLog(string text = null)
 		{
 			var logText = $"{DateTime.UtcNow.ToString("u")}: ";
@@ -116,15 +116,15 @@ namespace losol.EventManagement.Domain
 			Log += logText + "\n";
 		}
 
-		public void CreateOrder(IEnumerable<Product> products, IEnumerable<ProductVariant> variants)
+		public void CreateOrder(IEnumerable<Product> products, IEnumerable<ProductVariant> variants, IEnumerable<OrderLine> refundlines)
 		{
 			_ = products ?? throw new ArgumentNullException(nameof(products));
 
-			// Check if products belnongs to the event	
+			// Check if products belnongs to the event
 			if(products != null && products.Where(p => p.EventInfoId != EventInfoId).Any())
 			{
 				throw new ArgumentException(
-					message: "All the products must belong to the event being registered for.", 
+					message: "All the products must belong to the event being registered for.",
 					paramName: nameof(products)
 				);
 			}
@@ -138,7 +138,7 @@ namespace losol.EventManagement.Domain
 						message: "All the product-variants must belong to ",
 						paramName: nameof(products)
 					);
-				}	
+				}
 			}
 
 			// Create order.
@@ -156,16 +156,21 @@ namespace losol.EventManagement.Domain
 			};
 
 			if (products != null) {
-				order.OrderLines = _createOrderLines(products, variants);
+				order.OrderLines = _createOrderLines(products, variants, refundlines);
 			}
-	
+			if(refundlines != null)
+			{
+				order.OrderLines.AddRange(refundlines);
+			}
+
 			order.AddLog();
 			this.Orders = this.Orders ?? new List<Order>();
 			this.Orders.Add(order);
 		}
-		public void CreateOrder(IEnumerable<Product> products) => CreateOrder(products, null);
+		public void CreateOrder(ICollection<Product> products, ICollection<ProductVariant> variants) => CreateOrder(products, variants, null);
+		public void CreateOrder(ICollection<Product> products) => CreateOrder(products, null, null);
 
-		public void CreateOrder() => CreateOrder(null, null);
+		public void CreateOrder() => CreateOrder(null, null, null);
 
 		/// <summary>
 		/// Updates an existing order if it's not already been invoiced.
@@ -173,38 +178,74 @@ namespace losol.EventManagement.Domain
 		/// </summary>
 		/// <param name="products"></param>
 		/// <param name="variants"></param>
-		public void CreateOrUpdateOrder(IEnumerable<Product> products, IEnumerable<ProductVariant> variants)
+		public void CreateOrUpdateOrder(ICollection<Product> products, ICollection<ProductVariant> variants)
 		{
-			// Check if the product already exists in one of this registration's orders
-			var existingProductIds = Orders.Where(o => o.Status != OrderStatus.Cancelled)
-											.SelectMany(o => o.OrderLines
-											.Where(l => l.ProductId.HasValue)
-											.Select(l => l.ProductId.Value)
-										);
-			if(existingProductIds.Intersect(products.Select(p => p.ProductId)).Any())
-			{
-				throw new InvalidOperationException("The same product cannot be added twice");
-			}
+			// Get the existing productids
+            var existingProducts = Orders.Where(o => o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Refunded)
+                                        .SelectMany(o => o.OrderLines
+                                        .Where(l => l.ProductId.HasValue)
+                                    );
+			var existingProductIds = existingProducts.Select(l => l.ProductId.Value);
+
+            // Check if an order needs to be refunded
+            var conflictingProductIds = existingProductIds.Intersect(products.Select(p => p.ProductId));
+            var conflictingProducts = existingProducts
+				.Where(p => conflictingProductIds.Contains(p.ProductId.Value));
+
+			// If a refund is required
+			var refundLines = new List<OrderLine>();
+            if(conflictingProductIds.Any())
+            {
+				var ordersToRefund = Orders
+								.Where(o => o.OrderLines.Where(l => conflictingProductIds.Contains(l.ProductId.Value)).Any())
+								.GroupBy(o => o.OrderId)
+								.Select(g => g.First());
+				
+				// Refund the orders, and create refundlines for each of them
+				foreach(var o in ordersToRefund)
+				{
+					o.MarkAsRefunded();
+					refundLines.Add(OrderLine.CreateRefundOrderLine(o));
+				}
+
+				// Update the produces, variants arguments
+				var refundedOrdersLines = ordersToRefund.SelectMany(l => l.OrderLines);
+				foreach(var line in refundedOrdersLines)
+				{
+					if(!products.Where(p => p.ProductId == line.ProductId).Any())
+					{
+						products.Add(line.Product);
+						if(line.ProductVariantId != null)
+						{
+							variants.Add(line.ProductVariant);
+						}
+					}
+				}
+            }
 
 			// Check if any uninvoiced orders exist (excluding the cancelled ofcourse)
-			var uninvoicedOrders = Orders.Where(o => o.Status != OrderStatus.Invoiced && o.Status != OrderStatus.Cancelled);
+			var editableOrders = Orders.Where(o => o.Status != OrderStatus.Invoiced && o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Refunded);
 
-			if(!uninvoicedOrders.Any())
+			if(!editableOrders.Any())
 			{
 				// No uninvoiced orders exist
 				// Create a new order
-				CreateOrder(products, variants);
+				CreateOrder(products, variants, refundLines);
 				return;
 			}
-			
-			var orderToUpdate = uninvoicedOrders.First();
-			orderToUpdate.OrderLines.AddRange(_createOrderLines(products, variants));
+
+			var orderToUpdate = editableOrders.First();
+			orderToUpdate.OrderLines.AddRange(_createOrderLines(products, variants, refundLines));
 		}
-		public void CreateOrUpdateOrder(IEnumerable<Product> products) =>
+		public void CreateOrUpdateOrder(ICollection<Product> products) =>
 			CreateOrUpdateOrder(products, null);
 
-		private List<OrderLine> _createOrderLines(IEnumerable<Product> products, IEnumerable<ProductVariant> variants)
+		private List<OrderLine> _createOrderLines(
+			IEnumerable<Product> products, 
+			IEnumerable<ProductVariant> variants,
+			IEnumerable<OrderLine> refundlines)
 		{
+			refundlines = refundlines ?? new List<OrderLine>();
 			var orderLines = products.Select(p =>
 				{
 					var v = variants?.Where(var => var.ProductId == p.ProductId).SingleOrDefault();
@@ -214,7 +255,7 @@ namespace losol.EventManagement.Domain
 						ProductVariantId = v?.ProductVariantId,
 						Price = v?.Price ?? p.Price,
 						VatPercent = v?.VatPercent ?? p.VatPercent,
-						Quantity = Math.Max(1, p.MandatoryCount), 
+						Quantity = Math.Max(1, p.MandatoryCount),
 
 						ProductName = p.Name,
 						ProductDescription = p.Description,
@@ -225,6 +266,7 @@ namespace losol.EventManagement.Domain
 						// Comments
 					};
 				});
+			orderLines.Concat(refundlines);
 			return orderLines.ToList();
 		}
 	}

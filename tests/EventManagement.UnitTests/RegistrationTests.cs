@@ -231,25 +231,6 @@ namespace losol.EventManagement.UnitTests
 
 		public class CreateOrUpdateOrder_Should
 		{
-			[Fact]
-			public void ThrowExceptionIfProductAlreadyOrdered()
-			{
-				// Arrange
-				var registration = new Registration 
-				{
-					Orders = new List<Order> {
-						new Order { 
-							OrderLines = new List<OrderLine> {
-								new OrderLine { ProductId = 1 }
-							}
-						}
-					}
-				};
-				var products = new List<Product> { new Product { ProductId = 1 } };
-
-				// Act & assert
-				Assert.Throws<InvalidOperationException>(() => registration.CreateOrUpdateOrder(products));
-			}
 
 			[Fact]
 			public void CreateNewOrderIfExistingOrdersAreInvoiced()
@@ -325,6 +306,50 @@ namespace losol.EventManagement.UnitTests
 
 				// Assert
 				Assert.Equal(2, registration.Orders.Count);
+			}
+
+			[Fact]
+			public void CreateRefundOrderIfProductExistsInInvoicedOrder()
+			{
+				// Arrange
+				var registration = new Registration 
+				{
+					Orders = new List<Order> {
+						new Order { 
+							OrderLines = new List<OrderLine> {
+								new OrderLine 
+								{ 
+									ProductId = 1, 
+									ProductVariantId = 1, 
+									Price = 100,
+									Product = new Product
+									{
+										ProductId = 1
+									},
+									ProductVariant = new ProductVariant
+									{
+										ProductVariantId = 1,
+										ProductId = 1
+									}	
+								}
+							}
+						}
+					}
+				};
+				registration.Orders.First().MarkAsVerified();
+				registration.Orders.First().MarkAsInvoiced();
+				
+				var products = new List<Product> { new Product { ProductId = 1, Price = 100 } };
+				var variants = new List<ProductVariant> { new ProductVariant { ProductVariantId = 2, ProductId = 1, Price = 100 } };
+
+				// Act
+				registration.CreateOrUpdateOrder(products, variants);
+
+				// Assert
+				var last = registration.Orders.Last();
+				Assert.Equal(2, registration.Orders.Count);
+				Assert.Equal(OrderStatus.Refunded, registration.Orders.First().Status);
+				Assert.Equal(0m, registration.Orders.Last().TotalAmount);
 			}
 
 		}

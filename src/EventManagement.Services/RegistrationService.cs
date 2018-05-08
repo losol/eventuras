@@ -102,7 +102,7 @@ namespace losol.EventManagement.Services {
 				registration.CreateOrder (
 					products,
 					products.SelectMany (p => p.ProductVariants)
-					.Where (v => variantIds?.Contains (v.ProductVariantId) ?? false)
+					.Where (v => variantIds?.Contains (v.ProductVariantId) ?? false).ToList()
 				);
 			}
 
@@ -182,7 +182,7 @@ namespace losol.EventManagement.Services {
 				throw new ArgumentException (message: "Couldnt find all the products. Check the ids.", paramName : nameof (productIds));
 			}
 			_ = variantIds ?? new int[]{ };
-			var variants = products.First ().ProductVariants.Where (v => variantIds.Contains (v.ProductVariantId));
+			var variants = products.First ().ProductVariants.Where (v => variantIds.Contains (v.ProductVariantId)).ToList();
 
 			// Create/update an order as needed.
 			registration.CreateOrUpdateOrder (products, variants);
