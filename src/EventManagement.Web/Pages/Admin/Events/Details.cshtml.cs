@@ -78,8 +78,9 @@ namespace losol.EventManagement.Pages.Admin.Events
                     JobTitle = x.ParticipantJobTitle,
                     Employer = x.ParticipantEmployer,
                     City = x.ParticipantCity,
-                    Products = x.Orders.Where(o => o.Status != OrderStatus.Cancelled)
+                    Products = x.Orders.Where(o => o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Refunded)
                         .SelectMany(o => o.OrderLines)
+                        .Where(l => !l.IsRefund)
                         .Select(l => ValueTuple.Create(l.Product, l.ProductVariant, l.Quantity))
                         .ToList(),
                     HasCertificate = x.HasCertificate,
