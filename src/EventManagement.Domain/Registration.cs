@@ -226,7 +226,6 @@ namespace losol.EventManagement.Domain
 
 			if(!editableOrders.Any())
 			{
-				// No uninvoiced orders exist
 				// Create a new order
 				CreateOrder(orders, refundLines);
 				return;
