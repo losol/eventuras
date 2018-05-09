@@ -151,30 +151,8 @@ namespace losol.EventManagement.Web.Controllers.Api
 			return Ok();
 		}
 
+
 		[HttpPost("create-order")]
-		public async Task<IActionResult> CreateOrder([FromBody]CreateOrderVM vm,
-			[FromServices]IRegistrationService registrationService)
-		{
-			if(!ModelState.IsValid) return BadRequest();
-
-			try
-			{
-				await registrationService.CreateOrUpdateOrder(vm.RegistrationId, vm.ProductIds, vm.VariantIds);
-				return Ok();
-			}
-			catch(ArgumentException)
-			{
-				return BadRequest();
-			}
-			catch(InvalidOperationException)
-			{
-				return StatusCode(StatusCodes.Status409Conflict);
-			}
-			catch {
-				return StatusCode(StatusCodes.Status500InternalServerError);
-			}			
-		}
-
 		[HttpPost("update-order")]
 		public async Task<IActionResult> Update([FromBody]UpdateOrderVM vm,
 			[FromServices]IRegistrationService registrationService)
@@ -183,12 +161,15 @@ namespace losol.EventManagement.Web.Controllers.Api
 
 			try
 			{
-				var products = vm.Products.Where(p => p.Quantity > 0).ToList();
 				await registrationService.CreateOrUpdateOrder(
 					registrationId: vm.RegistrationId, 
-					products: products.Select(p => p.Id).ToArray(),
-					variants: products.Where(p => p.Variant.HasValue)
-									.Select(p => p.Variant.Value).ToArray()
+					ordersVm: vm.Products
+							.Select(o => new OrderVM 
+							{ 
+								ProductId = o.Id, 
+								VariantId = o.Variant, 
+								Quantity = o.Quantity 
+							}).ToList()
 				);
 				return Ok();
 			}

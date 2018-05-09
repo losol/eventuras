@@ -386,7 +386,6 @@
                             }
                         })
         };
-        console.log(JSON.stringify(data))
         $.postJSON('/api/v0/orders/update-order', data)
             .done(function(){
                 toastr.success('Update. Refresh the page to see changes.');
