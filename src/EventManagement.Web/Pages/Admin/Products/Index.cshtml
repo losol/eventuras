@@ -5,7 +5,7 @@
 @{
     var id = Convert.ToInt32(RouteData.Values["id"]);
     var product = await productsService.GetAsync(id);
-    var registrations = await productsService.GetRegistrationsAsync(id);
+    var registrations = await productsService.GetRegistrationsForProductAsync(id);
     var eventRegistrations = await registrationService.GetRegistrations(product.EventInfoId) ?? new List<Registration>();
 }
 
@@ -34,7 +34,7 @@
     @foreach(var v in product.ProductVariants)
     {
     
-        var varRegistrations = registrations.Where(r => r.Orders.Any(o => o.OrderLines.Any(l => l.ProductVariantId == v.ProductVariantId) == true)).ToList();
+        var varRegistrations = await productsService.GetRegistrationsForProductVariantAsync(v.ProductVariantId);
         var publishchecked = (v.Published) ? "checked" : "";
         <div class="py-5">
             <div class="row">

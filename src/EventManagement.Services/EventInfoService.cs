@@ -98,7 +98,7 @@ namespace losol.EventManagement.Services
 			
 			if(shouldDeleteProducts)
 			{
-				var originalProducts = await _productsService.GetForEventAsync(info.EventInfoId);
+				var originalProducts = await _productsService.GetProductsForEventAsync(info.EventInfoId);
 				var originalVariants = originalProducts.SelectMany(p => p.ProductVariants);
 
 				// Delete the variants that don't exist in the provided object
