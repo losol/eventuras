@@ -17,6 +17,7 @@ namespace losol.EventManagement.Services
 		Task<List<Registration>> GetRegistrationsWithOrders(ApplicationUser user);
 		
 		Task<int> CreateRegistration(Registration registration);
+		Task<int> CreateRegistration (Registration registration, List<OrderVM> ordersVm);
 		[Obsolete]
 		Task<bool> AddProductToRegistration(string email, int eventId, int productId, int? variantId);
 		Task<bool> CreateOrUpdateOrder(int registrationId, int productId, int? variantId);
