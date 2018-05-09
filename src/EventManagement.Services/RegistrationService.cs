@@ -95,7 +95,7 @@ namespace losol.EventManagement.Services {
 				var orders = ordersVm.Select(async o => new OrderDTO 
 				{ 
 					Product = await _db.Products.FindAsync(o.ProductId),
-					Variant = await _db.ProductVariants.FindAsync(o.VariantId),
+					Variant = o.VariantId.HasValue ? await _db.ProductVariants.FindAsync(o.VariantId): null,
 					Quantity = o.Quantity
 				});
 				registration.CreateOrder(await Task.WhenAll(orders));
@@ -183,7 +183,7 @@ namespace losol.EventManagement.Services {
 			var ordersDto = orders.Select(async o => new OrderDTO 
 			{ 
 				Product = await _db.Products.FindAsync(o.ProductId),
-				Variant = await _db.ProductVariants.FindAsync(o.VariantId),
+				Variant =  o.VariantId.HasValue ? await _db.ProductVariants.FindAsync(o.VariantId) : null,
 				Quantity = o.Quantity
 			});
 			// Create/update an order as needed.

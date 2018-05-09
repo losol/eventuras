@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using losol.EventManagement.Domain;
+using losol.EventManagement.Services;
 
 namespace losol.EventManagement.Web.Pages.Events.Register
 {
@@ -85,11 +86,14 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 		}
 
 		public bool HasProducts => Products != null && Products.Length > 0;
-		public IEnumerable<int> SelectedProducts => 
-			Products?.Where(rp => rp.IsSelected)
-					.Select(p => p.Value);
-		public IEnumerable<int> SelectedVariants =>
-			Products?.Where(p => p.SelectedVariantId.HasValue)
-					.Select(p => p.SelectedVariantId.Value);
+
+		public List<OrderVM> SelectedProducts =>
+			Products?
+				.Where(p => p.IsSelected || p.IsMandatory)
+				.Select(p => new OrderVM {
+					ProductId = p.Value,
+					VariantId = p.SelectedVariantId
+				}).ToList();
 	}
+
 }
