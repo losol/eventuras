@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using static losol.EventManagement.Domain.Order;
 
 namespace losol.EventManagement.Services
 {
@@ -35,7 +36,7 @@ namespace losol.EventManagement.Services
 				      .SingleOrDefaultAsync();
 		}
 
-		public Task<List<Product>> GetForEventAsync(int eventId)
+		public Task<List<Product>> GetProductsForEventAsync(int eventId)
 		{
 			return _db.Products
 				      .Where(p => p.EventInfoId == eventId)
@@ -44,7 +45,7 @@ namespace losol.EventManagement.Services
 					  .ToListAsync();
 		}
 
-		public Task<List<Registration>> GetRegistrationsAsync(int productId)
+		public Task<List<Registration>> GetRegistrationsForProductAsync(int productId)
 		{
 			return _db.Registrations
 				.Where(r => r.Orders.Any(o => o.OrderLines.Any(l => l.ProductId == productId)))
@@ -54,6 +55,22 @@ namespace losol.EventManagement.Services
 				.AsNoTracking()
 				.ToListAsync();
 		}
+
+
+		public async Task<List<Registration>> GetRegistrationsForProductVariantAsync(int productVariantId)
+		{
+			var registrations = await _db.Registrations
+				.Where(r => r.Orders.Any(o => o.Status != OrderStatus.Cancelled && 
+					o.OrderLines.Any(l => l.ProductVariantId == productVariantId) == true))
+				.Include(r => r.User)
+				.Include(r => r.Orders)
+					.ThenInclude(o => o.OrderLines)
+				.AsNoTracking()
+				.ToListAsync();
+
+			return registrations;
+		}
+
 
 		public async Task<bool> UpdateProductAsync(int productId, bool published) {
 			var product = await _db.Products
