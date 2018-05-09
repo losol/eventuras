@@ -109,7 +109,7 @@ namespace losol.EventManagement.Pages.Account
                 SuccessMessage = "Magic Link sent to your inbox!";
                 Email = string.Empty;
             }
-            return Page();
+            return RedirectToPage("/Account/MagicLinkSent");
         }
 
         public class InputModel

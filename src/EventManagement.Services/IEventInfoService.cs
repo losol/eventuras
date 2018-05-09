@@ -15,6 +15,7 @@ namespace losol.EventManagement.Services
 		Task<List<EventInfo>> GetFeaturedEventsAsync();
 		Task<List<EventInfo>> GetEventsAsync();
 		Task<List<EventInfo>> GetOnDemandEventsAsync();
+		Task<List<EventInfo>> GetOngoingEventsAsync();
 
 		Task<bool> AddAsync(EventInfo info);
 		Task<bool> UpdateEventWithProductsAsync(EventInfo info);

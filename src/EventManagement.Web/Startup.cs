@@ -209,7 +209,7 @@ namespace losol.EventManagement
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler("Info/Error");
             }
 
             app.UseStaticFiles();
