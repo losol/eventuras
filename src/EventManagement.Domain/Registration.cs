@@ -116,29 +116,27 @@ namespace losol.EventManagement.Domain
 			Log += logText + "\n";
 		}
 
-		public void CreateOrder(IEnumerable<Product> products, IEnumerable<ProductVariant> variants, IEnumerable<OrderLine> refundlines)
+		public void CreateOrder(IEnumerable<OrderDTO> orders, IEnumerable<OrderLine> refundlines = null)
 		{
-			_ = products ?? throw new ArgumentNullException(nameof(products));
+			_ = orders ?? throw new ArgumentNullException(nameof(orders));
 
-			// Check if products belnongs to the event
-			if(products != null && products.Where(p => p.EventInfoId != EventInfoId).Any())
+			// Check if the products belongs to the event
+			if(orders != null && orders.Where(p => p.Product.EventInfoId != EventInfoId).Any())
 			{
 				throw new ArgumentException(
 					message: "All the products must belong to the event being registered for.",
-					paramName: nameof(products)
+					paramName: nameof(orders)
 				);
 			}
 
-			// Check that variants have products
-			if(variants != null)
+			// Check if the variants belong to the product
+			// FIXME: Don't trust the DTO, check with real data instead!
+			if(!orders.Where(o => o.Variant != null).All(o => o.Variant.ProductId == o.Product.ProductId))
 			{
-				if (variants.Where(v => !products.Select(p => p.ProductId).Contains(v.ProductId)).Any())
-				{
-					throw new ArgumentException(
-						message: "All the product-variants must belong to ",
-						paramName: nameof(products)
-					);
-				}
+				throw new ArgumentException(
+					message: "Variant & Product IDs must match.",
+					paramName: nameof(orders)
+				);
 			}
 
 			// Create order.
@@ -155,8 +153,8 @@ namespace losol.EventManagement.Domain
 				RegistrationId = RegistrationId
 			};
 
-			if (products != null) {
-				order.OrderLines = _createOrderLines(products, variants, refundlines);
+			if (orders != null) {
+				order.OrderLines = _createOrderLines(orders, refundlines);
 			}
 			if(refundlines != null)
 			{
@@ -167,18 +165,14 @@ namespace losol.EventManagement.Domain
 			this.Orders = this.Orders ?? new List<Order>();
 			this.Orders.Add(order);
 		}
-		public void CreateOrder(ICollection<Product> products, ICollection<ProductVariant> variants) => CreateOrder(products, variants, null);
-		public void CreateOrder(ICollection<Product> products) => CreateOrder(products, null, null);
-
-		public void CreateOrder() => CreateOrder(null, null, null);
 
 		/// <summary>
 		/// Updates an existing order if it's not already been invoiced.
 		/// Else creates a new order.
 		/// </summary>
-		/// <param name="products"></param>
+		/// <param name="orders"></param>
 		/// <param name="variants"></param>
-		public void CreateOrUpdateOrder(ICollection<Product> products, ICollection<ProductVariant> variants)
+		public void CreateOrUpdateOrder(ICollection<OrderDTO> orders)
 		{
 			// Get the existing productids
             var existingProducts = Orders.Where(o => o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Refunded)
@@ -188,7 +182,7 @@ namespace losol.EventManagement.Domain
 			var existingProductIds = existingProducts.Select(l => l.ProductId.Value);
 
             // Check if an order needs to be refunded
-            var conflictingProductIds = existingProductIds.Intersect(products.Select(p => p.ProductId));
+            var conflictingProductIds = existingProductIds.Intersect(orders.Select(p => p.Product.ProductId));
             var conflictingProducts = existingProducts
 				.Where(p => conflictingProductIds.Contains(p.ProductId.Value));
 
@@ -212,13 +206,17 @@ namespace losol.EventManagement.Domain
 				var refundedOrdersLines = ordersToRefund.SelectMany(l => l.OrderLines);
 				foreach(var line in refundedOrdersLines)
 				{
-					if(!products.Where(p => p.ProductId == line.ProductId).Any())
+					if(!orders.Where(p => p.Product.ProductId == line.ProductId).Any())
 					{
-						products.Add(line.Product);
-						if(line.ProductVariantId != null)
+						orders.Add(new OrderDTO
 						{
-							variants.Add(line.ProductVariant);
-						}
+							Product = line.Product,
+							Variant = line.ProductVariant,
+							Quantity = line.Quantity
+							// TODO: consider the order lines price
+							// that could have been edited for the 
+							// given orderline
+						});
 					}
 				}
             }
@@ -230,38 +228,34 @@ namespace losol.EventManagement.Domain
 			{
 				// No uninvoiced orders exist
 				// Create a new order
-				CreateOrder(products, variants, refundLines);
+				CreateOrder(orders, refundLines);
 				return;
 			}
 
 			var orderToUpdate = editableOrders.First();
-			orderToUpdate.OrderLines.AddRange(_createOrderLines(products, variants, refundLines));
+			orderToUpdate.OrderLines.AddRange(_createOrderLines(orders, refundLines));
 		}
-		public void CreateOrUpdateOrder(ICollection<Product> products) =>
-			CreateOrUpdateOrder(products, null);
 
 		private List<OrderLine> _createOrderLines(
-			IEnumerable<Product> products, 
-			IEnumerable<ProductVariant> variants,
-			IEnumerable<OrderLine> refundlines)
+			IEnumerable<OrderDTO> orders, 
+			IEnumerable<OrderLine> refundlines = null)
 		{
 			refundlines = refundlines ?? new List<OrderLine>();
-			var orderLines = products.Select(p =>
+			var orderLines = orders.Select(p =>
 				{
-					var v = variants?.Where(var => var.ProductId == p.ProductId).SingleOrDefault();
 					return new OrderLine
 					{
-						ProductId = p.ProductId,
-						ProductVariantId = v?.ProductVariantId,
-						Price = v?.Price ?? p.Price,
-						VatPercent = v?.VatPercent ?? p.VatPercent,
-						Quantity = Math.Max(1, p.MandatoryCount),
+						ProductId = p.Product.ProductId,
+						ProductVariantId = p.Variant?.ProductVariantId,
+						Price = p.Variant?.Price ?? p.Product.Price,
+						VatPercent = p.Variant?.VatPercent ?? p.Product.VatPercent,
+						Quantity = Math.Max(p.Quantity, p.Product.MandatoryCount),
 
-						ProductName = p.Name,
-						ProductDescription = p.Description,
+						ProductName = p.Product.Name,
+						ProductDescription = p.Product.Description,
 
-						ProductVariantName = v?.Name,
-						ProductVariantDescription = v?.Description
+						ProductVariantName = p.Variant?.Name,
+						ProductVariantDescription = p.Variant?.Description
 
 						// Comments
 					};
@@ -270,4 +264,11 @@ namespace losol.EventManagement.Domain
 			return orderLines.ToList();
 		}
 	}
+
+	public class OrderDTO
+    {
+        public Product Product { get; set; }
+        public ProductVariant Variant { get; set; }
+        public int Quantity { get; set; } = 1; // FIXME: Should default to Product.MandatoryCount
+    }
 }
