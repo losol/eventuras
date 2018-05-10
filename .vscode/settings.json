@@ -9,5 +9,6 @@
         "**/obj": true,
         "*.userprefs": true,
         ".vs": true,
-    }
+    },
+    "python.linting.pylintEnabled": false
 }
