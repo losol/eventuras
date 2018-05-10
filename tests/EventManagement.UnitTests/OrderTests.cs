@@ -13,7 +13,6 @@ namespace losol.EventManagement.UnitTests
 			[InlineData(OrderStatus.Draft, OrderStatus.Verified)]
 			[InlineData(OrderStatus.Verified, OrderStatus.Invoiced)]
 			[InlineData(OrderStatus.Verified, OrderStatus.Cancelled)]
-			[InlineData(OrderStatus.Invoiced, OrderStatus.Cancelled)]
 			[InlineData(OrderStatus.Draft, OrderStatus.Cancelled)]
 			[InlineData(OrderStatus.Invoiced, OrderStatus.Refunded)]
 			public void Succeed(OrderStatus from, OrderStatus to)
@@ -29,6 +28,7 @@ namespace losol.EventManagement.UnitTests
 			[InlineData(OrderStatus.Cancelled, OrderStatus.Invoiced)]
 			[InlineData(OrderStatus.Invoiced, OrderStatus.Verified)]
 			[InlineData(OrderStatus.Draft, OrderStatus.Refunded)]
+			[InlineData(OrderStatus.Invoiced, OrderStatus.Cancelled)]
 			public void ThrowInvalidOperationException(OrderStatus from, OrderStatus to)
 			{
 				var order = getOrderWithStatus(from);
