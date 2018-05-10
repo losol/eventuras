@@ -12,9 +12,10 @@ using System;
 namespace losol.EventManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180510180717_Productsupdate2")]
+    partial class Productsupdate2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -378,8 +379,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .HasMaxLength(300);
-
-                    b.Property<bool>("EnableQuantity");
 
                     b.Property<int>("EventInfoId");
 

@@ -29,7 +29,7 @@ namespace losol.EventManagement.IntegrationTests
 							Name = "Tickets",
 							Price = 1000,
 							VatPercent = 5,
-							MandatoryCount = 1,
+							MinimumQuantity = 1,
 							ProductVariants = new List<ProductVariant>
 							{
 								new ProductVariant
@@ -82,7 +82,7 @@ namespace losol.EventManagement.IntegrationTests
 							Name = "Tickets",
 							Price = 1000,
 							VatPercent = 5,
-							MandatoryCount = 1
+							MinimumQuantity = 1
 						},
 						new Product
 						{

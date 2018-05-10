@@ -38,8 +38,8 @@ namespace losol.EventManagement.Web.Api.Controllers
 				s.MoreInformation,
 				s.EventInfoId,
 				s.IsMandatory,
-				s.MandatoryCount,
-				s.MaxOrdersCount,
+				s.MinimumQuantity,
+				s.Inventory,
 				s.Price,
 				Variants = s.ProductVariants.Select(v => new {
 					v.ProductVariantId,
