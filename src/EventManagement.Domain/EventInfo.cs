@@ -36,6 +36,7 @@ namespace losol.EventManagement.Domain
 		[Required]
 		[Display(Name = "Kode for kurset")]
 		public string Code { get; set; }
+		public string ExternalCourseId { get; set; }
 
 		public string Category { get; set; }
 		public EventType Type { get; set; } = EventType.Default;
