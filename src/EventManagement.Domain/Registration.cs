@@ -240,7 +240,7 @@ namespace losol.EventManagement.Domain
 			IEnumerable<OrderLine> refundlines = null)
 		{
 			refundlines = refundlines ?? new List<OrderLine>();
-			var orderLines = orders.Select(p =>
+			var orderLines = orders.Where(o => o.Quantity != 0).Select(p =>
 				{
 					return new OrderLine
 					{

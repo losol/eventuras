@@ -386,6 +386,56 @@ namespace losol.EventManagement.UnitTests
 				Assert.Equal(0m, registration.Orders.Last().TotalAmount);
 			}
 
+			[Fact]
+			public void RefundAndRemoveProductsFromInvoicedOrder()
+			{
+				// Arrange
+				var registration = new Registration 
+				{
+					Orders = new List<Order> {
+						new Order { 
+							OrderLines = new List<OrderLine> {
+								new OrderLine 
+								{ 
+									ProductId = 1, 
+									ProductVariantId = 1, 
+									Price = 100,
+									Quantity = 5,
+									Product = new Product
+									{
+										ProductId = 1
+									},
+									ProductVariant = new ProductVariant
+									{
+										ProductVariantId = 1,
+										ProductId = 1
+									}	
+								}
+							}
+						}
+					}
+				};
+				registration.Orders.First().MarkAsVerified();
+				registration.Orders.First().MarkAsInvoiced();
+				
+				var dto = new List<OrderDTO>
+				{
+					new OrderDTO
+					{
+						Product = new Product { ProductId = 1, Price = 100 },
+						Quantity = 0
+					}
+				};
+
+				// Act
+				registration.CreateOrUpdateOrder(dto);
+
+				// Assert
+				var last = registration.Orders.Last();
+				Assert.Equal(-500m, last.TotalAmount);
+				Assert.Equal(1, last.OrderLines.Count()); // only the refund orderline should exist
+			}
+
 		}
 
 		public class HasOrder_Should
