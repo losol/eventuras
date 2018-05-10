@@ -11,7 +11,7 @@ using losol.EventManagement.IntegrationTests.Fixtures;
 using Xunit;
 using System.Linq;
 
-namespace losol.EventManagement.IntegrationTests.Pages.Register
+namespace losol.EventManagement.IntegrationTests.Pages.Events
 {
     public class EventPageTests : IClassFixture<TestFixture<Startup>>
     {
@@ -25,32 +25,12 @@ namespace losol.EventManagement.IntegrationTests.Pages.Register
         }
 
         [Fact]
-        public async Task Request_ReturnsNotFound_WhenEventIdIsMissing()
-        {
-            // Act
-            var response = await _client.GetAsync("/Event/Register");
-
-            // Assert
-            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        }
-
-        [Fact]
-        public async Task Request_ReturnsNotFound_WhenEventIdIsInvalid()
-        {
-            // Act
-            var response = await _client.GetAsync("/Event/Register/1000");
-
-            // Assert
-            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        }
-
-        [Fact]
         public async Task Request_ReturnsEventDetails_WhenEventidIsValid()
         {
             // Arrange
 
             // Act
-            var response = await _client.GetAsync("/Event/2/Register/");
+            var response = await _client.GetAsync("/events/2/mangfold-beriker-arbeidsmiljoet/register");
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);

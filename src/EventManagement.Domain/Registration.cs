@@ -87,6 +87,7 @@ namespace losol.EventManagement.Domain
 		public void Verify()
 		{
 			Status = RegistrationStatus.Verified;
+			Verified = true;
 			AddLog();
 		}
 		public void MarkAsAttended()

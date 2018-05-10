@@ -201,13 +201,14 @@ namespace losol.EventManagement.UnitTests
 			[Fact]
 			public void SucceedWhenAlreadyVerified()
 			{
-				Registration registration = new Registration { Verified = true };
-				var expected = true;
+				Registration registration = new Registration { Verified = true, Status = RegistrationStatus.Verified };
+				
 
 				registration.Verify();
-				var actual = registration.Verified;
+				
 
-				Assert.Equal(expected, actual);
+				Assert.True(registration.Verified);
+				Assert.Equal(RegistrationStatus.Verified, registration.Status);
 			}
 		}
 
@@ -302,7 +303,7 @@ namespace losol.EventManagement.UnitTests
 				registration.CreateOrUpdateOrder(dto);
 
 				// Assert
-				Assert.Equal(1, registration.Orders.Count);
+				Assert.Single(registration.Orders);
 				Assert.Equal(2, registration.Orders.First().OrderLines.Count);
 			}
 
@@ -433,7 +434,7 @@ namespace losol.EventManagement.UnitTests
 				// Assert
 				var last = registration.Orders.Last();
 				Assert.Equal(-500m, last.TotalAmount);
-				Assert.Equal(1, last.OrderLines.Count()); // only the refund orderline should exist
+				Assert.Single(last.OrderLines); // only the refund orderline should exist
 			}
 
 		}
