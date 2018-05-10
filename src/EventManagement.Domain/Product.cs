@@ -24,7 +24,7 @@ namespace losol.EventManagement.Domain
 		[DataType(DataType.MultilineText)]
 		public string MoreInformation { get; set; }
 
-		public bool EnableQuantity = false;
+		public bool EnableQuantity { get; set; } = false;
 		[Display(Name = "Må deltaker bestille et antall av produktet?")]
 		public int MinimumQuantity { get; set; } = 0;
 
