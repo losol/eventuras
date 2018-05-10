@@ -31,11 +31,6 @@ namespace losol.EventManagement.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; }
 
-        [BindProperty]
-        [EmailAddress]
-        [Display(Name = "Epostadresse?")]
-        public string Email { get; set; } = string.Empty;
-
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public string ReturnUrl { get; set; }
@@ -97,17 +92,16 @@ namespace losol.EventManagement.Pages.Account
         {
             ModelState.Clear();
 
-            if(TryValidateModel(Email))
+            if(TryValidateModel(Input.Email))
             {
-                var user = await _signInManager.UserManager.FindByEmailAsync(Email);
+                var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
                 if(user != null)
                 {
                     // Send the email only if the email exists
                     await _magicLinkSender.SendMagicLinkAsync(user);
                 }
-                
-                SuccessMessage = "Magic Link sent to your inbox!";
-                Email = string.Empty;
+
+                Input.Email = string.Empty;
             }
             return RedirectToPage("/Account/MagicLinkSent");
         }
@@ -119,7 +113,6 @@ namespace losol.EventManagement.Pages.Account
             [EmailAddress]
             public string Email { get; set; }
 
-            [Required]
             [Display(Name = "Passord?")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
