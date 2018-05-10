@@ -23,6 +23,13 @@ namespace losol.EventManagement.Services {
 			.OrderByDescending (o => o.OrderTime)
 			.ToListAsync ();
 
+		public Task<List<Order>> GetWithRegistrationsAsync () =>
+			_db.Orders
+			.Include ( o => o.Registration)
+			.ThenInclude ( r => r.User)
+			.OrderByDescending (o => o.OrderTime)
+			.ToListAsync ();
+
 		public Task<List<Order>> GetAsync (int count, int offset) =>
 			_db.Orders
 			.Skip (offset)
@@ -111,13 +118,23 @@ namespace losol.EventManagement.Services {
 			return await _db.SaveChangesAsync () > 0;
 		}
 
-		public async Task<bool> UpdateOrderLine (int lineId, int quantity, decimal price) {
+		public async Task<bool> UpdateOrderLine (int lineId, int? variantId, int quantity, decimal price) {
 			var line = await _db.OrderLines.FindAsync (lineId);
 			_ = line ??
 				throw new ArgumentException ("Invalid lineId", nameof (lineId));
 
 			line.Quantity = quantity;
 			line.Price = price;
+			
+			line.ProductVariantId = variantId;
+			if(variantId != null)
+			{
+				var variant = await _db.ProductVariants
+									.AsNoTracking()
+									.SingleOrDefaultAsync(v => v.ProductVariantId == variantId);
+				line.ProductVariantName = variant.Name;
+				line.ProductVariantDescription = variant.Description;
+			}
 
 			_db.Update (line);
 			return await _db.SaveChangesAsync () > 0;

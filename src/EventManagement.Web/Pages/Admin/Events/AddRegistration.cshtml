@@ -1,8 +1,9 @@
 @page "{id:int}"
 @model losol.EventManagement.Pages.Admin.Events.AddRegistrationModel
-
+@using static losol.EventManagement.Domain.Registration;
 @{
     ViewData["Title"] = "Legg til deltaker på arrangement";
+    var RegistrationTypes = (RegistrationType[])Enum.GetValues(typeof(RegistrationType));
 }
 <div class="bg-gray-300 py-3">
     <div class="container">
@@ -11,62 +12,31 @@
     </div>
 </div>
 <div class="container py-3 min-height-75">
-
-        
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    
-
-
-    <form method="post">
+    <form method="post" id="form-add-registration">
         <div class="row justify-content-between py-3">
             <div class="col-md-9"> 
                 <div class="form-group">
-                    <label>User</label>
+                    <label>Bruker</label>
                     @Html.Partial("Partials/_UserSelect")
-                </div>
-                <div class="form-group">
-                    <label asp-for="Registration.ParticipantName"></label>
-                    <input asp-for="Registration.ParticipantName" class="form-control" />
-                    <span asp-validation-for="Registration.ParticipantName" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Registration.Email"></label>
-                    <input asp-for="Registration.Email" class="form-control" />
-                    <span asp-validation-for="Registration.Email" class="text-danger"></span>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-sm-3">
-                        <label asp-for="Registration.PhoneCountryCode"></label>
-                        <input asp-for="Registration.PhoneCountryCode" class="form-control" />
-                        <span asp-validation-for="Registration.PhoneCountryCode" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-sm-9">
-                        <label asp-for="Registration.Phone"></label>
-                        <input asp-for="Registration.Phone" class="form-control" />
-                        <span asp-validation-for="Registration.Phone" class="text-danger"></span>
-                    </div>
+                    <input type="hidden" asp-for="Registration.UserId" id="user-id" />
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="Registration.ParticipantJobTitle"></label>
-                    <input asp-for="Registration.ParticipantJobTitle" class="form-control" />
-                    <span asp-validation-for="Registration.ParticipantJobTitle" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Registration.ParticipantCity"></label>
-                    <input asp-for="Registration.ParticipantCity" class="form-control" />
-                    <span asp-validation-for="Registration.ParticipantCity" class="text-danger"></span>
-                </div>
-
-                @if (Model.EventInfo.InformationRequest != null ) {
-                        <div class="form-group">
-                            <label asp-for="Registration.Notes">@Model.EventInfo.InformationRequest</label>
-                            <textarea asp-for="Registration.Notes" class="form-control"></textarea>
-                            <span asp-validation-for="Registration.CustomerInvoiceReference" class="text-danger"></span>
+                    <label>Registration Type</label>
+                    @foreach(var type in RegistrationTypes)
+                    {
+                        <div class="form-check-inline">
+                        <label class="form-check-label">
+                            <input asp-for="Registration.Type"
+                                class="form-check-input" type="radio" value="@type">
+                            
+                                @type
+                            </label>
                         </div>
-                }
+                    }
+                </div>
 
 
                 @* START PAYMENT  *@
@@ -133,7 +103,9 @@
                     $('#customerdetails').collapse('show');
                 };   
             }
+            $('#form-add-registration').on('submit', function(){
+                $('#user-id').val($('#input-user').typeahead('getActive').id);
+            })
         </script>
-    }
-    
+    }    
 </div>

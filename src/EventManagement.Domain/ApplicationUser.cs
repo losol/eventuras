@@ -11,8 +11,10 @@ namespace losol.EventManagement.Domain
 	{
 		public string Name { get; set; }
 
+		// Internal fields
+		public string SignatureImageBase64 { get; set;} 
+		public bool Archived { get; set; }
 
 		public ICollection<Registration> Registrations { get; set; }
-		public ICollection<Certificate> Certificates { get; set; }
 	}
 }

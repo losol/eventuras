@@ -69,7 +69,10 @@ namespace losol.EventManagement.Pages.Admin.Events
             }
             
             var registrations = await _context.Registrations
-                .Where( r => r.EventInfoId == id && r.Status != RegistrationStatus.Cancelled)
+                .Where( 
+                    r => r.EventInfoId == id && 
+                    r.Status != RegistrationStatus.Cancelled &&
+                    r.Type == RegistrationType.Participant)
                 .Select ( x=> new RegistrationsVm{
                     RegistrationId = x.RegistrationId,
                     Name = x.User.Name,
@@ -95,9 +98,76 @@ namespace losol.EventManagement.Pages.Admin.Events
             }
             else {
                 return new JsonResult("none");
+            }    
+        }
+
+        public async Task<JsonResult> OnGetOtherAttendees(int? id)
+        {
+            if (id == null)
+            {
+               return new JsonResult("No event id submitted.");
             }
 
-            
+            var registrations = await _context.Registrations
+                .Where( 
+                    r => r.EventInfoId == id && 
+                    r.Status != RegistrationStatus.Cancelled &&
+                    r.Type != RegistrationType.Participant)
+                .Select ( x=> new RegistrationsVm{
+                    RegistrationId = x.RegistrationId,
+                    Name = x.User.Name,
+                    Email = x.User.Email,
+                    Phone = x.User.PhoneNumber,
+                    JobTitle = x.ParticipantJobTitle,
+                    Employer = x.ParticipantEmployer,
+                    City = x.ParticipantCity,
+                    HasCertificate = x.HasCertificate,
+                    CertificateId = x.CertificateId,
+                    Status = x.Status.ToString(),
+                    Type = x.Type.ToString()
+                    })
+                .ToListAsync();
+
+            if (registrations.Any()) {
+                return new JsonResult(registrations);
+            }
+            else {
+                return new JsonResult("none");
+            }    
+        }
+
+        public async Task<JsonResult> OnGetCancelled(int? id)
+        {
+            if (id == null)
+            {
+               return new JsonResult("No event id submitted.");
+            }
+
+            var registrations = await _context.Registrations
+                .Where( 
+                    r => r.EventInfoId == id && 
+                    r.Status == RegistrationStatus.Cancelled)
+                .Select ( x=> new RegistrationsVm{
+                    RegistrationId = x.RegistrationId,
+                    Name = x.User.Name,
+                    Email = x.User.Email,
+                    Phone = x.User.PhoneNumber,
+                    JobTitle = x.ParticipantJobTitle,
+                    Employer = x.ParticipantEmployer,
+                    City = x.ParticipantCity,
+                    HasCertificate = x.HasCertificate,
+                    CertificateId = x.CertificateId,
+                    Status = x.Status.ToString(),
+                    Type = x.Type.ToString()
+                    })
+                .ToListAsync();
+
+            if (registrations.Any()) {
+                return new JsonResult(registrations);
+            }
+            else {
+                return new JsonResult("none");
+            }    
         }
     }
 }

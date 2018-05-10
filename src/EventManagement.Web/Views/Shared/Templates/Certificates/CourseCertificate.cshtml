@@ -28,7 +28,7 @@
         width: 210mm;
         text-align: center;
         display: block;
-        background: #eee;
+        background: #fff;
         color: black;
         page-break-after: auto;
         margin: 50px;
@@ -36,7 +36,7 @@
       }
       @@media print {
         body {
-          background: #eee;
+          background: #fff;
         }
         .page {
           margin: 0;
@@ -64,10 +64,10 @@
         text-align: center;
       }
       .logo {
-        position: relative;
-        width: 80%;
-        top: 15%;
-        max-width: 280px;
+        padding: 3mm;
+      }
+      .w-50 {
+        width: 50%;
       }
       .handwriting {
         font-size: 24px;
@@ -113,27 +113,40 @@
           <div class="subtitle">@Model.RecipientName</div>
         </div>
 
-        @if (Model.Evidence.Any()) {
         <div class="group">
-          <div class="line">Basert p&aring; deltakelse p&aring;</div>
-          
-            @foreach (var item in Model.Evidence) {
-              <div class="line">
-                @item.Registration.EventInfo.Title 
-                @if(item.Registration.EventInfo.City != null) {
-                  <span> - @item.Registration.EventInfo.City</span>
+          <div class="line">Basert p&aring;</div>
+            @if (Model.Evidence != null && Model.Evidence.Any()) {
+                @foreach (var item in Model.Evidence) {
+                  <div class="line">
+                    @item.Registration.EventInfo.Title 
+                    @if(item.Registration.EventInfo.City != null) {
+                      <span> - @item.Registration.EventInfo.City</span>
+                    }
+                    @if(item.Registration.EventInfo.DateStart != null) {
+                      <span> - @String.Format("{0:d/M/yyyy}", item.Registration.EventInfo.DateStart)</span>
+                    }
+                    
+                    @if(item.Registration.EventInfo.DateEnd != null) {
+                      <span> - @String.Format("{0:d/M/yyyy}", item.Registration.EventInfo.DateEnd)</span>
+                    }
+                  </div>
                 }
-                @if(item.Registration.EventInfo.DateStart != null) {
-                  <span> - @String.Format("{0:d/M/yyyy}", item.Registration.EventInfo.DateStart)</span>
-                }
-                
-                @if(item.Registration.EventInfo.DateEnd != null) {
-                  <span> - @String.Format("{0:d/M/yyyy}", item.Registration.EventInfo.DateEnd)</span>
-                }
-              </div>
-            }
-          <br />
-          <div class="line">Arrangert av @Model.IssuerOrganizationName</div>
+            } else {
+              <div class="line">@Model.EvidenceDescription</div>
+            }  
+        </div>
+
+
+        @if (Model.IssuerOrganizationName != null) {
+        <div class="group">
+          <div class="logo">
+            @if(!string.IsNullOrEmpty(Model.IssuerOrganizationLogoBase64)) {
+                <img src="@Model.IssuerOrganizationLogoBase64" alt="signatur" class="center w-50" />
+              } 
+          </div>
+          <div class="line">
+            Arrangert av @Model.IssuerOrganizationName  
+          </div>
         </div>
         }
 
@@ -146,7 +159,13 @@
 
         <div class="group">
           <div class="line">@Model.IssuedInCity @Model.IssuingDate</div>
+
+          @if(!string.IsNullOrEmpty(Model.IssuerPersonSignatureImageBase64)) {
+            <img src="@Model.IssuerPersonSignatureImageBase64" alt="signatur" />
+          } else {
           <div class="line handwriting">@Model.IssuerPersonName</div>
+          }
+          <div class="line">@Model.IssuerPersonName</div>
           <div class="line">
             Kursansvarlig<br />
             <br />

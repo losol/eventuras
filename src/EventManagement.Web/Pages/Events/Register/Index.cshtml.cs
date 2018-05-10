@@ -91,8 +91,8 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 				if (existingRegistration != null)
 				{
 					// The user has already registered for the event.
-					await _registrationEmailSender.SendRegistrationAsync(user.Email, "Du var allerede påmeldt!", existingRegistration.RegistrationId);
-					return RedirectToPage("/Info/EmailSent");		
+					await _registrationEmailSender.SendRegistrationAsync(user.Email, "Du var allerede påmeldt!", "Vi hadde allerede en registrering for deg.", existingRegistration.RegistrationId);
+					return RedirectToPage("/Info/EmailSent");
 				}
 			}
 			else
@@ -113,7 +113,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 					foreach (var error in result.Errors)
 					{
 						ModelState.AddModelError(string.Empty, error.Description);
-					}	
+					}
 					PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
 					return Page();
 				}
@@ -125,7 +125,8 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 			var newRegistration = Registration.Adapt<Registration>();
 			newRegistration.VerificationCode = PasswordHelper.GeneratePassword(6);
 			await _registrationService.CreateRegistration(newRegistration, Registration.SelectedProducts);
-			await _registrationEmailSender.SendRegistrationAsync(user.Email, "Velkommen på kurs!", newRegistration.RegistrationId);
+            await _registrationEmailSender.SendRegistrationAsync(user.Email, "Velkommen på kurs!", "Vi fikk registreringen din", newRegistration.RegistrationId);
+
 
 			return RedirectToPage("/Info/EmailSent");
 		}

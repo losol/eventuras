@@ -28,6 +28,8 @@ namespace losol.EventManagement.Services {
 				.ThenInclude (c => c.Registration)
 				.ThenInclude (c => c.EventInfo)
 				.Include (c => c.RecipientUser)
+				.Include (c => c.IssuingOrganization)
+				.Include (c => c.IssuingUser)
 				.AsNoTracking ()
 				.SingleOrDefaultAsync (c => c.CertificateId == certificateId);
 
@@ -50,6 +52,9 @@ namespace losol.EventManagement.Services {
 
 			var registration = await _db.Registrations
 				.Include (e => e.EventInfo)
+				.ThenInclude (p => p.Organization)
+				.Include (e => e.EventInfo)
+				.ThenInclude (p => p.OrganizerUser)
 				.Include (e => e.User)
 				.Include (e => e.Certificate)
 				.Where (e => e.RegistrationId == registrationId)
@@ -62,13 +67,34 @@ namespace losol.EventManagement.Services {
 			var certificate = new Certificate {
 				Title = registration.EventInfo.Title,
 				Description = registration.EventInfo.CertificateDescription,
+
 				RecipientName = registration.ParticipantName,
 				RecipientEmail = registration.User.Email,
 				RecipientUserId = registration.User.Id,
-
-				IssuedByName = "Anette Holand-Nilsen"
-
 			};
+
+			// Add evidence description
+			certificate.EvidenceDescription = $"{registration.EventInfo.Title} {registration.EventInfo.City}";
+            if (registration.EventInfo.DateStart.HasValue) 
+                { certificate.EvidenceDescription += " – " + registration.EventInfo.DateStart.Value.ToString("d");};
+            if (registration.EventInfo.DateEnd.HasValue) 
+                { certificate.EvidenceDescription += "-" + registration.EventInfo.DateEnd.Value.ToString("d");};
+
+			// Add organization
+			if (registration.EventInfo.OrganizationId != null) {
+				certificate.IssuingOrganizationId = registration.EventInfo.OrganizationId;
+			} else {
+				certificate.IssuingOrganizationName = "Nordland legeforening";
+			}
+			
+			// Add organizer user
+			if (registration.EventInfo.OrganizerUserId != null) {
+				certificate.IssuedByName = registration.EventInfo.OrganizerUser.Name;
+				certificate.IssuingUserId = registration.EventInfo.OrganizerUserId;
+			} else {
+				certificate.IssuedByName = "Tove Myrbakk";
+			}
+
 
 			// Save cetificate
 			_db.Certificates.Add (certificate);

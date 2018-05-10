@@ -9,6 +9,7 @@ namespace losol.EventManagement.Services
 	{
 		// Orders
 		Task<List<Order>> GetAsync();
+		Task<List<Order>> GetWithRegistrationsAsync();
 		Task<List<Order>> GetAsync(int count);
 		Task<List<Order>> GetAsync(int count, int offset);
 		
@@ -25,7 +26,7 @@ namespace losol.EventManagement.Services
 		Task<OrderLine> GetOrderLineAsync(int lineId);
 		Task<bool> DeleteOrderLineAsync(int lineId);
 		Task<bool> AddOrderLineAsync(int orderId, int productId, int? variantId);
-		Task<bool> UpdateOrderLine(int lineId, int quantity, decimal price);
+		Task<bool> UpdateOrderLine(int lineId, int? variantId, int quantity, decimal price);
 
 		// Statuses
 		Task<bool> MarkAsVerifiedAsync(int orderId);

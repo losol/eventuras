@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Services;
+using static losol.EventManagement.Domain.Registration;
 
 namespace losol.EventManagement.Web.Pages.Events.Register
 {
@@ -26,7 +27,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 		[Required]
 		[Display(Name = "Landkode")]
 		public string PhoneCountryCode { get; set; } = "+47";
-		
+
 		[Required]
 		[Phone]
 		[Display(Name = "Mobiltelefon")]
@@ -61,6 +62,9 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 		public int? PaymentMethodId { get; set; }
 
 		public ProductVM[] Products { get; set; }
+
+		public RegistrationStatus Status { get; set; } = RegistrationStatus.Draft;
+		public RegistrationType Type { get; set; } = RegistrationType.Participant;
 
 		public RegisterVM() { }
 		public RegisterVM(EventInfo eventinfo, int? defaultPaymentMethod = null)

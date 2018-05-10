@@ -5,12 +5,12 @@
 @{
     var id = Convert.ToInt32(RouteData.Values["id"]);
     var order = await orderService.GetByIdAsync(id);
-    var products = await productsService.GetForEventAsync(order.Registration.EventInfoId);
+    var products = await productsService.GetProductsForEventAsync(order.Registration.EventInfoId);
     var variants = products.SelectMany(p => p.ProductVariants)
                            .Select(x => new { id = x.ProductVariantId, pid = x.ProductId, name = x.Name });
 }
 <div class="bg-gray-300 py-3">
-    <div class="container">
+    <div class="container"> 
         <h2>
             Ordre #@order.OrderId - @order.Registration.EventInfo.Title
             <order-status value="@order.Status" />
@@ -43,12 +43,7 @@
             }
             @if(order.Status != Order.OrderStatus.Invoiced)
             {
-                <button class="btn btn-small btn-danger " data-toggle="popover" 
-                    data-trigger="focus" 
-                    title="Delete order?" 
-                    data-content="<button class='btn btn-sm btn-danger' onclick='deleteOrder()'>Yes</button><button class='btn btn-sm btn-success'>No</button>">Delete</button>
-
-                <button class="btn btn-small btn-secondary " data-toggle="popover" 
+                <button class="btn btn-small btn-secondary" data-toggle="popover" 
                     data-trigger="focus" 
                     title="Make order free?" 
                     data-content="<button class='btn btn-sm btn-danger' onclick='makeFree()'>Yes</button><button class='btn btn-sm btn-success'>No</button>">Make Free</button>
@@ -141,6 +136,7 @@
                                         role="button"    
                                         data-quantity="@line.Quantity"
                                         data-id="@line.OrderLineId"
+                                        data-product-id="@line.ProductId"
                                         data-price='@line.Price.ToString("F",System.Globalization.CultureInfo.InvariantCulture)'
                                         data-trigger="focus">
                                         <i class="material-icons md-light md-18">edit</i>
@@ -248,6 +244,11 @@
         <div class="form-group">
             <label class="control-label">Price</label>
             <input id="input-edit-price" class="form-control" type="number" min="0" step="any" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">Variant</label>
+            <select id="input-edit-variant" class="form-control" disabled>
+            </select>
         </div>
         </div>
         <div class="modal-footer">
@@ -359,11 +360,15 @@ TODO: Gotta do it in a better way later. *@
 
             })
 
+
             $('.btn-edit-line').on('click', function() {
-                let editId = $(this).data('id');
+                const editId = $(this).data('id');
+                const productId = $(this).data('product-id');
+                
+                const $editModal = $('#edit-orderline-modal');
+                const $inputVariants = $('#input-edit-variant');
                 const $inputQuantity = $('#input-edit-quantity');
                 const $inputPrice = $('#input-edit-price');
-                const $editModal = $('#edit-orderline-modal')
 
                 $inputQuantity.val($(this).data('quantity'));
                 $inputPrice.val($(this).data('price'));
@@ -372,7 +377,8 @@ TODO: Gotta do it in a better way later. *@
                 $('#btn-edit-orderline').on('click', function() {
                     const postdata = {
                         quantity: $inputQuantity.val(),
-                        price: $inputPrice.val()
+                        price: $inputPrice.val(),
+                        variantId: $inputVariants.val()
                     };
                     $spinner.show();
                     $disabler.show();
@@ -385,6 +391,23 @@ TODO: Gotta do it in a better way later. *@
                     })
                     $(this).off('click');
                 });
+
+                // Remove existing options
+                $inputVariants.empty();
+                const currentVariants = variants.filter(function(v){ return v.pid == productId });
+                currentVariants.forEach(function(v){
+                    $inputVariants.append($('<option>', {
+                        value: v.id,
+                        text: v.name
+                    }));
+                });
+                if(currentVariants.length > 0) {
+                    // enable the input
+                    $inputVariants.prop('disabled', false);
+                } else {
+                    // Disable the input
+                    $inputVariants.prop('disabled', true);
+                }
             })
 
             $('#btn-edit-order').on('click', function() {
@@ -430,7 +453,6 @@ TODO: Gotta do it in a better way later. *@
 
         function reopenOrder() {
             $.post('/api/v0/orders/reopen/@id').done(function(id) {
-                console.log(id);
                 window.location.href = "/Admin/Orders/Details/"+id;
             }).fail(function(){
                 toastr.fail('Reopening failed. Create a new order manually instead.')

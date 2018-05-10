@@ -79,9 +79,12 @@ namespace losol.EventManagement.Services.PowerOffice {
                 .FirstOrDefault (c => c.VatNumber == order.CustomerVatNumber) :
                 null;
 
-            // If no customer was found by VAT number, then search by email
-            existingCustomer = existingCustomer ?? api.Customer.Get ().FirstOrDefault (c => c.EmailAddress == order.CustomerEmail);
+            var customerEmail = !string.IsNullOrWhiteSpace(order.CustomerEmail)? order.CustomerEmail : order.User.Email;
 
+            // If no customer was found by VAT number, then search by email
+            if (!string.IsNullOrWhiteSpace(order.CustomerEmail)) {
+                existingCustomer = existingCustomer ?? api.Customer.Get ().FirstOrDefault (c => c.EmailAddress == customerEmail);
+            }
             // If we found a customer, return him!
             if (existingCustomer != null) {
                 order.AddLog($"Kunden {existingCustomer.Name} med epost {existingCustomer.EmailAddress} fantes allerede.");
@@ -89,11 +92,12 @@ namespace losol.EventManagement.Services.PowerOffice {
             }
 
             // If not, create the customer
+          
             var customer = new Customer {
-                EmailAddress = order.CustomerEmail ?? order.User.Email,
+                EmailAddress = customerEmail,
                 Name = order.CustomerName ?? order.User.Name,
                 VatNumber = order.CustomerVatNumber,
-                InvoiceEmailAddress = order.CustomerEmail ?? order.User.Email
+                InvoiceEmailAddress = customerEmail
             };
 
             if (order.PaymentMethod.Name == "EHF" && string.IsNullOrWhiteSpace (order.CustomerVatNumber)) {

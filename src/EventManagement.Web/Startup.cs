@@ -99,6 +99,8 @@ namespace losol.EventManagement
                     options.Conventions.AuthorizeFolder("/Admin", "AdministratorRole");
                     options.Conventions.AddPageRoute("/Events/Details", "events/{id}/{slug?}");
 
+                    options.Conventions.AuthorizeFolder("/Profile");
+
                     options.Conventions.AddPageRoute("/Events/Register/Index", "events/{id}/{slug?}/register");
                 });
 
@@ -179,6 +181,7 @@ namespace losol.EventManagement
 			services.AddScoped<IProductsService, ProductsService>();
 			services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ICertificatesService, CertificatesService>();
+            services.AddScoped<IMessageLogService, MessageLogService>();
 
             // Add Page render Service
             services.AddScoped<IRenderService, ViewRenderService>();
@@ -206,7 +209,7 @@ namespace losol.EventManagement
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler("Info/Error");
             }
 
             app.UseStaticFiles();

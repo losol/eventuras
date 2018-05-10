@@ -24,6 +24,8 @@ namespace losol.EventManagement.Services
 		Task<bool> CreateOrUpdateOrder (int registrationId, List<OrderVM> ordersVm);
 
 		Task<bool> UpdateParticipantInfo(int registrationId, string name, string JobTitle, string city, string Employer);
+		Task<bool> UpdateCustomerInfo(int registrationId, string customerName, string customerEmail, string customerVatNumber, string customerInvoiceReference);
+		Task<bool> UpdatePaymentMethod(int registrationId, int paymentMethodId);
 		Task<bool> UpdateRegistrationStatus(int registrationId, Registration.RegistrationStatus registrationStatus);
 
 		Task<bool> UpdateRegistrationType(int registrationId, Registration.RegistrationType registrationType);

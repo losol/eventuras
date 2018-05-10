@@ -11,6 +11,7 @@ using losol.EventManagement.Services;
 using losol.EventManagement.Web.Services;
 using losol.EventManagement.ViewModels;
 using losol.EventManagement.Services.Messaging.Sms;
+using GoApi.Core;
 
 namespace losol.EventManagement.Web.Controllers.Api
 {
@@ -20,13 +21,16 @@ namespace losol.EventManagement.Web.Controllers.Api
 	{
 		private readonly StandardEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
+        private readonly IMessageLogService _messageLog;
 
 		public MessagingController(
             StandardEmailSender emailSender, 
-            ISmsSender smsSender)
+            ISmsSender smsSender,
+            IMessageLogService messageLog)
 		{
 			_emailSender = emailSender;
             _smsSender = smsSender;
+            _messageLog = messageLog;
 		}
 
 		[HttpPost("email")]
@@ -51,8 +55,25 @@ namespace losol.EventManagement.Web.Controllers.Api
 		{
 			if (!ModelState.IsValid) return BadRequest();
             var smsTasks = vm.To.Select(t => _smsSender.SendSmsAsync(t, vm.Text));
-            await Task.WhenAll(smsTasks);
-			return Ok();
+            var errors = "";
+            try  
+            {  
+                await Task.WhenAll(smsTasks);
+            }  
+            catch(Exception exc)  
+            {  
+                errors += exc.Message + Environment.NewLine;
+            }  
+            var result = "";
+            if (errors == "") {
+                result = "Alle SMS sendt!";
+            } else {
+                result = "Sendte SMS. Men fikk noen feil: " + Environment.NewLine + errors;
+            }
+
+            await _messageLog.AddAsync(vm.EventInfoId,  string.Join(";", vm.To), vm.Text, "SMS", "Twilio", result);
+            
+            return Ok(result.Replace(Environment.NewLine, "<br />"));
 		}
 
         public class SmsVM
@@ -61,6 +82,7 @@ namespace losol.EventManagement.Web.Controllers.Api
             public IEnumerable<string> To { get; set; }
             [Required]
             public string Text { get; set; }
+            public int EventInfoId { get; set; }
         }
 
 		public class EmailVM
@@ -71,6 +93,7 @@ namespace losol.EventManagement.Web.Controllers.Api
             public string Subject { get; set; }
             [Required]
             public string Message { get; set; }
+            public int EventInfoId { get; set; }
 		}
 
         public class EmailRecipientVM

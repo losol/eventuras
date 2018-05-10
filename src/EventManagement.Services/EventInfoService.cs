@@ -42,6 +42,17 @@ namespace losol.EventManagement.Services
 				.ToListAsync();
 		}
 
+		// TODO: Add events which is spanning over several days.
+		public async Task<List<EventInfo>> GetOngoingEventsAsync() 
+		{
+			return await _db.EventInfos
+				.Where(i => 
+					i.Published && 
+					i.DateStart.Value.Date == DateTime.Now.Date)
+				.OrderBy(s => s.DateStart)
+				.ToListAsync();
+		}
+
 		public async Task<List<EventInfo>> GetEventsAsync()
 		{
 			return await _db.EventInfos
@@ -56,6 +67,17 @@ namespace losol.EventManagement.Services
 		{
 			return await _db.EventInfos
 				            .SingleOrDefaultAsync(m => m.EventInfoId == id);
+		}
+
+		public async Task<EventInfo> GetWithOrganizerAsync(int id)
+		{
+			var eventinfo = await _db.EventInfos
+				.Where(m => m.EventInfoId == id)
+				.Include ( m => m.OrganizerUser)
+				.Include ( m => m.Organization)
+				.SingleOrDefaultAsync();
+			return eventinfo;
+
 		}
 
 		public async Task<int> GetRegistrationCount(int eventId)
@@ -87,7 +109,7 @@ namespace losol.EventManagement.Services
 			
 			if(shouldDeleteProducts)
 			{
-				var originalProducts = await _productsService.GetForEventAsync(info.EventInfoId);
+				var originalProducts = await _productsService.GetProductsForEventAsync(info.EventInfoId);
 				var originalVariants = originalProducts.SelectMany(p => p.ProductVariants);
 
 				// Delete the variants that don't exist in the provided object
