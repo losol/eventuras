@@ -1,4 +1,4 @@
-# 
+#
 # Stage 0
 # Build the project
 FROM microsoft/dotnet:2.1-sdk AS build-env
@@ -22,25 +22,32 @@ RUN npm install html-pdf
 
 # copy csproj and restore dependencies
 WORKDIR /app/src
-COPY ./EventManagement.Web/*.csproj ./EventManagement.Web/
-COPY ./EventManagement.Services/*.csproj ./EventManagement.Services/
-COPY ./EventManagement.Infrastructure/*.csproj ./EventManagement.Infrastructure/
-COPY ./EventManagement.Domain/*.csproj ./EventManagement.Domain/
-RUN dotnet restore EventManagement.Web/EventManagement.Web.csproj
+COPY ./EventManagement.sln .
+COPY ./src/EventManagement.Web/*.csproj ./src/EventManagement.Web/
+COPY ./src/EventManagement.Services/*.csproj ./src/EventManagement.Services/
+COPY ./src/EventManagement.Infrastructure/*.csproj ./src/EventManagement.Infrastructure/
+COPY ./src/EventManagement.Domain/*.csproj ./src/EventManagement.Domain/
+COPY ./tests/EventManagement.UnitTests/*.csproj ./tests/EventManagement.UnitTests/
+COPY ./tests/EventManagement.IntegrationTests/*.csproj ./tests/EventManagement.IntegrationTests/
+RUN dotnet restore
 
 # Copy the package.json file
-COPY ./EventManagement.Web/package*.json ./EventManagement.Web/
-RUN npm --prefix ./EventManagement.Web install ./EventManagement.Web
+COPY ./src/EventManagement.Web/package*.json ./src/EventManagement.Web/
+RUN npm --prefix ./src/EventManagement.Web install ./src/EventManagement.Web
 
-# copy everything else and build
+# copy everything else and build & run tests
 COPY . ./
-RUN dotnet publish ./EventManagement.Web/EventManagement.Web.csproj -c Release -o /app/out
+RUN dotnet build
+RUN ls tests/**/*.csproj | xargs -L1 dotnet test
 
-# Install html-pdf in the publish directory
+# Publish
+WORKDIR ./src/EventManagement.Web
+RUN ./node_modules/.bin/gulp
+RUN dotnet publish -c Release -o /app/out
 WORKDIR /app/out
 RUN cp -r /app/packages/node_modules .
 
-# 
+#
 # Stage 1
 # Copy the built files over
 FROM microsoft/dotnet:2.1-aspnetcore-runtime
