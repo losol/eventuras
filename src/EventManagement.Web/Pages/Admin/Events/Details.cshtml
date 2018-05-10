@@ -382,7 +382,7 @@
                             return {
                                 id: productId, 
                                 quantity: $(d).find('.input-quantity').first().val(),
-                                variant: $(d).find('input[name="variant-radio-'+ productId +'"]:checked').val()
+                                variantId: $(d).find('input[name="variant-radio-'+ productId +'"]:checked').val()
                             }
                         })
         };

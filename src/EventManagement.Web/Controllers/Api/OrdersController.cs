@@ -167,7 +167,7 @@ namespace losol.EventManagement.Web.Controllers.Api
 							.Select(o => new OrderVM 
 							{ 
 								ProductId = o.Id, 
-								VariantId = o.Variant, 
+								VariantId = o.VariantId, 
 								Quantity = o.Quantity 
 							}).ToList()
 				);
@@ -226,7 +226,7 @@ namespace losol.EventManagement.Web.Controllers.Api
 		{ 
 			public int Id { get; set; }
 			public int Quantity { get; set; }
-			public int? Variant { get; set; }
+			public int? VariantId { get; set; }
 		}
 	}
 }
