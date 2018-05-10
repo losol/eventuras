@@ -79,8 +79,8 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 				Products[i] = new ProductVM
 				{
 					Value = currentProduct.ProductId,
-					IsMandatory = currentProduct.MandatoryCount > 0,
-					IsSelected = currentProduct.MandatoryCount > 0,
+					IsMandatory = currentProduct.MinimumQuantity > 0,
+					IsSelected = currentProduct.MinimumQuantity > 0,
 					SelectedVariantId = currentProduct
 						.ProductVariants
 						.Select(pv => pv.ProductVariantId as int?)

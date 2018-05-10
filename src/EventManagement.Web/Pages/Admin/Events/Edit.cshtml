@@ -187,7 +187,7 @@
                                         <p class="card-text product-description">@p.Description</p>
                                         <!--If no variants exist-->
                                         <h6 class="card-subtitle mb-2 text-muted product-price">@((float)p.Price)</h6>
-                                        <input class="product-m-count" type="hidden" value="@p.MandatoryCount" />
+                                        <input class="product-m-count" type="hidden" value="@p.MinimumQuantity" />
                                     </div>
                                     <div class="col-2">
                                         <small>
@@ -398,7 +398,7 @@ $("#EventInfo_Title").keyup(function(){
     const $productName = $($modal).find('#input-product-name');
     const $productDescription = $($modal).find('#input-product-description');
     const $productPrice = $($modal).find('#input-product-price');
-    const $productMandatoryCount = $($modal).find('#input-product-m-number');
+    const $productMinimumQuantity = $($modal).find('#input-product-m-number');
 
     const $variantModal = $('#add-variant-modal');
     const $variantName = $($variantModal).find('#input-variant-name');
@@ -419,7 +419,7 @@ $("#EventInfo_Title").keyup(function(){
         $productName.val($card.find('.product-name').text())
         $productDescription.val($card.find('.product-description').text())
         $productPrice.val($card.find('.product-price').text())
-        $productMandatoryCount.val($card.find('.product-m-count').val())
+        $productMinimumQuantity.val($card.find('.product-m-count').val())
 
         isEdit = true;
         $currentProduct = $card;
@@ -487,7 +487,7 @@ $("#EventInfo_Title").keyup(function(){
         clone.querySelector('.product-name').innerText = $productName.val();
         clone.querySelector('.product-description').innerText = $productDescription.val();
         clone.querySelector('.product-price').innerText = $productPrice.val();
-        clone.querySelector('.product-m-count').value = $productMandatoryCount.val();
+        clone.querySelector('.product-m-count').value = $productMinimumQuantity.val();
 
         if(isEdit != true) {
             // Add the cloned template to the DOM
@@ -531,7 +531,7 @@ $("#EventInfo_Title").keyup(function(){
             addInputToMainForm("EventInfo.Products[" + i + "].Name", $(this).find('.product-name').first().text());
             addInputToMainForm("EventInfo.Products[" + i + "].Description", $(this).find('.product-description').first().text());
             addInputToMainForm("EventInfo.Products[" + i + "].Price", $(this).find('.product-price').first().text());
-            addInputToMainForm("EventInfo.Products[" + i + "].MandatoryCount", $(this).find('.product-m-count').first().val());
+            addInputToMainForm("EventInfo.Products[" + i + "].MinimumQuantity", $(this).find('.product-m-count').first().val());
 
             $(el).find('.variant-card').each(function(j, vel){
                 addInputToMainForm("EventInfo.Products[" + i + "].ProductVariants[" + j + "].Name", $(this).find('.variant-name').first().text());

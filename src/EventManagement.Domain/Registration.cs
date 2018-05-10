@@ -249,7 +249,7 @@ namespace losol.EventManagement.Domain
 						ProductVariantId = p.Variant?.ProductVariantId,
 						Price = p.Variant?.Price ?? p.Product.Price,
 						VatPercent = p.Variant?.VatPercent ?? p.Product.VatPercent,
-						Quantity = Math.Max(p.Quantity, p.Product.MandatoryCount),
+						Quantity = Math.Max(p.Quantity, p.Product.MinimumQuantity),
 
 						ProductName = p.Product.Name,
 						ProductDescription = p.Product.Description,
@@ -269,6 +269,6 @@ namespace losol.EventManagement.Domain
     {
         public Product Product { get; set; }
         public ProductVariant Variant { get; set; }
-        public int Quantity { get; set; } = 1; // FIXME: Should default to Product.MandatoryCount
+        public int Quantity { get; set; } = 1; // FIXME: Should default to Product.MinimumQuantity
     }
 }
