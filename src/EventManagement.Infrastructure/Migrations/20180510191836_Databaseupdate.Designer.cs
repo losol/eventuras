@@ -12,9 +12,10 @@ using System;
 namespace losol.EventManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180510191836_Databaseupdate")]
+    partial class Databaseupdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -370,13 +371,11 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.Property<string>("Code");
 
-                    b.Property<bool>("IsDefault");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(75);
 
-                    b.Property<int>("Provider");
+                    b.Property<string>("PaymentProvider");
 
                     b.HasKey("PaymentMethodId");
 

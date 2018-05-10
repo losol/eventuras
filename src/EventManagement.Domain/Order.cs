@@ -21,13 +21,15 @@ namespace losol.EventManagement.Domain
 		public int OrderId { get; set; }
 		public string UserId { get; set; }
 		public int RegistrationId { get; set; }
+		public string ExternalInvoiceId {get;set;}
+		public bool Paid { get;set; } = false;
 
 		/**
 			Allowed transitions:
 			Draft
 			Draft -> Cancelled
 			Draft -> Verified -> Cancelled
-			Draft -> Verified -> Invoiced -> Cancelled
+			Draft -> Verified -> Invoiced
 			Draft -> Verified -> Invoiced -> Refunded
 		 */
 		private OrderStatus _status = OrderStatus.Draft;
@@ -58,7 +60,10 @@ namespace losol.EventManagement.Domain
 						break;
 
 					case OrderStatus.Cancelled:
-						// Anything can be cancelled
+						if(_status == OrderStatus.Invoiced)
+						{
+							throw new InvalidOperationException("Invoiced orders cannot be cancelled.");
+						}
 						break;
 
 				}
