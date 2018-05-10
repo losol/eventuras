@@ -29,9 +29,9 @@ namespace losol.EventManagement.Domain
 		public int MinimumQuantity { get; set; } = 0;
 
 		public decimal Price { get; set; }
-		public int VatPercent { get; set; } = 0;
+		public int VatPercent { get; set; } = 0;	
 
-		public int MaxOrdersCount { get; set; } = 0;
+		public int Inventory { get; set; } = 0;
 		public bool Published {get;set;} = true;
 
 		// Navigational properties
