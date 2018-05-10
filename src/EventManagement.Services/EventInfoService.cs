@@ -48,7 +48,9 @@ namespace losol.EventManagement.Services
 			return await _db.EventInfos
 				.Where(i => 
 					i.Published && 
-					i.DateStart.Value.Date == DateTime.Now.Date)
+					i.DateStart.Value.Date == DateTime.Now.Date ||
+					(i.DateStart.Value.Date <= DateTime.Now.Date &&
+					i.DateEnd.Value.Date >= DateTime.Now.Date))
 				.OrderBy(s => s.DateStart)
 				.ToListAsync();
 		}
