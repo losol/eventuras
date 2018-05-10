@@ -16,8 +16,9 @@ namespace losol.EventManagement.Domain
 		[StringLength(75)]
 		[Display(Name = "Navn på betalingsmetode")]
 		public string Name { get; set; }
+		public string PaymentProvider { get; set; }
 
 		public bool Active { get; set; } = false;
-
+		public bool AdminOnly { get; set; } = false;
 	}
 }

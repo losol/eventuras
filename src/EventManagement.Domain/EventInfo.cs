@@ -103,6 +103,8 @@ namespace losol.EventManagement.Domain
 		[Display(Name = "Bildetekst for arrangementet (Husk fotokreditering)")]
 		public string FeaturedImageCaption { get; set; }
 
+		[Display(Name = "Prosjekt-kode for regnskap")]
+		public string ProjectCode { get; set; }
 
 		public string OrganizerUserId {get;set;}
 		[ForeignKey("OrganizerUserId")]
