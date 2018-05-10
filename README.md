@@ -23,5 +23,50 @@ Username: asdf@email.com
 Password: PaSsw0rd
 ```
 
+## Build & run from source
+
+**Prerequisites:** .NET Core 2.x, Node, SQL Server
+
+1. Clone the repository
+
+    ```bash
+    git clone https://github.com/losol/EventManagement.git
+    cd EventManagement
+    ```
+
+2. Build the project
+
+    ```bash
+    dotnet build
+    ```
+
+3. Run tests
+
+    ```bash
+    ls tests/**/*.csproj | xargs -L1 dotnet test
+    ```
+
+4. Install node dependencies
+
+    ```bash
+    cd src/EventManagement/EventManagement.Web
+    npm install
+    ```
+
+5. Run the gulp task
+
+    ```bash
+    ./node_modules/.bin/gulp
+    ```
+
+6. Configure the application following the steps [here](./docs/Setup/Install.md#configure-your-app). The complete application configuration is documented [here](./docs/Setup/Configuration.md).
+
+7. Run the application
+
+    ```bash
+    # Ensure you're in the src/EventManagement/EventManagement.Web directory
+    dotnet run
+    ```
+
 ## Credits
 * Email templates from [https://www.sendwithus.com/resources/templates/neopolitan](SendWithUs.com), and [https://github.com/leemunroe]
