@@ -12,8 +12,8 @@ using System;
 namespace losol.EventManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180510232516_eventsupdate2")]
-    partial class eventsupdate2
+    [Migration("20180510235010_eventsupdate_fix2")]
+    partial class eventsupdate_fix2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -158,7 +158,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.Property<string>("Code")
                         .IsRequired();
 
-                    b.Property<int>("CourseProvider");
+                    b.Property<int?>("CourseProvider");
 
                     b.Property<DateTime?>("DateEnd");
 
@@ -166,6 +166,8 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .HasMaxLength(300);
+
+                    b.Property<string>("ExternalCourseId");
 
                     b.Property<bool>("Featured");
 
@@ -207,7 +209,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.Property<string>("Title");
 
-                    b.Property<int>("Type");
+                    b.Property<int?>("Type");
 
                     b.Property<string>("WelcomeLetter");
 

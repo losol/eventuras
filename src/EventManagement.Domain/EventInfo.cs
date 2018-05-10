@@ -39,8 +39,8 @@ namespace losol.EventManagement.Domain
 		public string ExternalCourseId { get; set; }
 
 		public string Category { get; set; }
-		public EventType Type { get; set; } = EventType.Default;
-		public OnlineCourseProvider CourseProvider {get;set;} = OnlineCourseProvider.Default;
+		public EventType? Type { get; set; } = EventType.Default;
+		public OnlineCourseProvider? CourseProvider {get;set;} = OnlineCourseProvider.Default;
 
 		[StringLength(300, ErrorMessage = "Beskrivelsen kan bare være 300 tegn.")]
 		[Display(Name = "Kort beskrivelse av kurset")]

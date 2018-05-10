@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace losol.EventManagement.Infrastructure.Migrations
 {
-    public partial class eventsupdate3 : Migration
+    public partial class eventsupdate_fix2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
