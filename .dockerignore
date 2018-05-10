@@ -1,0 +1,13 @@
+bin\
+obj\
+out\
+node_modules
+npm-debug.log
+.dockerignore
+.env
+.git
+.gitignore
+.vs
+.vscode
+docker-compose.yml
+docker-compose.*.yml
