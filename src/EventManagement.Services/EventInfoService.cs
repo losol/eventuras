@@ -65,6 +65,16 @@ namespace losol.EventManagement.Services
 				.ToListAsync();
 		}
 
+		public async Task<List<EventInfo>> GetPastEventsAsync()
+		{
+			return await _db.EventInfos
+				.Where(a => 
+					a.Published &&
+					a.DateStart <= DateTime.Now)
+				.OrderBy(a => a.DateStart)
+				.ToListAsync();
+		}
+
 		public async Task<EventInfo> GetAsync(int id)
 		{
 			return await _db.EventInfos
