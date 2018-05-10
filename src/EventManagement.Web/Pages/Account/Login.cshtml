@@ -13,42 +13,22 @@
                     <h2>Magisk lenke</h2>
                     <form method="post">
                         <div asp-validation-summary="All" class="text-danger"></div>
-                        @if(!string.IsNullOrWhiteSpace(Model.SuccessMessage))
-                        {
-                            <div class="alert alert-success" role="alert">
-                            @Model.SuccessMessage
-                            </div>
-                        }
                         
                         <div class="form-group">
                             <br>
-                            <span>Legg inn eposten din her, s&aring; sender vi en magisk innloggingslenke.</span>
+                            <span>Legg inn eposten din her, s&aring; sender vi en magisk innloggingslenke. N&aring;r du klikker p&aring; lenken i eposten din, s&aring; er du innlogget.</span>
                             <br><br>
                              <div class="form-group">
                                 <label asp-for="Input.Email"></label>
                                 <input asp-for="Input.Email" class="form-control" />
-                                <span asp-validation-for="Email" class="text-danger"></span>
+                                <span asp-validation-for="Input.Email" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <button type="submit" asp-page-handler="SendMagicLink" class="btn btn-info">Send magisk lenke</button>
                         </div>
-                        
-                        
-                        <div class="form-group">
-                            <label asp-for="Input.Password"></label>
-                            <input asp-for="Input.Password" class="form-control" />
-                            <span asp-validation-for="Input.Password" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-secondary">Logg inn med passord</button>
-                        </div>
-                        <div class="form-group">
-                            <p>
-                                <a asp-page="./ForgotPassword">Glemt passordet?</a>
-                            </p>
-                        </div>
                     </form>
+                    <div><a asp-page="./LoginWithPassword">Logg inn med passord</a></div>
                 </section>
             </div>
         </div>
