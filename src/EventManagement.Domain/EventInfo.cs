@@ -12,6 +12,7 @@ namespace losol.EventManagement.Domain
 	{
 		public enum EventType
 		{
+			Default,
 			Course,
 			Conference,
 			Concert,
@@ -21,6 +22,7 @@ namespace losol.EventManagement.Domain
 		}
 		public enum OnlineCourseProvider
 		{
+			Default,
 			TalentLMS,
 			Moodle,
 			Canvas
@@ -36,8 +38,8 @@ namespace losol.EventManagement.Domain
 		public string Code { get; set; }
 
 		public string Category { get; set; }
-		public EventType? Type { get; set; }
-		public OnlineCourseProvider? CourseProvider {get;set;}
+		public EventType Type { get; set; } = EventType.Default;
+		public OnlineCourseProvider CourseProvider {get;set;} = OnlineCourseProvider.Default;
 
 		[StringLength(300, ErrorMessage = "Beskrivelsen kan bare være 300 tegn.")]
 		[Display(Name = "Kort beskrivelse av kurset")]
