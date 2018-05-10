@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = @Site.Title;
+    var onGoingEvents = await events.GetOngoingEventsAsync();
     var featuredEvents = await events.GetFeaturedEventsAsync();
     var onDemandEvents = await events.GetOnDemandEventsAsync();
     var upcomingEvents = await events.GetEventsAsync();
@@ -21,8 +22,22 @@
     </div>
 </div>
 
+@* ONGOING EVENTS *@
+@if (onGoingEvents != null && onGoingEvents.Any()) {
+    <div class="bg-blue text-light">
+        <div class="container py-3">
+            <p class="m-0">Akkurat n&aring; arrangerer vi: 
+            @foreach (var eventinfo in onGoingEvents) {
+                <a asp-page="./Events/Details" asp-route-id="@eventinfo.EventInfoId" class="text-light">@eventinfo.Title</a>
+            }
+            </p>
+        </div>
+    </div>
+}
+
 <div class="bg-gray-100 py-3">
     <div class="container" id="ondemand">
+      
         <div class="row">
         @foreach (var item in onDemandEvents)
             {
