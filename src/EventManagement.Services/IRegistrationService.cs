@@ -17,12 +17,11 @@ namespace losol.EventManagement.Services
 		Task<List<Registration>> GetRegistrationsWithOrders(ApplicationUser user);
 		
 		Task<int> CreateRegistration(Registration registration);
-		Task<int> CreateRegistration(Registration registration, int[] productIds, int[] variantIds);
+		Task<int> CreateRegistration (Registration registration, List<OrderVM> ordersVm);
 		[Obsolete]
 		Task<bool> AddProductToRegistration(string email, int eventId, int productId, int? variantId);
-		Task<bool> CreateOrUpdateOrder(int registrationId, int[] products, int[] variants);
 		Task<bool> CreateOrUpdateOrder(int registrationId, int productId, int? variantId);
-		
+		Task<bool> CreateOrUpdateOrder (int registrationId, List<OrderVM> ordersVm);
 
 		Task<bool> UpdateParticipantInfo(int registrationId, string name, string JobTitle, string city, string Employer);
 		Task<bool> UpdateCustomerInfo(int registrationId, string customerName, string customerEmail, string customerVatNumber, string customerInvoiceReference);

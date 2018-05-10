@@ -31,17 +31,20 @@ namespace losol.EventManagement.UnitTests
 					}
 				};
 				// Products that belong to the event being registered for
-				var products = new List<Product>
+				var dto = new List<OrderDTO>
 				{
-					new Product { ProductId = 1, EventInfoId = 1, Price = 1000 }
+					new OrderDTO
+					{
+						Product = new Product { ProductId = 1, EventInfoId = 1, Price = 1000 }
+					}
 				};
 
 				// Act
-				registration.CreateOrder(products);
+				registration.CreateOrder(dto);
 				
 				// Assert
 				Assert.NotNull(registration.Orders);
-				Assert.Equal(products[0].Price, registration.Orders[0].OrderLines[0].Price);
+				Assert.Equal(dto[0].Product.Price, registration.Orders[0].OrderLines[0].Price);
 			}
 
 			[Fact]
@@ -74,23 +77,23 @@ namespace losol.EventManagement.UnitTests
 					}
 				};
 				// Products that belong to the event being registered for
-				var products = new List<Product>
+				var dto = new List<OrderDTO>
 				{
-					new Product { ProductId = 1, EventInfoId = 1, Price = 1000 }
-				};
-				var variants = new List<ProductVariant>
-				{
-					new ProductVariant { ProductId = 1, ProductVariantId = 1, Price = 2000 }
+					new OrderDTO
+					{
+						Product = new Product { ProductId = 1, EventInfoId = 1, Price = 1000 },
+						Variant = new ProductVariant { ProductId = 1, ProductVariantId = 1, Price = 2000 }
+					}
 				};
 
 				// 
 				// Act
-				registration.CreateOrder(products, variants);
+				registration.CreateOrder(dto);
 
 				// 
 				// Assert
 				Assert.NotNull(registration.Orders);
-				Assert.Equal(variants[0].Price, registration.Orders[0].OrderLines[0].Price);
+				Assert.Equal(dto[0].Variant.Price, registration.Orders[0].OrderLines[0].Price);
 			}
 
 			[Fact]
@@ -125,9 +128,16 @@ namespace losol.EventManagement.UnitTests
 				{
 					new Product { ProductId = 2, EventInfoId = 2 }
 				};
+				var dto = new List<OrderDTO>
+				{
+					new OrderDTO
+					{
+						Product = new Product { ProductId = 2, EventInfoId = 2 }
+					}
+				};
 
 				// Act & Assert
-				Assert.Throws<ArgumentException>(() => registration.CreateOrder(products));
+				Assert.Throws<ArgumentException>(() => registration.CreateOrder(dto));
 			}
 
 			[Fact]
@@ -160,17 +170,17 @@ namespace losol.EventManagement.UnitTests
 					}
 				};
 				// Products that don't belong to the event being registered for
-				var products = new List<Product>
+				var dto = new List<OrderDTO>
 				{
-					new Product { ProductId = 2, EventInfoId = 1 }
-				};
-				var variants = new List<ProductVariant>
-				{
-					new ProductVariant { ProductId = 1, ProductVariantId = 2}
+					new OrderDTO
+					{
+						Product = new Product { ProductId = 2, EventInfoId = 1 },
+						Variant = new ProductVariant { ProductId = 1, ProductVariantId = 2 }
+					}
 				};
 
 				// Act & Assert
-				Assert.Throws<ArgumentException>(() => registration.CreateOrder(products, variants));
+				Assert.Throws<ArgumentException>(() => registration.CreateOrder(dto));
 			}
 		}
 
@@ -191,13 +201,14 @@ namespace losol.EventManagement.UnitTests
 			[Fact]
 			public void SucceedWhenAlreadyVerified()
 			{
-				Registration registration = new Registration { Verified = true };
-				var expected = true;
+				Registration registration = new Registration { Verified = true, Status = RegistrationStatus.Verified };
+				
 
 				registration.Verify();
-				var actual = registration.Verified;
+				
 
-				Assert.Equal(expected, actual);
+				Assert.True(registration.Verified);
+				Assert.Equal(RegistrationStatus.Verified, registration.Status);
 			}
 		}
 
@@ -231,25 +242,6 @@ namespace losol.EventManagement.UnitTests
 
 		public class CreateOrUpdateOrder_Should
 		{
-			[Fact]
-			public void ThrowExceptionIfProductAlreadyOrdered()
-			{
-				// Arrange
-				var registration = new Registration 
-				{
-					Orders = new List<Order> {
-						new Order { 
-							OrderLines = new List<OrderLine> {
-								new OrderLine { ProductId = 1 }
-							}
-						}
-					}
-				};
-				var products = new List<Product> { new Product { ProductId = 1 } };
-
-				// Act & assert
-				Assert.Throws<InvalidOperationException>(() => registration.CreateOrUpdateOrder(products));
-			}
 
 			[Fact]
 			public void CreateNewOrderIfExistingOrdersAreInvoiced()
@@ -270,10 +262,16 @@ namespace losol.EventManagement.UnitTests
 					o.MarkAsVerified();
 					o.MarkAsInvoiced();
 				}
-				var products = new List<Product> { new Product { ProductId = 2 } };
+				var dto = new List<OrderDTO>
+				{
+					new OrderDTO
+					{
+						Product = new Product { ProductId = 2 }
+					}
+				};
 
 				// Act
-				registration.CreateOrUpdateOrder(products);
+				registration.CreateOrUpdateOrder(dto);
 
 				// Assert
 				Assert.Equal(2, registration.Orders.Count);
@@ -293,13 +291,19 @@ namespace losol.EventManagement.UnitTests
 						}
 					}
 				};
-				var products = new List<Product> { new Product { ProductId = 2 } };
+				var dto = new List<OrderDTO>
+				{
+					new OrderDTO
+					{
+						Product = new Product { ProductId = 2 }
+					}
+				};
 
 				// Act
-				registration.CreateOrUpdateOrder(products);
+				registration.CreateOrUpdateOrder(dto);
 
 				// Assert
-				Assert.Equal(1, registration.Orders.Count);
+				Assert.Single(registration.Orders);
 				Assert.Equal(2, registration.Orders.First().OrderLines.Count);
 			}
 
@@ -318,13 +322,119 @@ namespace losol.EventManagement.UnitTests
 					}
 				};
 				registration.Orders.First().MarkAsCancelled();
-				var products = new List<Product> { new Product { ProductId = 1 } };
+				var dto = new List<OrderDTO>
+				{
+					new OrderDTO
+					{
+						Product = new Product { ProductId = 1 }
+					}
+				};
 
 				// Act
-				registration.CreateOrUpdateOrder(products);
+				registration.CreateOrUpdateOrder(dto);
 
 				// Assert
 				Assert.Equal(2, registration.Orders.Count);
+			}
+
+			[Fact]
+			public void CreateRefundOrderIfProductExistsInInvoicedOrder()
+			{
+				// Arrange
+				var registration = new Registration 
+				{
+					Orders = new List<Order> {
+						new Order { 
+							OrderLines = new List<OrderLine> {
+								new OrderLine 
+								{ 
+									ProductId = 1, 
+									ProductVariantId = 1, 
+									Price = 100,
+									Product = new Product
+									{
+										ProductId = 1
+									},
+									ProductVariant = new ProductVariant
+									{
+										ProductVariantId = 1,
+										ProductId = 1
+									}	
+								}
+							}
+						}
+					}
+				};
+				registration.Orders.First().MarkAsVerified();
+				registration.Orders.First().MarkAsInvoiced();
+				
+				var dto = new List<OrderDTO>
+				{
+					new OrderDTO
+					{
+						Product = new Product { ProductId = 1, Price = 100 },
+						Variant = new ProductVariant { ProductVariantId = 2, ProductId = 1, Price = 100 }
+					}
+				};
+
+				// Act
+				registration.CreateOrUpdateOrder(dto);
+
+				// Assert
+				var last = registration.Orders.Last();
+				Assert.Equal(2, registration.Orders.Count);
+				Assert.Equal(OrderStatus.Refunded, registration.Orders.First().Status);
+				Assert.Equal(0m, registration.Orders.Last().TotalAmount);
+			}
+
+			[Fact]
+			public void RefundAndRemoveProductsFromInvoicedOrder()
+			{
+				// Arrange
+				var registration = new Registration 
+				{
+					Orders = new List<Order> {
+						new Order { 
+							OrderLines = new List<OrderLine> {
+								new OrderLine 
+								{ 
+									ProductId = 1, 
+									ProductVariantId = 1, 
+									Price = 100,
+									Quantity = 5,
+									Product = new Product
+									{
+										ProductId = 1
+									},
+									ProductVariant = new ProductVariant
+									{
+										ProductVariantId = 1,
+										ProductId = 1
+									}	
+								}
+							}
+						}
+					}
+				};
+				registration.Orders.First().MarkAsVerified();
+				registration.Orders.First().MarkAsInvoiced();
+				
+				var dto = new List<OrderDTO>
+				{
+					new OrderDTO
+					{
+						Product = new Product { ProductId = 1, Price = 100 },
+						Quantity = 0
+					}
+				};
+
+				// Act
+				registration.CreateOrUpdateOrder(dto);
+
+				// Assert
+				var last = registration.Orders.Last();
+				Assert.Equal(-500m, last.TotalAmount);
+				Assert.Single(last.OrderLines); // only the refund orderline should exist
 			}
 
 		}

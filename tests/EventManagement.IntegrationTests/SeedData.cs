@@ -10,9 +10,9 @@ namespace losol.EventManagement.IntegrationTests
 			new List<EventInfo>
 			{
 				// Event with products and variants
-				new EventInfo 
-				{ 
-					EventInfoId = 1, 
+				new EventInfo
+				{
+					EventInfoId = 1,
 					Title = "Mangfold beriker arbeidsmiljøet",
 					Description = "Hvorfor er mange ledere så opptatt av firmahytte og treningstilbud når de egentlig burde fokusert på rollekonflikter, arbeidstidsforhold eller organisatorisk rettferdighet? Årets IA-konferanse 4.- 5. juni i Bodø har fokus på tillitsbasert ledelse, arbeidsglede og kunsten å virke sammen på jobb.",
 					Featured = true,
@@ -20,9 +20,9 @@ namespace losol.EventManagement.IntegrationTests
 					OnDemand = true,
 					Price = 1000,
 					City = "Bodø",
-					Products = new List<Product> 
+					Products = new List<Product>
 					{
-						new Product 
+						new Product
 						{
 							ProductId = 1,
 							EventInfoId = 1,
@@ -32,7 +32,7 @@ namespace losol.EventManagement.IntegrationTests
 							MandatoryCount = 1,
 							ProductVariants = new List<ProductVariant>
 							{
-								new ProductVariant 
+								new ProductVariant
 								{
 									ProductId = 1,
 									ProductVariantId = 1,
@@ -66,6 +66,7 @@ namespace losol.EventManagement.IntegrationTests
 				{
 					EventInfoId = 2,
 					Title = "Mangfold beriker arbeidsmiljøet",
+                    Code = "mangfold-beriker-arbeidsmiljoet",
 					Description = "Hvorfor er mange ledere så opptatt av firmahytte og treningstilbud når de egentlig burde fokusert på rollekonflikter, arbeidstidsforhold eller organisatorisk rettferdighet? Årets IA-konferanse 4.- 5. juni i Bodø har fokus på tillitsbasert ledelse, arbeidsglede og kunsten å virke sammen på jobb.",
 					Featured = true,
 					Published = true,

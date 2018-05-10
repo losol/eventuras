@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using static losol.EventManagement.Domain.Registration;
+using static losol.EventManagement.Domain.Order;
 
 namespace losol.EventManagement.Pages.Admin.Events
 {
@@ -35,6 +36,7 @@ namespace losol.EventManagement.Pages.Admin.Events
         public int? CertificateId {get; set; }
         public string Status {get;set;}
         public string Type {get;set;}
+        public List<(Product, ProductVariant, int)> Products { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -46,6 +48,7 @@ namespace losol.EventManagement.Pages.Admin.Events
 
             EventInfo = await _context.EventInfos
                 .Include(e => e.Products)
+                    .ThenInclude(p => p.ProductVariants)
                 .Include(e => e.Registrations)
                 .SingleOrDefaultAsync(m => m.EventInfoId == id);
 
@@ -64,7 +67,7 @@ namespace losol.EventManagement.Pages.Admin.Events
             {
                return new JsonResult("No event id submitted.");
             }
-
+            
             var registrations = await _context.Registrations
                 .Where( 
                     r => r.EventInfoId == id && 
@@ -78,6 +81,11 @@ namespace losol.EventManagement.Pages.Admin.Events
                     JobTitle = x.ParticipantJobTitle,
                     Employer = x.ParticipantEmployer,
                     City = x.ParticipantCity,
+                    Products = x.Orders.Where(o => o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Refunded)
+                        .SelectMany(o => o.OrderLines)
+                        .Where(l => !l.IsRefund)
+                        .Select(l => ValueTuple.Create(l.Product, l.ProductVariant, l.Quantity))
+                        .ToList(),
                     HasCertificate = x.HasCertificate,
                     CertificateId = x.CertificateId,
                     Status = x.Status.ToString(),

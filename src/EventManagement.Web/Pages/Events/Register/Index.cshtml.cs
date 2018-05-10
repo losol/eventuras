@@ -92,7 +92,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 				{
 					// The user has already registered for the event.
 					await _registrationEmailSender.SendRegistrationAsync(user.Email, "Du var allerede påmeldt!", "Vi hadde allerede en registrering for deg.", existingRegistration.RegistrationId);
-					return RedirectToPage("/Info/EmailSent");		
+					return RedirectToPage("/Info/EmailSent");
 				}
 			}
 			else
@@ -113,7 +113,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 					foreach (var error in result.Errors)
 					{
 						ModelState.AddModelError(string.Empty, error.Description);
-					}	
+					}
 					PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
 					return Page();
 				}
@@ -124,48 +124,9 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 
 			var newRegistration = Registration.Adapt<Registration>();
 			newRegistration.VerificationCode = PasswordHelper.GeneratePassword(6);
-			int[] selectedProductIds = null;
-			int[] selectedVariantIds = null;
+			await _registrationService.CreateRegistration(newRegistration, Registration.SelectedProducts);
+            await _registrationEmailSender.SendRegistrationAsync(user.Email, "Velkommen på kurs!", "Vi fikk registreringen din", newRegistration.RegistrationId);
 
-			// If the eventinfo has products, then register and make order
-			if (Registration.HasProducts)
-			{
-				// Populate the ids required to create the registration
-				selectedProductIds = Registration.SelectedProducts.ToArray();
-				selectedVariantIds = Registration.SelectedVariants.ToArray();
-				
-				var registeredProducts = EventInfo.Products
-					.Where(x => selectedProductIds.Contains(x.ProductId))
-					.ToList();
-
-				// Get the list of product names along with id and variants ...
-				var productNames = registeredProducts.Select(product =>
-				{
-					var variantId = Registration.Products
-						.Where(p => product.ProductId == p.Value)
-						.Select(p => p.SelectedVariantId)
-						.FirstOrDefault();
-
-					var variantString = "";
-					if (variantId != null)
-					{
-						var variantName = Products.Where(p => p.ProductId == product.ProductId)
-							.SelectMany(p => p.ProductVariants)
-							.Where(v => v.ProductVariantId == variantId)
-							.Select(v => v.Name)
-							.Single();
-
-						variantString = $" ({variantId}. {variantName})";
-					}
-
-					return $"{product.ProductId}. {product.Name}{variantString}";
-				});
-
-				// ... and concatenate them together into the notes field
-				Registration.Notes = String.Join(", ", productNames);
-			}
-			await _registrationService.CreateRegistration(newRegistration, selectedProductIds, selectedVariantIds);
-			await _registrationEmailSender.SendRegistrationAsync(user.Email, "Velkommen på kurs!", "Vi fikk registreringen din", newRegistration.RegistrationId);
 
 			return RedirectToPage("/Info/EmailSent");
 		}

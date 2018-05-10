@@ -170,6 +170,7 @@
                         <th data-field="jobTitle">Stilling</th>
                         <th data-field="employer" data-visible="false">Arbeidsplass</th>
                         <th data-field="city">Sted</th>
+                        <th data-field="products" data-formatter="ProductsFormatter">Products</th>
                         <th data-formatter="Attended" data-events="attendedEvents">Status</th>
                         <th data-formatter="RowActions" data-events="operateEvents">Meny</th>
                     </tr>
@@ -252,7 +253,44 @@
     </div>
 </div>
 
-
+<!-- Edit products modal -->
+<div id="modal-edit-products" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        @foreach(var product in Model.EventInfo.Products) {
+            <div class="row product-input-group">
+                <div class="col-2">
+                    <input id="input-quantity-@product.ProductId" 
+                        class="input-quantity"
+                        style="width: 100%" />
+                    <input type="hidden" value="@product.ProductId" class="input-prodid" />
+                </div>
+                <div class="col-10" id="content-@product.ProductId">
+                    <h4>@product.Name</h4>
+                    <p>@product.Description</p>
+                    @foreach(var variant in product.ProductVariants) {
+                        <input type="radio" 
+                            name="variant-radio-@product.ProductId" 
+                            value="@variant.ProductVariantId" /> @variant.Name <br />
+                    }
+                </div>
+            </div>
+        }
+      </div>
+      <div class="modal-footer">
+        <button id="btn-save-product-changes" type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 @section scripts { 
     <script>
@@ -263,6 +301,7 @@
     @Html.Partial("Partials/_EmailModalScripts")
     <script>
 
+    let registrationId = 0;
     const $table = $('#participants-table');
     $('#toolbar').find('select').change(function () {
         $table.bootstrapTable('refreshOptions', {
@@ -290,7 +329,8 @@
             actions = [
                 '<a href="/Admin/Registrations/Details/' + row.registrationId + '" alt="Vis registrering" class="btn btn-primary mr-1 link-decoration-none"><i class="fa fa-id-card-o" aria-hidden="true"></i> Info</a>', 
                 '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-sms mr-1">SMS</button>', 
-                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-email mr-1">Epost</button>'
+                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-email mr-1">Epost</button>',
+                '<button type="button" class="btn btn-secondary btn-edit-products">Edit Products</button>',
             ];
             if(row.hasCertificate)
             {
@@ -307,6 +347,24 @@
             }
             return actions.join('');
         }
+
+    function ProductsFormatter(products, row, index, field) {
+        let outHtml = ['<ul>'];
+        products.forEach(function(p) {
+            p.quantity = p.item3;
+            if(p.quantity > 1) {
+                outHtml.push('<li>' + p.quantity + ' &times; '+ p.item1.name);
+            }
+            else {
+                outHtml.push('<li>' + p.item1.name);
+            }
+            if(p.item2) {
+                outHtml.push('(' + p.item2.name + ')');
+            }
+        });
+        outHtml.push('</ul>');
+        return outHtml.join('');
+    }
 
     window.icons = {
         refresh: 'fa-refresh',
@@ -340,6 +398,17 @@
             .fail(function() {
                 toastr.error('Generating/emailing certificate failed.')
             })
+        },
+        'click .btn-edit-products': function(e, value, row, index) {
+            $('.input-quantity').val(0);
+            row.products.forEach(function(p) {
+                $('#input-quantity-'+p.item1.productId).val(p.item3);
+                if(p.item2) {
+                    $('#content-' +p.item1.productId + ' input[name=variant-radio-'+p.item1.productId+']').val([p.item2.productVariantId]);
+                }
+            });
+            registrationId = row.registrationId;
+            $('#modal-edit-products').modal('show');
         }
     };
 
@@ -378,6 +447,28 @@
         }
     };
 
+    $('#btn-save-product-changes').on('click', function(){
+        const data = {
+            registrationId: registrationId,
+            products: $('.product-input-group').get()
+                        .map(function(d) { 
+                            const productId = $(d).find('.input-prodid').first().val();
+                            return {
+                                id: productId, 
+                                quantity: $(d).find('.input-quantity').first().val(),
+                                variantId: $(d).find('input[name="variant-radio-'+ productId +'"]:checked').val()
+                            }
+                        })
+        };
+        $.postJSON('/api/v0/orders/update-order', data)
+            .done(function(){
+                toastr.success('Update. Refresh the page to see changes.');
+            })
+            .fail(function(){
+                toastr.fail('Update failed');
+            })
+    })
+    
     function sendAll() {
         const data = $table.bootstrapTable('getData', {useCurrentPage: false});
         recipients = data.map(function(x){ 

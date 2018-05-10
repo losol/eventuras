@@ -151,15 +151,26 @@ namespace losol.EventManagement.Web.Controllers.Api
 			return Ok();
 		}
 
+
 		[HttpPost("create-order")]
-		public async Task<IActionResult> CreateOrder([FromBody]CreateOrderVM vm,
+		[HttpPost("update-order")]
+		public async Task<IActionResult> Update([FromBody]UpdateOrderVM vm,
 			[FromServices]IRegistrationService registrationService)
 		{
 			if(!ModelState.IsValid) return BadRequest();
 
 			try
 			{
-				await registrationService.CreateOrUpdateOrder(vm.RegistrationId, vm.ProductIds, vm.VariantIds);
+				await registrationService.CreateOrUpdateOrder(
+					registrationId: vm.RegistrationId, 
+					ordersVm: vm.Products
+							.Select(o => new OrderVM 
+							{ 
+								ProductId = o.Id, 
+								VariantId = o.VariantId, 
+								Quantity = o.Quantity 
+							}).ToList()
+				);
 				return Ok();
 			}
 			catch(ArgumentException)
@@ -203,6 +214,19 @@ namespace losol.EventManagement.Web.Controllers.Api
 		{
 			public int Quantity { get; set; }
 			public decimal Price { get; set; }
+			public int? VariantId { get; set; }
+		}
+
+		public class UpdateOrderVM
+		{
+			public List<ProductVM> Products { get; set; } = new List<ProductVM>();
+			public int RegistrationId { get; set; }
+		}
+
+		public class ProductVM
+		{ 
+			public int Id { get; set; }
+			public int Quantity { get; set; }
 			public int? VariantId { get; set; }
 		}
 	}

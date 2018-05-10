@@ -12,9 +12,10 @@ using System;
 namespace losol.EventManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180507115146_AddRefundOrderReferenceField")]
+    partial class AddRefundOrderReferenceField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,8 +28,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("AccessFailedCount");
-
-                    b.Property<bool>("Archived");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -57,8 +56,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed");
 
                     b.Property<string>("SecurityStamp");
-
-                    b.Property<string>("SignatureImageBase64");
 
                     b.Property<bool>("TwoFactorEnabled");
 
@@ -89,8 +86,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<string>("EvidenceDescription");
-
                     b.Property<string>("IssuedByName");
 
                     b.Property<DateTime>("IssuedDate");
@@ -98,10 +93,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.Property<string>("IssuedInCity");
 
                     b.Property<int?>("IssuingOrganizationId");
-
-                    b.Property<string>("IssuingOrganizationName");
-
-                    b.Property<string>("IssuingUserId");
 
                     b.Property<string>("RecipientEmail");
 
@@ -115,8 +106,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.HasKey("CertificateId");
 
                     b.HasIndex("IssuingOrganizationId");
-
-                    b.HasIndex("IssuingUserId");
 
                     b.HasIndex("RecipientUserId");
 
@@ -213,32 +202,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.ToTable("EventInfos");
                 });
 
-            modelBuilder.Entity("losol.EventManagement.Domain.MessageLog", b =>
-                {
-                    b.Property<int>("MessageLogId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("EventInfoId");
-
-                    b.Property<string>("MessageContent");
-
-                    b.Property<string>("MessageType");
-
-                    b.Property<string>("Provider");
-
-                    b.Property<string>("Recipients");
-
-                    b.Property<string>("Result");
-
-                    b.Property<DateTime>("TimeStamp");
-
-                    b.HasKey("MessageLogId");
-
-                    b.HasIndex("EventInfoId");
-
-                    b.ToTable("MessageLogs");
-                });
-
             modelBuilder.Entity("losol.EventManagement.Domain.Order", b =>
                 {
                     b.Property<int>("OrderId")
@@ -324,12 +287,11 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.Property<int>("OrganizationId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("AccountNumber");
-
                     b.Property<string>("Description")
                         .HasMaxLength(300);
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(300);
 
                     b.Property<string>("LogoBase64");
@@ -341,9 +303,10 @@ namespace losol.EventManagement.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Property<string>("Phone")
-                        .HasMaxLength(100);
+                        .HasMaxLength(300);
 
                     b.Property<string>("Url")
+                        .IsRequired()
                         .HasMaxLength(300);
 
                     b.Property<string>("VatId");
@@ -608,12 +571,8 @@ namespace losol.EventManagement.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("IssuingOrganizationId");
 
-                    b.HasOne("losol.EventManagement.Domain.ApplicationUser", "IssuingUser")
-                        .WithMany()
-                        .HasForeignKey("IssuingUserId");
-
                     b.HasOne("losol.EventManagement.Domain.ApplicationUser", "RecipientUser")
-                        .WithMany()
+                        .WithMany("Certificates")
                         .HasForeignKey("RecipientUserId");
                 });
 
@@ -639,14 +598,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.HasOne("losol.EventManagement.Domain.ApplicationUser", "OrganizerUser")
                         .WithMany()
                         .HasForeignKey("OrganizerUserId");
-                });
-
-            modelBuilder.Entity("losol.EventManagement.Domain.MessageLog", b =>
-                {
-                    b.HasOne("losol.EventManagement.Domain.EventInfo", "EventInfo")
-                        .WithMany()
-                        .HasForeignKey("EventInfoId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("losol.EventManagement.Domain.Order", b =>
