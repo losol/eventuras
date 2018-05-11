@@ -99,12 +99,6 @@
                         </div>
                     }
                 }
-            @* Price *@
-            <div class="py-3">
-                @if (Model.EventInfo.Price.HasValue) {
-                <i class="material-icons align-top">credit_card</i> @Model.EventInfo.Price.Value.ToString("0 kr")
-                }
-            </div>
             
             
             <a class="btn btn-block btn-light link-decoration-none" href="#program"><i class="material-icons align-middle">speaker_notes</i> Program</a>

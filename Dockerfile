@@ -21,7 +21,7 @@ WORKDIR /app/packages
 RUN npm install html-pdf
 
 # copy csproj and restore dependencies
-WORKDIR /app
+WORKDIR /app/src
 COPY ./EventManagement.sln .
 COPY ./src/EventManagement.Web/*.csproj ./src/EventManagement.Web/
 COPY ./src/EventManagement.Services/*.csproj ./src/EventManagement.Services/
@@ -35,9 +35,8 @@ RUN dotnet restore
 COPY ./src/EventManagement.Web/package*.json ./src/EventManagement.Web/
 RUN npm --prefix ./src/EventManagement.Web install ./src/EventManagement.Web
 
-# copy everything else and build & run tests
+# copy everything else
 COPY . ./
-RUN dotnet build
 
 # Publish
 WORKDIR ./src/EventManagement.Web
