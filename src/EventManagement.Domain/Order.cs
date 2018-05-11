@@ -33,8 +33,8 @@ namespace losol.EventManagement.Domain
 			Draft -> Verified -> Invoiced -> Refunded
 		 */
 		private OrderStatus _status = OrderStatus.Draft;
-		public OrderStatus Status { 
-			get => _status; 
+		public OrderStatus Status {
+			get => _status;
 			set {
 				switch(value) {
 					case OrderStatus.Draft:
@@ -68,7 +68,7 @@ namespace losol.EventManagement.Domain
 
 				}
 				_status = value;
-			} 
+			}
 		}
 
 		// From registration, should be Participant details, if Customer details
@@ -106,12 +106,12 @@ namespace losol.EventManagement.Domain
 			Log += logText + "\n";
 		}
 
-		public bool CanEdit => 
+		public bool CanEdit =>
 			Status == OrderStatus.Draft || Status == OrderStatus.Verified;
 
 		// TODO: Write tests for this
-		public decimal TotalAmount => 
-			OrderLines.Sum(l => (l.Price + l.Price * l.VatPercent * 0.01m) * l.Quantity);
+		public decimal TotalAmount =>
+			OrderLines.Sum(l => l.TotalAmount);
 
 		public void MarkAsVerified()
 		{

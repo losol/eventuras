@@ -33,9 +33,9 @@ namespace losol.EventManagement.Domain
 		/// <summary>
 		/// A string that uniquely identifies a product-variant combination
 		/// </summary>
-		public string ItemCode 
-		{ 
-			get 
+		public string ItemCode
+		{
+			get
 			{
 				if(IsRefund)
 				{
@@ -45,8 +45,9 @@ namespace losol.EventManagement.Domain
 			}
 		}
 
-		public decimal Price { get; set; }
+		public decimal Price { get; set; } // TODO: Change this to PricePerUnit
 		public decimal VatPercent { get; set; } = 0;
+        public decimal TotalAmount => (Price + Price * VatPercent * 0.01m) * Quantity;
 
 		public string Comments { get; set; }
 
@@ -56,13 +57,15 @@ namespace losol.EventManagement.Domain
 		public Product Product { get; set; }
 		public ProductVariant ProductVariant { get; set; }
 
-		public static OrderLine CreateRefundOrderLine(Order forOrder)
+		public OrderLine CreateRefundOrderLine()
 		{
 			return new OrderLine
 			{
-				RefundOrderId = forOrder.OrderId,
-				ProductName = $"Refund for Order #{forOrder.OrderId}",
-				Price = -forOrder.TotalAmount
+				RefundOrderId = OrderId,
+				ProductName = $"Refund for {ProductName} (Order #{OrderId})",
+				Price = -Price,
+                Quantity = Quantity,
+                VatPercent = VatPercent
 			};
 		}
 

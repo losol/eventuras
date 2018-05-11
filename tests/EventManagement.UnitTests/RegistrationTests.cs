@@ -21,7 +21,7 @@ namespace losol.EventManagement.UnitTests
 				var registration = new Registration
 				{
 					EventInfoId = 1,
-					EventInfo = new EventInfo 
+					EventInfo = new EventInfo
 					{
 						EventInfoId = 1,
 						Products = new List<Product>
@@ -41,7 +41,7 @@ namespace losol.EventManagement.UnitTests
 
 				// Act
 				registration.CreateOrder(dto);
-				
+
 				// Assert
 				Assert.NotNull(registration.Orders);
 				Assert.Equal(dto[0].Product.Price, registration.Orders[0].OrderLines[0].Price);
@@ -55,14 +55,14 @@ namespace losol.EventManagement.UnitTests
 				var registration = new Registration
 				{
 					EventInfoId = 1,
-					EventInfo = new EventInfo 
+					EventInfo = new EventInfo
 					{
 						EventInfoId = 1,
 						Products = new List<Product>
 						{
-							new Product 
-							{ 
-								ProductId = 1, 
+							new Product
+							{
+								ProductId = 1,
 								EventInfoId = 1,
 								ProductVariants = new List<ProductVariant>
 								{
@@ -86,11 +86,11 @@ namespace losol.EventManagement.UnitTests
 					}
 				};
 
-				// 
+				//
 				// Act
 				registration.CreateOrder(dto);
 
-				// 
+				//
 				// Assert
 				Assert.NotNull(registration.Orders);
 				Assert.Equal(dto[0].Variant.Price, registration.Orders[0].OrderLines[0].Price);
@@ -114,7 +114,7 @@ namespace losol.EventManagement.UnitTests
 				var registration = new Registration
 				{
 					EventInfoId = 1,
-					EventInfo = new EventInfo 
+					EventInfo = new EventInfo
 					{
 						EventInfoId = 1,
 						Products = new List<Product>
@@ -153,11 +153,11 @@ namespace losol.EventManagement.UnitTests
 						EventInfoId = 1,
 						Products = new List<Product>
 						{
-							new Product 
-							{ 
-								ProductId = 1, 
+							new Product
+							{
+								ProductId = 1,
 								EventInfoId = 1,
-								ProductVariants = new List<ProductVariant> 
+								ProductVariants = new List<ProductVariant>
 								{
 									new ProductVariant
 									{
@@ -202,10 +202,10 @@ namespace losol.EventManagement.UnitTests
 			public void SucceedWhenAlreadyVerified()
 			{
 				Registration registration = new Registration { Verified = true, Status = RegistrationStatus.Verified };
-				
+
 
 				registration.Verify();
-				
+
 
 				Assert.True(registration.Verified);
 				Assert.Equal(RegistrationStatus.Verified, registration.Status);
@@ -247,10 +247,10 @@ namespace losol.EventManagement.UnitTests
 			public void CreateNewOrderIfExistingOrdersAreInvoiced()
 			{
 				// Arrange
-				var registration = new Registration 
+				var registration = new Registration
 				{
 					Orders = new List<Order> {
-						new Order { 
+						new Order {
 							OrderLines = new List<OrderLine> {
 								new OrderLine { ProductId = 1 }
 							}
@@ -281,10 +281,10 @@ namespace losol.EventManagement.UnitTests
 			public void UpdateOrderIfExistingOrdersAreNotInvoiced()
 			{
 				// Arrange
-				var registration = new Registration 
+				var registration = new Registration
 				{
 					Orders = new List<Order> {
-						new Order { 
+						new Order {
 							OrderLines = new List<OrderLine> {
 								new OrderLine { ProductId = 1 }
 							}
@@ -311,10 +311,10 @@ namespace losol.EventManagement.UnitTests
 			public void SucceedIfProductExistsInCancelledOrder()
 			{
 				// Arrange
-				var registration = new Registration 
+				var registration = new Registration
 				{
 					Orders = new List<Order> {
-						new Order { 
+						new Order {
 							OrderLines = new List<OrderLine> {
 								new OrderLine { ProductId = 1 }
 							}
@@ -338,18 +338,18 @@ namespace losol.EventManagement.UnitTests
 			}
 
 			[Fact]
-			public void CreateRefundOrderIfProductExistsInInvoicedOrder()
+			public void CreditOrderLineIfProductExistsInInvoicedOrder()
 			{
 				// Arrange
-				var registration = new Registration 
+				var registration = new Registration
 				{
 					Orders = new List<Order> {
-						new Order { 
+						new Order {
 							OrderLines = new List<OrderLine> {
-								new OrderLine 
-								{ 
-									ProductId = 1, 
-									ProductVariantId = 1, 
+								new OrderLine
+								{
+									ProductId = 1,
+									ProductVariantId = 1,
 									Price = 100,
 									Product = new Product
 									{
@@ -359,7 +359,16 @@ namespace losol.EventManagement.UnitTests
 									{
 										ProductVariantId = 1,
 										ProductId = 1
-									}	
+									}
+								},
+								new OrderLine
+								{
+									ProductId = 2,
+									Price = 100,
+									Product = new Product
+									{
+										ProductId = 2
+									}
 								}
 							}
 						}
@@ -367,7 +376,7 @@ namespace losol.EventManagement.UnitTests
 				};
 				registration.Orders.First().MarkAsVerified();
 				registration.Orders.First().MarkAsInvoiced();
-				
+
 				var dto = new List<OrderDTO>
 				{
 					new OrderDTO
@@ -383,23 +392,23 @@ namespace losol.EventManagement.UnitTests
 				// Assert
 				var last = registration.Orders.Last();
 				Assert.Equal(2, registration.Orders.Count);
-				Assert.Equal(OrderStatus.Refunded, registration.Orders.First().Status);
-				Assert.Equal(0m, registration.Orders.Last().TotalAmount);
+                Assert.Equal(2, last.OrderLines.Count);
+				Assert.Equal(0m, last.TotalAmount);
 			}
 
 			[Fact]
-			public void RefundAndRemoveProductsFromInvoicedOrder()
+			public void CreditAndRemoveProductsFromInvoicedOrder()
 			{
 				// Arrange
-				var registration = new Registration 
+				var registration = new Registration
 				{
 					Orders = new List<Order> {
-						new Order { 
+						new Order {
 							OrderLines = new List<OrderLine> {
-								new OrderLine 
-								{ 
-									ProductId = 1, 
-									ProductVariantId = 1, 
+								new OrderLine
+								{
+									ProductId = 1,
+									ProductVariantId = 1,
 									Price = 100,
 									Quantity = 5,
 									Product = new Product
@@ -410,7 +419,7 @@ namespace losol.EventManagement.UnitTests
 									{
 										ProductVariantId = 1,
 										ProductId = 1
-									}	
+									}
 								}
 							}
 						}
@@ -418,7 +427,7 @@ namespace losol.EventManagement.UnitTests
 				};
 				registration.Orders.First().MarkAsVerified();
 				registration.Orders.First().MarkAsInvoiced();
-				
+
 				var dto = new List<OrderDTO>
 				{
 					new OrderDTO
@@ -458,7 +467,7 @@ namespace losol.EventManagement.UnitTests
 			[Fact]
 			public void ReturnTrueIfHasOrder()
 			{
-				var registration = new Registration { 
+				var registration = new Registration {
 					Orders = new List<Order>() {
 						new Order()
 					}
