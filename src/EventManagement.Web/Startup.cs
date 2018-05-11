@@ -46,9 +46,6 @@ namespace losol.EventManagement
               options.EnableSensitiveDataLogging(HostingEnvironment.IsDevelopment());
             });
 
-
-                // sqlite: options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))); 
-
             services.AddIdentity<ApplicationUser, IdentityRole>(config =>
             {
                 config.SignIn.RequireConfirmedEmail = true;
@@ -56,18 +53,6 @@ namespace losol.EventManagement
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders()
                 .AddMagicLinkTokenProvider();
-
-            // Require SSL
-            // TODO Re-enable
-            /* if (HostingEnvironment.IsProduction())
-            {
-                services.Configure<MvcOptions>(options =>
-                {
-                    options.Filters.Add(new RequireHttpsAttribute());
-                });
-            }
-            */
-            
 
             // Set password requirements
             services.Configure<IdentityOptions>(options =>
@@ -84,18 +69,18 @@ namespace losol.EventManagement
             CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
             CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
-            
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdministratorRole", policy => policy.RequireRole("Admin", "SuperAdmin"));
             });
-            
+
             services.AddMvc()
                 .AddRazorPagesOptions(options =>
                 {
                     options.Conventions.AuthorizeFolder("/Account/Manage");
                     options.Conventions.AuthorizePage("/Account/Logout");
-                    
+
                     options.Conventions.AuthorizeFolder("/Admin", "AdministratorRole");
                     options.Conventions.AddPageRoute("/Events/Details", "events/{id}/{slug?}");
 
@@ -103,9 +88,6 @@ namespace losol.EventManagement
 
                     options.Conventions.AddPageRoute("/Events/Register/Index", "events/{id}/{slug?}/register");
                 });
-
-            // For sending antiforgery in ajax?
-            // services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
 
             // Register the Database Seed initializer & email sender services
             services.Configure<DbInitializerOptions>(Configuration);
@@ -172,7 +154,7 @@ namespace losol.EventManagement
             {
                 services.AddTransient<IInvoicingService, MockInvoicingService>();
             }
-            
+
 
 			// Register our application services
 			services.AddScoped<IEventInfoService, EventInfoService>();
@@ -185,7 +167,6 @@ namespace losol.EventManagement
 
             // Add Page render Service
             services.AddScoped<IRenderService, ViewRenderService>();
-
 
             // Added for the renderpage service
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -213,17 +194,7 @@ namespace losol.EventManagement
             }
 
             app.UseStaticFiles();
-
             app.UseAuthentication();
-
-            // TODO reenable
-            /*
-            if (env.IsProduction()) {
-                var options = new RewriteOptions()
-                .AddRedirectToHttps(); 
-                app.UseRewriter(options);
-            }
-             */
 
             app.UseMvc(routes =>
             {
