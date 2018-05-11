@@ -17,8 +17,8 @@ namespace losol.EventManagement.IntegrationTests
 					Description = "Hvorfor er mange ledere så opptatt av firmahytte og treningstilbud når de egentlig burde fokusert på rollekonflikter, arbeidstidsforhold eller organisatorisk rettferdighet? Årets IA-konferanse 4.- 5. juni i Bodø har fokus på tillitsbasert ledelse, arbeidsglede og kunsten å virke sammen på jobb.",
 					Featured = true,
 					Published = true,
+					Code = "event-1",
 					OnDemand = true,
-					Price = 1000,
 					City = "Bodø",
 					Products = new List<Product>
 					{
@@ -71,7 +71,6 @@ namespace losol.EventManagement.IntegrationTests
 					Featured = true,
 					Published = true,
 					OnDemand = true,
-					Price = 1000,
 					City = "Bodø",
 					Products = new List<Product>
 					{
@@ -100,11 +99,11 @@ namespace losol.EventManagement.IntegrationTests
 				{
 					EventInfoId = 3,
 					Title = "",
+					Code = "slug-for-event-3",
 					Description = "",
 					Featured = true,
 					Published = true,
 					OnDemand = true,
-					Price = 1000,
 					City = "Bodø",
 				},
 
@@ -113,6 +112,8 @@ namespace losol.EventManagement.IntegrationTests
 				new EventInfo
 				{
 					EventInfoId = 4,
+					Title = "Unpublished event",
+					Code = "slug-here-3",
 					Featured = false,
 					Published = false,
 					OnDemand = false,
