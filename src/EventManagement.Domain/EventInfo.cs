@@ -10,24 +10,6 @@ namespace losol.EventManagement.Domain
 
 	public class EventInfo
 	{
-		public enum EventType
-		{
-			Default,
-			Course,
-			Conference,
-			Concert,
-			Dinner,
-			Lecture,
-			OnlineCourse
-		}
-		public enum OnlineCourseProvider
-		{
-			Default,
-			TalentLMS,
-			Moodle,
-			Canvas
-		}
-
 		public int EventInfoId { get; set; }
 
 		[Display(Name = "Tittel på kurset")]
@@ -37,10 +19,6 @@ namespace losol.EventManagement.Domain
 		[Display(Name = "Kode for kurset")]
 		public string Code { get; set; }
 		public string ExternalCourseId { get; set; }
-
-		public string Category { get; set; }
-		public EventType? Type { get; set; } = EventType.Default;
-		public OnlineCourseProvider? CourseProvider {get;set;} = OnlineCourseProvider.Default;
 
 		[StringLength(300, ErrorMessage = "Beskrivelsen kan bare være 300 tegn.")]
 		[Display(Name = "Kort beskrivelse av kurset")]

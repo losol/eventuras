@@ -157,8 +157,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.Property<string>("Code")
                         .IsRequired();
 
-                    b.Property<int?>("CourseProvider");
-
                     b.Property<DateTime?>("DateEnd");
 
                     b.Property<DateTime?>("DateStart");
@@ -207,8 +205,6 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.Property<string>("RegistrationsUrl");
 
                     b.Property<string>("Title");
-
-                    b.Property<int?>("Type");
 
                     b.Property<string>("WelcomeLetter");
 
