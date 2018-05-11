@@ -6,7 +6,7 @@ services:
     image: losol/event-management-web:${TAG:-latest}
     build:
       context: .
-      dockerfile: ./src/EventManagement.Web/Dockerfile
+      dockerfile: ./Dockerfile
     depends_on:
       - mssql
 
