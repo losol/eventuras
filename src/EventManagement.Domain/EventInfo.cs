@@ -18,7 +18,6 @@ namespace losol.EventManagement.Domain
 		[Required]
 		[Display(Name = "Kode for kurset")]
 		public string Code { get; set; }
-		public string ExternalCourseId { get; set; }
 
 		[StringLength(300, ErrorMessage = "Beskrivelsen kan bare være 300 tegn.")]
 		[Display(Name = "Kort beskrivelse av kurset")]
