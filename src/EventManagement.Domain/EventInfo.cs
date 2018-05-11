@@ -86,10 +86,6 @@ namespace losol.EventManagement.Domain
 		[Display(Name = "Antall deltakere", Description = "Maksimalt antall deltakere")]
 		public int MaxParticipants { get; set; } = 0; //maks antall deltakere
 
-		[Display(Name = "Pris")]
-		[DisplayFormat(DataFormatString = "{0:0}", ApplyFormatInEditMode = true)]
-		public decimal? Price { get; set; }
-
 		[Display(Name = "Diplomtittel - typisk type kurs, f eks Grunnkurs A Allmennmedisin")]
 		public string CertificateTitle { get; set; } //Text for the certificate if issued.
 

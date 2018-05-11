@@ -18,7 +18,6 @@ namespace losol.EventManagement.IntegrationTests
 					Featured = true,
 					Published = true,
 					OnDemand = true,
-					Price = 1000,
 					City = "Bodø",
 					Products = new List<Product>
 					{
