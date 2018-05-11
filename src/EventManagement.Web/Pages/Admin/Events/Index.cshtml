@@ -12,61 +12,151 @@
         <p>
             <a asp-page="Create" class="btn btn-success link-decoration-none py-2 my-3">Opprett nytt</a>
         </p>
+
     </div>
 </div>
-<div class="container py-5">
 
-
-
-<table class="table table-striped table-hover">
-    <thead>
-        <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.EventInfo[0].Title)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.EventInfo[0].OnDemand)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.EventInfo[0].Published)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.EventInfo[0].City)
-                </th>
-                <th>
-                   Datoer
-                </th>
-                <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.EventInfo) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-                <a href="/Events/Details?id=@item.EventInfoId"><i class="fa fa-globe"></i><span class="sr-only">Vis infosiden</span></a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OnDemand)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Published)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateStart) - @Html.DisplayFor(modelItem => item.DateEnd)
-            </td>
-            
-            <td>
-            @if (item.ManageRegistrations) {
-                <a asp-page="./Details" asp-route-id="@item.EventInfoId" class="btn btn-success link-decoration-none">Vis</a>
-                }
-                <a asp-page="./Edit" asp-route-id="@item.EventInfoId" class="btn btn-info link-decoration-none">Endre</a>
-            </td>
-        </tr>
+@* ONGOING EVENTS *@
+@if (Model.OngoingEvents != null && Model.OngoingEvents.Any()) {
+    <div class="bg-blue text-light">
+        <div class="container py-3">
+            <p class="m-0">Akkurat n&aring; arrangerer vi: 
+            @foreach (var eventinfo in Model.OngoingEvents) {
+                <a asp-page="./Details" asp-route-id="@eventinfo.EventInfoId" class="text-light">@eventinfo.Title</a>
+            }
+            </p>
+        </div>
+    </div>
 }
-    </tbody>
-</table>
+
+
+<div class="container py-5">
+    <div>
+        <input id="search-events" type="search" placeholder="Søk etter kurs..." name="searchevents" class="form-control searchbox-input " required="">
+    </div>
+
+    <div class="row event-cards">
+        @foreach (var item in Model.UpcomingEvents) {
+            <div class="col-md-4 p-3">
+                <div class="card card-event h-100">
+                    <a asp-page="./Details" asp-route-id="@item.EventInfoId" class="link-decoration-none">
+                        <div class="card-body h-100">
+                            <h4 class="card-title">@item.Title</h4>
+                            <p>
+                            @if (item.OnDemand) {
+                                <span>Nettkurs</span>
+                            } else {
+                                <span>@item.City</span>
+                                <span>@item.DateStart?.ToString("d")</span>
+                                @if (item.DateEnd.HasValue) {
+                                    <span>- @item.DateEnd.Value.ToString("d")</span>
+                                }
+                            }
+                            </p>
+            
+                        </div>
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
 </div>
+
+
+@* ONLINE COURSES *@
+<div class="bg-gray-300">
+    <div class="container py-3">
+        <h2>Nettkurs</h2>
+
+        <div class="row event-cards">
+            @foreach (var item in Model.OnlineCourses) {
+                <div class="col-md-4 p-3">
+                    <div class="card card-event h-100">
+                        <a asp-page="./Details" asp-route-id="@item.EventInfoId" class="link-decoration-none">
+                            <div class="card-body h-100">
+                                <h4 class="card-title">@item.Title</h4>
+                                <p>
+                                @if (item.OnDemand) {
+                                    <span>Nettkurs</span>
+                                } else {
+                                    <span>@item.City</span>
+                                    <span>@item.DateStart?.ToString("d")</span>
+                                    @if (item.DateEnd.HasValue) {
+                                        <span>- @item.DateEnd.Value.ToString("d")</span>
+                                    }
+                                }
+                                </p>
+                
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@* PAST EVENTS *@
+@{
+    var pastEventsByMonth = Model.PastEvents.GroupBy(e => new { e.DateStart?.Year, e.DateStart?.Month });
+}
+
+<div class="bg-gray-700 py-5">
+    <div class="container">
+        <h2 class="text-light">Tidligere kurs</h2>
+        <div class="row">
+            @foreach(var group in pastEventsByMonth)
+            {
+                <div class="col-md-4 p-1">    
+                    <div class="card bg-white border-0 h-100">
+                        <div class="card-body">
+                            <h3>@group.Key.Month/@group.Key.Year</h3>
+
+                            @foreach(var item in group) {
+                                <p><strong>@item.Title</strong> - 
+                                <span class="text-muted">
+                                    @* Location *@
+                                    @if (item.City != null) {
+                                        <span>@item.City</span>
+                                    }
+                                    @if (item.Location != null) {
+                                        <span> @item.Location</span>
+                                    }
+                                    
+                                    @* Dates *@
+                                    @if (item.DateStart != null) {
+                                        @String.Format("{0:dd/MM/yyyy}", item.DateStart)
+                                    }
+                                    @if (item.DateEnd != null) {
+                                            <span> - @String.Format("{0:dd/MM/yyyy}", item.DateEnd)</span>
+                                        }
+                                    </span>
+                                    <br>
+                                <a asp-page="./Events/Details" asp-route-id="@item.EventInfoId" asp-route-slug="@item.Code" class="link-decoration-none">Vis kurset »</a></p>
+  
+                    
+                }
+                                      </div>
+                    </div>
+                 </div>     
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // NEW selector to no case sensitive contains
+        $.extend($.expr[":"], {
+        "containsNC": function(elem, i, match, array) {
+        return (elem.textContent || elem.innerText || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+        }
+        });
+
+        $('#search-events').keyup(function (){
+            $('.card-event').removeClass('d-none');
+            var filter = $(this).val().toLowerCase(); 
+            $('.event-cards').find('.card .card-body h4:not(:containsNC("'+filter+'"))').parent().parent().parent().addClass('d-none');
+        })
+    </script>
+}
