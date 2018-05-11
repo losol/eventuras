@@ -48,7 +48,9 @@ namespace losol.EventManagement.Services
 			return await _db.EventInfos
 				.Where(i => 
 					i.Published && 
-					i.DateStart.Value.Date == DateTime.Now.Date)
+					i.DateStart.Value.Date == DateTime.Now.Date ||
+					(i.DateStart.Value.Date <= DateTime.Now.Date &&
+					i.DateEnd.Value.Date >= DateTime.Now.Date))
 				.OrderBy(s => s.DateStart)
 				.ToListAsync();
 		}
@@ -59,6 +61,16 @@ namespace losol.EventManagement.Services
 				.Where(a => 
 					a.Published &&
 					a.DateStart >= DateTime.Now)
+				.OrderBy(a => a.DateStart)
+				.ToListAsync();
+		}
+
+		public async Task<List<EventInfo>> GetPastEventsAsync()
+		{
+			return await _db.EventInfos
+				.Where(a => 
+					a.Published &&
+					a.DateStart <= DateTime.Now)
 				.OrderBy(a => a.DateStart)
 				.ToListAsync();
 		}

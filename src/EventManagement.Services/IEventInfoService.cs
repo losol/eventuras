@@ -13,6 +13,7 @@ namespace losol.EventManagement.Services
 		Task<int> GetRegistrationCount(int eventId);
 
 		Task<List<EventInfo>> GetFeaturedEventsAsync();
+		Task<List<EventInfo>> GetPastEventsAsync();
 		Task<List<EventInfo>> GetEventsAsync();
 		Task<List<EventInfo>> GetOnDemandEventsAsync();
 		Task<List<EventInfo>> GetOngoingEventsAsync();
