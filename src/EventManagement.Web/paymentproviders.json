@@ -1,0 +1,40 @@
+{
+  "PaymentMethods": [
+    {
+      "PaymentMethodId": 2,
+      "Name": "PowerOfficeEmailInvoice",
+      "Provider": "PowerOfficeEmailInvoice",
+      "Active": true,
+      "AdminOnly": false,
+      "IsDefault": true
+    },
+    {
+      "PaymentMethodId": 3,
+      "Name": "PowerOfficeEHFInvoice",
+      "Provider": "PowerOfficeEHFInvoice",
+      "Active": true,
+      "AdminOnly": false
+    },
+    {
+      "PaymentMethodId": 10,
+      "Name": "EmailInvoice",
+      "Provider": "EmailInvoice",
+      "Active": false,
+      "AdminOnly": false
+    },
+    {
+      "PaymentMethodId": 11,
+      "Name": "Stripe",
+      "Provider": "Stripe",
+      "Active": false,
+      "AdminOnly": false
+    },
+    {
+      "PaymentMethodId": 12,
+      "Name": "Vipps",
+      "Provider": "Vipps",
+      "Active": false,
+      "AdminOnly": false
+    }
+  ]
+}
