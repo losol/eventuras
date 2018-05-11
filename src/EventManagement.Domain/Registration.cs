@@ -176,68 +176,46 @@ namespace losol.EventManagement.Domain
 		public void CreateOrUpdateOrder(ICollection<OrderDTO> orders)
 		{
 			// Get the existing productids
-            var existingProducts = Orders.Where(o => o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Refunded)
+            var existingProductIds = Orders.Where(o => o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Refunded)
                                         .SelectMany(o => o.OrderLines
                                         .Where(l => l.ProductId.HasValue)
-                                    );
-			var existingProductIds = existingProducts.Select(l => l.ProductId.Value);
+                                    ).Select(l => l.ProductId.Value);
 
             // Check if an order needs to be refunded
             var conflictingProductIds = existingProductIds.Intersect(orders.Select(p => p.Product.ProductId));
-            var conflictingProducts = existingProducts
-				.Where(p => conflictingProductIds.Contains(p.ProductId.Value));
 
 			// If a refund is required
 			var refundLines = new List<OrderLine>();
             if(conflictingProductIds.Any())
             {
-				var ordersToRefund = Orders
-								.Where(o => o.OrderLines.Where(l => conflictingProductIds.Contains(l.ProductId.Value)).Any())
-								.GroupBy(o => o.OrderId)
-								.Select(g => g.First());
-				
-				// Refund the orders, and create refundlines for each of them
-				foreach(var o in ordersToRefund)
-				{
-					o.MarkAsRefunded();
-					refundLines.Add(OrderLine.CreateRefundOrderLine(o));
-				}
+                var linesToRefund = Orders.SelectMany(o => o.OrderLines)
+                                        .Where(l => l.ProductId.HasValue && conflictingProductIds.Contains(l.ProductId.Value));
 
-				// Update the produces, variants arguments
-				var refundedOrdersLines = ordersToRefund.SelectMany(l => l.OrderLines);
-				foreach(var line in refundedOrdersLines)
+				// Refund the orders, and create refundlines for each of them
+				foreach(var l in linesToRefund)
 				{
-					if(!orders.Where(p => p.Product.ProductId == line.ProductId).Any())
-					{
-						orders.Add(new OrderDTO
-						{
-							Product = line.Product,
-							Variant = line.ProductVariant,
-							Quantity = line.Quantity
-							// TODO: consider the order lines price
-							// that could have been edited for the 
-							// given orderline
-						});
-					}
+					refundLines.Add(l.CreateRefundOrderLine());
 				}
             }
 
-			// Check if any uninvoiced orders exist (excluding the cancelled ofcourse)
+			// Check if any editable orders exist
 			var editableOrders = Orders.Where(o => o.Status != OrderStatus.Invoiced && o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Refunded);
 
 			if(!editableOrders.Any())
 			{
 				// Create a new order
 				CreateOrder(orders, refundLines);
-				return;
 			}
+            else
+            {
+                var orderToUpdate = editableOrders.First();
+			    orderToUpdate.OrderLines.AddRange(_createOrderLines(orders, refundLines));
+            }
 
-			var orderToUpdate = editableOrders.First();
-			orderToUpdate.OrderLines.AddRange(_createOrderLines(orders, refundLines));
 		}
 
 		private List<OrderLine> _createOrderLines(
-			IEnumerable<OrderDTO> orders, 
+			IEnumerable<OrderDTO> orders,
 			IEnumerable<OrderLine> refundlines = null)
 		{
 			refundlines = refundlines ?? new List<OrderLine>();
