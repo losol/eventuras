@@ -4,40 +4,37 @@ using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace losol.EventManagement.Services
 {
 	public class PaymentMethodService : IPaymentMethodService
 	{
-		private readonly ApplicationDbContext _db;
+        private readonly IEnumerable<PaymentMethod> paymentMethods;
 
-		public PaymentMethodService(ApplicationDbContext db)
+		public PaymentMethodService(IOptions<List<PaymentMethod>> paymentMethodConfig)
 		{
-			_db = db;
+            paymentMethods = paymentMethodConfig.Value;
 		}
 
-		public Task<List<PaymentMethod>> GetActivePaymentMethodsAsync()
+		public List<PaymentMethod> GetActivePaymentMethods()
 		{
-			return _db.PaymentMethods
-				      .Where(pm => pm.Active)
-				      .AsNoTracking()
-				      .ToListAsync();
+			return paymentMethods.Where(p => p.Active).ToList();
 		}
 
-		public Task<PaymentMethod> GetAsync(int id)
+		public PaymentMethod Get(int id)
 		{
-			return _db.PaymentMethods.FindAsync(id);
+			return paymentMethods.SingleOrDefault(p => p.PaymentMethodId == id);
 		}
 
-		public Task<PaymentMethod> GetDefaultPaymentMethod()
+		public PaymentMethod GetDefaultPaymentMethod()
 		{
-			return GetAsync(GetDefaultPaymentMethodId());
+			return paymentMethods.Single(p => p.IsDefault);
 		}
 
 		public int GetDefaultPaymentMethodId()
 		{
-			// HACK: Read this from a config!
-			return 2;
+			return GetDefaultPaymentMethod().PaymentMethodId;
 		}
 	}
 }

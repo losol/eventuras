@@ -18,7 +18,7 @@ namespace losol.EventManagement.Pages.Admin.Events
         private readonly IOrderService _orders;
         private readonly IPaymentMethodService _paymentMethodService;
 		private readonly UserManager<ApplicationUser> _userManager;
-        
+
 
         public AddRegistrationModel(IOrderService orders, IEventInfoService eventInfos, IRegistrationService registrations, IPaymentMethodService paymentMethods, UserManager<ApplicationUser> userManager)
         {
@@ -41,8 +41,8 @@ namespace losol.EventManagement.Pages.Admin.Events
         {
 			EventInfo = EventInfo ?? await _eventsService.GetWithProductsAsync(id);
 			if (EventInfo == null) return NotFound();
-            
-            PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
+
+            PaymentMethods = _paymentMethodService.GetActivePaymentMethods();
 			Registration = new Web.Pages.Events.Register.RegisterVM(EventInfo, DefaultPaymentMethod);
 
             return Page();

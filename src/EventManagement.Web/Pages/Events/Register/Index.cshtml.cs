@@ -61,7 +61,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 				return NotFound();
 			}
 
-			PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
+			PaymentMethods = _paymentMethodService.GetActivePaymentMethods();
 			Registration = new RegisterVM(EventInfo, DefaultPaymentMethod);
 
 			return Page();
@@ -72,7 +72,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 
 			if (!ModelState.IsValid)
 			{
-				PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
+				PaymentMethods = _paymentMethodService.GetActivePaymentMethods();
 				return Page();
 			}
 
@@ -114,7 +114,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 					{
 						ModelState.AddModelError(string.Empty, error.Description);
 					}
-					PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
+					PaymentMethods = _paymentMethodService.GetActivePaymentMethods();
 					return Page();
 				}
 			}
