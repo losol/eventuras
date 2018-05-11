@@ -28,6 +28,8 @@ namespace losol.EventManagement.Domain
 
 		public int? RefundOrderId { get; private set; }
 		public Order RefundOrder { get; private set; }
+        public int? RefundOrderLineId { get; private set; }
+        public OrderLine RefundOrderLine { get; private set; }
 		public bool IsRefund => RefundOrderId.HasValue;
 
 		/// <summary>
@@ -62,6 +64,7 @@ namespace losol.EventManagement.Domain
 			return new OrderLine
 			{
 				RefundOrderId = OrderId,
+                RefundOrderLineId = OrderLineId,
 				ProductName = $"Refund for {ProductName} (Order #{OrderId})",
 				Price = -Price,
                 Quantity = Quantity,
