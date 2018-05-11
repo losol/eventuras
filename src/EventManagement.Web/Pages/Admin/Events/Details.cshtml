@@ -39,12 +39,6 @@
                             <i class="material-icons align-top">hotel</i> @Model.EventInfo.Location
                         </div>
                     }
-                    @* Price *@
-                    <div>
-                        @if (Model.EventInfo.Price.HasValue) {
-                        <i class="material-icons align-top">credit_card</i> @Model.EventInfo.Price.Value.ToString("0 kr")
-                        }
-                    </div>
             }
 
             <div>

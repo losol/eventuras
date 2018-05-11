@@ -18,7 +18,6 @@ namespace losol.EventManagement.IntegrationTests
 					Featured = true,
 					Published = true,
 					OnDemand = true,
-					Price = 1000,
 					City = "Bodø",
 					Products = new List<Product>
 					{
@@ -27,7 +26,6 @@ namespace losol.EventManagement.IntegrationTests
 							ProductId = 1,
 							EventInfoId = 1,
 							Name = "Tickets",
-							Price = 1000,
 							VatPercent = 5,
 							MinimumQuantity = 1,
 							ProductVariants = new List<ProductVariant>
@@ -37,7 +35,6 @@ namespace losol.EventManagement.IntegrationTests
 									ProductId = 1,
 									ProductVariantId = 1,
 									Name = "Business",
-									Price = 1000,
 									VatPercent = 5
 								},
 								new ProductVariant
@@ -45,7 +42,6 @@ namespace losol.EventManagement.IntegrationTests
 									ProductId = 1,
 									ProductVariantId = 2,
 									Name = "VIP",
-									Price = 3000,
 									VatPercent = 5
 								}
 							}
@@ -55,7 +51,6 @@ namespace losol.EventManagement.IntegrationTests
 							ProductId = 2,
 							EventInfoId = 1,
 							Name = "Lunch",
-							Price = 40,
 							VatPercent = 5
 						}
 					}
@@ -71,7 +66,6 @@ namespace losol.EventManagement.IntegrationTests
 					Featured = true,
 					Published = true,
 					OnDemand = true,
-					Price = 1000,
 					City = "Bodø",
 					Products = new List<Product>
 					{
@@ -104,7 +98,6 @@ namespace losol.EventManagement.IntegrationTests
 					Featured = true,
 					Published = true,
 					OnDemand = true,
-					Price = 1000,
 					City = "Bodø",
 				},
 
