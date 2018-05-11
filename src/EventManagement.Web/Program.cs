@@ -15,9 +15,9 @@ using Microsoft.Extensions.Logging;
 namespace losol.EventManagement
 {
     public class Program
-    { 
+    {
         public static async Task Main(string[] args)
-        { 
+        {
             // Build the application host
             var host = BuildWebHost(args);
 
@@ -34,6 +34,9 @@ namespace losol.EventManagement
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration(app => {
+                    app.AddJsonFile("paymentproviders.json", optional: true, reloadOnChange: false);
+                })
                 .UseStartup<Startup>()
                 .Build();
     }
