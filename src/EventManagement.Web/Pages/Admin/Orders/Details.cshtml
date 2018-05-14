@@ -13,13 +13,14 @@
     <div class="container">
         <h1>
             Ordre #@order.OrderId - @order.Registration.EventInfo.Title
+            <order-status value="@order.Status" />
         </h1>
         <div class="d-print-none">
         @if(order.Status != Order.OrderStatus.Cancelled)
         {
-            
+           
             <div class="btn-group " role="group">
-            <h2><order-status value="@order.Status" />
+            
                 
                 @if(order.GetNextStatus() != null)
                 {
@@ -35,7 +36,7 @@
                         <button class="dropdown-item text-danger" onclick="updateOrderStatus('Cancelled')">Cancel</button>
                     </div>
                 </div>
-                </h2>
+                    
             </div>
             }
             else
@@ -426,9 +427,16 @@ TODO: Gotta do it in a better way later. *@
         }
 
         function updateOrderStatus(status) {
-            toastr.info('Please wait.', null, { timeOut: 0 });
-            $.post('/api/v0/orders/update/@id/' + status, function() {
+            toastr.info('Hent kaffe!!!', null, { timeOut: 0 });
+            $.post('/api/v0/orders/update/@id/' + status)
+            .done(function(msg) {
                 location.reload();
+            })
+            .fail(function(xhr, status, error){
+                toastr.error('Nåkka gikk galt. Sorry. Sjekk loggen.');
+                window.setTimeout(function(){
+                    location.reload();
+                }, 3000);
             })
         }
 
@@ -445,7 +453,7 @@ TODO: Gotta do it in a better way later. *@
             $.post('/api/v0/orders/reopen/@id').done(function(id) {
                 window.location.href = "/Admin/Orders/Details/"+id;
             }).fail(function(){
-                toastr.fail('Reopening failed. Create a new order manually instead.')
+                toastr.error('Reopening failed. Create a new order manually instead.')
             })
         }
 
