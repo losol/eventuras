@@ -16,9 +16,9 @@ namespace losol.EventManagement.Services.DbInitializers
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly DbInitializerOptions _config;
 
-		public BaseDbInitializer(ApplicationDbContext db, 
-		                         RoleManager<IdentityRole> roleManager,  
-		                         UserManager<ApplicationUser> userManager, 
+		public BaseDbInitializer(ApplicationDbContext db,
+		                         RoleManager<IdentityRole> roleManager,
+		                         UserManager<ApplicationUser> userManager,
 		                         IOptions<DbInitializerOptions> config)
 		{
 			_db = db;
@@ -67,24 +67,7 @@ namespace losol.EventManagement.Services.DbInitializers
 
 			}
 
-			// Seed payment methods
-			if (!_db.PaymentMethods.Any())
-			{
-				var paymentMethods = new PaymentMethod[] {
-					new PaymentMethod {Code="Card", Name="Kortbetaling", Active=false},
-					new PaymentMethod {Code="Email_invoice", Name="E-postfaktura", Active=true},
-					new PaymentMethod {Code="EHF_invoice", Name="EHF-faktura", Active=true}
-				};
-
-				foreach (var item in paymentMethods)
-				{
-					await _db.PaymentMethods.AddAsync(item);
-				}
-
-				await _db.SaveChangesAsync();
-			}
-
-			// Seed test events if no events exist. 
+			// Seed test events if no events exist.
 			if (!_db.EventInfos.Any())
 			{
 				var eventInfos = new EventInfo[]

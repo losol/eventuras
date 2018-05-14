@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using static losol.EventManagement.Domain.Registration;
 using System.Collections.Generic;
 using System.Linq;
+using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Web.Controllers.Api {
     [Authorize (Policy = "AdministratorRole")]
@@ -31,7 +32,7 @@ namespace losol.EventManagement.Web.Controllers.Api {
                     vm.ParticipantJobTitle,
                     vm.ParticipantCity,
                     vm.ParticipantEmployer);
-            } 
+            }
             catch (ArgumentException) {
                 return BadRequest ();
             }
@@ -48,21 +49,21 @@ namespace losol.EventManagement.Web.Controllers.Api {
                     vm.CustomerEmail,
                     vm.CustomerVatNumber,
                     vm.CustomerInvoiceReference);
-            } 
+            }
             catch (ArgumentException) {
                 return BadRequest ();
             }
             return Ok ();
         }
 
-        [HttpPost ("{id}/paymentmethod/update/{paymentmethodId}")]
-        public async Task<ActionResult> SetPaymentMethod ([FromRoute] int id, [FromRoute] int paymentmethodId) {
+        [HttpPost ("{id}/paymentmethod/update/{paymentmethod}")]
+        public async Task<ActionResult> SetPaymentMethod ([FromRoute] int id, [FromRoute] PaymentProvider paymentmethod) {
             if (!ModelState.IsValid) return BadRequest ();
             try {
                 await _registrationsService.UpdatePaymentMethod (
                     id,
-                    paymentmethodId);
-            } 
+                    paymentmethod);
+            }
             catch (ArgumentException) {
                 return BadRequest ();
             }
@@ -88,7 +89,7 @@ namespace losol.EventManagement.Web.Controllers.Api {
                 return BadRequest ();
             }
         }
-        
+
         [HttpPost ("type/update/{id}/{type}")]
         public async Task<ActionResult> UpdateRegistrationType ([FromRoute] int id, [FromRoute] RegistrationType type) {
             try {

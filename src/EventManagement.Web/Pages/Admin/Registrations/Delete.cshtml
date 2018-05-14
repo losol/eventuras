@@ -119,7 +119,7 @@
             @Html.DisplayNameFor(model => model.Registration.PaymentMethod)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Registration.PaymentMethod.Name)
+            @Html.DisplayFor(model => model.Registration.PaymentMethod)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Registration.User)
@@ -128,7 +128,7 @@
             @Html.DisplayFor(model => model.Registration.User.Id)
         </dd>
     </dl>
-    
+
     <form method="post">
         <input type="hidden" asp-for="Registration.RegistrationId" />
         <input type="submit" value="Delete" class="btn btn-default" /> |

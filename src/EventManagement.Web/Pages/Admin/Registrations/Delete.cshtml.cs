@@ -31,7 +31,6 @@ namespace losol.EventManagement.Pages.Admin.Registrations
 
             Registration = await _context.Registrations
                 .Include(r => r.EventInfo)
-                .Include(r => r.PaymentMethod)
                 .Include(r => r.User).SingleOrDefaultAsync(m => m.RegistrationId == id);
 
             if (Registration == null)

@@ -6,6 +6,7 @@ using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Services {
 	public class RegistrationService : IRegistrationService {
@@ -193,8 +194,8 @@ namespace losol.EventManagement.Services {
 			registration.CreateOrUpdateOrder(await Task.WhenAll(ordersDto));
 
 			// Set paymentmethod to default method if null.
-			if (registration.PaymentMethodId == null) {
-				registration.PaymentMethodId = _paymentMethods.GetDefaultPaymentMethodId();
+			if (registration.PaymentMethod == null) {
+				registration.PaymentMethod = _paymentMethods.GetDefaultPaymentMethod().Provider;
 			}
 
 			// Persist the changes
@@ -236,19 +237,19 @@ namespace losol.EventManagement.Services {
 				}
 			return await _db.SaveChangesAsync() > 0;
 		}
-		public async Task<bool> UpdatePaymentMethod(int registrationId, int paymentMethodId) {
+		public async Task<bool> UpdatePaymentMethod(int registrationId, PaymentProvider paymentMethod) {
 			var reg = await _db.Registrations
 				.Where( m => m.RegistrationId == registrationId)
 				.Include( m => m.Orders )
 				.FirstOrDefaultAsync();
 
 			// Update payment method in registration.
-			reg.PaymentMethodId = paymentMethodId;
+			reg.PaymentMethod = paymentMethod;
 			_db.Update(reg);
 
 			// Update payment method in editable orders
 			foreach (var order in reg.Orders.Where( s => s.CanEdit == true)) {
-				order.PaymentMethodId = paymentMethodId;
+				order.PaymentMethod = paymentMethod;
 			}
 
 			return await _db.SaveChangesAsync() > 0;

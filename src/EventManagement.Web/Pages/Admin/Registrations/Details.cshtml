@@ -11,12 +11,12 @@
 
         <div class="clearfix">
             <div class="mr-3 float-left">
-                Status: 
+                Status:
                 <select asp-for="Registration.Status" asp-items="Html.GetEnumSelectList<Registration.RegistrationStatus>()">
                 </select>
             </div>
             <div class="mr-3 float-left">
-                Type deltaker: 
+                Type deltaker:
                 <select asp-for="Registration.Type" asp-items="Html.GetEnumSelectList<Registration.RegistrationType>()">
                 </select>
             </div>
@@ -44,7 +44,7 @@
                         @Html.DisplayFor(model => model.Registration.ParticipantJobTitle)
                     </div>
                     <br />
-                    
+
                     <small>Sted</small>
                     <div contenteditable="true" class="participantinfo" id="participant-city">
                         @Html.DisplayFor(model => model.Registration.ParticipantCity)
@@ -73,7 +73,7 @@
                         @Html.DisplayFor(model => model.Registration.CustomerEmail)
                     </div>
                     <br />
-                    
+
                     <small>Org.nr</small>
                     <div contenteditable="true" class="customerinfo" id="customer-vatnumber">
                         @Html.DisplayFor(model => model.Registration.CustomerVatNumber)
@@ -87,12 +87,12 @@
                     <br />
 
                     <small>Betalingsmetode</small><br />
-                    <select asp-for="Registration.PaymentMethodId">
+                    <select asp-for="Registration.PaymentMethod">
                         @foreach(var paymethod in Model.PaymentMethods) {
-                            <option value="@paymethod.PaymentMethodId">@paymethod.Name</option>
+                            <option value="@paymethod.Provider">@paymethod.Name</option>
                         }
                     </select>
-              
+
                 </div>
             </div>
         </div>
@@ -118,11 +118,11 @@
         <li>Kursbevis: @Model.Registration.Certificate</li>
         <li>Brukerid: @Model.Registration.UserId</li>
         <li>Gratis? @Model.Registration.FreeRegistration</li>
-        <li>Betalingsmetode @Model.Registration.PaymentMethod.Name </li>
+        <li>Betalingsmetode @Model.Registration.PaymentMethod </li>
     </ul>
 </div>
 
-@section scripts { 
+@section scripts {
 <script>
     // *******PARTICIPANT INFO SCRIPTS *******
     // Add change listener to all contenteditables
@@ -222,9 +222,9 @@
 
 
     // ******* PAYMENTMETHOD UPDATE  SCRIPTS *******
-    $('#Registration_PaymentMethodId').on('change', function() {
-        var paymentMethodId = $("option:selected", this).val();
-        $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/paymentmethod/update/' + paymentMethodId, null)
+    $('#Registration_PaymentMethod').on('change', function() {
+        var paymentMethod = $("option:selected", this).val();
+        $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/paymentmethod/update/' + paymentMethod, null)
             .done(function() {
                 toastr.success('Lagret status');
             })
@@ -234,6 +234,6 @@
             });
     })
 
-        
+
 </script>
 }
