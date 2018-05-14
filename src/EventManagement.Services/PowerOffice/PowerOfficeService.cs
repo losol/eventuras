@@ -107,7 +107,8 @@ namespace losol.EventManagement.Services.PowerOffice {
                 MailAddress = new Address() {
                     Address1 = order.Registration.CustomerAddress,
                     City = order.Registration.CustomerCity, 
-                    ZipCode = order.Registration.CustomerZip
+                    ZipCode = order.Registration.CustomerZip,
+                    CountryCode = "NO" // TODO Do this properly...
                 }
             };
 
