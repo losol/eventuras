@@ -8,6 +8,7 @@ using losol.EventManagement.Domain;
 using losol.EventManagement.Services;
 using Microsoft.AspNetCore.Identity;
 using Mapster;
+using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Pages.Admin.Events
 {
@@ -35,7 +36,7 @@ namespace losol.EventManagement.Pages.Admin.Events
 		public EventInfo EventInfo { get; set; }
 		public List<PaymentMethod> PaymentMethods { get; set; }
 		public List<Product> Products => EventInfo.Products;
-		public int DefaultPaymentMethod => _paymentMethodService.GetDefaultPaymentMethodId();
+		public PaymentProvider DefaultPaymentMethod => _paymentMethodService.GetDefaultPaymentMethod().Provider;
 
         public async Task<IActionResult> OnGetAsync(int id)
         {

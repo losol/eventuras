@@ -1,20 +1,21 @@
 ﻿@page "{id:int}"
 @model losol.EventManagement.Web.Pages.Events.Register.EventRegistrationModel
+@using static losol.EventManagement.Domain.PaymentMethod;
 @{
     ViewData["Title"] = Model.EventInfo.Title + "- Påmelding";
-    
+
     Layout = "~/Pages/_Layout.cshtml";
 }
 <div class="container">
 <h1 class="display-2 pt-5">@Model.EventInfo.Title - p&aring;melding</h1>
 <p class="lead">@Model.EventInfo.Description</p>
 <p><a asp-page="../Details" asp-route-id="@Model.Registration.EventInfoId" class="btn  my-3 btn btn-info link-decoration-none">Se program og mer informasjon</a>  </p>
-    
+
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
 <form method="post">
     <div class="row justify-content-between py-3">
-        <div class="col-md-9"> 
+        <div class="col-md-9">
             <div class="form-group">
                 <label asp-for="Registration.ParticipantName"></label>
                 <input asp-for="Registration.ParticipantName" class="form-control" />
@@ -61,16 +62,16 @@
 
             @* START PAYMENT  *@
             @if (Model.EventInfo.Products.Any()) {
-            <div id="payment py-5" > 
+            <div id="payment py-5" >
                 <div class="form-group"><!-- Payment method -->
-                    <label asp-for="Registration.PaymentMethodId"></label><br>
+                    <label asp-for="Registration.PaymentMethod"></label><br>
                     <div>
                     @foreach (var item in Model.PaymentMethods)
                     {
-                        <label class="radio-inline pr-3">  
-                        <input asp-for="Registration.PaymentMethodId" id="Registration_PaymentMethodId_@item.PaymentMethodId" type="radio" value="@item.PaymentMethodId" onclick="paymentMethod()"/> @item.Name  
+                        <label class="radio-inline pr-3">
+                        <input asp-for="Registration.PaymentMethod" id="Registration_PaymentMethod_@item.Provider" type="radio" value="@item.Provider" onclick="paymentMethod()"/> @item.Name
                         </label>
-                
+
                     }
                     </div>
                 </div>
@@ -104,7 +105,7 @@
             </div>
             }
 
-            
+
             @if(Model.Products.Any()){
                 <h4 class="pt-5 pb-3">Tilpass bestillingen</h4>
                 @for(int i = 0; i < Model.Products.Count; i++)
@@ -163,7 +164,7 @@
                 }
             }
 
-         
+
 
             <div class="form-group py-3">
                 <input type="submit" value="Registrer meg" class="btn btn-lg btn-success" />
@@ -178,9 +179,9 @@
 <script>
 
     function paymentMethod() {
-        if (document.getElementById('Registration_PaymentMethodId_3').checked) {
+        if (document.getElementById('Registration_PaymentMethod_@PaymentProvider.PowerOfficeEHFInvoice').checked) {
             $('#customerdetails').collapse('show');
-        };   
+        };
     }
 </script>
 @section Scripts {

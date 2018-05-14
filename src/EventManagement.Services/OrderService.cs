@@ -125,7 +125,7 @@ namespace losol.EventManagement.Services {
 
 			line.Quantity = quantity;
 			line.Price = price;
-			
+
 			line.ProductVariantId = variantId;
 			if(variantId != null)
 			{
@@ -200,7 +200,7 @@ namespace losol.EventManagement.Services {
 
 			var newOrder = new Order
 			{
-				PaymentMethodId = order.PaymentMethodId,
+				PaymentMethod = order.PaymentMethod,
 				RegistrationId = order.RegistrationId,
 				Comments = order.Comments,
 				CustomerEmail = order.CustomerEmail,
@@ -221,7 +221,7 @@ namespace losol.EventManagement.Services {
 			{
 				throw new InvalidOperationException("Cannot recreate order because some of the products were already ordered.");
 			}
-			
+
 			await _db.AddAsync(newOrder);
 			await _db.SaveChangesAsync();
 			return newOrder;

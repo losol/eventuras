@@ -15,6 +15,7 @@ using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
 using losol.EventManagement.Services.Extensions;
 using System.Text;
+using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Web.Pages.Events.Register
 {
@@ -49,7 +50,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 		public EventInfo EventInfo { get; set; }
 		public List<PaymentMethod> PaymentMethods { get; set; }
 		public List<Product> Products => EventInfo.Products;
-		public int DefaultPaymentMethod => _paymentMethodService.GetDefaultPaymentMethodId();
+		public PaymentProvider DefaultPaymentMethod => _paymentMethodService.GetDefaultPaymentMethod().Provider;
 
 		public async Task<IActionResult> OnGetAsync(int id)
 		{

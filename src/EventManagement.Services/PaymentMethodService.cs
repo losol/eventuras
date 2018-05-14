@@ -5,6 +5,7 @@ using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Services
 {
@@ -27,14 +28,14 @@ namespace losol.EventManagement.Services
 			return paymentMethods.SingleOrDefault(p => p.PaymentMethodId == id);
 		}
 
+        public PaymentMethod Get(PaymentProvider provider)
+		{
+			return paymentMethods.SingleOrDefault(p => p.Provider == provider);
+		}
+
 		public PaymentMethod GetDefaultPaymentMethod()
 		{
 			return paymentMethods.Single(p => p.IsDefault);
-		}
-
-		public int GetDefaultPaymentMethodId()
-		{
-			return GetDefaultPaymentMethod().PaymentMethodId;
 		}
 	}
 }

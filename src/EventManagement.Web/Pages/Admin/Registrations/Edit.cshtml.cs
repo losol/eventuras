@@ -44,7 +44,7 @@ namespace losol.EventManagement.Pages.Admin.Registrations
                 return NotFound();
             }
            ViewData["EventInfoId"] = new SelectList(_context.EventInfos, "EventInfoId", "Code");
-           ViewData["PaymentMethodId"] = new SelectList(_paymentMethods.GetActivePaymentMethods(), "PaymentMethodId", "Name");
+           ViewData["PaymentMethod"] = new SelectList(_paymentMethods.GetActivePaymentMethods(), "Provider", "Name");
            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
             return Page();
         }

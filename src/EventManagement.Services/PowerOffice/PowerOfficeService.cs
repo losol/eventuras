@@ -10,6 +10,7 @@ using GoApi.Party;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using Microsoft.Extensions.Options;
+using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Services.PowerOffice {
     public class PowerOfficeService : IInvoicingService {
@@ -32,9 +33,9 @@ namespace losol.EventManagement.Services.PowerOffice {
         public async Task CreateInvoiceAsync (Order order) {
             var customer = await createCustomerIfNotExists (order);
             await createProductsIfNotExists (order);
-            
+
             var invoice = new OutgoingInvoice {
-                Status = OutgoingInvoiceStatus.Draft, 
+                Status = OutgoingInvoiceStatus.Draft,
                 OrderDate = order.OrderTime,
                 CustomerReference = order.CustomerInvoiceReference,
                 CustomerCode = customer.Code,
@@ -92,7 +93,7 @@ namespace losol.EventManagement.Services.PowerOffice {
             }
 
             // If not, create the customer
-          
+
             var customer = new Customer {
                 EmailAddress = customerEmail,
                 Name = order.CustomerName ?? order.User.Name,
@@ -100,9 +101,9 @@ namespace losol.EventManagement.Services.PowerOffice {
                 InvoiceEmailAddress = customerEmail
             };
 
-            if (order.PaymentMethod.Name == "EHF" && string.IsNullOrWhiteSpace (order.CustomerVatNumber)) {
+            if (order.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice && string.IsNullOrWhiteSpace (order.CustomerVatNumber)) {
                 customer.InvoiceDeliveryType = InvoiceDeliveryType.EHF;
-            } 
+            }
             else {
                 customer.InvoiceDeliveryType = InvoiceDeliveryType.PdfByEmail;
             }
