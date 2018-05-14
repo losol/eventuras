@@ -7,26 +7,31 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
+using losol.EventManagement.Services;
 
 namespace losol.EventManagement.Pages.Admin.Events
 {
     public class IndexModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IEventInfoService _eventInfos;
 
-        public IndexModel(ApplicationDbContext context)
+        public IndexModel(IEventInfoService eventInfos)
         {
-            _context = context;
+            _eventInfos = eventInfos;
         }
 
-        public IList<EventInfo> EventInfo { get;set; }
+        public IList<EventInfo> UpcomingEvents { get;set; }
+        public IList<EventInfo> OnlineCourses { get;set; }
+        public IList<EventInfo> PastEvents { get;set; }
+        public IList<EventInfo> OngoingEvents {get;set; }
+
 
         public async Task OnGetAsync()
         {
-            EventInfo = await _context.EventInfos
-                .Include(e => e.Registrations)
-                .OrderBy(e => e.DateStart)
-                .ToListAsync();
+            UpcomingEvents = await _eventInfos.GetEventsAsync();
+            OnlineCourses = await _eventInfos.GetOnDemandEventsAsync();
+            PastEvents = await _eventInfos.GetPastEventsAsync();
+            OngoingEvents = await _eventInfos.GetOngoingEventsAsync();
         }
     }
 }
