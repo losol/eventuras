@@ -2,7 +2,7 @@
   "PaymentMethods": [
     {
       "PaymentMethodId": 2,
-      "Name": "PowerOfficeEmailInvoice",
+      "Name": "E-postfaktura",
       "Provider": "PowerOfficeEmailInvoice",
       "Active": true,
       "AdminOnly": false,
@@ -10,7 +10,7 @@
     },
     {
       "PaymentMethodId": 3,
-      "Name": "PowerOfficeEHFInvoice",
+      "Name": "EHF-faktura",
       "Provider": "PowerOfficeEHFInvoice",
       "Active": true,
       "AdminOnly": false
