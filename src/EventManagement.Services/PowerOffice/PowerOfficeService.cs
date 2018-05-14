@@ -38,8 +38,12 @@ namespace losol.EventManagement.Services.PowerOffice {
                 Status = OutgoingInvoiceStatus.Draft,
                 OrderDate = order.OrderTime,
                 CustomerReference = order.CustomerInvoiceReference,
-                CustomerCode = customer.Code,
+                CustomerCode = customer.Code
             };
+
+            if (!string.IsNullOrWhiteSpace(order.Registration.EventInfo.ProjectCode)) {
+                invoice.ProjectCode = order.Registration.EventInfo.ProjectCode;
+            }
 
             foreach (var orderline in order.OrderLines) {
                 var invoiceLine = new OutgoingInvoiceLine {
