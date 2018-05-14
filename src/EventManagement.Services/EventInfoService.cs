@@ -36,7 +36,7 @@ namespace losol.EventManagement.Services
 			return await _db.EventInfos
 				.Where(
 					i => i.Published == false ||
-					!i.DateStart.HasValue )
+					( i.OnDemand == false && !i.DateStart.HasValue ) )
 				.OrderBy(s => s.DateStart)
 				.ToListAsync();
 		}
