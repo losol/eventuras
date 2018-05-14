@@ -26,6 +26,7 @@ namespace losol.EventManagement.Services
 
 		Task<bool> UpdateParticipantInfo(int registrationId, string name, string JobTitle, string city, string Employer);
 		Task<bool> UpdateCustomerInfo(int registrationId, string customerName, string customerEmail, string customerVatNumber, string customerInvoiceReference);
+		Task<bool> UpdateCustomerAddress(int registrationId, string customerAddress, string customerCity, string customerZip, string customerCountry);
 		Task<bool> UpdatePaymentMethod(int registrationId, PaymentProvider provider);
 		Task<bool> UpdateRegistrationStatus(int registrationId, Registration.RegistrationStatus registrationStatus);
 

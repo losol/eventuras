@@ -49,6 +49,13 @@ namespace losol.EventManagement.Web.Controllers.Api {
                     vm.CustomerEmail,
                     vm.CustomerVatNumber,
                     vm.CustomerInvoiceReference);
+
+                await _registrationsService.UpdateCustomerAddress (
+                    id,
+                    vm.CustomerAddress,
+                    vm.CustomerCity,
+                    vm.CustomerZip,
+                    vm.CustomerCountry);
             }
             catch (ArgumentException) {
                 return BadRequest ();
@@ -112,6 +119,11 @@ namespace losol.EventManagement.Web.Controllers.Api {
             public string CustomerEmail { get; set; }
             public string CustomerVatNumber { get; set; }
             public string CustomerInvoiceReference { get; set; }
+
+            public string CustomerAddress { get; set; }
+            public string CustomerZip { get; set; }
+            public string CustomerCity { get; set; }
+            public string CustomerCountry { get; set; }
         }
 
     }
