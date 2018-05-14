@@ -23,7 +23,6 @@
                 
                 @if(order.GetNextStatus() != null)
                 {
-                     <order-status value="@order.Status" />
                     <button type="button" class="btn btn-primary" onclick="updateOrderStatus('@order.GetNextStatus()')">
                         @order.GetOrderStatusActionText()
                     </button>

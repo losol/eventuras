@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using GoApi;
 using GoApi.Common;
@@ -80,9 +81,11 @@ namespace losol.EventManagement.Services.PowerOffice {
 
         private async Task<Customer> createCustomerIfNotExists (Order order) {
             // Search for customer by VAT number
-            var existingCustomer = !string.IsNullOrWhiteSpace (order.CustomerVatNumber?.Trim ()) ?
+            Regex rgx = new Regex("[^0-9]");
+            var vatNumber = rgx.Replace(order.Registration.CustomerVatNumber.ToString(), "");
+            var existingCustomer = !string.IsNullOrWhiteSpace (vatNumber) ?
                 api.Customer.Get ()
-                .FirstOrDefault (c => c.VatNumber == order.CustomerVatNumber) :
+                    .FirstOrDefault (c => c.VatNumber == order.CustomerVatNumber) :
                 null;
 
             var customerEmail = !string.IsNullOrWhiteSpace(order.Registration.CustomerEmail)? order.Registration.CustomerEmail : order.Registration.User.Email;
@@ -100,8 +103,7 @@ namespace losol.EventManagement.Services.PowerOffice {
             // If not, create the customer
             var customer = new Customer {
                 EmailAddress = customerEmail,
-                Name = order.Registration.CustomerName ?? order.Registration.User.Name,
-                VatNumber = order.Registration.CustomerVatNumber,
+                VatNumber = vatNumber,
                 InvoiceEmailAddress = customerEmail,
 
                 MailAddress = new Address() {
@@ -112,7 +114,13 @@ namespace losol.EventManagement.Services.PowerOffice {
                 }
             };
 
-            if (order.Registration.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice && !string.IsNullOrWhiteSpace (order.Registration.CustomerVatNumber)) {
+            if (!string.IsNullOrWhiteSpace(order.Registration.CustomerName)) {
+                customer.Name = order.Registration.CustomerName;
+            } else {
+                customer.Name = order.Registration.User.Name;
+            }
+
+            if (order.Registration.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice && !string.IsNullOrWhiteSpace (vatNumber)) {
                 customer.InvoiceDeliveryType = InvoiceDeliveryType.EHF;
             }
             else {
