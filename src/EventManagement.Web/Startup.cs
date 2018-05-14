@@ -169,6 +169,13 @@ namespace losol.EventManagement
                 services.Configure<PowerOfficeOptions>(Configuration.GetSection("PowerOffice"));
                 services.AddScoped<IInvoicingService, PowerOfficeService>();
             }
+            else if(appsettings.UseStripe)
+            {
+                // STRIPE OVERRIDES POWEROFFICE
+                // THIS NEEDS TO BE DOCUMENTED OR CHANGED
+                services.Configure<StripeOptions>(Configuration.GetSection("Stripe"));
+                services.AddScoped<IInvoicingService, StripeInvoicingService>();
+            }
             else
             {
                 services.AddTransient<IInvoicingService, MockInvoicingService>();

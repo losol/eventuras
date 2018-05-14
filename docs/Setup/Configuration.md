@@ -7,7 +7,8 @@ The JSON structure defines the configuration for the application.
   "AppSettings": {
     "EmailProvider": "SendGrid|SMTP|File|Mock",
     "SmsProvider": "Twilio|Mock",
-    "UsePowerOffice": "false|true"
+    "UsePowerOffice": "false|true",
+    "UseStripe": "false|true"
   },
   "Logging": {
     "IncludeScopes": false,
@@ -45,6 +46,10 @@ The JSON structure defines the configuration for the application.
     "ClientKey": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
     "Mode": "Production|Test|Beta|Demo|Debug",
     "TokenStoreName": "name.tokenstore"
+  },
+  "Stripe": {
+    "SecretKey": "sk_test_BQokikJOvBiI2HlWgH4olfQ2",
+    "PublishableKey": "pk_test_6pRNASCoBOKtIshFeQd4XMUh"
   }
 }
 ```
