@@ -63,6 +63,7 @@
 </div>
 
 
+
 @* ONLINE COURSES *@
 <div class="bg-gray-300">
     <div class="container py-3">
@@ -80,6 +81,42 @@
                                     <span>Nettkurs</span>
                                 } else {
                                     <span>@item.City</span>
+                                    <span>@item.DateStart?.ToString("d")</span>
+                                    @if (item.DateEnd.HasValue) {
+                                        <span>- @item.DateEnd.Value.ToString("d")</span>
+                                    }
+                                }
+                                </p>
+                
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@* Unpublished Events *@
+<div class="bg-warning">
+    <div class="container py-3">
+        <h2>Upubliserte kurs</h2>
+
+        <div class="row event-cards">
+            @foreach (var item in Model.UnpublishedEvents) {
+                <div class="col-md-4 p-3">
+                    <div class="card card-event h-100">
+                        <a asp-page="./Details" asp-route-id="@item.EventInfoId" class="link-decoration-none">
+                            <div class="card-body h-100">
+                                <h4 class="card-title">@item.Title</h4>
+                                <p>
+                                @if (item.OnDemand) {
+                                    <span>Nettkurs</span>
+                                } else {
+                                    <span>@item.City</span>
+                                    @if (!item.DateStart.HasValue) {
+                                        <span class="text-danger">Mangler startdato</span>
+                                    }
                                     <span>@item.DateStart?.ToString("d")</span>
                                     @if (item.DateEnd.HasValue) {
                                         <span>- @item.DateEnd.Value.ToString("d")</span>
@@ -132,7 +169,7 @@
                                         }
                                     </span>
                                     <br>
-                                <a asp-page="./Events/Details" asp-route-id="@item.EventInfoId" asp-route-slug="@item.Code" class="link-decoration-none">Vis kurset »</a></p>
+                                <a asp-page="./Details" asp-route-id="@item.EventInfoId" class="link-decoration-none">Vis kurset »</a></p>
   
                     
                 }
