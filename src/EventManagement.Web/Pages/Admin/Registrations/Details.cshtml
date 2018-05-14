@@ -74,6 +74,31 @@
                     </div>
                     <br />
 
+                    <small>Adresse</small>
+                    <div contenteditable="true" class="customerinfo" id="customer-address">
+                        @Html.DisplayFor(model => model.Registration.CustomerAddress)
+                    </div>
+                    <br />
+
+                    <small>Postnummer</small>
+                    <div contenteditable="true" class="customerinfo" id="customer-zip">
+                        @Html.DisplayFor(model => model.Registration.CustomerZip)
+                    </div>
+                    <br />
+
+
+                    <small>Poststed</small>
+                    <div contenteditable="true" class="customerinfo" id="customer-city">
+                        @Html.DisplayFor(model => model.Registration.CustomerCity)
+                    </div>
+                    <br />
+
+                     <small>Land</small>
+                    <div contenteditable="true" class="customerinfo" id="customer-country">
+                        @Html.DisplayFor(model => model.Registration.CustomerCountry)
+                    </div>
+                    <br />
+
                     <small>Org.nr</small>
                     <div contenteditable="true" class="customerinfo" id="customer-vatnumber">
                         @Html.DisplayFor(model => model.Registration.CustomerVatNumber)
@@ -172,9 +197,13 @@
     });
 
     function saveCustomerInfo() {
-        const customerPostData = {
+        var customerPostData = {
             CustomerName: $('#customer-name').text().trim(),
             CustomerEmail: $('#customer-email').text().trim(),
+            CustomerAddress: $('#customer-address').text().trim(),
+            CustomerZip: $('#customer-zip').text().trim(),
+            CustomerCity: $('#customer-city').text().trim(),
+            CustomerCountry: $('#customer-country').text().trim(),
             CustomerVatNumber: $('#customer-vatnumber').text().trim(),
             CustomerInvoiceReference: $('#customer-invoicereference').text().trim()
         };
