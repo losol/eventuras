@@ -38,7 +38,7 @@
             else
             {
                 <button type="button" class="btn btn-primary " onclick="reopenOrder()">
-                    Reopen
+                    Lag kopi av ordren
                 </button>
             }
             @if(order.Status != Order.OrderStatus.Invoiced)
@@ -68,26 +68,23 @@
                 </div>
             </div>
 
-            <div class="card col-md-5 m-2">
+            <div class="card col-md-6 m-1">
                 <div class="card-body">
                     <h4 class="card-title">Betalingsinformasjon</h4>
                     <hr />
-                    <dl class="">
-                        <dt class="">Kundenavn</dt>
-                        <dd class="">@order.CustomerName &nbsp;</dd>
-                        <dt class="">Epost for faktura</dt>
-                        <dd class="">@order.CustomerEmail &nbsp;</dd>
-                        <dt class="">Organisasjonsnummer</dt>
-                        <dd class="">@order.CustomerVatNumber &nbsp;</dd>
-                        <dt class="">Fakturareferanse</dt>
-                        <dd class="">@order.CustomerInvoiceReference &nbsp;</dd>
-                        <dt class="">Betalingsmetode</dt>
-                        <dd class=""> @order.PaymentMethod</dd>
+                    <dl class="row">
+                        <dt class="col-sm-4">Kunde</dt>
+                        <dd class="col-sm-8">@order.CustomerName &nbsp;</dd>
+                        <dt class="col-sm-4">Fakturaepost</dt>
+                        <dd class="col-sm-8">@order.CustomerEmail &nbsp;</dd>
+                        <dt class="col-sm-4">Org.nr</dt>
+                        <dd class="col-sm-8">@order.CustomerVatNumber &nbsp;</dd>
+                        <dt class="col-sm-4">Fakturaref.</dt>
+                        <dd class="col-sm-8">@order.CustomerInvoiceReference &nbsp;</dd>
+                        <dt class="col-sm-4">Betalingsmetode</dt>
+                        <dd class="col-sm-8">@order.PaymentMethod</dd>
                
                     </dl>
-
-            <a href="#" data-toggle="modal" class="d-print-none"
-                data-target="#edit-order-modal">Endre detaljer</a>
                 </div>
             </div>
         </div>
@@ -157,6 +154,9 @@
 
             <strong>Kommentarer</strong><br />
             <pre>@order.Comments</pre>
+
+
+            <a href="#" data-toggle="modal" class="d-print-none" data-target="#edit-order-comment-modal">Endre detaljer</a>
 
             <strong>Logg</strong><br />
             <pre>@order.Log</pre>
@@ -259,9 +259,9 @@
     </div>
 </div>
 
-<!-- Edit Order (customer/comments) Modal -->
+<!-- Edit Order Comments Modal -->
 <div class="modal fade"
-    id="edit-order-modal"
+    id="edit-order-comment-modal"
     tabindex="-1"
     role="dialog"
     data-keyboard="false"
@@ -270,28 +270,15 @@
     <div class="modal-dialog" role="document">
     <div class="modal-content">
         <div class="modal-header">
-        <h5 class="modal-title" id="edit-order-modal-title">Edit Order Information</h5>
+        <h5 class="modal-title" id="edit-order-modal-title">Edit Order Comment</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
         </div>
         <div class="modal-body">
         <div class="form-group">
-            <label class="control-label">Customer Name</label>
-            <input id="input-edit-customer-name" class="form-control" value="@order.CustomerName" />
-        </div>
-        <div class="form-group">
-            <label class="control-label">Customer Email</label>
-            <input id="input-edit-customer-email" class="form-control" value="@order.CustomerEmail" />
-        </div>
-        <div class="form-group">
-            <label class="control-label">Customer Invoice Reference </label>
-            <input id="input-edit-customer-invoiceref" class="form-control" value="@order.CustomerInvoiceReference" />
-        </div>
-        <hr>
-        <div class="form-group">
-            <label class="control-label">Comments </label>
-            <textarea id="input-edit-comments" class="form-control">@order.Comments</textarea>
+            <label class="control-label">Kommentar </label>
+            <textarea id="input-edit-comments" rows="8" class="form-control">@order.Comments</textarea>
         </div>
         </div>
         <div class="modal-footer">
@@ -410,16 +397,13 @@ TODO: Gotta do it in a better way later. *@
                 }
             })
 
-            $('#btn-edit-order').on('click', function() {
+            $('#btn-edit-order-comment').on('click', function() {
                 const postData = {
-                    customerName: $('#input-edit-customer-name').val(),
-                    customerEmail: $('#input-edit-customer-email').val(),
-                    invoiceReference: $('#input-edit-customer-invoiceref').val(),
                     comments: $('#input-edit-comments').val()
                 }
                 $spinner.show();
                 $disabler.show();
-                $.postJSON('/api/v0/orders/update/@order.OrderId', postData).done(function() {
+                $.postJSON('/api/v0/orders/@order.OrderId/updatecomment', postData).done(function() {
                     location.reload();
                 }).fail(function(){
                     $spinner.hide();
