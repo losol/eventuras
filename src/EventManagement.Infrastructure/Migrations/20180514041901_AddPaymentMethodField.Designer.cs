@@ -12,9 +12,10 @@ using System;
 namespace losol.EventManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180514041901_AddPaymentMethodField")]
+    partial class AddPaymentMethodField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -191,6 +192,8 @@ namespace losol.EventManagement.Infrastructure.Migrations
                     b.Property<string>("OrganizerUserId");
 
                     b.Property<string>("PracticalInformation");
+
+                    b.Property<decimal?>("Price");
 
                     b.Property<string>("Program");
 

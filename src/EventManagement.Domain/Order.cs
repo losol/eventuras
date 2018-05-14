@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Domain
 {
@@ -78,6 +79,7 @@ namespace losol.EventManagement.Domain
 		public string CustomerVatNumber { get; set; }
 		public string CustomerInvoiceReference { get; set; }
 		public int? PaymentMethodId { get; set; }
+        public PaymentProvider? PaymentMethod { get; set; }
 
 		public DateTime OrderTime { get; set; } = DateTime.UtcNow;
 
@@ -89,7 +91,6 @@ namespace losol.EventManagement.Domain
 
 		// Navigational properties
 		public Registration Registration { get; set; }
-		public PaymentMethod PaymentMethod { get; set; }
 		public ApplicationUser User { get; set; }
 		public List<OrderLine> OrderLines { get; set; }
 

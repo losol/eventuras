@@ -7,22 +7,25 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
+using losol.EventManagement.Services;
 
 namespace losol.EventManagement.Pages.Admin.Registrations
 {
     public class CreateModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly IPaymentMethodService _paymentMethods;
 
-        public CreateModel(ApplicationDbContext context)
+        public CreateModel(ApplicationDbContext context, IPaymentMethodService paymentMethods)
         {
             _context = context;
+            _paymentMethods = paymentMethods;
         }
 
         public IActionResult OnGet()
         {
         ViewData["EventInfoId"] = new SelectList(_context.EventInfos, "EventInfoId", "Code");
-        ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods, "PaymentMethodId", "Name");
+        ViewData["PaymentMethod"] = new SelectList(_paymentMethods.GetActivePaymentMethods(), "Provider", "Name");
         ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
             return Page();
         }

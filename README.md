@@ -34,37 +34,31 @@ Password: PaSsw0rd
     cd EventManagement
     ```
 
-2. Build the project
-
-    ```bash
-    dotnet build
-    ```
-
-3. Run tests
+1. Run tests
 
     ```bash
     ls tests/**/*.csproj | xargs -L1 dotnet test
     ```
 
-4. Install node dependencies
+1. Install node dependencies
 
     ```bash
-    cd src/EventManagement/EventManagement.Web
+    cd src/EventManagement.Web
     npm install
     ```
 
-5. Run the gulp task
+1. Run the gulp task
 
     ```bash
     ./node_modules/.bin/gulp
     ```
 
-6. Configure the application following the steps [here](./docs/Setup/Install.md#configure-your-app). The complete application configuration is documented [here](./docs/Setup/Configuration.md).
+1. Configure the application following the steps [here](./docs/Setup/Install.md#configure-your-app). The complete application configuration is documented [here](./docs/Setup/Configuration.md).
 
-7. Run the application
+1. Run the application
 
     ```bash
-    # Ensure you're in the src/EventManagement/EventManagement.Web directory
+    # Ensure you're in the src/EventManagement.Web directory
     dotnet run
     ```
 

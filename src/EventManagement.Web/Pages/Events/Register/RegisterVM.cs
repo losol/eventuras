@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Services;
+using static losol.EventManagement.Domain.PaymentMethod;
 using static losol.EventManagement.Domain.Registration;
 
 namespace losol.EventManagement.Web.Pages.Events.Register
@@ -59,7 +60,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 		public string CustomerInvoiceReference { get; set; }
 
 		[Display(Name = "Betaling")]
-		public int? PaymentMethodId { get; set; }
+		public PaymentProvider? PaymentMethod { get; set; }
 
 		public ProductVM[] Products { get; set; }
 
@@ -67,10 +68,10 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 		public RegistrationType Type { get; set; } = RegistrationType.Participant;
 
 		public RegisterVM() { }
-		public RegisterVM(EventInfo eventinfo, int? defaultPaymentMethod = null)
+		public RegisterVM(EventInfo eventinfo, PaymentProvider? defaultPaymentMethod = null)
 		{
 			EventInfoId = eventinfo.EventInfoId;
-			PaymentMethodId = defaultPaymentMethod;
+			PaymentMethod = defaultPaymentMethod;
 
 			Products = new ProductVM[eventinfo.Products.Count];
 			for (int i = 0; i < Products.Length; i++)

@@ -1,6 +1,7 @@
 @page "{id:int}"
 @model losol.EventManagement.Pages.Admin.Events.AddRegistrationModel
 @using static losol.EventManagement.Domain.Registration;
+@using static losol.EventManagement.Domain.PaymentMethod;
 @{
     ViewData["Title"] = "Legg til deltaker på arrangement";
     var RegistrationTypes = (RegistrationType[])Enum.GetValues(typeof(RegistrationType));
@@ -16,7 +17,7 @@
 
     <form method="post" id="form-add-registration">
         <div class="row justify-content-between py-3">
-            <div class="col-md-9"> 
+            <div class="col-md-9">
                 <div class="form-group">
                     <label>Bruker</label>
                     @Html.Partial("Partials/_UserSelect")
@@ -31,7 +32,7 @@
                         <label class="form-check-label">
                             <input asp-for="Registration.Type"
                                 class="form-check-input" type="radio" value="@type">
-                            
+
                                 @type
                             </label>
                         </div>
@@ -41,16 +42,16 @@
 
                 @* START PAYMENT  *@
                 @if (Model.EventInfo.Products.Any()) {
-                <div id="payment py-5" > 
+                <div id="payment py-5" >
                     <div class="form-group"><!-- Payment method -->
-                        <label asp-for="Registration.PaymentMethodId"></label><br>
+                        <label asp-for="Registration.PaymentMethod"></label><br>
                         <div>
                         @foreach (var item in Model.PaymentMethods)
                         {
-                            <label class="radio-inline pr-3">  
-                            <input asp-for="Registration.PaymentMethodId" id="Registration_PaymentMethodId_@item.PaymentMethodId" type="radio" value="@item.PaymentMethodId" onclick="paymentMethod()"/> @item.Name  
+                            <label class="radio-inline pr-3">
+                            <input asp-for="Registration.PaymentMethod" id="Registration_PaymentMethod_@item.Provider" type="radio" value="@item.Provider" onclick="paymentMethod()"/> @item.Name
                             </label>
-                    
+
                         }
                         </div>
                     </div>
@@ -93,19 +94,19 @@
     </form>
 
     </div>
-    
+
     @section Scripts {
         @Html.Partial("_ValidationScriptsPartial");
         @Html.Partial("Partials/_UserSelectScript");
         <script>
             function paymentMethod() {
-                if (document.getElementById('Registration_PaymentMethodId_3').checked) {
+                if (document.getElementById('Registration_PaymentMethod_@PaymentProvider.PowerOfficeEHFInvoice').checked) {
                     $('#customerdetails').collapse('show');
-                };   
+                };
             }
             $('#form-add-registration').on('submit', function(){
                 $('#user-id').val($('#input-user').typeahead('getActive').id);
             })
         </script>
-    }    
+    }
 </div>
