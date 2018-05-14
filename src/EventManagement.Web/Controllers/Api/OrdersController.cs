@@ -23,7 +23,7 @@ namespace losol.EventManagement.Web.Controllers.Api
 			_orderService = orderService;
 		}
 
-		[HttpPost("{id}/update/")]
+		[HttpPost("{id}/update/ordercomment")]
 		public async Task<ActionResult> UpdateOrderComment([FromRoute]int id, [FromBody]UpdateOrderDetailsVM vm)
 		{
 			if (!ModelState.IsValid) return BadRequest();

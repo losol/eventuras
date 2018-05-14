@@ -11,16 +11,19 @@
 }
 <div class="bg-gray-300 py-3">
     <div class="container">
-        <h2>
+        <h1>
             Ordre #@order.OrderId - @order.Registration.EventInfo.Title
-            <order-status value="@order.Status" />
-        </h2>
+        </h1>
         <div class="d-print-none">
         @if(order.Status != Order.OrderStatus.Cancelled)
         {
+            
             <div class="btn-group " role="group">
+            <h2><order-status value="@order.Status" />
+                
                 @if(order.GetNextStatus() != null)
                 {
+                     <order-status value="@order.Status" />
                     <button type="button" class="btn btn-primary" onclick="updateOrderStatus('@order.GetNextStatus()')">
                         @order.GetOrderStatusActionText()
                     </button>
@@ -33,6 +36,7 @@
                         <button class="dropdown-item text-danger" onclick="updateOrderStatus('Cancelled')">Cancel</button>
                     </div>
                 </div>
+                </h2>
             </div>
             }
             else
@@ -52,8 +56,8 @@
     </div>
 </div>
 <div class="container py-3">
-        <div class="row justify-content-between">
-            <div class="card col-md-5 m-2">
+        <div class="row">
+            <div class="card col-md-6">
                 <div class="card-body">
                 <h4 class="card-title">Deltaker</h4>
                 <hr />
@@ -65,10 +69,11 @@
                     <dt>Telefon</dt>
                     <dd>@(order.User?.PhoneNumber ?? "-")</dd>
                 </dl>
+                <a asp-page="../Registrations/Details" asp-route-id="@order.RegistrationId">Endre</a>
                 </div>
             </div>
 
-            <div class="card col-md-6 m-1">
+            <div class="card col-md-6">
                 <div class="card-body">
                     <h4 class="card-title">Betalingsinformasjon</h4>
                     <hr />
@@ -85,6 +90,7 @@
                         <dd class="col-sm-8">@order.PaymentMethod</dd>
                
                     </dl>
+                    <a asp-page="../Registrations/Details" asp-route-id="@order.RegistrationId">Endre</a>
                 </div>
             </div>
         </div>
@@ -152,16 +158,17 @@
                 </tbody>
             </table>
 
-            <strong>Kommentarer</strong><br />
+            <h2>Kommentarer</h2>
             <pre>@order.Comments</pre>
 
+            <p>
+                <a href="#" data-toggle="modal" class="d-print-none" data-target="#edit-order-comment-modal">Endre kommentar</a>
+            </p>
 
-            <a href="#" data-toggle="modal" class="d-print-none" data-target="#edit-order-comment-modal">Endre detaljer</a>
-
-            <strong>Logg</strong><br />
+            <h2>Logg</h2>
             <pre>@order.Log</pre>
 
-            <h4>Ordreinformasjon</h4>
+            <h2>Ordreinformasjon</h2    >
             <dl class="row">
                 <dt class="col-6 col-md-3 col-lg-2 text-right">Order ID</dt>
                 <dd class="col-6 col-md-9 col-lg-10">@order.OrderId</dd>
@@ -283,7 +290,7 @@
         </div>
         <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button id="btn-edit-order" type="button" class="btn btn-primary">Save <i class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true" style="display:none"></i></button>
+        <button id="btn-edit-order-comment" type="button" class="btn btn-primary">Save <i class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true" style="display:none"></i></button>
         </div>
     </div>
     </div>
@@ -403,7 +410,7 @@ TODO: Gotta do it in a better way later. *@
                 }
                 $spinner.show();
                 $disabler.show();
-                $.postJSON('/api/v0/orders/@order.OrderId/updatecomment', postData).done(function() {
+                $.postJSON('/api/v0/orders/@order.OrderId/update/ordercomment', postData).done(function() {
                     location.reload();
                 }).fail(function(){
                     $spinner.hide();
