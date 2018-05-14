@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 
-namespace losol.EventManagement.Services.PowerOffice
+namespace losol.EventManagement.Services.Invoicing
 {
     public class MockInvoicingService : IInvoicingService
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
-using losol.EventManagement.Services.PowerOffice;
+using losol.EventManagement.Services.Invoicing;
 using Microsoft.EntityFrameworkCore;
 using static losol.EventManagement.Domain.Order;
 
