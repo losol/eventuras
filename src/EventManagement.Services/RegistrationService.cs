@@ -237,6 +237,24 @@ namespace losol.EventManagement.Services {
 				}
 			return await _db.SaveChangesAsync() > 0;
 		}
+		
+		public async Task<bool> UpdateCustomerAddress(int registrationId, string customerAddress, string customerCity, string customerZip, string customerCountry) {
+			var reg = await _db.Registrations
+				.Where( m => m.RegistrationId == registrationId)
+				.Include ( m => m.Orders)
+				.FirstOrDefaultAsync();
+
+				// Update customer details in registration.
+				reg.CustomerAddress = customerAddress;
+				reg.CustomerCity =  customerCity;
+				reg.CustomerZip = customerZip;
+				reg.CustomerCountry = customerCountry;
+				_db.Update(reg);
+
+			return await _db.SaveChangesAsync() > 0;
+		}
+
+
 		public async Task<bool> UpdatePaymentMethod(int registrationId, PaymentProvider paymentMethod) {
 			var reg = await _db.Registrations
 				.Where( m => m.RegistrationId == registrationId)

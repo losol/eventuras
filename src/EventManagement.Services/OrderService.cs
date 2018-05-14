@@ -151,6 +151,13 @@ namespace losol.EventManagement.Services {
 			return await _db.SaveChangesAsync () > 0;
 		}
 
+		public async Task<bool> UpdateOrderComment (int id, string comments) {
+			var order = await _db.Orders.FindAsync (id);
+			order.Comments = comments;
+			_db.Orders.Update (order);
+			return await _db.SaveChangesAsync () > 0;
+		}
+
 		public async Task<int> MakeOrderFreeAsync (int id) {
 			var order = await _db.Orders
 				.Include (o => o.OrderLines)

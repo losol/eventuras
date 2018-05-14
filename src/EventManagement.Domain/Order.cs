@@ -74,6 +74,7 @@ namespace losol.EventManagement.Domain
 
 		// From registration, should be Participant details, if Customer details
 		// does not exist.
+		// TODO: REMOVE, USE FROM REGISTRATION...
 		public string CustomerName { get; set; }
 		public string CustomerEmail { get; set; }
 		public string CustomerVatNumber { get; set; }

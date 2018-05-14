@@ -23,17 +23,13 @@ namespace losol.EventManagement.Web.Controllers.Api
 			_orderService = orderService;
 		}
 
-		[HttpPost("update/{id}")]
-		public async Task<ActionResult> UpdateOrder([FromRoute]int id, [FromBody]UpdateOrderDetailsVM vm)
+		[HttpPost("{id}/update/ordercomment")]
+		public async Task<ActionResult> UpdateOrderComment([FromRoute]int id, [FromBody]UpdateOrderDetailsVM vm)
 		{
 			if (!ModelState.IsValid) return BadRequest();
 			try
 			{
-				await _orderService.UpdateOrderDetailsAsync(id, 
-					vm.CustomerName, 
-					vm.CustomerEmail, 
-					vm.InvoiceReference, 
-					vm.Comments);
+				await _orderService.UpdateOrderComment(id, vm.Comments);
 			}
 			catch (ArgumentException)
 			{
@@ -68,7 +64,7 @@ namespace losol.EventManagement.Web.Controllers.Api
 				}
 				return Ok();
 			}
-			catch(Exception e) when (e is InvalidOperationException || e is ArgumentException) {
+			catch(Exception e) {
 				await _orderService.AddLogLineAsync(id, e.Message);
 				return BadRequest();
 			}
