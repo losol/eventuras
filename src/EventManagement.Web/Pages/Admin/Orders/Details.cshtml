@@ -10,12 +10,12 @@
                            .Select(x => new { id = x.ProductVariantId, pid = x.ProductId, name = x.Name });
 }
 <div class="bg-gray-300 py-3">
-    <div class="container"> 
+    <div class="container">
         <h2>
             Ordre #@order.OrderId - @order.Registration.EventInfo.Title
             <order-status value="@order.Status" />
         </h2>
-        <div class="d-print-none"> 
+        <div class="d-print-none">
         @if(order.Status != Order.OrderStatus.Cancelled)
         {
             <div class="btn-group " role="group">
@@ -35,7 +35,7 @@
                 </div>
             </div>
             }
-            else 
+            else
             {
                 <button type="button" class="btn btn-primary " onclick="reopenOrder()">
                     Reopen
@@ -43,15 +43,15 @@
             }
             @if(order.Status != Order.OrderStatus.Invoiced)
             {
-                <button class="btn btn-small btn-secondary" data-toggle="popover" 
-                    data-trigger="focus" 
-                    title="Make order free?" 
+                <button class="btn btn-small btn-secondary" data-toggle="popover"
+                    data-trigger="focus"
+                    title="Make order free?"
                     data-content="<button class='btn btn-sm btn-danger' onclick='makeFree()'>Yes</button><button class='btn btn-sm btn-success'>No</button>">Make Free</button>
             }
         </div>
     </div>
 </div>
-<div class="container py-3"> 
+<div class="container py-3">
         <div class="row justify-content-between">
             <div class="card col-md-5 m-2">
                 <div class="card-body">
@@ -67,12 +67,12 @@
                 </dl>
                 </div>
             </div>
-            
+
             <div class="card col-md-5 m-2">
                 <div class="card-body">
                     <h4 class="card-title">Betalingsinformasjon</h4>
                     <hr />
-                    <dl class=""> 
+                    <dl class="">
                         <dt class="">Kundenavn</dt>
                         <dd class="">@order.CustomerName &nbsp;</dd>
                         <dt class="">Epost for faktura</dt>
@@ -82,7 +82,7 @@
                         <dt class="">Fakturareferanse</dt>
                         <dd class="">@order.CustomerInvoiceReference &nbsp;</dd>
                         <dt class="">Betalingsmetode</dt>
-                        <dd class=""> @order.PaymentMethod?.Name</dd>
+                        <dd class=""> @order.PaymentMethod</dd>
                
                     </dl>
 
@@ -91,13 +91,13 @@
                 </div>
             </div>
         </div>
-            
+
             <h2>
-                Ordrelinjer 
+                Ordrelinjer
                 @if(order.CanEdit)
                 {
-                    <button class="ml-3 btn btn-success d-print-none" 
-                        data-toggle="modal" 
+                    <button class="ml-3 btn btn-success d-print-none"
+                        data-toggle="modal"
                         data-target="#add-orderline-modal">Ny ordrelinje</button>
                 }
             </h2>
@@ -131,9 +131,9 @@
                             @if(order.CanEdit)
                             {
                                 <td class="d-print-none">
-                                    <a tabindex="0" 
-                                        class="btn btn-sm btn-primary btn-edit-line" 
-                                        role="button"    
+                                    <a tabindex="0"
+                                        class="btn btn-sm btn-primary btn-edit-line"
+                                        role="button"
                                         data-quantity="@line.Quantity"
                                         data-id="@line.OrderLineId"
                                         data-product-id="@line.ProductId"
@@ -141,10 +141,10 @@
                                         data-trigger="focus">
                                         <i class="material-icons md-light md-18">edit</i>
                                     </a>
-                                    <a tabindex="0" class="btn btn-sm btn-danger" role="button"       
-                                        data-toggle="popover" 
-                                        data-trigger="focus" 
-                                        title="Delete line?" 
+                                    <a tabindex="0" class="btn btn-sm btn-danger" role="button"
+                                        data-toggle="popover"
+                                        data-trigger="focus"
+                                        title="Delete line?"
                                         data-content="<button class='btn btn-sm btn-danger btn-delete-line' onclick='deleteOrderLine(@line.OrderLineId)'>Yes</button><button class='btn btn-sm btn-success'>No</button>">
                                         <i class="material-icons md-light md-18">delete</i>
                                     </a>
@@ -180,12 +180,12 @@
 
 
 <!-- Add OrderLine Modal -->
-<div class="modal fade" 
-    id="add-orderline-modal" 
-    tabindex="-1" 
-    role="dialog" 
+<div class="modal fade"
+    id="add-orderline-modal"
+    tabindex="-1"
+    role="dialog"
     data-keyboard="false"
-    aria-labelledby="add-orderline-modal-title" 
+    aria-labelledby="add-orderline-modal-title"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -199,8 +199,8 @@
         <div class="form-group">
             <label class="control-label">Product</label>
             <select id="selected-product" class="form-control">
-                <option selected disabled>Select Product</option>   
-                @foreach(var p in products) 
+                <option selected disabled>Select Product</option>
+                @foreach(var p in products)
                 {
                     <option value="@p.ProductId">@p.Name</option>
                 }
@@ -221,12 +221,12 @@
 </div>
 
 <!-- Edit OrderLine Modal -->
-<div class="modal fade" 
-    id="edit-orderline-modal" 
-    tabindex="-1" 
-    role="dialog" 
+<div class="modal fade"
+    id="edit-orderline-modal"
+    tabindex="-1"
+    role="dialog"
     data-keyboard="false"
-    aria-labelledby="edit-orderline-modal-title" 
+    aria-labelledby="edit-orderline-modal-title"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -260,12 +260,12 @@
 </div>
 
 <!-- Edit Order (customer/comments) Modal -->
-<div class="modal fade" 
-    id="edit-order-modal" 
-    tabindex="-1" 
-    role="dialog" 
+<div class="modal fade"
+    id="edit-order-modal"
+    tabindex="-1"
+    role="dialog"
     data-keyboard="false"
-    aria-labelledby="edit-order-modal-title" 
+    aria-labelledby="edit-order-modal-title"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -306,7 +306,7 @@
 TODO: Gotta do it in a better way later. *@
 <div id="input-disabler" style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; color: transparent; z-index:2000; display: none"></div>
 
-@section scripts { 
+@section scripts {
     <script>
 
         $(function () {
@@ -338,7 +338,7 @@ TODO: Gotta do it in a better way later. *@
                     $sVariants.prop('disabled', true);
                 }
             });
-            
+
             const $disabler = $('#input-disabler');
             const $spinner = $('.fa-spinner');
             $('#btn-add-orderline').bind('click', function() {
@@ -364,7 +364,7 @@ TODO: Gotta do it in a better way later. *@
             $('.btn-edit-line').on('click', function() {
                 const editId = $(this).data('id');
                 const productId = $(this).data('product-id');
-                
+
                 const $editModal = $('#edit-orderline-modal');
                 const $inputVariants = $('#input-edit-variant');
                 const $inputQuantity = $('#input-edit-quantity');
@@ -439,7 +439,7 @@ TODO: Gotta do it in a better way later. *@
             toastr.info('Please wait.', null, { timeOut: 0 });
             $.post('/api/v0/orders/update/@id/' + status, function() {
                 location.reload();
-            })            
+            })
         }
 
         function deleteOrder() {
@@ -465,5 +465,5 @@ TODO: Gotta do it in a better way later. *@
             })
         }
     </script>
-    
+
 }

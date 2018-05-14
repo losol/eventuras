@@ -25,7 +25,6 @@ namespace losol.EventManagement.Pages.Admin.Registrations
         {
             Registrations = await _context.Registrations
                 .Include(r => r.EventInfo)
-                .Include(r => r.PaymentMethod)
                 .Include(r => r.User).ToListAsync();
         }
     }
