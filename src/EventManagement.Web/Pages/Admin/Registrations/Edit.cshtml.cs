@@ -8,16 +8,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
+using losol.EventManagement.Services;
 
 namespace losol.EventManagement.Pages.Admin.Registrations
 {
     public class EditModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly IPaymentMethodService _paymentMethods;
 
-        public EditModel(ApplicationDbContext context)
+        public EditModel(ApplicationDbContext context, IPaymentMethodService paymentMethods)
         {
             _context = context;
+            _paymentMethods = paymentMethods;
         }
 
         [BindProperty]
@@ -41,7 +44,7 @@ namespace losol.EventManagement.Pages.Admin.Registrations
                 return NotFound();
             }
            ViewData["EventInfoId"] = new SelectList(_context.EventInfos, "EventInfoId", "Code");
-           ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods, "PaymentMethodId", "Name");
+           ViewData["PaymentMethodId"] = new SelectList(_paymentMethods.GetActivePaymentMethods(), "PaymentMethodId", "Name");
            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
             return Page();
         }
