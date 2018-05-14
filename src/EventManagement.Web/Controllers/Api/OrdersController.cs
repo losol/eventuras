@@ -30,10 +30,10 @@ namespace losol.EventManagement.Web.Controllers.Api
 			try
 			{
 				await _orderService.UpdateOrderDetailsAsync(id, 
-				                                            vm.CustomerName, 
-				                                            vm.CustomerEmail, 
-				                                            vm.InvoiceReference, 
-				                                            vm.Comments);
+					vm.CustomerName, 
+					vm.CustomerEmail, 
+					vm.InvoiceReference, 
+					vm.Comments);
 			}
 			catch (ArgumentException)
 			{
@@ -56,7 +56,6 @@ namespace losol.EventManagement.Web.Controllers.Api
 		[HttpPost("update/{id}/{status}")]
 		public async Task<ActionResult> UpdateOrderStatus([FromRoute]int id, [FromRoute]OrderStatus status)
 		{
-			if(status == OrderStatus.Draft) return BadRequest();
 			try{
 				switch(status)
 				{
@@ -70,6 +69,7 @@ namespace losol.EventManagement.Web.Controllers.Api
 				return Ok();
 			}
 			catch(Exception e) when (e is InvalidOperationException || e is ArgumentException) {
+				await _orderService.AddLogLineAsync(id, e.Message);
 				return BadRequest();
 			}
 		}

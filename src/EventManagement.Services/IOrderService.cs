@@ -33,5 +33,8 @@ namespace losol.EventManagement.Services
 		Task<bool> CreateInvoiceAsync(int orderId);
 		Task<bool> MarkAsCancelledAsync(int orderId);
 		Task<Order> CreateDraftFromCancelledOrder(int orderId);
+
+		// Log
+		Task<bool> AddLogLineAsync(int orderId, string logText);
 	}
 }

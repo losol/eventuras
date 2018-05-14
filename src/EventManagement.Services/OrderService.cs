@@ -186,6 +186,13 @@ namespace losol.EventManagement.Services {
 			return await _db.SaveChangesAsync () > 0; // what if power office succeeds but this fails?
 		}
 
+		public async Task<bool> AddLogLineAsync(int orderId, string logText) {
+			var order = await _db.Orders
+				.Where(m => m.OrderId == orderId).SingleOrDefaultAsync();
+			order.AddLog(logText);
+			return await _db.SaveChangesAsync() > 0;
+		}
+
 		public async Task<Order> CreateDraftFromCancelledOrder(int orderId)
 		{
 			var order = await _db.Orders
