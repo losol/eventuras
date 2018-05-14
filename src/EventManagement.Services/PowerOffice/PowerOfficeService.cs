@@ -101,7 +101,7 @@ namespace losol.EventManagement.Services.PowerOffice {
                 InvoiceEmailAddress = customerEmail
             };
 
-            if (order.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice && string.IsNullOrWhiteSpace (order.CustomerVatNumber)) {
+            if (order.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice && !string.IsNullOrWhiteSpace (order.CustomerVatNumber)) {
                 customer.InvoiceDeliveryType = InvoiceDeliveryType.EHF;
             }
             else {
