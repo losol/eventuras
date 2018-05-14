@@ -30,10 +30,10 @@ namespace losol.EventManagement.Web.Controllers.Api
 			try
 			{
 				await _orderService.UpdateOrderDetailsAsync(id, 
-				                                            vm.CustomerName, 
-				                                            vm.CustomerEmail, 
-				                                            vm.InvoiceReference, 
-				                                            vm.Comments);
+					vm.CustomerName, 
+					vm.CustomerEmail, 
+					vm.InvoiceReference, 
+					vm.Comments);
 			}
 			catch (ArgumentException)
 			{
