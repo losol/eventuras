@@ -37,7 +37,7 @@ namespace losol.EventManagement.Services.PowerOffice {
             var invoice = new OutgoingInvoice {
                 Status = OutgoingInvoiceStatus.Draft,
                 OrderDate = order.OrderTime,
-                CustomerReference = order.CustomerInvoiceReference,
+                CustomerReference = order.Registration.CustomerInvoiceReference,
                 CustomerCode = customer.Code
             };
 
@@ -72,6 +72,7 @@ namespace losol.EventManagement.Services.PowerOffice {
                 });
 
             var result = api.OutgoingInvoice.Save (invoice);
+            order.ExternalInvoiceId = invoice.Id.ToString();
             order.AddLog("Sendte fakturautkast til PowerOffice");
             _db.Orders.Update(order);
             await _db.SaveChangesAsync();
@@ -84,7 +85,7 @@ namespace losol.EventManagement.Services.PowerOffice {
                 .FirstOrDefault (c => c.VatNumber == order.CustomerVatNumber) :
                 null;
 
-            var customerEmail = !string.IsNullOrWhiteSpace(order.CustomerEmail)? order.CustomerEmail : order.User.Email;
+            var customerEmail = !string.IsNullOrWhiteSpace(order.Registration.CustomerEmail)? order.Registration.CustomerEmail : order.Registration.User.Email;
 
             // If no customer was found by VAT number, then search by email
             if (!string.IsNullOrWhiteSpace(order.CustomerEmail)) {
@@ -97,15 +98,20 @@ namespace losol.EventManagement.Services.PowerOffice {
             }
 
             // If not, create the customer
-
             var customer = new Customer {
                 EmailAddress = customerEmail,
-                Name = order.CustomerName ?? order.User.Name,
-                VatNumber = order.CustomerVatNumber,
-                InvoiceEmailAddress = customerEmail
+                Name = order.Registration.CustomerName ?? order.Registration.User.Name,
+                VatNumber = order.Registration.CustomerVatNumber,
+                InvoiceEmailAddress = customerEmail,
+
+                MailAddress = new Address() {
+                    Address1 = order.Registration.CustomerAddress,
+                    City = order.Registration.CustomerCity, 
+                    ZipCode = order.Registration.CustomerZip
+                }
             };
 
-            if (order.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice && !string.IsNullOrWhiteSpace (order.CustomerVatNumber)) {
+            if (order.Registration.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice && !string.IsNullOrWhiteSpace (order.Registration.CustomerVatNumber)) {
                 customer.InvoiceDeliveryType = InvoiceDeliveryType.EHF;
             }
             else {
