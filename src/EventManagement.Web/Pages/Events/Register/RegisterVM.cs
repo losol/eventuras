@@ -56,6 +56,16 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 		[Display(Name = "Fakturamottakers epost")]
 		public string CustomerEmail { get; set; }
 
+
+		[Display(Name = "Postnummer")]
+		public string CustomerZip { get; set; }
+
+		[Display(Name = "Poststed")]
+		public string CustomerCity { get; set; }
+
+		[Display(Name = "Land")]
+		public string CustomerCountry { get; set; } = "Norge";
+		
 		[Display(Name = "Fakturareferanse")]
 		public string CustomerInvoiceReference { get; set; }
 
