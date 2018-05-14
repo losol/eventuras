@@ -68,7 +68,7 @@ namespace losol.EventManagement.Web.Controllers.Api
 				}
 				return Ok();
 			}
-			catch(Exception e) when (e is InvalidOperationException || e is ArgumentException) {
+			catch(Exception e) {
 				await _orderService.AddLogLineAsync(id, e.Message);
 				return BadRequest();
 			}
