@@ -14,6 +14,7 @@ namespace losol.EventManagement.Services
 		Task<Registration> GetWithUserAndEventInfoAsync(int id);
 		Task<Registration> GetWithUserAndEventInfoAndOrders (int id);
 		Task<List<Registration>> GetRegistrations(int eventId);
+		Task<List<Registration>> GetCancelledRegistrations(int eventId);
 		Task<List<Registration>> GetRegistrationsWithOrders(int eventId);
 		Task<List<Registration>> GetRegistrationsWithOrders(ApplicationUser user);
 

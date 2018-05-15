@@ -7,6 +7,7 @@ using losol.EventManagement.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using static losol.EventManagement.Domain.PaymentMethod;
+using static losol.EventManagement.Domain.Registration;
 
 namespace losol.EventManagement.Services {
 	public class RegistrationService : IRegistrationService {
@@ -63,7 +64,19 @@ namespace losol.EventManagement.Services {
 
 		public async Task<List<Registration>> GetRegistrations (int eventId) {
 			return await _db.Registrations
-				.Where (r => r.EventInfoId == eventId)
+				.Where (r => 
+					r.EventInfoId == eventId &&
+					r.Status != RegistrationStatus.Cancelled)
+				.Include (r => r.EventInfo)
+				.Include (r => r.User)
+				.ToListAsync ();
+		}
+
+		public async Task<List<Registration>> GetCancelledRegistrations (int eventId) {
+			return await _db.Registrations
+				.Where (r => 
+					r.EventInfoId == eventId &&
+					r.Status == RegistrationStatus.Cancelled)
 				.Include (r => r.EventInfo)
 				.Include (r => r.User)
 				.ToListAsync ();
