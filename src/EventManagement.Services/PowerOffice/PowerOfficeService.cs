@@ -91,7 +91,7 @@ namespace losol.EventManagement.Services.PowerOffice {
             var customerEmail = !string.IsNullOrWhiteSpace(order.Registration.CustomerEmail)? order.Registration.CustomerEmail : order.Registration.User.Email;
 
             // If no customer was found by VAT number, then search by email
-            if (!string.IsNullOrWhiteSpace(order.CustomerEmail)) {
+            if (!string.IsNullOrWhiteSpace(customerEmail)) {
                 existingCustomer = existingCustomer ?? api.Customer.Get ().FirstOrDefault (c => c.EmailAddress == customerEmail);
             }
             // If we found a customer, return him!
