@@ -10,6 +10,7 @@
 .StripeElement {
   background-color: white;
   height: 40px;
+  width: 100%;
   padding: 10px 12px;
   border-radius: 4px;
   border: 1px solid transparent;
@@ -35,7 +36,7 @@
 
 <div class="container">
     <div class="row">
-        <div class="col">
+        <div class="col-6">
 
             <form action="/charge" method="post" id="payment-form">
                 <div class="form-row">
@@ -43,26 +44,14 @@
                     <div id="card-element"></div>
                     <div id="card-errors" role="alert"></div>
                 </div>
-                <button>Submit Payment</button>
-            </form>
-
-            <form action="your-server-side-code" method="POST">
-                <script
-                    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                    data-key="pk_test_vqRsOYI4kXVAtetRoRSZfBCH"
-                    data-amount="999"
-                    data-name="@site.Description"
-                    data-description="Example charge"
-                    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-                    data-locale="auto"
-                    data-currency="nok">
-                </script>
+                <button class="StripeElement btn btn-primary">Submit Payment</button>
             </form>
 
         </div>
     </div>
 </div>
 
+<br><br><br>
 
 
 @section scripts {
