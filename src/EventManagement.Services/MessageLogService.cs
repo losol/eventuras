@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
-using losol.EventManagement.Services.PowerOffice;
 using Microsoft.EntityFrameworkCore;
 using static losol.EventManagement.Domain.Order;
 
@@ -18,8 +17,8 @@ namespace losol.EventManagement.Services {
 
 		public async Task<bool> AddAsync(int eventinfoId, string recipients, string messageContent, string messageType, string provider = "", string result = "") {
 			var entry = new MessageLog() {
-				EventInfoId = eventinfoId, 
-				Recipients = recipients, 
+				EventInfoId = eventinfoId,
+				Recipients = recipients,
 				MessageContent = messageContent,
 				MessageType = messageType,
 				Provider = provider,

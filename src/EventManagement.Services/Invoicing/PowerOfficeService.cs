@@ -13,7 +13,7 @@ using losol.EventManagement.Infrastructure;
 using Microsoft.Extensions.Options;
 using static losol.EventManagement.Domain.PaymentMethod;
 
-namespace losol.EventManagement.Services.PowerOffice {
+namespace losol.EventManagement.Services.Invoicing {
     public class PowerOfficeService : IInvoicingService {
 
         private readonly Go api;
