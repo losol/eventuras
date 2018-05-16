@@ -151,6 +151,13 @@ namespace losol.EventManagement.Services {
 			return await _db.SaveChangesAsync () > 0;
 		}
 
+		public async Task<bool> UpdateOrderComment (int id, string comments) {
+			var order = await _db.Orders.FindAsync (id);
+			order.Comments = comments;
+			_db.Orders.Update (order);
+			return await _db.SaveChangesAsync () > 0;
+		}
+
 		public async Task<int> MakeOrderFreeAsync (int id) {
 			var order = await _db.Orders
 				.Include (o => o.OrderLines)
@@ -184,6 +191,13 @@ namespace losol.EventManagement.Services {
 			order.MarkAsInvoiced ();
 			_db.Orders.Update (order);
 			return await _db.SaveChangesAsync () > 0; // what if power office succeeds but this fails?
+		}
+
+		public async Task<bool> AddLogLineAsync(int orderId, string logText) {
+			var order = await _db.Orders
+				.Where(m => m.OrderId == orderId).SingleOrDefaultAsync();
+			order.AddLog(logText);
+			return await _db.SaveChangesAsync() > 0;
 		}
 
 		public async Task<Order> CreateDraftFromCancelledOrder(int orderId)

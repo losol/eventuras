@@ -24,6 +24,7 @@ namespace losol.EventManagement.Pages.Admin.Events
         public IList<EventInfo> OnlineCourses { get;set; }
         public IList<EventInfo> PastEvents { get;set; }
         public IList<EventInfo> OngoingEvents {get;set; }
+        public IList<EventInfo> UnpublishedEvents {get;set; }
 
 
         public async Task OnGetAsync()
@@ -32,6 +33,7 @@ namespace losol.EventManagement.Pages.Admin.Events
             OnlineCourses = await _eventInfos.GetOnDemandEventsAsync();
             PastEvents = await _eventInfos.GetPastEventsAsync();
             OngoingEvents = await _eventInfos.GetOngoingEventsAsync();
+            UnpublishedEvents = await _eventInfos.GetUnpublishedEventsAsync();
         }
     }
 }

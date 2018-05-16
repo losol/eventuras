@@ -68,9 +68,11 @@ namespace losol.EventManagement.Domain
 		public string City { get; set; }
 
 		[Display(Name = "Dato start")]
+		[DataType(DataType.Date)]
 		public DateTime? DateStart { get; set; }
 
 		[Display(Name = "Dato slutt")]
+		[DataType(DataType.Date)]
 		public DateTime? DateEnd { get; set; }
 
 		[Display(Name = "Påmeldingsfrist", Description = "Frist for påmelding til arrangementet", GroupName = "Frister")]

@@ -11,14 +11,17 @@
 }
 <div class="bg-gray-300 py-3">
     <div class="container">
-        <h2>
+        <h1>
             Ordre #@order.OrderId - @order.Registration.EventInfo.Title
             <order-status value="@order.Status" />
-        </h2>
+        </h1>
         <div class="d-print-none">
         @if(order.Status != Order.OrderStatus.Cancelled)
         {
+           
             <div class="btn-group " role="group">
+            
+                
                 @if(order.GetNextStatus() != null)
                 {
                     <button type="button" class="btn btn-primary" onclick="updateOrderStatus('@order.GetNextStatus()')">
@@ -33,12 +36,13 @@
                         <button class="dropdown-item text-danger" onclick="updateOrderStatus('Cancelled')">Cancel</button>
                     </div>
                 </div>
+                    
             </div>
             }
             else
             {
                 <button type="button" class="btn btn-primary " onclick="reopenOrder()">
-                    Reopen
+                    Lag kopi av ordren
                 </button>
             }
             @if(order.Status != Order.OrderStatus.Invoiced)
@@ -52,8 +56,8 @@
     </div>
 </div>
 <div class="container py-3">
-        <div class="row justify-content-between">
-            <div class="card col-md-5 m-2">
+        <div class="row">
+            <div class="card col-md-6">
                 <div class="card-body">
                 <h4 class="card-title">Deltaker</h4>
                 <hr />
@@ -65,29 +69,28 @@
                     <dt>Telefon</dt>
                     <dd>@(order.User?.PhoneNumber ?? "-")</dd>
                 </dl>
+                <a asp-page="../Registrations/Details" asp-route-id="@order.RegistrationId">Endre</a>
                 </div>
             </div>
 
-            <div class="card col-md-5 m-2">
+            <div class="card col-md-6">
                 <div class="card-body">
                     <h4 class="card-title">Betalingsinformasjon</h4>
                     <hr />
-                    <dl class="">
-                        <dt class="">Kundenavn</dt>
-                        <dd class="">@order.CustomerName &nbsp;</dd>
-                        <dt class="">Epost for faktura</dt>
-                        <dd class="">@order.CustomerEmail &nbsp;</dd>
-                        <dt class="">Organisasjonsnummer</dt>
-                        <dd class="">@order.CustomerVatNumber &nbsp;</dd>
-                        <dt class="">Fakturareferanse</dt>
-                        <dd class="">@order.CustomerInvoiceReference &nbsp;</dd>
-                        <dt class="">Betalingsmetode</dt>
-                        <dd class=""> @order.PaymentMethod</dd>
+                    <dl class="row">
+                        <dt class="col-sm-4">Kunde</dt>
+                        <dd class="col-sm-8">@order.CustomerName &nbsp;</dd>
+                        <dt class="col-sm-4">Fakturaepost</dt>
+                        <dd class="col-sm-8">@order.CustomerEmail &nbsp;</dd>
+                        <dt class="col-sm-4">Org.nr</dt>
+                        <dd class="col-sm-8">@order.CustomerVatNumber &nbsp;</dd>
+                        <dt class="col-sm-4">Fakturaref.</dt>
+                        <dd class="col-sm-8">@order.CustomerInvoiceReference &nbsp;</dd>
+                        <dt class="col-sm-4">Betalingsmetode</dt>
+                        <dd class="col-sm-8">@order.PaymentMethod</dd>
                
                     </dl>
-
-            <a href="#" data-toggle="modal" class="d-print-none"
-                data-target="#edit-order-modal">Endre detaljer</a>
+                    <a asp-page="../Registrations/Details" asp-route-id="@order.RegistrationId">Endre</a>
                 </div>
             </div>
         </div>
@@ -155,13 +158,17 @@
                 </tbody>
             </table>
 
-            <strong>Kommentarer</strong><br />
+            <h2>Kommentarer</h2>
             <pre>@order.Comments</pre>
 
-            <strong>Logg</strong><br />
+            <p>
+                <a href="#" data-toggle="modal" class="d-print-none" data-target="#edit-order-comment-modal">Endre kommentar</a>
+            </p>
+
+            <h2>Logg</h2>
             <pre>@order.Log</pre>
 
-            <h4>Ordreinformasjon</h4>
+            <h2>Ordreinformasjon</h2    >
             <dl class="row">
                 <dt class="col-6 col-md-3 col-lg-2 text-right">Order ID</dt>
                 <dd class="col-6 col-md-9 col-lg-10">@order.OrderId</dd>
@@ -259,9 +266,9 @@
     </div>
 </div>
 
-<!-- Edit Order (customer/comments) Modal -->
+<!-- Edit Order Comments Modal -->
 <div class="modal fade"
-    id="edit-order-modal"
+    id="edit-order-comment-modal"
     tabindex="-1"
     role="dialog"
     data-keyboard="false"
@@ -270,33 +277,20 @@
     <div class="modal-dialog" role="document">
     <div class="modal-content">
         <div class="modal-header">
-        <h5 class="modal-title" id="edit-order-modal-title">Edit Order Information</h5>
+        <h5 class="modal-title" id="edit-order-modal-title">Edit Order Comment</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
         </div>
         <div class="modal-body">
         <div class="form-group">
-            <label class="control-label">Customer Name</label>
-            <input id="input-edit-customer-name" class="form-control" value="@order.CustomerName" />
-        </div>
-        <div class="form-group">
-            <label class="control-label">Customer Email</label>
-            <input id="input-edit-customer-email" class="form-control" value="@order.CustomerEmail" />
-        </div>
-        <div class="form-group">
-            <label class="control-label">Customer Invoice Reference </label>
-            <input id="input-edit-customer-invoiceref" class="form-control" value="@order.CustomerInvoiceReference" />
-        </div>
-        <hr>
-        <div class="form-group">
-            <label class="control-label">Comments </label>
-            <textarea id="input-edit-comments" class="form-control">@order.Comments</textarea>
+            <label class="control-label">Kommentar </label>
+            <textarea id="input-edit-comments" rows="8" class="form-control">@order.Comments</textarea>
         </div>
         </div>
         <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button id="btn-edit-order" type="button" class="btn btn-primary">Save <i class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true" style="display:none"></i></button>
+        <button id="btn-edit-order-comment" type="button" class="btn btn-primary">Save <i class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true" style="display:none"></i></button>
         </div>
     </div>
     </div>
@@ -410,16 +404,13 @@ TODO: Gotta do it in a better way later. *@
                 }
             })
 
-            $('#btn-edit-order').on('click', function() {
+            $('#btn-edit-order-comment').on('click', function() {
                 const postData = {
-                    customerName: $('#input-edit-customer-name').val(),
-                    customerEmail: $('#input-edit-customer-email').val(),
-                    invoiceReference: $('#input-edit-customer-invoiceref').val(),
                     comments: $('#input-edit-comments').val()
                 }
                 $spinner.show();
                 $disabler.show();
-                $.postJSON('/api/v0/orders/update/@order.OrderId', postData).done(function() {
+                $.postJSON('/api/v0/orders/@order.OrderId/update/ordercomment', postData).done(function() {
                     location.reload();
                 }).fail(function(){
                     $spinner.hide();
@@ -436,9 +427,16 @@ TODO: Gotta do it in a better way later. *@
         }
 
         function updateOrderStatus(status) {
-            toastr.info('Please wait.', null, { timeOut: 0 });
-            $.post('/api/v0/orders/update/@id/' + status, function() {
+            toastr.info('Hent kaffe!!!', null, { timeOut: 0 });
+            $.post('/api/v0/orders/update/@id/' + status)
+            .done(function(msg) {
                 location.reload();
+            })
+            .fail(function(xhr, status, error){
+                toastr.error('Nåkka gikk galt. Sorry. Sjekk loggen.');
+                window.setTimeout(function(){
+                    location.reload();
+                }, 3000);
             })
         }
 
@@ -455,7 +453,7 @@ TODO: Gotta do it in a better way later. *@
             $.post('/api/v0/orders/reopen/@id').done(function(id) {
                 window.location.href = "/Admin/Orders/Details/"+id;
             }).fail(function(){
-                toastr.fail('Reopening failed. Create a new order manually instead.')
+                toastr.error('Reopening failed. Create a new order manually instead.')
             })
         }
 

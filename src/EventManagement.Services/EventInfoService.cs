@@ -31,6 +31,16 @@ namespace losol.EventManagement.Services
 				.ToListAsync();
 		}
 
+		public async Task<List<EventInfo>> GetUnpublishedEventsAsync() 
+		{
+			return await _db.EventInfos
+				.Where(
+					i => i.Published == false ||
+					( i.OnDemand == false && !i.DateStart.HasValue ) )
+				.OrderBy(s => s.DateStart)
+				.ToListAsync();
+		}
+
 		public async Task<List<EventInfo>> GetOnDemandEventsAsync() 
 		{
 			return await _db.EventInfos

@@ -50,6 +50,10 @@ namespace losol.EventManagement.Domain
 		// Who pays for it?
 		public string CustomerName { get; set; }
 		public string CustomerEmail { get; set; }
+		public string CustomerAddress { get; set; }
+		public string CustomerZip { get; set; }
+		public string CustomerCity { get; set; }
+		public string CustomerCountry { get; set; }
 		public string CustomerVatNumber { get; set; }
 		public string CustomerInvoiceReference { get; set; }
 
