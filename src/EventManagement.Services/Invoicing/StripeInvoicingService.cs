@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using losol.EventManagement.Domain;
@@ -25,10 +26,11 @@ namespace losol.EventManagement.Services.Invoicing
                 var invoiceLineItem = await service.CreateAsync(createInvoiceLineOptions);
             }
 
+            var eventInfo = order.Registration.EventInfo;
             var createInvoiceOptions = new StripeInvoiceCreateOptions
             {
                 Billing = StripeBilling.SendInvoice,
-                DaysUntilDue = 30,
+                DaysUntilDue = eventInfo.DateStart.HasValue ? ((eventInfo.LastCancellationDate ?? eventInfo.LastRegistrationDate ?? eventInfo.DateStart) - DateTime.UtcNow).Value.Days : 30,
                 Description = $"Deltakelse for {order.Registration.ParticipantName} på {order.Registration.EventInfo.Title} "
             };
             var createInvoiceService = new StripeInvoiceService();
