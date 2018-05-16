@@ -14,7 +14,8 @@ namespace losol.EventManagement.Domain
             Stripe,
             PowerOfficeEmailInvoice,
             PowerOfficeEHFInvoice,
-            Vipps
+            Vipps,
+            StripeDirect
         }
 
         public int PaymentMethodId { get; set; }
