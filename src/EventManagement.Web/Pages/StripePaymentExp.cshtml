@@ -38,7 +38,7 @@
     <div class="row">
         <div class="col-6">
 
-            <form action="/charge" method="post" id="payment-form">
+            <form action="/payments/stripe" method="post" id="payment-form">
                 <div class="form-row">
                     <label for="card-element">Credit or debit card</label>
                     <div id="card-element"></div>
@@ -67,7 +67,6 @@ var elements = stripe.elements();
 var style = {
   base: {
     color: '#32325d',
-    lineHeight: '18px',
     fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
     fontSmoothing: 'antialiased',
     fontSize: '16px',
@@ -109,7 +108,19 @@ form.addEventListener('submit', function(event) {
       errorElement.textContent = result.error.message;
     } else {
       // Send the token to your server.
-      stripeTokenHandler(result.token);
+      const data = {
+          token: result.token,
+          orderId: 6
+      }
+      console.log(data)
+      $.postJSON('/api/payments/stripe', data)
+        .done(function(){
+            alert('success!')
+        })
+        .fail(function(r){
+            console.log(r)
+            alert('fail!')
+        })
     }
   });
 });
