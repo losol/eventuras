@@ -68,7 +68,9 @@ namespace losol.EventManagement.Domain
 				ProductName = $"Refund for {ProductName} (Order #{OrderId})",
 				Price = -Price,
                 Quantity = Quantity,
-                VatPercent = VatPercent
+                VatPercent = VatPercent,
+                ProductId = ProductId,
+                ProductVariantId = ProductVariantId
 			};
 		}
 
