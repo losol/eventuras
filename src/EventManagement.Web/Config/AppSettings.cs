@@ -6,7 +6,7 @@ namespace losol.EventManagement.Config
 		public EmailProvider EmailProvider { get; set; }
 		public SmsProvider SmsProvider { get; set; }
 		public bool UsePowerOffice { get; set; }
-        public bool UseStripe { get; set; }
+        public bool UseStripeInvoice { get; set; }
 	}
 
 	internal enum EmailProvider

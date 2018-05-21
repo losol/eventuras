@@ -8,7 +8,7 @@ The JSON structure defines the configuration for the application.
     "EmailProvider": "SendGrid|SMTP|File|Mock",
     "SmsProvider": "Twilio|Mock",
     "UsePowerOffice": "false|true",
-    "UseStripe": "false|true"
+    "UseStripeInvoice": "false|true"
   },
   "Logging": {
     "IncludeScopes": false,
