@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using Stripe;
 
-namespace EventManagement.Services.Payments
+namespace EventManagement.Services.Invoicing
 {
     public class StripeInvoiceProvider
     {
