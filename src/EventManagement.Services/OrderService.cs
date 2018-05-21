@@ -7,6 +7,7 @@ using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services.Invoicing;
 using Microsoft.EntityFrameworkCore;
 using static losol.EventManagement.Domain.Order;
+using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Services {
 	public class OrderService : IOrderService {
@@ -191,6 +192,18 @@ namespace losol.EventManagement.Services {
 			order.MarkAsInvoiced ();
 			_db.Orders.Update (order);
 			return await _db.SaveChangesAsync () > 0; // what if power office succeeds but this fails?
+		}
+
+		public async Task<bool> UpdatePaymentMethod(int orderId, PaymentProvider paymentMethod) {
+			var order = await _db.Orders
+				.Where( m => m.OrderId == orderId)
+				.FirstOrDefaultAsync();
+
+			// Update payment method in registration.
+			order.PaymentMethod = paymentMethod;
+			_db.Update(order);
+
+			return await _db.SaveChangesAsync() > 0;
 		}
 
 		public async Task<bool> AddLogLineAsync(int orderId, string logText) {
