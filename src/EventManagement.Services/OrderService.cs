@@ -6,6 +6,7 @@ using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services.Invoicing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using static losol.EventManagement.Domain.Order;
 using static losol.EventManagement.Domain.PaymentMethod;
 
@@ -13,10 +14,12 @@ namespace losol.EventManagement.Services {
 	public class OrderService : IOrderService {
 		private readonly ApplicationDbContext _db;
 		private readonly IInvoicingService _powerOfficeService;
+		private readonly ILogger _logger;
 
-		public OrderService (ApplicationDbContext db, IInvoicingService powerOfficeService) {
+		public OrderService (ApplicationDbContext db, IInvoicingService powerOfficeService, ILogger<RegistrationService> logger) {
 			_db = db;
 			_powerOfficeService = powerOfficeService;
+			_logger = logger;
 		}
 
 		public Task<List<Order>> GetAsync () =>
@@ -186,7 +189,10 @@ namespace losol.EventManagement.Services {
 				.Include (o => o.User)
 				.Include (o => o.Registration)
 				.ThenInclude (r => r.EventInfo)
+				.Include (o => o.PaymentMethod)
 				.SingleOrDefaultAsync (o => o.OrderId == orderId);
+			
+			
 			await _powerOfficeService.CreateInvoiceAsync (order);
 
 			order.MarkAsInvoiced ();
