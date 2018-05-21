@@ -11,11 +11,12 @@ namespace losol.EventManagement.Domain
         public enum PaymentProvider
         {
             EmailInvoice,
-            Stripe,
+            StripeInvoice,
             PowerOfficeEmailInvoice,
             PowerOfficeEHFInvoice,
-            Vipps,
-            StripeDirect
+            VippsDirect,
+            StripeDirect,
+            VippsInvoice,
         }
 
         public int PaymentMethodId { get; set; }
