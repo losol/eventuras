@@ -5,7 +5,7 @@ using Stripe;
 
 namespace EventManagement.Services.Payments
 {
-    public class StripePaymentProvider
+    public class StripeInvoiceProvider
     {
 
         public async Task ChargeCustomer(Order order, StripeToken token)

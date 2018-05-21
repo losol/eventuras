@@ -188,7 +188,7 @@ namespace losol.EventManagement
 			services.AddScoped<IEventInfoService, EventInfoService>();
             services.Configure<List<PaymentMethod>>(Configuration.GetSection("PaymentMethods"));
 			services.AddScoped<IPaymentMethodService, PaymentMethodService>();
-            services.AddScoped<StripePaymentProvider>();
+            services.AddScoped<StripeInvoiceProvider>();
 			services.AddScoped<IRegistrationService, RegistrationService>();
 			services.AddScoped<IProductsService, ProductsService>();
 			services.AddScoped<IOrderService, OrderService>();

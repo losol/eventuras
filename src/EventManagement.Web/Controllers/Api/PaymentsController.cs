@@ -17,7 +17,7 @@ namespace EventManagement.Web.Controllers.Api
 
         [HttpPost("stripe")]
         public async Task<IActionResult> StripeCharge([FromBody]StripeChargeRequestVM request,
-            [FromServices]StripePaymentProvider provider)
+            [FromServices]StripeInvoiceProvider provider)
         {
             await provider.ChargeCustomer(
                 order: await _orderService.GetByIdAsync(request.OrderId),
