@@ -24,7 +24,6 @@ using losol.EventManagement.Config;
 using losol.EventManagement.Web.Config;
 using losol.EventManagement.Web.Extensions;
 using System.Collections.Generic;
-using EventManagement.Services.Invoicing;
 
 namespace losol.EventManagement
 {

@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using EventManagement.Services.Invoicing;
+using losol.EventManagement.Services.Invoicing;
 using losol.EventManagement.Services;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
