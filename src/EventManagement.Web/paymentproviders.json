@@ -35,6 +35,12 @@
       "Provider": "Vipps",
       "Active": false,
       "AdminOnly": false
+    },
+    {
+      "PaymentMethodId": 13,
+      "Name": "StripeDirect",
+      "Provider": "StripeDirect",
+      "Active": true
     }
   ]
 }
