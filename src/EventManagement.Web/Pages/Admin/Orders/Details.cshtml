@@ -1,10 +1,12 @@
 @page "{id:int}"
 @inject IOrderService orderService
 @inject IProductsService productsService
+@inject IPaymentMethodService paymentmethodService
 @using losol.EventManagement.Web.Pages.Admin.Orders
 @{
     var id = Convert.ToInt32(RouteData.Values["id"]);
     var order = await orderService.GetByIdAsync(id);
+    var paymentMethods = paymentmethodService.GetActivePaymentMethods();
     var products = await productsService.GetProductsForEventAsync(order.Registration.EventInfoId);
     var variants = products.SelectMany(p => p.ProductVariants)
                            .Select(x => new { id = x.ProductVariantId, pid = x.ProductId, name = x.Name });
@@ -86,11 +88,14 @@
                         <dd class="col-sm-8">@order.Registration.CustomerVatNumber &nbsp;</dd>
                         <dt class="col-sm-4">Fakturaref.</dt>
                         <dd class="col-sm-8">@order.Registration.CustomerInvoiceReference &nbsp;</dd>
-                        <dt class="col-sm-4">Betalingsmetode</dt>
-                        <dd class="col-sm-8">@order.PaymentMethod</dd>
-               
                     </dl>
                     <a asp-page="../Registrations/Details" asp-route-id="@order.RegistrationId">Endre</a>
+                    <br />
+                    <select asp-for="@order.PaymentMethod">
+                        @foreach(var paymethod in paymentMethods) {
+                            <option value="@paymethod.Provider">@paymethod.Name</option>
+                        }
+                    </select>
                 </div>
             </div>
         </div>
@@ -462,6 +467,20 @@ TODO: Gotta do it in a better way later. *@
                 location.reload();
             })
         }
+    </script>
+    <script>
+    // ******* PAYMENTMETHOD UPDATE  SCRIPTS *******
+    $('#order_PaymentMethod').on('change', function() {
+        var paymentMethod = $("option:selected", this).val();
+        $.postJSON('/api/v0/orders/@id/paymentmethod/update/' + paymentMethod, null)
+            .done(function() {
+                toastr.success('Lagret status');
+            })
+            .fail(function() {
+                toastr.error('Noe gikk galt... Sorry altså');
+                location.reload();
+            });
+    })
     </script>
 
 }
