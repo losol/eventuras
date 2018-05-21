@@ -45,13 +45,13 @@ namespace losol.EventManagement.Services.Invoicing
             {
                 Limit = 1
             };
-            listOptions.AddExtraParam("email", order.CustomerEmail);
+            listOptions.AddExtraParam("email", order.CustomerEmail ?? order.User.Email);
             var customer = (await service.ListAsync(listOptions)).Data.FirstOrDefault();
             if (customer != null) return customer;
 
             var customerCreateOptions = new StripeCustomerCreateOptions
             {
-                Email = order.CustomerEmail,
+                Email = order.CustomerEmail ?? order.User.Email,
                 BusinessVatId = order.CustomerVatNumber
             };
             return await service.CreateAsync(customerCreateOptions);
