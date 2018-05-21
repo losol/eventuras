@@ -5,6 +5,6 @@ namespace losol.EventManagement.Services.Invoicing
 {
     public interface IInvoicingService
     {
-        Task CreateInvoiceAsync(Order order);
+        Task<bool> CreateInvoiceAsync(Order order);
     }
 }

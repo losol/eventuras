@@ -31,7 +31,7 @@ namespace losol.EventManagement.Services.Invoicing {
             _db = db;
         }
 
-        public async Task CreateInvoiceAsync (Order order) {
+        public async Task<bool> CreateInvoiceAsync (Order order) {
             var customer = await createCustomerIfNotExists (order);
             await createProductsIfNotExists (order);
 
@@ -77,6 +77,7 @@ namespace losol.EventManagement.Services.Invoicing {
             order.AddLog("Sendte fakturautkast til PowerOffice");
             _db.Orders.Update(order);
             await _db.SaveChangesAsync();
+            return true;
             }
 
         private async Task<Customer> createCustomerIfNotExists (Order order) {

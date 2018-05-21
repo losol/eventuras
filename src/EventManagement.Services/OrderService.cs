@@ -192,11 +192,14 @@ namespace losol.EventManagement.Services {
 				.Include (o => o.PaymentMethod)
 				.SingleOrDefaultAsync (o => o.OrderId == orderId);
 			
+			_logger.LogInformation($"Making invoice for order: {order.OrderId}, paymentmethod: {order.PaymentMethod}");
 			
-			await _powerOfficeService.CreateInvoiceAsync (order);
+			var succeded = await _powerOfficeService.CreateInvoiceAsync (order);
 
-			order.MarkAsInvoiced ();
-			_db.Orders.Update (order);
+			if (succeded) {
+				order.MarkAsInvoiced ();
+				_db.Orders.Update (order);
+			}	
 			return await _db.SaveChangesAsync () > 0; // what if power office succeeds but this fails?
 		}
 
