@@ -1,4 +1,5 @@
 # Eventer - Event Management Solution
+[![Build Status](https://travis-ci.com/losol/EventManagement.svg?branch=master)](https://travis-ci.com/losol/EventManagement)   
 Asp.net core event management solution. In development now, using agile development. 
 
 ## Quickstart
