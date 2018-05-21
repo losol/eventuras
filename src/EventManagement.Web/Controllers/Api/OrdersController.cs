@@ -79,8 +79,8 @@ namespace losol.EventManagement.Web.Controllers.Api
                     id,
                     paymentmethod);
             }
-            catch (ArgumentException) {
-                return BadRequest ();
+            catch (ArgumentException ex) {
+                return BadRequest (ex.Message);
             }
             return Ok ();
         }
