@@ -189,7 +189,6 @@ namespace losol.EventManagement.Services {
 				.Include (o => o.User)
 				.Include (o => o.Registration)
 				.ThenInclude (r => r.EventInfo)
-				.Include (o => o.PaymentMethod)
 				.SingleOrDefaultAsync (o => o.OrderId == orderId);
 			
 			_logger.LogInformation($"Making invoice for order: {order.OrderId}");
