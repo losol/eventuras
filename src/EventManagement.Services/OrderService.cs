@@ -192,7 +192,7 @@ namespace losol.EventManagement.Services {
 				.Include (o => o.PaymentMethod)
 				.SingleOrDefaultAsync (o => o.OrderId == orderId);
 			
-			_logger.LogInformation($"Making invoice for order: {order.OrderId}, paymentmethod: {order.PaymentMethod}");
+			_logger.LogInformation($"Making invoice for order: {order.OrderId}");
 			
 			var succeded = await _powerOfficeService.CreateInvoiceAsync (order);
 
