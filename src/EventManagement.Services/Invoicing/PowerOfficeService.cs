@@ -33,15 +33,13 @@ namespace losol.EventManagement.Services.Invoicing {
             _db = db;
             _logger = logger;
 
-            _logger.LogInformation($"Using PowerOffice Client: {api.Client.ToString()}, ClientKey: {authorizationSettings.ClientKey}");
+            _logger.LogInformation($"Using PowerOffice Client with applicationKey: {authorizationSettings.ApplicationKey}");
         }
 
         public async Task<bool> CreateInvoiceAsync (Order order) {
             if (api.Client == null) {
                 throw new InvalidOperationException("Did not find PowerOffice Client");
             }
-            _logger.LogInformation($"* PowerOffice Client: {api.Client.ToString()}");
-
 
             var customer = await createCustomerIfNotExists (order);
             await createProductsIfNotExists (order);
