@@ -1,7 +1,7 @@
 ﻿using System;
 namespace losol.EventManagement.Config
 {
-	internal class AppSettings
+	public class AppSettings
 	{
 		public EmailProvider EmailProvider { get; set; }
 		public SmsProvider SmsProvider { get; set; }
@@ -9,7 +9,7 @@ namespace losol.EventManagement.Config
         public bool UseStripeInvoice { get; set; }
 	}
 
-	internal enum EmailProvider
+	public enum EmailProvider
 	{
 		SendGrid,
 		SMTP,
@@ -17,7 +17,7 @@ namespace losol.EventManagement.Config
 		Mock
 	}
 
-	internal enum SmsProvider
+	public enum SmsProvider
 	{
 		Twilio,
 		Mock

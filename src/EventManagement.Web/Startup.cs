@@ -37,6 +37,19 @@ namespace losol.EventManagement
 
         public IHostingEnvironment HostingEnvironment { get; }
         public IConfiguration Configuration { get; }
+        private AppSettings appSettings;
+        public AppSettings AppSettings
+        {
+            get
+            {
+                if(appSettings == null)
+                {
+                    appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
+                }
+                return appSettings;
+            }
+            protected set => appSettings = value;
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public virtual void ConfigureServices(IServiceCollection services)
@@ -125,10 +138,9 @@ namespace losol.EventManagement
 
             var siteConfig = Configuration.GetSection("Site").Get<Site>();
             services.AddSingleton(siteConfig);
-            var appsettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
 
 			// Register the correct email provider depending on the config
-			switch(appsettings.EmailProvider)
+			switch(AppSettings.EmailProvider)
 			{
 				case EmailProvider.SendGrid:
 					services.Configure<SendGridOptions>(Configuration.GetSection("SendGrid"));
@@ -152,7 +164,7 @@ namespace losol.EventManagement
 			services.AddTransient<RegistrationEmailSender>();
 
             // Register SMS services
-			switch(appsettings.SmsProvider)
+			switch(AppSettings.SmsProvider)
 			{
 				case SmsProvider.Twilio:
 					services.Configure<TwilioOptions>(Configuration.GetSection("Twilio"));
@@ -164,12 +176,12 @@ namespace losol.EventManagement
 			}
 
             // Register PowerOffice
-            if(appsettings.UsePowerOffice)
+            if(AppSettings.UsePowerOffice)
             {
                 services.Configure<PowerOfficeOptions>(Configuration.GetSection("PowerOffice"));
                 services.AddScoped<IPowerOfficeService, PowerOfficeService>();
             }
-            if(appsettings.UseStripeInvoice)
+            if(AppSettings.UseStripeInvoice)
             {
                 var config = Configuration.GetSection("Stripe").Get<StripeOptions>();
                 StripeInvoicingService.Configure(config.SecretKey);
