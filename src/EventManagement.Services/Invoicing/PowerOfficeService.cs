@@ -121,7 +121,7 @@ namespace losol.EventManagement.Services.Invoicing {
                 customer.Name = order.Registration.User.Name;
             }
 
-            if (order.Registration.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice && !string.IsNullOrWhiteSpace (vatNumber)) {
+            if (order.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice && !string.IsNullOrWhiteSpace (vatNumber)) {
                 customer.InvoiceDeliveryType = InvoiceDeliveryType.EHF;
             }
             else {
