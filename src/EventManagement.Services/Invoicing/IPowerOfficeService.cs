@@ -3,8 +3,7 @@ using losol.EventManagement.Domain;
 
 namespace losol.EventManagement.Services.Invoicing
 {
-    public interface IPowerOfficeService
+    public interface IPowerOfficeService : IInvoicingService
     {
-        Task<bool> CreateInvoiceAsync(Order order);
     }
 }
