@@ -13,10 +13,10 @@ using static losol.EventManagement.Domain.PaymentMethod;
 namespace losol.EventManagement.Services {
 	public class OrderService : IOrderService {
 		private readonly ApplicationDbContext _db;
-		private readonly IInvoicingService _powerOfficeService;
+		private readonly IPowerOfficeService _powerOfficeService;
 		private readonly ILogger _logger;
 
-		public OrderService (ApplicationDbContext db, IInvoicingService powerOfficeService, ILogger<OrderService> logger) {
+		public OrderService (ApplicationDbContext db, IPowerOfficeService powerOfficeService, ILogger<OrderService> logger) {
 			_db = db;
 			_powerOfficeService = powerOfficeService;
 			_logger = logger;
