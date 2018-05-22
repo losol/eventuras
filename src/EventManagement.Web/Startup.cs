@@ -181,6 +181,10 @@ namespace losol.EventManagement
                 services.Configure<PowerOfficeOptions>(Configuration.GetSection("PowerOffice"));
                 services.AddScoped<IPowerOfficeService, PowerOfficeService>();
             }
+            else
+            {
+                services.AddTransient<IPowerOfficeService, MockInvoicingService>();
+            }
             if(AppSettings.UseStripeInvoice)
             {
                 var config = Configuration.GetSection("Stripe").Get<StripeOptions>();
@@ -189,7 +193,7 @@ namespace losol.EventManagement
             }
             else
             {
-                services.AddTransient<IInvoicingService, MockInvoicingService>();
+                services.AddTransient<IStripeInvoiceService, MockInvoicingService>();
             }
 
 
