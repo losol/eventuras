@@ -10,16 +10,18 @@ using GoApi.Invoices;
 using GoApi.Party;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Services.Invoicing {
-    public class PowerOfficeService : IInvoicingService {
+    public class PowerOfficeService : IPowerOfficeService {
 
         private readonly Go api;
         private readonly ApplicationDbContext _db;
+        private readonly ILogger _logger;
 
-        public PowerOfficeService (IOptions<PowerOfficeOptions> options, ApplicationDbContext db) {
+        public PowerOfficeService (IOptions<PowerOfficeOptions> options, ApplicationDbContext db, ILogger<PowerOfficeService> logger) {
             GoApi.Global.Settings.Mode = options.Value.Mode;
             var authorizationSettings = new AuthorizationSettings {
                 ApplicationKey = options.Value.ApplicationKey,
@@ -29,9 +31,18 @@ namespace losol.EventManagement.Services.Invoicing {
             var authorization = new Authorization (authorizationSettings);
             api = new Go (authorization);
             _db = db;
+            _logger = logger;
+
+            _logger.LogInformation($"Using PowerOffice Client: {api.Client.ToString()}, ClientKey: {authorizationSettings.ClientKey}");
         }
 
         public async Task<bool> CreateInvoiceAsync (Order order) {
+            if (api.Client == null) {
+                throw new InvalidOperationException("Did not find PowerOffice Client");
+            }
+            _logger.LogInformation($"* PowerOffice Client: {api.Client.ToString()}");
+
+
             var customer = await createCustomerIfNotExists (order);
             await createProductsIfNotExists (order);
 

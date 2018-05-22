@@ -7,7 +7,7 @@ using Stripe;
 
 namespace losol.EventManagement.Services.Invoicing
 {
-    public class StripeInvoicingService : IInvoicingService
+    public class StripeInvoicingService : IStripeInvoiceService
     {
         public async Task<bool> CreateInvoiceAsync(Order order)
         {

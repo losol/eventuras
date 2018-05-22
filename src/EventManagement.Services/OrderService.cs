@@ -16,7 +16,7 @@ namespace losol.EventManagement.Services {
 		private readonly IInvoicingService _powerOfficeService;
 		private readonly ILogger _logger;
 
-		public OrderService (ApplicationDbContext db, IInvoicingService powerOfficeService, ILogger<RegistrationService> logger) {
+		public OrderService (ApplicationDbContext db, IInvoicingService powerOfficeService, ILogger<OrderService> logger) {
 			_db = db;
 			_powerOfficeService = powerOfficeService;
 			_logger = logger;
@@ -191,11 +191,16 @@ namespace losol.EventManagement.Services {
 				.ThenInclude (r => r.EventInfo)
 				.SingleOrDefaultAsync (o => o.OrderId == orderId);
 			
-			_logger.LogInformation($"Making invoice for order: {order.OrderId}");
+			_logger.LogInformation($"Making invoice for order: {order.OrderId}, paymenmethodId: {order.PaymentMethodId}");
 			
-			var succeded = await _powerOfficeService.CreateInvoiceAsync (order);
+			bool invoiceCreated = false;
+			
+			if (order.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice || order.PaymentMethod == PaymentProvider.PowerOfficeEmailInvoice) {
+				_logger.LogInformation("* Using PowerOffice for invoicing");
+				invoiceCreated = await _powerOfficeService.CreateInvoiceAsync (order);
+			}
 
-			if (succeded) {
+			if (invoiceCreated) {
 				order.MarkAsInvoiced ();
 				_db.Orders.Update (order);
 			}	
