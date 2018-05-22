@@ -7,9 +7,9 @@ using Stripe;
 
 namespace losol.EventManagement.Services.Invoicing
 {
-    public class StripeInvoicingService : IInvoicingService
+    public class StripeInvoicingService : IStripeInvoiceService
     {
-        public async Task CreateInvoiceAsync(Order order)
+        public async Task<bool> CreateInvoiceAsync(Order order)
         {
             var customer = await getOrCreateCustomer(order);
             var service = new StripeInvoiceItemService();
@@ -35,6 +35,8 @@ namespace losol.EventManagement.Services.Invoicing
             };
             var createInvoiceService = new StripeInvoiceService();
             await createInvoiceService.CreateAsync(customer.Id, createInvoiceOptions);
+
+            return true;
         }
 
         private async Task<StripeCustomer> getOrCreateCustomer(Order order)

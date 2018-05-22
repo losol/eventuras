@@ -24,7 +24,6 @@ using losol.EventManagement.Config;
 using losol.EventManagement.Web.Config;
 using losol.EventManagement.Web.Extensions;
 using System.Collections.Generic;
-using EventManagement.Services.Payments;
 
 namespace losol.EventManagement
 {
@@ -38,6 +37,19 @@ namespace losol.EventManagement
 
         public IHostingEnvironment HostingEnvironment { get; }
         public IConfiguration Configuration { get; }
+        private AppSettings appSettings;
+        public AppSettings AppSettings
+        {
+            get
+            {
+                if(appSettings == null)
+                {
+                    appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
+                }
+                return appSettings;
+            }
+            protected set => appSettings = value;
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public virtual void ConfigureServices(IServiceCollection services)
@@ -126,10 +138,9 @@ namespace losol.EventManagement
 
             var siteConfig = Configuration.GetSection("Site").Get<Site>();
             services.AddSingleton(siteConfig);
-            var appsettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
 
 			// Register the correct email provider depending on the config
-			switch(appsettings.EmailProvider)
+			switch(AppSettings.EmailProvider)
 			{
 				case EmailProvider.SendGrid:
 					services.Configure<SendGridOptions>(Configuration.GetSection("SendGrid"));
@@ -153,7 +164,7 @@ namespace losol.EventManagement
 			services.AddTransient<RegistrationEmailSender>();
 
             // Register SMS services
-			switch(appsettings.SmsProvider)
+			switch(AppSettings.SmsProvider)
 			{
 				case SmsProvider.Twilio:
 					services.Configure<TwilioOptions>(Configuration.GetSection("Twilio"));
@@ -165,22 +176,24 @@ namespace losol.EventManagement
 			}
 
             // Register PowerOffice
-            if(appsettings.UsePowerOffice)
+            if(AppSettings.UsePowerOffice)
             {
                 services.Configure<PowerOfficeOptions>(Configuration.GetSection("PowerOffice"));
-                services.AddScoped<IInvoicingService, PowerOfficeService>();
-            }
-            if(appsettings.UseStripe)
-            {
-                // STRIPE OVERRIDES POWEROFFICE
-                // THIS NEEDS TO BE CHANGED
-                var config = Configuration.GetSection("Stripe").Get<StripeOptions>();
-                StripeInvoicingService.Configure(config.SecretKey);
-                services.AddScoped<IInvoicingService, StripeInvoicingService>();
+                services.AddScoped<IPowerOfficeService, PowerOfficeService>();
             }
             else
             {
-                services.AddTransient<IInvoicingService, MockInvoicingService>();
+                services.AddTransient<IPowerOfficeService, MockInvoicingService>();
+            }
+            if(AppSettings.UseStripeInvoice)
+            {
+                var config = Configuration.GetSection("Stripe").Get<StripeOptions>();
+                StripeInvoicingService.Configure(config.SecretKey);
+                services.AddScoped<IStripeInvoiceService, StripeInvoicingService>();
+            }
+            else
+            {
+                services.AddTransient<IStripeInvoiceService, MockInvoicingService>();
             }
 
 
@@ -188,7 +201,7 @@ namespace losol.EventManagement
 			services.AddScoped<IEventInfoService, EventInfoService>();
             services.Configure<List<PaymentMethod>>(Configuration.GetSection("PaymentMethods"));
 			services.AddScoped<IPaymentMethodService, PaymentMethodService>();
-            services.AddScoped<StripePaymentProvider>();
+            services.AddScoped<StripeInvoiceProvider>();
 			services.AddScoped<IRegistrationService, RegistrationService>();
 			services.AddScoped<IProductsService, ProductsService>();
 			services.AddScoped<IOrderService, OrderService>();

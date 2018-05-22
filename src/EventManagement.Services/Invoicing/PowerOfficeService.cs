@@ -10,16 +10,18 @@ using GoApi.Invoices;
 using GoApi.Party;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Services.Invoicing {
-    public class PowerOfficeService : IInvoicingService {
+    public class PowerOfficeService : IPowerOfficeService {
 
         private readonly Go api;
         private readonly ApplicationDbContext _db;
+        private readonly ILogger _logger;
 
-        public PowerOfficeService (IOptions<PowerOfficeOptions> options, ApplicationDbContext db) {
+        public PowerOfficeService (IOptions<PowerOfficeOptions> options, ApplicationDbContext db, ILogger<PowerOfficeService> logger) {
             GoApi.Global.Settings.Mode = options.Value.Mode;
             var authorizationSettings = new AuthorizationSettings {
                 ApplicationKey = options.Value.ApplicationKey,
@@ -29,9 +31,16 @@ namespace losol.EventManagement.Services.Invoicing {
             var authorization = new Authorization (authorizationSettings);
             api = new Go (authorization);
             _db = db;
+            _logger = logger;
+
+            _logger.LogInformation($"Using PowerOffice Client with applicationKey: {authorizationSettings.ApplicationKey}");
         }
 
-        public async Task CreateInvoiceAsync (Order order) {
+        public async Task<bool> CreateInvoiceAsync (Order order) {
+            if (api.Client == null) {
+                throw new InvalidOperationException("Did not find PowerOffice Client");
+            }
+
             var customer = await createCustomerIfNotExists (order);
             await createProductsIfNotExists (order);
 
@@ -77,6 +86,7 @@ namespace losol.EventManagement.Services.Invoicing {
             order.AddLog("Sendte fakturautkast til PowerOffice");
             _db.Orders.Update(order);
             await _db.SaveChangesAsync();
+            return true;
             }
 
         private async Task<Customer> createCustomerIfNotExists (Order order) {
@@ -120,7 +130,7 @@ namespace losol.EventManagement.Services.Invoicing {
                 customer.Name = order.Registration.User.Name;
             }
 
-            if (order.Registration.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice && !string.IsNullOrWhiteSpace (vatNumber)) {
+            if (order.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice && !string.IsNullOrWhiteSpace (vatNumber)) {
                 customer.InvoiceDeliveryType = InvoiceDeliveryType.EHF;
             }
             else {

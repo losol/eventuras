@@ -3,8 +3,8 @@ using losol.EventManagement.Domain;
 
 namespace losol.EventManagement.Services.Invoicing
 {
-    public class MockInvoicingService : IInvoicingService
+    public class MockInvoicingService : IInvoicingService, IPowerOfficeService, IStripeInvoiceService
     {
-        public async Task CreateInvoiceAsync(Order order) => await Task.FromResult(0);
+        public async Task<bool> CreateInvoiceAsync(Order order) => await Task.FromResult(true);
     }
 }

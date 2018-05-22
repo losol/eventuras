@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using EventManagement.Services.Payments;
+using losol.EventManagement.Services.Invoicing;
 using losol.EventManagement.Services;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
@@ -17,7 +17,7 @@ namespace EventManagement.Web.Controllers.Api
 
         [HttpPost("stripe")]
         public async Task<IActionResult> StripeCharge([FromBody]StripeChargeRequestVM request,
-            [FromServices]StripePaymentProvider provider)
+            [FromServices]StripeInvoiceProvider provider)
         {
             await provider.ChargeCustomer(
                 order: await _orderService.GetByIdAsync(request.OrderId),

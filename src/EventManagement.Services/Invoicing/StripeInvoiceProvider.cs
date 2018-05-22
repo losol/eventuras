@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using Stripe;
 
-namespace EventManagement.Services.Payments
+namespace losol.EventManagement.Services.Invoicing
 {
-    public class StripePaymentProvider
+    public class StripeInvoiceProvider
     {
 
         public async Task ChargeCustomer(Order order, StripeToken token)
