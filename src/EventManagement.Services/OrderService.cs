@@ -14,11 +14,13 @@ namespace losol.EventManagement.Services {
 	public class OrderService : IOrderService {
 		private readonly ApplicationDbContext _db;
 		private readonly IPowerOfficeService _powerOfficeService;
+		private readonly IStripeInvoiceService _stripeInvoiceService;
 		private readonly ILogger _logger;
 
-		public OrderService (ApplicationDbContext db, IPowerOfficeService powerOfficeService, ILogger<OrderService> logger) {
+		public OrderService (ApplicationDbContext db, IPowerOfficeService powerOfficeService, IStripeInvoiceService stripeInvoiceService, ILogger<OrderService> logger) {
 			_db = db;
 			_powerOfficeService = powerOfficeService;
+			_stripeInvoiceService = stripeInvoiceService;
 			_logger = logger;
 		}
 
@@ -198,13 +200,17 @@ namespace losol.EventManagement.Services {
 			if (order.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice || order.PaymentMethod == PaymentProvider.PowerOfficeEmailInvoice) {
 				_logger.LogInformation("* Using PowerOffice for invoicing");
 				invoiceCreated = await _powerOfficeService.CreateInvoiceAsync (order);
+			} else if (order.PaymentMethod == PaymentProvider.StripeInvoice) {
+				_logger.LogInformation("* Using StripeInvoice for invoicing");
+				invoiceCreated = await _stripeInvoiceService.CreateInvoiceAsync (order);
 			}
 
 			if (invoiceCreated) {
 				order.MarkAsInvoiced ();
 				_db.Orders.Update (order);
+				await _db.SaveChangesAsync ();
 			}	
-			return await _db.SaveChangesAsync () > 0; // what if power office succeeds but this fails?
+			return  invoiceCreated;
 		}
 
 		public async Task<bool> UpdatePaymentMethod(int orderId, PaymentProvider paymentMethod) {
