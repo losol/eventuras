@@ -42,6 +42,8 @@ namespace losol.EventManagement.Services.Invoicing {
             }
 
             var customer = await createCustomerIfNotExists (order);
+            _logger.LogInformation($"* Bruker kunde med epost: {customer.EmailAddress}, id {customer.Id}");
+
             await createProductsIfNotExists (order);
 
             var invoice = new OutgoingInvoice {
@@ -92,13 +94,18 @@ namespace losol.EventManagement.Services.Invoicing {
         private async Task<Customer> createCustomerIfNotExists (Order order) {
             // Search for customer by VAT number
             Regex rgx = new Regex("[^0-9]");
-            var vatNumber = rgx.Replace(order.Registration.CustomerVatNumber.ToString(), "");
+            var vatNumber = (order.Registration.CustomerVatNumber != null) ? 
+                rgx.Replace(order.Registration.CustomerVatNumber.ToString(), "") :
+                null;
+
+            _logger.LogInformation($"* VAt number: {vatNumber}");
             var existingCustomer = !string.IsNullOrWhiteSpace (vatNumber) ?
                 api.Customer.Get ()
                     .FirstOrDefault (c => c.VatNumber == order.CustomerVatNumber) :
                 null;
 
-            var customerEmail = !string.IsNullOrWhiteSpace(order.Registration.CustomerEmail)? order.Registration.CustomerEmail : order.Registration.User.Email;
+            var customerEmail = !string.IsNullOrWhiteSpace(order.Registration.CustomerEmail) ? order.Registration.CustomerEmail : order.Registration.User.Email;
+            _logger.LogInformation($"* Customer email: {customerEmail}");
 
             // If no customer was found by VAT number, then search by email
             if (!string.IsNullOrWhiteSpace(customerEmail)) {
