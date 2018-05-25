@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 
-namespace losol.EventManagement.Services.PowerOffice
+namespace losol.EventManagement.Services.Invoicing
 {
     public interface IInvoicingService
     {
-        Task CreateInvoiceAsync(Order order);
+        Task<bool> CreateInvoiceAsync(Order order);
     }
 }

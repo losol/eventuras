@@ -39,10 +39,6 @@ namespace losol.EventManagement.Domain
 		{
 			get
 			{
-				if(IsRefund)
-				{
-					return $"R{RefundOrderId}";
-				}
 				return ProductVariantId.HasValue ? $"K{ProductId}-{ProductVariantId}" : $"K{ProductId}";
 			}
 		}
@@ -65,10 +61,12 @@ namespace losol.EventManagement.Domain
 			{
 				RefundOrderId = OrderId,
                 RefundOrderLineId = OrderLineId,
-				ProductName = $"Refund for {ProductName} (Order #{OrderId})",
-				Price = -Price,
-                Quantity = Quantity,
-                VatPercent = VatPercent
+				ProductName = $"Korreksjon for {ProductName} (Order #{OrderId})",
+				Price = Price,
+                Quantity = -Quantity,
+                VatPercent = VatPercent,
+                ProductId = ProductId,
+                ProductVariantId = ProductVariantId
 			};
 		}
 

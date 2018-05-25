@@ -10,16 +10,18 @@ using GoApi.Invoices;
 using GoApi.Party;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using static losol.EventManagement.Domain.PaymentMethod;
 
-namespace losol.EventManagement.Services.PowerOffice {
-    public class PowerOfficeService : IInvoicingService {
+namespace losol.EventManagement.Services.Invoicing {
+    public class PowerOfficeService : IPowerOfficeService {
 
         private readonly Go api;
         private readonly ApplicationDbContext _db;
+        private readonly ILogger _logger;
 
-        public PowerOfficeService (IOptions<PowerOfficeOptions> options, ApplicationDbContext db) {
+        public PowerOfficeService (IOptions<PowerOfficeOptions> options, ApplicationDbContext db, ILogger<PowerOfficeService> logger) {
             GoApi.Global.Settings.Mode = options.Value.Mode;
             var authorizationSettings = new AuthorizationSettings {
                 ApplicationKey = options.Value.ApplicationKey,
@@ -29,10 +31,19 @@ namespace losol.EventManagement.Services.PowerOffice {
             var authorization = new Authorization (authorizationSettings);
             api = new Go (authorization);
             _db = db;
+            _logger = logger;
+
+            _logger.LogInformation($"Using PowerOffice Client with applicationKey: {authorizationSettings.ApplicationKey}");
         }
 
-        public async Task CreateInvoiceAsync (Order order) {
+        public async Task<bool> CreateInvoiceAsync (Order order) {
+            if (api.Client == null) {
+                throw new InvalidOperationException("Did not find PowerOffice Client");
+            }
+
             var customer = await createCustomerIfNotExists (order);
+            _logger.LogInformation($"* Bruker kunde med epost: {customer.EmailAddress}, id {customer.Id}");
+
             await createProductsIfNotExists (order);
 
             var invoice = new OutgoingInvoice {
@@ -77,18 +88,24 @@ namespace losol.EventManagement.Services.PowerOffice {
             order.AddLog("Sendte fakturautkast til PowerOffice");
             _db.Orders.Update(order);
             await _db.SaveChangesAsync();
+            return true;
             }
 
         private async Task<Customer> createCustomerIfNotExists (Order order) {
             // Search for customer by VAT number
             Regex rgx = new Regex("[^0-9]");
-            var vatNumber = rgx.Replace(order.Registration.CustomerVatNumber.ToString(), "");
+            var vatNumber = (order.Registration.CustomerVatNumber != null) ? 
+                rgx.Replace(order.Registration.CustomerVatNumber.ToString(), "") :
+                null;
+
+            _logger.LogInformation($"* VAt number: {vatNumber}");
             var existingCustomer = !string.IsNullOrWhiteSpace (vatNumber) ?
                 api.Customer.Get ()
                     .FirstOrDefault (c => c.VatNumber == order.CustomerVatNumber) :
                 null;
 
-            var customerEmail = !string.IsNullOrWhiteSpace(order.Registration.CustomerEmail)? order.Registration.CustomerEmail : order.Registration.User.Email;
+            var customerEmail = !string.IsNullOrWhiteSpace(order.Registration.CustomerEmail) ? order.Registration.CustomerEmail : order.Registration.User.Email;
+            _logger.LogInformation($"* Customer email: {customerEmail}");
 
             // If no customer was found by VAT number, then search by email
             if (!string.IsNullOrWhiteSpace(customerEmail)) {
@@ -120,7 +137,7 @@ namespace losol.EventManagement.Services.PowerOffice {
                 customer.Name = order.Registration.User.Name;
             }
 
-            if (order.Registration.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice && !string.IsNullOrWhiteSpace (vatNumber)) {
+            if (order.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice && !string.IsNullOrWhiteSpace (vatNumber)) {
                 customer.InvoiceDeliveryType = InvoiceDeliveryType.EHF;
             }
             else {

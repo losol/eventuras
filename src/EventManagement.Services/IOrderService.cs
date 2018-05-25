@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using losol.EventManagement.Domain;
+using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Services
 {
@@ -19,6 +20,7 @@ namespace losol.EventManagement.Services
 		// Order details
 		Task<bool> UpdateOrderDetailsAsync(int id, string customername, string customerEmail, string invoiceReference, string comments);
 		Task<bool> UpdateOrderComment(int id, string comments);
+		Task<bool> UpdatePaymentMethod(int orderId, PaymentProvider provider);
 		Task<int> MakeOrderFreeAsync(int id);
 		Task<int> DeleteOrderAsync(Order order);
 		Task<int> DeleteOrderAsync(int orderId);

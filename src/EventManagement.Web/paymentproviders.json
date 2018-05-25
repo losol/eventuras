@@ -4,6 +4,7 @@
       "PaymentMethodId": 2,
       "Name": "E-postfaktura",
       "Provider": "PowerOfficeEmailInvoice",
+      "Type": "Invoice",
       "Active": true,
       "AdminOnly": false,
       "IsDefault": true
@@ -12,29 +13,17 @@
       "PaymentMethodId": 3,
       "Name": "EHF-faktura",
       "Provider": "PowerOfficeEHFInvoice",
+      "Type": "Invoice",
       "Active": true,
       "AdminOnly": false
     },
     {
-      "PaymentMethodId": 10,
-      "Name": "EmailInvoice",
-      "Provider": "EmailInvoice",
-      "Active": false,
-      "AdminOnly": false
-    },
-    {
       "PaymentMethodId": 11,
-      "Name": "Stripe",
-      "Provider": "Stripe",
-      "Active": false,
-      "AdminOnly": false
-    },
-    {
-      "PaymentMethodId": 12,
-      "Name": "Vipps",
-      "Provider": "Vipps",
-      "Active": false,
-      "AdminOnly": false
+      "Name": "StripeInvoice",
+      "Type": "Invoice",
+      "Provider": "StripeInvoice",
+      "Active": true,
+      "AdminOnly": true
     }
   ]
 }

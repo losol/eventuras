@@ -1,6 +1,6 @@
 using static GoApi.Global.Settings;
 
-namespace losol.EventManagement.Services.PowerOffice
+namespace losol.EventManagement.Services.Invoicing
 {
     public class PowerOfficeOptions
     {

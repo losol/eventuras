@@ -19,7 +19,7 @@ using losol.EventManagement.Services.DbInitializers;
 using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.Web.Services;
 using losol.EventManagement.Services.Messaging.Sms;
-using losol.EventManagement.Services.PowerOffice;
+using losol.EventManagement.Services.Invoicing;
 using losol.EventManagement.Config;
 using losol.EventManagement.Web.Config;
 using losol.EventManagement.Web.Extensions;
@@ -37,6 +37,19 @@ namespace losol.EventManagement
 
         public IHostingEnvironment HostingEnvironment { get; }
         public IConfiguration Configuration { get; }
+        private AppSettings appSettings;
+        public AppSettings AppSettings
+        {
+            get
+            {
+                if(appSettings == null)
+                {
+                    appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
+                }
+                return appSettings;
+            }
+            protected set => appSettings = value;
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public virtual void ConfigureServices(IServiceCollection services)
@@ -48,7 +61,7 @@ namespace losol.EventManagement
             });
 
 
-                // sqlite: options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))); 
+                // sqlite: options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>(config =>
             {
@@ -68,7 +81,7 @@ namespace losol.EventManagement
                 });
             }
             */
-            
+
 
             // Set password requirements
             services.Configure<IdentityOptions>(options =>
@@ -85,18 +98,18 @@ namespace losol.EventManagement
             CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
             CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
-            
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdministratorRole", policy => policy.RequireRole("Admin", "SuperAdmin"));
             });
-            
+
             services.AddMvc()
                 .AddRazorPagesOptions(options =>
                 {
                     options.Conventions.AuthorizeFolder("/Account/Manage");
                     options.Conventions.AuthorizePage("/Account/Logout");
-                    
+
                     options.Conventions.AuthorizeFolder("/Admin", "AdministratorRole");
                     options.Conventions.AddPageRoute("/Events/Details", "events/{id}/{slug?}");
 
@@ -125,10 +138,9 @@ namespace losol.EventManagement
 
             var siteConfig = Configuration.GetSection("Site").Get<Site>();
             services.AddSingleton(siteConfig);
-            var appsettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
 
 			// Register the correct email provider depending on the config
-			switch(appsettings.EmailProvider)
+			switch(AppSettings.EmailProvider)
 			{
 				case EmailProvider.SendGrid:
 					services.Configure<SendGridOptions>(Configuration.GetSection("SendGrid"));
@@ -152,7 +164,7 @@ namespace losol.EventManagement
 			services.AddTransient<RegistrationEmailSender>();
 
             // Register SMS services
-			switch(appsettings.SmsProvider)
+			switch(AppSettings.SmsProvider)
 			{
 				case SmsProvider.Twilio:
 					services.Configure<TwilioOptions>(Configuration.GetSection("Twilio"));
@@ -164,21 +176,32 @@ namespace losol.EventManagement
 			}
 
             // Register PowerOffice
-            if(appsettings.UsePowerOffice)
+            if(AppSettings.UsePowerOffice)
             {
                 services.Configure<PowerOfficeOptions>(Configuration.GetSection("PowerOffice"));
-                services.AddScoped<IInvoicingService, PowerOfficeService>();
+                services.AddScoped<IPowerOfficeService, PowerOfficeService>();
             }
             else
             {
-                services.AddTransient<IInvoicingService, MockInvoicingService>();
+                services.AddTransient<IPowerOfficeService, MockInvoicingService>();
             }
-            
+            if(AppSettings.UseStripeInvoice)
+            {
+                var config = Configuration.GetSection("Stripe").Get<StripeOptions>();
+                StripeInvoicingService.Configure(config.SecretKey);
+                services.AddScoped<IStripeInvoiceService, StripeInvoicingService>();
+            }
+            else
+            {
+                services.AddTransient<IStripeInvoiceService, MockInvoicingService>();
+            }
+
 
 			// Register our application services
 			services.AddScoped<IEventInfoService, EventInfoService>();
             services.Configure<List<PaymentMethod>>(Configuration.GetSection("PaymentMethods"));
 			services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+            services.AddScoped<StripeInvoiceProvider>();
 			services.AddScoped<IRegistrationService, RegistrationService>();
 			services.AddScoped<IProductsService, ProductsService>();
 			services.AddScoped<IOrderService, OrderService>();
@@ -222,7 +245,7 @@ namespace losol.EventManagement
             /*
             if (env.IsProduction()) {
                 var options = new RewriteOptions()
-                .AddRedirectToHttps(); 
+                .AddRedirectToHttps();
                 app.UseRewriter(options);
             }
              */

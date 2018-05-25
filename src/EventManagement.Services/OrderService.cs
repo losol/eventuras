@@ -4,18 +4,24 @@ using System.Linq;
 using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
-using losol.EventManagement.Services.PowerOffice;
+using losol.EventManagement.Services.Invoicing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using static losol.EventManagement.Domain.Order;
+using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Services {
 	public class OrderService : IOrderService {
 		private readonly ApplicationDbContext _db;
-		private readonly IInvoicingService _powerOfficeService;
+		private readonly IPowerOfficeService _powerOfficeService;
+		private readonly IStripeInvoiceService _stripeInvoiceService;
+		private readonly ILogger _logger;
 
-		public OrderService (ApplicationDbContext db, IInvoicingService powerOfficeService) {
+		public OrderService (ApplicationDbContext db, IPowerOfficeService powerOfficeService, IStripeInvoiceService stripeInvoiceService, ILogger<OrderService> logger) {
 			_db = db;
 			_powerOfficeService = powerOfficeService;
+			_stripeInvoiceService = stripeInvoiceService;
+			_logger = logger;
 		}
 
 		public Task<List<Order>> GetAsync () =>
@@ -186,11 +192,42 @@ namespace losol.EventManagement.Services {
 				.Include (o => o.Registration)
 				.ThenInclude (r => r.EventInfo)
 				.SingleOrDefaultAsync (o => o.OrderId == orderId);
-			await _powerOfficeService.CreateInvoiceAsync (order);
+			
+			_logger.LogInformation($"Making invoice for order: {order.OrderId}, paymenmethodId: {order.PaymentMethodId}");
+			
+			bool invoiceCreated = false;
+			
+			if (order.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice || order.PaymentMethod == PaymentProvider.PowerOfficeEmailInvoice) {
+				_logger.LogInformation("* Using PowerOffice for invoicing");
+				invoiceCreated = await _powerOfficeService.CreateInvoiceAsync (order);
+			} else if (order.PaymentMethod == PaymentProvider.StripeInvoice) {
+				_logger.LogInformation("* Using StripeInvoice for invoicing");
+				invoiceCreated = await _stripeInvoiceService.CreateInvoiceAsync (order);
+			}
 
-			order.MarkAsInvoiced ();
-			_db.Orders.Update (order);
-			return await _db.SaveChangesAsync () > 0; // what if power office succeeds but this fails?
+			if (invoiceCreated) {
+				order.MarkAsInvoiced ();
+				_db.Orders.Update (order);
+				await _db.SaveChangesAsync ();
+			}	
+			return  invoiceCreated;
+		}
+
+		public async Task<bool> UpdatePaymentMethod(int orderId, PaymentProvider paymentMethod) {
+			var order = await _db.Orders
+				.Where( m => m.OrderId == orderId)
+				.FirstOrDefaultAsync();
+
+			if(order.CanEdit == false)
+			{
+				throw new InvalidOperationException($"Cannot edit paymentmethod. Order status: {order.Status}.");
+			}
+
+			// Update payment method in registration.
+			order.PaymentMethod = paymentMethod;
+			_db.Update(order);
+
+			return await _db.SaveChangesAsync() > 0;
 		}
 
 		public async Task<bool> AddLogLineAsync(int orderId, string logText) {

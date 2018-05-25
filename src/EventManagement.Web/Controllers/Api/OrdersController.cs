@@ -9,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using static losol.EventManagement.Domain.Order;
 using System.Collections.Generic;
 using System.Linq;
+using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Web.Controllers.Api
 {
@@ -69,6 +70,20 @@ namespace losol.EventManagement.Web.Controllers.Api
 				return BadRequest();
 			}
 		}
+
+		[HttpPost ("{id}/paymentmethod/update/{paymentmethod}")]
+        public async Task<ActionResult> SetPaymentMethod ([FromRoute] int id, [FromRoute] PaymentProvider paymentmethod) {
+            if (!ModelState.IsValid) return BadRequest ();
+            try {
+                await _orderService.UpdatePaymentMethod (
+                    id,
+                    paymentmethod);
+            }
+            catch (ArgumentException ex) {
+                return BadRequest (ex.Message);
+            }
+            return Ok ();
+        }
 
 		[HttpPost("update/{id}/make-free")]
 		public async Task<ActionResult> MakeOrderFree([FromRoute]int id)

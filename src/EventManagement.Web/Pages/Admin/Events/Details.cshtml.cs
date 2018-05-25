@@ -56,21 +56,21 @@ namespace losol.EventManagement.Pages.Admin.Events
             {
                 return NotFound();
             }
-            
+
             return Page();
         }
 
-         
+
         public async Task<JsonResult> OnGetParticipants(int? id)
         {
             if (id == null)
             {
                return new JsonResult("No event id submitted.");
             }
-            
+
             var registrations = await _context.Registrations
-                .Where( 
-                    r => r.EventInfoId == id && 
+                .Where(
+                    r => r.EventInfoId == id &&
                     r.Status != RegistrationStatus.Cancelled &&
                     r.Type == RegistrationType.Participant)
                 .Select ( x=> new RegistrationsVm{
@@ -83,8 +83,11 @@ namespace losol.EventManagement.Pages.Admin.Events
                     City = x.ParticipantCity,
                     Products = x.Orders.Where(o => o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Refunded)
                         .SelectMany(o => o.OrderLines)
-                        .Where(l => !l.IsRefund)
-                        .Select(l => ValueTuple.Create(l.Product, l.ProductVariant, l.Quantity))
+                        .Where(l => l.Product != null && l.ProductVariant != null) // required because these are null for some old invalid data
+                        .Select(l => ValueTuple.Create(l.Product, l.ProductVariant, l.Quantity, l.IsRefund))
+                        .GroupBy(l => new { l.Item1, l.Item2 })
+                        .Select(g => ValueTuple.Create(g.Key.Item1, g.Key.Item2, g.Sum(t => t.Item3 * (t.Item4 ? -1 : 1))))
+                        .Where(p => p.Item3 > 0)
                         .ToList(),
                     HasCertificate = x.HasCertificate,
                     CertificateId = x.CertificateId,
@@ -98,7 +101,7 @@ namespace losol.EventManagement.Pages.Admin.Events
             }
             else {
                 return new JsonResult("none");
-            }    
+            }
         }
 
         public async Task<JsonResult> OnGetOtherAttendees(int? id)
@@ -109,8 +112,8 @@ namespace losol.EventManagement.Pages.Admin.Events
             }
 
             var registrations = await _context.Registrations
-                .Where( 
-                    r => r.EventInfoId == id && 
+                .Where(
+                    r => r.EventInfoId == id &&
                     r.Status != RegistrationStatus.Cancelled &&
                     r.Type != RegistrationType.Participant)
                 .Select ( x=> new RegistrationsVm{
@@ -133,7 +136,7 @@ namespace losol.EventManagement.Pages.Admin.Events
             }
             else {
                 return new JsonResult("none");
-            }    
+            }
         }
 
         public async Task<JsonResult> OnGetCancelled(int? id)
@@ -144,8 +147,8 @@ namespace losol.EventManagement.Pages.Admin.Events
             }
 
             var registrations = await _context.Registrations
-                .Where( 
-                    r => r.EventInfoId == id && 
+                .Where(
+                    r => r.EventInfoId == id &&
                     r.Status == RegistrationStatus.Cancelled)
                 .Select ( x=> new RegistrationsVm{
                     RegistrationId = x.RegistrationId,
@@ -167,7 +170,7 @@ namespace losol.EventManagement.Pages.Admin.Events
             }
             else {
                 return new JsonResult("none");
-            }    
+            }
         }
     }
 }
