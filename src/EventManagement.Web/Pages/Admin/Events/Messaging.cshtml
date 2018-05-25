@@ -1,0 +1,67 @@
+@page "{id:int}"
+@model losol.EventManagement.Pages.Admin.Events.MessagingModel
+
+@{
+    ViewData["Title"] = "Meldinger – " + @Model.EventInfo.Title;
+}
+
+<div class="jumbotron jumbotron-fluid">
+    <div class="container"> 
+        <div>
+            <h1 class="display-4">Meldinger @Model.EventInfo.Title</h1>
+            <p class="lead">Send beskjed til alle!</p>
+        </div>
+    </div>
+</div>
+<div class="container min-height-66">
+
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Epost</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">SMS</a>
+    </li>
+    </ul>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+            <form class="py-3">
+                <div class="form-group">
+                    <label for="emailtitle">Tittel</label>
+                    <input type="email" class="form-control" asp-for="Input.EmailSubject" aria-describedby="emailHelp" placeholder="Tittel for eposten">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Innhold</label>
+                    <textarea asp-for="Input.EmailContent" class="form-control" name="content" ></textarea>
+                </div>
+    
+                <button type="submit" class="btn btn-lg btn-success">Send e-post til alle!</button>
+            </form>
+            
+
+        </div>
+        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+            <form class="py-3">
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Innhold</label>
+                    <small id="emailHelp" class="form-text text-muted">Gi gjerne en mottaker om hvilket arrangement det gjelder!</small>
+                    <textarea asp-for="Input.SmsContent" class="form-control" name="content" id="smseditor" class="w-50" rows="4"></textarea>
+                </div>
+    
+                <button type="submit" class="btn btn-lg btn-success">Send SMS til alle!</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.ckeditor.com/ckeditor5/10.0.1/classic/ckeditor.js"></script>
+    <script>
+    ClassicEditor
+        .create( document.querySelector( '#Input_EmailContent' ) )
+        .catch( error => {
+            console.error( error );
+        } );
+</script>
+
+}
