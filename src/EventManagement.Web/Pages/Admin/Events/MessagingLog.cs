@@ -11,7 +11,7 @@ using losol.EventManagement.Services;
 
 namespace losol.EventManagement.Pages.Admin.Events
 {
-    public class MessagingModel : PageModel
+    public class MessagingLogModel : PageModel
     {
         private readonly IMessageLogService  _messageLogService;
         private readonly IEventInfoService _eventinfos;
