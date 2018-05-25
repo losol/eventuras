@@ -478,7 +478,7 @@
                 toastr.fail('Noe gikk galt. Sorry!');
             })
     })
-    
+    // TODO: Remove this?
     function sendAll() {
         const data = $table.bootstrapTable('getData', {useCurrentPage: false});
         recipients = data.map(function(x){ 
@@ -513,18 +513,18 @@
         $('#sms-modal').modal('hide');
     }
 
-    function emailCertificatesToAll() {
-        toastr.info("Vær tålmodig, det kan ta litt tid.");
-        $.postJSON('/api/certificates/event/@Model.EventInfo.EventInfoId/email', null)
-        .done(function(){
-            toastr.success('Kursbevisene er på vei!');
-            $('#sendCertificatesModal').modal('hide');
-            $('#participants-table').bootstrapTable('refresh', null);
-        })
-        .fail(function(){
-            toastr.error('Nåkka gikk galt. Sorry.')
-        })
-    }
+        function emailCertificatesToAll() {
+            toastr.info("Vær tålmodig, det kan ta litt tid.");
+            $.postJSON('/api/certificates/event/@Model.EventInfo.EventInfoId/email', null)
+            .done(function(){
+                toastr.success('Kursbevisene er på vei!');
+                $('#sendCertificatesModal').modal('hide');
+                $('#participants-table').bootstrapTable('refresh', null);
+            })
+            .fail(function(){
+                toastr.error('Nåkka gikk galt. Sorry.')
+            })
+        }
 </script>
     @await Html.PartialAsync("_CompBootstrapTable")
 }
