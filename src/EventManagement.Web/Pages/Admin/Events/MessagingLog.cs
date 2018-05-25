@@ -16,7 +16,7 @@ namespace losol.EventManagement.Pages.Admin.Events
         private readonly IMessageLogService  _messageLogService;
         private readonly IEventInfoService _eventinfos;
 
-        public MessagingModel(IMessageLogService messageLogService, IEventInfoService eventinfos)
+        public MessagingLogModel(IMessageLogService messageLogService, IEventInfoService eventinfos)
         {
             _messageLogService = messageLogService;
             _eventinfos = eventinfos;
