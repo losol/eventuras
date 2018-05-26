@@ -145,7 +145,21 @@ namespace losol.EventManagement.Domain
             {
                 throw new InvalidOperationException("Only invoiced orders can be refunded.");
             }
-            throw new NotImplementedException();
+            var refund = new Order
+            {
+                CustomerEmail = CustomerEmail,
+                CustomerName = CustomerName,
+                CustomerVatNumber = CustomerVatNumber,
+                RegistrationId = RegistrationId,
+                UserId = UserId,
+                // TODO: Add other fields like payment method, etc.
+                OrderLines = new List<OrderLine>()
+            };
+            foreach(var line in OrderLines)
+            {
+                refund.OrderLines.Add(line.CreateRefundOrderLine());
+            }
+            return refund;
         }
 
 	}

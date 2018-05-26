@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using losol.EventManagement.Domain;
 using Xunit;
 using static losol.EventManagement.Domain.Order;
@@ -71,7 +72,13 @@ namespace losol.EventManagement.UnitTests
             public void Succeed()
             {
                 Order order = getOrderWithStatus(OrderStatus.Invoiced);
-                Assert.Throws<NotImplementedException>(() => order.GetRefundOrder());
+                order.OrderLines = new List<OrderLine>
+                {
+                    new OrderLine { ProductId = 1, Quantity = 1, Price = 10 },
+                    new OrderLine { ProductId = 2, Quantity = 1, Price = 10 }
+                };
+                var refund = order.GetRefundOrder();
+                Assert.Equal(-order.TotalAmount, refund.TotalAmount);
             }
         }
 
