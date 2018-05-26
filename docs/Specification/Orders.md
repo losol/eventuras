@@ -160,6 +160,7 @@ Products
 #### Case 4: Decreasing the quantity of an item from Order #255.
 
 **Order #256**
+
 | ItemCode | Product name | Quantity | Price | Line total
 |--|--|--|--|--|
 | K3 | Daily rate | -1 | 200 | -200|
@@ -179,11 +180,12 @@ Ordered products are now
 The user has ordered dinner (K2-1), but now wants sightseeing (K4) instead
 
 **Order #256**
-| ItemCode | Product name | Quantity | Price | Line total
+
+| ItemCode | Product name | Quantity | Price | Line total |
 |--|--|--|--|--|
-| K2-1 | Small dinner | -1 | 400 | -400|
-| K4 | Sightseeing | 1 | 800 | 800|
-|  | **Order total** |  |  | 400
+| K2-1 | Small dinner | -1 | 400 | -400 |
+| K4 | Sightseeing | 1 | 800 | 800 |
+|  | **Order total** |  |  | 400 |
 
 
 ```text
@@ -200,11 +202,12 @@ Ordered products are now
 The user has ordered small dinner, but wants large dinner
 
 **Order #256**
-| ItemCode | Product name | Quantity | Price | Line total
+
+| ItemCode | Product name | Quantity | Price | Line total |
 |--|--|--|--|--|
-| K2-1 | Small dinner | -1 | 400 | -400|
-| K2-2 | Large dinner | 1 | 600 | 600|
-|  | **Order total** |  |  | 200
+| K2-1 | Small dinner | -1 | 400 | -400 |
+| K2-2 | Large dinner | 1 | 600 | 600 |
+|  | **Order total** |  |  | 200 |
 
 
 ```text
