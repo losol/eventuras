@@ -35,14 +35,8 @@ namespace losol.EventManagement.Domain
 		/// <summary>
 		/// A string that uniquely identifies a product-variant combination
 		/// </summary>
-		public string ItemCode
-		{
-			get
-			{
-                var prefix = IsRefund ? "R" : "K";
-				return ProductVariantId.HasValue ? $"{prefix}{ProductId}-{ProductVariantId}" : $"{prefix}{ProductId}";
-			}
-		}
+		public string ItemCode =>
+            ProductVariantId.HasValue ? $"K{ProductId}-{ProductVariantId}" : $"K{ProductId}";
 
 		public decimal Price { get; set; } // TODO: Change this to PricePerUnit
 		public decimal VatPercent { get; set; } = 0;
