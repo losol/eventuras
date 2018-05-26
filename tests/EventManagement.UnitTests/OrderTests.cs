@@ -58,6 +58,23 @@ namespace losol.EventManagement.UnitTests
 			}
 		}
 
+        public class GetRefundOrder_Should
+        {
+            [Fact]
+            public void ThrowExceptionIfNotInvoiced()
+            {
+                Order order = new Order();
+                Assert.Throws<InvalidOperationException>(() => order.GetRefundOrder());
+            }
+
+            [Fact]
+            public void Succeed()
+            {
+                Order order = getOrderWithStatus(OrderStatus.Invoiced);
+                Assert.Throws<NotImplementedException>(() => order.GetRefundOrder());
+            }
+        }
+
 		protected static Order getOrderWithStatus(OrderStatus status)
 		{
 			// Create a new order

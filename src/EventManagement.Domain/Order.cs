@@ -139,5 +139,14 @@ namespace losol.EventManagement.Domain
 			this.AddLog();
 		}
 
+        public Order GetRefundOrder()
+        {
+            if(Status != OrderStatus.Invoiced)
+            {
+                throw new InvalidOperationException("Only invoiced orders can be refunded.");
+            }
+            throw new NotImplementedException();
+        }
+
 	}
 }
