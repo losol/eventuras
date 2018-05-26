@@ -17,6 +17,7 @@ namespace losol.EventManagement.Web.Controllers.Api {
     [Route ("/api/v0/messaging")]
     public class MessagingController : Controller {
         private readonly StandardEmailSender _emailSender;
+        private readonly RegistrationEmailSender _registrationEmailSender;
         private readonly ISmsSender _smsSender;
         private readonly IRegistrationService _registrationService;
         private readonly IMessageLogService _messageLog;
@@ -25,15 +26,17 @@ namespace losol.EventManagement.Web.Controllers.Api {
             StandardEmailSender emailSender,
             ISmsSender smsSender,
             IRegistrationService registrationService,
-            IMessageLogService messageLog) {
+            IMessageLogService messageLog,
+            RegistrationEmailSender registrationEmailSender) {
             _emailSender = emailSender;
+            _registrationEmailSender = registrationEmailSender;
             _smsSender = smsSender;
             _messageLog = messageLog;
             _registrationService = registrationService;
         }
 
-        [HttpPost ("email/participants-at-event/{id}")]
-        public async Task<IActionResult> EmailAll ([FromRoute] int eventInfoId, [FromBody] EmailContent content) {
+        [HttpPost ("email/participants-at-event/{eventInfoId}")]
+        public async Task<IActionResult> EmailAll ([FromRoute] int eventInfoId, [FromBody] EmailContent email) {
             if (!ModelState.IsValid) return BadRequest ();
             
             var recipients = "";
@@ -42,14 +45,12 @@ namespace losol.EventManagement.Web.Controllers.Api {
 
             foreach (var reg in registrations) {
                 try {
-                    await _emailSender.SendStandardEmailAsync (
-                        new EmailMessage {
-                            Name = reg.ParticipantName,
-                                Email = reg.User.Email,
-                                Subject = content.Subject,
-                                Message = content.Message
-                        }
-                    );
+                    await _registrationEmailSender.SendRegistrationAsync (
+                        reg.User.Email,
+                        email.Subject,
+                        email.Content,
+                        reg.RegistrationId);
+    
                     recipients += $@"""{reg.User.Name}"" <{reg.User.Email}>; ";
                 } catch (Exception exc) {
                     errors += exc.Message + Environment.NewLine;
@@ -63,7 +64,36 @@ namespace losol.EventManagement.Web.Controllers.Api {
                 result = "Sendte epost. Men fikk noen feil: " + Environment.NewLine + errors;
             }
             
-            await _messageLog.AddAsync (eventInfoId, recipients, content.Message, "Email", "SendGrid", result);
+            await _messageLog.AddAsync (eventInfoId, recipients, email.Content, "Email", "SendGrid", result);
+
+            return Ok (result.Replace (Environment.NewLine, "<br />"));
+        }
+
+        [HttpPost ("sms/participants-at-event/{eventInfoId}")]
+        public async Task<IActionResult> SmsAll ([FromRoute] int eventInfoId, [FromBody] SmsContent sms) {
+            if (!ModelState.IsValid) return BadRequest ();
+
+            var recipients = "";
+            var errors = "";
+            var registrations = await _registrationService.GetRegistrations (eventInfoId);
+
+            foreach (var reg in registrations) {
+                try {
+                    await _smsSender.SendSmsAsync(reg.User.PhoneNumber, sms.Content);
+                    recipients += $@"""{reg.User.Name}"" <{reg.User.PhoneNumber}>; ";
+                } catch (Exception exc) {
+                    errors += exc.Message + Environment.NewLine;
+                }
+            }
+
+            var result = "";
+            if (errors == "") {
+                result = "Alle SMS sendt!";
+            } else {
+                result = "Sendte SMS. Men fikk noen feil: " + Environment.NewLine + errors;
+            }
+
+            await _messageLog.AddAsync (eventInfoId, recipients, sms.Content, "SMS", "Twilio", result);
 
             return Ok (result.Replace (Environment.NewLine, "<br />"));
         }
@@ -119,7 +149,11 @@ namespace losol.EventManagement.Web.Controllers.Api {
 
         public class EmailContent {
             public string Subject { get; set; }
-            public string Message { get; set; }
+            public string Content { get; set; }
+        }
+
+        public class SmsContent {
+            public string Content { get; set; }
         }
 
         public class SmsVM {
@@ -140,7 +174,7 @@ namespace losol.EventManagement.Web.Controllers.Api {
 
             [Required]
             public string Message { get; set; }
-            public int EventInfoId { get; set; }
+            public int EventInfoId { get; set; } // TODO: Remove this?
         }
 
         public class EmailRecipientVM {

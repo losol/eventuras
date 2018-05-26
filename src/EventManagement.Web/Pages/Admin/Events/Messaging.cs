@@ -59,33 +59,8 @@ namespace losol.EventManagement.Pages.Admin.Events
                 return Page();
             }
             
-            var recipients = "";
-            var errors = "";
-            var registrations = await _registrationService.GetRegistrations (id);
-
-            foreach (var reg in registrations) {
-                try {
-                    await _registrationEmailSender.SendRegistrationAsync(
-                        reg.User.Email,
-                        Input.EmailSubject,
-                        Input.EmailContent,
-                        reg.RegistrationId
-                    );
-                    recipients += $@"""{reg.User.Name}"" <{reg.User.Email}>; ";
-                } catch (Exception exc) {
-                    errors += exc.Message + Environment.NewLine;
-                }
-            }
-
-            var result = "";
-            if (errors == "") {
-                result = "Alle epost sendt!";
-            } else {
-                result = "Sendte epost. Men fikk noen feil: " + Environment.NewLine + errors;
-            }
             
-            await _messageLogService.AddAsync (id, recipients, Input.EmailContent, "Email", "SendGrid", result);
-            StatusMessage = result;
+            // StatusMessage = result;
             EventInfo = await _eventinfos.GetAsync(id);
             return RedirectToPage();
         }
