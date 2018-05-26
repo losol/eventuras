@@ -39,7 +39,8 @@ namespace losol.EventManagement.Domain
 		{
 			get
 			{
-				return ProductVariantId.HasValue ? $"K{ProductId}-{ProductVariantId}" : $"K{ProductId}";
+                var prefix = IsRefund ? "R" : "K";
+				return ProductVariantId.HasValue ? $"{prefix}{ProductId}-{ProductVariantId}" : $"{prefix}{ProductId}";
 			}
 		}
 
