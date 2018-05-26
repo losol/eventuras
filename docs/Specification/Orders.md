@@ -1,14 +1,41 @@
 # Orders
 
-Each registration for an event could have one or more orders associated with the registration. Typical products on the orders are event tickets with variants with different prices. For most events it will be an associated mandatory product – the ticket. 
+Each event registration could have one or more orders associated with the registration.  Typical orders contain products like event tickets with variants with different prices. For most events it will be an associated *mandatory product* – the ticket. 
 
 For conferences there will often be a "daily conference pack" for each day of the event, which is mandatory. 
 
-In addition many events will have optional product as well. Examples could be dinners or sightseeing. Note that some products might be free addons. 
+In addition many events will have *optional product* as well. Examples could be dinners or sightseeing. Note that some products might be free addons. 
 
-For both the participant and the admin, it is important to have an overview of which products which is ordered independant of which order they belong to. 
+For both the participant and the admin, it is important to have an overview of which products which is ordered independant of which order they belong to. Orders keeps track of the person or organisation paying, and has a reference to the event. Each order may contain multiple order lines.
 
-Orders keeps track of the person or organisation paying, and has a reference to the event. Each order may contain multiple order lines.
+## Sample products and order
+The user `John Doe` registers for `The great conference`.  This conference has the following products:
+ - Ticket (K1) - price 1000, mandatory
+ - Dinner (K2) 
+	 - Small dinner (K2-1) - price 400
+	 - Large dinner (K2-2) - price 600
+ - Daily rate (K3)  - price 200, a mandatory quantity of 2
+ - Sightseeing  (K4) - price 800
+ - Guided walk (K5) - price 0
+
+In his first order (with OrderId 255) which he registers at the website he has the following products
+
+**Order # 255**
+
+| ItemCode | Product name | Quantity | Price | Line total
+|--|--|--|--|--|
+| K1 | Conference ticket (3 days) | 1 | 1000 | 1000|
+| K2-1 | Small dinner | 1 | 400 | 400
+| K3 | Daily rate | 2 | 200 | 400
+|  | **Order total** |  |  | 1800
+
+```
+Ordered products are now
+----------------------
+1 × K1
+1 × K2-1
+2 × K3
+```
 
 ## Order status
 
@@ -55,35 +82,19 @@ As long as the order is not invoiced, it could be edited by admin. The user can 
 
 Invoiced orders are refunded by issuing a new invoice that cancels all the items in the negative
 
-Consider the following order:
+Consider if we want to refund order #255 from above.  The refund order will be as follows:
 
-```text
-Order #255
-----------------------
-K1  Item-A  ×1  Kr1000
-K2  Item-B  ×1  Kr2000
-K3  Item-C  ×5   Kr500
-----------------------
-Total:          Kr5500
+**Order #256**
 
-Ordered products
-----------------------
-1 × A
-1 × B
-5 × C
+| ItemCode | Product name | Quantity | Price | Line total
+|--|--|--|--|--|
+| K1 | Conference ticket (3 days) | -1 | 1000 | -1000|
+| K2-1 | Small dinner | -1 | 400 | -400
+| K3 | Daily rate | -2 | 200 | -400
+|  | **Order total** |  |  | -1800
+
 ```
-
-The refund order will be as follows:
-```text
-Order #256
-------------------------
-K1  Item-A  × -1  Kr1000
-K2  Item-B  × -1  Kr2000
-K3  Item-C  × -5   Kr500
-------------------------
-Total:          Kr -5500
-
-Ordered products
+Ordered products are now: 
 ----------------------
 Null
 ```
@@ -94,85 +105,112 @@ Changes to invoiced orders are handled by issuing a new order that includes the 
 
 Combinations of the following cases can make any change to an invoiced order possible.
 
-Case 1: Adding an item to Order #255.
+#### Case 1: Adding Sightseeing to Order #255.
+
+**Order #256**
+
+| ItemCode | Product name | Quantity | Price | Line total
+|--|--|--|--|--|
+| K4 | Sightseeing | 1 | 800 | 800|
+|  | **Order total** |  |  | 800
+
 
 ```text
-Order #256
-----------------------
-K4  Item-D  ×1  Kr1000
-----------------------
-Total:          Kr1000
 
-Products
+Ordered products are now
 ----------------------
-1 × A
-1 × B
-5 × C
-1 × D
+1 × K1
+1 × K2-1
+2 × K3
+1 × K4
 ```
 
-Case 2: Removing an item from Order #255.
+#### Case 2: Removing dinner from Order #255.
+
+| ItemCode | Product name | Quantity | Price | Line total
+|--|--|--|--|--|
+| K2-1 | Refund for "Dinner" | -1 | 400 | -400|
+|  | **Order total** |  |  | -400
+
 
 ```text
-Order #256
-------------------------
-K3  Item-C  × -5   Kr500
-------------------------
-Total:          Kr -2500
 
-Products
+Ordered products are now
 ----------------------
-1 × A
-1 × B
+1 × K1
+2 x K3
 ```
 
-Case 3: Increasing the quantity of an item from Order #255.
+#### Case 3: Increasing the quantity of an item from Order #255.
+
+| ItemCode | Product name | Quantity | Price | Line total
+|--|--|--|--|--|
+| K3 | Daily rate | 1 | 200 | 200|
+|  | **Order total** |  |  | 200
 
 ```text
-Order #256
-----------------------
-K1  Item-A  ×1  Kr1000
-----------------------
-Total:          Kr1000
 
 Products
 ----------------------
-2 × A
-1 × B
-5 × C
+1 × K1
+1 x K2-1
+3 x K3
 ```
 
-Case 4: Decreasing the quantity of an item from Order #255.
+#### Case 4: Decreasing the quantity of an item from Order #255.
+
+**Order #256**
+| ItemCode | Product name | Quantity | Price | Line total
+|--|--|--|--|--|
+| K3 | Daily rate | -1 | 200 | -200|
+|  | **Order total** |  |  | -200
+
 
 ```text
-Order #256
-------------------------
-K3  Item-C  × -2   Kr500
-------------------------
-Total:          Kr -1000
 
-Products
+Ordered products are now
 ----------------------
-1 × A
-1 × B
-3 × C
+1 × K1
+1 x K2-1
+1 × K3
+```
+
+#### Case 5: Changing products for Order #255.
+The user has ordered dinner (K2-1), but now wants sightseeing (K4) instead
+
+**Order #256**
+| ItemCode | Product name | Quantity | Price | Line total
+|--|--|--|--|--|
+| K2-1 | Small dinner | -1 | 400 | -400|
+| K4 | Sightseeing | 1 | 800 | 800|
+|  | **Order total** |  |  | 400
+
+
+```text
+
+Ordered products are now
+----------------------
+1 × K1
+2 × K3
+1 x K4
 ```
 
 
-Case 5: Changing products for Order #255.
-The user has ordered Product B, but now wants product D instead
+#### Case 6: Changing variant for Order #255.
+The user has ordered small dinner, but wants large dinner
+
+**Order #256**
+| ItemCode | Product name | Quantity | Price | Line total
+|--|--|--|--|--|
+| K2-1 | Small dinner | -1 | 400 | -400|
+| K2-2 | Large dinner | 1 | 600 | 600|
+|  | **Order total** |  |  | 200
+
 
 ```text
-Order #256
-------------------------
-K2  Item-B  × -1  Kr2000
-K4  Item-D  × 1    Kr500
-------------------------
-Total:          Kr -1500
-
-Products
+Ordered products are now
 ----------------------
-1 × A
-3 × C
-1 x D
+1 × K1
+1 x K2-2
+2 × K3
 ```
