@@ -84,9 +84,9 @@ namespace losol.EventManagement.Pages.Admin.Events
                     Products = x.Orders.Where(o => o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Refunded)
                         .SelectMany(o => o.OrderLines)
                         .Where(l => l.Product != null && l.ProductVariant != null) // required because these are null for some old invalid data
-                        .Select(l => ValueTuple.Create(l.Product, l.ProductVariant, l.Quantity, l.IsRefund))
-                        .GroupBy(l => new { l.Item1, l.Item2 })
-                        .Select(g => ValueTuple.Create(g.Key.Item1, g.Key.Item2, g.Sum(t => t.Item3 * (t.Item4 ? -1 : 1))))
+                        .Select(l => new { productId = l.Product, variantId = l.ProductVariant, quantity = l.Quantity })
+                        .GroupBy(l => new { l.productId, l.variantId })
+                        .Select(g => ValueTuple.Create(g.Key.productId, g.Key.variantId, g.Sum(t => t.quantity)))
                         .Where(p => p.Item3 > 0)
                         .ToList(),
                     HasCertificate = x.HasCertificate,
