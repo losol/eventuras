@@ -10,6 +10,10 @@
         <div>
             <h1 class="display-4">Meldinger @Model.EventInfo.Title</h1>
             <p class="lead">Send beskjed til alle!</p>
+            @Model.StatusMessage
+            @if (Model.StatusMessage != null ) {
+                <p>@Model.StatusMessage</p>
+            }
         </div>
     </div>
 </div>
@@ -25,30 +29,30 @@
     </ul>
     <div class="tab-content" id="pills-tabContent">
         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-            <form class="py-3">
+            <form method="post" class="py-3">
                 <div class="form-group">
-                    <label for="emailtitle">Tittel</label>
-                    <input type="email" class="form-control" asp-for="Input.EmailSubject" aria-describedby="emailHelp" placeholder="Tittel for eposten">
+                    <label asp-for="Input.EmailSubject">Tittel</label>
+                    <input asp-for="Input.EmailSubject" class="form-control" aria-describedby="emailHelp" placeholder="Tittel for eposten">
                 </div>
                 <div class="form-group">
-                    <label for="exampleInputPassword1">Innhold</label>
+                    <label asp-for="Input.EmailContent">Innhold</label>
                     <textarea asp-for="Input.EmailContent" class="form-control" name="content" ></textarea>
                 </div>
     
-                <button type="submit" class="btn btn-lg btn-success">Send e-post til alle!</button>
+                <button asp-handler="SendEmail" type="submit" class="btn btn-lg btn-success">Send e-post til alle!</button>
             </form>
             
 
         </div>
         <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-            <form class="py-3">
+            <form method="post" class="py-3">
                 <div class="form-group">
-                    <label for="exampleInputPassword1">Innhold</label>
-                    <small id="emailHelp" class="form-text text-muted">Gi gjerne en mottaker om hvilket arrangement det gjelder!</small>
+                    <label asp-for="Input.SmsContent">Innhold</label>
+                    <small id="emailHelp" class="form-text text-muted py-1">Gi gjerne en mottaker om hvilket arrangement det gjelder!</small>
                     <textarea asp-for="Input.SmsContent" class="form-control" name="content" id="smseditor" class="w-50" rows="4"></textarea>
                 </div>
     
-                <button type="submit" class="btn btn-lg btn-success">Send SMS til alle!</button>
+                <button asp-handler="SendSms" type="submit" class="btn btn-lg btn-success">Send SMS til alle!</button>
             </form>
         </div>
     </div>
