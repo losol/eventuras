@@ -88,9 +88,9 @@ Consider if we want to refund order #255 from above.  The refund order will be a
 
 | ItemCode | Product name | Quantity | Price | Line total
 |--|--|--|--|--|
-| K1 | Conference ticket (3 days) | -1 | 1000 | -1000|
-| K2-1 | Small dinner | -1 | 400 | -400
-| K3 | Daily rate | -2 | 200 | -400
+| K1 | Refund of Conference ticket (3 days) | -1 | 1000 | -1000|
+| K2-1 | Refund of Small dinner | -1 | 400 | -400
+| K3 | Refund of Daily rate | -2 | 200 | -400
 |  | **Order total** |  |  | -1800
 
 ```
@@ -129,7 +129,7 @@ Ordered products are now
 
 | ItemCode | Product name | Quantity | Price | Line total
 |--|--|--|--|--|
-| K2-1 | Refund for "Dinner" | -1 | 400 | -400|
+| K2-1 | Refund of Dinner | -1 | 400 | -400|
 |  | **Order total** |  |  | -400
 
 
@@ -159,6 +159,8 @@ Products
 
 #### Case 4: Decreasing the quantity of an item from Order #255.
 
+Although K3 daily rate has a mandatory count of 2, the admin should be able to reduce this to 1.
+
 **Order #256**
 
 | ItemCode | Product name | Quantity | Price | Line total
@@ -183,7 +185,7 @@ The user has ordered dinner (K2-1), but now wants sightseeing (K4) instead
 
 | ItemCode | Product name | Quantity | Price | Line total |
 |--|--|--|--|--|
-| K2-1 | Small dinner | -1 | 400 | -400 |
+| K2-1 | Refund of Small dinner | -1 | 400 | -400 |
 | K4 | Sightseeing | 1 | 800 | 800 |
 |  | **Order total** |  |  | 400 |
 
@@ -205,7 +207,7 @@ The user has ordered small dinner, but wants large dinner
 
 | ItemCode | Product name | Quantity | Price | Line total |
 |--|--|--|--|--|
-| K2-1 | Small dinner | -1 | 400 | -400 |
+| K2-1 | Refund of Small dinner | -1 | 400 | -400 |
 | K2-2 | Large dinner | 1 | 600 | 600 |
 |  | **Order total** |  |  | 200 |
 
