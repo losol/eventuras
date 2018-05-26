@@ -139,7 +139,7 @@ namespace losol.EventManagement.Domain
 			this.AddLog();
 		}
 
-        public Order GetRefundOrder()
+        public Order CreateRefundOrder()
         {
             if(Status != OrderStatus.Invoiced)
             {

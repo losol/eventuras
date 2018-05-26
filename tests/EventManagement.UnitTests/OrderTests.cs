@@ -59,13 +59,13 @@ namespace losol.EventManagement.UnitTests
 			}
 		}
 
-        public class GetRefundOrder_Should
+        public class CreateRefundOrder_Should
         {
             [Fact]
             public void ThrowExceptionIfNotInvoiced()
             {
                 Order order = new Order();
-                Assert.Throws<InvalidOperationException>(() => order.GetRefundOrder());
+                Assert.Throws<InvalidOperationException>(() => order.CreateRefundOrder());
             }
 
             [Fact]
@@ -77,7 +77,7 @@ namespace losol.EventManagement.UnitTests
                     new OrderLine { ProductId = 1, Quantity = 1, Price = 10 },
                     new OrderLine { ProductId = 2, Quantity = 1, Price = 10 }
                 };
-                var refund = order.GetRefundOrder();
+                var refund = order.CreateRefundOrder();
                 Assert.Equal(-order.TotalAmount, refund.TotalAmount);
             }
         }
