@@ -85,7 +85,7 @@ namespace losol.EventManagement.Pages.Admin.Events
             }
             
             await _messageLogService.AddAsync (id, recipients, Input.EmailContent, "Email", "SendGrid", result);
-            StatusMessage = "Sendte epost";
+            StatusMessage = result;
             EventInfo = await _eventinfos.GetAsync(id);
             return RedirectToPage();
         }
@@ -94,6 +94,8 @@ namespace losol.EventManagement.Pages.Admin.Events
             {
                 return Page();
             }
+
+            // Do the SMS sending here. 
 
             StatusMessage = "Sendte SMS";
             EventInfo = await _eventinfos.GetAsync(id);

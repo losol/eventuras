@@ -39,7 +39,7 @@
                     <textarea asp-for="Input.EmailContent" class="form-control" name="content" ></textarea>
                 </div>
     
-                <button asp-handler="SendEmail" type="submit" class="btn btn-lg btn-success">Send e-post til alle!</button>
+                <button asp-page-handler="SendEmail" type="submit" class="btn btn-lg btn-success">Send e-post til alle!</button>
             </form>
             
 
@@ -52,7 +52,7 @@
                     <textarea asp-for="Input.SmsContent" class="form-control" name="content" id="smseditor" class="w-50" rows="4"></textarea>
                 </div>
     
-                <button asp-handler="SendSms" type="submit" class="btn btn-lg btn-success">Send SMS til alle!</button>
+                <button asp-page-handler="SendSms" type="submit" class="btn btn-lg btn-success">Send SMS til alle!</button>
             </form>
         </div>
     </div>
