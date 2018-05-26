@@ -1,0 +1,33 @@
+using losol.EventManagement.Domain;
+using Xunit;
+using static losol.EventManagement.Domain.Registration;
+
+namespace losol.EventManagement.UnitTests.RegistrationTests
+{
+    public class Register_Attendance_Should
+    {
+        [Fact]
+        public void Succeed_When_Not_Attended()
+        {
+            Registration registration = new Registration();
+            var expected = RegistrationStatus.Attended;
+
+            registration.MarkAsAttended();
+            var actual = registration.Status;
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void Succeed_When_Already_Attended()
+        {
+            Registration registration = new Registration { Status = RegistrationStatus.Attended };
+            var expected = RegistrationStatus.Attended;
+
+            registration.MarkAsAttended();
+            var actual = registration.Status;
+
+            Assert.Equal(expected, actual);
+        }
+    }
+}
