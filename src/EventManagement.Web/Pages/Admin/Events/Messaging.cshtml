@@ -5,6 +5,10 @@
     ViewData["Title"] = "Meldinger – " + @Model.EventInfo.Title;
 }
 
+<div class="bg-info text-light py-1 px-3">
+    &lt; <a asp-page="./Details" asp-route-id="@Model.EventInfo.EventInfoId" class="text-light link-decoration-none">Vis arrangement</a>
+</div>
+
 <div class="jumbotron jumbotron-fluid">
     <div class="container"> 
         <div>

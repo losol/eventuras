@@ -71,16 +71,9 @@
                 <a asp-page="Edit" asp-route-id="@Model.EventInfo.EventInfoId" class="btn btn-warning link-decoration-none">Rediger</a>
   
                 <!-- COMMUNICATE MENU -->
-                <div class="btn-group">
-                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Send info til alle
-                </button>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item link-decoration-none" href="#" onclick="sendAll(); return false;" role="button">Epost</a>
-                    <a class="dropdown-item link-decoration-none" href="#" onclick="smsAll();return false;" role="button">Tekstmelding</a>
-                    <a asp-page="Messaging" asp-route-id="@Model.EventInfo.EventInfoId" class="dropdown-item link-decoration-none">Meldingslogg</a>
-                </div>
-                </div>
+                <a asp-page="./Messaging" asp-route-id="@Model.EventInfo.EventInfoId" class="btn btn-info link-decoration-none">
+                    Kommuniser
+                </a>
 
                 @Html.Partial("Partials/_EmailModal")
                 @Html.Partial("Partials/_SmsModal")
