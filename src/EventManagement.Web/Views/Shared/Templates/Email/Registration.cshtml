@@ -41,7 +41,7 @@
                             <p><i>Virker ikke knappen? Da kan du bekrefte med &aring; kopiere inn denne lenken i nettleseren: @Model.VerificationUrl</i></p>
                         }
                         
-                        <p>@Model.Message</p>
+                        @Html.Raw(Model.Message)
 
                         <p>Du f&aring;r denne eposten fordi du er p&aring;meldt @Model.EventInfo.Title. Oppdatert program finner du p&aring; <a href="@Model.EventUrl">p&aring; nettsidene</a>.</p>
                         @if(Model.HasOrder){
