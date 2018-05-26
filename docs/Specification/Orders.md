@@ -138,7 +138,7 @@ The user has ordered Product B, but now wants product D instead
 ```text
 Order #256
 ------------------------
-K2  Item-C  × -1  Kr2000
+K2  Item-B  × -1  Kr2000
 K4  Item-D  × 1    Kr500
 ------------------------
 Total:          Kr -1500
