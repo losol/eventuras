@@ -1,6 +1,6 @@
 # Orders
 
-To keep track of ordered events, as well as products. When a website visitor registers for an event, an order is created - even if the event is free. The order should also contain products selected - free or paid. 
+To keep track of ordered events, as well as products. When a website visitor registers for an event, an order is created - even if the event is free. The order should also contain products selected - free or paid. **UPDATE: No Orders for free registrations.**
 
 The orders keeps track of the person or organisation paying, and has a reference to the event. Each order may contain multiple order lines.
 
@@ -18,5 +18,116 @@ After implementing orders, we should change from verification of registration to
 1. When the admin manually or by extension invoices the event, the OrderStatus changes to Invoiced. 
 1. If the admin manually wants to, he could change status to paid, after receiving payment. 
 
-Business rules to be implemented (later):
-* If paymentmethod is EHF, it should be a VatNumber
+**TODO: Update the flow to account for the different providers.**
+
+~~~Business rules to be implemented (later):~~   
+~~* If paymentmethod is EHF, it should be a VatNumber~~
+
+
+## Refunding an invoiced order
+
+Invoiced orders are refunded by issuing a new invoice that cancels all the items in the negative
+
+Consider the following order:
+
+```text
+Order #255
+----------------------
+K1  Item-A  ×1  Kr1000
+K2  Item-B  ×1  Kr2000
+K3  Item-C  ×5   Kr500
+----------------------
+Total:          Kr5500
+
+Products
+----------------------
+1 × A
+1 × B
+5 × C
+```
+
+The refund order will be as follows:
+```text
+Order #256
+------------------------
+R1  Item-A  ×1  (Kr1000)
+R2  Item-B  ×1  (Kr2000)
+R3  Item-C  ×5   (Kr500)
+------------------------
+Total:          (Kr5500)
+
+Products
+----------------------
+NIL
+```
+
+## Changes to invoiced orders
+
+Changes to invoiced orders are handled by issuing a new order that includes the items to be added and refunds the items to be removed.
+
+Combinations of the following cases can make any change to an invoiced order possible.
+
+Case 1: Adding an item to Order #255.
+
+```text
+Order #256
+----------------------
+K4  Item-D  ×1  Kr1000
+----------------------
+Total:          Kr1000
+
+Products
+----------------------
+1 × A
+1 × B
+5 × C
+1 × D
+```
+
+Case 2: Removing an item from Order #255.
+
+```text
+Order #256
+------------------------
+R3  Item-C  ×5   (Kr500)
+------------------------
+Total:          (Kr2500)
+
+Products
+----------------------
+1 × A
+1 × B
+```
+
+Case 3: Increasing the quantity of an item from Order #255.
+
+```text
+Order #256
+----------------------
+K1  Item-A  ×1  Kr1000
+----------------------
+Total:          Kr1000
+
+Products
+----------------------
+2 × A
+1 × B
+5 × C
+```
+
+Case 4: Decreasing the quantity of an item from Order #255.
+
+```text
+Order #256
+------------------------
+RC  Item-C  ×2   (Kr500)
+------------------------
+Total:          (Kr1000)
+
+Products
+----------------------
+1 × A
+1 × B
+3 × C
+```
+
