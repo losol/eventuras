@@ -11,7 +11,7 @@ For both the participant and the admin, it is important to have an overview of w
 ## Sample products and order
 The user `John Doe` registers for `The great conference`.  This conference has the following products:
  - Ticket (K1) - price 1000, mandatory
- - Dinner (K2) 
+ - Dinner (K2), is a product which has 2 product variants.
 	 - Small dinner (K2-1) - price 400
 	 - Large dinner (K2-2) - price 600
  - Daily rate (K3)  - price 200, a mandatory quantity of 2
