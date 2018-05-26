@@ -35,6 +35,7 @@ namespace losol.EventManagement.Web.Controllers.Api {
         [HttpPost ("email/participants-at-event/{id}")]
         public async Task<IActionResult> EmailAll ([FromRoute] int eventInfoId, [FromBody] EmailContent content) {
             if (!ModelState.IsValid) return BadRequest ();
+            
             var recipients = "";
             var errors = "";
             var registrations = await _registrationService.GetRegistrations (eventInfoId);
@@ -86,12 +87,11 @@ namespace losol.EventManagement.Web.Controllers.Api {
 
             var result = "";
             if (errors == "") {
-                result = "Alle SMS sendt!";
+                result = "Epost sendt!";
             } else {
-                result = "Sendte SMS. Men fikk noen feil: " + Environment.NewLine + errors;
+                result = "Sendte epost. Men fikk noen feil: " + Environment.NewLine + errors;
             }
             
-          
             return Ok (result.Replace (Environment.NewLine, "<br />"));
         }
 
