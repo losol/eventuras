@@ -1,3 +1,4 @@
+using System;
 using losol.EventManagement.Domain;
 using Xunit;
 
@@ -23,6 +24,21 @@ namespace losol.EventManagement.UnitTests
                 Assert.Equal(line.Price, refund.Price);
                 Assert.Equal(-line.Quantity, refund.Quantity);
                 Assert.Equal(-line.TotalAmount, refund.TotalAmount);
+            }
+
+            [Fact]
+            public void ThrowExceptionIfRefundOrderLine()
+            {
+                var line = new OrderLine
+                {
+                    ProductId = 1,
+                    ProductVariantId = 1,
+                    OrderId = 1,
+                    Price = 100,
+                    Quantity = 1
+                };
+                var refundLine = line.CreateRefundOrderLine();
+                Assert.Throws<InvalidOperationException>(() => refundLine.CreateRefundOrderLine());
             }
         }
     }

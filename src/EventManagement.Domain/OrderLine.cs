@@ -58,6 +58,10 @@ namespace losol.EventManagement.Domain
 
 		public OrderLine CreateRefundOrderLine()
 		{
+            if(IsRefund)
+            {
+                throw new InvalidOperationException("Cannot create a refund orderline for a refund orderline.");
+            }
 			return new OrderLine
 			{
                 OrderId = OrderId,
