@@ -50,9 +50,9 @@ The refund order will be as follows:
 ```text
 Order #256
 ------------------------
-R1  Item-A  ×1  (Kr1000)
-R2  Item-B  ×1  (Kr2000)
-R3  Item-C  ×5   (Kr500)
+R1  Item-A  (×1)  Kr1000
+R2  Item-B  (×1)  Kr2000
+R3  Item-C  (×5)   Kr500
 ------------------------
 Total:          (Kr5500)
 
@@ -89,7 +89,7 @@ Case 2: Removing an item from Order #255.
 ```text
 Order #256
 ------------------------
-R3  Item-C  ×5   (Kr500)
+R3  Item-C  (×5)   Kr500
 ------------------------
 Total:          (Kr2500)
 
@@ -120,7 +120,7 @@ Case 4: Decreasing the quantity of an item from Order #255.
 ```text
 Order #256
 ------------------------
-RC  Item-C  ×2   (Kr500)
+RC  Item-C  (×2)   Kr500
 ------------------------
 Total:          (Kr1000)
 
