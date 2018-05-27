@@ -148,7 +148,7 @@ namespace losol.EventManagement.Domain
                 );
             }
 
-            // Create order.
+            // Create the order ...
             var order = new Order
             {
                 UserId = UserId,
@@ -161,17 +161,10 @@ namespace losol.EventManagement.Domain
                 PaymentMethod = PaymentMethod,
                 RegistrationId = RegistrationId
             };
-
-            if (orders != null)
-            {
-                order.OrderLines = _createOrderLines(orders, refundlines);
-            }
-            if (refundlines != null)
-            {
-                order.OrderLines.AddRange(refundlines);
-            }
-
+            order.OrderLines = _createOrderLines(orders, refundlines);
             order.AddLog();
+
+            // ... and add it to the current registration
             this.Orders = this.Orders ?? new List<Order>();
             this.Orders.Add(order);
         }
@@ -198,7 +191,7 @@ namespace losol.EventManagement.Domain
             if (conflictingProductIds.Any())
             {
                 var linesToRefund = Orders.SelectMany(o => o.OrderLines)
-                                        .Where(l => l.ProductId.HasValue && conflictingProductIds.Contains(l.ProductId.Value));
+                                        .Where(l => l.ProductId.HasValue && !l.IsRefund && conflictingProductIds.Contains(l.ProductId.Value));
 
                 // Refund the orders, and create refundlines for each of them
                 foreach (var l in linesToRefund)
@@ -228,7 +221,24 @@ namespace losol.EventManagement.Domain
             IEnumerable<OrderLine> refundlines = null)
         {
             refundlines = refundlines ?? new List<OrderLine>();
-            var orderLines = orders.Where(o => o.Quantity != 0).Select(p =>
+            var orderLines = orders.ToOrderLines();
+            orderLines.Concat(refundlines);
+            return orderLines.ToList();
+        }
+    }
+
+    public class OrderDTO
+    {
+        public Product Product { get; set; }
+        public ProductVariant Variant { get; set; }
+        public int Quantity { get; set; } = 1; // FIXME: Should default to Product.MinimumQuantity
+    }
+
+    public static class OrderDTOExtensions
+    {
+        public static List<OrderLine> ToOrderLines(this IEnumerable<OrderDTO> orders)
+        {
+            return orders.Where(o => o.Quantity != 0).Select(p =>
                 new OrderLine
                 {
                     ProductId = p.Product.ProductId,
@@ -245,16 +255,7 @@ namespace losol.EventManagement.Domain
 
                     // Comments
                 }
-            );
-            orderLines.Concat(refundlines);
-            return orderLines.ToList();
+            ).ToList();
         }
-    }
-
-    public class OrderDTO
-    {
-        public Product Product { get; set; }
-        public ProductVariant Variant { get; set; }
-        public int Quantity { get; set; } = 1; // FIXME: Should default to Product.MinimumQuantity
     }
 }
