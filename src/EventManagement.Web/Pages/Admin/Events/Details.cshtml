@@ -471,6 +471,8 @@
                 toastr.fail('Noe gikk galt. Sorry!');
             })
     })
+
+
     // TODO: Remove this?
     function sendAll() {
         const data = $table.bootstrapTable('getData', {useCurrentPage: false});
@@ -482,6 +484,7 @@
         showOrderCheckbox();
     }
 
+    // TODO: Remove?
     function smsAll() {
         const data = $table.bootstrapTable('getData', {useCurrentPage: false});
         recipients = data.map(function(x){ return x.phone });
@@ -489,6 +492,7 @@
         $('#sms-modal').modal('show');
     }
 
+    // TODO: Remove?
     function sendSms() {
         const text = $('#sms-text').val();
         const sms = {
