@@ -5,19 +5,141 @@
     ViewData["Title"] = "Meldinger – " + @Model.EventInfo.Title;
 }
 
+<div class="bg-info text-light py-1 px-3">
+    &lt; <a asp-page="./Details" asp-route-id="@Model.EventInfo.EventInfoId" class="text-light link-decoration-none">Vis arrangement</a>
+</div>
+
 <div class="jumbotron jumbotron-fluid">
     <div class="container"> 
         <div>
             <h1 class="display-4">Meldinger @Model.EventInfo.Title</h1>
-            <p class="lead pb-5">Beskjeder sendt ut. Pr nå bare sms...</p>
+            <p class="lead">Send info til alle!</p>
+            <a asp-page="./MessagingLog" asp-route-id="@Model.EventInfo.EventInfoId" class="btn btn-info link-decoration-none">Meldingslogg</a>
         </div>
     </div>
 </div>
-<div class="container">
-    @foreach (var message in Model.Messages) {
-        <h3>@message.MessageType &nbsp;&nbsp;<i class="fa fa-clock-o" aria-hidden="true"></i> @message.TimeStamp</h3>
-        <p>Til: @message.Recipients.ToString()</p>
-        <p>Innhold: @message.MessageContent</p>
-        <p>Resultat: @message.Result</p>
-    }
+<div class="container min-height-66">
+
+    <div id="messages my-3"></div>
+
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Epost</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">SMS</a>
+    </li>
+    </ul>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+            <div class="py-3" id="emailform">
+                <div class="form-group">
+                    <label for="email-subject">Emnefelt</label>
+                    <input id="email-subject" class="form-control" aria-describedby="emailHelp" placeholder="Emne for eposten">
+                </div>
+                <div class="form-group">
+                    <label for="email-content">Innhold</label>
+                    <textarea id="email-content" class="form-control" ></textarea>
+                </div>
+    
+                <button id="send-emails-button" type="submit" class="btn btn-lg btn-success" onclick="sendEmail()">Send e-post til alle!</button>
+            </div>
+        
+        </div>
+        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+            <form method="post" class="py-3" id="smsform">
+                <div class="form-group">
+                    <label for="sms-content">Innhold</label>
+                    <small id="smsHelp" class="form-text text-muted py-1">Gi gjerne mottaker et hint om hvilket arrangement det gjelder!</small>
+                    <textarea id="sms-content" class="form-control w-50" name="content" rows="4"></textarea>
+                </div>
+    
+                <button id="send-sms-button" type="submit" class="btn btn-lg btn-success" onclick="sendSms()">Send SMS til alle!</button>
+            </form>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+     <script>
+        function sendEmail() {
+            toastr.info("Vær tålmodig, det kan ta litt tid.");
+            
+            // Disable button and add spinner
+            document.querySelector( '#send-emails-button' ).disabled=true; 
+            document.querySelector( '#send-emails-button' ).innerHTML='<i class="fa fa-spinner fa-spin"></i> Sender...';
+
+            const subject = $('#email-subject').val();
+            const content = emailEditor.getData();
+            const email = {
+                subject: subject,
+                content: content
+            }
+
+            $.postJSON('/api/v0/messaging/email/participants-at-event/' + @Model.EventInfo.EventInfoId, email)
+                .done(function(response){
+                    toastr.success(response, 'Epost sendt', {timeOut: 60000});
+
+                    document.querySelector('#email-subject').value = '';
+                    emailEditor.setData( '' );
+                    document.querySelector( '#send-emails-button' ).disabled=false; 
+                    document.querySelector( '#send-emails-button' ).innerHTML='Send epost';
+                })
+                .fail(function(){
+                    toastr.remove();
+                    toastr.error('Nåkka gikk galt.. Sorry!');
+
+                    document.querySelector( '#send-emails-button' ).disabled=false; 
+                    document.querySelector( '#send-emails-button' ).innerHTML='Send epost';
+                });
+        }
+
+         function sendSms() {
+            toastr.info("Vær tålmodig, det kan ta litt tid.", "Sender SMS", {timeOut: 60000});
+            
+            // Disable button and add spinner
+            document.querySelector( '#send-sms-button' ).disabled=true; 
+            document.querySelector( '#send-sms-button' ).innerHTML='<i class="fa fa-spinner fa-spin"></i> Sender...';
+
+            const content = $('#sms-content').val();
+            const sms = {
+                content: content
+            }
+
+            $.postJSON('/api/v0/messaging/sms/participants-at-event/' + @Model.EventInfo.EventInfoId, sms)
+                .done(function(response){
+                    toastr.remove();
+                    toastr.success(response, 'Sms sendt', {timeOut: 60000});
+
+                    document.querySelector( '#sms-content' ).value = '';
+                    document.querySelector( '#send-sms-button' ).disabled=false; 
+                    document.querySelector( '#send-sms-button' ).innerHTML='Send SMS';
+                })
+                .fail(function(){
+                    toastr.remove();
+                    toastr.error('Nåkka gikk galt.. Sorry!');
+
+                    document.querySelector( '#send-sms-button' ).disabled=false; 
+                    document.querySelector( '#send-sms-button' ).innerHTML='Send SMS';
+                });
+        }
+    </script>
+
+
+    <script src="https://cdn.ckeditor.com/ckeditor5/10.0.1/classic/ckeditor.js"></script>
+    <script>
+    var emailEditor;
+    ClassicEditor
+        .create( document.querySelector( '#email-content' ) , {
+            toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList' ]
+        } )
+        .then( editor => {
+            console.log( 'Editor was initialized', editor );
+            emailEditor = editor;
+        } )
+        .catch( error => {
+            console.error( error );
+        } );
+    </script>
+
+}

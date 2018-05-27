@@ -8,29 +8,27 @@ using Microsoft.EntityFrameworkCore;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services;
-using System.ComponentModel.DataAnnotations;
-using losol.EventManagement.Web.Services;
 
 namespace losol.EventManagement.Pages.Admin.Events
 {
-    public class MessagingModel : PageModel
+    public class MessagingLogModel : PageModel
     {
+        private readonly IMessageLogService  _messageLogService;
         private readonly IEventInfoService _eventinfos;
 
-        public MessagingModel(
-            IEventInfoService eventinfos)
+        public MessagingLogModel(IMessageLogService messageLogService, IEventInfoService eventinfos)
         {
+            _messageLogService = messageLogService;
             _eventinfos = eventinfos;
         }
 
+        public IList<MessageLog> Messages { get;set; }
         public EventInfo EventInfo {get;set;}
 
-        public async Task<IActionResult> OnGetAsync(int id)
+        public async Task OnGetAsync(int id)
         {
+            Messages = await _messageLogService.Get(id);
             EventInfo = await _eventinfos.GetAsync(id);
-            return Page();
         }
-
     }
 }
-

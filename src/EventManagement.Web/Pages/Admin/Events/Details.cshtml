@@ -71,16 +71,9 @@
                 <a asp-page="Edit" asp-route-id="@Model.EventInfo.EventInfoId" class="btn btn-warning link-decoration-none">Rediger</a>
   
                 <!-- COMMUNICATE MENU -->
-                <div class="btn-group">
-                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Send info til alle
-                </button>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item link-decoration-none" href="#" onclick="sendAll(); return false;" role="button">Epost</a>
-                    <a class="dropdown-item link-decoration-none" href="#" onclick="smsAll();return false;" role="button">Tekstmelding</a>
-                    <a asp-page="Messaging" asp-route-id="@Model.EventInfo.EventInfoId" class="dropdown-item link-decoration-none">Meldingslogg</a>
-                </div>
-                </div>
+                <a asp-page="./Messaging" asp-route-id="@Model.EventInfo.EventInfoId" class="btn btn-info link-decoration-none">
+                    Kommuniser
+                </a>
 
                 @Html.Partial("Partials/_EmailModal")
                 @Html.Partial("Partials/_SmsModal")
@@ -478,7 +471,9 @@
                 toastr.fail('Noe gikk galt. Sorry!');
             })
     })
-    
+
+
+    // TODO: Remove this?
     function sendAll() {
         const data = $table.bootstrapTable('getData', {useCurrentPage: false});
         recipients = data.map(function(x){ 
@@ -489,6 +484,7 @@
         showOrderCheckbox();
     }
 
+    // TODO: Remove?
     function smsAll() {
         const data = $table.bootstrapTable('getData', {useCurrentPage: false});
         recipients = data.map(function(x){ return x.phone });
@@ -496,6 +492,7 @@
         $('#sms-modal').modal('show');
     }
 
+    // TODO: Remove?
     function sendSms() {
         const text = $('#sms-text').val();
         const sms = {
@@ -513,18 +510,18 @@
         $('#sms-modal').modal('hide');
     }
 
-    function emailCertificatesToAll() {
-        toastr.info("Vær tålmodig, det kan ta litt tid.");
-        $.postJSON('/api/certificates/event/@Model.EventInfo.EventInfoId/email', null)
-        .done(function(){
-            toastr.success('Kursbevisene er på vei!');
-            $('#sendCertificatesModal').modal('hide');
-            $('#participants-table').bootstrapTable('refresh', null);
-        })
-        .fail(function(){
-            toastr.error('Nåkka gikk galt. Sorry.')
-        })
-    }
+        function emailCertificatesToAll() {
+            toastr.info("Vær tålmodig, det kan ta litt tid.");
+            $.postJSON('/api/certificates/event/@Model.EventInfo.EventInfoId/email', null)
+            .done(function(){
+                toastr.success('Kursbevisene er på vei!');
+                $('#sendCertificatesModal').modal('hide');
+                $('#participants-table').bootstrapTable('refresh', null);
+            })
+            .fail(function(){
+                toastr.error('Nåkka gikk galt. Sorry.')
+            })
+        }
 </script>
     @await Html.PartialAsync("_CompBootstrapTable")
 }
