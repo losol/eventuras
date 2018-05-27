@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using static losol.EventManagement.Domain.Order;
@@ -89,6 +90,21 @@ namespace losol.EventManagement.Domain
         public ApplicationUser User { get; set; }
         // public PaymentMethod PaymentMethod { get; set; }
         public List<Order> Orders { get; set; }
+
+        [NotMapped]
+        public List<OrderDTO> Products
+        {
+            get {
+                var validOrders = Orders.Where(o => o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Refunded);
+                var productOrderLines = validOrders.SelectMany(o => o.OrderLines)
+                    .Select(l => new { product = l.Product, variant = l.ProductVariant, quantity = l.Quantity });
+                return productOrderLines
+                    .GroupBy(l => new { l.product, l.variant })
+                    .Select(g => new OrderDTO { Product = g.Key.product, Variant = g.Key.variant, Quantity = g.Sum(t => t.quantity ) })
+                    .Where(p => p.Quantity > 0)
+                    .ToList();
+            }
+        }
 
         public void Verify()
         {
