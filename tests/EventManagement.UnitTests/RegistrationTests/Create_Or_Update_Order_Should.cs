@@ -209,5 +209,73 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             Assert.Equal(-500m, last.TotalAmount);
             Assert.Single(last.OrderLines); // only the refund orderline should exist
         }
+
+        [Fact]
+        public void Create_New_Order_When_New_Product_Is_Added()
+        {
+            // Arrange
+            var registration = new Registration
+            {
+                Orders = new List<Order>
+                {
+                    new Order
+                    {
+                        OrderId = 255,
+                        OrderLines = new List<OrderLine>
+                        {
+                            new OrderLine
+                            {
+                                ProductId = 1,
+                                ProductName = "Conference ticket (3 days)",
+                                Quantity = 1,
+                                Price = 1000
+                            },
+                            new OrderLine
+                            {
+                                ProductId = 2,
+                                ProductVariantId = 1,
+                                ProductName = "Small Dinner",
+                                Quantity = 1,
+                                Price = 400
+                            },
+                            new OrderLine
+                            {
+                                ProductId = 3,
+                                ProductName = "Daily rate",
+                                Quantity = 2,
+                                Price = 200
+                            },
+                        }
+                    }
+                }
+            };
+            registration.Orders.ForEach(o =>
+                {
+                    o.MarkAsVerified();
+                    o.MarkAsInvoiced();
+                }
+            );
+
+            var ordersToAdd = new List<OrderDTO>
+            {
+                new OrderDTO
+                {
+                    Product = new Product
+                    {
+                        ProductId = 4,
+                        Name = "Sightseeing",
+                        Price = 800
+                    },
+                    Quantity = 1
+                }
+            };
+
+            // Act
+            registration.CreateOrUpdateOrder(ordersToAdd);
+
+            // Assert
+            // TODO: The assert statement must check for the final products as well
+            Assert.Equal(2600, registration.Orders.Sum(o => o.TotalAmount));
+        }
     }
 }
