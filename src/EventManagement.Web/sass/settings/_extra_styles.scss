@@ -44,6 +44,31 @@ h2 {
     word-break: break-word;
 }
 
+h1.section {
+    font-size:1.5rem;
+    text-transform: uppercase;
+    overflow: hidden;
+    text-align: center;
+   }
+   h1.section:before,
+   h1.section:after {
+    background-color: #333;
+    content: "";
+    display: inline-block;
+    height: 1px;
+    position: relative;
+    vertical-align: middle;
+    width: 50%;
+   }
+   h1.section:before {
+    right: 0.5em;
+    margin-left: -50%;
+   }
+   h1.section:after {
+    left: 0.5em;
+    margin-right: -50%;
+   }
+
 
 /* 2. Main parts of site */
 
