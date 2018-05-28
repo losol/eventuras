@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -194,27 +194,36 @@ namespace losol.EventManagement.Domain
         public void CreateOrUpdateOrder(ICollection<OrderDTO> orders)
         {
             // Get the existing productids
-            var existingProductIds = Orders.Where(o => o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Refunded)
-                                        .SelectMany(o => o.OrderLines
-                                            .Where(l => l.ProductId.HasValue))
-                                        .Select(l => l.ProductId.Value);
+            var products = Products;
 
-            // Check if an orderline needs to be updated
-            var conflictingProductIds = existingProductIds.Intersect(orders.Select(p => p.Product.ProductId));
-
-            // If a refund is required
+            var refundDtos = new List<OrderDTO>();
             var refundLines = new List<OrderLine>();
-            if (conflictingProductIds.Any())
+            foreach(var order in orders)
             {
-                var linesToRefund = Orders.SelectMany(o => o.OrderLines)
-                                        .Where(l => l.ProductId.HasValue && !l.IsRefund && conflictingProductIds.Contains(l.ProductId.Value));
-
-                // Refund the orders, and create refundlines for each of them
-                foreach (var l in linesToRefund)
+                foreach(var p in products)
                 {
-                    refundLines.Add(l.CreateRefundOrderLine());
+                    if(order.Product.ProductId == p.Product.ProductId)
+                    {
+                        var orderline = new OrderLine
+                        {
+                            // OrderId = OrderId,
+                            ProductName = $"Korreksjon for {p.Product?.Name}",
+                            Price = order.Product.Price,
+                            Quantity = order.Quantity - p.Quantity,
+                            VatPercent = order.Product.VatPercent,
+                            ProductId = order.Product.ProductId,
+                            ProductVariantId = order.Variant.ProductVariantId,
+                            Product = order.Product,
+                            ProductVariant = order.Variant
+                        };
+                        refundLines.Add(orderline);
+                        refundDtos.Add(order);
+                    }
                 }
             }
+
+            refundDtos.ForEach(dto => orders.Remove(dto));
+            refundDtos = null;
 
             // Check if any editable orders exist
             var editableOrders = Orders.Where(o => o.Status != OrderStatus.Invoiced && o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Refunded);
