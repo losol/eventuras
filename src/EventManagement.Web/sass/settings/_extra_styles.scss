@@ -113,13 +113,17 @@ h1.section {
 
 /* 9.0 TOOLS AND UTILITIES */
 
-
-/* 9.1 Width and height */
-
-.w-33 {
-    width: 33.33%;
+.card-hover-info {
+    outline-color: $gray-200;
+}
+.card-hover-info:hover {
+    outline-style: solid;
+    outline-color: lighten( $info, 50% );
+    outline-width: 5px;
+    transition: outline-color 0.2s ease;
 }
 
+/* 9.1 Width and height */
 
 /* Min heights */
 
