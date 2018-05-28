@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -248,6 +248,15 @@ namespace losol.EventManagement.Domain
         public Product Product { get; set; }
         public ProductVariant Variant { get; set; }
         public int Quantity { get; set; } = 1; // FIXME: Should default to Product.MinimumQuantity
+    }
+
+    /// <summary>
+    /// Compares OrderDTOs using the ProductId & VariantId
+    /// </summary>
+    public class OrderDTOProductAndVariantComparer : IEqualityComparer<OrderDTO>
+    {
+        public bool Equals(OrderDTO x, OrderDTO y) => x.Product.ProductId == y.Product.ProductId && x.Variant?.ProductVariantId == y.Variant?.ProductVariantId;
+        public int GetHashCode(OrderDTO obj) => obj.Product.ProductId;
     }
 
     public static class OrderDTOExtensions

@@ -72,6 +72,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
 
             // Assert
             Assert.Equal(3, products.Count);
+            Assert.Equal(expectedProducts, products, new OrderDTOProductAndVariantComparer());
         }
     }
 }
