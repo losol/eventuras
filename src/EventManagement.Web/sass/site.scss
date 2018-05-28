@@ -8,10 +8,11 @@
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
 
 // Font awesome
- $fa-font-path: "../fonts";
- @import "../node_modules/font-awesome/scss/font-awesome";
+$fa-font-path: "../fonts";
+@import "../node_modules/font-awesome/scss/font-awesome";
 
 // Adding extra styles
+@import "./includes/_colors";
 @import "settings/extra_styles";
 
 @import "../node_modules/toastr/toastr";

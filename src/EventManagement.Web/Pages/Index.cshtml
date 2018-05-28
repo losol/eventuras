@@ -20,13 +20,13 @@
         <p>Nordland Legeforening satser på fag, kvalitet og opplevelser.</p>
     </div>
 </div>
-
 <div class="bg-gray-100 py-3">
     <div class="container" id="ondemand">
+        <h1 class="section">Nettkurs</h1>
         <div class="row">
         @foreach (var item in onDemandEvents)
             {
-            <div class="col-md-6 p-1">
+            <div class="col-md-4 p-1">
                 <div class="card bg-white border-0 h-100">
                     <div class="card-body">
                     <h3>@item.Title</h3>
@@ -58,6 +58,7 @@
 
 <div class="bg-gray-100">
     <div class="container min-height-50" id="featured">
+        <h1 class="section">Vanlige kurs</h1>
         <div class="row">
         @foreach (var item in featuredEvents)
             {
