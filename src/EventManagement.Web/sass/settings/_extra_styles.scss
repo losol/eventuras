@@ -327,40 +327,6 @@ blockquote p {
     display: inline;
 }
 
-// Background colors
-.bg {
-    &-white {
-        background-color: $white;
-    }
-    &-black {
-        background-color: $black;
-    }
-    &-red {
-        background-color: $red;
-    }
-    &-orange {
-        background-color: $orange;
-    }
-    &-green {
-        background-color: $green;
-    }
-    &-blue {
-        background-color: $blue;
-    }
-    &-teal {
-        background-color: $teal;
-    }
-    &-pink {
-        background-color: $pink;
-    }
-    &-purple {
-        background-color: $purple;
-    }
-    &-gray {
-        background-color: $gray;
-    }
-}
-
 .bg-gray {
     &-100 {
         background-color: #F2F2F2;
@@ -438,38 +404,5 @@ blockquote p {
     }
     &-900 {
         font-weight: 900;
-    }
-}
-
-.text {
-    &-white {
-        color: $white;
-    }
-    &-black {
-        color: $black;
-    }
-    &-red {
-        color: $red;
-    }
-    &-orange {
-        color: $orange;
-    }
-    &-green {
-        color: $green;
-    }
-    &-blue {
-        color: $blue;
-    }
-    &-teal {
-        color: $teal;
-    }
-    &-pink {
-        color: $pink;
-    }
-    &-purple {
-        color: $purple;
-    }
-    &-gray {
-        color: $gray;
     }
 }
