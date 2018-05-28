@@ -91,6 +91,11 @@ h2 {
 
 /* 9.1 Width and height */
 
+.w-33 {
+    width: 33.33%;
+}
+
+
 /* Min heights */
 
 .min-height-25 {
@@ -351,35 +356,38 @@ blockquote p {
     &-purple {
         background-color: $purple;
     }
+    &-gray {
+        background-color: $gray;
+    }
 }
 
 .bg-gray {
     &-100 {
-        background-color: $gray-100;
+        background-color: #F2F2F2;
     }
     &-200 {
-        background-color: $gray-200;
+        background-color: #EDEDED;
     }
     &-300 {
-        background-color: $gray-300;
+        background-color: #E7E7E7;
     }
     &-400 {
-        background-color: $gray-400;
+        background-color: #E1E1E1;
     }
     &-500 {
-        background-color: $gray-500;
+        background-color: #C0C0C0;
     }
     &-600 {
-        background-color: $gray-600;
+        background-color: #424242;
     }
     &-700 {
-        background-color: $gray-700;
+        background-color: #262626;
     }
     &-800 {
-        background-color: $gray-800;
+        background-color: #1A1A1A;
     }
     &-900 {
-        background-color: $gray-900;
+        background-color: #121212;
     }
 }
 
@@ -462,6 +470,6 @@ blockquote p {
         color: $purple;
     }
     &-gray {
-        color: $gray-600;
+        color: $gray;
     }
 }
