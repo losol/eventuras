@@ -30,7 +30,7 @@ namespace losol.EventManagement.Domain
 		public Order RefundOrder { get; private set; }
         public int? RefundOrderLineId { get; private set; }
         public OrderLine RefundOrderLine { get; private set; }
-		public bool IsRefund => RefundOrderLineId.HasValue;
+		public bool IsRefund => Quantity < 0;
 
 		/// <summary>
 		/// A string that uniquely identifies a product-variant combination
