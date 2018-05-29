@@ -278,6 +278,10 @@ namespace losol.EventManagement.Domain
                 {
                     ProductId = p.Product.ProductId,
                     ProductVariantId = p.Variant?.ProductVariantId,
+
+                    Product = p.Product,
+                    ProductVariant = p.Variant,
+
                     Price = p.Variant?.Price ?? p.Product.Price,
                     VatPercent = p.Variant?.VatPercent ?? p.Product.VatPercent,
                     Quantity = Math.Max(p.Quantity, p.Product.MinimumQuantity),
