@@ -165,7 +165,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
         public void Create_New_Order_When_New_Product_Is_Added()
         {
             // Arrange
-            var registration = getTestCaseRegistration();
+            var registration = Helpers.GetTestCaseRegistration();
             var ordersToAdd = new List<OrderDTO>
             {
                 Helpers.GetOrderDto(productId: 4, price: 800, quantity: 1)
@@ -191,7 +191,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
         public void Create_New_Order_When_Product_Is_Removed()
         {
             // Arrange
-            var registration = getTestCaseRegistration();
+            var registration = Helpers.GetTestCaseRegistration();
             var orderitems = new List<OrderDTO>
             {
                 Helpers.GetOrderDto(productId: 2, variantId: 1, price: 400, quantity: 0)
@@ -215,7 +215,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
         public void Create_New_Order_When_Product_Quantity_Is_Increased()
         {
             // Arrange
-            var registration = getTestCaseRegistration();
+            var registration = Helpers.GetTestCaseRegistration();
             var orderitems = new List<OrderDTO>
             {
                 Helpers.GetOrderDto(productId: 3, price: 200, quantity: 3)
@@ -240,7 +240,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
         public void Create_New_Order_When_Product_Quantity_Is_Decreased()
         {
             // Arrange
-            var registration = getTestCaseRegistration();
+            var registration = Helpers.GetTestCaseRegistration();
             var orderitems = new List<OrderDTO>
             {
                 Helpers.GetOrderDto(productId: 3, price: 200, quantity: 1)
@@ -265,7 +265,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
         public void Create_New_Order_When_Product_Is_Replaced()
         {
             // Arrange
-            var registration = getTestCaseRegistration();
+            var registration = Helpers.GetTestCaseRegistration();
             var orderitems = new List<OrderDTO>
             {
                 Helpers.GetOrderDto(productId: 2, variantId: 1, price: 400, quantity: 0),
@@ -286,38 +286,5 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             Assert.Equal(expectedItems, registration.Products, new OrderDTOProductAndVariantComparer());
         }
 
-
-        #region Helper Methods
-        /*
-         * Helper methods
-         */
-
-        private Registration getTestCaseRegistration()
-        {
-            var registration = new Registration
-            {
-                Orders = new List<Order>
-                {
-                    new Order
-                    {
-                        OrderId = 255,
-                        OrderLines = new List<OrderLine>
-                        {
-                            Helpers.GetOrderLine(productId: 1, price: 1000, quantity: 1), // Conference ticket (3 days)
-                            Helpers.GetOrderLine(productId: 2, variantId: 1, price: 400, quantity: 1), // Small Dinner
-                            Helpers.GetOrderLine(productId: 3, price: 200, quantity: 2) // Daily rate
-                        }
-                    }
-                }
-            };
-            registration.Orders.ForEach(o =>
-                {
-                    o.MarkAsVerified();
-                    o.MarkAsInvoiced();
-                }
-            );
-            return registration;
-        }
-        #endregion
     }
 }

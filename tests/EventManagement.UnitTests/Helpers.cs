@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using losol.EventManagement.Domain;
 
 namespace losol.EventManagement.UnitTests
@@ -38,6 +39,33 @@ namespace losol.EventManagement.UnitTests
                 } : null,
                 Quantity = quantity
             };
+        }
+
+        internal static Registration GetTestCaseRegistration()
+        {
+            var registration = new Registration
+            {
+                Orders = new List<Order>
+                {
+                    new Order
+                    {
+                        OrderId = 255,
+                        OrderLines = new List<OrderLine>
+                        {
+                            Helpers.GetOrderLine(productId: 1, price: 1000, quantity: 1), // Conference ticket (3 days)
+                            Helpers.GetOrderLine(productId: 2, variantId: 1, price: 400, quantity: 1), // Small Dinner
+                            Helpers.GetOrderLine(productId: 3, price: 200, quantity: 2) // Daily rate
+                        }
+                    }
+                }
+            };
+            registration.Orders.ForEach(o =>
+                {
+                    o.MarkAsVerified();
+                    o.MarkAsInvoiced();
+                }
+            );
+            return registration;
         }
     }
 }
