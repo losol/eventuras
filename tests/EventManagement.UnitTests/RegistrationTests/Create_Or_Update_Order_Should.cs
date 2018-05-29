@@ -28,10 +28,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             }
             var dto = new List<OrderDTO>
             {
-                new OrderDTO
-                {
-                    Product = new Product { ProductId = 2 }
-                }
+                getOrderDto(productId: 2, price: 100)
             };
 
             // Act
@@ -57,10 +54,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             };
             var dto = new List<OrderDTO>
             {
-                new OrderDTO
-                {
-                    Product = new Product { ProductId = 2 }
-                }
+                getOrderDto(productId: 2, price: 400)
             };
 
             // Act
@@ -88,10 +82,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             registration.Orders.First().MarkAsCancelled();
             var dto = new List<OrderDTO>
             {
-                new OrderDTO
-                {
-                    Product = new Product { ProductId = 1 }
-                }
+                getOrderDto(productId: 1, price: 100)
             };
 
             // Act
@@ -121,11 +112,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
 
             var dto = new List<OrderDTO>
             {
-                new OrderDTO
-                {
-                    Product = new Product { ProductId = 1, Price = 100 },
-                    Variant = new ProductVariant { ProductVariantId = 2, ProductId = 1, Price = 100 }
-                }
+                getOrderDto(productId: 1, price: 100, variantId: 2)
             };
 
             // Act
@@ -156,12 +143,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
 
             var dto = new List<OrderDTO>
             {
-                new OrderDTO
-                {
-                    Product = new Product { ProductId = 1, Price = 100 },
-                    Variant = new ProductVariant { ProductVariantId = 1, ProductId = 1 },
-                    Quantity = 0
-                }
+                getOrderDto(productId: 1, variantId: 1, price: 100, quantity: 0)
             };
 
             // Act
@@ -186,16 +168,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             var registration = getTestCaseRegistration();
             var ordersToAdd = new List<OrderDTO>
             {
-                new OrderDTO
-                {
-                    Product = new Product
-                    {
-                        ProductId = 4,
-                        Name = "Sightseeing",
-                        Price = 800
-                    },
-                    Quantity = 1
-                }
+                getOrderDto(productId: 4, price: 800, quantity: 1)
             };
 
             // Act
@@ -224,6 +197,11 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             Assert.Equal(1400, registration.Orders.Sum(o => o.TotalAmount));
         }
 
+
+        #region Helper Methods
+        /*
+         * Helper methods
+         */
 
         private OrderLine getOrderLine(int productId, decimal price, int quantity = 1, int? variantId = null)
         {
@@ -287,5 +265,6 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             );
             return registration;
         }
+        #endregion
     }
 }
