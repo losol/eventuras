@@ -170,13 +170,20 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             {
                 getOrderDto(productId: 4, price: 800, quantity: 1)
             };
+            var expectedItems = new List<OrderDTO>
+            {
+                getOrderDto(productId: 1, price: 1000, quantity: 1),
+                getOrderDto(productId: 2, variantId: 1, price: 400, quantity: 1),
+                getOrderDto(productId: 3, price: 200, quantity: 2),
+                getOrderDto(productId: 4, price: 800, quantity: 1),
+            };
 
             // Act
             registration.CreateOrUpdateOrder(ordersToAdd);
 
             // Assert
-            // TODO: The assert statement must check for the final products as well
             Assert.Equal(2600, registration.Orders.Sum(o => o.TotalAmount));
+            Assert.Equal(expectedItems, registration.Products, new OrderDTOProductAndVariantComparer());
         }
 
         // Case #2
@@ -189,12 +196,18 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             {
                 getOrderDto(productId: 2, variantId: 1, price: 400, quantity: 0)
             };
+            var expectedItems = new List<OrderDTO>
+            {
+                getOrderDto(productId: 1, price: 1000, quantity: 1),
+                getOrderDto(productId: 3, price: 200, quantity: 2),
+            };
 
             // Act
             registration.CreateOrUpdateOrder(orderitems);
 
             //Assert
             Assert.Equal(1400, registration.Orders.Sum(o => o.TotalAmount));
+            Assert.Equal(expectedItems, registration.Products, new OrderDTOProductAndVariantComparer());
         }
 
         // Case #3
@@ -207,12 +220,19 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             {
                 getOrderDto(productId: 3, price: 200, quantity: 3)
             };
+            var expectedItems = new List<OrderDTO>
+            {
+                getOrderDto(productId: 1, price: 1000, quantity: 1),
+                getOrderDto(productId: 2, variantId: 1, price: 400, quantity: 1),
+                getOrderDto(productId: 3, price: 200, quantity: 3),
+            };
 
             // Act
             registration.CreateOrUpdateOrder(orderitems);
 
             //Assert
             Assert.Equal(2000, registration.Orders.Sum(o => o.TotalAmount));
+            Assert.Equal(expectedItems, registration.Products, new OrderDTOProductAndVariantComparer());
         }
 
         // Case #4
@@ -225,12 +245,19 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             {
                 getOrderDto(productId: 3, price: 200, quantity: 1)
             };
+            var expectedItems = new List<OrderDTO>
+            {
+                getOrderDto(productId: 1, price: 1000, quantity: 1),
+                getOrderDto(productId: 2, variantId: 1, price: 400, quantity: 1),
+                getOrderDto(productId: 3, price: 200, quantity: 1),
+            };
 
             // Act
             registration.CreateOrUpdateOrder(orderitems);
 
             //Assert
             Assert.Equal(1600, registration.Orders.Sum(o => o.TotalAmount));
+            Assert.Equal(expectedItems, registration.Products, new OrderDTOProductAndVariantComparer());
         }
 
         // Case #5
@@ -244,12 +271,19 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
                 getOrderDto(productId: 2, variantId: 1, price: 400, quantity: 0),
                 getOrderDto(productId: 4, price: 800, quantity: 1)
             };
+            var expectedItems = new List<OrderDTO>
+            {
+                getOrderDto(productId: 1, price: 1000, quantity: 1),
+                getOrderDto(productId: 3, price: 200, quantity: 2),
+                getOrderDto(productId: 4, price: 200, quantity: 1)
+            };
 
             // Act
             registration.CreateOrUpdateOrder(orderitems);
 
             //Assert
             Assert.Equal(2200, registration.Orders.Sum(o => o.TotalAmount));
+            Assert.Equal(expectedItems, registration.Products, new OrderDTOProductAndVariantComparer());
         }
 
 
