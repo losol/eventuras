@@ -173,33 +173,17 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             Assert.Single(last.OrderLines); // only the refund orderline should exist
         }
 
+        /*
+         * The test cases below are straight from the spec
+         * https://github.com/losol/EventManagement/blob/master/docs/Specification/Orders.md
+         */
+
+        // Case #1
         [Fact]
         public void Create_New_Order_When_New_Product_Is_Added()
         {
             // Arrange
-            var registration = new Registration
-            {
-                Orders = new List<Order>
-                {
-                    new Order
-                    {
-                        OrderId = 255,
-                        OrderLines = new List<OrderLine>
-                        {
-                            getOrderLine(productId: 1, price: 1000, quantity: 1), // Conference ticket (3 days)
-                            getOrderLine(productId: 2, variantId: 1, price: 400, quantity: 1), // Small Dinner
-                            getOrderLine(productId: 3, price: 200, quantity: 2) // Daily rate
-                        }
-                    }
-                }
-            };
-            registration.Orders.ForEach(o =>
-                {
-                    o.MarkAsVerified();
-                    o.MarkAsInvoiced();
-                }
-            );
-
+            var registration = getTestCaseRegistration();
             var ordersToAdd = new List<OrderDTO>
             {
                 new OrderDTO
@@ -222,6 +206,24 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             Assert.Equal(2600, registration.Orders.Sum(o => o.TotalAmount));
         }
 
+        // Case #2
+        [Fact]
+        public void Create_New_Order_When_Product_Is_Removed()
+        {
+            // Arrange
+            var registration = getTestCaseRegistration();
+            var orderitems = new List<OrderDTO>
+            {
+                getOrderDto(productId: 2, variantId: 1, price: 400, quantity: 0)
+            };
+
+            // Act
+            registration.CreateOrUpdateOrder(orderitems);
+
+            //Assert
+            Assert.Equal(1400, registration.Orders.Sum(o => o.TotalAmount));
+        }
+
 
         private OrderLine getOrderLine(int productId, decimal price, int quantity = 1, int? variantId = null)
         {
@@ -242,6 +244,48 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
                     ProductId = productId
                 } : null
             };
+        }
+
+        private OrderDTO getOrderDto(int productId, decimal price, int quantity = 1, int? variantId = null)
+        {
+            return new OrderDTO
+            {
+                Product = new Product { ProductId = productId, Price = price },
+                Variant = variantId.HasValue ? new ProductVariant
+                {
+                    ProductVariantId = variantId.Value,
+                    ProductId = productId,
+                    Price = price
+                } : null,
+                Quantity = quantity
+            };
+        }
+
+        private Registration getTestCaseRegistration()
+        {
+            var registration = new Registration
+            {
+                Orders = new List<Order>
+                {
+                    new Order
+                    {
+                        OrderId = 255,
+                        OrderLines = new List<OrderLine>
+                        {
+                            getOrderLine(productId: 1, price: 1000, quantity: 1), // Conference ticket (3 days)
+                            getOrderLine(productId: 2, variantId: 1, price: 400, quantity: 1), // Small Dinner
+                            getOrderLine(productId: 3, price: 200, quantity: 2) // Daily rate
+                        }
+                    }
+                }
+            };
+            registration.Orders.ForEach(o =>
+                {
+                    o.MarkAsVerified();
+                    o.MarkAsInvoiced();
+                }
+            );
+            return registration;
         }
     }
 }
