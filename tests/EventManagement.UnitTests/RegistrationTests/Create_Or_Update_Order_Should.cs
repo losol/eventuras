@@ -16,7 +16,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
                 Orders = new List<Order> {
                     new Order {
                         OrderLines = new List<OrderLine> {
-                            getOrderLine(productId: 1, price: 100)
+                            Helpers.GetOrderLine(productId: 1, price: 100)
                         }
                     }
                 }
@@ -28,7 +28,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             }
             var dto = new List<OrderDTO>
             {
-                getOrderDto(productId: 2, price: 100)
+                Helpers.GetOrderDto(productId: 2, price: 100)
             };
 
             // Act
@@ -47,14 +47,14 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
                 Orders = new List<Order> {
                     new Order {
                         OrderLines = new List<OrderLine> {
-                            getOrderLine(productId: 1, price: 100)
+                            Helpers.GetOrderLine(productId: 1, price: 100)
                         }
                     }
                 }
             };
             var dto = new List<OrderDTO>
             {
-                getOrderDto(productId: 2, price: 400)
+                Helpers.GetOrderDto(productId: 2, price: 400)
             };
 
             // Act
@@ -82,7 +82,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             registration.Orders.First().MarkAsCancelled();
             var dto = new List<OrderDTO>
             {
-                getOrderDto(productId: 1, price: 100)
+                Helpers.GetOrderDto(productId: 1, price: 100)
             };
 
             // Act
@@ -101,8 +101,8 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
                 Orders = new List<Order> {
                     new Order {
                         OrderLines = new List<OrderLine> {
-                            getOrderLine(productId: 1, price: 100, quantity: 1, variantId: 1),
-                            getOrderLine(productId: 2, price: 100)
+                            Helpers.GetOrderLine(productId: 1, price: 100, quantity: 1, variantId: 1),
+                            Helpers.GetOrderLine(productId: 2, price: 100)
                         }
                     }
                 }
@@ -112,7 +112,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
 
             var dto = new List<OrderDTO>
             {
-                getOrderDto(productId: 1, price: 100, variantId: 2)
+                Helpers.GetOrderDto(productId: 1, price: 100, variantId: 2)
             };
 
             // Act
@@ -133,7 +133,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
                 Orders = new List<Order> {
                     new Order {
                         OrderLines = new List<OrderLine> {
-                            getOrderLine(productId: 1, price: 100, quantity: 5, variantId: 1)
+                            Helpers.GetOrderLine(productId: 1, price: 100, quantity: 5, variantId: 1)
                         }
                     }
                 }
@@ -143,7 +143,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
 
             var dto = new List<OrderDTO>
             {
-                getOrderDto(productId: 1, variantId: 1, price: 100, quantity: 0)
+                Helpers.GetOrderDto(productId: 1, variantId: 1, price: 100, quantity: 0)
             };
 
             // Act
@@ -168,14 +168,14 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             var registration = getTestCaseRegistration();
             var ordersToAdd = new List<OrderDTO>
             {
-                getOrderDto(productId: 4, price: 800, quantity: 1)
+                Helpers.GetOrderDto(productId: 4, price: 800, quantity: 1)
             };
             var expectedItems = new List<OrderDTO>
             {
-                getOrderDto(productId: 1, price: 1000, quantity: 1),
-                getOrderDto(productId: 2, variantId: 1, price: 400, quantity: 1),
-                getOrderDto(productId: 3, price: 200, quantity: 2),
-                getOrderDto(productId: 4, price: 800, quantity: 1),
+                Helpers.GetOrderDto(productId: 1, price: 1000, quantity: 1),
+                Helpers.GetOrderDto(productId: 2, variantId: 1, price: 400, quantity: 1),
+                Helpers.GetOrderDto(productId: 3, price: 200, quantity: 2),
+                Helpers.GetOrderDto(productId: 4, price: 800, quantity: 1),
             };
 
             // Act
@@ -194,12 +194,12 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             var registration = getTestCaseRegistration();
             var orderitems = new List<OrderDTO>
             {
-                getOrderDto(productId: 2, variantId: 1, price: 400, quantity: 0)
+                Helpers.GetOrderDto(productId: 2, variantId: 1, price: 400, quantity: 0)
             };
             var expectedItems = new List<OrderDTO>
             {
-                getOrderDto(productId: 1, price: 1000, quantity: 1),
-                getOrderDto(productId: 3, price: 200, quantity: 2),
+                Helpers.GetOrderDto(productId: 1, price: 1000, quantity: 1),
+                Helpers.GetOrderDto(productId: 3, price: 200, quantity: 2),
             };
 
             // Act
@@ -218,13 +218,13 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             var registration = getTestCaseRegistration();
             var orderitems = new List<OrderDTO>
             {
-                getOrderDto(productId: 3, price: 200, quantity: 3)
+                Helpers.GetOrderDto(productId: 3, price: 200, quantity: 3)
             };
             var expectedItems = new List<OrderDTO>
             {
-                getOrderDto(productId: 1, price: 1000, quantity: 1),
-                getOrderDto(productId: 2, variantId: 1, price: 400, quantity: 1),
-                getOrderDto(productId: 3, price: 200, quantity: 3),
+                Helpers.GetOrderDto(productId: 1, price: 1000, quantity: 1),
+                Helpers.GetOrderDto(productId: 2, variantId: 1, price: 400, quantity: 1),
+                Helpers.GetOrderDto(productId: 3, price: 200, quantity: 3),
             };
 
             // Act
@@ -243,13 +243,13 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             var registration = getTestCaseRegistration();
             var orderitems = new List<OrderDTO>
             {
-                getOrderDto(productId: 3, price: 200, quantity: 1)
+                Helpers.GetOrderDto(productId: 3, price: 200, quantity: 1)
             };
             var expectedItems = new List<OrderDTO>
             {
-                getOrderDto(productId: 1, price: 1000, quantity: 1),
-                getOrderDto(productId: 2, variantId: 1, price: 400, quantity: 1),
-                getOrderDto(productId: 3, price: 200, quantity: 1),
+                Helpers.GetOrderDto(productId: 1, price: 1000, quantity: 1),
+                Helpers.GetOrderDto(productId: 2, variantId: 1, price: 400, quantity: 1),
+                Helpers.GetOrderDto(productId: 3, price: 200, quantity: 1),
             };
 
             // Act
@@ -268,14 +268,14 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             var registration = getTestCaseRegistration();
             var orderitems = new List<OrderDTO>
             {
-                getOrderDto(productId: 2, variantId: 1, price: 400, quantity: 0),
-                getOrderDto(productId: 4, price: 800, quantity: 1)
+                Helpers.GetOrderDto(productId: 2, variantId: 1, price: 400, quantity: 0),
+                Helpers.GetOrderDto(productId: 4, price: 800, quantity: 1)
             };
             var expectedItems = new List<OrderDTO>
             {
-                getOrderDto(productId: 1, price: 1000, quantity: 1),
-                getOrderDto(productId: 3, price: 200, quantity: 2),
-                getOrderDto(productId: 4, price: 200, quantity: 1)
+                Helpers.GetOrderDto(productId: 1, price: 1000, quantity: 1),
+                Helpers.GetOrderDto(productId: 3, price: 200, quantity: 2),
+                Helpers.GetOrderDto(productId: 4, price: 200, quantity: 1)
             };
 
             // Act
@@ -292,42 +292,6 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
          * Helper methods
          */
 
-        private OrderLine getOrderLine(int productId, decimal price, int quantity = 1, int? variantId = null)
-        {
-            return new OrderLine
-            {
-                ProductId = productId,
-                Product = new Product
-                {
-                    ProductId = productId
-                },
-                Price = price,
-                Quantity = quantity,
-
-                ProductVariantId = variantId,
-                ProductVariant = variantId.HasValue ? new ProductVariant
-                {
-                    ProductVariantId = variantId.Value,
-                    ProductId = productId
-                } : null
-            };
-        }
-
-        private OrderDTO getOrderDto(int productId, decimal price, int quantity = 1, int? variantId = null)
-        {
-            return new OrderDTO
-            {
-                Product = new Product { ProductId = productId, Price = price },
-                Variant = variantId.HasValue ? new ProductVariant
-                {
-                    ProductVariantId = variantId.Value,
-                    ProductId = productId,
-                    Price = price
-                } : null,
-                Quantity = quantity
-            };
-        }
-
         private Registration getTestCaseRegistration()
         {
             var registration = new Registration
@@ -339,9 +303,9 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
                         OrderId = 255,
                         OrderLines = new List<OrderLine>
                         {
-                            getOrderLine(productId: 1, price: 1000, quantity: 1), // Conference ticket (3 days)
-                            getOrderLine(productId: 2, variantId: 1, price: 400, quantity: 1), // Small Dinner
-                            getOrderLine(productId: 3, price: 200, quantity: 2) // Daily rate
+                            Helpers.GetOrderLine(productId: 1, price: 1000, quantity: 1), // Conference ticket (3 days)
+                            Helpers.GetOrderLine(productId: 2, variantId: 1, price: 400, quantity: 1), // Small Dinner
+                            Helpers.GetOrderLine(productId: 3, price: 200, quantity: 2) // Daily rate
                         }
                     }
                 }
