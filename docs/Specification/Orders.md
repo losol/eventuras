@@ -1,3 +1,4 @@
+
 # Orders
 
 Each event registration could have one or more orders associated with the registration.  Typical orders contain products like event tickets with variants with different prices. For most events it will be an associated *mandatory product* – the ticket. 
@@ -101,7 +102,9 @@ Null
 
 ## Changes to invoiced orders
 
-Changes to invoiced orders are handled by issuing a new order that includes the items to be added and refunds the items to be removed.
+Changes to orders are handled by editing a draft order, or issuing a new order that includes only the minimal orderlines needed so that the participant are registered for the intended products. 
+
+For each registration it should not be more than one order that is in draft/verified state. 
 
 Combinations of the following cases can make any change to an invoiced order possible.
 
