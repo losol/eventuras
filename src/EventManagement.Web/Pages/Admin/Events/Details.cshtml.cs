@@ -23,21 +23,6 @@ namespace losol.EventManagement.Pages.Admin.Events
 
         public EventInfo EventInfo { get; set; }
 
-        public class RegistrationsVm
-        {
-        public int RegistrationId {get;set;}
-        public string Name { set;get;}
-        public string Email { set;get;}
-        public string Phone { set;get;}
-        public string Employer {get;set;}
-        public string JobTitle {get;set;}
-        public string City {get;set;}
-        public bool HasCertificate { get; set; }
-        public int? CertificateId {get; set; }
-        public string Status {get;set;}
-        public string Type {get;set;}
-        public List<(Product, ProductVariant, int)> Products { get; set; }
-        }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -81,7 +66,8 @@ namespace losol.EventManagement.Pages.Admin.Events
                         .ThenInclude(ol => ol.ProductVariant)
                 .Include(r => r.User)
                 .ToListAsync();
-            var vms = registrations.Select (x => new RegistrationsVm{
+            var vms = registrations.Select(x => new RegistrationsVm
+            {
                 RegistrationId = x.RegistrationId,
                 Name = x.User.Name,
                 Email = x.User.Email,
@@ -89,7 +75,10 @@ namespace losol.EventManagement.Pages.Admin.Events
                 JobTitle = x.ParticipantJobTitle,
                 Employer = x.ParticipantEmployer,
                 City = x.ParticipantCity,
-                Products = x.Products.Select(dto => ValueTuple.Create(dto.Product, dto.Variant, dto.Quantity)).ToList(),
+                Products = x.Products.Select(dto => ValueTuple.Create(
+                    new RegistrationsProductVm(dto.Product),
+                    RegistrationsVariantVm.Create(dto.Variant),
+                    dto.Quantity)).ToList(),
                 HasCertificate = x.HasCertificate,
                 CertificateId = x.CertificateId,
                 Status = x.Status.ToString(),
@@ -172,5 +161,49 @@ namespace losol.EventManagement.Pages.Admin.Events
                 return new JsonResult("none");
             }
         }
+
+        internal class RegistrationsVm
+        {
+            public int RegistrationId {get;set;}
+            public string Name { set;get;}
+            public string Email { set;get;}
+            public string Phone { set;get;}
+            public string Employer {get;set;}
+            public string JobTitle {get;set;}
+            public string City {get;set;}
+            public bool HasCertificate { get; set; }
+            public int? CertificateId {get; set; }
+            public string Status {get;set;}
+            public string Type {get;set;}
+            // public List<(Product, ProductVariant, int)> Products { get; set; }
+            public List<(RegistrationsProductVm, RegistrationsVariantVm, int)> Products { get; set; }
+        }
+
+        internal class RegistrationsProductVm
+        {
+            public int ProductId { get; set; }
+            public string Name { get; set; }
+
+            public RegistrationsProductVm(Product product)
+            {
+                this.ProductId = product.ProductId;
+                this.Name = product.Name;
+            }
+        }
+
+        internal class RegistrationsVariantVm
+        {
+            public int ProductVariantId { get; set; }
+            public string Name { get; set; }
+
+            public RegistrationsVariantVm(ProductVariant variant)
+            {
+                this.ProductVariantId = variant.ProductVariantId;
+                this.Name = variant.Name;
+            }
+            public static RegistrationsVariantVm Create(ProductVariant variant) =>
+                variant == null ? null : new RegistrationsVariantVm(variant);
+        }
+
     }
 }
