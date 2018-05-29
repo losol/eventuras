@@ -197,49 +197,51 @@ namespace losol.EventManagement.Domain
             var products = Products;
             var orders = dtos.ToList();
 
-            var refundDtos = new List<OrderDTO>();
-            var refundLines = new List<OrderLine>();
-            foreach(var order in orders)
-            {
-                foreach(var p in products)
-                {
-                    if(order.Product.ProductId == p.Product.ProductId)
-                    {
-                        var orderline = new OrderLine
-                        {
-                            // OrderId = OrderId,
-                            ProductName = $"Korreksjon for {p.Product?.Name}",
-                            Price = order.Product.Price,
-                            Quantity = order.Quantity - p.Quantity,
-                            VatPercent = order.Product.VatPercent,
-                            ProductId = order.Product.ProductId,
-                            ProductVariantId = order.Variant?.ProductVariantId,
-                            Product = order.Product,
-                            ProductVariant = order.Variant
-                        };
-                        refundLines.Add(orderline);
-                        refundDtos.Add(order);
-                    }
-                }
-            }
-
-            refundDtos.ForEach(dto => orders.Remove(dto));
-            refundDtos = null;
-
             // Check if any editable orders exist
             var editableOrders = Orders.Where(o => o.Status != OrderStatus.Invoiced && o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Refunded);
 
             if (!editableOrders.Any())
             {
+                var refundDtos = new List<OrderDTO>();
+                var refundLines = new List<OrderLine>();
+                foreach(var order in orders)
+                {
+                    foreach(var p in products)
+                    {
+                        if(order.Product.ProductId == p.Product.ProductId)
+                        {
+                            var orderline = new OrderLine
+                            {
+                                // OrderId = OrderId,
+                                ProductName = $"Korreksjon for {p.Product?.Name}",
+                                Price = order.Product.Price,
+                                Quantity = order.Quantity - p.Quantity,
+                                VatPercent = order.Product.VatPercent,
+                                ProductId = order.Product.ProductId,
+                                ProductVariantId = order.Variant?.ProductVariantId,
+                                Product = order.Product,
+                                ProductVariant = order.Variant
+                            };
+                            if(orderline.Quantity != 0)
+                            {
+                                refundLines.Add(orderline);
+                            }
+                            refundDtos.Add(order);
+                        }
+                    }
+                }
+
+                refundDtos.ForEach(dto => orders.Remove(dto));
+                refundDtos = null;
+
                 // Create a new order
                 CreateOrder(orders, refundLines);
             }
             else
             {
                 var orderToUpdate = editableOrders.First();
-                orderToUpdate.OrderLines.AddRange(_createOrderLines(orders, refundLines));
+                orderToUpdate.OrderLines.AddRange(_createOrderLines(orders));
             }
-
         }
 
         private List<OrderLine> _createOrderLines(

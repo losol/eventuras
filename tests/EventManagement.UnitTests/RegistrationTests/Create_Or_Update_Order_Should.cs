@@ -186,6 +186,26 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             Assert.Equal(expectedItems, registration.Products, new OrderDTOProductAndVariantComparer());
         }
 
+        // Case #1 extension
+        // Ensure that only orderlines with 0 quantity are discarded
+        [Fact]
+        public void Create_New_Order_With_One_Orderline_When_New_Product_Is_Added()
+        {
+            // Arrange
+            var registration = Helpers.GetTestCaseRegistration();
+            var ordersToAdd = new List<OrderDTO>
+            {
+                Helpers.GetOrderDto(productId: 4, price: 800, quantity: 1), // new product
+                Helpers.GetOrderDto(productId: 1, price: 1000, quantity: 1), // existing product
+            };
+
+            // Act
+            registration.CreateOrUpdateOrder(ordersToAdd);
+
+            // Assert
+            Assert.Single(registration.Orders.Last().OrderLines);
+        }
+
         // Case #2
         [Fact]
         public void Create_New_Order_When_Product_Is_Removed()
@@ -208,6 +228,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             //Assert
             Assert.Equal(1400, registration.Orders.Sum(o => o.TotalAmount));
             Assert.Equal(expectedItems, registration.Products, new OrderDTOProductAndVariantComparer());
+            Assert.Single(registration.Orders.Last().OrderLines);
         }
 
         // Case #3
