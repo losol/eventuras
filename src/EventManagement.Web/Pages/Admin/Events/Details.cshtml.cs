@@ -73,31 +73,31 @@ namespace losol.EventManagement.Pages.Admin.Events
                     r => r.EventInfoId == id &&
                     r.Status != RegistrationStatus.Cancelled &&
                     r.Type == RegistrationType.Participant)
-                .Select ( x=> new RegistrationsVm{
-                    RegistrationId = x.RegistrationId,
-                    Name = x.User.Name,
-                    Email = x.User.Email,
-                    Phone = x.User.PhoneNumber,
-                    JobTitle = x.ParticipantJobTitle,
-                    Employer = x.ParticipantEmployer,
-                    City = x.ParticipantCity,
-                    Products = x.Orders.Where(o => o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Refunded)
-                        .SelectMany(o => o.OrderLines)
-                        .Where(l => l.Product != null && l.ProductVariant != null) // required because these are null for some old invalid data
-                        .Select(l => new { productId = l.Product, variantId = l.ProductVariant, quantity = l.Quantity })
-                        .GroupBy(l => new { l.productId, l.variantId })
-                        .Select(g => ValueTuple.Create(g.Key.productId, g.Key.variantId, g.Sum(t => t.quantity)))
-                        .Where(p => p.Item3 > 0)
-                        .ToList(),
-                    HasCertificate = x.HasCertificate,
-                    CertificateId = x.CertificateId,
-                    Status = x.Status.ToString(),
-                    Type = x.Type.ToString()
-                    })
+                .Include(r => r.Orders)
+                    .ThenInclude(o => o.OrderLines)
+                        .ThenInclude(ol => ol.Product)
+                .Include(r => r.Orders)
+                    .ThenInclude(o => o.OrderLines)
+                        .ThenInclude(ol => ol.ProductVariant)
+                .Include(r => r.User)
                 .ToListAsync();
+            var vms = registrations.Select (x => new RegistrationsVm{
+                RegistrationId = x.RegistrationId,
+                Name = x.User.Name,
+                Email = x.User.Email,
+                Phone = x.User.PhoneNumber,
+                JobTitle = x.ParticipantJobTitle,
+                Employer = x.ParticipantEmployer,
+                City = x.ParticipantCity,
+                Products = x.Products.Select(dto => ValueTuple.Create(dto.Product, dto.Variant, dto.Quantity)).ToList(),
+                HasCertificate = x.HasCertificate,
+                CertificateId = x.CertificateId,
+                Status = x.Status.ToString(),
+                Type = x.Type.ToString()
+            });
 
-            if (registrations.Any()) {
-                return new JsonResult(registrations);
+            if (vms.Any()) {
+                return new JsonResult(vms);
             }
             else {
                 return new JsonResult("none");
