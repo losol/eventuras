@@ -30,18 +30,13 @@ namespace losol.EventManagement.Domain
 		public Order RefundOrder { get; private set; }
         public int? RefundOrderLineId { get; private set; }
         public OrderLine RefundOrderLine { get; private set; }
-		public bool IsRefund => RefundOrderId.HasValue;
+		public bool IsRefund => Quantity < 0;
 
 		/// <summary>
 		/// A string that uniquely identifies a product-variant combination
 		/// </summary>
-		public string ItemCode
-		{
-			get
-			{
-				return ProductVariantId.HasValue ? $"K{ProductId}-{ProductVariantId}" : $"K{ProductId}";
-			}
-		}
+		public string ItemCode =>
+            ProductVariantId.HasValue ? $"K{ProductId}-{ProductVariantId}" : $"K{ProductId}";
 
 		public decimal Price { get; set; } // TODO: Change this to PricePerUnit
 		public decimal VatPercent { get; set; } = 0;
@@ -57,8 +52,13 @@ namespace losol.EventManagement.Domain
 
 		public OrderLine CreateRefundOrderLine()
 		{
+            if(IsRefund)
+            {
+                throw new InvalidOperationException("Cannot create a refund orderline for a refund orderline.");
+            }
 			return new OrderLine
 			{
+                OrderId = OrderId,
 				RefundOrderId = OrderId,
                 RefundOrderLineId = OrderLineId,
 				ProductName = $"Korreksjon for {ProductName} (Order #{OrderId})",
