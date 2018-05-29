@@ -99,7 +99,7 @@ namespace losol.EventManagement.Domain
                 var productOrderLines = validOrders.SelectMany(o => o.OrderLines)
                     .Select(l => new { product = l.Product, variant = l.ProductVariant, quantity = l.Quantity });
                 return productOrderLines
-                    .GroupBy(l => new { l.product, l.variant })
+                    .GroupBy(l => (product: l.product, variant: l.variant), new ProductAndVariantIdComparer())
                     .Select(g => new OrderDTO { Product = g.Key.product, Variant = g.Key.variant, Quantity = g.Sum(t => t.quantity ) })
                     .Where(p => p.Quantity > 0)
                     .ToList();
@@ -257,7 +257,7 @@ namespace losol.EventManagement.Domain
         public ProductVariant Variant { get; set; }
         public int Quantity { get; set; } = 1; // FIXME: Should default to Product.MinimumQuantity
 
-        public override string ToString() => $"{Product.ProductId}-{Variant?.ProductVariantId.ToString()??"NA"}";
+        public override string ToString() => $"{Product.ProductId}-{Variant?.ProductVariantId.ToString()??"NA"}×{Quantity}";
     }
 
     /// <summary>
@@ -267,6 +267,18 @@ namespace losol.EventManagement.Domain
     {
         public bool Equals(OrderDTO x, OrderDTO y) => x.Product.ProductId == y.Product.ProductId && x.Variant?.ProductVariantId == y.Variant?.ProductVariantId;
         public int GetHashCode(OrderDTO obj) => obj.Product.ProductId;
+    }
+
+    /// <summary>
+    /// Compares OrderDTOs using the ProductId & VariantId
+    /// </summary>
+    public class ProductAndVariantIdComparer : IEqualityComparer<(Product product, ProductVariant variant)>
+    {
+        public bool Equals((Product product, ProductVariant variant) x, (Product product, ProductVariant variant) y) =>
+            x.product.ProductId == y.product.ProductId && x.variant?.ProductVariantId == y.variant?.ProductVariantId;
+
+        public int GetHashCode((Product product, ProductVariant variant) obj)
+            => $"{obj.product.ProductId}-{obj.variant?.ProductVariantId.ToString() ?? "NA"}".GetHashCode();
     }
 
     public static class OrderDTOExtensions
