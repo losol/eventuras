@@ -191,10 +191,11 @@ namespace losol.EventManagement.Domain
         /// </summary>
         /// <param name="orders"></param>
         /// <param name="variants"></param>
-        public void CreateOrUpdateOrder(ICollection<OrderDTO> orders)
+        public void CreateOrUpdateOrder(ICollection<OrderDTO> dtos)
         {
             // Get the existing productids
             var products = Products;
+            var orders = dtos.ToList();
 
             var refundDtos = new List<OrderDTO>();
             var refundLines = new List<OrderLine>();
