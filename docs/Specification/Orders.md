@@ -1,3 +1,4 @@
+
 # Orders
 
 Each event registration could have one or more orders associated with the registration.  Typical orders contain products like event tickets with variants with different prices. For most events it will be an associated *mandatory product* – the ticket. 
@@ -101,7 +102,9 @@ Null
 
 ## Changes to invoiced orders
 
-Changes to invoiced orders are handled by issuing a new order that includes the items to be added and refunds the items to be removed.
+Changes to orders are handled by editing a draft order, or issuing a new order that includes only the minimal orderlines needed so that the participant are registered for the intended products. 
+
+For each registration it should not be more than one order that is in draft/verified state. 
 
 Combinations of the following cases can make any change to an invoiced order possible.
 
@@ -219,3 +222,58 @@ Ordered products are now
 1 x K2-2
 2 × K3
 ```
+
+### Changes when combinations of invoiced and draft orders
+
+John has placed those orders: 
+**Order # 255 - Invoiced**
+
+| ItemCode | Product name | Quantity | Price | Line total
+|--|--|--|--|--|
+| K1 | Conference ticket (3 days) | 1 | 1000 | 1000|
+| K2-1 | Small dinner | 1 | 400 | 400
+| K3 | Daily rate | 2 | 200 | 400
+|  | **Order total** |  |  | 1800
+
+**Order #256 - Draft**
+
+| ItemCode | Product name | Quantity | Price | Line total |
+|--|--|--|--|--|
+| K2-1 | Refund of Small dinner | -1 | 400 | -400 |
+| K2-2 | Large dinner | 1 | 600 | 600 |
+|  | **Order total** |  |  | 200 |
+
+
+Current products are now
+
+| ItemCode | Product name | Current Quantity 
+|--|--|--|
+| K1 | Ticket | 1 |
+| K2-1 | Small dinner | 0 | 
+| K2-2 | Large dinner | 1 | 
+| K3 | Daily rate | 2 |
+| K4 | Sightseeing | 0 |
+| K5 | Guided walk | 0 |
+
+If he wants to change his current products, we can have the following cases.
+
+**Remove dinner**
+To get a baseline we sum all invoiced orders, and are skipping orders which are draft/verified.
+
+| ItemCode | Product name | Invoiced Quantity | Wanted Quantity | Difference |
+|--|--|--|--|--|
+| K1 | Ticket | 1 | 1 | 0 |
+| K2-1 | Small dinner | 1 | 0 | -1 |
+| K2-2 | Large dinner | 0 | 0 | 0 |
+| K3 | Daily rate | 2 | 2 | 0 |
+| K4 | Sightseeing | 0 | 0 | 0 |
+| K5 | Guided walk | 0 | 0 | 0 |
+
+To accomplish getting the right number of current products, we just delete all orderlines of draft invoices, and add orderlines to the difference between invoiced and wanted quantity.
+
+The new order #256
+
+| ItemCode | Product name | Quantity | Price | Line total |
+|--|--|--|--|--|
+| K2-1 | Refund of Small dinner | -1 | 400 | -400 |
+|  | **Order total** |  |  | -400 |
