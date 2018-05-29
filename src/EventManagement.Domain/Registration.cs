@@ -212,7 +212,7 @@ namespace losol.EventManagement.Domain
                             Quantity = order.Quantity - p.Quantity,
                             VatPercent = order.Product.VatPercent,
                             ProductId = order.Product.ProductId,
-                            ProductVariantId = order.Variant.ProductVariantId,
+                            ProductVariantId = order.Variant?.ProductVariantId,
                             Product = order.Product,
                             ProductVariant = order.Variant
                         };
