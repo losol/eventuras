@@ -16,7 +16,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
                 Orders = new List<Order> {
                     new Order {
                         OrderLines = new List<OrderLine> {
-                            getOrderLine(1, 100)
+                            getOrderLine(productId: 1, price: 100)
                         }
                     }
                 }
@@ -50,7 +50,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
                 Orders = new List<Order> {
                     new Order {
                         OrderLines = new List<OrderLine> {
-                            getOrderLine(1, 100)
+                            getOrderLine(productId: 1, price: 100)
                         }
                     }
                 }
@@ -110,16 +110,8 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
                 Orders = new List<Order> {
                     new Order {
                         OrderLines = new List<OrderLine> {
-                            getOrderLine(1, 100, 1, 1),
-                            new OrderLine
-                            {
-                                ProductId = 2,
-                                Price = 100,
-                                Product = new Product
-                                {
-                                    ProductId = 2
-                                }
-                            }
+                            getOrderLine(productId: 1, price: 100, quantity: 1, variantId: 1),
+                            getOrderLine(productId: 2, price: 100)
                         }
                     }
                 }
@@ -154,7 +146,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
                 Orders = new List<Order> {
                     new Order {
                         OrderLines = new List<OrderLine> {
-                            getOrderLine(1, 100, 5, 1)
+                            getOrderLine(productId: 1, price: 100, quantity: 5, variantId: 1)
                         }
                     }
                 }
@@ -195,7 +187,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
                         OrderLines = new List<OrderLine>
                         {
                             getOrderLine(productId: 1, price: 1000, quantity: 1), // Conference ticket (3 days)
-                            getOrderLine(productId: 2, productVariantId: 1, price: 400, quantity: 1), // Small Dinner
+                            getOrderLine(productId: 2, variantId: 1, price: 400, quantity: 1), // Small Dinner
                             getOrderLine(productId: 3, price: 200, quantity: 2) // Daily rate
                         }
                     }
@@ -231,7 +223,7 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
         }
 
 
-        private OrderLine getOrderLine(int productId, decimal price, int quantity = 1, int? productVariantId = null)
+        private OrderLine getOrderLine(int productId, decimal price, int quantity = 1, int? variantId = null)
         {
             return new OrderLine
             {
@@ -243,10 +235,10 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
                 Price = price,
                 Quantity = quantity,
 
-                ProductVariantId = productVariantId,
-                ProductVariant = productVariantId.HasValue ? new ProductVariant
+                ProductVariantId = variantId,
+                ProductVariant = variantId.HasValue ? new ProductVariant
                 {
-                    ProductVariantId = productVariantId.Value,
+                    ProductVariantId = variantId.Value,
                     ProductId = productId
                 } : null
             };
