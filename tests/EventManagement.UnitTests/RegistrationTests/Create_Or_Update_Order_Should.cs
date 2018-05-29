@@ -197,6 +197,24 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             Assert.Equal(1400, registration.Orders.Sum(o => o.TotalAmount));
         }
 
+        // Case #3
+        [Fact]
+        public void Create_New_Order_When_Product_Quantity_Is_Increased()
+        {
+            // Arrange
+            var registration = getTestCaseRegistration();
+            var orderitems = new List<OrderDTO>
+            {
+                getOrderDto(productId: 3, price: 200, quantity: 3)
+            };
+
+            // Act
+            registration.CreateOrUpdateOrder(orderitems);
+
+            //Assert
+            Assert.Equal(2000, registration.Orders.Sum(o => o.TotalAmount));
+        }
+
 
         #region Helper Methods
         /*
