@@ -272,6 +272,7 @@ To get a baseline we sum all invoiced orders, and are skipping orders which are 
 To accomplish getting the right number of current products, we just delete all orderlines of draft invoices, and add orderlines to the difference between invoiced and wanted quantity.
 
 The new order #256
+
 | ItemCode | Product name | Quantity | Price | Line total |
 |--|--|--|--|--|
 | K2-1 | Refund of Small dinner | -1 | 400 | -400 |
