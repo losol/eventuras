@@ -247,8 +247,7 @@ namespace losol.EventManagement.Domain
         {
             refundlines = refundlines ?? new List<OrderLine>();
             var orderLines = orders.ToOrderLines();
-            orderLines.Concat(refundlines);
-            return orderLines.ToList();
+            return orderLines.Concat(refundlines).ToList();
         }
     }
 
