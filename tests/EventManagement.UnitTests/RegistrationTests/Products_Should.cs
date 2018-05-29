@@ -19,42 +19,15 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
                     {
                         OrderLines = new List<OrderLine>
                         {
-                            new OrderLine
-                            {
-                                ProductId = 1,
-                                Product = new Product
-                                {
-                                    ProductId = 1
-                                },
-                                Quantity = 1,
-                                Price = 100
-                            },
-                            new OrderLine
-                            {
-                                ProductId = 2,
-                                Product = new Product
-                                {
-                                    ProductId = 2
-                                },
-                                Quantity = 1,
-                                Price = 100
-                            }
+                            Helpers.GetOrderLine(productId: 1, price: 100, quantity: 1),
+                            Helpers.GetOrderLine(productId: 2, price: 100, quantity: 1)
                         }
                     },
                     new Order
                     {
                         OrderLines = new List<OrderLine>
                         {
-                            new OrderLine
-                            {
-                                ProductId = 3,
-                                Product = new Product
-                                {
-                                    ProductId = 3
-                                },
-                                Quantity = 1,
-                                Price = 100
-                            }
+                            Helpers.GetOrderLine(productId: 3, price: 100, quantity: 1)
                         }
                     }
                 }
@@ -62,9 +35,9 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
 
             var expectedProducts = new List<OrderDTO>
             {
-                new OrderDTO { Product = new Product { ProductId = 1 }, Quantity = 1 },
-                new OrderDTO { Product = new Product { ProductId = 2 }, Quantity = 1 },
-                new OrderDTO { Product = new Product { ProductId = 3 }, Quantity = 1 }
+                Helpers.GetOrderDto(productId: 1, price: 100, quantity: 1),
+                Helpers.GetOrderDto(productId: 2, price: 100, quantity: 1),
+                Helpers.GetOrderDto(productId: 3, price: 100, quantity: 1)
             };
 
             // Act
