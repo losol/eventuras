@@ -256,6 +256,8 @@ namespace losol.EventManagement.Domain
         public Product Product { get; set; }
         public ProductVariant Variant { get; set; }
         public int Quantity { get; set; } = 1; // FIXME: Should default to Product.MinimumQuantity
+
+        public override string ToString() => $"{Product.ProductId}-{Variant?.ProductVariantId.ToString()??"NA"}";
     }
 
     /// <summary>
