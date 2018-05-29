@@ -226,23 +226,18 @@ Ordered products are now
 ### Changes when combinations of invoiced and draft orders
 
 John has placed those orders: 
-**Order # 255 - Invoiced**
 
 | ItemCode | Product name | Quantity | Price | Line total
 |--|--|--|--|--|
+| | | | | |
+| | **Order # 255 - Invoiced** | | | |
 | K1 | Conference ticket (3 days) | 1 | 1000 | 1000|
 | K2-1 | Small dinner | 1 | 400 | 400
 | K3 | Daily rate | 2 | 200 | 400
-|  | **Order total** |  |  | 1800
-
-**Order #256 - Draft**
-
-| ItemCode | Product name | Quantity | Price | Line total |
-|--|--|--|--|--|
+| | | | | |
+| | **Order # 256 - Verified** | | | |
 | K2-1 | Refund of Small dinner | -1 | 400 | -400 |
 | K2-2 | Large dinner | 1 | 600 | 600 |
-|  | **Order total** |  |  | 200 |
-
 
 Current products are now
 
@@ -255,10 +250,10 @@ Current products are now
 | K4 | Sightseeing | 0 |
 | K5 | Guided walk | 0 |
 
-If he wants to change his current products, we can have the following cases.
+If he wants to change his products, we will be dropping his editable orders, and place the minimum orderlines to correct it to the wanted quantity of products.
 
 **Remove dinner**
-To get a baseline we sum all invoiced orders, and are skipping orders which are draft/verified.
+To get a baseline we sum all invoiced orders, and are skipping orderlines from orders with status draft/verified.
 
 | ItemCode | Product name | Invoiced Quantity | Wanted Quantity | Difference |
 |--|--|--|--|--|
@@ -271,9 +266,62 @@ To get a baseline we sum all invoiced orders, and are skipping orders which are 
 
 To accomplish getting the right number of current products, we just delete all orderlines of draft invoices, and add orderlines to the difference between invoiced and wanted quantity.
 
-The new order #256
+**The new order #256**
 
 | ItemCode | Product name | Quantity | Price | Line total |
 |--|--|--|--|--|
 | K2-1 | Refund of Small dinner | -1 | 400 | -400 |
 |  | **Order total** |  |  | -400 |
+
+
+### Changes when multiple orders are invoiced
+
+John has placed those orders: 
+
+| ItemCode | Product name | Quantity | Price | Line total
+|--|--|--|--|--|
+| | | | | |
+| | **Order # 255 - Invoiced** | | | |
+| K1 | Conference ticket (3 days) | 1 | 1000 | 1000|
+| K2-1 | Small dinner | 1 | 400 | 400 |
+| K3 | Daily rate | 2 | 200 | 400 |
+| | | | | |
+| | **Order # 256 - Invoiced** | | | |
+| K4 | Sightseeing | 1 | 800 | 800|
+
+
+Current products are now
+
+| ItemCode | Product name | Current Quantity 
+|--|--|--|
+| K1 | Ticket | 1 |
+| K2-1 | Small dinner | 1 | 
+| K2-2 | Large dinner | 0 | 
+| K3 | Daily rate | 2 |
+| K4 | Sightseeing | 1 |
+| K5 | Guided walk | 0 |
+
+If he wants to change his current products, we can have the following cases.
+
+**Change to large dinner and add guided walk**
+To get a baseline we sum all invoiced orders, and are skipping orders which are draft/verified.
+
+| ItemCode | Product name | Invoiced Quantity | Wanted Quantity | Difference |
+|--|--|--|--|--|
+| K1 | Ticket | 1 | 1 | 0 |
+| K2-1 | Small dinner | 1 | 0 | -1 |
+| K2-2 | Large dinner | 0 | 0 | 1 |
+| K3 | Daily rate | 2 | 2 | 0 |
+| K4 | Sightseeing | 1 | 0 | 0 |
+| K5 | Guided walk | 0 | 0 | 1 |
+
+To accomplish getting the right number of current products, we need to add a new order, with the orderlines below.
+
+**The new order #257**
+
+| ItemCode | Product name | Quantity | Price | Line total |
+|--|--|--|--|--|
+| K2-1 | Refund of Small dinner | -1 | 400 | -400 |
+| K2-1 | Large dinner | 1 | 600 | 600 |
+| K5 | Guided walk | 1 | 0 | 0 |
+
