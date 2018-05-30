@@ -1,4 +1,5 @@
 
+  
 # Orders
 
 Each event registration could have one or more orders associated with the registration.  Typical orders contain products like event tickets with variants with different prices. For most events it will be an associated *mandatory product* – the ticket. 
@@ -9,7 +10,18 @@ In addition many events will have *optional product* as well. Examples could be 
 
 For both the participant and the admin, it is important to have an overview of which products which is ordered independant of which order they belong to. Orders keeps track of the person or organisation paying, and has a reference to the event. Each order may contain multiple order lines.
 
-## Sample products and order
+## Order status
+
+An order has a status. `OrderStatus` will could be:
+
+1. Draft
+1. Verified
+1. Invoiced
+1. Paid
+1. Refunded
+
+
+## Placing the first order
 The user `John Doe` registers for `The great conference`.  This conference has the following products:
  - Ticket (K1) - price 1000, mandatory
  - Dinner (K2), is a product which has 2 product variants.
@@ -38,15 +50,13 @@ Ordered products are now
 2 × K3
 ```
 
-## Order status
+### Placing order from admin UI
 
-An order has a status. `OrderStatus` will could be:
+The first order may be placed by administrator user. Flow:
 
-1. Draft
-1. Verified
-1. Invoiced
-1. Paid
-1. Refunded
+1. Admin adds user to event on this page: `/Admin/Events/AddRegistration/x`
+2. Admin adds products to user from Products modal on this page `/Admin/Events/Details/10`
+
 
 ## Verification of orders
 
@@ -324,4 +334,3 @@ To accomplish getting the right number of current products, we need to add a new
 | K2-1 | Refund of Small dinner | -1 | 400 | -400 |
 | K2-1 | Large dinner | 1 | 600 | 600 |
 | K5 | Guided walk | 1 | 0 | 0 |
-
