@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -214,9 +214,9 @@ namespace losol.EventManagement.Domain
                             {
                                 // OrderId = OrderId,
                                 ProductName = $"Korreksjon for {p.Product?.Name}",
-                                Price = order.Product.Price,
+                                Price = order.Variant?.Price ?? order.Product.Price,
                                 Quantity = order.Quantity - p.Quantity,
-                                VatPercent = order.Product.VatPercent,
+                                VatPercent = order.Variant?.VatPercent ?? order.Product.VatPercent,
                                 ProductId = order.Product.ProductId,
                                 ProductVariantId = order.Variant?.ProductVariantId,
                                 Product = order.Product,
