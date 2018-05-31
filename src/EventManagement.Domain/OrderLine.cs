@@ -70,5 +70,7 @@ namespace losol.EventManagement.Domain
 			};
 		}
 
+        public override string ToString() => $"{ItemCode}×{Quantity}";
+
 	}
 }
