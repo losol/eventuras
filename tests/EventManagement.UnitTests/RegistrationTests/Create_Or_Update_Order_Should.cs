@@ -307,5 +307,30 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             Assert.Equal(expectedItems, registration.Products, new OrderDTOProductAndVariantComparer());
         }
 
+        // Case #6
+        [Fact]
+        public void Create_New_Order_When_Variant_Is_Changed()
+        {
+            // Arrange
+            var registration = Helpers.GetTestCaseRegistration();
+            var orderitems = new List<OrderDTO>
+            {
+                Helpers.GetOrderDto(productId: 2, variantId: 2, price: 600, quantity: 1), // Small Dinner
+            };
+            var expectedItems = new List<OrderDTO>
+            {
+                Helpers.GetOrderDto(productId: 1, price: 1000, quantity: 1),
+                Helpers.GetOrderDto(productId: 3, price: 200, quantity: 2),
+                Helpers.GetOrderDto(productId: 2, variantId: 2, price: 600, quantity: 1), // large Dinner
+            };
+
+            // Act
+            registration.CreateOrUpdateOrder(orderitems);
+
+            //Assert
+            Assert.Equal(expectedItems, registration.Products, new OrderDTOProductAndVariantComparer());
+            Assert.Equal(2000, registration.Orders.Sum(o => o.TotalAmount));
+        }
+
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -222,11 +222,27 @@ namespace losol.EventManagement.Domain
                                 Product = order.Product,
                                 ProductVariant = order.Variant
                             };
+
+                            var shouldReplaceProductVariant = order.Variant?.ProductVariantId != p.Variant?.ProductVariantId;
+                            if(shouldReplaceProductVariant)
+                            {
+                                orderline.Quantity = -p.Quantity;
+                                orderline.Price = p.Variant.Price;
+                                orderline.ProductId = p.Product.ProductId;
+                                orderline.ProductVariantId = p.Variant.ProductVariantId;
+                                orderline.Product = p.Product;
+                                orderline.ProductVariant = p.Variant;
+                            }
+
                             if(orderline.Quantity != 0)
                             {
                                 refundLines.Add(orderline);
                             }
-                            refundDtos.Add(order);
+
+                            if(!shouldReplaceProductVariant)
+                            {
+                                refundDtos.Add(order);
+                            }
                         }
                     }
                 }

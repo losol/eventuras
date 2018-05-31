@@ -12,7 +12,8 @@ namespace losol.EventManagement.UnitTests
                 ProductId = productId,
                 Product = new Product
                 {
-                    ProductId = productId
+                    ProductId = productId,
+                    Price = price
                 },
                 Price = price,
                 Quantity = quantity,
@@ -21,7 +22,8 @@ namespace losol.EventManagement.UnitTests
                 ProductVariant = variantId.HasValue ? new ProductVariant
                 {
                     ProductVariantId = variantId.Value,
-                    ProductId = productId
+                    ProductId = productId,
+                    Price = price
                 } : null
             };
         }
