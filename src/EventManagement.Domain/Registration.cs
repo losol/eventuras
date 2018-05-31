@@ -92,18 +92,23 @@ namespace losol.EventManagement.Domain
         public List<Order> Orders { get; set; }
 
         [NotMapped]
-        public List<OrderDTO> Products
+        public List<OrderDTO> Products => GetCurrentProducts();
+
+        public List<OrderDTO> GetCurrentProducts() =>
+            _getProductsForOrders(Orders.Where(o => o.Status != OrderStatus.Cancelled));
+
+        public List<OrderDTO> GetInvoicedProducts() =>
+            _getProductsForOrders(Orders.Where(o => o.Status == OrderStatus.Invoiced && o.Status == OrderStatus.Refunded));
+
+        private static List<OrderDTO> _getProductsForOrders(IEnumerable<Order> orders)
         {
-            get {
-                var validOrders = Orders.Where(o => o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Refunded);
-                var productOrderLines = validOrders.SelectMany(o => o.OrderLines)
-                    .Select(l => new { product = l.Product, variant = l.ProductVariant, quantity = l.Quantity });
-                return productOrderLines
-                    .GroupBy(l => (product: l.product, variant: l.variant), new ProductAndVariantIdComparer())
-                    .Select(g => new OrderDTO { Product = g.Key.product, Variant = g.Key.variant, Quantity = g.Sum(t => t.quantity ) })
-                    .Where(p => p.Quantity > 0)
-                    .ToList();
-            }
+            var productOrderLines = orders.SelectMany(o => o.OrderLines)
+                .Select(l => new { product = l.Product, variant = l.ProductVariant, quantity = l.Quantity });
+            return productOrderLines
+                .GroupBy(l => (product: l.product, variant: l.variant), new ProductAndVariantIdComparer())
+                .Select(g => new OrderDTO { Product = g.Key.product, Variant = g.Key.variant, Quantity = g.Sum(t => t.quantity ) })
+                .Where(p => p.Quantity > 0)
+                .ToList();
         }
 
         public void Verify()
