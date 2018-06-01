@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -98,7 +98,7 @@ namespace losol.EventManagement.Domain
             _getProductsForOrders(Orders.Where(o => o.Status != OrderStatus.Cancelled));
 
         public List<OrderDTO> GetInvoicedProducts() =>
-            _getProductsForOrders(Orders.Where(o => o.Status == OrderStatus.Invoiced && o.Status == OrderStatus.Refunded));
+            _getProductsForOrders(Orders.Where(o => o.Status == OrderStatus.Invoiced || o.Status == OrderStatus.Refunded));
 
         private static List<OrderDTO> _getProductsForOrders(IEnumerable<Order> orders)
         {
