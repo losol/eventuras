@@ -332,5 +332,36 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             Assert.Equal(2000, registration.Orders.Sum(o => o.TotalAmount));
         }
 
+        // Case #6
+        [Fact]
+        public void Update_Existing_Order_When_A_Draft_Exists()
+        {
+            // Arrange
+            var registration = Helpers.GetTestCaseRegistration();
+            registration.Orders.Add(new Order
+            {
+                OrderLines = new List<OrderLine>
+                {
+                    Helpers.GetOrderLine(productId: 4, price: 800, quantity: 1)
+                }
+            });
+            var orderitems = new List<OrderDTO>
+            {
+                Helpers.GetOrderDto(productId: 4, price: 800, quantity: 2)
+            };
+            var expectedOrderlines = new List<OrderLine>
+            {
+                Helpers.GetOrderLine(productId: 4, price: 800, quantity: 2)
+            };
+
+            // Act
+            registration.CreateOrUpdateOrder(orderitems);
+            var last = registration.Orders.Last().OrderLines;
+
+            //Assert
+            Assert.Single(last);
+            Assert.Equal(2, last.First().Quantity);
+        }
+
     }
 }

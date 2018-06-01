@@ -198,14 +198,15 @@ namespace losol.EventManagement.Domain
         /// <param name="variants"></param>
         public void CreateOrUpdateOrder(ICollection<OrderDTO> dtos)
         {
+            // Check if any editable orders exist
+            var editableOrders = Orders.Where(o => o.CanEdit);
+            var editableOrderExists = editableOrders.Any();
+
             // Get the existing productids
-            var products = Products;
+            var products = editableOrderExists ? GetInvoicedProducts() : GetCurrentProducts();
             var orders = dtos.ToList();
 
-            // Check if any editable orders exist
-            var editableOrders = Orders.Where(o => o.Status != OrderStatus.Invoiced && o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Refunded);
-
-            if (!editableOrders.Any())
+            if (!editableOrderExists)
             {
                 var refundDtos = new List<OrderDTO>();
                 var refundLines = new List<OrderLine>();
@@ -258,10 +259,22 @@ namespace losol.EventManagement.Domain
                 // Create a new order
                 CreateOrder(orders, refundLines);
             }
-            else
+            else // an editable (uninvoiced) order exists
             {
                 var orderToUpdate = editableOrders.First();
-                orderToUpdate.OrderLines.AddRange(_createOrderLines(orders));
+                var lines = orderToUpdate.OrderLines;
+                foreach(var order in orders)
+                {
+                    var match = lines.Find(l => l.ProductId == order.Product.ProductId);
+                    if(match != null)
+                    {
+                        lines.Remove(match);
+                    }
+                    var product = products.Find(p => p.Product.ProductId == order.Product.ProductId);
+                    var orderline = order.ToOrderLine();
+                    orderline.Quantity = order.Quantity - (product?.Quantity ?? 0);
+                    lines.Add(orderline);
+                }
             }
         }
 
@@ -309,28 +322,32 @@ namespace losol.EventManagement.Domain
     {
         public static List<OrderLine> ToOrderLines(this IEnumerable<OrderDTO> orders)
         {
-            return orders.Where(o => o.Quantity != 0).Select(p =>
-                new OrderLine
+            return orders.Where(o => o.Quantity != 0)
+                .Select(o => o.ToOrderLine())
+                .ToList();
+        }
+
+        public static OrderLine ToOrderLine(this OrderDTO order) =>
+            new OrderLine
                 {
-                    ProductId = p.Product.ProductId,
-                    ProductVariantId = p.Variant?.ProductVariantId,
+                    ProductId = order.Product.ProductId,
+                    ProductVariantId = order.Variant?.ProductVariantId,
 
-                    Product = p.Product,
-                    ProductVariant = p.Variant,
+                    Product = order.Product,
+                    ProductVariant = order.Variant,
 
-                    Price = p.Variant?.Price ?? p.Product.Price,
-                    VatPercent = p.Variant?.VatPercent ?? p.Product.VatPercent,
-                    Quantity = Math.Max(p.Quantity, p.Product.MinimumQuantity),
+                    Price = order.Variant?.Price ?? order.Product.Price,
+                    VatPercent = order.Variant?.VatPercent ?? order.Product.VatPercent,
+                    Quantity = Math.Max(order.Quantity, order.Product.MinimumQuantity),
 
-                    ProductName = p.Product.Name,
-                    ProductDescription = p.Product.Description,
+                    ProductName = order.Product.Name,
+                    ProductDescription = order.Product.Description,
 
-                    ProductVariantName = p.Variant?.Name,
-                    ProductVariantDescription = p.Variant?.Description
+                    ProductVariantName = order.Variant?.Name,
+                    ProductVariantDescription = order.Variant?.Description
 
                     // Comments
-                }
-            ).ToList();
-        }
+                };
+
     }
 }
