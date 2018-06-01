@@ -155,6 +155,8 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             Assert.Single(last.OrderLines); // only the refund orderline should exist
         }
 
+        #region
+
         /*
          * The test cases below are straight from the spec
          * https://github.com/losol/EventManagement/blob/master/docs/Specification/Orders.md
@@ -331,8 +333,9 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             Assert.Equal(expectedItems, registration.Products, new OrderDTOProductAndVariantComparer());
             Assert.Equal(2000, registration.Orders.Sum(o => o.TotalAmount));
         }
+        #endregion
 
-        // Case #6
+
         [Fact]
         public void Update_Existing_Order_When_A_Draft_Exists()
         {
@@ -361,6 +364,37 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             //Assert
             Assert.Single(last);
             Assert.Equal(2, last.First().Quantity);
+        }
+
+        [Fact]
+        public void Update_Existing_Order_When_A_Draft_Exists_Replace_Invoiced_Variant()
+        {
+            // Arrange
+            var registration = Helpers.GetTestCaseRegistration();
+            registration.Orders.Add(new Order
+            {
+                OrderLines = new List<OrderLine>
+                {
+                    Helpers.GetOrderLine(productId: 4, price: 800, quantity: 1)
+                }
+            });
+            var orderitems = new List<OrderDTO>
+            {
+                Helpers.GetOrderDto(productId: 2, variantId: 2, price: 600, quantity: 1)
+            };
+            var expectedOrderlines = new List<OrderLine>
+            {
+                Helpers.GetOrderLine(productId: 4, price: 800, quantity: 1),
+                Helpers.GetOrderLine(productId: 2, variantId: 2, price: 600, quantity: 1),
+                Helpers.GetOrderLine(productId: 2, variantId: 1, price: 400, quantity: -1)
+            };
+
+            // Act
+            registration.CreateOrUpdateOrder(orderitems);
+            var last = registration.Orders.Last().OrderLines;
+
+            //Assert
+            Assert.Equal(3, last.Count);
         }
 
     }
