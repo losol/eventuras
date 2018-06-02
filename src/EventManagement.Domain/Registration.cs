@@ -92,18 +92,23 @@ namespace losol.EventManagement.Domain
         public List<Order> Orders { get; set; }
 
         [NotMapped]
-        public List<OrderDTO> Products
+        public List<OrderDTO> Products => GetCurrentProducts();
+
+        public List<OrderDTO> GetCurrentProducts() =>
+            _getProductsForOrders(Orders.Where(o => o.Status != OrderStatus.Cancelled));
+
+        public List<OrderDTO> GetInvoicedProducts() =>
+            _getProductsForOrders(Orders.Where(o => o.Status == OrderStatus.Invoiced || o.Status == OrderStatus.Refunded));
+
+        private static List<OrderDTO> _getProductsForOrders(IEnumerable<Order> orders)
         {
-            get {
-                var validOrders = Orders.Where(o => o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Refunded);
-                var productOrderLines = validOrders.SelectMany(o => o.OrderLines)
-                    .Select(l => new { product = l.Product, variant = l.ProductVariant, quantity = l.Quantity });
-                return productOrderLines
-                    .GroupBy(l => (product: l.product, variant: l.variant), new ProductAndVariantIdComparer())
-                    .Select(g => new OrderDTO { Product = g.Key.product, Variant = g.Key.variant, Quantity = g.Sum(t => t.quantity ) })
-                    .Where(p => p.Quantity > 0)
-                    .ToList();
-            }
+            var productOrderLines = orders.SelectMany(o => o.OrderLines)
+                .Select(l => new { product = l.Product, variant = l.ProductVariant, quantity = l.Quantity });
+            return productOrderLines
+                .GroupBy(l => (product: l.product, variant: l.variant), new ProductAndVariantIdComparer())
+                .Select(g => new OrderDTO { Product = g.Key.product, Variant = g.Key.variant, Quantity = g.Sum(t => t.quantity ) })
+                .Where(p => p.Quantity > 0)
+                .ToList();
         }
 
         public void Verify()
@@ -193,14 +198,15 @@ namespace losol.EventManagement.Domain
         /// <param name="variants"></param>
         public void CreateOrUpdateOrder(ICollection<OrderDTO> dtos)
         {
+            // Check if any editable orders exist
+            var editableOrders = Orders.Where(o => o.CanEdit);
+            var editableOrderExists = editableOrders.Any();
+
             // Get the existing productids
-            var products = Products;
+            var products = editableOrderExists ? GetInvoicedProducts() : GetCurrentProducts();
             var orders = dtos.ToList();
 
-            // Check if any editable orders exist
-            var editableOrders = Orders.Where(o => o.Status != OrderStatus.Invoiced && o.Status != OrderStatus.Cancelled && o.Status != OrderStatus.Refunded);
-
-            if (!editableOrders.Any())
+            if (!editableOrderExists)
             {
                 var refundDtos = new List<OrderDTO>();
                 var refundLines = new List<OrderLine>();
@@ -214,19 +220,35 @@ namespace losol.EventManagement.Domain
                             {
                                 // OrderId = OrderId,
                                 ProductName = $"Korreksjon for {p.Product?.Name}",
-                                Price = order.Product.Price,
+                                Price = order.Variant?.Price ?? order.Product.Price,
                                 Quantity = order.Quantity - p.Quantity,
-                                VatPercent = order.Product.VatPercent,
+                                VatPercent = order.Variant?.VatPercent ?? order.Product.VatPercent,
                                 ProductId = order.Product.ProductId,
                                 ProductVariantId = order.Variant?.ProductVariantId,
                                 Product = order.Product,
                                 ProductVariant = order.Variant
                             };
+
+                            var shouldReplaceProductVariant = order.Variant?.ProductVariantId != p.Variant?.ProductVariantId;
+                            if(shouldReplaceProductVariant)
+                            {
+                                orderline.Quantity = -p.Quantity;
+                                orderline.Price = p.Variant.Price;
+                                orderline.ProductId = p.Product.ProductId;
+                                orderline.ProductVariantId = p.Variant.ProductVariantId;
+                                orderline.Product = p.Product;
+                                orderline.ProductVariant = p.Variant;
+                            }
+
                             if(orderline.Quantity != 0)
                             {
                                 refundLines.Add(orderline);
                             }
-                            refundDtos.Add(order);
+
+                            if(!shouldReplaceProductVariant)
+                            {
+                                refundDtos.Add(order);
+                            }
                         }
                     }
                 }
@@ -237,10 +259,32 @@ namespace losol.EventManagement.Domain
                 // Create a new order
                 CreateOrder(orders, refundLines);
             }
-            else
+            else // an editable (uninvoiced) order exists
             {
                 var orderToUpdate = editableOrders.First();
-                orderToUpdate.OrderLines.AddRange(_createOrderLines(orders));
+                var lines = orderToUpdate.OrderLines;
+                foreach(var order in orders)
+                {
+                    var match = lines.Find(l => l.ProductId == order.Product.ProductId);
+                    if(match != null)
+                    {
+                        lines.Remove(match);
+                    }
+                    var product = products.Find(p => p.Product.ProductId == order.Product.ProductId);
+                    var orderline = order.ToOrderLine();
+                    if(product != null && product.Variant?.ProductVariantId != order.Variant?.ProductVariantId)
+                    {
+                        lines.Add(orderline);
+                        var refundLine = product.ToOrderLine();
+                        refundLine.Quantity = -refundLine.Quantity;
+                        lines.Add(refundLine);
+                    }
+                    else
+                    {
+                        orderline.Quantity = order.Quantity - (product?.Quantity ?? 0);
+                        lines.Add(orderline);
+                    }
+                }
             }
         }
 
@@ -288,28 +332,32 @@ namespace losol.EventManagement.Domain
     {
         public static List<OrderLine> ToOrderLines(this IEnumerable<OrderDTO> orders)
         {
-            return orders.Where(o => o.Quantity != 0).Select(p =>
-                new OrderLine
+            return orders.Where(o => o.Quantity != 0)
+                .Select(o => o.ToOrderLine())
+                .ToList();
+        }
+
+        public static OrderLine ToOrderLine(this OrderDTO order) =>
+            new OrderLine
                 {
-                    ProductId = p.Product.ProductId,
-                    ProductVariantId = p.Variant?.ProductVariantId,
+                    ProductId = order.Product.ProductId,
+                    ProductVariantId = order.Variant?.ProductVariantId,
 
-                    Product = p.Product,
-                    ProductVariant = p.Variant,
+                    Product = order.Product,
+                    ProductVariant = order.Variant,
 
-                    Price = p.Variant?.Price ?? p.Product.Price,
-                    VatPercent = p.Variant?.VatPercent ?? p.Product.VatPercent,
-                    Quantity = Math.Max(p.Quantity, p.Product.MinimumQuantity),
+                    Price = order.Variant?.Price ?? order.Product.Price,
+                    VatPercent = order.Variant?.VatPercent ?? order.Product.VatPercent,
+                    Quantity = Math.Max(order.Quantity, order.Product.MinimumQuantity),
 
-                    ProductName = p.Product.Name,
-                    ProductDescription = p.Product.Description,
+                    ProductName = order.Product.Name,
+                    ProductDescription = order.Product.Description,
 
-                    ProductVariantName = p.Variant?.Name,
-                    ProductVariantDescription = p.Variant?.Description
+                    ProductVariantName = order.Variant?.Name,
+                    ProductVariantDescription = order.Variant?.Description
 
                     // Comments
-                }
-            ).ToList();
-        }
+                };
+
     }
 }

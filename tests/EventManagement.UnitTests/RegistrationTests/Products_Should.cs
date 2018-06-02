@@ -116,5 +116,53 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
 
 
 
+        [Fact]
+        public void Return_Products_When_Variants_Were_Changed()
+        {
+            // Arrange
+            var registration = new Registration
+            {
+                Orders = new List<Order>
+                {
+                    new Order
+                    {
+                        OrderLines = new List<OrderLine>
+                        {
+                            Helpers.GetOrderLine(productId: 1, price: 1000, quantity: 1), // Conference ticket (3 days)
+                            Helpers.GetOrderLine(productId: 2, variantId: 1, price: 400, quantity: 1), // Small Dinner
+                            Helpers.GetOrderLine(productId: 3, price: 200, quantity: 3) // Daily rate
+                        }
+                    },
+                    new Order
+                    {
+                        OrderLines = new List<OrderLine>
+                        {
+                            Helpers.GetOrderLine(productId: 2, variantId: 1, price: 400, quantity: -1),
+                            Helpers.GetOrderLine(productId: 2, variantId: 2, price: 600, quantity: 1),
+                        }
+                    }
+                }
+            };
+            registration.Orders.ForEach(o => {
+                o.MarkAsVerified();
+                o.MarkAsInvoiced();
+            });
+
+            var expectedProducts = new List<OrderDTO>
+            {
+                Helpers.GetOrderDto(productId: 1, price: 1000, quantity: 1),
+                Helpers.GetOrderDto(productId: 3, price: 200, quantity: 2),
+                Helpers.GetOrderDto(productId: 2, variantId: 2, price: 600, quantity: 1),
+            };
+
+            // Act
+            var products = registration.Products;
+
+            // Assert
+            Assert.Equal(expectedProducts, products, new OrderDTOProductAndVariantComparer());
+        }
+
+
+
     }
 }
