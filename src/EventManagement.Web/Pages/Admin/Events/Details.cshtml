@@ -6,25 +6,25 @@
 }
 
 <div class="jumbotron jumbotron-fluid">
-    <div class="container"> 
+    <div class="container">
         <div>
             <h1 class="display-4">@Model.EventInfo.Title</h1>
             <p class="lead pb-5">@Model.EventInfo.Description</p>
             @{ // Dates
-                if(Model.EventInfo.DateStart != null) 
+                if(Model.EventInfo.DateStart != null)
                 {
                     <div>
                     <i class="material-icons  align-top">date_range</i> @Model.EventInfo.DateStart.Value.ToString("d")
-                        
+
                             @if(Model.EventInfo.DateEnd != null) {
                             <text>- @Model.EventInfo.DateEnd.Value.ToString("d")</text>
                             }
                     </div>
                 }
-            
+
             }
             @{ // City
-                if(Model.EventInfo.City != null) 
+                if(Model.EventInfo.City != null)
                 {
                     <div>
                         <i class="material-icons align-top">location_on</i> @Model.EventInfo.City
@@ -33,7 +33,7 @@
             }
 
             @{ // Location
-                    if(Model.EventInfo.Location != null) 
+                    if(Model.EventInfo.Location != null)
                     {
                         <div>
                             <i class="material-icons align-top">hotel</i> @Model.EventInfo.Location
@@ -57,10 +57,10 @@
                     @: <a href="/Admin/Products/@p.ProductId">@p.Name</a>  &nbsp;
                 }
             }
-            
+
         </div>
 
-        
+
     </div>
         <div id="event-menu" class="py-3">
 
@@ -69,7 +69,7 @@
 
                 <!-- EDIT EVENT -->
                 <a asp-page="Edit" asp-route-id="@Model.EventInfo.EventInfoId" class="btn btn-warning link-decoration-none">Rediger</a>
-  
+
                 <!-- COMMUNICATE MENU -->
                 <a asp-page="./Messaging" asp-route-id="@Model.EventInfo.EventInfoId" class="btn btn-info link-decoration-none">
                     Kommuniser
@@ -111,7 +111,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        Sertifikatet går til alle deltakere som er møtt. 
+                        Sertifikatet går til alle deltakere som er møtt.
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Lukk</button>
@@ -126,13 +126,13 @@
     </div>
     </div>
 </div>
- 
+
 <div class="container min-height-50 pb-5">
 	<div class="row">
 		<div class="col">
-            <table  
+            <table
                 id="participants-table"
-                data-toggle="table" 
+                data-toggle="table"
                 data-url="/Admin/Events/Details/@Model.EventInfo.EventInfoId?handler=Participants"
                 data-pagination="false"
                 data-show-columns="true"
@@ -162,15 +162,15 @@
                         <th data-formatter="RowActions" data-events="operateEvents">Meny</th>
                     </tr>
                 </thead>
-            </table> 
+            </table>
 		</div>
 	</div>
     <div class="row">
         <div class="col">
             <h2>Andre deltakere/stab</h2>
-            <table  
+            <table
                 id="participants-table"
-                data-toggle="table" 
+                data-toggle="table"
                 data-url="/Admin/Events/Details/@Model.EventInfo.EventInfoId?handler=OtherAttendees"
                 data-pagination="false"
                 data-show-columns="true"
@@ -197,16 +197,16 @@
                         <th data-formatter="RowActions" data-events="operateEvents">Meny</th>
                     </tr>
                 </thead>
-            </table> 
+            </table>
         </div>
     </div>
 
      <div class="row">
         <div class="col">
             <h2>Avmeldte</h2>
-            <table  
+            <table
                 id="participants-table"
-                data-toggle="table" 
+                data-toggle="table"
                 data-url="/Admin/Events/Details/@Model.EventInfo.EventInfoId?handler=Cancelled"
                 data-pagination="false"
                 data-show-columns="true"
@@ -235,7 +235,7 @@
                         <th data-formatter="RowActions" data-events="operateEvents">Meny</th>
                     </tr>
                 </thead>
-            </table> 
+            </table>
         </div>
     </div>
 </div>
@@ -254,7 +254,7 @@
         @foreach(var product in Model.EventInfo.Products) {
             <div class="row product-input-group">
                 <div class="col-2">
-                    <input id="input-quantity-@product.ProductId" 
+                    <input id="input-quantity-@product.ProductId"
                         class="input-quantity"
                         style="width: 100%" />
                     <input type="hidden" value="@product.ProductId" class="input-prodid" />
@@ -263,8 +263,8 @@
                     <h4>@product.Name</h4>
                     <p>@product.Description</p>
                     @foreach(var variant in product.ProductVariants) {
-                        <input type="radio" 
-                            name="variant-radio-@product.ProductId" 
+                        <input type="radio"
+                            name="variant-radio-@product.ProductId"
                             value="@variant.ProductVariantId" /> @variant.Name <br />
                     }
                 </div>
@@ -279,7 +279,7 @@
   </div>
 </div>
 
-@section scripts { 
+@section scripts {
     <script>
     let recipients = [];
     let includeOrders = false;
@@ -315,29 +315,29 @@
 
             // Edit info menu
             actions.push(
-            '<div class="btn-group" role="group">' + 
-                '<button id="btnGroupChange" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Endre</button>' + 
+            '<div class="btn-group" role="group">' +
+                '<button id="btnGroupChange" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Endre</button>' +
                 '<div class="dropdown-menu py-3" aria-labelledby="btnGroupChange">' +
                     '<a href="/Admin/Registrations/Details/' + row.registrationId + '" alt="Vis registrering" class="dropdown-item link-decoration-none"><i class="fa fa-id-card-o" aria-hidden="true"></i> Registrering</a>' +
-                    '<a href="#" class="dropdown-item link-decoration-none btn-edit-products"><i class="fa fa-list" aria-hidden="true"></i> Produkter</a>' + 
-                '</div>' + 
+                    '<a href="#" class="dropdown-item link-decoration-none btn-edit-products"><i class="fa fa-list" aria-hidden="true"></i> Produkter</a>' +
+                '</div>' +
             '</div>');
 
             // Communications menu
             actions.push(
-            '<div class="btn-group" role="group">' + 
-                '<button id="btnGroupSendToParticipant" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Send</button>' + 
+            '<div class="btn-group" role="group">' +
+                '<button id="btnGroupSendToParticipant" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Send</button>' +
                 '<div class="dropdown-menu py-3" aria-labelledby="btnGroupSendToParticipant">' +
-                    '<a href="#" data-participantemail="' + row.email + '" class="dropdown-item link-decoration-none btn-send-sms ">SMS</a>' + 
+                    '<a href="#" data-participantemail="' + row.email + '" class="dropdown-item link-decoration-none btn-send-sms ">SMS</a>' +
                     '<a href="#" data-participantemail="' + row.email + '" class="dropdown-item link-decoration-none btn-send-email ">Epost</a>'+
-                '</div>' + 
+                '</div>' +
             '</div>');
 
             // Certificate menu
             if(row.hasCertificate)
             {
                 const dropdownMarkup = '<div class="btn-group" role="group">' +
-                        '<a class="btn btn-secondary link-decoration-none" href="/certificate/' + 
+                        '<a class="btn btn-secondary link-decoration-none" href="/certificate/' +
                         row.certificateId + '/download" target="_blank">Diplom</a>' +
                         '<button type="button" class="btn btn-secondary dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
                         '</button>' +
@@ -402,6 +402,12 @@
             })
         },
         'click .btn-edit-products': function(e, value, row, index) {
+            $.each(
+                $('input[type=radio]:first-of-type'),
+                function(i, el) {
+                    $(el).prop("checked", true);
+                }
+            );
             $('.input-quantity').val(0);
             row.products.forEach(function(p) {
                 $('#input-quantity-'+p.item1.productId).val(p.item3);
@@ -419,7 +425,7 @@
             .done(function(){
                 toastr.success('Da va følgende registrert ombord ' + row.name + '.');
                 $('#participants-table').bootstrapTable('refresh', null);
-                
+
             })
             .fail(function(){
                 toastr.error('Uuuups, fikk ikke registrert ' + row.name + '. ')
@@ -440,7 +446,7 @@
             .done(function(){
                 toastr.success('Da va følgende registrert som fullført ' + row.name + '.');
                 $('#participants-table').bootstrapTable('refresh', null);
-                
+
             })
             .fail(function(){
                 toastr.error('Uuuups, fikk ikke registrert ' + row.name + '. ')
@@ -453,10 +459,10 @@
         const data = {
             registrationId: registrationId,
             products: $('.product-input-group').get()
-                        .map(function(d) { 
+                        .map(function(d) {
                             const productId = $(d).find('.input-prodid').first().val();
                             return {
-                                id: productId, 
+                                id: productId,
                                 quantity: $(d).find('.input-quantity').first().val(),
                                 variantId: $(d).find('input[name="variant-radio-'+ productId +'"]:checked').val()
                             }
@@ -476,8 +482,8 @@
     // TODO: Remove this?
     function sendAll() {
         const data = $table.bootstrapTable('getData', {useCurrentPage: false});
-        recipients = data.map(function(x){ 
-            return { name: x.name, email: x.email } 
+        recipients = data.map(function(x){
+            return { name: x.name, email: x.email }
         });
         includeOrders = true;
         showEmailModal('alle deltakere');
