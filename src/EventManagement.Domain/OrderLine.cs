@@ -42,11 +42,14 @@ namespace losol.EventManagement.Domain
 		/// A string which combines product and productvariant name
 		/// </summary>
 		public string ItemName =>
-            string.IsNullOrWhiteSpace(ProductVariantName) ? $"{ProductName}-{ProductVariantName}" : $"{ProductName}";
+            !string.IsNullOrWhiteSpace(ProductVariantName) ? $"{ProductName} ({ProductVariantName})" : $"{ProductName}";
 
 
+		[DataType(DataType.Currency)]
 		public decimal Price { get; set; } 
+
 		public decimal VatPercent { get; set; } = 0;
+
         public decimal LineTotal => (Price + Price * VatPercent * 0.01m) * Quantity;
 
 		public string Comments { get; set; }
