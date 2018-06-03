@@ -38,7 +38,14 @@ namespace losol.EventManagement.Domain
 		public string ItemCode =>
             ProductVariantId.HasValue ? $"K{ProductId}-{ProductVariantId}" : $"K{ProductId}";
 
-		public decimal Price { get; set; } // TODO: Change this to PricePerUnit
+		/// <summary>
+		/// A string which combines product and productvariant name
+		/// </summary>
+		public string ItemName =>
+            string.IsNullOrWhiteSpace(ProductVariantName) ? $"{ProductName}-{ProductVariantName}" : $"{ProductName}";
+
+
+		public decimal Price { get; set; } 
 		public decimal VatPercent { get; set; } = 0;
         public decimal LineTotal => (Price + Price * VatPercent * 0.01m) * Quantity;
 
