@@ -72,16 +72,26 @@ namespace losol.EventManagement.Services
 
 		public async Task<List<Registration>> GetRegistrationsForProductVariantAsync(int productVariantId)
 		{
-			var registrations = await _db.Registrations
-				.Where(r => r.Orders.Any(o => o.Status != OrderStatus.Cancelled &&
-					o.OrderLines.Any(l => l.ProductVariantId == productVariantId) == true))
-				.Include(r => r.User)
-				.Include(r => r.Orders)
-					.ThenInclude(o => o.OrderLines)
-				.AsNoTracking()
-				.ToListAsync();
+			var registrationIds = await _db.OrderLines
+                .Where(l => l.Order.Status != OrderStatus.Cancelled && l.ProductVariantId == productVariantId)
+                .GroupBy(l => l.Order.RegistrationId)
+                .Where(g => g.Sum(l => l.Quantity) > 0)
+                .Select(g => g.Key)
+                .ToListAsync();
 
-			return registrations;
+            List<Registration> registrations = new List<Registration>();
+            foreach(var id in registrationIds)
+            {
+                var registration = await _db.Registrations.FindAsync(id);
+                var task1 = _db.Entry(registration).Reference(r => r.User).LoadAsync();
+                var task2 = _db.Entry(registration).Collection(r => r.Orders).LoadAsync();
+                var task3 = _db.OrderLines.Where(l => l.Order.RegistrationId == id).LoadAsync();
+                await Task.WhenAll(task1, task2, task3);
+
+                registrations.Add(registration);
+            }
+
+            return registrations;
 		}
 
 
