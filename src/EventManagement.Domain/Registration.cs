@@ -272,7 +272,7 @@ namespace losol.EventManagement.Domain
                     }
                     var product = products.Find(p => p.Product.ProductId == order.Product.ProductId);
                     var orderline = order.ToOrderLine();
-                    if(product != null && product.Variant?.ProductVariantId != order.Variant?.ProductVariantId)
+                    if(product != null && product.Variant?.ProductVariantId != order.Variant?.ProductVariantId) // if a product variant is being replaced
                     {
                         lines.Add(orderline);
                         var refundLine = product.ToOrderLine();
@@ -282,7 +282,10 @@ namespace losol.EventManagement.Domain
                     else
                     {
                         orderline.Quantity = order.Quantity - (product?.Quantity ?? 0);
-                        lines.Add(orderline);
+                        if(orderline.Quantity != 0)
+                        {
+                            lines.Add(orderline);
+                        }
                     }
                 }
             }

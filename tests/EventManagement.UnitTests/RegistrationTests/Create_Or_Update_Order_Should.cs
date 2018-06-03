@@ -397,5 +397,41 @@ namespace losol.EventManagement.UnitTests.RegistrationTests
             Assert.Equal(3, last.Count);
         }
 
+
+        [Fact]
+        public void Not_Add_Items_With_Zero_Quantity()
+        {
+            // Arrange
+            var registration = new Registration()
+            {
+                Orders = new List<Order>
+                {
+                    new Order
+                    {
+                        OrderLines = new List<OrderLine>
+                        {
+                            Helpers.GetOrderLine(productId: 1, price: 1000, quantity: 1),
+                            Helpers.GetOrderLine(productId: 2, price: 1000, quantity: 0)
+                        }
+                    }
+                }
+            };
+            var orderitems = new List<OrderDTO>
+            {
+                Helpers.GetOrderDto(productId: 1, price: 1000, quantity: 1),
+                Helpers.GetOrderDto(productId: 2, price: 1000, quantity: 0),
+                Helpers.GetOrderDto(productId: 3, price: 1000, quantity: 0),
+                Helpers.GetOrderDto(productId: 4, price: 1000, quantity: 0),
+            };
+
+            // Act
+            registration.CreateOrUpdateOrder(orderitems);
+            var lines = registration.Orders.First().OrderLines;
+
+            //Assert
+            Assert.Single(lines);
+            Assert.Equal(1000, registration.Orders.Sum(o => o.TotalAmount));
+        }
+
     }
 }
