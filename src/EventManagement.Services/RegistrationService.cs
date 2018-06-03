@@ -64,7 +64,7 @@ namespace losol.EventManagement.Services {
 
 		public async Task<List<Registration>> GetRegistrations (int eventId) {
 			return await _db.Registrations
-				.Where (r => 
+				.Where (r =>
 					r.EventInfoId == eventId &&
 					r.Status != RegistrationStatus.Cancelled)
 				.Include (r => r.EventInfo)
@@ -74,7 +74,7 @@ namespace losol.EventManagement.Services {
 
 		public async Task<List<Registration>> GetCancelledRegistrations (int eventId) {
 			return await _db.Registrations
-				.Where (r => 
+				.Where (r =>
 					r.EventInfoId == eventId &&
 					r.Status == RegistrationStatus.Cancelled)
 				.Include (r => r.EventInfo)
@@ -175,7 +175,11 @@ namespace losol.EventManagement.Services {
 			var registration = await _db.Registrations
 				.Where (a => a.RegistrationId == registrationId)
 				.Include (r => r.Orders)
-				.ThenInclude (o => o.OrderLines)
+				    .ThenInclude (o => o.OrderLines)
+                        .ThenInclude(l => l.Product)
+                .Include (r => r.Orders)
+				    .ThenInclude (o => o.OrderLines)
+                        .ThenInclude(l => l.ProductVariant)
 				.SingleOrDefaultAsync ();
 			_ = registration ??
 				throw new ArgumentException (message: "Invalid registration id.", paramName : nameof (registrationId));
@@ -250,7 +254,7 @@ namespace losol.EventManagement.Services {
 				}
 			return await _db.SaveChangesAsync() > 0;
 		}
-		
+
 		public async Task<bool> UpdateCustomerAddress(int registrationId, string customerAddress, string customerCity, string customerZip, string customerCountry) {
 			var reg = await _db.Registrations
 				.Where( m => m.RegistrationId == registrationId)
