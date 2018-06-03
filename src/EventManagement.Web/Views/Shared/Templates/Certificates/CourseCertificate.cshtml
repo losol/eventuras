@@ -156,7 +156,7 @@
 
           @if(Model.Description != null) {
               <div class="group">
-                <pre class="line text">@Model.Description</pre>
+                <div class="line text">@Model.Description.Replace(Environment.NewLine, "<br />")</div>
               </div>
             }
 
@@ -164,7 +164,9 @@
           <div class="line">@Model.IssuedInCity @Model.IssuingDate</div>
 
           @if(!string.IsNullOrEmpty(Model.IssuerPersonSignatureImageBase64)) {
-            <img src="@Model.IssuerPersonSignatureImageBase64" class="w-25" alt="signatur" />
+            <div class="center">
+              <img src="@Model.IssuerPersonSignatureImageBase64" class="w-50" alt="Signatur" />
+            </div>
           } else {
           <div class="line handwriting">@Model.IssuerPersonName</div>
           }
