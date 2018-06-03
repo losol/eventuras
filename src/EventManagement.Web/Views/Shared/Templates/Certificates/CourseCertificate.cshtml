@@ -69,6 +69,9 @@
       .w-50 {
         width: 50%;
       }
+      .w-25 {
+        width: 25%;
+      }
       .handwriting {
         font-size: 24px;
         font-family: 'Reenie Beanie';
@@ -161,7 +164,7 @@
           <div class="line">@Model.IssuedInCity @Model.IssuingDate</div>
 
           @if(!string.IsNullOrEmpty(Model.IssuerPersonSignatureImageBase64)) {
-            <img src="@Model.IssuerPersonSignatureImageBase64" alt="signatur" />
+            <img src="@Model.IssuerPersonSignatureImageBase64" class="w-25" alt="signatur" />
           } else {
           <div class="line handwriting">@Model.IssuerPersonName</div>
           }
