@@ -23,7 +23,7 @@ namespace losol.EventManagement.UnitTests
 
                 Assert.Equal(line.Price, refund.Price);
                 Assert.Equal(-line.Quantity, refund.Quantity);
-                Assert.Equal(-line.TotalAmount, refund.TotalAmount);
+                Assert.Equal(-line.LineTotal, refund.LineTotal);
             }
 
             [Fact]

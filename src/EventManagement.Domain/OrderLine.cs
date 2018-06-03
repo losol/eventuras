@@ -40,7 +40,7 @@ namespace losol.EventManagement.Domain
 
 		public decimal Price { get; set; } // TODO: Change this to PricePerUnit
 		public decimal VatPercent { get; set; } = 0;
-        public decimal TotalAmount => (Price + Price * VatPercent * 0.01m) * Quantity;
+        public decimal LineTotal => (Price + Price * VatPercent * 0.01m) * Quantity;
 
 		public string Comments { get; set; }
 
