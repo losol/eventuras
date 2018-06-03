@@ -105,23 +105,35 @@ namespace losol.EventManagement.Pages.Admin.Events
                     r => r.EventInfoId == id &&
                     r.Status != RegistrationStatus.Cancelled &&
                     r.Type != RegistrationType.Participant)
-                .Select ( x=> new RegistrationsVm{
-                    RegistrationId = x.RegistrationId,
-                    Name = x.User.Name,
-                    Email = x.User.Email,
-                    Phone = x.User.PhoneNumber,
-                    JobTitle = x.ParticipantJobTitle,
-                    Employer = x.ParticipantEmployer,
-                    City = x.ParticipantCity,
-                    HasCertificate = x.HasCertificate,
-                    CertificateId = x.CertificateId,
-                    Status = x.Status.ToString(),
-                    Type = x.Type.ToString()
-                    })
+                .Include(r => r.Orders)
+                    .ThenInclude(o => o.OrderLines)
+                        .ThenInclude(ol => ol.Product)
+                .Include(r => r.Orders)
+                    .ThenInclude(o => o.OrderLines)
+                        .ThenInclude(ol => ol.ProductVariant)
+                .Include(r => r.User)
                 .ToListAsync();
+            var vms = registrations.Select(x => new RegistrationsVm
+            {
+                RegistrationId = x.RegistrationId,
+                Name = x.User.Name,
+                Email = x.User.Email,
+                Phone = x.User.PhoneNumber,
+                JobTitle = x.ParticipantJobTitle,
+                Employer = x.ParticipantEmployer,
+                City = x.ParticipantCity,
+                Products = x.Products.Select(dto => ValueTuple.Create(
+                    new RegistrationsProductVm(dto.Product),
+                    RegistrationsVariantVm.Create(dto.Variant),
+                    dto.Quantity)).ToList(),
+                HasCertificate = x.HasCertificate,
+                CertificateId = x.CertificateId,
+                Status = x.Status.ToString(),
+                Type = x.Type.ToString()
+            });
 
-            if (registrations.Any()) {
-                return new JsonResult(registrations);
+            if (vms.Any()) {
+                return new JsonResult(vms);
             }
             else {
                 return new JsonResult("none");

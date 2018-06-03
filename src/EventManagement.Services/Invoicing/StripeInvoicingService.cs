@@ -18,7 +18,7 @@ namespace losol.EventManagement.Services.Invoicing
             {
                 var createInvoiceLineOptions = new StripeInvoiceItemCreateOptions
                 {
-                    Amount = (int)(line.TotalAmount * 100m), // inclusive of quantity & tax
+                    Amount = (int)(line.LineTotal * 100m), // inclusive of quantity & tax
                     Currency = "nok", // TODO: read this from config
                     CustomerId = customer.Id,
                     Description = !string.IsNullOrWhiteSpace(line.ProductVariantName) ? $"{line.ProductName} ({line.ProductVariantName})" : line.ProductName,

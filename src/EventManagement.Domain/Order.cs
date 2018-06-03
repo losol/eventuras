@@ -113,7 +113,7 @@ namespace losol.EventManagement.Domain
 
 		// TODO: Write tests for this
 		public decimal TotalAmount =>
-			OrderLines.Sum(l => l.TotalAmount);
+			OrderLines.Sum(l => l.LineTotal);
 
 		public void MarkAsVerified()
 		{
