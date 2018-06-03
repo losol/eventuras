@@ -33,7 +33,7 @@
     <h2>Varianter</h2>
     @foreach(var v in product.ProductVariants)
     {
-    
+
         var varRegistrations = await productsService.GetRegistrationsForProductVariantAsync(v.ProductVariantId);
         var publishchecked = (v.Published) ? "checked" : "";
         <div class="py-5">
@@ -48,7 +48,7 @@
                     </div>
                     <strong>Registration Count: </strong>@varRegistrations.Count()
                     @await Html.PartialAsync("_registrationTable", Tuple.Create(varRegistrations, id, false))
-                </div>  
+                </div>
             </div>
         </div>
     }
@@ -71,19 +71,19 @@
             <label class="control-label">User Email</label>
             <!-- <input id="input-email" class="form-control" /> -->
             <input id="input-user"
-                type="text" class="typeahead form-control" 
+                type="text" class="typeahead form-control"
                 placeholder="Name, email or phone."
                 autocomplete="off"
                 data-provide="typeahead">
         </div>
         <div class="form-group">
             <label class="control-label">Variant</label>
-            <select id="input-variant" 
-                class="form-control" 
+            <select id="input-variant"
+                class="form-control"
                 @(product.ProductVariants.Any() ? "" : "disabled") >
                 @foreach(var v in product.ProductVariants)
                 {
-                    <option value="@v.ProductVariantId">@v.Name</option>    
+                    <option value="@v.ProductVariantId">@v.Name</option>
                 }
             </select>
         </div>
@@ -97,7 +97,7 @@
 </div>
 </div>
 
-@section scripts { 
+@section scripts {
 <script>
 
     $('#product_Published').change(function() {
@@ -113,9 +113,9 @@
             .fail(function(){
                 toastr.error('Sorry.')
             });
-    }); 
+    });
 
-    // variant-published-status  [HttpPost("/variant/{id}/published/{publish}")]
+
     $('.variant-published-status').change(function() {
         var productStatus = {
             id : $(this).data('id'),
@@ -129,12 +129,12 @@
             .fail(function(){
                 toastr.error('Sorry.')
             });
-    }); 
+    });
 
     $(function () {
 
         const users = @Html.Raw(JsonConvert.SerializeObject(eventRegistrations.Select(r => new { id = r.RegistrationId, name = $"{r.ParticipantName} {r.User?.PhoneNumber} {r.User?.Email}" })));
-        const $inputUser = $('#input-user').typeahead({ 
+        const $inputUser = $('#input-user').typeahead({
             source: users,
             fitToElement: true,
             showHintOnFocus: "all"
