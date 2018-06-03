@@ -27,25 +27,23 @@
                         <table class="table table-sm table-hover">
                             <thead>
                                 <tr>
-                                <th scope="col">Kode</th>
-                                <th scope="col">Produkt</th>
-                                <th scope="col">Antall x Pris</th>
-                                <th scope="col">Linjetotal</th>
+                                    <th scope="col">Kode</th>
+                                    <th scope="col">Produkt</th>
+                                    <th scope="col">Antall x Pris</th>
+                                    <th scope="col">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var orderline in order.OrderLines) 
                                 {
                                     <tr>
-                                        <th scope="row">@orderline.ItemCode</th>
-                                        <th scope="row">@orderline.ItemName</th>
-                                        <th scope="row">@orderline.Quantity x @orderline.Price</th>
-                                        <th scope="row">@orderline.LineTotal</th>
+                                        <th>@orderline.ItemCode</th>
+                                        <th>@orderline.ItemName</th>
+                                        <th>@orderline.Quantity x @orderline.Price</th>
+                                        <th>@string.Format("{0:C}", orderline.LineTotal)</th>
                                     </tr>
                                 }
                             </tbody>
-
-                        
                         </table>
                         <p>
                             <a asp-page="../Orders/Details" asp-route-id="@order.OrderId" class="btn btn-secondary link-decoration-none">Vis ordre</a>
