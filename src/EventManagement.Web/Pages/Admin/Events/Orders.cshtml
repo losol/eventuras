@@ -29,8 +29,8 @@
                                 <tr>
                                 <th scope="col">Kode</th>
                                 <th scope="col">Produkt</th>
-                                <th scope="col">Antall</th>
-                                <th scope="col">Pris</th>
+                                <th scope="col">Antall x Pris</th>
+                                <th scope="col">Linjetotal</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -39,8 +39,8 @@
                                     <tr>
                                         <th scope="row">@orderline.ItemCode</th>
                                         <th scope="row">@orderline.ItemName</th>
-                                        <th scope="row">@orderline.Quantity</th>
-                                        <th scope="row">@orderline.Price</th>
+                                        <th scope="row">@orderline.Quantity x @orderline.Price</th>
+                                        <th scope="row">@orderline.LineTotal</th>
                                     </tr>
                                 }
                             </tbody>
