@@ -69,6 +69,9 @@
       .w-50 {
         width: 50%;
       }
+      .w-33 {
+        width: 33%;
+      }
       .w-25 {
         width: 25%;
       }
@@ -117,11 +120,12 @@
         </div>
 
         <div class="group">
-          @if (Model.EvidenceDescription != null) {
-            <div class="line">@Model.EvidenceDescription</div>
-            <br />
-          }
+
           <div class="line">Basert p&aring;</div>
+            @if (Model.EvidenceDescription != null) {
+              <div class="line">@Model.EvidenceDescription</div>
+              <br />
+            }
             @if (Model.Evidence != null && Model.Evidence.Any()) {
                 @foreach (var item in Model.Evidence) {
                   <div class="line">
@@ -165,7 +169,7 @@
 
           @if(!string.IsNullOrEmpty(Model.IssuerPersonSignatureImageBase64)) {
             <div class="center">
-              <img src="@Model.IssuerPersonSignatureImageBase64" class="w-50" alt="Signatur" />
+              <img src="@Model.IssuerPersonSignatureImageBase64" class="w-33" alt="Signatur" />
             </div>
           } else {
           <div class="line handwriting">@Model.IssuerPersonName</div>

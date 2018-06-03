@@ -20,7 +20,7 @@ The application will now be live at `localhost:5100`.
 Use the following credentials to login:
 
 ```text
-Username: asdf@email.com
+Username: admin@email.com
 Password: PaSsw0rd
 ```
 
