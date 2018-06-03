@@ -117,8 +117,10 @@
         </div>
 
         <div class="group">
-          <div class="line">@Model.EvidenceDescription</div>
-          <br />
+          @if (Model.EvidenceDescription != null) {
+            <div class="line">@Model.EvidenceDescription</div>
+            <br />
+          }
           <div class="line">Basert p&aring;</div>
             @if (Model.Evidence != null && Model.Evidence.Any()) {
                 @foreach (var item in Model.Evidence) {
