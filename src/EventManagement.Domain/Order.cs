@@ -31,7 +31,7 @@ namespace losol.EventManagement.Domain
 			Draft -> Cancelled
 			Draft -> Verified -> Cancelled
 			Draft -> Verified -> Invoiced
-			Draft -> Verified -> Invoiced -> Refunded
+			Draft -> Verified -> Invoiced -> Cancelled
 		 */
 		private OrderStatus _status = OrderStatus.Draft;
 		public OrderStatus Status {
@@ -61,10 +61,6 @@ namespace losol.EventManagement.Domain
 						break;
 
 					case OrderStatus.Cancelled:
-						if(_status == OrderStatus.Invoiced)
-						{
-							throw new InvalidOperationException("Invoiced orders cannot be cancelled.");
-						}
 						break;
 
 				}
