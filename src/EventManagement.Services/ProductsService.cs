@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using static losol.EventManagement.Domain.Order;
 
 namespace losol.EventManagement.Services
@@ -12,10 +13,12 @@ namespace losol.EventManagement.Services
 	public class ProductsService : IProductsService
 	{
 		private readonly ApplicationDbContext _db;
+		private readonly ILogger _logger;
 
-		public ProductsService(ApplicationDbContext db)
+		public ProductsService(ApplicationDbContext db, ILogger<ProductsService> logger)
 		{
 			_db = db;
+			_logger = logger;
 		}
 
 		public Task<List<Product>> GetAsync()
@@ -57,6 +60,7 @@ namespace losol.EventManagement.Services
             List<Registration> registrations = new List<Registration>();
             foreach(var id in registrationIds)
             {
+				try {
                 var registration = await _db.Registrations.FindAsync(id);
                 var task1 = _db.Entry(registration).Reference(r => r.User).LoadAsync();
                 var task2 = _db.Entry(registration).Collection(r => r.Orders).LoadAsync();
@@ -64,6 +68,9 @@ namespace losol.EventManagement.Services
                 await Task.WhenAll(task1, task2, task3);
 
                 registrations.Add(registration);
+				} catch (Exception ex) {
+					_logger.LogError(ex.Message);
+				}
             }
 
             return registrations;
