@@ -58,7 +58,16 @@ namespace losol.EventManagement.Services
                 .ToListAsync();
 
             List<Registration> registrations = new List<Registration>();
-            foreach(var id in registrationIds)
+			foreach (var id in registrationIds) {
+				var reg = await _db.Registrations
+					.Where( m => m.RegistrationId == id)
+					.Include ( m=> m.User)
+					.Include ( m=> m.Orders)
+						.ThenInclude (ml => ml.OrderLines)
+					.FirstOrDefaultAsync();
+				registrations.Add(reg);
+			}
+            /* foreach(var id in registrationIds)
             {
 				try {
                 var registration = await _db.Registrations.FindAsync(id);
@@ -71,7 +80,7 @@ namespace losol.EventManagement.Services
 				} catch (Exception ex) {
 					_logger.LogError(ex.Message);
 				}
-            }
+            }*/
 
             return registrations;
 		}
@@ -87,6 +96,18 @@ namespace losol.EventManagement.Services
                 .ToListAsync();
 
             List<Registration> registrations = new List<Registration>();
+
+			foreach (var id in registrationIds) {
+				var reg = await _db.Registrations
+					.Where( m => m.RegistrationId == id)
+					.Include ( m=> m.User)
+					.Include ( m=> m.Orders)
+						.ThenInclude (ml => ml.OrderLines)
+					.FirstOrDefaultAsync();
+				registrations.Add(reg);
+			}
+
+			/* 
             foreach(var id in registrationIds)
             {
                 var registration = await _db.Registrations.FindAsync(id);
@@ -97,6 +118,7 @@ namespace losol.EventManagement.Services
 
                 registrations.Add(registration);
             }
+			*/
 
             return registrations;
 		}
