@@ -16,6 +16,7 @@ using losol.EventManagement.Web.Services;
 using losol.EventManagement.Services.Extensions;
 using System.Text;
 using static losol.EventManagement.Domain.PaymentMethod;
+using System.Text.RegularExpressions;
 
 namespace losol.EventManagement.Web.Pages.Events.Register
 {
@@ -76,6 +77,22 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 				PaymentMethods = _paymentMethodService.GetActivePaymentMethods();
 				return Page();
 			}
+
+			// Sanitization of input
+			Registration.ParticipantName = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
+			Registration.Email = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
+			Registration.PhoneCountryCode = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
+			Registration.Phone = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
+			Registration.ParticipantJobTitle = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
+			Registration.ParticipantCity = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
+			Registration.Notes = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
+			Registration.CustomerVatNumber = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
+			Registration.CustomerName = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
+			Registration.CustomerEmail = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
+			Registration.CustomerInvoiceReference = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
+			Registration.CustomerZip = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
+			Registration.CustomerCity = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
+			Registration.CustomerCountry = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
 
 			EventInfo = await _eventsService.GetWithProductsAsync(id);
 			if (EventInfo == null) return NotFound();
