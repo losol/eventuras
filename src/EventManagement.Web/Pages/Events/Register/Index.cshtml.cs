@@ -79,20 +79,20 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 			}
 
 			// Sanitization of input
-			Registration.ParticipantName = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
-			Registration.Email = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
-			Registration.PhoneCountryCode = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
-			Registration.Phone = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
-			Registration.ParticipantJobTitle = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
-			Registration.ParticipantCity = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
-			Registration.Notes = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
-			Registration.CustomerVatNumber = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
-			Registration.CustomerName = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
-			Registration.CustomerEmail = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
-			Registration.CustomerInvoiceReference = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
-			Registration.CustomerZip = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
-			Registration.CustomerCity = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
-			Registration.CustomerCountry = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);
+			if (!string.IsNullOrWhiteSpace(Registration.ParticipantName)) 	{ Registration.ParticipantName = Regex.Replace(Registration.ParticipantName, "<.*?>", String.Empty); }
+			if (!string.IsNullOrWhiteSpace(Registration.Email)) 				{ Registration.Email = Regex.Replace(Registration.Email, "<.*?>", String.Empty); }
+			if (!string.IsNullOrWhiteSpace(Registration.PhoneCountryCode)) 	{ Registration.PhoneCountryCode = Regex.Replace(Registration.PhoneCountryCode, "<.*?>", String.Empty); }
+			if (!string.IsNullOrWhiteSpace(Registration.Phone)) 				{ Registration.Phone = Regex.Replace(Registration.Phone, "<.*?>", String.Empty); }
+			if (!string.IsNullOrWhiteSpace(Registration.ParticipantJobTitle)){ Registration.ParticipantJobTitle = Regex.Replace(Registration.ParticipantJobTitle, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.ParticipantCity)) 	{ Registration.ParticipantCity = Regex.Replace(Registration.ParticipantCity, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.Notes)) 				{ Registration.Notes = Regex.Replace(Registration.Notes, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerVatNumber)) 	{ Registration.CustomerVatNumber = Regex.Replace(Registration.CustomerVatNumber, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerName)) 		{ Registration.CustomerName = Regex.Replace(Registration.CustomerName, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerEmail)) 		{ Registration.CustomerEmail = Regex.Replace(Registration.CustomerEmail, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerInvoiceReference)) {Registration.CustomerInvoiceReference = Regex.Replace(Registration.CustomerInvoiceReference, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerZip)) 		{ Registration.CustomerZip = Regex.Replace(Registration.CustomerZip, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerCity)) 		{ Registration.CustomerCity = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerCountry)) 	{ Registration.CustomerCountry = Regex.Replace(Registration.CustomerCountry, "<.*?>", String.Empty);}
 
 			EventInfo = await _eventsService.GetWithProductsAsync(id);
 			if (EventInfo == null) return NotFound();
