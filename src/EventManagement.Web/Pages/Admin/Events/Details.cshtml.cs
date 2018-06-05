@@ -73,6 +73,7 @@ namespace losol.EventManagement.Pages.Admin.Events
                 Email = x.User.Email,
                 Phone = x.User.PhoneNumber,
                 JobTitle = x.ParticipantJobTitle,
+                Notes = x.Notes,
                 Employer = x.ParticipantEmployer,
                 City = x.ParticipantCity,
                 Products = x.Products.Select(dto => ValueTuple.Create(
@@ -122,6 +123,7 @@ namespace losol.EventManagement.Pages.Admin.Events
                 JobTitle = x.ParticipantJobTitle,
                 Employer = x.ParticipantEmployer,
                 City = x.ParticipantCity,
+                Notes = x.Notes,
                 Products = x.Products.Select(dto => ValueTuple.Create(
                     new RegistrationsProductVm(dto.Product),
                     RegistrationsVariantVm.Create(dto.Variant),
@@ -156,6 +158,7 @@ namespace losol.EventManagement.Pages.Admin.Events
                     Name = x.User.Name,
                     Email = x.User.Email,
                     Phone = x.User.PhoneNumber,
+                    Notes = x.Notes,
                     JobTitle = x.ParticipantJobTitle,
                     Employer = x.ParticipantEmployer,
                     City = x.ParticipantCity,
@@ -181,6 +184,7 @@ namespace losol.EventManagement.Pages.Admin.Events
             public string Email { set;get;}
             public string Phone { set;get;}
             public string Employer {get;set;}
+            public string Notes {get;set;}
             public string JobTitle {get;set;}
             public string City {get;set;}
             public bool HasCertificate { get; set; }
