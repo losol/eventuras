@@ -15,6 +15,7 @@ namespace losol.EventManagement.Domain {
         [Required]
         public string Title { get; set; }
         public string Description { get; set; }
+        public string Comment { get; set; }
 
         // The recipient of the certificate
         public string RecipientName { get; set; }
