@@ -7,6 +7,7 @@ using losol.EventManagement.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using static losol.EventManagement.Domain.Order;
+using static losol.EventManagement.Domain.Registration;
 
 namespace losol.EventManagement.Services
 {
@@ -65,7 +66,11 @@ namespace losol.EventManagement.Services
 					.Include ( m=> m.Orders)
 						.ThenInclude (ml => ml.OrderLines)
 					.FirstOrDefaultAsync();
-				registrations.Add(reg);
+
+				// Only add if registration is not cancelled
+				if (reg.Status != RegistrationStatus.Cancelled) {
+					registrations.Add(reg);
+				}
 			}
             /* foreach(var id in registrationIds)
             {
@@ -104,7 +109,12 @@ namespace losol.EventManagement.Services
 					.Include ( m=> m.Orders)
 						.ThenInclude (ml => ml.OrderLines)
 					.FirstOrDefaultAsync();
-				registrations.Add(reg);
+
+				
+				// Only add if registration is not cancelled
+				if (reg.Status != RegistrationStatus.Cancelled) {
+					registrations.Add(reg);
+				}
 			}
 
 			/* 
