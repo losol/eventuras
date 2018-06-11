@@ -67,6 +67,7 @@ namespace losol.EventManagement.Services {
 			var certificate = new Certificate {
 				Title = registration.EventInfo.Title,
 				Description = registration.EventInfo.CertificateDescription,
+				Comment = registration.CertificateComment,
 
 				RecipientName = registration.ParticipantName,
 				RecipientEmail = registration.User.Email,
