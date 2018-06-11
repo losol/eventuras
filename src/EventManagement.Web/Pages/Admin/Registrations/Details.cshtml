@@ -57,6 +57,17 @@
                     </div>
                 </div>
             </div>
+            <div class="card mt-3" id="certificateinfo-card">
+                <div class="card-body">
+                    <h4>Kursbevis</h4>
+                    <small>Kommentar på kursbeviset</small>
+                    <div contenteditable="true" class="certificateinfo" id="certificateinfo-comment">
+                        @Html.DisplayFor(model => model.Registration.CertificateComment)
+                    </div>
+                    <br />
+
+                </div>
+            </div>
         </div>
             <div class="col-md-6">
             <div class="card" id="customerinfo-card">
@@ -147,6 +158,36 @@
 
 @section scripts {
 <script>
+
+    // *******CERTIFICATE COMMENT  SCRIPTS *******
+    // Add change listener to all contenteditables
+    var contenteditables = document.querySelectorAll(".certificateinfo");
+    [].forEach.call(contenteditables, function (content) {
+        // Save inital text when entering
+        content.addEventListener("focus", function () {
+            content.setAttribute("data-initial-text", content.innerHTML);
+        });
+        // And check if it has changed
+        content.addEventListener("blur", function () {
+            if (content.getAttribute("data-initial-text") !== content.innerHTML) {
+                saveCertificateComment();
+            }
+        });
+    });
+
+    function saveCertificateComment() {
+        const postData = {
+            CertificateComment: $('#certificateinfo-comment').text().trim()
+        };
+        $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/comment/update', postData)
+            .done(function() {
+                toastr.success('Lagret kommentar til kursbevis');
+            })
+            .fail(function() {
+                toastr.error('Noe gikk galt... Sorry altså');
+            });
+    };
+
     // *******PARTICIPANT INFO SCRIPTS *******
     // Add change listener to all contenteditables
     var contenteditables = document.querySelectorAll(".participantinfo");
