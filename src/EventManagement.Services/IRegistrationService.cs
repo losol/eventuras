@@ -30,6 +30,7 @@ namespace losol.EventManagement.Services
 		Task<bool> UpdateCustomerAddress(int registrationId, string customerAddress, string customerCity, string customerZip, string customerCountry);
 		Task<bool> UpdatePaymentMethod(int registrationId, PaymentProvider provider);
 		Task<bool> UpdateRegistrationStatus(int registrationId, Registration.RegistrationStatus registrationStatus);
+		Task<bool> UpdateCertificateComment(int registrationId, string comment);
 
 		Task<bool> UpdateRegistrationType(int registrationId, Registration.RegistrationType registrationType);
 		// Set status

@@ -84,6 +84,7 @@ namespace losol.EventManagement.Domain
 
         public int? CertificateId { get; set; }
         public Certificate Certificate { get; set; }
+        public string CertificateComment { get; set; }
 
         // Navigation properties
         public EventInfo EventInfo { get; set; }

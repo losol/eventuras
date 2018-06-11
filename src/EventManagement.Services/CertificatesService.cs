@@ -67,6 +67,7 @@ namespace losol.EventManagement.Services {
 			var certificate = new Certificate {
 				Title = registration.EventInfo.Title,
 				Description = registration.EventInfo.CertificateDescription,
+				Comment = registration.CertificateComment,
 
 				RecipientName = registration.ParticipantName,
 				RecipientEmail = registration.User.Email,
@@ -74,12 +75,13 @@ namespace losol.EventManagement.Services {
 			};
 
 			// Add evidence description
-			certificate.EvidenceDescription = $"{registration.EventInfo.Title} {registration.EventInfo.City}";
+			/* certificate.EvidenceDescription = $"{registration.EventInfo.Title} {registration.EventInfo.City}";
             if (registration.EventInfo.DateStart.HasValue) 
                 { certificate.EvidenceDescription += " – " + registration.EventInfo.DateStart.Value.ToString("d");};
             if (registration.EventInfo.DateEnd.HasValue) 
                 { certificate.EvidenceDescription += "-" + registration.EventInfo.DateEnd.Value.ToString("d");};
-
+			*/ 
+			
 			// Add organization
 			if (registration.EventInfo.OrganizationId != null) {
 				certificate.IssuingOrganizationId = registration.EventInfo.OrganizationId;

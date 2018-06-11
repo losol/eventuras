@@ -10,6 +10,7 @@ namespace losol.EventManagement.Web.ViewModels
 
         public string Title { get;set; } 
         public string Description { get;set; }
+        public string Comment { get;set; }
 
         public string RecipientName {get;set;}
 
@@ -32,6 +33,8 @@ namespace losol.EventManagement.Web.ViewModels
             IssuerOrganizationName = "Nordland Legeforening",
             IssuerPersonName = "Tove Myrbakk",
 
+            Comment = "Deltaker har vært tilstede på nesten hele kurset.",
+
             //EventDateStart = DateTime.Now.AddDays(-7),
             CertificateGuid = Guid.NewGuid().ToString(),
             IssuedInCity = "Bodø",
@@ -49,6 +52,7 @@ namespace losol.EventManagement.Web.ViewModels
 
                 Title = c.Title,
                 Description = c.Description,
+                Comment = c.Comment,
 
                 RecipientName = c.RecipientName,
                 

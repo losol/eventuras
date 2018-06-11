@@ -83,7 +83,7 @@
       }
 
       .featured {
-        padding: 25mm 0 10mm 0;
+        padding: 15mm 0 10mm 0;
         background-color: #336699;
         color: white;
       }
@@ -142,6 +142,11 @@
                     }
                   </div>
                 }
+            }
+            <br /> <br />
+              @if (Model.Comment != null) {
+              <div class="line">@Model.Comment</div>
+              <br />
             }
         </div>
 

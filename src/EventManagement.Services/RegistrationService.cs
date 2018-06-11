@@ -232,6 +232,16 @@ namespace losol.EventManagement.Services {
 			return await _db.SaveChangesAsync() > 0;
 		}
 
+		public async Task<bool> UpdateCertificateComment(int registrationId, string comment) {
+			var reg = await _db.Registrations
+				.Where( m => m.RegistrationId == registrationId)
+				.FirstOrDefaultAsync();
+
+			reg.CertificateComment = comment;
+			_db.Update(reg);
+			return await _db.SaveChangesAsync() > 0;
+		}
+
 		public async Task<bool> UpdateCustomerInfo(int registrationId, string customerName, string customerEmail, string customerVatNumber, string customerInvoiceReference) {
 			var reg = await _db.Registrations
 				.Where( m => m.RegistrationId == registrationId)

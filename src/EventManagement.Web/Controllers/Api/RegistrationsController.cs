@@ -39,6 +39,20 @@ namespace losol.EventManagement.Web.Controllers.Api {
             return Ok ();
         }
 
+        [HttpPost ("{id}/certificatecomment/update")]
+        public async Task<ActionResult> UpdateCertificateComment ([FromRoute] int id, [FromBody] CertificateCommentVM vm) {
+            if (!ModelState.IsValid) return BadRequest ();
+            try {
+                await _registrationsService.UpdateCertificateComment (
+                    id,
+                    vm.CertificateComment);
+            }
+            catch (ArgumentException) {
+                return BadRequest ();
+            }
+            return Ok ();
+        }
+
         [HttpPost ("{id}/customer/update")]
         public async Task<ActionResult> UpdateCustomerInfo ([FromRoute] int id, [FromBody] CustomerInfoVM vm) {
             if (!ModelState.IsValid) return BadRequest ();
@@ -105,6 +119,10 @@ namespace losol.EventManagement.Web.Controllers.Api {
             } catch (Exception e) when (e is InvalidOperationException || e is ArgumentException) {
                 return BadRequest ();
             }
+        }
+
+        public class CertificateCommentVM {
+            public string CertificateComment { get; set; }
         }
 
         public class ParticipantInfoVM {
