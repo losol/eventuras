@@ -157,151 +157,169 @@
 </div>
 
 @section scripts {
-<script>
+    <style>
+        [contenteditable=true]:empty:before{
+        content: attr(placeholder);
+        display: block; /* For Firefox */
+        }
 
-    // *******CERTIFICATE COMMENT  SCRIPTS *******
-    // Add change listener to all contenteditables
-    var contenteditables = document.querySelectorAll(".certificateinfo");
-    [].forEach.call(contenteditables, function (content) {
-        // Save inital text when entering
-        content.addEventListener("focus", function () {
-            content.setAttribute("data-initial-text", content.innerHTML);
-        });
-        // And check if it has changed
-        content.addEventListener("blur", function () {
-            if (content.getAttribute("data-initial-text") !== content.innerHTML) {
-                saveCertificateComment();
-            }
-        });
-    });
+        div[contenteditable=true] {
+        border: 1px dashed #AAA;
+        width: 290px;
+        padding: 5px;
+        }
 
-    function saveCertificateComment() {
-        const postData = {
-            CertificateComment: $('#certificateinfo-comment').text().trim()
+        pre {
+        background:#EEE;
+        padding:5px;
+        width: 290px;
+        }   
+    </style>
+    <script>
+
+        // *******CERTIFICATE COMMENT  SCRIPTS *******
+        // Add change listener to all contenteditables
+        var contenteditables = document.querySelectorAll(".certificateinfo");
+        [].forEach.call(contenteditables, function (content) {
+            // Save inital text when entering
+            content.addEventListener("focus", function () {
+                content.setAttribute("data-initial-text", content.innerHTML);
+            });
+            // And check if it has changed
+            content.addEventListener("blur", function () {
+                if (content.getAttribute("data-initial-text") !== content.innerHTML) {
+                    saveCertificateComment();
+                }
+            });
+        });
+
+        function saveCertificateComment() {
+            const postData = {
+                CertificateComment: $('#certificateinfo-comment').text().trim()
+            };
+            $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/certificatecomment/update', postData)
+                .done(function() {
+                    toastr.success('Lagret kommentar til kursbevis');
+                })
+                .fail(function() {
+                    toastr.error('Noe gikk galt... Sorry altså');
+                });
         };
-        $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/comment/update', postData)
-            .done(function() {
-                toastr.success('Lagret kommentar til kursbevis');
-            })
-            .fail(function() {
-                toastr.error('Noe gikk galt... Sorry altså');
-            });
-    };
 
-    // *******PARTICIPANT INFO SCRIPTS *******
-    // Add change listener to all contenteditables
-    var contenteditables = document.querySelectorAll(".participantinfo");
-    [].forEach.call(contenteditables, function (content) {
-        // Save inital text when entering
-        content.addEventListener("focus", function () {
-            content.setAttribute("data-initial-text", content.innerHTML);
+        // *******PARTICIPANT INFO SCRIPTS *******
+        // Add change listener to all contenteditables
+        var contenteditables = document.querySelectorAll(".participantinfo");
+        [].forEach.call(contenteditables, function (content) {
+            // Save inital text when entering
+            content.addEventListener("focus", function () {
+                content.setAttribute("data-initial-text", content.innerHTML);
+            });
+            // And check if it has changed
+            content.addEventListener("blur", function () {
+                if (content.getAttribute("data-initial-text") !== content.innerHTML) {
+                    saveParticipantInfo();
+                }
+            });
         });
-        // And check if it has changed
-        content.addEventListener("blur", function () {
-            if (content.getAttribute("data-initial-text") !== content.innerHTML) {
-                saveParticipantInfo();
-            }
-        });
-    });
-    function saveParticipantInfo() {
-        const postData = {
-            ParticipantName: $('#participant-name').text().trim(),
-            ParticipantJobTitle: $('#participant-jobtitle').text().trim(),
-            ParticipantCity: $('#participant-city').text().trim(),
-            ParticipantEmployer: $('#participant-employer').text().trim()
+        function saveParticipantInfo() {
+            const postData = {
+                ParticipantName: $('#participant-name').text().trim(),
+                ParticipantJobTitle: $('#participant-jobtitle').text().trim(),
+                ParticipantCity: $('#participant-city').text().trim(),
+                ParticipantEmployer: $('#participant-employer').text().trim()
+            };
+            $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/participant/update', postData)
+                .done(function() {
+                    toastr.success('Lagret deltakerinfo');
+                })
+                .fail(function() {
+                    toastr.error('Noe gikk galt... Sorry altså');
+                });
         };
-        $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/participant/update', postData)
-            .done(function() {
-                toastr.success('Lagret deltakerinfo');
-            })
-            .fail(function() {
-                toastr.error('Noe gikk galt... Sorry altså');
+
+
+        // *******CUSTOMER INFO SCRIPTS *******
+        var contenteditables = document.querySelectorAll(".customerinfo");
+        [].forEach.call(contenteditables, function (content) {
+            // Save inital text when entering
+            content.addEventListener("focus", function () {
+                content.setAttribute("data-initial-text", content.innerHTML);
             });
-    };
-
-
-    // *******CUSTOMER INFO SCRIPTS *******
-    var contenteditables = document.querySelectorAll(".customerinfo");
-    [].forEach.call(contenteditables, function (content) {
-        // Save inital text when entering
-        content.addEventListener("focus", function () {
-            content.setAttribute("data-initial-text", content.innerHTML);
+            // And check if it has changed, and save it
+            content.addEventListener("blur", function () {
+                if (content.getAttribute("data-initial-text") !== content.innerHTML) {
+                    saveCustomerInfo();
+                }
+            });
         });
-        // And check if it has changed, and save it
-        content.addEventListener("blur", function () {
-            if (content.getAttribute("data-initial-text") !== content.innerHTML) {
-                saveCustomerInfo();
-            }
-        });
-    });
 
-    function saveCustomerInfo() {
-        var customerPostData = {
-            CustomerName: $('#customer-name').text().trim(),
-            CustomerEmail: $('#customer-email').text().trim(),
-            CustomerAddress: $('#customer-address').text().trim(),
-            CustomerZip: $('#customer-zip').text().trim(),
-            CustomerCity: $('#customer-city').text().trim(),
-            CustomerCountry: $('#customer-country').text().trim(),
-            CustomerVatNumber: $('#customer-vatnumber').text().trim(),
-            CustomerInvoiceReference: $('#customer-invoicereference').text().trim()
+        function saveCustomerInfo() {
+            var customerPostData = {
+                CustomerName: $('#customer-name').text().trim(),
+                CustomerEmail: $('#customer-email').text().trim(),
+                CustomerAddress: $('#customer-address').text().trim(),
+                CustomerZip: $('#customer-zip').text().trim(),
+                CustomerCity: $('#customer-city').text().trim(),
+                CustomerCountry: $('#customer-country').text().trim(),
+                CustomerVatNumber: $('#customer-vatnumber').text().trim(),
+                CustomerInvoiceReference: $('#customer-invoicereference').text().trim()
+            };
+            $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/customer/update', customerPostData)
+                .done(function() {
+                    toastr.success('Lagret kundeinfo');
+                })
+                .fail(function() {
+                    toastr.error('Noe gikk galt... Sorry altså');
+                });
         };
-        $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/customer/update', customerPostData)
-            .done(function() {
-                toastr.success('Lagret kundeinfo');
-            })
-            .fail(function() {
-                toastr.error('Noe gikk galt... Sorry altså');
-            });
-    };
 
-    // ******* REGISTRATION STATUS SCRIPTS *******
-    $('#Registration_Status').on('change', function() {
-        var status = $("option:selected", this).text();
-        $.postJSON('/api/v0/registrations/status/update/@Model.Registration.RegistrationId/' + status, null)
-            .done(function() {
-                toastr.success('Lagret status');
-            })
-            .fail(function() {
-                toastr.error('Noe gikk galt... Sorry altså');
-                location.reload();
-            });
-    })
+        // ******* REGISTRATION STATUS SCRIPTS *******
+        $('#Registration_Status').on('change', function() {
+            var status = $("option:selected", this).text();
+            $.postJSON('/api/v0/registrations/status/update/@Model.Registration.RegistrationId/' + status, null)
+                .done(function() {
+                    toastr.success('Lagret status');
+                })
+                .fail(function() {
+                    toastr.error('Noe gikk galt... Sorry altså');
+                    location.reload();
+                });
+        })
 
-    // ******* REGISTRATION TYPE SCRIPTS *******
-    $('#Registration_Type').on('change', function() {
-        var type = $("option:selected", this).text();
-        $.postJSON('/api/v0/registrations/type/update/@Model.Registration.RegistrationId/' + type, null)
-            .done(function() {
-                toastr.success('Lagret deltakertype');
-            })
-            .fail(function() {
-                toastr.error('Noe gikk galt... Sorry altså');
-                location.reload();
-            });
-    })
+        // ******* REGISTRATION TYPE SCRIPTS *******
+        $('#Registration_Type').on('change', function() {
+            var type = $("option:selected", this).text();
+            $.postJSON('/api/v0/registrations/type/update/@Model.Registration.RegistrationId/' + type, null)
+                .done(function() {
+                    toastr.success('Lagret deltakertype');
+                })
+                .fail(function() {
+                    toastr.error('Noe gikk galt... Sorry altså');
+                    location.reload();
+                });
+        })
 
-    // ******* CANCEL REGISTRATION BUTTON *******
-    function CancelRegistration() {
-        var val = 'Cancelled';
-        $('#Registration_Status option:contains(' + val + ')').prop({selected: true});
-        $('#Registration_Status').change();
-    };
+        // ******* CANCEL REGISTRATION BUTTON *******
+        function CancelRegistration() {
+            var val = 'Cancelled';
+            $('#Registration_Status option:contains(' + val + ')').prop({selected: true});
+            $('#Registration_Status').change();
+        };
 
 
-    // ******* PAYMENTMETHOD UPDATE  SCRIPTS *******
-    $('#Registration_PaymentMethod').on('change', function() {
-        var paymentMethod = $("option:selected", this).val();
-        $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/paymentmethod/update/' + paymentMethod, null)
-            .done(function() {
-                toastr.success('Lagret status');
-            })
-            .fail(function() {
-                toastr.error('Noe gikk galt... Sorry altså');
-                location.reload();
-            });
-    })
+        // ******* PAYMENTMETHOD UPDATE  SCRIPTS *******
+        $('#Registration_PaymentMethod').on('change', function() {
+            var paymentMethod = $("option:selected", this).val();
+            $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/paymentmethod/update/' + paymentMethod, null)
+                .done(function() {
+                    toastr.success('Lagret status');
+                })
+                .fail(function() {
+                    toastr.error('Noe gikk galt... Sorry altså');
+                    location.reload();
+                });
+        })
 
 
-</script>
+    </script>
 }
