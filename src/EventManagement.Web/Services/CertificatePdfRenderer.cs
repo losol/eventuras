@@ -12,7 +12,7 @@ namespace losol.EventManagement.Web.Services
 	{
 		private const string SCRIPT = "./Node/writeToPdf";
 		private const string TEMPLATE = "Templates/Certificates/CourseCertificate";
-		private readonly object OPTIONS = new { format = "A4", timeout = 50_000 }; // options passed to html-pdf 
+		private readonly object OPTIONS = new { format = "A4", timeout = 50_000, zoomFactor = "0.8", }; // options passed to html-pdf 
 		private readonly INodeServices _nodeServices;
 		private readonly IRenderService _renderService;
 		public CertificatePdfRenderer(INodeServices nodeServices, 
