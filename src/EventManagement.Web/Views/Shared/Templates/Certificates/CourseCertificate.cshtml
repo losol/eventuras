@@ -126,23 +126,6 @@
               <div class="line">@Model.EvidenceDescription</div>
               <br />
             }
-            @if (Model.Evidence != null && Model.Evidence.Any()) {
-                @foreach (var item in Model.Evidence) {
-                  <div class="line">
-                    @item.Registration.EventInfo.Title 
-                    @if(item.Registration.EventInfo.City != null) {
-                      <span> - @item.Registration.EventInfo.City</span>
-                    }
-                    @if(item.Registration.EventInfo.DateStart != null) {
-                      <span> - @String.Format("{0:d/M/yyyy}", item.Registration.EventInfo.DateStart)</span>
-                    }
-                    
-                    @if(item.Registration.EventInfo.DateEnd != null) {
-                      <span> - @String.Format("{0:d/M/yyyy}", item.Registration.EventInfo.DateEnd)</span>
-                    }
-                  </div>
-                }
-            }
             <br /> <br />
               @if (Model.Comment != null) {
               <div class="line">@Model.Comment</div>

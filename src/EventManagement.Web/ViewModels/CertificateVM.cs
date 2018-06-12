@@ -15,7 +15,6 @@ namespace losol.EventManagement.Web.ViewModels
         public string RecipientName {get;set;}
 
         public string EvidenceDescription { get; set;}
-        public List<CertificateEvidence> Evidence {get;set;}
 
         public string IssuedInCity { get; set; }
         public string IssuingDate { get; set; }
@@ -57,7 +56,6 @@ namespace losol.EventManagement.Web.ViewModels
                 RecipientName = c.RecipientName,
                 
                 EvidenceDescription = c.EvidenceDescription,
-                Evidence = c.Evidence,
 
                 IssuedInCity = c.IssuedInCity,
                 IssuingDate = c.IssuedDate.ToString("dd.MMM.yyyy"),
