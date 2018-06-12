@@ -72,6 +72,7 @@ namespace losol.EventManagement.Pages.Admin.Events
                 Name = x.User.Name,
                 Email = x.User.Email,
                 Phone = x.User.PhoneNumber,
+                userId = x.User.Id,
                 JobTitle = x.ParticipantJobTitle,
                 Notes = x.Notes,
                 Employer = x.ParticipantEmployer,
@@ -120,6 +121,7 @@ namespace losol.EventManagement.Pages.Admin.Events
                 Name = x.User.Name,
                 Email = x.User.Email,
                 Phone = x.User.PhoneNumber,
+                userId = x.User.Id,
                 JobTitle = x.ParticipantJobTitle,
                 Employer = x.ParticipantEmployer,
                 City = x.ParticipantCity,
@@ -158,6 +160,7 @@ namespace losol.EventManagement.Pages.Admin.Events
                     Name = x.User.Name,
                     Email = x.User.Email,
                     Phone = x.User.PhoneNumber,
+                    userId = x.User.Id,
                     Notes = x.Notes,
                     JobTitle = x.ParticipantJobTitle,
                     Employer = x.ParticipantEmployer,
@@ -182,6 +185,7 @@ namespace losol.EventManagement.Pages.Admin.Events
             public int RegistrationId {get;set;}
             public string Name { set;get;}
             public string Email { set;get;}
+            public string userId {get;set;}
             public string Phone { set;get;}
             public string Employer {get;set;}
             public string Notes {get;set;}
