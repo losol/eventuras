@@ -20,7 +20,8 @@ namespace losol.EventManagement.Services
 
 		public List<PaymentMethod> GetActivePaymentMethods()
 		{
-			return paymentMethods.Where(p => p.Active).ToList();
+			return paymentMethods
+				.Where(p => p.Active && !p.AdminOnly).ToList();
 		}
 
 		public PaymentMethod Get(int id)
