@@ -25,7 +25,6 @@ namespace losol.EventManagement.Domain {
 
         // Evidence for the certificate
         public string EvidenceDescription { get; set;}
-        public List<CertificateEvidence> Evidence {get;set;}
 
         // Issued by
         public string IssuingOrganizationName {get;set;}

@@ -24,9 +24,6 @@ namespace losol.EventManagement.Services {
 
 		public async Task<Certificate> GetAsync (int certificateId) {
 			var certificate = await _db.Certificates
-				.Include (c => c.Evidence)
-				.ThenInclude (c => c.Registration)
-				.ThenInclude (c => c.EventInfo)
 				.Include (c => c.RecipientUser)
 				.Include (c => c.IssuingOrganization)
 				.Include (c => c.IssuingUser)
@@ -75,12 +72,11 @@ namespace losol.EventManagement.Services {
 			};
 
 			// Add evidence description
-			/* certificate.EvidenceDescription = $"{registration.EventInfo.Title} {registration.EventInfo.City}";
+			certificate.EvidenceDescription = $"{registration.EventInfo.Title} {registration.EventInfo.City}";
             if (registration.EventInfo.DateStart.HasValue) 
                 { certificate.EvidenceDescription += " – " + registration.EventInfo.DateStart.Value.ToString("d");};
             if (registration.EventInfo.DateEnd.HasValue) 
                 { certificate.EvidenceDescription += "-" + registration.EventInfo.DateEnd.Value.ToString("d");};
-			*/ 
 			
 			// Add organization
 			if (registration.EventInfo.OrganizationId != null) {
@@ -97,18 +93,8 @@ namespace losol.EventManagement.Services {
 				certificate.IssuedByName = "Tove Myrbakk";
 			}
 
-
 			// Save cetificate
 			_db.Certificates.Add (certificate);
-			await _db.SaveChangesAsync ();
-
-			// Add and save evidence
-			var evidence = new CertificateEvidence{
-				CertificateId = certificate.CertificateId,
-				RegistrationId = registration.RegistrationId
-			};
-			registration.Certificate = certificate;
-			_db.CertificateEvidences.Add(evidence);
 			var result = await _db.SaveChangesAsync ();
 
 			_logger.LogInformation($"* Added certificate (id {certificate.CertificateId}. Result code: {result} ***");
