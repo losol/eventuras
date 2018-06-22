@@ -97,6 +97,10 @@ namespace losol.EventManagement.Services {
 			_db.Certificates.Add (certificate);
 			var result = await _db.SaveChangesAsync ();
 
+			registration.CertificateId = certificate.CertificateId;
+			_db.Update(registration);
+			await _db.SaveChangesAsync();
+
 			_logger.LogInformation($"* Added certificate (id {certificate.CertificateId}. Result code: {result} ***");
 
 			return certificate;
