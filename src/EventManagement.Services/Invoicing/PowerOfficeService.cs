@@ -49,6 +49,7 @@ namespace losol.EventManagement.Services.Invoicing {
             var invoice = new OutgoingInvoice {
                 Status = OutgoingInvoiceStatus.Draft,
                 OrderDate = order.OrderTime,
+                ContractNo = order.OrderId.ToString(),
                 CustomerReference = order.Registration.CustomerInvoiceReference,
                 CustomerCode = customer.Code
             };
