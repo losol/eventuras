@@ -10,7 +10,31 @@ namespace losol.EventManagement.Domain
 
 	public class EventInfo
 	{
+		public enum EventInfoStatus
+        {
+            Draft = 0,
+            Planned = 1,
+            RegistrationsOpen = 2,
+			WaitingList = 3,
+            RegistrationsClosed = 4,
+            Finished = 5,
+			Cancelled = 9,
+
+        }
+
+		public enum EventInfoType
+        {
+            Course = 0,
+            Conference = 1,
+            OnlineCourse = 2,
+            Social = 3,
+            Other = 9
+        }
+
 		public int EventInfoId { get; set; }
+        public EventInfoStatus Status { get; set; } = EventInfoStatus.Draft;
+        public EventInfoType Type { get; set; } = EventInfoType.Course;
+
 
 		[Display(Name = "Tittel på kurset")]
 		public string Title { get; set; }
