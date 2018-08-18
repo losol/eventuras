@@ -25,6 +25,20 @@
                 <input asp-for="EventInfo.Code" class="form-control" />
                 <span asp-validation-for="EventInfo.Code" class="text-danger"></span>
             </div>
+            
+            <div class="form-group col-md-6">
+                <label asp-for="EventInfo.Status" class="control-label"></label>
+                <select asp-for="EventInfo.Status" asp-items="Html.GetEnumSelectList<losol.EventManagement.Domain.EventInfo.EventInfoStatus>()" class="form-control">
+                </select>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label asp-for="EventInfo.Type" class="control-label"></label>
+                <select asp-for="EventInfo.Type" asp-items="Html.GetEnumSelectList<losol.EventManagement.Domain.EventInfo.EventInfoType>()" class="form-control">
+                </select>
+            </div>
+
+
             </div>
             <div class="form-group">
                 <div class="form-check form-check-inline">
