@@ -46,6 +46,7 @@
                             @if (item.OnDemand) {
                                 <span>Nettkurs</span>
                             } else {
+                                <event-status value="@item.Status"/>
                                 <span>@item.City</span>
                                 <span>@item.DateStart?.ToString("d")</span>
                                 @if (item.DateEnd.HasValue) {
@@ -77,17 +78,9 @@
                             <div class="card-body h-100">
                                 <h4 class="card-title">@item.Title</h4>
                                 <p>
-                                @if (item.OnDemand) {
+                                    <event-status value="@item.Status"/>
                                     <span>Nettkurs</span>
-                                } else {
-                                    <span>@item.City</span>
-                                    <span>@item.DateStart?.ToString("d")</span>
-                                    @if (item.DateEnd.HasValue) {
-                                        <span>- @item.DateEnd.Value.ToString("d")</span>
-                                    }
-                                }
                                 </p>
-                
                             </div>
                         </a>
                     </div>
@@ -109,6 +102,7 @@
                         <a asp-page="./Details" asp-route-id="@item.EventInfoId" class="link-decoration-none">
                             <div class="card-body h-100">
                                 <h4 class="card-title">@item.Title</h4>
+                                <event-status value="@item.Status"/>
                                 <p>
                                 @if (item.OnDemand) {
                                     <span>Nettkurs</span>

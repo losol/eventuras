@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using static losol.EventManagement.Domain.EventInfo;
 
 namespace losol.EventManagement.Services
 {
@@ -22,8 +23,9 @@ namespace losol.EventManagement.Services
 		public async Task<List<EventInfo>> GetFeaturedEventsAsync() 
 		{
 			return await _db.EventInfos
-				.Where(
-					i => i.Published && 
+				.Where( i => 
+					i.Status != EventInfoStatus.Cancelled && 
+					i.Status != EventInfoStatus.Draft &&
 					i.Featured &&
 					i.DateStart >= DateTime.Now
 					)
@@ -34,9 +36,8 @@ namespace losol.EventManagement.Services
 		public async Task<List<EventInfo>> GetUnpublishedEventsAsync() 
 		{
 			return await _db.EventInfos
-				.Where(
-					i => i.Published == false ||
-					( i.OnDemand == false && !i.DateStart.HasValue ) )
+				.Where( i => 
+					i.Status == EventInfoStatus.Draft )
 				.OrderBy(s => s.DateStart)
 				.ToListAsync();
 		}
@@ -45,8 +46,9 @@ namespace losol.EventManagement.Services
 		{
 			return await _db.EventInfos
 				.Where(i => 
-					i.Published && 
-					i.OnDemand 
+					i.Status != EventInfoStatus.Cancelled && 
+					i.Status != EventInfoStatus.Draft &&
+					i.Type == EventInfoType.OnlineCourse 
 					)
 				.OrderBy(s => s.Title)
 				.ToListAsync();
@@ -56,6 +58,8 @@ namespace losol.EventManagement.Services
 		{
 			return await _db.EventInfos
 				.Where(i => 
+					i.Status != EventInfoStatus.Cancelled && 
+					i.Status != EventInfoStatus.Draft && 
 					i.DateStart.Value.Date == DateTime.Now.Date ||
 					(i.DateStart.Value.Date <= DateTime.Now.Date &&
 					i.DateEnd.Value.Date >= DateTime.Now.Date))
@@ -66,9 +70,10 @@ namespace losol.EventManagement.Services
 		public async Task<List<EventInfo>> GetEventsAsync()
 		{
 			return await _db.EventInfos
-				.Where(a => 
-					a.Published &&
-					a.DateStart >= DateTime.Now)
+				.Where(i =>
+					i.Status != EventInfoStatus.Cancelled && 
+					i.Status != EventInfoStatus.Draft && 
+					i.DateStart >= DateTime.Now)
 				.OrderBy(a => a.DateStart)
 				.ToListAsync();
 		}
@@ -76,9 +81,10 @@ namespace losol.EventManagement.Services
 		public async Task<List<EventInfo>> GetPastEventsAsync()
 		{
 			return await _db.EventInfos
-				.Where(a => 
-					a.Published &&
-					a.DateStart <= DateTime.Now)
+				.Where(i => 
+					i.Status != EventInfoStatus.Cancelled && 
+					i.Status != EventInfoStatus.Draft &&
+					i.DateStart <= DateTime.Now)
 				.OrderBy(a => a.DateStart)
 				.ToListAsync();
 		}
