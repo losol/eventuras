@@ -37,7 +37,8 @@ namespace losol.EventManagement.Services
 		{
 			return await _db.EventInfos
 				.Where( i => 
-					i.Status == EventInfoStatus.Draft )
+					i.Status == EventInfoStatus.Draft ||
+					i.Status == EventInfoStatus.Cancelled )
 				.OrderBy(s => s.DateStart)
 				.ToListAsync();
 		}
