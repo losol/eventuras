@@ -195,7 +195,7 @@ namespace losol.EventManagement.Services {
 			
 			if (!order.PaymentMethodId.HasValue) {
 				_logger.LogError($"OrderId {order.Status} has no PaymentMethodId.");
-				throw new InvalidOperationException($"Cannot edit paymentmethod. Order status: {order.Status}.");
+				throw new InvalidOperationException($"OrderId {order.PaymentMethodId} has no PaymentMethodId. Order status: {order.Status}.");
 			}
 			_logger.LogInformation($"Making invoice for order: {order.OrderId}, paymenmethodId: {order.PaymentMethodId}");
 			
