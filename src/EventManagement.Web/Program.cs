@@ -34,6 +34,9 @@ namespace losol.EventManagement
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration(app => {
+                    app.AddJsonFile("paymentproviders.json", optional: true, reloadOnChange: false);
+                })
                 .UseStartup<Startup>()
                 .Build();
     }

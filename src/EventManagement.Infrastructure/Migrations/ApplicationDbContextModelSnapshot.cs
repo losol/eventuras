@@ -15,7 +15,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
+                .HasAnnotation("ProductVersion", "2.1.0-rtm-30799")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -355,7 +355,9 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("losol.EventManagement.Domain.PaymentMethod", b =>
                 {
-                    b.Property<int>("Provider");
+                    b.Property<int>("PaymentMethodId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<bool>("Active");
 
@@ -365,9 +367,11 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<int>("Provider");
+
                     b.Property<int>("Type");
 
-                    b.HasKey("Provider");
+                    b.HasKey("PaymentMethodId");
 
                     b.ToTable("PaymentMethods");
                 });

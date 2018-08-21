@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,26 +8,15 @@ namespace losol.EventManagement.Domain
 {
     public class PaymentMethod
     {
-
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public PaymentProvider Provider { get; set; }
-        public PaymentProviderType Type { get; set; }
-
-        public string Name { get; set; }
-        public bool Active { get; set; } = false;
-        public bool AdminOnly { get; set; } = false;
-        public bool IsDefault { get; set; } = false;
-
-
         public enum PaymentProvider
         {
-            EmailInvoice = 1,
-            PowerOfficeEmailInvoice = 2,
-            PowerOfficeEHFInvoice = 3,
-            VippsDirect = 4,
-            StripeInvoice = 5,
-            StripeDirect = 6,
-            VippsInvoice = 7,
+            EmailInvoice = 0,
+            StripeInvoice = 1,
+            StripeDirect = 2,
+            PowerOfficeEmailInvoice = 3,
+            PowerOfficeEHFInvoice = 4,
+            VippsDirect = 5,
+            VippsInvoice = 6,
         }
 
         public enum PaymentProviderType
@@ -36,5 +24,15 @@ namespace losol.EventManagement.Domain
             Direct,
             Invoice
         }
+
+        public int PaymentMethodId { get; set; }
+
+        public string Name { get; set; }
+        public PaymentProvider Provider { get; set; }
+        public PaymentProviderType Type { get; set; }
+
+        public bool Active { get; set; } = false;
+        public bool AdminOnly { get; set; } = false;
+        public bool IsDefault { get; set; } = false;
     }
 }

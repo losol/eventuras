@@ -6,7 +6,6 @@ using Microsoft.Extensions.Options;
 
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
-using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Services.DbInitializers
 {
@@ -68,33 +67,22 @@ namespace losol.EventManagement.Services.DbInitializers
 
 			}
 
-            // Seed the payment methods if none exist
-            if (!_db.PaymentMethods.Any())
-            {
-                var methods = new PaymentMethod[] {
-                    new PaymentMethod {
-                        Provider = PaymentProvider.EmailInvoice,
-                        Name = "Kortbetaling",
-                        Type = PaymentProviderType.Invoice,
-                        Active = true,
-                    },
-                    new PaymentMethod {
-                        Provider = PaymentProvider.PowerOfficeEmailInvoice,
-                        Name = "E-postfaktura",
-                        Type = PaymentProviderType.Invoice,
-                        Active = true,
-                        IsDefault = true
-                    },
-                    new PaymentMethod {
-                        Provider = PaymentProvider.PowerOfficeEHFInvoice,
-                        Name = "EHF-faktura",
-                        Type = PaymentProviderType.Invoice,
-                        Active = true
-                    },
-                };
-                _db.AddRange(methods);
-                await _db.SaveChangesAsync();
-            }
+			// Seed test events if no events exist.
+			if (!_db.EventInfos.Any())
+			{
+				var eventInfos = new EventInfo[]
+				{
+					new EventInfo{Title="Test event 01", Code="Test01", Description="A test event."},
+					new EventInfo{Title="Test event 02", Code="Test02", Description="Another test event."}
+				};
+
+				foreach (var item in eventInfos)
+				{
+					await _db.EventInfos.AddAsync(item);
+				}
+
+				await _db.SaveChangesAsync();
+			}
         }
     }
 }
