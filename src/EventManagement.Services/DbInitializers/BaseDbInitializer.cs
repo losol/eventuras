@@ -109,6 +109,8 @@ namespace losol.EventManagement.Services.DbInitializers
                         Active = true
                     },
                 };
+                _db.AddRange(methods);
+                await _db.SaveChangesAsync();
             }
         }
     }
