@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
+using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Services.DbInitializers
 {
@@ -83,6 +84,32 @@ namespace losol.EventManagement.Services.DbInitializers
 
 				await _db.SaveChangesAsync();
 			}
+
+            // Seed the payment methods if none exist
+            if (!_db.PaymentMethods.Any())
+            {
+                var methods = new PaymentMethod[] {
+                    new PaymentMethod {
+                        Provider = PaymentProvider.EmailInvoice,
+                        Name = "Kortbetaling",
+                        Type = PaymentProviderType.Invoice,
+                        Active = true,
+                    },
+                    new PaymentMethod {
+                        Provider = PaymentProvider.PowerOfficeEmailInvoice,
+                        Name = "E-postfaktura",
+                        Type = PaymentProviderType.Invoice,
+                        Active = true,
+                        IsDefault = true
+                    },
+                    new PaymentMethod {
+                        Provider = PaymentProvider.PowerOfficeEHFInvoice,
+                        Name = "EHF-faktura",
+                        Type = PaymentProviderType.Invoice,
+                        Active = true
+                    },
+                };
+            }
         }
     }
 }
