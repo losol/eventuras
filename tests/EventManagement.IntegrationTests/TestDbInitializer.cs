@@ -9,22 +9,19 @@ using losol.EventManagement.Services.DbInitializers;
 
 namespace losol.EventManagement.IntegrationTests
 {
-	public class TestDbInitializer : IDbInitializer
+	public class TestDbInitializer : BaseDbInitializer, IDbInitializer
 	{
 
-		private readonly ApplicationDbContext _db;
+        public TestDbInitializer(ApplicationDbContext db, RoleManager<IdentityRole> roleManager,  UserManager<ApplicationUser> userManager, IOptions<DbInitializerOptions> config)
+            : base(db, roleManager, userManager, config)
+         { }
 
-		public TestDbInitializer(ApplicationDbContext db)
-		{
-			_db = db;
-		}
-
-		public Task SeedAsync()
+		public override async Task SeedAsync()
 		{
 			_db.Database.EnsureCreated();
+            await base.SeedAsync();
 			_db.EventInfos.AddRange(SeedData.Events);
-			_db.SaveChanges();
-			return Task.CompletedTask;
+			await _db.SaveChangesAsync();
 		}
 	}
 }
