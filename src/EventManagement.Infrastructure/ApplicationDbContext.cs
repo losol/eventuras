@@ -21,10 +21,14 @@ namespace losol.EventManagement.Infrastructure {
         public DbSet<losol.EventManagement.Domain.Organization> Organizations { get; set; }
         public DbSet<losol.EventManagement.Domain.Certificate> Certificates { get; set; }
         public DbSet<losol.EventManagement.Domain.MessageLog> MessageLogs { get; set; }
-        
-       
+
+
         protected override void OnModelCreating (ModelBuilder builder) {
             base.OnModelCreating (builder);
+
+            builder.Entity<PaymentMethod>()
+                .HasIndex(p => p.Provider)
+                .IsUnique();
         }
 
         public void DetachAllEntities () {
