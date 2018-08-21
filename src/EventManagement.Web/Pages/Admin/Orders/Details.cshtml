@@ -6,7 +6,7 @@
 @{
     var id = Convert.ToInt32(RouteData.Values["id"]);
     var order = await orderService.GetByIdAsync(id);
-    var paymentMethods = await paymentmethodService.GetActivePaymentMethodsAsync();
+    var paymentMethods = paymentmethodService.GetActivePaymentMethods();
     var products = await productsService.GetProductsForEventAsync(order.Registration.EventInfoId);
     var variants = products.SelectMany(p => p.ProductVariants)
                            .Select(x => new { id = x.ProductVariantId, pid = x.ProductId, name = x.Name });
@@ -20,10 +20,10 @@
         <div class="d-print-none">
         @if(order.Status != Order.OrderStatus.Cancelled)
         {
-
+           
             <div class="btn-group " role="group">
-
-
+            
+                
                 @if(order.GetNextStatus() != null)
                 {
                     <button type="button" class="btn btn-primary" onclick="updateOrderStatus('@order.GetNextStatus()')">
@@ -38,7 +38,7 @@
                         <button class="dropdown-item text-danger" onclick="updateOrderStatus('Cancelled')">Cancel</button>
                     </div>
                 </div>
-
+                    
             </div>
             }
             else

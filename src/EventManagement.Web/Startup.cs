@@ -23,6 +23,7 @@ using losol.EventManagement.Services.Invoicing;
 using losol.EventManagement.Config;
 using losol.EventManagement.Web.Config;
 using losol.EventManagement.Web.Extensions;
+using System.Collections.Generic;
 
 namespace losol.EventManagement
 {
@@ -198,6 +199,7 @@ namespace losol.EventManagement
 
 			// Register our application services
 			services.AddScoped<IEventInfoService, EventInfoService>();
+            services.Configure<List<PaymentMethod>>(Configuration.GetSection("PaymentMethods"));
 			services.AddScoped<IPaymentMethodService, PaymentMethodService>();
             services.AddScoped<StripeInvoiceProvider>();
 			services.AddScoped<IRegistrationService, RegistrationService>();

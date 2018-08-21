@@ -29,6 +29,7 @@ namespace losol.EventManagement.IntegrationTests.Fixtures
 				.ConfigureAppConfiguration(app =>
                 {
                     app.AddJsonFile("appsettings.json");
+                    app.AddJsonFile("paymentproviders.json");
                 })
 				.UseStartup<TestStartup>()
 				.ConfigureServices(ConfigureServices);

@@ -1,46 +1,42 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
-using static losol.EventManagement.Domain.PaymentMethod;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Services
 {
 	public class PaymentMethodService : IPaymentMethodService
 	{
-        private readonly ApplicationDbContext _db;
+        private readonly IEnumerable<PaymentMethod> paymentMethods;
 
-		public PaymentMethodService(ApplicationDbContext db)
+		public PaymentMethodService(IOptions<List<PaymentMethod>> paymentMethodConfig)
 		{
-            _db = db;
+            paymentMethods = paymentMethodConfig.Value;
 		}
 
-		public async Task<List<PaymentMethod>> GetActivePaymentMethodsAsync()
+		public List<PaymentMethod> GetActivePaymentMethods()
 		{
-			return await _db.PaymentMethods
-				.Where(p => p.Active && !p.AdminOnly).ToListAsync();
+			return paymentMethods
+				.Where(p => p.Active && !p.AdminOnly).ToList();
 		}
 
-        public async Task<PaymentMethod> GetAsync(PaymentProvider provider)
+		public PaymentMethod Get(int id)
 		{
-			return await _db.PaymentMethods
-                .SingleOrDefaultAsync(p => p.Provider == provider);
+			return paymentMethods.SingleOrDefault(p => p.PaymentMethodId == id);
 		}
 
-		public async Task<PaymentMethod> GetDefaultPaymentMethodAsync()
+        public PaymentMethod Get(PaymentProvider provider)
 		{
-			return await _db.PaymentMethods.SingleAsync(p => p.IsDefault);
+			return paymentMethods.SingleOrDefault(p => p.Provider == provider);
 		}
 
-        public PaymentProvider GetDefaultPaymentProvider()
-        {
-            // TODO: Try to use cache to handle this
-            return _db.PaymentMethods.Single(p => p.IsDefault).Provider;
-        }
-    }
+		public PaymentMethod GetDefaultPaymentMethod()
+		{
+			return paymentMethods.Single(p => p.IsDefault);
+		}
+	}
 }
