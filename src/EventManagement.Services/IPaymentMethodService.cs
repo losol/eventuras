@@ -8,8 +8,9 @@ namespace losol.EventManagement.Services
 {
 	public interface IPaymentMethodService
 	{
-        PaymentMethod Get(PaymentProvider provider);
-		List<PaymentMethod> GetActivePaymentMethods();
-		PaymentMethod GetDefaultPaymentMethod();
+        Task<PaymentMethod> GetAsync(PaymentProvider provider);
+		Task<List<PaymentMethod>> GetActivePaymentMethodsAsync();
+		Task<PaymentMethod> GetDefaultPaymentMethodAsync();
+        PaymentProvider GetDefaultPaymentProvider();
 	}
 }

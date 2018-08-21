@@ -22,11 +22,11 @@ namespace losol.EventManagement.Pages.Admin.Registrations
             _paymentMethods = paymentMethods;
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
-        ViewData["EventInfoId"] = new SelectList(_context.EventInfos, "EventInfoId", "Code");
-        ViewData["PaymentMethod"] = new SelectList(_paymentMethods.GetActivePaymentMethods(), "Provider", "Name");
-        ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
+            ViewData["EventInfoId"] = new SelectList(_context.EventInfos, "EventInfoId", "Code");
+            ViewData["PaymentMethod"] = new SelectList(await _paymentMethods.GetActivePaymentMethodsAsync(), "Provider", "Name");
+            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
             return Page();
         }
 

@@ -37,7 +37,7 @@ namespace losol.EventManagement.Pages.Admin.Registrations
                 .Include(r => r.Orders)
                 .Include(r => r.User).SingleOrDefaultAsync(m => m.RegistrationId == id);
 
-            PaymentMethods = _paymentMethods.GetActivePaymentMethods();
+            PaymentMethods = await _paymentMethods.GetActivePaymentMethodsAsync();
 
             if (Registration == null)
             {
