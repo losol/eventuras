@@ -24,11 +24,6 @@ namespace losol.EventManagement.Services
 				.Where(p => p.Active && !p.AdminOnly).ToList();
 		}
 
-		public PaymentMethod Get(int id)
-		{
-			return paymentMethods.SingleOrDefault(p => p.PaymentMethodId == id);
-		}
-
         public PaymentMethod Get(PaymentProvider provider)
 		{
 			return paymentMethods.SingleOrDefault(p => p.Provider == provider);
