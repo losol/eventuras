@@ -222,11 +222,6 @@ namespace losol.EventManagement.Services {
 				.Where( m => m.OrderId == orderId)
 				.FirstOrDefaultAsync();
 
-			if(order.CanEdit == false)
-			{
-				throw new InvalidOperationException($"Cannot edit paymentmethod. Order status: {order.Status}.");
-			}
-
 			// Update payment method in registration.
 			order.PaymentMethod = paymentMethod;
 			_db.Update(order);
