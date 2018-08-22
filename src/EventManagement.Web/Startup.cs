@@ -24,6 +24,7 @@ using losol.EventManagement.Config;
 using losol.EventManagement.Web.Config;
 using losol.EventManagement.Web.Extensions;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace losol.EventManagement
 {
@@ -102,6 +103,13 @@ namespace losol.EventManagement
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdministratorRole", policy => policy.RequireRole("Admin", "SuperAdmin"));
+                options.AddPolicy("POCPolicy", policy =>
+                    policy.RequireAssertion(context =>
+                        context.User.IsInRole("Admin") ||
+                        context.User.IsInRole("SuperAdmin") ||
+                        context.User.HasClaim(c =>
+                            c.Type == CustomClaimTypes.IsStaff && c.Value == true.ToString()
+                )));
             });
 
             services.AddMvc()
