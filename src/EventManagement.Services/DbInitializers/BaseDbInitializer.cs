@@ -74,13 +74,13 @@ namespace losol.EventManagement.Services.DbInitializers
                 var methods = new PaymentMethod[] {
                     new PaymentMethod {
                         Provider = PaymentProvider.EmailInvoice,
-                        Name = "Kortbetaling",
+                        Name = "Email invoice",
                         Type = PaymentProviderType.Invoice,
-                        Active = true,
+                        Active = false,
                     },
                     new PaymentMethod {
                         Provider = PaymentProvider.PowerOfficeEmailInvoice,
-                        Name = "E-postfaktura",
+                        Name = "Epost-faktura",
                         Type = PaymentProviderType.Invoice,
                         Active = true,
                         IsDefault = true
