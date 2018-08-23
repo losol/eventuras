@@ -36,14 +36,14 @@ namespace losol.EventManagement.Pages.Admin.Events
 		public EventInfo EventInfo { get; set; }
 		public List<PaymentMethod> PaymentMethods { get; set; }
 		public List<Product> Products => EventInfo.Products;
-		public PaymentProvider DefaultPaymentMethod => _paymentMethodService.GetDefaultPaymentMethod().Provider;
+		public PaymentProvider DefaultPaymentMethod => _paymentMethodService.GetDefaultPaymentProvider();
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
 			EventInfo = EventInfo ?? await _eventsService.GetWithProductsAsync(id);
 			if (EventInfo == null) return NotFound();
 
-            PaymentMethods = _paymentMethodService.GetActivePaymentMethods();
+            PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
 			Registration = new Web.Pages.Events.Register.RegisterVM(EventInfo, DefaultPaymentMethod);
 
             return Page();

@@ -212,7 +212,7 @@ namespace losol.EventManagement.Services {
 
 			// Set paymentmethod to default method if null.
 			if (registration.PaymentMethod == null) {
-				registration.PaymentMethod = _paymentMethods.GetDefaultPaymentMethod().Provider;
+				registration.PaymentMethod = _paymentMethods.GetDefaultPaymentProvider();
 			}
 
 			// Persist the changes

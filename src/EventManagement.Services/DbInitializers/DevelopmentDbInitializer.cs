@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
+using System.Linq;
 
 namespace losol.EventManagement.Services.DbInitializers
 {
@@ -15,10 +16,28 @@ namespace losol.EventManagement.Services.DbInitializers
             : base(db, roleManager, userManager, config)
          { }
 
-        public override Task SeedAsync()
+        public async override Task SeedAsync()
         {
             _db.Database.Migrate();
-            return base.SeedAsync();
+
+            // Seed test events if no events exist.
+			if (!_db.EventInfos.Any())
+			{
+				var eventInfos = new EventInfo[]
+				{
+					new EventInfo{Title="Test event 01", Code="Test01", Description="A test event."},
+					new EventInfo{Title="Test event 02", Code="Test02", Description="Another test event."}
+				};
+
+				foreach (var item in eventInfos)
+				{
+					await _db.EventInfos.AddAsync(item);
+				}
+
+				await _db.SaveChangesAsync();
+			}
+
+            await base.SeedAsync();
         }
     }
 }
