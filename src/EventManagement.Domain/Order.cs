@@ -75,7 +75,6 @@ namespace losol.EventManagement.Domain
 		public string CustomerEmail { get; set; }
 		public string CustomerVatNumber { get; set; }
 		public string CustomerInvoiceReference { get; set; }
-		public int? PaymentMethodId { get; set; }
         public PaymentProvider? PaymentMethod { get; set; }
 
 		public DateTime OrderTime { get; set; } = DateTime.UtcNow;

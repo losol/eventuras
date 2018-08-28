@@ -74,7 +74,6 @@ namespace losol.EventManagement.Domain
 
         [Display(Name = "Betalingsmetode")]
         public PaymentProvider? PaymentMethod { get; set; }
-        public int? PaymentMethodId { get; set; }
 
         [Display(Name = "Verifisert påmelding?")]
         public bool Verified { get; set; } = false;
@@ -89,7 +88,7 @@ namespace losol.EventManagement.Domain
         // Navigation properties
         public EventInfo EventInfo { get; set; }
         public ApplicationUser User { get; set; }
-        // public PaymentMethod PaymentMethod { get; set; }
+
         public List<Order> Orders { get; set; }
 
         [NotMapped]
