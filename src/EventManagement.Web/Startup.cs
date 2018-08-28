@@ -1,28 +1,10 @@
-using System.Globalization;
-
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Rewrite;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
-using losol.EventManagement.Domain;
-using losol.EventManagement.Infrastructure;
-using losol.EventManagement.Services;
-using losol.EventManagement.Services.DbInitializers;
-using losol.EventManagement.Services.Messaging;
-using losol.EventManagement.Web.Services;
-using losol.EventManagement.Services.Messaging.Sms;
-using losol.EventManagement.Services.Invoicing;
 using losol.EventManagement.Config;
-using losol.EventManagement.Web.Config;
-using losol.EventManagement.Web.Extensions;
 using EventManagement.Web.Extensions;
 
 namespace losol.EventManagement
