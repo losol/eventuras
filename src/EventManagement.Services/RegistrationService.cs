@@ -210,11 +210,6 @@ namespace losol.EventManagement.Services {
 			// Create/update an order as needed.
 			registration.CreateOrUpdateOrder(await Task.WhenAll(ordersDto));
 
-			// Set paymentmethod to default method if null.
-			if (registration.PaymentMethod == null) {
-				registration.PaymentMethod = _paymentMethods.GetDefaultPaymentProvider();
-			}
-
 			// Persist the changes
 			return await _db.SaveChangesAsync () > 0;
 		}

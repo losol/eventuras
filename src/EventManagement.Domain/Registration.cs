@@ -73,7 +73,7 @@ namespace losol.EventManagement.Domain
         public bool FreeRegistration { get; set; } = false;
 
         [Display(Name = "Betalingsmetode")]
-        public PaymentProvider? PaymentMethod { get; set; }
+        public PaymentProvider PaymentMethod { get; set; } = PaymentProvider.PowerOfficeEmailInvoice; // HACK: This ignores the actual default paymentmethod set in the database
 
         [Display(Name = "Verifisert påmelding?")]
         public bool Verified { get; set; } = false;
