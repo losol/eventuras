@@ -75,8 +75,8 @@
                     Kommuniser
                 </a>
 
-                @Html.Partial("Partials/_EmailModal")
-                @Html.Partial("Partials/_SmsModal")
+                <partial name="Partials/_EmailModal" />
+                <partial name="Partials/_SmsModal" />
 
 
                 <!-- ECONOMY MENU -->
@@ -284,7 +284,7 @@
     let includeOrders = false;
     let eventId = @Model.EventInfo.EventInfoId;
     </script>
-    @Html.Partial("Partials/_EmailModalScripts")
+    <partial name="Partials/_EmailModalScripts" />
     <script>
 
     let registrationId = 0;
@@ -529,5 +529,5 @@
             })
         }
 </script>
-    @await Html.PartialAsync("_CompBootstrapTable")
+    <partial name="_CompBootstrapTable" />
 }
