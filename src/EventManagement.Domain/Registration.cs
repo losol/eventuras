@@ -66,7 +66,7 @@ namespace losol.EventManagement.Domain
         [DataType(DataType.MultilineText)]
         public string Log { get; set; }
 
-        public DateTime? RegistrationTime { get; set; }
+        public DateTime? RegistrationTime { get; set; } = DateTime.UtcNow;
         public string RegistrationBy { get; set; }
 
         [Display(Name = "Gratisdeltaker?")]
