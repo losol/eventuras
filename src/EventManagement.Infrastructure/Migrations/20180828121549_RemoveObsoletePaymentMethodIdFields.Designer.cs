@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using losol.EventManagement.Infrastructure;
 
 namespace losol.EventManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180828121549_RemoveObsoletePaymentMethodIdFields")]
+    partial class RemoveObsoletePaymentMethodIdFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -252,7 +254,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.Property<bool>("Paid");
 
-                    b.Property<int>("PaymentMethod");
+                    b.Property<int?>("PaymentMethod");
 
                     b.Property<int>("RegistrationId");
 
@@ -479,7 +481,7 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.Property<string>("ParticipantName");
 
-                    b.Property<int>("PaymentMethod");
+                    b.Property<int?>("PaymentMethod");
 
                     b.Property<string>("RegistrationBy");
 

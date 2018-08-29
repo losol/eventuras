@@ -1,42 +1,46 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
+using static losol.EventManagement.Domain.PaymentMethod;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Services
 {
 	public class PaymentMethodService : IPaymentMethodService
 	{
-        private readonly IEnumerable<PaymentMethod> paymentMethods;
+        private readonly ApplicationDbContext _db;
 
-		public PaymentMethodService(IOptions<List<PaymentMethod>> paymentMethodConfig)
+		public PaymentMethodService(ApplicationDbContext db)
 		{
-            paymentMethods = paymentMethodConfig.Value;
+            _db = db;
 		}
 
-		public List<PaymentMethod> GetActivePaymentMethods()
+		public async Task<List<PaymentMethod>> GetActivePaymentMethodsAsync()
 		{
-			return paymentMethods
-				.Where(p => p.Active && !p.AdminOnly).ToList();
+			return await _db.PaymentMethods
+				.Where(p => p.Active && !p.AdminOnly).ToListAsync();
 		}
 
-		public PaymentMethod Get(int id)
+        public async Task<PaymentMethod> GetAsync(PaymentProvider provider)
 		{
-			return paymentMethods.SingleOrDefault(p => p.PaymentMethodId == id);
+			return await _db.PaymentMethods
+                .SingleOrDefaultAsync(p => p.Provider == provider);
 		}
 
-        public PaymentMethod Get(PaymentProvider provider)
+		public async Task<PaymentMethod> GetDefaultPaymentMethodAsync()
 		{
-			return paymentMethods.SingleOrDefault(p => p.Provider == provider);
+			return await _db.PaymentMethods.SingleAsync(p => p.IsDefault);
 		}
 
-		public PaymentMethod GetDefaultPaymentMethod()
-		{
-			return paymentMethods.Single(p => p.IsDefault);
-		}
-	}
+        public PaymentProvider GetDefaultPaymentProvider()
+        {
+            // TODO: Try to use cache to handle this
+            return _db.PaymentMethods.Single(p => p.IsDefault).Provider;
+        }
+    }
 }

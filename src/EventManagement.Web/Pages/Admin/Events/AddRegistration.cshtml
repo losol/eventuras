@@ -20,7 +20,7 @@
             <div class="col-md-9">
                 <div class="form-group">
                     <label>Bruker</label>
-                    @Html.Partial("Partials/_UserSelect")
+                    <partial name="Partials/_UserSelect" />
                     <input type="hidden" asp-for="Registration.UserId" id="user-id" />
                 </div>
 
@@ -96,8 +96,8 @@
     </div>
 
     @section Scripts {
-        @Html.Partial("_ValidationScriptsPartial");
-        @Html.Partial("Partials/_UserSelectScript");
+        <partial name="_ValidationScriptsPartial" />
+        <partial name="Partials/_UserSelectScript" />
         <script>
             function paymentMethod() {
                 if (document.getElementById('Registration_PaymentMethod_@PaymentProvider.PowerOfficeEHFInvoice').checked) {

@@ -27,14 +27,14 @@
     </div>
 </div>
 
-@Html.Partial("Partials/_EmailModal")
-@Html.Partial("Partials/_SmsModal")
-@await Html.PartialAsync("_CompBootstrapTable")
+<partial name="Partials/_EmailModal" />
+<partial name="Partials/_SmsModal" />
+<partial name="_CompBootstrapTable" />
 
 <div class="container  py-5">
-<table 
-    class="table" 
-    data-toggle="table" 
+<table
+    class="table"
+    data-toggle="table"
     data-pagination="false"
     data-show-columns="true"
     data-show-export="true"
@@ -72,13 +72,13 @@
     @if (product.ProductVariants.Any()) {
         @foreach (var variant in product.ProductVariants) {
             var variantregistrations = await productsService.GetRegistrationsForProductVariantAsync(variant.ProductVariantId);
-            
+
             <div class="container py-3 ">
                 <h1 class="section py-3">@variant.Name</h1>
                 <p class="lead">Antall: @variantregistrations.Count()</p>
-                <table 
-                    class="table" 
-                    data-toggle="table" 
+                <table
+                    class="table"
+                    data-toggle="table"
                     data-pagination="false"
                     data-show-columns="true"
                     data-show-export="true"
@@ -151,7 +151,7 @@
 </script>
 <script>
 // For SMS and email scripts
-let recipients = []; 
+let recipients = [];
 let includeOrders = true;
 let eventId = @product.EventInfoId;
 (function () {
@@ -167,8 +167,8 @@ let eventId = @product.EventInfoId;
     })
 })();
 </script>
-@Html.Partial("Partials/_EmailModalScripts")
-@Html.Partial("Partials/_SmsModalScripts")
+<partial name="Partials/_EmailModalScripts" />
+<partial name="Partials/_SmsModalScripts" />
 
 <script src="//rawgit.com/hhurz/tableExport.jquery.plugin/master/tableExport.js"></script>
 }

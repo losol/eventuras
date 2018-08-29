@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using losol.EventManagement.Infrastructure;
 
 namespace losol.EventManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180821073514_ChangePKeyInPaymentMethods")]
+    partial class ChangePKeyInPaymentMethods
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -252,7 +254,9 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.Property<bool>("Paid");
 
-                    b.Property<int>("PaymentMethod");
+                    b.Property<int?>("PaymentMethod");
+
+                    b.Property<int?>("PaymentMethodId");
 
                     b.Property<int>("RegistrationId");
 
@@ -479,7 +483,9 @@ namespace losol.EventManagement.Infrastructure.Migrations
 
                     b.Property<string>("ParticipantName");
 
-                    b.Property<int>("PaymentMethod");
+                    b.Property<int?>("PaymentMethod");
+
+                    b.Property<int?>("PaymentMethodId");
 
                     b.Property<string>("RegistrationBy");
 

@@ -192,15 +192,11 @@ namespace losol.EventManagement.Services {
 				.Include (o => o.Registration)
 				.ThenInclude (r => r.EventInfo)
 				.SingleOrDefaultAsync (o => o.OrderId == orderId);
-			
-			if (!order.PaymentMethodId.HasValue) {
-				_logger.LogError($"OrderId {order.Status} has no PaymentMethodId.");
-				throw new InvalidOperationException($"Cannot edit paymentmethod. Order status: {order.Status}.");
-			}
-			_logger.LogInformation($"Making invoice for order: {order.OrderId}, paymenmethodId: {order.PaymentMethodId}");
-			
+
+			_logger.LogInformation($"Making invoice for order: {order.OrderId}, paymenmethod: {order.PaymentMethod}");
+
 			bool invoiceCreated = false;
-			
+
 			if (order.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice || order.PaymentMethod == PaymentProvider.PowerOfficeEmailInvoice) {
 				_logger.LogInformation("* Using PowerOffice for invoicing");
 				invoiceCreated = await _powerOfficeService.CreateInvoiceAsync (order);
@@ -213,7 +209,7 @@ namespace losol.EventManagement.Services {
 				order.MarkAsInvoiced ();
 				_db.Orders.Update (order);
 				await _db.SaveChangesAsync ();
-			}	
+			}
 			return  invoiceCreated;
 		}
 
@@ -221,11 +217,6 @@ namespace losol.EventManagement.Services {
 			var order = await _db.Orders
 				.Where( m => m.OrderId == orderId)
 				.FirstOrDefaultAsync();
-
-			if(order.CanEdit == false)
-			{
-				throw new InvalidOperationException($"Cannot edit paymentmethod. Order status: {order.Status}.");
-			}
 
 			// Update payment method in registration.
 			order.PaymentMethod = paymentMethod;
