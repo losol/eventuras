@@ -2,6 +2,18 @@
 # Authorization model spec
 
 
+## Overview
+
+| Policy                    | Description                                              | Organization admin                | Course admin               | Admin                               | Site admin                          |
+|---------------------------|----------------------------------------------------------|-----------------------------------|----------------------------|-------------------------------------|-------------------------------------|
+| Manage site admins        | Can manage site admins.                                  |                                   |                            |                                     | v                                   |
+| Manage site organisations | Can manage all site organizations.                       | v                                 |                            | v                                   | v                                   |
+| Manage users              | Can manage all site users.                               |                                   |                            | v                                   | v                                   |
+| Manage organisation       | Can manage organisation info and events for organisation | v                                 |                            | v                                   | v                                   |
+| Manage individual event   | Can edit indiviudal event details                        | Create or events for organization | Only edit individual event | Create events for all organizations | Create events for all organizations |
+| Set admin privileges      |                                                          | None                              | None                       | Promote new admins                  | Promote admins to site owner        |
+
+
 ## User Roles
 
 Role | Description
