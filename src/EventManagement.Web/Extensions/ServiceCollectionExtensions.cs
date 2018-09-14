@@ -9,6 +9,7 @@ using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.Services.Messaging.Sms;
 using losol.EventManagement.Web.Config;
 using losol.EventManagement.Web.Extensions;
+using losol.EventManagement.Web.Policies;
 using losol.EventManagement.Web.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -60,6 +61,7 @@ namespace EventManagement.Web.Extensions
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdministratorRole", policy => policy.RequireRole("Admin", "SuperAdmin"));
+                options.AddPOCPolicy();
             });
         }
 
