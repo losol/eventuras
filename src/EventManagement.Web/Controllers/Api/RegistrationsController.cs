@@ -9,6 +9,7 @@ using static losol.EventManagement.Domain.Registration;
 using System.Collections.Generic;
 using System.Linq;
 using static losol.EventManagement.Domain.PaymentMethod;
+using losol.EventManagement.Controllers;
 
 namespace losol.EventManagement.Web.Controllers.Api {
     [Authorize (Policy = "AdministratorRole")]
@@ -16,10 +17,12 @@ namespace losol.EventManagement.Web.Controllers.Api {
     public class RegistrationsController : Controller {
         private readonly IRegistrationService _registrationsService;
         private readonly IOrderService _orderService;
+        private readonly AccountController _accountController;
 
-        public RegistrationsController (IRegistrationService registrationsService, IOrderService orderService) {
+        public RegistrationsController (IRegistrationService registrationsService, AccountController accountController, IOrderService orderService) {
             _registrationsService = registrationsService;
             _orderService = orderService;
+            _accountController = accountController;
         }
 
         [HttpPost ("{id}/participant/update")]
@@ -115,6 +118,9 @@ namespace losol.EventManagement.Web.Controllers.Api {
         public async Task<ActionResult> UpdateRegistrationType ([FromRoute] int id, [FromRoute] RegistrationType type) {
             try {
                 await _registrationsService.UpdateRegistrationType(id, type);
+                if ( type == RegistrationType.Staff) {
+                    await _accountController.UpdateStaffClaim(id);
+                }
                 return Ok ();
             } catch (Exception e) when (e is InvalidOperationException || e is ArgumentException) {
                 return BadRequest ();

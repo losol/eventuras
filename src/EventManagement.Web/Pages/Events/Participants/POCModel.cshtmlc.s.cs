@@ -38,7 +38,7 @@ namespace losol.EventManagement.Pages.Events.Participants
                 return RedirectToPage("./POC", new { id, slug = EventInfo.Code });
             }
 
-            var authResult = await _authService.AuthorizeAsync(User, EventInfo, policyName: "POCPolicy");
+            var authResult = await _authService.AuthorizeAsync(User, EventInfo, policyName: "EventStaffPolicy");
 
             if(!authResult.Succeeded)
             {

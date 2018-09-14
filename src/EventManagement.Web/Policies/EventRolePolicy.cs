@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace losol.EventManagement.Web.Policies
 {
-    public static class POCAuthorizationPolicyExtensions
+    public static class EventAuthorizationPolicyExtensions
     {
-        public static void AddPOCPolicy(this AuthorizationOptions options)
+        public static void AddEventRolePolicy(this AuthorizationOptions options)
         {
-            options.AddPolicy("POCPolicy", policy =>
+            options.AddPolicy("EventStaffPolicy", policy =>
                 {
                     policy.RequireAssertion(context =>
                         context.User.IsInRole("Admin") ||

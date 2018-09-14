@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using losol.EventManagement.Domain;
+using losol.EventManagement.Services;
 
 namespace losol.EventManagement.Controllers
 {
@@ -13,12 +14,16 @@ namespace losol.EventManagement.Controllers
     public class AccountController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IRegistrationService _registrationService;
         private readonly ILogger _logger;
 
-        public AccountController(SignInManager<ApplicationUser> signInManager, ILogger<AccountController> logger)
+        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IRegistrationService registrationService, ILogger<AccountController> logger)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _userManager = userManager;
+            _registrationService = registrationService;
         }
 
         [HttpPost]
@@ -58,6 +63,13 @@ namespace losol.EventManagement.Controllers
             }
             
             return RedirectToPage("/Profile/Index");
+        }
+
+
+        public async Task<IActionResult> UpdateStaffClaim(int registrationId) {
+            await _registrationService.GetAsync(registrationId);
+            _logger.LogInformation($"* Want to Updated claims for registrationId {registrationId}");
+            return Ok();
         }
     }
 }

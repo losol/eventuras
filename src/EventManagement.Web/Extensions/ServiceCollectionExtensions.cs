@@ -61,7 +61,7 @@ namespace EventManagement.Web.Extensions
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdministratorRole", policy => policy.RequireRole("Admin", "SuperAdmin"));
-                options.AddPOCPolicy();
+                options.AddEventRolePolicy();
             });
         }
 
