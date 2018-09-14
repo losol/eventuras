@@ -9,7 +9,7 @@ using static losol.EventManagement.Domain.Registration;
 
 namespace losol.EventManagement.Web.TagHelpers
 {
-	[HtmlTargetElement("order-status", TagStructure = TagStructure.WithoutEndTag)]
+	[HtmlTargetElement("registration-type", TagStructure = TagStructure.WithoutEndTag)]
 	public class RegistationTypeTagHelper : TagHelper
 	{
 		public RegistrationType Value { get; set; }
