@@ -63,41 +63,6 @@ namespace losol.EventManagement.Pages.Events.Register
 				    await _registrationService.SetRegistrationAsVerified(id.Value);
                 }
 
-                if(registration.Type == RegistrationType.Staff)
-                {
-                    var user = await _userManager.FindByIdAsync(registration.UserId);
-                    var claims = await _userManager.GetClaimsAsync(user);
-
-                    if(!claims.Any(c => c.Type == CustomClaimTypes.IsStaff))
-                    {
-                        var result = await _userManager.AddClaimAsync(user,
-                            new Claim (
-                                type: CustomClaimTypes.IsStaff,
-                                value: true.ToString(),
-                                valueType: ClaimValueTypes.Boolean)
-                        );
-                        if(!result.Succeeded)
-                        {
-                            // TODO: handle this
-                        }
-                    }
-
-                    var claimExists = claims.Any(c => c.Type == CustomClaimTypes.StaffEventId
-                        && registration.EventInfoId.ToString() == c.Value);
-                    if(!claimExists)
-                    {
-                        var result = await _userManager.AddClaimAsync(user, new Claim(
-                            type: CustomClaimTypes.StaffEventId,
-                            value: registration.EventInfoId.ToString(),
-                            valueType: ClaimValueTypes.Integer
-                        ));
-                        if(!result.Succeeded)
-                        {
-                            // TODO: handle this
-                        }
-                    }
-                }
-
 				// Send a copy to admin
                 // TODO: Read from appsettings
 				var adminmessage = "<p>Hurra! Enda en påmelding!</p>";
