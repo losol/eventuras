@@ -1,43 +1,46 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
+using static losol.EventManagement.Domain.PaymentMethod;
+
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace losol.EventManagement.Services
 {
 	public class PaymentMethodService : IPaymentMethodService
 	{
-		private readonly ApplicationDbContext _db;
+        private readonly ApplicationDbContext _db;
 
 		public PaymentMethodService(ApplicationDbContext db)
 		{
-			_db = db;
+            _db = db;
 		}
 
-		public Task<List<PaymentMethod>> GetActivePaymentMethodsAsync()
+		public async Task<List<PaymentMethod>> GetActivePaymentMethodsAsync()
 		{
-			return _db.PaymentMethods
-				      .Where(pm => pm.Active)
-				      .AsNoTracking()
-				      .ToListAsync();
+			return await _db.PaymentMethods
+				.Where(p => p.Active && !p.AdminOnly).ToListAsync();
 		}
 
-		public Task<PaymentMethod> GetAsync(int id)
+        public async Task<PaymentMethod> GetAsync(PaymentProvider provider)
 		{
-			return _db.PaymentMethods.FindAsync(id);
+			return await _db.PaymentMethods
+                .SingleOrDefaultAsync(p => p.Provider == provider);
 		}
 
-		public Task<PaymentMethod> GetDefaultPaymentMethod()
+		public async Task<PaymentMethod> GetDefaultPaymentMethodAsync()
 		{
-			return GetAsync(GetDefaultPaymentMethodId());
+			return await _db.PaymentMethods.SingleAsync(p => p.IsDefault);
 		}
 
-		public int GetDefaultPaymentMethodId()
-		{
-			// HACK: Read this from a config!
-			return 2;
-		}
-	}
+        public PaymentProvider GetDefaultPaymentProvider()
+        {
+            // TODO: Try to use cache to handle this
+            return _db.PaymentMethods.Single(p => p.IsDefault).Provider;
+        }
+    }
 }

@@ -23,7 +23,6 @@ namespace losol.EventManagement.Pages.Admin.Users
             _registrationService = registrationService;
         }
 
-        [BindProperty]
         public DetailsVM UserProfile { get; set; }
 
         public class DetailsVM
@@ -48,13 +47,14 @@ namespace losol.EventManagement.Pages.Admin.Users
             var user = await _userManager.FindByIdAsync(id);
             // var userRegistrations = await _db.Registrations.
 
-            UserProfile = new DetailsVM();
-
-            UserProfile.UserId = user.Id;
-            UserProfile.Name = user.Name;
-            UserProfile.Email = user.Email;
-            UserProfile.Phone = user.PhoneNumber;
-            // UserProfile.Registrations = _registrationService.GetRegistrations()
+            UserProfile = new DetailsVM() {
+                UserId = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Phone = user.PhoneNumber
+            };
+            
+            UserProfile.Registrations = await _registrationService.GetRegistrationsWithOrders(user);
 
 			return Page();
         }

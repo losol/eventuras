@@ -6,20 +6,25 @@ using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using static losol.EventManagement.Domain.PaymentMethod;
+using static losol.EventManagement.Domain.Registration;
 
 namespace losol.EventManagement.Services {
 	public class RegistrationService : IRegistrationService {
 		private readonly ApplicationDbContext _db;
 		private readonly IPaymentMethodService _paymentMethods;
+		private readonly IOrderService _orderService;
 		private readonly ILogger _logger;
 
 		public RegistrationService (
-			ApplicationDbContext db, 
+			ApplicationDbContext db,
 			IPaymentMethodService paymentMethods,
-			ILogger<RegistrationService> logger) 
+			IOrderService orderService,
+			ILogger<RegistrationService> logger)
 		{
 			_db = db;
 			_paymentMethods = paymentMethods;
+			_orderService = orderService;
 			_logger = logger;
 		}
 
@@ -59,7 +64,19 @@ namespace losol.EventManagement.Services {
 
 		public async Task<List<Registration>> GetRegistrations (int eventId) {
 			return await _db.Registrations
-				.Where (r => r.EventInfoId == eventId)
+				.Where (r =>
+					r.EventInfoId == eventId &&
+					r.Status != RegistrationStatus.Cancelled)
+				.Include (r => r.EventInfo)
+				.Include (r => r.User)
+				.ToListAsync ();
+		}
+
+		public async Task<List<Registration>> GetCancelledRegistrations (int eventId) {
+			return await _db.Registrations
+				.Where (r =>
+					r.EventInfoId == eventId &&
+					r.Status == RegistrationStatus.Cancelled)
 				.Include (r => r.EventInfo)
 				.Include (r => r.User)
 				.ToListAsync ();
@@ -72,7 +89,7 @@ namespace losol.EventManagement.Services {
 			.ThenInclude (o => o.OrderLines)
 			.Include (r => r.User)
 			.ToListAsync ();
-		
+
 		public async Task<List<Registration>> GetRegistrationsWithOrders(ApplicationUser user) {
 			var reg = await _db.Registrations
 				.Where( m => m.UserId == user.Id)
@@ -83,36 +100,31 @@ namespace losol.EventManagement.Services {
 			return reg;
 		}
 
-		public async Task<int> CreateRegistration (Registration registration, int[] productIds, int[] variantIds) {
+		public async Task<int> CreateRegistration (Registration registration, List<OrderVM> ordersVm) {
 			// Check if registration exists
 			var existingRegistration = await GetAsync (registration.UserId, registration.EventInfoId);
 			if (existingRegistration != null) {
 				throw new InvalidOperationException ("The user can only register once!");
 			}
 
-			// Create orders if productIds is not null
-			if (productIds != null) {
-				var products = await _db.Products
-					.Where (p => productIds.Contains (p.ProductId))
-					.Include (p => p.ProductVariants)
-					.AsNoTracking ()
-					.ToListAsync ();
-
-				// Create an order for the registration
-				registration.CreateOrder (
-					products,
-					products.SelectMany (p => p.ProductVariants)
-					.Where (v => variantIds?.Contains (v.ProductVariantId) ?? false)
-				);
+			// Create a registration order, if it exists
+			if (ordersVm != null) {
+				var orders = ordersVm.Select(async o => new OrderDTO
+				{
+					Product = await _db.Products.FindAsync(o.ProductId),
+					Variant = o.VariantId.HasValue ? await _db.ProductVariants.FindAsync(o.VariantId): null,
+					Quantity = o.Quantity
+				});
+				registration.CreateOrder(await Task.WhenAll(orders));
 			}
 
 			// Create the registration
-			await _db.Registrations.AddAsync (registration);
-			return await _db.SaveChangesAsync ();
+			await _db.Registrations.AddAsync(registration);
+			return await _db.SaveChangesAsync();
 		}
 
 		public Task<int> CreateRegistration (Registration registration) =>
-			CreateRegistration (registration, null, null);
+			CreateRegistration (registration, null);
 
 		public async Task<int> SetRegistrationAsVerified (int id) {
 			var registration = await GetAsync (id);
@@ -147,50 +159,56 @@ namespace losol.EventManagement.Services {
 			_ = registration ??
 				throw new ArgumentException (message: "Invalid eventId or the user is not registered for the event", paramName : nameof (eventId));
 
-			return await _createOrUpdateOrderAsync (registration, new int[] { productId }, new int[] { variantId.Value });
+			var vm = new List<OrderVM>
+			{
+				new OrderVM
+				{
+					ProductId = productId,
+					VariantId = variantId
+				}
+			};
+
+			return await _createOrUpdateOrderAsync (registration,vm);
 		}
 
-		public async Task<bool> CreateOrUpdateOrder (int registrationId, int[] products, int[] variants) {
+		public async Task<bool> CreateOrUpdateOrder (int registrationId, List<OrderVM> orders) {
 			var registration = await _db.Registrations
 				.Where (a => a.RegistrationId == registrationId)
 				.Include (r => r.Orders)
-				.ThenInclude (o => o.OrderLines)
+				    .ThenInclude (o => o.OrderLines)
+                        .ThenInclude(l => l.Product)
+                .Include (r => r.Orders)
+				    .ThenInclude (o => o.OrderLines)
+                        .ThenInclude(l => l.ProductVariant)
 				.SingleOrDefaultAsync ();
 			_ = registration ??
 				throw new ArgumentException (message: "Invalid registration id.", paramName : nameof (registrationId));
 
-			return await _createOrUpdateOrderAsync (registration, products, variants);
+			return await _createOrUpdateOrderAsync (registration, orders);
 		}
 
 		public Task<bool> CreateOrUpdateOrder (int registrationId, int productId, int? productVariantId) {
-			var productIds = new int[] { productId };
-			int[] variantIds = null;
-			if (productVariantId.HasValue) {
-				variantIds = new int[] { productVariantId.Value };
-			}
-			return CreateOrUpdateOrder (registrationId, productIds, variantIds);
+			var vm = new List<OrderVM>
+			{
+				new OrderVM
+				{
+					ProductId = productId,
+					VariantId = productVariantId
+				}
+			};
+			return CreateOrUpdateOrder (registrationId, vm);
 		}
 
-		private async Task<bool> _createOrUpdateOrderAsync (Registration registration, int[] productIds, int[] variantIds) {
-			// Get lists with a single product & variant in them
-			var products = await _db.Products
-				.Where (p => productIds.Contains (p.ProductId))
-				.Include (p => p.ProductVariants)
-				.AsNoTracking ()
-				.ToListAsync ();
-			if (products?.Count != productIds.Count ()) {
-				throw new ArgumentException (message: "Couldnt find all the products. Check the ids.", paramName : nameof (productIds));
-			}
-			_ = variantIds ?? new int[]{ };
-			var variants = products.First ().ProductVariants.Where (v => variantIds.Contains (v.ProductVariantId));
+		private async Task<bool> _createOrUpdateOrderAsync (Registration registration, List<OrderVM> orders) {
 
+			var ordersDto = orders.Select(async o => new OrderDTO
+			{
+				Product = await _db.Products.FindAsync(o.ProductId),
+				Variant =  o.VariantId.HasValue ? await _db.ProductVariants.FindAsync(o.VariantId) : null,
+				Quantity = o.Quantity
+			});
 			// Create/update an order as needed.
-			registration.CreateOrUpdateOrder (products, variants);
-
-			// Set paymentmethod to default method if null.
-			if (registration.PaymentMethodId == null) {
-				registration.PaymentMethodId = _paymentMethods.GetDefaultPaymentMethodId();
-			}
+			registration.CreateOrUpdateOrder(await Task.WhenAll(ordersDto));
 
 			// Persist the changes
 			return await _db.SaveChangesAsync () > 0;
@@ -200,7 +218,7 @@ namespace losol.EventManagement.Services {
 			var reg = await _db.Registrations
 				.Where( m => m.RegistrationId == registrationId)
 				.FirstOrDefaultAsync();
-			
+
 			reg.ParticipantName = name;
 			reg.ParticipantJobTitle =  jobTitle;
 			reg.ParticipantCity = city;
@@ -209,25 +227,71 @@ namespace losol.EventManagement.Services {
 			return await _db.SaveChangesAsync() > 0;
 		}
 
-		public async Task<bool> UpdateCustomerInfo(int registrationId, string customerName, string customerEmail, string customerVatNumber, string customerInvoiceReference) {
+		public async Task<bool> UpdateCertificateComment(int registrationId, string comment) {
 			var reg = await _db.Registrations
 				.Where( m => m.RegistrationId == registrationId)
 				.FirstOrDefaultAsync();
 
+			reg.CertificateComment = comment;
+			_db.Update(reg);
+			return await _db.SaveChangesAsync() > 0;
+		}
+
+		public async Task<bool> UpdateCustomerInfo(int registrationId, string customerName, string customerEmail, string customerVatNumber, string customerInvoiceReference) {
+			var reg = await _db.Registrations
+				.Where( m => m.RegistrationId == registrationId)
+				.Include ( m => m.Orders)
+				.FirstOrDefaultAsync();
+
+				// Update customer details in registration.
 				reg.CustomerName = customerName;
 				reg.CustomerEmail =  customerEmail;
 				reg.CustomerVatNumber = customerVatNumber;
 				reg.CustomerInvoiceReference = customerInvoiceReference;
 				_db.Update(reg);
+
+				// Update customer details in editable orders.
+				foreach (var order in reg.Orders.Where( s => s.CanEdit == true)) {
+					order.CustomerName = customerName;
+					order.CustomerEmail =  customerEmail;
+					order.CustomerVatNumber = customerVatNumber;
+					order.CustomerInvoiceReference = customerInvoiceReference;
+				}
 			return await _db.SaveChangesAsync() > 0;
 		}
-		public async Task<bool> UpdatePaymentMethod(int registrationId, int paymentMethodId) {
+
+		public async Task<bool> UpdateCustomerAddress(int registrationId, string customerAddress, string customerCity, string customerZip, string customerCountry) {
 			var reg = await _db.Registrations
 				.Where( m => m.RegistrationId == registrationId)
+				.Include ( m => m.Orders)
 				.FirstOrDefaultAsync();
 
-			reg.PaymentMethodId = paymentMethodId;
+				// Update customer details in registration.
+				reg.CustomerAddress = customerAddress;
+				reg.CustomerCity =  customerCity;
+				reg.CustomerZip = customerZip;
+				reg.CustomerCountry = customerCountry;
+				_db.Update(reg);
+
+			return await _db.SaveChangesAsync() > 0;
+		}
+
+
+		public async Task<bool> UpdatePaymentMethod(int registrationId, PaymentProvider paymentMethod) {
+			var reg = await _db.Registrations
+				.Where( m => m.RegistrationId == registrationId)
+				.Include( m => m.Orders )
+				.FirstOrDefaultAsync();
+
+			// Update payment method in registration.
+			reg.PaymentMethod = paymentMethod;
 			_db.Update(reg);
+
+			// Update payment method in editable orders
+			foreach (var order in reg.Orders.Where( s => s.CanEdit == true)) {
+				order.PaymentMethod = paymentMethod;
+			}
+
 			return await _db.SaveChangesAsync() > 0;
 		}
 
@@ -235,8 +299,9 @@ namespace losol.EventManagement.Services {
 			var reg = await _db.Registrations
 				.Where( m => m.RegistrationId == registrationId)
 				.FirstOrDefaultAsync();
-			
+
 			reg.Status = status;
+			reg.AddLog();
 			_db.Update(reg);
 			return await _db.SaveChangesAsync() > 0;
 		}
@@ -246,11 +311,18 @@ namespace losol.EventManagement.Services {
 			var reg = await _db.Registrations
 				.Where( m => m.RegistrationId == registrationId)
 				.FirstOrDefaultAsync();
-			
+
 			reg.Type = type;
+			reg.AddLog($"Satte deltakertype til {reg.Type} ");
 			_db.Update(reg);
 			return await _db.SaveChangesAsync() > 0;
 		}
+    }
 
+	public class OrderVM
+	{
+		public int ProductId { get; set; }
+		public int? VariantId { get; set; }
+		public int Quantity { get; set; } = 1;
 	}
 }

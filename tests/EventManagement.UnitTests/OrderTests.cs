@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using losol.EventManagement.Domain;
 using Xunit;
 using static losol.EventManagement.Domain.Order;
@@ -13,8 +14,9 @@ namespace losol.EventManagement.UnitTests
 			[InlineData(OrderStatus.Draft, OrderStatus.Verified)]
 			[InlineData(OrderStatus.Verified, OrderStatus.Invoiced)]
 			[InlineData(OrderStatus.Verified, OrderStatus.Cancelled)]
-			[InlineData(OrderStatus.Invoiced, OrderStatus.Cancelled)]
 			[InlineData(OrderStatus.Draft, OrderStatus.Cancelled)]
+			[InlineData(OrderStatus.Invoiced, OrderStatus.Refunded)]
+			[InlineData(OrderStatus.Invoiced, OrderStatus.Cancelled)]
 			public void Succeed(OrderStatus from, OrderStatus to)
 			{
 				var order = getOrderWithStatus(from);
@@ -27,6 +29,7 @@ namespace losol.EventManagement.UnitTests
 			[InlineData(OrderStatus.Draft, OrderStatus.Invoiced)]
 			[InlineData(OrderStatus.Cancelled, OrderStatus.Invoiced)]
 			[InlineData(OrderStatus.Invoiced, OrderStatus.Verified)]
+			[InlineData(OrderStatus.Draft, OrderStatus.Refunded)]
 			public void ThrowInvalidOperationException(OrderStatus from, OrderStatus to)
 			{
 				var order = getOrderWithStatus(from);
@@ -47,12 +50,37 @@ namespace losol.EventManagement.UnitTests
 
 			[Theory]
 			[InlineData(OrderStatus.Cancelled)]
+			[InlineData(OrderStatus.Invoiced)]
+			[InlineData(OrderStatus.Refunded)]
 			public void ReturnFalse(OrderStatus status)
 			{
 				var order = getOrderWithStatus(status);
 				Assert.False(order.CanEdit);
 			}
 		}
+
+        public class CreateRefundOrder_Should
+        {
+            [Fact]
+            public void ThrowExceptionIfNotInvoiced()
+            {
+                Order order = new Order();
+                Assert.Throws<InvalidOperationException>(() => order.CreateRefundOrder());
+            }
+
+            [Fact]
+            public void Succeed()
+            {
+                Order order = getOrderWithStatus(OrderStatus.Invoiced);
+                order.OrderLines = new List<OrderLine>
+                {
+                    new OrderLine { ProductId = 1, Quantity = 1, Price = 10 },
+                    new OrderLine { ProductId = 2, Quantity = 1, Price = 10 }
+                };
+                var refund = order.CreateRefundOrder();
+                Assert.Equal(-order.TotalAmount, refund.TotalAmount);
+            }
+        }
 
 		protected static Order getOrderWithStatus(OrderStatus status)
 		{

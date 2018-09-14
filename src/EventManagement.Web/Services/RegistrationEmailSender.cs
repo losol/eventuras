@@ -37,7 +37,8 @@ namespace losol.EventManagement.Web.Services
             _requestScheme = actionContextAccessor.ActionContext.HttpContext.Request.Scheme;
 		}
 
-		public async Task SendRegistrationAsync(string emailAddress, string subject, int registrationId) {
+
+		public async Task SendRegistrationAsync(string emailAddress, string subject, string message, int registrationId) {
 
 			var registration = await _registrationService.GetWithUserAndEventInfoAndOrders(registrationId);
 
@@ -47,7 +48,8 @@ namespace losol.EventManagement.Web.Services
 					Orders = registration.Orders,
 					Email = registration.User.Email,
 					Verified =  (registration.Status != RegistrationStatus.Draft) ? true : false,
-					HasOrder = registration.Orders.Count > 0
+					HasOrder = registration.Orders.Count > 0,
+					Message = message
 				};
 
 				eventRegistration.VerificationUrl = _urlHelper.Page(

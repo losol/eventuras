@@ -38,7 +38,7 @@ namespace EventManagement.Web.Controllers
         public async Task<IActionResult> ViewCertificateForEvent([FromRoute]int id,
             [FromServices]IEventInfoService eventInfoService)
         {
-            var eventInfo = await eventInfoService.GetAsync(id);
+            var eventInfo = await eventInfoService.GetWithOrganizerAsync(id);
             if(eventInfo == null)
             {
                 return NotFound();
@@ -47,11 +47,24 @@ namespace EventManagement.Web.Controllers
             
             vm.Title = eventInfo.Title;
             vm.Description = eventInfo.CertificateDescription;
-            // vm.EventDateStart = eventInfo.DateStart;
-            //vm.EventDateEnd = eventInfo.DateEnd;
+
+            vm.EvidenceDescription = $"{eventInfo.Title} {eventInfo.City}";
+            if (eventInfo.DateStart.HasValue) 
+                { vm.EvidenceDescription += " - " + eventInfo.DateStart.Value.ToString("d");};
+            if (eventInfo.DateEnd.HasValue) 
+                { vm.EvidenceDescription += " - " + eventInfo.DateEnd.Value.ToString("d");};
+
             vm.IssuedInCity = eventInfo.City;
-            vm.Description = eventInfo.CertificateDescription;
-            // TODO: Add organizer details
+
+            if (eventInfo.OrganizerUser != null && !string.IsNullOrWhiteSpace(eventInfo.OrganizerUser.SignatureImageBase64)) {
+                vm.IssuerPersonName = eventInfo.OrganizerUser.Name;
+                vm.IssuerPersonSignatureImageBase64 = eventInfo.OrganizerUser.SignatureImageBase64;
+            }
+
+            if (eventInfo.Organization != null && !string.IsNullOrWhiteSpace(eventInfo.Organization.LogoBase64)) {
+                vm.IssuerOrganizationName = eventInfo.Organization.Name;
+                vm.IssuerOrganizationLogoBase64 = eventInfo.Organization.LogoBase64;   
+             }
             
             return View("Templates/Certificates/CourseCertificate", vm);
         }
@@ -60,6 +73,7 @@ namespace EventManagement.Web.Controllers
         public async Task<IActionResult> DownloadCertificate(
             [FromServices] CertificatePdfRenderer writer, 
             [FromServices] ICertificatesService certificatesService,
+            [FromServices] IEventInfoService eventinfoService,
             [FromRoute] int id)
         {
             var certificate = await certificatesService.GetAsync(id);

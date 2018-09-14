@@ -11,12 +11,12 @@
 
         <div class="clearfix">
             <div class="mr-3 float-left">
-                Status: 
+                Status:
                 <select asp-for="Registration.Status" asp-items="Html.GetEnumSelectList<Registration.RegistrationStatus>()">
                 </select>
             </div>
             <div class="mr-3 float-left">
-                Type deltaker: 
+                Type deltaker:
                 <select asp-for="Registration.Type" asp-items="Html.GetEnumSelectList<Registration.RegistrationType>()">
                 </select>
             </div>
@@ -44,7 +44,7 @@
                         @Html.DisplayFor(model => model.Registration.ParticipantJobTitle)
                     </div>
                     <br />
-                    
+
                     <small>Sted</small>
                     <div contenteditable="true" class="participantinfo" id="participant-city">
                         @Html.DisplayFor(model => model.Registration.ParticipantCity)
@@ -55,6 +55,17 @@
                     <div contenteditable="true" class="participantinfo" id="participant-employer">
                         @Html.DisplayFor(model => model.Registration.ParticipantEmployer)
                     </div>
+                </div>
+            </div>
+            <div class="card mt-3" id="certificateinfo-card">
+                <div class="card-body">
+                    <h4>Kursbevis</h4>
+                    <small>Kommentar på kursbeviset</small>
+                    <div contenteditable="true" class="certificateinfo" id="certificateinfo-comment">
+                        @Html.DisplayFor(model => model.Registration.CertificateComment)
+                    </div>
+                    <br />
+
                 </div>
             </div>
         </div>
@@ -73,7 +84,32 @@
                         @Html.DisplayFor(model => model.Registration.CustomerEmail)
                     </div>
                     <br />
-                    
+
+                    <small>Adresse</small>
+                    <div contenteditable="true" class="customerinfo" id="customer-address">
+                        @Html.DisplayFor(model => model.Registration.CustomerAddress)
+                    </div>
+                    <br />
+
+                    <small>Postnummer</small>
+                    <div contenteditable="true" class="customerinfo" id="customer-zip">
+                        @Html.DisplayFor(model => model.Registration.CustomerZip)
+                    </div>
+                    <br />
+
+
+                    <small>Poststed</small>
+                    <div contenteditable="true" class="customerinfo" id="customer-city">
+                        @Html.DisplayFor(model => model.Registration.CustomerCity)
+                    </div>
+                    <br />
+
+                     <small>Land</small>
+                    <div contenteditable="true" class="customerinfo" id="customer-country">
+                        @Html.DisplayFor(model => model.Registration.CustomerCountry)
+                    </div>
+                    <br />
+
                     <small>Org.nr</small>
                     <div contenteditable="true" class="customerinfo" id="customer-vatnumber">
                         @Html.DisplayFor(model => model.Registration.CustomerVatNumber)
@@ -87,12 +123,12 @@
                     <br />
 
                     <small>Betalingsmetode</small><br />
-                    <select asp-for="Registration.PaymentMethodId">
+                    <select asp-for="Registration.PaymentMethod">
                         @foreach(var paymethod in Model.PaymentMethods) {
-                            <option value="@paymethod.PaymentMethodId">@paymethod.Name</option>
+                            <option value="@paymethod.Provider">@paymethod.Name</option>
                         }
                     </select>
-              
+
                 </div>
             </div>
         </div>
@@ -109,131 +145,181 @@
      <h2>Ordre</h2>
         @{
             foreach (var order in Model.Registration.Orders) {
-                <span class="badge badge-default">@order.OrderId </span>
+                <a asp-page="../Orders/Details" asp-route-id="@order.OrderId" class="btn btn-secondary link-decoration-none">Vis ordre @order.OrderId </a>
             }
         }
 
     <h2>Annet</h2>
     <ul>
         <li>Kursbevis: @Model.Registration.Certificate</li>
-        <li>Brukerid: @Model.Registration.UserId</li>
         <li>Gratis? @Model.Registration.FreeRegistration</li>
-        <li>Betalingsmetode @Model.Registration.PaymentMethod.Name </li>
     </ul>
 </div>
 
-@section scripts { 
-<script>
-    // *******PARTICIPANT INFO SCRIPTS *******
-    // Add change listener to all contenteditables
-    var contenteditables = document.querySelectorAll(".participantinfo");
-    [].forEach.call(contenteditables, function (content) {
-        // Save inital text when entering
-        content.addEventListener("focus", function () {
-            content.setAttribute("data-initial-text", content.innerHTML);
+@section scripts {
+    <style>
+        [contenteditable=true]:empty:before{
+        content: attr(placeholder);
+        display: block; /* For Firefox */
+        }
+
+        div[contenteditable=true] {
+        border: 1px dashed #AAA;
+        width: 290px;
+        padding: 5px;
+        }
+
+        pre {
+        background:#EEE;
+        padding:5px;
+        width: 290px;
+        }   
+    </style>
+    <script>
+
+        // *******CERTIFICATE COMMENT  SCRIPTS *******
+        // Add change listener to all contenteditables
+        var contenteditables = document.querySelectorAll(".certificateinfo");
+        [].forEach.call(contenteditables, function (content) {
+            // Save inital text when entering
+            content.addEventListener("focus", function () {
+                content.setAttribute("data-initial-text", content.innerHTML);
+            });
+            // And check if it has changed
+            content.addEventListener("blur", function () {
+                if (content.getAttribute("data-initial-text") !== content.innerHTML) {
+                    saveCertificateComment();
+                }
+            });
         });
-        // And check if it has changed
-        content.addEventListener("blur", function () {
-            if (content.getAttribute("data-initial-text") !== content.innerHTML) {
-                saveParticipantInfo();
-            }
-        });
-    });
-    function saveParticipantInfo() {
-        const postData = {
-            ParticipantName: $('#participant-name').text().trim(),
-            ParticipantJobTitle: $('#participant-jobtitle').text().trim(),
-            ParticipantCity: $('#participant-city').text().trim(),
-            ParticipantEmployer: $('#participant-employer').text().trim()
+
+        function saveCertificateComment() {
+            const postData = {
+                CertificateComment: $('#certificateinfo-comment').text().trim()
+            };
+            $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/certificatecomment/update', postData)
+                .done(function() {
+                    toastr.success('Lagret kommentar til kursbevis');
+                })
+                .fail(function() {
+                    toastr.error('Noe gikk galt... Sorry altså');
+                });
         };
-        $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/participant/update', postData)
-            .done(function() {
-                toastr.success('Lagret deltakerinfo');
-            })
-            .fail(function() {
-                toastr.error('Noe gikk galt... Sorry altså');
+
+        // *******PARTICIPANT INFO SCRIPTS *******
+        // Add change listener to all contenteditables
+        var contenteditables = document.querySelectorAll(".participantinfo");
+        [].forEach.call(contenteditables, function (content) {
+            // Save inital text when entering
+            content.addEventListener("focus", function () {
+                content.setAttribute("data-initial-text", content.innerHTML);
             });
-    };
-
-
-    // *******CUSTOMER INFO SCRIPTS *******
-    var contenteditables = document.querySelectorAll(".customerinfo");
-    [].forEach.call(contenteditables, function (content) {
-        // Save inital text when entering
-        content.addEventListener("focus", function () {
-            content.setAttribute("data-initial-text", content.innerHTML);
+            // And check if it has changed
+            content.addEventListener("blur", function () {
+                if (content.getAttribute("data-initial-text") !== content.innerHTML) {
+                    saveParticipantInfo();
+                }
+            });
         });
-        // And check if it has changed, and save it
-        content.addEventListener("blur", function () {
-            if (content.getAttribute("data-initial-text") !== content.innerHTML) {
-                saveCustomerInfo();
-            }
-        });
-    });
-
-    function saveCustomerInfo() {
-        const customerPostData = {
-            CustomerName: $('#customer-name').text().trim(),
-            CustomerEmail: $('#customer-email').text().trim(),
-            CustomerVatNumber: $('#customer-vatnumber').text().trim(),
-            CustomerInvoiceReference: $('#customer-invoicereference').text().trim()
+        function saveParticipantInfo() {
+            const postData = {
+                ParticipantName: $('#participant-name').text().trim(),
+                ParticipantJobTitle: $('#participant-jobtitle').text().trim(),
+                ParticipantCity: $('#participant-city').text().trim(),
+                ParticipantEmployer: $('#participant-employer').text().trim()
+            };
+            $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/participant/update', postData)
+                .done(function() {
+                    toastr.success('Lagret deltakerinfo');
+                })
+                .fail(function() {
+                    toastr.error('Noe gikk galt... Sorry altså');
+                });
         };
-        $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/customer/update', customerPostData)
-            .done(function() {
-                toastr.success('Lagret kundeinfo');
-            })
-            .fail(function() {
-                toastr.error('Noe gikk galt... Sorry altså');
+
+
+        // *******CUSTOMER INFO SCRIPTS *******
+        var contenteditables = document.querySelectorAll(".customerinfo");
+        [].forEach.call(contenteditables, function (content) {
+            // Save inital text when entering
+            content.addEventListener("focus", function () {
+                content.setAttribute("data-initial-text", content.innerHTML);
             });
-    };
-
-    // ******* REGISTRATION STATUS SCRIPTS *******
-    $('#Registration_Status').on('change', function() {
-        var status = $("option:selected", this).text();
-        $.postJSON('/api/v0/registrations/status/update/@Model.Registration.RegistrationId/' + status, null)
-            .done(function() {
-                toastr.success('Lagret status');
-            })
-            .fail(function() {
-                toastr.error('Noe gikk galt... Sorry altså');
-                location.reload();
+            // And check if it has changed, and save it
+            content.addEventListener("blur", function () {
+                if (content.getAttribute("data-initial-text") !== content.innerHTML) {
+                    saveCustomerInfo();
+                }
             });
-    })
+        });
 
-    // ******* REGISTRATION TYPE SCRIPTS *******
-    $('#Registration_Type').on('change', function() {
-        var type = $("option:selected", this).text();
-        $.postJSON('/api/v0/registrations/type/update/@Model.Registration.RegistrationId/' + type, null)
-            .done(function() {
-                toastr.success('Lagret deltakertype');
-            })
-            .fail(function() {
-                toastr.error('Noe gikk galt... Sorry altså');
-                location.reload();
-            });
-    })
+        function saveCustomerInfo() {
+            var customerPostData = {
+                CustomerName: $('#customer-name').text().trim(),
+                CustomerEmail: $('#customer-email').text().trim(),
+                CustomerAddress: $('#customer-address').text().trim(),
+                CustomerZip: $('#customer-zip').text().trim(),
+                CustomerCity: $('#customer-city').text().trim(),
+                CustomerCountry: $('#customer-country').text().trim(),
+                CustomerVatNumber: $('#customer-vatnumber').text().trim(),
+                CustomerInvoiceReference: $('#customer-invoicereference').text().trim()
+            };
+            $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/customer/update', customerPostData)
+                .done(function() {
+                    toastr.success('Lagret kundeinfo');
+                })
+                .fail(function() {
+                    toastr.error('Noe gikk galt... Sorry altså');
+                });
+        };
 
-    // ******* CANCEL REGISTRATION BUTTON *******
-    function CancelRegistration() {
-        var val = 'Cancelled';
-        $('#Registration_Status option:contains(' + val + ')').prop({selected: true});
-        $('#Registration_Status').change();
-    };
+        // ******* REGISTRATION STATUS SCRIPTS *******
+        $('#Registration_Status').on('change', function() {
+            var status = $("option:selected", this).text();
+            $.postJSON('/api/v0/registrations/status/update/@Model.Registration.RegistrationId/' + status, null)
+                .done(function() {
+                    toastr.success('Lagret status');
+                })
+                .fail(function() {
+                    toastr.error('Noe gikk galt... Sorry altså');
+                    location.reload();
+                });
+        })
+
+        // ******* REGISTRATION TYPE SCRIPTS *******
+        $('#Registration_Type').on('change', function() {
+            var type = $("option:selected", this).text();
+            $.postJSON('/api/v0/registrations/type/update/@Model.Registration.RegistrationId/' + type, null)
+                .done(function() {
+                    toastr.success('Lagret deltakertype');
+                })
+                .fail(function() {
+                    toastr.error('Noe gikk galt... Sorry altså');
+                    location.reload();
+                });
+        })
+
+        // ******* CANCEL REGISTRATION BUTTON *******
+        function CancelRegistration() {
+            var val = 'Cancelled';
+            $('#Registration_Status option:contains(' + val + ')').prop({selected: true});
+            $('#Registration_Status').change();
+        };
 
 
-    // ******* PAYMENTMETHOD UPDATE  SCRIPTS *******
-    $('#Registration_PaymentMethodId').on('change', function() {
-        var paymentMethodId = $("option:selected", this).val();
-        $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/paymentmethod/update/' + paymentMethodId, null)
-            .done(function() {
-                toastr.success('Lagret status');
-            })
-            .fail(function() {
-                toastr.error('Noe gikk galt... Sorry altså');
-                location.reload();
-            });
-    })
+        // ******* PAYMENTMETHOD UPDATE  SCRIPTS *******
+        $('#Registration_PaymentMethod').on('change', function() {
+            var paymentMethod = $("option:selected", this).val();
+            $.postJSON('/api/v0/registrations/@Model.Registration.RegistrationId/paymentmethod/update/' + paymentMethod, null)
+                .done(function() {
+                    toastr.success('Lagret status');
+                })
+                .fail(function() {
+                    toastr.error('Noe gikk galt... Sorry altså');
+                    location.reload();
+                });
+        })
 
-        
-</script>
+
+    </script>
 }

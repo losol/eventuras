@@ -1,24 +1,29 @@
 @page "{id:int}"
 @inject IOrderService orderService
 @inject IProductsService productsService
+@inject IPaymentMethodService paymentmethodService
 @using losol.EventManagement.Web.Pages.Admin.Orders
 @{
     var id = Convert.ToInt32(RouteData.Values["id"]);
     var order = await orderService.GetByIdAsync(id);
-    var products = await productsService.GetForEventAsync(order.Registration.EventInfoId);
+    var paymentMethods = await paymentmethodService.GetActivePaymentMethodsAsync();
+    var products = await productsService.GetProductsForEventAsync(order.Registration.EventInfoId);
     var variants = products.SelectMany(p => p.ProductVariants)
                            .Select(x => new { id = x.ProductVariantId, pid = x.ProductId, name = x.Name });
 }
 <div class="bg-gray-300 py-3">
     <div class="container">
-        <h2>
+        <h1>
             Ordre #@order.OrderId - @order.Registration.EventInfo.Title
             <order-status value="@order.Status" />
-        </h2>
-        <div class="d-print-none"> 
+        </h1>
+        <div class="d-print-none">
         @if(order.Status != Order.OrderStatus.Cancelled)
         {
+
             <div class="btn-group " role="group">
+
+
                 @if(order.GetNextStatus() != null)
                 {
                     <button type="button" class="btn btn-primary" onclick="updateOrderStatus('@order.GetNextStatus()')">
@@ -33,32 +38,28 @@
                         <button class="dropdown-item text-danger" onclick="updateOrderStatus('Cancelled')">Cancel</button>
                     </div>
                 </div>
+
             </div>
             }
-            else 
+            else
             {
                 <button type="button" class="btn btn-primary " onclick="reopenOrder()">
-                    Reopen
+                    Lag kopi av ordren
                 </button>
             }
             @if(order.Status != Order.OrderStatus.Invoiced)
             {
-                <button class="btn btn-small btn-danger " data-toggle="popover" 
-                    data-trigger="focus" 
-                    title="Delete order?" 
-                    data-content="<button class='btn btn-sm btn-danger' onclick='deleteOrder()'>Yes</button><button class='btn btn-sm btn-success'>No</button>">Delete</button>
-
-                <button class="btn btn-small btn-secondary " data-toggle="popover" 
-                    data-trigger="focus" 
-                    title="Make order free?" 
+                <button class="btn btn-small btn-secondary" data-toggle="popover"
+                    data-trigger="focus"
+                    title="Make order free?"
                     data-content="<button class='btn btn-sm btn-danger' onclick='makeFree()'>Yes</button><button class='btn btn-sm btn-success'>No</button>">Make Free</button>
             }
         </div>
     </div>
 </div>
-<div class="container py-3"> 
-        <div class="row justify-content-between">
-            <div class="card col-md-5 m-2">
+<div class="container py-3">
+        <div class="row">
+            <div class="card col-md-6">
                 <div class="card-body">
                 <h4 class="card-title">Deltaker</h4>
                 <hr />
@@ -70,39 +71,41 @@
                     <dt>Telefon</dt>
                     <dd>@(order.User?.PhoneNumber ?? "-")</dd>
                 </dl>
+                <a asp-page="../Registrations/Details" asp-route-id="@order.RegistrationId">Endre</a>
                 </div>
             </div>
-            
-            <div class="card col-md-5 m-2">
+
+            <div class="card col-md-6">
                 <div class="card-body">
                     <h4 class="card-title">Betalingsinformasjon</h4>
                     <hr />
-                    <dl class=""> 
-                        <dt class="">Kundenavn</dt>
-                        <dd class="">@order.CustomerName &nbsp;</dd>
-                        <dt class="">Epost for faktura</dt>
-                        <dd class="">@order.CustomerEmail &nbsp;</dd>
-                        <dt class="">Organisasjonsnummer</dt>
-                        <dd class="">@order.CustomerVatNumber &nbsp;</dd>
-                        <dt class="">Fakturareferanse</dt>
-                        <dd class="">@order.CustomerInvoiceReference &nbsp;</dd>
-                        <dt class="">Betalingsmetode</dt>
-                        <dd class=""> @order.PaymentMethod?.Name</dd>
-               
+                    <dl class="row">
+                        <dt class="col-sm-4">Kunde</dt>
+                        <dd class="col-sm-8">@order.Registration.CustomerName &nbsp;</dd>
+                        <dt class="col-sm-4">Fakturaepost</dt>
+                        <dd class="col-sm-8">@order.Registration.CustomerEmail &nbsp;</dd>
+                        <dt class="col-sm-4">Org.nr</dt>
+                        <dd class="col-sm-8">@order.Registration.CustomerVatNumber &nbsp;</dd>
+                        <dt class="col-sm-4">Fakturaref.</dt>
+                        <dd class="col-sm-8">@order.Registration.CustomerInvoiceReference &nbsp;</dd>
                     </dl>
-
-            <a href="#" data-toggle="modal" class="d-print-none"
-                data-target="#edit-order-modal">Endre detaljer</a>
+                    <a asp-page="../Registrations/Details" asp-route-id="@order.RegistrationId">Endre</a>
+                    <br />
+                    <select asp-for="@order.PaymentMethod">
+                        @foreach(var paymethod in paymentMethods) {
+                            <option value="@paymethod.Provider">@paymethod.Name</option>
+                        }
+                    </select>
                 </div>
             </div>
         </div>
-            
+
             <h2>
-                Ordrelinjer 
+                Ordrelinjer
                 @if(order.CanEdit)
                 {
-                    <button class="ml-3 btn btn-success d-print-none" 
-                        data-toggle="modal" 
+                    <button class="ml-3 btn btn-success d-print-none"
+                        data-toggle="modal"
                         data-target="#add-orderline-modal">Ny ordrelinje</button>
                 }
             </h2>
@@ -136,9 +139,9 @@
                             @if(order.CanEdit)
                             {
                                 <td class="d-print-none">
-                                    <a tabindex="0" 
-                                        class="btn btn-sm btn-primary btn-edit-line" 
-                                        role="button"    
+                                    <a tabindex="0"
+                                        class="btn btn-sm btn-primary btn-edit-line"
+                                        role="button"
                                         data-quantity="@line.Quantity"
                                         data-id="@line.OrderLineId"
                                         data-product-id="@line.ProductId"
@@ -146,10 +149,10 @@
                                         data-trigger="focus">
                                         <i class="material-icons md-light md-18">edit</i>
                                     </a>
-                                    <a tabindex="0" class="btn btn-sm btn-danger" role="button"       
-                                        data-toggle="popover" 
-                                        data-trigger="focus" 
-                                        title="Delete line?" 
+                                    <a tabindex="0" class="btn btn-sm btn-danger" role="button"
+                                        data-toggle="popover"
+                                        data-trigger="focus"
+                                        title="Delete line?"
                                         data-content="<button class='btn btn-sm btn-danger btn-delete-line' onclick='deleteOrderLine(@line.OrderLineId)'>Yes</button><button class='btn btn-sm btn-success'>No</button>">
                                         <i class="material-icons md-light md-18">delete</i>
                                     </a>
@@ -160,13 +163,17 @@
                 </tbody>
             </table>
 
-            <strong>Kommentarer</strong><br />
+            <h2>Kommentarer</h2>
             <pre>@order.Comments</pre>
 
-            <strong>Logg</strong><br />
+            <p>
+                <a href="#" data-toggle="modal" class="d-print-none" data-target="#edit-order-comment-modal">Endre kommentar</a>
+            </p>
+
+            <h2>Logg</h2>
             <pre>@order.Log</pre>
 
-            <h4>Ordreinformasjon</h4>
+            <h2>Ordreinformasjon</h2    >
             <dl class="row">
                 <dt class="col-6 col-md-3 col-lg-2 text-right">Order ID</dt>
                 <dd class="col-6 col-md-9 col-lg-10">@order.OrderId</dd>
@@ -185,12 +192,12 @@
 
 
 <!-- Add OrderLine Modal -->
-<div class="modal fade" 
-    id="add-orderline-modal" 
-    tabindex="-1" 
-    role="dialog" 
+<div class="modal fade"
+    id="add-orderline-modal"
+    tabindex="-1"
+    role="dialog"
     data-keyboard="false"
-    aria-labelledby="add-orderline-modal-title" 
+    aria-labelledby="add-orderline-modal-title"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -204,8 +211,8 @@
         <div class="form-group">
             <label class="control-label">Product</label>
             <select id="selected-product" class="form-control">
-                <option selected disabled>Select Product</option>   
-                @foreach(var p in products) 
+                <option selected disabled>Select Product</option>
+                @foreach(var p in products)
                 {
                     <option value="@p.ProductId">@p.Name</option>
                 }
@@ -226,12 +233,12 @@
 </div>
 
 <!-- Edit OrderLine Modal -->
-<div class="modal fade" 
-    id="edit-orderline-modal" 
-    tabindex="-1" 
-    role="dialog" 
+<div class="modal fade"
+    id="edit-orderline-modal"
+    tabindex="-1"
+    role="dialog"
     data-keyboard="false"
-    aria-labelledby="edit-orderline-modal-title" 
+    aria-labelledby="edit-orderline-modal-title"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -264,44 +271,31 @@
     </div>
 </div>
 
-<!-- Edit Order (customer/comments) Modal -->
-<div class="modal fade" 
-    id="edit-order-modal" 
-    tabindex="-1" 
-    role="dialog" 
+<!-- Edit Order Comments Modal -->
+<div class="modal fade"
+    id="edit-order-comment-modal"
+    tabindex="-1"
+    role="dialog"
     data-keyboard="false"
-    aria-labelledby="edit-order-modal-title" 
+    aria-labelledby="edit-order-modal-title"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
     <div class="modal-content">
         <div class="modal-header">
-        <h5 class="modal-title" id="edit-order-modal-title">Edit Order Information</h5>
+        <h5 class="modal-title" id="edit-order-modal-title">Edit Order Comment</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
         </div>
         <div class="modal-body">
         <div class="form-group">
-            <label class="control-label">Customer Name</label>
-            <input id="input-edit-customer-name" class="form-control" value="@order.CustomerName" />
-        </div>
-        <div class="form-group">
-            <label class="control-label">Customer Email</label>
-            <input id="input-edit-customer-email" class="form-control" value="@order.CustomerEmail" />
-        </div>
-        <div class="form-group">
-            <label class="control-label">Customer Invoice Reference </label>
-            <input id="input-edit-customer-invoiceref" class="form-control" value="@order.CustomerInvoiceReference" />
-        </div>
-        <hr>
-        <div class="form-group">
-            <label class="control-label">Comments </label>
-            <textarea id="input-edit-comments" class="form-control">@order.Comments</textarea>
+            <label class="control-label">Kommentar </label>
+            <textarea id="input-edit-comments" rows="8" class="form-control">@order.Comments</textarea>
         </div>
         </div>
         <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button id="btn-edit-order" type="button" class="btn btn-primary">Save <i class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true" style="display:none"></i></button>
+        <button id="btn-edit-order-comment" type="button" class="btn btn-primary">Save <i class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true" style="display:none"></i></button>
         </div>
     </div>
     </div>
@@ -311,7 +305,7 @@
 TODO: Gotta do it in a better way later. *@
 <div id="input-disabler" style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; color: transparent; z-index:2000; display: none"></div>
 
-@section scripts { 
+@section scripts {
     <script>
 
         $(function () {
@@ -343,7 +337,7 @@ TODO: Gotta do it in a better way later. *@
                     $sVariants.prop('disabled', true);
                 }
             });
-            
+
             const $disabler = $('#input-disabler');
             const $spinner = $('.fa-spinner');
             $('#btn-add-orderline').bind('click', function() {
@@ -369,7 +363,7 @@ TODO: Gotta do it in a better way later. *@
             $('.btn-edit-line').on('click', function() {
                 const editId = $(this).data('id');
                 const productId = $(this).data('product-id');
-                
+
                 const $editModal = $('#edit-orderline-modal');
                 const $inputVariants = $('#input-edit-variant');
                 const $inputQuantity = $('#input-edit-quantity');
@@ -415,16 +409,13 @@ TODO: Gotta do it in a better way later. *@
                 }
             })
 
-            $('#btn-edit-order').on('click', function() {
+            $('#btn-edit-order-comment').on('click', function() {
                 const postData = {
-                    customerName: $('#input-edit-customer-name').val(),
-                    customerEmail: $('#input-edit-customer-email').val(),
-                    invoiceReference: $('#input-edit-customer-invoiceref').val(),
                     comments: $('#input-edit-comments').val()
                 }
                 $spinner.show();
                 $disabler.show();
-                $.postJSON('/api/v0/orders/update/@order.OrderId', postData).done(function() {
+                $.postJSON('/api/v0/orders/@order.OrderId/update/ordercomment', postData).done(function() {
                     location.reload();
                 }).fail(function(){
                     $spinner.hide();
@@ -441,10 +432,17 @@ TODO: Gotta do it in a better way later. *@
         }
 
         function updateOrderStatus(status) {
-            toastr.info('Please wait.', null, { timeOut: 0 });
-            $.post('/api/v0/orders/update/@id/' + status, function() {
+            toastr.info('Hent kaffe!!!', null, { timeOut: 0 });
+            $.post('/api/v0/orders/update/@id/' + status)
+            .done(function(msg) {
                 location.reload();
-            })            
+            })
+            .fail(function(xhr, status, error){
+                toastr.error('Nåkka gikk galt. Sorry. Sjekk loggen.');
+                window.setTimeout(function(){
+                    location.reload();
+                }, 3000);
+            })
         }
 
         function deleteOrder() {
@@ -460,7 +458,7 @@ TODO: Gotta do it in a better way later. *@
             $.post('/api/v0/orders/reopen/@id').done(function(id) {
                 window.location.href = "/Admin/Orders/Details/"+id;
             }).fail(function(){
-                toastr.fail('Reopening failed. Create a new order manually instead.')
+                toastr.error('Reopening failed. Create a new order manually instead.')
             })
         }
 
@@ -470,5 +468,19 @@ TODO: Gotta do it in a better way later. *@
             })
         }
     </script>
-    
+    <script>
+    // ******* PAYMENTMETHOD UPDATE  SCRIPTS *******
+    $('#order_PaymentMethod').on('change', function() {
+        var paymentMethod = $("option:selected", this).val();
+        $.postJSON('/api/v0/orders/@id/paymentmethod/update/' + paymentMethod, null)
+            .done(function() {
+                toastr.success('Lagret status');
+            })
+            .fail(function() {
+                toastr.error('Noe gikk galt... Sorry altså');
+                location.reload();
+            });
+    })
+    </script>
+
 }

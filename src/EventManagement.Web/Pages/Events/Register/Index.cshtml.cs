@@ -15,6 +15,8 @@ using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
 using losol.EventManagement.Services.Extensions;
 using System.Text;
+using static losol.EventManagement.Domain.PaymentMethod;
+using System.Text.RegularExpressions;
 
 namespace losol.EventManagement.Web.Pages.Events.Register
 {
@@ -49,7 +51,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 		public EventInfo EventInfo { get; set; }
 		public List<PaymentMethod> PaymentMethods { get; set; }
 		public List<Product> Products => EventInfo.Products;
-		public int DefaultPaymentMethod => _paymentMethodService.GetDefaultPaymentMethodId();
+		public PaymentProvider DefaultPaymentMethod => _paymentMethodService.GetDefaultPaymentProvider();
 
 		public async Task<IActionResult> OnGetAsync(int id)
 		{
@@ -76,6 +78,22 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 				return Page();
 			}
 
+			// Sanitization of input
+			if (!string.IsNullOrWhiteSpace(Registration.ParticipantName)) 	{ Registration.ParticipantName = Regex.Replace(Registration.ParticipantName, "<.*?>", String.Empty); }
+			if (!string.IsNullOrWhiteSpace(Registration.Email)) 				{ Registration.Email = Regex.Replace(Registration.Email, "<.*?>", String.Empty); }
+			if (!string.IsNullOrWhiteSpace(Registration.PhoneCountryCode)) 	{ Registration.PhoneCountryCode = Regex.Replace(Registration.PhoneCountryCode, "<.*?>", String.Empty); }
+			if (!string.IsNullOrWhiteSpace(Registration.Phone)) 				{ Registration.Phone = Regex.Replace(Registration.Phone, "<.*?>", String.Empty); }
+			if (!string.IsNullOrWhiteSpace(Registration.ParticipantJobTitle)){ Registration.ParticipantJobTitle = Regex.Replace(Registration.ParticipantJobTitle, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.ParticipantCity)) 	{ Registration.ParticipantCity = Regex.Replace(Registration.ParticipantCity, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.Notes)) 				{ Registration.Notes = Regex.Replace(Registration.Notes, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerVatNumber)) 	{ Registration.CustomerVatNumber = Regex.Replace(Registration.CustomerVatNumber, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerName)) 		{ Registration.CustomerName = Regex.Replace(Registration.CustomerName, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerEmail)) 		{ Registration.CustomerEmail = Regex.Replace(Registration.CustomerEmail, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerInvoiceReference)) {Registration.CustomerInvoiceReference = Regex.Replace(Registration.CustomerInvoiceReference, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerZip)) 		{ Registration.CustomerZip = Regex.Replace(Registration.CustomerZip, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerCity)) 		{ Registration.CustomerCity = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerCountry)) 	{ Registration.CustomerCountry = Regex.Replace(Registration.CustomerCountry, "<.*?>", String.Empty);}
+
 			EventInfo = await _eventsService.GetWithProductsAsync(id);
 			if (EventInfo == null) return NotFound();
 			Registration.EventInfoId = EventInfo.EventInfoId;
@@ -91,8 +109,8 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 				if (existingRegistration != null)
 				{
 					// The user has already registered for the event.
-					await _registrationEmailSender.SendRegistrationAsync(user.Email, "Du var allerede påmeldt!", existingRegistration.RegistrationId);
-					return RedirectToPage("/Info/EmailSent");		
+					await _registrationEmailSender.SendRegistrationAsync(user.Email, "Du var allerede påmeldt!", "<p>Vi hadde allerede en registrering for deg.</p>", existingRegistration.RegistrationId);
+					return RedirectToPage("/Info/EmailSent");
 				}
 			}
 			else
@@ -113,7 +131,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 					foreach (var error in result.Errors)
 					{
 						ModelState.AddModelError(string.Empty, error.Description);
-					}	
+					}
 					PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
 					return Page();
 				}
@@ -124,48 +142,9 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 
 			var newRegistration = Registration.Adapt<Registration>();
 			newRegistration.VerificationCode = PasswordHelper.GeneratePassword(6);
-			int[] selectedProductIds = null;
-			int[] selectedVariantIds = null;
+			await _registrationService.CreateRegistration(newRegistration, Registration.SelectedProducts);
+            await _registrationEmailSender.SendRegistrationAsync(user.Email, "Velkommen på kurs!", "<p>Vi fikk registreringen din</p>", newRegistration.RegistrationId);
 
-			// If the eventinfo has products, then register and make order
-			if (Registration.HasProducts)
-			{
-				// Populate the ids required to create the registration
-				selectedProductIds = Registration.SelectedProducts.ToArray();
-				selectedVariantIds = Registration.SelectedVariants.ToArray();
-				
-				var registeredProducts = EventInfo.Products
-					.Where(x => selectedProductIds.Contains(x.ProductId))
-					.ToList();
-
-				// Get the list of product names along with id and variants ...
-				var productNames = registeredProducts.Select(product =>
-				{
-					var variantId = Registration.Products
-						.Where(p => product.ProductId == p.Value)
-						.Select(p => p.SelectedVariantId)
-						.FirstOrDefault();
-
-					var variantString = "";
-					if (variantId != null)
-					{
-						var variantName = Products.Where(p => p.ProductId == product.ProductId)
-							.SelectMany(p => p.ProductVariants)
-							.Where(v => v.ProductVariantId == variantId)
-							.Select(v => v.Name)
-							.Single();
-
-						variantString = $" ({variantId}. {variantName})";
-					}
-
-					return $"{product.ProductId}. {product.Name}{variantString}";
-				});
-
-				// ... and concatenate them together into the notes field
-				Registration.Notes = String.Join(", ", productNames);
-			}
-			await _registrationService.CreateRegistration(newRegistration, selectedProductIds, selectedVariantIds);
-			await _registrationEmailSender.SendRegistrationAsync(user.Email, "Velkommen på kurs!", newRegistration.RegistrationId);
 
 			return RedirectToPage("/Info/EmailSent");
 		}

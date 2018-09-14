@@ -1,6 +1,6 @@
 # Updating docker image
 
-in /src
+in / folder
 
 ```bash
 docker build -t eventmanagement .

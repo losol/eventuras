@@ -24,7 +24,7 @@ namespace losol.EventManagement.Web.Api.Controllers
 		[HttpGet, Route("for-event/{eventId}")]
 		public async Task<IActionResult> GetForEvent(int eventId)
 		{
-			var products = await _productsService.GetForEventAsync(eventId);
+			var products = await _productsService.GetProductsForEventAsync(eventId);
 			return Ok(getResult(products));
 		}
 
@@ -38,8 +38,8 @@ namespace losol.EventManagement.Web.Api.Controllers
 				s.MoreInformation,
 				s.EventInfoId,
 				s.IsMandatory,
-				s.MandatoryCount,
-				s.MaxOrdersCount,
+				s.MinimumQuantity,
+				s.Inventory,
 				s.Price,
 				Variants = s.ProductVariants.Select(v => new {
 					v.ProductVariantId,

@@ -20,7 +20,7 @@ namespace losol.EventManagement.Infrastructure {
         public DbSet<losol.EventManagement.Domain.OrderLine> OrderLines { get; set; }
         public DbSet<losol.EventManagement.Domain.Organization> Organizations { get; set; }
         public DbSet<losol.EventManagement.Domain.Certificate> Certificates { get; set; }
-        public DbSet<losol.EventManagement.Domain.CertificateEvidence> CertificateEvidences { get; set; }
+        public DbSet<losol.EventManagement.Domain.MessageLog> MessageLogs { get; set; }
         
        
         protected override void OnModelCreating (ModelBuilder builder) {

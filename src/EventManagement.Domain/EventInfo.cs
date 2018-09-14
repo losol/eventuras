@@ -10,7 +10,31 @@ namespace losol.EventManagement.Domain
 
 	public class EventInfo
 	{
+		public enum EventInfoStatus
+        {
+            Draft = 0,
+            Planned = 1,
+            RegistrationsOpen = 2,
+			WaitingList = 3,
+            RegistrationsClosed = 4,
+            Finished = 5,
+			Cancelled = 9,
+
+        }
+
+		public enum EventInfoType
+        {
+            Course = 0,
+            Conference = 1,
+            OnlineCourse = 2,
+            Social = 3,
+            Other = 9
+        }
+
 		public int EventInfoId { get; set; }
+        public EventInfoStatus Status { get; set; } = EventInfoStatus.Draft;
+        public EventInfoType Type { get; set; } = EventInfoType.Course;
+
 
 		[Display(Name = "Tittel på kurset")]
 		public string Title { get; set; }
@@ -86,10 +110,6 @@ namespace losol.EventManagement.Domain
 		[Display(Name = "Antall deltakere", Description = "Maksimalt antall deltakere")]
 		public int MaxParticipants { get; set; } = 0; //maks antall deltakere
 
-		[Display(Name = "Pris")]
-		[DisplayFormat(DataFormatString = "{0:0}", ApplyFormatInEditMode = true)]
-		public decimal? Price { get; set; }
-
 		[Display(Name = "Diplomtittel - typisk type kurs, f eks Grunnkurs A Allmennmedisin")]
 		public string CertificateTitle { get; set; } //Text for the certificate if issued.
 
@@ -102,6 +122,9 @@ namespace losol.EventManagement.Domain
 
 		[Display(Name = "Bildetekst for arrangementet (Husk fotokreditering)")]
 		public string FeaturedImageCaption { get; set; }
+
+		[Display(Name = "Prosjekt-kode for regnskap")]
+		public string ProjectCode { get; set; }
 
 		public string OrganizerUserId {get;set;}
 		[ForeignKey("OrganizerUserId")]

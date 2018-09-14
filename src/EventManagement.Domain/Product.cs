@@ -24,13 +24,14 @@ namespace losol.EventManagement.Domain
 		[DataType(DataType.MultilineText)]
 		public string MoreInformation { get; set; }
 
+		public bool EnableQuantity { get; set; } = false;
 		[Display(Name = "Må deltaker bestille et antall av produktet?")]
-		public int MandatoryCount { get; set; } = 0;
+		public int MinimumQuantity { get; set; } = 0;
 
 		public decimal Price { get; set; }
-		public int VatPercent { get; set; } = 0;
+		public int VatPercent { get; set; } = 0;	
 
-		public int MaxOrdersCount { get; set; } = 0;
+		public int Inventory { get; set; } = 0;
 		public bool Published {get;set;} = true;
 
 		// Navigational properties
@@ -43,6 +44,6 @@ namespace losol.EventManagement.Domain
 
 		public List<OrderLine> OrderLines { get; set; }
 
-		public bool IsMandatory => MandatoryCount > 0;
+		public bool IsMandatory => MinimumQuantity > 0;
 	}
 }

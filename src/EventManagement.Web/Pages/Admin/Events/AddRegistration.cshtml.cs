@@ -8,6 +8,7 @@ using losol.EventManagement.Domain;
 using losol.EventManagement.Services;
 using Microsoft.AspNetCore.Identity;
 using Mapster;
+using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Pages.Admin.Events
 {
@@ -18,7 +19,7 @@ namespace losol.EventManagement.Pages.Admin.Events
         private readonly IOrderService _orders;
         private readonly IPaymentMethodService _paymentMethodService;
 		private readonly UserManager<ApplicationUser> _userManager;
-        
+
 
         public AddRegistrationModel(IOrderService orders, IEventInfoService eventInfos, IRegistrationService registrations, IPaymentMethodService paymentMethods, UserManager<ApplicationUser> userManager)
         {
@@ -35,13 +36,13 @@ namespace losol.EventManagement.Pages.Admin.Events
 		public EventInfo EventInfo { get; set; }
 		public List<PaymentMethod> PaymentMethods { get; set; }
 		public List<Product> Products => EventInfo.Products;
-		public int DefaultPaymentMethod => _paymentMethodService.GetDefaultPaymentMethodId();
+		public PaymentProvider DefaultPaymentMethod => _paymentMethodService.GetDefaultPaymentProvider();
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
 			EventInfo = EventInfo ?? await _eventsService.GetWithProductsAsync(id);
 			if (EventInfo == null) return NotFound();
-            
+
             PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
 			Registration = new Web.Pages.Events.Register.RegisterVM(EventInfo, DefaultPaymentMethod);
 

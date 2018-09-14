@@ -23,7 +23,7 @@ namespace losol.EventManagement.Domain
 
 		public bool AdminOnly { get; set; } = false;
 
-		public int MaxOrdersCount { get; set; } = 0;
+		public int Inventory { get; set; } = 0;
 		public bool Published {get;set;} = true; 
 
 		// Navigational properties

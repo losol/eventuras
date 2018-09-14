@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using losol.EventManagement.Domain;
+using losol.EventManagement.Services;
+using static losol.EventManagement.Domain.PaymentMethod;
 using static losol.EventManagement.Domain.Registration;
 
 namespace losol.EventManagement.Web.Pages.Events.Register
@@ -26,7 +28,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 		[Required]
 		[Display(Name = "Landkode")]
 		public string PhoneCountryCode { get; set; } = "+47";
-		
+
 		[Required]
 		[Phone]
 		[Display(Name = "Mobiltelefon")]
@@ -54,11 +56,21 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 		[Display(Name = "Fakturamottakers epost")]
 		public string CustomerEmail { get; set; }
 
+
+		[Display(Name = "Postnummer")]
+		public string CustomerZip { get; set; }
+
+		[Display(Name = "Poststed")]
+		public string CustomerCity { get; set; }
+
+		[Display(Name = "Land")]
+		public string CustomerCountry { get; set; } = "Norge";
+		
 		[Display(Name = "Fakturareferanse")]
 		public string CustomerInvoiceReference { get; set; }
 
 		[Display(Name = "Betaling")]
-		public int? PaymentMethodId { get; set; }
+		public PaymentProvider? PaymentMethod { get; set; }
 
 		public ProductVM[] Products { get; set; }
 
@@ -66,10 +78,10 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 		public RegistrationType Type { get; set; } = RegistrationType.Participant;
 
 		public RegisterVM() { }
-		public RegisterVM(EventInfo eventinfo, int? defaultPaymentMethod = null)
+		public RegisterVM(EventInfo eventinfo, PaymentProvider? defaultPaymentMethod = null)
 		{
 			EventInfoId = eventinfo.EventInfoId;
-			PaymentMethodId = defaultPaymentMethod;
+			PaymentMethod = defaultPaymentMethod;
 
 			Products = new ProductVM[eventinfo.Products.Count];
 			for (int i = 0; i < Products.Length; i++)
@@ -78,8 +90,8 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 				Products[i] = new ProductVM
 				{
 					Value = currentProduct.ProductId,
-					IsMandatory = currentProduct.MandatoryCount > 0,
-					IsSelected = currentProduct.MandatoryCount > 0,
+					IsMandatory = currentProduct.MinimumQuantity > 0,
+					IsSelected = currentProduct.MinimumQuantity > 0,
 					SelectedVariantId = currentProduct
 						.ProductVariants
 						.Select(pv => pv.ProductVariantId as int?)
@@ -89,11 +101,14 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 		}
 
 		public bool HasProducts => Products != null && Products.Length > 0;
-		public IEnumerable<int> SelectedProducts => 
-			Products?.Where(rp => rp.IsSelected)
-					.Select(p => p.Value);
-		public IEnumerable<int> SelectedVariants =>
-			Products?.Where(p => p.SelectedVariantId.HasValue)
-					.Select(p => p.SelectedVariantId.Value);
+
+		public List<OrderVM> SelectedProducts =>
+			Products?
+				.Where(p => p.IsSelected || p.IsMandatory)
+				.Select(p => new OrderVM {
+					ProductId = p.Value,
+					VariantId = p.SelectedVariantId
+				}).ToList();
 	}
+
 }

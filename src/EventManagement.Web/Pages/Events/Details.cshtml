@@ -17,7 +17,18 @@
     }
 }   
 
+
+   @if (Model.EventInfo.Status == losol.EventManagement.Domain.EventInfo.EventInfoStatus.Cancelled) {
+    <div class="jumbotron jumbotron-fluid bg-danger text-light">
+    <div class="container">
+        <h1 class="display-4">Avlyst :(</h1>
+        <p class="lead">Ta kontakt med oss på epost for mer informasjon.</p>
+    </div>
+    </div>
+}
+
 <div class="bg-img min-height-33 hero center-both py-3 mb-5" style="@heroStyle">
+
     <div class="container hero-text">
         <h1 class="display-1">@Model.EventInfo.Title</h1>
         <p class="lead pb-5">@Model.EventInfo.Description</p>
@@ -99,12 +110,6 @@
                         </div>
                     }
                 }
-            @* Price *@
-            <div class="py-3">
-                @if (Model.EventInfo.Price.HasValue) {
-                <i class="material-icons align-top">credit_card</i> @Model.EventInfo.Price.Value.ToString("0 kr")
-                }
-            </div>
             
             
             <a class="btn btn-block btn-light link-decoration-none" href="#program"><i class="material-icons align-middle">speaker_notes</i> Program</a>

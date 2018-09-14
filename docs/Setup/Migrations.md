@@ -13,5 +13,5 @@ dotnet ef migrations add YourMigrationClassName -s ../EventManagement.Web/EventM
 
 ## Applying a Migration
 ```bash
-dotnet database update
+dotnet ef database update -s ../EventManagement.Web/EventManagement.Web.csproj
 ```

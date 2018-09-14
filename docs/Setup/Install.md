@@ -45,7 +45,7 @@ dotnet user-secrets set ConnectionStrings:DefaultConnection "Server=127.0.0.1,14
 Set admin user email and password
 ```bash
 dotnet user-secrets set SuperAdmin:Email admin@email.com
-dotnet user-secrets set SuperAdmin:Password Pa$$w0rd
+dotnet user-secrets set SuperAdmin:Password PaSsw0rd
 ```
 
 Set Sendgrid-settings by setting environment variables or in terminal: 

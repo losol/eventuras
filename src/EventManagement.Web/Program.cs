@@ -15,9 +15,9 @@ using Microsoft.Extensions.Logging;
 namespace losol.EventManagement
 {
     public class Program
-    { 
+    {
         public static async Task Main(string[] args)
-        { 
+        {
             // Build the application host
             var host = BuildWebHost(args);
 

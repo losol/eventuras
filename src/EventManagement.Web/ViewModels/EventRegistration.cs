@@ -18,6 +18,7 @@ namespace losol.EventManagement.ViewModels
 		public string EventUrl { get; set; }
 		public bool Verified { get;set; }
 		public string VerificationUrl { get; set; }
+		public string Message { get; set; }
 
 	}
 }
