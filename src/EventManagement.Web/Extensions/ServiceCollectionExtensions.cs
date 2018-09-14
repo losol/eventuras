@@ -109,6 +109,9 @@ namespace EventManagement.Web.Extensions
         public static void AddSiteConfig(this IServiceCollection services, IConfiguration Configuration) {
             var siteConfig = Configuration.GetSection("Site").Get<Site>();
             services.AddSingleton(siteConfig);
+
+            var socialConfig = Configuration.GetSection("Social").Get<Social>();
+            services.AddSingleton(socialConfig);
         }
 
         public static void AddEmailServices(this IServiceCollection services,

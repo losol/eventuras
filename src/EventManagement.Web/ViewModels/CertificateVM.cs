@@ -32,7 +32,7 @@ namespace losol.EventManagement.Web.ViewModels
             IssuerOrganizationName = "Nordland Legeforening",
             IssuerPersonName = "Tove Myrbakk",
 
-            Comment = "Deltaker har vært tilstede på nesten hele kurset.",
+            Comment = "Eventuell tekst som er skrevet som kommentar på deltakers registrering kommer her",
 
             //EventDateStart = DateTime.Now.AddDays(-7),
             CertificateGuid = Guid.NewGuid().ToString(),
