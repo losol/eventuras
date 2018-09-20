@@ -78,8 +78,11 @@ namespace losol.EventManagement.Domain
 		[Display(Name = "Påmeldinger på kursinord.no?")]
 		public bool ManageRegistrations { get; set; } = false;
 
+		[Display(Name = "Url til ekstern informasjonsside om arrangementet")]
+		public string ExternalInfoPageUrl { get; set; }
+
 		[Display(Name = "Lenke for ekstern påmelding")]
-		public string RegistrationsUrl { get; set; }
+		public string ExternalRegistrationsUrl { get; set; }
 
 		[Display(Name = "Spør deltaker om ekstra informasjon ved påmelding?")]
 		[DataType(DataType.MultilineText)]
@@ -139,6 +142,8 @@ namespace losol.EventManagement.Domain
 		public List<Product> Products { get; set; }
 
 		public bool HasFeaturedImage => !string.IsNullOrWhiteSpace(FeaturedImageUrl);
+		public bool HasExternalInfoPage => !string.IsNullOrWhiteSpace(ExternalInfoPageUrl);
+		public bool HasExternalRegistrationPage => !string.IsNullOrWhiteSpace(ExternalRegistrationsUrl);
 
 	}
 }
