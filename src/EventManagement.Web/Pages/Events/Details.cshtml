@@ -60,11 +60,11 @@
 		<div class="col-md-9" id="info">
 
             @{ // Registration link on top for mobile
-                if (String.IsNullOrEmpty(Model.EventInfo.RegistrationsUrl)) {
+                if (String.IsNullOrEmpty(Model.EventInfo.ExternalRegistrationsUrl)) {
                     <a asp-page="./Register/Index" asp-route-id="@Model.EventInfo.EventInfoId" class="d-block d-md-none btn btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>  
                 }
                 else {
-                    <a href="@Model.EventInfo.RegistrationsUrl" class="d-block d-md-none btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>
+                    <a href="@Model.EventInfo.ExternalRegistrationsUrl" class="d-block d-md-none btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>
                 }
             }
           
@@ -116,8 +116,8 @@
             <a class="btn btn-block btn-light link-decoration-none" href="#practical"><i class="material-icons align-middle">hotel</i> Praktisk</a>
 
             <p>
-            @if (!String.IsNullOrEmpty(Model.EventInfo.RegistrationsUrl) &&  !Model.EventInfo.ManageRegistrations) {
-                <a href="@Model.EventInfo.RegistrationsUrl" class="btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>
+            @if (!String.IsNullOrEmpty(Model.EventInfo.ExternalRegistrationsUrl) &&  !Model.EventInfo.ManageRegistrations) {
+                <a href="@Model.EventInfo.ExternalRegistrationsUrl" class="btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>
             }
             else {
                 <a asp-page="./Register/Index" asp-route-id="@Model.EventInfo.EventInfoId" class="btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>  
