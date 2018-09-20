@@ -53,11 +53,6 @@
                 <textarea asp-for="EventInfo.Description" class="form-control" rows="6"></textarea>
                 <span asp-validation-for="EventInfo.Description" class="text-danger"></span>
             </div>
-             <div class="form-group">
-                <label asp-for="EventInfo.ExternalRegistrationsUrl" class="control-label"></label>
-                <input asp-for="EventInfo.ExternalRegistrationsUrl" class="form-control" />
-                <span asp-validation-for="EventInfo.ExternalRegistrationsUrl" class="text-danger"></span>
-            </div>
             <div class="row">
                 <div class="form-group col-md-6">
                     <label asp-for="EventInfo.MaxParticipants" class="control-label"></label>
@@ -139,22 +134,37 @@
                 <textarea asp-for="EventInfo.CertificateDescription" class="form-control" rows="6"></textarea>
                 <span asp-validation-for="EventInfo.CertificateDescription" class="text-danger"></span>
             </div>
-             <div class="form-group col-md-6">
+             <div class="form-group">
                 <label asp-for="EventInfo.ProjectCode" class="control-label"></label>
                 <input asp-for="EventInfo.ProjectCode" class="form-control" />
                 <span asp-validation-for="EventInfo.ProjectCode" class="text-danger"></span>
             </div>
 
-            <div class="form-group col-md-6">
+            <div class="form-group">
                 <label asp-for="EventInfo.OrganizerUserId" class="control-label"></label>
                 <input asp-for="EventInfo.OrganizerUserId" class="form-control" />
                 <span asp-validation-for="EventInfo.OrganizerUserId" class="text-danger"></span>
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group">
                 <label asp-for="EventInfo.OrganizationId" class="control-label"></label>
                 <input asp-for="EventInfo.OrganizationId" class="form-control" />
                 <span asp-validation-for="EventInfo.OrganizationId" class="text-danger"></span>
             </div>
+
+            <div class="form-group">
+                <label asp-for="EventInfo.ExternalInfoPageUrl" class="control-label"></label>
+                <input asp-for="EventInfo.ExternalInfoPageUrl" class="form-control" />
+                <span asp-validation-for="EventInfo.ExternalInfoPageUrl" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="EventInfo.ExternalRegistrationsUrl" class="control-label"></label>
+                <input asp-for="EventInfo.ExternalRegistrationsUrl" class="form-control" />
+                <span asp-validation-for="EventInfo.ExternalRegistrationsUrl" class="text-danger"></span>
+            </div>
+
+
+
             <hr>
             <h2>Bilde</h2>
             <div class="form-group">
