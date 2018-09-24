@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using losol.EventManagement.Domain;
+using static losol.EventManagement.Domain.EventInfo;
 
 namespace losol.EventManagement.IntegrationTests
 {
@@ -13,12 +14,14 @@ namespace losol.EventManagement.IntegrationTests
 				new EventInfo
 				{
 					EventInfoId = 1,
-					Title = "Mangfold beriker arbeidsmiljøet",
-					Description = "Hvorfor er mange ledere så opptatt av firmahytte og treningstilbud når de egentlig burde fokusert på rollekonflikter, arbeidstidsforhold eller organisatorisk rettferdighet? Årets IA-konferanse 4.- 5. juni i Bodø har fokus på tillitsbasert ledelse, arbeidsglede og kunsten å virke sammen på jobb.",
+					Title = "The first great event",
+					Description = "All other event are fake. This is a great mega event!",
+					Code = "first-great-event",
 					Featured = true,
-					Published = true,
-					OnDemand = true,
-					City = "Bodø",
+					DateStart = DateTime.UtcNow.AddDays(-1),
+					DateEnd = DateTime.UtcNow.AddDays(1),
+					Type = EventInfoType.Conference,
+					City = "Red city",
 					Products = new List<Product>
 					{
 						new Product
@@ -60,13 +63,11 @@ namespace losol.EventManagement.IntegrationTests
 				new EventInfo
 				{
 					EventInfoId = 2,
-					Title = "Mangfold beriker arbeidsmiljøet",
-                    Code = "mangfold-beriker-arbeidsmiljoet",
-					Description = "Hvorfor er mange ledere så opptatt av firmahytte og treningstilbud når de egentlig burde fokusert på rollekonflikter, arbeidstidsforhold eller organisatorisk rettferdighet? Årets IA-konferanse 4.- 5. juni i Bodø har fokus på tillitsbasert ledelse, arbeidsglede og kunsten å virke sammen på jobb.",
+					Title = "The next event",
+                    Code = "the-next-event",
+					Description = "The second event is much more difficult. ",
 					Featured = true,
-					Published = true,
-					OnDemand = true,
-					City = "Bodø",
+					City = "White City",
 					Products = new List<Product>
 					{
 						new Product
