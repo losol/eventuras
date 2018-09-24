@@ -61,7 +61,11 @@ namespace losol.EventManagement.Services
 				.Where(i => 
 					i.Status != EventInfoStatus.Cancelled && 
 					i.Status != EventInfoStatus.Draft && 
-					i.DateStart.Value.Date == DateTime.Now.Date ||
+
+					(i.DateStart.HasValue &&
+					i.DateStart.Value.Date == DateTime.Now.Date) ||
+
+					(i.DateStart.HasValue && i.DateEnd.HasValue) &&
 					(i.DateStart.Value.Date <= DateTime.Now.Date &&
 					i.DateEnd.Value.Date >= DateTime.Now.Date))
 				.OrderBy(s => s.DateStart)
