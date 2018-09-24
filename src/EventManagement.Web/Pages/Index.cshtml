@@ -27,7 +27,7 @@
         <div class="container py-3">
             <p class="m-0">Akkurat n&aring; arrangerer vi: 
             @foreach (var eventinfo in ongoingEvents) {
-                <a asp-page="./Events/Details" asp-route-id="@eventinfo.EventInfoId" class="text-light">@eventinfo.Title</a> &nbsp;
+                <a asp-page="./Events/Details" asp-route-id="@eventinfo.EventInfoId" class="text-light">@eventinfo.Title</a> 
             }
             </p>
         </div>
