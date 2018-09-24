@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = @Site.Title;
+    var ongoingEvents = await events.GetOngoingEventsAsync();
     var featuredEvents = await events.GetFeaturedEventsAsync();
     var onDemandEvents = await events.GetOnDemandEventsAsync();
     var upcomingEvents = await events.GetEventsAsync();
@@ -20,6 +21,19 @@
         <p>Nordland Legeforening satser på fag, kvalitet og opplevelser.</p>
     </div>
 </div>
+@* ONGOING EVENTS *@
+@if (ongoingEvents != null && ongoingEvents.Any()) {
+    <div class="bg-blue text-light">
+        <div class="container py-3">
+            <p class="m-0">Akkurat n&aring; arrangerer vi: 
+            @foreach (var eventinfo in ongoingEvents) {
+                <a asp-page="./Events/Details" asp-route-id="@eventinfo.EventInfoId" class="text-light">@eventinfo.Title</a> &nbsp;
+            }
+            </p>
+        </div>
+    </div>
+}
+
 <div class="bg-gray-100 py-3">
     <div class="container" id="ondemand">
         <h1 class="section">Nettkurs</h1>
