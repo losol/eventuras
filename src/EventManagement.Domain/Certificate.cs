@@ -6,11 +6,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace losol.EventManagement.Domain {
 
     public class Certificate {
+
+        public enum CertificateStatus
+        {
+            Draft = 0,
+            Issued = 1,
+            Revoked = 2,
+        }
         
         [Key]
         public int CertificateId { get; set; }
         public Guid CertificateGuid { get; set; } = Guid.NewGuid ();
         public Guid Auth { get; set; } = Guid.NewGuid ();
+        public CertificateStatus Status {get;set;} = CertificateStatus.Issued;
+        public string StatusComment {get;set;}
 
         [Required]
         public string Title { get; set; }
