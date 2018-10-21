@@ -46,6 +46,13 @@ namespace losol.EventManagement.Web.Controllers.Api {
             return Ok ();
         }
 
+
+        [HttpPost ("event/{eventId}/update")]
+        public async Task<IActionResult> UpdateCertificatesForEvent ( [FromRoute] int eventId ) {
+            var result = await _certificatesService.UpdateCertificatesForEvent(eventId);
+            return Ok ( $"Oppdaterte {result.Count()}");
+        }
+
         [HttpPost ("registration/{regId}/email")]
         public async Task<IActionResult> EmailCertificate ([FromRoute] int regId, [FromServices] CertificatePdfRenderer writer, [FromServices] StandardEmailSender emailSender) {
             var c = await _certificatesService.GetForRegistrationAsync (regId);

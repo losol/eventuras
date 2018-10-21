@@ -131,5 +131,69 @@ namespace losol.EventManagement.Services {
 
 			return result;
 		}
+
+		public async Task<List<Certificate>> UpdateCertificatesForEvent (int eventInfoId) {
+			var eventInfo = await _db.EventInfos
+				.Include (m => m.Registrations)
+				.ThenInclude (mr => mr.User)
+				.Include (m => m.OrganizerUser)
+				.Where (m => m.EventInfoId == eventInfoId)
+				.SingleOrDefaultAsync ();
+
+			if (eventInfo == null) {
+				throw new ArgumentException ("No event found");
+			}
+			_logger.LogInformation($"Updating certificates for {eventInfo.Title} (id: {eventInfoId})");
+
+			var registrationsWithCertificates = eventInfo.Registrations.Where( m => m.CertificateId != null);
+			var result = new List<Certificate> ();
+
+			foreach (var registration in registrationsWithCertificates)  {
+				_logger.LogInformation($"* Updating certificate id {registration.CertificateId}");
+
+				var certificate = await _db.Certificates
+					.Where( m => m.CertificateId == registration.CertificateId)
+					.SingleOrDefaultAsync();
+
+				certificate.Title = registration.EventInfo.Title;
+				certificate.Description = registration.EventInfo.CertificateDescription;
+				certificate.Comment = registration.CertificateComment;
+				certificate.RecipientName = registration.ParticipantName;
+				certificate.RecipientEmail = registration.User.Email;
+				certificate.RecipientUserId = registration.User.Id;
+
+				// Add evidence description
+				certificate.EvidenceDescription = $"{registration.EventInfo.Title} {registration.EventInfo.City}";
+				if (registration.EventInfo.DateStart.HasValue) 
+					{ certificate.EvidenceDescription += " – " + registration.EventInfo.DateStart.Value.ToString("d");};
+				if (registration.EventInfo.DateEnd.HasValue) 
+					{ certificate.EvidenceDescription += "-" + registration.EventInfo.DateEnd.Value.ToString("d");};
+				
+				// Add organization
+				if (registration.EventInfo.OrganizationId != null) {
+					certificate.IssuingOrganizationId = registration.EventInfo.OrganizationId;
+				} else {
+					certificate.IssuingOrganizationName = "Nordland legeforening";
+				}
+				
+				// Add organizer user
+				if (registration.EventInfo.OrganizerUserId != null) {
+					certificate.IssuedByName = registration.EventInfo.OrganizerUser.Name;
+					certificate.IssuingUserId = registration.EventInfo.OrganizerUserId;
+				} else {
+					certificate.IssuedByName = "Tove Myrbakk";
+				}
+
+				// Save changes
+				_db.Certificates.Update(certificate);
+				await _db.SaveChangesAsync();
+
+				// Add the modified certificate to results.
+				result.Add(certificate);
+
+			}
+
+			return result;
+		}
 	}
 }

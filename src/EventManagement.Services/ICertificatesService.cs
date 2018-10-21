@@ -29,5 +29,14 @@ namespace losol.EventManagement.Services
 		/// <returns></returns>
 		Task<List<Certificate>> CreateCertificatesForEvent(int eventId);
 
+
+		/// <summary>
+		/// Updates all existing certificates for an event with event information. 
+		/// and returns the updated certificates
+		/// </summary>
+		/// <param name="eventId">The eventId to create certificates for.</param>
+		/// <returns></returns>
+		Task<List<Certificate>> UpdateCertificatesForEvent(int eventId);
+
 	}
 }
