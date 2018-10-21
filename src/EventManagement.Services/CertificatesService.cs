@@ -135,6 +135,8 @@ namespace losol.EventManagement.Services {
 		public async Task<List<Certificate>> UpdateCertificatesForEvent (int eventInfoId) {
 			var eventInfo = await _db.EventInfos
 				.Include (m => m.Registrations)
+				.ThenInclude (mr => mr.User)
+				.Include (m => m.OrganizerUser)
 				.Where (m => m.EventInfoId == eventInfoId)
 				.SingleOrDefaultAsync ();
 
@@ -143,8 +145,10 @@ namespace losol.EventManagement.Services {
 			}
 			_logger.LogInformation($"Updating certificates for {eventInfo.Title} (id: {eventInfoId})");
 
+			var registrationsWithCertificates = eventInfo.Registrations.Where( m => m.CertificateId != null);
 			var result = new List<Certificate> ();
-			foreach (var registration in eventInfo.Registrations)  {
+
+			foreach (var registration in registrationsWithCertificates)  {
 				_logger.LogInformation($"* Updating certificate id {registration.CertificateId}");
 
 				var certificate = await _db.Certificates
