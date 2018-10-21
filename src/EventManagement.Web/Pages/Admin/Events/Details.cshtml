@@ -96,11 +96,12 @@
                 </button>
                 <div class="dropdown-menu">
                     <a class="dropdown-item link-decoration-none" href="/certificate/preview/event/@Model.EventInfo.EventInfoId" target="_blank" role="button">Forh&aring;ndsvis kursbevis</a>
+                    <a class="dropdown-item link-decoration-none" href="#" data-toggle="modal" data-target="#updateCertificatesModal" role="button">Oppdater kursbevis</a>
                     <a class="dropdown-item link-decoration-none" href="#" data-toggle="modal" data-target="#sendCertificatesModal" role="button">Send ut kursbevis</a>
                 </div>
                 </div>
 
-                <!-- CERTIFICATES Send Modal -->
+                <!-- SEND CERTIFICATES Modal -->
                 <div class="modal fade" id="sendCertificatesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -116,6 +117,27 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Lukk</button>
                         <button type="button" onclick="emailCertificatesToAll()" class="btn btn-primary">Send</button>
+                    </div>
+                    </div>
+                </div>
+                </div>
+
+                <!-- UPDATE CERTIFICATES Modal -->
+                <div class="modal fade" id="updateCertificatesModal" tabindex="-1" role="dialog" aria-labelledby="updateCertificatesModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Oppdater alle kursbevis for arrangementet</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Kursbevisene vil ikke sendes ut automatisk. 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Lukk</button>
+                        <button type="button" onclick="updateCertificatesForEvent()" class="btn btn-primary">Oppdater</button>
                     </div>
                     </div>
                 </div>
@@ -516,18 +538,31 @@
         $('#sms-modal').modal('hide');
     }
 
-        function emailCertificatesToAll() {
-            toastr.info("Vær tålmodig, det kan ta litt tid.");
-            $.postJSON('/api/certificates/event/@Model.EventInfo.EventInfoId/email', null)
-            .done(function(){
-                toastr.success('Kursbevisene er på vei!');
-                $('#sendCertificatesModal').modal('hide');
-                $('#participants-table').bootstrapTable('refresh', null);
-            })
-            .fail(function(){
-                toastr.error('Nåkka gikk galt. Sorry.')
-            })
-        }
+    function emailCertificatesToAll() {
+        toastr.info("Vær tålmodig, det kan ta litt tid.");
+        $.postJSON('/api/certificates/event/@Model.EventInfo.EventInfoId/email', null)
+        .done(function(){
+            toastr.success('Kursbevisene er på vei!');
+            $('#sendCertificatesModal').modal('hide');
+            $('#participants-table').bootstrapTable('refresh', null);
+        })
+        .fail(function(){
+            toastr.error('Nåkka gikk galt. Sorry.')
+        })
+    }
+
+    function updateCertificatesForEvent() {
+        toastr.info("Vær tålmodig, det kan ta litt tid.");
+        $.postJSON('/api/certificates/event/@Model.EventInfo.EventInfoId/update', null)
+        .done(function(){
+            toastr.success('Kursbevisene er oppdatert med ny info!');
+            $('#sendCertificatesModal').modal('hide');
+            $('#participants-table').bootstrapTable('refresh', null);
+        })
+        .fail(function(){
+            toastr.error('Nåkka gikk galt. Sorry.')
+        })
+    }
 </script>
     <partial name="_CompBootstrapTable" />
 }
