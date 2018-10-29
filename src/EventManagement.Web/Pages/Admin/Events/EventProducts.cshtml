@@ -1,0 +1,82 @@
+@page "{id:int}"
+@model EventProductsModel
+@{
+}
+
+<div class="container">
+    <h1>Rediger kurs</h1><hr />
+    <div class="row">
+        <div class="col-12">
+
+            <form id="main-form" method="post">
+
+                <h2>Products</h2>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-product-modal">
+                    Add Product
+                </button>
+                <div id="product-wrapper" class="form-group">
+                    @for (int i = 0; i < Model.EventInfo.Products.Count; i++)
+                    {
+                        var p = Model.EventInfo.Products[i];
+                        <div class="product-card">
+                            <input asp-for="EventInfo.Products[i].ProductId" type="hidden" />
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h5 class="card-title product-name">@p.Name</h5>
+                                            <p class="card-text product-description">@p.Description</p>
+                                            <!--If no variants exist-->
+                                            <h6 class="card-subtitle mb-2 text-muted product-price">@((float)p.Price)</h6>
+                                            <input class="product-m-count" type="hidden" value="@p.MinimumQuantity" />
+                                        </div>
+                                        <div class="col-2">
+                                            <small>
+                                                <a href="#/" class="edit-product-link">Edit</a> |
+                                                <a href="#/" class="text-muted delete-product-link">Delete</a>
+                                                <br /><br />
+                                                <a href="#/" class="text-primary add-variant-link">Add Variant</a>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-1"></div>
+                                <div class="col variant-wrapper">
+                                    @for (int j = 0; j < p.ProductVariants?.Count; j++)
+                                    {
+                                        var v = p.ProductVariants[j];
+                                        <div class="card variant-card">
+                                            <input asp-for="EventInfo.Products[i].ProductVariants[j].ProductVariantId" type="hidden" />
+                                            <div class="row">
+                                                <div class="col">
+                                                    <h5 class="card-title variant-name">@v.Name</h5>
+                                                    <p class="card-text variant-description">@v.Description</p>
+                                                    <h6 class="card-subtitle mb-2 text-muted variant-price">@((float)v.Price)</h6>
+                                                </div>
+                                                <div class="col-2">
+                                                    <small>
+                                                        <a href="#/" class="edit-variant-link">Edit</a> |
+                                                        <a href="#/" onclick="$(this).closest('.variant-card').remove()" class="text-muted delete-variant-link">Delete</a>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @*Added products will be listed here.*@
+                </div>
+
+
+                <div class="form-group">
+                    <input type="submit" value="Lagre" class="btn btn-default" />
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
