@@ -1,7 +1,5 @@
 @page "{id:int}"
 @model EventProductsModel
-@{
-}
 
 <div class="container">
     <h1>Products for @Model.EventInfo.Title (#@Model.EventInfo.EventInfoId)</h1><hr />
@@ -15,11 +13,11 @@
                     Add Product
                 </button>
                 <div id="product-wrapper" class="form-group">
-                    @for (int i = 0; i < Model.EventInfo.Products.Count; i++)
+                    @for (int i = 0; i < Model.Vm.Products.Count; i++)
                     {
-                        var p = Model.EventInfo.Products[i];
+                        var p = Model.Vm.Products[i];
                         <div class="product-card">
-                            <input asp-for="EventInfo.Products[i].ProductId" type="hidden" />
+                            <input asp-for="Vm.Products[i].ProductId" type="hidden" />
                             <div class="card">
                                 <div class="card-body">
                                     <div class="row">
@@ -48,7 +46,7 @@
                                     {
                                         var v = p.ProductVariants[j];
                                         <div class="card variant-card">
-                                            <input asp-for="EventInfo.Products[i].ProductVariants[j].ProductVariantId" type="hidden" />
+                                            <input asp-for="Vm.Products[i].ProductVariants[j].ProductVariantId" type="hidden" />
                                             <div class="row">
                                                 <div class="col">
                                                     <h5 class="card-title variant-name">@v.Name</h5>
@@ -97,7 +95,6 @@
                 <div class="form-group">
                     <label class="control-label">Product Name</label>
                     <input id="input-product-name" class="form-control" required />
-                    @*<span asp-validation-for="EventInfo.FeaturedImageUrl" class="text-danger"></span>*@
                 </div>
                 <div class="form-group">
                     <label class="control-label">Product Description</label>
@@ -134,7 +131,6 @@
                 <div class="form-group">
                     <label class="control-label">Name</label>
                     <input id="input-variant-name" class="form-control" required />
-                    @*<span asp-validation-for="EventInfo.FeaturedImageUrl" class="text-danger"></span>*@
                 </div>
                 <div class="form-group">
                     <label class="control-label">Description</label>
@@ -347,15 +343,15 @@
             mainForm.onsubmit = function() {
                 // Add hidden-inputs to the DOM here.
                 $('.product-card').each(function(i, el){
-                    addInputToMainForm("EventInfo.Products[" + i + "].Name", $(this).find('.product-name').first().text());
-                    addInputToMainForm("EventInfo.Products[" + i + "].Description", $(this).find('.product-description').first().text());
-                    addInputToMainForm("EventInfo.Products[" + i + "].Price", $(this).find('.product-price').first().text());
-                    addInputToMainForm("EventInfo.Products[" + i + "].MinimumQuantity", $(this).find('.product-m-count').first().val());
+                    addInputToMainForm("Vm.Products[" + i + "].Name", $(this).find('.product-name').first().text());
+                    addInputToMainForm("Vm.Products[" + i + "].Description", $(this).find('.product-description').first().text());
+                    addInputToMainForm("Vm.Products[" + i + "].Price", $(this).find('.product-price').first().text());
+                    addInputToMainForm("Vm.Products[" + i + "].MinimumQuantity", $(this).find('.product-m-count').first().val());
 
                     $(el).find('.variant-card').each(function(j, vel){
-                        addInputToMainForm("EventInfo.Products[" + i + "].ProductVariants[" + j + "].Name", $(this).find('.variant-name').first().text());
-                        addInputToMainForm("EventInfo.Products[" + i + "].ProductVariants[" + j + "].Description", $(this).find('.variant-description').first().text());
-                        addInputToMainForm("EventInfo.Products[" + i + "].ProductVariants[" + j + "].Price", $(this).find('.variant-price').first().text());
+                        addInputToMainForm("Vm.Products[" + i + "].ProductVariants[" + j + "].Name", $(this).find('.variant-name').first().text());
+                        addInputToMainForm("Vm.Products[" + i + "].ProductVariants[" + j + "].Description", $(this).find('.variant-description').first().text());
+                        addInputToMainForm("Vm.Products[" + i + "].ProductVariants[" + j + "].Price", $(this).find('.variant-price').first().text());
                     });
                 });
             };

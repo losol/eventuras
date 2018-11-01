@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Services;
@@ -11,7 +9,7 @@ namespace losol.EventManagement.Pages.Admin.Events
 {
     public class EventProductsModel : PageModel
     {
-
+        [BindProperty] public EventProductsModelVM Vm { get; set; }
         public EventInfo EventInfo { get; set; }
         private readonly IEventInfoService _eventsService;
 
@@ -25,7 +23,24 @@ namespace losol.EventManagement.Pages.Admin.Events
             if (id is 0) return BadRequest();
             EventInfo = await _eventsService.GetWithProductsAsync(id);
             if (EventInfo is null) return NotFound();
+            Vm = new EventProductsModelVM
+            {
+                EventInfoId = EventInfo.EventInfoId,
+                Products = EventInfo.Products
+            };
             return Page();
         }
+
+        public async Task<IActionResult> OnPost()
+        {
+            // TODO: Save the changes!
+            return RedirectToPage();
+        }
+    }
+
+    public class EventProductsModelVM
+    {
+        public int EventInfoId { get; set; }
+        public List<Product> Products { get; set; }
     }
 }
