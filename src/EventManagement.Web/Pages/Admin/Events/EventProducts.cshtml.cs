@@ -22,8 +22,9 @@ namespace losol.EventManagement.Pages.Admin.Events
 
         public async Task<IActionResult> OnGet(int id)
         {
-            if (id is 0) return NotFound();
+            if (id is 0) return BadRequest();
             EventInfo = await _eventsService.GetWithProductsAsync(id);
+            if (EventInfo is null) return NotFound();
             return Page();
         }
     }
