@@ -21,5 +21,7 @@ namespace losol.EventManagement.Services
 
 		Task<bool> AddAsync(EventInfo info);
 		Task<bool> UpdateEventWithProductsAsync(EventInfo info);
-	}
+        Task<bool> UpdateEventProductsAsync(int eventId, List<Product> products);
+
+    }
 }

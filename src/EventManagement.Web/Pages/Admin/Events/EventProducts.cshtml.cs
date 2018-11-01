@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Services;
@@ -33,14 +34,18 @@ namespace losol.EventManagement.Pages.Admin.Events
 
         public async Task<IActionResult> OnPost()
         {
-            // TODO: Save the changes!
+            if (!ModelState.IsValid) return BadRequest();
+            await _eventsService.UpdateEventProductsAsync(Vm.EventInfoId, Vm.Products);
             return RedirectToPage();
         }
     }
 
     public class EventProductsModelVM
     {
+        [Required]
         public int EventInfoId { get; set; }
+
+        [Required]
         public List<Product> Products { get; set; }
     }
 }

@@ -124,6 +124,7 @@ namespace losol.EventManagement.Services
 			return await _db.EventInfos
 				            .Include(ei => ei.Products)
 				            	.ThenInclude(products => products.ProductVariants)
+                            .AsNoTracking()
 							.SingleOrDefaultAsync(m => m.EventInfoId == id);
 		}
 
@@ -167,5 +168,37 @@ namespace losol.EventManagement.Services
 
 			return result;
 		}
-	}
+
+        public async Task<bool> UpdateEventProductsAsync(int eventId, List<Product> products)
+        {
+            if (products is null) throw new ArgumentNullException(paramName: nameof(products));
+            bool result = true;
+
+            var originalProducts = await _productsService.GetProductsForEventAsync(eventId);
+            var originalVariants = originalProducts.SelectMany(p => p.ProductVariants);
+
+
+            // Delete the variants that don't exist in the provided object
+            var providedVariants = products
+                                       .Where(p => p.ProductVariants != null)
+                                       .SelectMany(p => p.ProductVariants);
+            var variantsToDelete = originalVariants
+                .Where(originalVariant => !providedVariants.Any(variant => variant.ProductVariantId == originalVariant.ProductVariantId));
+            _db.ProductVariants.RemoveRange(variantsToDelete);
+            result &= await _db.SaveChangesAsync() == variantsToDelete.Count();
+
+            // Delete the products that don't exist in the provided object
+            var producstToDelete = originalProducts.Where(op => !products.Any(p => p.ProductId == op.ProductId));
+            _db.Products.RemoveRange(producstToDelete);
+            result &= await _db.SaveChangesAsync() == producstToDelete.Count();
+
+            // Save the updates
+            var info = await GetWithProductsAsync(eventId);
+            info.Products = products;
+            _db.EventInfos.Update(info);
+            result &= await _db.SaveChangesAsync() > 0;
+
+            return result;
+        }
+    }
 }
