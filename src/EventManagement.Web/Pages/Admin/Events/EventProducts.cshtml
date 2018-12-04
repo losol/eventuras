@@ -171,6 +171,7 @@
                         </div>
                         <div class="col-2">
                             <small>
+                                <a href="#/" class="edit-product-link">Edit</a> |
                                 <a href="#/" class="text-muted delete-product-link">Delete</a>
                                 <br /><br />
                                 <a href="#/" class="text-primary add-variant-link">Add Variant</a>
@@ -200,6 +201,7 @@
                 </div>
                 <div class="col-2">
                     <small>
+                        <a href="#/" class="edit-variant-link">Edit</a> |
                         <a href="#/" onclick="$(this).closest('.variant-card').remove()" class="text-muted delete-variant-link">Delete</a>
                     </small>
                 </div>
@@ -230,8 +232,8 @@
             const productsWrapper = document.querySelector('#product-wrapper');
             let isEdit = false; // Add / Edit flag
 
-            $('.edit-product-link').bind('click', function(e) {
-                let $card = $(this).closest('.product-card');
+            function bindEditProductLink($el) {
+                let $card = $el.closest('.product-card');
 
                 $productName.val($card.find('.product-name').text())
                 $productDescription.val($card.find('.product-description').text())
@@ -241,10 +243,13 @@
                 isEdit = true;
                 $currentProduct = $card;
                 $modal.modal('show');
+            }
+            $('.edit-product-link').bind('click', function(e) {
+                bindEditProductLink($(this))
             });
 
-            $('.edit-variant-link').bind('click', function(e) {
-                let $card = $(this).closest('.variant-card');
+            function bindEditVariantLink($el) {
+                let $card = $el.closest('.variant-card');
 
                 $variantName.val($card.find('.variant-name').text());
                 $variantDescription.val($card.find('.variant-description').text());
@@ -254,6 +259,9 @@
                 $currentProduct = $(this).closest('.product-card');
                 $currentVariant = $card;
                 $variantModal.modal('show');
+            }
+            $('.edit-variant-link').bind('click', function(e) {
+                bindEditProductLink($(this))
             });
 
             // Bind the delete product and add variant links
@@ -280,6 +288,9 @@
                     // Show the modal
                     $variantModal.modal('show');
                     $currentProduct = $(this).closest('.product-card');
+                })
+                $('.edit-product-link').last().bind('click', function(e) {
+                    bindEditProductLink($(this))
                 })
             }
 
