@@ -24,7 +24,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col">
-                                            <h5 class="card-title product-name">@p.Name</h5>
+                                            <h5 class="card-title product-name"><i class="fa fa-bars product-handle" aria-hidden="true"></i> @p.Name</h5>
                                             <p class="card-text product-description">@p.Description</p>
                                             <!--If no variants exist-->
                                             <h6 class="card-subtitle mb-2 text-muted product-price">@((float)p.Price)</h6>
@@ -371,8 +371,8 @@
             // List with handle
             const wrapper = document.getElementById('product-wrapper')
             Sortable.create(wrapper, {
-              // handle: '.my-handle',
-              // animation: 150
+              handle: '.product-handle',
+              animation: 150
             });
         })();
     </script>
