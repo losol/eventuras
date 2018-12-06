@@ -56,7 +56,7 @@ gulp.task("copy:lib", () => {
 });
 
 
-// gulp make:css - Make both minified and unminified css from scss. 
+// gulp make:css - Make both minified and unminified css from scss.
 gulp.task('make:css', function () {
     var source = gulp.src('./sass/*.scss')
         .pipe(plumber())
@@ -71,14 +71,14 @@ gulp.task('make:css', function () {
         .pipe(cssnano())
         .pipe(rename({ suffix: '.min' }))
         .pipe(gulp.dest(paths.cssDest));
-    
+
     gulp.src([paths.libSrc + 'bootstrap-table/dist/bootstrap-table.min.css'])
         .pipe(concat('bootstrap-table.min.css'))
         .pipe(gulp.dest(paths.cssDest));
 
     return merge(pipe1, pipe2);
 
-    
+
 });
 
 // gulp make:js - Uglifies and concat all JS files into one
@@ -91,7 +91,8 @@ gulp.task('make:js', function () {
         paths.libSrc + 'bootstrap/dist/js/bootstrap.min.js',
         paths.libSrc + 'bootstrap-3-typeahead/bootstrap3-typeahead.min.js',
         paths.libSrc + 'toastr/toastr.js',
-        './js/admin.js'
+        './js/admin.js',
+        './js/sortable.js'
     ])
         .pipe(concat('site.min.js'))
         .pipe(gulp.dest(paths.jsDest));
@@ -103,7 +104,8 @@ gulp.task('make:js', function () {
         paths.libSrc + 'bootstrap/dist/js/bootstrap.js',
         paths.libSrc + 'bootstrap-3-typeahead/bootstrap3-typeahead.js',
         paths.libSrc + 'toastr/toastr.js',
-        './js/admin.js'
+        './js/admin.js',
+        './js/sortable.js'
     ])
         .pipe(concat('site.js'))
         .pipe(gulp.dest(paths.jsDest));
