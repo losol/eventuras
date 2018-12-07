@@ -45,6 +45,7 @@ namespace losol.EventManagement.Services
 			return _db.Products
 				      .Where(p => p.EventInfoId == eventId)
 					  .Include(p => p.ProductVariants)
+                      .OrderBy(p => p.DisplayOrder)
 					  .AsNoTracking()
 					  .ToListAsync();
 		}
