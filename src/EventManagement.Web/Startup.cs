@@ -47,18 +47,9 @@ namespace losol.EventManagement
 			services.AddEmailServices(AppSettings.EmailProvider, Configuration);
             services.AddSmsServices(AppSettings.SmsProvider, Configuration);
             services.AddInvoicingServices(AppSettings, Configuration);
+            services.AddELearningServices(AppSettings, Configuration);
 			services.AddApplicationServices();
 
-            // TODO: Enable this!
-            // if(appsettings.UseTalentLms)
-            // {
-            //     services.Configure<TalentLmsOptions>(Configuration.GetSection("TalentLms"));
-            //     services.AddScoped<ITalentLmsService, TalentLmsService>();
-            // }
-            // else
-            // {
-            //     services.AddTransient<ITalentLmsService, MockTalentLmsService>();
-            // }
 
             // Require SSL
             // TODO Re-enable

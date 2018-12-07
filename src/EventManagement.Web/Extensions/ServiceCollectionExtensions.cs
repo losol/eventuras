@@ -7,6 +7,7 @@ using losol.EventManagement.Services.DbInitializers;
 using losol.EventManagement.Services.Invoicing;
 using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.Services.Messaging.Sms;
+using losol.EventManagement.Services.TalentLms;
 using losol.EventManagement.Web.Config;
 using losol.EventManagement.Web.Extensions;
 using losol.EventManagement.Web.Services;
@@ -183,6 +184,22 @@ namespace EventManagement.Web.Extensions
             else
             {
                 services.AddTransient<IStripeInvoiceService, MockInvoicingService>();
+            }
+        }
+
+        public static void AddELearningServices(
+            this IServiceCollection services, 
+            AppSettings appsettings, 
+            IConfiguration config)
+        {
+            if (appsettings.UseTalentLms)
+            {
+                services.Configure<TalentLmsOptions>(config.GetSection("TalentLms"));
+                services.AddScoped<ITalentLmsService, TalentLmsService>();
+            }
+            else
+            {
+                services.AddTransient<ITalentLmsService, MockTalentLmsService>();
             }
         }
 
