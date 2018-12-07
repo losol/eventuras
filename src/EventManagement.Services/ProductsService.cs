@@ -72,20 +72,6 @@ namespace losol.EventManagement.Services
 					registrations.Add(reg);
 				}
 			}
-            /* foreach(var id in registrationIds)
-            {
-				try {
-                var registration = await _db.Registrations.FindAsync(id);
-                var task1 = _db.Entry(registration).Reference(r => r.User).LoadAsync();
-                var task2 = _db.Entry(registration).Collection(r => r.Orders).LoadAsync();
-                var task3 = _db.OrderLines.Where(l => l.Order.RegistrationId == id).LoadAsync();
-                await Task.WhenAll(task1, task2, task3);
-
-                registrations.Add(registration);
-				} catch (Exception ex) {
-					_logger.LogError(ex.Message);
-				}
-            }*/
 
             return registrations;
 		}
