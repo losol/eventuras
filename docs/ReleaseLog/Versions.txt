@@ -1,0 +1,10 @@
+
+
+## 2018-08-18
+
+* New features: Event type and status (show message if event is cancelled)
+* Bug fix: Throw error if paymentmethodId does not exist. 
+
+## 2018-09-21
+
+* New features: External information pages

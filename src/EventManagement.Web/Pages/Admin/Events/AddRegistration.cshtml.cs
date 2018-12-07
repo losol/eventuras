@@ -8,6 +8,7 @@ using losol.EventManagement.Domain;
 using losol.EventManagement.Services;
 using Microsoft.AspNetCore.Identity;
 using Mapster;
+using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Pages.Admin.Events
 {
@@ -18,7 +19,7 @@ namespace losol.EventManagement.Pages.Admin.Events
         private readonly IOrderService _orders;
         private readonly IPaymentMethodService _paymentMethodService;
 		private readonly UserManager<ApplicationUser> _userManager;
-        
+
 
         public AddRegistrationModel(IOrderService orders, IEventInfoService eventInfos, IRegistrationService registrations, IPaymentMethodService paymentMethods, UserManager<ApplicationUser> userManager)
         {
@@ -35,17 +36,13 @@ namespace losol.EventManagement.Pages.Admin.Events
 		public EventInfo EventInfo { get; set; }
 		public List<PaymentMethod> PaymentMethods { get; set; }
 		public List<Product> Products => EventInfo.Products;
-		public int DefaultPaymentMethod => _paymentMethodService.GetDefaultPaymentMethodId();
+		public PaymentProvider DefaultPaymentMethod => _paymentMethodService.GetDefaultPaymentProvider();
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-			EventInfo = await _eventsService.GetWithProductsAsync(id);
+			EventInfo = EventInfo ?? await _eventsService.GetWithProductsAsync(id);
+			if (EventInfo == null) return NotFound();
 
-			if (EventInfo == null)
-			{
-				return NotFound();
-			}
-            
             PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
 			Registration = new Web.Pages.Events.Register.RegisterVM(EventInfo, DefaultPaymentMethod);
 
@@ -54,38 +51,27 @@ namespace losol.EventManagement.Pages.Admin.Events
 
         public async Task<IActionResult> OnPostAsync(int id)
 		{
-
-			if (!ModelState.IsValid)
+            ModelState.Clear(); // Clear the validation errors, will validate manually later.
+            if(string.IsNullOrWhiteSpace(Registration.UserId))
+            {
+                ModelState.AddModelError("UserId", "User field is required.");
+                return await OnGetAsync(id);
+            }
+            // Check if user exists with email registered, and create new user if not.
+			var user = await _userManager.FindByIdAsync(Registration.UserId);
+			if (user == null)
 			{
-                EventInfo = await _eventsService.GetWithProductsAsync(id);
-				PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
-                Registration = new Web.Pages.Events.Register.RegisterVM(EventInfo, DefaultPaymentMethod);
-				return Page();
+                // This shouldn't happen, because a registration can only
+                // be created for existing users.
+                ModelState.AddModelError(string.Empty, "Invalid user selected.");
+                return await OnGetAsync(id);
 			}
+            Registration.ParticipantName = user.Name;
+            Registration.Email = user.Email;
+            Registration.Phone = user.PhoneNumber;
 
 			EventInfo = await _eventsService.GetWithProductsAsync(id);
 			if (EventInfo == null) return NotFound();
-
-			// Check if user exists with email registered, and create new user if not.
-			var user = await _userManager.FindByEmailAsync(Registration.Email);
-			if (user == null)
-			{
-                user = new ApplicationUser { 
-                    UserName = Registration.Email, 
-                    Name = Registration.ParticipantName, 
-                    Email = Registration.Email, 
-                    PhoneNumber = (Registration.PhoneCountryCode + Registration.Phone) 
-                };
-
-				var result = await _userManager.CreateAsync(user);
-                if (!result.Succeeded) {
-                    foreach (var error in result.Errors)
-					{
-						ModelState.AddModelError(string.Empty, error.Description);
-					}
-                    return Page();
-                }
-			}
 
             Registration.EventInfoId = id;
             Registration.UserId = user.Id;
@@ -95,15 +81,21 @@ namespace losol.EventManagement.Pages.Admin.Events
             if (registration != null)
             {
                 ModelState.AddModelError(string.Empty, "Bruker var allerede registrert");
-                return Page();
+                return await OnGetAsync(id);
             }
+
+            // Validate the VM
+			if (!TryValidateModel(Registration))
+			{
+                ModelState.AddModelError(string.Empty, "Please check the form before submitting.");
+                return await OnGetAsync(id);
+			}
 
 			// Create registration for our user
 			var newRegistration = Registration.Adapt<Registration>();
-
 			await _registrations.CreateRegistration(newRegistration);
 
-			return RedirectToPage();
+			return RedirectToPage("./Details", new { id = id });
 		}
     }
 }

@@ -5,7 +5,7 @@
 @{
     var id = Convert.ToInt32(RouteData.Values["id"]);
     var product = await productsService.GetAsync(id);
-    var registrations = await productsService.GetRegistrationsAsync(id);
+    var registrations = await productsService.GetRegistrationsForProductAsync(id);
     var eventRegistrations = await registrationService.GetRegistrations(product.EventInfoId) ?? new List<Registration>();
 }
 
@@ -15,9 +15,8 @@
         <p class="lead">@product.Eventinfo.Title</p>
         <p class"lead">Antall solgt: </strong> @registrations.Count()
         <div id="menu">
-            <button class="btn btn-secondary" data-toggle="modal" data-target="#add-user-modal">Ny deltaker</button>
-            <button class="btn btn-secondary" id="btn-send-emails">Epost</button>
-            <button class="btn btn-secondary" id="btn-send-sms">SMS</button>
+            <button class="btn btn-secondary" id="btn-send-emails">Epost til alle</button>
+            <button class="btn btn-secondary" id="btn-send-sms">SMS til alle</button>
             <div class="form-check">
                 <label class="form-check-label">
                     <input asp-for="@product.Published" data-id="@product.ProductId" class="form-check-input" type="checkbox" value="">
@@ -27,77 +26,96 @@
         </div>
     </div>
 </div>
-<div class="container py-5">
-    @await Html.PartialAsync("_registrationTable", Tuple.Create(registrations, id, true))
 
-    <h2>Varianter</h2>
-    @foreach(var v in product.ProductVariants)
-    {
-    
-        var varRegistrations = registrations.Where(r => r.Orders.Any(o => o.OrderLines.Any(l => l.ProductVariantId == v.ProductVariantId) == true)).ToList();
-        var publishchecked = (v.Published) ? "checked" : "";
-        <div class="py-5">
-            <div class="row">
-                <div class="col-12">
-                    <h3>@v.Name</h3>
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input @publishchecked data-id="@v.ProductVariantId" class="form-check-input variant-published-status" type="checkbox">
-                            Publisert
-                        </label>
-                    </div>
-                    <strong>Registration Count: </strong>@varRegistrations.Count()
-                    @await Html.PartialAsync("_registrationTable", Tuple.Create(varRegistrations, id, false))
-                </div>  
+<partial name="Partials/_EmailModal" />
+<partial name="Partials/_SmsModal" />
+<partial name="_CompBootstrapTable" />
+
+<div class="container  py-5">
+<table
+    class="table"
+    data-toggle="table"
+    data-pagination="false"
+    data-show-columns="true"
+    data-show-export="true"
+    data-sort-name="name"
+    data-sort-order="asc"
+    data-icons-prefix="fa"
+    data-icons="icons"
+    data-search="true"
+    data-advanced-search="true"
+    data-search-align="left"
+    data-click-to-select="true"
+    data-id-table="advancedTable"
+    data-export-options='{"fileName": "registrations-for-product-@id-@DateTime.Now.ToString("yyyy-MM-dd")"}'>
+    <thead>
+        <tr>
+            <th data-field="name" data-sortable="true">Deltaker</th>
+            <th data-field="phone" data-sortable="true">Telefon</th>
+            <th data-field="email" data-sortable="true">Epost</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var r in registrations)
+        {
+            <tr>
+                <td data-field="name" data-sortable="true">@r.User.Name</td>
+                <td data-field="phone" data-sortable="true">@r.User.PhoneNumber</td>
+                <td data-field="email" data-sortable="true">@r.User.Email</td>
+            </tr>
+        }
+    </tbody>
+</table>
+</div>
+
+<div class="bg-gray-100">
+    @if (product.ProductVariants.Any()) {
+        @foreach (var variant in product.ProductVariants) {
+            var variantregistrations = await productsService.GetRegistrationsForProductVariantAsync(variant.ProductVariantId);
+
+            <div class="container py-3 ">
+                <h1 class="section py-3">@variant.Name</h1>
+                <p class="lead">Antall: @variantregistrations.Count()</p>
+                <table
+                    class="table"
+                    data-toggle="table"
+                    data-pagination="false"
+                    data-show-columns="true"
+                    data-show-export="true"
+                    data-sort-name="name"
+                    data-sort-order="asc"
+                    data-icons-prefix="fa"
+                    data-icons="icons"
+                    data-search="true"
+                    data-advanced-search="true"
+                    data-search-align="left"
+                    data-click-to-select="true"
+                    data-id-table="advancedTable"
+                    data-export-options='{"fileName": "registrations-for-product-@id-@DateTime.Now.ToString("yyyy-MM-dd")"}'>
+                    <thead>
+                        <tr>
+                            <th data-field="name" data-sortable="true">Deltaker</th>
+                            <th data-field="phone" data-sortable="true">Telefon</th>
+                            <th data-field="email" data-sortable="true">Epost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var r in variantregistrations)
+                        {
+                            <tr>
+                                <td data-field="name" data-sortable="true">@r.ParticipantName</td>
+                                <td data-field="phone" data-sortable="true">@r.User.PhoneNumber</td>
+                                <td data-field="email" data-sortable="true">@r.User.Email</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
-        </div>
+        }
     }
 </div>
 
-@Html.Partial("Partials/_EmailModal")
-@Html.Partial("Partials/_SmsModal")
-
-<div id="add-user-modal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Add User</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-            <label class="control-label">User Email</label>
-            <!-- <input id="input-email" class="form-control" /> -->
-            <input id="input-user"
-                type="text" class="typeahead form-control" 
-                placeholder="Name, email or phone."
-                autocomplete="off"
-                data-provide="typeahead">
-        </div>
-        <div class="form-group">
-            <label class="control-label">Variant</label>
-            <select id="input-variant" 
-                class="form-control" 
-                @(product.ProductVariants.Any() ? "" : "disabled") >
-                @foreach(var v in product.ProductVariants)
-                {
-                    <option value="@v.ProductVariantId">@v.Name</option>    
-                }
-            </select>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button id="btn-add-user" type="button" class="btn btn-primary">Add Order</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-
-@section scripts { 
+@section scripts {
 <script>
 
     $('#product_Published').change(function() {
@@ -113,9 +131,9 @@
             .fail(function(){
                 toastr.error('Sorry.')
             });
-    }); 
+    });
 
-    // variant-published-status  [HttpPost("/variant/{id}/published/{publish}")]
+
     $('.variant-published-status').change(function() {
         var productStatus = {
             id : $(this).data('id'),
@@ -129,43 +147,11 @@
             .fail(function(){
                 toastr.error('Sorry.')
             });
-    }); 
-
-    $(function () {
-
-        const users = @Html.Raw(JsonConvert.SerializeObject(eventRegistrations.Select(r => new { id = r.RegistrationId, name = $"{r.ParticipantName} {r.User?.PhoneNumber} {r.User?.Email}" })));
-        const $inputUser = $('#input-user').typeahead({ 
-            source: users,
-            fitToElement: true,
-            showHintOnFocus: "all"
-        });
-
-        var $table = $('table');
-        window.icons = {
-            toggle: 'fa-toggle-on',
-            columns: 'fa-th-list',
-            export: 'fa-download'
-        };
-
-        const inputVariant = $('#input-variant');
-        $('#btn-add-user').on('click', function(){
-            const data = {
-                registrationId: $inputUser.typeahead("getActive").id,
-                productId: @product.ProductId,
-                productVariantId: inputVariant.val()
-            };
-            $.postJSON('/api/v0/products/add-user', data)
-             .done(function(){
-                 toastr.success('User added!')
-                 location.reload()
-             }).fail(function(){
-                 toastr.error('Error adding user.')
-             });
-        })
     });
 </script>
 <script>
-let recipients = []; @*used by the email and sms scripts*@
+// For SMS and email scripts
+let recipients = [];
 let includeOrders = true;
 let eventId = @product.EventInfoId;
 (function () {
@@ -181,8 +167,8 @@ let eventId = @product.EventInfoId;
     })
 })();
 </script>
-@Html.Partial("Partials/_EmailModalScripts")
-@Html.Partial("Partials/_SmsModalScripts")
-@await Html.PartialAsync("_CompBootstrapTable")
+<partial name="Partials/_EmailModalScripts" />
+<partial name="Partials/_SmsModalScripts" />
+
 <script src="//rawgit.com/hhurz/tableExport.jquery.plugin/master/tableExport.js"></script>
 }

@@ -36,9 +36,10 @@ namespace losol.EventManagement.Pages.Profile
         public ApplicationUser CurrentUser { get; set;}
         public List<Registration> Registrations { get; set; }
         public List<(string Id, string Title)> OnlineCourses =>
-            Registrations.Where(r => r.EventInfo.OnDemand && !string.IsNullOrWhiteSpace(r.EventInfo.RegistrationsUrl))
+            Registrations.Where(r => r.EventInfo.OnDemand && !string.IsNullOrWhiteSpace(r.EventInfo.ExternalRegistrationsUrl))
+                    .Where(r => r.Status != RegistrationStatus.Draft)
                     .Select(r => (
-                        Regex.Match(r.EventInfo.RegistrationsUrl, @"id:(\d*)").Groups[1].Value, 
+                        Regex.Match(r.EventInfo.ExternalRegistrationsUrl, @"id:(\d*)").Groups[1].Value,
                         r.EventInfo.Title))
                     .ToList();
 

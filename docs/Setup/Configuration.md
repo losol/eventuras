@@ -8,6 +8,7 @@ The JSON structure defines the configuration for the application.
     "EmailProvider": "SendGrid|SMTP|File|Mock",
     "SmsProvider": "Twilio|Mock",
     "UsePowerOffice": "false|true",
+    "UseStripeInvoice": "false|true",
     "UseTalentLms": "false|true"
   },
   "Site": {
@@ -54,6 +55,10 @@ The JSON structure defines the configuration for the application.
   "TalentLms": {
     "Domain": "appname.talentlms.com",
     "ApiKey": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  },
+  "Stripe": {
+    "SecretKey": "sk_test_BQokikJOvBiI2HlWgH4olfQ2",
+    "PublishableKey": "pk_test_6pRNASCoBOKtIshFeQd4XMUh"
   }
 }
 ```

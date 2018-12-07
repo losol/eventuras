@@ -1,8 +1,10 @@
 @page "{id:int}"
 @model losol.EventManagement.Pages.Admin.Events.AddRegistrationModel
-
+@using static losol.EventManagement.Domain.Registration;
+@using static losol.EventManagement.Domain.PaymentMethod;
 @{
     ViewData["Title"] = "Legg til deltaker på arrangement";
+    var RegistrationTypes = (RegistrationType[])Enum.GetValues(typeof(RegistrationType));
 }
 <div class="bg-gray-300 py-3">
     <div class="container">
@@ -11,76 +13,45 @@
     </div>
 </div>
 <div class="container py-3 min-height-75">
-
-        
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    
-
-
-    <form method="post">
+    <form method="post" id="form-add-registration">
         <div class="row justify-content-between py-3">
-            <div class="col-md-9"> 
+            <div class="col-md-9">
                 <div class="form-group">
-                    <label>User</label>
-                    @Html.Partial("Partials/_UserSelect")
-                </div>
-                <div class="form-group">
-                    <label asp-for="Registration.ParticipantName"></label>
-                    <input asp-for="Registration.ParticipantName" class="form-control" />
-                    <span asp-validation-for="Registration.ParticipantName" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Registration.Email"></label>
-                    <input asp-for="Registration.Email" class="form-control" />
-                    <span asp-validation-for="Registration.Email" class="text-danger"></span>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-sm-3">
-                        <label asp-for="Registration.PhoneCountryCode"></label>
-                        <input asp-for="Registration.PhoneCountryCode" class="form-control" />
-                        <span asp-validation-for="Registration.PhoneCountryCode" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-sm-9">
-                        <label asp-for="Registration.Phone"></label>
-                        <input asp-for="Registration.Phone" class="form-control" />
-                        <span asp-validation-for="Registration.Phone" class="text-danger"></span>
-                    </div>
+                    <label>Bruker</label>
+                    <partial name="Partials/_UserSelect" />
+                    <input type="hidden" asp-for="Registration.UserId" id="user-id" />
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="Registration.ParticipantJobTitle"></label>
-                    <input asp-for="Registration.ParticipantJobTitle" class="form-control" />
-                    <span asp-validation-for="Registration.ParticipantJobTitle" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Registration.ParticipantCity"></label>
-                    <input asp-for="Registration.ParticipantCity" class="form-control" />
-                    <span asp-validation-for="Registration.ParticipantCity" class="text-danger"></span>
-                </div>
+                    <label>Registration Type</label>
+                    @foreach(var type in RegistrationTypes)
+                    {
+                        <div class="form-check-inline">
+                        <label class="form-check-label">
+                            <input asp-for="Registration.Type"
+                                class="form-check-input" type="radio" value="@type">
 
-                @if (Model.EventInfo.InformationRequest != null ) {
-                        <div class="form-group">
-                            <label asp-for="Registration.Notes">@Model.EventInfo.InformationRequest</label>
-                            <textarea asp-for="Registration.Notes" class="form-control"></textarea>
-                            <span asp-validation-for="Registration.CustomerInvoiceReference" class="text-danger"></span>
+                                @type
+                            </label>
                         </div>
-                }
+                    }
+                </div>
 
 
                 @* START PAYMENT  *@
                 @if (Model.EventInfo.Products.Any()) {
-                <div id="payment py-5" > 
+                <div id="payment py-5" >
                     <div class="form-group"><!-- Payment method -->
-                        <label asp-for="Registration.PaymentMethodId"></label><br>
+                        <label asp-for="Registration.PaymentMethod"></label><br>
                         <div>
                         @foreach (var item in Model.PaymentMethods)
                         {
-                            <label class="radio-inline pr-3">  
-                            <input asp-for="Registration.PaymentMethodId" id="Registration_PaymentMethodId_@item.PaymentMethodId" type="radio" value="@item.PaymentMethodId" onclick="paymentMethod()"/> @item.Name  
+                            <label class="radio-inline pr-3">
+                            <input asp-for="Registration.PaymentMethod" id="Registration_PaymentMethod_@item.Provider" type="radio" value="@item.Provider" onclick="paymentMethod()"/> @item.Name
                             </label>
-                    
+
                         }
                         </div>
                     </div>
@@ -123,17 +94,19 @@
     </form>
 
     </div>
-    
+
     @section Scripts {
-        @Html.Partial("_ValidationScriptsPartial");
-        @Html.Partial("Partials/_UserSelectScript");
+        <partial name="_ValidationScriptsPartial" />
+        <partial name="Partials/_UserSelectScript" />
         <script>
             function paymentMethod() {
-                if (document.getElementById('Registration_PaymentMethodId_3').checked) {
+                if (document.getElementById('Registration_PaymentMethod_@PaymentProvider.PowerOfficeEHFInvoice').checked) {
                     $('#customerdetails').collapse('show');
-                };   
+                };
             }
+            $('#form-add-registration').on('submit', function(){
+                $('#user-id').val($('#input-user').typeahead('getActive').id);
+            })
         </script>
     }
-    
 </div>

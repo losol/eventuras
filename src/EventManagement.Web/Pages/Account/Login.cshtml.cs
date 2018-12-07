@@ -9,17 +9,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using losol.EventManagement.Domain;
+using losol.EventManagement.Web.Services;
 
 namespace losol.EventManagement.Pages.Account
 {
     public class LoginModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly MagicLinkSender _magicLinkSender;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<ApplicationUser> signInManager, 
+            MagicLinkSender magicLinkSender,
+            ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
+            _magicLinkSender = magicLinkSender;
             _logger = logger;
         }
 
@@ -33,19 +38,8 @@ namespace losol.EventManagement.Pages.Account
         [TempData]
         public string ErrorMessage { get; set; }
 
-        public class InputModel
-        {
-            [Required]
-            [EmailAddress]
-            public string Email { get; set; }
-
-            [Required]
-            [DataType(DataType.Password)]
-            public string Password { get; set; }
-
-            [Display(Name = "Remember me?")]
-            public bool RememberMe { get; set; }
-        }
+        [TempData]
+        public string SuccessMessage { get; set; }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
@@ -65,8 +59,8 @@ namespace losol.EventManagement.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-
-            if (ModelState.IsValid)
+            ModelState.Clear();
+            if (TryValidateModel(Input))
             {
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
@@ -92,6 +86,39 @@ namespace losol.EventManagement.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
+        }
+
+        public async Task<IActionResult> OnPostSendMagicLinkAsync()
+        {
+            ModelState.Clear();
+
+            if(TryValidateModel(Input.Email))
+            {
+                var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
+                if(user != null)
+                {
+                    // Send the email only if the email exists
+                    await _magicLinkSender.SendMagicLinkAsync(user);
+                }
+
+                Input.Email = string.Empty;
+            }
+            return RedirectToPage("/Account/MagicLinkSent");
+        }
+
+        public class InputModel
+        {
+            [Required]
+            [Display(Name = "Epostadresse?")]
+            [EmailAddress]
+            public string Email { get; set; }
+
+            [Display(Name = "Passord?")]
+            [DataType(DataType.Password)]
+            public string Password { get; set; }
+
+            [Display(Name = "Husk meg?")]
+            public bool RememberMe { get; set; }
         }
     }
 }

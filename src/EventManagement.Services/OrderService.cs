@@ -4,22 +4,35 @@ using System.Linq;
 using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
-using losol.EventManagement.Services.PowerOffice;
+using losol.EventManagement.Services.Invoicing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using static losol.EventManagement.Domain.Order;
+using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Services {
 	public class OrderService : IOrderService {
 		private readonly ApplicationDbContext _db;
-		private readonly IInvoicingService _powerOfficeService;
+		private readonly IPowerOfficeService _powerOfficeService;
+		private readonly IStripeInvoiceService _stripeInvoiceService;
+		private readonly ILogger _logger;
 
-		public OrderService (ApplicationDbContext db, IInvoicingService powerOfficeService) {
+		public OrderService (ApplicationDbContext db, IPowerOfficeService powerOfficeService, IStripeInvoiceService stripeInvoiceService, ILogger<OrderService> logger) {
 			_db = db;
 			_powerOfficeService = powerOfficeService;
+			_stripeInvoiceService = stripeInvoiceService;
+			_logger = logger;
 		}
 
 		public Task<List<Order>> GetAsync () =>
 			_db.Orders
+			.OrderByDescending (o => o.OrderTime)
+			.ToListAsync ();
+
+		public Task<List<Order>> GetWithRegistrationsAsync () =>
+			_db.Orders
+			.Include ( o => o.Registration)
+			.ThenInclude ( r => r.User)
 			.OrderByDescending (o => o.OrderTime)
 			.ToListAsync ();
 
@@ -38,7 +51,7 @@ namespace losol.EventManagement.Services {
 			.Include (o => o.OrderLines)
 			.Include (o => o.User)
 			.Include (o => o.Registration)
-			.Include (o => o.PaymentMethod)
+			.ThenInclude (r => r.EventInfo)
 			.SingleOrDefaultAsync ();
 
 		public Task<List<Order>> GetOrdersForEventAsync (int eventId) =>
@@ -85,7 +98,7 @@ namespace losol.EventManagement.Services {
 		public async Task<bool> AddOrderLineAsync (int orderId, int productId, int? variantId) {
 			var order = await _db.Orders.FindAsync (orderId);
 			var product = await _db.Products.FindAsync (productId);
-			var variant = variantId.HasValue ? await _db.Products.FindAsync (variantId) : null;
+			var variant = variantId.HasValue ? await _db.ProductVariants.FindAsync (variantId) : null;
 
 			_ = order ??
 				throw new ArgumentException ("Invalid orderId", nameof (orderId));
@@ -99,7 +112,7 @@ namespace losol.EventManagement.Services {
 
 					Price = variant?.Price ?? product.Price,
 					VatPercent = variant?.VatPercent ?? product.VatPercent,
-					Quantity = variant?.MandatoryCount ?? product.MandatoryCount,
+					Quantity = product.MinimumQuantity,
 
 					ProductName = product.Name,
 					ProductDescription = product.Description,
@@ -110,13 +123,23 @@ namespace losol.EventManagement.Services {
 			return await _db.SaveChangesAsync () > 0;
 		}
 
-		public async Task<bool> UpdateOrderLine (int lineId, int quantity, decimal price) {
+		public async Task<bool> UpdateOrderLine (int lineId, int? variantId, int quantity, decimal price) {
 			var line = await _db.OrderLines.FindAsync (lineId);
 			_ = line ??
 				throw new ArgumentException ("Invalid lineId", nameof (lineId));
 
 			line.Quantity = quantity;
 			line.Price = price;
+
+			line.ProductVariantId = variantId;
+			if(variantId != null)
+			{
+				var variant = await _db.ProductVariants
+									.AsNoTracking()
+									.SingleOrDefaultAsync(v => v.ProductVariantId == variantId);
+				line.ProductVariantName = variant.Name;
+				line.ProductVariantDescription = variant.Description;
+			}
 
 			_db.Update (line);
 			return await _db.SaveChangesAsync () > 0;
@@ -130,6 +153,13 @@ namespace losol.EventManagement.Services {
 			order.CustomerInvoiceReference = invoiceReference;
 			order.Comments = comments;
 
+			_db.Orders.Update (order);
+			return await _db.SaveChangesAsync () > 0;
+		}
+
+		public async Task<bool> UpdateOrderComment (int id, string comments) {
+			var order = await _db.Orders.FindAsync (id);
+			order.Comments = comments;
 			_db.Orders.Update (order);
 			return await _db.SaveChangesAsync () > 0;
 		}
@@ -161,13 +191,45 @@ namespace losol.EventManagement.Services {
 				.Include (o => o.User)
 				.Include (o => o.Registration)
 				.ThenInclude (r => r.EventInfo)
-				.Include (o => o.PaymentMethod)
 				.SingleOrDefaultAsync (o => o.OrderId == orderId);
-			await _powerOfficeService.CreateInvoiceAsync (order);
 
-			order.MarkAsInvoiced ();
-			_db.Orders.Update (order);
-			return await _db.SaveChangesAsync () > 0; // what if power office succeeds but this fails?
+			_logger.LogInformation($"Making invoice for order: {order.OrderId}, paymenmethod: {order.PaymentMethod}");
+
+			bool invoiceCreated = false;
+
+			if (order.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice || order.PaymentMethod == PaymentProvider.PowerOfficeEmailInvoice) {
+				_logger.LogInformation("* Using PowerOffice for invoicing");
+				invoiceCreated = await _powerOfficeService.CreateInvoiceAsync (order);
+			} else if (order.PaymentMethod == PaymentProvider.StripeInvoice) {
+				_logger.LogInformation("* Using StripeInvoice for invoicing");
+				invoiceCreated = await _stripeInvoiceService.CreateInvoiceAsync (order);
+			}
+
+			if (invoiceCreated) {
+				order.MarkAsInvoiced ();
+				_db.Orders.Update (order);
+				await _db.SaveChangesAsync ();
+			}
+			return  invoiceCreated;
+		}
+
+		public async Task<bool> UpdatePaymentMethod(int orderId, PaymentProvider paymentMethod) {
+			var order = await _db.Orders
+				.Where( m => m.OrderId == orderId)
+				.FirstOrDefaultAsync();
+
+			// Update payment method in registration.
+			order.PaymentMethod = paymentMethod;
+			_db.Update(order);
+
+			return await _db.SaveChangesAsync() > 0;
+		}
+
+		public async Task<bool> AddLogLineAsync(int orderId, string logText) {
+			var order = await _db.Orders
+				.Where(m => m.OrderId == orderId).SingleOrDefaultAsync();
+			order.AddLog(logText);
+			return await _db.SaveChangesAsync() > 0;
 		}
 
 		public async Task<Order> CreateDraftFromCancelledOrder(int orderId)
@@ -182,7 +244,7 @@ namespace losol.EventManagement.Services {
 
 			var newOrder = new Order
 			{
-				PaymentMethodId = order.PaymentMethodId,
+				PaymentMethod = order.PaymentMethod,
 				RegistrationId = order.RegistrationId,
 				Comments = order.Comments,
 				CustomerEmail = order.CustomerEmail,
@@ -203,7 +265,7 @@ namespace losol.EventManagement.Services {
 			{
 				throw new InvalidOperationException("Cannot recreate order because some of the products were already ordered.");
 			}
-			
+
 			await _db.AddAsync(newOrder);
 			await _db.SaveChangesAsync();
 			return newOrder;

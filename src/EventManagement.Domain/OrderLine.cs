@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace losol.EventManagement.Domain
 	{
 		[Required]
 		public int OrderLineId { get; set; }
-		[Required]
+		[Required, ForeignKey("Order")]
 		public int OrderId { get; set; }
 
 		public int? ProductId { get; set; }
@@ -25,20 +26,61 @@ namespace losol.EventManagement.Domain
 		public string ProductVariantName { get; set; }
 		public string ProductVariantDescription { get; set; }
 
+		public int? RefundOrderId { get; private set; }
+		public Order RefundOrder { get; private set; }
+        public int? RefundOrderLineId { get; private set; }
+        public OrderLine RefundOrderLine { get; private set; }
+		public bool IsRefund => Quantity < 0;
+
 		/// <summary>
 		/// A string that uniquely identifies a product-variant combination
 		/// </summary>
-		public string ItemCode => ProductVariantId.HasValue ? $"K{ProductId}-{ProductVariantId}" : $"K{ProductId}";
+		public string ItemCode =>
+            ProductVariantId.HasValue ? $"K{ProductId}-{ProductVariantId}" : $"K{ProductId}";
 
-		public decimal Price { get; set; }
+		/// <summary>
+		/// A string which combines product and productvariant name
+		/// </summary>
+		public string ItemName =>
+            !string.IsNullOrWhiteSpace(ProductVariantName) ? $"{ProductName} ({ProductVariantName})" : $"{ProductName}";
+
+
+		[DataType(DataType.Currency)]
+		public decimal Price { get; set; } 
+
 		public decimal VatPercent { get; set; } = 0;
+
+        public decimal LineTotal => (Price + Price * VatPercent * 0.01m) * Quantity;
 
 		public string Comments { get; set; }
 
 		// Navigational properties
+		[InverseProperty("OrderLines")]
 		public Order Order { get; set; }
 		public Product Product { get; set; }
 		public ProductVariant ProductVariant { get; set; }
+
+		public OrderLine CreateRefundOrderLine()
+		{
+            if(IsRefund)
+            {
+                throw new InvalidOperationException("Cannot create a refund orderline for a refund orderline.");
+            }
+			return new OrderLine
+			{
+                OrderId = OrderId,
+				RefundOrderId = OrderId,
+                RefundOrderLineId = OrderLineId,
+				ProductName = $"Korreksjon for {ProductName} (Order #{OrderId})",
+				Price = Price,
+                Quantity = -Quantity,
+                VatPercent = VatPercent,
+                ProductId = ProductId,
+                ProductVariantId = ProductVariantId
+			};
+		}
+
+        public override string ToString() => $"{ItemCode}×{Quantity}";
 
 	}
 }

@@ -25,24 +25,22 @@
                 <input asp-for="EventInfo.Code" class="form-control" />
                 <span asp-validation-for="EventInfo.Code" class="text-danger"></span>
             </div>
+            
+            <div class="form-group col-md-6">
+                <label asp-for="EventInfo.Status" class="control-label"></label>
+                <select asp-for="EventInfo.Status" asp-items="Html.GetEnumSelectList<losol.EventManagement.Domain.EventInfo.EventInfoStatus>()" class="form-control">
+                </select>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label asp-for="EventInfo.Type" class="control-label"></label>
+                <select asp-for="EventInfo.Type" asp-items="Html.GetEnumSelectList<losol.EventManagement.Domain.EventInfo.EventInfoType>()" class="form-control">
+                </select>
+            </div>
+
+
             </div>
             <div class="form-group">
-                <div class="form-check form-check-inline">
-                    <label>
-                        <input asp-for="EventInfo.Published" /> @Html.DisplayNameFor(model => model.EventInfo.Published)
-                    </label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <label>
-                        <input asp-for="EventInfo.ManageRegistrations" /> @Html.DisplayNameFor(model => model.EventInfo.ManageRegistrations)
-                    </label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <label>
-                        <input asp-for="EventInfo.OnDemand" /> @Html.DisplayNameFor(model => model.EventInfo.OnDemand)
-                    </label>
-                </div>
- 
                 <div class="form-check form-check-inline">
                     <label>
                         <input asp-for="EventInfo.Featured" /> @Html.DisplayNameFor(model => model.EventInfo.Featured)
@@ -55,17 +53,7 @@
                 <textarea asp-for="EventInfo.Description" class="form-control" rows="6"></textarea>
                 <span asp-validation-for="EventInfo.Description" class="text-danger"></span>
             </div>
-             <div class="form-group">
-                <label asp-for="EventInfo.RegistrationsUrl" class="control-label"></label>
-                <input asp-for="EventInfo.RegistrationsUrl" class="form-control" />
-                <span asp-validation-for="EventInfo.RegistrationsUrl" class="text-danger"></span>
-            </div>
             <div class="row">
-                <div class="form-group col-md-6">
-                    <label asp-for="EventInfo.Price" class="control-label"></label>
-                    <input asp-for="EventInfo.Price" class="form-control" />
-                    <span asp-validation-for="EventInfo.Price" class="text-danger"></span>
-                </div>
                 <div class="form-group col-md-6">
                     <label asp-for="EventInfo.MaxParticipants" class="control-label"></label>
                     <input asp-for="EventInfo.MaxParticipants" class="form-control" />
@@ -146,6 +134,37 @@
                 <textarea asp-for="EventInfo.CertificateDescription" class="form-control" rows="6"></textarea>
                 <span asp-validation-for="EventInfo.CertificateDescription" class="text-danger"></span>
             </div>
+             <div class="form-group">
+                <label asp-for="EventInfo.ProjectCode" class="control-label"></label>
+                <input asp-for="EventInfo.ProjectCode" class="form-control" />
+                <span asp-validation-for="EventInfo.ProjectCode" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="EventInfo.OrganizerUserId" class="control-label"></label>
+                <input asp-for="EventInfo.OrganizerUserId" class="form-control" />
+                <span asp-validation-for="EventInfo.OrganizerUserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventInfo.OrganizationId" class="control-label"></label>
+                <input asp-for="EventInfo.OrganizationId" class="form-control" />
+                <span asp-validation-for="EventInfo.OrganizationId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="EventInfo.ExternalInfoPageUrl" class="control-label"></label>
+                <input asp-for="EventInfo.ExternalInfoPageUrl" class="form-control" />
+                <span asp-validation-for="EventInfo.ExternalInfoPageUrl" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="EventInfo.ExternalRegistrationsUrl" class="control-label"></label>
+                <input asp-for="EventInfo.ExternalRegistrationsUrl" class="form-control" />
+                <span asp-validation-for="EventInfo.ExternalRegistrationsUrl" class="text-danger"></span>
+            </div>
+
+
+
             <hr>
             <h2>Bilde</h2>
             <div class="form-group">
@@ -177,7 +196,7 @@
                                         <p class="card-text product-description">@p.Description</p>
                                         <!--If no variants exist-->
                                         <h6 class="card-subtitle mb-2 text-muted product-price">@((float)p.Price)</h6>
-                                        <input class="product-m-count" type="hidden" value="@p.MandatoryCount" />
+                                        <input class="product-m-count" type="hidden" value="@p.MinimumQuantity" />
                                     </div>
                                     <div class="col-2">
                                         <small>
@@ -388,7 +407,7 @@ $("#EventInfo_Title").keyup(function(){
     const $productName = $($modal).find('#input-product-name');
     const $productDescription = $($modal).find('#input-product-description');
     const $productPrice = $($modal).find('#input-product-price');
-    const $productMandatoryCount = $($modal).find('#input-product-m-number');
+    const $productMinimumQuantity = $($modal).find('#input-product-m-number');
 
     const $variantModal = $('#add-variant-modal');
     const $variantName = $($variantModal).find('#input-variant-name');
@@ -409,7 +428,7 @@ $("#EventInfo_Title").keyup(function(){
         $productName.val($card.find('.product-name').text())
         $productDescription.val($card.find('.product-description').text())
         $productPrice.val($card.find('.product-price').text())
-        $productMandatoryCount.val($card.find('.product-m-count').val())
+        $productMinimumQuantity.val($card.find('.product-m-count').val())
 
         isEdit = true;
         $currentProduct = $card;
@@ -477,7 +496,7 @@ $("#EventInfo_Title").keyup(function(){
         clone.querySelector('.product-name').innerText = $productName.val();
         clone.querySelector('.product-description').innerText = $productDescription.val();
         clone.querySelector('.product-price').innerText = $productPrice.val();
-        clone.querySelector('.product-m-count').value = $productMandatoryCount.val();
+        clone.querySelector('.product-m-count').value = $productMinimumQuantity.val();
 
         if(isEdit != true) {
             // Add the cloned template to the DOM
@@ -521,7 +540,7 @@ $("#EventInfo_Title").keyup(function(){
             addInputToMainForm("EventInfo.Products[" + i + "].Name", $(this).find('.product-name').first().text());
             addInputToMainForm("EventInfo.Products[" + i + "].Description", $(this).find('.product-description').first().text());
             addInputToMainForm("EventInfo.Products[" + i + "].Price", $(this).find('.product-price').first().text());
-            addInputToMainForm("EventInfo.Products[" + i + "].MandatoryCount", $(this).find('.product-m-count').first().val());
+            addInputToMainForm("EventInfo.Products[" + i + "].MinimumQuantity", $(this).find('.product-m-count').first().val());
 
             $(el).find('.variant-card').each(function(j, vel){
                 addInputToMainForm("EventInfo.Products[" + i + "].ProductVariants[" + j + "].Name", $(this).find('.variant-name').first().text());

@@ -45,7 +45,8 @@ namespace losol.EventManagement.Pages.Admin.Users
 
             if (ApplicationUser != null)
             {
-                await _userManager.DeleteAsync(ApplicationUser);
+                ApplicationUser.Archived = true;
+                await _userManager.UpdateAsync(ApplicationUser);
             }
 
             return RedirectToPage("./Index");

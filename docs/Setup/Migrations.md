@@ -8,10 +8,10 @@ cd src/EventManagement.Infrastructure
 
 ## Adding a migration
 ```bash
-dotnet ef migrations add YourMigrationClassName -s ../EventManagement.Web/EventManagement.Web.csproj
+dotnet ef migrations add ExtInfoPage -s ../EventManagement.Web/EventManagement.Web.csproj
 ```
 
 ## Applying a Migration
 ```bash
-dotnet database update
+dotnet ef database update -s ../EventManagement.Web/EventManagement.Web.csproj
 ```

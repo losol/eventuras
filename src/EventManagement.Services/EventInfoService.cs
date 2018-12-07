@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using static losol.EventManagement.Domain.EventInfo;
 
 namespace losol.EventManagement.Services
 {
@@ -22,11 +23,22 @@ namespace losol.EventManagement.Services
 		public async Task<List<EventInfo>> GetFeaturedEventsAsync() 
 		{
 			return await _db.EventInfos
-				.Where(
-					i => i.Published && 
+				.Where( i => 
+					i.Status != EventInfoStatus.Cancelled && 
+					i.Status != EventInfoStatus.Draft &&
 					i.Featured &&
 					i.DateStart >= DateTime.Now
 					)
+				.OrderBy(s => s.DateStart)
+				.ToListAsync();
+		}
+
+		public async Task<List<EventInfo>> GetUnpublishedEventsAsync() 
+		{
+			return await _db.EventInfos
+				.Where( i => 
+					i.Status == EventInfoStatus.Draft ||
+					i.Status == EventInfoStatus.Cancelled )
 				.OrderBy(s => s.DateStart)
 				.ToListAsync();
 		}
@@ -35,19 +47,49 @@ namespace losol.EventManagement.Services
 		{
 			return await _db.EventInfos
 				.Where(i => 
-					i.Published && 
-					i.OnDemand 
+					i.Status != EventInfoStatus.Cancelled && 
+					i.Status != EventInfoStatus.Draft &&
+					i.Type == EventInfoType.OnlineCourse 
 					)
 				.OrderBy(s => s.Title)
+				.ToListAsync();
+		}
+
+		public async Task<List<EventInfo>> GetOngoingEventsAsync() 
+		{
+			return await _db.EventInfos
+				.Where(i => 
+					i.Status != EventInfoStatus.Cancelled && 
+					i.Status != EventInfoStatus.Draft && 
+
+					((i.DateStart.HasValue &&
+					i.DateStart.Value.Date == DateTime.Now.Date) ||
+
+					(i.DateStart.HasValue && i.DateEnd.HasValue) &&
+					(i.DateStart.Value.Date <= DateTime.Now.Date &&
+					i.DateEnd.Value.Date >= DateTime.Now.Date)))
+				.OrderBy(s => s.DateStart)
 				.ToListAsync();
 		}
 
 		public async Task<List<EventInfo>> GetEventsAsync()
 		{
 			return await _db.EventInfos
-				.Where(a => 
-					a.Published &&
-					a.DateStart >= DateTime.Now)
+				.Where(i =>
+					i.Status != EventInfoStatus.Cancelled && 
+					i.Status != EventInfoStatus.Draft && 
+					i.DateStart >= DateTime.Now)
+				.OrderBy(a => a.DateStart)
+				.ToListAsync();
+		}
+
+		public async Task<List<EventInfo>> GetPastEventsAsync()
+		{
+			return await _db.EventInfos
+				.Where(i => 
+					i.Status != EventInfoStatus.Cancelled && 
+					i.Status != EventInfoStatus.Draft &&
+					i.DateStart <= DateTime.Now)
 				.OrderBy(a => a.DateStart)
 				.ToListAsync();
 		}
@@ -56,6 +98,17 @@ namespace losol.EventManagement.Services
 		{
 			return await _db.EventInfos
 				            .SingleOrDefaultAsync(m => m.EventInfoId == id);
+		}
+
+		public async Task<EventInfo> GetWithOrganizerAsync(int id)
+		{
+			var eventinfo = await _db.EventInfos
+				.Where(m => m.EventInfoId == id)
+				.Include ( m => m.OrganizerUser)
+				.Include ( m => m.Organization)
+				.SingleOrDefaultAsync();
+			return eventinfo;
+
 		}
 
 		public async Task<int> GetRegistrationCount(int eventId)
@@ -87,7 +140,7 @@ namespace losol.EventManagement.Services
 			
 			if(shouldDeleteProducts)
 			{
-				var originalProducts = await _productsService.GetForEventAsync(info.EventInfoId);
+				var originalProducts = await _productsService.GetProductsForEventAsync(info.EventInfoId);
 				var originalVariants = originalProducts.SelectMany(p => p.ProductVariants);
 
 				// Delete the variants that don't exist in the provided object

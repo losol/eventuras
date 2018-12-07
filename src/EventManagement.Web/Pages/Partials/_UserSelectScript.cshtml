@@ -1,7 +1,13 @@
 <script>
 $.get("/api/v0/users").done(function(response){
+    const data = response.map(function(x) { 
+        return { 
+            id: x.id, 
+            name: x.name + ' ' + x.email + ' ' + x.phone 
+        } 
+    });
     $('#input-user').typeahead({ 
-        source: response.map(function(x) { return { id: x.id, name: x.name + ' ' + x.email + ' ' + x.phone } }),
+        source: data,
         fitToElement: true,
         showHintOnFocus: true
     });

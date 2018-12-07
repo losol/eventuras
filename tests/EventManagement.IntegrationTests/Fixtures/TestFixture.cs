@@ -26,7 +26,10 @@ namespace losol.EventManagement.IntegrationTests.Fixtures
 			var builder = new WebHostBuilder()
 				.UseContentRoot("../../../../../src/EventManagement.Web")
 				.UseEnvironment("Development")
-				.ConfigureAppConfiguration((b, c) => c.AddJsonFile("appsettings.json"))
+				.ConfigureAppConfiguration(app =>
+                {
+                    app.AddJsonFile("appsettings.json");
+                })
 				.UseStartup<TestStartup>()
 				.ConfigureServices(ConfigureServices);
 

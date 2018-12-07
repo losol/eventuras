@@ -25,15 +25,23 @@ namespace losol.EventManagement.Pages.Admin.Users
         public class InputModel
         {
             [Required]
+            [Display(Name = "Fullt navn")]
             public string Name { get; set; }
 
             [Required]
             [EmailAddress]
+            [Display(Name = "Epost")]
             public string Email { get; set; }
 
+            [Display(Name = "Mobilnummer")]
             public string PhoneNumber { get; set; }
 
+            [Display(Name = "Signatur som Base64")]
+            public string SignatureImageBase64 { get; set; }
+
         }
+
+
         
         [TempData]
         public string StatusMessage { get; set; }
@@ -54,7 +62,8 @@ namespace losol.EventManagement.Pages.Admin.Users
             Input = new InputModel{
                 Name = user.Name,
                 Email = user.Email,
-                PhoneNumber = user.PhoneNumber
+                PhoneNumber = user.PhoneNumber,
+                SignatureImageBase64 = user.SignatureImageBase64
             };
 
 			return Page();
@@ -107,7 +116,17 @@ namespace losol.EventManagement.Pages.Admin.Users
                 }
             }
 
-            StatusMessage = "The profile has been updated";
+            if (Input.SignatureImageBase64 != user.SignatureImageBase64)
+            {
+                user.SignatureImageBase64 = Input.SignatureImageBase64;
+                var setSignatureResult = await _userManager.UpdateAsync(user);
+                if (!setSignatureResult.Succeeded)
+                {
+                    throw new ApplicationException($"Unexpected error occurred setting email for user with ID '{user.Id}'.");
+                }
+            }
+
+            StatusMessage = "Profilen er oppdatert!";
             return RedirectToPage();
         }
     }

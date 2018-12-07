@@ -9,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using static losol.EventManagement.Domain.Order;
 using System.Collections.Generic;
 using System.Linq;
+using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Web.Controllers.Api
 {
@@ -23,17 +24,13 @@ namespace losol.EventManagement.Web.Controllers.Api
 			_orderService = orderService;
 		}
 
-		[HttpPost("update/{id}")]
-		public async Task<ActionResult> UpdateOrder([FromRoute]int id, [FromBody]UpdateOrderDetailsVM vm)
+		[HttpPost("{id}/update/ordercomment")]
+		public async Task<ActionResult> UpdateOrderComment([FromRoute]int id, [FromBody]UpdateOrderDetailsVM vm)
 		{
 			if (!ModelState.IsValid) return BadRequest();
 			try
 			{
-				await _orderService.UpdateOrderDetailsAsync(id, 
-				                                            vm.CustomerName, 
-				                                            vm.CustomerEmail, 
-				                                            vm.InvoiceReference, 
-				                                            vm.Comments);
+				await _orderService.UpdateOrderComment(id, vm.Comments);
 			}
 			catch (ArgumentException)
 			{
@@ -56,7 +53,6 @@ namespace losol.EventManagement.Web.Controllers.Api
 		[HttpPost("update/{id}/{status}")]
 		public async Task<ActionResult> UpdateOrderStatus([FromRoute]int id, [FromRoute]OrderStatus status)
 		{
-			if(status == OrderStatus.Draft) return BadRequest();
 			try{
 				switch(status)
 				{
@@ -69,10 +65,25 @@ namespace losol.EventManagement.Web.Controllers.Api
 				}
 				return Ok();
 			}
-			catch(Exception e) when (e is InvalidOperationException || e is ArgumentException) {
+			catch(Exception e) {
+				await _orderService.AddLogLineAsync(id, e.Message);
 				return BadRequest();
 			}
 		}
+
+		[HttpPost ("{id}/paymentmethod/update/{paymentmethod}")]
+        public async Task<ActionResult> SetPaymentMethod ([FromRoute] int id, [FromRoute] PaymentProvider paymentmethod) {
+            if (!ModelState.IsValid) return BadRequest ();
+            try {
+                await _orderService.UpdatePaymentMethod (
+                    id,
+                    paymentmethod);
+            }
+            catch (ArgumentException ex) {
+                return BadRequest (ex.Message);
+            }
+            return Ok ();
+        }
 
 		[HttpPost("update/{id}/make-free")]
 		public async Task<ActionResult> MakeOrderFree([FromRoute]int id)
@@ -135,7 +146,7 @@ namespace losol.EventManagement.Web.Controllers.Api
 			if (!ModelState.IsValid) return BadRequest();
 			try 
 			{
-				await _orderService.UpdateOrderLine(lineId, vm.Quantity, vm.Price);	
+				await _orderService.UpdateOrderLine(lineId, vm.VariantId, vm.Quantity, vm.Price);	
 			}
 			catch(ArgumentException)
 			{
@@ -151,15 +162,26 @@ namespace losol.EventManagement.Web.Controllers.Api
 			return Ok();
 		}
 
+
 		[HttpPost("create-order")]
-		public async Task<IActionResult> CreateOrder([FromBody]CreateOrderVM vm,
+		[HttpPost("update-order")]
+		public async Task<IActionResult> Update([FromBody]UpdateOrderVM vm,
 			[FromServices]IRegistrationService registrationService)
 		{
 			if(!ModelState.IsValid) return BadRequest();
 
 			try
 			{
-				await registrationService.CreateOrUpdateOrder(vm.RegistrationId, vm.ProductIds, vm.VariantIds);
+				await registrationService.CreateOrUpdateOrder(
+					registrationId: vm.RegistrationId, 
+					ordersVm: vm.Products
+							.Select(o => new OrderVM 
+							{ 
+								ProductId = o.Id, 
+								VariantId = o.VariantId, 
+								Quantity = o.Quantity 
+							}).ToList()
+				);
 				return Ok();
 			}
 			catch(ArgumentException)
@@ -203,6 +225,20 @@ namespace losol.EventManagement.Web.Controllers.Api
 		{
 			public int Quantity { get; set; }
 			public decimal Price { get; set; }
+			public int? VariantId { get; set; }
+		}
+
+		public class UpdateOrderVM
+		{
+			public List<ProductVM> Products { get; set; } = new List<ProductVM>();
+			public int RegistrationId { get; set; }
+		}
+
+		public class ProductVM
+		{ 
+			public int Id { get; set; }
+			public int Quantity { get; set; }
+			public int? VariantId { get; set; }
 		}
 	}
 }

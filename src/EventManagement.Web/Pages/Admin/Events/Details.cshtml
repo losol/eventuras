@@ -6,25 +6,25 @@
 }
 
 <div class="jumbotron jumbotron-fluid">
-    <div class="container"> 
+    <div class="container">
         <div>
             <h1 class="display-4">@Model.EventInfo.Title</h1>
             <p class="lead pb-5">@Model.EventInfo.Description</p>
             @{ // Dates
-                if(Model.EventInfo.DateStart != null) 
+                if(Model.EventInfo.DateStart != null)
                 {
                     <div>
                     <i class="material-icons  align-top">date_range</i> @Model.EventInfo.DateStart.Value.ToString("d")
-                        
+
                             @if(Model.EventInfo.DateEnd != null) {
                             <text>- @Model.EventInfo.DateEnd.Value.ToString("d")</text>
                             }
                     </div>
                 }
-            
+
             }
             @{ // City
-                if(Model.EventInfo.City != null) 
+                if(Model.EventInfo.City != null)
                 {
                     <div>
                         <i class="material-icons align-top">location_on</i> @Model.EventInfo.City
@@ -33,18 +33,12 @@
             }
 
             @{ // Location
-                    if(Model.EventInfo.Location != null) 
+                    if(Model.EventInfo.Location != null)
                     {
                         <div>
                             <i class="material-icons align-top">hotel</i> @Model.EventInfo.Location
                         </div>
                     }
-                    @* Price *@
-                    <div>
-                        @if (Model.EventInfo.Price.HasValue) {
-                        <i class="material-icons align-top">credit_card</i> @Model.EventInfo.Price.Value.ToString("0 kr")
-                        }
-                    </div>
             }
 
             <div>
@@ -63,10 +57,10 @@
                     @: <a href="/Admin/Products/@p.ProductId">@p.Name</a>  &nbsp;
                 }
             }
-            
+
         </div>
 
-        
+
     </div>
         <div id="event-menu" class="py-3">
 
@@ -75,20 +69,14 @@
 
                 <!-- EDIT EVENT -->
                 <a asp-page="Edit" asp-route-id="@Model.EventInfo.EventInfoId" class="btn btn-warning link-decoration-none">Rediger</a>
-  
-                <!-- COMMUNICATE MENU -->
-                <div class="btn-group">
-                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Send info til alle
-                </button>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item link-decoration-none" href="#" onclick="sendAll(); return false;" role="button">Epost</a>
-                    <a class="dropdown-item link-decoration-none" href="#" onclick="smsAll();return false;" role="button">Tekstmelding</a>
-                </div>
-                </div>
 
-                @Html.Partial("Partials/_EmailModal")
-                @Html.Partial("Partials/_SmsModal")
+                <!-- COMMUNICATE MENU -->
+                <a asp-page="./Messaging" asp-route-id="@Model.EventInfo.EventInfoId" class="btn btn-info link-decoration-none">
+                    Kommuniser
+                </a>
+
+                <partial name="Partials/_EmailModal" />
+                <partial name="Partials/_SmsModal" />
 
 
                 <!-- ECONOMY MENU -->
@@ -108,11 +96,12 @@
                 </button>
                 <div class="dropdown-menu">
                     <a class="dropdown-item link-decoration-none" href="/certificate/preview/event/@Model.EventInfo.EventInfoId" target="_blank" role="button">Forh&aring;ndsvis kursbevis</a>
+                    <a class="dropdown-item link-decoration-none" href="#" data-toggle="modal" data-target="#updateCertificatesModal" role="button">Oppdater kursbevis</a>
                     <a class="dropdown-item link-decoration-none" href="#" data-toggle="modal" data-target="#sendCertificatesModal" role="button">Send ut kursbevis</a>
                 </div>
                 </div>
 
-                <!-- CERTIFICATES Send Modal -->
+                <!-- SEND CERTIFICATES Modal -->
                 <div class="modal fade" id="sendCertificatesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -123,11 +112,32 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        Sertifikatet går til alle deltakere som er møtt. 
+                        Sertifikatet g&aring;r til alle deltakere som er registrert som fullf&oslash;rt.
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Lukk</button>
                         <button type="button" onclick="emailCertificatesToAll()" class="btn btn-primary">Send</button>
+                    </div>
+                    </div>
+                </div>
+                </div>
+
+                <!-- UPDATE CERTIFICATES Modal -->
+                <div class="modal fade" id="updateCertificatesModal" tabindex="-1" role="dialog" aria-labelledby="updateCertificatesModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Oppdater alle kursbevis for arrangementet</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Kursbevisene vil ikke sendes ut automatisk. 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Lukk</button>
+                        <button type="button" onclick="updateCertificatesForEvent()" class="btn btn-primary">Oppdater</button>
                     </div>
                     </div>
                 </div>
@@ -138,14 +148,88 @@
     </div>
     </div>
 </div>
- 
+
 <div class="container min-height-50 pb-5">
 	<div class="row">
 		<div class="col">
-            <table  
+            <table
                 id="participants-table"
-                data-toggle="table" 
+                data-toggle="table"
                 data-url="/Admin/Events/Details/@Model.EventInfo.EventInfoId?handler=Participants"
+                data-pagination="false"
+                data-show-columns="true"
+                data-show-export="true"
+                data-sort-name="name"
+                data-sort-order="asc"
+                data-icons-prefix="fa"
+                data-icons="icons"
+                data-search="true"
+                data-advanced-search="true"
+                data-search-align="left"
+                data-show-refresh="true"
+                data-click-to-select="true"
+                data-export-options='{
+                    "fileName": "Deltakere-@Model.EventInfo.Code-@DateTime.Now.ToString("yyyy-MM-dd")"
+                }'>
+                <thead>
+                    <tr>
+                        <th data-field="name" data-sortable="true">Navn</th>
+                        <th data-field="email" data-sortable="true" data-visible="false">Epost</th>
+                        <th data-field="phone">Telefon</th>
+                        <th data-field="jobTitle" data-visible="false">Stilling</th>
+                        <th data-field="employer" data-visible="false">Arbeidsplass</th>
+                        <th data-field="city" data-visible="false">Sted</th>
+                        <th data-field="notes" data-visible="false">Kommentar</th>
+                        <th data-field="products" data-formatter="ProductsFormatter">Detaljer</th>
+                        <th data-formatter="RowActions" data-events="operateEvents">Meny</th>
+                    </tr>
+                </thead>
+            </table>
+		</div>
+	</div>
+    <div class="row">
+        <div class="col">
+            <h2>Andre deltakere/stab</h2>
+            <table
+                id="staff-table"
+                data-toggle="table"
+                data-url="/Admin/Events/Details/@Model.EventInfo.EventInfoId?handler=OtherAttendees"
+                data-pagination="false"
+                data-show-columns="true"
+                data-show-export="true"
+                data-sort-name="name"
+                data-sort-order="asc"
+                data-icons-prefix="fa"
+                data-icons="icons"
+                data-search="true"
+                data-advanced-search="true"
+                data-search-align="left"
+                data-show-refresh="true"
+                data-click-to-select="true"
+                data-export-options='{
+                    "fileName": "Deltakere-@Model.EventInfo.Code-@DateTime.Now.ToString("yyyy-MM-dd")"
+                }'>
+                <thead>
+                    <tr>
+                        <th data-field="name" data-sortable="true">Navn</th>
+                        <th data-field="email" data-sortable="true" data-visible="false">Epost</th>
+                        <th data-field="phone">Telefon</th>
+                        <th data-field="type">Type</th>
+                        <th data-field="products" data-formatter="ProductsFormatter">Detaljer</th>
+                        <th data-formatter="RowActions" data-events="operateEvents">Meny</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+     <div class="row">
+        <div class="col">
+            <h2>Avmeldte</h2>
+            <table
+                id="participants-table"
+                data-toggle="table"
+                data-url="/Admin/Events/Details/@Model.EventInfo.EventInfoId?handler=Cancelled"
                 data-pagination="false"
                 data-show-columns="true"
                 data-show-export="true"
@@ -169,24 +253,63 @@
                         <th data-field="jobTitle">Stilling</th>
                         <th data-field="employer" data-visible="false">Arbeidsplass</th>
                         <th data-field="city">Sted</th>
-                        <th data-formatter="Attended" data-events="attendedEvents">Status</th>
                         <th data-formatter="RowActions" data-events="operateEvents">Meny</th>
                     </tr>
                 </thead>
-            </table> 
-		</div>
-	</div>
+            </table>
+        </div>
+    </div>
 </div>
 
-@section scripts { 
+<!-- Edit products modal -->
+<div id="modal-edit-products" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        @foreach(var product in Model.EventInfo.Products) {
+            <div class="row product-input-group">
+                <div class="col-2">
+                    <input id="input-quantity-@product.ProductId"
+                        class="input-quantity"
+                        style="width: 100%" />
+                    <input type="hidden" value="@product.ProductId" class="input-prodid" />
+                </div>
+                <div class="col-10" id="content-@product.ProductId">
+                    <h4>@product.Name</h4>
+                    <p>@product.Description</p>
+                    @foreach(var variant in product.ProductVariants) {
+                        <input type="radio"
+                            name="variant-radio-@product.ProductId"
+                            value="@variant.ProductVariantId" /> @variant.Name <br />
+                    }
+                </div>
+            </div>
+        }
+      </div>
+      <div class="modal-footer">
+        <button id="btn-save-product-changes" type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section scripts {
     <script>
     let recipients = [];
     let includeOrders = false;
     let eventId = @Model.EventInfo.EventInfoId;
     </script>
-    @Html.Partial("Partials/_EmailModalScripts")
+    <partial name="Partials/_EmailModalScripts" />
     <script>
 
+    let registrationId = 0;
     const $table = $('#participants-table');
     $('#toolbar').find('select').change(function () {
         $table.bootstrapTable('refreshOptions', {
@@ -194,33 +317,50 @@
         });
     });
 
-    function Attended(value, row, index, field) {
+    function RowActions(value, row, index, field) {
             let actions = [];
-            if((row.status == ('Draft' || 'Verified'))) {
-                actions.push('<button type="button" class="btn btn-secondary btn-attended mr-1">Registrer</button>');
+
+            // Registration status
+            if(row.status == 'Draft' || row.status == 'Verified') {
+                actions.push('<button type="button" class="btn btn-warning btn-attended">Møtt?</button>');
             }
             if((row.status == 'Attended')) {
-                actions.push('<button type="button" class="btn btn-secondary btn-finished mr-1">Fullført</button>');
+                actions.push('<button type="button" class="btn btn-secondary btn-finished">Fullført?</button>');
             }
             if((row.status == 'Finished')) {
-                actions.push('<span class="badge badge-success mr-1">Fullført</span>');
+                actions.push('<button type="button" class="btn btn-secondary" disabled>Fullført</button>');
             }
             if((row.status == 'NotAttended')) {
-                actions.push('<span class="badge badge-warning mr-1">Ikke møtt</span>');
+                actions.push('<span class="badge badge-warning">Ikke møtt</span>');
             }
-            return actions.join('');
-        }
-    function RowActions(value, row, index, field) {
-            actions = [
-                '<a href="/Admin/Registrations/Details/' + row.registrationId + '" alt="Vis registrering" class="btn btn-primary mr-1 link-decoration-none"><i class="fa fa-id-card-o" aria-hidden="true"></i> Info</a>', 
-                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-sms mr-1">SMS</button>', 
-                '<button type="button" data-participantemail="' + row.email + '" class="btn btn-secondary btn-send-email mr-1">Epost</button>'
-            ];
+
+            // Edit info menu
+            actions.push(
+            '<div class="btn-group" role="group">' +
+                '<button id="btnGroupChange" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Endre</button>' +
+                '<div class="dropdown-menu py-3" aria-labelledby="btnGroupChange">' +
+                    '<a href="/Admin/Registrations/Details/' + row.registrationId + '" alt="Vis registrering" class="dropdown-item link-decoration-none"><i class="fa fa-id-card-o" aria-hidden="true"></i> Registrering</a>' +
+                    '<a href="/Admin/Users/Details/' + row.userId + '" alt="Vis registrering" class="dropdown-item link-decoration-none"><i class="fa fa-user" aria-hidden="true"></i> Brukerinfo</a>' +
+                    '<a href="#" class="dropdown-item link-decoration-none btn-edit-products"><i class="fa fa-list" aria-hidden="true"></i> Produkter</a>' +
+                '</div>' +
+            '</div>');
+
+            // Communications menu
+            actions.push(
+            '<div class="btn-group" role="group">' +
+                '<button id="btnGroupSendToParticipant" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Send</button>' +
+                '<div class="dropdown-menu py-3" aria-labelledby="btnGroupSendToParticipant">' +
+                    '<a href="#" data-participantemail="' + row.email + '" class="dropdown-item link-decoration-none btn-send-sms ">SMS</a>' +
+                    '<a href="#" data-participantemail="' + row.email + '" class="dropdown-item link-decoration-none btn-send-email ">Epost</a>'+
+                '</div>' +
+            '</div>');
+
+            // Certificate menu
             if(row.hasCertificate)
             {
                 const dropdownMarkup = '<div class="btn-group" role="group">' +
-                        '<a class="btn btn-secondary link-decoration-none" href="/certificate/' + 
-                        row.certificateId + '/download" target="_blank"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Kursbevis</a>' +
+                        '<a class="btn btn-secondary link-decoration-none" href="/certificate/' +
+                        row.certificateId + '/download" target="_blank">Diplom</a>' +
                         '<button type="button" class="btn btn-secondary dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
                         '</button>' +
                         '<div class="dropdown-menu">' +
@@ -231,6 +371,24 @@
             }
             return actions.join('');
         }
+
+    function ProductsFormatter(products, row, index, field) {
+        let outHtml = ['<ul class="list-unstyled">'];
+        products.forEach(function(p) {
+            p.quantity = p.item3;
+            if(p.quantity > 1) {
+                outHtml.push('<li>' + p.quantity + ' &times; '+ p.item1.name);
+            }
+            else {
+                outHtml.push('<li>' + p.item1.name);
+            }
+            if(p.item2) {
+                outHtml.push('(' + p.item2.name + ')');
+            }
+        });
+        outHtml.push('</ul>');
+        return outHtml.join('');
+    }
 
     window.icons = {
         refresh: 'fa-refresh',
@@ -264,16 +422,32 @@
             .fail(function() {
                 toastr.error('Generating/emailing certificate failed.')
             })
-        }
-    };
+        },
+        'click .btn-edit-products': function(e, value, row, index) {
+            $.each(
+                $('input[type=radio]:first-of-type'),
+                function(i, el) {
+                    $(el).prop("checked", true);
+                }
+            );
+            $('.input-quantity').val(0);
+            row.products.forEach(function(p) {
+                $('#input-quantity-'+p.item1.productId).val(p.item3);
+                if(p.item2) {
+                    $('#content-' +p.item1.productId + ' input[name=variant-radio-'+p.item1.productId+']').val([p.item2.productVariantId]);
+                }
+            });
+            registrationId = row.registrationId;
+            $('#modal-edit-products').modal('show');
+        },
 
-    window.attendedEvents = {
+        // Attended functions
         'click .btn-attended': function(e, value, row, index) {
             $.postJSON("/api/participants/mark_as_attended/" + row.registrationId, null)
             .done(function(){
                 toastr.success('Da va følgende registrert ombord ' + row.name + '.');
                 $('#participants-table').bootstrapTable('refresh', null);
-                
+
             })
             .fail(function(){
                 toastr.error('Uuuups, fikk ikke registrert ' + row.name + '. ')
@@ -294,7 +468,7 @@
             .done(function(){
                 toastr.success('Da va følgende registrert som fullført ' + row.name + '.');
                 $('#participants-table').bootstrapTable('refresh', null);
-                
+
             })
             .fail(function(){
                 toastr.error('Uuuups, fikk ikke registrert ' + row.name + '. ')
@@ -302,16 +476,43 @@
         }
     };
 
+
+    $('#btn-save-product-changes').on('click', function(){
+        const data = {
+            registrationId: registrationId,
+            products: $('.product-input-group').get()
+                        .map(function(d) {
+                            const productId = $(d).find('.input-prodid').first().val();
+                            return {
+                                id: productId,
+                                quantity: $(d).find('.input-quantity').first().val(),
+                                variantId: $(d).find('input[name="variant-radio-'+ productId +'"]:checked').val()
+                            }
+                        })
+        };
+        $.postJSON('/api/v0/orders/update-order', data)
+            .done(function(){
+                $('#participants-table').bootstrapTable('refresh', null);
+                toastr.success('Oppdaterte produkter');
+            })
+            .fail(function(){
+                toastr.error('Noe gikk galt. Sorry!');
+            })
+    })
+
+
+    // TODO: Remove this?
     function sendAll() {
         const data = $table.bootstrapTable('getData', {useCurrentPage: false});
-        recipients = data.map(function(x){ 
-            return { name: x.name, email: x.email } 
+        recipients = data.map(function(x){
+            return { name: x.name, email: x.email }
         });
         includeOrders = true;
         showEmailModal('alle deltakere');
         showOrderCheckbox();
     }
 
+    // TODO: Remove?
     function smsAll() {
         const data = $table.bootstrapTable('getData', {useCurrentPage: false});
         recipients = data.map(function(x){ return x.phone });
@@ -319,15 +520,17 @@
         $('#sms-modal').modal('show');
     }
 
+    // TODO: Remove?
     function sendSms() {
         const text = $('#sms-text').val();
         const sms = {
             to: recipients,
-            text: text
+            text: text,
+            eventInfoId: @Model.EventInfo.EventInfoId
         }
         $.postJSON('/api/v0/messaging/sms', sms)
-            .done(function(){
-                toastr.success('SMS sent to ' + recipients.length + ' participants.');
+            .done(function(response){
+                toastr.success(response, 'SMS til alle', {timeOut: 60000});
             })
             .fail(function(){
                 toastr.error('Could not send the SMS.');
@@ -347,6 +550,19 @@
             toastr.error('Nåkka gikk galt. Sorry.')
         })
     }
+
+    function updateCertificatesForEvent() {
+        toastr.info("Vær tålmodig, det kan ta litt tid.");
+        $.postJSON('/api/certificates/event/@Model.EventInfo.EventInfoId/update', null)
+        .done(function(){
+            toastr.success('Kursbevisene er oppdatert med ny info!');
+            $('#sendCertificatesModal').modal('hide');
+            $('#participants-table').bootstrapTable('refresh', null);
+        })
+        .fail(function(){
+            toastr.error('Nåkka gikk galt. Sorry.')
+        })
+    }
 </script>
-    @await Html.PartialAsync("_CompBootstrapTable")
+    <partial name="_CompBootstrapTable" />
 }

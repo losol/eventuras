@@ -36,7 +36,7 @@ namespace losol.EventManagement.Web.Controllers.Api {
                 var result = await writer.RenderAsync( CertificateVM.From ( certificate ) );
                 var memoryStream = new MemoryStream ();
                 await result.CopyToAsync (memoryStream);
-                await emailSender.SendAsync (new EmailMessage {
+                await emailSender.SendStandardEmailAsync (new EmailMessage {
                     Email = certificate.RecipientEmail,
                         Subject = $"Kursbevis for {certificate.Title}",
                         Message = "Her er kursbeviset! Gratulere!",
@@ -44,6 +44,13 @@ namespace losol.EventManagement.Web.Controllers.Api {
                 });
             }
             return Ok ();
+        }
+
+
+        [HttpPost ("event/{eventId}/update")]
+        public async Task<IActionResult> UpdateCertificatesForEvent ( [FromRoute] int eventId ) {
+            var result = await _certificatesService.UpdateCertificatesForEvent(eventId);
+            return Ok ( $"Oppdaterte {result.Count()}");
         }
 
         [HttpPost ("registration/{regId}/email")]
@@ -61,7 +68,7 @@ namespace losol.EventManagement.Web.Controllers.Api {
                 Bytes = memoryStream.ToArray ()
                 }
             };
-            await emailSender.SendAsync (emailMessage);
+            await emailSender.SendStandardEmailAsync (emailMessage);
             return Ok ();
         }
     }

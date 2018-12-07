@@ -24,7 +24,7 @@ namespace losol.EventManagement.Web.Api.Controllers
 		[HttpGet, Route("for-event/{eventId}")]
 		public async Task<IActionResult> GetForEvent(int eventId)
 		{
-			var products = await _productsService.GetForEventAsync(eventId);
+			var products = await _productsService.GetProductsForEventAsync(eventId);
 			return Ok(getResult(products));
 		}
 
@@ -38,8 +38,8 @@ namespace losol.EventManagement.Web.Api.Controllers
 				s.MoreInformation,
 				s.EventInfoId,
 				s.IsMandatory,
-				s.MandatoryCount,
-				s.MaxOrdersCount,
+				s.MinimumQuantity,
+				s.Inventory,
 				s.Price,
 				Variants = s.ProductVariants.Select(v => new {
 					v.ProductVariantId,
@@ -81,7 +81,7 @@ namespace losol.EventManagement.Web.Api.Controllers
 				return BadRequest();
 			}
 			try{
-				await registrationService.CreateOrUpdateOrder(vm.RegistrationId, vm.ProductId, vm.VariantId);
+				await registrationService.CreateOrUpdateOrder(vm.RegistrationId, vm.ProductId, vm.ProductVariantId);
 			}
 			catch(InvalidOperationException)
 			{
@@ -98,7 +98,7 @@ namespace losol.EventManagement.Web.Api.Controllers
 		{
 			public int RegistrationId { get; set; }
 			public int ProductId { get; set; }
-			public int? VariantId { get; set; }
+			public int? ProductVariantId { get; set; }
 		}
 	}
 }

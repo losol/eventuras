@@ -15,23 +15,23 @@ using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
 using losol.EventManagement.Services.Extensions;
 using System.Text;
+using static losol.EventManagement.Domain.PaymentMethod;
+using System.Text.RegularExpressions;
 
 namespace losol.EventManagement.Web.Pages.Events.Register
 {
 	public class EventRegistrationModel : PageModel
 	{
 		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly ConfirmationEmailSender _confirmationEmailSender;
-		private readonly StandardEmailSender _standardEmailSender;
 		private readonly ILogger<EventRegistrationModel> _logger;
 		private readonly IEventInfoService _eventsService;
 		private readonly IPaymentMethodService _paymentMethodService;
 		private readonly IRegistrationService _registrationService;
+		private readonly RegistrationEmailSender _registrationEmailSender;
 
 		public EventRegistrationModel(
 			UserManager<ApplicationUser> userManager,
-			ConfirmationEmailSender confirmationEmailSender,
-			StandardEmailSender standardEmailSender,
+			RegistrationEmailSender registrationEmailSender,
 			ILogger<EventRegistrationModel> logger,
 			IEventInfoService eventsService,
 			IPaymentMethodService paymentMethodService,
@@ -39,12 +39,11 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 		)
 		{
 			_userManager = userManager;
-			_confirmationEmailSender = confirmationEmailSender;
-			_standardEmailSender = standardEmailSender;
 			_logger = logger;
 			_eventsService = eventsService;
 			_paymentMethodService = paymentMethodService;
 			_registrationService = registrationService;
+			_registrationEmailSender = registrationEmailSender;
 		}
 
 		[BindProperty]
@@ -52,7 +51,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 		public EventInfo EventInfo { get; set; }
 		public List<PaymentMethod> PaymentMethods { get; set; }
 		public List<Product> Products => EventInfo.Products;
-		public int DefaultPaymentMethod => _paymentMethodService.GetDefaultPaymentMethodId();
+		public PaymentProvider DefaultPaymentMethod => _paymentMethodService.GetDefaultPaymentProvider();
 
 		public async Task<IActionResult> OnGetAsync(int id)
 		{
@@ -79,6 +78,22 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 				return Page();
 			}
 
+			// Sanitization of input
+			if (!string.IsNullOrWhiteSpace(Registration.ParticipantName)) 	{ Registration.ParticipantName = Regex.Replace(Registration.ParticipantName, "<.*?>", String.Empty); }
+			if (!string.IsNullOrWhiteSpace(Registration.Email)) 				{ Registration.Email = Regex.Replace(Registration.Email, "<.*?>", String.Empty); }
+			if (!string.IsNullOrWhiteSpace(Registration.PhoneCountryCode)) 	{ Registration.PhoneCountryCode = Regex.Replace(Registration.PhoneCountryCode, "<.*?>", String.Empty); }
+			if (!string.IsNullOrWhiteSpace(Registration.Phone)) 				{ Registration.Phone = Regex.Replace(Registration.Phone, "<.*?>", String.Empty); }
+			if (!string.IsNullOrWhiteSpace(Registration.ParticipantJobTitle)){ Registration.ParticipantJobTitle = Regex.Replace(Registration.ParticipantJobTitle, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.ParticipantCity)) 	{ Registration.ParticipantCity = Regex.Replace(Registration.ParticipantCity, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.Notes)) 				{ Registration.Notes = Regex.Replace(Registration.Notes, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerVatNumber)) 	{ Registration.CustomerVatNumber = Regex.Replace(Registration.CustomerVatNumber, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerName)) 		{ Registration.CustomerName = Regex.Replace(Registration.CustomerName, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerEmail)) 		{ Registration.CustomerEmail = Regex.Replace(Registration.CustomerEmail, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerInvoiceReference)) {Registration.CustomerInvoiceReference = Regex.Replace(Registration.CustomerInvoiceReference, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerZip)) 		{ Registration.CustomerZip = Regex.Replace(Registration.CustomerZip, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerCity)) 		{ Registration.CustomerCity = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty);}
+			if (!string.IsNullOrWhiteSpace(Registration.CustomerCountry)) 	{ Registration.CustomerCountry = Regex.Replace(Registration.CustomerCountry, "<.*?>", String.Empty);}
+
 			EventInfo = await _eventsService.GetWithProductsAsync(id);
 			if (EventInfo == null) return NotFound();
 			Registration.EventInfoId = EventInfo.EventInfoId;
@@ -90,11 +105,12 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 				Registration.UserId = user.Id;
 				_logger.LogInformation("Found existing user.");
 				// Any registrations for this user on this event?
-				var registration = await _registrationService.GetAsync(user.Id, Registration.EventInfoId);
-				if (registration != null)
+				var existingRegistration = await _registrationService.GetAsync(user.Id, Registration.EventInfoId);
+				if (existingRegistration != null)
 				{
 					// The user has already registered for the event.
-					return await userAlreadyRegisteredResult(registration);
+					await _registrationEmailSender.SendRegistrationAsync(user.Email, "Du var allerede påmeldt!", "<p>Vi hadde allerede en registrering for deg.</p>", existingRegistration.RegistrationId);
+					return RedirectToPage("/Info/EmailSent");
 				}
 			}
 			else
@@ -115,7 +131,7 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 					foreach (var error in result.Errors)
 					{
 						ModelState.AddModelError(string.Empty, error.Description);
-					}	
+					}
 					PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
 					return Page();
 				}
@@ -125,115 +141,12 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 			_logger.LogInformation("Starting new registration:");
 
 			var newRegistration = Registration.Adapt<Registration>();
-			newRegistration.VerificationCode = PasswordHelper.GeneratePassword(length: 6);
-			int[] selectedProductIds = null;
-			int[] selectedVariantIds = null;
+			newRegistration.VerificationCode = PasswordHelper.GeneratePassword(6);
+			await _registrationService.CreateRegistration(newRegistration, Registration.SelectedProducts);
+            await _registrationEmailSender.SendRegistrationAsync(user.Email, "Velkommen på kurs!", "<p>Vi fikk registreringen din</p>", newRegistration.RegistrationId);
 
-			// If the eventinfo has products, then register and make order
-			if (Registration.HasProducts)
-			{
-				// Populate the ids required to create the registration
-				selectedProductIds = Registration.SelectedProducts.ToArray();
-				selectedVariantIds = Registration.SelectedVariants.ToArray();
-				
-				var registeredProducts = EventInfo.Products
-					.Where(x => selectedProductIds.Contains(x.ProductId))
-					.ToList();
 
-				// Get the list of product names along with id and variants ...
-				var productNames = registeredProducts.Select(product =>
-				{
-					var variantId = Registration.Products
-						.Where(p => product.ProductId == p.Value)
-						.Select(p => p.SelectedVariantId)
-						.FirstOrDefault();
-
-					var variantString = "";
-					if (variantId != null)
-					{
-						var variantName = Products.Where(p => p.ProductId == product.ProductId)
-							.SelectMany(p => p.ProductVariants)
-							.Where(v => v.ProductVariantId == variantId)
-							.Select(v => v.Name)
-							.Single();
-
-						variantString = $" ({variantId}. {variantName})";
-					}
-
-					return $"{product.ProductId}. {product.Name}{variantString}";
-				});
-
-				// ... and concatenate them together into the notes field
-				Registration.Notes = String.Join(", ", productNames);
-			}
-			await _registrationService.CreateRegistration(newRegistration, selectedProductIds, selectedVariantIds);
-
-			var confirmEmail = new ConfirmEventRegistration
-			{
-				Name = Registration.ParticipantName,
-				Phone = Registration.Phone,
-				Email = Registration.Email,
-				PaymentMethod = Registration.PaymentMethodId.ToString(),
-				EventTitle = EventInfo.Title,
-				EventDescription = EventInfo.Description,
-				VerificationUrl = Url.Page(
-					pageName: "/Events/Register/Confirm", 
-					pageHandler:"get", 
-					values: new {
-						id = newRegistration.RegistrationId,
-						auth = newRegistration.VerificationCode
-					},
-					protocol: Request.Scheme
-				)
-			};
-
-			if(Registration.HasProducts)
-			{
-				var builder = new StringBuilder ();
-				builder.AppendLine ("<br>");
-				builder.AppendLine ("<h4>Ordre</h4>");
-				var registration = await _registrationService.GetWithEventInfoAndOrders(newRegistration.RegistrationId);
-				registration.Orders.ForEach(
-					(o) => o.OrderLines?.ForEach (
-						(line) => builder.AppendLine ($"<br>{line.ProductName}")
-					)
-				);
-				confirmEmail.OrdersHtml += builder.ToString ();
-			}
-			
-			await _confirmationEmailSender.SendAsync(Registration.Email, "Bekreft påmelding", confirmEmail);
 			return RedirectToPage("/Info/EmailSent");
 		}
-
-		// TODO: Move to registrationservice
-		private async Task<IActionResult> userAlreadyRegisteredResult(Registration registration)
-		{
-			// Prepare an email to send out
-			var emailVM = new EmailMessage()
-			{
-				Name = Registration.ParticipantName,
-				Email = Registration.Email,
-				Subject = "Du var allerede påmeldt!",
-				Message = @"Vi hadde allerede registrert deg i systemet.
-								Ta kontakt med ole@nordland-legeforening hvis du tror det er skjedd noe feil her!
-								"
-			};
-
-			// If registered but not verified, just send reminder of verification. 
-			if (registration.Verified == false)
-			{
-				var verificationUrl = Url.Action("Confirm", "Register", new { id = registration.RegistrationId, auth = registration.VerificationCode }, protocol: Request.Scheme);
-				emailVM.Subject = "En liten bekreftelse bare...";
-				emailVM.Message = $@"Vi hadde allerede registrert deg i systemet, men du har ikke bekreftet enda.
-								<p><a href='{verificationUrl}'>Bekreft her</a></p>
-								<p></p>
-								<p>Hvis lenken ikke virker, så kan du kopiere inn teksten under i nettleseren:
-								{verificationUrl} </p>";
-			}
-
-			await _standardEmailSender.SendAsync(emailVM);
-			return RedirectToPage("/Info/EmailSent");
-		}
-
 	}
 }

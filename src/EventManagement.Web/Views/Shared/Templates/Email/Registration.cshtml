@@ -1,0 +1,55 @@
+<html>
+    <head>
+        <title>Velkommen til @Model.EventInfo.Title!</title>
+        <style>
+        body {
+            font-family: "Arial", sans-serif;
+        }
+    </style>
+    </head>
+    <body>
+      
+      <p><strong>Heisann @Model.ParticipantName!</strong></p>
+
+      @* Remind the user to verify his order *@
+      @if(Model.Verified == false){
+        <hr />
+        <p><strong>Viktig: </strong>For &aring; bekrefte p&aring;meldingen, s&aring; m&aring; du <a href="@Model.VerificationUrl">klikke her</a>. </p>
+        <p><i>Virker ikke knappen? Da kan du bekrefte med &aring; kopiere inn denne lenken i nettleseren: @Model.VerificationUrl</i></p>
+        <hr />
+      }
+
+      @* The message *@
+      @Html.Raw(Model.Message)
+
+      @* Summary of current ordered products *@
+      <p>&nbsp;</p>
+      <p>Du f&aring;r denne eposten fordi du er p&aring;meldt @Model.EventInfo.Title. Oppdatert program finner du p&aring; <a href="@Model.EventUrl">p&aring; nettsidene</a>.</p>
+        @if(Model.HasOrder){
+            <h4>Dine ordrer</h4>
+            @foreach (var order in Model.Orders) {
+                <p>Ordre #@order.OrderId</p>
+                <ul>
+
+                @foreach (var orderline in order.OrderLines) {
+                    <li>
+                        @if (orderline.Quantity != 1) {
+                            <span> @orderline.Quantity x </span>
+                        }
+                        @orderline.ProductName @orderline.ProductDescription. 
+                        @if(!string.IsNullOrEmpty(orderline.ProductVariantName)) {
+                            <i>Variant: @orderline.ProductVariantName . @orderline.ProductVariantDescription</i>
+                        } 
+                    </li>
+                    
+                }
+                </ul>
+            }
+        }
+
+        <p>&nbsp;</p>
+        <p>Denne eposten ble sendt fra kurssystemet til Nordland legeforening, Mørkvedsentret 17, 8028 Bodø <br />
+        Telefon: 90026052 / 91179899</p>
+
+    </body>
+</html>
