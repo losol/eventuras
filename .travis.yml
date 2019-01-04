@@ -1,7 +1,7 @@
 language: csharp
-dist: trusty
+dist: xenial
 mono: none
-dotnet: 2.2.101
+dotnet: 2.2
 
 script:
 - dotnet test ./tests/EventManagement.IntegrationTests/EventManagement.IntegrationTests.csproj
