@@ -15,7 +15,7 @@
     <PackageReference Include="MailKit" Version="2.1.2" />
     <PackageReference Include="PowerOfficeGoSdk" Version="2.5.0" />
     <PackageReference Include="Sendgrid" Version="9.10.0" />
-    <PackageReference Include="Stripe.net" Version="22.4.0" />
+    <PackageReference Include="Stripe.net" Version="16.4.0" />
     <PackageReference Include="Twilio" Version="5.25.1" />
   </ItemGroup>
   <ItemGroup>

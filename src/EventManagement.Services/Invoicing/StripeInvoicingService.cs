@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using losol.EventManagement.Domain;
 using Microsoft.Extensions.Options;
 using Stripe;
 
