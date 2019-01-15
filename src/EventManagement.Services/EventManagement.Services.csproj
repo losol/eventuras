@@ -12,11 +12,11 @@
     <ProjectReference Include="..\EventManagement.Infrastructure\EventManagement.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MailKit" Version="2.0.4" />
-    <PackageReference Include="PowerOfficeGoSdk" Version="2.0.4" />
-    <PackageReference Include="Sendgrid" Version="9.9.0" />
-    <PackageReference Include="Stripe.net" Version="16.4.0" />
-    <PackageReference Include="Twilio" Version="5.13.2" />
+    <PackageReference Include="MailKit" Version="2.1.2" />
+    <PackageReference Include="PowerOfficeGoSdk" Version="2.5.0" />
+    <PackageReference Include="Sendgrid" Version="9.10.0" />
+    <PackageReference Include="Stripe.net" Version="22.4.0" />
+    <PackageReference Include="Twilio" Version="5.25.1" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Messaging\" />
