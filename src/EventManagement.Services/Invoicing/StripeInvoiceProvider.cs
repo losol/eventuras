@@ -8,7 +8,7 @@ namespace losol.EventManagement.Services.Invoicing
     public class StripeInvoiceProvider
     {
 
-        public async Task ChargeCustomer(Order order, StripeToken token)
+        public async Task ChargeCustomer(Domain.Order order, StripeToken token)
         {
             var options = new StripeChargeCreateOptions {
                 Amount = (int)(order.TotalAmount * 100m),
