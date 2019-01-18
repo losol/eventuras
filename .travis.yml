@@ -4,5 +4,6 @@ mono: none
 dotnet: 2.2
 
 script:
+- dotnet restore
 - dotnet test ./tests/EventManagement.IntegrationTests/EventManagement.IntegrationTests.csproj
 - dotnet test ./tests/EventManagement.UnitTests/EventManagement.UnitTests.csproj
