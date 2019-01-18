@@ -42,8 +42,8 @@ namespace losol.EventManagement.Domain
         [Display(Name = "Skal ha kursdiplom?")]
         public bool Diploma { get; set; } = true;
 
-        // The participant
-        public string ParticipantName { get; set; }
+        // The participant - TODO: Consider removing, at least the name
+        public string ParticipantName { get; set; } 
         public string ParticipantJobTitle { get; set; }
         public string ParticipantEmployer { get; set; }
         public string ParticipantCity { get; set; }

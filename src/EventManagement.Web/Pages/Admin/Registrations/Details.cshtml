@@ -34,8 +34,9 @@
                 <div class="card-body">
                     <h4>Deltaker</h4>
                     <small>Navn</small>
-                    <div contenteditable="true" class="participantinfo" id="participant-name">
-                        @Html.DisplayFor(model => model.Registration.ParticipantName)
+                    <div class="participantinfo" id="participant-name">
+                        @Html.DisplayFor(model => model.Registration.User.Name) <br/>
+                        <a asp-page="/Admin/Users/Edit" asp-route-id="@Model.Registration.User.Id" class="small">Endre brukerinformasjon</a>
                     </div>
                     <br />
 
