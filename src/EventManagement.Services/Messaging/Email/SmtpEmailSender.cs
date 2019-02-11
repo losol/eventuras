@@ -49,14 +49,14 @@ namespace losol.EventManagement.Services.Messaging
                     emailClient.Authenticate(options.Username, options.Password);
                     emailClient.Send(mailmessage);
                     emailClient.Disconnect(true);
-                    emailresult = "OK."
                 } catch (Exception ex) {
                     emailresult = ex.Message;
                 }
 	
             }
 
-            
+            return Task.FromResult(0);
+
         }
     }
 
