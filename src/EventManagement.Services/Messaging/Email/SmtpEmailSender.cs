@@ -3,6 +3,8 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
+using MailKit.Security;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
@@ -12,9 +14,11 @@ namespace losol.EventManagement.Services.Messaging
     public class SmtpEmailSender : IEmailSender
     {
         private readonly SmtpOptions options;
-        public SmtpEmailSender(IOptions<SmtpOptions> options)
+        private readonly ILogger _logger;
+        public SmtpEmailSender(IOptions<SmtpOptions> options, ILogger<SmtpEmailSender> logger)
         {
             this.options = options.Value;
+            _logger = logger;
         }
 
         public Task SendEmailAsync(string email, string subject, string message) =>
@@ -42,14 +46,16 @@ namespace losol.EventManagement.Services.Messaging
             using (var emailClient = new SmtpClient()) {
 
                 try {
-                    emailClient.Connect(options.Host, options.Port, true);
-            
-                    //Remove any OAuth functionality as we won't be using it. 
-                    emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
+                    _logger.LogInformation($"*** START SEND EMAIL BY SMTP - Smtp host: {options.Host} - Port: {options.Port}***");
+
+                    emailClient.Connect(options.Host, options.Port, SecureSocketOptions.StartTls);
                     emailClient.Authenticate(options.Username, options.Password);
                     emailClient.Send(mailmessage);
                     emailClient.Disconnect(true);
+
+                    _logger.LogInformation("*** END SEND EMAIL ***");
                 } catch (Exception ex) {
+                    _logger.LogError(ex.Message);
                     emailresult = ex.Message;
                 }
 	
