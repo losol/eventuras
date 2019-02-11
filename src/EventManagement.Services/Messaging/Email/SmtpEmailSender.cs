@@ -41,6 +41,8 @@ namespace losol.EventManagement.Services.Messaging
                 builder.Attachments.Add(attachment.Filename, new MemoryStream(attachment.Bytes));
             }
 
+            mailmessage.Body = builder.ToMessageBody();
+
             var emailresult = "";
 
             using (var emailClient = new SmtpClient()) {
