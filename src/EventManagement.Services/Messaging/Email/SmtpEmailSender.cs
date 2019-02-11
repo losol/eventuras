@@ -1,10 +1,11 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Net.Mail;
-using System.Net.Mime;
 using System.Threading.Tasks;
+using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
+using MimeKit;
+using MimeKit.Text;
 
 namespace losol.EventManagement.Services.Messaging
 {
@@ -21,26 +22,41 @@ namespace losol.EventManagement.Services.Messaging
 
         public Task SendEmailAsync(string email, string subject, string message, Attachment attachment)
         {
-            MailMessage mailMsg = new MailMessage();
+            MimeMessage mailmessage = new MimeMessage();
 
-            mailMsg.To.Add(new MailAddress(email));
-            mailMsg.From = new MailAddress(options.From);
+            mailmessage.To.Add(new MailboxAddress(email));
+            mailmessage.From.Add(new MailboxAddress(options.From));
 
-            mailMsg.Subject = subject;
-            mailMsg.Body = message;
-            string html = message;
-            mailMsg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(html, null, MediaTypeNames.Text.Html));
+            mailmessage.Subject = subject;
 
-            if(attachment != null) 
-            {
-                mailMsg.Attachments.Add(new System.Net.Mail.Attachment(new MemoryStream(attachment.Bytes), attachment.Filename));
+            var builder = new BodyBuilder ();
+
+            builder.HtmlBody = message;
+
+            if (attachment != null) {
+                builder.Attachments.Add(attachment.Filename, new MemoryStream(attachment.Bytes));
             }
 
-            SmtpClient smtpClient = new SmtpClient(options.Host, options.Port);
-            System.Net.NetworkCredential credentials = new System.Net.NetworkCredential(options.Username, options.Password);
-            smtpClient.Credentials = credentials;
+            var emailresult = "";
 
-            return smtpClient.SendMailAsync(mailMsg);
+            using (var emailClient = new SmtpClient()) {
+
+                try {
+                    emailClient.Connect(options.Host, options.Port, true);
+            
+                    //Remove any OAuth functionality as we won't be using it. 
+                    emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
+                    emailClient.Authenticate(options.Username, options.Password);
+                    emailClient.Send(mailmessage);
+                    emailClient.Disconnect(true);
+                    emailresult = "OK."
+                } catch (Exception ex) {
+                    emailresult = ex.Message;
+                }
+	
+            }
+
+            
         }
     }
 
