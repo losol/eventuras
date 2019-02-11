@@ -54,6 +54,12 @@ dotnet user-secrets set SendGrid:User asdf1234
 dotnet user-secrets set SendGrid:Key asdf1234
 ```
 
+Or use smtp server...
+```
+dotnet user-secrets set Smtp:Username hello@its.me
+dotnet user-secrets set Smtp:Password asdf1234
+```
+
 ### Run your app!
 
 ```
