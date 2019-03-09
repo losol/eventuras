@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Services;
@@ -35,6 +36,16 @@ namespace losol.EventManagement.Pages.Admin.Events
         public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid) return BadRequest();
+
+            // Set the order of the products correctly
+            if (Vm.Products.Any())
+            {
+                for (int i = 0; i < Vm.Products.Count; i++)
+                {
+                    Vm.Products[i].DisplayOrder = i;
+                }
+            }
+
             await _eventsService.UpdateEventProductsAsync(Vm.EventInfoId, Vm.Products);
             return RedirectToPage();
         }
