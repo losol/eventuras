@@ -1,6 +1,10 @@
 @page "{id:int}"
 @model EventProductsModel
 
+@{
+    var orderedProducts = Model.Vm.Products.OrderBy(p => p.DisplayOrder).ToList();
+}
+
 <div class="container">
     <h1>Products for @Model.EventInfo.Title (#@Model.EventInfo.EventInfoId)</h1><hr />
     <div class="row">
@@ -15,9 +19,9 @@
                     Add Product
                 </button>
                 <div id="product-wrapper" class="form-group">
-                    @for (int i = 0; i < Model.Vm.Products.Count; i++)
+                    @for (int i = 0; i < orderedProducts.Count; i++)
                     {
-                        var p = Model.Vm.Products[i];
+                        var p = orderedProducts[i];
                         <div class="product-card">
                             <div class="card">
                                 <div class="card-body">
@@ -48,7 +52,7 @@
                                     {
                                         var v = p.ProductVariants[j];
                                         <div class="card variant-card">
-                                            <input class="variant-id" value="@Model.Vm.Products[i].ProductVariants[j].ProductVariantId" type="hidden" />
+                                            <input class="variant-id" value="@p.ProductVariants[j].ProductVariantId" type="hidden" />
                                             <div class="row">
                                                 <div class="col">
                                                     <h5 class="card-title variant-name">@v.Name</h5>
@@ -57,8 +61,8 @@
                                                 </div>
                                                 <div class="col-2">
                                                     <small>
-                                                        <a href="#/" class="edit-variant-link">Edit</a> |
-                                                        <a href="#/" onclick="$(this).closest('.variant-card').remove()" class="text-muted delete-variant-link">Delete</a>
+                                                        <a href="#" class="edit-variant-link">Edit</a> |
+                                                        <a href="#" onclick="$(this).closest('.variant-card').remove()" class="text-muted delete-variant-link">Delete</a>
                                                     </small>
                                                 </div>
                                             </div>
@@ -357,7 +361,7 @@
             mainForm.onsubmit = function() {
                 // Add hidden-inputs to the DOM here.
                 $('.product-card').each(function(i, el){
-                    console.log('['+i+']:' + $(this).find('.product-id').first().val() || 0)
+                    // console.log('['+i+']:' + $(this).find('.product-id').first().val() || 0)
                     addInputToMainForm("Vm.Products[" + i + "].ProductId", $(this).find('.product-id').first().val() || 0);
                     addInputToMainForm("Vm.Products[" + i + "].Name", $(this).find('.product-name').first().text());
                     addInputToMainForm("Vm.Products[" + i + "].Description", $(this).find('.product-description').first().text());
@@ -365,7 +369,7 @@
                     addInputToMainForm("Vm.Products[" + i + "].MinimumQuantity", $(this).find('.product-m-count').first().val());
 
                     $(el).find('.variant-card').each(function(j, vel){
-                        console.log('['+i+']['+j+']:' + $(this).find('.variant-id').first().val() || 0)
+                        // console.log('['+i+']['+j+']:' + $(this).find('.variant-id').first().val() || 0)
                         addInputToMainForm("Vm.Products[" + i + "].ProductVariants[" + j + "].ProductVariantId", $(this).find('.variant-id').first().val() || 0);
                         addInputToMainForm("Vm.Products[" + i + "].ProductVariants[" + j + "].Name", $(this).find('.variant-name').first().text());
                         addInputToMainForm("Vm.Products[" + i + "].ProductVariants[" + j + "].Description", $(this).find('.variant-description').first().text());
