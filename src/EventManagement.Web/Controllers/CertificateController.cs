@@ -56,13 +56,19 @@ namespace EventManagement.Web.Controllers
 
             vm.IssuedInCity = eventInfo.City;
 
-            if (eventInfo.OrganizerUser != null && !string.IsNullOrWhiteSpace(eventInfo.OrganizerUser.SignatureImageBase64)) {
+            if (eventInfo.OrganizerUser != null) {
                 vm.IssuerPersonName = eventInfo.OrganizerUser.Name;
+            }
+
+            if (eventInfo.OrganizerUser != null && !string.IsNullOrWhiteSpace(eventInfo.OrganizerUser.SignatureImageBase64)) {
                 vm.IssuerPersonSignatureImageBase64 = eventInfo.OrganizerUser.SignatureImageBase64;
             }
 
-            if (eventInfo.Organization != null && !string.IsNullOrWhiteSpace(eventInfo.Organization.LogoBase64)) {
+            if (eventInfo.Organization != null) {
                 vm.IssuerOrganizationName = eventInfo.Organization.Name;
+             }
+
+            if (eventInfo.Organization != null && !string.IsNullOrWhiteSpace(eventInfo.Organization.LogoBase64)) {
                 vm.IssuerOrganizationLogoBase64 = eventInfo.Organization.LogoBase64;   
              }
             
