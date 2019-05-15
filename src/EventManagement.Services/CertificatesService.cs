@@ -66,7 +66,7 @@ namespace losol.EventManagement.Services {
 				Description = registration.EventInfo.CertificateDescription,
 				Comment = registration.CertificateComment,
 
-				RecipientName = registration.ParticipantName,
+				RecipientName = registration.User.Name,
 				RecipientEmail = registration.User.Email,
 				RecipientUserId = registration.User.Id,
 			};
@@ -158,7 +158,7 @@ namespace losol.EventManagement.Services {
 				certificate.Title = registration.EventInfo.Title;
 				certificate.Description = registration.EventInfo.CertificateDescription;
 				certificate.Comment = registration.CertificateComment;
-				certificate.RecipientName = registration.ParticipantName;
+				certificate.RecipientName = registration.User.Name;
 				certificate.RecipientEmail = registration.User.Email;
 				certificate.RecipientUserId = registration.User.Id;
 

@@ -65,7 +65,7 @@
         <div id="event-menu" class="py-3">
 
                 <!-- ADD PARTICIPANT -->
-                <a asp-page="AddRegistration" class="btn btn-success link-decoration-none">Ny deltaker</a>
+                <a asp-page="AddRegistration" asp-route-id="@Model.EventInfo.EventInfoId" class="btn btn-success link-decoration-none">Ny deltaker</a>
 
                 <!-- EDIT EVENT -->
                 <a asp-page="Edit" asp-route-id="@Model.EventInfo.EventInfoId" class="btn btn-warning link-decoration-none">Rediger</a>
@@ -177,6 +177,7 @@
                         <th data-field="email" data-sortable="true" data-visible="false">Epost</th>
                         <th data-field="phone">Telefon</th>
                         <th data-field="jobTitle" data-visible="false">Stilling</th>
+                        <th data-field="status">Status</th>
                         <th data-field="employer" data-visible="false">Arbeidsplass</th>
                         <th data-field="city" data-visible="false">Sted</th>
                         <th data-field="notes" data-visible="false">Kommentar</th>

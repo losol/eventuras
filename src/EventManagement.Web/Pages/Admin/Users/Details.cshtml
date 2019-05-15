@@ -11,8 +11,8 @@
             <i class="material-icons">phone</i> @Model.UserProfile.Phone <span class="mr-5"></span>
             <i class="material-icons">email</i> @Model.UserProfile.Email
         </p>
-        <a asp-page="edit" route-id="@Model.UserProfile.UserId" class="btn btn-warning link-decoration-none">Endre bruker</a>
-        <a asp-page="delete" route-id="@Model.UserProfile.UserId" class="btn btn-danger link-decoration-none">Slett bruker</a>
+        <a asp-page="Edit" asp-route-id="@Model.UserProfile.UserId" class="btn btn-warning link-decoration-none">Endre bruker</a>
+        <a asp-page="Delete" asp-route-id="@Model.UserProfile.UserId" class="btn btn-danger link-decoration-none">Slett bruker</a>
     </div>
 </div>
 <div class="container min-height-50 py-5">

@@ -1,19 +1,24 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Net.Mail;
-using System.Net.Mime;
 using System.Threading.Tasks;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MimeKit;
+using MimeKit.Text;
 
 namespace losol.EventManagement.Services.Messaging
 {
     public class SmtpEmailSender : IEmailSender
     {
         private readonly SmtpOptions options;
-        public SmtpEmailSender(IOptions<SmtpOptions> options)
+        private readonly ILogger _logger;
+        public SmtpEmailSender(IOptions<SmtpOptions> options, ILogger<SmtpEmailSender> logger)
         {
             this.options = options.Value;
+            _logger = logger;
         }
 
         public Task SendEmailAsync(string email, string subject, string message) =>
@@ -21,26 +26,45 @@ namespace losol.EventManagement.Services.Messaging
 
         public Task SendEmailAsync(string email, string subject, string message, Attachment attachment)
         {
-            MailMessage mailMsg = new MailMessage();
+            MimeMessage mailmessage = new MimeMessage();
 
-            mailMsg.To.Add(new MailAddress(email));
-            mailMsg.From = new MailAddress(options.From);
+            mailmessage.To.Add(new MailboxAddress(email));
+            mailmessage.From.Add(new MailboxAddress(options.From));
 
-            mailMsg.Subject = subject;
-            mailMsg.Body = message;
-            string html = message;
-            mailMsg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(html, null, MediaTypeNames.Text.Html));
+            mailmessage.Subject = subject;
 
-            if(attachment != null) 
-            {
-                mailMsg.Attachments.Add(new System.Net.Mail.Attachment(new MemoryStream(attachment.Bytes), attachment.Filename));
+            var builder = new BodyBuilder ();
+
+            builder.HtmlBody = message;
+
+            if (attachment != null) {
+                builder.Attachments.Add(attachment.Filename, new MemoryStream(attachment.Bytes));
             }
 
-            SmtpClient smtpClient = new SmtpClient(options.Host, options.Port);
-            System.Net.NetworkCredential credentials = new System.Net.NetworkCredential(options.Username, options.Password);
-            smtpClient.Credentials = credentials;
+            mailmessage.Body = builder.ToMessageBody();
 
-            return smtpClient.SendMailAsync(mailMsg);
+            var emailresult = "";
+
+            using (var emailClient = new SmtpClient()) {
+
+                try {
+                    _logger.LogInformation($"*** START SEND EMAIL BY SMTP - Smtp host: {options.Host} - Port: {options.Port}***");
+
+                    emailClient.Connect(options.Host, options.Port, SecureSocketOptions.StartTls);
+                    emailClient.Authenticate(options.Username, options.Password);
+                    emailClient.Send(mailmessage);
+                    emailClient.Disconnect(true);
+
+                    _logger.LogInformation("*** END SEND EMAIL ***");
+                } catch (Exception ex) {
+                    _logger.LogError(ex.Message);
+                    emailresult = ex.Message;
+                }
+	
+            }
+
+            return Task.FromResult(0);
+
         }
     }
 

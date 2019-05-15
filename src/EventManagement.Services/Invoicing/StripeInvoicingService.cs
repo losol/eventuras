@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using losol.EventManagement.Domain;
 using Microsoft.Extensions.Options;
 using Stripe;
 
@@ -9,7 +8,7 @@ namespace losol.EventManagement.Services.Invoicing
 {
     public class StripeInvoicingService : IStripeInvoiceService
     {
-        public async Task<bool> CreateInvoiceAsync(Order order)
+        public async Task<bool> CreateInvoiceAsync(Domain.Order order)
         {
             var customer = await getOrCreateCustomer(order);
             var service = new StripeInvoiceItemService();
@@ -39,7 +38,7 @@ namespace losol.EventManagement.Services.Invoicing
             return true;
         }
 
-        private async Task<StripeCustomer> getOrCreateCustomer(Order order)
+        private async Task<StripeCustomer> getOrCreateCustomer(Domain.Order order)
         {
 
             var service = new StripeCustomerService();

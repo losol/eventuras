@@ -129,7 +129,7 @@
                 <a href="@Model.EventInfo.ExternalRegistrationsUrl" class="btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>
             }
             else {
-                <a asp-page="./Register/Index" asp-route-id="@Model.EventInfo.EventInfoId" class="btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>  
+                <a href="/events/@Model.EventInfo.EventInfoId/reg/register" class="btn  my-3 btn-block btn-lg btn-success link-decoration-none">Meld meg p&aring;</a>  
             }
             </p>
             </div>
