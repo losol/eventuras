@@ -1,7 +1,7 @@
 #
 # Stage 0
 # Build the project
-FROM microsoft/dotnet:sdk AS build-env
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build
 
 # Install node
 ENV NODE_VERSION 8.11.4
@@ -48,7 +48,7 @@ RUN cp -r /app/packages/node_modules .
 #
 # Stage 1
 # Copy the built files over
-FROM microsoft/dotnet:2.2.5-aspnetcore-runtime
+FROM mcr.microsoft.com/dotnet/core/aspnet:2.2 AS runtime
 
 # Install node (required for NodeServices)
 ENV NODE_VERSION 8.11.4
@@ -64,6 +64,6 @@ RUN apt-get -qq update && apt-get --assume-yes install libfontconfig
 
 # Copy files over from the build-env stage
 WORKDIR /app
-COPY --from=build-env /app/out .
+COPY --from=build /app/out .
 
 ENTRYPOINT ["dotnet", "losol.EventManagement.Web.dll"]
