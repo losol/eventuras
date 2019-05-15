@@ -1,7 +1,7 @@
 #
 # Stage 0
 # Build the project
-FROM microsoft/dotnet:2.2.103-sdk AS build-env
+FROM microsoft/dotnet:2.2.107-sdk AS build-env
 
 # Install node
 ENV NODE_VERSION 8.11.4
