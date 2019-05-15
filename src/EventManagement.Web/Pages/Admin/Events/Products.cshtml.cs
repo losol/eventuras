@@ -47,7 +47,7 @@ namespace losol.EventManagement.Pages.Admin.Events
             }
 
             await _eventsService.UpdateEventProductsAsync(Vm.EventInfoId, Vm.Products);
-            return RedirectToPage();
+            return RedirectToPage("./Details", new {id=Vm.EventInfoId});
         }
     }
 

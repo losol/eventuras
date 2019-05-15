@@ -51,5 +51,15 @@ namespace losol.EventManagement.Pages.Admin.Events
 
             return RedirectToPage("./Index");
         }
+
+        public async Task<IActionResult> OnPostSaveAndEditProductsAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            return RedirectToPage("./Products", new {id=EventInfo.EventInfoId});
+        }
     }
 }

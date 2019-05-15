@@ -176,7 +176,8 @@
                     <span asp-validation-for="EventInfo.FeaturedImageCaption" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Lagre" class="btn btn-default" />
+                    <input type="submit" value="Lagre" class="btn btn-success" />
+                    <input type="submit" asp-page-handler="SaveAndEditProducts" value="Lagre og endre produkter" class="btn btn-info" />
                 </div>
             </form>
         </div>
