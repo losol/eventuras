@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css?family=Material+Icons|Lato:300|Open+Sans:300,400,600');
 
 // Import bootstrap variables first
-@import "settings/bootstrap_variables"; 
+@import "settings/bootstrap_variables";
 
 // Then import boostrap
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
@@ -19,3 +19,11 @@ $fa-font-path: "../fonts";
 
 // Typeahead JS bootstrap4 css
 @import "./includes/_typeahead";
+
+
+.product-handle {
+  font-size: 1rem;
+  vertical-align: middle;
+  margin-top: -.5em;
+  cursor: pointer;
+}

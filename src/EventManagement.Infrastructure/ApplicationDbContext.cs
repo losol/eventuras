@@ -21,21 +21,18 @@ namespace losol.EventManagement.Infrastructure {
         public DbSet<losol.EventManagement.Domain.Organization> Organizations { get; set; }
         public DbSet<losol.EventManagement.Domain.Certificate> Certificates { get; set; }
         public DbSet<losol.EventManagement.Domain.MessageLog> MessageLogs { get; set; }
-        
-       
+
+
         protected override void OnModelCreating (ModelBuilder builder) {
             base.OnModelCreating (builder);
         }
 
-        public void DetachAllEntities () {
-            var changedEntriesCopy = this.ChangeTracker.Entries ()
-                .Where (e => e.State == EntityState.Added ||
-                    e.State == EntityState.Modified ||
-                    e.State == EntityState.Unchanged ||
-                    e.State == EntityState.Deleted)
-                .ToList ();
+        public void DetachAllEntities ()
+        {
+            var changedEntriesCopy = ChangeTracker.Entries()
+                .Where(e => e.State != EntityState.Detached);
             foreach (var entity in changedEntriesCopy) {
-                this.Entry (entity.Entity).State = EntityState.Detached;
+                Entry(entity.Entity).State = EntityState.Detached;
             }
         }
     }

@@ -1,13 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace losol.EventManagement.Domain
 {
-
-
 	public class Product
 	{
 		public int ProductId { get; set; }
@@ -34,9 +29,13 @@ namespace losol.EventManagement.Domain
 		public int Inventory { get; set; } = 0;
 		public bool Published {get;set;} = true;
 
-		// Navigational properties
-		// "Child" of an eventinfo.
-		public int EventInfoId { get; set; }
+        // Order used to display the products
+        // Products with lower values should be shown first.
+        public int DisplayOrder { get; set; } = int.MaxValue;
+
+        // Navigational properties
+        // "Child" of an eventinfo.
+        public int EventInfoId { get; set; }
 		public EventInfo Eventinfo { get; set; }
 
 		// Has a list of productvariants.

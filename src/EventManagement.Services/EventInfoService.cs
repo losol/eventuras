@@ -20,11 +20,11 @@ namespace losol.EventManagement.Services
 			_productsService = productsService;
 		}
 
-		public async Task<List<EventInfo>> GetFeaturedEventsAsync() 
+		public async Task<List<EventInfo>> GetFeaturedEventsAsync()
 		{
 			return await _db.EventInfos
-				.Where( i => 
-					i.Status != EventInfoStatus.Cancelled && 
+				.Where( i =>
+					i.Status != EventInfoStatus.Cancelled &&
 					i.Status != EventInfoStatus.Draft &&
 					i.Featured &&
 					i.DateStart >= DateTime.Now
@@ -33,34 +33,34 @@ namespace losol.EventManagement.Services
 				.ToListAsync();
 		}
 
-		public async Task<List<EventInfo>> GetUnpublishedEventsAsync() 
+		public async Task<List<EventInfo>> GetUnpublishedEventsAsync()
 		{
 			return await _db.EventInfos
-				.Where( i => 
+				.Where( i =>
 					i.Status == EventInfoStatus.Draft ||
 					i.Status == EventInfoStatus.Cancelled )
 				.OrderBy(s => s.DateStart)
 				.ToListAsync();
 		}
 
-		public async Task<List<EventInfo>> GetOnDemandEventsAsync() 
+		public async Task<List<EventInfo>> GetOnDemandEventsAsync()
 		{
 			return await _db.EventInfos
-				.Where(i => 
-					i.Status != EventInfoStatus.Cancelled && 
+				.Where(i =>
+					i.Status != EventInfoStatus.Cancelled &&
 					i.Status != EventInfoStatus.Draft &&
-					i.Type == EventInfoType.OnlineCourse 
+					i.Type == EventInfoType.OnlineCourse
 					)
 				.OrderBy(s => s.Title)
 				.ToListAsync();
 		}
 
-		public async Task<List<EventInfo>> GetOngoingEventsAsync() 
+		public async Task<List<EventInfo>> GetOngoingEventsAsync()
 		{
 			return await _db.EventInfos
-				.Where(i => 
-					i.Status != EventInfoStatus.Cancelled && 
-					i.Status != EventInfoStatus.Draft && 
+				.Where(i =>
+					i.Status != EventInfoStatus.Cancelled &&
+					i.Status != EventInfoStatus.Draft &&
 
 					((i.DateStart.HasValue &&
 					i.DateStart.Value.Date == DateTime.Now.Date) ||
@@ -76,8 +76,8 @@ namespace losol.EventManagement.Services
 		{
 			return await _db.EventInfos
 				.Where(i =>
-					i.Status != EventInfoStatus.Cancelled && 
-					i.Status != EventInfoStatus.Draft && 
+					i.Status != EventInfoStatus.Cancelled &&
+					i.Status != EventInfoStatus.Draft &&
 					i.DateStart >= DateTime.Now)
 				.OrderBy(a => a.DateStart)
 				.ToListAsync();
@@ -86,8 +86,8 @@ namespace losol.EventManagement.Services
 		public async Task<List<EventInfo>> GetPastEventsAsync()
 		{
 			return await _db.EventInfos
-				.Where(i => 
-					i.Status != EventInfoStatus.Cancelled && 
+				.Where(i =>
+					i.Status != EventInfoStatus.Cancelled &&
 					i.Status != EventInfoStatus.Draft &&
 					((i.DateStart <= DateTime.Now) ||
 					(!i.DateStart.HasValue)))
@@ -125,6 +125,7 @@ namespace losol.EventManagement.Services
 			return await _db.EventInfos
 				            .Include(ei => ei.Products)
 				            	.ThenInclude(products => products.ProductVariants)
+                            .AsNoTracking()
 							.SingleOrDefaultAsync(m => m.EventInfoId == id);
 		}
 
@@ -138,7 +139,7 @@ namespace losol.EventManagement.Services
 		{
 			bool shouldDeleteProducts = info.Products != null;
 			bool result = true;
-			
+
 			if(shouldDeleteProducts)
 			{
 				var originalProducts = await _productsService.GetProductsForEventAsync(info.EventInfoId);
@@ -168,5 +169,52 @@ namespace losol.EventManagement.Services
 
 			return result;
 		}
-	}
+
+        public async Task<bool> UpdateEventProductsAsync(int eventId, List<Product> products)
+        {
+            if (products is null) throw new ArgumentNullException(paramName: nameof(products));
+            bool result = true;
+
+            var originalProducts = _db.Products.Where(p => p.EventInfoId == eventId)
+                .Include(p => p.ProductVariants).AsNoTracking();
+            var originalVariants = originalProducts.SelectMany(p => p.ProductVariants).AsNoTracking();
+
+            // Delete the variants that don't exist in the provided object
+            var providedVariants = products
+                                       .Where(p => p.ProductVariants != null)
+                                       .SelectMany(p => p.ProductVariants);
+            var variantsToDelete = await originalVariants
+                .Where(originalVariant => providedVariants.All(variant => variant.ProductVariantId != originalVariant.ProductVariantId))
+                .AsNoTracking().ToListAsync();
+            if (variantsToDelete.Any())
+            {
+                _db.ProductVariants.AttachRange(variantsToDelete);
+                _db.ProductVariants.RemoveRange(variantsToDelete);
+                result &= await _db.SaveChangesAsync() == variantsToDelete.Count();
+            }
+
+            // Delete the products that don't exist in the provided object
+            var productsToDelete = await originalProducts.Where(op => products.All(p => p.ProductId != op.ProductId)).AsNoTracking().ToListAsync();
+            if (productsToDelete.Any())
+            {
+                _db.Products.AttachRange(productsToDelete);
+                _db.Products.RemoveRange(productsToDelete);
+                result &= await _db.SaveChangesAsync() == productsToDelete.Count();
+            }
+
+            // Save the updates
+            var info = await _db.EventInfos
+                .Where(e => e.EventInfoId == eventId)
+                .Include(ei => ei.Products)
+                .ThenInclude(p => p.ProductVariants)
+                .AsNoTracking()
+                .SingleAsync();
+            info.Products = products;
+            _db.DetachAllEntities();
+            _db.EventInfos.Update(info);
+            result &= await _db.SaveChangesAsync() > 0;
+
+            return result;
+        }
+    }
 }

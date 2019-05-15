@@ -56,7 +56,7 @@ gulp.task("copy:lib", () => {
 });
 
 
-// gulp make:css - Make both minified and unminified css from scss. 
+// gulp make:css - Make both minified and unminified css from scss.
 gulp.task('make:css', function () {
     var source = gulp.src('./sass/*.scss')
         .pipe(plumber())
@@ -71,42 +71,32 @@ gulp.task('make:css', function () {
         .pipe(cssnano())
         .pipe(rename({ suffix: '.min' }))
         .pipe(gulp.dest(paths.cssDest));
-    
+
     gulp.src([paths.libSrc + 'bootstrap-table/dist/bootstrap-table.min.css'])
         .pipe(concat('bootstrap-table.min.css'))
         .pipe(gulp.dest(paths.cssDest));
 
     return merge(pipe1, pipe2);
-
-    
 });
 
 // gulp make:js - Uglifies and concat all JS files into one
 gulp.task('make:js', function () {
 
-    // Minified files for production
+    // Dependent javascript files
     gulp.src([
-        paths.libSrc + 'jquery/dist/jquery.min.js',
-        paths.libSrc + 'popper.js/dist/umd/popper.min.js',
-        paths.libSrc + 'bootstrap/dist/js/bootstrap.min.js',
-        paths.libSrc + 'bootstrap-3-typeahead/bootstrap3-typeahead.min.js',
-        paths.libSrc + 'toastr/toastr.js',
-        './js/admin.js'
+      paths.libSrc + 'jquery/dist/jquery.js',
+      paths.libSrc + 'popper.js/dist/umd/popper.js',
+      paths.libSrc + 'bootstrap/dist/js/bootstrap.js',
+      paths.libSrc + 'bootstrap-3-typeahead/bootstrap3-typeahead.js',
+      paths.libSrc + 'toastr/toastr.js',
+      './js/admin.js',
+      './js/sortable.js'
     ])
-        .pipe(concat('site.min.js'))
-        .pipe(gulp.dest(paths.jsDest));
-
-    // Full files for development
-    gulp.src([
-        paths.libSrc + 'jquery/dist/jquery.js',
-        paths.libSrc + 'popper.js/dist/umd/popper.js',
-        paths.libSrc + 'bootstrap/dist/js/bootstrap.js',
-        paths.libSrc + 'bootstrap-3-typeahead/bootstrap3-typeahead.js',
-        paths.libSrc + 'toastr/toastr.js',
-        './js/admin.js'
-    ])
-        .pipe(concat('site.js'))
-        .pipe(gulp.dest(paths.jsDest));
+      .pipe(concat('site.js')) // Concatenate them into a single site.js file
+      .pipe(gulp.dest(paths.jsDest)) // save it for dev,
+      .pipe(uglify()) // minify it,
+      .pipe(concat('site.min.js'))
+      .pipe(gulp.dest(paths.jsDest)); // and save it again for prod
 
     // Bootstrap table Javascript
     gulp.src([
@@ -117,9 +107,9 @@ gulp.task('make:js', function () {
         paths.libSrc + 'tableexport.jquery.plugin/tableExport.js',
         paths.libSrc + 'bootstrap-table/src/extensions/export/bootstrap-table-export.js',
         paths.libSrc + 'bootstrap-table/dist/locale/bootstrap-table-nb-NO.min.js'
-        ])
-        .pipe(concat('bootstrap-table.min.js'))
-        .pipe(gulp.dest(paths.jsDest));
+      ])
+      .pipe(concat('bootstrap-table.min.js'))
+      .pipe(gulp.dest(paths.jsDest));
 });
 
 // The default gulp task
