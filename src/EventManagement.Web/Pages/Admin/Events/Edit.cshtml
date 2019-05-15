@@ -163,8 +163,6 @@
                     <span asp-validation-for="EventInfo.ExternalRegistrationsUrl" class="text-danger"></span>
                 </div>
 
-
-
                 <hr>
                 <h2>Bilde</h2>
                 <div class="form-group">
@@ -185,75 +183,6 @@
     </div>
 </div>
 
-<!-- Add product modal -->
-<div class="modal fade" id="add-product-modal" tabindex="-1" role="dialog" aria-labelledby="add-product-modal-title" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-        <h5 class="modal-title" id="add-product-modal-title">Add Product</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        </div>
-        <div class="modal-body">
-        <div class="form-group">
-            <label class="control-label">Product Name</label>
-            <input id="input-product-name" class="form-control" required />
-            @*<span asp-validation-for="EventInfo.FeaturedImageUrl" class="text-danger"></span>*@
-        </div>
-        <div class="form-group">
-            <label class="control-label">Product Description</label>
-            <input id="input-product-description" class="form-control" required />
-        </div>
-        <div class="form-group">
-            <label class="control-label">Mandatory Number</label>
-            <input id="input-product-m-number" type="number" value="0" class="form-control" required />
-        </div>
-        <div class="form-group">
-            <label class="control-label">Price</label>
-            <input id="input-product-price" type="number" class="form-control" required />
-        </div>
-        </div>
-        <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button id="btn-add-product" type="button" class="btn btn-primary">Save Product</button>
-        </div>
-    </div>
-    </div>
-</div>
-
-<!-- Add variant modal -->
-<div class="modal fade" id="add-variant-modal" tabindex="-1" role="dialog" aria-labelledby="add-variant-modal-title" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-        <h5 class="modal-title" id="add-variant-modal-title">Add Product Variant</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        </div>
-        <div class="modal-body">
-        <div class="form-group">
-            <label class="control-label">Name</label>
-            <input id="input-variant-name" class="form-control" required />
-            @*<span asp-validation-for="EventInfo.FeaturedImageUrl" class="text-danger"></span>*@
-        </div>
-        <div class="form-group">
-            <label class="control-label">Description</label>
-            <input id="input-variant-description" class="form-control" required />
-        </div>
-        <div class="form-group">
-            <label class="control-label">Price</label>
-            <input id="input-variant-price" type="number" class="form-control" required />
-        </div>
-        </div>
-        <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button id="btn-add-variant" type="button" class="btn btn-primary">Save Product</button>
-        </div>
-    </div>
-    </div>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");
