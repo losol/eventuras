@@ -172,7 +172,6 @@ namespace losol.EventManagement.Services
 
         public async Task<bool> UpdateEventProductsAsync(int eventId, List<Product> products)
         {
-            if (products is null) throw new ArgumentNullException(paramName: nameof(products));
             bool result = true;
 
             var originalProducts = _db.Products.Where(p => p.EventInfoId == eventId)
