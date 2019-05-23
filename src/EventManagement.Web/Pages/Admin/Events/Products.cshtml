@@ -4,9 +4,17 @@
 @{
     var orderedProducts = Model.Vm.Products.OrderBy(p => p.DisplayOrder).ToList();
 }
-
-<div class="container">
-    <h1>Products for @Model.EventInfo.Title (#@Model.EventInfo.EventInfoId)</h1><hr />
+<div class="jumbotron">
+    <div class="container">
+        <h1>@Model.EventInfo.Title</h1>
+        <p class="lead">Rediger produkter for arrangementet.</p>
+        <button type="button" class="btn btn-primary py-3" data-toggle="modal" data-target="#add-product-modal">
+            Nytt produkt
+        </button>
+    </div>
+</div>
+<div class="container pt-3">
+    
     <div class="row">
         <div class="col-12">
 
@@ -14,10 +22,6 @@
 
                 <input asp-for="Vm.EventInfoId" type="hidden" />
 
-                <h2>Products</h2>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-product-modal">
-                    Add Product
-                </button>
                 <div id="product-wrapper" class="form-group">
                     @for (int i = 0; i < orderedProducts.Count; i++)
                     {
