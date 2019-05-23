@@ -38,7 +38,7 @@ namespace losol.EventManagement.Pages.Admin.Events
             if (!ModelState.IsValid) return BadRequest();
 
             // Set the order of the products correctly
-            if (Vm.Products.Any())
+            if (Vm.Products != null)
             {
                 for (int i = 0; i < Vm.Products.Count; i++)
                 {
@@ -56,7 +56,6 @@ namespace losol.EventManagement.Pages.Admin.Events
         [Required]
         public int EventInfoId { get; set; }
 
-        [Required]
         public List<Product> Products { get; set; }
     }
 }
