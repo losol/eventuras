@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +8,7 @@ using losol.EventManagement.Services.DbInitializers;
 using losol.EventManagement.Services.Messaging.Sms;
 using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.Config;
+using Microsoft.Extensions.Hosting;
 
 namespace losol.EventManagement.IntegrationTests
 {
@@ -15,14 +16,14 @@ namespace losol.EventManagement.IntegrationTests
 	{
 		public TestStartup(
 			IConfiguration configuration,
-			IHostingEnvironment env) : base(configuration, env)
+			IHostEnvironment env) : base(configuration, env)
 		{
 
 		}
 
 		public override void ConfigureServices(IServiceCollection services)
 		{
-            AppSettings = new AppSettings
+            this.AppSettings = new AppSettings
             {
                 EmailProvider = EmailProvider.Mock,
                 SmsProvider = SmsProvider.Mock,
@@ -34,7 +35,7 @@ namespace losol.EventManagement.IntegrationTests
 			services.AddScoped<IDbInitializer, TestDbInitializer>();
 		}
 
-		public override void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+		public override void Configure(IApplicationBuilder app, IHostEnvironment env, ILoggerFactory loggerFactory)
 		{
 			base.Configure(app, env, loggerFactory);
 

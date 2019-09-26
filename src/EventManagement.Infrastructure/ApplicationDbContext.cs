@@ -1,12 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
-namespace losol.EventManagement.Infrastructure {
+namespace losol.EventManagement.Infrastructure
+{
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser> {
         public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) : base (options) { }
 
@@ -29,10 +27,10 @@ namespace losol.EventManagement.Infrastructure {
 
         public void DetachAllEntities ()
         {
-            var changedEntriesCopy = ChangeTracker.Entries()
+            var changedEntriesCopy = this.ChangeTracker.Entries()
                 .Where(e => e.State != EntityState.Detached);
             foreach (var entity in changedEntriesCopy) {
-                Entry(entity.Entity).State = EntityState.Detached;
+                this.Entry(entity.Entity).State = EntityState.Detached;
             }
         }
     }

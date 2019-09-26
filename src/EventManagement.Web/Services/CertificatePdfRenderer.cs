@@ -1,14 +1,13 @@
-﻿using System;
 using System.IO;
 using System.Threading.Tasks;
 using losol.EventManagement.Web.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.NodeServices;
-using Microsoft.AspNetCore.NodeServices.HostingModels;
+using Microsoft.Extensions.Hosting;
 
 namespace losol.EventManagement.Web.Services
 {
-	public class CertificatePdfRenderer
+    public class CertificatePdfRenderer
 	{
 		private const string SCRIPT = "./Node/writeToPdf";
 		private const string TEMPLATE = "Templates/Certificates/CourseCertificate";
@@ -16,7 +15,7 @@ namespace losol.EventManagement.Web.Services
 		private readonly INodeServices _nodeServices;
 		private readonly IRenderService _renderService;
 		public CertificatePdfRenderer(INodeServices nodeServices, 
-			IHostingEnvironment environment,
+			IHostEnvironment environment,
 			IRenderService renderService)
 		{
 			_nodeServices = nodeServices;

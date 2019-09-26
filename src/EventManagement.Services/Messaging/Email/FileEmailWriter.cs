@@ -1,21 +1,21 @@
-﻿using System;
+using Microsoft.Extensions.Hosting;
+using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
 
 namespace losol.EventManagement.Services.Messaging
 {
-	/// <summary>
-	/// Writes an email to a file instead of actually sending it.
-	/// This implementation is not designed to be used in production.
-	/// </summary>
-	public class FileEmailWriter : IEmailSender
+    /// <summary>
+    /// Writes an email to a file instead of actually sending it.
+    /// This implementation is not designed to be used in production.
+    /// </summary>
+    public class FileEmailWriter : IEmailSender
 	{
-		private readonly IHostingEnvironment _environment;
+		private readonly IHostEnvironment _environment;
 		private readonly string filePath;
 
-		public FileEmailWriter(IHostingEnvironment environment)
+		public FileEmailWriter(IHostEnvironment environment)
 		{
 			_environment = environment;
 			filePath = Path.Combine(_environment.ContentRootPath, "emails");

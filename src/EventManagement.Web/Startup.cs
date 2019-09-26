@@ -6,48 +6,51 @@ using Microsoft.Extensions.Logging;
 
 using losol.EventManagement.Config;
 using EventManagement.Web.Extensions;
+using Microsoft.Extensions.Hosting;
 
 namespace losol.EventManagement
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IHostEnvironment env)
         {
-            Configuration = configuration;
-            HostingEnvironment = env;
+            this.Configuration = configuration;
+            this.HostingEnvironment = env;
+           
         }
 
-        public IHostingEnvironment HostingEnvironment { get; }
+        public IHostEnvironment HostingEnvironment { get; }
         public IConfiguration Configuration { get; }
         private AppSettings appSettings;
         public AppSettings AppSettings
         {
             get
             {
-                if(appSettings == null)
+                if (this.appSettings == null)
                 {
-                    appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
+                    this.appSettings = this.Configuration.GetSection("AppSettings").Get<AppSettings>();
                 }
-                return appSettings;
+                return this.appSettings;
             }
-            protected set => appSettings = value;
+            protected set => this.appSettings = value;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public virtual void ConfigureServices(IServiceCollection services)
         {
-            services.ConfigureEF(Configuration, HostingEnvironment);
+            services.ConfigureEF(this.Configuration, this.HostingEnvironment);
             services.ConfigureIdentity();
-            services.ConfigureDbInitializationStrategy(Configuration, HostingEnvironment);
+            services.ConfigureDbInitializationStrategy(this.Configuration, this.HostingEnvironment);
             services.ConfigureAuthorizationPolicies();
             ServiceCollectionExtensions.ConfigureInternationalization();
-            services.ConfigureMvc();
-
-            services.AddSiteConfig(Configuration);
-			services.AddEmailServices(AppSettings.EmailProvider, Configuration);
-            services.AddSmsServices(AppSettings.SmsProvider, Configuration);
-            services.AddInvoicingServices(AppSettings, Configuration);
-			services.AddApplicationServices();
+            // services.ConfigureMvc();
+            services.AddControllersWithViews();
+            services.AddRazorPages();
+            services.AddSiteConfig(this.Configuration);
+            services.AddEmailServices(this.AppSettings.EmailProvider, this.Configuration);
+            services.AddSmsServices(this.AppSettings.SmsProvider, this.Configuration);
+            services.AddInvoicingServices(this.AppSettings, this.Configuration);
+            services.AddApplicationServices();
 
             // Require SSL
             // TODO Re-enable
@@ -62,12 +65,13 @@ namespace losol.EventManagement
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public virtual void Configure(IApplicationBuilder app, IHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                //app.UseDatabaseErrorPage();
+                app.UseExceptionHandler("/Info/Error");
             }
             else
             {
@@ -85,8 +89,18 @@ namespace losol.EventManagement
                 app.UseRewriter(options);
             }
              */
-
-            app.UseMvc();
+            app.UseRouting();
+            //app.UseMvc();
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapControllerRoute(
+            //        name: "default",
+            //        pattern: "{controller=Account}/{action=Index}/{id?}");
+            //});
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapRazorPages();
+            });
         }
     }
 }

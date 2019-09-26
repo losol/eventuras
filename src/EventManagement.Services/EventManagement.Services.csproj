@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
     <RootNamespace>losol.EventManagement.Services</RootNamespace>
     <AssemblyName>losol.EventManagement.Services</AssemblyName>
@@ -12,11 +12,12 @@
     <ProjectReference Include="..\EventManagement.Infrastructure\EventManagement.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MailKit" Version="2.1.2" />
+    <PackageReference Include="MailKit" Version="2.3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0" />
     <PackageReference Include="PowerOfficeGoSdk" Version="2.5.0" />
-    <PackageReference Include="Sendgrid" Version="9.10.0" />
+    <PackageReference Include="Sendgrid" Version="9.12.0" />
     <PackageReference Include="Stripe.net" Version="16.4.0" />
-    <PackageReference Include="Twilio" Version="5.25.1" />
+    <PackageReference Include="Twilio" Version="5.33.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Messaging\" />

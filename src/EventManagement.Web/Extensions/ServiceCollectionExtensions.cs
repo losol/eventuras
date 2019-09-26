@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace EventManagement.Web.Extensions
 {
@@ -26,7 +27,7 @@ namespace EventManagement.Web.Extensions
         public static void ConfigureEF(
             this IServiceCollection services,
             IConfiguration config,
-            IHostingEnvironment env)
+            IHostEnvironment env)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
             {
@@ -68,7 +69,7 @@ namespace EventManagement.Web.Extensions
             this IServiceCollection services)
         {
             services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddRazorPagesOptions(options =>
                 {
                     options.Conventions.AuthorizeFolder("/Account/Manage");
@@ -85,7 +86,7 @@ namespace EventManagement.Web.Extensions
 
         public static void ConfigureDbInitializationStrategy(this IServiceCollection services,
             IConfiguration config,
-            IHostingEnvironment hostingEnv)
+            IHostEnvironment hostingEnv)
         {
             services.Configure<DbInitializerOptions>(config);
             switch(hostingEnv)
