@@ -1,7 +1,7 @@
 #
 # Stage 0
 # Build the project
-FROM microsoft/dotnet:sdk AS build-env
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build-env 
 
 # Install node
 ENV NODE_VERSION 8.11.4
@@ -48,7 +48,7 @@ RUN cp -r /app/packages/node_modules .
 #
 # Stage 1
 # Copy the built files over
-FROM microsoft/dotnet:aspnetcore-runtime
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0
 
 # Install node (required for NodeServices)
 ENV NODE_VERSION 8.11.4

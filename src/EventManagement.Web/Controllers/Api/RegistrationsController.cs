@@ -1,16 +1,13 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 using losol.EventManagement.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using static losol.EventManagement.Domain.Registration;
-using System.Collections.Generic;
-using System.Linq;
+using System;
+using System.Threading.Tasks;
 using static losol.EventManagement.Domain.PaymentMethod;
+using static losol.EventManagement.Domain.Registration;
 
-namespace losol.EventManagement.Web.Controllers.Api {
+namespace losol.EventManagement.Web.Controllers.Api
+{
     [Authorize (Policy = "AdministratorRole")]
     [Route ("/api/v0/registrations")]
     public class RegistrationsController : Controller {
@@ -24,7 +21,7 @@ namespace losol.EventManagement.Web.Controllers.Api {
 
         [HttpPost ("{id}/participant/update")]
         public async Task<ActionResult> UpdateParticipantInfo ([FromRoute] int id, [FromBody] ParticipantInfoVM vm) {
-            if (!ModelState.IsValid) return BadRequest ();
+            if (!ModelState.IsValid) return this.BadRequest();
             try {
                 await _registrationsService.UpdateParticipantInfo (
                     id,
