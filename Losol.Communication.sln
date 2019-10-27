@@ -7,6 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{8553
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationApp", "samples\CommunicationApp\CommunicationApp.csproj", "{8404E574-CF41-46CA-A45C-AD8E906B7AB1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4B03ABF7-A8C8-40C2-BCA5-EE1ED6B5D5B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Losol.Communication.Email", "src\Email\Losol.Communication.Email.csproj", "{5AC216F1-78E8-4A69-9C58-5AF1938FBADA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,8 +36,21 @@ Global
 		{8404E574-CF41-46CA-A45C-AD8E906B7AB1}.Release|x64.Build.0 = Release|Any CPU
 		{8404E574-CF41-46CA-A45C-AD8E906B7AB1}.Release|x86.ActiveCfg = Release|Any CPU
 		{8404E574-CF41-46CA-A45C-AD8E906B7AB1}.Release|x86.Build.0 = Release|Any CPU
+		{5AC216F1-78E8-4A69-9C58-5AF1938FBADA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AC216F1-78E8-4A69-9C58-5AF1938FBADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AC216F1-78E8-4A69-9C58-5AF1938FBADA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5AC216F1-78E8-4A69-9C58-5AF1938FBADA}.Debug|x64.Build.0 = Debug|Any CPU
+		{5AC216F1-78E8-4A69-9C58-5AF1938FBADA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5AC216F1-78E8-4A69-9C58-5AF1938FBADA}.Debug|x86.Build.0 = Debug|Any CPU
+		{5AC216F1-78E8-4A69-9C58-5AF1938FBADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AC216F1-78E8-4A69-9C58-5AF1938FBADA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AC216F1-78E8-4A69-9C58-5AF1938FBADA}.Release|x64.ActiveCfg = Release|Any CPU
+		{5AC216F1-78E8-4A69-9C58-5AF1938FBADA}.Release|x64.Build.0 = Release|Any CPU
+		{5AC216F1-78E8-4A69-9C58-5AF1938FBADA}.Release|x86.ActiveCfg = Release|Any CPU
+		{5AC216F1-78E8-4A69-9C58-5AF1938FBADA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8404E574-CF41-46CA-A45C-AD8E906B7AB1} = {8553E8A5-2517-44FF-87BF-20783D560428}
+		{5AC216F1-78E8-4A69-9C58-5AF1938FBADA} = {4B03ABF7-A8C8-40C2-BCA5-EE1ED6B5D5B4}
 	EndGlobalSection
 EndGlobal
