@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Losol.Communication.Email.Services
+namespace Losol.Communication.Email.Services.Render
 {
     public class RegisterAccountService : IRegisterAccountService
     {

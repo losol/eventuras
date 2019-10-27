@@ -6,6 +6,8 @@
 // In Startup.cs in the ConfigureServices method
     services.AddScoped<IRegisterAccountService, RegisterAccountService>();
     services.AddScoped<IRazorViewToStringService, RazorViewToStringService>();
+
+    services.AddTransient<IEmailSender, EmailSender>();
 ``` 
 
 ## Credits

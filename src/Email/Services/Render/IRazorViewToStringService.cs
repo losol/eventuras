@@ -13,7 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Losol.Communication.Email.Services
+namespace Losol.Communication.Email.Services.Render
 {
     public interface IRazorViewToStringService
     {

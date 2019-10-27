@@ -12,7 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Losol.Communication.Email.Services
+namespace Losol.Communication.Email.Services.Render
 {
     // Code from: https://github.com/aspnet/Entropy/blob/dev/samples/Mvc.RenderViewToString/RazorViewToStringRenderer.cs
     // Copyright (c) .NET Foundation. All rights reserved.

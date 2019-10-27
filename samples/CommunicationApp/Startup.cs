@@ -12,7 +12,7 @@ using CommunicationApp.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Losol.Communication.Email.Services;
+using Losol.Communication.Email.Services.Render;
 
 namespace CommunicationApp
 {
