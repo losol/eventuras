@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Losol.Communication.Email.Services
 {
-    public interface IRazorViewToStringRenderer
+    public interface IRazorViewToStringService
     {
         Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model);
     }

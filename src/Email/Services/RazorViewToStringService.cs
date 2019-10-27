@@ -17,13 +17,13 @@ namespace Losol.Communication.Email.Services
     // Code from: https://github.com/aspnet/Entropy/blob/dev/samples/Mvc.RenderViewToString/RazorViewToStringRenderer.cs
     // Copyright (c) .NET Foundation. All rights reserved.
     // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
-    public class RazorViewToStringRenderer : IRazorViewToStringRenderer
+    public class RazorViewToStringService : IRazorViewToStringService
     {
         private IRazorViewEngine _viewEngine;
         private ITempDataProvider _tempDataProvider;
         private IServiceProvider _serviceProvider;
 
-        public RazorViewToStringRenderer(
+        public RazorViewToStringService(
             IRazorViewEngine viewEngine,
             ITempDataProvider tempDataProvider,
             IServiceProvider serviceProvider)
