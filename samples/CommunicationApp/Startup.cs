@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Losol.Communication.Email.Services.Render;
+using Losol.Communication.Email.Services;
+using Losol.Communication.Email.Config;
 
 namespace CommunicationApp
 {
@@ -30,6 +32,19 @@ namespace CommunicationApp
         {
             services.AddScoped<IRegisterAccountService, RegisterAccountService>();
             services.AddScoped<IRazorViewToStringService, RazorViewToStringService>();
+
+
+            // Adding EmailSender
+            services.Configure<SmtpConfig>(Configuration.GetSection("SmtpSettings"));
+            services.AddSingleton<IEmailSender, EmailSender>();
+
+            /* services.AddTransient<IEmailSender, EmailSender>(i =>
+                new EmailSettings()
+                {
+                    new EmailProvider() { EmailProvider = Losol.Communication.Email.Config.EmailProvider.SMTP},
+                    new SmtpConfiguration() { }
+                }
+            );*/
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(
