@@ -11,5 +11,5 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
-      - run: cd docs && npm ci
+      - run: cd docs && npm install
       - run: gatsby build --prefix-paths && gh-pages -d public -r https://${{ secrets.GH_TOKEN }}@github.com/losol/Losol.Communication.git
