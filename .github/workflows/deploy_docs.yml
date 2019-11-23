@@ -22,7 +22,7 @@ jobs:
     
     - name: Run tests
       continue-on-error: false
-      run: npm run test
+      run: cd docs && npm run test
       
     - name: Deploy pages
-      run: npm run deploy:githubpages
+      run: gatsby build --prefix-paths && gh-pages -d public -r https://${{ secrets.GITHUB_TOKEN }}@github.com/losol/Losol.Communication.git"
