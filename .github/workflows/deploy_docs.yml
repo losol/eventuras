@@ -9,9 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Deploy
-    - uses: actions/checkout@v1
-    - uses: actions/setup-node@master
-    - run: npm install
-    - run: npm run test
-    - run: gatsby build --prefix-paths && gh-pages -d public -r https://${{ secrets.GH_TOKEN }}@github.com/losol/Losol.Communication.git"
+      - name: Deploy
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@master
+      - run: npm install
+      - run: npm run test
+      - run: gatsby build --prefix-paths && gh-pages -d public -r https://${{ secrets.GH_TOKEN }}@github.com/losol/Losol.Communication.git"
