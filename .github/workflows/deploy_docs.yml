@@ -1,0 +1,15 @@
+name: Deploy documentation
+
+on:
+  push:	
+    branches:	
+      - master
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+      - run: cd docs && npm ci
+      - run: gatsby build --prefix-paths && gh-pages -d public -r https://${{ secrets.GH_TOKEN }}@github.com/losol/Losol.Communication.git"
