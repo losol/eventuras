@@ -1,5 +1,6 @@
 # Losol.Communication
 
+[![Build status](https://ci.appveyor.com/api/projects/status/8024k9srg1u0aq9a?svg=true)](https://ci.appveyor.com/project/losolio/losol-communication)
 
 
 ```
