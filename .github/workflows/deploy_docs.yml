@@ -18,11 +18,14 @@ jobs:
         node-version: 10.x
 
     - name: Install npm dependencies 
-      run: cd docs && npm install
+      working-directory: ./docs
+      run: npm install
 
     - name: Run tests
+      working-directory: ./docs
       continue-on-error: false
       run: npm run test
 
     - name: Deploy pages
-      run: cd docs && npx gatsby build --prefix-paths && gh-pages -d public -r https://${{ secrets.GH_TOKEN }}@github.com/losol/Losol.Communication.git
+      working-directory: ./docs
+      run: gatsby build --prefix-paths && gh-pages -d public -r https://${{ secrets.GH_TOKEN }}@github.com/losol/Losol.Communication.git
