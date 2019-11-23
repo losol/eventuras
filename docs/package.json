@@ -38,9 +38,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/losol/doczy"
+    "url": "https://github.com/losol/Losol.Communication"
   },
   "bugs": {
-    "url": "https://github.com/losol/doczy/issues"
+    "url": "https://github.com/losol/Losol.Communication/issues"
   }
 }
