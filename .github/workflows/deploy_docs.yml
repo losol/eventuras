@@ -28,4 +28,4 @@ jobs:
 
     - name: Deploy pages
       working-directory: ./docs
-      run: gatsby build --prefix-paths && gh-pages -d public -r https://${{ secrets.GH_TOKEN }}@github.com/losol/Losol.Communication.git
+      run: npx gatsby build --prefix-paths && gh-pages -d public -r https://${{ secrets.GH_TOKEN }}@github.com/losol/Losol.Communication.git
