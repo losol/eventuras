@@ -28,7 +28,7 @@ jobs:
 
       - name: Deploy pages
         working-directory: ./docs
-        run: 
+        run: |
           git config --global user.name "Deploy bot"
           git config --global user.email "doc@bot.com"
           npx gatsby build --prefix-paths && npx gh-pages -d public -r https://${{ secrets.GH_TOKEN }}@github.com/losol/Losol.Communication.git
