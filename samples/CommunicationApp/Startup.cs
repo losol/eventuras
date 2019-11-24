@@ -15,11 +15,13 @@ using Microsoft.Extensions.Hosting;
 using Losol.Communication.Email.Services.Render;
 using Losol.Communication.Email.Services;
 using Losol.Communication.Email.Config;
+using Microsoft.Extensions.Logging;
 
 namespace CommunicationApp
 {
     public class Startup
     {
+        private readonly ILogger _logger;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -30,13 +32,14 @@ namespace CommunicationApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IRegisterAccountService, RegisterAccountService>();
+            // Adding EmailSender
+            services.Configure<SmtpConfig>(Configuration.GetSection("EmailSettings:SmtpSettings"));
+
+            services.AddTransient<IEmailSender, SmtpEmailSender>();
+
             services.AddScoped<IRazorViewToStringService, RazorViewToStringService>();
 
 
-            // Adding EmailSender
-            services.Configure<SmtpConfig>(Configuration.GetSection("SmtpSettings"));
-            services.AddSingleton<IEmailSender, EmailSender>();
 
             /* services.AddTransient<IEmailSender, EmailSender>(i =>
                 new EmailSettings()

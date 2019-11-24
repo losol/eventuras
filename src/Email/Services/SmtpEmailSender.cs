@@ -5,18 +5,22 @@ using System.Text;
 using System.Threading.Tasks;
 using Losol.Communication.Email.Config;
 using MailKit.Net.Smtp;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MimeKit;
 
 namespace Losol.Communication.Email.Services
 {
-    public class EmailSender : IEmailSender
+    public class SmtpEmailSender : IEmailSender
     {
 
-        private SmtpConfig _smtpConfig;
+        private readonly SmtpConfig _smtpConfig;
+        private ILogger _logger;
 
-        public EmailSender(SmtpConfig smtpConfig)
+        public SmtpEmailSender(IOptions<SmtpConfig> smtpConfig, ILogger<SmtpEmailSender> logger)
         {
-            _smtpConfig = smtpConfig;
+            _smtpConfig = smtpConfig.Value;
+            _logger = logger;
         }
 
         public async Task SendEmailAsync(string name, string email, string subject, string htmlMessage)

@@ -4,7 +4,7 @@ namespace Losol.Communication.Email.Config
 {
     public class EmailSettings
     {
-        public EmailProvider EmailProvider { get; set; }
+        public EmailProvider EmailProvider { get; set; } = 0;
         public SmtpConfig SmtpSettings { get; set; }
     }
 

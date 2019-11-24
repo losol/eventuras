@@ -22,7 +22,7 @@ namespace Losol.Communication.Email.Services.Render
         {
             // TODO: Validation + actually add the User to a DB + whatever else
             // TODO: Base URL off of ASP.NET Core Identity's logic or some other mechanism, rather than hardcoding to creating a random guid
-            var confirmAccountModel = new ConfirmAccountEmailViewModel($"{baseUrl}/{Guid.NewGuid()}");
+            var confirmAccountModel = new ConfirmAccountEmailViewModel { ConfirmEmailUrl = "https://asdf" };
 
             string body = await _razorViewToStringService.RenderViewToStringAsync("/Views/Emails/ConfirmAccount/ConfirmAccountEmail.cshtml", confirmAccountModel);
 
