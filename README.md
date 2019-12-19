@@ -1,4 +1,4 @@
-# Eventer - Event Management Solution
+# Eventuras - Event Management Solution
 
 [![Build Status](https://travis-ci.com/losol/EventManagement.svg?branch=master)](https://travis-ci.com/losol/EventManagement)
 [![Build status](https://losolio.visualstudio.com/EventManagement/_apis/build/status/legekurs%20-%20CI)](https://losolio.visualstudio.com/EventManagement/_build/latest?definitionId=11)
