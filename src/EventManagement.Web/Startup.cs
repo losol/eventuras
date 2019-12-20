@@ -6,18 +6,19 @@ using Microsoft.Extensions.Logging;
 
 using losol.EventManagement.Config;
 using EventManagement.Web.Extensions;
+using Microsoft.Extensions.Hosting;
 
 namespace losol.EventManagement
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
             HostingEnvironment = env;
         }
 
-        public IHostingEnvironment HostingEnvironment { get; }
+        public IWebHostEnvironment HostingEnvironment { get; }
         public IConfiguration Configuration { get; }
         private AppSettings appSettings;
         public AppSettings AppSettings
@@ -44,10 +45,10 @@ namespace losol.EventManagement
             services.ConfigureMvc();
 
             services.AddSiteConfig(Configuration);
-			services.AddEmailServices(AppSettings.EmailProvider, Configuration);
+            services.AddEmailServices(AppSettings.EmailProvider, Configuration);
             services.AddSmsServices(AppSettings.SmsProvider, Configuration);
             services.AddInvoicingServices(AppSettings, Configuration);
-			services.AddApplicationServices();
+            services.AddApplicationServices();
 
             // Require SSL
             // TODO Re-enable
@@ -62,7 +63,7 @@ namespace losol.EventManagement
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -74,8 +75,15 @@ namespace losol.EventManagement
                 app.UseExceptionHandler("/Info/Error");
             }
 
+            app.UseRouting();
+            app.UseAuthorization();
             app.UseStaticFiles();
             app.UseAuthentication();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapRazorPages();
+            });
 
             // TODO reenable
             /*
@@ -85,8 +93,6 @@ namespace losol.EventManagement
                 app.UseRewriter(options);
             }
              */
-
-            app.UseMvc();
         }
     }
 }

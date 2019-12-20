@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using losol.EventManagement.Services.DbInitializers;
-using losol.EventManagement.Services.Messaging.Sms;
-using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.Config;
 
 namespace losol.EventManagement.IntegrationTests
@@ -15,7 +13,7 @@ namespace losol.EventManagement.IntegrationTests
 	{
 		public TestStartup(
 			IConfiguration configuration,
-			IHostingEnvironment env) : base(configuration, env)
+			IWebHostEnvironment env) : base(configuration, env)
 		{
 
 		}
@@ -34,7 +32,7 @@ namespace losol.EventManagement.IntegrationTests
 			services.AddScoped<IDbInitializer, TestDbInitializer>();
 		}
 
-		public override void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+		public override void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
 		{
 			base.Configure(app, env, loggerFactory);
 

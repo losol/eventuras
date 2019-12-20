@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -12,10 +12,10 @@ namespace losol.EventManagement.Services.Messaging
 	/// </summary>
 	public class FileEmailWriter : IEmailSender
 	{
-		private readonly IHostingEnvironment _environment;
+		private readonly IWebHostEnvironment _environment;
 		private readonly string filePath;
 
-		public FileEmailWriter(IHostingEnvironment environment)
+		public FileEmailWriter(IWebHostEnvironment environment)
 		{
 			_environment = environment;
 			filePath = Path.Combine(_environment.ContentRootPath, "emails");

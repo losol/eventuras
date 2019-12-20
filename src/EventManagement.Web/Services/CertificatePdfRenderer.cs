@@ -1,10 +1,8 @@
-﻿using System;
 using System.IO;
 using System.Threading.Tasks;
 using losol.EventManagement.Web.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.NodeServices;
-using Microsoft.AspNetCore.NodeServices.HostingModels;
 
 namespace losol.EventManagement.Web.Services
 {
@@ -16,7 +14,7 @@ namespace losol.EventManagement.Web.Services
 		private readonly INodeServices _nodeServices;
 		private readonly IRenderService _renderService;
 		public CertificatePdfRenderer(INodeServices nodeServices, 
-			IHostingEnvironment environment,
+			IWebHostEnvironment environment,
 			IRenderService renderService)
 		{
 			_nodeServices = nodeServices;
