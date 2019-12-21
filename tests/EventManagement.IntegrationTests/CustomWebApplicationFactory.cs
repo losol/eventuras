@@ -41,10 +41,9 @@ namespace losol.EventManagement.IntegrationTests
                 }
 
                 // Add ApplicationDbContext using an in-memory database for testing.
-                services.AddEntityFrameworkInMemoryDatabase();
                 services.AddDbContext<ApplicationDbContext>(options =>
                 {
-                    options.UseInMemoryDatabase($"losol-eventmanagement-itests-{Guid.NewGuid()}");
+                    options.UseInMemoryDatabase("losol-eventmanagement-itests");
                 });
 
                 services.AddScoped<IDbInitializer, TestDbInitializer>();
