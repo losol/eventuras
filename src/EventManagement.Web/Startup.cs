@@ -1,11 +1,9 @@
+using EventManagement.Web.Extensions;
+using losol.EventManagement.Config;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-
-using losol.EventManagement.Config;
-using EventManagement.Web.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace losol.EventManagement
@@ -25,7 +23,7 @@ namespace losol.EventManagement
         {
             get
             {
-                if(appSettings == null)
+                if (appSettings == null)
                 {
                     appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
                 }
@@ -63,7 +61,7 @@ namespace losol.EventManagement
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -75,10 +73,10 @@ namespace losol.EventManagement
                 app.UseExceptionHandler("/Info/Error");
             }
 
-            app.UseRouting();
-            app.UseAuthorization();
             app.UseStaticFiles();
+            app.UseRouting();
             app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

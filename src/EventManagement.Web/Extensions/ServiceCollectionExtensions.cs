@@ -68,6 +68,7 @@ namespace EventManagement.Web.Extensions
         public static void ConfigureMvc(
             this IServiceCollection services)
         {
+            services.AddControllersWithViews();
             services.AddRazorPages()
                 .AddRazorPagesOptions(options =>
                 {

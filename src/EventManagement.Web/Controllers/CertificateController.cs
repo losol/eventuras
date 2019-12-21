@@ -31,7 +31,7 @@ namespace EventManagement.Web.Controllers
             {
                 return NotFound();
             }
-            return View("Templates/Certificates/CourseCertificate", certificate);
+            return View("Templates/Certificates/CourseCertificate", CertificateVM.From(certificate));
         }
 
         [HttpGet("preview/event/{id}")]

@@ -1,27 +1,17 @@
-using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-
-using losol.EventManagement.Domain;
-using losol.EventManagement.Infrastructure;
-using losol.EventManagement.IntegrationTests.Fixtures;
 using Xunit;
-using System.Linq;
 
 namespace losol.EventManagement.IntegrationTests.Pages.Events
 {
-    public class EventPageTests : IClassFixture<TestFixture<Startup>>
+    public class EventPageTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private readonly HttpClient _client;
-		private readonly TestFixture<Startup> _fixture;
 
-		public EventPageTests(TestFixture<Startup> fixture)
+        public EventPageTests(CustomWebApplicationFactory<Startup> factory)
         {
-            _client = fixture.Client;
-			_fixture = fixture;
+            _client = factory.CreateClient();
         }
 
         [Fact]
