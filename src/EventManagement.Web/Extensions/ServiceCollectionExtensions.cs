@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace EventManagement.Web.Extensions
 {
@@ -26,12 +27,12 @@ namespace EventManagement.Web.Extensions
         public static void ConfigureEF(
             this IServiceCollection services,
             IConfiguration config,
-            IHostingEnvironment env)
+            IWebHostEnvironment env)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-              options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
-              options.EnableSensitiveDataLogging(env.IsDevelopment());
+                options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
+                options.EnableSensitiveDataLogging(env.IsDevelopment());
             });
         }
 
@@ -67,8 +68,8 @@ namespace EventManagement.Web.Extensions
         public static void ConfigureMvc(
             this IServiceCollection services)
         {
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+            services.AddControllersWithViews();
+            services.AddRazorPages()
                 .AddRazorPagesOptions(options =>
                 {
                     options.Conventions.AuthorizeFolder("/Account/Manage");
@@ -85,10 +86,10 @@ namespace EventManagement.Web.Extensions
 
         public static void ConfigureDbInitializationStrategy(this IServiceCollection services,
             IConfiguration config,
-            IHostingEnvironment hostingEnv)
+            IWebHostEnvironment hostingEnv)
         {
             services.Configure<DbInitializerOptions>(config);
-            switch(hostingEnv)
+            switch (hostingEnv)
             {
                 case var env when env.IsProduction():
                     services.AddScoped<IDbInitializer, ProductionDbInitializer>();
@@ -102,13 +103,15 @@ namespace EventManagement.Web.Extensions
             }
         }
 
-        public static void ConfigureInternationalization() {
+        public static void ConfigureInternationalization()
+        {
             var cultureInfo = new CultureInfo("nb-NO");
             CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
             CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
         }
 
-        public static void AddSiteConfig(this IServiceCollection services, IConfiguration Configuration) {
+        public static void AddSiteConfig(this IServiceCollection services, IConfiguration Configuration)
+        {
             var siteConfig = Configuration.GetSection("Site").Get<Site>();
             services.AddSingleton(siteConfig);
 
@@ -120,28 +123,28 @@ namespace EventManagement.Web.Extensions
             EmailProvider provider, IConfiguration Configuration)
         {
             // Register the correct email provider depending on the config
-			switch(provider)
-			{
-				case EmailProvider.SendGrid:
-					services.Configure<SendGridOptions>(Configuration.GetSection("SendGrid"));
-					services.AddTransient<IEmailSender, SendGridEmailSender>();
-					break;
+            switch (provider)
+            {
+                case EmailProvider.SendGrid:
+                    services.Configure<SendGridOptions>(Configuration.GetSection("SendGrid"));
+                    services.AddTransient<IEmailSender, SendGridEmailSender>();
+                    break;
                 case EmailProvider.SMTP:
-					services.Configure<SmtpOptions>(Configuration.GetSection("Smtp"));
-					services.AddTransient<IEmailSender, SmtpEmailSender>();
-					break;
-				case EmailProvider.File:
-					services.AddTransient<IEmailSender, FileEmailWriter>();
-					break;
-				case EmailProvider.Mock:
-					services.AddTransient<IEmailSender, MockEmailSender>();
-					break;
-			}
+                    services.Configure<SmtpOptions>(Configuration.GetSection("Smtp"));
+                    services.AddTransient<IEmailSender, SmtpEmailSender>();
+                    break;
+                case EmailProvider.File:
+                    services.AddTransient<IEmailSender, FileEmailWriter>();
+                    break;
+                case EmailProvider.Mock:
+                    services.AddTransient<IEmailSender, MockEmailSender>();
+                    break;
+            }
 
             // Register email services
-			services.AddTransient<StandardEmailSender>();
+            services.AddTransient<StandardEmailSender>();
             services.AddTransient<MagicLinkSender>();
-			services.AddTransient<RegistrationEmailSender>();
+            services.AddTransient<RegistrationEmailSender>();
         }
 
         public static void AddSmsServices(
@@ -149,16 +152,16 @@ namespace EventManagement.Web.Extensions
             SmsProvider provider,
             IConfiguration config)
         {
-			switch(provider)
-			{
-				case SmsProvider.Twilio:
-					services.Configure<TwilioOptions>(config.GetSection("Twilio"));
-					services.AddTransient<ISmsSender, TwilioSmsSender>();
-					break;
-				case SmsProvider.Mock:
-					services.AddTransient<ISmsSender, MockSmsSender>();
-					break;
-			}
+            switch (provider)
+            {
+                case SmsProvider.Twilio:
+                    services.Configure<TwilioOptions>(config.GetSection("Twilio"));
+                    services.AddTransient<ISmsSender, TwilioSmsSender>();
+                    break;
+                case SmsProvider.Mock:
+                    services.AddTransient<ISmsSender, MockSmsSender>();
+                    break;
+            }
         }
 
         public static void AddInvoicingServices(
@@ -167,7 +170,7 @@ namespace EventManagement.Web.Extensions
             IConfiguration config)
         {
             // Register PowerOffice
-            if(appsettings.UsePowerOffice)
+            if (appsettings.UsePowerOffice)
             {
                 services.Configure<PowerOfficeOptions>(config.GetSection("PowerOffice"));
                 services.AddScoped<IPowerOfficeService, PowerOfficeService>();
@@ -176,7 +179,7 @@ namespace EventManagement.Web.Extensions
             {
                 services.AddTransient<IPowerOfficeService, MockInvoicingService>();
             }
-            if(appsettings.UseStripeInvoice)
+            if (appsettings.UseStripeInvoice)
             {
                 var stripeConfig = config.GetSection("Stripe").Get<StripeOptions>();
                 StripeInvoicingService.Configure(stripeConfig.SecretKey);
@@ -188,14 +191,15 @@ namespace EventManagement.Web.Extensions
             }
         }
 
-        public static void AddApplicationServices(this IServiceCollection services) {
+        public static void AddApplicationServices(this IServiceCollection services)
+        {
             // Register our application services
-			services.AddScoped<IEventInfoService, EventInfoService>();
-			services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+            services.AddScoped<IEventInfoService, EventInfoService>();
+            services.AddScoped<IPaymentMethodService, PaymentMethodService>();
             services.AddScoped<StripeInvoiceProvider>();
-			services.AddScoped<IRegistrationService, RegistrationService>();
-			services.AddScoped<IProductsService, ProductsService>();
-			services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IRegistrationService, RegistrationService>();
+            services.AddScoped<IProductsService, ProductsService>();
+            services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ICertificatesService, CertificatesService>();
             services.AddScoped<IMessageLogService, MessageLogService>();
 
@@ -207,8 +211,8 @@ namespace EventManagement.Web.Extensions
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
-			services.AddNodeServices();
-			services.AddTransient<CertificatePdfRenderer>();
+            services.AddNodeServices();
+            services.AddTransient<CertificatePdfRenderer>();
         }
 
     }

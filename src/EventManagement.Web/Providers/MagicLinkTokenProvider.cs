@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace losol.EventManagement.Web.Providers
@@ -9,8 +10,9 @@ namespace losol.EventManagement.Web.Providers
     {
         public MagicLinkTokenProvider(
             IDataProtectionProvider dataProtectionProvider,
-            IOptions<MagicLinkTokenProviderOptions> options) 
-            : base(dataProtectionProvider, options)
+            IOptions<MagicLinkTokenProviderOptions> options,
+            ILogger<MagicLinkTokenProvider<TUser>> logger) 
+            : base(dataProtectionProvider, options, logger)
         {
 
         }
