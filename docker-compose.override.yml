@@ -22,3 +22,4 @@ services:
     environment:
       - MSSQL_SA_PASSWORD=Str0ng#PaSsw0rd
       - ACCEPT_EULA=Y
+      - MSSQL_PID=Developer
