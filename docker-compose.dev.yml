@@ -3,18 +3,22 @@ version: '3'
 services:
 
   web:
-    image: losolio/eventuras:${TAG:-latest}
+    container_name: eventuras-dev
+    image: eventuras:dev
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/app
     ports:
-      - "5100:80"
+      - "5000:5000"
+      - "5001:5001"
     depends_on:
       - mssql
-
   mssql:
     image: mcr.microsoft.com/mssql/server:2019-latest
-    container_name: event_db
+    ports:
+      - "1433:1433"
     environment:
       - MSSQL_SA_PASSWORD=Str0ng#PaSsw0rd
       - ACCEPT_EULA=Y

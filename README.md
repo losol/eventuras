@@ -24,7 +24,7 @@ Use the following credentials to login:
 
 ```text
 Username: admin@email.com
-Password: PaSsw0rd
+Password: Str0ng!PaSsw0rd
 ```
 
 ## Build & run from source
