@@ -10,11 +10,9 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - .:/app
-    # ports:
-     # - "5000:5000"
-     # - "5001:5001"
     ports:
-      - "5100:80"
+      - "5000:5000"
+      - "5001:5001"
     depends_on:
       - mssql
   mssql:
@@ -22,5 +20,5 @@ services:
     ports:
       - "1433:1433"
     environment:
-      - MSSQL_SA_PASSWORD=Str0ng!PaSsw0rd!
+      - MSSQL_SA_PASSWORD=Str0ng#PaSsw0rd
       - ACCEPT_EULA=Y
