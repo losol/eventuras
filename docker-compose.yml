@@ -3,7 +3,7 @@ version: '3'
 services:
 
   web:
-    image: losol/event-management-web:${TAG:-latest}
+    image: losolio/eventuras:${TAG:-latest}
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -11,4 +11,8 @@ services:
       - mssql
 
   mssql:
-    image: microsoft/mssql-server-linux:2017-latest
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: event_db
+    environment:
+      - MSSQL_SA_PASSWORD=Str0ng!PaSsw0rd!
+      - ACCEPT_EULA=Y 

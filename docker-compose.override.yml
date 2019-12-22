@@ -3,20 +3,24 @@ version: '3'
 services:
 
   web:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=mssql;Database=EventDB;User Id=sa;Password=Passw0rd!
-      - SuperAdmin__Email=asdf@email.com
-      - SuperAdmin__Password=PaSsw0rd
-      - AppSettings__EmailProvider=Mock
-      - AppSettings__SmsProvider=Mock
+    container_name: eventuras-dev
+    image: eventuras:dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/app
+    # ports:
+     # - "5000:5000"
+     # - "5001:5001"
     ports:
       - "5100:80"
     depends_on:
       - mssql
-
   mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1433:1433"
     environment:
-      - MSSQL_SA_PASSWORD=Passw0rd!
+      - MSSQL_SA_PASSWORD=Str0ng!PaSsw0rd!
       - ACCEPT_EULA=Y
-      - MSSQL_PID=Developer
