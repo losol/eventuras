@@ -1,6 +1,6 @@
 name: Deploy Nuget package
 
-on: [push]
+on: [release]
 
 jobs:
   build:
