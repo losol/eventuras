@@ -117,6 +117,10 @@ namespace EventManagement.Web.Extensions
 
             var socialConfig = Configuration.GetSection("Social").Get<Social>();
             services.AddSingleton(socialConfig);
+
+            // TODO: Change to feature manager later
+            var featureConfig = Configuration.GetSection("FeatureManagement").Get<FeatureManagement>();
+            
         }
 
         public static void AddEmailServices(this IServiceCollection services,

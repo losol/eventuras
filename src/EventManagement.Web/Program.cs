@@ -1,8 +1,12 @@
+using System.Diagnostics;
 using System.Threading.Tasks;
 using losol.EventManagement.Services.DbInitializers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Builder;
+using System.IO;
 
 namespace losol.EventManagement
 {
@@ -28,6 +32,18 @@ namespace losol.EventManagement
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    var config = new ConfigurationBuilder()
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .AddJsonFile("appsettings.json", optional: false)
+                        .AddEnvironmentVariables()
+                        .Build();
+
+                    var useSentry = false;
+                    bool.TryParse(config.GetSection("FeatureManagement:Sentry").Value.ToString(), out useSentry);
+                    if (useSentry) {
+                        webBuilder.UseSentry();
+                    }
+                    
                     webBuilder.UseStartup<Startup>();
                 });
     }
