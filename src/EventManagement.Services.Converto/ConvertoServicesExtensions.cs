@@ -10,6 +10,7 @@ namespace EventManagement.Services.Converto
         public static IServiceCollection AddConvertoServices(this IServiceCollection services, IConfiguration config)
         {
             services.Configure<ConvertoConfig>(config);
+            services.TryAddSingleton<IConvertoClient, ConvertoClient>();
             services.TryAddTransient<IPdfRenderService, ConvertoPdfRenderService>();
             return services;
         }

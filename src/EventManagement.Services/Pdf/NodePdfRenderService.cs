@@ -17,16 +17,16 @@ namespace losol.EventManagement.Services.Pdf
             this._nodeServices = nodeServices;
         }
 
-        public async Task<Stream> RenderHtmlAsync(string html, PdfRenderOptions options)
+        public async Task<Stream> RenderHtmlAsync(string html, PdfRenderOptions pdfRenderOptions)
         {
             return await _nodeServices.InvokeAsync<Stream>(
                 Script,
                 html,
                 new
                 {
-                    format = options.Format,
+                    format = pdfRenderOptions.Format,
                     timeout = 50_000,
-                    zoomFactor = options.Scale?.ToString()
+                    zoomFactor = pdfRenderOptions.Scale?.ToString()
                 }
             );
         }

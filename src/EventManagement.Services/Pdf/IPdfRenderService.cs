@@ -6,7 +6,7 @@ namespace losol.EventManagement.Services.Pdf
 {
     public interface IPdfRenderService
     {
-        Task<Stream> RenderHtmlAsync(string html, PdfRenderOptions options);
+        Task<Stream> RenderHtmlAsync(string html, PdfRenderOptions pdfRenderOptions);
     }
 
     public class PdfRenderOptions

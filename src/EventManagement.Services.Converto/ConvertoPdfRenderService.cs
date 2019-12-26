@@ -1,52 +1,40 @@
 using losol.EventManagement.Services.Pdf;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace EventManagement.Services.Converto
 {
     public class ConvertoPdfRenderService : IPdfRenderService
     {
-        private readonly IHttpClientFactory httpClientFactory;
+        private readonly IConvertoClient client;
         private readonly IOptions<ConvertoConfig> options;
         private readonly ILogger<ConvertoPdfRenderService> logger;
 
         public ConvertoPdfRenderService(
-            IHttpClientFactory httpClientFactory,
+            IConvertoClient client,
             IOptions<ConvertoConfig> options,
             ILogger<ConvertoPdfRenderService> logger)
         {
-            this.httpClientFactory = httpClientFactory;
+            this.client = client;
             this.options = options;
             this.logger = logger;
         }
 
-        public async Task<Stream> RenderHtmlAsync(string html, PdfRenderOptions options)
+        public async Task<Stream> RenderHtmlAsync(string html, PdfRenderOptions pdfRenderOptions)
         {
-            var client = this.httpClientFactory.CreateClient();
-            var endpointUrl = this.options.Value.EndpointUrl;
-
-            this.logger.LogDebug($"Sending HTML to {endpointUrl}");
-            this.logger.LogDebug(html);
-
-            var response = await client.PostAsync(endpointUrl, new FormUrlEncodedContent(new List<KeyValuePair<string, string>>
+            try
             {
-                KeyValuePair.Create("html", html),
-                KeyValuePair.Create("scale", (options.Scale ?? this.options.Value.DefaultScale ?? 1).ToString(CultureInfo.InvariantCulture)),
-                KeyValuePair.Create("format", options.Format ?? this.options.Value.DefaultFormat ?? "A4")
-            }));
-
-            if (!response.IsSuccessStatusCode)
+                return await this.client.Html2PdfAsync(html,
+                    pdfRenderOptions.Scale ?? this.options.Value.DefaultScale ?? 1,
+                    pdfRenderOptions.Format ?? this.options.Value.DefaultFormat ?? "A4");
+            }
+            catch (ConvertoClientException e)
             {
-                this.logger.LogError($"{endpointUrl} returned {response.StatusCode} status code");
+                this.logger.LogError(e.Message, e);
                 return new MemoryStream();
             }
-
-            return await response.Content.ReadAsStreamAsync();
         }
     }
 }

@@ -30,6 +30,7 @@ COPY ./src/EventManagement.Infrastructure/*.csproj ./src/EventManagement.Infrast
 COPY ./src/EventManagement.Domain/*.csproj ./src/EventManagement.Domain/
 COPY ./tests/EventManagement.UnitTests/*.csproj ./tests/EventManagement.UnitTests/
 COPY ./tests/EventManagement.IntegrationTests/*.csproj ./tests/EventManagement.IntegrationTests/
+COPY ./tests/EventManagement.Services.Converto.Tests/*.csproj ./tests/EventManagement.Services.Converto.Tests/
 RUN dotnet restore
 
 # Copy the package.json file
