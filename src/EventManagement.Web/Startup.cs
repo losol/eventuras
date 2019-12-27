@@ -46,7 +46,7 @@ namespace losol.EventManagement
             services.AddEmailServices(AppSettings.EmailProvider, Configuration);
             services.AddSmsServices(AppSettings.SmsProvider, Configuration);
             services.AddInvoicingServices(AppSettings, Configuration);
-            services.AddApplicationServices();
+            services.AddApplicationServices(Configuration);
 
             // Require SSL
             // TODO Re-enable

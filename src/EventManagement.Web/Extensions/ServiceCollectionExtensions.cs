@@ -1,4 +1,4 @@
-using System.Globalization;
+using EventManagement.Services.Converto;
 using losol.EventManagement.Config;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
@@ -13,12 +13,12 @@ using losol.EventManagement.Web.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Globalization;
 
 namespace EventManagement.Web.Extensions
 {
@@ -191,7 +191,7 @@ namespace EventManagement.Web.Extensions
             }
         }
 
-        public static void AddApplicationServices(this IServiceCollection services)
+        public static void AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             // Register our application services
             services.AddScoped<IEventInfoService, EventInfoService>();
@@ -210,9 +210,9 @@ namespace EventManagement.Web.Extensions
             // Added for the renderpage service
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-
-            services.AddNodeServices();
+            services.AddConvertoServices(configuration.GetSection("Converto"));
             services.AddTransient<CertificatePdfRenderer>();
+            services.AddHttpClient();
         }
 
     }
