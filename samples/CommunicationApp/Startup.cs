@@ -1,20 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.EntityFrameworkCore;
 using CommunicationApp.Data;
+using Losol.Communication.Email.Services;
+using Losol.Communication.Email.Services.Render;
+using Losol.Communication.Email.Smtp;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Losol.Communication.Email.Services.Render;
-using Losol.Communication.Email.Services;
-using Losol.Communication.Email.Config;
 using Microsoft.Extensions.Logging;
 
 namespace CommunicationApp
@@ -33,9 +27,7 @@ namespace CommunicationApp
         public void ConfigureServices(IServiceCollection services)
         {
             // Adding EmailSender
-            services.Configure<SmtpConfig>(Configuration.GetSection("EmailSettings:SmtpSettings"));
-
-            services.AddTransient<IEmailSender, SmtpEmailSender>();
+            services.AddSmtpEmailServices(Configuration.GetSection("EmailSettings:SmtpSettings"));
 
             services.AddScoped<IRazorViewToStringService, RazorViewToStringService>();
 

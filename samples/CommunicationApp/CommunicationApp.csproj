@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Email\Losol.Communication.Email.csproj" />
+    <ProjectReference Include="..\..\src\Losol.Communication.Email.Smtp\Losol.Communication.Email.Smtp.csproj" />
   </ItemGroup>
 
 </Project>
