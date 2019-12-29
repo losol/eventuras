@@ -1,14 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace losol.EventManagement.Domain
 {
 
-	public class EventInfo
+    public class EventInfo
 	{
 		public enum EventInfoStatus
         {

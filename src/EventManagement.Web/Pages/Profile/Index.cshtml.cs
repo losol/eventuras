@@ -1,17 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
+using losol.EventManagement.Domain;
+using losol.EventManagement.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using losol.EventManagement.Domain;
-using losol.EventManagement.Services;
-using losol.EventManagement.Services.Messaging;
-using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using static losol.EventManagement.Domain.Registration;
 
 namespace losol.EventManagement.Pages.Profile

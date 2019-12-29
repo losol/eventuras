@@ -1,30 +1,23 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using F = System.IO.File;
-
-using System.IO;
-using System.Text;
-using losol.EventManagement.Domain;
 using losol.EventManagement.Services;
-using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
 using losol.EventManagement.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Losol.Communication.Email;
 
-namespace losol.EventManagement.Web.Controllers.Api {
+namespace losol.EventManagement.Web.Controllers.Api
+{
 
     [Authorize (Policy = "AdministratorRole")]
     [Route ("api/certificates")]
     public class CertificatesController : Controller {
-
-        private readonly IRegistrationService _registrationService;
         private readonly ICertificatesService _certificatesService;
 
-        public CertificatesController (IRegistrationService registrationService, ICertificatesService certificatesService) {
-            _registrationService = registrationService;
+        public CertificatesController (ICertificatesService certificatesService) {
             _certificatesService = certificatesService;
         }
 
