@@ -1,4 +1,3 @@
-using Losol.Communication.Email.Services;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Logging;

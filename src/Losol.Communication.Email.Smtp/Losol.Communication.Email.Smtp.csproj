@@ -2,10 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <Version>0.0.1</Version>
+    <Authors>Ole Kristian Losvik</Authors>
+    <Company>Losol AS</Company>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Email\Losol.Communication.Email.csproj" />
+    <ProjectReference Include="..\Losol.Communication.Email\Losol.Communication.Email.csproj" />
     <PackageReference Include="MailKit" Version="2.4.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />

@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Losol.Communication.Email.Services
+namespace Losol.Communication.Email
 {
     public interface IEmailSender
     {

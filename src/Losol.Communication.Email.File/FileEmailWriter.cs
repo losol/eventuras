@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Losol.Communication.Email.Services;
+using Losol.Communication.Email;
 using Microsoft.Extensions.Options;
 
 namespace Losol.Communication.Email.File

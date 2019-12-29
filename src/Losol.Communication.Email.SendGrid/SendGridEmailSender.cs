@@ -1,11 +1,11 @@
-﻿using Losol.Communication.Email.Services;
+﻿using Losol.Communication.Email;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using Attachment = Losol.Communication.Email.Services.Attachment;
+using Attachment = Losol.Communication.Email.Attachment;
 
 namespace Losol.Communication.Email.SendGrid
 {
