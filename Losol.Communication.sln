@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{8553
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4B03ABF7-A8C8-40C2-BCA5-EE1ED6B5D5B4}"
 	ProjectSection(SolutionItems) = preProject
-		src\dependencies.props = src\dependencies.props
+		src\common.props = src\common.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Losol.Communication.Email", "src\Losol.Communication.Email\Losol.Communication.Email.csproj", "{5AC216F1-78E8-4A69-9C58-5AF1938FBADA}"
@@ -24,7 +24,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Losol.Communication.Sms.Twi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Losol.Communication.Email.Mock", "src\Losol.Communication.Email.Mock\Losol.Communication.Email.Mock.csproj", "{AA736154-C412-4A51-9134-3576F62B9134}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Losol.Communication.Sms.Mock", "src\Losol.Communication.Sms.Mock\Losol.Communication.Sms.Mock.csproj", "{294D8E54-C44A-47E4-B7EA-3487FA8213F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Losol.Communication.Sms.Mock", "src\Losol.Communication.Sms.Mock\Losol.Communication.Sms.Mock.csproj", "{294D8E54-C44A-47E4-B7EA-3487FA8213F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

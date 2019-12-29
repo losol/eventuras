@@ -1,14 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../dependencies.props" />
-
-  <PropertyGroup>
-    <TargetFramework>$(FrameworkVersion)</TargetFramework>
-    <Version>$(LibraryVersion)</Version>
-    <Authors>$(LibraryAuthor)</Authors>
-    <Company>$(LibraryCompany)</Company>
-    <IsPackable>true</IsPackable>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-  </PropertyGroup>
+  <Import Project="../common.props" />
 
 </Project>
