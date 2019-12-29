@@ -8,10 +8,11 @@
     <Authors>$(LibraryAuthor)</Authors>
     <Company>$(LibraryCompany)</Company>
     <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Losol.Communication.Email\Losol.Communication.Email.csproj" />
+    <PackageReference Include="Losol.Communication.Email" Version="$(LibraryVersion)" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.0" />

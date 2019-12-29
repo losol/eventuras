@@ -8,6 +8,7 @@
     <Authors>$(LibraryAuthor)</Authors>
     <Company>$(LibraryCompany)</Company>
     <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
 </Project>
