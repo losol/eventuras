@@ -6,7 +6,7 @@ namespace Losol.Communication.Sms.Twilio
 {
     public static class TwilioSmsServicesExtensions
     {
-        public static IServiceCollection AddSmtpEmailServices(
+        public static IServiceCollection AddTwilioSmsServices(
             this IServiceCollection services,
             IConfiguration configuration)
         {
