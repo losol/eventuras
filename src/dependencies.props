@@ -1,7 +1,7 @@
 ﻿<Project>
   <PropertyGroup>
     <FrameworkVersion>netstandard2.1</FrameworkVersion>
-    <LibraryVersion>0.0.1</LibraryVersion>
+    <LibraryVersion>0.2.0</LibraryVersion>
     <LibraryAuthor>Ole Kristian Losvik</LibraryAuthor>
     <LibraryCompany>Losol AS</LibraryCompany>
   </PropertyGroup>
