@@ -120,6 +120,15 @@
   <data name="Click here to log in!" xml:space="preserve">
     <value>Trykk her for å logge inn!</value>
   </data>
+  <data name="kurs@nordland-legeforening.no" xml:space="preserve">
+    <value>kurs@nordland-legeforening.no</value>
+  </data>
+  <data name="Mørkvedsenteret 17, 8028 Bodø" xml:space="preserve">
+    <value>Mørkvedsenteret 17, 8028 Bodø</value>
+  </data>
+  <data name="Nordland legeforening" xml:space="preserve">
+    <value>Nordland legeforening</value>
+  </data>
   <data name="Or copy the link into your browser:&lt;br/&gt; {0}" xml:space="preserve">
     <value>Eller kopier lenken inn i nettleseren:&lt;br /&gt; {0}</value>
   </data>

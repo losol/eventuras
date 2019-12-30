@@ -117,43 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Arrangement" xml:space="preserve">
-    <value>Arrangement</value>
+  <data name="&lt;strong&gt;Important: &lt;/strong&gt;To confirm, you must &lt;a href=&quot;{0}&quot;&gt; click here &lt;/a&gt;." xml:space="preserve">
+    <value>&lt;strong&gt;Viktig: &lt;/strong&gt;For å bekrefte påmeldingen, så må du &lt;a href="{0}"&gt;klikke her&lt;/a&gt;.</value>
   </data>
-  <data name="Confirm registration!" xml:space="preserve">
-    <value>Bekreft påmelding!</value>
+  <data name="Dine ordrer" xml:space="preserve">
+    <value>Dine ordrer</value>
   </data>
-  <data name="Email" xml:space="preserve">
-    <value>Epost</value>
+  <data name="Doesn't the button work? Then you can confirm by copying this link into your browser: {0}" xml:space="preserve">
+    <value>Virker ikke knappen? Da kan du bekrefte med å kopiere inn denne lenken i nettleseren: {0}</value>
   </data>
-  <data name="If something is wrong, please contact bar@nordland-legeforening.no." xml:space="preserve">
-    <value>Hvis noe er feil, så tar du bar kontakt med nett@nordland-legeforening.no.</value>
+  <data name="Hi {0}!" xml:space="preserve">
+    <value>Heisann {0}!</value>
   </data>
-  <data name="If the button doesn't work, you can try to paste the URL into a browser: {0}" xml:space="preserve">
-    <value>Hvis knappen ikke virker, så kan du forsøke å lime inn nettadressen i en nettleser: {0}</value>
+  <data name="Order # {0}" xml:space="preserve">
+    <value>Ordre #{0}</value>
   </data>
-  <data name="kurs@nordland-legeforening.no" xml:space="preserve">
-    <value>kurs@nordland-legeforening.no</value>
+  <data name="This email was sent from the course system to the Nordland Medical Association, Mørkvedsentret 17, 8028 Bodø" xml:space="preserve">
+    <value>Denne eposten ble sendt fra kurssystemet til Nordland legeforening, Mørkvedsentret 17, 8028 Bodø</value>
   </data>
-  <data name="Mobile" xml:space="preserve">
-    <value>Mobil</value>
+  <data name="Variation: {0}" xml:space="preserve">
+    <value>Variant: {0}</value>
   </data>
-  <data name="Mørkvedsenteret 17, 8028 Bodø" xml:space="preserve">
-    <value>Mørkvedsenteret 17, 8028 Bodø</value>
+  <data name="Welcome to {0}!" xml:space="preserve">
+    <value>Velkommen til {0}!</value>
   </data>
-  <data name="Nordland legeforening" xml:space="preserve">
-    <value>Nordland legeforening</value>
-  </data>
-  <data name="Signed" xml:space="preserve">
-    <value>Påmeldt</value>
-  </data>
-  <data name="Track Order" xml:space="preserve">
-    <value>Spor bestilling</value>
-  </data>
-  <data name="We just need to &lt;a href=&quot;{0}&quot;&gt;confirm your registration!&lt;/a&gt;. All you have to do is click on the link below." xml:space="preserve">
-    <value>Vi trenger bare at du &lt;a href="{0}"&gt;bekrefter påmeldingen!&lt;/a&gt;. Alt du trenger å gjøre er å trykke på lenken under.</value>
-  </data>
-  <data name="You are almost signed up..." xml:space="preserve">
-    <value>Du er nesten påmeldt...</value>
+  <data name="You are receiving this email because you are signed up {0}. Updated program can be found &lt;a href=&quot;{1}&quot;&gt;on the website&lt;/a&gt;." xml:space="preserve">
+    <value>Du får denne eposten fordi du er påmeldt {0}. Oppdatert program finner du på &lt;a href="{1}"&gt;på nettsidene&lt;/a&gt;.</value>
   </data>
 </root>
