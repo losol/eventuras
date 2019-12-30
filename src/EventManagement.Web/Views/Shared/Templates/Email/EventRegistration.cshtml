@@ -1,109 +1,113 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
 @{
     Layout = "_EmailLayout";
 }
 
-
-
 <table align="center" cellpadding="0" cellspacing="0" class="container-for-gmail-android" width="100%">
-  <tr>
-    <td align="center" valign="top" width="100%" style="background-color: #f7f7f7;" class="content-padding">
-      <center>
-        <table cellspacing="0" cellpadding="0" width="600" class="w320">
-          <tr>
-            <td class="header-lg">
-              Du er nesten p&aring;meldt...
-            </td>
-          </tr>
-          <tr>
-            <td class="free-text">
-              Vi trenger bare at du <a href="@Model.VerificationUrl">bekrefter p&aring;meldingen!</a>. Alt du trenger &aring; gj&oslash;re er &aring; trykke p&aring; lenken under.
-              Hvis noe er feil, s&aring; tar du bar kontakt med nett@@nordland-legeforening.no. 
-             
-              <br />
-              <br />
-              Hvis knappen ikke virker, s&aring; kan du fors&oslash;ke &aring; lime inn nettadressen i en nettleser: @Model.VerificationUrl
-            </td>
-          </tr>
-          @if(!string.IsNullOrWhiteSpace(Model.OrdersHtml))
-          {
-            <tr>
-              <td class="free-text">
-                @Html.Raw(Model.OrdersHtml)
-              </td>
-            </tr>
-          }
-          <tr>
-            <td class="button">
-              <div><!--[if mso]>
-                <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="http://" style="height:45px;v-text-anchor:middle;width:155px;" arcsize="15%" strokecolor="#ffffff" fillcolor="#ff6f6f">
-                  <w:anchorlock/>
-                  <center style="color:#ffffff;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;">Track Order</center>
-                </v:roundrect>
-              <![endif]--><a href="@Model.VerificationUrl"
-              style="background-color:#ff6f6f;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;">Bekreft p&aring;melding!</a></div>
-            </td>
-          </tr>
-          <tr>
-            <td class="w320">
-              <table cellpadding="0" cellspacing="0" width="100%">
-                <tr>
-                  <td class="mini-container-left">
-                    <table cellpadding="0" cellspacing="0" width="100%">
-                      <tr>
-                        <td class="mini-block-padding">
-                          <table cellspacing="0" cellpadding="0" width="100%" style="border-collapse:separate !important;">
-                            <tr>
-                              <td class="mini-block">
-                                <span class="header-sm">P&aring;meldt</span><br />
-                                @Model.Name <br />
-                                Epost: @Model.Email <br />
-                                Mobil: @Model.Phone <br />
-                              </td>
-                            </tr>
-                          </table>
+    <tr>
+        <td align="center" valign="top" width="100%" style="background-color: #f7f7f7;" class="content-padding">
+            <center>
+                <table cellspacing="0" cellpadding="0" width="600" class="w320">
+                    <tr>
+                        <td class="header-lg">
+                            @Localizer["You are almost signed up..."]
                         </td>
-                      </tr>
-                    </table>
-                  </td>
-                  <td class="mini-container-right">
-                    <table cellpadding="0" cellspacing="0" width="100%">
-                      <tr>
-                        <td class="mini-block-padding">
-                          <table cellspacing="0" cellpadding="0" width="100%" style="border-collapse:separate !important;">
-                            <tr>
-                              <td class="mini-block">
-                                <span class="header-sm">Arrangement</span><br />
-                                @Model.EventTitle <br />
-                        		    @Model.EventDate<br />
-                        
-                              </td>
-                            </tr>
-                          </table>
+                    </tr>
+                    <tr>
+                        <td class="free-text">
+                            @Localizer["We just need to <a href=\"{0}\">confirm your registration!</a>. All you have to do is click on the link below.", Model.VerificationUrl]
+                            @Localizer["If something is wrong, please contact bar@nordland-legeforening.no."]
+                            <br />
+                            <br />
+                            @Localizer["If the button doesn't work, you can try to paste the URL into a browser: {0}", Model.VerificationUrl]
                         </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </table>
-      </center>
-    </td>
-  </tr>
-  <tr>
-    <td align="center" valign="top" width="100%" style="background-color: #efefef; height: 100px;">
-      <center>
-        <table cellspacing="0" cellpadding="0" width="600" class="w320">
-          <tr>
-            <td style="padding: 25px 0 25px">
-              <strong>Nordland legeforening</strong><br />
-			            Mørkvedsenteret 17, 8028 Bodø <br />
-              kurs@nordland-legeforening.no <br /><br />
-            </td>
-          </tr>
-        </table>
-      </center>
-    </td>
-  </tr>
+                    </tr>
+                    @if (!string.IsNullOrWhiteSpace(Model.OrdersHtml))
+                    {
+                        <tr>
+                            <td class="free-text">
+                                @Html.Raw(Model.OrdersHtml)
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="button">
+                            <div>
+                                <!--[if mso]>
+                                  <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="http://" style="height:45px;v-text-anchor:middle;width:155px;" arcsize="15%" strokecolor="#ffffff" fillcolor="#ff6f6f">
+                                    <w:anchorlock/>
+                                    <center style="color:#ffffff;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;">@Localizer["Track Order"]</center>
+                                  </v:roundrect>
+                                <![endif]-->
+                                <a href="@Model.VerificationUrl"
+                                   style="background-color:#ff6f6f;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;">@Localizer["Confirm registration!"]</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="w320">
+                            <table cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td class="mini-container-left">
+                                        <table cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td class="mini-block-padding">
+                                                    <table cellspacing="0" cellpadding="0" width="100%" style="border-collapse:separate !important;">
+                                                        <tr>
+                                                            <td class="mini-block">
+                                                                <span class="header-sm">@Localizer["Signed"]</span><br />
+                                                                @Model.Name <br />
+                                                                @Localizer["Email"]: @Model.Email <br />
+                                                                @Localizer["Mobile"]: @Model.Phone <br />
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td class="mini-container-right">
+                                        <table cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td class="mini-block-padding">
+                                                    <table cellspacing="0" cellpadding="0" width="100%" style="border-collapse:separate !important;">
+                                                        <tr>
+                                                            <td class="mini-block">
+                                                                <span class="header-sm">@Localizer["Arrangement"]</span><br />
+                                                                @Model.EventTitle <br />
+                                                                @Model.EventDate<br />
+
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </center>
+        </td>
+    </tr>
+    <tr>
+        <td align="center" valign="top" width="100%" style="background-color: #efefef; height: 100px;">
+            <center>
+                <table cellspacing="0" cellpadding="0" width="600" class="w320">
+                    <tr>
+                        <td style="padding: 25px 0 25px">
+                            <strong>Nordland legeforening</strong><br />
+                            Mørkvedsenteret 17, 8028 Bodø <br />
+                            kurs@nordland-legeforening.no <br /><br />
+                        </td>
+                    </tr>
+                </table>
+            </center>
+        </td>
+    </tr>
 </table>
