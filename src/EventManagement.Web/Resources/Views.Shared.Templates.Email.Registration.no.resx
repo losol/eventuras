@@ -120,9 +120,6 @@
   <data name="&lt;strong&gt;Important: &lt;/strong&gt;To confirm, you must &lt;a href=&quot;{0}&quot;&gt; click here &lt;/a&gt;." xml:space="preserve">
     <value>&lt;strong&gt;Viktig: &lt;/strong&gt;For å bekrefte påmeldingen, så må du &lt;a href="{0}"&gt;klikke her&lt;/a&gt;.</value>
   </data>
-  <data name="Dine ordrer" xml:space="preserve">
-    <value>Dine ordrer</value>
-  </data>
   <data name="Doesn't the button work? Then you can confirm by copying this link into your browser: {0}" xml:space="preserve">
     <value>Virker ikke knappen? Da kan du bekrefte med å kopiere inn denne lenken i nettleseren: {0}</value>
   </data>
@@ -143,5 +140,8 @@
   </data>
   <data name="You are receiving this email because you are signed up {0}. Updated program can be found &lt;a href=&quot;{1}&quot;&gt;on the website&lt;/a&gt;." xml:space="preserve">
     <value>Du får denne eposten fordi du er påmeldt {0}. Oppdatert program finner du på &lt;a href="{1}"&gt;på nettsidene&lt;/a&gt;.</value>
+  </data>
+  <data name="Your orders" xml:space="preserve">
+    <value>Dine ordrer</value>
   </data>
 </root>

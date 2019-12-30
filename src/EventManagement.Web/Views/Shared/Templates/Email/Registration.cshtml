@@ -32,7 +32,7 @@
     <p>@Localizer["You are receiving this email because you are signed up {0}. Updated program can be found <a href=\"{1}\">on the website</a>.", Model.EventInfo.Title, Model.EventLink]</p>
     @if (Model.HasOrder)
     {
-        <h4>Dine ordrer</h4>
+        <h4>@Localizer["Your orders"]</h4>
         @foreach (var order in Model.Orders)
         {
             <p>@Localizer["Order # {0}", order.OrderId]</p>

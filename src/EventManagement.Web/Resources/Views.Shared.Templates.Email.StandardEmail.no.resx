@@ -117,4 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="kurs@nordland-legeforening.no" xml:space="preserve">
+    <value>kurs@nordland-legeforening.no</value>
+  </data>
+  <data name="Mørkvedsenteret 17, 8028 Bodø" xml:space="preserve">
+    <value>Mørkvedsenteret 17, 8028 Bodø</value>
+  </data>
+  <data name="Nordland Medical Association" xml:space="preserve">
+    <value>Nordland legeforening</value>
+  </data>
 </root>
