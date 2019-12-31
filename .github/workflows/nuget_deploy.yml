@@ -11,11 +11,11 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 2.2.103
-    #- name: Build
-    #  run: dotnet build --configuration Release
     - name: Run tests
       run: dotnet test
-    - name: Build NuGet Package
+    - name: Pack NuGet Packages
       run: dotnet pack ./src/Email/Losol.Communication.Email.csproj --configuration Release -o NuGetPackages
-    - name: Deploy NuGet Package
-      run: dotnet nuget push ./NuGetPackages/Losol.Communication.Email.0.1.0.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+    - name: Deploy Nuget Packages
+      run: dotnet nuget push ./**/*.nupkg 
+        --api-keyk ${{ secrets.NUGET_API_KEY }} 
+        --source https://api.nuget.org/v3/index.json
