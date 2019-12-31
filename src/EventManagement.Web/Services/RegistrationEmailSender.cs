@@ -1,25 +1,19 @@
-using System;
-using System.Threading.Tasks;
-using losol.EventManagement.Domain;
 using losol.EventManagement.Services;
-using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.ViewModels;
-using losol.EventManagement.Web.Config;
-using Microsoft.AspNetCore.Identity;
+using Losol.Communication.Email;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Routing;
+using System.Threading.Tasks;
 using static losol.EventManagement.Domain.Registration;
 
 namespace losol.EventManagement.Web.Services
 {
-	public sealed class RegistrationEmailSender : ApplicationEmailSender
+    public sealed class RegistrationEmailSender : ApplicationEmailSender
 	{
 		protected override string Template => "Templates/Email/Registration";
 		private readonly IRegistrationService _registrationService;
-		private readonly IRenderService _renderService;
-		private readonly IUrlHelper _urlHelper;
+        private readonly IUrlHelper _urlHelper;
         private readonly string _requestScheme;
 
 
@@ -32,7 +26,6 @@ namespace losol.EventManagement.Web.Services
 			: base(emailSender, renderService)
 		{ 
 			_registrationService = registrationService;
-			_renderService = renderService;
             _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);;
             _requestScheme = actionContextAccessor.ActionContext.HttpContext.Request.Scheme;
 		}

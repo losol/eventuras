@@ -1,11 +1,9 @@
-﻿using System;
+using Losol.Communication.Email;
 using System.Threading.Tasks;
-using losol.EventManagement.Services;
-using losol.EventManagement.Services.Messaging;
 
 namespace losol.EventManagement.Web.Services
 {
-	public abstract class ApplicationEmailSender
+    public abstract class ApplicationEmailSender
 	{
 		protected abstract string Template { get; }
 

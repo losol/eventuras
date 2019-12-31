@@ -1,18 +1,17 @@
+using losol.EventManagement.Services;
+using losol.EventManagement.ViewModels;
+using losol.EventManagement.Web.Services;
+using Losol.Communication.Sms;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using GoApi.Core;
-using losol.EventManagement.Services;
-using losol.EventManagement.Services.Messaging.Sms;
-using losol.EventManagement.ViewModels;
-using losol.EventManagement.Web.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
-namespace losol.EventManagement.Web.Controllers.Api {
+namespace losol.EventManagement.Web.Controllers.Api
+{
     [Authorize (Policy = "AdministratorRole")]
     [Route ("/api/v0/messaging")]
     public class MessagingController : Controller {

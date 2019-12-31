@@ -1,9 +1,8 @@
-using System;
-using losol.EventManagement.Services.Messaging;
+using Losol.Communication.Email;
 
 namespace losol.EventManagement.ViewModels
 {
-	public class EmailMessage
+    public class EmailMessage
 	{
 		public string Name { get; set; }
 		public string Email { get; set; }

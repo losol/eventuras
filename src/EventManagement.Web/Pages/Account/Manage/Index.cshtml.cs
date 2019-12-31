@@ -1,15 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
+using losol.EventManagement.Domain;
+using losol.EventManagement.Services;
+using Losol.Communication.Email;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using losol.EventManagement.Domain;
-using losol.EventManagement.Services;
-using losol.EventManagement.Services.Messaging;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace losol.EventManagement.Pages.Account.Manage
 {

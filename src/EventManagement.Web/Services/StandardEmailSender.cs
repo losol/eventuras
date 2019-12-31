@@ -1,12 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using losol.EventManagement.Services;
-using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.ViewModels;
+using Losol.Communication.Email;
+using System.Threading.Tasks;
 
 namespace losol.EventManagement.Web.Services
 {
-	public sealed class StandardEmailSender : ApplicationEmailSender
+    public sealed class StandardEmailSender : ApplicationEmailSender
 	{
 		protected override string Template => "Templates/Email/StandardEmail";
 		public StandardEmailSender(

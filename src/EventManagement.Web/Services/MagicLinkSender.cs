@@ -1,12 +1,12 @@
-using System.Threading.Tasks;
 using losol.EventManagement.Domain;
-using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.Web.Config;
 using losol.EventManagement.Web.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
+using System.Threading.Tasks;
+using Losol.Communication.Email;
 
 namespace losol.EventManagement.Web.Services
 {

@@ -1,24 +1,31 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>latest</LangVersion>
     <RootNamespace>losol.EventManagement.Web</RootNamespace>
     <AssemblyName>losol.EventManagement.Web</AssemblyName>
     <UserSecretsId>aspnet-losol.EventManagement-74C0FE44-3444-4386-9785-6815A715D4AB</UserSecretsId>
+    <LosolCommunicationLibraryVersion>0.2.0</LosolCommunicationLibraryVersion>
   </PropertyGroup>
   <PropertyGroup>
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MailKit" Version="2.4.1" />
+    <PackageReference Include="Losol.Communication.Email" Version="$(LosolCommunicationLibraryVersion)" />
+    <PackageReference Include="Losol.Communication.Email.Smtp" Version="$(LosolCommunicationLibraryVersion)" />
+    <PackageReference Include="Losol.Communication.Email.SendGrid" Version="$(LosolCommunicationLibraryVersion)" />
+    <PackageReference Include="Losol.Communication.Email.File" Version="$(LosolCommunicationLibraryVersion)" />
+    <PackageReference Include="Losol.Communication.Email.Mock" Version="$(LosolCommunicationLibraryVersion)" />
+    <PackageReference Include="Losol.Communication.Sms" Version="$(LosolCommunicationLibraryVersion)" />
+    <PackageReference Include="Losol.Communication.Sms.Twilio" Version="$(LosolCommunicationLibraryVersion)" />
+    <PackageReference Include="Losol.Communication.Sms.Mock" Version="$(LosolCommunicationLibraryVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.0" />
-    <PackageReference Include="Sendgrid" Version="9.12.0" />
     <PackageReference Include="Mapster" Version="4.1.1" />
     <PackageReference Include="Sentry.AspNetCore" Version="1.2.0" />
     <PackageReference Include="Stripe.net" Version="[16.4.0]" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EventManagement.Services.Converto\EventManagement.Services.Converto.csproj" />
     <ProjectReference Include="..\EventManagement.Services\EventManagement.Services.csproj" />
     <ProjectReference Include="..\EventManagement.Infrastructure\EventManagement.Infrastructure.csproj" />
     <ProjectReference Include="..\EventManagement.Domain\EventManagement.Domain.csproj" />
@@ -27,12 +34,6 @@
   <ItemGroup>
     <Folder Include="Pages\Admin\Products\" />
     <Folder Include="Views\Shared\Templates\Certificates\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Node\writeToPdf.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
 </Project>

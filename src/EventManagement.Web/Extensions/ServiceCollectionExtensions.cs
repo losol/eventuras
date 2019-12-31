@@ -1,24 +1,28 @@
-using System.Globalization;
+using EventManagement.Services.Converto;
 using losol.EventManagement.Config;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services;
 using losol.EventManagement.Services.DbInitializers;
 using losol.EventManagement.Services.Invoicing;
-using losol.EventManagement.Services.Messaging;
-using losol.EventManagement.Services.Messaging.Sms;
 using losol.EventManagement.Web.Config;
 using losol.EventManagement.Web.Extensions;
 using losol.EventManagement.Web.Services;
+using Losol.Communication.Email.File;
+using Losol.Communication.Email.Mock;
+using Losol.Communication.Email.SendGrid;
+using Losol.Communication.Email.Smtp;
+using Losol.Communication.Sms.Mock;
+using Losol.Communication.Sms.Twilio;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Globalization;
 
 namespace EventManagement.Web.Extensions
 {
@@ -130,18 +134,16 @@ namespace EventManagement.Web.Extensions
             switch (provider)
             {
                 case EmailProvider.SendGrid:
-                    services.Configure<SendGridOptions>(Configuration.GetSection("SendGrid"));
-                    services.AddTransient<IEmailSender, SendGridEmailSender>();
+                    services.AddSendGridEmailServices(Configuration.GetSection("SendGrid"));
                     break;
-                case EmailProvider.SMTP:
-                    services.Configure<SmtpOptions>(Configuration.GetSection("Smtp"));
-                    services.AddTransient<IEmailSender, SmtpEmailSender>();
+                case EmailProvider.Smtp:
+                    services.AddSmtpEmailServices(Configuration.GetSection("Smtp"));
                     break;
                 case EmailProvider.File:
-                    services.AddTransient<IEmailSender, FileEmailWriter>();
+                    services.AddFileEmailServices(Configuration.GetSection("Files"));
                     break;
                 case EmailProvider.Mock:
-                    services.AddTransient<IEmailSender, MockEmailSender>();
+                    services.AddMockEmailServices();
                     break;
             }
 
@@ -159,11 +161,10 @@ namespace EventManagement.Web.Extensions
             switch (provider)
             {
                 case SmsProvider.Twilio:
-                    services.Configure<TwilioOptions>(config.GetSection("Twilio"));
-                    services.AddTransient<ISmsSender, TwilioSmsSender>();
+                    services.AddTwilioSmsServices(config.GetSection("Twilio"));
                     break;
                 case SmsProvider.Mock:
-                    services.AddTransient<ISmsSender, MockSmsSender>();
+                    services.AddMockSmsServices();
                     break;
             }
         }
@@ -195,7 +196,7 @@ namespace EventManagement.Web.Extensions
             }
         }
 
-        public static void AddApplicationServices(this IServiceCollection services)
+        public static void AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             // Register our application services
             services.AddScoped<IEventInfoService, EventInfoService>();
@@ -214,9 +215,9 @@ namespace EventManagement.Web.Extensions
             // Added for the renderpage service
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-
-            services.AddNodeServices();
+            services.AddConvertoServices(configuration.GetSection("Converto"));
             services.AddTransient<CertificatePdfRenderer>();
+            services.AddHttpClient();
         }
 
     }

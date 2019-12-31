@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Losol.Communication.Email;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using losol.EventManagement.Services;
-using losol.EventManagement.Services.Messaging;
 
 namespace losol.EventManagement.Services
 {
