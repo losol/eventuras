@@ -13,9 +13,9 @@ jobs:
         dotnet-version: 3.1.100
     - name: Run tests
       run: dotnet test
-    - name: Pack NuGet Packages
-      run: dotnet pack ./src/**/*.csproj --configuration Release -o NuGetPackages
+    - name: Build
+      run: dotnet build --configuration Release
     - name: Deploy Nuget Packages
-      run: dotnet nuget push ./**/NuGetPackages/*.nupkg 
+      run: dotnet nuget push ./**/*.nupkg 
         --api-keyk ${{ secrets.NUGET_API_KEY }} 
         --source https://api.nuget.org/v3/index.json
