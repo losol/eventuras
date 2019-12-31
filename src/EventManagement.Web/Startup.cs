@@ -2,14 +2,23 @@ using EventManagement.Web.Extensions;
 using losol.EventManagement.Config;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Globalization;
+using System.Linq;
 
 namespace losol.EventManagement
 {
     public class Startup
     {
+        private static readonly string[] SupportedCultures = new[]
+        {
+            "no", // default one goes first
+            "en"
+        };
+
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
@@ -39,7 +48,7 @@ namespace losol.EventManagement
             services.ConfigureIdentity();
             services.ConfigureDbInitializationStrategy(Configuration, HostingEnvironment);
             services.ConfigureAuthorizationPolicies();
-            ServiceCollectionExtensions.ConfigureInternationalization();
+            services.ConfigureLocalization(new CultureInfo(SupportedCultures[0]));
             services.ConfigureMvc();
 
             services.AddSiteConfig(Configuration);
@@ -72,6 +81,16 @@ namespace losol.EventManagement
             {
                 app.UseExceptionHandler("/Info/Error");
             }
+
+            var cultureInfoList = SupportedCultures.Select(c => new CultureInfo(c)).ToList();
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture(SupportedCultures[0]),
+                // Formatting numbers, dates, etc.
+                SupportedCultures = cultureInfoList,
+                // UI strings that we have localized.
+                SupportedUICultures = cultureInfoList
+            });
 
             app.UseStaticFiles();
             app.UseRouting();

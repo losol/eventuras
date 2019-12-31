@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -65,7 +66,7 @@ namespace EventManagement.Web.Extensions
         {
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AdministratorRole", policy => policy.RequireRole("Admin", "SuperAdmin"));
+                options.AddPolicy("AdministratorRole", policy => policy.RequireRole(Roles.Admin, Roles.SuperAdmin));
             });
         }
 
@@ -85,7 +86,15 @@ namespace EventManagement.Web.Extensions
                     options.Conventions.AuthorizeFolder("/Profile");
 
                     options.Conventions.AddPageRoute("/Events/Register/Index", "events/{id}/{slug?}/register");
-                });
+                })
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
+        }
+
+        public static void ConfigureLocalization(this IServiceCollection services, CultureInfo defaultCultureInfo)
+        {
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+            CultureInfo.DefaultThreadCurrentCulture = defaultCultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = defaultCultureInfo;
         }
 
         public static void ConfigureDbInitializationStrategy(this IServiceCollection services,
@@ -105,13 +114,6 @@ namespace EventManagement.Web.Extensions
                     services.AddScoped<IDbInitializer, DefaultDbInitializer>();
                     break;
             }
-        }
-
-        public static void ConfigureInternationalization()
-        {
-            var cultureInfo = new CultureInfo("nb-NO");
-            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
         }
 
         public static void AddSiteConfig(this IServiceCollection services, IConfiguration Configuration)

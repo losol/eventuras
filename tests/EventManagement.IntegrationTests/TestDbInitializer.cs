@@ -1,11 +1,10 @@
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services.DbInitializers;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using System.Threading;
+using System.Threading.Tasks;
 
 
 namespace losol.EventManagement.IntegrationTests
@@ -14,7 +13,11 @@ namespace losol.EventManagement.IntegrationTests
     {
         private static readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
 
-        public TestDbInitializer(ApplicationDbContext db, RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, IOptions<DbInitializerOptions> config)
+        public TestDbInitializer(
+            ApplicationDbContext db,
+            RoleManager<IdentityRole> roleManager,
+            UserManager<ApplicationUser> userManager,
+            IOptions<DbInitializerOptions> config)
             : base(db, roleManager, userManager, config)
         { }
 
@@ -23,11 +26,11 @@ namespace losol.EventManagement.IntegrationTests
             await SemaphoreSlim.WaitAsync();
             try
             {
-                if (_db.Database.EnsureCreated())
+                if (this._db.Database.EnsureCreated())
                 {
                     await base.SeedAsync();
-                    _db.EventInfos.AddRange(SeedData.Events);
-                    await _db.SaveChangesAsync();
+                    this._db.EventInfos.AddRange(SeedData.Events);
+                    await this._db.SaveChangesAsync();
                 }
             }
             finally

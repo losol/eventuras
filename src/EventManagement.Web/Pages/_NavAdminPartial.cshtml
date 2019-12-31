@@ -3,7 +3,7 @@
 @if (SignInManager.IsSignedIn(User))
 {
     // is the current user authorized to see the next part of the page?
-    if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin") )
+    if (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.SuperAdmin) )
     {
         <ul class="nav navbar-nav navbar-right">
             <li class="nav-item">

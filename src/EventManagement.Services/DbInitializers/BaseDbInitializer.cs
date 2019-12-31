@@ -31,7 +31,7 @@ namespace losol.EventManagement.Services.DbInitializers
         public virtual async Task SeedAsync()
         {
             // Add administrator role if it does not exist
-			string[] roleNames = { "Admin", "SuperAdmin" };
+			string[] roleNames = { Roles.Admin, Roles.SuperAdmin };
 			IdentityResult roleResult;
 			foreach (var roleName in roleNames)
 			{
