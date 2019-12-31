@@ -14,8 +14,9 @@ jobs:
     - name: Run tests
       run: dotnet test
     - name: Build
-      run: dotnet build --configuration Release
+      run: dotnet build 
+        --configuration Release
     - name: Deploy Nuget Packages
       run: dotnet nuget push ./**/*.nupkg 
-        --api-keyk ${{ secrets.NUGET_API_KEY }} 
+        --api-key ${{ secrets.NUGET_API_KEY }} 
         --source https://api.nuget.org/v3/index.json
