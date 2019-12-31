@@ -20,7 +20,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManagement.Integration
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManagement.UnitTests", "tests\EventManagement.UnitTests\EventManagement.UnitTests.csproj", "{99FFFC5B-69E5-44B9-B0B6-BF74E664EFC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventManagement.Services.Converto.Tests", "tests\EventManagement.Services.Converto.Tests\EventManagement.Services.Converto.Tests.csproj", "{D71150B9-59E2-4723-81FD-9074261172DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventManagement.Services.Converto.Tests", "tests\EventManagement.Services.Converto.Tests\EventManagement.Services.Converto.Tests.csproj", "{D71150B9-59E2-4723-81FD-9074261172DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

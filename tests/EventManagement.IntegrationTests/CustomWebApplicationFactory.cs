@@ -1,14 +1,13 @@
-using System;
-using System.Collections.Generic;
 using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services.DbInitializers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace losol.EventManagement.IntegrationTests
 {

@@ -1,20 +1,15 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using F = System.IO.File;
-
-using System.Text;
 using losol.EventManagement.Services;
-using losol.EventManagement.Services.Messaging;
 using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
 using Microsoft.AspNetCore.Authorization;
-using System.IO;
-using losol.EventManagement.Domain;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using static losol.EventManagement.Domain.Registration;
 
-namespace losol.EventManagement.Web.Controllers.Api {
+namespace losol.EventManagement.Web.Controllers.Api
+{
 
     [Authorize (Policy = "AdministratorRole")]
     [Route ("api/participants")]
