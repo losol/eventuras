@@ -1,0 +1,12 @@
+﻿<Project>
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Version>0.2.0</Version>
+    <Authors>Ole Kristian Losvik</Authors>
+    <Company>Losol AS</Company>
+    <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+</Project>
