@@ -3,7 +3,6 @@
   <Import Project="../common.props" />
 
   <ItemGroup>
-    <PackageReference Include="Losol.Communication.Sms" Version="$(Version)" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.0" />
@@ -11,6 +10,10 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="3.1.0" />
     <PackageReference Include="Twilio" Version="5.37.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Losol.Communication.Sms\Losol.Communication.Sms.csproj" />
   </ItemGroup>
 
 </Project>

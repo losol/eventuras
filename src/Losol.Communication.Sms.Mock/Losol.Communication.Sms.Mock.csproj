@@ -3,8 +3,11 @@
   <Import Project="../common.props" />
 
   <ItemGroup>
-    <PackageReference Include="Losol.Communication.Sms" Version="$(Version)" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Losol.Communication.Sms\Losol.Communication.Sms.csproj" />
   </ItemGroup>
 
 </Project>

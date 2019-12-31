@@ -3,7 +3,6 @@
   <Import Project="../common.props" />
 
   <ItemGroup>
-    <PackageReference Include="Losol.Communication.Email" Version="$(Version)" />
     <PackageReference Include="MailKit" Version="2.4.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />
@@ -11,6 +10,10 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="3.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Losol.Communication.Email\Losol.Communication.Email.csproj" />
   </ItemGroup>
 
 </Project>
