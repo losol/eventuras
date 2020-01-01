@@ -16,7 +16,8 @@ namespace losol.EventManagement.IntegrationTests
             {
                 EventInfoId = eventInfo.EventInfoId,
                 User = user,
-                Status = status
+                Status = status,
+                ParticipantName = user.Name,
                 // TODO: add other params
             };
             context.Registrations.Add(registration);

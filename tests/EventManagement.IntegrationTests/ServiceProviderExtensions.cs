@@ -35,6 +35,7 @@ namespace losol.EventManagement.IntegrationTests
 
             var user = new ApplicationUser
             {
+                Name = email,
                 UserName = email,
                 Email = email,
                 EmailConfirmed = true

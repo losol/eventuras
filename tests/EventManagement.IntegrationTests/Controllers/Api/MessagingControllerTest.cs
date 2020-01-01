@@ -4,9 +4,11 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Losol.Communication.Email;
 using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using Xunit;
 
 namespace losol.EventManagement.IntegrationTests.Controllers.Api
@@ -55,6 +57,12 @@ namespace losol.EventManagement.IntegrationTests.Controllers.Api
 
                 var content = await response.Content.ReadAsStringAsync();
                 Assert.DoesNotContain("Sendte epost. Men fikk noen feil", content);
+
+                this.factory.EmailSenderMock.Verify(s => s.SendEmailAsync(user.Entity.Email, "Test",
+                    It.Is<string>(html => html.Contains("Test Email Contents")),
+                    It.IsAny<Attachment>(),
+                    EmailMessageType.Html));
+
             }
         }
     }
