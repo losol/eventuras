@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Losol.Communication.Email;
@@ -27,16 +28,31 @@ namespace losol.EventManagement.IntegrationTests.Controllers.Api
             });
         }
 
-        [Fact]
-        public async Task Should_Send_Register_Email()
+        [Theory]
+        [InlineData("nb-NO", "Velkommen til")]
+        [InlineData("en-US", "Welcome to")]
+        public async Task Should_Send_Register_Email(string languageCode, string textToCheck)
         {
             const string email = "test@email.com";
             const string password = "MySecretPassword1!";
+
+            this.client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue(languageCode));
 
             var eventInfo = SeedData.Events[0];
 
             using var scope = this.factory.Services.NewScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            this.factory.EmailSenderMock.Setup(s => s.SendEmailAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<Attachment>(),
+                    EmailMessageType.Html))
+                .Callback((string email, string subject, string html, Attachment attachment, EmailMessageType emailType) =>
+                {
+                    Assert.Contains(textToCheck, html);
+                });
 
             using (await scope.ServiceProvider.NewUserAsync(email, password, Roles.Admin))
             {
@@ -62,7 +78,6 @@ namespace losol.EventManagement.IntegrationTests.Controllers.Api
                     It.Is<string>(html => html.Contains("Test Email Contents")),
                     It.IsAny<Attachment>(),
                     EmailMessageType.Html));
-
             }
         }
     }
