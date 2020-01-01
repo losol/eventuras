@@ -35,22 +35,4 @@
     <Folder Include="Views\Shared\Templates\Certificates\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Resources\Services.MagicLinkSender.no.resx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Views.Shared.Templates.Email.EmailRegistration.no.resx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Views.Shared.Templates.Email.MagicLinkEmail.no.resx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Views.Shared.Templates.Email.Registration.no.resx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Views.Shared.Templates.Email.StandardEmail.no.resx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-
 </Project>
