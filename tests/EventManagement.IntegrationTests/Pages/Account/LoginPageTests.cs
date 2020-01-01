@@ -16,9 +16,9 @@ namespace losol.EventManagement.IntegrationTests.Pages.Account
         }
 
         [Theory]
-        [InlineData("nb-NO", "Logg inn")]
-        [InlineData("en-US", "Sign in")]
-        public async Task Should_Send_Magic_Link_Email(string languageCode, string textToCheck)
+        [InlineData("nb-NO", "Logg inn", "Innloggingslenke Kursinord.no")]
+        [InlineData("en-US", "Sign in", "Login link Kursinord.no")]
+        public async Task Should_Send_Magic_Link_Email(string languageCode, string textToCheck, string subject)
         {
             var client = this.factory.CreateClient();
             client.AcceptLanguage(languageCode);
@@ -29,7 +29,7 @@ namespace losol.EventManagement.IntegrationTests.Pages.Account
             var emailExpectation = this.factory.EmailSenderMock
                 .ExpectEmail()
                 .SentTo(user.Entity.Email)
-                .WithSubject("Innloggingslenke Kursinord.no")
+                .WithSubject(subject)
                 .ContainingText("/magic")
                 .ContainingText(textToCheck)
                 .Setup();

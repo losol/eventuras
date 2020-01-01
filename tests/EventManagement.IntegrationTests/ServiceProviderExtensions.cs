@@ -30,7 +30,7 @@ namespace losol.EventManagement.IntegrationTests
 
             if (password == Placeholder)
             {
-                password = Guid.NewGuid().ToString();
+                password = "MySuperSecretPassword1!";
             }
 
             var user = new ApplicationUser
