@@ -52,6 +52,9 @@ namespace losol.EventManagement.IntegrationTests.Controllers.Api
                     }), Encoding.UTF8, "application/json"));
 
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+                var content = await response.Content.ReadAsStringAsync();
+                Assert.DoesNotContain("Sendte epost. Men fikk noen feil", content);
             }
         }
     }
