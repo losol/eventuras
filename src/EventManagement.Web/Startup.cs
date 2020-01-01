@@ -15,8 +15,8 @@ namespace losol.EventManagement
     {
         private static readonly string[] SupportedCultures = new[]
         {
-            "no", // default one goes first
-            "en"
+            "nb-NO", // default one goes first
+            "en-US"
         };
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
