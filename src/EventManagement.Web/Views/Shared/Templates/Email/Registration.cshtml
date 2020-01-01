@@ -20,7 +20,7 @@
     {
         <hr />
         <p>@Localizer["<strong>Important: </strong>To confirm, you must <a href=\"{0}\"> click here </a>.", Model.VerificationUrl] </p>
-        <p><i>@Localizer["Doesn't the button work? Then you can confirm by copying this link into your browser: {0}", Model.VerificationUrl]</i></p>
+        <p><em>@Localizer["Doesn't the button work? Then you can confirm by copying this link into your browser: {0}", Model.VerificationUrl]</em></p>
         <hr />
     }
 
@@ -48,7 +48,7 @@
                         @orderline.ProductName @orderline.ProductDescription.
                         @if (!string.IsNullOrEmpty(orderline.ProductVariantName))
                         {
-                            <i>@Localizer["Variation: {0}", orderline.ProductVariantName . orderline.ProductVariantDescription]</i>
+                            <em>@Localizer["Variation: {0}", orderline.ProductVariantName . orderline.ProductVariantDescription]</em>
                         }
                     </li>
 
