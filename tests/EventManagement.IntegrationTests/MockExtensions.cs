@@ -1,7 +1,6 @@
-using System.Collections.Generic;
-using System.Linq;
 using Losol.Communication.Email;
 using Moq;
+using System.Collections.Generic;
 using Xunit;
 
 namespace losol.EventManagement.IntegrationTests
@@ -23,7 +22,7 @@ namespace losol.EventManagement.IntegrationTests
         private string email = Placeholder;
         private string subject = Placeholder;
         private string message = Placeholder;
-        private List<string> textContained = new List<string>();
+        private readonly List<string> textContained = new List<string>();
         private bool shouldNotHaveAttachment;
         private bool shouldHaveAttachment;
         private EmailMessageType type = EmailMessageType.Html;

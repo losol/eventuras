@@ -2,7 +2,6 @@ using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -24,14 +23,11 @@ namespace losol.EventManagement.IntegrationTests
 
         public static async Task<HttpResponseMessage> LoginAsync(this HttpClient httpClient, string email, string password)
         {
-            var response = await httpClient.PostAsync("/Account/Login", new Dictionary<string, string>
+            return await httpClient.PostAsync("/Account/Login", new Dictionary<string, string>
             {
                 { "Email", email },
                 { "Password", password }
             });
-
-            Assert.Equal(HttpStatusCode.Found, response.StatusCode);
-            return response;
         }
 
         public static async Task<HttpResponseMessage> LogInAsSuperAdminAsync(this HttpClient httpClient)
