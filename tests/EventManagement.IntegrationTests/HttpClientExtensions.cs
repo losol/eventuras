@@ -14,18 +14,17 @@ namespace losol.EventManagement.IntegrationTests
     {
         public static async Task<HttpResponseMessage> LoginAsync(this HttpClient httpClient, string email, string password)
         {
-            return await httpClient.UseAntiForgeryTokenAsync(async token =>
-            {
-                var response = await httpClient.PostAsync("/Account/Login", new FormUrlEncodedContent(new Dictionary<string, string>
-                {
-                    { "Email", email },
-                    { "Password", password },
-                    { "__RequestVerificationToken", token }
-                }));
+            var token = await httpClient.GetAntiForgeryTokenAsync();
 
-                Assert.Equal(HttpStatusCode.Found, response.StatusCode);
-                return response;
-            });
+            var response = await httpClient.PostAsync("/Account/Login", new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                { "Email", email },
+                { "Password", password },
+                { "__RequestVerificationToken", token }
+            }));
+
+            Assert.Equal(HttpStatusCode.Found, response.StatusCode);
+            return response;
         }
 
         public static async Task<HttpResponseMessage> LogInAsSuperAdminAsync(this HttpClient httpClient)
@@ -33,7 +32,7 @@ namespace losol.EventManagement.IntegrationTests
             return await httpClient.LoginAsync(SeedData.SuperAdminEmail, SeedData.SuperAdminPassword);
         }
 
-        public static async Task<HttpResponseMessage> UseAntiForgeryTokenAsync(this HttpClient httpClient, Func<string, Task<HttpResponseMessage>> callbackAction)
+        public static async Task<string> GetAntiForgeryTokenAsync(this HttpClient httpClient)
         {
             SetCookieHeaderValue antiForgeryCookie = null;
 
@@ -51,8 +50,7 @@ namespace losol.EventManagement.IntegrationTests
             var match = AntiForgeryFormFieldRegex.Match(responseHtml);
             var antiForgeryToken = match.Success ? match.Groups[1].Captures[0].Value : null;
             Assert.NotNull(antiForgeryToken);
-            httpClient.DefaultRequestHeaders.Clear();
-            return await callbackAction(antiForgeryToken);
+            return antiForgeryToken;
         }
 
         private static readonly Regex AntiForgeryFormFieldRegex =
