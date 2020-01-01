@@ -6,7 +6,6 @@ using Moq;
 using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -16,15 +15,10 @@ namespace losol.EventManagement.IntegrationTests.Controllers.Api
     public class MessagingControllerTest : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private readonly CustomWebApplicationFactory<Startup> factory;
-        private readonly HttpClient client;
 
         public MessagingControllerTest(CustomWebApplicationFactory<Startup> factory)
         {
             this.factory = factory;
-            this.client = factory.CreateClient(new WebApplicationFactoryClientOptions
-            {
-                AllowAutoRedirect = false
-            });
         }
 
         [Theory]
@@ -32,29 +26,30 @@ namespace losol.EventManagement.IntegrationTests.Controllers.Api
         [InlineData("en-US", "Welcome to")]
         public async Task Should_Send_Register_Email(string languageCode, string textToCheck)
         {
-            this.client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue(languageCode));
-            await this.client.LogInAsSuperAdminAsync();
+            var client = this.factory.CreateClient(new WebApplicationFactoryClientOptions
+            {
+                AllowAutoRedirect = false
+            });
 
-            var eventInfo = SeedData.Events[0];
-
-            this.factory.EmailSenderMock.Setup(s => s.SendEmailAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<Attachment>(),
-                    EmailMessageType.Html))
-                .Callback((string email, string subject, string html, Attachment attachment, EmailMessageType emailType) =>
-                {
-                    Assert.Contains(textToCheck, html);
-                });
+            await client.LogInAsSuperAdminAsync();
 
             using var scope = this.factory.Services.NewScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
+            var eventInfo = SeedData.Events[0];
             using var user = await scope.ServiceProvider.NewUserAsync();
             using var registration = await context.NewRegistrationAsync(eventInfo, user.Entity);
 
-            var response = await this.client.PostAsync($"/api/v0/messaging/email/participants-at-event/{eventInfo.EventInfoId}",
+            var emailExpectation = this.factory.EmailSenderMock
+                .ExpectEmail()
+                .SentTo(user.Entity.Email)
+                .WithSubject("Test")
+                .ContainingText("Test Email Contents")
+                .ContainingText(textToCheck)
+                .Setup();
+
+            client.AcceptLanguage(languageCode);
+            var response = await client.PostAsync($"/api/v0/messaging/email/participants-at-event/{eventInfo.EventInfoId}",
                 new StringContent(JsonConvert.SerializeObject(new
                 {
                     Subject = "Test",
@@ -66,10 +61,7 @@ namespace losol.EventManagement.IntegrationTests.Controllers.Api
             var content = await response.Content.ReadAsStringAsync();
             Assert.DoesNotContain("Sendte epost. Men fikk noen feil", content);
 
-            this.factory.EmailSenderMock.Verify(s => s.SendEmailAsync(user.Entity.Email, "Test",
-                It.Is<string>(html => html.Contains("Test Email Contents")),
-                It.IsAny<Attachment>(),
-                EmailMessageType.Html));
+            emailExpectation.VerifyEmailSent(Times.Once());
         }
     }
 }

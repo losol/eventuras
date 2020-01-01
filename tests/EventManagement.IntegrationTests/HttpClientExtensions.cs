@@ -7,21 +7,28 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xunit;
+using StringWithQualityHeaderValue = System.Net.Http.Headers.StringWithQualityHeaderValue;
 
 namespace losol.EventManagement.IntegrationTests
 {
     public static class HttpClientExtensions
     {
-        public static async Task<HttpResponseMessage> LoginAsync(this HttpClient httpClient, string email, string password)
+        public static async Task<HttpResponseMessage> PostAsync(this HttpClient httpClient, string requestUri, IDictionary<string, string> data)
         {
             var token = await httpClient.GetAntiForgeryTokenAsync();
 
-            var response = await httpClient.PostAsync("/Account/Login", new FormUrlEncodedContent(new Dictionary<string, string>
+            data.Add("__RequestVerificationToken", token);
+
+            return await httpClient.PostAsync(requestUri, new FormUrlEncodedContent(data));
+        }
+
+        public static async Task<HttpResponseMessage> LoginAsync(this HttpClient httpClient, string email, string password)
+        {
+            var response = await httpClient.PostAsync("/Account/Login", new Dictionary<string, string>
             {
                 { "Email", email },
-                { "Password", password },
-                { "__RequestVerificationToken", token }
-            }));
+                { "Password", password }
+            });
 
             Assert.Equal(HttpStatusCode.Found, response.StatusCode);
             return response;
@@ -51,6 +58,11 @@ namespace losol.EventManagement.IntegrationTests
             var antiForgeryToken = match.Success ? match.Groups[1].Captures[0].Value : null;
             Assert.NotNull(antiForgeryToken);
             return antiForgeryToken;
+        }
+
+        public static void AcceptLanguage(this HttpClient httpClient, string languageIsoCode)
+        {
+            httpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue(languageIsoCode));
         }
 
         private static readonly Regex AntiForgeryFormFieldRegex =
