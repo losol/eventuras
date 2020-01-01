@@ -5,6 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace losol.EventManagement.IntegrationTests
 {
+    /// <summary>
+    /// Each newly created entity should be removed from the testing database right after usage,
+    /// so it would not clash with other DB entities created in other tests. This includes users,
+    /// events, registrations, and other.
+    /// </summary>
+    /// <typeparam name="T">Entity type</typeparam>
     public interface IDisposableEntity<out T> : IDisposable where T : class
     {
         public T Entity { get; }
