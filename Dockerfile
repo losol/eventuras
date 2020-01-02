@@ -1,23 +1,10 @@
 #
 # Stage 0
 # Build the project
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
-
-# Install node
-ENV NODE_VERSION 8.11.4
-ENV NODE_DOWNLOAD_SHA c69abe770f002a7415bd00f7ea13b086650c1dd925ef0c3bf8de90eabecc8790
-RUN curl -SL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz" --output nodejs.tar.gz \
-    && echo "$NODE_DOWNLOAD_SHA nodejs.tar.gz" | sha256sum -c - \
-    && tar -xzf "nodejs.tar.gz" -C /usr/local --strip-components=1 \
-    && rm nodejs.tar.gz \
-    && ln -s /usr/local/bin/node /usr/local/bin/nodejs
-
-# This is needed for PhantomJS to successfully install
-RUN apt-get update
-RUN apt-get install bzip2
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
+WORKDIR /app/src
 
 # copy csproj and restore dependencies
-WORKDIR /app/src
 COPY ./EventManagement.sln .
 COPY ./src/EventManagement.Web/*.csproj ./src/EventManagement.Web/
 COPY ./src/EventManagement.Services/*.csproj ./src/EventManagement.Services/
@@ -29,16 +16,11 @@ COPY ./tests/EventManagement.IntegrationTests/*.csproj ./tests/EventManagement.I
 COPY ./tests/EventManagement.Services.Converto.Tests/*.csproj ./tests/EventManagement.Services.Converto.Tests/
 RUN dotnet restore
 
-# Copy the package.json file
-COPY ./src/EventManagement.Web/package*.json ./src/EventManagement.Web/
-RUN npm --prefix ./src/EventManagement.Web install ./src/EventManagement.Web
-
 # copy everything else
 COPY . ./
 
 # Publish
-WORKDIR ./src/EventManagement.Web
-RUN ./node_modules/.bin/gulp
+WORKDIR /app/src/src/EventManagement.Web
 RUN dotnet publish -c Release -o /app/out
 
 #
@@ -46,11 +28,8 @@ RUN dotnet publish -c Release -o /app/out
 # Copy the built files over
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 
-# Install libfontconfig (required by PhantomJS)
-RUN apt-get -qq update && apt-get --assume-yes install libfontconfig
-
-# Copy files over from the build-env stage
+# Copy files over from the build stage
 WORKDIR /app
-COPY --from=build-env /app/out .
+COPY --from=build /app/out .
 
 ENTRYPOINT ["dotnet", "losol.EventManagement.Web.dll"]
