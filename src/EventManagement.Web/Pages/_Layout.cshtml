@@ -3,17 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <title>@ViewData["Title"] - kursinord.no</title>
-
-    <environment include="Development">
-        <link rel="stylesheet" href="~/assets/css/site.css" />
-         <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
-    </environment>
-    <environment exclude="Development">
-        <link rel="stylesheet" href="~/assets/css/site.min.css" asp-append-version="true" />
-         <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
-    </environment>
+        <link rel="stylesheet" href="~/assets/css/main.css" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     @RenderSection("HeadScripts", required: false)
     <google-tag-head gtm-id="GTM-5KKT49H" />
 </head>
@@ -39,7 +30,7 @@
 @RenderBody()
 </main>
 @await Html.PartialAsync("_PartFooter")
-    <script src="~/assets/js/site.min.js" asp-append-version="true"></script>
+    <script src="~/assets/js/app.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
