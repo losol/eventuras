@@ -5,7 +5,8 @@
 	"scripts": {
 		"test": "echo \"Warning: no test specified\" && exit 1",
 		"build": "webpack --mode production",
-		"build:dev": "webpack --mode development"
+		"build:dev": "webpack --mode development",
+		"postinstall": "npm run build"
 	},
 	"repository": {
 		"type": "git",
@@ -41,7 +42,6 @@
 		"font-awesome": "^4.7.0",
 		"jquery": "^3.4.1",
 		"popper.js": "^1.15.0",
-		"tableexport": "hhurz/tableExport.jquery.plugin",
 		"toastr": "^2.1.4"
 	}
 }

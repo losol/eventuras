@@ -1,0 +1,458 @@
+/* Extra styles 
+ * Will be added after the Boootstrap 4 CSS. 
+ * Feel free to clean unused styles...
+ */
+
+
+/* 1.0 BODY and HTML */
+
+
+/* Background gradient
+*/
+
+html {
+  min-height: 100vh;
+}
+
+body {
+  min-height: 100vh;
+  background: rgba(255, 255, 255, 1);
+  background: -moz-radial-gradient(center, ellipse cover, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 71%, rgba(219, 215, 219, 1) 100%);
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, rgba(255, 255, 255, 1)), color-stop(71%, rgba(246, 246, 246, 1)), color-stop(100%, rgba(219, 215, 219, 1)));
+  background: -webkit-radial-gradient(center, ellipse cover, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 71%, rgba(219, 215, 219, 1) 100%);
+  background: -o-radial-gradient(center, ellipse cover, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 71%, rgba(219, 215, 219, 1) 100%);
+  background: -ms-radial-gradient(center, ellipse cover, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 71%, rgba(219, 215, 219, 1) 100%);
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 71%, rgba(219, 215, 219, 1) 100%);
+}
+
+
+/* 1.1 HEADINGS  */
+
+h1,
+h2 {
+  padding-top: 2rem;
+}
+
+.badge a {
+  color: #ececec;
+  text-decoration: none;
+  font-weight: normal;
+}
+
+h1,
+h2 {
+  word-break: break-word;
+}
+
+h1.section {
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-align: center;
+}
+
+h1.section:before,
+h1.section:after {
+  background-color: #333;
+  content: "";
+  display: inline-block;
+  height: 1px;
+  position: relative;
+  vertical-align: middle;
+  width: 50%;
+}
+
+h1.section:before {
+  right: 0.5em;
+  margin-left: -50%;
+}
+
+h1.section:after {
+  left: 0.5em;
+  margin-right: -50%;
+}
+
+
+/* 2. Main parts of site */
+
+
+/* 2.1 Hero */
+
+.center-both {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero {
+  min-height: 30vh;
+}
+
+.hero-text {
+  z-index: 2;
+  color: #eee;
+  text-align: center;
+  text-shadow: 5px 5px 100px #333;
+}
+
+.bg-img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: url('https://losol.no/wp-content/uploads/2018/03/saltstraumen.jpg') center center no-repeat;
+  background-size: cover;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-image: linear-gradient(to bottom right, #998899, #ad3244);
+    opacity: .6;
+  }
+}
+
+
+/* 9.0 TOOLS AND UTILITIES */
+
+.card-hover-info {
+  outline-color: $gray-200;
+}
+
+.card-hover-info:hover {
+  outline-style: solid;
+  outline-color: lighten($info, 50%);
+  outline-width: 5px;
+  transition: outline-color 0.2s ease;
+}
+
+/* 9.1 Width and height */
+
+/* Min heights */
+
+.min-height-25 {
+  min-height: 25vh;
+}
+
+.min-height-33 {
+  min-height: 33vh;
+}
+
+.min-height-50 {
+  min-height: 50vh;
+}
+
+.min-height-66 {
+  min-height: 66vh;
+}
+
+.min-height-75 {
+  min-height: 75vh;
+}
+
+.min-height-100 {
+  min-height: 100vh;
+}
+
+.position-relative {
+  position: relative !important;
+}
+
+.position-absolute {
+  position: absolute !important;
+}
+
+.top-left {
+  left: 0px;
+  top: 0px;
+}
+
+.left {
+  left: 0px;
+}
+
+.background-size-cover {
+  background-size: cover;
+  color: white;
+  background-position: center center;
+  position: relative;
+  z-index: -2;
+}
+
+// Footer
+.footer-contact i {
+  background-color: #33383b;
+  color: #ffffff;
+  font-size: 25px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 42px;
+  vertical-align: middle;
+}
+
+.footer-contact p {
+  display: inline-block;
+  color: #ffffff;
+  vertical-align: middle;
+  margin: 0;
+}
+
+.footer-contact p a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.black-marker {
+  float: left;
+  clear: left;
+  background: rgba(44, 44, 44, 0.4);
+  padding: 2px;
+}
+
+.bg-circle {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  padding: 14px 4px;
+  color: #ececec;
+  text-align: center;
+  border-radius: 50%;
+}
+
+.bg-circle-outline {
+  width: 50px;
+  height: 50px;
+  color: smoke;
+  padding: 8px 2px;
+  border: 2px solid;
+  border-color: smoke;
+  border-radius: 50%;
+}
+
+.bg-circle a,
+.bg-circle a:hover,
+.media a:focus {
+  text-decoration: none !important;
+  outline: none;
+  color: #ececec;
+}
+
+.bg-circle-outline a,
+.bg-circle-outline a:hover,
+.media a:focus {
+  text-decoration: none !important;
+  outline: none;
+  color: #ececec;
+}
+
+.bg-dimmed {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.card-badge {
+  text-transform: uppercase;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+}
+
+.card-grey {
+  background-color: #ccc;
+  border-color: #ccc;
+}
+
+.display-1 .text-white {
+  color: #fff;
+}
+
+.redtop {
+  border-top: 10px solid #ed1c24;
+}
+
+.redbottom {
+  border-bottom: 0.4pt dotted #ed1c24;
+}
+
+.bluetop {
+  border-top: 10px solid #355E7C;
+}
+
+.bluebottom {
+  border-bottom: 5px solid #355E7C;
+}
+
+.text-shadow {
+  text-shadow: 1px 1px 0 #fff;
+}
+
+
+/* Some links should not have any decoration */
+
+h1 a,
+h2 a,
+h3 a,
+h4 a {
+  text-decoration: none;
+}
+
+.nav-link {
+  text-decoration: none;
+}
+
+.link-decoration-none {
+  text-decoration: none !important;
+}
+
+.link-decoration-none * {
+  text-decoration: none !important;
+}
+
+
+/* Breadcrumb */
+
+.breadcrumb {
+  margin-bottom: 0rem;
+}
+
+ul.breadcrumb {
+  margin-left: 0px;
+  padding-left: 1rem;
+}
+
+.breadcrumb>li+li::before {
+  content: ">";
+}
+
+.white-space-normal {
+  white-space: normal;
+}
+
+.word-break-break-all {
+  word-break: break-all;
+}
+
+
+/* Nice blockquote */
+
+blockquote {
+  background: #f9f9f9;
+  border-left: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: "\201C""\201D""\2018""\2019";
+}
+
+blockquote:before {
+  color: #ccc;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+
+blockquote:after {
+  content: no-close-quote;
+}
+
+blockquote p {
+  display: inline;
+}
+
+.bg-gray {
+  &-100 {
+    background-color: #F2F2F2;
+  }
+
+  &-200 {
+    background-color: #EDEDED;
+  }
+
+  &-300 {
+    background-color: #E7E7E7;
+  }
+
+  &-400 {
+    background-color: #E1E1E1;
+  }
+
+  &-500 {
+    background-color: #C0C0C0;
+  }
+
+  &-600 {
+    background-color: #424242;
+  }
+
+  &-700 {
+    background-color: #262626;
+  }
+
+  &-800 {
+    background-color: #1A1A1A;
+  }
+
+  &-900 {
+    background-color: #121212;
+  }
+}
+
+.bg-opa10 {
+  background-color: rgba(44, 44, 44, 0.1);
+  background: rgba(44, 44, 44, 0.1);
+}
+
+.bg-opa20 {
+  background-color: rgba(44, 44, 44, 0.2);
+  background: rgba(44, 44, 44, 0.2);
+}
+
+.bg-opa30 {
+  background-color: rgba(44, 44, 44, 0.3);
+  background: rgba(44, 44, 44, 0.3);
+}
+
+.bg-opa40 {
+  background-color: rgba(44, 44, 44, 0.4);
+  background: rgba(44, 44, 44, 0.4);
+}
+
+.font-weight {
+  &-100 {
+    font-weight: 100;
+  }
+
+  &-200 {
+    font-weight: 200;
+  }
+
+  &-300 {
+    font-weight: 300;
+  }
+
+  &-400 {
+    font-weight: 400;
+  }
+
+  &-500 {
+    font-weight: 500;
+  }
+
+  &-600 {
+    font-weight: 600;
+  }
+
+  &-700 {
+    font-weight: 700;
+  }
+
+  &-800 {
+    font-weight: 800;
+  }
+
+  &-900 {
+    font-weight: 900;
+  }
+}
