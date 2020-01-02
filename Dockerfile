@@ -30,15 +30,15 @@ COPY ./tests/EventManagement.Services.Converto.Tests/*.csproj ./tests/EventManag
 RUN dotnet restore
 
 # Copy the package.json file
-COPY ./src/EventManagement.Web/package*.json ./src/EventManagement.Web/
-RUN npm --prefix ./src/EventManagement.Web install ./src/EventManagement.Web
+COPY ./src/EventManagement.Web/ClientApp/package*.json ./src/EventManagement.Web/ClientApp
+RUN npm --prefix ./src/EventManagement.Web/ClientApp install ./src/EventManagement.Web/ClientApp
 
 # copy everything else
 COPY . ./
 
 # Publish
-WORKDIR ./src/EventManagement.Web
-RUN ./node_modules/.bin/gulp
+WORKDIR ./src/EventManagement.Web/ClientApp
+RUN npm run build
 RUN dotnet publish -c Release -o /app/out
 
 #
