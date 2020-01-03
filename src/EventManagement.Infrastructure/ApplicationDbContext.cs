@@ -1,37 +1,32 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using losol.EventManagement.Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
-namespace losol.EventManagement.Infrastructure {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser> {
-        public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) : base (options) { }
+namespace losol.EventManagement.Infrastructure
+{
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        public DbSet<losol.EventManagement.Domain.ApplicationUser> ApplicationUsers { get; set; }
-        public DbSet<losol.EventManagement.Domain.EventInfo> EventInfos { get; set; }
-        public DbSet<losol.EventManagement.Domain.Registration> Registrations { get; set; }
-        public DbSet<losol.EventManagement.Domain.PaymentMethod> PaymentMethods { get; set; }
-        public DbSet<losol.EventManagement.Domain.Product> Products { get; set; }
-        public DbSet<losol.EventManagement.Domain.ProductVariant> ProductVariants { get; set; }
-        public DbSet<losol.EventManagement.Domain.Order> Orders { get; set; }
-        public DbSet<losol.EventManagement.Domain.OrderLine> OrderLines { get; set; }
-        public DbSet<losol.EventManagement.Domain.Organization> Organizations { get; set; }
-        public DbSet<losol.EventManagement.Domain.Certificate> Certificates { get; set; }
-        public DbSet<losol.EventManagement.Domain.MessageLog> MessageLogs { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<EventInfo> EventInfos { get; set; }
+        public DbSet<Registration> Registrations { get; set; }
+        public DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductVariant> ProductVariants { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderLine> OrderLines { get; set; }
+        public DbSet<Organization> Organizations { get; set; }
+        public DbSet<Certificate> Certificates { get; set; }
+        public DbSet<MessageLog> MessageLogs { get; set; }
 
-
-        protected override void OnModelCreating (ModelBuilder builder) {
-            base.OnModelCreating (builder);
-        }
-
-        public void DetachAllEntities ()
+        public void DetachAllEntities()
         {
             var changedEntriesCopy = ChangeTracker.Entries()
                 .Where(e => e.State != EntityState.Detached);
-            foreach (var entity in changedEntriesCopy) {
+            foreach (var entity in changedEntriesCopy)
+            {
                 Entry(entity.Entity).State = EntityState.Detached;
             }
         }

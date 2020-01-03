@@ -13,6 +13,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="3.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
@@ -28,10 +29,6 @@
     <ProjectReference Include="..\..\src\EventManagement.Web\EventManagement.Web.csproj" />
     <ProjectReference Include="..\..\src\EventManagement.Infrastructure\EventManagement.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\EventManagement.Services\EventManagement.Services.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Pages\" />
-    <Folder Include="Pages\Register\" />
   </ItemGroup>
   <Target Name="CopyDepsFiles" AfterTargets="Build" Condition="'$(TargetFramework)'!=''">
     <ItemGroup>
