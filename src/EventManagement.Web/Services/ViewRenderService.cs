@@ -56,7 +56,6 @@ namespace losol.EventManagement.Web.Services
 				); 
 				
 				await view.RenderAsync(viewContext);
-				Console.WriteLine(sw.ToString());
 				return sw.ToString();
 			}
 			

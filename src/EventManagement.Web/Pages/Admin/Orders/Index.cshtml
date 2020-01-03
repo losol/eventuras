@@ -26,10 +26,7 @@
                 data-advanced-search="true"
                 data-search-align="left"
                 data-click-to-select="true"
-                data-id-table="advancedTable"
-                data-export-options='{
-                    "fileName": "orders@id-@DateTime.Now.ToString("yyyy-MM-dd")"
-                }'>
+                data-id-table="advancedTable" >
                 <thead>
                     <tr>
                         <th data-field="id" data-sortable="true">ID</th>
@@ -73,5 +70,4 @@
 </script>
 </script>
     @await Html.PartialAsync("_CompBootstrapTable")
-    <script src="//rawgit.com/hhurz/tableExport.jquery.plugin/master/tableExport.js"></script>
 }
