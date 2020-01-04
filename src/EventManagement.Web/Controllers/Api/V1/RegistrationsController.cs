@@ -10,6 +10,7 @@ using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services;
 using Microsoft.AspNetCore.Authorization;
+using losol.EventManagement.ViewModels;
 
 namespace losol.EventManagement.Web.Controllers.Api.V1
 {
@@ -29,14 +30,16 @@ namespace losol.EventManagement.Web.Controllers.Api.V1
         // GET: api/v1/registrations
         // Returns the latest 100 registrations
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Registration>>> GetRegistrations()
+        public async Task<ActionResult<IEnumerable<RegistrationVM>>> GetRegistrations()
         {
-            return await _registrationService.GetAsync();
+            var registrations = await _registrationService.GetAsync();
+            var vmlist = registrations.Select(m => _registrationVM(m));
+            return Ok(vmlist);
         }
 
         // GET: api/v1/registrations/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Registration>> GetRegistration(int id)
+        public async Task<ActionResult<RegistrationVM>> GetRegistration(int id)
         {
             var registration = await _registrationService.GetAsync(id);
 
@@ -45,7 +48,7 @@ namespace losol.EventManagement.Web.Controllers.Api.V1
                 return NotFound();
             }
 
-            return registration;
+            return _registrationVM(registration);
         }
 
         // PUT: api/v1/registrations/5
@@ -82,6 +85,17 @@ namespace losol.EventManagement.Web.Controllers.Api.V1
         public async Task<ActionResult<Registration>> DeleteRegistration(int id)
         {
             throw new NotImplementedException();
+        }
+
+        private ActionResult<RegistrationVM> _registrationVM(Registration registration)
+        {
+            var reg = new RegistrationVM();
+            reg.EventId = registration.EventInfoId;
+            reg.UserId = registration.UserId;
+            reg.Status = registration.Status;
+            reg.Type = registration.Type;
+
+            return reg;
         }
 
 
