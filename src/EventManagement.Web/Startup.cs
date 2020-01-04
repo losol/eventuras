@@ -3,9 +3,13 @@ using losol.EventManagement.Config;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using System.Globalization;
 using System.Linq;
 
@@ -57,16 +61,20 @@ namespace losol.EventManagement
             services.AddInvoicingServices(AppSettings, Configuration);
             services.AddApplicationServices(Configuration);
 
-            // Require SSL
-            // TODO Re-enable
-            /* if (HostingEnvironment.IsProduction())
+            services.AddApiVersioning(o =>
             {
-                services.Configure<MvcOptions>(options =>
-                {
-                    options.Filters.Add(new RequireHttpsAttribute());
-                });
-            }
-            */
+                o.ReportApiVersions = true;
+                o.AssumeDefaultVersionWhenUnspecified = true;
+                o.DefaultApiVersion = new ApiVersion(1, 0);
+            });
+
+
+            // Register the Swagger generator
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v0", new OpenApiInfo { Title = "Eventuras API", Version = "v0" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Eventuras API", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -92,6 +100,15 @@ namespace losol.EventManagement
                 SupportedUICultures = cultureInfoList
             });
 
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.RoutePrefix = "api";
+                c.SwaggerEndpoint("/swagger/v0/swagger.json", "Eventuras API V0");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Eventuras API V1");
+            });
+
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication();
@@ -102,14 +119,7 @@ namespace losol.EventManagement
                 endpoints.MapRazorPages();
             });
 
-            // TODO reenable
-            /*
-            if (env.IsProduction()) {
-                var options = new RewriteOptions()
-                .AddRedirectToHttps();
-                app.UseRewriter(options);
-            }
-             */
+
         }
     }
 }

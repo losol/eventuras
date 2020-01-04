@@ -6,6 +6,7 @@ using Stripe;
 
 namespace EventManagement.Web.Controllers.Api
 {
+    [ApiVersion("0")]
     [Route("api/payments")]
     public class PaymentsController : Controller
     {
