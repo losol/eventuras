@@ -11,18 +11,19 @@ using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services;
 using Microsoft.AspNetCore.Authorization;
 using losol.EventManagement.ViewModels;
+using static losol.EventManagement.Domain.Registration;
 
 namespace losol.EventManagement.Web.Controllers.Api.V1
 {
-    [ApiVersion("1.0")]
+    [ApiVersion("1")]
     [Authorize(Policy = "AdministratorRole")]
     [Route("api/v1/registrations")]
     [ApiController]
     public class RegistrationsController : ControllerBase
     {
-        private readonly RegistrationService _registrationService;
+        private readonly IRegistrationService _registrationService;
 
-        public RegistrationsController(RegistrationService registrationService)
+        public RegistrationsController(IRegistrationService registrationService)
         {
             _registrationService = registrationService;
         }
@@ -33,7 +34,7 @@ namespace losol.EventManagement.Web.Controllers.Api.V1
         public async Task<ActionResult<IEnumerable<RegistrationVM>>> GetRegistrations()
         {
             var registrations = await _registrationService.GetAsync();
-            var vmlist = registrations.Select(m => _registrationVM(m));
+            var vmlist = registrations.Select(m => _registrationVM(m).Value);
             return Ok(vmlist);
         }
 
@@ -90,6 +91,7 @@ namespace losol.EventManagement.Web.Controllers.Api.V1
         private ActionResult<RegistrationVM> _registrationVM(Registration registration)
         {
             var reg = new RegistrationVM();
+
             reg.EventId = registration.EventInfoId;
             reg.UserId = registration.UserId;
             reg.Status = registration.Status;

@@ -38,7 +38,10 @@ namespace losol.EventManagement.Services
         public async Task<List<Registration>> GetAsync()
         {
             return await _db.Registrations
-                .TakeLast(100)
+                .Include(m => m.User)
+                .Include(m => m.EventInfo)
+                .OrderByDescending(m => m.RegistrationTime)
+                .Take(100)
                 .ToListAsync();
         }
 
