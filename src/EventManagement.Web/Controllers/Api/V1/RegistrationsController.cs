@@ -9,10 +9,12 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace losol.EventManagement.Web.Controllers.Api.V1
 {
     [ApiVersion("1.0")]
+    [Authorize(Policy = "AdministratorRole")]
     [Route("api/v1/registrations")]
     [ApiController]
     public class RegistrationsController : ControllerBase
