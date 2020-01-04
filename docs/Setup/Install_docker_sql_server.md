@@ -11,10 +11,8 @@ Docker for Mac, Docker for Windows or Docker Engine 1.8+ for Linux.
 
 ```bash
 # Create mssql and install SQL Server 2017 for Linux
-docker pull microsoft/mssql-server-linux:2017-latest
-docker run -e 'ACCEPT_EULA=Y' -e 'MSSQL_SA_PASSWORD=<Strong!Passw0rd>' \
-   -p 1401:1433 --name mssql \
-   -d microsoft/mssql-server-linux:2017-latest
+docker pull mcr.microsoft.com/mssql/server:2017-latest
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=<Strong!Passw0rd>" -p 1433:1433 --name mssql -d mcr.microsoft.com/mssql/server:2017-latest
 ```
 
 
