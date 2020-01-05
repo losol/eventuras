@@ -58,6 +58,10 @@ namespace losol.EventManagement.Pages.Admin.Events
                     r => r.EventInfoId == id &&
                     r.Status != RegistrationStatus.Cancelled &&
                     r.Type == RegistrationType.Participant)
+                .Include(r => r.Products)
+                    .ThenInclude(p => p.Product)
+                .Include(r => r.Products)
+                    .ThenInclude(p => p.Variant)
                 .Include(r => r.Orders)
                     .ThenInclude(o => o.OrderLines)
                         .ThenInclude(ol => ol.Product)
@@ -107,6 +111,10 @@ namespace losol.EventManagement.Pages.Admin.Events
                     r => r.EventInfoId == id &&
                     r.Status != RegistrationStatus.Cancelled &&
                     r.Type != RegistrationType.Participant)
+                .Include(r => r.Products)
+                    .ThenInclude(p => p.Product)
+                .Include(r => r.Products)
+                    .ThenInclude(p => p.Variant)
                 .Include(r => r.Orders)
                     .ThenInclude(o => o.OrderLines)
                         .ThenInclude(ol => ol.Product)
