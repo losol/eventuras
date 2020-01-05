@@ -31,8 +31,8 @@ namespace losol.EventManagement.IntegrationTests.Controllers.Api
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
             var eventInfo = SeedData.Events[0];
-            using var user = await scope.ServiceProvider.NewUserAsync();
-            using var registration = await context.NewRegistrationAsync(eventInfo, user.Entity);
+            using var user = await scope.ServiceProvider.CreateUserAsync();
+            using var registration = await context.CreateRegistrationAsync(eventInfo, user.Entity);
 
             var emailExpectation = this.factory.EmailSenderMock
                 .ExpectEmail()

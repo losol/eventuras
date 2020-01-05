@@ -24,7 +24,7 @@ namespace losol.EventManagement.IntegrationTests.Pages.Account
             client.AcceptLanguage(languageCode);
 
             using var scope = this.factory.Services.NewScope();
-            using var user = await scope.ServiceProvider.NewUserAsync();
+            using var user = await scope.ServiceProvider.CreateUserAsync();
 
             var emailExpectation = this.factory.EmailSenderMock
                 .ExpectEmail()

@@ -15,7 +15,7 @@ namespace losol.EventManagement.IntegrationTests
             return serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
         }
 
-        public static async Task<IDisposableEntity<ApplicationUser>> NewUserAsync(
+        public static async Task<IDisposableEntity<ApplicationUser>> CreateUserAsync(
             this IServiceProvider serviceProvider,
             string email = Placeholder,
             string password = Placeholder,
