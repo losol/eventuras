@@ -41,7 +41,7 @@ namespace losol.EventManagement.Services
                 .Include(m => m.User)
                 .Include(m => m.EventInfo)
                 .OrderByDescending(m => m.RegistrationTime)
-                .Take(100)
+                .Take(20)
                 .ToListAsync();
         }
 
