@@ -15,6 +15,7 @@ namespace losol.EventManagement.ViewModels
             this.StartDate = eventInfo.DateStart ?? null;
             this.EndDate = eventInfo.DateEnd ?? null;
             this.Description = eventInfo.Description;
+            this.Image = new List<ImageInfo>();
 
             if (!String.IsNullOrWhiteSpace(eventInfo.FeaturedImageUrl))
             {
