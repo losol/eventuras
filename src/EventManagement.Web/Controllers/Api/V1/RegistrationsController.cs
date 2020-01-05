@@ -31,16 +31,16 @@ namespace losol.EventManagement.Web.Controllers.Api.V1
         // GET: api/v1/registrations
         // Returns the latest 100 registrations
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RegistrationVM>>> GetRegistrations()
+        public async Task<ActionResult<IEnumerable<EventManagement.ViewModels.RegistrationViewModel>>> GetRegistrations()
         {
             var registrations = await _registrationService.GetAsync();
-            var vmlist = registrations.Select(m => _registrationVM(m).Value);
+            var vmlist = registrations.Select(m => new RegistrationViewModel(m));
             return Ok(vmlist);
         }
 
         // GET: api/v1/registrations/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<RegistrationVM>> GetRegistration(int id)
+        public async Task<ActionResult<EventManagement.ViewModels.RegistrationViewModel>> GetRegistration(int id)
         {
             var registration = await _registrationService.GetAsync(id);
 
@@ -49,14 +49,14 @@ namespace losol.EventManagement.Web.Controllers.Api.V1
                 return NotFound();
             }
 
-            return _registrationVM(registration);
+            return new EventManagement.ViewModels.RegistrationViewModel((Domain.Registration)registration);
         }
 
         // PUT: api/v1/registrations/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRegistration(int id, Registration registration)
+        public async Task<IActionResult> PutRegistration(int id, Domain.Registration registration)
         {
             if (id != registration.RegistrationId)
             {
@@ -75,7 +75,7 @@ namespace losol.EventManagement.Web.Controllers.Api.V1
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Registration>> PostRegistration(Registration registration)
+        public async Task<ActionResult<Domain.Registration>> PostRegistration(Domain.Registration registration)
         {
             throw new NotImplementedException();
             // return CreatedAtAction("GetRegistration", new { id = registration.RegistrationId }, registration);
@@ -83,23 +83,10 @@ namespace losol.EventManagement.Web.Controllers.Api.V1
 
         // DELETE: api/v1/registrations/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Registration>> DeleteRegistration(int id)
+        public Task<ActionResult<Domain.Registration>> DeleteRegistration(int id)
         {
             throw new NotImplementedException();
         }
-
-        private ActionResult<RegistrationVM> _registrationVM(Registration registration)
-        {
-            var reg = new RegistrationVM();
-
-            reg.EventId = registration.EventInfoId;
-            reg.UserId = registration.UserId;
-            reg.Status = registration.Status;
-            reg.Type = registration.Type;
-
-            return reg;
-        }
-
 
     }
 }
