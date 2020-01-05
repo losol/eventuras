@@ -50,7 +50,7 @@ namespace losol.EventManagement.Pages.Admin.Events
         {
             if (id == null)
             {
-               return new JsonResult("No event id submitted.");
+                return new JsonResult("No event id submitted.");
             }
 
             var registrations = await _context.Registrations
@@ -58,10 +58,6 @@ namespace losol.EventManagement.Pages.Admin.Events
                     r => r.EventInfoId == id &&
                     r.Status != RegistrationStatus.Cancelled &&
                     r.Type == RegistrationType.Participant)
-                .Include(r => r.Products)
-                    .ThenInclude(p => p.Product)
-                .Include(r => r.Products)
-                    .ThenInclude(p => p.Variant)
                 .Include(r => r.Orders)
                     .ThenInclude(o => o.OrderLines)
                         .ThenInclude(ol => ol.Product)
@@ -81,20 +77,19 @@ namespace losol.EventManagement.Pages.Admin.Events
                 Notes = x.Notes,
                 Employer = x.ParticipantEmployer,
                 City = x.ParticipantCity,
-                Products = x.Products.Select(dto => ValueTuple.Create(
-                    new RegistrationsProductVm(dto.Product),
-                    RegistrationsVariantVm.Create(dto.Variant),
-                    dto.Quantity)).ToList(),
+                Products = x.Products.Select(dto => new RegistrationOrderVm(dto)).ToList(),
                 HasCertificate = x.HasCertificate,
                 CertificateId = x.CertificateId,
                 Status = x.Status.ToString(),
                 Type = x.Type.ToString()
             });
 
-            if (vms.Any()) {
+            if (vms.Any())
+            {
                 return new JsonResult(vms);
             }
-            else {
+            else
+            {
                 return new JsonResult("none");
             }
         }
@@ -103,7 +98,7 @@ namespace losol.EventManagement.Pages.Admin.Events
         {
             if (id == null)
             {
-               return new JsonResult("No event id submitted.");
+                return new JsonResult("No event id submitted.");
             }
 
             var registrations = await _context.Registrations
@@ -111,10 +106,6 @@ namespace losol.EventManagement.Pages.Admin.Events
                     r => r.EventInfoId == id &&
                     r.Status != RegistrationStatus.Cancelled &&
                     r.Type != RegistrationType.Participant)
-                .Include(r => r.Products)
-                    .ThenInclude(p => p.Product)
-                .Include(r => r.Products)
-                    .ThenInclude(p => p.Variant)
                 .Include(r => r.Orders)
                     .ThenInclude(o => o.OrderLines)
                         .ThenInclude(ol => ol.Product)
@@ -134,20 +125,19 @@ namespace losol.EventManagement.Pages.Admin.Events
                 Employer = x.ParticipantEmployer,
                 City = x.ParticipantCity,
                 Notes = x.Notes,
-                Products = x.Products.Select(dto => ValueTuple.Create(
-                    new RegistrationsProductVm(dto.Product),
-                    RegistrationsVariantVm.Create(dto.Variant),
-                    dto.Quantity)).ToList(),
+                Products = x.Products.Select(dto => new RegistrationOrderVm(dto)).ToList(),
                 HasCertificate = x.HasCertificate,
                 CertificateId = x.CertificateId,
                 Status = x.Status.ToString(),
                 Type = x.Type.ToString()
             });
 
-            if (vms.Any()) {
+            if (vms.Any())
+            {
                 return new JsonResult(vms);
             }
-            else {
+            else
+            {
                 return new JsonResult("none");
             }
         }
@@ -156,14 +146,15 @@ namespace losol.EventManagement.Pages.Admin.Events
         {
             if (id == null)
             {
-               return new JsonResult("No event id submitted.");
+                return new JsonResult("No event id submitted.");
             }
 
             var registrations = await _context.Registrations
                 .Where(
                     r => r.EventInfoId == id &&
                     r.Status == RegistrationStatus.Cancelled)
-                .Select ( x=> new RegistrationsVm{
+                .Select(x => new RegistrationsVm
+                {
                     RegistrationId = x.RegistrationId,
                     Name = x.User.Name,
                     Email = x.User.Email,
@@ -177,34 +168,35 @@ namespace losol.EventManagement.Pages.Admin.Events
                     CertificateId = x.CertificateId,
                     Status = x.Status.ToString(),
                     Type = x.Type.ToString()
-                    })
+                })
                 .ToListAsync();
 
-            if (registrations.Any()) {
+            if (registrations.Any())
+            {
                 return new JsonResult(registrations);
             }
-            else {
+            else
+            {
                 return new JsonResult("none");
             }
         }
 
         internal class RegistrationsVm
         {
-            public int RegistrationId {get;set;}
-            public string Name { set;get;}
-            public string Email { set;get;}
-            public string userId {get;set;}
-            public string Phone { set;get;}
-            public string Employer {get;set;}
-            public string Notes {get;set;}
-            public string JobTitle {get;set;}
-            public string City {get;set;}
+            public int RegistrationId { get; set; }
+            public string Name { set; get; }
+            public string Email { set; get; }
+            public string userId { get; set; }
+            public string Phone { set; get; }
+            public string Employer { get; set; }
+            public string Notes { get; set; }
+            public string JobTitle { get; set; }
+            public string City { get; set; }
             public bool HasCertificate { get; set; }
-            public int? CertificateId {get; set; }
-            public string Status {get;set;}
-            public string Type {get;set;}
-            // public List<(Product, ProductVariant, int)> Products { get; set; }
-            public List<(RegistrationsProductVm, RegistrationsVariantVm, int)> Products { get; set; }
+            public int? CertificateId { get; set; }
+            public string Status { get; set; }
+            public string Type { get; set; }
+            public List<RegistrationOrderVm> Products { get; set; }
         }
 
         internal class RegistrationsProductVm
@@ -233,5 +225,22 @@ namespace losol.EventManagement.Pages.Admin.Events
                 variant == null ? null : new RegistrationsVariantVm(variant);
         }
 
+        internal class RegistrationOrderVm
+        {
+            public RegistrationsProductVm Item1 { get; }
+            public RegistrationsVariantVm Item2 { get; }
+            public int Item3 { get; }
+
+            public RegistrationOrderVm(OrderDTO dto) : this(dto.Product, dto.Variant, dto.Quantity)
+            {
+            }
+
+            public RegistrationOrderVm(Product product, ProductVariant variant, int quantity)
+            {
+                this.Item1 = new RegistrationsProductVm(product);
+                this.Item2 = RegistrationsVariantVm.Create(variant);
+                this.Item3 = quantity;
+            }
+        }
     }
 }
