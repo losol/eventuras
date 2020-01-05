@@ -105,7 +105,6 @@ namespace losol.EventManagement
             app.UseSwaggerUI(c =>
             {
                 c.RoutePrefix = "api";
-                c.SwaggerEndpoint("/swagger/v0/swagger.json", "Eventuras API V0");
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Eventuras API V1");
             });
 
