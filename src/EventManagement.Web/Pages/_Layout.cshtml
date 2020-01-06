@@ -6,7 +6,13 @@
     <link rel="stylesheet" href="~/assets/css/main.css" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" integrity="sha256-ENFZrbVzylNbgnXx0n3I1g//2WeO47XxoPe0vkp3NC8=" crossorigin="anonymous" />
     @RenderSection("HeadScripts", required: false)
+
+    <script src="~/assets/js/app.js" asp-append-version="true"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    @RenderSection("Scripts", required: false)
     <google-tag-head gtm-id="GTM-5KKT49H" />
 </head>
 <body>
@@ -31,8 +37,6 @@
 @RenderBody()
 </main>
 @await Html.PartialAsync("_PartFooter")
-    <script src="~/assets/js/app.js" asp-append-version="true"></script>
-    <script src="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.js"></script>
-    @RenderSection("Scripts", required: false)
+
 </body>
 </html>
