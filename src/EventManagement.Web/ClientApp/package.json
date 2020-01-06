@@ -42,6 +42,7 @@
 		"font-awesome": "^4.7.0",
 		"jquery": "^3.4.1",
 		"popper.js": "^1.15.0",
+		"sortablejs": "1.10.2",
 		"toastr": "^2.1.4"
 	}
 }
