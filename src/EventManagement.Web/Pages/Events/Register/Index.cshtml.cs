@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,6 +17,7 @@ using losol.EventManagement.Services.Extensions;
 using System.Text;
 using static losol.EventManagement.Domain.PaymentMethod;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Localization;
 
 namespace losol.EventManagement.Web.Pages.Events.Register
 {
@@ -28,22 +29,24 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 		private readonly IPaymentMethodService _paymentMethodService;
 		private readonly IRegistrationService _registrationService;
 		private readonly RegistrationEmailSender _registrationEmailSender;
+        private readonly IStringLocalizer<EventRegistrationModel> _stringLocalizer;
 
-		public EventRegistrationModel(
+        public EventRegistrationModel(
 			UserManager<ApplicationUser> userManager,
 			RegistrationEmailSender registrationEmailSender,
 			ILogger<EventRegistrationModel> logger,
 			IEventInfoService eventsService,
 			IPaymentMethodService paymentMethodService,
-			IRegistrationService registrationService
-		)
+			IRegistrationService registrationService,
+            IStringLocalizer<EventRegistrationModel> stringLocalizer)
 		{
 			_userManager = userManager;
 			_logger = logger;
 			_eventsService = eventsService;
 			_paymentMethodService = paymentMethodService;
 			_registrationService = registrationService;
-			_registrationEmailSender = registrationEmailSender;
+            _stringLocalizer = stringLocalizer;
+            _registrationEmailSender = registrationEmailSender;
 		}
 
 		[BindProperty]
@@ -143,10 +146,13 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 			var newRegistration = Registration.Adapt<Registration>();
 			newRegistration.VerificationCode = PasswordHelper.GeneratePassword(6);
 			await _registrationService.CreateRegistration(newRegistration, Registration.SelectedProducts);
-            await _registrationEmailSender.SendRegistrationAsync(user.Email, "Velkommen på kurs!", "<p>Vi fikk registreringen din</p>", newRegistration.RegistrationId);
+            await _registrationEmailSender.SendRegistrationAsync(user.Email,
+                this._stringLocalizer["Welcome to the course!"],
+                this._stringLocalizer["<p>We received your registration</p>"],
+                newRegistration.RegistrationId);
 
 
-			return RedirectToPage("/Info/EmailSent");
+            return RedirectToPage("/Info/EmailSent");
 		}
 	}
 }

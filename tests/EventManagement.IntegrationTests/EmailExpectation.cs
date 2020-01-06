@@ -14,6 +14,7 @@ namespace losol.EventManagement.IntegrationTests
         private string email = Placeholder;
         private string subject = Placeholder;
         private string message = Placeholder;
+        private readonly List<string> subjectContains = new List<string>();
         private readonly List<string> textContained = new List<string>();
         private bool shouldNotHaveAttachment;
         private bool shouldHaveAttachment;
@@ -55,6 +56,12 @@ namespace losol.EventManagement.IntegrationTests
             return this;
         }
 
+        public EmailExpectation SubjectContains(string text)
+        {
+            this.subjectContains.Add(text);
+            return this;
+        }
+
         public EmailExpectation ContainingText(string text)
         {
             this.textContained.Add(text);
@@ -69,11 +76,16 @@ namespace losol.EventManagement.IntegrationTests
                     this.MessageToCheck,
                     this.AttachmentToCheck,
                     this.type))
-                .Callback((string email, string subject, string html, Attachment attachment, EmailMessageType emailType) =>
+                .Callback((string email, string subject, string body, Attachment attachment, EmailMessageType emailType) =>
                 {
+                    foreach (var text in this.subjectContains)
+                    {
+                        Assert.Contains(text, subject);
+                    }
+
                     foreach (var text in this.textContained)
                     {
-                        Assert.Contains(text, html);
+                        Assert.Contains(text, body);
                     }
                 });
 
