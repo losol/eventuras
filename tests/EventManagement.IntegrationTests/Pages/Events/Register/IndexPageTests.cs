@@ -37,6 +37,45 @@ namespace losol.EventManagement.IntegrationTests.Pages.Events.Register
         }
 
         [Theory]
+        [InlineData("nb-NO", "Du var allerede påmeldt!", "Vi hadde allerede en registrering for deg.")]
+        [InlineData("en-US", "You were already signed up!", "We already had a registration for you.")]
+        public async Task ShouldSendEmailWhenAlreadyRegistered(string language, string subject, string body)
+        {
+            var client = this.factory.CreateClient();
+            client.AcceptLanguage(language);
+
+            using var scope = this.factory.Services.NewScope();
+
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            using var eventInfo = await context.CreateEventAsync();
+            using var user = await scope.ServiceProvider.CreateUserAsync(Email);
+            using var registration = await context.CreateRegistrationAsync(eventInfo.Entity, user.Entity);
+
+            var emailExpectation = this.factory.EmailSenderMock
+                .ExpectEmail()
+                .SentTo(Email)
+                .WithSubject(subject)
+                .ContainingText(body)
+                .Setup();
+
+            var response = await client.PostAsync($"/events/{eventInfo.Entity.EventInfoId}/{eventInfo.Entity.Code}/register",
+                new Dictionary<string, string>
+            {
+                { "Email", Email },
+                { "PhoneCountryCode", "+1" },
+                { "Phone", "1111111111" },
+                { "ParticipantName", "John Doe" },
+                { "ParticipantJobTitle", "Head" },
+                { "ParticipantCity", "Oslo" },
+                { "Notes", "Testing" }
+            });
+
+            Assert.True(response.IsSuccessStatusCode, await response.Content.ReadAsStringAsync());
+
+            emailExpectation.VerifyEmailSent();
+        }
+
+        [Theory]
         [InlineData("nb-NO", "Velkommen på kurs!", "Vi fikk registreringen din")]
         [InlineData("en-US", "Welcome to the course!", "We received your registration")]
         public async Task ShouldCreateNewUserAndRegistration(string language, string subject, string body)

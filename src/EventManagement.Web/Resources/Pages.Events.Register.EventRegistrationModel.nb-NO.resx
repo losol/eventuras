@@ -117,10 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="&lt;p&gt;We already had a registration for you.&lt;/p&gt;" xml:space="preserve">
+    <value>&lt;p&gt;Vi hadde allerede en registrering for deg.&lt;/p&gt;</value>
+  </data>
   <data name="&lt;p&gt;We received your registration&lt;/p&gt;" xml:space="preserve">
     <value>&lt;p&gt;Vi fikk registreringen din&lt;/p&gt;</value>
   </data>
   <data name="Welcome to the course!" xml:space="preserve">
     <value>Velkommen på kurs!</value>
+  </data>
+  <data name="You were already signed up!" xml:space="preserve">
+    <value>Du var allerede påmeldt!</value>
   </data>
 </root>

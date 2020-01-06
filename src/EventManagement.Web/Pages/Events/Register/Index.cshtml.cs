@@ -111,9 +111,12 @@ namespace losol.EventManagement.Web.Pages.Events.Register
 				var existingRegistration = await _registrationService.GetAsync(user.Id, Registration.EventInfoId);
 				if (existingRegistration != null)
 				{
-					// The user has already registered for the event.
-					await _registrationEmailSender.SendRegistrationAsync(user.Email, "Du var allerede påmeldt!", "<p>Vi hadde allerede en registrering for deg.</p>", existingRegistration.RegistrationId);
-					return RedirectToPage("/Info/EmailSent");
+                    // The user has already registered for the event.
+                    await _registrationEmailSender.SendRegistrationAsync(user.Email,
+                        this._stringLocalizer["You were already signed up!"],
+                        this._stringLocalizer["<p>We already had a registration for you.</p>"],
+                        existingRegistration.RegistrationId);
+                    return RedirectToPage("/Info/EmailSent");
 				}
 			}
 			else
