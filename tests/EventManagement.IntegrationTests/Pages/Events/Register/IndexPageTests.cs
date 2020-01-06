@@ -78,6 +78,54 @@ namespace losol.EventManagement.IntegrationTests.Pages.Events.Register
         [Theory]
         [InlineData("nb-NO", "Velkommen på kurs!", "Vi fikk registreringen din")]
         [InlineData("en-US", "Welcome to the course!", "We received your registration")]
+        public async Task ShouldCreateNewRegistrationForExistingUser(string language, string subject, string body)
+        {
+            var client = this.factory.CreateClient();
+            client.AcceptLanguage(language);
+
+            using var scope = this.factory.Services.NewScope();
+
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            using var eventInfo = await context.CreateEventAsync();
+            using var user = await scope.ServiceProvider.CreateUserAsync(Email);
+
+            var emailExpectation = this.factory.EmailSenderMock
+                .ExpectEmail()
+                .SentTo(Email)
+                .WithSubject(subject)
+                .ContainingText(body)
+                .Setup();
+
+            var response = await client.PostAsync($"/events/{eventInfo.Entity.EventInfoId}/{eventInfo.Entity.Code}/register",
+                new Dictionary<string, string>
+            {
+                { "Email", Email },
+                { "PhoneCountryCode", "+1" },
+                { "Phone", "1111111111" },
+                { "ParticipantName", "John Doe" },
+                { "ParticipantJobTitle", "Head" },
+                { "ParticipantCity", "Oslo" },
+                { "Notes", "Testing" }
+            });
+
+            Assert.True(response.IsSuccessStatusCode, await response.Content.ReadAsStringAsync());
+
+            var registration =
+                await context.Registrations.FirstOrDefaultAsync(r =>
+                    r.UserId == user.Entity.Id && r.EventInfoId == eventInfo.Entity.EventInfoId);
+
+            Assert.NotNull(registration);
+            Assert.Equal("John Doe", registration.ParticipantName);
+            Assert.Equal("Head", registration.ParticipantJobTitle);
+            Assert.Equal("Oslo", registration.ParticipantCity);
+            Assert.Equal("Testing", registration.Notes);
+
+            emailExpectation.VerifyEmailSent();
+        }
+
+        [Theory]
+        [InlineData("nb-NO", "Velkommen på kurs!", "Vi fikk registreringen din")]
+        [InlineData("en-US", "Welcome to the course!", "We received your registration")]
         public async Task ShouldCreateNewUserAndRegistration(string language, string subject, string body)
         {
             var client = this.factory.CreateClient();
