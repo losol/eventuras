@@ -1,21 +1,21 @@
 using System;
-using losol.EventManagement.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using losol.EventManagement.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
+using Moq;
+using Newtonsoft.Json;
 using Xunit;
 
-namespace losol.EventManagement.IntegrationTests.Controllers.Api
+namespace losol.EventManagement.IntegrationTests.Controllers.Api.V0
 {
-    public class MessagingControllerTest : IClassFixture<CustomWebApplicationFactory<Startup>>, IDisposable
+    public class ParticipantsControllerTest : IClassFixture<CustomWebApplicationFactory<Startup>>, IDisposable
     {
         private readonly CustomWebApplicationFactory<Startup> factory;
 
-        public MessagingControllerTest(CustomWebApplicationFactory<Startup> factory)
+        public ParticipantsControllerTest(CustomWebApplicationFactory<Startup> factory)
         {
             this.factory = factory;
         }
@@ -26,9 +26,9 @@ namespace losol.EventManagement.IntegrationTests.Controllers.Api
         }
 
         [Theory]
-        [InlineData("nb-NO", "Velkommen til")]
-        [InlineData("en-US", "Welcome to")]
-        public async Task Should_Send_Register_Email(string languageCode, string textToCheck)
+        [InlineData("nb-NO", "Nordland legeforening")]
+        [InlineData("en-US", "Nordland Medical Association")]
+        public async Task Should_Send_Email_To_Participants(string languageCode, string textToCheck)
         {
             var client = this.factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
@@ -49,17 +49,14 @@ namespace losol.EventManagement.IntegrationTests.Controllers.Api
                 .Setup();
 
             client.AcceptLanguage(languageCode);
-            var response = await client.PostAsync($"/api/v0/messaging/email/participants-at-event/{eventInfo.EventInfoId}",
+            var response = await client.PostAsync($"/api/participants/order_emails/{eventInfo.EventInfoId}",
                 new StringContent(JsonConvert.SerializeObject(new
                 {
                     Subject = "Test",
-                    Content = "Test Email Contents"
+                    Message = "Test Email Contents"
                 }), Encoding.UTF8, "application/json"));
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-            var content = await response.Content.ReadAsStringAsync();
-            Assert.DoesNotContain("Sendte epost. Men fikk noen feil", content);
 
             emailExpectation.VerifyEmailSent(Times.Once());
         }
