@@ -1,3 +1,4 @@
+using System;
 using losol.EventManagement.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -10,13 +11,18 @@ using Xunit;
 
 namespace losol.EventManagement.IntegrationTests.Controllers.Api
 {
-    public class MessagingControllerTest : IClassFixture<CustomWebApplicationFactory<Startup>>
+    public class MessagingControllerTest : IClassFixture<CustomWebApplicationFactory<Startup>>, IDisposable
     {
         private readonly CustomWebApplicationFactory<Startup> factory;
 
         public MessagingControllerTest(CustomWebApplicationFactory<Startup> factory)
         {
             this.factory = factory;
+        }
+
+        public void Dispose()
+        {
+            this.factory.EmailSenderMock.Reset();
         }
 
         [Theory]

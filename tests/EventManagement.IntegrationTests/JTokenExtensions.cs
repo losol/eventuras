@@ -4,7 +4,7 @@ using losol.EventManagement.Domain;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace losol.EventManagement.IntegrationTests.Pages.Admin.Events
+namespace losol.EventManagement.IntegrationTests
 {
     public static class JTokenExtensions
     {

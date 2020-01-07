@@ -1,25 +1,28 @@
+using losol.EventManagement.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
+using Moq;
+using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using losol.EventManagement.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace losol.EventManagement.IntegrationTests.Controllers.Api
 {
-    public class ParticipantsControllerTest : IClassFixture<CustomWebApplicationFactory<Startup>>
+    public class ParticipantsControllerTest : IClassFixture<CustomWebApplicationFactory<Startup>>, IDisposable
     {
         private readonly CustomWebApplicationFactory<Startup> factory;
 
         public ParticipantsControllerTest(CustomWebApplicationFactory<Startup> factory)
         {
             this.factory = factory;
+        }
+
+        public void Dispose()
+        {
+            this.factory.EmailSenderMock.Reset();
         }
 
         [Theory]
