@@ -58,6 +58,7 @@ namespace losol.EventManagement.IntegrationTests.Pages.Events.Register
                 .ContainingText(body)
                 .Setup();
 
+            var token = await client.GetAntiForgeryTokenAsync("/Account/Login");
             var response = await client.PostAsync($"/events/{eventInfo.Entity.EventInfoId}/{eventInfo.Entity.Code}/register",
                 new Dictionary<string, string>
             {
@@ -68,7 +69,7 @@ namespace losol.EventManagement.IntegrationTests.Pages.Events.Register
                 { "ParticipantJobTitle", "Head" },
                 { "ParticipantCity", "Oslo" },
                 { "Notes", "Testing" }
-            });
+            }, token);
 
             Assert.True(response.IsSuccessStatusCode, await response.Content.ReadAsStringAsync());
 
@@ -96,6 +97,7 @@ namespace losol.EventManagement.IntegrationTests.Pages.Events.Register
                 .ContainingText(body)
                 .Setup();
 
+            var token = await client.GetAntiForgeryTokenAsync("/Account/Login");
             var response = await client.PostAsync($"/events/{eventInfo.Entity.EventInfoId}/{eventInfo.Entity.Code}/register",
                 new Dictionary<string, string>
             {
@@ -106,7 +108,7 @@ namespace losol.EventManagement.IntegrationTests.Pages.Events.Register
                 { "ParticipantJobTitle", "Head" },
                 { "ParticipantCity", "Oslo" },
                 { "Notes", "Testing" }
-            });
+            }, token);
 
             Assert.True(response.IsSuccessStatusCode, await response.Content.ReadAsStringAsync());
 
@@ -143,6 +145,7 @@ namespace losol.EventManagement.IntegrationTests.Pages.Events.Register
                 .ContainingText(body)
                 .Setup();
 
+            var token = await client.GetAntiForgeryTokenAsync("/Account/Login");
             var response = await client.PostAsync($"/events/{eventInfo.Entity.EventInfoId}/{eventInfo.Entity.Code}/register",
                 new Dictionary<string, string>
             {
@@ -153,7 +156,7 @@ namespace losol.EventManagement.IntegrationTests.Pages.Events.Register
                 { "ParticipantJobTitle", "Head" },
                 { "ParticipantCity", "Oslo" },
                 { "Notes", "Testing" }
-            });
+            }, token);
 
             Assert.True(response.IsSuccessStatusCode, await response.Content.ReadAsStringAsync());
 
