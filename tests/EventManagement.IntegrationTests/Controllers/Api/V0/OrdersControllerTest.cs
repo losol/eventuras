@@ -21,7 +21,7 @@ namespace losol.EventManagement.IntegrationTests.Controllers.Api.V0
         }
 
         [Fact]
-        public async Task Should_Update_Existing_Order()
+        public async Task Should_Update_Existing_Order_Using_Strings()
         {
             var client = this.factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
@@ -43,8 +43,8 @@ namespace losol.EventManagement.IntegrationTests.Controllers.Api.V0
                     {
                         new
                         {
-                            id = product.Entity.ProductId,
-                            quantity = 1
+                            id = product.Entity.ProductId.ToString(),
+                            quantity = "1"
                         }
                     }
                 }), Encoding.UTF8, "application/json"));
