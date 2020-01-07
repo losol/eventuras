@@ -39,7 +39,7 @@ namespace losol.EventManagement.IntegrationTests.Pages.Events.Register
         [Theory]
         [InlineData("nb-NO", "Du var allerede påmeldt!", "Vi hadde allerede en registrering for deg.")]
         [InlineData("en-US", "You were already signed up!", "We already had a registration for you.")]
-        public async Task ShouldSendEmailWhenAlreadyRegistered(string language, string subject, string body)
+        public async Task Should_Send_Email_When_Already_Registered(string language, string subject, string body)
         {
             var client = this.factory.CreateClient();
             client.AcceptLanguage(language);
@@ -78,7 +78,7 @@ namespace losol.EventManagement.IntegrationTests.Pages.Events.Register
         [Theory]
         [InlineData("nb-NO", "Velkommen på kurs!", "Vi fikk registreringen din")]
         [InlineData("en-US", "Welcome to the course!", "We received your registration")]
-        public async Task ShouldCreateNewRegistrationForExistingUser(string language, string subject, string body)
+        public async Task Should_Create_New_Registration_For_Existing_User(string language, string subject, string body)
         {
             var client = this.factory.CreateClient();
             client.AcceptLanguage(language);
@@ -126,7 +126,7 @@ namespace losol.EventManagement.IntegrationTests.Pages.Events.Register
         [Theory]
         [InlineData("nb-NO", "Velkommen på kurs!", "Vi fikk registreringen din")]
         [InlineData("en-US", "Welcome to the course!", "We received your registration")]
-        public async Task ShouldCreateNewUserAndRegistration(string language, string subject, string body)
+        public async Task Should_Create_New_User_And_Registration(string language, string subject, string body)
         {
             var client = this.factory.CreateClient();
             client.AcceptLanguage(language);
