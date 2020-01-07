@@ -73,8 +73,12 @@ namespace EventManagement.Web.Extensions
         public static void ConfigureMvc(
             this IServiceCollection services)
         {
-            services.AddControllersWithViews();
-            services.AddRazorPages()
+            services
+                .AddControllersWithViews()
+                .AddNewtonsoftJson();
+
+            services
+                .AddRazorPages()
                 .AddRazorPagesOptions(options =>
                 {
                     options.Conventions.AuthorizeFolder("/Account/Manage");
@@ -126,7 +130,7 @@ namespace EventManagement.Web.Extensions
 
             // TODO: Change to feature manager later
             var featureConfig = Configuration.GetSection("FeatureManagement").Get<FeatureManagement>();
-            
+
         }
 
         public static void AddEmailServices(this IServiceCollection services,
