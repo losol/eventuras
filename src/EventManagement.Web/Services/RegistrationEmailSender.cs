@@ -68,7 +68,7 @@ namespace losol.EventManagement.Web.Services
 						protocol: _requestScheme
 					);
 
-            _logger.LogInformation("Sending registration email to {emailAddress}", emailAddress);
+            _logger.LogInformation("RegistrationEmailSender: Sending registration email for registrationId {registrationId}", registrationId);
             await SendAsync(emailAddress, subject, eventRegistration);
 		}
 	}
