@@ -9,6 +9,7 @@ using losol.EventManagement.Services;
 using Microsoft.AspNetCore.Identity;
 using Mapster;
 using static losol.EventManagement.Domain.PaymentMethod;
+using losol.EventManagement.Infrastructure;
 
 namespace losol.EventManagement.Pages.Admin.Events
 {
@@ -19,15 +20,17 @@ namespace losol.EventManagement.Pages.Admin.Events
         private readonly IOrderService _orders;
         private readonly IPaymentMethodService _paymentMethodService;
 		private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _db;
 
 
-        public AddRegistrationModel(IOrderService orders, IEventInfoService eventInfos, IRegistrationService registrations, IPaymentMethodService paymentMethods, UserManager<ApplicationUser> userManager)
+        public AddRegistrationModel(IOrderService orders, IEventInfoService eventInfos, IRegistrationService registrations, IPaymentMethodService paymentMethods, UserManager<ApplicationUser> userManager, ApplicationDbContext db)
         {
             _eventsService = eventInfos;
             _orders = orders;
             _registrations = registrations;
             _paymentMethodService = paymentMethods;
             _userManager = userManager;
+            _db = db;
         }
 
 		[BindProperty]
@@ -94,6 +97,7 @@ namespace losol.EventManagement.Pages.Admin.Events
 			// Create registration for our user
 			var newRegistration = Registration.Adapt<Registration>();
 			await _registrations.CreateRegistration(newRegistration);
+            await _db.SaveChangesAsync();
 
 			return RedirectToPage("./Details", new { id = id });
 		}
