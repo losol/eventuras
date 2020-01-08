@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -104,14 +104,14 @@ namespace losol.EventManagement.Services
 				}
 			}
 
-			/* 
+            /* 
             foreach(var id in registrationIds)
             {
                 var registration = await _db.Registrations.FindAsync(id);
                 var task1 = _db.Entry(registration).Reference(r => r.User).LoadAsync();
                 var task2 = _db.Entry(registration).Collection(r => r.Orders).LoadAsync();
                 var task3 = _db.OrderLines.Where(l => l.Order.RegistrationId == id).LoadAsync();
-                await Task.WhenAll(task1, task2, task3);
+                await Task.WhenAll(task1, task2, task3); // DON'T DO THIS, it will cause 'A second operation started on this context before a previous operation completed.'
 
                 registrations.Add(registration);
             }

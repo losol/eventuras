@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,17 +17,20 @@ namespace losol.EventManagement.Services
         private readonly IPaymentMethodService _paymentMethods;
         private readonly IOrderService _orderService;
         private readonly ILogger _logger;
+        private readonly IOrderVmConversionService _orderVmConversionService;
 
         public RegistrationService(
             ApplicationDbContext db,
             IPaymentMethodService paymentMethods,
             IOrderService orderService,
-            ILogger<RegistrationService> logger)
+            ILogger<RegistrationService> logger,
+            IOrderVmConversionService orderVmConversionService)
         {
             _db = db;
             _paymentMethods = paymentMethods;
             _orderService = orderService;
             _logger = logger;
+            _orderVmConversionService = orderVmConversionService;
         }
 
         public async Task<bool> RegistrationExists(int id)
@@ -136,13 +139,8 @@ namespace losol.EventManagement.Services
             // Create a registration order, if it exists
             if (ordersVm != null)
             {
-                var orders = ordersVm.Select(async o => new OrderDTO
-                {
-                    Product = await _db.Products.FindAsync(o.ProductId),
-                    Variant = o.VariantId.HasValue ? await _db.ProductVariants.FindAsync(o.VariantId) : null,
-                    Quantity = o.Quantity
-                });
-                registration.CreateOrder(await Task.WhenAll(orders));
+                var orders = await _orderVmConversionService.OrderVmsToOrderDtos(ordersVm);
+                registration.CreateOrder(orders.ToArray());
             }
 
             // Create the registration
@@ -234,15 +232,10 @@ namespace losol.EventManagement.Services
 
         private async Task<bool> _createOrUpdateOrderAsync(Registration registration, List<OrderVM> orders)
         {
+            var ordersDto = await _orderVmConversionService.OrderVmsToOrderDtos(orders);
 
-            var ordersDto = orders.Select(async o => new OrderDTO
-            {
-                Product = await _db.Products.FindAsync(o.ProductId),
-                Variant = o.VariantId.HasValue ? await _db.ProductVariants.FindAsync(o.VariantId) : null,
-                Quantity = o.Quantity
-            });
             // Create/update an order as needed.
-            registration.CreateOrUpdateOrder(await Task.WhenAll(ordersDto));
+            registration.CreateOrUpdateOrder(ordersDto.ToArray());
 
             // Persist the changes
             return await _db.SaveChangesAsync() > 0;
