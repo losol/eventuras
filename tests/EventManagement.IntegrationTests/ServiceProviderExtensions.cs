@@ -9,6 +9,7 @@ namespace losol.EventManagement.IntegrationTests
     public static class ServiceProviderExtensions
     {
         public const string Placeholder = "___Placeholder___";
+        public const string DefaultPassword = "MySuperSecretPassword1!";
 
         public static IServiceScope NewScope(this IServiceProvider serviceProvider)
         {
@@ -30,7 +31,7 @@ namespace losol.EventManagement.IntegrationTests
 
             if (password == Placeholder)
             {
-                password = "MySuperSecretPassword1!";
+                password = DefaultPassword;
             }
 
             var user = new ApplicationUser

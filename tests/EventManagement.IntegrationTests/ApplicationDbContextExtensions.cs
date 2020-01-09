@@ -128,7 +128,7 @@ namespace losol.EventManagement.IntegrationTests
         public static async Task<IDisposableEntity<Order>> CreateOrderAsync(
             this ApplicationDbContext context,
             Registration registration,
-            Product[] products,
+            Product[] products = null,
             Order.OrderStatus status = Order.OrderStatus.Verified)
         {
             var order = new Order
