@@ -39,7 +39,7 @@ In development mode it is recommended to set options by dotnet user-secrets. In 
 
 Set database connection string
 ```bash
-dotnet user-secrets set ConnectionStrings:DefaultConnection "Server=127.0.0.1,1401;Initial Catalog=EventDb;User ID=sa;Password=<Apples345#$%>"
+dotnet user-secrets set ConnectionStrings:DefaultConnection "Server=127.0.0.1,1401;Initial Catalog=EventDb;User ID=sa;Password=1Super#Secret!"
 ```
 
 Set admin user email and password
