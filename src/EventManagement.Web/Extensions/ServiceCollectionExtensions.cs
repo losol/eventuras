@@ -213,6 +213,7 @@ namespace EventManagement.Web.Extensions
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ICertificatesService, CertificatesService>();
             services.AddScoped<IMessageLogService, MessageLogService>();
+            services.AddTransient<IOrderVmConversionService, OrderVmConversionService>();
 
             // Add Page render Service
             services.AddScoped<IRenderService, ViewRenderService>();

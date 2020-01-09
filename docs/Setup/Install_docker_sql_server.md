@@ -12,7 +12,7 @@ Docker for Mac, Docker for Windows or Docker Engine 1.8+ for Linux.
 ```bash
 # Create mssql and install SQL Server 2017 for Linux
 docker pull mcr.microsoft.com/mssql/server:2017-latest
-docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=<Strong!Passw0rd>" -p 1433:1433 --name mssql -d mcr.microsoft.com/mssql/server:2017-latest
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Strong#Passw0rd" -p 1433:1433 --name mssql -d mcr.microsoft.com/mssql/server:2017-latest
 ```
 
 
@@ -22,7 +22,7 @@ docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=<Strong!Passw0rd>" -p 1433:1433 --
 # Connect to the mssql container
 docker exec -it mssql "bash"
 # Connect to SQL Server
-/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P '<Strong!Passw0rd>'
+/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'Strong#Passw0rd'
 ```
 
 ```sql
