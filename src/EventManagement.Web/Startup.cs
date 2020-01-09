@@ -58,6 +58,7 @@ namespace losol.EventManagement
             services.AddSmsServices(AppSettings.SmsProvider, Configuration);
             services.AddInvoicingServices(AppSettings, Configuration);
             services.AddApplicationServices(Configuration);
+            services.AddAntiforgery();
 
             services.AddApiVersioning(o =>
             {
