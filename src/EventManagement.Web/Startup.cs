@@ -90,24 +90,25 @@ namespace losol.EventManagement
                 app.UseExceptionHandler("/Info/Error");
             }
 
-            // Supported locales are nb-no, and soon en-us
-            var locale = Configuration["Site:DefaultLocale"];
+            // Localization
             var cultureInfoList = SupportedCultures.Select(c => new CultureInfo(c)).ToList();
+            var requestCultureProviders = new List<IRequestCultureProvider>
+                {
+                    new QueryStringRequestCultureProvider(),
+                    new CookieRequestCultureProvider()
+                };
 
-            var supportedCultures = new List<CultureInfo>() { new CultureInfo(locale) };
+            // Use localization by language header only in development environment
+            if (env.IsDevelopment()) {
+                requestCultureProviders.Add(new AcceptLanguageHeaderRequestCultureProvider());
+            }
+
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
-                DefaultRequestCulture = new RequestCulture(locale),
-                // Formatting numbers, dates, etc.
+                DefaultRequestCulture = new RequestCulture(Configuration["Site:DefaultLocale"]),
                 SupportedCultures = cultureInfoList,
-                // UI strings that we have localized.
                 SupportedUICultures = cultureInfoList,
-                RequestCultureProviders = new List<IRequestCultureProvider>
-                    {
-                        // Does not use AcceptLanguageHeader
-                        new QueryStringRequestCultureProvider(),
-                        new CookieRequestCultureProvider()
-                    }
+                RequestCultureProviders = requestCultureProviders
             });
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
