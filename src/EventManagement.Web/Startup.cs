@@ -16,6 +16,12 @@ namespace losol.EventManagement
 {
     public class Startup
     {
+        private static readonly string[] SupportedCultures = new[]
+        {
+            "en-US",
+            "nb-NO"
+        };
+
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
@@ -45,7 +51,7 @@ namespace losol.EventManagement
             services.ConfigureIdentity();
             services.ConfigureDbInitializationStrategy(Configuration, HostingEnvironment);
             services.ConfigureAuthorizationPolicies();
-            services.ConfigureLocalization(new CultureInfo(AppSettings.DefaultLocale));
+            services.ConfigureLocalization(new CultureInfo(Configuration["Site:DefaultLocale"]));
             services.ConfigureMvc();
 
             services.AddSiteConfig(Configuration);
@@ -85,15 +91,23 @@ namespace losol.EventManagement
             }
 
             // Supported locales are nb-no, and soon en-us
-            var locale = Configuration["Appsettings:DefaultLocale"];
+            var locale = Configuration["Site:DefaultLocale"];
+            var cultureInfoList = SupportedCultures.Select(c => new CultureInfo(c)).ToList();
+
             var supportedCultures = new List<CultureInfo>() { new CultureInfo(locale) };
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
                 DefaultRequestCulture = new RequestCulture(locale),
                 // Formatting numbers, dates, etc.
-                SupportedCultures = supportedCultures,
+                SupportedCultures = cultureInfoList,
                 // UI strings that we have localized.
-                SupportedUICultures = supportedCultures
+                SupportedUICultures = cultureInfoList,
+                RequestCultureProviders = new List<IRequestCultureProvider>
+                    {
+                        // Does not use AcceptLanguageHeader
+                        new QueryStringRequestCultureProvider(),
+                        new CookieRequestCultureProvider()
+                    }
             });
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
