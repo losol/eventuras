@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace losol.EventManagement.Web.Controllers.Api.V0
 {
     [ApiVersion("0")]
-    [Authorize(Policy = "AdministratorRole")]
+    [Authorize(Policy = AuthPolicies.AdministratorRole)]
     [Route("/api/v0/messaging")]
     public class MessagingController : Controller
     {

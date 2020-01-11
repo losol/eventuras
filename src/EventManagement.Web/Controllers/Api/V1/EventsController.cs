@@ -1,22 +1,15 @@
-using System;
+using losol.EventManagement.Services;
+using losol.EventManagement.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc.Versioning;
-using losol.EventManagement.Domain;
-using losol.EventManagement.Infrastructure;
-using losol.EventManagement.Services;
-using Microsoft.AspNetCore.Authorization;
-using losol.EventManagement.ViewModels;
-using static losol.EventManagement.Domain.Registration;
 
 namespace losol.EventManagement.Web.Controllers.Api.V1
 {
     [ApiVersion("1")]
-    [Authorize(Policy = "AdministratorRole")]
+    [Authorize(Policy = AuthPolicies.AdministratorRole)]
     [Route("api/v1/events")]
     [ApiController]
     public class EventsController : ControllerBase
