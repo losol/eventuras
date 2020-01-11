@@ -35,6 +35,7 @@ namespace losol.EventManagement
                     var config = new ConfigurationBuilder()
                         .SetBasePath(Directory.GetCurrentDirectory())
                         .AddJsonFile("appsettings.json", optional: false)
+                        .AddUserSecrets<Startup>()
                         .AddEnvironmentVariables()
                         .Build();
 
