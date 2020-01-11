@@ -24,6 +24,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Globalization;
+using losol.EventManagement.Web;
 
 namespace EventManagement.Web.Extensions
 {
@@ -84,7 +85,7 @@ namespace EventManagement.Web.Extensions
                     options.Conventions.AuthorizeFolder("/Account/Manage");
                     options.Conventions.AuthorizePage("/Account/Logout");
 
-                    options.Conventions.AuthorizeFolder("/Admin", "AdministratorRole");
+                    options.Conventions.AuthorizeFolder("/Admin", AuthPolicies.AdministratorRole);
                     options.Conventions.AddPageRoute("/Events/Details", "events/{id}/{slug?}");
 
                     options.Conventions.AuthorizeFolder("/Profile");

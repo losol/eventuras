@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace losol.EventManagement.Web.Controllers.Api.V0
 {
     [ApiVersion("0")]
     [Route("api/v0/users")]
-    [Authorize(Policy = "AdministratorRole")]
+    [Authorize(Policy = AuthPolicies.AdministratorRole)]
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext _db; // TODO: Get rid of this

@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using System.Threading.Tasks;
+using losol.EventManagement.Web;
 
 namespace EventManagement.Web.Controllers
 {
-    [Authorize (Policy = "AdministratorRole")]
+    [Authorize (Policy = AuthPolicies.AdministratorRole)]
     [Route("certificate")]
     public class CertificateController : Controller
     {

@@ -1,19 +1,15 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 using losol.EventManagement.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using static losol.EventManagement.Domain.Registration;
-using System.Collections.Generic;
-using System.Linq;
+using System;
+using System.Threading.Tasks;
 using static losol.EventManagement.Domain.PaymentMethod;
+using static losol.EventManagement.Domain.Registration;
 
 namespace losol.EventManagement.Web.Controllers.Api.V0
 {
     [ApiVersion("0")]
-    [Authorize(Policy = "AdministratorRole")]
+    [Authorize(Policy = AuthPolicies.AdministratorRole)]
     [Route("/api/v0/registrations")]
     public class RegistrationsController : Controller
     {
