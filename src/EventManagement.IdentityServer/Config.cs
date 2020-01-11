@@ -30,6 +30,17 @@ namespace losol.EventManagement.IdentityServer
             var webClientUrl = configuration["Web:Url"].TrimEnd('/');
             var spaClientUrl = configuration["Spa:Url"].TrimEnd('/');
 
+            var webClientScopes = configuration.GetSection("Web:AllowedScopes")
+                .GetChildren()
+                .Select(s => s.Value)
+                .ToArray();
+
+
+            var spaClientScopes = configuration.GetSection("Spa:AllowedScopes")
+                .GetChildren()
+                .Select(s => s.Value)
+                .ToArray();
+
             return new[]
             {
                 // MVC client using hybrid flow
@@ -40,19 +51,14 @@ namespace losol.EventManagement.IdentityServer
                     RequireConsent = false,
                     AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
                     ClientSecrets = { new Secret(configuration["Web:Secret"].Sha256()) },
-
                     RedirectUris = { $"{webClientUrl}/{configuration["Web:RedirectPath"].TrimStart('/')}" },
                     FrontChannelLogoutUri = $"{webClientUrl}/{configuration["Web:FrontChannelLogoutPath"].TrimStart('/')}",
                     PostLogoutRedirectUris =
                     {
                         $"{webClientUrl}/{configuration["Web:PostLogoutRedirectPath"].TrimStart('/')}"
                     },
-
                     AllowOfflineAccess = true,
-                    AllowedScopes = configuration.GetSection("Web:AllowedScopes")
-                        .AsEnumerable()
-                        .Select(kvPair => kvPair.Value)
-                        .ToArray()
+                    AllowedScopes = webClientScopes
                 },
 
                 // SPA client using Code flow
@@ -66,19 +72,13 @@ namespace losol.EventManagement.IdentityServer
                     RequirePkce = true,
                     RequireClientSecret = false,
                     AllowAccessTokensViaBrowser = true,
-
                     RedirectUris = configuration.GetSection("Spa:RedirectPaths")
-                        .AsEnumerable()
-                        .Select(kvPair => $"{webClientUrl}/{kvPair.Value.TrimStart('/')}")
+                        .GetChildren()
+                        .Select(s => $"{spaClientUrl}/{s.Value.TrimStart('/')}")
                         .ToArray(),
-
                     PostLogoutRedirectUris = { $"{spaClientUrl}/{configuration["Spa:PostLogoutRedirectPath"].TrimStart('/')}" },
-                    AllowedCorsOrigins = { webClientUrl },
-
-                    AllowedScopes = configuration.GetSection("Spa:AllowedScopes")
-                        .AsEnumerable()
-                        .Select(kvPair => kvPair.Value)
-                        .ToArray()
+                    AllowedCorsOrigins = { spaClientUrl },
+                    AllowedScopes = spaClientScopes
                 }
             };
         }

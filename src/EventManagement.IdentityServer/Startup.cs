@@ -26,6 +26,8 @@ namespace losol.EventManagement.IdentityServer
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews();
+
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<IdentityDbContext<ApplicationUser>>()
                 .AddDefaultTokenProviders();
@@ -46,6 +48,7 @@ namespace losol.EventManagement.IdentityServer
                 .AddAspNetIdentity<ApplicationUser>();
 
             services.AddAuthentication();
+            services.AddAuthorization();
 
             if (this.Environment.IsDevelopment())
             {
