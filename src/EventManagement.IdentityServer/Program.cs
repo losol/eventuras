@@ -41,8 +41,9 @@ namespace losol.EventManagement.IdentityServer
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
-                    webBuilder.UseSerilog();
+                    webBuilder
+                        .UseStartup<Startup>()
+                        .UseSerilog();
                 });
     }
 }

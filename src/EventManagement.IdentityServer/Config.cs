@@ -7,11 +7,20 @@ namespace losol.EventManagement.IdentityServer
 {
     public static class Config
     {
+        public static IEnumerable<IdentityResource> GetIds()
+        {
+            return new IdentityResource[]
+            {
+                new IdentityResources.OpenId(),
+                new IdentityResources.Profile(),
+            };
+        }
+
         public static IEnumerable<ApiResource> GetApis(IConfigurationSection configuration)
         {
             return new[]
             {
-                new ApiResource(configuration["Identity:Id"],configuration["Identity:Name"]), // TODO: is it needed?
+                new ApiResource(configuration["Identity:Id"],configuration["Identity:Name"]),
                 new ApiResource(configuration["EventManagement:Id"],configuration["EventManagement:Name"])
             };
         }
