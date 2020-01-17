@@ -11,21 +11,39 @@ namespace losol.EventManagement.ViewModels
         public RegistrationViewModel(Registration registration)
         {
             this.RegistrationId = registration.RegistrationId;
-            this.EventInfo = new EventInfoViewModel(registration.EventInfo);
+            this.Event = new EventInfoReference() {EventInfoId = registration.EventInfoId} ;
             this.Participant = new ParticipantViewModel(registration.User);
             this.Status = registration.Status;
             this.Type = registration.Type;
+            this.Notes = registration.Notes;
         }
 
         public int RegistrationId { get; set; }
+        public EventInfoReference Event { get; set; }
         public ParticipantViewModel Participant { get; set; }
-        public EventInfoViewModel EventInfo { get; set; }
-        public List<Product> Products { get; set; }
-        public List<Order> Orders { get; set; }
+
+        // To be implemented
+        public ProductsSummaryViewModel ProductsSummary { get; set; }
+
+        // To be implemeented
+        public List<OrderReference> Orders { get; set; }
+
         public RegistrationStatus Status { get; set; }
         public RegistrationType Type { get; set; }
         public int? CertificateId { get; set; }
         public string Notes { get; set; }
+    }
+
+    public class OrderReference 
+    {
+        public int OrderId { get; set; }
+        // later this class will include some detail urls and so on
+    }
+
+    public class EventInfoReference
+    {
+        public int EventInfoId { get; set; }
+        // later this class will include some detail urls and so on
     }
 }
 
