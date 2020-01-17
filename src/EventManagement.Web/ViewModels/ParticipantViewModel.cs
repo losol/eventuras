@@ -19,11 +19,16 @@ namespace losol.EventManagement.ViewModels
             this.UserId = user.Id;
             this.GivenName = givenName;
             this.FamilyName = familyName;
+
+            this.PhoneNumber = user.PhoneNumber;
+            this.Email = user.Email;
         }
 
         public string UserId { get; set; }
         public string GivenName { get; set; }
         public string FamilyName { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
     }
 }
 
