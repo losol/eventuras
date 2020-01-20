@@ -49,10 +49,10 @@ dotnet_style_null_propagation = true:warning
 dotnet_style_object_initializer = true:warning
 dotnet_style_predefined_type_for_locals_parameters_members = true:warning
 dotnet_style_predefined_type_for_member_access = true:warning
-dotnet_style_qualification_for_event = true:warning
-dotnet_style_qualification_for_field = true:warning
-dotnet_style_qualification_for_method = true:warning
-dotnet_style_qualification_for_property = true:warning
+dotnet_style_qualification_for_event = false:silent
+dotnet_style_qualification_for_field = false:silent
+dotnet_style_qualification_for_method = false:silent
+dotnet_style_qualification_for_property = false:silent
 
 # Naming Symbols
 # constant_fields - Define constant fields
@@ -69,6 +69,9 @@ dotnet_naming_symbols.static_readonly_fields.required_modifiers = static, readon
 dotnet_naming_symbols.private_readonly_fields.applicable_accessibilities = private
 dotnet_naming_symbols.private_readonly_fields.applicable_kinds = field
 dotnet_naming_symbols.private_readonly_fields.required_modifiers = readonly
+# private_fields - Define private fields
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_fields.applicable_kinds = field
 # public_internal_fields - Define public and internal fields
 dotnet_naming_symbols.public_internal_fields.applicable_accessibilities = public, internal
 dotnet_naming_symbols.public_internal_fields.applicable_kinds = field
@@ -95,6 +98,8 @@ dotnet_naming_style.first_upper.capitalization = first_word_upper
 # prefix_interface_interface_with_i - Interfaces must be PascalCase and the first character of an interface must be an 'I'
 dotnet_naming_style.prefix_interface_interface_with_i.capitalization = pascal_case
 dotnet_naming_style.prefix_interface_interface_with_i.required_prefix = I
+dotnet_naming_style.private_fields.capitalization = camel_case
+dotnet_naming_style.private_fields.required_prefix = _
 
 # Naming Rules
 # Constant fields must be PascalCase
@@ -109,10 +114,11 @@ dotnet_naming_rule.non_private_readonly_fields_must_be_pascal_case.style = pasca
 dotnet_naming_rule.static_readonly_fields_must_be_pascal_case.severity = warning
 dotnet_naming_rule.static_readonly_fields_must_be_pascal_case.symbols = static_readonly_fields
 dotnet_naming_rule.static_readonly_fields_must_be_pascal_case.style = pascal_case
-# Private readonly fields must be camelCase
-dotnet_naming_rule.private_readonly_fields_must_be_camel_case.severity = warning
-dotnet_naming_rule.private_readonly_fields_must_be_camel_case.symbols = private_readonly_fields
-dotnet_naming_rule.private_readonly_fields_must_be_camel_case.style = camel_case
+# Private fields must be camelCase
+dotnet_naming_rule.private_fields.severity = warning
+dotnet_naming_rule.private_fields.symbols = private_fields
+dotnet_naming_rule.private_fields.style = private_fields
+
 # Public and internal fields must be PascalCase
 dotnet_naming_rule.public_internal_fields_must_be_pascal_case.severity = warning
 dotnet_naming_rule.public_internal_fields_must_be_pascal_case.symbols = public_internal_fields

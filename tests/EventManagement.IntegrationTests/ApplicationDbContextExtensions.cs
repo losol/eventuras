@@ -110,7 +110,8 @@ namespace losol.EventManagement.IntegrationTests
             this ApplicationDbContext context,
             EventInfo eventInfo,
             ApplicationUser user,
-            Registration.RegistrationStatus status = Registration.RegistrationStatus.Verified)
+            Registration.RegistrationStatus status = Registration.RegistrationStatus.Verified,
+            DateTime? time = null)
         {
             var registration = new Registration
             {
@@ -118,6 +119,7 @@ namespace losol.EventManagement.IntegrationTests
                 User = user,
                 Status = status,
                 ParticipantName = user.Name,
+                RegistrationTime = time ?? DateTime.UtcNow
                 // TODO: add other params
             };
             context.Registrations.Add(registration);
@@ -129,25 +131,43 @@ namespace losol.EventManagement.IntegrationTests
             this ApplicationDbContext context,
             Registration registration,
             Product[] products = null,
+            ProductVariant[] variants = null,
+            int[] quantities = null,
             Order.OrderStatus status = Order.OrderStatus.Verified)
         {
             var order = new Order
             {
                 Registration = registration,
                 Status = status,
-                OrderLines = products?.Select(p => new OrderLine
+                OrderLines = products?.Select((p, i) => new OrderLine
                 {
                     Product = p,
+                    ProductVariant = variants != null && variants.Length > i ? variants[i] : null,
+                    Quantity = quantities != null && quantities.Length > i ? quantities[i] : p.MinimumQuantity,
                     VatPercent = p.VatPercent,
                     Price = p.Price,
-                    ProductName = p.Name,
-                    Quantity = p.MinimumQuantity
+                    ProductName = p.Name
                 }).ToList()
             };
 
             context.Orders.Add(order);
             await context.SaveChangesAsync();
             return new DisposableEntity<Order>(order, context);
+        }
+
+        public static async Task<IDisposableEntity<Order>> CreateOrderAsync(
+            this ApplicationDbContext context,
+            Registration registration,
+            Product product,
+            ProductVariant variant = null,
+            int quantity = 1,
+            Order.OrderStatus status = Order.OrderStatus.Verified)
+        {
+            return await context.CreateOrderAsync(registration,
+                new[] { product },
+                variant != null ? new[] { variant } : null,
+                new[] { quantity },
+                status);
         }
     }
 }

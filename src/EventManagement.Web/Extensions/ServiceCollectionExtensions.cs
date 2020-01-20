@@ -5,6 +5,7 @@ using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services;
 using losol.EventManagement.Services.DbInitializers;
 using losol.EventManagement.Services.Invoicing;
+using losol.EventManagement.Web;
 using losol.EventManagement.Web.Config;
 using losol.EventManagement.Web.Extensions;
 using losol.EventManagement.Web.Services;
@@ -24,7 +25,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Globalization;
-using losol.EventManagement.Web;
 
 namespace EventManagement.Web.Extensions
 {
@@ -206,15 +206,7 @@ namespace EventManagement.Web.Extensions
         public static void AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             // Register our application services
-            services.AddScoped<IEventInfoService, EventInfoService>();
-            services.AddScoped<IPaymentMethodService, PaymentMethodService>();
-            services.AddScoped<StripeInvoiceProvider>();
-            services.AddScoped<IRegistrationService, RegistrationService>();
-            services.AddScoped<IProductsService, ProductsService>();
-            services.AddScoped<IOrderService, OrderService>();
-            services.AddScoped<ICertificatesService, CertificatesService>();
-            services.AddScoped<IMessageLogService, MessageLogService>();
-            services.AddTransient<IOrderVmConversionService, OrderVmConversionService>();
+            services.AddEventServices();
 
             // Add Page render Service
             services.AddScoped<IRenderService, ViewRenderService>();
