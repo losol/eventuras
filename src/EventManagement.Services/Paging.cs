@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -16,8 +16,8 @@ namespace losol.EventManagement.Services
             TotalRecords = totalRecords;
         }
 
-        public static async Task<Paging<T>> CreateAsync<T>(
-            IQueryable<T> query,
+        public static async Task<Paging<TP>> CreateAsync<TP>(
+            IQueryable<TP> query,
             PagingRequest request,
             CancellationToken cancellationToken = default)
         {
@@ -26,12 +26,12 @@ namespace losol.EventManagement.Services
                 .Skip(request.Offset)
                 .Take(request.Limit)
                 .ToArrayAsync(cancellationToken);
-            return new Paging<T>(data, count);
+            return new Paging<TP>(data, count);
         }
 
-        public static Paging<T> Empty()
+        public static Paging<TP> Empty<TP>()
         {
-            return new Paging<T>(new T[0], 0);
+            return new Paging<TP>(new TP[0], 0);
         }
     }
 }
