@@ -4,5 +4,6 @@ namespace losol.EventManagement.Web.Config
     {
         public string Title { get; set; }
         public string Description { get; set; }
+        public string DefaultLocale { get; set; }
     }
 }

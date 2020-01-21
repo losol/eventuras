@@ -12,22 +12,34 @@ namespace losol.EventManagement.IntegrationTests
 {
     public static class HttpClientExtensions
     {
-        public static async Task<HttpResponseMessage> PostAsync(this HttpClient httpClient, string requestUri, IDictionary<string, string> data)
+        public static async Task<HttpResponseMessage> PostAsync(
+            this HttpClient httpClient,
+            string requestUri,
+            IDictionary<string, string> data,
+            string requestVerificationToken)
         {
-            var token = await httpClient.GetAntiForgeryTokenAsync();
-
-            data.Add("__RequestVerificationToken", token);
+            data.Add("__RequestVerificationToken", requestVerificationToken);
 
             return await httpClient.PostAsync(requestUri, new FormUrlEncodedContent(data));
         }
 
+        public static async Task<HttpResponseMessage> PostAsync(
+            this HttpClient httpClient,
+            string requestUri,
+            IDictionary<string, string> data)
+        {
+            var token = await httpClient.GetAntiForgeryTokenAsync(requestUri); // Obtain token from the same URL
+            return await httpClient.PostAsync(requestUri, data, token);
+        }
+
         public static async Task<HttpResponseMessage> LoginAsync(this HttpClient httpClient, string email, string password)
         {
+            var token = await httpClient.GetAntiForgeryTokenAsync("/Account/Login");
             return await httpClient.PostAsync("/Account/Login", new Dictionary<string, string>
             {
                 { "Email", email },
                 { "Password", password }
-            });
+            }, token);
         }
 
         public static async Task<HttpResponseMessage> LogInAsSuperAdminAsync(this HttpClient httpClient)
@@ -35,19 +47,23 @@ namespace losol.EventManagement.IntegrationTests
             return await httpClient.LoginAsync(SeedData.SuperAdminEmail, SeedData.SuperAdminPassword);
         }
 
-        public static async Task<string> GetAntiForgeryTokenAsync(this HttpClient httpClient)
+        public static async Task<string> GetAntiForgeryTokenAsync(this HttpClient httpClient, string requestUri)
         {
             SetCookieHeaderValue antiForgeryCookie = null;
 
-            var response = await httpClient.GetAsync("/Account/Login");
+            var response = await httpClient.GetAsync(requestUri);
             Assert.True(response.IsSuccessStatusCode, await response.Content.ReadAsStringAsync());
             if (response.Headers.TryGetValues("Set-Cookie", out var values))
             {
-                antiForgeryCookie = SetCookieHeaderValue.ParseList(values.ToList()).SingleOrDefault(c =>
+                var setCookieHeaderValues = SetCookieHeaderValue.ParseList(values.ToList());
+                antiForgeryCookie = setCookieHeaderValues.SingleOrDefault(c =>
                     c.Name.StartsWith(".AspNetCore.AntiForgery.", StringComparison.InvariantCultureIgnoreCase));
             }
-            Assert.NotNull(antiForgeryCookie);
-            httpClient.DefaultRequestHeaders.Add("Cookie", new CookieHeaderValue(antiForgeryCookie.Name, antiForgeryCookie.Value).ToString());
+
+            if (antiForgeryCookie != null)
+            {
+                httpClient.DefaultRequestHeaders.Add("Cookie", new CookieHeaderValue(antiForgeryCookie.Name, antiForgeryCookie.Value).ToString());
+            }
 
             var responseHtml = await response.Content.ReadAsStringAsync();
             var match = AntiForgeryFormFieldRegex.Match(responseHtml);

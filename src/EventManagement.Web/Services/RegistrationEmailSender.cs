@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using static losol.EventManagement.Domain.Registration;
 
 namespace losol.EventManagement.Web.Services
@@ -15,6 +16,7 @@ namespace losol.EventManagement.Web.Services
 		private readonly IRegistrationService _registrationService;
         private readonly IUrlHelper _urlHelper;
         private readonly string _requestScheme;
+        private readonly ILogger<RegistrationEmailSender> _logger;
 
 
 		public RegistrationEmailSender(
@@ -22,13 +24,15 @@ namespace losol.EventManagement.Web.Services
                 IRenderService renderService,
                 IUrlHelperFactory urlHelperFactory,
                 IActionContextAccessor actionContextAccessor,
-				IRegistrationService registrationService) 
+				IRegistrationService registrationService,
+                ILogger<RegistrationEmailSender> logger) 
 			: base(emailSender, renderService)
 		{ 
 			_registrationService = registrationService;
             _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);;
             _requestScheme = actionContextAccessor.ActionContext.HttpContext.Request.Scheme;
-		}
+            _logger = logger;
+        }
 
 
 		public async Task SendRegistrationAsync(string emailAddress, string subject, string message, int registrationId) {
@@ -63,9 +67,9 @@ namespace losol.EventManagement.Web.Services
 						},
 						protocol: _requestScheme
 					);
-					
-				await SendAsync(emailAddress, subject, eventRegistration);
-		}
 
+            _logger.LogInformation("RegistrationEmailSender: Sending registration email for registrationId {registrationId}", registrationId);
+            await SendAsync(emailAddress, subject, eventRegistration);
+		}
 	}
 }

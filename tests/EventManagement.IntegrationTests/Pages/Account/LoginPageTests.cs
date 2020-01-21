@@ -1,3 +1,4 @@
+using System;
 using Moq;
 using System.Collections.Generic;
 using System.Net;
@@ -6,13 +7,18 @@ using Xunit;
 
 namespace losol.EventManagement.IntegrationTests.Pages.Account
 {
-    public class LoginPageTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+    public class LoginPageTests : IClassFixture<CustomWebApplicationFactory<Startup>>, IDisposable
     {
         private readonly CustomWebApplicationFactory<Startup> factory;
 
         public LoginPageTests(CustomWebApplicationFactory<Startup> factory)
         {
             this.factory = factory;
+        }
+
+        public void Dispose()
+        {
+            this.factory.EmailSenderMock.Reset();
         }
 
         [Theory]

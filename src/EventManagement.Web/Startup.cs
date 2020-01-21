@@ -4,12 +4,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
@@ -19,8 +18,8 @@ namespace losol.EventManagement
     {
         private static readonly string[] SupportedCultures = new[]
         {
-            "nb-NO", // default one goes first
-            "en-US"
+            "en-US",
+            "nb-NO"
         };
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
@@ -52,7 +51,7 @@ namespace losol.EventManagement
             services.ConfigureIdentity();
             services.ConfigureDbInitializationStrategy(Configuration, HostingEnvironment);
             services.ConfigureAuthorizationPolicies();
-            services.ConfigureLocalization(new CultureInfo(SupportedCultures[0]));
+            services.ConfigureLocalization(new CultureInfo(Configuration["Site:DefaultLocale"]));
             services.ConfigureMvc();
 
             services.AddSiteConfig(Configuration);
@@ -60,6 +59,7 @@ namespace losol.EventManagement
             services.AddSmsServices(AppSettings.SmsProvider, Configuration);
             services.AddInvoicingServices(AppSettings, Configuration);
             services.AddApplicationServices(Configuration);
+            services.AddAntiforgery();
 
             services.AddApiVersioning(o =>
             {
@@ -90,14 +90,25 @@ namespace losol.EventManagement
                 app.UseExceptionHandler("/Info/Error");
             }
 
+            // Localization
             var cultureInfoList = SupportedCultures.Select(c => new CultureInfo(c)).ToList();
+            var requestCultureProviders = new List<IRequestCultureProvider>
+                {
+                    new QueryStringRequestCultureProvider(),
+                    new CookieRequestCultureProvider()
+                };
+
+            // Use localization by language header only in development environment
+            if (env.IsDevelopment()) {
+                requestCultureProviders.Add(new AcceptLanguageHeaderRequestCultureProvider());
+            }
+
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
-                DefaultRequestCulture = new RequestCulture(SupportedCultures[0]),
-                // Formatting numbers, dates, etc.
+                DefaultRequestCulture = new RequestCulture(Configuration["Site:DefaultLocale"]),
                 SupportedCultures = cultureInfoList,
-                // UI strings that we have localized.
-                SupportedUICultures = cultureInfoList
+                SupportedUICultures = cultureInfoList,
+                RequestCultureProviders = requestCultureProviders
             });
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.

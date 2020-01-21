@@ -11,8 +11,8 @@ Docker for Mac, Docker for Windows or Docker Engine 1.8+ for Linux.
 
 ```bash
 # Create mssql and install SQL Server 2017 for Linux
-docker pull mcr.microsoft.com/mssql/server:2017-latest
-docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=<Strong!Passw0rd>" -p 1433:1433 --name mssql -d mcr.microsoft.com/mssql/server:2017-latest
+docker pull mcr.microsoft.com/mssql/server:2019-latest
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Strong#Passw0rd" -p 1433:1433 --name eventdb -d mcr.microsoft.com/mssql/server:2019-latest
 ```
 
 
@@ -20,22 +20,22 @@ docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=<Strong!Passw0rd>" -p 1433:1433 --
 3. Create our database and change sa password
 ```bash
 # Connect to the mssql container
-docker exec -it mssql "bash"
+docker exec -it eventdb "bash"
 # Connect to SQL Server
-/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P '<Strong!Passw0rd>'
+/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'Strong#Passw0rd'
 ```
 
 ```sql
 -- Create the EventDB database for the app
-CREATE DATABASE EventDB
+CREATE DATABASE eventuras
 GO
 ```
 
 4. Change the password (optional)
 
 ```sql
--- Change the password to <Apples345#$%>
-ALTER LOGIN SA WITH PASSWORD="<Apples345#$%>"
+-- Change the password to 1Super#Secret!
+ALTER LOGIN SA WITH PASSWORD="1Super#Secret!"
 GO
 ```
 
@@ -43,7 +43,7 @@ You may now exit the SQL session using `quit` and then the bash session using `e
 
 The connection string will now be:
 ```
-Server=127.0.0.1,1401;Database=EventDB;User=sa;Password=<Apples345#$%>;
+Server=event_db,1433;Database=eventuras;User Id=sa;Password=1Super#Secret!;Trusted_Connection=False;
 ```
 
 ## Using the mssql container
@@ -51,21 +51,21 @@ Server=127.0.0.1,1401;Database=EventDB;User=sa;Password=<Apples345#$%>;
 You now can start this container anytime using:
 
 ```bash
-docker start mssql
+docker start eventdb
 ```
 
 To run interactive sql
 ```bash
 # Connect to the mssql container
-docker exec -it mssql "bash"
+docker exec -it eventdb "bash"
 # Connect to SQL Server
-/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P '<Apples345#$%>'
+/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P '1Super#Secret!'
 ```
 
 To stop use:
 
 ```bash
-docker stop mssql
+docker stop eventdb
 ```
 
 To see the running containers:
@@ -80,10 +80,10 @@ To see all containers:
 docker ps -a
 ```
 
-To remove `mssql` container (and its data):
+To remove `eventdb` container (and its data):
 
 ```bash
-docker rm mssql
+docker rm eventdb
 ```
 
 ## Related links

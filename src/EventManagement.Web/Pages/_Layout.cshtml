@@ -1,38 +1,44 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <title>@ViewData["Title"] - kursinord.no</title>
-    <link rel="stylesheet" href="~/assets/css/main.css" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.css">
-    @RenderSection("HeadScripts", required: false)
-    <google-tag-head gtm-id="GTM-5KKT49H" />
-</head>
-<body>
-<google-tag-body gtm-id="GTM-5KKT49H" />
-<header>
-<nav class="navbar navbar-expand-md navbar-dark bg-teal">
-        <a asp-page="/Index" class="navbar-brand link-decoration-none">Kurs for leger</a>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <title>@ViewData["Title"] - kursinord.no</title>
+        <link rel="stylesheet" href="~/assets/css/main.css" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" integrity="sha256-ENFZrbVzylNbgnXx0n3I1g//2WeO47XxoPe0vkp3NC8=" crossorigin="anonymous" />
+        @RenderSection("HeadScripts", required: false)
 
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <google-tag-head gtm-id="GTM-5KKT49H" />
+    </head>
+    <body>
+        <google-tag-body gtm-id="GTM-5KKT49H" />
+        <header>
+            <nav class="navbar navbar-expand-md navbar-dark bg-teal">
+                <a asp-page="/Index" class="navbar-brand link-decoration-none">Kurs for leger</a>
 
-        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-                
-        @await Html.PartialAsync("_LoginPartial")
-        @await Html.PartialAsync("_NavAdminPartial")
-    
-        </div>
-    </nav>
-</header>
-<main>
-@RenderBody()
-</main>
-@await Html.PartialAsync("_PartFooter")
-    <script src="~/assets/js/app.js" asp-append-version="true"></script>
-    <script src="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.js"></script>
-    @RenderSection("Scripts", required: false)
-</body>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+                        
+                @await Html.PartialAsync("_LoginPartial")
+                @await Html.PartialAsync("_NavAdminPartial")
+            
+                </div>
+            </nav>
+        </header>
+        <main>
+        @RenderBody()
+        </main>
+        @await Html.PartialAsync("_PartFooter")
+
+        <script src="~/assets/js/app.js" asp-append-version="true"></script>
+        <script src="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+        <script src="https://cdn.ckeditor.com/ckeditor5/16.0.0/classic/ckeditor.js"></script>
+        <script src="~/assets/js/admin.js"></script>
+        @RenderSection("Scripts", required: false)
+    </body>
 </html>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -175,17 +175,17 @@ namespace losol.EventManagement.Services
             if (products is null) throw new ArgumentNullException(paramName: nameof(products));
             bool result = true;
 
-            var originalProducts = _db.Products.Where(p => p.EventInfoId == eventId)
-                .Include(p => p.ProductVariants).AsNoTracking();
-            var originalVariants = originalProducts.SelectMany(p => p.ProductVariants).AsNoTracking();
+            var originalProducts = await _db.Products.Where(p => p.EventInfoId == eventId)
+                .Include(p => p.ProductVariants).AsNoTracking().ToArrayAsync();
+            var originalVariants = originalProducts.SelectMany(p => p.ProductVariants).ToArray();
 
             // Delete the variants that don't exist in the provided object
             var providedVariants = products
                                        .Where(p => p.ProductVariants != null)
                                        .SelectMany(p => p.ProductVariants);
-            var variantsToDelete = await originalVariants
+            var variantsToDelete = originalVariants
                 .Where(originalVariant => providedVariants.All(variant => variant.ProductVariantId != originalVariant.ProductVariantId))
-                .AsNoTracking().ToListAsync();
+                .ToList();
             if (variantsToDelete.Any())
             {
                 _db.ProductVariants.AttachRange(variantsToDelete);
@@ -194,7 +194,7 @@ namespace losol.EventManagement.Services
             }
 
             // Delete the products that don't exist in the provided object
-            var productsToDelete = await originalProducts.Where(op => products.All(p => p.ProductId != op.ProductId)).AsNoTracking().ToListAsync();
+            var productsToDelete = originalProducts.Where(op => products.All(p => p.ProductId != op.ProductId)).ToList();
             if (productsToDelete.Any())
             {
                 _db.Products.AttachRange(productsToDelete);

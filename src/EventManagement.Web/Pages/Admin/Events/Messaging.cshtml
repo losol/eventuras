@@ -125,21 +125,16 @@
         }
     </script>
 
-
-    <script src="https://cdn.ckeditor.com/ckeditor5/10.0.1/classic/ckeditor.js"></script>
     <script>
+
     var emailEditor;
     ClassicEditor
-        .create( document.querySelector( '#email-content' ) , {
-            toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList' ]
-        } )
-        .then( editor => {
-            console.log( 'Editor was initialized', editor );
-            emailEditor = editor;
-        } )
+        .create( document.querySelector( '#email-content' ) )
+        .then ( editor => {
+            emailEditor = editor
+        })
         .catch( error => {
             console.error( error );
         } );
     </script>
-
 }
