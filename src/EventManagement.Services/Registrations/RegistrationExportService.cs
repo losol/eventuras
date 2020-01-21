@@ -1,12 +1,12 @@
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using losol.EventManagement.Domain;
 using System;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using losol.EventManagement.Domain;
 
 namespace losol.EventManagement.Services.Registrations
 {
@@ -30,7 +30,12 @@ namespace losol.EventManagement.Services.Registrations
             var worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
             var sheetData = new SheetData();
 
-            var registrations = await PageReader<Registration>.ReadAllAsync(async (offset, limit, token) =>
+            if (options?.ExportHeader == true)
+            {
+                WriteHeader(sheetData);
+            }
+
+            var reader = new PageReader<Registration>(async (offset, limit, token) =>
                 await _registrationRetrievalService.ListRegistrationsAsync(
                     new IRegistrationRetrievalService.Request
                     {
@@ -45,15 +50,12 @@ namespace losol.EventManagement.Services.Registrations
                         Descending = true
                     }, token));
 
-
-            if (options?.ExportHeader == true)
+            while (await reader.HasMoreAsync())
             {
-                WriteHeader(sheetData);
-            }
-
-            foreach (var registration in registrations)
-            {
-                WriteRow(sheetData, registration);
+                foreach (var registration in await reader.ReadNextAsync())
+                {
+                    WriteRow(sheetData, registration);
+                }
             }
 
             worksheetPart.Worksheet = new Worksheet(sheetData);
