@@ -37,8 +37,9 @@ namespace EventManagement.Web.Extensions
         {
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
-                options.EnableSensitiveDataLogging(env.IsDevelopment());
+                options
+                    .UseNpgsql(config.GetConnectionString("DefaultConnection"))
+                    .EnableSensitiveDataLogging(env.IsDevelopment());
             });
         }
 
