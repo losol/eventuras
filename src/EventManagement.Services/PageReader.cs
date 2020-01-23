@@ -60,12 +60,12 @@ namespace losol.EventManagement.Services
             }
         }
 
-        public static async Task<T[]> ReadAllAsync<T>(
-            Func</*offset*/int, /*limit*/int, CancellationToken, Task<Paging<T>>> func,
+        public static async Task<TP[]> ReadAllAsync<TP>(
+            Func</*offset*/int, /*limit*/int, CancellationToken, Task<Paging<TP>>> func,
             CancellationToken cancellationToken = default)
         {
-            var reader = new PageReader<T>(func);
-            var result = new List<T>();
+            var reader = new PageReader<TP>(func);
+            var result = new List<TP>();
             while (!cancellationToken.IsCancellationRequested &&
                    await reader.HasMoreAsync(cancellationToken))
             {
