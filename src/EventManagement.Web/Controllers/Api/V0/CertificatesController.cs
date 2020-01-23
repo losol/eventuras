@@ -2,18 +2,17 @@ using losol.EventManagement.Services;
 using losol.EventManagement.ViewModels;
 using losol.EventManagement.Web.Services;
 using losol.EventManagement.Web.ViewModels;
+using Losol.Communication.Email;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Losol.Communication.Email;
 
 namespace losol.EventManagement.Web.Controllers.Api.V0
 {
     [ApiVersion("0")]
-    [Authorize(Policy = "AdministratorRole")]
+    [Authorize(Policy = AuthPolicies.AdministratorRole)]
     [Route("api/certificates")]
     public class CertificatesController : Controller
     {

@@ -20,7 +20,8 @@ namespace losol.EventManagement.IntegrationTests
             this IServiceProvider serviceProvider,
             string email = Placeholder,
             string password = Placeholder,
-            params string[] roles)
+            string phone = Placeholder,
+            string[] roles = null)
         {
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
@@ -34,17 +35,24 @@ namespace losol.EventManagement.IntegrationTests
                 password = DefaultPassword;
             }
 
+            if (phone == Placeholder)
+            {
+                phone = "+11111111111";
+            }
+
             var user = new ApplicationUser
             {
                 Name = email,
                 UserName = email,
                 Email = email,
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                PhoneNumber = phone,
+                PhoneNumberConfirmed = !string.IsNullOrEmpty(phone)
             };
 
             await userManager.CreateAsync(user, password);
 
-            if (roles.Length > 0)
+            if (roles?.Length > 0)
             {
                 await userManager.AddToRolesAsync(user, roles);
             }

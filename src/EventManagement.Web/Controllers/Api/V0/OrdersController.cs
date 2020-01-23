@@ -1,20 +1,19 @@
-﻿using System;
-using System.Threading.Tasks;
+using losol.EventManagement.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-using losol.EventManagement.Services;
-using System.ComponentModel.DataAnnotations;
-using static losol.EventManagement.Domain.Order;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
+using static losol.EventManagement.Domain.Order;
 using static losol.EventManagement.Domain.PaymentMethod;
 
 namespace losol.EventManagement.Web.Controllers.Api.V0
 {
     [ApiVersion("0")]
-    [Authorize(Policy = "AdministratorRole")]
+    [Authorize(Policy = AuthPolicies.AdministratorRole)]
     [Route("/api/v0/orders")]
     public class OrdersController : Controller
     {

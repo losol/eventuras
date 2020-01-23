@@ -11,7 +11,7 @@ using static losol.EventManagement.Domain.Registration;
 namespace losol.EventManagement.Web.Controllers.Api.V0
 {
     [ApiVersion("0")]
-    [Authorize(Policy = "AdministratorRole")]
+    [Authorize(Policy = AuthPolicies.AdministratorRole)]
     [Route("api/participants")]
     public class ParticipantsController : Controller
     {
