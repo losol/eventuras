@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace EventManagement.Services.Converto
@@ -45,13 +47,19 @@ namespace EventManagement.Services.Converto
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.accessToken);
 
-                var response = await client.PostAsync(endpointUrl, new FormUrlEncodedContent(
-                    new List<KeyValuePair<string, string>>
+                var content = new List<KeyValuePair<string, string>>
                     {
                         KeyValuePair.Create("html", html),
                         KeyValuePair.Create("scale", scale.ToString(CultureInfo.InvariantCulture)),
                         KeyValuePair.Create("format", format)
-                    }));
+                    };
+
+                var jsoncontent = JsonConvert.SerializeObject(content);
+
+                var response = await client.PostAsync(
+                    endpointUrl, 
+                    new StringContent(jsoncontent, Encoding.UTF8, "application/json")
+                    );
 
                 if (!response.IsSuccessStatusCode)
                 {
