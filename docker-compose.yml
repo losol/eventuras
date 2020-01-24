@@ -10,12 +10,17 @@ services:
     ports:
       - "5100:80"
     depends_on:
-      - mssql
+      - db
 
-  mssql:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    container_name: event_db
+  db:
+    container_name: eventuras_db
+    image: postgres
+    restart: always
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     environment:
-      - MSSQL_SA_PASSWORD=Str0ng#PaSsw0rd
-      - ACCEPT_EULA=Y
-      - MSSQL_PID=Developer
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: Str0ngPassword
+      POSTGRES_DB: eventuras_db
