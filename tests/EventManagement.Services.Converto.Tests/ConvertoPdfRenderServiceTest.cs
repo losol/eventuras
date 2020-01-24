@@ -101,6 +101,18 @@ namespace EventManagement.Services.Converto.Tests
             }
         }
 
+        [Fact(Skip = "Provide URL for converto service")]
+        public async Task ShouldRenderLargePdf()
+        {
+            // Initially caused "Invalid URI: The Uri string is too long."
+            var html = $"<html>{new String('A', 200000)}</html>";
+            using (var stream = await this.NewService().RenderHtmlAsync(html,
+                new PdfRenderOptions()))
+            {
+                await CheckNotEmptyAsync(stream);
+            }
+        }
+
         private static async Task CheckEmptyAsync(Stream stream)
         {
             var buffer = new byte[1024];

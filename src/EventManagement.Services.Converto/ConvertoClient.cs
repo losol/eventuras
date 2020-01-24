@@ -8,50 +8,51 @@ using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace EventManagement.Services.Converto
 {
     public class ConvertoClient : IConvertoClient
     {
-        private readonly IHttpClientFactory httpClientFactory;
-        private readonly IOptions<ConvertoConfig> options;
-        private readonly ILogger<ConvertoClient> logger;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IOptions<ConvertoConfig> _options;
+        private readonly ILogger<ConvertoClient> _logger;
 
-        private string accessToken;
-        private JwtSecurityToken securityToken;
+        private string _accessToken;
+        private JwtSecurityToken _securityToken;
 
         public ConvertoClient(
             IHttpClientFactory httpClientFactory,
             IOptions<ConvertoConfig> options,
             ILogger<ConvertoClient> logger)
         {
-            this.options = options;
-            this.logger = logger;
-            this.httpClientFactory = httpClientFactory;
+            _options = options;
+            _logger = logger;
+            _httpClientFactory = httpClientFactory;
         }
 
         public async Task<Stream> Html2PdfAsync(string html, float scale, string format)
         {
-            await this.EnsureLoggedInAsync();
+            await EnsureLoggedInAsync();
 
-            var client = this.httpClientFactory.CreateClient();
-            var endpointUrl = this.options.Value.Html2PdfEndpointUrl;
+            var client = _httpClientFactory.CreateClient();
+            var endpointUrl = _options.Value.Html2PdfEndpointUrl;
 
-            this.logger.LogDebug($"Sending HTML to {endpointUrl}");
-            this.logger.LogTrace(html);
+            _logger.LogDebug($"Sending HTML to {endpointUrl}");
+            _logger.LogTrace(html);
 
             try
             {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.accessToken);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
 
-                var response = await client.PostAsync(endpointUrl, new FormUrlEncodedContent(
-                    new List<KeyValuePair<string, string>>
-                    {
-                        KeyValuePair.Create("html", html),
-                        KeyValuePair.Create("scale", scale.ToString(CultureInfo.InvariantCulture)),
-                        KeyValuePair.Create("format", format)
-                    }));
+                var response = await client.PostAsync(endpointUrl, new StringContent(JsonConvert.SerializeObject(new
+                {
+                    html,
+                    scale,
+                    format
+                }), Encoding.UTF8, "application/json"));
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -68,23 +69,23 @@ namespace EventManagement.Services.Converto
 
         private async Task EnsureLoggedInAsync()
         {
-            if (this.securityToken != null && this.securityToken.ValidTo > DateTime.UtcNow.AddMinutes(1))
+            if (_securityToken != null && _securityToken.ValidTo > DateTime.UtcNow.AddMinutes(1))
             {
                 return;
             }
 
-            var client = this.httpClientFactory.CreateClient();
-            var endpointUrl = this.options.Value.LoginEndpointUrl;
+            var client = _httpClientFactory.CreateClient();
+            var endpointUrl = _options.Value.LoginEndpointUrl;
 
             try
             {
-                this.logger.LogDebug($"Authenticate using {endpointUrl}");
+                _logger.LogDebug($"Authenticate using {endpointUrl}");
 
                 var response = await client.PostAsync(endpointUrl, new FormUrlEncodedContent(
                     new List<KeyValuePair<string, string>>
                     {
-                        KeyValuePair.Create("identifier", this.options.Value.Username),
-                        KeyValuePair.Create("password", this.options.Value.Password)
+                        KeyValuePair.Create("identifier", _options.Value.Username),
+                        KeyValuePair.Create("password", _options.Value.Password)
                     }));
 
                 if (!response.IsSuccessStatusCode)
@@ -93,8 +94,8 @@ namespace EventManagement.Services.Converto
                 }
 
                 var json = JObject.Parse(await response.Content.ReadAsStringAsync());
-                this.accessToken = json.Value<string>("jwt");
-                this.securityToken = new JwtSecurityTokenHandler().ReadJwtToken(this.accessToken);
+                _accessToken = json.Value<string>("jwt");
+                _securityToken = new JwtSecurityTokenHandler().ReadJwtToken(_accessToken);
             }
             catch (IOException e)
             {
