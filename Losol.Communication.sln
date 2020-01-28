@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29509.3
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{8553E8A5-2517-44FF-87BF-20783D560428}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4B03ABF7-A8C8-40C2-BCA5-EE1ED6B5D5B4}"
 	ProjectSection(SolutionItems) = preProject
 		src\common.props = src\common.props
