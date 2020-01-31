@@ -43,7 +43,7 @@ namespace losol.EventManagement.Services
             return await _db.Registrations
                 .Include(m => m.User)
                 .Include(m => m.EventInfo)
-                .OrderByDescending(m => m.RegistrationTime)
+                .OrderByDescending(m => m.RegistrationId)
                 .Take(20)
                 .ToListAsync();
         }
