@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>0.3.2</Version>
-    <Authors>Ole Kristian Losvik</Authors>
+    <Version>0.4.0</Version>
+    <Authors>Andrew Anisimov, Ole Kristian Losvik</Authors>
     <Company>Losol AS</Company>
     <IsPackable>true</IsPackable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

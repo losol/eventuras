@@ -24,6 +24,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Losol.Communication.Email.M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Losol.Communication.Sms.Mock", "src\Losol.Communication.Sms.Mock\Losol.Communication.Sms.Mock.csproj", "{294D8E54-C44A-47E4-B7EA-3487FA8213F3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{BD1386F9-8B88-4963-8901-B6E8462A30B9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Losol.Communication.Email.Tests", "tests\Losol.Communication.Email.Tests\Losol.Communication.Email.Tests.csproj", "{EDD51222-34F3-4A54-8C35-23C7EF583E77}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4E25A29A-9CE9-4321-860C-1157E478950F}"
+	ProjectSection(SolutionItems) = preProject
+		src\common.props = src\common.props
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -130,6 +139,18 @@ Global
 		{294D8E54-C44A-47E4-B7EA-3487FA8213F3}.Release|x64.Build.0 = Release|Any CPU
 		{294D8E54-C44A-47E4-B7EA-3487FA8213F3}.Release|x86.ActiveCfg = Release|Any CPU
 		{294D8E54-C44A-47E4-B7EA-3487FA8213F3}.Release|x86.Build.0 = Release|Any CPU
+		{EDD51222-34F3-4A54-8C35-23C7EF583E77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDD51222-34F3-4A54-8C35-23C7EF583E77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDD51222-34F3-4A54-8C35-23C7EF583E77}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EDD51222-34F3-4A54-8C35-23C7EF583E77}.Debug|x64.Build.0 = Debug|Any CPU
+		{EDD51222-34F3-4A54-8C35-23C7EF583E77}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EDD51222-34F3-4A54-8C35-23C7EF583E77}.Debug|x86.Build.0 = Debug|Any CPU
+		{EDD51222-34F3-4A54-8C35-23C7EF583E77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDD51222-34F3-4A54-8C35-23C7EF583E77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDD51222-34F3-4A54-8C35-23C7EF583E77}.Release|x64.ActiveCfg = Release|Any CPU
+		{EDD51222-34F3-4A54-8C35-23C7EF583E77}.Release|x64.Build.0 = Release|Any CPU
+		{EDD51222-34F3-4A54-8C35-23C7EF583E77}.Release|x86.ActiveCfg = Release|Any CPU
+		{EDD51222-34F3-4A54-8C35-23C7EF583E77}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -143,6 +164,7 @@ Global
 		{0A5F5288-F334-48EC-AA8A-03037C17CEEC} = {4B03ABF7-A8C8-40C2-BCA5-EE1ED6B5D5B4}
 		{AA736154-C412-4A51-9134-3576F62B9134} = {4B03ABF7-A8C8-40C2-BCA5-EE1ED6B5D5B4}
 		{294D8E54-C44A-47E4-B7EA-3487FA8213F3} = {4B03ABF7-A8C8-40C2-BCA5-EE1ED6B5D5B4}
+		{EDD51222-34F3-4A54-8C35-23C7EF583E77} = {BD1386F9-8B88-4963-8901-B6E8462A30B9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ED56FF45-6DFC-4630-9ADD-2E824CC10E30}

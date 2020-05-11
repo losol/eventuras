@@ -1,3 +1,5 @@
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace Losol.Communication.Email
@@ -12,24 +14,15 @@ namespace Losol.Communication.Email
         /// <param name="message">HTML or plain text to be sent</param>
         /// <param name="attachment">Optional email attachment</param>
         /// <param name="messageType">Type of the given <code>message</code> data. Can be <code>Text</code> or <code>Html</code></param>
+        [Obsolete("Use SendEmailAsync(EmailModel) instead")]
         Task SendEmailAsync(
             string address,
             string subject,
             string message,
             Attachment attachment = null,
             EmailMessageType messageType = EmailMessageType.Html);
-    }
 
-    public enum EmailMessageType
-    {
-        Text = 1,
-        Html = 2
-    }
-
-    public class Attachment
-    {
-        public string Filename { get; set; }
-
-        public byte[] Bytes { get; set; }
+        /// <exception cref="ValidationException">When given <code>emailModel</code> is not valid.</exception>
+        Task SendEmailAsync(EmailModel emailModel);
     }
 }

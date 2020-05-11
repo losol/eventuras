@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace Losol.Communication.Email.Mock
 {
-    public class MockEmailSender : IEmailSender
+    public class MockEmailSender : AbstractEmailSender
     {
         private readonly ILogger<MockEmailSender> _logger;
 
@@ -12,10 +13,10 @@ namespace Losol.Communication.Email.Mock
             _logger = logger;
         }
 
-        public Task SendEmailAsync(string address, string subject, string message, Attachment attachment = null,
-            EmailMessageType messageType = EmailMessageType.Html)
+        public override Task SendEmailAsync(EmailModel emailModel)
         {
-            _logger.LogInformation("Sending email with subject {subject} to {address}", subject, address);
+            _logger.LogInformation("Sending email from {{from}} with subject {{subject}} to {{address}}",
+                emailModel.From, emailModel.Subject, emailModel.Recipients.First());
             return Task.CompletedTask;
         }
     }
