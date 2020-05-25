@@ -5,13 +5,13 @@
     <RootNamespace>losol.EventManagement.Web</RootNamespace>
     <AssemblyName>losol.EventManagement.Web</AssemblyName>
     <UserSecretsId>aspnet-losol.EventManagement-74C0FE44-3444-4386-9785-6815A715D4AB</UserSecretsId>
-    <LosolCommunicationLibraryVersion>0.3.0</LosolCommunicationLibraryVersion>
+    <LosolCommunicationLibraryVersion>0.4.0</LosolCommunicationLibraryVersion>
   </PropertyGroup>
   <PropertyGroup>
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Losol.Communication.Email" Version="$(LosolCommunicationLibraryVersion)" />
+    <PackageReference Include="Losol.Communication.Email" Version="$(LosolCommunicationLibraryVersion)" /> 
     <PackageReference Include="Losol.Communication.Email.Smtp" Version="$(LosolCommunicationLibraryVersion)" />
     <PackageReference Include="Losol.Communication.Email.SendGrid" Version="$(LosolCommunicationLibraryVersion)" />
     <PackageReference Include="Losol.Communication.Email.File" Version="$(LosolCommunicationLibraryVersion)" />
