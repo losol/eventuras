@@ -25,6 +25,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Globalization;
+using EventManagement.Services.Auth0;
+using losol.EventManagement.Services.Auth;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using DefaultAuthenticationService = losol.EventManagement.Web.Services.DefaultAuthenticationService;
 
 namespace EventManagement.Web.Extensions
 {
@@ -212,6 +217,11 @@ namespace EventManagement.Web.Extensions
             // Add Page render Service
             services.AddScoped<IRenderService, ViewRenderService>();
 
+            // Add default authentication handler (Razor Pages)
+            services.TryAddTransient<IEventManagementAuthenticationService, DefaultAuthenticationService>();
+
+            // Add Auth0 authentication if enabled in config.
+            services.AddAuth0AuthenticationIfEnabled(configuration.GetSection("Auth0"));
 
             // Added for the renderpage service
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -220,6 +230,5 @@ namespace EventManagement.Web.Extensions
             services.AddTransient<CertificatePdfRenderer>();
             services.AddHttpClient();
         }
-
     }
 }

@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using losol.EventManagement.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using losol.EventManagement.Domain;
+using System;
+using System.Threading.Tasks;
+using losol.EventManagement.Services;
+using losol.EventManagement.Services.Auth;
 
 namespace losol.EventManagement.Controllers
 {
@@ -13,21 +13,25 @@ namespace losol.EventManagement.Controllers
     public class AccountController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IEventManagementAuthenticationService _authenticationService;
         private readonly ILogger _logger;
 
-        public AccountController(SignInManager<ApplicationUser> signInManager, ILogger<AccountController> logger)
+        public AccountController(
+            SignInManager<ApplicationUser> signInManager,
+            IEventManagementAuthenticationService authenticationService,
+            ILogger<AccountController> logger)
         {
             _signInManager = signInManager;
+            _authenticationService = authenticationService ?? throw new ArgumentNullException(nameof(authenticationService));
             _logger = logger;
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout()
+        public async Task Logout()
         {
-            await _signInManager.SignOutAsync();
+            await _authenticationService.HandleLogOutAsync(HttpContext, Url.Page("/Index"));
             _logger.LogInformation("User logged out.");
-            return RedirectToPage("/Index");
         }
 
 
@@ -35,7 +39,7 @@ namespace losol.EventManagement.Controllers
         public async Task<IActionResult> MagicLogin([FromQuery]string userid, [FromQuery]string token )
         {
             // Sign the user out if they're signed in
-            if(_signInManager.IsSignedIn(User))
+            if (User.Identity.IsAuthenticated)
             {
                 await _signInManager.SignOutAsync();
             }

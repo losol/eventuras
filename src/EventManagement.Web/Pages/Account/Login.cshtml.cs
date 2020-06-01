@@ -9,20 +9,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using losol.EventManagement.Domain;
+using losol.EventManagement.Services.Auth;
 using losol.EventManagement.Web.Services;
 
 namespace losol.EventManagement.Pages.Account
 {
     public class LoginModel : PageModel
     {
+        private readonly IEventManagementAuthenticationService _authenticationService;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly MagicLinkSender _magicLinkSender;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, 
+        public LoginModel(
+            IEventManagementAuthenticationService authenticationService,
+            SignInManager<ApplicationUser> signInManager, 
             MagicLinkSender magicLinkSender,
             ILogger<LoginModel> logger)
         {
+            _authenticationService = authenticationService;
             _signInManager = signInManager;
             _magicLinkSender = magicLinkSender;
             _logger = logger;
@@ -48,8 +53,7 @@ namespace losol.EventManagement.Pages.Account
                 ModelState.AddModelError(string.Empty, ErrorMessage);
             }
 
-            // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            await _authenticationService.HandleLogInAsync(HttpContext, Url.GetLocalUrl(returnUrl));
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 

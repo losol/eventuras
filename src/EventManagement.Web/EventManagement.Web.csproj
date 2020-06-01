@@ -32,6 +32,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc5" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EventManagement.Services.Auth0\EventManagement.Services.Auth0.csproj" />
     <ProjectReference Include="..\EventManagement.Services.Converto\EventManagement.Services.Converto.csproj" />
     <ProjectReference Include="..\EventManagement.Services\EventManagement.Services.csproj" />
     <ProjectReference Include="..\EventManagement.Infrastructure\EventManagement.Infrastructure.csproj" />
