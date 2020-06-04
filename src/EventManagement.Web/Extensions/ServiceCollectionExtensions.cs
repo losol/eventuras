@@ -1,8 +1,11 @@
+using EventManagement.Services.Auth0;
 using EventManagement.Services.Converto;
+using EventManagement.Services.TalentLms;
 using losol.EventManagement.Config;
 using losol.EventManagement.Domain;
 using losol.EventManagement.Infrastructure;
 using losol.EventManagement.Services;
+using losol.EventManagement.Services.Auth;
 using losol.EventManagement.Services.DbInitializers;
 using losol.EventManagement.Services.Invoicing;
 using losol.EventManagement.Web;
@@ -23,12 +26,9 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using System.Globalization;
-using EventManagement.Services.Auth0;
-using losol.EventManagement.Services.Auth;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using DefaultAuthenticationService = losol.EventManagement.Web.Services.DefaultAuthenticationService;
 
 namespace EventManagement.Web.Extensions
@@ -98,7 +98,8 @@ namespace EventManagement.Web.Extensions
 
                     options.Conventions.AddPageRoute("/Events/Register/Index", "events/{id}/{slug?}/register");
                 })
-                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddRazorRuntimeCompilation();
         }
 
         public static void ConfigureLocalization(this IServiceCollection services, CultureInfo defaultCultureInfo)
@@ -220,8 +221,11 @@ namespace EventManagement.Web.Extensions
             // Add default authentication handler (Razor Pages)
             services.TryAddTransient<IEventManagementAuthenticationService, DefaultAuthenticationService>();
 
-            // Add Auth0 authentication if enabled in config.
+            // Add Auth0 authentication if enabled in settings.
             services.AddAuth0AuthenticationIfEnabled(configuration.GetSection("Auth0"));
+
+            // Add TalentLms integration if enabled in settings.
+            services.AddTalentLmsIfEnabled(configuration.GetSection("TalentLms"));
 
             // Added for the renderpage service
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

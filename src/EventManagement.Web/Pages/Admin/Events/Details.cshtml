@@ -78,6 +78,16 @@
                 <partial name="Partials/_EmailModal" />
                 <partial name="Partials/_SmsModal" />
 
+                @if (!string.IsNullOrWhiteSpace(Model.EventInfo.LmsCourseId))
+                {
+                    <!-- LMS MENU -->
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">LMS</button>
+                        <div class="dropdown-menu">
+                            <a asp-page="./SyncLms" asp-route-id="@Model.EventInfo.EventInfoId" class="dropdown-item link-decoration-none">Sync participants</a>
+                        </div>
+                    </div>
+                }
 
                 <!-- ECONOMY MENU -->
                 <div class="btn-group">

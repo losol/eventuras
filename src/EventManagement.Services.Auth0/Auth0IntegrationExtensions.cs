@@ -1,3 +1,4 @@
+using losol.EventManagement.Services;
 using losol.EventManagement.Services.Auth;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -5,13 +6,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
 
 namespace EventManagement.Services.Auth0
 {
@@ -26,7 +24,8 @@ namespace EventManagement.Services.Auth0
                 return services;
             }
 
-            var settings = configuration.Get<Auth0IntegrationSettings>().Validate();
+            var settings = configuration.Get<Auth0IntegrationSettings>();
+            ValidationHelper.ValidateObject(settings);
             services.AddSingleton(Options.Create(settings));
 
             services.Configure<CookiePolicyOptions>(options =>
@@ -120,16 +119,6 @@ namespace EventManagement.Services.Auth0
                 });
 
             return services;
-        }
-
-        private static Auth0IntegrationSettings Validate(this Auth0IntegrationSettings settings)
-        {
-            var results = new List<ValidationResult>();
-            if (Validator.TryValidateObject(settings, new ValidationContext(settings, null, null), results, true))
-                return settings;
-            var summary = string.Join(";\r\n ", results
-                .Select(v => v.ErrorMessage));
-            throw new ValidationException($"Invalid Auth0 settings: {summary}");
         }
     }
 }

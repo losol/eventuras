@@ -127,7 +127,10 @@ namespace losol.EventManagement.Domain
 		[Display(Name = "Prosjekt-kode for regnskap")]
 		public string ProjectCode { get; set; }
 
-		public string OrganizerUserId {get;set;}
+        [Display(Name = "LMS Course ID")]
+        public string LmsCourseId { get; set; }
+
+        public string OrganizerUserId {get;set;}
 		[ForeignKey("OrganizerUserId")]
 		public ApplicationUser OrganizerUser {get;set;}
 

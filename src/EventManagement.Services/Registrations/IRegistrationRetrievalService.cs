@@ -19,6 +19,13 @@ namespace losol.EventManagement.Services.Registrations
             public bool IncludingProducts { get; set; }
             public Order OrderBy { get; set; } = Order.RegistrationTime;
             public bool Descending { get; set; }
+
+            public bool VerifiedOnly { get; set; }
+
+            public bool ActiveUsersOnly { get; set; }
+
+            public bool HavingEmailConfirmedOnly { get; set; }
+            public bool NotEnrolledOnly { get; set; }
         }
 
         public enum Order

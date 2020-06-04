@@ -50,6 +50,26 @@ namespace losol.EventManagement.Services.Registrations
                     .ThenInclude(l => l.ProductVariant);
             }
 
+            if (request.VerifiedOnly)
+            {
+                query = query.Where(r => r.Verified);
+            }
+
+            if (request.ActiveUsersOnly)
+            {
+                query = query.Where(r => !r.User.Archived);
+            }
+
+            if (request.HavingEmailConfirmedOnly)
+            {
+                query = query.Where(r => r.User.EmailConfirmed);
+            }
+
+            if (request.NotEnrolledOnly)
+            {
+                query = query.Where(r => !r.EnrolledInLms);
+            }
+
             if (request.EventInfoId.HasValue)
             {
                 query = query.Where(r => r.EventInfoId == request.EventInfoId);
