@@ -68,7 +68,6 @@ namespace losol.EventManagement
                 o.DefaultApiVersion = new ApiVersion(1, 0);
             });
 
-
             // Register the Swagger generator
             services.AddSwaggerGen(c =>
             {
@@ -128,8 +127,6 @@ namespace losol.EventManagement
                 endpoints.MapControllers();
                 endpoints.MapRazorPages();
             });
-
-
         }
     }
 }

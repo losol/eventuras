@@ -9,6 +9,7 @@ COPY ./EventManagement.sln .
 COPY ./src/EventManagement.Web/*.csproj ./src/EventManagement.Web/
 COPY ./src/EventManagement.Services/*.csproj ./src/EventManagement.Services/
 COPY ./src/EventManagement.Services.Converto/*.csproj ./src/EventManagement.Services.Converto/
+COPY ./src/EventManagement.Services.Auth0/*.csproj ./src/EventManagement.Services.Auth0/
 COPY ./src/EventManagement.Infrastructure/*.csproj ./src/EventManagement.Infrastructure/
 COPY ./src/EventManagement.Domain/*.csproj ./src/EventManagement.Domain/
 COPY ./tests/EventManagement.UnitTests/*.csproj ./tests/EventManagement.UnitTests/

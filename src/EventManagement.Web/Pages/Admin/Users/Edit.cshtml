@@ -33,7 +33,7 @@
             </div>
 
             @* SHOW SIGNATURE FIELD ONLY TO SUPERADMIN *@
-            @if (SignInManager.IsSignedIn(User)) {
+            @if (User.Identity.IsAuthenticated) {
                 @if ( User.IsInRole("SuperAdmin") ) {
                     <div class="form-group">
                         <label asp-for="Input.SignatureImageBase64"></label>
