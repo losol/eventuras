@@ -1,4 +1,5 @@
 using losol.EventManagement.Services.Invoicing;
+using losol.EventManagement.Services.Lms;
 using losol.EventManagement.Services.Registrations;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,8 +18,8 @@ namespace losol.EventManagement.Services
             services.AddScoped<ICertificatesService, CertificatesService>();
             services.AddScoped<IMessageLogService, MessageLogService>();
             services.AddTransient<IOrderVmConversionService, OrderVmConversionService>();
-            services.AddTransient<IRegistrationRetrievalService, RegistrationRetrievalService>();
-            services.AddTransient<IRegistrationExportService, RegistrationExportService>();
+            services.AddRegistrationServices();
+            services.AddLmsServices();
             return services;
         }
     }

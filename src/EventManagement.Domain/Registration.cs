@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -48,6 +48,23 @@ namespace losol.EventManagement.Domain
         public string ParticipantEmployer { get; set; }
         public string ParticipantCity { get; set; }
 
+        [NotMapped] private IEnumerable<string> NameParts => ParticipantName?.Split(" ")?.Select(p => p.Trim());
+
+        [NotMapped]
+        public string ParticipantFirstName
+        {
+            get
+            {
+                var parts = NameParts?.ToArray();
+                return parts == null ? null
+                    : parts.Length == 1 ? parts[0]
+                    : string.Join(" ", parts.Take(parts.Length - 1));
+            }
+        }
+
+        [NotMapped]
+        public string ParticipantLastName => NameParts?.LastOrDefault();
+
         // Who pays for it?
         public string CustomerName { get; set; }
         public string CustomerEmail { get; set; }
@@ -80,6 +97,8 @@ namespace losol.EventManagement.Domain
 
         [Display(Name = "Verifiseringskode")]
         public string VerificationCode { get; set; }
+
+        public bool EnrolledInLms { get; set; }
 
         public int? CertificateId { get; set; }
         public Certificate Certificate { get; set; }
