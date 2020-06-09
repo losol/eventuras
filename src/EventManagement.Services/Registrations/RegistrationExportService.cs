@@ -59,7 +59,20 @@ namespace losol.EventManagement.Services.Registrations
             }
 
             worksheetPart.Worksheet = new Worksheet(sheetData);
+
+            // Add Sheets to the Workbook.
+            var sheets = spreadsheetDocument.WorkbookPart.Workbook.AppendChild(new Sheets());
+
+            // Append a new worksheet and associate it with the workbook.
+            sheets.Append(new Sheet
+            {
+                Id = spreadsheetDocument.WorkbookPart.GetIdOfPart(worksheetPart),
+                SheetId = 1,
+                Name = "Participants"
+            });
+
             workbookPart.Workbook.Save();
+            spreadsheetDocument.Close();
         }
 
         private static void WriteHeader(SheetData sheetData)
