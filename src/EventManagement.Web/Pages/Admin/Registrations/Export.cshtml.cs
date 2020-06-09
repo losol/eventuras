@@ -17,16 +17,20 @@ namespace losol.EventManagement.Web.Pages.Admin.Registrations
             _registrationExportService = registrationExportService ?? throw new ArgumentNullException(nameof(registrationExportService));
         }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGet(int? id)
         {
             var stream = new MemoryStream();
             await _registrationExportService.ExportParticipantListToExcelAsync(stream, new IRegistrationExportService.Options
             {
-                ExportHeader = true
+                ExportHeader = true,
+                EventInfoId = id
             });
+            var fileName = id.HasValue
+                ? $"registrations-event{id:####}-{DateTime.Now:yyyy-MM-dd-HH-mm-ss-fff}.xlsx"
+                : $"registrations-{DateTime.Now:yyyy-MM-dd-HH-mm-ss-fff}.xlsx";
             var cd = new ContentDisposition
             {
-                FileName = $"registrations-{DateTime.Now:yyyy-MM-dd-HH-mm-ss-fff}.xlsx",
+                FileName = fileName,
                 Inline = false,
             };
             stream.Seek(0, SeekOrigin.Begin);
