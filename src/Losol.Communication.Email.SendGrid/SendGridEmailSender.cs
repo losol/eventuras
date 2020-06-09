@@ -3,7 +3,9 @@ using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using Losol.Communication.HealthCheck.Abstractions;
 
 namespace Losol.Communication.Email.SendGrid
 {
@@ -11,12 +13,12 @@ namespace Losol.Communication.Email.SendGrid
     {
         private readonly SendGridConfig _config;
 
-        public SendGridEmailSender(IOptions<SendGridConfig> options)
+        public SendGridEmailSender(IOptions<SendGridConfig> options, IHealthCheckStorage healthCheckStorage) : base(healthCheckStorage)
         {
             _config = options.Value;
         }
 
-        public override async Task SendEmailAsync(EmailModel emailModel)
+        protected override async Task SendEmailInternalAsync(EmailModel emailModel)
         {
             var msg = new SendGridMessage
             {
@@ -53,7 +55,12 @@ namespace Losol.Communication.Email.SendGrid
             }
 
             var client = new SendGridClient(_config.Key);
-            await client.SendEmailAsync(msg);
+            var response = await client.SendEmailAsync(msg);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                var responseBody = await response.Body.ReadAsStringAsync();
+                throw new EmailSenderException($"SendGrid returned {response.StatusCode} status code ({responseBody})");
+            }
         }
     }
 }

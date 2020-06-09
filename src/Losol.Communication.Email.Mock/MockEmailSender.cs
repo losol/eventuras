@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Losol.Communication.HealthCheck.Abstractions;
 using Microsoft.Extensions.Logging;
 
 namespace Losol.Communication.Email.Mock
@@ -8,12 +9,12 @@ namespace Losol.Communication.Email.Mock
     {
         private readonly ILogger<MockEmailSender> _logger;
 
-        public MockEmailSender(ILogger<MockEmailSender> logger)
+        public MockEmailSender(ILogger<MockEmailSender> logger, IHealthCheckStorage healthCheckStorage) : base(healthCheckStorage)
         {
             _logger = logger;
         }
 
-        public override Task SendEmailAsync(EmailModel emailModel)
+        protected override Task SendEmailInternalAsync(EmailModel emailModel)
         {
             _logger.LogInformation("Sending email from {{from}} with subject {{subject}} to {{address}}",
                 emailModel.From, emailModel.Subject, emailModel.Recipients.First());

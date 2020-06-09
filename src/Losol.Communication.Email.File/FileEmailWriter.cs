@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Losol.Communication.HealthCheck.Abstractions;
 
 namespace Losol.Communication.Email.File
 {
@@ -16,7 +17,7 @@ namespace Losol.Communication.Email.File
     {
         private readonly IOptions<FileEmailConfig> _options;
 
-        public FileEmailWriter(IOptions<FileEmailConfig> options)
+        public FileEmailWriter(IOptions<FileEmailConfig> options, IHealthCheckStorage healthCheckStorage) : base(healthCheckStorage)
         {
             _options = options;
             if (!Directory.Exists(options.Value.FilePath))
@@ -25,7 +26,7 @@ namespace Losol.Communication.Email.File
             }
         }
 
-        public override async Task SendEmailAsync(EmailModel emailModel)
+        protected override async Task SendEmailInternalAsync(EmailModel emailModel)
         {
             emailModel.Validate();
 
