@@ -94,9 +94,17 @@
                 <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     &Oslash;konomi
                 </button>
-                <div class="dropdown-menu">
-                    <a asp-page="./Orders" asp-route-id="@Model.EventInfo.EventInfoId" class="dropdown-item link-decoration-none">Vis alle ordre</a>
+                    <div class="dropdown-menu">
+                        <a asp-page="./Orders" asp-route-id="@Model.EventInfo.EventInfoId" class="dropdown-item link-decoration-none">Vis alle ordre</a>
+                    </div>
                 </div>
+
+                <!-- EXPORT MENU -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Eksport</button>
+                    <div class="dropdown-menu">
+                        <a asp-page="../Registrations/Export" asp-route-id="@Model.EventInfo.EventInfoId" class="dropdown-item link-decoration-none">Deltakere</a>
+                    </div>
                 </div>
 
                  <!-- CERTIFICATES MENU -->
