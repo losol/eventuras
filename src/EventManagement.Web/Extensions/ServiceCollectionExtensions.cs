@@ -29,6 +29,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using System.Globalization;
+using System.Net.Http.Headers;
+using Losol.Communication.HealthCheck.Abstractions;
+using Losol.Communication.HealthCheck.Email;
+using Losol.Communication.HealthCheck.Sms;
 using DefaultAuthenticationService = losol.EventManagement.Web.Services.DefaultAuthenticationService;
 
 namespace EventManagement.Web.Extensions
@@ -227,12 +231,35 @@ namespace EventManagement.Web.Extensions
             // Add TalentLms integration if enabled in settings.
             services.AddTalentLmsIfEnabled(configuration.GetSection("TalentLms"));
 
+            // Add Health Checks
+            services.AddApplicationHealthChecks(configuration.GetSection("HealthChecks"));
+
             // Added for the renderpage service
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddConvertoServices(configuration.GetSection("Converto"));
             services.AddTransient<CertificatePdfRenderer>();
             services.AddHttpClient();
+        }
+
+        public static void AddApplicationHealthChecks(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<EmailHealthCheckSettings>(configuration.GetSection("Email"));
+            services.Configure<SmsHealthCheckSettings>(configuration.GetSection("Sms"));
+
+            services.AddSingleton<IHealthCheckStorage, HealthCheckMemoryStorage>(); // store health information in memory.
+
+            services.AddHealthChecks()
+                .AddCheck<EmailHealthCheck>("email")
+                .AddCheck<SmsHealthCheck>("sms");
+
+            services
+                .AddHealthChecksUI(settings =>
+                {
+                    settings
+                        .AddHealthCheckEndpoint(Constants.HealthCheckName, Constants.HealthCheckUri);
+                })
+                .AddInMemoryStorage();
         }
     }
 }

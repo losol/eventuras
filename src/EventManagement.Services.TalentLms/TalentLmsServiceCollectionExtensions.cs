@@ -1,6 +1,7 @@
 using losol.EventManagement.Services.Lms;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace EventManagement.Services.TalentLms
 {
@@ -20,6 +21,13 @@ namespace EventManagement.Services.TalentLms
             services.AddOptions<TalentLmsSettings>()
                 .ValidateDataAnnotations()
                 .Bind(configuration);
+
+            services.Configure<HealthCheckServiceOptions>(options =>
+            {
+                options.Registrations.Add(new HealthCheckRegistration("lms",
+                    ActivatorUtilities.GetServiceOrCreateInstance<TalentLmsHealthCheck>,
+                    null, null, null));
+            });
 
             return services;
         }

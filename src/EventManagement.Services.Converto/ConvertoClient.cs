@@ -1,20 +1,19 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace EventManagement.Services.Converto
 {
-    public class ConvertoClient : IConvertoClient
+    internal class ConvertoClient : IConvertoClient
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IOptions<ConvertoConfig> _options;
@@ -31,6 +30,36 @@ namespace EventManagement.Services.Converto
             _options = options;
             _logger = logger;
             _httpClientFactory = httpClientFactory;
+        }
+
+        public async Task<string> LoginAsync()
+        {
+            var client = _httpClientFactory.CreateClient();
+            var endpointUrl = _options.Value.LoginEndpointUrl;
+
+            try
+            {
+                _logger.LogDebug($"Authenticate using {endpointUrl}");
+
+                var response = await client.PostAsync(endpointUrl, new FormUrlEncodedContent(
+                    new List<KeyValuePair<string, string>>
+                    {
+                        KeyValuePair.Create("identifier", _options.Value.Username),
+                        KeyValuePair.Create("password", _options.Value.Password)
+                    }));
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new ConvertoClientException($"{endpointUrl} returned {response.StatusCode} status code");
+                }
+
+                var json = JObject.Parse(await response.Content.ReadAsStringAsync());
+                return json.Value<string>("jwt");
+            }
+            catch (IOException e)
+            {
+                throw new ConvertoClientException($"Failed to authenticate using endpoint {endpointUrl}", e);
+            }
         }
 
         public async Task<Stream> Html2PdfAsync(string html, float scale, string format)
@@ -73,34 +102,8 @@ namespace EventManagement.Services.Converto
             {
                 return;
             }
-
-            var client = _httpClientFactory.CreateClient();
-            var endpointUrl = _options.Value.LoginEndpointUrl;
-
-            try
-            {
-                _logger.LogDebug($"Authenticate using {endpointUrl}");
-
-                var response = await client.PostAsync(endpointUrl, new FormUrlEncodedContent(
-                    new List<KeyValuePair<string, string>>
-                    {
-                        KeyValuePair.Create("identifier", _options.Value.Username),
-                        KeyValuePair.Create("password", _options.Value.Password)
-                    }));
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new ConvertoClientException($"{endpointUrl} returned {response.StatusCode} status code");
-                }
-
-                var json = JObject.Parse(await response.Content.ReadAsStringAsync());
-                _accessToken = json.Value<string>("jwt");
-                _securityToken = new JwtSecurityTokenHandler().ReadJwtToken(_accessToken);
-            }
-            catch (IOException e)
-            {
-                throw new ConvertoClientException($"Failed to authenticate using endpoint {endpointUrl}", e);
-            }
+            _accessToken = await LoginAsync();
+            _securityToken = new JwtSecurityTokenHandler().ReadJwtToken(_accessToken);
         }
     }
 }

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventManagement.Services.Converto
 {
-    public class ConvertoConfig
+    internal class ConvertoConfig
     {
         [Required]
         public string LoginEndpointUrl { get; set; }

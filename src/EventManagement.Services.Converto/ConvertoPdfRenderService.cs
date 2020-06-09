@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EventManagement.Services.Converto
 {
-    public class ConvertoPdfRenderService : IPdfRenderService
+    internal class ConvertoPdfRenderService : IPdfRenderService
     {
         private readonly IConvertoClient _client;
         private readonly IOptions<ConvertoConfig> _options;
