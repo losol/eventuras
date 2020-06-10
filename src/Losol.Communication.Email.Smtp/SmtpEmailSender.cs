@@ -6,22 +6,27 @@ using MimeKit;
 using System;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Losol.Communication.HealthCheck.Abstractions;
 
 namespace Losol.Communication.Email.Smtp
 {
     public class SmtpEmailSender : AbstractEmailSender
     {
         private readonly SmtpConfig _smtpConfig;
-        private readonly ILogger _logger;
+        private readonly ILogger<SmtpEmailSender> _logger;
 
-        public SmtpEmailSender(IOptions<SmtpConfig> smtpConfig, ILogger<SmtpEmailSender> logger)
+        public SmtpEmailSender(
+            IOptions<SmtpConfig> smtpConfig,
+            IHealthCheckStorage healthCheckStorage,
+            ILogger<SmtpEmailSender> logger) : base(healthCheckStorage)
         {
-            _smtpConfig = smtpConfig.Value;
-            _logger = logger;
+            _smtpConfig = smtpConfig.Value ?? throw new ArgumentNullException(nameof(smtpConfig));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public override async Task SendEmailAsync(EmailModel emailModel)
+        protected override async Task SendEmailInternalAsync(EmailModel emailModel)
         {
             var mimeMessage = new MimeMessage
             {
@@ -93,6 +98,41 @@ namespace Losol.Communication.Email.Smtp
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
+                throw new EmailSenderException(ex.Message, ex);
+            }
+        }
+
+        public override async Task<HealthCheckStatus> CheckHealthAsync(CancellationToken cancellationToken = default)
+        {
+            _logger.LogInformation("Performing health check");
+
+            try
+            {
+                using var emailClient = new SmtpClient();
+
+                _logger.LogDebug("Connecting to {host}:{port}", _smtpConfig.Host, _smtpConfig.Port);
+                await emailClient.ConnectAsync(_smtpConfig.Host, _smtpConfig.Port, SecureSocketOptions.StartTls, cancellationToken);
+                _logger.LogDebug("Connection successful");
+
+                if (!string.IsNullOrEmpty(_smtpConfig.Username) &&
+                    !string.IsNullOrEmpty(_smtpConfig.Password))
+                {
+                    _logger.LogDebug("Performing authentication");
+                    await emailClient.AuthenticateAsync(_smtpConfig.Username, _smtpConfig.Password, cancellationToken);
+                    _logger.LogDebug("Auth successful");
+                }
+
+                _logger.LogDebug("Disconnecting from server");
+                await emailClient.DisconnectAsync(true, cancellationToken);
+                _logger.LogDebug("Disconnected from server");
+
+                _logger.LogInformation("Health check passed");
+                return new HealthCheckStatus(HealthStatus.Healthy);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Health status check failed", ex);
+                return new HealthCheckStatus(HealthStatus.Unhealthy, ex.Message);
             }
         }
     }

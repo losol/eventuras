@@ -1,8 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="../common.props" />
 
   <ItemGroup>
+    <ProjectReference Include="..\Losol.Communication.Email\Losol.Communication.Email.csproj" />
     <ProjectReference Include="..\Losol.Communication.HealthCheck.Abstractions\Losol.Communication.HealthCheck.Abstractions.csproj" />
   </ItemGroup>
 
