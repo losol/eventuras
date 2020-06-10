@@ -12,34 +12,42 @@ namespace EventManagement.Services.Converto.Tests
 {
     public class ConvertoPdfRenderServiceTest : IDisposable
     {
-        private readonly HttpClient httpClient = new HttpClient();
-        private readonly IHttpClientFactory httpClientFactory;
+        private readonly HttpClient _httpClient = new HttpClient();
+        private readonly IHttpClientFactory _httpClientFactory;
 
         public ConvertoPdfRenderServiceTest()
         {
             var httpClientFactoryMock = new Mock<IHttpClientFactory>();
             httpClientFactoryMock.Setup(f => f.CreateClient(It.IsAny<string>()))
-                .Returns(this.httpClient);
-            this.httpClientFactory = httpClientFactoryMock.Object;
+                .Returns(_httpClient);
+            _httpClientFactory = httpClientFactoryMock.Object;
         }
 
         public void Dispose()
         {
-            this.httpClient.Dispose();
+            _httpClient.Dispose();
         }
 
         private ConvertoPdfRenderService NewService(
-            string loginUrl = "http://localhost:1337/auth/local",
-            string endpointUrl = "http://localhost:1337/convert/html/to/pdf",
+            string loginPath = "/auth/local",
+            string endpointPath = "/convert/html/to/pdf",
             int defaultScale = 1,
             string defaultFormat = "A4",
-            string username = "tester",
-            string password = "SomeCrypticPass")
+            string username = null,
+            string password = null)
         {
+            var baseUri = Environment.GetEnvironmentVariable(ConvertoTestEnv.ApiBaseUriEnvKey);
+            Assert.NotNull(baseUri);
+            Assert.NotEmpty(baseUri);
+
+            baseUri = baseUri.TrimEnd('/');
+            username ??= Environment.GetEnvironmentVariable(ConvertoTestEnv.UsernameEnvKey);
+            password ??= Environment.GetEnvironmentVariable(ConvertoTestEnv.PasswordEnvKey);
+
             var options = Options.Create(new ConvertoConfig
             {
-                LoginEndpointUrl = loginUrl,
-                Html2PdfEndpointUrl = endpointUrl,
+                LoginEndpointUrl = $"{baseUri}{loginPath}",
+                Html2PdfEndpointUrl = $"{baseUri}{endpointPath}",
                 DefaultScale = defaultScale,
                 DefaultFormat = defaultFormat,
                 Username = username,
@@ -48,7 +56,7 @@ namespace EventManagement.Services.Converto.Tests
 
             var loggerFactory = new LoggerFactory();
             var convertoClient = new ConvertoClient(
-                this.httpClientFactory,
+                _httpClientFactory,
                 options,
                 loggerFactory.CreateLogger<ConvertoClient>());
 
@@ -58,59 +66,46 @@ namespace EventManagement.Services.Converto.Tests
                 loggerFactory.CreateLogger<ConvertoPdfRenderService>());
         }
 
-        [Fact(Skip = "Provide URL for converto service")]
+        [ConvertoEnvSpecificFact]
         public async Task ShouldReturnEmptyPdfStreamForInvalidLoginUrl()
         {
-            using (var stream = await this.NewService(loginUrl: "http://localhost:1337/auth/login2")
-                .RenderHtmlAsync("<html></html>",
-                    new PdfRenderOptions()))
-            {
-                await CheckEmptyAsync(stream);
-            }
+            await using var stream = await NewService(loginPath: "/auth/login2")
+                .RenderHtmlAsync("<html></html>", new PdfRenderOptions());
+            await CheckEmptyAsync(stream);
         }
 
-        [Fact(Skip = "Provide URL for converto service")]
+        [ConvertoEnvSpecificFact]
         public async Task ShouldReturnEmptyPdfStreamForInvalidEndpointUrl()
         {
-            using (var stream = await this.NewService(endpointUrl: "http://localhost:1337/convert/html/to/pdf2")
+            await using var stream = await NewService(endpointPath: "/convert/html/to/pdf2")
                 .RenderHtmlAsync("<html></html>",
-                    new PdfRenderOptions()))
-            {
-                await CheckEmptyAsync(stream);
-            }
+                    new PdfRenderOptions());
+            await CheckEmptyAsync(stream);
         }
 
-        [Fact(Skip = "Provide URL for converto service")]
+        [ConvertoEnvSpecificFact]
         public async Task ShouldReturnEmptyPdfStreamForInvalidCredentials()
         {
-            using (var stream = await this.NewService(username: "invalid")
+            await using var stream = await NewService(username: "invalid")
                 .RenderHtmlAsync("<html></html>",
-                    new PdfRenderOptions()))
-            {
-                await CheckEmptyAsync(stream);
-            }
+                    new PdfRenderOptions());
+            await CheckEmptyAsync(stream);
         }
 
-        [Fact(Skip = "Provide URL for converto service")]
+        [ConvertoEnvSpecificFact]
         public async Task ShouldCreateEmptyPdf()
         {
-            using (var stream = await this.NewService().RenderHtmlAsync("<html></html>",
-                new PdfRenderOptions()))
-            {
-                await CheckNotEmptyAsync(stream);
-            }
+            await using var stream = await NewService().RenderHtmlAsync("<html></html>", new PdfRenderOptions());
+            await CheckNotEmptyAsync(stream);
         }
 
-        [Fact(Skip = "Provide URL for converto service")]
+        [ConvertoEnvSpecificFact]
         public async Task ShouldRenderLargePdf()
         {
             // Initially caused "Invalid URI: The Uri string is too long."
-            var html = $"<html>{new String('A', 200000)}</html>";
-            using (var stream = await this.NewService().RenderHtmlAsync(html,
-                new PdfRenderOptions()))
-            {
-                await CheckNotEmptyAsync(stream);
-            }
+            var html = $"<html>{new string('A', 200000)}</html>";
+            await using var stream = await NewService().RenderHtmlAsync(html, new PdfRenderOptions());
+            await CheckNotEmptyAsync(stream);
         }
 
         private static async Task CheckEmptyAsync(Stream stream)

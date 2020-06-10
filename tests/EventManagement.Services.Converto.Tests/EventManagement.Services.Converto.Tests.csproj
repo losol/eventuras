@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\EventManagement.Services.Converto\EventManagement.Services.Converto.csproj" />
+    <ProjectReference Include="..\EventManagement.TestAbstractions\EventManagement.TestAbstractions.csproj" />
   </ItemGroup>
 
 </Project>
