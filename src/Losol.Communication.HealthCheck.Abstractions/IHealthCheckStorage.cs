@@ -6,6 +6,6 @@ namespace Losol.Communication.HealthCheck.Abstractions
     {
         Task<HealthCheckStatus> GetCurrentStatusAsync(string serviceName);
 
-        Task CheckedAsync(string serviceName, HealthCheckStatus healthCheckStatus);
+        Task CheckedAsync(string serviceName, HealthCheckStatus newStatus);
     }
 }
