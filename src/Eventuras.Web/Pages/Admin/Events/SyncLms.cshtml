@@ -1,0 +1,30 @@
+@page "{id:int}"
+
+@model Eventuras.Web.Pages.Admin.Events.SyncLms
+
+@{
+    ViewData["Title"] = "Sync data with LMS";
+}
+
+<div class="bg-gray-300 py-3">
+    <div class="container">
+        <h1>LMS data synchronization</h1>
+        <ul>
+            <li>Users created in LMS: @Model.Result.CreatedUserIds.Count.</li>
+            <li>Users already existing in LMS: @Model.Result.ExistingUserIds.Count.</li>
+            <li>Users enrolled to course: @Model.Result.EnrolledUserIds.Count.</li>
+            <li>Errors: @Model.Result.Errors.Count</li>
+        </ul>
+    </div>
+</div>
+
+<div class="container py-5 min-height-75">
+    @if (Model.Result.Errors.Any())
+    {
+        foreach (var error in Model.Result.Errors)
+        {
+            <pre>@error.Value.Message</pre>
+        }
+
+    }
+</div>
