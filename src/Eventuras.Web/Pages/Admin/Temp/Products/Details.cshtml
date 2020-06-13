@@ -1,0 +1,67 @@
+@page
+@model Eventuras.Pages.Admin.Temp.Products.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Product</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Product.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Product.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.MoreInformation)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Product.MoreInformation)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.MinimumQuantity)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Product.MinimumQuantity)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.Price)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Product.Price)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.VatPercent)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Product.VatPercent)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.Inventory)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Product.Inventory)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.Eventinfo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Product.Eventinfo.Code)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Product.ProductId">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

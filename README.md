@@ -1,9 +1,9 @@
 # Eventuras - Event Management Solution
 
-[![Build Status](https://travis-ci.com/losol/EventManagement.svg?branch=master)](https://travis-ci.com/losol/EventManagement)
-[![Build status](https://losolio.visualstudio.com/EventManagement/_apis/build/status/legekurs%20-%20CI)](https://losolio.visualstudio.com/EventManagement/_build/latest?definitionId=11)
+[![Build Status](https://travis-ci.com/losol/Eventuras.svg?branch=master)](https://travis-ci.com/losol/Eventuras)
+[![Build status](https://losolio.visualstudio.com/Eventuras/_apis/build/status/legekurs%20-%20CI)](https://losolio.visualstudio.com/Eventuras/_build/latest?definitionId=11)
 
-Asp.net core event management solution. In development now, using agile development. 
+Asp.net core event management solution. In development now, using agile development.
 
 ## Quickstart
 
@@ -11,15 +11,15 @@ Asp.net core event management solution. In development now, using agile developm
 
 ```bash
 # Clone the repository
-git clone https://github.com/losol/EventManagement.git
-cd EventManagement
+git clone https://github.com/losol/Eventuras.git
+cd Eventuras
 
 # Build and run the application
 docker-compose build
 docker-compose up
 ```
 
-The application will now be live at `localhost:5100`.   
+The application will now be live at `localhost:5100`.  
 Use the following credentials to login:
 
 ```text
@@ -34,8 +34,8 @@ Password: Str0ng!PaSsw0rd
 1. Clone the repository
 
     ```bash
-    git clone https://github.com/losol/EventManagement.git
-    cd EventManagement
+    git clone https://github.com/losol/Eventuras.git
+    cd Eventuras
     ```
 
 1. Run tests
@@ -47,7 +47,7 @@ Password: Str0ng!PaSsw0rd
 1. Install node dependencies
 
     ```bash
-    cd src/EventManagement.Web
+    cd src/Eventuras.Web
     npm install
     ```
 
@@ -62,9 +62,10 @@ Password: Str0ng!PaSsw0rd
 1. Run the application
 
     ```bash
-    # Ensure you're in the src/EventManagement.Web directory
+    # Ensure you're in the src/Eventuras.Web directory
     dotnet run
     ```
 
 ## Credits
-* Email templates from [https://www.sendwithus.com/resources/templates/neopolitan](SendWithUs.com), and [https://github.com/leemunroe]
+
+-   Email templates from [https://www.sendwithus.com/resources/templates/neopolitan](SendWithUs.com), and [https://github.com/leemunroe]
