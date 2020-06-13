@@ -2,7 +2,7 @@ using System;
 
 namespace EventManagement.Services.Converto
 {
-    public class ConvertoClientException : Exception
+    internal class ConvertoClientException : Exception
     {
         public ConvertoClientException(string message) : base(message)
         {

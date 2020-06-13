@@ -11,6 +11,10 @@ using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using HealthChecks.UI.Client;
+using losol.EventManagement.Web;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 namespace losol.EventManagement
 {
@@ -98,7 +102,8 @@ namespace losol.EventManagement
                 };
 
             // Use localization by language header only in development environment
-            if (env.IsDevelopment()) {
+            if (env.IsDevelopment())
+            {
                 requestCultureProviders.Add(new AcceptLanguageHeaderRequestCultureProvider());
             }
 
@@ -126,6 +131,13 @@ namespace losol.EventManagement
             {
                 endpoints.MapControllers();
                 endpoints.MapRazorPages();
+                endpoints.MapHealthChecks(Constants.HealthCheckUri, new HealthCheckOptions
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+                })
+                    .WithDisplayName(_ => Constants.HealthCheckName);
+                endpoints.MapHealthChecksUI();
             });
         }
     }
