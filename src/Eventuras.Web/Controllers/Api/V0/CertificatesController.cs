@@ -67,7 +67,8 @@ namespace Eventuras.Web.Controllers.Api.V0
                 Attachment = new Attachment
                 {
                     Filename = "kursbevis.pdf",
-                    Bytes = memoryStream.ToArray()
+                    Bytes = memoryStream.ToArray(),
+                    ContentType = "application/pdf"
                 }
             };
             await emailSender.SendStandardEmailAsync(emailMessage);
