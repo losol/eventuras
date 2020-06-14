@@ -44,6 +44,11 @@ namespace Losol.Communication.Email.Tests
             {
                 Bytes = Encoding.UTF8.GetBytes("test")
             }}}}, // no attachment file name
+            new object[]{new EmailModel{Recipients = new[]{ new Address("test@email.com") }, Subject = "Test", TextBody = "Some text", Attachments = new List<Attachment>{new Attachment
+            {
+                Bytes = Encoding.UTF8.GetBytes("test"),
+                Filename = "test.txt"
+            }}}}, // no attachment content type
 
             // Too long to/from name, email, subject
             new object[]{new EmailModel{Recipients = new[]{ new Address(TestEmailWithMaxLength + "a") }, Subject = "Test", TextBody = "Some text"}},
@@ -68,7 +73,8 @@ namespace Losol.Communication.Email.Tests
                     new Attachment
                     {
                         Filename = "test.txt",
-                        Bytes = Encoding.UTF8.GetBytes("test")
+                        Bytes = Encoding.UTF8.GetBytes("test"),
+                        ContentType = "text/plain"
                     }
                 }}},
         };
