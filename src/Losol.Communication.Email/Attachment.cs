@@ -14,6 +14,7 @@ namespace Losol.Communication.Email
         [MinLength(1)]
         public byte[] Bytes { get; set; }
 
+        [Required]
         public string ContentType { get; set; }
 
         public string ContentDisposition { get; set; }
