@@ -38,7 +38,7 @@ namespace Eventuras.Web.Controllers.Api.V0
                     Email = certificate.RecipientEmail,
                     Subject = $"Kursbevis for {certificate.Title}",
                     Message = "Her er kursbeviset! Gratulere!",
-                    Attachment = new Attachment { Filename = "kursbevis.pdf", Bytes = memoryStream.ToArray() }
+                    Attachment = new Attachment { Filename = "kursbevis.pdf", Bytes = memoryStream.ToArray(), ContentType = "application/pdf"}
                 });
             }
             return Ok();
