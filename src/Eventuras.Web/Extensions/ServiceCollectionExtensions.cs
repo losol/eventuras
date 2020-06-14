@@ -33,6 +33,8 @@ using System.Net.Http.Headers;
 using Losol.Communication.HealthCheck.Abstractions;
 using Losol.Communication.HealthCheck.Email;
 using Losol.Communication.HealthCheck.Sms;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.HttpOverrides;
 using DefaultAuthenticationService = Eventuras.Web.Services.DefaultAuthenticationService;
 
 namespace Eventuras.Web.Extensions
@@ -104,6 +106,11 @@ namespace Eventuras.Web.Extensions
                 })
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddRazorRuntimeCompilation();
+
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
         }
 
         public static void ConfigureLocalization(this IServiceCollection services, CultureInfo defaultCultureInfo)
