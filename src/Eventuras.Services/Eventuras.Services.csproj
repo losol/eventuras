@@ -14,7 +14,7 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.11.0" />
-    <PackageReference Include="PowerOfficeGoSdk" Version="[2.5.0]" />
+    <PackageReference Include="PowerOfficeGoSdk" Version="2.14.0" />
     <PackageReference Include="Stripe.net" Version="[16.4.0]" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
   </ItemGroup>

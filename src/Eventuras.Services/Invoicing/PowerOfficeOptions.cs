@@ -1,4 +1,4 @@
-using static GoApi.Global.Settings;
+using GoApi.Core.Global;
 
 namespace Eventuras.Services.Invoicing
 {
@@ -6,7 +6,7 @@ namespace Eventuras.Services.Invoicing
     {
         public string ApplicationKey { get; set; }
         public string ClientKey { get; set; }
-        public EndPointMode Mode { get; set; }
+        public Settings.EndPointMode Mode { get; set; }
         public string TokenStoreName { get; set; }
     }
 }
