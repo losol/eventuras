@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -10,6 +9,7 @@ using GoApi.Invoices;
 using GoApi.Party;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using GoApi.Core.Global;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using static Eventuras.Domain.PaymentMethod;
@@ -18,30 +18,36 @@ namespace Eventuras.Services.Invoicing
 {
     public class PowerOfficeService : IPowerOfficeService
     {
-
-        private readonly Go api;
         private readonly ApplicationDbContext _db;
+        private readonly IOptions<PowerOfficeOptions> _options;
         private readonly ILogger _logger;
+        private Go _api;
 
-        public PowerOfficeService(IOptions<PowerOfficeOptions> options, ApplicationDbContext db, ILogger<PowerOfficeService> logger)
+        public PowerOfficeService(
+            IOptions<PowerOfficeOptions> options,
+            ApplicationDbContext db,
+            ILogger<PowerOfficeService> logger)
         {
-            GoApi.Global.Settings.Mode = options.Value.Mode;
-            var authorizationSettings = new AuthorizationSettings
-            {
-                ApplicationKey = options.Value.ApplicationKey,
-                ClientKey = options.Value.ClientKey,
-                TokenStore = new BasicTokenStore(options.Value.TokenStoreName)
-            };
-            var authorization = new Authorization(authorizationSettings);
-            api = new Go(authorization);
-            _db = db;
-            _logger = logger;
+            _db = db ?? throw new ArgumentNullException(nameof(db));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _options = options ?? throw new ArgumentNullException(nameof(options));
+            _logger.LogInformation($"Using PowerOffice Client with applicationKey: {options.Value.ApplicationKey}");
+        }
 
-            _logger.LogInformation($"Using PowerOffice Client with applicationKey: {authorizationSettings.ApplicationKey}");
+        private async Task<Go> GetApiAsync()
+        {
+            return _api ??= await Go.CreateAsync(new AuthorizationSettings
+            {
+                ApplicationKey = _options.Value.ApplicationKey,
+                ClientKey = _options.Value.ClientKey,
+                TokenStore = new BasicTokenStore(_options.Value.TokenStoreName),
+                EndPointHost = new Settings.Host(_options.Value.Mode)
+            });
         }
 
         public async Task<bool> CreateInvoiceAsync(Order order)
         {
+            var api = await GetApiAsync();
             if (api.Client == null)
             {
                 throw new InvalidOperationException("Did not find PowerOffice Client");
@@ -107,6 +113,8 @@ namespace Eventuras.Services.Invoicing
 
         private async Task<Customer> createCustomerIfNotExists(Order order)
         {
+            var api = await GetApiAsync();
+
             // Search for customer by VAT number
             Regex rgx = new Regex("[^0-9]");
             var vatNumber = (order.Registration.CustomerVatNumber != null) ?
@@ -174,6 +182,7 @@ namespace Eventuras.Services.Invoicing
 
         private async Task createProductIfNotExists(OrderLine line)
         {
+            var api = await GetApiAsync();
             var exists = api.Product.Get().FirstOrDefault(p => p.Code == line.ItemCode) != null;
             if (!exists)
             {
