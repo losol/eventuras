@@ -260,11 +260,13 @@ namespace Eventuras.Web.Extensions
                 .AddCheck<EmailHealthCheck>("email")
                 .AddCheck<SmsHealthCheck>("sms");
 
+            var baseUri = configuration.GetValue<string>("BaseUri")?.TrimEnd('/') ?? "";
+
             services
                 .AddHealthChecksUI(settings =>
                 {
                     settings
-                        .AddHealthCheckEndpoint(Constants.HealthCheckName, Constants.HealthCheckUri);
+                        .AddHealthCheckEndpoint(Constants.HealthCheckName, $"{baseUri}{Constants.HealthCheckUri}");
                 })
                 .AddInMemoryStorage();
         }
