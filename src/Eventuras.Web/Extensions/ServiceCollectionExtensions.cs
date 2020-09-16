@@ -239,7 +239,7 @@ namespace Eventuras.Web.Extensions
             services.AddTalentLmsIfEnabled(configuration.GetSection("TalentLms"));
 
             // Add Health Checks
-            services.AddApplicationHealthChecks(configuration.GetSection("HealthChecks"));
+            services.AddApplicationHealthChecks(configuration.GetSection(Constants.HealthCheckConfigurationKey));
 
             // Added for the renderpage service
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -249,12 +249,17 @@ namespace Eventuras.Web.Extensions
             services.AddHttpClient();
         }
 
-        public static void AddApplicationHealthChecks(this IServiceCollection services, IConfiguration configuration)
+        public static void AddApplicationHealthChecks(this IServiceCollection services, IConfigurationSection configuration)
         {
+            services.AddSingleton<IHealthCheckStorage, HealthCheckMemoryStorage>(); // store health information in memory.
+
+            if (!configuration.HealthChecksEnabled())
+            {
+                return;
+            }
+
             services.Configure<EmailHealthCheckSettings>(configuration.GetSection("Email"));
             services.Configure<SmsHealthCheckSettings>(configuration.GetSection("Sms"));
-
-            services.AddSingleton<IHealthCheckStorage, HealthCheckMemoryStorage>(); // store health information in memory.
 
             services.AddHealthChecks()
                 .AddCheck<EmailHealthCheck>("email")
