@@ -8,7 +8,6 @@ namespace Eventuras.Services.Registrations
         {
             services.AddTransient<IRegistrationRetrievalService, RegistrationRetrievalService>();
             services.AddTransient<IRegistrationExportService, RegistrationExportService>();
-            services.AddTransient<IRegistrationEnrollmentService, RegistrationEnrollmentService>();
             return services;
         }
     }

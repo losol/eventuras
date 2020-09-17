@@ -1,36 +1,28 @@
 using Eventuras.Domain;
+using Eventuras.Infrastructure;
 using Eventuras.Services.Extensions;
-using Eventuras.Services.Lms;
+using Eventuras.Services.ExternalSync;
 using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Eventuras.Services.TalentLms
 {
-    internal class TalentLmsProviderService : ILmsProviderService
+    internal class TalentLmsProviderService : AbstractExternalAccountPerUserSyncProviderService
     {
-        private const string ProviderName = "talentlms";
-        public string Name => ProviderName;
+        public override string Name => "TalentLMS";
 
         private readonly ITalentLmsApiService _apiService;
 
-        public TalentLmsProviderService(ITalentLmsApiService apiService)
+        public TalentLmsProviderService(
+            ITalentLmsApiService apiService,
+            ApplicationDbContext context) : base(context)
         {
-            _apiService = apiService;
+            _apiService = apiService ?? throw new ArgumentNullException(nameof(apiService));
         }
 
-        public async Task<NewLmsAccountInfo> CreateAccountForUserAsync(Registration registration)
+        protected override async Task<ExternalAccountDto> CreateNewExternalAccountForRegistrationAsync(Registration registration)
         {
-            if (registration == null)
-            {
-                throw new ArgumentNullException(nameof(registration));
-            }
-
-            if (!registration.Verified)
-            {
-                throw new InvalidOperationException($"Registration {registration.RegistrationId} is not verified");
-            }
-
             var user = registration.User;
             //if (user.Archived)
             //{
@@ -59,32 +51,22 @@ namespace Eventuras.Services.TalentLms
                 Password = password
             });
 
-            return new NewLmsAccountInfo
+            return new ExternalAccountDto
             {
                 Id = response.Id,
-                Password = password,
                 Name = $"{response.FirstName} {response.LastName}"
             };
         }
 
-        public async Task EnrollUserToCourseAsync(string lmsAccountId, string lmsCourseId)
+        protected override async Task RegisterUserToExternalEventAsync(ExternalAccount account, ExternalEvent externalEvent)
         {
-            if (string.IsNullOrEmpty(lmsAccountId))
-            {
-                throw new ArgumentException(nameof(lmsAccountId));
-            }
-
-            if (string.IsNullOrEmpty(lmsCourseId))
-            {
-                throw new ArgumentException(nameof(lmsCourseId));
-            }
-
             await _apiService.EnrollUserToCourseAsync(new TalentLmsEnrollmentDto
             {
-                UserId = lmsAccountId,
-                CourseId = lmsCourseId,
+                UserId = account.ExternalAccountId,
+                CourseId = externalEvent.ExternalEventId,
                 Role = TalentLmsEnrollmentDto.Learner // TODO: Instructor role support?
             });
+
         }
     }
 }

@@ -127,9 +127,6 @@ namespace Eventuras.Domain
         [Display(Name = "Prosjekt-kode for regnskap")]
         public string ProjectCode { get; set; }
 
-        [Display(Name = "LMS Course ID")]
-        public string LmsCourseId { get; set; }
-
         public string OrganizerUserId { get; set; }
         [ForeignKey("OrganizerUserId")]
         public ApplicationUser OrganizerUser { get; set; }
@@ -141,6 +138,7 @@ namespace Eventuras.Domain
         // Navigational properties
         public List<Registration> Registrations { get; set; }
         public List<Product> Products { get; set; }
+        public List<ExternalEvent> ExternalEvents { get; set; }
 
         public bool HasFeaturedImage => !string.IsNullOrWhiteSpace(FeaturedImageUrl);
         public bool HasExternalInfoPage => !string.IsNullOrWhiteSpace(ExternalInfoPageUrl);

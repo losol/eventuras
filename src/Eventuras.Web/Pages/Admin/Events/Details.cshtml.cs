@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Services.ExternalSync;
 using static Eventuras.Domain.Registration;
 using static Eventuras.Domain.Order;
 
@@ -15,13 +16,19 @@ namespace Eventuras.Pages.Admin.Events
     public class DetailsModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly IEventSynchronizationService _eventSynchronizationService;
 
-        public DetailsModel(ApplicationDbContext context)
+        public DetailsModel(
+            ApplicationDbContext context,
+            IEventSynchronizationService eventSynchronizationService)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _eventSynchronizationService = eventSynchronizationService ?? throw new ArgumentNullException(nameof(eventSynchronizationService));
         }
 
         public EventInfo EventInfo { get; set; }
+
+        public string[] SyncProviderNames => _eventSynchronizationService.SyncProviderNames;
 
 
         public async Task<IActionResult> OnGetAsync(int? id)
