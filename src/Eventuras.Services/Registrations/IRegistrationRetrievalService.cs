@@ -25,7 +25,6 @@ namespace Eventuras.Services.Registrations
             public bool ActiveUsersOnly { get; set; }
 
             public bool HavingEmailConfirmedOnly { get; set; }
-            public bool NotEnrolledOnly { get; set; }
         }
 
         public enum Order

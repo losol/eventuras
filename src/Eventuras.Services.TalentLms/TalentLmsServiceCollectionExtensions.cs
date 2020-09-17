@@ -1,4 +1,4 @@
-using Eventuras.Services.Lms;
+using Eventuras.Services.ExternalSync;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -17,17 +17,20 @@ namespace Eventuras.Services.TalentLms
             }
 
             services.AddTransient<ITalentLmsApiService, TalentLmsApiService>();
-            services.AddTransient<ILmsProviderService, TalentLmsProviderService>();
+            services.AddTransient<IExternalSyncProviderService, TalentLmsProviderService>();
             services.AddOptions<TalentLmsSettings>()
                 .ValidateDataAnnotations()
                 .Bind(configuration);
 
-            services.Configure<HealthCheckServiceOptions>(options =>
+            if (configuration?.GetValue<bool>("DisableHealthChecks") != true)
             {
-                options.Registrations.Add(new HealthCheckRegistration("lms",
-                    ActivatorUtilities.GetServiceOrCreateInstance<TalentLmsHealthCheck>,
-                    null, null, null));
-            });
+                services.Configure<HealthCheckServiceOptions>(options =>
+                {
+                    options.Registrations.Add(new HealthCheckRegistration("lms",
+                        ActivatorUtilities.GetServiceOrCreateInstance<TalentLmsHealthCheck>,
+                        null, null, null));
+                });
+            }
 
             return services;
         }

@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Eventuras.IntegrationTests.Controllers.Api.V1
+namespace Eventuras.IntegrationTests
 {
     public static class HttpResponseMessageExtensions
     {
@@ -17,6 +17,16 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V1
             {
                 Assert.Equal(expectedErrorText, str);
             }
+        }
+
+        public static void CheckOk(this HttpResponseMessage response)
+        {
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        public static void CheckNotFound(this HttpResponseMessage response)
+        {
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
     }
 }

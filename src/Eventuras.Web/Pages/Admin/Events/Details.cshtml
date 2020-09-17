@@ -78,13 +78,20 @@
                 <partial name="Partials/_EmailModal" />
                 <partial name="Partials/_SmsModal" />
 
-                @if (!string.IsNullOrWhiteSpace(Model.EventInfo.LmsCourseId))
+                <!-- EXTERNAL SERVICES SYNCHRONIZATION MENU -->
+                @if (Model.SyncProviderNames.Any())
                 {
-                    <!-- LMS MENU -->
                     <div class="btn-group">
-                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">LMS</button>
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sync</button>
                         <div class="dropdown-menu">
-                            <a asp-page="./SyncLms" asp-route-id="@Model.EventInfo.EventInfoId" class="dropdown-item link-decoration-none">Sync participants</a>
+                            @foreach (var providerName in Model.SyncProviderNames)
+                            {
+                                <a asp-page="../Sync/Run"
+                                   asp-route-id="@Model.EventInfo.EventInfoId"
+                                   asp-route-provider="@providerName"
+                                   class="dropdown-item link-decoration-none">@providerName</a>
+                            }
+                            <a asp-page="../Sync/Setup" asp-route-id="@Model.EventInfo.EventInfoId" class="dropdown-item link-decoration-none">Oppsett</a>
                         </div>
                     </div>
                 }
@@ -163,7 +170,6 @@
 
 
         </div>
-    </div>
     </div>
 </div>
 

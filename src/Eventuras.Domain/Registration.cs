@@ -98,8 +98,6 @@ namespace Eventuras.Domain
         [Display(Name = "Verifiseringskode")]
         public string VerificationCode { get; set; }
 
-        public bool EnrolledInLms { get; set; }
-
         public int? CertificateId { get; set; }
         public Certificate Certificate { get; set; }
         public string CertificateComment { get; set; }
@@ -107,6 +105,10 @@ namespace Eventuras.Domain
         // Navigation properties
         public EventInfo EventInfo { get; set; }
         public ApplicationUser User { get; set; }
+
+        public List<ExternalAccount> ExternalAccounts { get; set; }
+
+        public List<ExternalRegistration> ExternalRegistrations { get; set; }
 
         public List<Order> Orders { get; set; }
 

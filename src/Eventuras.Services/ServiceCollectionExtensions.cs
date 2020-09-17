@@ -1,5 +1,5 @@
 using Eventuras.Services.Invoicing;
-using Eventuras.Services.Lms;
+using Eventuras.Services.ExternalSync;
 using Eventuras.Services.Registrations;
 using Microsoft.Extensions.DependencyInjection;
 

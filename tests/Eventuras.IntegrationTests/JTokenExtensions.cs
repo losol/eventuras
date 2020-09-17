@@ -53,6 +53,18 @@ namespace Eventuras.IntegrationTests
             Assert.Equal(variant.Name, token.Value<string>("Name"));
         }
 
+        public static void CheckExternalEvent(this JToken token, ExternalEvent externalEvent)
+        {
+            if (externalEvent == null)
+            {
+                Assert.Empty(token);
+                return;
+            }
+            Assert.Equal(externalEvent.LocalId, token.Value<int>("localId"));
+            Assert.Equal(externalEvent.ExternalServiceName, token.Value<string>("externalServiceName"));
+            Assert.Equal(externalEvent.ExternalEventId, token.Value<string>("externalEventId"));
+        }
+
         public static JArray CheckArray<T>(this JArray token, Action<JToken, T> f, params T[] values)
         {
             Assert.Equal(values.Length, token.Count);
@@ -60,6 +72,12 @@ namespace Eventuras.IntegrationTests
             {
                 f(token[i], values[i]);
             }
+            return token;
+        }
+
+        public static JArray CheckEmptyArray(this JArray token)
+        {
+            Assert.Empty(token);
             return token;
         }
     }

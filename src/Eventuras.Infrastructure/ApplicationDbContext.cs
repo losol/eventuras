@@ -20,6 +20,26 @@ namespace Eventuras.Infrastructure
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<Certificate> Certificates { get; set; }
         public DbSet<MessageLog> MessageLogs { get; set; }
+        public DbSet<ExternalAccount> ExternalAccounts { get; set; }
+        public DbSet<ExternalEvent> ExternalEvents { get; set; }
+        public DbSet<ExternalRegistration> ExternalRegistrations { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<ExternalEvent>()
+                .HasIndex(c => new { c.EventInfoId, c.ExternalServiceName, c.ExternalEventId })
+                .IsUnique();
+
+            builder.Entity<ExternalAccount>()
+                .HasIndex(a => new { a.ExternalServiceName, a.ExternalAccountId })
+                .IsUnique();
+
+            builder.Entity<ExternalRegistration>()
+                .HasIndex(e => new { e.ExternalAccountId, e.ExternalEventId })
+                .IsUnique();
+        }
 
         public void DetachAllEntities()
         {

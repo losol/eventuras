@@ -169,5 +169,32 @@ namespace Eventuras.IntegrationTests
                 new[] { quantity },
                 status);
         }
+
+        public static async Task<IDisposableEntity<ExternalEvent>> CreateExternalEventAsync(
+            this ApplicationDbContext context,
+            EventInfo eventInfo,
+            string externalServiceName = Placeholder,
+            string externalEventId = Placeholder)
+        {
+            if (externalServiceName == Placeholder)
+            {
+                externalServiceName = "Test";
+            }
+
+            if (externalEventId == Placeholder)
+            {
+                externalEventId = Guid.NewGuid().ToString();
+            }
+
+            var externalEvent = new ExternalEvent
+            {
+                EventInfo = eventInfo,
+                ExternalServiceName = externalServiceName,
+                ExternalEventId = externalEventId
+            };
+            await context.ExternalEvents.AddAsync(externalEvent);
+            await context.SaveChangesAsync();
+            return new DisposableEntity<ExternalEvent>(externalEvent, context);
+        }
     }
 }

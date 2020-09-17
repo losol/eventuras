@@ -1,14 +1,13 @@
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Eventuras.Services.Lms
+namespace Eventuras.Services.ExternalSync
 {
-    internal static class LmsServiceCollectionExtensions
+    internal static class ExternalSyncServiceCollectionExtensions
     {
         public static IServiceCollection AddLmsServices(this IServiceCollection services)
         {
-            services.TryAddTransient<ILmsProviderService, DefaultLmsProviderService>();
             services.AddTransient<IEventSynchronizationService, EventSynchronizationService>();
+            services.AddTransient<IExternalEventManagementService, ExternalEventManagementService>();
             return services;
         }
     }
