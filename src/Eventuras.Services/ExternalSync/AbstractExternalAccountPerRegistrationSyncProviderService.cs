@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 namespace Eventuras.Services.ExternalSync
 {
     /// <summary>
-    /// Manages one external account per user, in contrast
-    /// with having one external account per registration.
+    /// Manages one external account per single event registration. Which means,
+    /// that every user registered in the system may have multiple external accounts
+    /// linked to different event registrations.
     /// </summary>
-    public abstract class AbstractExternalAccountPerUserSyncProviderService : AbstractExternalSyncProviderService
+    public abstract class AbstractExternalAccountPerRegistrationSyncProviderService : AbstractExternalSyncProviderService
     {
         private readonly ApplicationDbContext _context;
 
-        protected AbstractExternalAccountPerUserSyncProviderService(ApplicationDbContext context) : base(context)
+        protected AbstractExternalAccountPerRegistrationSyncProviderService(ApplicationDbContext context) : base(context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
@@ -28,7 +29,7 @@ namespace Eventuras.Services.ExternalSync
 
             return await _context.ExternalAccounts
                 .FirstOrDefaultAsync(a => a.ExternalServiceName == Name &&
-                                          a.UserId == registration.UserId);
+                                          a.RegistrationId == registration.RegistrationId);
         }
     }
 }

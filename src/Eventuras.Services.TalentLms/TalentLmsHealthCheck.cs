@@ -29,7 +29,7 @@ namespace Eventuras.Services.TalentLms
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "TalentLMS API connection health failed");
+                _logger.LogError(e, "TalentLMS API connection health check failed");
                 return HealthCheckResult.Unhealthy(e.Message);
             }
         }

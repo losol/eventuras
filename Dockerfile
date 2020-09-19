@@ -11,6 +11,7 @@ COPY ./src/Eventuras.Services/*.csproj ./src/Eventuras.Services/
 COPY ./src/Eventuras.Services.Converto/*.csproj ./src/Eventuras.Services.Converto/
 COPY ./src/Eventuras.Services.Auth0/*.csproj ./src/Eventuras.Services.Auth0/
 COPY ./src/Eventuras.Services.TalentLms/*.csproj ./src/Eventuras.Services.TalentLms/
+COPY ./src/Eventuras.Services.Zoom/*.csproj ./src/Eventuras.Services.Zoom/
 COPY ./src/Eventuras.Infrastructure/*.csproj ./src/Eventuras.Infrastructure/
 COPY ./src/Eventuras.Domain/*.csproj ./src/Eventuras.Domain/
 COPY ./tests/Eventuras.UnitTests/*.csproj ./tests/Eventuras.UnitTests/

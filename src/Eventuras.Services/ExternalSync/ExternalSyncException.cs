@@ -11,5 +11,9 @@ namespace Eventuras.Services.ExternalSync
         public ExternalSyncException(string message) : base(message)
         {
         }
+
+        public ExternalSyncException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
     }
 }

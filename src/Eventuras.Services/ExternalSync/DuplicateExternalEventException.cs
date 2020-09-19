@@ -8,7 +8,7 @@ namespace Eventuras.Services.ExternalSync
         {
         }
 
-        public DuplicateExternalEventException(string message, Exception? innerException) : base(message, innerException)
+        public DuplicateExternalEventException(string message, Exception innerException) : base(message, innerException)
         {
         }
     }
