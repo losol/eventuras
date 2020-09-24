@@ -80,7 +80,7 @@ namespace Eventuras.Web.Extensions
         {
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AdministratorRole", policy => policy.RequireRole(Roles.Admin, Roles.SuperAdmin));
+                options.AddPolicy(AuthPolicies.AdministratorRole, policy => policy.RequireRole(Roles.Admin, Roles.SuperAdmin));
             });
         }
 

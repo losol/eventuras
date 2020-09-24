@@ -43,7 +43,7 @@ namespace Eventuras.Services.DbInitializers
             }
 
             // Add super-admin if none exists
-            if (!_userManager.GetUsersInRoleAsync("SuperAdmin").Result.Any())
+            if (!_userManager.GetUsersInRoleAsync(Roles.SuperAdmin).Result.Any())
             {
                 _ = _config?.SuperAdmin?.Email ?? throw new ArgumentException("SuperAdmin email not set. Please check install documentation");
                 _ = _config?.SuperAdmin?.Password ?? throw new ArgumentException("SuperAdmin password not set. Please check install documentation");
@@ -62,7 +62,7 @@ namespace Eventuras.Services.DbInitializers
                     var createSuperAdmin = await _userManager.CreateAsync(superadmin, UserPassword);
                     if (createSuperAdmin.Succeeded)
                     {
-                        await _userManager.AddToRoleAsync(superadmin, "SuperAdmin");
+                        await _userManager.AddToRoleAsync(superadmin, Roles.SuperAdmin);
                     }
                 }
 
