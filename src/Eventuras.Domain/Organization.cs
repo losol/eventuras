@@ -1,16 +1,16 @@
-using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Eventuras.Domain
 {
-
-
     public class Organization
     {
         public int OrganizationId { get; set; }
+
+        [DisplayName("Foreldreorganisasjon")]
+        public int? ParentOrganizationId { get; set; }
 
         [Required]
         [Display(Name = "Navn")]
@@ -41,5 +41,19 @@ namespace Eventuras.Domain
         public string VatId { get; set; }
         public string AccountNumber { get; set; }
 
+        [DisplayName("Aktiv")]
+        public bool Active { get; set; } = true;
+
+        [StringLength(300, ErrorMessage = "Eventuras vertsnavn kan bare være 300 tegn.")]
+        [Display(Name = "Eventuras vertsnavn")]
+        public string EventurasHostname { get; set; }
+
+        [DisplayName("Foreldreorganisasjon")]
+        [ForeignKey(nameof(ParentOrganizationId))]
+        public Organization ParentOrganization { get; set; }
+
+        public List<Organization> ChildOrganizations { get; set; }
+
+        public List<OrganizationMember> Members { get; set; }
     }
 }

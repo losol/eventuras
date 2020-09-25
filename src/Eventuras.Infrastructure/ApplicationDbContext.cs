@@ -18,6 +18,7 @@ namespace Eventuras.Infrastructure
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderLine> OrderLines { get; set; }
         public DbSet<Organization> Organizations { get; set; }
+        public DbSet<OrganizationMember> OrganizationMembers { get; set; }
         public DbSet<Certificate> Certificates { get; set; }
         public DbSet<MessageLog> MessageLogs { get; set; }
         public DbSet<ExternalAccount> ExternalAccounts { get; set; }
@@ -38,6 +39,15 @@ namespace Eventuras.Infrastructure
 
             builder.Entity<ExternalRegistration>()
                 .HasIndex(e => new { e.ExternalAccountId, e.ExternalEventId })
+                .IsUnique();
+
+            builder.Entity<Organization>()
+                .HasIndex(o => o.EventurasHostname)
+                .HasFilter($@"""{nameof(Organization.EventurasHostname)}"" IS NOT NULL AND ""{nameof(Organization.Active)}"" = true")
+                .IsUnique();
+
+            builder.Entity<OrganizationMember>()
+                .HasIndex(m => new { m.OrganizationId, m.UserId })
                 .IsUnique();
         }
 

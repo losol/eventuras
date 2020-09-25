@@ -1,27 +1,31 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Eventuras.Domain;
+using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Eventuras.Pages.Admin.Organizations
+namespace Eventuras.Web.Pages.Admin.Organizations
 {
     public class CreateModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IOrganizationRetrievalService _organizationRetrievalService;
+        private readonly IOrganizationManagementService _organizationManagementService;
 
-        public CreateModel(ApplicationDbContext context)
+        public CreateModel(
+            IOrganizationRetrievalService organizationRetrievalService,
+            IOrganizationManagementService organizationManagementService)
         {
-            _context = context;
+            _organizationRetrievalService = organizationRetrievalService ?? throw new ArgumentNullException(nameof(organizationRetrievalService));
+            _organizationManagementService = organizationManagementService ?? throw new ArgumentNullException(nameof(organizationManagementService));
         }
 
-        public IActionResult OnGet()
+        public IList<Organization> ParentOrganizations { get; set; }
+
+        public async Task<IActionResult> OnGet()
         {
-            return Page();
+            return await PageAsync();
         }
 
         [BindProperty]
@@ -31,13 +35,30 @@ namespace Eventuras.Pages.Admin.Organizations
         {
             if (!ModelState.IsValid)
             {
-                return Page();
+                return await PageAsync();
             }
 
-            _context.Organizations.Add(Organization);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _organizationManagementService.CreateNewOrganizationAsync(Organization);
+            }
+            catch (DuplicateOrganizationHostnameException e)
+            {
+                ModelState.AddModelError($"{nameof(Organization)}.{nameof(Organization.EventurasHostname)}", e.Message);
+                return await PageAsync();
+            }
 
             return RedirectToPage("./Index");
+        }
+
+        private async Task<IActionResult> PageAsync()
+        {
+            ParentOrganizations = await _organizationRetrievalService.ListOrganizationsAsync(new OrganizationFilter
+            {
+                ParentOnly = true
+            });
+
+            return Page();
         }
     }
 }

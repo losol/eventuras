@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Eventuras.Services.Registrations
 {
-    internal static class LmsServiceCollectionExtensions
+    internal static class RegistrationServiceCollectionExtensions
     {
         public static IServiceCollection AddRegistrationServices(this IServiceCollection services)
         {

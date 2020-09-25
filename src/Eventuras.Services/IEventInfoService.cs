@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Eventuras.Domain;
@@ -10,7 +10,6 @@ namespace Eventuras.Services
         Task<EventInfo> GetAsync(int id);
         Task<EventInfo> GetWithOrganizerAsync(int id);
         Task<EventInfo> GetWithProductsAsync(int id);
-        Task<int> GetRegistrationCount(int eventId);
 
         Task<List<EventInfo>> GetFeaturedEventsAsync();
         Task<List<EventInfo>> GetEventsAsync();

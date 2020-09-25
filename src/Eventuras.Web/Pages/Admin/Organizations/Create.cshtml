@@ -1,5 +1,5 @@
 @page
-@model Eventuras.Pages.Admin.Organizations.CreateModel
+@model Eventuras.Web.Pages.Admin.Organizations.CreateModel
 
 @{
     ViewData["Title"] = "Create";
@@ -25,6 +25,14 @@
                     <label asp-for="Organization.Description" class="control-label"></label>
                     <input asp-for="Organization.Description" class="form-control" />
                     <span asp-validation-for="Organization.Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Organization.ParentOrganizationId" class="control-label"></label>
+                    <select asp-for="Organization.ParentOrganizationId" class="form-control"
+                            asp-items="@(new SelectList(Model.ParentOrganizations,nameof(Organization.OrganizationId),nameof(Organization.Name)))">
+                        <option></option>
+                    </select>
+                    <span asp-validation-for="Organization.ParentOrganizationId" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Legg til" class="btn btn-success" />

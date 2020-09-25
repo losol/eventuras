@@ -1,5 +1,5 @@
 @page
-@model Eventuras.Pages.Admin.Organizations.IndexModel
+@model Eventuras.Web.Pages.Admin.Organizations.IndexModel
 
 @{
     ViewData["Title"] = "Index";
@@ -16,20 +16,35 @@
 </div>
 
 <div class="container py-5 min-height-75">
-    @if (!Model.Organizations.Any()) {
-            <h1>Ingen organisasjoner enda...</h1>
-            <p class="lead">Fortvil ikke, trykk p&aring; den gr&oslash;nne knappen over for &aring; opprette en ny.</p>
+    @if (!Model.Organizations.Any())
+    {
+        <h1>Ingen organisasjoner enda...</h1>
+        <p class="lead">Fortvil ikke, trykk p&aring; den gr&oslash;nne knappen over for &aring; opprette en ny.</p>
     }
     <div class="row">
-        @foreach (var item in Model.Organizations) {
+        @foreach (var item in Model.Organizations)
+        {
             <div class="col-md-4">
                 <div class="card text-white bg-info mb-3">
                     <div class="card-body">
                         <h2 class="card-title">@item.Name</h2>
-                        <a asp-page="./Details" asp-route-id="@item.OrganizationId" class="btn btn-secondary link-decoration-none" >Vis</a>
+                        <div>@item.EventurasHostname</div><br />
+                        <a asp-page="./Details" asp-route-id="@item.OrganizationId" class="btn btn-secondary link-decoration-none">Vis</a>
                     </div>
                 </div>
             </div>
+            foreach (var child in item.ChildOrganizations)
+            {
+                <div class="col-md-4">
+                    <div class="card text-white bg-success mb-3">
+                        <div class="card-body">
+                            <h2 class="card-title">@child.Name</h2>
+                            <div>@child.EventurasHostname</div><br/>
+                            <a asp-page="./Details" asp-route-id="@child.OrganizationId" class="btn btn-secondary link-decoration-none">Vis</a>
+                        </div>
+                    </div>
+                </div>
+            }
         }
     </div>
 </div>

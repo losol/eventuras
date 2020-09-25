@@ -1,0 +1,58 @@
+@page "{id}"
+@model Eventuras.Web.Pages.Admin.Organizations.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div class="container py-5">
+    <h2>Slett organisasjon</h2>
+    <h3>Er du helt sikker på at du vil slette denne organisasjon?</h3>
+    <p>Organisasjonen blir arkivert, og bare Ole kan gjenopprette den organisasjonen.</p>
+    <div>
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Organization.Name)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Organization.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Organization.Description)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Organization.Description)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Organization.Email)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Organization.Email)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Organization.Url)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Organization.Url)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Organization.Phone)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Organization.Phone)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Organization.EventurasHostname)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Organization.EventurasHostname)
+            </dd>
+        </dl>
+
+        <form method="post">
+            <input type="hidden" asp-for="Organization.OrganizationId" />
+            <input type="submit" value="Delete" class="btn btn-danger" />
+            <a asp-page="./Index">Back to List</a>
+        </form>
+    </div>
+</div>

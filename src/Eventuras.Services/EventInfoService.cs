@@ -109,15 +109,6 @@ namespace Eventuras.Services
                 .Include(m => m.Organization)
                 .SingleOrDefaultAsync();
             return eventinfo;
-
-        }
-
-        public async Task<int> GetRegistrationCount(int eventId)
-        {
-            return await _db.EventInfos
-                            .Where(e => e.EventInfoId == eventId)
-                            .Select(e => e.Registrations.Where(r => r.Verified).Count())
-                            .SingleAsync();
         }
 
         public async Task<EventInfo> GetWithProductsAsync(int id)

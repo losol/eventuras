@@ -15,6 +15,12 @@
             <li class="nav-item">
                 <a asp-page="/Admin/Users/Index" class="nav-link link-decoration-none"><i class="material-icons align-top">supervisor_account</i> Brukere</a>
             </li>
+            @if (User.IsInRole(Roles.SuperAdmin))
+            {
+                <li class="nav-item">
+                    <a asp-page="/Admin/Organizations/Index" class="nav-link link-decoration-none"><i class="material-icons align-top">business</i> Organisasjoner</a>
+                </li>
+            }
             <li class="nav-item">
                 <a href="/healthchecks-ui" class="nav-link link-decoration-none" target="_blank"><i class="material-icons align-top">info</i> Systemhelse</a>
             </li>
