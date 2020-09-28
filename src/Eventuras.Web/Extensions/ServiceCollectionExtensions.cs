@@ -30,6 +30,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using System.Globalization;
 using System.Net.Http.Headers;
+using Eventuras.Services.Zoom;
 using Losol.Communication.HealthCheck.Abstractions;
 using Losol.Communication.HealthCheck.Email;
 using Losol.Communication.HealthCheck.Sms;
@@ -241,6 +242,9 @@ namespace Eventuras.Web.Extensions
 
             // Add TalentLms integration if enabled in settings.
             services.AddTalentLmsIfEnabled(configuration.GetSection("TalentLms"));
+
+            // Add Zoom external services if enabled in settings.
+            services.AddZoomIfEnabled(configuration.GetSection("Zoom"));
 
             // Add Health Checks
             services.AddApplicationHealthChecks(configuration.GetSection(Constants.HealthCheckConfigurationKey));

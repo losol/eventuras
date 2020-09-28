@@ -43,6 +43,7 @@
     <ProjectReference Include="..\Eventuras.Services.Auth0\Eventuras.Services.Auth0.csproj" />
     <ProjectReference Include="..\Eventuras.Services.Converto\Eventuras.Services.Converto.csproj" />
     <ProjectReference Include="..\Eventuras.Services.TalentLms\Eventuras.Services.TalentLms.csproj" />
+    <ProjectReference Include="..\Eventuras.Services.Zoom\Eventuras.Services.Zoom.csproj" />
     <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj" />
     <ProjectReference Include="..\Eventuras.Infrastructure\Eventuras.Infrastructure.csproj" />
     <ProjectReference Include="..\Eventuras.Domain\Eventuras.Domain.csproj" />

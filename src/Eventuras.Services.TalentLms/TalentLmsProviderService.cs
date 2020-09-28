@@ -21,7 +21,7 @@ namespace Eventuras.Services.TalentLms
             _apiService = apiService ?? throw new ArgumentNullException(nameof(apiService));
         }
 
-        protected override async Task<ExternalAccountDto> CreateNewExternalAccountForRegistrationAsync(Registration registration)
+        protected override async Task<ExternalAccount> CreateNewExternalAccountForRegistrationAsync(Registration registration)
         {
             var user = registration.User;
             //if (user.Archived)
@@ -51,10 +51,12 @@ namespace Eventuras.Services.TalentLms
                 Password = password
             });
 
-            return new ExternalAccountDto
+            return new ExternalAccount
             {
-                Id = response.Id,
-                Name = $"{response.FirstName} {response.LastName}"
+                UserId = registration.UserId,
+                ExternalAccountId = response.Id,
+                ExternalServiceName = Name,
+                DisplayName = $"{response.FirstName} {response.LastName}"
             };
         }
 

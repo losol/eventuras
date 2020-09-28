@@ -1,0 +1,148 @@
+using Eventuras.Domain;
+using Eventuras.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
+
+namespace Eventuras.Services.ExternalSync
+{
+    /// <summary>
+    /// External event synchronization stub. Common approach to external synchronization
+    /// is to make checks whether the external event is registered in the system,
+    /// whether the external account exists and create one if it doesn't. All external system
+    /// interactions are delegated to the descendant classes.
+    /// </summary>
+    public abstract class AbstractExternalSyncProviderService : IExternalSyncProviderService
+    {
+        public abstract string Name { get; }
+
+        private readonly ApplicationDbContext _context;
+
+        protected AbstractExternalSyncProviderService(ApplicationDbContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
+        public virtual async Task SynchronizationCheckAsync(EventInfo eventInfo)
+        {
+            if (eventInfo == null)
+            {
+                throw new ArgumentNullException(nameof(eventInfo));
+            }
+
+            await EnsureExternalEventAsync(eventInfo);
+        }
+
+        public virtual async Task<ExternalEventSyncResult> RunSynchronizationAsync(ExternalAccount account, Registration registration)
+        {
+            if (account == null)
+            {
+                throw new ArgumentException(nameof(account));
+            }
+
+            if (registration == null)
+            {
+                throw new ArgumentException(nameof(registration));
+            }
+
+            if (registration.EventInfo == null)
+            {
+                throw new ArgumentException(nameof(registration));
+            }
+
+            var externalEvent = await EnsureExternalEventAsync(registration.EventInfo);
+            if (externalEvent == null)
+            {
+                return ExternalEventSyncResult.NotSynced;
+            }
+
+            if (await _context.ExternalRegistrations
+                .AnyAsync(e => e.ExternalEventId == externalEvent.LocalId &&
+                               e.ExternalAccountId == account.LocalId))
+            {
+                return ExternalEventSyncResult.AlreadySynced;
+            }
+
+            await RegisterUserToExternalEventAsync(account, externalEvent);
+
+            try
+            {
+                var externalRegistration = new ExternalRegistration
+                {
+                    ExternalEvent = externalEvent,
+                    ExternalAccount = account,
+                    Registration = registration
+                };
+
+                await _context.ExternalRegistrations.AddAsync(externalRegistration);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
+            {
+                return ExternalEventSyncResult.AlreadySynced;
+            }
+
+            return ExternalEventSyncResult.Synced;
+        }
+
+        public abstract Task<ExternalAccount> FindExistingAccountAsync(Registration registration);
+
+        public async Task<ExternalAccount> CreateAccountForUserAsync(Registration registration)
+        {
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
+
+            if (!registration.Verified)
+            {
+                throw new InvalidOperationException($"Registration {registration.RegistrationId} is not verified");
+            }
+
+            var externalAccount = await CreateNewExternalAccountForRegistrationAsync(registration);
+            await _context.ExternalAccounts.AddAsync(externalAccount);
+            await _context.SaveChangesAsync();
+            return externalAccount;
+        }
+
+        /// <summary>
+        /// Implementation may decide to perform some actions in addition to just creating external account.
+        /// Default is do nothing.
+        /// </summary>
+        protected virtual Task RegisterUserToExternalEventAsync(ExternalAccount account, ExternalEvent externalEvent)
+        {
+            return Task.CompletedTask; // Do nothing by default
+        }
+
+        /// <summary>
+        /// Creates new <see cref="ExternalAccount"/> for the given registration.
+        /// Implementation may decide to perform additional checks whether the account is already exists in the external service
+        /// and re-use the existing data or create new record.
+        /// </summary>
+        /// <param name="registration">Not null.</param>
+        /// <returns>Not null.</returns>
+        protected abstract Task<ExternalAccount> CreateNewExternalAccountForRegistrationAsync(Registration registration);
+
+
+        /// <summary>
+        /// Checks whether the external event setup is properly done for the given event info and returns
+        /// the corresponding external event object or throws <see cref="ExternalSyncException"/> in case of any issues.
+        /// </summary>
+        /// <param name="eventInfo">Local event info.</param>
+        /// <returns>Not null</returns>
+        /// <exception cref="ExternalSyncException">External event not found or misconfigured.</exception>
+        protected virtual async Task<ExternalEvent> EnsureExternalEventAsync(EventInfo eventInfo)
+        {
+            var externalEvent = await _context.ExternalEvents.FirstOrDefaultAsync(
+                c => c.ExternalServiceName == Name &&
+                     c.EventInfoId == eventInfo.EventInfoId);
+
+            if (externalEvent == null)
+            {
+                throw new ExternalEventNotFoundException($"No external events configured for event {eventInfo.Title}");
+            }
+
+            return externalEvent;
+        }
+    }
+}
