@@ -1,13 +1,12 @@
-using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Eventuras.Domain
 {
-
-
     public class Organization
     {
         public int OrganizationId { get; set; }
@@ -41,5 +40,24 @@ namespace Eventuras.Domain
         public string VatId { get; set; }
         public string AccountNumber { get; set; }
 
+        [DisplayName("Aktiv")]
+        public bool Active { get; set; } = true;
+
+        public List<OrganizationMember> Members { get; set; }
+
+        public List<OrganizationHostname> Hostnames { get; set; }
+
+        [NotMapped]
+        public string NameAndHostname =>
+            Hostnames?.Any(h => h.Active) == true
+                ? $"{Name} ({CommaSeparatedHostnames})" : Name;
+
+        [NotMapped]
+        [DisplayName("Kommaseparerte Eventuras vertsnavn")]
+        public string CommaSeparatedHostnames => string.Join(",",
+            Hostnames?.Where(h => h.Active)
+                .Select(h => h.Hostname)
+                .ToList()
+            ?? new List<string>());
     }
 }

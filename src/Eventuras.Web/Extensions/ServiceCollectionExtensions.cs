@@ -80,7 +80,7 @@ namespace Eventuras.Web.Extensions
         {
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AdministratorRole", policy => policy.RequireRole(Roles.Admin, Roles.SuperAdmin));
+                options.AddPolicy(AuthPolicies.AdministratorRole, policy => policy.RequireRole(Roles.Admin, Roles.SuperAdmin));
             });
         }
 
@@ -250,7 +250,7 @@ namespace Eventuras.Web.Extensions
             services.AddApplicationHealthChecks(configuration.GetSection(Constants.HealthCheckConfigurationKey));
 
             // Added for the renderpage service
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddHttpContextAccessor();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddConvertoServices(configuration.GetSection("Converto"));
             services.AddTransient<CertificatePdfRenderer>();

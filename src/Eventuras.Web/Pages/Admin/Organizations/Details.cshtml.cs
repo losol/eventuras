@@ -1,54 +1,78 @@
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Domain;
+using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
 
-namespace Eventuras.Pages.Admin.Organizations
+namespace Eventuras.Web.Pages.Admin.Organizations
 {
     public class DetailsModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IOrganizationRetrievalService _organizationRetrievalService;
+        private readonly IOrganizationManagementService _organizationManagementService;
 
-        public DetailsModel(ApplicationDbContext context)
+        public DetailsModel(
+            IOrganizationRetrievalService organizationRetrievalService,
+            IOrganizationManagementService organizationManagementService)
         {
-            _context = context;
+            _organizationRetrievalService = organizationRetrievalService ?? throw new ArgumentNullException(nameof(organizationRetrievalService));
+            _organizationManagementService = organizationManagementService ?? throw new ArgumentNullException(nameof(organizationManagementService));
         }
 
         [BindProperty]
         public Organization Organization { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        [BindProperty]
+        [DisplayName("Kommaseparerte Eventuras vertsnavn")]
+        public string Hostnames { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            if (id == null)
+            return await PageAsync(id);
+        }
+
+        public async Task<IActionResult> OnPostAsync(int id)
+        {
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return await PageAsync(id);
             }
 
-            Organization = await _context.Organizations
-                .SingleOrDefaultAsync(m => m.OrganizationId == id);
+            await _organizationManagementService.UpdateOrganizationAsync(Organization);
+
+            try
+            {
+                await _organizationManagementService.UpdateOrganizationHostnames(id, Hostnames.Split(','));
+            }
+            catch (DuplicateOrganizationHostnameException e)
+            {
+                ModelState.AddModelError(nameof(Hostnames), e.Message);
+                return await PageAsync(id);
+            }
+
+            return RedirectToPage("./Index");
+        }
+
+        private async Task<IActionResult> PageAsync(int id)
+        {
+            var org = await _organizationRetrievalService.GetOrganizationByIdAsync(id, new OrganizationRetrievalOptions
+            {
+                LoadHostnames = true
+            });
+
+            Organization ??= org;
 
             if (Organization == null)
             {
                 return NotFound();
             }
+
+            Hostnames ??= org.CommaSeparatedHostnames;
+
             return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync(int? id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-            _context.Organizations.Update(Organization);
-            await _context.SaveChangesAsync();
-            return RedirectToPage("./Index");
         }
     }
 }

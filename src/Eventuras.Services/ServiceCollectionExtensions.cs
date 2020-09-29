@@ -1,5 +1,6 @@
 using Eventuras.Services.Invoicing;
 using Eventuras.Services.ExternalSync;
+using Eventuras.Services.Organizations;
 using Eventuras.Services.Registrations;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,6 +21,7 @@ namespace Eventuras.Services
             services.AddTransient<IOrderVmConversionService, OrderVmConversionService>();
             services.AddRegistrationServices();
             services.AddLmsServices();
+            services.AddOrganizationServices();
             return services;
         }
     }
