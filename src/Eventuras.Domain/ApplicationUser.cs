@@ -14,5 +14,7 @@ namespace Eventuras.Domain
         public bool Archived { get; set; }
 
         public ICollection<Registration> Registrations { get; set; }
+
+        public ICollection<OrganizationMember> OrganizationMembership { get; set; }
     }
 }

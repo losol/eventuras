@@ -1,29 +1,26 @@
+using Eventuras.Domain;
+using Eventuras.Services.Organizations;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
 
-namespace Eventuras.Pages.Admin.Organizations
+namespace Eventuras.Web.Pages.Admin.Organizations
 {
     public class IndexModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IOrganizationRetrievalService _organizationRetrievalService;
 
-        public IndexModel(ApplicationDbContext context)
+        public IndexModel(IOrganizationRetrievalService organizationRetrievalService)
         {
-            _context = context;
+            _organizationRetrievalService = organizationRetrievalService ?? throw new ArgumentNullException(nameof(organizationRetrievalService));
         }
 
         public IList<Organization> Organizations { get; set; }
 
         public async Task OnGetAsync()
         {
-            Organizations = await _context.Organizations.ToListAsync();
+            Organizations = await _organizationRetrievalService.ListOrganizationsAsync();
         }
     }
 }
