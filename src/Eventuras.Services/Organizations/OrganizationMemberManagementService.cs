@@ -26,26 +26,31 @@ namespace Eventuras.Services.Organizations
 
         public async Task<OrganizationMember> FindOrganizationMemberAsync(
             ApplicationUser user,
-            Organization organization)
+            Organization organization = null,
+            OrganizationMemberRetrievalOptions options = null)
         {
-            if (organization == null)
-            {
-                throw new ArgumentNullException(nameof(organization));
-            }
-
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
             }
 
+            organization ??= await _currentOrganizationAccessorService
+                .GetCurrentOrganizationAsync();
+
+            if (organization == null)
+            {
+                return null;
+            }
+
             await CheckOrganizationAdminAccessAsync(organization);
 
-            return await FindExistingMemberAsync(organization, user);
+            return await FindExistingMemberAsync(organization, user, options);
         }
 
         public async Task<OrganizationMember> AddToOrganizationAsync(
             ApplicationUser user,
-            Organization organization)
+            Organization organization = null,
+            OrganizationMemberRetrievalOptions options = null)
         {
             if (user == null)
             {
@@ -57,7 +62,9 @@ namespace Eventuras.Services.Organizations
 
             await CheckOrganizationAdminAccessAsync(organization);
 
-            var member = await FindExistingMemberAsync(organization, user);
+            var member = await FindExistingMemberAsync(organization, user,
+                options ?? new OrganizationMemberRetrievalOptions());
+
             if (member == null)
             {
                 try
@@ -76,7 +83,7 @@ namespace Eventuras.Services.Organizations
                     {
                         _context.OrganizationMembers.Remove(member);
                     }
-                    return await FindExistingMemberAsync(organization, user);
+                    return await FindExistingMemberAsync(organization, user, options);
                 }
             }
 
@@ -105,10 +112,14 @@ namespace Eventuras.Services.Organizations
             }
         }
 
-        private async Task<OrganizationMember> FindExistingMemberAsync(Organization organization, ApplicationUser user)
+        private async Task<OrganizationMember> FindExistingMemberAsync(
+            Organization organization,
+            ApplicationUser user,
+            OrganizationMemberRetrievalOptions options = null)
         {
             return await _context.OrganizationMembers
                 .AsNoTracking()
+                .UseOptions(options ?? new OrganizationMemberRetrievalOptions())
                 .FirstOrDefaultAsync(m => m.OrganizationId == organization.OrganizationId &&
                                           m.UserId == user.Id);
         }

@@ -1,5 +1,5 @@
 @page
-@model Eventuras.Pages.Admin.Users.CreateModel
+@model Eventuras.Web.Pages.Admin.Users.CreateModel
 
 @{
     ViewData["Title"] = "Ny bruker";
@@ -36,6 +36,18 @@
                         <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
                     </div>
                 </div>
+                @if (Model.Organization != null && User.IsInRole(Roles.SuperAdmin))
+                {
+                    <div class="row">
+                        <div class="form-check">
+                            @Html.CheckBoxFor(model => model.Input.IsOrgMember, new { @class = "form-check-input", onchange = "javascript:enableRoleInputs(this.checked)" })
+                            <label asp-for="Input.IsOrgMember" class="form-check-label">Assosiert med @Model.Organization.NameAndHostname</label>
+                        </div>
+                    </div>
+                }
+                <div class="row">
+                    <partial name="_UserFormRolesPartial" model="Model.MemberRoles" />
+                </div>
                 <hr>
                 <div class="form-group">
                     <input type="submit" value="Lagre" class="btn btn-success" />
@@ -47,5 +59,8 @@
     <div>
         <a asp-page="/Admin/Users/Index">Tilbake til brukeroversikten</a>
     </div>
-    </div>
 </div>
+
+@section Scripts {
+    <partial name="_UserFormScriptsPartial" />
+}
