@@ -1,4 +1,5 @@
 using Eventuras.Services.Auth;
+using Eventuras.Services.Events;
 using Eventuras.Services.Invoicing;
 using Eventuras.Services.ExternalSync;
 using Eventuras.Services.Organizations;
@@ -10,9 +11,8 @@ namespace Eventuras.Services
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddEventServices(this IServiceCollection services)
+        public static IServiceCollection AddCoreServices(this IServiceCollection services)
         {
-            services.AddScoped<IEventInfoService, EventInfoService>();
             services.AddScoped<IPaymentMethodService, PaymentMethodService>();
             services.AddScoped<StripeInvoiceProvider>();
             services.AddScoped<IRegistrationService, RegistrationService>();
@@ -22,10 +22,11 @@ namespace Eventuras.Services
             services.AddScoped<IMessageLogService, MessageLogService>();
             services.AddTransient<IOrderVmConversionService, OrderVmConversionService>();
             services.AddRegistrationServices();
-            services.AddLmsServices();
             services.AddOrganizationServices();
             services.AddUserServices();
             services.AddAuthServices();
+            services.AddEventServices();
+            services.AddExternalSyncServices();
             return services;
         }
     }

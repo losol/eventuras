@@ -17,6 +17,7 @@ using Eventuras.Services.Extensions;
 using System.Text;
 using static Eventuras.Domain.PaymentMethod;
 using System.Text.RegularExpressions;
+using Eventuras.Services.Events;
 using Microsoft.Extensions.Localization;
 
 namespace Eventuras.Web.Pages.Events.Register
@@ -25,7 +26,7 @@ namespace Eventuras.Web.Pages.Events.Register
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<EventRegistrationModel> _logger;
-        private readonly IEventInfoService _eventsService;
+        private readonly IEventInfoRetrievalService _eventsService;
         private readonly IPaymentMethodService _paymentMethodService;
         private readonly IRegistrationService _registrationService;
         private readonly RegistrationEmailSender _registrationEmailSender;
@@ -35,7 +36,7 @@ namespace Eventuras.Web.Pages.Events.Register
             UserManager<ApplicationUser> userManager,
             RegistrationEmailSender registrationEmailSender,
             ILogger<EventRegistrationModel> logger,
-            IEventInfoService eventsService,
+            IEventInfoRetrievalService eventsService,
             IPaymentMethodService paymentMethodService,
             IRegistrationService registrationService,
             IStringLocalizer<EventRegistrationModel> stringLocalizer)
@@ -59,7 +60,10 @@ namespace Eventuras.Web.Pages.Events.Register
         public async Task<IActionResult> OnGetAsync(int id)
         {
 
-            EventInfo = await _eventsService.GetWithProductsAsync(id);
+            EventInfo = await _eventsService.GetEventInfoByIdAsync(id, new EventInfoRetrievalOptions
+            {
+                LoadProducts = true
+            });
 
             if (EventInfo == null)
             {
@@ -97,7 +101,10 @@ namespace Eventuras.Web.Pages.Events.Register
             if (!string.IsNullOrWhiteSpace(Registration.CustomerCity)) { Registration.CustomerCity = Regex.Replace(Registration.CustomerCity, "<.*?>", String.Empty); }
             if (!string.IsNullOrWhiteSpace(Registration.CustomerCountry)) { Registration.CustomerCountry = Regex.Replace(Registration.CustomerCountry, "<.*?>", String.Empty); }
 
-            EventInfo = await _eventsService.GetWithProductsAsync(id);
+            EventInfo = await _eventsService.GetEventInfoByIdAsync(id, new EventInfoRetrievalOptions
+            {
+                LoadProducts = true
+            });
             if (EventInfo == null) return NotFound();
             Registration.EventInfoId = EventInfo.EventInfoId;
 

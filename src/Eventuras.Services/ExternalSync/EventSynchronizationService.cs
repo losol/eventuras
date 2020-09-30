@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Eventuras.Services.Events;
 
 namespace Eventuras.Services.ExternalSync
 {
@@ -14,18 +15,18 @@ namespace Eventuras.Services.ExternalSync
         private readonly IEnumerable<IExternalSyncProviderService> _syncProviderServices;
         private readonly ILogger<EventSynchronizationService> _logger;
         private readonly IRegistrationRetrievalService _registrationRetrievalService;
-        private readonly IEventInfoService _eventInfoService;
+        private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
 
         public EventSynchronizationService(
             IEnumerable<IExternalSyncProviderService> syncProviderServices,
             ILogger<EventSynchronizationService> logger,
             IRegistrationRetrievalService registrationRetrievalService,
-            IEventInfoService eventInfoService)
+            IEventInfoRetrievalService eventInfoRetrievalService)
         {
             _syncProviderServices = syncProviderServices ?? throw new ArgumentNullException(nameof(syncProviderServices));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _registrationRetrievalService = registrationRetrievalService ?? throw new ArgumentNullException(nameof(registrationRetrievalService));
-            _eventInfoService = eventInfoService;
+            _eventInfoRetrievalService = eventInfoRetrievalService ?? throw new ArgumentNullException(nameof(eventInfoRetrievalService));
         }
 
         public string[] SyncProviderNames => _syncProviderServices.Select(s => s.Name).ToArray();
@@ -35,7 +36,7 @@ namespace Eventuras.Services.ExternalSync
             string syncProviderName,
             CancellationToken cancellationToken)
         {
-            var eventInfo = await _eventInfoService.GetAsync(eventId);
+            var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventId);
 
             var results = new List<EventSynchronizationResult>();
 

@@ -1,5 +1,5 @@
 @page "{id:int}"
-@model Eventuras.Pages.Admin.Events.EditModel
+@model Eventuras.Web.Pages.Admin.Events.EditModel
 
 @{
     ViewData["Title"] = "Rediger kurs";
@@ -47,6 +47,18 @@
                             <input asp-for="EventInfo.Featured" /> @Html.DisplayNameFor(model => model.EventInfo.Featured)
                         </label>
                     </div>
+                    @if (Model.Organization != null && User.IsInRole(Roles.SuperAdmin))
+                    {
+                        <div class="form-check form-check-inline">
+                            <label>
+                                @Html.CheckBox(nameof(EventInfo.OrganizationId),
+                                    Model.EventInfo.OrganizationId == Model.Organization.OrganizationId,
+                                    new { onchange = $"javascript: document.getElementById('orgId').value = this.checked ? '{Model.Organization.OrganizationId}' : null;" })
+                                Assosiert med @Model.Organization.NameAndHostname
+                                <input id="orgId" type="hidden" asp-for="EventInfo.OrganizationId" />
+                            </label>
+                        </div>
+                    }
                 </div>
 
                 <div class="form-group">
@@ -146,11 +158,6 @@
                     <label asp-for="EventInfo.OrganizerUserId" class="control-label"></label>
                     <input asp-for="EventInfo.OrganizerUserId" class="form-control" />
                     <span asp-validation-for="EventInfo.OrganizerUserId" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="EventInfo.OrganizationId" class="control-label"></label>
-                    <input asp-for="EventInfo.OrganizationId" class="form-control" />
-                    <span asp-validation-for="EventInfo.OrganizationId" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">

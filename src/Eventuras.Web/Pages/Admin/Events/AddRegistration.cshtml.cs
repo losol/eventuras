@@ -10,12 +10,13 @@ using Microsoft.AspNetCore.Identity;
 using Mapster;
 using static Eventuras.Domain.PaymentMethod;
 using Eventuras.Infrastructure;
+using Eventuras.Services.Events;
 
 namespace Eventuras.Pages.Admin.Events
 {
     public class AddRegistrationModel : PageModel
     {
-        private readonly IEventInfoService _eventsService;
+        private readonly IEventInfoRetrievalService _eventsService;
         private readonly IRegistrationService _registrations;
         private readonly IOrderService _orders;
         private readonly IPaymentMethodService _paymentMethodService;
@@ -23,7 +24,7 @@ namespace Eventuras.Pages.Admin.Events
         private readonly ApplicationDbContext _db;
 
 
-        public AddRegistrationModel(IOrderService orders, IEventInfoService eventInfos, IRegistrationService registrations, IPaymentMethodService paymentMethods, UserManager<ApplicationUser> userManager, ApplicationDbContext db)
+        public AddRegistrationModel(IOrderService orders, IEventInfoRetrievalService eventInfos, IRegistrationService registrations, IPaymentMethodService paymentMethods, UserManager<ApplicationUser> userManager, ApplicationDbContext db)
         {
             _eventsService = eventInfos;
             _orders = orders;
@@ -43,7 +44,10 @@ namespace Eventuras.Pages.Admin.Events
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            EventInfo = EventInfo ?? await _eventsService.GetWithProductsAsync(id);
+            EventInfo ??= await _eventsService.GetEventInfoByIdAsync(id, new EventInfoRetrievalOptions
+            {
+                LoadProducts = true
+            });
             if (EventInfo == null) return NotFound();
 
             PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
@@ -73,7 +77,10 @@ namespace Eventuras.Pages.Admin.Events
             Registration.Email = user.Email;
             Registration.Phone = user.PhoneNumber;
 
-            EventInfo = await _eventsService.GetWithProductsAsync(id);
+            EventInfo = await _eventsService.GetEventInfoByIdAsync(id, new EventInfoRetrievalOptions
+            {
+                LoadProducts = true
+            });
             if (EventInfo == null) return NotFound();
 
             Registration.EventInfoId = id;

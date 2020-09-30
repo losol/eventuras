@@ -2,6 +2,7 @@ using Eventuras.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Services.Events;
 
 namespace Eventuras.Web.Api.Controllers
 {
@@ -9,9 +10,9 @@ namespace Eventuras.Web.Api.Controllers
     [Route("api/v0/events")]
     public class EventsController : Controller
     {
-        private readonly IEventInfoService _eventsService;
+        private readonly IEventInfoRetrievalService _eventsService;
 
-        public EventsController(IEventInfoService eventsService)
+        public EventsController(IEventInfoRetrievalService eventsService)
         {
             _eventsService = eventsService;
         }
@@ -19,7 +20,7 @@ namespace Eventuras.Web.Api.Controllers
         [HttpGet, Route("upcoming")]
         public async Task<IActionResult> Get()
         {
-            var events = await _eventsService.GetEventsAsync();
+            var events = await _eventsService.GetUpcomingEventsAsync();
             var list = events.Select(s => new
             {
                 Id = s.EventInfoId,

@@ -1,9 +1,10 @@
 @page
-@inject IEventInfoService events
+@using Eventuras.Services.Events
+@inject IEventInfoRetrievalService events
 
 @{
     ViewData["Title"] = "Index";
-    var upcomingEvents = await events.GetEventsAsync(); 
+    var upcomingEvents = await events.GetUpcomingEventsAsync(); 
 }
 
 <div class="container">

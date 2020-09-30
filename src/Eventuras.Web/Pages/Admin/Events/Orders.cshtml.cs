@@ -6,16 +6,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Eventuras.Domain;
 using Eventuras.Services;
+using Eventuras.Services.Events;
 
 namespace Eventuras.Pages.Admin.Events
 {
     public class OrdersModel : PageModel
     {
         private readonly IOrderService _orders;
-        private readonly IEventInfoService _eventInfos;
+        private readonly IEventInfoRetrievalService _eventInfos;
         private readonly IRegistrationService _registrations;
 
-        public OrdersModel(IOrderService orders, IEventInfoService eventInfos, IRegistrationService registrations)
+        public OrdersModel(IOrderService orders, IEventInfoRetrievalService eventInfos, IRegistrationService registrations)
         {
             _eventInfos = eventInfos;
             _orders = orders;
@@ -31,7 +32,10 @@ namespace Eventuras.Pages.Admin.Events
         {
             // Get orders for
             Orders = await _orders.GetOrdersForEventAsync(id);
-            EventInfo = await _eventInfos.GetWithProductsAsync(id);
+            EventInfo = await _eventInfos.GetEventInfoByIdAsync(id, new EventInfoRetrievalOptions
+            {
+                LoadProducts = true
+            });
             Registrations = await _registrations.GetRegistrationsWithOrders(id);
             Registrations.OrderBy(m => m.ParticipantName);
             return Page();

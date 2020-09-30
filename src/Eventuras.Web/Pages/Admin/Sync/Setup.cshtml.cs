@@ -3,14 +3,15 @@ using Eventuras.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
+using Eventuras.Services.Events;
 
 namespace Eventuras.Web.Pages.Admin.Sync
 {
     public class SetupModel : PageModel
     {
-        private readonly IEventInfoService _eventInfoService;
+        private readonly IEventInfoRetrievalService _eventInfoService;
 
-        public SetupModel(IEventInfoService eventInfoService)
+        public SetupModel(IEventInfoRetrievalService eventInfoService)
         {
             _eventInfoService = eventInfoService;
         }
@@ -19,7 +20,7 @@ namespace Eventuras.Web.Pages.Admin.Sync
 
         public async Task<IActionResult> OnGet(int id)
         {
-            EventInfo = await _eventInfoService.GetAsync(id);
+            EventInfo = await _eventInfoService.GetEventInfoByIdAsync(id);
 
             if (EventInfo == null)
             {

@@ -8,16 +8,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Services.Events;
 
 namespace Eventuras.Pages.Admin.Temp.Products
 {
     public class EditModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
 
-        public EditModel(ApplicationDbContext context)
+        public EditModel(
+            ApplicationDbContext context,
+            IEventInfoRetrievalService eventInfoRetrievalService)
         {
             _context = context;
+            _eventInfoRetrievalService = eventInfoRetrievalService;
         }
 
         [BindProperty]
@@ -37,7 +42,7 @@ namespace Eventuras.Pages.Admin.Temp.Products
             {
                 return NotFound();
             }
-            ViewData["EventInfoId"] = new SelectList(_context.EventInfos, "EventInfoId", "Code");
+            ViewData["EventInfoId"] = new SelectList(await _eventInfoRetrievalService.ListEventsAsync(), "EventInfoId", "Code");
             return Page();
         }
 

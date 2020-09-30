@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services;
+using Eventuras.Services.Events;
+using Eventuras.Services.Users;
 
 namespace Eventuras.Pages.Admin.Registrations
 {
@@ -16,11 +18,19 @@ namespace Eventuras.Pages.Admin.Registrations
     {
         private readonly ApplicationDbContext _context;
         private readonly IPaymentMethodService _paymentMethods;
+        private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
+        private readonly IUserRetrievalService _userListingService;
 
-        public EditModel(ApplicationDbContext context, IPaymentMethodService paymentMethods)
+        public EditModel(
+            ApplicationDbContext context,
+            IPaymentMethodService paymentMethods,
+            IEventInfoRetrievalService eventInfoRetrievalService,
+            IUserRetrievalService userListingService)
         {
             _context = context;
             _paymentMethods = paymentMethods;
+            _eventInfoRetrievalService = eventInfoRetrievalService;
+            _userListingService = userListingService;
         }
 
         [BindProperty]
@@ -42,9 +52,9 @@ namespace Eventuras.Pages.Admin.Registrations
             {
                 return NotFound();
             }
-            ViewData["EventInfoId"] = new SelectList(_context.EventInfos, "EventInfoId", "Code");
+            ViewData["EventInfoId"] = new SelectList(await _eventInfoRetrievalService.ListEventsAsync(), "EventInfoId", "Code");
             ViewData["PaymentMethod"] = new SelectList(await _paymentMethods.GetActivePaymentMethodsAsync(), "Provider", "Name");
-            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
+            ViewData["UserId"] = new SelectList(await _userListingService.ListAccessibleUsers(), "Id", "Id");
             return Page();
         }
 

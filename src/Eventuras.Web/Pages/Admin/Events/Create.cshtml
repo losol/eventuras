@@ -1,5 +1,5 @@
 @page
-@model Eventuras.Pages.Admin.Events.CreateModel
+@model Eventuras.Web.Pages.Admin.Events.CreateModel
 
 @{
     ViewData["Title"] = "Nytt kurs";
@@ -47,6 +47,18 @@
                         <input asp-for="EventInfo.Featured" /> @Html.DisplayNameFor(model => model.EventInfo.Featured)
                     </label>
                 </div>
+                @if (Model.Organization != null && User.IsInRole(Roles.SuperAdmin))
+                {
+                    <div class="form-check form-check-inline">
+                        <label>
+                            @Html.CheckBox(nameof(EventInfo.OrganizationId),
+                                Model.EventInfo.OrganizationId == Model.Organization.OrganizationId,
+                                new { onchange = $"javascript: document.getElementById('orgId').value = this.checked ? '{Model.Organization.OrganizationId}' : null;" })
+                            Assosiert med @Model.Organization.NameAndHostname
+                            <input id="orgId" type="hidden" asp-for="EventInfo.OrganizationId" />
+                        </label>
+                    </div>
+                }
             </div>
             <div class="form-group">
                 <label asp-for="EventInfo.Description" class="control-label"></label>

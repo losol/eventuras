@@ -7,21 +7,26 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Services.Events;
 
 namespace Eventuras.Pages.Admin.Temp.Products
 {
     public class CreateModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
 
-        public CreateModel(ApplicationDbContext context)
+        public CreateModel(
+            ApplicationDbContext context,
+            IEventInfoRetrievalService eventInfoRetrievalService)
         {
             _context = context;
+            _eventInfoRetrievalService = eventInfoRetrievalService;
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
-            ViewData["EventInfoId"] = new SelectList(_context.EventInfos, "EventInfoId", "Code");
+            ViewData["EventInfoId"] = new SelectList(await _eventInfoRetrievalService.ListEventsAsync(), "EventInfoId", "Code");
             return Page();
         }
 

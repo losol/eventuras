@@ -1,29 +1,28 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 using Eventuras.Domain;
-using Eventuras.Infrastructure;
+using Eventuras.Services.Events;
 using Eventuras.Services.ExternalSync;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace Eventuras.Web.Pages.Admin.Sync
 {
     public class AddExternalEventModel : PageModel
     {
         private readonly IEventSynchronizationService _eventSynchronizationService;
+        private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
         private readonly IExternalEventManagementService _externalEventManagementService;
-        private readonly ApplicationDbContext _context;
 
         public AddExternalEventModel(
             IEventSynchronizationService eventSynchronizationService,
-            IExternalEventManagementService externalEventManagementService,
-            ApplicationDbContext context)
+            IEventInfoRetrievalService eventInfoRetrievalService,
+            IExternalEventManagementService externalEventManagementService)
         {
             _eventSynchronizationService = eventSynchronizationService ?? throw new ArgumentNullException(nameof(eventSynchronizationService));
+            _eventInfoRetrievalService = eventInfoRetrievalService ?? throw new ArgumentNullException(nameof(eventInfoRetrievalService));
             _externalEventManagementService = externalEventManagementService ?? throw new ArgumentNullException(nameof(externalEventManagementService));
-            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public string[] ExternalServiceNames => _eventSynchronizationService.SyncProviderNames;
@@ -35,7 +34,7 @@ namespace Eventuras.Web.Pages.Admin.Sync
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            EventInfo = await _context.EventInfos.FirstOrDefaultAsync(e => e.EventInfoId == id);
+            EventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(id);
             if (EventInfo == null)
             {
                 return NotFound();

@@ -1,28 +1,34 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Domain;
+using Eventuras.Services;
+using Eventuras.Services.Events;
+using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
-using Eventuras.Services;
 
-namespace Eventuras.Pages.Admin.Events
+namespace Eventuras.Web.Pages.Admin.Events
 {
     public class EditModel : PageModel
     {
-        private readonly IEventInfoService _eventsService;
+        private readonly IEventManagementService _eventsService;
+        private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
+        private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
 
-        public EditModel(IEventInfoService eventsService)
+        public EditModel(
+            IEventManagementService eventsService,
+            IEventInfoRetrievalService eventInfoRetrievalService,
+            ICurrentOrganizationAccessorService currentOrganizationAccessorService)
         {
             _eventsService = eventsService;
+            _eventInfoRetrievalService = eventInfoRetrievalService;
+            _currentOrganizationAccessorService = currentOrganizationAccessorService;
         }
 
         [BindProperty]
         public EventInfo EventInfo { get; set; }
+
+        public Organization Organization { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -31,23 +37,39 @@ namespace Eventuras.Pages.Admin.Events
                 return NotFound();
             }
 
-            EventInfo = await _eventsService.GetWithProductsAsync(id.Value);
-
-            if (EventInfo == null)
+            try
+            {
+                EventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(id.Value,
+                    new EventInfoRetrievalOptions
+                    {
+                        LoadProducts = true
+                    });
+            }
+            catch (InvalidOperationException)
             {
                 return NotFound();
             }
-            return Page();
+
+            return await PageAsync();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
-                return Page();
+                return await PageAsync();
             }
 
-            await _eventsService.UpdateEventWithProductsAsync(EventInfo);
+            if (!User.IsInRole(Roles.SuperAdmin))
+            {
+                // Force current org id to be set by all admins except
+                // super admin who can choose not to bind event to the org.
+                EventInfo.OrganizationId = (await _currentOrganizationAccessorService
+                        .RequireCurrentOrganizationAsync())
+                    .OrganizationId;
+            }
+
+            await _eventsService.UpdateEventAsync(EventInfo);
 
             return RedirectToPage("./Index");
         }
@@ -56,10 +78,20 @@ namespace Eventuras.Pages.Admin.Events
         {
             if (!ModelState.IsValid)
             {
-                return Page();
+                return await PageAsync();
             }
 
             return RedirectToPage("./Products", new { id = EventInfo.EventInfoId });
+        }
+
+        private async Task<IActionResult> PageAsync()
+        {
+            Organization = await _currentOrganizationAccessorService.GetCurrentOrganizationAsync(new OrganizationRetrievalOptions
+            {
+                LoadHostnames = true
+            });
+
+            return Page();
         }
     }
 }
