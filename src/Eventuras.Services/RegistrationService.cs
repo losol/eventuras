@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Services.Orders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using static Eventuras.Domain.PaymentMethod;

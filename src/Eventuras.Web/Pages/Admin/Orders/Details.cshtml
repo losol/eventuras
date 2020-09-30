@@ -3,6 +3,7 @@
 @inject IProductsService productsService
 @inject IPaymentMethodService paymentmethodService
 @using Eventuras.Web.Pages.Admin.Orders
+@using Eventuras.Services.Orders
 @{
     var id = Convert.ToInt32(RouteData.Values["id"]);
     var order = await orderService.GetByIdAsync(id);

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Services.Orders;
 using static Eventuras.Domain.Order;
 using static Eventuras.Domain.PaymentMethod;
 

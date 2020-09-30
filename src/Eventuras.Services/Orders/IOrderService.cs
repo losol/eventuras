@@ -1,11 +1,12 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using static Eventuras.Domain.PaymentMethod;
 
-namespace Eventuras.Services
+namespace Eventuras.Services.Orders
 {
+    // FIXME: make refactoring, split into multiple services according to ISP and SRP
+
     public interface IOrderService
     {
         // Orders

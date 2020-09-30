@@ -1,8 +1,8 @@
-using Eventuras.Domain;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Eventuras.Domain;
 
-namespace Eventuras.Services
+namespace Eventuras.Services.Orders
 {
     public interface IOrderVmConversionService
     {

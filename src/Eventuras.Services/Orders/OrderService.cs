@@ -1,55 +1,67 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.Invoicing;
+using Eventuras.Services.Organizations;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using static Eventuras.Domain.Order;
 using static Eventuras.Domain.PaymentMethod;
 
-namespace Eventuras.Services
+namespace Eventuras.Services.Orders
 {
-    public class OrderService : IOrderService
+    internal class OrderService : IOrderService
     {
         private readonly ApplicationDbContext _db;
         private readonly IPowerOfficeService _powerOfficeService;
         private readonly IStripeInvoiceService _stripeInvoiceService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
         private readonly ILogger _logger;
 
-        public OrderService(ApplicationDbContext db, IPowerOfficeService powerOfficeService, IStripeInvoiceService stripeInvoiceService, ILogger<OrderService> logger)
+        public OrderService(
+            ApplicationDbContext db,
+            IPowerOfficeService powerOfficeService,
+            IStripeInvoiceService stripeInvoiceService,
+            ILogger<OrderService> logger,
+            ICurrentOrganizationAccessorService currentOrganizationAccessorService,
+            IHttpContextAccessor httpContextAccessor)
         {
             _db = db;
             _powerOfficeService = powerOfficeService;
             _stripeInvoiceService = stripeInvoiceService;
             _logger = logger;
+            _currentOrganizationAccessorService = currentOrganizationAccessorService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public Task<List<Order>> GetAsync() =>
-            _db.Orders
+        public async Task<List<Order>> GetAsync() =>
+            await (await AddCurrentOrgFilterForAdminAsync(_db.Orders))
             .OrderByDescending(o => o.OrderTime)
             .ToListAsync();
 
-        public Task<List<Order>> GetWithRegistrationsAsync() =>
-            _db.Orders
+        public async Task<List<Order>> GetWithRegistrationsAsync() =>
+            await (await AddCurrentOrgFilterForAdminAsync(_db.Orders))
             .Include(o => o.Registration)
             .ThenInclude(r => r.User)
             .OrderByDescending(o => o.OrderTime)
             .ToListAsync();
 
-        public Task<List<Order>> GetAsync(int count, int offset) =>
-            _db.Orders
+        public async Task<List<Order>> GetAsync(int count, int offset) =>
+            await (await AddCurrentOrgFilterForAdminAsync(_db.Orders))
             .Skip(offset)
             .Take(count)
             .OrderByDescending(o => o.OrderTime)
             .ToListAsync();
 
-        public Task<List<Order>> GetAsync(int count) => GetAsync(count, 0);
+        public async Task<List<Order>> GetAsync(int count) => await GetAsync(count, 0);
 
-        public Task<Order> GetByIdAsync(int orderId) =>
-            _db.Orders
+        public async Task<Order> GetByIdAsync(int orderId) =>
+            await (await AddCurrentOrgFilterForAdminAsync(_db.Orders))
             .Where(o => o.OrderId == orderId)
             .Include(o => o.OrderLines)
             .Include(o => o.User)
@@ -57,8 +69,8 @@ namespace Eventuras.Services
             .ThenInclude(r => r.EventInfo)
             .SingleOrDefaultAsync();
 
-        public Task<List<Order>> GetOrdersForEventAsync(int eventId) =>
-            _db.Orders
+        public async Task<List<Order>> GetOrdersForEventAsync(int eventId) =>
+            await (await AddCurrentOrgFilterForAdminAsync(_db.Orders))
             .Include(o => o.OrderLines)
             .Include(o => o.Registration)
             .Where(o => o.Registration.EventInfoId == eventId)
@@ -66,18 +78,21 @@ namespace Eventuras.Services
             .AsNoTracking()
             .ToListAsync();
 
-        public Task<int> DeleteOrderAsync(Order order)
+        public async Task<int> DeleteOrderAsync(Order order)
         {
             if (order.Status == OrderStatus.Invoiced)
             {
                 throw new InvalidOperationException("Invoiced orders cannot be deleted.");
             }
+
+            await CheckOrderAccessibilityAsync(order.OrderId);
+
             _db.Orders.Remove(order);
-            return _db.SaveChangesAsync();
+            return await _db.SaveChangesAsync();
         }
         public async Task<int> DeleteOrderAsync(int orderId)
         {
-            var order = await _db.Orders.FindAsync(orderId);
+            var order = await CheckOrderAccessibilityAsync(orderId);
             return await DeleteOrderAsync(order);
         }
 
@@ -159,7 +174,7 @@ namespace Eventuras.Services
 
         public async Task<bool> UpdateOrderDetailsAsync(int id, string customername, string customerEmail, string invoiceReference, string comments)
         {
-            var order = await _db.Orders.FindAsync(id);
+            var order = await CheckOrderAccessibilityAsync(id);
 
             order.CustomerName = customername;
             order.CustomerEmail = customerEmail;
@@ -172,7 +187,7 @@ namespace Eventuras.Services
 
         public async Task<bool> UpdateOrderComment(int id, string comments)
         {
-            var order = await _db.Orders.FindAsync(id);
+            var order = await CheckOrderAccessibilityAsync(id);
             order.Comments = comments;
             _db.Orders.Update(order);
             return await _db.SaveChangesAsync() > 0;
@@ -180,7 +195,7 @@ namespace Eventuras.Services
 
         public async Task<int> MakeOrderFreeAsync(int id)
         {
-            var order = await _db.Orders
+            var order = await (await AddCurrentOrgFilterForAdminAsync(_db.Orders))
                 .Include(o => o.OrderLines)
                 .SingleOrDefaultAsync(o => o.OrderId == id);
             order.OrderLines.ForEach((l) => l.Price = 0);
@@ -189,7 +204,7 @@ namespace Eventuras.Services
 
         public async Task<bool> MarkAsVerifiedAsync(int orderId)
         {
-            var order = await _db.Orders.FindAsync(orderId);
+            var order = await CheckOrderAccessibilityAsync(orderId);
             order.MarkAsVerified();
             _db.Orders.Update(order);
             return await _db.SaveChangesAsync() > 0;
@@ -197,7 +212,7 @@ namespace Eventuras.Services
 
         public async Task<bool> MarkAsCancelledAsync(int orderId)
         {
-            var order = await _db.Orders.FindAsync(orderId);
+            var order = await CheckOrderAccessibilityAsync(orderId);
             order.MarkAsCancelled();
             _db.Orders.Update(order);
             return await _db.SaveChangesAsync() > 0;
@@ -205,7 +220,8 @@ namespace Eventuras.Services
 
         public async Task<bool> CreateInvoiceAsync(int orderId)
         {
-            var order = await _db.Orders.Include(o => o.OrderLines)
+            var order = await (await AddCurrentOrgFilterForAdminAsync(_db.Orders))
+                .Include(o => o.OrderLines)
                 .Include(o => o.User)
                 .Include(o => o.Registration)
                 .ThenInclude(r => r.EventInfo)
@@ -237,7 +253,7 @@ namespace Eventuras.Services
 
         public async Task<bool> UpdatePaymentMethod(int orderId, PaymentProvider paymentMethod)
         {
-            var order = await _db.Orders
+            var order = await (await AddCurrentOrgFilterForAdminAsync(_db.Orders))
                 .Where(m => m.OrderId == orderId)
                 .FirstOrDefaultAsync();
 
@@ -250,7 +266,7 @@ namespace Eventuras.Services
 
         public async Task<bool> AddLogLineAsync(int orderId, string logText)
         {
-            var order = await _db.Orders
+            var order = await (await AddCurrentOrgFilterForAdminAsync(_db.Orders))
                 .Where(m => m.OrderId == orderId).SingleOrDefaultAsync();
             order.AddLog(logText);
             return await _db.SaveChangesAsync() > 0;
@@ -258,7 +274,7 @@ namespace Eventuras.Services
 
         public async Task<Order> CreateDraftFromCancelledOrder(int orderId)
         {
-            var order = await _db.Orders
+            var order = await (await AddCurrentOrgFilterForAdminAsync(_db.Orders))
                                 .Include(o => o.Registration)
                                     .ThenInclude(r => r.Orders)
                                         .ThenInclude(o => o.OrderLines)
@@ -293,6 +309,38 @@ namespace Eventuras.Services
             await _db.AddAsync(newOrder);
             await _db.SaveChangesAsync();
             return newOrder;
+        }
+
+        private async Task<IQueryable<Order>> AddCurrentOrgFilterForAdminAsync(IQueryable<Order> query)
+        {
+            var principal = _httpContextAccessor.HttpContext.User;
+            if (principal.IsInRole(Roles.SuperAdmin))
+            {
+                return query;
+            }
+            if (principal.Identity.IsAuthenticated)
+            {
+                var organization = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync();
+                return query.HavingOrganization(organization);
+            }
+            else
+            {
+                var organization = await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
+                return query.HavingNoOrganizationOr(organization);
+            }
+        }
+
+        private async Task<Order> CheckOrderAccessibilityAsync(int orderId)
+        {
+            var order = await (await AddCurrentOrgFilterForAdminAsync(_db.Orders))
+                .SingleOrDefaultAsync(o => o.OrderId == orderId);
+
+            if (order == null)
+            {
+                throw new InvalidOperationException($"Order {orderId} doesn't exist or not accessible");
+            }
+
+            return order;
         }
     }
 }
