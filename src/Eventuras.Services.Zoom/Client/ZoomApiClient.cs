@@ -1,10 +1,9 @@
+using Pathoschild.Http.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using Pathoschild.Http.Client;
 using ZoomNet;
 using ZoomNet.Models;
 
@@ -14,13 +13,15 @@ namespace Eventuras.Services.Zoom.Client
     {
         private readonly ZoomClient _thirdPartyClient; // encapsulate third party code, don't expose its API, make it replaceable
 
-        public ZoomApiClient(IOptions<ZoomSettings> options)
+        public ZoomApiClient(IZoomCredentialsAccessor zoomCredentialsAccessor)
         {
-            if (options == null)
+            if (zoomCredentialsAccessor == null)
             {
-                throw new ArgumentNullException(nameof(options));
+                throw new ArgumentNullException(nameof(zoomCredentialsAccessor));
             }
-            _thirdPartyClient = new ZoomClient(new JwtConnectionInfo(options.Value.ApiKey, options.Value.ApiSecret));
+
+            var zoomCredentials = zoomCredentialsAccessor.GetJwtCredentials();
+            _thirdPartyClient = new ZoomClient(new JwtConnectionInfo(zoomCredentials.ApiKey, zoomCredentials.ApiSecret));
         }
 
         public async Task HealthCheckAsync(CancellationToken cancellationToken)

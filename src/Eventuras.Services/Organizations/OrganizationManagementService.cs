@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Eventuras.Services.Organizations
@@ -164,10 +165,10 @@ namespace Eventuras.Services.Organizations
                 return h;
             }
 
-            var uri = new Uri(h);
-            return uri.Port > 0
-                ? $"{uri.Host}:{uri.Port}"
-                : uri.Host;
+            var m = HostPattern.Match(h);
+            return m.Success ? m.Groups[2].Value : h;
         }
+
+        private static readonly Regex HostPattern = new Regex("^http(s?):\\/\\/(.*?)\\/");
     }
 }

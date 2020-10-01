@@ -11,8 +11,18 @@
     ...
     "Zoom": {
         "Enabled": true,
-        "ApiKey": "...",
-        "ApiSecret": "..."
+        "Apps": [
+            {
+                "Name": "kursinord.no",
+                "ApiKey": "...",
+                "ApiSecret": "..."
+            },
+            {
+                "Name": "*", // all other hosts
+                ...
+            },
+            ...
+        ]
     }
 }
 ```

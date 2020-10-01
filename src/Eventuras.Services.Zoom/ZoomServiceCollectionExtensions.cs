@@ -15,6 +15,7 @@ namespace Eventuras.Services.Zoom
                 return services;
             }
 
+            services.AddTransient<IZoomCredentialsAccessor, ZoomCredentialsAccessor>();
             services.AddTransient<IZoomApiClient, ZoomApiClient>();
             services.AddTransient<IExternalSyncProviderService, ZoomSyncProviderService>();
 
