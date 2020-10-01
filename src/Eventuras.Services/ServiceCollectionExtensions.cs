@@ -2,6 +2,7 @@ using Eventuras.Services.Auth;
 using Eventuras.Services.Events;
 using Eventuras.Services.Invoicing;
 using Eventuras.Services.ExternalSync;
+using Eventuras.Services.Orders;
 using Eventuras.Services.Organizations;
 using Eventuras.Services.Registrations;
 using Eventuras.Services.Users;
@@ -17,15 +18,14 @@ namespace Eventuras.Services
             services.AddScoped<StripeInvoiceProvider>();
             services.AddScoped<IRegistrationService, RegistrationService>();
             services.AddScoped<IProductsService, ProductsService>();
-            services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ICertificatesService, CertificatesService>();
             services.AddScoped<IMessageLogService, MessageLogService>();
-            services.AddTransient<IOrderVmConversionService, OrderVmConversionService>();
             services.AddRegistrationServices();
             services.AddOrganizationServices();
             services.AddUserServices();
             services.AddAuthServices();
             services.AddEventServices();
+            services.AddOrderServices();
             services.AddExternalSyncServices();
             return services;
         }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.Services.Events;
+using Eventuras.Services.Orders;
 
 namespace Eventuras.Pages.Admin.Events
 {

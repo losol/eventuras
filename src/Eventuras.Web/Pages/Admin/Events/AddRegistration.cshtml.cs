@@ -11,6 +11,7 @@ using Mapster;
 using static Eventuras.Domain.PaymentMethod;
 using Eventuras.Infrastructure;
 using Eventuras.Services.Events;
+using Eventuras.Services.Orders;
 
 namespace Eventuras.Pages.Admin.Events
 {

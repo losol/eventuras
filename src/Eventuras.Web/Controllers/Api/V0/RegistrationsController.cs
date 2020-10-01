@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using Eventuras.Services.Orders;
 using static Eventuras.Domain.PaymentMethod;
 using static Eventuras.Domain.Registration;
 
