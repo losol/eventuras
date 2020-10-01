@@ -19,6 +19,7 @@ namespace Eventuras.Infrastructure
         public DbSet<OrderLine> OrderLines { get; set; }
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<OrganizationMember> OrganizationMembers { get; set; }
+        public DbSet<OrganizationMemberRole> OrganizationMemberRoles { get; set; }
         public DbSet<OrganizationHostname> OrganizationHostnames { get; set; }
         public DbSet<Certificate> Certificates { get; set; }
         public DbSet<MessageLog> MessageLogs { get; set; }
@@ -53,6 +54,9 @@ namespace Eventuras.Infrastructure
             builder.Entity<OrganizationMember>()
                 .HasIndex(m => new { m.OrganizationId, m.UserId })
                 .IsUnique();
+
+            builder.Entity<OrganizationMemberRole>()
+                .HasKey(o => new { o.OrganizationMemberId, o.Role });
         }
 
         public void DetachAllEntities()

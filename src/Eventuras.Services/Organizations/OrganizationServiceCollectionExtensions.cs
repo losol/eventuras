@@ -10,6 +10,7 @@ namespace Eventuras.Services.Organizations
             services.AddTransient<IOrganizationRetrievalService, OrganizationRetrievalService>();
             services.AddTransient<IOrganizationManagementService, OrganizationManagementService>();
             services.AddTransient<IOrganizationMemberManagementService, OrganizationMemberManagementService>();
+            services.AddTransient<IOrganizationMemberRolesManagementService, OrganizationMemberRolesManagementService>();
             return services;
         }
     }

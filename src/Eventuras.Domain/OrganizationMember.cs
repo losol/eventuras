@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Eventuras.Domain
 {
@@ -18,5 +20,9 @@ namespace Eventuras.Domain
 
         [ForeignKey(nameof(OrganizationId))]
         public Organization Organization { get; set; }
+
+        public List<OrganizationMemberRole> Roles { get; set; }
+
+        public bool HasRole(string role) => Roles?.Any(r => r.Role == role) == true;
     }
 }

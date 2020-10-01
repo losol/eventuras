@@ -1,52 +1,60 @@
 @page "{id}"
-@using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> SignInManager
-@model Eventuras.Pages.Admin.Users.EditModel
+@model Eventuras.Web.Pages.Admin.Users.EditModel
 @{
     ViewData["Title"] = "Endre brukeropplysninger";
     Layout = "~/Pages/_Layout.cshtml";
 }
 <div class="container py-5 min-height-75">
-<h1>Endre brukeropplysninger</h1>
-<p class="lead">Endre hva som helst.</p>
+    <h1>Endre brukeropplysninger</h1>
+    <p class="lead">Endre hva som helst.</p>
 
-<div class="row">
-    <div class="col-md-4">
-        <partial name="_StatusMessage" model="Model.StatusMessage" />
+    <div class="row">
+        <div class="col-md-4">
+            <form method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Input.Name"></label>
+                    <input asp-for="Input.Name" class="form-control" />
+                    <span asp-validation-for="Input.Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.PhoneNumber"></label>
+                    <input asp-for="Input.PhoneNumber" class="form-control" />
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Email"></label>
+                    <input asp-for="Input.Email" class="form-control" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
 
-        <form method="post">
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Input.Name"></label>
-                <input asp-for="Input.Name" class="form-control" />
-                <span asp-validation-for="Input.Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.PhoneNumber"></label>
-                <input asp-for="Input.PhoneNumber" class="form-control" />
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.Email"></label>
-                <input asp-for="Input.Email" class="form-control" />
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
+                @if (Model.Organization != null && User.IsInRole(Roles.SuperAdmin))
+                {
+                    <div class="form-check">
+                        @Html.CheckBoxFor(model => model.Input.IsOrgMember, new { @class = "form-check-input", onchange = "javascript:enableRoleInputs(this.checked)" })
+                        <label asp-for="Input.IsOrgMember" class="form-check-label">Assosiert med @Model.Organization.NameAndHostname</label>
+                    </div>
+                }
 
-            @* SHOW SIGNATURE FIELD ONLY TO SUPERADMIN *@
-            @if (User.Identity.IsAuthenticated) {
-                @if ( User.IsInRole("SuperAdmin") ) {
+                <partial name="_UserFormRolesPartial" model="Model.MemberRoles" />
+
+                @* SHOW SIGNATURE FIELD ONLY TO SUPERADMIN *@
+                @if (User.IsInRole(Roles.SuperAdmin))
+                {
                     <div class="form-group">
                         <label asp-for="Input.SignatureImageBase64"></label>
                         <input asp-for="Input.SignatureImageBase64" class="form-control" />
                         <span asp-validation-for="Input.SignatureImageBase64" class="text-danger"></span>
                     </div>
                 }
-            }
-            <button type="submit" class="btn btn-success">Lagre</button>
-        </form>
+                <button type="submit" class="btn btn-success">Lagre</button>
+            </form>
+        </div>
     </div>
 </div>
 
 @section Scripts {
-   <partial name="_ValidationScriptsPartial" />
+    <partial name="_UserFormScriptsPartial" />
+    <partial name="_ValidationScriptsPartial" />
 }

@@ -2,10 +2,10 @@ using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 
 namespace Eventuras.Services.Organizations
 {
@@ -97,8 +97,9 @@ namespace Eventuras.Services.Organizations
             }
 
             var normalizedHostnames = hostnames
-                .Select(h => h?.Trim().ToLower())
+                .Select(NormalizeHostname)
                 .Where(h => !string.IsNullOrWhiteSpace(h))
+                .Distinct()
                 .ToArray();
 
             foreach (var hostname in normalizedHostnames)
@@ -147,6 +148,26 @@ namespace Eventuras.Services.Organizations
             organization.Hostnames.ForEach(h => h.Active = false);
 
             await _context.SaveChangesAsync();
+        }
+
+        private static string NormalizeHostname(string h)
+        {
+            if (string.IsNullOrWhiteSpace(h))
+            {
+                return null;
+            }
+
+            h = h.Trim().ToLower();
+
+            if (!h.StartsWith("http") || !h.Contains("://"))
+            {
+                return h;
+            }
+
+            var uri = new Uri(h);
+            return uri.Port > 0
+                ? $"{uri.Host}:{uri.Port}"
+                : uri.Host;
         }
     }
 }

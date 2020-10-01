@@ -1,7 +1,9 @@
+using Eventuras.Services.Auth;
 using Eventuras.Services.Invoicing;
 using Eventuras.Services.ExternalSync;
 using Eventuras.Services.Organizations;
 using Eventuras.Services.Registrations;
+using Eventuras.Services.Users;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Eventuras.Services
@@ -22,6 +24,8 @@ namespace Eventuras.Services
             services.AddRegistrationServices();
             services.AddLmsServices();
             services.AddOrganizationServices();
+            services.AddUserServices();
+            services.AddAuthServices();
             return services;
         }
     }
