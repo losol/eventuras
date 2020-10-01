@@ -229,7 +229,7 @@ namespace Eventuras.Web.Extensions
         public static void AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             // Register our application services
-            services.AddEventServices();
+            services.AddCoreServices();
 
             // Add Page render Service
             services.AddScoped<IRenderService, ViewRenderService>();

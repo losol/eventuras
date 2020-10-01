@@ -6,14 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Eventuras.Domain;
 using Eventuras.Services;
+using Eventuras.Services.Events;
 
 namespace Eventuras.Pages.Events
 {
     public class DetailsModel : PageModel
     {
-        private readonly IEventInfoService _eventsService;
+        private readonly IEventInfoRetrievalService _eventsService;
 
-        public DetailsModel(IEventInfoService eventsService)
+        public DetailsModel(IEventInfoRetrievalService eventsService)
         {
             _eventsService = eventsService;
         }
@@ -22,7 +23,10 @@ namespace Eventuras.Pages.Events
 
         public async Task<IActionResult> OnGetAsync(int id, string slug)
         {
-            EventInfo = await _eventsService.GetWithProductsAsync(id);
+            EventInfo = await _eventsService.GetEventInfoByIdAsync(id, new EventInfoRetrievalOptions
+            {
+                LoadProducts = true
+            });
 
             if (EventInfo == null)
             {

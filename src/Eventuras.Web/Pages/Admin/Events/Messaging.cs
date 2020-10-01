@@ -9,16 +9,17 @@ using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services;
 using System.ComponentModel.DataAnnotations;
+using Eventuras.Services.Events;
 using Eventuras.Web.Services;
 
 namespace Eventuras.Pages.Admin.Events
 {
     public class MessagingModel : PageModel
     {
-        private readonly IEventInfoService _eventinfos;
+        private readonly IEventInfoRetrievalService _eventinfos;
 
         public MessagingModel(
-            IEventInfoService eventinfos)
+            IEventInfoRetrievalService eventinfos)
         {
             _eventinfos = eventinfos;
         }
@@ -27,7 +28,7 @@ namespace Eventuras.Pages.Admin.Events
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            EventInfo = await _eventinfos.GetAsync(id);
+            EventInfo = await _eventinfos.GetEventInfoByIdAsync(id);
             return Page();
         }
 

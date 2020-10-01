@@ -8,15 +8,16 @@ using Microsoft.EntityFrameworkCore;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services;
+using Eventuras.Services.Events;
 
 namespace Eventuras.Pages.Admin.Events
 {
     public class MessagingLogModel : PageModel
     {
         private readonly IMessageLogService _messageLogService;
-        private readonly IEventInfoService _eventinfos;
+        private readonly IEventInfoRetrievalService _eventinfos;
 
-        public MessagingLogModel(IMessageLogService messageLogService, IEventInfoService eventinfos)
+        public MessagingLogModel(IMessageLogService messageLogService, IEventInfoRetrievalService eventinfos)
         {
             _messageLogService = messageLogService;
             _eventinfos = eventinfos;
@@ -28,7 +29,7 @@ namespace Eventuras.Pages.Admin.Events
         public async Task OnGetAsync(int id)
         {
             Messages = await _messageLogService.Get(id);
-            EventInfo = await _eventinfos.GetAsync(id);
+            EventInfo = await _eventinfos.GetEventInfoByIdAsync(id);
         }
     }
 }

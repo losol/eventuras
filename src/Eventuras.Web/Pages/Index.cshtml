@@ -1,12 +1,13 @@
-﻿@page
-@inject IEventInfoService events
+@page
+@using Eventuras.Services.Events
+@inject IEventInfoRetrievalService events
 
 @{
     ViewData["Title"] = @Site.Title;
     var ongoingEvents = await events.GetOngoingEventsAsync();
     var featuredEvents = await events.GetFeaturedEventsAsync();
     var onDemandEvents = await events.GetOnDemandEventsAsync();
-    var upcomingEvents = await events.GetEventsAsync();
+    var upcomingEvents = await events.GetUpcomingEventsAsync();
     var eventsByMonth =  upcomingEvents.GroupBy(e => new { e.DateStart?.Year, e.DateStart?.Month });
 }
 

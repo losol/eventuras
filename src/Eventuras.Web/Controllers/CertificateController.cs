@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using System.Threading.Tasks;
+using Eventuras.Services.Events;
 using Eventuras.Web;
 
 namespace Eventuras.Web.Controllers
@@ -29,9 +30,14 @@ namespace Eventuras.Web.Controllers
 
         [HttpGet("preview/event/{id}")]
         public async Task<IActionResult> ViewCertificateForEvent([FromRoute] int id,
-            [FromServices] IEventInfoService eventInfoService)
+            [FromServices] IEventInfoRetrievalService eventInfoService)
         {
-            var eventInfo = await eventInfoService.GetWithOrganizerAsync(id);
+            var eventInfo = await eventInfoService.GetEventInfoByIdAsync(id, new EventInfoRetrievalOptions
+            {
+                LoadOrganizerUser = true,
+                LoadOrganization = true
+            });
+
             if (eventInfo == null)
             {
                 return NotFound();
@@ -76,7 +82,6 @@ namespace Eventuras.Web.Controllers
         public async Task<IActionResult> DownloadCertificate(
             [FromServices] CertificatePdfRenderer writer,
             [FromServices] ICertificatesService certificatesService,
-            [FromServices] IEventInfoService eventinfoService,
             [FromRoute] int id)
         {
             var certificate = await certificatesService.GetAsync(id);

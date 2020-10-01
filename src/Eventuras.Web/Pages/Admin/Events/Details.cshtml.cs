@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Services.Events;
 using Eventuras.Services.ExternalSync;
 using static Eventuras.Domain.Registration;
 using static Eventuras.Domain.Order;
@@ -16,14 +17,17 @@ namespace Eventuras.Pages.Admin.Events
     public class DetailsModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
         private readonly IEventSynchronizationService _eventSynchronizationService;
 
         public DetailsModel(
             ApplicationDbContext context,
-            IEventSynchronizationService eventSynchronizationService)
+            IEventSynchronizationService eventSynchronizationService,
+            IEventInfoRetrievalService eventInfoRetrievalService)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
             _eventSynchronizationService = eventSynchronizationService ?? throw new ArgumentNullException(nameof(eventSynchronizationService));
+            _eventInfoRetrievalService = eventInfoRetrievalService ?? throw new ArgumentNullException(nameof(eventInfoRetrievalService));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public EventInfo EventInfo { get; set; }
@@ -38,11 +42,11 @@ namespace Eventuras.Pages.Admin.Events
                 return NotFound();
             }
 
-            EventInfo = await _context.EventInfos
-                .Include(e => e.Products)
-                    .ThenInclude(p => p.ProductVariants)
-                .Include(e => e.Registrations)
-                .SingleOrDefaultAsync(m => m.EventInfoId == id);
+            EventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(id.Value, new EventInfoRetrievalOptions
+            {
+                LoadProducts = true,
+                LoadRegistrations = true
+            });
 
             if (EventInfo == null)
             {

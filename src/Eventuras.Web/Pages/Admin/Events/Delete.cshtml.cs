@@ -1,22 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Eventuras.Domain;
+using Eventuras.Services.Events;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
+using System;
+using System.Threading.Tasks;
 
 namespace Eventuras.Pages.Admin.Events
 {
     public class DeleteModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
+        private readonly IEventManagementService _eventManagementService;
 
-        public DeleteModel(ApplicationDbContext context)
+        public DeleteModel(IEventInfoRetrievalService eventInfoRetrievalService, IEventManagementService eventManagementService)
         {
-            _context = context;
+            _eventInfoRetrievalService = eventInfoRetrievalService ?? throw new ArgumentNullException(nameof(eventInfoRetrievalService));
+            _eventManagementService = eventManagementService ?? throw new ArgumentNullException(nameof(eventManagementService));
         }
 
         [BindProperty]
@@ -29,7 +28,7 @@ namespace Eventuras.Pages.Admin.Events
                 return NotFound();
             }
 
-            EventInfo = await _context.EventInfos.SingleOrDefaultAsync(m => m.EventInfoId == id);
+            EventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(id.Value);
 
             if (EventInfo == null)
             {
@@ -45,13 +44,7 @@ namespace Eventuras.Pages.Admin.Events
                 return NotFound();
             }
 
-            EventInfo = await _context.EventInfos.FindAsync(id);
-
-            if (EventInfo != null)
-            {
-                _context.EventInfos.Remove(EventInfo);
-                await _context.SaveChangesAsync();
-            }
+            await _eventManagementService.DeleteEventAsync(id.Value);
 
             return RedirectToPage("./Index");
         }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Services.Events;
 
 namespace Eventuras.Web.Controllers.Api.V1
 {
@@ -14,9 +15,9 @@ namespace Eventuras.Web.Controllers.Api.V1
     [ApiController]
     public class EventInfosController : ControllerBase
     {
-        private readonly IEventInfoService _eventInfoService;
+        private readonly IEventInfoRetrievalService _eventInfoService;
 
-        public EventInfosController(IEventInfoService eventInfoService)
+        public EventInfosController(IEventInfoRetrievalService eventInfoService)
         {
             _eventInfoService = eventInfoService;
         }
@@ -25,7 +26,7 @@ namespace Eventuras.Web.Controllers.Api.V1
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EventInfoViewModel>>> GetRegistrations()
         {
-            var eventinfos = await _eventInfoService.GetEventsAsync();
+            var eventinfos = await _eventInfoService.GetUpcomingEventsAsync();
             var vmlist = eventinfos.Select(m => new EventInfoViewModel(m));
             return Ok(vmlist);
         }

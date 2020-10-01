@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
+using Eventuras.Services.Events;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -13,17 +14,24 @@ namespace Eventuras.Pages.Admin.Events
     {
         [BindProperty] public EventProductsModelVM Vm { get; set; }
         public EventInfo EventInfo { get; set; }
-        private readonly IEventInfoService _eventsService;
+        private readonly IEventInfoRetrievalService _eventsService;
+        private readonly IEventManagementService _eventManagementService;
 
-        public EventProductsModel(IEventInfoService eventsService)
+        public EventProductsModel(
+            IEventInfoRetrievalService eventsService,
+            IEventManagementService eventManagementService)
         {
             _eventsService = eventsService;
+            _eventManagementService = eventManagementService;
         }
 
         public async Task<IActionResult> OnGet(int id)
         {
             if (id is 0) return BadRequest();
-            EventInfo = await _eventsService.GetWithProductsAsync(id);
+            EventInfo = await _eventsService.GetEventInfoByIdAsync(id, new EventInfoRetrievalOptions
+            {
+                LoadProducts = true
+            });
             if (EventInfo is null) return NotFound();
             Vm = new EventProductsModelVM
             {
@@ -46,7 +54,7 @@ namespace Eventuras.Pages.Admin.Events
                 }
             }
 
-            await _eventsService.UpdateEventProductsAsync(Vm.EventInfoId, Vm.Products);
+            await _eventManagementService.UpdateEventProductsAsync(Vm.EventInfoId, Vm.Products);
             return RedirectToPage("./Details", new { id = Vm.EventInfoId });
         }
     }

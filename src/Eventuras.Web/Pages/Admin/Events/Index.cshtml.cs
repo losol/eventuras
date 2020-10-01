@@ -1,21 +1,17 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using Eventuras.Domain;
-using Eventuras.Infrastructure;
 using Eventuras.Services;
+using Eventuras.Services.Events;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Eventuras.Pages.Admin.Events
+namespace Eventuras.Web.Pages.Admin.Events
 {
     public class IndexModel : PageModel
     {
-        private readonly IEventInfoService _eventInfos;
+        private readonly IEventInfoRetrievalService _eventInfos;
 
-        public IndexModel(IEventInfoService eventInfos)
+        public IndexModel(IEventInfoRetrievalService eventInfos)
         {
             _eventInfos = eventInfos;
         }
@@ -29,7 +25,7 @@ namespace Eventuras.Pages.Admin.Events
 
         public async Task OnGetAsync()
         {
-            UpcomingEvents = await _eventInfos.GetEventsAsync();
+            UpcomingEvents = await _eventInfos.GetUpcomingEventsAsync();
             OnlineCourses = await _eventInfos.GetOnDemandEventsAsync();
             PastEvents = await _eventInfos.GetPastEventsAsync();
             OngoingEvents = await _eventInfos.GetOngoingEventsAsync();
