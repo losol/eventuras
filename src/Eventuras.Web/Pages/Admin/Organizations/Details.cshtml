@@ -67,6 +67,12 @@
                     <input asp-for="Hostnames" class="form-control" />
                     <span asp-validation-for="Hostnames" class="text-danger"></span>
                 </div>
+                <div class="form-check form-check-inline">
+                    <label>
+                        <input asp-for="Organization.IsRoot" />
+                        @Html.DisplayNameFor(model => model.Organization.IsRoot)
+                    </label>
+                </div>
                 <div class="form-group">
                     <input type="submit" value="Oppdater" class="btn btn-success" />
                     <a asp-page="./Index" class="btn btn-secondary link-decoration-none">Avbryt</a>

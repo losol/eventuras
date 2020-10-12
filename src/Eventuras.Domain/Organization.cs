@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Eventuras.Domain
 {
@@ -39,6 +38,9 @@ namespace Eventuras.Domain
 
         public string VatId { get; set; }
         public string AccountNumber { get; set; }
+
+        [DisplayName("Er rotorganisasjon")]
+        public bool IsRoot { get; set; }
 
         [DisplayName("Aktiv")]
         public bool Active { get; set; } = true;
