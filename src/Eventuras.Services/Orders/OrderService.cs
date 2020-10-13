@@ -321,7 +321,8 @@ namespace Eventuras.Services.Orders
             if (principal.Identity.IsAuthenticated)
             {
                 var organization = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync();
-                return query.HavingOrganization(organization);
+                return organization?.IsRoot == true
+                    ? query : query.HavingOrganization(organization);
             }
             else
             {

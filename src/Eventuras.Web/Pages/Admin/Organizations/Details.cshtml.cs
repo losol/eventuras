@@ -43,14 +43,17 @@ namespace Eventuras.Web.Pages.Admin.Organizations
 
             await _organizationManagementService.UpdateOrganizationAsync(Organization);
 
-            try
+            if (!string.IsNullOrWhiteSpace(Hostnames))
             {
-                await _organizationManagementService.UpdateOrganizationHostnames(id, Hostnames.Split(','));
-            }
-            catch (DuplicateOrganizationHostnameException e)
-            {
-                ModelState.AddModelError(nameof(Hostnames), e.Message);
-                return await PageAsync(id);
+                try
+                {
+                    await _organizationManagementService.UpdateOrganizationHostnames(id, Hostnames.Split(','));
+                }
+                catch (DuplicateOrganizationHostnameException e)
+                {
+                    ModelState.AddModelError(nameof(Hostnames), e.Message);
+                    return await PageAsync(id);
+                }
             }
 
             return RedirectToPage("./Index");

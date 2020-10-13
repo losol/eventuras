@@ -60,7 +60,9 @@ namespace Eventuras.Services.Events
             if (!principal.Identity.IsAuthenticated)
             {
                 var organization = await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
-                return query.HavingNoOrganizationOr(organization);
+                return organization?.IsRoot == true
+                    ? query
+                    : query.HavingNoOrganizationOr(organization);
             }
 
             if (!principal.IsInRole(Roles.SuperAdmin))

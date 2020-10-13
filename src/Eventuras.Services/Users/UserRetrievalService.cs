@@ -59,7 +59,10 @@ namespace Eventuras.Services.Users
                 }
 
                 var organization = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync();
-                query = query.HavingOrganization(organization);
+                if (!organization.IsRoot)
+                {
+                    query = query.HavingOrganization(organization);
+                }
             }
 
             return await query.ToListAsync();
