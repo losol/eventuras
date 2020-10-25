@@ -1,10 +1,14 @@
 {
-  "name": "@losol/markdown-editor",
-  "author": "CKSource",
-  "description": "A custom CKEditor 5 build made by the CKEditor 5 online builder.",
-  "version": "0.0.2",
-  "license": "SEE LICENSE IN LICENSE.md",
+  "name": "@losol/ckeditor5-build-markdown",
+  "author": "Losol AS",
+  "description": "Custom CKEditor5 for editing basic markdown.",
+  "version": "23.0.0",
+  "license": "GPL2+",
   "private": false,
+  "main": "./build/ckeditor.js",
+  "files": [
+    "build"
+  ],
   "devDependencies": {
     "@ckeditor/ckeditor5-autoformat": "^23.0.0",
     "@ckeditor/ckeditor5-basic-styles": "^23.0.0",
@@ -34,14 +38,15 @@
   "scripts": {
     "build": "webpack --mode production"
   },
-  "main": "webpack.config.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/losol/scribo.git"
   },
   "keywords": [
     "editor",
-    "markdown"
+    "markdown",
+    "ckeditor",
+    "ckeditor5-build"
   ],
   "bugs": {
     "url": "https://github.com/losol/scribo/issues"
