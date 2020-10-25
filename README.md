@@ -1,0 +1,3 @@
+# Scribo
+
+Editor collection.
