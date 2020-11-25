@@ -5,6 +5,7 @@ using Eventuras.Services.ExternalSync;
 using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Eventuras.Services.TalentLms
 {
@@ -16,7 +17,8 @@ namespace Eventuras.Services.TalentLms
 
         public TalentLmsProviderService(
             ITalentLmsApiService apiService,
-            ApplicationDbContext context) : base(context)
+            ApplicationDbContext context,
+            ILogger<TalentLmsProviderService> logger) : base(context, logger)
         {
             _apiService = apiService ?? throw new ArgumentNullException(nameof(apiService));
         }

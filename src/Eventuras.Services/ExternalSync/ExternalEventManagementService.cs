@@ -5,16 +5,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Eventuras.Services.ExternalSync
 {
     public class ExternalEventManagementService : IExternalEventManagementService
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<ExternalEventManagementService> _logger;
 
-        public ExternalEventManagementService(ApplicationDbContext context)
+        public ExternalEventManagementService(
+            ApplicationDbContext context,
+            ILogger<ExternalEventManagementService> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<ExternalEvent> FindExternalEventByLocalIdAsync(int localId)
@@ -65,6 +70,7 @@ namespace Eventuras.Services.ExternalSync
             }
             catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
             {
+                _logger.LogWarning(e, e.Message);
                 FireDuplicateExternalEventException(externalServiceName, externalEventId);
             }
 
