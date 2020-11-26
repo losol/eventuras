@@ -3,6 +3,8 @@ using Eventuras.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using DbUpdateException = Microsoft.EntityFrameworkCore.DbUpdateException;
 
 namespace Eventuras.Services.ExternalSync
 {
@@ -17,10 +19,12 @@ namespace Eventuras.Services.ExternalSync
         public abstract string Name { get; }
 
         private readonly ApplicationDbContext _context;
+        private readonly ILogger _logger;
 
-        protected AbstractExternalSyncProviderService(ApplicationDbContext context)
+        protected AbstractExternalSyncProviderService(ApplicationDbContext context, ILogger logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public virtual async Task SynchronizationCheckAsync(EventInfo eventInfo)
@@ -65,20 +69,22 @@ namespace Eventuras.Services.ExternalSync
 
             await RegisterUserToExternalEventAsync(account, externalEvent);
 
+            var externalRegistration = new ExternalRegistration
+            {
+                ExternalEvent = externalEvent,
+                ExternalAccount = account,
+                Registration = registration
+            };
+
             try
             {
-                var externalRegistration = new ExternalRegistration
-                {
-                    ExternalEvent = externalEvent,
-                    ExternalAccount = account,
-                    Registration = registration
-                };
-
                 await _context.ExternalRegistrations.AddAsync(externalRegistration);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
             {
+                _logger.LogWarning(e, e.Message);
+                _context.ExternalRegistrations.Remove(externalRegistration);
                 return ExternalEventSyncResult.AlreadySynced;
             }
 
@@ -100,9 +106,19 @@ namespace Eventuras.Services.ExternalSync
             }
 
             var externalAccount = await CreateNewExternalAccountForRegistrationAsync(registration);
-            await _context.ExternalAccounts.AddAsync(externalAccount);
-            await _context.SaveChangesAsync();
-            return externalAccount;
+
+            try
+            {
+                await _context.ExternalAccounts.AddAsync(externalAccount);
+                await _context.SaveChangesAsync();
+                return externalAccount;
+            }
+            catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
+            {
+                _logger.LogWarning(e, e.Message);
+                _context.ExternalAccounts.Remove(externalAccount);
+                return await FindExistingAccountAsync(registration);
+            }
         }
 
         /// <summary>

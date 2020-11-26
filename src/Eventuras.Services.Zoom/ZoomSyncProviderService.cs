@@ -5,6 +5,7 @@ using Eventuras.Services.Zoom.Client;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Eventuras.Services.Zoom
 {
@@ -14,7 +15,7 @@ namespace Eventuras.Services.Zoom
 
         private readonly IZoomApiClient _zoomApiClient;
 
-        public ZoomSyncProviderService(ApplicationDbContext context, IZoomApiClient zoomApiClient) : base(context)
+        public ZoomSyncProviderService(ApplicationDbContext context, IZoomApiClient zoomApiClient, ILogger<ZoomSyncProviderService> logger) : base(context, logger)
         {
             _zoomApiClient = zoomApiClient ?? throw new ArgumentNullException(nameof(zoomApiClient));
         }

@@ -3,6 +3,7 @@ using Eventuras.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Eventuras.Services.ExternalSync
 {
@@ -14,7 +15,7 @@ namespace Eventuras.Services.ExternalSync
     {
         private readonly ApplicationDbContext _context;
 
-        protected AbstractExternalAccountPerUserSyncProviderService(ApplicationDbContext context) : base(context)
+        protected AbstractExternalAccountPerUserSyncProviderService(ApplicationDbContext context, ILogger logger) : base(context, logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }

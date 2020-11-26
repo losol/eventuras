@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Eventuras.Services.Organizations
 {
@@ -13,15 +14,18 @@ namespace Eventuras.Services.Organizations
         private readonly ApplicationDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
+        private readonly ILogger<OrganizationMemberManagementService> _logger;
 
         public OrganizationMemberManagementService(
             ApplicationDbContext context,
             IHttpContextAccessor httpContextAccessor,
-            ICurrentOrganizationAccessorService currentOrganizationAccessorService)
+            ICurrentOrganizationAccessorService currentOrganizationAccessorService,
+            ILogger<OrganizationMemberManagementService> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw new ArgumentNullException(nameof(currentOrganizationAccessorService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<OrganizationMember> FindOrganizationMemberAsync(
@@ -79,6 +83,7 @@ namespace Eventuras.Services.Organizations
                 }
                 catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
                 {
+                    _logger.LogWarning(e, e.Message);
                     if (member != null)
                     {
                         _context.OrganizationMembers.Remove(member);
