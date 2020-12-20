@@ -69,7 +69,7 @@ namespace Eventuras
             {
                 o.ReportApiVersions = true;
                 o.AssumeDefaultVersionWhenUnspecified = true;
-                o.DefaultApiVersion = new ApiVersion(1, 0);
+                o.DefaultApiVersion = new ApiVersion(2, 0);
             });
 
             // Register the Swagger generator
@@ -77,6 +77,7 @@ namespace Eventuras
             {
                 c.SwaggerDoc("v0", new OpenApiInfo { Title = "Eventuras API", Version = "v0" });
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Eventuras API", Version = "v1" });
+                c.SwaggerDoc("v2.0", new OpenApiInfo { Title = "Eventuras API", Version = "v2.0" });
             });
         }
 

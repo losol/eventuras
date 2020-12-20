@@ -33,8 +33,6 @@ namespace Eventuras.Services.Events
                 .Where(e => e.EventInfoId == id)
                 .UseOptions(options ?? new EventInfoRetrievalOptions());
 
-            query = await AddOrgFilterIfNeededAsync(query);
-
             return await query.SingleAsync();
         }
 
