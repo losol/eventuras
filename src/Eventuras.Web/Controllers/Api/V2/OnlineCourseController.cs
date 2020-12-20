@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Eventuras.Web.Controllers.Api.V2
 {
-    [ApiVersion("2.0")]
+    [ApiVersion("2")]
     [Authorize(Policy = AuthPolicies.AdministratorRole)]
     [Route("api/v{version:apiVersion}/onlinecourses")]
     [ApiController]
@@ -39,6 +39,29 @@ namespace Eventuras.Web.Controllers.Api.V2
                              Featured = e.Featured
                          };
             return Ok(events);
+        }
+
+        // GET: api/v2/onlinecourses/5
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<OnlineCourseDto>> Get(int id)
+        {
+            var eventInfo = await _eventInfoService.GetEventInfoByIdAsync(id);
+            if (eventInfo == null)
+            {
+                return NotFound();
+            }
+
+            var dto = new OnlineCourseDto()
+            {
+                Id = eventInfo.EventInfoId,
+                Name = eventInfo.Title,
+                Slug = eventInfo.Code,
+                Description = eventInfo.Description,
+                Featured = eventInfo.Featured
+            };
+
+            return Ok(dto);
         }
     }
 }

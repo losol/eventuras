@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Eventuras.Web.Controllers.Api.V2
 {
-    [ApiVersion("2.0")]
+    [ApiVersion("2")]
     [Authorize(Policy = AuthPolicies.AdministratorRole)]
     [Route("api/v{version:apiVersion}/events")]
     [ApiController]
@@ -49,32 +49,27 @@ namespace Eventuras.Web.Controllers.Api.V2
 
         // GET: api/v2/events/5
         [AllowAnonymous]
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<EventDto>> Get(int id)
         {
-            /* Get help with this!! 
-            var eventInfo = await _eventInfoService.GetEventInfoByIdAsync(id).Select(e =>
-             new EventDto()
-             {
-                 Id = e.EventInfoId,
-                 Name = e.Title,
-                 Slug = e.Code,
-                 Description = e.Description,
-                 StartDate = e.DateStart,
-                 EndDate = e.DateEnd,
-                 Featured = e.Featured
-             });
-
-             
-
+            var eventInfo = await _eventInfoService.GetEventInfoByIdAsync(id);
             if (eventInfo == null)
             {
                 return NotFound();
             }
 
-            return Ok(eventInfo);
-            */
-            return Ok();
+            var dto = new EventDto()
+            {
+                Id = eventInfo.EventInfoId,
+                Name = eventInfo.Title,
+                Slug = eventInfo.Code,
+                Description = eventInfo.Description,
+                StartDate = eventInfo.DateStart,
+                EndDate = eventInfo.DateEnd,
+                Featured = eventInfo.Featured
+            };
+
+            return Ok(dto);
         }
 
         // POST: api/EventInfo
