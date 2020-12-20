@@ -38,27 +38,11 @@ namespace Eventuras.Web.Controllers.Api.V2
                              Description = e.Description,
                              StartDate = e.DateStart,
                              EndDate = e.DateEnd,
-                             Featured = e.Featured
-                         };
-            return Ok(events);
-        }
-
-        // GET: api/v2/events/ondemand
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("ondemand")]
-        public async Task<ActionResult<IQueryable<EventDto>>> GetOnDemandEvents()
-        {
-            var events = from e in await _eventInfoService.GetUpcomingEventsAsync()
-                         select new EventDto()
-                         {
-                             Id = e.EventInfoId,
-                             Name = e.Title,
-                             Slug = e.Code,
-                             Description = e.Description,
-                             StartDate = e.DateStart,
-                             EndDate = e.DateEnd,
-                             Featured = e.Featured
+                             Featured = e.Featured,
+                             Location = new LocationDto()
+                             {
+                                 Name = e.Location
+                             }
                          };
             return Ok(events);
         }
