@@ -13,7 +13,7 @@ namespace Eventuras.Web.Controllers.Api.V2
 {
     [ApiVersion("2.0")]
     [Authorize(Policy = AuthPolicies.AdministratorRole)]
-    [Route("api/v2/events")]
+    [Route("api/v{version:apiVersion}/events")]
     [ApiController]
     public class EventInfoController : ControllerBase
     {

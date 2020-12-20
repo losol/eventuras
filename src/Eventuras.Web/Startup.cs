@@ -15,6 +15,7 @@ using HealthChecks.UI.Client;
 using Eventuras.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Mvc.Versioning;
 
 namespace Eventuras
 {
@@ -67,9 +68,9 @@ namespace Eventuras
 
             services.AddApiVersioning(o =>
             {
-                o.ReportApiVersions = true;
+                o.ApiVersionReader = new UrlSegmentApiVersionReader();
                 o.AssumeDefaultVersionWhenUnspecified = true;
-                o.DefaultApiVersion = new ApiVersion(2, 0);
+                o.DefaultApiVersion = new ApiVersion(1, 0);
             });
 
             // Register the Swagger generator
