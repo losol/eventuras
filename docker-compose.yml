@@ -4,6 +4,8 @@ services:
 
   web:
     image: losolio/eventuras:${TAG:-latest}
+    environment:
+      ConnectionStrings__DefaultConnection: 'Host=db;Database=eventuras_db;Username=pguser;Password=Str0ngPassword'
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -21,6 +23,6 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: pguser
-      POSTGRES_PASSWORD: Str0ngPassword
+      POSTGRES_USER: eventuras
+      POSTGRES_PASSWORD: 'Str0ng!Pasword'
       POSTGRES_DB: eventuras_db

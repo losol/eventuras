@@ -1,9 +1,9 @@
-# Eventuras - Event Management Solution
+# Eventuras - Event and Course Management Solution
 
-[![Build Status](https://travis-ci.com/losol/Eventuras.svg?branch=master)](https://travis-ci.com/losol/Eventuras)
-[![Build status](https://losolio.visualstudio.com/Eventuras/_apis/build/status/legekurs%20-%20CI)](https://losolio.visualstudio.com/Eventuras/_build/latest?definitionId=11)
+![.NET Core CI](https://github.com/losol/eventuras/workflows/.NET%20Core%20CI/badge.svg)
+![Docker Image CI](https://github.com/losol/eventuras/workflows/Docker%20Image%20CI/badge.svg)
 
-Asp.net core event management solution. In development now, using agile development.
+Event and Course management solution. 
 
 ## Quickstart
 
@@ -29,42 +29,23 @@ Password: Str0ng!PaSsw0rd
 
 ## Build & run from source
 
-**Prerequisites:** .NET Core 2.x, Node, SQL Server
+**Prerequisites:** .NET Core 3.x, Postgres SQL server
 
 1. Clone the repository
 
     ```bash
-    git clone https://github.com/losol/Eventuras.git
-    cd Eventuras
+    git clone https://github.com/losol/eventuras.git
+    cd eventuras
     ```
 
-1. Run tests
+1. Set up postgres database. By default the application connects to 
+   * Database `eventuras_db` 
+   * Username `eventuras` 
+   * Password `Str0ng!PaSsw0rd`
 
-    ```bash
-    ls tests/**/*.csproj | xargs -L1 dotnet test
-    ```
-
-1. Install node dependencies
-
-    ```bash
-    cd src/Eventuras.Web
-    npm install
-    ```
-
-1. Run the gulp task
-
-    ```bash
-    ./node_modules/.bin/gulp
-    ```
-
-1. Configure the application following the steps [here](./docs/Setup/Install.md#configure-your-app). The complete application configuration is documented [here](./docs/Setup/Configuration.md).
-
-1. Run the application
-
-    ```bash
-    # Ensure you're in the src/Eventuras.Web directory
-    dotnet run
-    ```
+1. After running the application, you could add events at the url `http://localhost:5555/admin/events`. 
+   * Username `admin@email.com`
+   * Password `Str0ng!PaSsw0rd`
 
 ## Credits
 
