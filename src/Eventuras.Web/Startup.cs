@@ -52,6 +52,16 @@ namespace Eventuras
         // This method gets called by the runtime. Use this method to add services to the container.
         public virtual void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowGetFromAnyOrigin",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin().WithMethods("GET"); ;
+                    });
+            });
+
             services.ConfigureEF(Configuration, HostingEnvironment);
             services.ConfigureIdentity();
             services.ConfigureDbInitializationStrategy(Configuration, HostingEnvironment);
@@ -129,6 +139,7 @@ namespace Eventuras
 
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
