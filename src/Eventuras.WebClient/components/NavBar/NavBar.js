@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, Text } from "@chakra-ui/react";
+import { Flex, Heading, useColorModeValue } from "@chakra-ui/react";
 
 import ColorModeToggler from "../../components/ColorModeToggler/ColorModeToggler";
 import React from "react";
@@ -11,8 +11,8 @@ const NavBar = (props) => {
       justify="space-between"
       wrap="wrap"
       padding="1.5rem"
-      bg={props.colorMode === "dark" ? "white" : "gray.600"}
-      color={props.colorMode === "dark" ? "gray.600" : "white"}
+      bg={useColorModeValue("gray.100", "gray.900")}
+      color={useColorModeValue("gray.600", "gray.300")}
       {...props}
     >
       <Flex align="center" mr={5}>
