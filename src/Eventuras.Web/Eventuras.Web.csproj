@@ -38,6 +38,7 @@
     <PackageReference Include="Sentry.AspNetCore" Version="2.1.3" />
     <PackageReference Include="Stripe.net" Version="[16.4.0]" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.4.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.10" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Eventuras.Services.Auth0\Eventuras.Services.Auth0.csproj" />
@@ -52,6 +53,7 @@
   <ItemGroup>
     <Folder Include="Pages\Admin\Products\" />
     <Folder Include="Views\Shared\Templates\Certificates\" />
+    <Folder Include="Controllers\Api\V2\" />
   </ItemGroup>
 
 </Project>

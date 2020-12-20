@@ -15,6 +15,7 @@ using HealthChecks.UI.Client;
 using Eventuras.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Mvc.Versioning;
 
 namespace Eventuras
 {
@@ -67,7 +68,7 @@ namespace Eventuras
 
             services.AddApiVersioning(o =>
             {
-                o.ReportApiVersions = true;
+                o.ApiVersionReader = new UrlSegmentApiVersionReader();
                 o.AssumeDefaultVersionWhenUnspecified = true;
                 o.DefaultApiVersion = new ApiVersion(1, 0);
             });
@@ -77,6 +78,7 @@ namespace Eventuras
             {
                 c.SwaggerDoc("v0", new OpenApiInfo { Title = "Eventuras API", Version = "v0" });
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Eventuras API", Version = "v1" });
+                c.SwaggerDoc("v2.0", new OpenApiInfo { Title = "Eventuras API", Version = "v2.0" });
             });
         }
 
