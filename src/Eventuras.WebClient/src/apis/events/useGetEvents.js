@@ -6,8 +6,6 @@ export const useGetEvents = path => {
     throw new Error("Path is required")
   }
 
-  console.log("base url", baseUrl)
-
   const url = baseUrl + path
 
   const { data: events, error } = useSWR(url, fetcher)
