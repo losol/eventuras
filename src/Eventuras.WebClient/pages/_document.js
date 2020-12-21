@@ -1,5 +1,4 @@
 import Document, { Head, Html, Main, NextScript } from 'next/document';
-import NavBar from '../src/components/NavBar/NavBar';
 
 export default class extends Document {
   static async getInitialProps(ctx) {
@@ -14,7 +13,6 @@ export default class extends Document {
           <title>Eventuras</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <NavBar />
         <body>
           <Main />
           <NextScript />
