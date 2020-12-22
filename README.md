@@ -3,7 +3,7 @@
 ![.NET Core CI](https://github.com/losol/eventuras/workflows/.NET%20Core%20CI/badge.svg)
 ![Docker Image CI](https://github.com/losol/eventuras/workflows/Docker%20Image%20CI/badge.svg)
 
-Event and Course management solution. 
+Event and Course management solution.
 
 ## Quickstart
 
@@ -11,8 +11,8 @@ Event and Course management solution.
 
 ```bash
 # Clone the repository
-git clone https://github.com/losol/Eventuras.git
-cd Eventuras
+git clone https://github.com/losol/eventuras.git
+cd eventuras
 
 # Build and run the application
 docker-compose build
@@ -38,14 +38,15 @@ Password: Str0ng!PaSsw0rd
     cd eventuras
     ```
 
-1. Set up postgres database. By default the application connects to 
-   * Database `eventuras_db` 
-   * Username `eventuras` 
-   * Password `Str0ng!PaSsw0rd`
+1. Set up postgres database. By default the application connects to
 
-1. After running the application, you could add events at the url `http://localhost:5555/admin/events`. 
-   * Username `admin@email.com`
-   * Password `Str0ng!PaSsw0rd`
+    - Database `eventuras_db`
+    - Username `eventuras`
+    - Password `Str0ng!PaSsw0rd`
+
+1. After running the application, you could add events at the url `http://localhost:5555/admin/events`.
+    - Username `admin@email.com`
+    - Password `Str0ng!PaSsw0rd`
 
 ## Credits
 

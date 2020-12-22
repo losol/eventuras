@@ -9,7 +9,7 @@ cd src/Eventuras.Infrastructure
 ## Adding a migration
 
 ```bash
-dotnet ef migrations add ExtInfoPage -s ../Eventuras.Web/Eventuras.Web.csproj
+dotnet ef migrations add MigrationDescription -s ../Eventuras.Web/Eventuras.Web.csproj
 ```
 
 ## Applying a Migration
