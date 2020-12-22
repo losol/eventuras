@@ -1,2 +1,2 @@
-export * from './config';
+export * from './base';
 export * from './events';
