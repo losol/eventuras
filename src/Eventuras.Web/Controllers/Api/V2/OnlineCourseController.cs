@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Eventuras.Web.Controllers.Api.V2
 {
+    [EnableCors("DefaultCorsPolicy")]
     [ApiVersion("2")]
     [Authorize(Policy = AuthPolicies.AdministratorRole)]
     [Route("api/v{version:apiVersion}/onlinecourses")]
@@ -27,7 +28,6 @@ namespace Eventuras.Web.Controllers.Api.V2
 
         // GET: api/v2/onlinecourses
         [AllowAnonymous]
-        [EnableCors("AllowGetFromAnyOrigin")]
         [HttpGet]
         public async Task<ActionResult<IQueryable<OnlineCourseDto>>> Get()
         {
