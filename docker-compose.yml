@@ -1,16 +1,18 @@
-version: '3'
+version: "3"
 
 services:
-
   web:
     image: losolio/eventuras:${TAG:-latest}
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=db;Database=eventuras_db;Username=eventuras;Password=Str0ng!Pasword"
     build:
       context: .
       dockerfile: ./Dockerfile
     ports:
       - "5100:80"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   db:
     container_name: eventuras_db
@@ -21,6 +23,12 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: pguser
-      POSTGRES_PASSWORD: Str0ngPassword
+      POSTGRES_USER: eventuras
+      POSTGRES_PASSWORD: "Str0ng!Pasword"
       POSTGRES_DB: eventuras_db
+    healthcheck:
+      test:
+        ["CMD-SHELL", "pg_isready --dbname=eventuras_db --username=eventuras"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
