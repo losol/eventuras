@@ -1,8 +1,9 @@
-import { Badge, Box, Image, StarIcon } from "@chakra-ui/react";
+import { Box, useColorMode } from "@chakra-ui/react";
 
-import { react } from "react";
+import React from "react";
 
-function EventCard() {
+function EventCard({ title, description }) {
+  const { colorMode, toggleColorMode } = useColorMode();
   return (
     <Box maxW="sm" borderWidth="1px" borderRadius="lg" overflow="hidden">
       <Box p="6">
@@ -13,10 +14,10 @@ function EventCard() {
           lineHeight="tight"
           isTruncated
         >
-          Event Title here
+          {title}
         </Box>
 
-        <Box>Price here</Box>
+        <Box>{description}</Box>
       </Box>
     </Box>
   );

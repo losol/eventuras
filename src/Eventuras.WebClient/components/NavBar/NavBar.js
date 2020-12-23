@@ -1,6 +1,7 @@
 import { Flex, Heading, useColorModeValue } from "@chakra-ui/react";
 
 import ColorModeToggler from "../../components/ColorModeToggler/ColorModeToggler";
+import Link from "next/link";
 import React from "react";
 
 const NavBar = (props) => {
@@ -17,7 +18,7 @@ const NavBar = (props) => {
     >
       <Flex align="center" mr={5}>
         <Heading as="h1" size="lg" letterSpacing={"-.1rem"}>
-          Eventuras
+          <Link href="/">Eventuras</Link>
         </Heading>
       </Flex>
 
