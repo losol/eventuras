@@ -6,8 +6,8 @@ import Head from "next/head";
 import useRequest from "../lib/useRequest";
 
 export default function Index() {
-  const { data: events } = useRequest("/events");
-  const { data: onlinecourses } = useRequest("/onlinecourses");
+  const { data: events } = useRequest("/v2/events");
+  const { data: onlinecourses } = useRequest("/v2/onlinecourses");
 
   return (
     <>

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { config } from "../../config";
 import { fetcher } from "./fetcher";
 import { useAuth0 } from "@auth0/auth0-react";
 import useSWR from "swr";
@@ -17,7 +16,7 @@ export const useApi = (url, options = {}) => {
   const [token, setToken] = useState("");
 
   const { data, error } = useSWR(
-    token ? config.api.baseUrl + url : null,
+    token ? process.env.NEXT_PUBLIC_API_BASE_URL + url : null,
     (url) => fetcher(url, token, fetchOptions),
     {
       refreshInterval: 0,
@@ -59,3 +58,5 @@ export const useApi = (url, options = {}) => {
     refresh: () => setRefreshIndex(refreshIndex + 1),
   };
 };
+
+export default useApi;
