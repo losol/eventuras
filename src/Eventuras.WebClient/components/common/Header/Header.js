@@ -1,10 +1,10 @@
 import { Flex, Heading, useColorModeValue } from "@chakra-ui/react";
 
-import ColorModeToggler from "../../components/ColorModeToggler/ColorModeToggler";
+import { ColorModeToggler } from "..";
 import Link from "next/link";
 import React from "react";
 
-const NavBar = (props) => {
+const Header = (props) => {
   return (
     <Flex
       as="nav"
@@ -27,4 +27,4 @@ const NavBar = (props) => {
   );
 };
 
-export default NavBar;
+export default Header;

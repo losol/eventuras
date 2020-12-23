@@ -1,40 +1,37 @@
-import { Box, Heading } from "@chakra-ui/react";
+import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 
-import EventCard from "../../components/event/EventCard/EventCard";
-import Head from "next/head";
-import NavBar from "../../components/NavBar/NavBar";
-import useRequest from "../../lib/useRequest";
+import { Layout } from "../../components/common";
+import React from "react";
 
 function Index() {
-  const { data: events } = useRequest("/events");
-  const { data: onlinecourses } = useRequest("/onlinecourses");
+  const {
+    isLoading,
+    isAuthenticated,
+    error,
+    user,
+    loginWithRedirect,
+    logout,
+  } = useAuth0();
 
-  return (
-    <>
-      <Head>
-        <title>Eventuras</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>Oops... {error.message}</div>;
+  }
 
-      <NavBar />
-
-      <main>
-        <Box margin="8">
-          <Heading as="h1" marginTop="16" marginBottom="4">
-            Admin page
-          </Heading>
-          {events &&
-            events.map((e) => (
-              <EventCard
-                title={e.name}
-                description={e.description}
-                key={e.id}
-              />
-            ))}
-        </Box>
-      </main>
-    </>
-  );
+  if (isAuthenticated) {
+    return (
+      <Layout>
+        Hello {user.name}{" "}
+        <button onClick={() => logout({ returnTo: window.location.origin })}>
+          Log out
+        </button>
+      </Layout>
+    );
+  } else {
+    return <button onClick={loginWithRedirect}>Log in</button>;
+  }
 }
 
-export default Index;
+export default withAuthenticationRequired(Index);
