@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Eventuras.Web.Controllers.Api.V2
 {
-    [EnableCors("DefaultCorsPolicy")]
     [ApiVersion("2")]
     [Authorize(Policy = AuthPolicies.AdministratorRole)]
     [Route("api/v{version:apiVersion}/events")]
