@@ -55,10 +55,10 @@ namespace Eventuras
 
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowGetFromAnyOrigin",
+                options.AddPolicy("DefaultCorsPolicy",
                     builder =>
                           builder
-                            .WithOrigins(appSettings.AllowedOrigins.Split(',')
+                            .WithOrigins(AppSettings.AllowedOrigins.Split(',')
                                 .Select(x => x.Trim())
                                 .Where(x => !string.IsNullOrWhiteSpace(x))
                                 .ToArray())
