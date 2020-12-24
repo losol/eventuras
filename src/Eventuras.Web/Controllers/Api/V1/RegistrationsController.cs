@@ -1,6 +1,7 @@
 using Eventuras.Services;
 using Eventuras.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Eventuras.Web.Controllers.Api.V1
 {
+    [EnableCors("DefaultCorsPolicy")]
     [ApiVersion("1")]
     [Authorize(Policy = AuthPolicies.AdministratorRole)]
     [Route("api/v1/registrations")]

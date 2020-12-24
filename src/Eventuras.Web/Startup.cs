@@ -57,9 +57,14 @@ namespace Eventuras
             {
                 options.AddPolicy("AllowGetFromAnyOrigin",
                     builder =>
-                    {
-                        builder.AllowAnyOrigin().WithMethods("GET"); ;
-                    });
+                          builder
+                            .WithOrigins(appSettings.AllowedOrigins.Split(',')
+                                .Select(x => x.Trim())
+                                .Where(x => !string.IsNullOrWhiteSpace(x))
+                                .ToArray())
+                                .AllowAnyHeader()
+                                .AllowCredentials()
+                                .AllowAnyMethod());
             });
 
             services.ConfigureEF(Configuration, HostingEnvironment);
@@ -88,7 +93,7 @@ namespace Eventuras
             {
                 c.SwaggerDoc("v0", new OpenApiInfo { Title = "Eventuras API", Version = "v0" });
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Eventuras API", Version = "v1" });
-                c.SwaggerDoc("v2.0", new OpenApiInfo { Title = "Eventuras API", Version = "v2.0" });
+                c.SwaggerDoc("v2", new OpenApiInfo { Title = "Eventuras API", Version = "v2.0" });
             });
         }
 

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Eventuras.Web.Controllers.Api.V2
 {
+    [EnableCors("DefaultCorsPolicy")]
     [ApiVersion("2")]
     [Authorize(Policy = AuthPolicies.AdministratorRole)]
     [Route("api/v{version:apiVersion}/events")]
@@ -27,7 +28,6 @@ namespace Eventuras.Web.Controllers.Api.V2
 
         // GET: api/v2/events
         [AllowAnonymous]
-        [EnableCors("AllowGetFromAnyOrigin")]
         [HttpGet]
         public async Task<ActionResult<IQueryable<EventDto>>> Get()
         {
@@ -51,7 +51,6 @@ namespace Eventuras.Web.Controllers.Api.V2
 
         // GET: api/v2/events/5
         [AllowAnonymous]
-        [EnableCors("AllowGetFromAnyOrigin")]
         [HttpGet("{id}")]
         public async Task<ActionResult<EventDto>> Get(int id)
         {
