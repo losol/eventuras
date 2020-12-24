@@ -25,6 +25,7 @@
     <PackageReference Include="Losol.Communication.Sms.Twilio" Version="$(LosolCommunicationLibraryVersion)" />
     <PackageReference Include="Losol.Communication.Sms.Mock" Version="$(LosolCommunicationLibraryVersion)" />
     <PackageReference Include="Mapster" Version="5.3.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="3.1.10" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.5" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.5" />
