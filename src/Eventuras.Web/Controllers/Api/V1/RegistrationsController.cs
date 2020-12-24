@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace Eventuras.Web.Controllers.Api.V1
 {
-    [EnableCors("DefaultCorsPolicy")]
     [ApiVersion("1")]
     [Authorize(Policy = AuthPolicies.AdministratorRole)]
     [Route("api/v1/registrations")]

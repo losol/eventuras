@@ -55,7 +55,7 @@ namespace Eventuras
 
             services.AddCors(options =>
             {
-                options.AddPolicy("DefaultCorsPolicy",
+                options.AddDefaultPolicy(
                     builder =>
                           builder
                             .WithOrigins(AppSettings.AllowedOrigins.Split(',')
