@@ -1,6 +1,6 @@
 import useSwr from "swr";
 
-const baseUrl = "https://www.legekurs.no/api/v2";
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const useRequest = (path, name) => {
   if (!path) {
