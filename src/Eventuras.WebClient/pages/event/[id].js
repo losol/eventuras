@@ -17,21 +17,21 @@ const EventInfo = (props) => {
 };
 
 export async function getStaticProps({ params }) {
-  console.log("**********" + params.id);
-  const { id = "" } = params.id;
   const res = await fetch(
-    process.env.NEXT_PUBLIC_API_BASE_URL + "/v2/events/" + id
+    process.env.NEXT_PUBLIC_API_BASE_URL + "/v2/events/" + params.id
   );
   const json = await res.json();
-  return json;
+  return { props: { ...json } };
 }
 
 export async function getStaticPaths() {
   const res = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/v2/events/");
   const events = await res.json();
-  // Get the paths we want to pre-render based on posts
+
   const paths = events.map((e) => ({
-    params: { id: e.id.toString() },
+    params: {
+      id: e.id.toString(),
+    },
   }));
 
   return { paths, fallback: true };

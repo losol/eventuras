@@ -19,6 +19,7 @@ function EventCard({ id, title, description }) {
         </Box>
 
         <Box>{description}</Box>
+        <Link href={`/event/${id}`}>Les mer</Link>
       </Box>
     </Box>
   );
