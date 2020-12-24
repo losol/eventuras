@@ -26,6 +26,7 @@ export default function Index() {
             {events &&
               events.map((e) => (
                 <EventCard
+                  id={e.id}
                   title={e.name}
                   description={e.description}
                   key={e.id}
@@ -38,6 +39,7 @@ export default function Index() {
             {onlinecourses &&
               onlinecourses.map((c) => (
                 <EventCard
+                  id={c.id}
                   title={c.name}
                   description={c.description}
                   key={c.id}

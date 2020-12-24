@@ -1,8 +1,9 @@
 import { Box, useColorMode } from "@chakra-ui/react";
 
+import Link from "next/link";
 import React from "react";
 
-function EventCard({ title, description }) {
+function EventCard({ id, title, description }) {
   const { colorMode, toggleColorMode } = useColorMode();
   return (
     <Box maxW="sm" borderWidth="1px" borderRadius="lg" overflow="hidden">
