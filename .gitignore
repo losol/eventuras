@@ -7,6 +7,9 @@
 
 db
 .vscode
+.next
+out
+.env.local
 
 # User-specific files
 *.suo
