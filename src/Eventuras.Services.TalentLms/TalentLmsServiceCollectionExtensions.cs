@@ -28,7 +28,7 @@ namespace Eventuras.Services.TalentLms
                 {
                     options.Registrations.Add(new HealthCheckRegistration("lms",
                         ActivatorUtilities.GetServiceOrCreateInstance<TalentLmsHealthCheck>,
-                        null, null, null));
+                        null, null));
                 });
             }
 
