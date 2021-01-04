@@ -28,9 +28,9 @@ namespace Eventuras.Web.Controllers.Api.V2
         // GET: api/v2/events
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IQueryable<EventDto>>> Get()
+        public async Task<ActionResult<IQueryable<EventDto>>> Get([FromQuery] EventInfoQueryParams query)
         {
-            var events = from e in await _eventInfoService.GetUpcomingEventsAsync()
+            var events = from e in await _eventInfoService.GetUpcomingEventsAsync(query.ToEventInfoFilter())
                          select new EventDto()
                          {
                              Id = e.EventInfoId,
@@ -45,6 +45,7 @@ namespace Eventuras.Web.Controllers.Api.V2
                                  Name = e.Location
                              }
                          };
+
             return Ok(events);
         }
 
@@ -92,6 +93,22 @@ namespace Eventuras.Web.Controllers.Api.V2
         public void Delete(int id)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public class EventInfoQueryParams
+    {
+        [FromQuery(Name = "collection")]
+        public int? CollectionId { get; set; }
+
+        public EventInfoFilter ToEventInfoFilter()
+        {
+            var filter = new EventInfoFilter();
+            if (CollectionId.HasValue)
+            {
+                filter.CollectionIds = new[] { CollectionId.Value };
+            }
+            return filter;
         }
     }
 }

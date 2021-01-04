@@ -18,8 +18,10 @@ namespace Eventuras.IntegrationTests
             IDictionary<string, string> data,
             string requestVerificationToken)
         {
-            data.Add("__RequestVerificationToken", requestVerificationToken);
-
+            if (!string.IsNullOrEmpty(requestVerificationToken))
+            {
+                data.Add("__RequestVerificationToken", requestVerificationToken);
+            }
             return await httpClient.PostAsync(requestUri, new FormUrlEncodedContent(data));
         }
 
@@ -67,9 +69,7 @@ namespace Eventuras.IntegrationTests
 
             var responseHtml = await response.Content.ReadAsStringAsync();
             var match = AntiForgeryFormFieldRegex.Match(responseHtml);
-            var antiForgeryToken = match.Success ? match.Groups[1].Captures[0].Value : null;
-            Assert.NotNull(antiForgeryToken);
-            return antiForgeryToken;
+            return match.Success ? match.Groups[1].Captures[0].Value : null;
         }
 
         public static void AcceptLanguage(this HttpClient httpClient, string languageIsoCode)

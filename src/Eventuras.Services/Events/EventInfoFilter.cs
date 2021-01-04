@@ -20,5 +20,28 @@ namespace Eventuras.Services.Events
         public bool TodaysEventsOnly { get; set; }
 
         public DateTime? StartDateAfter { get; set; }
+
+        public int[] CollectionIds { get; set; }
+
+        public EventInfoFilter()
+        {
+        }
+
+        public EventInfoFilter(EventInfoFilter copy)
+        {
+            if (copy == null)
+            {
+                throw new ArgumentNullException(nameof(copy));
+            }
+            StatusNoneOf = copy.StatusNoneOf;
+            StatusNoneOf = copy.StatusNoneOf;
+            TypeOneOf = copy.TypeOneOf;
+            TypeNoneOf = copy.TypeNoneOf;
+            FeaturedOnly = copy.FeaturedOnly;
+            PastEventsOnly = copy.PastEventsOnly;
+            TodaysEventsOnly = copy.TodaysEventsOnly;
+            StartDateAfter = copy.StartDateAfter;
+            CollectionIds = copy.CollectionIds;
+        }
     }
 }
