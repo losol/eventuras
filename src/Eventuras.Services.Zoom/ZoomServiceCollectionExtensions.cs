@@ -29,7 +29,7 @@ namespace Eventuras.Services.Zoom
                 {
                     options.Registrations.Add(new HealthCheckRegistration("zoom",
                         ActivatorUtilities.GetServiceOrCreateInstance<ZoomHealthCheck>,
-                        null, null, null));
+                        null, null));
                 });
             }
 

@@ -36,32 +36,31 @@ namespace Eventuras.Services.Users
                 .AsNoTracking()
                 .SingleAsync(u => u.Id == userId);
         }
-        public async Task<List<ApplicationUser>> ListAccessibleUsers(UserRetrievalOptions options)
+        public async Task<List<ApplicationUser>> ListUsers(UserFilter filter, UserRetrievalOptions options)
         {
+            filter ??= new UserFilter();
             options ??= new UserRetrievalOptions();
 
-            var user = _httpContextAccessor.HttpContext.User;
-            if (!user.IsInRole(Roles.Admin) &&
-                !user.IsInRole(Roles.SuperAdmin))
-            {
-                throw new AccessViolationException($"Should have {Roles.Admin} role to access other users.");
-            }
-
-            var query = _context.Users.AsNoTracking()
+            var query = _context.Users
+                .AsNoTracking()
                 .UseOptions(options);
 
-            if (!user.IsInRole(Roles.SuperAdmin))
+            if (filter.AccessibleToOrgOnly)
             {
-                if (!user.IsInRole(Roles.Admin))
+                var user = _httpContextAccessor.HttpContext.User;
+                if (!user.IsInRole(Roles.Admin) &&
+                    !user.IsInRole(Roles.SuperAdmin))
                 {
-                    // Not an admin of the current org => can't see org member list.
                     return new List<ApplicationUser>();
                 }
 
-                var organization = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync();
-                if (!organization.IsRoot)
+                if (!user.IsInRole(Roles.SuperAdmin))
                 {
-                    query = query.HavingOrganization(organization);
+                    var organization = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync();
+                    if (!organization.IsRoot)
+                    {
+                        query = query.HavingOrganization(organization);
+                    }
                 }
             }
 

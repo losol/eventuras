@@ -18,7 +18,7 @@ namespace Eventuras.Services.Converto
             {
                 options.Registrations.Add(new HealthCheckRegistration("pdf",
                     ActivatorUtilities.GetServiceOrCreateInstance<ConvertoHealthCheck>,
-                    null, null, null));
+                    null, null));
             });
 
             return services;
