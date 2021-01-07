@@ -31,7 +31,7 @@ RUN dotnet publish -c Release -o /app/out
 #
 # Stage 1
 # Copy the built files over
-FROM mcr.microsoft.com/dotnet/runtime:5.0
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
 
 # Copy files over from the build stage
 WORKDIR /app
