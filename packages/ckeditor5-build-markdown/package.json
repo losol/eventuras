@@ -2,7 +2,7 @@
   "name": "@losol/ckeditor5-build-markdown",
   "author": "Losol AS",
   "description": "Custom CKEditor5 for editing basic markdown.",
-  "version": "23.0.0",
+  "version": "23.0.1",
   "license": "GPL2+",
   "private": false,
   "main": "./build/ckeditor.js",
