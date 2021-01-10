@@ -26,8 +26,9 @@ namespace Eventuras.WebApi.Controllers
             _eventInfoService = eventInfoService;
         }
 
-        // GET: api/v2/onlinecourses
+        // GET: v1/onlinecourses
         [AllowAnonymous]
+        [EnableCors("AllowGetFromAnyOrigin")]
         [HttpGet]
         public async Task<ActionResult<IQueryable<OnlineCourseDto>>> Get()
         {
@@ -43,7 +44,7 @@ namespace Eventuras.WebApi.Controllers
             return Ok(events);
         }
 
-        // GET: api/v2/onlinecourses/5
+        // GET: v1/onlinecourses/5
         [AllowAnonymous]
         [EnableCors("AllowGetFromAnyOrigin")]
         [HttpGet("{id}")]

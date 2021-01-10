@@ -17,20 +17,21 @@ namespace Eventuras.WebApi
     [Authorize(Policy = AuthPolicies.AdministratorRole)]
     [Route("v{version:apiVersion}/events")]
     [ApiController]
-    public class EventInfoController : ControllerBase
+    public class EventController : ControllerBase
     {
         private readonly IEventInfoRetrievalService _eventInfoService;
 
-        public EventInfoController(IEventInfoRetrievalService eventInfoService)
+        public EventController(IEventInfoRetrievalService eventInfoService)
         {
             _eventInfoService = eventInfoService;
         }
 
-        // GET: api/v2/events
+        // GET: v1/events
         [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IQueryable<EventDto>>> Get()
         {
+            // TODO: add event type filter
             var events = from e in await _eventInfoService.GetUpcomingEventsAsync()
                          select new EventDto()
                          {
@@ -49,7 +50,7 @@ namespace Eventuras.WebApi
             return Ok(events);
         }
 
-        // GET: api/v2/events/5
+        // GET: v1/events/5
         [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<EventDto>> Get(int id)
@@ -76,13 +77,15 @@ namespace Eventuras.WebApi
 
         // POST: api/EventInfo
         [HttpPost]
-        public void Post([FromBody] string value)
+        [Authorize("events:write")]
+        public ActionResult Post([FromBody] string value)
         {
-            throw new NotImplementedException();
+            return Ok("Post a new event, authorized?!");
         }
 
         // PUT: api/EventInfo/5
         [HttpPut("{id}")]
+        [Authorize("events:write")]
         public void Put(int id, [FromBody] string value)
         {
             throw new NotImplementedException();
@@ -90,6 +93,7 @@ namespace Eventuras.WebApi
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
+        [Authorize("events:write")]
         public void Delete(int id)
         {
             throw new NotImplementedException();
