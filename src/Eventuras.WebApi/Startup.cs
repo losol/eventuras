@@ -17,6 +17,7 @@ using Eventuras.WebApi.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using Eventuras.WebApi.Auth;
 
 namespace Eventuras.WebApi
 {
@@ -112,11 +113,13 @@ namespace Eventuras.WebApi
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(AuthPolicies.AdministratorRole, policy => policy.RequireRole(Roles.Admin, Roles.SuperAdmin, Roles.SystemAdmin));
+                options.AddPolicy("read:events", policy => policy.Requirements.Add(new HasScopeRequirement("read:events", $"https://{Configuration["Auth0:Domain"]}/")));
+                options.AddPolicy("write:events", policy => policy.Requirements.Add(new HasScopeRequirement("write:events", $"https://{Configuration["Auth0:Domain"]}/")));
             });
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v0", new OpenApiInfo { Title = "Eventuras.WebApi", Version = "v0" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Eventuras.WebApi", Version = "v1" });
             });
         }
 
