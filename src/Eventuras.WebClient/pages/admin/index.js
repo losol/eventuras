@@ -4,7 +4,7 @@ import { Layout } from "../../components/common";
 import React from "react";
 import useApi from "../../lib/useApi";
 
-function Index() {
+function AdminIndex() {
   const {
     isLoading,
     isAuthenticated,
@@ -38,4 +38,4 @@ function Index() {
   }
 }
 
-export default withAuthenticationRequired(Index);
+export default withAuthenticationRequired(AdminIndex);
