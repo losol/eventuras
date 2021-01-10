@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using Eventuras.WebApi.Auth;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Eventuras.WebApi
 {
@@ -64,7 +66,6 @@ namespace Eventuras.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureEF(Configuration, _env);
-            services.ConfigureIdentity();
             services.ConfigureDbInitializationStrategy(Configuration, _env);
             services.ConfigureAuthorizationPolicies(Configuration);
             services.AddEmailServices(AppSettings.EmailProvider, Configuration);
@@ -97,7 +98,11 @@ namespace Eventuras.WebApi
             });
 
             services
-                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
                 .AddJwtBearer(options =>
                 {
                     options.Authority = $"https://{Configuration["Auth0:Domain"]}/";
@@ -108,7 +113,7 @@ namespace Eventuras.WebApi
                         NameClaimType = ClaimTypes.NameIdentifier
                     };
                 });
-
+            services.ConfigureIdentity();
 
             services.AddAuthorization(options =>
             {
@@ -136,12 +141,9 @@ namespace Eventuras.WebApi
             }
 
             app.UseRouting();
-
             app.UseCors();
-
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

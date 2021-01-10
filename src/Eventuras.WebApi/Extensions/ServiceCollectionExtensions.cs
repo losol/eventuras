@@ -53,7 +53,7 @@ namespace Eventuras.WebApi.Extensions
         {
             services.AddIdentity<ApplicationUser, IdentityRole>(config =>
             {
-                config.SignIn.RequireConfirmedEmail = true;
+                config.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<ApplicationDbContext>()
               .AddDefaultTokenProviders();
         }
