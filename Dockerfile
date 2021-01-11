@@ -7,6 +7,7 @@ WORKDIR /app/src
 # copy csproj and restore dependencies
 COPY ./Eventuras.sln .
 COPY ./src/Eventuras.Web/*.csproj ./src/Eventuras.Web/
+COPY ./src/Eventuras.WebApi/*.csproj ./src/Eventuras.WebApi/
 COPY ./src/Eventuras.Services/*.csproj ./src/Eventuras.Services/
 COPY ./src/Eventuras.Services.Converto/*.csproj ./src/Eventuras.Services.Converto/
 COPY ./src/Eventuras.Services.Auth0/*.csproj ./src/Eventuras.Services.Auth0/
@@ -25,16 +26,16 @@ RUN dotnet restore
 COPY . ./
 
 # Publish
-WORKDIR /app/src/src/Eventuras.Web
+WORKDIR /app/src/src/Eventuras.WebApi
 RUN dotnet publish -c Release -o /app/out
 
 #
 # Stage 1
 # Copy the built files over
-FROM mcr.microsoft.com/dotnet/runtime:5.0
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
 
 # Copy files over from the build stage
 WORKDIR /app
 COPY --from=build /app/out .
 
-ENTRYPOINT ["dotnet", "Eventuras.Web.dll"]
+ENTRYPOINT ["dotnet", "Eventuras.WebApi.dll"]

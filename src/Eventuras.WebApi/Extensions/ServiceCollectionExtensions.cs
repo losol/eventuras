@@ -1,17 +1,13 @@
 using Eventuras.Services.Auth0;
 using Eventuras.Services.Converto;
 using Eventuras.Services.TalentLms;
-using Eventuras.Web.Config;
+using Eventuras.WebApi.Config;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services;
 using Eventuras.Services.Auth;
 using Eventuras.Services.DbInitializers;
 using Eventuras.Services.Invoicing;
-using Eventuras.Web;
-using Eventuras.Web.Config;
-using Eventuras.Web.Extensions;
-using Eventuras.Web.Services;
 using Losol.Communication.Email.File;
 using Losol.Communication.Email.Mock;
 using Losol.Communication.Email.SendGrid;
@@ -19,29 +15,26 @@ using Losol.Communication.Email.Smtp;
 using Losol.Communication.Sms.Mock;
 using Losol.Communication.Sms.Twilio;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using System.Globalization;
-using System.Net.Http.Headers;
 using Eventuras.Services.Zoom;
 using Losol.Communication.HealthCheck.Abstractions;
 using Losol.Communication.HealthCheck.Email;
 using Losol.Communication.HealthCheck.Sms;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.HttpOverrides;
-using DefaultAuthenticationService = Eventuras.Web.Services.DefaultAuthenticationService;
+using Eventuras.WebApi.Constants;
+using Microsoft.FeatureManagement;
+using Eventuras.WebApi.Auth;
 
-namespace Eventuras.Web.Extensions
+namespace Eventuras.WebApi.Extensions
 {
     public static class ServiceCollectionExtensions
     {
+
         public static void ConfigureEF(
             this IServiceCollection services,
             IConfiguration config,
@@ -60,69 +53,20 @@ namespace Eventuras.Web.Extensions
         {
             services.AddIdentity<ApplicationUser, IdentityRole>(config =>
             {
-                config.SignIn.RequireConfirmedEmail = true;
+                config.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<ApplicationDbContext>()
-              .AddDefaultTokenProviders()
-              .AddMagicLinkTokenProvider();
-
-            services.Configure<IdentityOptions>(options =>
-            {
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 7;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = true;
-            });
+              .AddDefaultTokenProviders();
         }
 
         public static void ConfigureAuthorizationPolicies(
-            this IServiceCollection services)
+            this IServiceCollection services,
+            IConfiguration config)
         {
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(AuthPolicies.AdministratorRole, policy => policy.RequireRole(Roles.Admin, Roles.SuperAdmin));
+                options.AddPolicy("read:events", policy => policy.Requirements.Add(new HasScopeRequirement("read:events", $"https://{config["Auth0:Domain"]}/")));
             });
-        }
-
-        public static void ConfigureMvc(
-            this IServiceCollection services)
-        {
-            services
-                .AddControllersWithViews()
-                .AddNewtonsoftJson();
-
-            services
-                .AddRazorPages()
-                .AddRazorPagesOptions(options =>
-                {
-                    options.Conventions.AuthorizeFolder("/Account/Manage");
-                    options.Conventions.AuthorizePage("/Account/Logout");
-
-                    options.Conventions.AuthorizeFolder("/Admin", AuthPolicies.AdministratorRole);
-                    options.Conventions.AddPageRoute("/Events/Details", "events/{id}/{slug?}");
-
-                    options.Conventions.AuthorizeFolder("/Profile");
-
-                    options.Conventions.AddPageRoute("/Events/Register/Index", "events/{id}/{slug?}/register");
-                })
-                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-                .AddRazorRuntimeCompilation();
-
-            services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
-                // Only loopback proxies are allowed by default. Clear that restriction because forwarders are
-                // being enabled by explicit configuration.
-                options.KnownNetworks.Clear();
-                options.KnownProxies.Clear();
-            });
-        }
-
-        public static void ConfigureLocalization(this IServiceCollection services, CultureInfo defaultCultureInfo)
-        {
-            services.AddLocalization(options => options.ResourcesPath = "Resources");
-            CultureInfo.DefaultThreadCurrentCulture = defaultCultureInfo;
-            CultureInfo.DefaultThreadCurrentUICulture = defaultCultureInfo;
         }
 
         public static void ConfigureDbInitializationStrategy(this IServiceCollection services,
@@ -142,19 +86,6 @@ namespace Eventuras.Web.Extensions
                     services.AddScoped<IDbInitializer, DefaultDbInitializer>();
                     break;
             }
-        }
-
-        public static void AddSiteConfig(this IServiceCollection services, IConfiguration Configuration)
-        {
-            var siteConfig = Configuration.GetSection("Site").Get<Site>();
-            services.AddSingleton(siteConfig);
-
-            var socialConfig = Configuration.GetSection("Social").Get<Social>();
-            services.AddSingleton(socialConfig);
-
-            // TODO: Change to feature manager later
-            var featureConfig = Configuration.GetSection("FeatureManagement").Get<FeatureManagement>();
-
         }
 
         public static void AddEmailServices(this IServiceCollection services,
@@ -177,10 +108,6 @@ namespace Eventuras.Web.Extensions
                     break;
             }
 
-            // Register email services
-            services.AddTransient<StandardEmailSender>();
-            services.AddTransient<MagicLinkSender>();
-            services.AddTransient<RegistrationEmailSender>();
         }
 
         public static void AddSmsServices(
@@ -200,12 +127,12 @@ namespace Eventuras.Web.Extensions
         }
 
         public static void AddInvoicingServices(
-            this IServiceCollection services,
-            AppSettings appsettings,
-            IConfiguration config)
+                this IServiceCollection services,
+                FeatureManagement features,
+                IConfiguration config)
         {
             // Register PowerOffice
-            if (appsettings.UsePowerOffice)
+            if (features.UsePowerOffice)
             {
                 services.Configure<PowerOfficeOptions>(config.GetSection("PowerOffice"));
                 services.AddScoped<IPowerOfficeService, PowerOfficeService>();
@@ -214,7 +141,7 @@ namespace Eventuras.Web.Extensions
             {
                 services.AddTransient<IPowerOfficeService, MockInvoicingService>();
             }
-            if (appsettings.UseStripeInvoice)
+            if (features.UseStripeInvoice)
             {
                 var stripeConfig = config.GetSection("Stripe").Get<StripeOptions>();
                 StripeInvoicingService.Configure(stripeConfig.SecretKey);
@@ -231,9 +158,6 @@ namespace Eventuras.Web.Extensions
             // Register our application services
             services.AddCoreServices();
 
-            // Add Page render Service
-            services.AddScoped<IRenderService, ViewRenderService>();
-
             // Add default authentication handler (Razor Pages)
             services.TryAddTransient<IEventurasAuthenticationService, DefaultAuthenticationService>();
 
@@ -247,15 +171,18 @@ namespace Eventuras.Web.Extensions
             services.AddZoomIfEnabled(configuration.GetSection("Zoom"));
 
             // Add Health Checks
-            services.AddApplicationHealthChecks(configuration.GetSection(Constants.HealthCheckConfigurationKey));
+            services.AddApplicationHealthChecks(configuration.GetSection(Constants.HealthChecks.HealthCheckConfigurationKey));
 
             // Added for the renderpage service
+            /* 
             services.AddHttpContextAccessor();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddConvertoServices(configuration.GetSection("Converto"));
-            services.AddTransient<CertificatePdfRenderer>();
+            // services.AddTransient<CertificatePdfRenderer>();
             services.AddHttpClient();
+            */
         }
+
 
         public static void AddApplicationHealthChecks(this IServiceCollection services, IConfigurationSection configuration)
         {
@@ -279,9 +206,11 @@ namespace Eventuras.Web.Extensions
                 .AddHealthChecksUI(settings =>
                 {
                     settings
-                        .AddHealthCheckEndpoint(Constants.HealthCheckName, $"{baseUri}{Constants.HealthCheckUri}");
+                        .AddHealthCheckEndpoint(Constants.HealthChecks.HealthCheckName, $"{baseUri}{Constants.HealthChecks.HealthCheckUri}");
                 })
                 .AddInMemoryStorage();
         }
     }
 }
+
+
