@@ -18,14 +18,14 @@ const EventInfo = (props) => {
 
 export async function getStaticProps({ params }) {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_API_BASE_URL + "/v2/events/" + params.id
+    process.env.NEXT_PUBLIC_API_BASE_URL + "/v1/events/" + params.id
   );
   const json = await res.json();
   return { props: { ...json } };
 }
 
 export async function getStaticPaths() {
-  const res = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/v2/events/");
+  const res = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/v1/events/");
   const events = await res.json();
 
   const paths = events.map((e) => ({

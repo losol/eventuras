@@ -14,7 +14,7 @@ function AdminIndex() {
     logout,
   } = useAuth0();
 
-  const { data: registrations } = useApi("/v1/registrations");
+  const { data: registrations } = useApi("/v1/registrations", { scope: "registrations:read", audience: "https://eventuras/api" });
 
   if (isLoading) {
     return <div>Loading...</div>;
