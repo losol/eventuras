@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 namespace Eventuras.Web.Controllers.Api.V1
 {
     [ApiVersion("1")]
-    [Authorize(Policy = AuthPolicies.AdministratorRole)]
     [Authorize("registrations:read")]
     [Route("v{version:apiVersion}/registrations")]
     [ApiController]
@@ -28,7 +27,6 @@ namespace Eventuras.Web.Controllers.Api.V1
         // GET: v1/registrations
         // Returns the latest 100 registrations
         [HttpGet]
-        [Authorize("registrations:read")]
         public async Task<ActionResult<IEnumerable<RegistrationDto>>> GetRegistrations()
         {
             var registrations = await _registrationService.GetAsync();

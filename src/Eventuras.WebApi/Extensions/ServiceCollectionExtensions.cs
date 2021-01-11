@@ -128,7 +128,6 @@ namespace Eventuras.WebApi.Extensions
 
         public static void AddInvoicingServices(
                 this IServiceCollection services,
-                FeatureManagement features,
                 IConfiguration config)
         {
             // Register PowerOffice
@@ -157,12 +156,6 @@ namespace Eventuras.WebApi.Extensions
         {
             // Register our application services
             services.AddCoreServices();
-
-            // Add default authentication handler (Razor Pages)
-            services.TryAddTransient<IEventurasAuthenticationService, DefaultAuthenticationService>();
-
-            // Add Auth0 authentication if enabled in settings.
-            services.AddAuth0AuthenticationIfEnabled(configuration.GetSection("Auth0"));
 
             // Add TalentLms integration if enabled in settings.
             services.AddTalentLmsIfEnabled(configuration.GetSection("TalentLms"));
