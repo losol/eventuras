@@ -46,8 +46,6 @@ namespace Eventuras.Services.Organizations
                 return null;
             }
 
-            await CheckOrganizationAdminAccessAsync(organization);
-
             return await FindExistingMemberAsync(organization, user, options);
         }
 
