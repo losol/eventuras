@@ -10,17 +10,67 @@ namespace Eventuras.IntegrationTests
     {
         public const string Placeholder = "__Placeholder__";
 
+        public static async Task<IDisposableEntity<EventCollection>> CreateEventCollectionAsync(
+            this ApplicationDbContext context,
+            string name = Placeholder,
+            string slug = null,
+            string description = null,
+            bool featured = false,
+            string featuredImageUrl = Placeholder,
+            string featuredImageCaption = Placeholder,
+            Organization organization = null,
+            int? organizationId = null)
+        {
+
+            if (name == Placeholder)
+            {
+                name = $"Test Collection {Guid.NewGuid()}";
+            }
+
+            organizationId ??= (organization ?? (await context.CreateOrganizationAsync()).Entity).OrganizationId;
+
+            if (featuredImageUrl == Placeholder)
+            {
+                featuredImageUrl = featured ? $"http://some.featured.image.url/{Guid.NewGuid()}" : null;
+            }
+
+            if (featuredImageCaption == Placeholder)
+            {
+                featuredImageCaption = featured ? $"Some featured image caption {Guid.NewGuid()}" : null;
+            }
+
+            var collection = new EventCollection
+            {
+                Name = name,
+                OrganizationId = organizationId.Value,
+                Slug = slug,
+                Description = description,
+                Featured = featured,
+                FeaturedImageUrl = featuredImageUrl,
+                FeaturedImageCaption = featuredImageCaption
+            };
+
+            await context.EventCollections.AddAsync(collection);
+            await context.SaveChangesAsync();
+            return new DisposableEntity<EventCollection>(collection, context);
+        }
+
         public static async Task<IDisposableEntity<EventInfo>> CreateEventAsync(
             this ApplicationDbContext context,
             string title = Placeholder,
             string description = Placeholder,
             string code = Placeholder,
             string city = Placeholder,
+            EventInfo.EventInfoStatus status = EventInfo.EventInfoStatus.Planned,
             EventInfo.EventInfoType eventInfoType = EventInfo.EventInfoType.Conference,
             bool featured = false,
             DateTime? dateStart = null,
             DateTime? dateEnd = null,
-            Product[] products = null)
+            Product[] products = null,
+            Organization organization = null,
+            int? organizationId = null,
+            EventCollection collection = null,
+            EventCollection[] collections = null)
         {
             if (title == Placeholder)
             {
@@ -37,6 +87,16 @@ namespace Eventuras.IntegrationTests
                 code = Guid.NewGuid().ToString();
             }
 
+            if (city == Placeholder)
+            {
+                city = "Oslo";
+            }
+
+            if (collections == null && collection != null)
+            {
+                collections = new[] { collection };
+            }
+
             var eventInfo = new EventInfo
             {
                 Title = title,
@@ -47,7 +107,13 @@ namespace Eventuras.IntegrationTests
                 DateEnd = dateEnd,
                 Type = eventInfoType,
                 City = city,
-                Products = products?.ToList()
+                Status = status,
+                Products = products?.ToList(),
+                OrganizationId = organizationId ?? organization?.OrganizationId,
+                CollectionMappings = collections?.Select(c => new EventCollectionMapping
+                {
+                    CollectionId = c.CollectionId
+                }).ToList()
             };
             context.EventInfos.Add(eventInfo);
             await context.SaveChangesAsync();
@@ -195,6 +261,67 @@ namespace Eventuras.IntegrationTests
             await context.ExternalEvents.AddAsync(externalEvent);
             await context.SaveChangesAsync();
             return new DisposableEntity<ExternalEvent>(externalEvent, context);
+        }
+
+        public static async Task<IDisposableEntity<Organization>> CreateOrganizationAsync(
+            this ApplicationDbContext context,
+            string name = Placeholder,
+            string hostname = null,
+            string[] hostnames = null)
+        {
+            if (name == Placeholder)
+            {
+                name = $"Test Org {Guid.NewGuid()}";
+            }
+
+            if (hostnames == null && hostname != null)
+            {
+                hostnames = new[] { hostname };
+            }
+
+            var org = new Organization
+            {
+                Name = name,
+                Hostnames = hostnames?.Select(h => new OrganizationHostname
+                {
+                    Hostname = h,
+                    Active = true
+                }).ToList()
+            };
+
+            await context.Organizations.AddAsync(org);
+            await context.SaveChangesAsync();
+            return new DisposableEntity<Organization>(org, context);
+        }
+
+        public static async Task<IDisposableEntity<OrganizationMember>> CreateOrganizationMemberAsync(
+            this ApplicationDbContext context,
+            ApplicationUser user = null,
+            Organization organization = null,
+            int? organizationId = null,
+            string[] roles = null,
+            string role = null)
+        {
+            organizationId ??= (organization ?? (await context.CreateOrganizationAsync()).Entity).OrganizationId;
+
+            if (roles == null && role != null)
+            {
+                roles = new[] { role };
+            }
+
+            var member = new OrganizationMember
+            {
+                OrganizationId = organizationId.Value,
+                User = user,
+                Roles = roles?.Select(r => new OrganizationMemberRole
+                {
+                    Role = r
+                }).ToList()
+            };
+
+            await context.OrganizationMembers.AddAsync(member);
+            await context.SaveChangesAsync();
+            return new DisposableEntity<OrganizationMember>(member, context);
         }
     }
 }

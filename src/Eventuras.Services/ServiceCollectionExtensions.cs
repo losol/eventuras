@@ -1,4 +1,5 @@
 using Eventuras.Services.Auth;
+using Eventuras.Services.EventCollections;
 using Eventuras.Services.Events;
 using Eventuras.Services.Invoicing;
 using Eventuras.Services.ExternalSync;
@@ -25,6 +26,7 @@ namespace Eventuras.Services
             services.AddUserServices();
             services.AddAuthServices();
             services.AddEventServices();
+            services.AddEventCollectionServices();
             services.AddOrderServices();
             services.AddExternalSyncServices();
             return services;

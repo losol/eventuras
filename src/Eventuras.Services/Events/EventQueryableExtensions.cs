@@ -56,6 +56,13 @@ namespace Eventuras.Services.Events
                 query = query.Where(e => e.DateStart >= filter.StartDateAfter);
             }
 
+            if (filter.CollectionIds?.Any() == true)
+            {
+                query = query.Where(e => e.CollectionMappings
+                    .Any(m => filter.CollectionIds
+                        .Contains(m.CollectionId)));
+            }
+
             return query;
         }
 

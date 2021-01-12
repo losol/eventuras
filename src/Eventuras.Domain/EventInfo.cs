@@ -139,6 +139,8 @@ namespace Eventuras.Domain
         public List<Registration> Registrations { get; set; }
         public List<Product> Products { get; set; }
         public List<ExternalEvent> ExternalEvents { get; set; }
+        public virtual ICollection<EventCollection> Collections { get; set; }
+        public virtual List<EventCollectionMapping> CollectionMappings { get; set; }
 
         public bool HasFeaturedImage => !string.IsNullOrWhiteSpace(FeaturedImageUrl);
         public bool HasExternalInfoPage => !string.IsNullOrWhiteSpace(ExternalInfoPageUrl);

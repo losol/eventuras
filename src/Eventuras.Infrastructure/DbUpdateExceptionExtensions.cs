@@ -5,19 +5,24 @@ namespace Eventuras.Infrastructure
 {
     public static class DbUpdateExceptionExtensions
     {
-        public static bool IsUniqueKeyViolation(this DbUpdateException e)
+        private const string ForeignKeyViolation = "23503";
+        private const string UniqueViolation = "23505";
+
+        public static string GetSqlStateCode(this DbUpdateException e)
         {
             var postgresException = e.InnerException as PostgresException
                                     ?? e.InnerException?.InnerException as PostgresException;
-            if (postgresException != null)
-                // https://www.postgresql.org/docs/current/static/errcodes-appendix.html
-                switch (postgresException.SqlState)
-                {
-                    case "23505": // Unique constraint error
-                        return true;
-                }
+            return postgresException?.SqlState;
+        }
 
-            return false;
+        public static bool IsForeignKeyViolation(this DbUpdateException e)
+        {
+            return e.GetSqlStateCode() == ForeignKeyViolation;
+        }
+
+        public static bool IsUniqueKeyViolation(this DbUpdateException e)
+        {
+            return e.GetSqlStateCode() == UniqueViolation;
         }
     }
 }

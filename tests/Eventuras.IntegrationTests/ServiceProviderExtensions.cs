@@ -21,7 +21,8 @@ namespace Eventuras.IntegrationTests
             string email = Placeholder,
             string password = Placeholder,
             string phone = Placeholder,
-            string[] roles = null)
+            string[] roles = null,
+            string role = null)
         {
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
@@ -38,6 +39,11 @@ namespace Eventuras.IntegrationTests
             if (phone == Placeholder)
             {
                 phone = "+11111111111";
+            }
+
+            if (roles == null && !string.IsNullOrEmpty(role))
+            {
+                roles = new[] { role };
             }
 
             var user = new ApplicationUser

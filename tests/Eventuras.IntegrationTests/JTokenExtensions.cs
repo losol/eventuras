@@ -65,6 +65,38 @@ namespace Eventuras.IntegrationTests
             Assert.Equal(externalEvent.ExternalEventId, token.Value<string>("externalEventId"));
         }
 
+        public static void CheckEvent(this JToken token, EventInfo e)
+        {
+            if (e == null)
+            {
+                Assert.Empty(token);
+                return;
+            }
+            Assert.Equal(e.EventInfoId, token.Value<int>("id"));
+            Assert.Equal(e.Title, token.Value<string>("name"));
+            Assert.Equal(e.Code, token.Value<string>("slug"));
+            Assert.Equal(e.Description, token.Value<string>("description"));
+            Assert.Equal(e.Featured, token.Value<bool>("featured"));
+            Assert.Equal(e.DateStart, token.Value<DateTime?>("startDate"));
+            Assert.Equal(e.DateEnd, token.Value<DateTime?>("endDate"));
+        }
+
+        public static void CheckEventCollection(this JToken token, EventCollection c)
+        {
+            if (c == null)
+            {
+                Assert.Empty(token);
+                return;
+            }
+            Assert.Equal(c.CollectionId, token.Value<int>("id"));
+            Assert.Equal(c.Name, token.Value<string>("name"));
+            Assert.Equal(c.Slug, token.Value<string>("slug"));
+            Assert.Equal(c.Description, token.Value<string>("description"));
+            Assert.Equal(c.Featured, token.Value<bool>("featured"));
+            Assert.Equal(c.FeaturedImageUrl, token.Value<string>("featuredImageUrl"));
+            Assert.Equal(c.FeaturedImageCaption, token.Value<string>("featuredImageCaption"));
+        }
+
         public static JArray CheckArray<T>(this JArray token, Action<JToken, T> f, params T[] values)
         {
             Assert.Equal(values.Length, token.Count);

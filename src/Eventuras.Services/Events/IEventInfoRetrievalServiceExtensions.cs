@@ -7,9 +7,12 @@ namespace Eventuras.Services.Events
 {
     public static class IEventInfoRetrievalServiceExtensions
     {
-        public static async Task<List<EventInfo>> GetUpcomingEventsAsync(this IEventInfoRetrievalService service, EventInfoRetrievalOptions options = null)
+        public static async Task<List<EventInfo>> GetUpcomingEventsAsync(
+            this IEventInfoRetrievalService service,
+            EventInfoFilter filter = null,
+            EventInfoRetrievalOptions options = null)
         {
-            return await service.ListEventsAsync(new EventInfoFilter
+            return await service.ListEventsAsync(new EventInfoFilter(filter ?? new EventInfoFilter())
             {
                 StatusNoneOf = new[]
                 {
@@ -20,9 +23,12 @@ namespace Eventuras.Services.Events
             }, EventRetrievalOrder.StartDate, options);
         }
 
-        public static async Task<List<EventInfo>> GetFeaturedEventsAsync(this IEventInfoRetrievalService service, EventInfoRetrievalOptions options = null)
+        public static async Task<List<EventInfo>> GetFeaturedEventsAsync(
+            this IEventInfoRetrievalService service,
+            EventInfoFilter filter = null,
+            EventInfoRetrievalOptions options = null)
         {
-            return await service.ListEventsAsync(new EventInfoFilter
+            return await service.ListEventsAsync(new EventInfoFilter(filter ?? new EventInfoFilter())
             {
                 FeaturedOnly = true,
                 StatusNoneOf = new[]
@@ -34,9 +40,12 @@ namespace Eventuras.Services.Events
             }, EventRetrievalOrder.StartDate, options);
         }
 
-        public static async Task<List<EventInfo>> GetUnpublishedEventsAsync(this IEventInfoRetrievalService service, EventInfoRetrievalOptions options = null)
+        public static async Task<List<EventInfo>> GetUnpublishedEventsAsync(
+            this IEventInfoRetrievalService service,
+            EventInfoFilter filter = null,
+            EventInfoRetrievalOptions options = null)
         {
-            return await service.ListEventsAsync(new EventInfoFilter
+            return await service.ListEventsAsync(new EventInfoFilter(filter ?? new EventInfoFilter())
             {
                 StatusOneOf = new[]
                 {
@@ -46,9 +55,12 @@ namespace Eventuras.Services.Events
             }, EventRetrievalOrder.StartDate, options);
         }
 
-        public static async Task<List<EventInfo>> GetPastEventsAsync(this IEventInfoRetrievalService service, EventInfoRetrievalOptions options = null)
+        public static async Task<List<EventInfo>> GetPastEventsAsync(
+            this IEventInfoRetrievalService service,
+            EventInfoFilter filter = null,
+            EventInfoRetrievalOptions options = null)
         {
-            return await service.ListEventsAsync(new EventInfoFilter
+            return await service.ListEventsAsync(new EventInfoFilter(filter ?? new EventInfoFilter())
             {
                 PastEventsOnly = true,
                 StatusNoneOf = new[]
@@ -59,9 +71,12 @@ namespace Eventuras.Services.Events
             }, EventRetrievalOrder.StartDate, options);
         }
 
-        public static async Task<List<EventInfo>> GetOnDemandEventsAsync(this IEventInfoRetrievalService service, EventInfoRetrievalOptions options = null)
+        public static async Task<List<EventInfo>> GetOnDemandEventsAsync(
+            this IEventInfoRetrievalService service,
+            EventInfoFilter filter = null,
+            EventInfoRetrievalOptions options = null)
         {
-            return await service.ListEventsAsync(new EventInfoFilter
+            return await service.ListEventsAsync(new EventInfoFilter(filter ?? new EventInfoFilter())
             {
                 StatusNoneOf = new[]
                 {
@@ -75,9 +90,12 @@ namespace Eventuras.Services.Events
             }, EventRetrievalOrder.Title, options);
         }
 
-        public static async Task<List<EventInfo>> GetOngoingEventsAsync(this IEventInfoRetrievalService service, EventInfoRetrievalOptions options = null)
+        public static async Task<List<EventInfo>> GetOngoingEventsAsync(
+            this IEventInfoRetrievalService service,
+            EventInfoFilter filter = null,
+            EventInfoRetrievalOptions options = null)
         {
-            return await service.ListEventsAsync(new EventInfoFilter
+            return await service.ListEventsAsync(new EventInfoFilter(filter ?? new EventInfoFilter())
             {
                 TodaysEventsOnly = true,
                 StatusNoneOf = new[]
