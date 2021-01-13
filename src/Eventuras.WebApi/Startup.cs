@@ -1,5 +1,4 @@
 using System.Linq;
-using Eventuras.Infrastructure;
 using Eventuras.Services;
 using Eventuras.WebApi.Config;
 using Eventuras.WebApi.Constants;
@@ -7,7 +6,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,8 +16,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using Eventuras.WebApi.Auth;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Eventuras.WebApi
 {
@@ -97,23 +94,19 @@ namespace Eventuras.WebApi
                 o.DefaultApiVersion = new ApiVersion(1, 0);
             });
 
+            services.ConfigureIdentity();
             services
                 .AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
-                .AddJwtBearer(options =>
-                {
-                    options.Authority = $"https://{Configuration["Auth0:Domain"]}/";
-                    options.Audience = Configuration["Auth0:Audience"];
-                    // If the access token does not have a `sub` claim, `User.Identity.Name` will be `null`. Map it to a different claim by setting the NameClaimType below.
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        NameClaimType = ClaimTypes.NameIdentifier
-                    };
-                });
-            services.ConfigureIdentity();
+                      .AddJwtBearerConfiguration(
+                            $"https://{Configuration["Auth0:Domain"]}/",
+                            Configuration["Auth0:Audience"]
+                        );
+
 
             services.AddAuthorization(options =>
             {
@@ -123,6 +116,8 @@ namespace Eventuras.WebApi
                 options.AddPolicy("registrations:read", policy => policy.Requirements.Add(new HasScopeRequirement("registrations:read", $"https://{Configuration["Auth0:Domain"]}/")));
                 options.AddPolicy("registrations:write", policy => policy.Requirements.Add(new HasScopeRequirement("registrations:write", $"https://{Configuration["Auth0:Domain"]}/")));
             });
+
+            services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
             services.AddSwaggerGen(c =>
             {

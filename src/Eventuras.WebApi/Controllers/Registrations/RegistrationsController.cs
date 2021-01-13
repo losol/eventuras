@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Eventuras.Web.Controllers.Api.V1
+namespace Eventuras.WebApi.Controllers.Registrations
 {
     [ApiVersion("1")]
     [Authorize("registrations:read")]
