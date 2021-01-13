@@ -128,7 +128,8 @@ namespace Eventuras.WebApi.Extensions
 
         public static void AddInvoicingServices(
                 this IServiceCollection services,
-                IConfiguration config)
+                IConfiguration config,
+                FeatureManagement features)
         {
             // Register PowerOffice
             if (features.UsePowerOffice)

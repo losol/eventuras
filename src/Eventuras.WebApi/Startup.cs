@@ -70,7 +70,7 @@ namespace Eventuras.WebApi
             services.ConfigureAuthorizationPolicies(Configuration);
             services.AddEmailServices(AppSettings.EmailProvider, Configuration);
             services.AddSmsServices(AppSettings.SmsProvider, Configuration);
-            services.AddInvoicingServices(Features, Configuration);
+            services.AddInvoicingServices(Configuration, Features);
             services.AddApplicationServices(Configuration);
             services.AddFeatureManagement();
 
