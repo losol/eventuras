@@ -5,6 +5,7 @@
     <LangVersion>latest</LangVersion>
     <RootNamespace>Eventuras.Services</RootNamespace>
     <AssemblyName>Eventuras.Services</AssemblyName>
+    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
   </PropertyGroup>
 
   <ItemGroup>

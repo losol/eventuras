@@ -26,6 +26,8 @@ namespace Eventuras.Infrastructure
         public DbSet<ExternalAccount> ExternalAccounts { get; set; }
         public DbSet<ExternalEvent> ExternalEvents { get; set; }
         public DbSet<ExternalRegistration> ExternalRegistrations { get; set; }
+        public DbSet<EventCollection> EventCollections { get; set; }
+        public DbSet<EventCollectionMapping> EventCollectionMappings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -57,6 +59,17 @@ namespace Eventuras.Infrastructure
 
             builder.Entity<OrganizationMemberRole>()
                 .HasKey(o => new { o.OrganizationMemberId, o.Role });
+
+            builder.Entity<EventCollection>()
+                .HasMany(c => c.Events)
+                .WithMany(e => e.Collections)
+                .UsingEntity<EventCollectionMapping>(
+                    j => j.HasOne(m => m.Event)
+                        .WithMany(e => e.CollectionMappings)
+                        .OnDelete(DeleteBehavior.Cascade),
+                    j => j.HasOne(m => m.Collection)
+                        .WithMany(c => c.EventMappings)
+                        .OnDelete(DeleteBehavior.Cascade));
         }
 
         public void DetachAllEntities()

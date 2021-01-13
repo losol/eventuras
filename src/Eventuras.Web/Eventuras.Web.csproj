@@ -55,7 +55,6 @@
   <ItemGroup>
     <Folder Include="Pages\Admin\Products\" />
     <Folder Include="Views\Shared\Templates\Certificates\" />
-    <Folder Include="Controllers\Api\V2\" />
   </ItemGroup>
 
 </Project>
