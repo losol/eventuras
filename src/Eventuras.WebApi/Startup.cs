@@ -103,8 +103,8 @@ namespace Eventuras.WebApi
                     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
                       .AddJwtBearerConfiguration(
-                            $"https://{Configuration["Auth0:Domain"]}/",
-                            Configuration["Auth0:Audience"]
+                            Configuration["Auth:Issuer"],
+                            Configuration["Auth:Audience"]
                         );
 
 

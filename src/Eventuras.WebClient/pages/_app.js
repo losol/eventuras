@@ -15,7 +15,7 @@ function App({ Component, pageProps }) {
       redirectUri={process.env.NEXT_PUBLIC_APPLICATION_URL}
       onRedirectCallback={onRedirectCallback}
       audience="https://eventuras/api"
-      scope="registrations:read"
+      scope="openid profile email registrations:read"
     >
       <ChakraProvider theme={theme}>
         <Component {...pageProps} />

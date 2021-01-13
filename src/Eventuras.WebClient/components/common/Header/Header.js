@@ -20,6 +20,7 @@ const Header = (props) => {
         <Heading as="h1" size="lg" letterSpacing={"-.1rem"}>
           <Link href="/">Eventuras</Link>
         </Heading>
+        <Link href="/admin/">Admin</Link>
       </Flex>
 
       <ColorModeToggler />
