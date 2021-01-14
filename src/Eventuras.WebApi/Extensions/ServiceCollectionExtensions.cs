@@ -29,6 +29,7 @@ using Losol.Communication.HealthCheck.Sms;
 using Eventuras.WebApi.Constants;
 using Microsoft.FeatureManagement;
 using Eventuras.WebApi.Auth;
+using System;
 
 namespace Eventuras.WebApi.Extensions
 {
@@ -64,8 +65,23 @@ namespace Eventuras.WebApi.Extensions
         {
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(AuthPolicies.AdministratorRole, policy => policy.RequireRole(Roles.Admin, Roles.SuperAdmin));
-                options.AddPolicy("read:events", policy => policy.Requirements.Add(new HasScopeRequirement("read:events", $"https://{config["Auth0:Domain"]}/")));
+                var apiScopes = new[] {
+                    "events:read",
+                    "events:write",
+                    "registrations:read",
+                    "registrations:write"
+                };
+
+                var adminRoles = new string[] { Roles.Admin, Roles.SuperAdmin, Roles.SystemAdmin };
+                options.AddPolicy(AuthPolicies.AdministratorRole, policy => policy.RequireRole(adminRoles));
+
+                Array.ForEach(apiScopes, apiScope =>
+                    options.AddPolicy(apiScope,
+                    policy => policy.Requirements.Add(
+                        new ScopeRequirement(config["Auth:Issuer"], apiScope)
+                    )
+                    )
+                );
             });
         }
 

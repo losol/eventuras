@@ -108,16 +108,7 @@ namespace Eventuras.WebApi
                         );
 
 
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy(AuthPolicies.AdministratorRole, policy => policy.RequireRole(Roles.Admin, Roles.SuperAdmin, Roles.SystemAdmin));
-                options.AddPolicy("events:read", policy => policy.Requirements.Add(new HasScopeRequirement("events:read", $"https://{Configuration["Auth0:Domain"]}/")));
-                options.AddPolicy("events:write", policy => policy.Requirements.Add(new HasScopeRequirement("events:write", $"https://{Configuration["Auth0:Domain"]}/")));
-                options.AddPolicy("registrations:read", policy => policy.Requirements.Add(new HasScopeRequirement("registrations:read", $"https://{Configuration["Auth0:Domain"]}/")));
-                options.AddPolicy("registrations:write", policy => policy.Requirements.Add(new HasScopeRequirement("registrations:write", $"https://{Configuration["Auth0:Domain"]}/")));
-            });
-
-            services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
+            services.AddSingleton<IAuthorizationHandler, RequireScopeHandler>();
 
             services.AddSwaggerGen(c =>
             {

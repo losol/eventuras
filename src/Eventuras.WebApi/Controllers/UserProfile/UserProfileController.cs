@@ -6,7 +6,7 @@ using Eventuras.WebApi.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Eventuras.WebApi.Controllers
+namespace Eventuras.WebApi.Controllers.UserProfile
 {
     public class UserInfo
     {
@@ -18,11 +18,13 @@ namespace Eventuras.WebApi.Controllers
     }
 
     [ApiController]
-    [Route("/api/claims")]
+
     public class UserController : ControllerBase
     {
         [HttpGet]
         [Authorize]
+        [ApiVersion("1")]
+        [Route("v{version:apiVersion}/userprofile/claims")]
         public UserInfo Get()
         {
             return new UserInfo()

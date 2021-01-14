@@ -26,7 +26,7 @@ export const useApi = (url, options = {}) => {
   useEffect(() => {
     (async () => {
       try {
-        const token = await getAccessTokenSilently({ audience, scope });
+        const token = await getAccessTokenSilently({ audience: "https://eventuras/api", scope: "openid profile email registrations:read" });
         setToken(token);
         setState({
           ...state,
