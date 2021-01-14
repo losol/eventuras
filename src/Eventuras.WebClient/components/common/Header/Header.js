@@ -1,10 +1,20 @@
-import { Flex, Heading, useColorModeValue } from "@chakra-ui/react";
+import { Button, Flex, Heading, useColorModeValue } from "@chakra-ui/react";
+import { ColorModeToggler, UserMenu } from "..";
 
-import { ColorModeToggler } from "..";
 import Link from "next/link";
 import React from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Header = (props) => {
+  const {
+    isLoading,
+    isAuthenticated,
+    error,
+    user,
+    loginWithRedirect,
+    logout,
+  } = useAuth0();
+
   return (
     <Flex
       as="nav"
@@ -20,10 +30,19 @@ const Header = (props) => {
         <Heading as="h1" size="lg" letterSpacing={"-.1rem"}>
           <Link href="/">Eventuras</Link>
         </Heading>
-        <Link href="/admin/">Admin</Link>
       </Flex>
 
-      <ColorModeToggler />
+      {!isAuthenticated && (
+        <Button
+          onClick={loginWithRedirect}
+          colorScheme="teal"
+          variant="outline"
+        >
+          Logg på
+        </Button>
+      )}
+
+      {isAuthenticated && <UserMenu name={user.name} />}
     </Flex>
   );
 };
