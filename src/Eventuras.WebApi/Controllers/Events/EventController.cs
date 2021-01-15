@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Eventuras.WebApi
 {
-    [ApiVersion("1")]
+    [ApiVersion("3")]
     [Authorize(Policy = AuthPolicies.AdministratorRole)]
     [Route("v{version:apiVersion}/events")]
     [ApiController]
@@ -32,7 +32,7 @@ namespace Eventuras.WebApi
         public async Task<ActionResult<IQueryable<EventDto>>> Get()
         {
             // TODO: add event type filter
-            var events = from e in await _eventInfoService.GetUpcomingEventsAsync()
+            var events = from e in await _eventInfoService.ListEventsAsync()
                          select new EventDto()
                          {
                              Id = e.EventInfoId,

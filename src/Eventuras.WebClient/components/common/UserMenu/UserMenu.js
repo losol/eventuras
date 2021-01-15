@@ -1,20 +1,16 @@
 import { Avatar, AvatarBadge } from "@chakra-ui/react";
 import {
   Button,
-  ChevronDownIcon,
-  Flex,
-  Heading,
+  Link,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
   Wrap,
   WrapItem,
-  useColorModeValue,
 } from "@chakra-ui/react";
 
 import { ColorModeToggler } from "..";
-import Link from "next/link";
 import React from "react";
 
 const UserMenu = (props) => {
@@ -42,6 +38,11 @@ const UserMenu = (props) => {
 
           <MenuItem>
             <ColorModeToggler />
+          </MenuItem>
+          <MenuItem>
+            <Button onClick={() => logout({ returnTo: window.location.origin })}>
+              Logg av
+            </Button>
           </MenuItem>
         </MenuList>
       </Menu>

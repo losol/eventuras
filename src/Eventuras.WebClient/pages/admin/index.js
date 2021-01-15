@@ -14,7 +14,7 @@ function AdminIndex() {
     logout,
   } = useAuth0();
 
-  const { data: registrations } = useApi("/v1/registrations");
+  const { data: registrations } = useApi("/v3/registrations");
 
   if (isLoading) {
     return <div>Loading...</div>;

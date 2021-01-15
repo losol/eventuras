@@ -1,4 +1,5 @@
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+import { Container, Heading } from "@chakra-ui/react";
 
 import { Layout } from "../../components/common";
 import React from "react";
@@ -14,28 +15,18 @@ function UserIndex() {
     logout,
   } = useAuth0();
 
-  const { data: registrations } = useApi("/v1/registrations");
+  const { data: registrations } = useApi("/v3/registrations");
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>Oops... {error.message}</div>;
-  }
+  return (
+    <Layout>
+      <Container marginTop="16">
+        <Heading>Heihei {user.name}{" "}</Heading>
 
-  if (isAuthenticated) {
-    return (
-      <Layout>
-        Heihei {user.name}{" "}
-        <button onClick={() => logout({ returnTo: window.location.origin })}>
-          Log out
-        </button>
         {registrations && registrations.map((r) => <p>{r.registrationId}</p>)}
-      </Layout>
-    );
-  } else {
-    return <button onClick={loginWithRedirect}>Log in</button>;
-  }
+      </Container>
+    </Layout>
+  );
+
 }
 
 export default withAuthenticationRequired(UserIndex);

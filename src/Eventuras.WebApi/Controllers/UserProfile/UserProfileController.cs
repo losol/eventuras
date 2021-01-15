@@ -23,7 +23,7 @@ namespace Eventuras.WebApi.Controllers.UserProfile
     {
         [HttpGet]
         [Authorize]
-        [ApiVersion("1")]
+        [ApiVersion("3")]
         [Route("v{version:apiVersion}/userprofile/claims")]
         public UserInfo Get()
         {

@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Eventuras.WebApi.Controllers
 {
-    [ApiVersion("1")]
+    [ApiVersion("3")]
     [Authorize(Policy = AuthPolicies.AdministratorRole)]
     [Route("v{version:apiVersion}/onlinecourses")]
     [ApiController]

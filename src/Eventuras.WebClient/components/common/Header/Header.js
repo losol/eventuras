@@ -1,15 +1,12 @@
 import { Button, Flex, Heading, useColorModeValue } from "@chakra-ui/react";
-import { ColorModeToggler, UserMenu } from "..";
+import { Link, UserMenu } from "..";
 
-import Link from "next/link";
 import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const Header = (props) => {
   const {
-    isLoading,
     isAuthenticated,
-    error,
     user,
     loginWithRedirect,
     logout,
@@ -41,7 +38,6 @@ const Header = (props) => {
           Logg på
         </Button>
       )}
-
       {isAuthenticated && <UserMenu name={user.name} />}
     </Flex>
   );
