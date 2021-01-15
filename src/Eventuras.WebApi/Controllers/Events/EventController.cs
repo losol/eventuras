@@ -1,20 +1,16 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Eventuras.Domain;
 using Eventuras.Services.Events;
-using Eventuras.WebApi.Constants;
 using Eventuras.WebApi.Models;
+using Eventuras.WebApi;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eventuras.WebApi
 {
     [ApiVersion("3")]
-    [Authorize(Policy = AuthPolicies.AdministratorRole)]
+    [Authorize(Policy = Constants.Auth.AdministratorRole)]
     [Route("v{version:apiVersion}/events")]
     [ApiController]
     public class EventController : ControllerBase

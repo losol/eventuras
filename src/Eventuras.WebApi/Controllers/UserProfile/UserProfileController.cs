@@ -29,13 +29,13 @@ namespace Eventuras.WebApi.Controllers.UserProfile
     [ApiController]
     public class UserProfileController : ControllerBase
     {
-        private readonly IRegistrationRetrievalService _registrationService;
+        private readonly IRegistrationRetrievalService _registrationRetrievalService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger _logger;
 
-        public UserProfileController(IRegistrationRetrievalService registrationService, UserManager<ApplicationUser> userManager, ILogger<UserProfileController> logger)
+        public UserProfileController(IRegistrationRetrievalService registrationRetrievalService, UserManager<ApplicationUser> userManager, ILogger<UserProfileController> logger)
         {
-            _registrationService = registrationService;
+            _registrationRetrievalService = registrationRetrievalService;
             _userManager = userManager;
             _logger = logger;
         }
@@ -59,25 +59,28 @@ namespace Eventuras.WebApi.Controllers.UserProfile
         [Authorize]
         [ApiVersion("3")]
         [Route("v{version:apiVersion}/userprofile/registrations")]
-        public async Task<ActionResult<List<RegistrationDto>>> GetUserRegistrations()
+        public async Task<ActionResult> GetUserRegistrations()
         {
-            // TODO: add new user if user does not exist?
-            // TODO: get the email?
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            var token = new CancellationToken();
-            var registrations = await _registrationService.ListRegistrationsAsync(
-                    new IRegistrationRetrievalService.Request
-                    {
-                        UserId = user.Id,
-                        IncludingUser = true,
-                        IncludingEventInfo = true,
-                        IncludingOrders = true,
-                        IncludingProducts = true,
-                        OrderBy = IRegistrationRetrievalService.Order.RegistrationTime,
-                        Descending = true
-                    }, token);
+            // TODO: add paging
 
-            return Ok(registrations);
+            var userEmail = HttpContext.User.GetEmail();
+            var user = await _userManager.FindByEmailAsync(userEmail);
+
+            var reader = new PageReader<Registration>(async (offset, limit, token) =>
+                            await _registrationRetrievalService.ListRegistrationsAsync(
+                                new IRegistrationRetrievalService.Request
+                                {
+                                    UserId = user.Id,
+                                    IncludingUser = false,
+                                    IncludingEventInfo = false,
+                                    IncludingOrders = false,
+                                    IncludingProducts = false,
+                                    OrderBy = IRegistrationRetrievalService.Order.RegistrationTime,
+                                    Descending = true
+                                }, token));
+
+            // TODO: Read 10 registrations by defalt, and add pagination to this api
+            return Ok();
         }
     }
 }

@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Eventuras.WebApi.Controllers
 {
     [ApiVersion("3")]
-    [Authorize(Policy = AuthPolicies.AdministratorRole)]
+    [Authorize(Policy = Constants.Auth.AdministratorRole)]
     [Route("v{version:apiVersion}/onlinecourses")]
     [ApiController]
     public class OnlineCourseController : ControllerBase

@@ -7,7 +7,14 @@ namespace Eventuras.Services
 {
     public class Paging<T>
     {
+        /// <summary>
+        /// Data for this page. 
+        /// </summary>
         public T[] Data { get; }
+
+        /// <summary>
+        /// Total of records for this query. 
+        /// </summary>
         public int TotalRecords { get; }
 
         public Paging(T[] data, int totalRecords)

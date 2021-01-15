@@ -73,7 +73,7 @@ namespace Eventuras.WebApi.Extensions
                 };
 
                 var adminRoles = new string[] { Roles.Admin, Roles.SuperAdmin, Roles.SystemAdmin };
-                options.AddPolicy(AuthPolicies.AdministratorRole, policy => policy.RequireRole(adminRoles));
+                options.AddPolicy(Constants.Auth.AdministratorRole, policy => policy.RequireRole(adminRoles));
 
                 Array.ForEach(apiScopes, apiScope =>
                     options.AddPolicy(apiScope,
