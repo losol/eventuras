@@ -22,7 +22,7 @@ function UserProfile() {
       <Container marginTop="16">
         <Heading>Min bruker</Heading>
         <Text>Navn: {user.name}</Text>
-        {registrations && registrations.map((r) => <p>r.registrationId</p>)}
+        <Text>E-post: {user.email}</Text>
       </Container>
     </Layout>
   );

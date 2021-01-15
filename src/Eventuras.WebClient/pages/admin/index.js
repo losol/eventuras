@@ -1,5 +1,5 @@
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
-
+import { Container, Heading } from "@chakra-ui/react";
 import { Layout } from "../../components/common";
 import React from "react";
 import useApi from "../../lib/useApi";
@@ -26,11 +26,12 @@ function AdminIndex() {
   if (isAuthenticated) {
     return (
       <Layout>
-        Hello {user.name}{" "}
-        <button onClick={() => logout({ returnTo: window.location.origin })}>
-          Log out
-        </button>
-        {registrations && registrations.map((r) => <p>r.registrationId</p>)}
+        <Container paddingTop="32">
+          <Heading as="h1">Admin</Heading>
+
+          <Heading as="h2" paddingTop="16">Siste registreringer</Heading>
+          {registrations && registrations.map((r) => <p>{r.registrationId}, {r.userId}</p>)}
+        </Container>
       </Layout>
     );
   } else {

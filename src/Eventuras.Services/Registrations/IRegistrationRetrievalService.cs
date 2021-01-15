@@ -13,6 +13,7 @@ namespace Eventuras.Services.Registrations
         public class Request : PagingRequest
         {
             public int? EventInfoId { get; set; }
+            public string UserId { get; set; }
             public bool IncludingUser { get; set; }
             public bool IncludingEventInfo { get; set; }
             public bool IncludingOrders { get; set; }
