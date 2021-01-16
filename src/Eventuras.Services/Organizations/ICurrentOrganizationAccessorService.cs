@@ -1,3 +1,4 @@
+using System.Threading;
 using Eventuras.Domain;
 using System.Threading.Tasks;
 
@@ -11,9 +12,13 @@ namespace Eventuras.Services.Organizations
     public interface ICurrentOrganizationAccessorService
     {
         /// <returns>Current organization or <c>null</c>, if can't be determined.</returns>
-        Task<Organization> GetCurrentOrganizationAsync(OrganizationRetrievalOptions options = null);
+        Task<Organization> GetCurrentOrganizationAsync(
+            OrganizationRetrievalOptions options = null,
+            CancellationToken cancellationToken = default);
 
         /// <exception cref="OrganizationMisconfigurationException">Organization not configured for the current hostname.</exception>
-        Task<Organization> RequireCurrentOrganizationAsync(OrganizationRetrievalOptions options = null);
+        Task<Organization> RequireCurrentOrganizationAsync(
+            OrganizationRetrievalOptions options = null,
+            CancellationToken cancellationToken = default);
     }
 }

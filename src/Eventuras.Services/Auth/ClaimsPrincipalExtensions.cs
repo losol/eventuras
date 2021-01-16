@@ -12,7 +12,7 @@ namespace Eventuras.Services.Auth
 
         public static bool IsAdmin(this ClaimsPrincipal user)
         {
-            return new[] { Roles.Admin, Roles.SuperAdmin }.Any(user.IsInRole);
+            return new[] { Roles.Admin, Roles.SystemAdmin, Roles.SuperAdmin }.Any(user.IsInRole);
         }
 
         public static bool IsSuperAdmin(this ClaimsPrincipal user)
@@ -20,9 +20,20 @@ namespace Eventuras.Services.Auth
             return user.IsInRole(Roles.SuperAdmin);
         }
 
+        public static bool IsSystemAdmin(this ClaimsPrincipal user)
+        {
+            return user.IsInRole(Roles.SystemAdmin);
+        }
+
         public static bool IsAnonymous(this ClaimsPrincipal user)
         {
             return user.Identity?.IsAuthenticated != true;
+        }
+
+        /// <returns>Whether the principal is a super admin or system admin.</returns>
+        public static bool IsPowerAdmin(this ClaimsPrincipal user)
+        {
+            return user.IsSuperAdmin() || user.IsSystemAdmin();
         }
     }
 }

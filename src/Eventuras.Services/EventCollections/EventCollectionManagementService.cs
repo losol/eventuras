@@ -60,8 +60,7 @@ namespace Eventuras.Services.EventCollections
             {
                 throw new NotAccessibleException();
             }
-            _context.Update(collection);
-            await _context.SaveChangesAsync();
+            await _context.UpdateAsync(collection);
         }
 
         public async Task DeleteCollectionAsync(EventCollection collection)

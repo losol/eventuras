@@ -5,89 +5,87 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Eventuras.Services.Exceptions;
 
 namespace Eventuras.Services.Registrations
 {
-    public class RegistrationRetrievalService : IRegistrationRetrievalService
+    internal class RegistrationRetrievalService : IRegistrationRetrievalService
     {
-        private readonly ApplicationDbContext _db;
+        private readonly ApplicationDbContext _context;
+        private readonly IRegistrationAccessControlService _registrationAccessControlService;
 
-        public RegistrationRetrievalService(ApplicationDbContext db)
+        public RegistrationRetrievalService(
+            ApplicationDbContext context,
+            IRegistrationAccessControlService registrationAccessControlService)
         {
-            _db = db ?? throw new ArgumentNullException(nameof(db));
+            _context = context ?? throw
+                new ArgumentNullException(nameof(context));
+
+            _registrationAccessControlService = registrationAccessControlService ?? throw
+                new ArgumentNullException(nameof(registrationAccessControlService));
+        }
+
+        public async Task<Registration> GetRegistrationByIdAsync(int id,
+            RegistrationRetrievalOptions options,
+            CancellationToken cancellationToken)
+        {
+            options ??= RegistrationRetrievalOptions.Default;
+
+            var registration = await _context.Registrations
+                .AsNoTracking()
+                .WithOptions(options)
+                .Where(r => r.RegistrationId == id)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (registration == null)
+            {
+                throw new NotFoundException($"Registration {id} not found.");
+            }
+
+            await _registrationAccessControlService
+                .CheckRegistrationReadAccessAsync(registration);
+
+            return registration;
+        }
+
+        public async Task<Registration> FindRegistrationAsync(
+            RegistrationFilter filter,
+            RegistrationRetrievalOptions options,
+            CancellationToken cancellationToken)
+        {
+            options ??= RegistrationRetrievalOptions.Default;
+
+            var query = _context.Registrations
+                .AsNoTracking()
+                .WithOptions(options)
+                .AddFilter(filter);
+
+            if (filter.AccessibleOnly)
+            {
+                query = await _registrationAccessControlService
+                    .AddAccessFilterAsync(query);
+            }
+
+            return await query.FirstOrDefaultAsync(cancellationToken);
         }
 
         public async Task<Paging<Registration>> ListRegistrationsAsync(
-            IRegistrationRetrievalService.Request request,
-            CancellationToken cancellationToken = default)
+            RegistrationListRequest request,
+            RegistrationRetrievalOptions options,
+            CancellationToken cancellationToken)
         {
-            var query = _db.Registrations as IQueryable<Registration>;
+            options ??= RegistrationRetrievalOptions.Default;
 
-            if (request.IncludingUser)
+            var query = _context.Registrations
+                .AsNoTracking()
+                .WithOptions(options)
+                .AddFilter(request.Filter)
+                .AddOrder(request.OrderBy, request.Descending);
+
+            if (request.Filter.AccessibleOnly)
             {
-                query = query.Include(r => r.User);
-            }
-
-            if (request.IncludingEventInfo)
-            {
-                query = query.Include(r => r.EventInfo);
-            }
-
-            if (request.IncludingOrders)
-            {
-                query = query.Include(r => r.Orders)
-                    .ThenInclude(o => o.OrderLines);
-            }
-
-            if (request.IncludingProducts)
-            {
-                query = query.Include(r => r.Orders)
-                    .ThenInclude(o => o.OrderLines)
-                    .ThenInclude(l => l.Product);
-
-                query = query.Include(r => r.Orders)
-                    .ThenInclude(o => o.OrderLines)
-                    .ThenInclude(l => l.ProductVariant);
-            }
-
-            if (request.VerifiedOnly)
-            {
-                query = query.Where(r => r.Verified);
-            }
-
-            if (request.ActiveUsersOnly)
-            {
-                query = query.Where(r => !r.User.Archived);
-            }
-
-            if (request.HavingEmailConfirmedOnly)
-            {
-                query = query.Where(r => r.User.EmailConfirmed);
-            }
-
-            if (request.EventInfoId.HasValue)
-            {
-                query = query.Where(r => r.EventInfoId == request.EventInfoId);
-            }
-
-            if (!string.IsNullOrEmpty(request.UserId))
-            {
-                query = query.Where(r => r.UserId == request.UserId);
-            }
-
-            switch (request.OrderBy)
-            {
-                case IRegistrationRetrievalService.Order.RegistrationTime:
-                    if (request.Descending)
-                    {
-
-                        query = query.OrderByDescending(r => r.RegistrationTime);
-                    }
-                    else
-                    {
-                        query = query.OrderBy(r => r.RegistrationTime);
-                    }
-                    break;
+                query = await _registrationAccessControlService
+                    .AddAccessFilterAsync(query);
             }
 
             return await Paging<Registration>.CreateAsync(query, request, cancellationToken);

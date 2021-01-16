@@ -68,16 +68,15 @@ namespace Eventuras.WebApi.Controllers.UserProfile
 
             var reader = new PageReader<Registration>(async (offset, limit, token) =>
                             await _registrationRetrievalService.ListRegistrationsAsync(
-                                new IRegistrationRetrievalService.Request
+                                new RegistrationListRequest
                                 {
-                                    UserId = user.Id,
-                                    IncludingUser = false,
-                                    IncludingEventInfo = false,
-                                    IncludingOrders = false,
-                                    IncludingProducts = false,
-                                    OrderBy = IRegistrationRetrievalService.Order.RegistrationTime,
-                                    Descending = true
-                                }, token));
+                                    OrderBy = RegistrationListOrder.RegistrationTime,
+                                    Descending = true,
+                                    Filter = new RegistrationFilter
+                                    {
+                                        UserId = user.Id
+                                    }
+                                }, RegistrationRetrievalOptions.RegistrationInfoOnly, token));
 
             // TODO: Read 10 registrations by defalt, and add pagination to this api
             return Ok();

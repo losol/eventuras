@@ -36,7 +36,7 @@ namespace Eventuras.Services.ExternalSync
             string syncProviderName,
             CancellationToken cancellationToken)
         {
-            var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventId);
+            var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventId, cancellationToken);
 
             var results = new List<EventSynchronizationResult>();
 
@@ -56,16 +56,17 @@ namespace Eventuras.Services.ExternalSync
 
             var reader = new PageReader<Registration>(async (offset, limit, token) =>
                 await _registrationRetrievalService.ListRegistrationsAsync(
-                    new IRegistrationRetrievalService.Request
+                    new RegistrationListRequest
                     {
                         Offset = offset,
                         Limit = limit,
-                        EventInfoId = eventInfo?.EventInfoId,
-                        IncludingUser = true,
-                        IncludingEventInfo = true,
-                        VerifiedOnly = true,
-                        OrderBy = IRegistrationRetrievalService.Order.RegistrationTime
-                    }, token));
+                        OrderBy = RegistrationListOrder.RegistrationTime,
+                        Filter = new RegistrationFilter
+                        {
+                            EventInfoId = eventInfo?.EventInfoId,
+                            VerifiedOnly = true,
+                        }
+                    }, RegistrationRetrievalOptions.UserAndEvent, token));
 
             while (await reader.HasMoreAsync(cancellationToken))
             {

@@ -19,6 +19,8 @@ namespace Eventuras.Services.Events
 
         public bool TodaysEventsOnly { get; set; }
 
+        public bool AccessibleOnly { get; set; } = true;
+
         public DateTime? StartDateAfter { get; set; }
 
         public int[] CollectionIds { get; set; }
