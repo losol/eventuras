@@ -6,6 +6,7 @@
     <AssemblyName>Eventuras.Web</AssemblyName>
     <UserSecretsId>aspnet-losol.Eventuras-74C0FE44-3444-4386-9785-6815A715D4AB</UserSecretsId>
     <LosolCommunicationLibraryVersion>0.5.2</LosolCommunicationLibraryVersion>
+    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
   </PropertyGroup>
   <PropertyGroup>
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
