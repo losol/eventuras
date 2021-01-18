@@ -7,6 +7,7 @@ WORKDIR /app/src
 # copy csproj and restore dependencies
 COPY ./Eventuras.sln .
 COPY ./src/Eventuras.Web/*.csproj ./src/Eventuras.Web/
+COPY ./src/Eventuras.WebApi/*.csproj ./src/Eventuras.WebApi/
 COPY ./src/Eventuras.Services/*.csproj ./src/Eventuras.Services/
 COPY ./src/Eventuras.Services.Converto/*.csproj ./src/Eventuras.Services.Converto/
 COPY ./src/Eventuras.Services.Auth0/*.csproj ./src/Eventuras.Services.Auth0/

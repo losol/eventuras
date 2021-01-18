@@ -1,5 +1,5 @@
 using Eventuras.Web.Extensions;
-using Eventuras.Config;
+using Eventuras.Web.Config;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;

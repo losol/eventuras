@@ -70,6 +70,11 @@ namespace Eventuras.Services.Registrations
                 query = query.Where(r => r.EventInfoId == request.EventInfoId);
             }
 
+            if (!string.IsNullOrEmpty(request.UserId))
+            {
+                query = query.Where(r => r.UserId == request.UserId);
+            }
+
             switch (request.OrderBy)
             {
                 case IRegistrationRetrievalService.Order.RegistrationTime:

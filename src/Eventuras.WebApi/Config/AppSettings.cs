@@ -1,11 +1,9 @@
-namespace Eventuras.Web.Config
+namespace Eventuras.WebApi.Config
 {
     public class AppSettings
     {
         public EmailProvider EmailProvider { get; set; }
         public SmsProvider SmsProvider { get; set; }
-        public bool UsePowerOffice { get; set; }
-        public bool UseStripeInvoice { get; set; }
         public string AllowedOrigins { get; set; }
     }
 
