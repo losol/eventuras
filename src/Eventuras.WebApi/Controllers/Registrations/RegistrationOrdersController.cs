@@ -39,7 +39,7 @@ namespace Eventuras.WebApi.Controllers.Registrations
 
             var order = await _registrationOrderManagementService
                 .CreateOrderForRegistrationAsync(registration, dto
-                        .Select(d => d.ToOrderLineDto())
+                        .Select(d => d.ToOrderItemDto())
                         .ToArray(), cancellationToken);
 
             return Ok(new OrderDto(order));

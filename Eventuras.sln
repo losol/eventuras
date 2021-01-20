@@ -1,4 +1,5 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 15.0.26124.0
@@ -16,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.Services.Converto
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{DBDA05E0-4065-4C83-8C2B-29C1A77BFA98}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.IntegrationTests", "tests\Eventuras.IntegrationTests\Eventuras.IntegrationTests.csproj", "{02C50FB2-0AFC-41A4-B6B4-69801337434D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.Web.Tests", "tests\Eventuras.Web.Tests\Eventuras.Web.Tests.csproj", "{02C50FB2-0AFC-41A4-B6B4-69801337434D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.UnitTests", "tests\Eventuras.UnitTests\Eventuras.UnitTests.csproj", "{99FFFC5B-69E5-44B9-B0B6-BF74E664EFC6}"
 EndProject
@@ -30,9 +31,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.Services.TalentLm
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.TestAbstractions", "tests\Eventuras.TestAbstractions\Eventuras.TestAbstractions.csproj", "{D5E8C294-C317-42CB-96E4-33D64B0CA846}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventuras.Services.Zoom", "src\Eventuras.Services.Zoom\Eventuras.Services.Zoom.csproj", "{35B5584E-F93C-415A-85E6-C2CA3DAA1418}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.Services.Zoom", "src\Eventuras.Services.Zoom\Eventuras.Services.Zoom.csproj", "{35B5584E-F93C-415A-85E6-C2CA3DAA1418}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventuras.WebApi", "src\Eventuras.WebApi\Eventuras.WebApi.csproj", "{8B8EC21D-A64F-402B-829A-E1E9187EE5A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.WebApi", "src\Eventuras.WebApi\Eventuras.WebApi.csproj", "{8B8EC21D-A64F-402B-829A-E1E9187EE5A5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.WebApi.Tests", "tests\Eventuras.WebApi.Tests\Eventuras.WebApi.Tests.csproj", "{2C56C37D-9071-4C4C-9B8D-6D8BA2A6FAF2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -212,6 +215,18 @@ Global
 		{8B8EC21D-A64F-402B-829A-E1E9187EE5A5}.Release|x64.Build.0 = Release|Any CPU
 		{8B8EC21D-A64F-402B-829A-E1E9187EE5A5}.Release|x86.ActiveCfg = Release|Any CPU
 		{8B8EC21D-A64F-402B-829A-E1E9187EE5A5}.Release|x86.Build.0 = Release|Any CPU
+		{2C56C37D-9071-4C4C-9B8D-6D8BA2A6FAF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C56C37D-9071-4C4C-9B8D-6D8BA2A6FAF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C56C37D-9071-4C4C-9B8D-6D8BA2A6FAF2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2C56C37D-9071-4C4C-9B8D-6D8BA2A6FAF2}.Debug|x64.Build.0 = Debug|Any CPU
+		{2C56C37D-9071-4C4C-9B8D-6D8BA2A6FAF2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2C56C37D-9071-4C4C-9B8D-6D8BA2A6FAF2}.Debug|x86.Build.0 = Debug|Any CPU
+		{2C56C37D-9071-4C4C-9B8D-6D8BA2A6FAF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C56C37D-9071-4C4C-9B8D-6D8BA2A6FAF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C56C37D-9071-4C4C-9B8D-6D8BA2A6FAF2}.Release|x64.ActiveCfg = Release|Any CPU
+		{2C56C37D-9071-4C4C-9B8D-6D8BA2A6FAF2}.Release|x64.Build.0 = Release|Any CPU
+		{2C56C37D-9071-4C4C-9B8D-6D8BA2A6FAF2}.Release|x86.ActiveCfg = Release|Any CPU
+		{2C56C37D-9071-4C4C-9B8D-6D8BA2A6FAF2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -231,6 +246,7 @@ Global
 		{D5E8C294-C317-42CB-96E4-33D64B0CA846} = {DBDA05E0-4065-4C83-8C2B-29C1A77BFA98}
 		{35B5584E-F93C-415A-85E6-C2CA3DAA1418} = {B280334D-A924-4F2E-9AF3-BA7566335FB0}
 		{8B8EC21D-A64F-402B-829A-E1E9187EE5A5} = {B280334D-A924-4F2E-9AF3-BA7566335FB0}
+		{2C56C37D-9071-4C4C-9B8D-6D8BA2A6FAF2} = {DBDA05E0-4065-4C83-8C2B-29C1A77BFA98}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {73E41161-D239-4EB6-8C90-A0FEA88D4E7C}

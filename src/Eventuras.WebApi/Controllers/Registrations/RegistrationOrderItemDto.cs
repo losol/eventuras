@@ -10,7 +10,7 @@ namespace Eventuras.WebApi.Controllers.Registrations
 
         public int Quantity { get; set; }
 
-        public OrderItemDto ToOrderLineDto()
+        public OrderItemDto ToOrderItemDto()
         {
             return new OrderItemDto
             {
