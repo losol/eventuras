@@ -7,9 +7,6 @@ namespace Eventuras.TestAbstractions
 {
     public class SeedData
     {
-        public const string SuperAdminEmail = "super-admin@email.com";
-        public const string SuperAdminPassword = "MySuperSecretKey1!";
-
         public static readonly EventInfo[] Events = {
 				// Event with products and variants
 				new EventInfo

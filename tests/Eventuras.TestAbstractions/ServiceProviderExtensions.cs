@@ -1,11 +1,10 @@
+using System;
+using System.Threading.Tasks;
 using Eventuras.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Threading.Tasks;
-using Eventuras.TestAbstractions;
 
-namespace Eventuras.IntegrationTests
+namespace Eventuras.TestAbstractions
 {
     public static class ServiceProviderExtensions
     {

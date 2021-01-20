@@ -112,5 +112,14 @@ namespace Eventuras.TestAbstractions
             Assert.Empty(token);
             return token;
         }
+
+        public static JToken CheckEmptyPaging(this JToken token)
+        {
+            Assert.Equal(1, token.Value<int>("page"));
+            Assert.Equal(0, token.Value<int>("total"));
+            Assert.Equal(0, token.Value<int>("pages"));
+            token.Value<JArray>("data").CheckEmptyArray();
+            return token;
+        }
     }
 }

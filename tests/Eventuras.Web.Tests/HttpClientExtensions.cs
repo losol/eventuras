@@ -11,7 +11,7 @@ using StringWithQualityHeaderValue = System.Net.Http.Headers.StringWithQualityHe
 
 namespace Eventuras.IntegrationTests
 {
-    public static class HttpClientExtensions
+    internal static class HttpClientExtensions
     {
         public static async Task<HttpResponseMessage> PostAsync(
             this HttpClient httpClient,
@@ -47,7 +47,7 @@ namespace Eventuras.IntegrationTests
 
         public static async Task<HttpResponseMessage> LogInAsSuperAdminAsync(this HttpClient httpClient)
         {
-            return await httpClient.LoginAsync(SeedData.SuperAdminEmail, SeedData.SuperAdminPassword);
+            return await httpClient.LoginAsync(TestingConstants.SuperAdminEmail, TestingConstants.SuperAdminPassword);
         }
 
         public static async Task<string> GetAntiForgeryTokenAsync(this HttpClient httpClient, string requestUri)

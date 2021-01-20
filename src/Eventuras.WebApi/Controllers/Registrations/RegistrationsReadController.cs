@@ -3,8 +3,6 @@ using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,15 +22,17 @@ namespace Eventuras.WebApi.Controllers.Registrations
                 new ArgumentNullException(nameof(registrationRetrievalService));
         }
 
-        // GET: v3/registrations
-        // Returns the latest 100 registrations
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RegistrationDto>>> GetRegistrations(CancellationToken cancellationToken)
+        public async Task<PageResponseDto<RegistrationDto>> GetRegistrations(
+            [FromQuery] PageQueryDto query,
+            CancellationToken cancellationToken)
         {
-            var registrations = await _registrationRetrievalService
+            var paging = await _registrationRetrievalService
                 .ListRegistrationsAsync(
                     new RegistrationListRequest
                     {
+                        Limit = query.Limit,
+                        Offset = query.Offset,
                         Filter = new RegistrationFilter
                         {
                             AccessibleOnly = true
@@ -43,7 +43,8 @@ namespace Eventuras.WebApi.Controllers.Registrations
                     RegistrationRetrievalOptions.Default,
                     cancellationToken);
 
-            return Ok(registrations.Data.Select(r => new RegistrationDto(r)));
+            return PageResponseDto<RegistrationDto>.FromPaging(
+                query, paging, r => new RegistrationDto(r));
         }
     }
 }

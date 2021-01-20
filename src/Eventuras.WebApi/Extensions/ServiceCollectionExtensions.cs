@@ -30,6 +30,7 @@ using Eventuras.WebApi.Constants;
 using Microsoft.FeatureManagement;
 using Eventuras.WebApi.Auth;
 using System;
+using System.Linq;
 
 namespace Eventuras.WebApi.Extensions
 {
@@ -65,12 +66,10 @@ namespace Eventuras.WebApi.Extensions
         {
             services.AddAuthorization(options =>
             {
-                var apiScopes = new[] {
-                    "events:read",
-                    "events:write",
-                    "registrations:read",
-                    "registrations:write"
-                };
+                var apiScopes = config.GetSection("Auth:Scopes")
+                    .GetChildren()
+                    .Select(s => s.Value)
+                    .ToArray();
 
                 var adminRoles = new string[] { Roles.Admin, Roles.SuperAdmin, Roles.SystemAdmin };
                 options.AddPolicy(Constants.Auth.AdministratorRole, policy => policy.RequireRole(adminRoles));

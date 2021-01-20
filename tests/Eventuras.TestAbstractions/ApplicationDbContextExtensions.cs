@@ -3,39 +3,36 @@ using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
-using Eventuras.IntegrationTests;
 
 namespace Eventuras.TestAbstractions
 {
     public static class ApplicationDbContextExtensions
     {
-        public const string Placeholder = "__Placeholder__";
-
         public static async Task<IDisposableEntity<EventCollection>> CreateEventCollectionAsync(
             this ApplicationDbContext context,
-            string name = Placeholder,
+            string name = TestingConstants.Placeholder,
             string slug = null,
             string description = null,
             bool featured = false,
-            string featuredImageUrl = Placeholder,
-            string featuredImageCaption = Placeholder,
+            string featuredImageUrl = TestingConstants.Placeholder,
+            string featuredImageCaption = TestingConstants.Placeholder,
             Organization organization = null,
             int? organizationId = null)
         {
 
-            if (name == Placeholder)
+            if (name == TestingConstants.Placeholder)
             {
                 name = $"Test Collection {Guid.NewGuid()}";
             }
 
             organizationId ??= (organization ?? (await context.CreateOrganizationAsync()).Entity).OrganizationId;
 
-            if (featuredImageUrl == Placeholder)
+            if (featuredImageUrl == TestingConstants.Placeholder)
             {
                 featuredImageUrl = featured ? $"http://some.featured.image.url/{Guid.NewGuid()}" : null;
             }
 
-            if (featuredImageCaption == Placeholder)
+            if (featuredImageCaption == TestingConstants.Placeholder)
             {
                 featuredImageCaption = featured ? $"Some featured image caption {Guid.NewGuid()}" : null;
             }
@@ -58,10 +55,10 @@ namespace Eventuras.TestAbstractions
 
         public static async Task<IDisposableEntity<EventInfo>> CreateEventAsync(
             this ApplicationDbContext context,
-            string title = Placeholder,
-            string description = Placeholder,
-            string code = Placeholder,
-            string city = Placeholder,
+            string title = TestingConstants.Placeholder,
+            string description = TestingConstants.Placeholder,
+            string code = TestingConstants.Placeholder,
+            string city = TestingConstants.Placeholder,
             EventInfo.EventInfoStatus status = EventInfo.EventInfoStatus.Planned,
             EventInfo.EventInfoType eventInfoType = EventInfo.EventInfoType.Conference,
             bool featured = false,
@@ -73,22 +70,22 @@ namespace Eventuras.TestAbstractions
             EventCollection collection = null,
             EventCollection[] collections = null)
         {
-            if (title == Placeholder)
+            if (title == TestingConstants.Placeholder)
             {
                 title = $"Test Event {Guid.NewGuid()}";
             }
 
-            if (description == Placeholder)
+            if (description == TestingConstants.Placeholder)
             {
                 description = $"Test Event Description {Guid.NewGuid()}";
             }
 
-            if (code == Placeholder)
+            if (code == TestingConstants.Placeholder)
             {
                 code = Guid.NewGuid().ToString();
             }
 
-            if (city == Placeholder)
+            if (city == TestingConstants.Placeholder)
             {
                 city = "Oslo";
             }
@@ -116,7 +113,7 @@ namespace Eventuras.TestAbstractions
                     CollectionId = c.CollectionId
                 }).ToList()
             };
-            context.EventInfos.Add(eventInfo);
+            await context.EventInfos.AddAsync(eventInfo);
             await context.SaveChangesAsync();
             return new DisposableEntity<EventInfo>(eventInfo, context);
         }
@@ -124,13 +121,13 @@ namespace Eventuras.TestAbstractions
         public static async Task<IDisposableEntity<Product>> CreateProductAsync(
             this ApplicationDbContext context,
             EventInfo eventInfo,
-            string name = Placeholder,
+            string name = TestingConstants.Placeholder,
             int vatPercent = 5,
             int minimumQuantity = 1,
             ProductVariant[] variants = null)
         {
 
-            if (name == Placeholder)
+            if (name == TestingConstants.Placeholder)
             {
                 name = $"Test Product {Guid.NewGuid()}";
             }
@@ -144,7 +141,7 @@ namespace Eventuras.TestAbstractions
                 ProductVariants = variants?.ToList()
             };
 
-            context.Products.Add(product);
+            await context.Products.AddAsync(product);
             await context.SaveChangesAsync();
             return new DisposableEntity<Product>(product, context);
         }
@@ -152,10 +149,10 @@ namespace Eventuras.TestAbstractions
         public static async Task<IDisposableEntity<ProductVariant>> CreateProductVariantAsync(
             this ApplicationDbContext context,
             Product product,
-            string name = Placeholder,
+            string name = TestingConstants.Placeholder,
             int vatPercent = 5)
         {
-            if (name == Placeholder)
+            if (name == TestingConstants.Placeholder)
             {
                 name = $"Test Product Variant {Guid.NewGuid()}";
             }
@@ -168,7 +165,7 @@ namespace Eventuras.TestAbstractions
                 // TODO: add other props
             };
 
-            context.ProductVariants.Add(variant);
+            await context.ProductVariants.AddAsync(variant);
             await context.SaveChangesAsync();
             return new DisposableEntity<ProductVariant>(variant, context);
         }
@@ -189,7 +186,7 @@ namespace Eventuras.TestAbstractions
                 RegistrationTime = time ?? DateTime.UtcNow
                 // TODO: add other params
             };
-            context.Registrations.Add(registration);
+            await context.Registrations.AddAsync(registration);
             await context.SaveChangesAsync();
             return new DisposableEntity<Registration>(registration, context);
         }
@@ -217,7 +214,7 @@ namespace Eventuras.TestAbstractions
                 }).ToList()
             };
 
-            context.Orders.Add(order);
+            await context.Orders.AddAsync(order);
             await context.SaveChangesAsync();
             return new DisposableEntity<Order>(order, context);
         }
@@ -240,15 +237,15 @@ namespace Eventuras.TestAbstractions
         public static async Task<IDisposableEntity<ExternalEvent>> CreateExternalEventAsync(
             this ApplicationDbContext context,
             EventInfo eventInfo,
-            string externalServiceName = Placeholder,
-            string externalEventId = Placeholder)
+            string externalServiceName = TestingConstants.Placeholder,
+            string externalEventId = TestingConstants.Placeholder)
         {
-            if (externalServiceName == Placeholder)
+            if (externalServiceName == TestingConstants.Placeholder)
             {
                 externalServiceName = "Test";
             }
 
-            if (externalEventId == Placeholder)
+            if (externalEventId == TestingConstants.Placeholder)
             {
                 externalEventId = Guid.NewGuid().ToString();
             }
@@ -266,11 +263,11 @@ namespace Eventuras.TestAbstractions
 
         public static async Task<IDisposableEntity<Organization>> CreateOrganizationAsync(
             this ApplicationDbContext context,
-            string name = Placeholder,
+            string name = TestingConstants.Placeholder,
             string hostname = null,
             string[] hostnames = null)
         {
-            if (name == Placeholder)
+            if (name == TestingConstants.Placeholder)
             {
                 name = $"Test Org {Guid.NewGuid()}";
             }
