@@ -11,19 +11,19 @@ namespace Eventuras.WebApi.Tests
 {
     internal static class HttpClientExtensions
     {
-        public static HttpClient SetAuthenticatedAsSystemAdmin(this HttpClient httpClient)
+        public static HttpClient AuthenticatedAsSystemAdmin(this HttpClient httpClient)
         {
-            return httpClient.SetAuthenticated(role: Roles.SystemAdmin);
+            return httpClient.Authenticated(role: Roles.SystemAdmin);
         }
 
-        public static HttpClient SetAuthenticatedAsSuperAdmin(this HttpClient httpClient)
+        public static HttpClient AuthenticatedAsSuperAdmin(this HttpClient httpClient)
         {
-            return httpClient.SetAuthenticated(role: Roles.SuperAdmin);
+            return httpClient.Authenticated(role: Roles.SuperAdmin);
         }
 
-        public static HttpClient SetAuthenticated(this HttpClient httpClient, ApplicationUser user, params string[] roles)
+        public static HttpClient AuthenticatedAs(this HttpClient httpClient, ApplicationUser user, params string[] roles)
         {
-            return httpClient.SetAuthenticated(
+            return httpClient.Authenticated(
                 user.Id,
                 user.Name,
                 null, // FIXME: we don't have surname in AspNetCore.Identity?
@@ -31,7 +31,7 @@ namespace Eventuras.WebApi.Tests
                 roles: roles);
         }
 
-        public static HttpClient SetAuthenticated(
+        public static HttpClient Authenticated(
             this HttpClient httpClient,
             string id = TestingConstants.Placeholder,
             string firstName = TestingConstants.Placeholder,
@@ -43,6 +43,7 @@ namespace Eventuras.WebApi.Tests
         {
             var claims = BuildClaims(id, firstName, lastName, email, role, roles, scopes);
             var token = FakeJwtManager.GenerateJwtToken(claims);
+            httpClient.DefaultRequestHeaders.Remove("Authorization");
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
             return httpClient;
         }
@@ -82,7 +83,7 @@ namespace Eventuras.WebApi.Tests
             {
                 claims.Add(new Claim(ClaimTypes.Name, firstName));
             }
-            if (!string.IsNullOrEmpty(firstName))
+            if (!string.IsNullOrEmpty(lastName))
             {
                 claims.Add(new Claim(ClaimTypes.Surname, lastName));
             }

@@ -1,29 +1,17 @@
 using System;
 using Eventuras.TestAbstractions;
 using System.Threading.Tasks;
-using Eventuras.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Registrations
 {
-    public class RegistrationsReadControllerTest : IClassFixture<CustomWebApiApplicationFactory<Startup>>, IDisposable
+    public class RegistrationsReadControllerTest : IClassFixture<CustomWebApiApplicationFactory<Startup>>
     {
         private readonly CustomWebApiApplicationFactory<Startup> _factory;
-        private readonly IServiceScope _scope;
-
-        private ApplicationDbContext Context => _scope.ServiceProvider
-            .GetRequiredService<ApplicationDbContext>();
 
         public RegistrationsReadControllerTest(CustomWebApiApplicationFactory<Startup> factory)
         {
             _factory = factory;
-            _scope = factory.Services.NewTestScope();
-        }
-
-        public void Dispose()
-        {
-            _scope.Dispose();
         }
 
         [Fact]
@@ -39,7 +27,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         public async Task Should_Return_Empty_Registration_List()
         {
             var client = _factory.CreateClient()
-                .SetAuthenticated();
+                .Authenticated();
 
             var response = await client.GetAsync("/v3/registrations");
             var paging = await response.AsTokenAsync();
@@ -50,25 +38,100 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         public async Task Should_Use_Paging_For_Registration_List()
         {
             var client = _factory.CreateClient()
-                .SetAuthenticatedAsSystemAdmin();
+                .AuthenticatedAsSystemAdmin();
 
             using var scope = _factory.Services.NewTestScope();
+            using var e = await scope.CreateEventAsync();
+            using var user = await scope.CreateUserAsync();
+            using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(3));
+            using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(2));
+            using var r3 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(1));
 
+            var response = await client.GetAsync("/v3/registrations?page=1&count=2");
+            var paging = await response.AsTokenAsync();
+            paging.CheckPaging(1, 2, 3,
+                (token, r) => token.CheckRegistration(r),
+                r1.Entity, r2.Entity);
 
-            // TODO: implement!
+            response = await client.GetAsync("/v3/registrations?page=2&count=2");
+            paging = await response.AsTokenAsync();
+            paging.CheckPaging(2, 2, 3,
+                (token, r) => token.CheckRegistration(r),
+                r3.Entity);
         }
 
         [Fact]
         public async Task Should_Limit_Registrations_For_Regular_User()
         {
             using var scope = _factory.Services.NewTestScope();
-            using var user = scope.CreateUserAsync();
+            using var user = await scope.CreateUserAsync();
+            using var otherUser = await scope.CreateUserAsync();
+
+            using var e = await scope.CreateEventAsync();
+            using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(3));
+            using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(2));
+            using var r3 = await scope.CreateRegistrationAsync(e.Entity, otherUser.Entity, time: DateTime.Now.AddDays(1));
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAs(user.Entity);
+
+            var response = await client.GetAsync("/v3/registrations");
+            var paging = await response.AsTokenAsync();
+            paging.CheckPaging(1, 2,
+                (token, r) => token.CheckRegistration(r),
+                r1.Entity, r2.Entity);
+
+            client.AuthenticatedAs(otherUser.Entity);
+
+            response = await client.GetAsync("/v3/registrations");
+            paging = await response.AsTokenAsync();
+            paging.CheckPaging(1, 1,
+                (token, r) => token.CheckRegistration(r),
+                r3.Entity);
+        }
+
+        [Fact]
+        public async Task Should_Not_Limit_Registrations_For_System_Admin()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var otherUser = await scope.CreateUserAsync();
+
+            using var e = await scope.CreateEventAsync();
+            using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(3));
+            using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(2));
+            using var r3 = await scope.CreateRegistrationAsync(e.Entity, otherUser.Entity, time: DateTime.Now.AddDays(1));
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin();
+
+            var response = await client.GetAsync("/v3/registrations");
+            var paging = await response.AsTokenAsync();
+            paging.CheckPaging(1, 3,
+                (token, r) => token.CheckRegistration(r),
+                r1.Entity, r2.Entity, r3.Entity);
         }
 
         [Fact]
         public async Task Should_Not_Limit_Registrations_For_Super_Admin()
         {
-            // TODO: implement!
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var otherUser = await scope.CreateUserAsync();
+
+            using var e = await scope.CreateEventAsync();
+            using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(3));
+            using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(2));
+            using var r3 = await scope.CreateRegistrationAsync(e.Entity, otherUser.Entity, time: DateTime.Now.AddDays(1));
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin();
+
+            var response = await client.GetAsync("/v3/registrations");
+            var paging = await response.AsTokenAsync();
+            paging.CheckPaging(1, 3,
+                (token, r) => token.CheckRegistration(r),
+                r1.Entity, r2.Entity, r3.Entity);
         }
     }
 }

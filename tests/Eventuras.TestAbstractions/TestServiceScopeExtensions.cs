@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Eventuras.TestAbstractions
 {
-    public static class ApplicationDbContextExtensions
+    public static class TestServiceScopeExtensions
     {
         public static async Task<IDisposableEntity<ApplicationUser>> CreateUserAsync(
             this TestServiceScope scope,
