@@ -1,15 +1,14 @@
-using Eventuras.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Eventuras.IntegrationTests;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-namespace Eventuras.IntegrationTests.Controllers.Api.V2
+namespace Eventuras.Web.Tests.Controllers.Api.V2
 {
     public class EventCollectionMappingControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
@@ -26,10 +25,8 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V2
             var client = _factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            using var collection = await context.CreateEventCollectionAsync();
+            using var scope = _factory.Services.NewTestScope();
+            using var collection = await scope.CreateEventCollectionAsync();
             var response = await client.PutAsync($"/api/v2/events/10001/collections/{collection.Entity.CollectionId}",
                 new StringContent("", Encoding.UTF8));
 
@@ -42,10 +39,8 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V2
             var client = _factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            using var @event = await context.CreateEventAsync();
+            using var scope = _factory.Services.NewTestScope();
+            using var @event = await scope.CreateEventAsync();
             var response = await client.PutAsync($"/api/v2/events/{@event.Entity.EventInfoId}/collections/10001",
                 new StringContent("", Encoding.UTF8));
 
@@ -57,17 +52,15 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V2
         {
             var client = _factory.CreateClient();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            using var scope = _factory.Services.NewTestScope();
+            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var otherOrg = await scope.CreateOrganizationAsync();
+            using var collection = await scope.CreateEventCollectionAsync(organization: org.Entity);
+            using var @event = await scope.CreateEventAsync(organization: otherOrg.Entity);
 
-            using var org = await context.CreateOrganizationAsync(hostname: "localhost");
-            using var otherOrg = await context.CreateOrganizationAsync();
-            using var collection = await context.CreateEventCollectionAsync(organization: org.Entity);
-            using var @event = await context.CreateEventAsync(organization: otherOrg.Entity);
-
-            using var admin = await scope.ServiceProvider.CreateUserAsync(role: Roles.Admin);
-            using var member = await context.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
-            await client.LoginAsync(admin.Entity.Email, ServiceProviderExtensions.DefaultPassword);
+            using var admin = await scope.CreateUserAsync(role: Roles.Admin);
+            using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
+            await client.LoginAsync(admin.Entity.Email, TestingConstants.DefaultPassword);
 
             var response = await client.PutAsync($"/api/v2/events/{@event.Entity.EventInfoId}/collections/{collection.Entity.CollectionId}",
                 new StringContent("", Encoding.UTF8));
@@ -80,17 +73,15 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V2
         {
             var client = _factory.CreateClient();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            using var scope = _factory.Services.NewTestScope();
+            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var otherOrg = await scope.CreateOrganizationAsync();
+            using var collection = await scope.CreateEventCollectionAsync(organization: otherOrg.Entity);
+            using var @event = await scope.CreateEventAsync(organization: org.Entity);
 
-            using var org = await context.CreateOrganizationAsync(hostname: "localhost");
-            using var otherOrg = await context.CreateOrganizationAsync();
-            using var collection = await context.CreateEventCollectionAsync(organization: otherOrg.Entity);
-            using var @event = await context.CreateEventAsync(organization: org.Entity);
-
-            using var admin = await scope.ServiceProvider.CreateUserAsync(role: Roles.Admin);
-            using var member = await context.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
-            await client.LoginAsync(admin.Entity.Email, ServiceProviderExtensions.DefaultPassword);
+            using var admin = await scope.CreateUserAsync(role: Roles.Admin);
+            using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
+            await client.LoginAsync(admin.Entity.Email, TestingConstants.DefaultPassword);
 
             var response = await client.PutAsync($"/api/v2/events/{@event.Entity.EventInfoId}/collections/{collection.Entity.CollectionId}",
                 new StringContent("", Encoding.UTF8));
@@ -104,17 +95,15 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V2
             var client = _factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            using var collection = await context.CreateEventCollectionAsync();
-            using var @event = await context.CreateEventAsync();
+            using var scope = _factory.Services.NewTestScope();
+            using var collection = await scope.CreateEventCollectionAsync();
+            using var @event = await scope.CreateEventAsync();
 
             var response = await client.PutAsync($"/api/v2/events/{@event.Entity.EventInfoId}/collections/{collection.Entity.CollectionId}",
                 new StringContent("", Encoding.UTF8));
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.NotNull(await context.EventCollectionMappings
+            Assert.NotNull(await scope.Db.EventCollectionMappings
                 .SingleOrDefaultAsync(m => m.EventId == @event.Entity.EventInfoId
                                   && m.CollectionId == collection.Entity.CollectionId));
         }
@@ -125,17 +114,15 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V2
             var client = _factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            using var collection = await context.CreateEventCollectionAsync();
-            using var @event = await context.CreateEventAsync(collection: collection.Entity);
+            using var scope = _factory.Services.NewTestScope();
+            using var collection = await scope.CreateEventCollectionAsync();
+            using var @event = await scope.CreateEventAsync(collection: collection.Entity);
 
             var response = await client.PutAsync($"/api/v2/events/{@event.Entity.EventInfoId}/collections/{collection.Entity.CollectionId}",
                 new StringContent("", Encoding.UTF8));
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.NotNull(await context.EventCollectionMappings
+            Assert.NotNull(await scope.Db.EventCollectionMappings
                 .SingleOrDefaultAsync(m => m.EventId == @event.Entity.EventInfoId
                                            && m.CollectionId == collection.Entity.CollectionId));
         }
@@ -146,19 +133,17 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V2
             var client = _factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            using var org1 = await context.CreateOrganizationAsync();
-            using var org2 = await context.CreateOrganizationAsync();
-            using var collection = await context.CreateEventCollectionAsync(organization: org1.Entity);
-            using var @event = await context.CreateEventAsync(organization: org2.Entity);
+            using var scope = _factory.Services.NewTestScope();
+            using var org1 = await scope.CreateOrganizationAsync();
+            using var org2 = await scope.CreateOrganizationAsync();
+            using var collection = await scope.CreateEventCollectionAsync(organization: org1.Entity);
+            using var @event = await scope.CreateEventAsync(organization: org2.Entity);
 
             var response = await client.PutAsync($"/api/v2/events/{@event.Entity.EventInfoId}/collections/{collection.Entity.CollectionId}",
                 new StringContent("", Encoding.UTF8));
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.NotNull(await context.EventCollectionMappings
+            Assert.NotNull(await scope.Db.EventCollectionMappings
                 .SingleOrDefaultAsync(m => m.EventId == @event.Entity.EventInfoId
                                            && m.CollectionId == collection.Entity.CollectionId));
         }
@@ -169,10 +154,8 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V2
             var client = _factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            using var collection = await context.CreateEventCollectionAsync();
+            using var scope = _factory.Services.NewTestScope();
+            using var collection = await scope.CreateEventCollectionAsync();
             var response = await client.DeleteAsync($"/api/v2/events/10001/collections/{collection.Entity.CollectionId}");
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -184,10 +167,8 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V2
             var client = _factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            using var @event = await context.CreateEventAsync();
+            using var scope = _factory.Services.NewTestScope();
+            using var @event = await scope.CreateEventAsync();
             var response = await client.DeleteAsync($"/api/v2/events/{@event.Entity.EventInfoId}/collections/10001");
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -199,11 +180,9 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V2
             var client = _factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            using var collection = await context.CreateEventCollectionAsync();
-            using var @event = await context.CreateEventAsync();
+            using var scope = _factory.Services.NewTestScope();
+            using var collection = await scope.CreateEventCollectionAsync();
+            using var @event = await scope.CreateEventAsync();
 
             var response = await client.DeleteAsync($"/api/v2/events/{@event.Entity.EventInfoId}/collections/{collection.Entity.CollectionId}");
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -215,20 +194,19 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V2
             var client = _factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
+            using var scope = _factory.Services.NewTestScope();
+            
             // FIXME: not removing them automatically by using "using" keyword
             // because they both refer to the mapping entity deleted in API method.
             // Possible solution??
-            var collection = await context.CreateEventCollectionAsync();
-            var @event = await context.CreateEventAsync(collection: collection.Entity);
+            var collection = await scope.CreateEventCollectionAsync();
+            var @event = await scope.CreateEventAsync(collection: collection.Entity);
 
             var response = await client.DeleteAsync($"/api/v2/events/{@event.Entity.EventInfoId}/collections/{collection.Entity.CollectionId}");
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.False(await context.EventCollectionMappings.AnyAsync());
-            Assert.True(await context.EventInfos.AnyAsync(e => e.EventInfoId == @event.Entity.EventInfoId));
-            Assert.True(await context.EventCollections.AnyAsync(e => e.CollectionId == collection.Entity.CollectionId));
+            Assert.False(await scope.Db.EventCollectionMappings.AnyAsync());
+            Assert.True(await scope.Db.EventInfos.AnyAsync(e => e.EventInfoId == @event.Entity.EventInfoId));
+            Assert.True(await scope.Db.EventCollections.AnyAsync(e => e.CollectionId == collection.Entity.CollectionId));
         }
 
         [Fact]
@@ -236,17 +214,15 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V2
         {
             var client = _factory.CreateClient();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            using var scope = _factory.Services.NewTestScope();
+            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var otherOrg = await scope.CreateOrganizationAsync();
+            using var collection = await scope.CreateEventCollectionAsync(organization: org.Entity);
+            using var @event = await scope.CreateEventAsync(organization: otherOrg.Entity);
 
-            using var org = await context.CreateOrganizationAsync(hostname: "localhost");
-            using var otherOrg = await context.CreateOrganizationAsync();
-            using var collection = await context.CreateEventCollectionAsync(organization: org.Entity);
-            using var @event = await context.CreateEventAsync(organization: otherOrg.Entity);
-
-            using var admin = await scope.ServiceProvider.CreateUserAsync(role: Roles.Admin);
-            using var member = await context.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
-            await client.LoginAsync(admin.Entity.Email, ServiceProviderExtensions.DefaultPassword);
+            using var admin = await scope.CreateUserAsync(role: Roles.Admin);
+            using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
+            await client.LoginAsync(admin.Entity.Email, TestingConstants.DefaultPassword);
 
             var response = await client.DeleteAsync($"/api/v2/events/{@event.Entity.EventInfoId}/collections/{collection.Entity.CollectionId}");
 
@@ -258,17 +234,15 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V2
         {
             var client = _factory.CreateClient();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            using var scope = _factory.Services.NewTestScope();
+            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var otherOrg = await scope.CreateOrganizationAsync();
+            using var collection = await scope.CreateEventCollectionAsync(organization: otherOrg.Entity);
+            using var @event = await scope.CreateEventAsync(organization: org.Entity);
 
-            using var org = await context.CreateOrganizationAsync(hostname: "localhost");
-            using var otherOrg = await context.CreateOrganizationAsync();
-            using var collection = await context.CreateEventCollectionAsync(organization: otherOrg.Entity);
-            using var @event = await context.CreateEventAsync(organization: org.Entity);
-
-            using var admin = await scope.ServiceProvider.CreateUserAsync(role: Roles.Admin);
-            using var member = await context.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
-            await client.LoginAsync(admin.Entity.Email, ServiceProviderExtensions.DefaultPassword);
+            using var admin = await scope.CreateUserAsync(role: Roles.Admin);
+            using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
+            await client.LoginAsync(admin.Entity.Email, TestingConstants.DefaultPassword);
 
             var response = await client.DeleteAsync($"/api/v2/events/{@event.Entity.EventInfoId}/collections/{collection.Entity.CollectionId}");
 

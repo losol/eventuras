@@ -1,16 +1,29 @@
+using System;
 using Eventuras.TestAbstractions;
 using System.Threading.Tasks;
+using Eventuras.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Registrations
 {
-    public class RegistrationsReadControllerTest : IClassFixture<CustomWebApiApplicationFactory<Startup>>
+    public class RegistrationsReadControllerTest : IClassFixture<CustomWebApiApplicationFactory<Startup>>, IDisposable
     {
         private readonly CustomWebApiApplicationFactory<Startup> _factory;
+        private readonly IServiceScope _scope;
+
+        private ApplicationDbContext Context => _scope.ServiceProvider
+            .GetRequiredService<ApplicationDbContext>();
 
         public RegistrationsReadControllerTest(CustomWebApiApplicationFactory<Startup> factory)
         {
             _factory = factory;
+            _scope = factory.Services.NewTestScope();
+        }
+
+        public void Dispose()
+        {
+            _scope.Dispose();
         }
 
         [Fact]
@@ -36,13 +49,20 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         [Fact]
         public async Task Should_Use_Paging_For_Registration_List()
         {
+            var client = _factory.CreateClient()
+                .SetAuthenticatedAsSystemAdmin();
+
+            using var scope = _factory.Services.NewTestScope();
+
+
             // TODO: implement!
         }
 
         [Fact]
         public async Task Should_Limit_Registrations_For_Regular_User()
         {
-            // TODO: implement!
+            using var scope = _factory.Services.NewTestScope();
+            using var user = scope.CreateUserAsync();
         }
 
         [Fact]

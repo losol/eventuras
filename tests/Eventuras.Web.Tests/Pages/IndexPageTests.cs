@@ -1,10 +1,10 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Eventuras.IntegrationTests;
 using Xunit;
 
-
-namespace Eventuras.IntegrationTests.Pages
+namespace Eventuras.Web.Tests.Pages
 {
     public class IndexPageTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {

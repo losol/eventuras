@@ -1,15 +1,65 @@
+using Eventuras.Domain;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
 
 namespace Eventuras.TestAbstractions
 {
     public static class ApplicationDbContextExtensions
     {
+        public static async Task<IDisposableEntity<ApplicationUser>> CreateUserAsync(
+            this TestServiceScope scope,
+            string email = TestingConstants.Placeholder,
+            string password = TestingConstants.Placeholder,
+            string phone = TestingConstants.Placeholder,
+            string[] roles = null,
+            string role = null)
+        {
+            var userManager = scope.GetService<UserManager<ApplicationUser>>();
+
+            if (email == TestingConstants.Placeholder)
+            {
+                email = $"{Guid.NewGuid()}@email.com";
+            }
+
+            if (password == TestingConstants.Placeholder)
+            {
+                password = TestingConstants.DefaultPassword;
+            }
+
+            if (phone == TestingConstants.Placeholder)
+            {
+                phone = "+11111111111";
+            }
+
+            if (roles == null && !string.IsNullOrEmpty(role))
+            {
+                roles = new[] { role };
+            }
+
+            var user = new ApplicationUser
+            {
+                Name = email,
+                UserName = email,
+                Email = email,
+                EmailConfirmed = true,
+                PhoneNumber = phone,
+                PhoneNumberConfirmed = !string.IsNullOrEmpty(phone)
+            };
+
+            await userManager.CreateAsync(user, password);
+
+            if (roles?.Length > 0)
+            {
+                await userManager.AddToRolesAsync(user, roles);
+            }
+
+            return new DisposableUser(user, userManager);
+        }
+
         public static async Task<IDisposableEntity<EventCollection>> CreateEventCollectionAsync(
-            this ApplicationDbContext context,
+            this TestServiceScope scope,
             string name = TestingConstants.Placeholder,
             string slug = null,
             string description = null,
@@ -25,7 +75,7 @@ namespace Eventuras.TestAbstractions
                 name = $"Test Collection {Guid.NewGuid()}";
             }
 
-            organizationId ??= (organization ?? (await context.CreateOrganizationAsync()).Entity).OrganizationId;
+            organizationId ??= (organization ?? (await scope.CreateOrganizationAsync()).Entity).OrganizationId;
 
             if (featuredImageUrl == TestingConstants.Placeholder)
             {
@@ -48,13 +98,13 @@ namespace Eventuras.TestAbstractions
                 FeaturedImageCaption = featuredImageCaption
             };
 
-            await context.EventCollections.AddAsync(collection);
-            await context.SaveChangesAsync();
-            return new DisposableEntity<EventCollection>(collection, context);
+            await scope.Db.EventCollections.AddAsync(collection);
+            await scope.Db.SaveChangesAsync();
+            return new DisposableEntity<EventCollection>(collection, scope.Db);
         }
 
         public static async Task<IDisposableEntity<EventInfo>> CreateEventAsync(
-            this ApplicationDbContext context,
+            this TestServiceScope scope,
             string title = TestingConstants.Placeholder,
             string description = TestingConstants.Placeholder,
             string code = TestingConstants.Placeholder,
@@ -113,13 +163,13 @@ namespace Eventuras.TestAbstractions
                     CollectionId = c.CollectionId
                 }).ToList()
             };
-            await context.EventInfos.AddAsync(eventInfo);
-            await context.SaveChangesAsync();
-            return new DisposableEntity<EventInfo>(eventInfo, context);
+            await scope.Db.EventInfos.AddAsync(eventInfo);
+            await scope.Db.SaveChangesAsync();
+            return new DisposableEntity<EventInfo>(eventInfo, scope.Db);
         }
 
         public static async Task<IDisposableEntity<Product>> CreateProductAsync(
-            this ApplicationDbContext context,
+            this TestServiceScope scope,
             EventInfo eventInfo,
             string name = TestingConstants.Placeholder,
             int vatPercent = 5,
@@ -141,13 +191,13 @@ namespace Eventuras.TestAbstractions
                 ProductVariants = variants?.ToList()
             };
 
-            await context.Products.AddAsync(product);
-            await context.SaveChangesAsync();
-            return new DisposableEntity<Product>(product, context);
+            await scope.Db.Products.AddAsync(product);
+            await scope.Db.SaveChangesAsync();
+            return new DisposableEntity<Product>(product, scope.Db);
         }
 
         public static async Task<IDisposableEntity<ProductVariant>> CreateProductVariantAsync(
-            this ApplicationDbContext context,
+            this TestServiceScope scope,
             Product product,
             string name = TestingConstants.Placeholder,
             int vatPercent = 5)
@@ -165,13 +215,13 @@ namespace Eventuras.TestAbstractions
                 // TODO: add other props
             };
 
-            await context.ProductVariants.AddAsync(variant);
-            await context.SaveChangesAsync();
-            return new DisposableEntity<ProductVariant>(variant, context);
+            await scope.Db.ProductVariants.AddAsync(variant);
+            await scope.Db.SaveChangesAsync();
+            return new DisposableEntity<ProductVariant>(variant, scope.Db);
         }
 
         public static async Task<IDisposableEntity<Registration>> CreateRegistrationAsync(
-            this ApplicationDbContext context,
+            this TestServiceScope scope,
             EventInfo eventInfo,
             ApplicationUser user,
             Registration.RegistrationStatus status = Registration.RegistrationStatus.Verified,
@@ -186,13 +236,13 @@ namespace Eventuras.TestAbstractions
                 RegistrationTime = time ?? DateTime.UtcNow
                 // TODO: add other params
             };
-            await context.Registrations.AddAsync(registration);
-            await context.SaveChangesAsync();
-            return new DisposableEntity<Registration>(registration, context);
+            await scope.Db.Registrations.AddAsync(registration);
+            await scope.Db.SaveChangesAsync();
+            return new DisposableEntity<Registration>(registration, scope.Db);
         }
 
         public static async Task<IDisposableEntity<Order>> CreateOrderAsync(
-            this ApplicationDbContext context,
+            this TestServiceScope scope,
             Registration registration,
             Product[] products = null,
             ProductVariant[] variants = null,
@@ -214,20 +264,20 @@ namespace Eventuras.TestAbstractions
                 }).ToList()
             };
 
-            await context.Orders.AddAsync(order);
-            await context.SaveChangesAsync();
-            return new DisposableEntity<Order>(order, context);
+            await scope.Db.Orders.AddAsync(order);
+            await scope.Db.SaveChangesAsync();
+            return new DisposableEntity<Order>(order, scope.Db);
         }
 
         public static async Task<IDisposableEntity<Order>> CreateOrderAsync(
-            this ApplicationDbContext context,
+            this TestServiceScope scope,
             Registration registration,
             Product product,
             ProductVariant variant = null,
             int quantity = 1,
             Order.OrderStatus status = Order.OrderStatus.Verified)
         {
-            return await context.CreateOrderAsync(registration,
+            return await scope.CreateOrderAsync(registration,
                 new[] { product },
                 variant != null ? new[] { variant } : null,
                 new[] { quantity },
@@ -235,7 +285,7 @@ namespace Eventuras.TestAbstractions
         }
 
         public static async Task<IDisposableEntity<ExternalEvent>> CreateExternalEventAsync(
-            this ApplicationDbContext context,
+            this TestServiceScope scope,
             EventInfo eventInfo,
             string externalServiceName = TestingConstants.Placeholder,
             string externalEventId = TestingConstants.Placeholder)
@@ -256,13 +306,13 @@ namespace Eventuras.TestAbstractions
                 ExternalServiceName = externalServiceName,
                 ExternalEventId = externalEventId
             };
-            await context.ExternalEvents.AddAsync(externalEvent);
-            await context.SaveChangesAsync();
-            return new DisposableEntity<ExternalEvent>(externalEvent, context);
+            await scope.Db.ExternalEvents.AddAsync(externalEvent);
+            await scope.Db.SaveChangesAsync();
+            return new DisposableEntity<ExternalEvent>(externalEvent, scope.Db);
         }
 
         public static async Task<IDisposableEntity<Organization>> CreateOrganizationAsync(
-            this ApplicationDbContext context,
+            this TestServiceScope scope,
             string name = TestingConstants.Placeholder,
             string hostname = null,
             string[] hostnames = null)
@@ -287,20 +337,20 @@ namespace Eventuras.TestAbstractions
                 }).ToList()
             };
 
-            await context.Organizations.AddAsync(org);
-            await context.SaveChangesAsync();
-            return new DisposableEntity<Organization>(org, context);
+            await scope.Db.Organizations.AddAsync(org);
+            await scope.Db.SaveChangesAsync();
+            return new DisposableEntity<Organization>(org, scope.Db);
         }
 
         public static async Task<IDisposableEntity<OrganizationMember>> CreateOrganizationMemberAsync(
-            this ApplicationDbContext context,
+            this TestServiceScope scope,
             ApplicationUser user = null,
             Organization organization = null,
             int? organizationId = null,
             string[] roles = null,
             string role = null)
         {
-            organizationId ??= (organization ?? (await context.CreateOrganizationAsync()).Entity).OrganizationId;
+            organizationId ??= (organization ?? (await scope.CreateOrganizationAsync()).Entity).OrganizationId;
 
             if (roles == null && role != null)
             {
@@ -317,9 +367,9 @@ namespace Eventuras.TestAbstractions
                 }).ToList()
             };
 
-            await context.OrganizationMembers.AddAsync(member);
-            await context.SaveChangesAsync();
-            return new DisposableEntity<OrganizationMember>(member, context);
+            await scope.Db.OrganizationMembers.AddAsync(member);
+            await scope.Db.SaveChangesAsync();
+            return new DisposableEntity<OrganizationMember>(member, scope.Db);
         }
     }
 }

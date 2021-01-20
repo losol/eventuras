@@ -1,18 +1,17 @@
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Eventuras.Domain;
+using Eventuras.IntegrationTests;
 using Eventuras.TestAbstractions;
 using Xunit;
 
-namespace Eventuras.IntegrationTests.Controllers.Api.V1
+namespace Eventuras.Web.Tests.Controllers.Api.V1
 {
     public class RegistrationExportControllerTest : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
@@ -34,11 +33,11 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V1
         [Fact(Skip = "FIXME: add auth tokens instead of cookies and return Forbidden response")]
         public async Task Should_Require_Admin_Role_To_Export_Registrations()
         {
-            using var scope = _factory.Services.NewScope();
-            using var user = await scope.ServiceProvider.CreateUserAsync();
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
 
             var client = _factory.CreateClient();
-            await client.LoginAsync(user.Entity.Email, ServiceProviderExtensions.DefaultPassword);
+            await client.LoginAsync(user.Entity.Email, TestingConstants.DefaultPassword);
 
             var response = await client.GetAsync("/api/v1/registrations/export");
             Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
@@ -50,7 +49,7 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V1
             var client = _factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = _factory.Services.NewScope();
+            using var scope = _factory.Services.NewTestScope();
             var response = await client.GetAsync("/api/v1/registrations/export");
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
@@ -63,22 +62,21 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V1
             var client = _factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            using var e1 = await context.CreateEventAsync();
-            using var e2 = await context.CreateEventAsync();
-            using var p1 = await context.CreateProductAsync(e1.Entity);
-            using var p2 = await context.CreateProductAsync(e2.Entity);
-            using var v1 = await context.CreateProductVariantAsync(p1.Entity);
-            using var v2 = await context.CreateProductVariantAsync(p1.Entity);
-            using var u1 = await scope.ServiceProvider.CreateUserAsync();
-            using var u2 = await scope.ServiceProvider.CreateUserAsync();
-            using var r1 = await context.CreateRegistrationAsync(e1.Entity, u1.Entity, time: DateTime.UtcNow.AddDays(-3));
-            using var r2 = await context.CreateRegistrationAsync(e1.Entity, u2.Entity, time: DateTime.UtcNow.AddDays(-2));
-            using var r3 = await context.CreateRegistrationAsync(e2.Entity, u2.Entity, time: DateTime.UtcNow.AddDays(-1));
-            using var o1 = context.CreateOrderAsync(r1.Entity, p1.Entity, v1.Entity);
-            using var o2 = context.CreateOrderAsync(r3.Entity, p2.Entity, quantity: 10);
+            using var scope = _factory.Services.NewTestScope();
+            
+            using var e1 = await scope.CreateEventAsync();
+            using var e2 = await scope.CreateEventAsync();
+            using var p1 = await scope.CreateProductAsync(e1.Entity);
+            using var p2 = await scope.CreateProductAsync(e2.Entity);
+            using var v1 = await scope.CreateProductVariantAsync(p1.Entity);
+            using var v2 = await scope.CreateProductVariantAsync(p1.Entity);
+            using var u1 = await scope.CreateUserAsync();
+            using var u2 = await scope.CreateUserAsync();
+            using var r1 = await scope.CreateRegistrationAsync(e1.Entity, u1.Entity, time: DateTime.UtcNow.AddDays(-3));
+            using var r2 = await scope.CreateRegistrationAsync(e1.Entity, u2.Entity, time: DateTime.UtcNow.AddDays(-2));
+            using var r3 = await scope.CreateRegistrationAsync(e2.Entity, u2.Entity, time: DateTime.UtcNow.AddDays(-1));
+            using var o1 = await scope.CreateOrderAsync(r1.Entity, p1.Entity, v1.Entity);
+            using var o2 = await scope.CreateOrderAsync(r3.Entity, p2.Entity, quantity: 10);
 
             var response = await client.GetAsync($"/api/v1/registrations/export?header={exportHeader}");
             await CheckSuccessfulResponseAsync(response, exportHeader, r3.Entity, r2.Entity, r1.Entity);
@@ -95,11 +93,11 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V1
         [Fact(Skip = "FIXME: add auth tokens instead of cookies and return Forbidden response")]
         public async Task Should_Require_Admin_Role_To_Export_Registrations_For_Event()
         {
-            using var scope = _factory.Services.NewScope();
-            using var user = await scope.ServiceProvider.CreateUserAsync();
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
 
             var client = _factory.CreateClient();
-            await client.LoginAsync(user.Entity.Email, ServiceProviderExtensions.DefaultPassword);
+            await client.LoginAsync(user.Entity.Email, TestingConstants.DefaultPassword);
 
             var response = await client.GetAsync("/api/v1/registrations/export/1");
             Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
@@ -111,7 +109,7 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V1
             var client = _factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = _factory.Services.NewScope();
+            using var scope = _factory.Services.NewTestScope();
             var response = await client.GetAsync("/api/v1/registrations/export/1");
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
@@ -124,22 +122,21 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V1
             var client = _factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            using var scope = _factory.Services.NewTestScope();
 
-            using var e1 = await context.CreateEventAsync();
-            using var e2 = await context.CreateEventAsync();
-            using var p1 = await context.CreateProductAsync(e1.Entity);
-            using var p2 = await context.CreateProductAsync(e2.Entity);
-            using var v1 = await context.CreateProductVariantAsync(p1.Entity);
-            using var v2 = await context.CreateProductVariantAsync(p1.Entity);
-            using var u1 = await scope.ServiceProvider.CreateUserAsync();
-            using var u2 = await scope.ServiceProvider.CreateUserAsync();
-            using var r1 = await context.CreateRegistrationAsync(e1.Entity, u1.Entity, time: DateTime.UtcNow.AddDays(-3));
-            using var r2 = await context.CreateRegistrationAsync(e1.Entity, u2.Entity, time: DateTime.UtcNow.AddDays(-2));
-            using var r3 = await context.CreateRegistrationAsync(e2.Entity, u2.Entity, time: DateTime.UtcNow.AddDays(-1));
-            using var o1 = context.CreateOrderAsync(r1.Entity, p1.Entity, v1.Entity);
-            using var o2 = context.CreateOrderAsync(r3.Entity, p2.Entity, quantity: 10);
+            using var e1 = await scope.CreateEventAsync();
+            using var e2 = await scope.CreateEventAsync();
+            using var p1 = await scope.CreateProductAsync(e1.Entity);
+            using var p2 = await scope.CreateProductAsync(e2.Entity);
+            using var v1 = await scope.CreateProductVariantAsync(p1.Entity);
+            using var v2 = await scope.CreateProductVariantAsync(p1.Entity);
+            using var u1 = await scope.CreateUserAsync();
+            using var u2 = await scope.CreateUserAsync();
+            using var r1 = await scope.CreateRegistrationAsync(e1.Entity, u1.Entity, time: DateTime.UtcNow.AddDays(-3));
+            using var r2 = await scope.CreateRegistrationAsync(e1.Entity, u2.Entity, time: DateTime.UtcNow.AddDays(-2));
+            using var r3 = await scope.CreateRegistrationAsync(e2.Entity, u2.Entity, time: DateTime.UtcNow.AddDays(-1));
+            using var o1 = await scope.CreateOrderAsync(r1.Entity, p1.Entity, v1.Entity);
+            using var o2 = await scope.CreateOrderAsync(r3.Entity, p2.Entity, quantity: 10);
 
             var response = await client.GetAsync($"/api/v1/registrations/export/{e1.Entity.EventInfoId}?header={exportHeader}");
             await CheckSuccessfulResponseAsync(response, exportHeader, r2.Entity, r1.Entity);

@@ -5,11 +5,22 @@ using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using Eventuras.Domain;
+using Eventuras.Services;
 
 namespace Eventuras.WebApi.Tests
 {
     internal static class HttpClientExtensions
     {
+        public static HttpClient SetAuthenticatedAsSystemAdmin(this HttpClient httpClient)
+        {
+            return httpClient.SetAuthenticated(role: Roles.SystemAdmin);
+        }
+
+        public static HttpClient SetAuthenticatedAsSuperAdmin(this HttpClient httpClient)
+        {
+            return httpClient.SetAuthenticated(role: Roles.SuperAdmin);
+        }
+
         public static HttpClient SetAuthenticated(this HttpClient httpClient, ApplicationUser user, params string[] roles)
         {
             return httpClient.SetAuthenticated(

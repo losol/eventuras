@@ -1,14 +1,13 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Eventuras.Infrastructure;
+using Eventuras.IntegrationTests;
 using Eventuras.TestAbstractions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace Eventuras.IntegrationTests.Controllers.Api.V1
+namespace Eventuras.Web.Tests.Controllers.Api.V1
 {
     public class ExternalEventsControllerTest : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
@@ -37,9 +36,8 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V1
             var client = _factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            using var eventInfo = await context.CreateEventAsync();
+            using var scope = _factory.Services.NewTestScope();
+            using var eventInfo = await scope.CreateEventAsync();
 
             var response = await client.GetAsync($"/api/v1/events/external/{eventInfo.Entity.EventInfoId}");
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -54,15 +52,14 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V1
             var client = _factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            using var scope = _factory.Services.NewTestScope();
 
-            using var eventInfo = await context.CreateEventAsync();
-            using var externalEvent = await context.CreateExternalEventAsync(eventInfo.Entity);
-            using var externalEvent2 = await context.CreateExternalEventAsync(eventInfo.Entity);
+            using var eventInfo = await scope.CreateEventAsync();
+            using var externalEvent = await scope.CreateExternalEventAsync(eventInfo.Entity);
+            using var externalEvent2 = await scope.CreateExternalEventAsync(eventInfo.Entity);
 
-            using var eventInfo2 = await context.CreateEventAsync();
-            using var anotherEventEvent = await context.CreateExternalEventAsync(eventInfo2.Entity);
+            using var eventInfo2 = await scope.CreateEventAsync();
+            using var anotherEventEvent = await scope.CreateExternalEventAsync(eventInfo2.Entity);
 
 
             var response = await client.GetAsync($"/api/v1/events/external/{eventInfo.Entity.EventInfoId}");
@@ -89,9 +86,8 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V1
             var client = _factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            using var eventInfo = await context.CreateEventAsync();
+            using var scope = _factory.Services.NewTestScope();
+            using var eventInfo = await scope.CreateEventAsync();
 
             var response = await client.DeleteAsync($"/api/v1/events/external/{eventInfo.Entity.EventInfoId:####}");
             await response.CheckBadRequestAsync();
@@ -103,9 +99,9 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V1
             var client = _factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            using var eventInfo = await context.CreateEventAsync();
+            using var scope = _factory.Services.NewTestScope();
+            
+            using var eventInfo = await scope.CreateEventAsync();
 
             var response = await client.DeleteAsync($"/api/v1/events/external/{eventInfo.Entity.EventInfoId:####}?localId=1");
             response.CheckOk();
@@ -117,11 +113,11 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V1
             var client = _factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            using var eventInfo = await context.CreateEventAsync();
-            using var anotherEvent = await context.CreateEventAsync();
-            using var anotherExternalEvent = await context.CreateExternalEventAsync(anotherEvent.Entity);
+            using var scope = _factory.Services.NewTestScope();
+            
+            using var eventInfo = await scope.CreateEventAsync();
+            using var anotherEvent = await scope.CreateEventAsync();
+            using var anotherExternalEvent = await scope.CreateExternalEventAsync(anotherEvent.Entity);
 
             var response = await client.DeleteAsync($"/api/v1/events/external/{eventInfo.Entity.EventInfoId:####}?localId={anotherExternalEvent.Entity.LocalId}");
             response.CheckNotFound();
@@ -133,16 +129,16 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V1
             var client = _factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = _factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            using var eventInfo = await context.CreateEventAsync();
-            var externalEvent = await context.CreateExternalEventAsync(eventInfo.Entity); // will be deleted in controller
+            using var scope = _factory.Services.NewTestScope();
+            
+            using var eventInfo = await scope.CreateEventAsync();
+            var externalEvent = await scope.CreateExternalEventAsync(eventInfo.Entity); // will be deleted in controller
 
             var response = await client.DeleteAsync($"/api/v1/events/external/{eventInfo.Entity.EventInfoId:####}?localId={externalEvent.Entity.LocalId}");
             response.CheckOk();
 
-            context.Entry(eventInfo.Entity.ExternalEvents.First()).State = EntityState.Detached;
-            Assert.Null(await context.ExternalEvents.AsNoTracking()
+            scope.Db.Entry(eventInfo.Entity.ExternalEvents.First()).State = EntityState.Detached;
+            Assert.Null(await scope.Db.ExternalEvents.AsNoTracking()
                 .FirstOrDefaultAsync(c => c.LocalId == externalEvent.Entity.LocalId));
         }
     }

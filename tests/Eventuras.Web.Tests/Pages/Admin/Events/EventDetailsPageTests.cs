@@ -1,12 +1,11 @@
-using Eventuras.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Eventuras.IntegrationTests;
 using Eventuras.TestAbstractions;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace Eventuras.IntegrationTests.Pages.Admin.Events
+namespace Eventuras.Web.Tests.Pages.Admin.Events
 {
     public class EventDetailsPageTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
@@ -23,15 +22,15 @@ namespace Eventuras.IntegrationTests.Pages.Admin.Events
             var client = this.factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = this.factory.Services.NewScope();
-            using var user = await scope.ServiceProvider.CreateUserAsync();
+            using var scope = this.factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
 
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            using var eventInfo = await context.CreateEventAsync();
-            using var product = await context.CreateProductAsync(eventInfo.Entity);
-            using var variant = await context.CreateProductVariantAsync(product.Entity);
-            using var registration = await context.CreateRegistrationAsync(eventInfo.Entity, user.Entity);
-            using var order = await context.CreateOrderAsync(registration.Entity, new[] { product.Entity });
+            
+            using var eventInfo = await scope.CreateEventAsync();
+            using var product = await scope.CreateProductAsync(eventInfo.Entity);
+            using var variant = await scope.CreateProductVariantAsync(product.Entity);
+            using var registration = await scope.CreateRegistrationAsync(eventInfo.Entity, user.Entity);
+            using var order = await scope.CreateOrderAsync(registration.Entity, new[] { product.Entity });
 
             var response = await client.GetAsync($"/Admin/Events/Details/{eventInfo.Entity.EventInfoId}?handler=Participants");
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);

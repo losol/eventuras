@@ -1,12 +1,13 @@
 using System;
-using Moq;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using Eventuras.IntegrationTests;
 using Eventuras.TestAbstractions;
+using Moq;
 using Xunit;
 
-namespace Eventuras.IntegrationTests.Pages.Account
+namespace Eventuras.Web.Tests.Pages.Account
 {
     public class LoginPageTests : IClassFixture<CustomWebApplicationFactory<Startup>>, IDisposable
     {
@@ -30,8 +31,8 @@ namespace Eventuras.IntegrationTests.Pages.Account
             var client = this.factory.CreateClient();
             client.AcceptLanguage(languageCode);
 
-            using var scope = this.factory.Services.NewScope();
-            using var user = await scope.ServiceProvider.CreateUserAsync();
+            using var scope = this.factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
 
             var emailExpectation = this.factory.EmailSenderMock
                 .ExpectEmail()

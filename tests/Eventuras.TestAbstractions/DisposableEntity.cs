@@ -20,18 +20,18 @@ namespace Eventuras.TestAbstractions
     {
         public T Entity { get; }
 
-        private readonly DbContext context;
+        private readonly DbContext _context;
 
         public DisposableEntity(T entity, DbContext context)
         {
-            this.Entity = entity;
-            this.context = context;
+            Entity = entity;
+            _context = context;
         }
 
         public void Dispose()
         {
-            this.context.Remove(this.Entity);
-            this.context.SaveChanges();
+            _context.Remove(Entity);
+            _context.SaveChanges();
         }
     }
 
@@ -39,19 +39,19 @@ namespace Eventuras.TestAbstractions
     {
         public ApplicationUser Entity { get; }
 
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public DisposableUser(
             ApplicationUser entity,
             UserManager<ApplicationUser> userManager)
         {
-            this.Entity = entity;
-            this.userManager = userManager;
+            Entity = entity;
+            _userManager = userManager;
         }
 
         public void Dispose()
         {
-            this.userManager.DeleteAsync(this.Entity).Wait();
+            _userManager.DeleteAsync(Entity).Wait();
         }
     }
 }

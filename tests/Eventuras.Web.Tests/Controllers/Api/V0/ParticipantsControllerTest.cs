@@ -3,14 +3,13 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Eventuras.Infrastructure;
+using Eventuras.IntegrationTests;
 using Eventuras.TestAbstractions;
-using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace Eventuras.IntegrationTests.Controllers.Api.V0
+namespace Eventuras.Web.Tests.Controllers.Api.V0
 {
     public class ParticipantsControllerTest : IClassFixture<CustomWebApplicationFactory<Startup>>, IDisposable
     {
@@ -34,12 +33,11 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V0
             var client = this.factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = this.factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            using var scope = this.factory.Services.NewTestScope();
 
             var eventInfo = SeedData.Events[0];
-            using var user = await scope.ServiceProvider.CreateUserAsync();
-            using var registration = await context.CreateRegistrationAsync(eventInfo, user.Entity);
+            using var user = await scope.CreateUserAsync();
+            using var registration = await scope.CreateRegistrationAsync(eventInfo, user.Entity);
 
             var emailExpectation = this.factory.EmailSenderMock
                 .ExpectEmail()

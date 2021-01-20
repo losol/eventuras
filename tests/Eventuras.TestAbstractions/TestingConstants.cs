@@ -14,5 +14,7 @@ namespace Eventuras.TestAbstractions
             "users:read",
             "users:write"
         };
+
+        public const string DefaultPassword = "MySuperSecretPassword1!";
     }
 }

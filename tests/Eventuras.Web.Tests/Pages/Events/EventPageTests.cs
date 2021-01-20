@@ -1,9 +1,10 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Eventuras.IntegrationTests;
 using Xunit;
 
-namespace Eventuras.IntegrationTests.Pages.Events
+namespace Eventuras.Web.Tests.Pages.Events
 {
     public class EventPageTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {

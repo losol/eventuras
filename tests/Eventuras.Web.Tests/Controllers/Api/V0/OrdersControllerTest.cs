@@ -1,16 +1,15 @@
 using System.Linq;
-using Eventuras.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Eventuras.IntegrationTests;
 using Eventuras.TestAbstractions;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Xunit;
 
-namespace Eventuras.IntegrationTests.Controllers.Api.V0
+namespace Eventuras.Web.Tests.Controllers.Api.V0
 {
     public class OrdersControllerTest : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
@@ -27,14 +26,12 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V0
             var client = this.factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = this.factory.Services.NewScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            using var user = await scope.ServiceProvider.CreateUserAsync();
-            using var eventInfo = await context.CreateEventAsync();
-            using var registration = await context.CreateRegistrationAsync(eventInfo.Entity, user.Entity);
-            using var product = await context.CreateProductAsync(eventInfo.Entity);
-            using var order = await context.CreateOrderAsync(registration.Entity);
+            using var scope = this.factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var eventInfo = await scope.CreateEventAsync();
+            using var registration = await scope.CreateRegistrationAsync(eventInfo.Entity, user.Entity);
+            using var product = await scope.CreateProductAsync(eventInfo.Entity);
+            using var order = await scope.CreateOrderAsync(registration.Entity);
 
             var response = await client.PostAsync("/api/v0/orders/update-order",
                 new StringContent(JsonConvert.SerializeObject(new
@@ -53,7 +50,7 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V0
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
             var orderId = order.Entity.OrderId;
-            var orderLines = await context.OrderLines.AsNoTracking()
+            var orderLines = await scope.Db.OrderLines.AsNoTracking()
                 .Where(line => line.OrderId == orderId)
                 .ToArrayAsync();
 

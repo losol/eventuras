@@ -3,8 +3,6 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <RootNamespace>Eventuras.IntegrationTests</RootNamespace>
-    <AssemblyName>Eventuras.IntegrationTests</AssemblyName>
     <IsPackable>false</IsPackable>
     <PreserveCompilationContext>true</PreserveCompilationContext>
   </PropertyGroup>

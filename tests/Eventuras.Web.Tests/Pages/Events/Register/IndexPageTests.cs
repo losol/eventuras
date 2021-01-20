@@ -2,14 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Eventuras.Infrastructure;
+using Eventuras.IntegrationTests;
 using Eventuras.TestAbstractions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
 
-namespace Eventuras.IntegrationTests.Pages.Events.Register
+namespace Eventuras.Web.Tests.Pages.Events.Register
 {
     public class IndexPageTests : IClassFixture<CustomWebApplicationFactory<Startup>>, IDisposable
     {
@@ -26,14 +25,14 @@ namespace Eventuras.IntegrationTests.Pages.Events.Register
         {
             this.factory.EmailSenderMock.Reset();
 
-            using var scope = this.factory.Services.NewScope();
+            using var scope = this.factory.Services.NewTestScope();
 
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var user = context.Users.FirstOrDefault(u => u.Email == Email);
+            
+            var user = scope.Db.Users.FirstOrDefault(u => u.Email == Email);
             if (user != null)
             {
-                context.Remove(user);
-                context.SaveChanges();
+                scope.Db.Remove(user);
+                scope.Db.SaveChanges();
             }
         }
 
@@ -45,12 +44,12 @@ namespace Eventuras.IntegrationTests.Pages.Events.Register
             var client = this.factory.CreateClient();
             client.AcceptLanguage(language);
 
-            using var scope = this.factory.Services.NewScope();
+            using var scope = this.factory.Services.NewTestScope();
 
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            using var eventInfo = await context.CreateEventAsync();
-            using var user = await scope.ServiceProvider.CreateUserAsync(Email);
-            using var registration = await context.CreateRegistrationAsync(eventInfo.Entity, user.Entity);
+            
+            using var eventInfo = await scope.CreateEventAsync();
+            using var user = await scope.CreateUserAsync(Email);
+            using var registration = await scope.CreateRegistrationAsync(eventInfo.Entity, user.Entity);
 
             var emailExpectation = this.factory.EmailSenderMock
                 .ExpectEmail()
@@ -85,11 +84,11 @@ namespace Eventuras.IntegrationTests.Pages.Events.Register
             var client = this.factory.CreateClient();
             client.AcceptLanguage(language);
 
-            using var scope = this.factory.Services.NewScope();
+            using var scope = this.factory.Services.NewTestScope();
 
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            using var eventInfo = await context.CreateEventAsync();
-            using var user = await scope.ServiceProvider.CreateUserAsync(Email);
+            
+            using var eventInfo = await scope.CreateEventAsync();
+            using var user = await scope.CreateUserAsync(Email);
 
             var emailExpectation = this.factory.EmailSenderMock
                 .ExpectEmail()
@@ -114,7 +113,7 @@ namespace Eventuras.IntegrationTests.Pages.Events.Register
             Assert.True(response.IsSuccessStatusCode, await response.Content.ReadAsStringAsync());
 
             var registration =
-                await context.Registrations.FirstOrDefaultAsync(r =>
+                await scope.Db.Registrations.FirstOrDefaultAsync(r =>
                     r.UserId == user.Entity.Id && r.EventInfoId == eventInfo.Entity.EventInfoId);
 
             Assert.NotNull(registration);
@@ -134,10 +133,10 @@ namespace Eventuras.IntegrationTests.Pages.Events.Register
             var client = this.factory.CreateClient();
             client.AcceptLanguage(language);
 
-            using var scope = this.factory.Services.NewScope();
+            using var scope = this.factory.Services.NewTestScope();
 
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            using var eventInfo = await context.CreateEventAsync();
+            
+            using var eventInfo = await scope.CreateEventAsync();
 
             var emailExpectation = this.factory.EmailSenderMock
                 .ExpectEmail()
@@ -161,14 +160,14 @@ namespace Eventuras.IntegrationTests.Pages.Events.Register
 
             Assert.True(response.IsSuccessStatusCode, await response.Content.ReadAsStringAsync());
 
-            var user = await context.Users.FirstOrDefaultAsync(u => u.Email == Email);
+            var user = await scope.Db.Users.FirstOrDefaultAsync(u => u.Email == Email);
             Assert.NotNull(user);
             Assert.Equal("John Doe", user.Name);
             Assert.Equal(Email, user.UserName);
             Assert.Equal("+11111111111", user.PhoneNumber);
 
             var registration =
-                await context.Registrations.FirstOrDefaultAsync(r =>
+                await scope.Db.Registrations.FirstOrDefaultAsync(r =>
                     r.UserId == user.Id && r.EventInfoId == eventInfo.Entity.EventInfoId);
 
             Assert.NotNull(registration);

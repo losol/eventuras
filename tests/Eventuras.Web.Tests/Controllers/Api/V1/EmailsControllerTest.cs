@@ -1,15 +1,16 @@
-using Newtonsoft.Json;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Eventuras.IntegrationTests;
 using Eventuras.TestAbstractions;
 using Losol.Communication.Email;
 using Moq;
+using Newtonsoft.Json;
 using Xunit;
 
-namespace Eventuras.IntegrationTests.Controllers.Api.V1
+namespace Eventuras.Web.Tests.Controllers.Api.V1
 {
     public class EmailsControllerTest : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
@@ -31,11 +32,11 @@ namespace Eventuras.IntegrationTests.Controllers.Api.V1
         [Fact(Skip = "FIXME: add auth tokens instead of cookies and return Forbidden response")]
         public async Task Should_Require_Admin_Role_To_Send_Emails()
         {
-            using var scope = _factory.Services.NewScope();
-            using var user = await scope.ServiceProvider.CreateUserAsync();
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
 
             var client = _factory.CreateClient();
-            await client.LoginAsync(user.Entity.Email, ServiceProviderExtensions.DefaultPassword);
+            await client.LoginAsync(user.Entity.Email, TestingConstants.DefaultPassword);
 
             var response = await client.PostAsync("/api/v1/emails", new StringContent("{}", Encoding.UTF8, "application/json"));
             Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);

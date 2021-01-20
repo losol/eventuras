@@ -1,14 +1,13 @@
-using Eventuras.Infrastructure;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Eventuras.IntegrationTests;
 using Eventuras.TestAbstractions;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-namespace Eventuras.IntegrationTests.Pages.Admin.Events
+namespace Eventuras.Web.Tests.Pages.Admin.Events
 {
     public class ProductsPageTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
@@ -25,11 +24,11 @@ namespace Eventuras.IntegrationTests.Pages.Admin.Events
             var client = this.factory.CreateClient();
             await client.LogInAsSuperAdminAsync();
 
-            using var scope = this.factory.Services.NewScope();
-            using var user = await scope.ServiceProvider.CreateUserAsync();
+            using var scope = this.factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
 
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            using var eventInfo = await context.CreateEventAsync();
+            
+            using var eventInfo = await scope.CreateEventAsync();
 
             var response = await client.PostAsync($"/Admin/Events/Products/{eventInfo.Entity.EventInfoId}",
                 new Dictionary<string, string>
@@ -42,7 +41,7 @@ namespace Eventuras.IntegrationTests.Pages.Admin.Events
                 });
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-            var updatedEvent = await context.EventInfos.AsNoTracking()
+            var updatedEvent = await scope.Db.EventInfos.AsNoTracking()
                 .Include(e => e.Products)
                 .ThenInclude(p => p.ProductVariants)
                 .FirstOrDefaultAsync(e => e.EventInfoId == eventInfo.Entity.EventInfoId);
