@@ -1,5 +1,7 @@
-using System;
 using Eventuras.TestAbstractions;
+using System;
+using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -32,6 +34,31 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             var response = await client.GetAsync("/v3/registrations");
             var paging = await response.AsTokenAsync();
             paging.CheckEmptyPaging();
+        }
+
+        [Theory]
+        [InlineData("test", null)]
+        [InlineData(-1, null)]
+        [InlineData(0, null)]
+        [InlineData(null, "test")]
+        [InlineData(null, -1)]
+        [InlineData(null, 101)]
+        public async Task Should_Return_BadRequest_For_Invalid_Paging_Params(object page, object count)
+        {
+            var client = _factory.CreateClient().Authenticated();
+
+            var q = new List<object>();
+            if (page != null)
+            {
+                q.Add($"page={WebUtility.UrlEncode(page.ToString())}");
+            }
+            if (count != null)
+            {
+                q.Add($"count={WebUtility.UrlEncode(count.ToString())}");
+            }
+
+            var response = await client.GetAsync("/v3/registrations?" + string.Join("&", q));
+            await response.CheckBadRequestAsync();
         }
 
         [Fact]
