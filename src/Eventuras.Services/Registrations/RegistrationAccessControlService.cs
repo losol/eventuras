@@ -88,7 +88,9 @@ namespace Eventuras.Services.Registrations
             }
 
             var org = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(null, cancellationToken);
-            return query.Where(r => r.EventInfo.OrganizationId == org.OrganizationId);
+            return query.Where(r => r.EventInfo.OrganizationId == org.OrganizationId &&
+                                    r.EventInfo.Organization.Members
+                                        .Any(m => m.UserId == user.GetUserId())); // FIXME: it's not true anymore that if the user is Admin then he is an Admin of the current org.
         }
 
         private async Task<bool> CheckAdminAccessAsync(

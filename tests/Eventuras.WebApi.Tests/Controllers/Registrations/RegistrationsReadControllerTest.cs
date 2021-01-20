@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using Eventuras.Services;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Registrations
@@ -115,6 +116,42 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             paging.CheckPaging(1, 1,
                 (token, r) => token.CheckRegistration(r),
                 r3.Entity);
+        }
+
+        [Fact]
+        public async Task Should_Limit_Registrations_For_Admin()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var otherUser = await scope.CreateUserAsync();
+            using var admin = await scope.CreateUserAsync();
+            using var otherAdmin = await scope.CreateUserAsync();
+            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var otherOrg = await scope.CreateOrganizationAsync();
+
+            await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
+            await scope.CreateOrganizationMemberAsync(otherAdmin.Entity, otherOrg.Entity, role: Roles.Admin);
+
+            using var e1 = await scope.CreateEventAsync(organization: org.Entity);
+            using var e2 = await scope.CreateEventAsync(organization: otherOrg.Entity);
+            using var r1 = await scope.CreateRegistrationAsync(e1.Entity, user.Entity, time: DateTime.Now.AddDays(3));
+            using var r2 = await scope.CreateRegistrationAsync(e1.Entity, otherUser.Entity, time: DateTime.Now.AddDays(2));
+            using var r3 = await scope.CreateRegistrationAsync(e2.Entity, otherUser.Entity, time: DateTime.Now.AddDays(1));
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAs(admin.Entity, Roles.Admin);
+
+            var response = await client.GetAsync("/v3/registrations");
+            var paging = await response.AsTokenAsync();
+            paging.CheckPaging(1, 2,
+                (token, r) => token.CheckRegistration(r),
+                r1.Entity, r2.Entity);
+
+            client.AuthenticatedAs(otherAdmin.Entity, Roles.Admin);
+
+            response = await client.GetAsync("/v3/registrations");
+            paging = await response.AsTokenAsync();
+            paging.CheckEmptyPaging();
         }
 
         [Fact]

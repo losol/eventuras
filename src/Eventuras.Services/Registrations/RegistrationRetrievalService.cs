@@ -63,7 +63,7 @@ namespace Eventuras.Services.Registrations
             if (filter.AccessibleOnly)
             {
                 query = await _registrationAccessControlService
-                    .AddAccessFilterAsync(query);
+                    .AddAccessFilterAsync(query, cancellationToken);
             }
 
             return await query.FirstOrDefaultAsync(cancellationToken);
@@ -85,7 +85,7 @@ namespace Eventuras.Services.Registrations
             if (request.Filter.AccessibleOnly)
             {
                 query = await _registrationAccessControlService
-                    .AddAccessFilterAsync(query);
+                    .AddAccessFilterAsync(query, cancellationToken);
             }
 
             return await Paging<Registration>.CreateAsync(query, request, cancellationToken);
