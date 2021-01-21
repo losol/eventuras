@@ -36,9 +36,7 @@ namespace Eventuras.WebApi.Controllers.Registrations
         {
             try
             {
-                var registration = await _registrationManagementService.CreateRegistrationAsync(dto.EventId, dto.UserId, cancellationToken);
-                dto.CopyTo(registration);
-                await _registrationManagementService.UpdateRegistrationAsync(registration, cancellationToken);
+                var registration = await _registrationManagementService.CreateRegistrationAsync(dto.EventId, dto.UserId, dto.CopyTo, cancellationToken);
                 return Ok(new RegistrationDto(registration));
             }
             catch (DuplicateException)

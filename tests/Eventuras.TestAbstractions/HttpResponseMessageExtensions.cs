@@ -8,7 +8,12 @@ namespace Eventuras.TestAbstractions
 {
     public static class HttpResponseMessageExtensions
     {
-        public static async Task CheckBadRequestAsync(this HttpResponseMessage response, string expectedErrorText = null)
+        public static void CheckBadRequest(this HttpResponseMessage response)
+        {
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        public static async Task CheckBadRequestAsync(this HttpResponseMessage response, string expectedErrorText)
         {
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
@@ -51,7 +56,7 @@ namespace Eventuras.TestAbstractions
 
         public static void CheckForbidden(this HttpResponseMessage response)
         {
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
         }
     }
 }

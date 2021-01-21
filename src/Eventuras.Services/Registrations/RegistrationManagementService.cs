@@ -34,7 +34,11 @@ namespace Eventuras.Services.Registrations
                 new ArgumentNullException(nameof(context));
         }
 
-        public async Task<Registration> CreateRegistrationAsync(int eventId, string userId, CancellationToken cancellationToken)
+        public async Task<Registration> CreateRegistrationAsync(
+            int eventId,
+            string userId,
+            Action<Registration> fillAction,
+            CancellationToken cancellationToken)
         {
             var @event = await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventId, null, cancellationToken); // To check event reference only
             var user = await _userRetrievalService.GetUserByIdAsync(userId, cancellationToken);
@@ -45,6 +49,8 @@ namespace Eventuras.Services.Registrations
                 UserId = userId,
                 ParticipantName = user.Name // TODO: remove this property?
             };
+
+            fillAction?.Invoke(registration);
 
             await _registrationAccessControlService.CheckRegistrationCreateAccessAsync(registration, cancellationToken);
 

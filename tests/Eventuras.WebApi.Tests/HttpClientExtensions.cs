@@ -4,8 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
+using Microsoft.Rest;
+using Newtonsoft.Json;
 
 namespace Eventuras.WebApi.Tests
 {
@@ -100,6 +104,26 @@ namespace Eventuras.WebApi.Tests
                 claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
             }
             return claims.ToArray();
+        }
+
+        public static async Task<HttpResponseMessage> PostAsync(
+            this HttpClient httpClient,
+            string requestUri,
+            object data)
+        {
+            return await httpClient.PostAsync(requestUri,
+                new StringContent(JsonConvert.SerializeObject(data),
+                    Encoding.UTF8, "application/json"));
+        }
+
+        public static async Task<HttpResponseMessage> PutAsync(
+            this HttpClient httpClient,
+            string requestUri,
+            object data)
+        {
+            return await httpClient.PutAsync(requestUri,
+                new StringContent(JsonConvert.SerializeObject(data),
+                    Encoding.UTF8, "application/json"));
         }
     }
 }

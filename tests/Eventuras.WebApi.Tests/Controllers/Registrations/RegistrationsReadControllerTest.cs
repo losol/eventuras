@@ -59,7 +59,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             }
 
             var response = await client.GetAsync("/v3/registrations?" + string.Join("&", q));
-            await response.CheckBadRequestAsync();
+            response.CheckBadRequest();
         }
 
         [Fact]

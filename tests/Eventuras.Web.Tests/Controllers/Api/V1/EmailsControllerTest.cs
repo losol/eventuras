@@ -50,7 +50,7 @@ namespace Eventuras.Web.Tests.Controllers.Api.V1
             await client.LogInAsSuperAdminAsync();
 
             var response = await client.PostAsync("/api/v1/emails", new StringContent(request, Encoding.UTF8, "application/json"));
-            await response.CheckBadRequestAsync();
+            response.CheckBadRequest();
         }
 
         [Fact]
@@ -73,7 +73,7 @@ namespace Eventuras.Web.Tests.Controllers.Api.V1
                 }
             }), Encoding.UTF8, "application/json"));
 
-            await response.CheckBadRequestAsync();
+            response.CheckBadRequest();
         }
 
         [Fact]
@@ -130,7 +130,7 @@ namespace Eventuras.Web.Tests.Controllers.Api.V1
                 }
             }), Encoding.UTF8, "application/json"));
 
-            await response.CheckBadRequestAsync();
+            response.CheckBadRequest();
         }
 
         [Fact]
@@ -183,7 +183,7 @@ namespace Eventuras.Web.Tests.Controllers.Api.V1
             });
 
             var response = await client.PostAsync("/api/v1/emails", new StringContent(json, Encoding.UTF8, "application/json"));
-            await response.CheckBadRequestAsync();
+            response.CheckBadRequest();
         }
 
         [Fact]
@@ -201,7 +201,7 @@ namespace Eventuras.Web.Tests.Controllers.Api.V1
             });
 
             var response = await client.PostAsync("/api/v1/emails", new StringContent(json, Encoding.UTF8, "application/json"));
-            await response.CheckBadRequestAsync();
+            response.CheckBadRequest();
         }
 
         [Fact]
@@ -218,7 +218,7 @@ namespace Eventuras.Web.Tests.Controllers.Api.V1
             });
 
             var response = await client.PostAsync("/api/v1/emails", new StringContent(json, Encoding.UTF8, "application/json"));
-            await response.CheckBadRequestAsync();
+            response.CheckBadRequest();
         }
 
         [Fact]
@@ -240,7 +240,7 @@ namespace Eventuras.Web.Tests.Controllers.Api.V1
             });
 
             var response = await client.PostAsync("/api/v1/emails", new StringContent(json, Encoding.UTF8, "application/json"));
-            await response.CheckBadRequestAsync();
+            response.CheckBadRequest();
         }
 
         [Fact]
@@ -263,7 +263,7 @@ namespace Eventuras.Web.Tests.Controllers.Api.V1
             });
 
             var response = await client.PostAsync("/api/v1/emails", new StringContent(json, Encoding.UTF8, "application/json"));
-            await response.CheckBadRequestAsync();
+            response.CheckBadRequest();
         }
 
         [Fact]

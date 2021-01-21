@@ -90,7 +90,7 @@ namespace Eventuras.Web.Tests.Controllers.Api.V1
             using var eventInfo = await scope.CreateEventAsync();
 
             var response = await client.DeleteAsync($"/api/v1/events/external/{eventInfo.Entity.EventInfoId:####}");
-            await response.CheckBadRequestAsync();
+            response.CheckBadRequest();
         }
 
         [Fact]
@@ -100,7 +100,7 @@ namespace Eventuras.Web.Tests.Controllers.Api.V1
             await client.LogInAsSuperAdminAsync();
 
             using var scope = _factory.Services.NewTestScope();
-            
+
             using var eventInfo = await scope.CreateEventAsync();
 
             var response = await client.DeleteAsync($"/api/v1/events/external/{eventInfo.Entity.EventInfoId:####}?localId=1");
@@ -114,7 +114,7 @@ namespace Eventuras.Web.Tests.Controllers.Api.V1
             await client.LogInAsSuperAdminAsync();
 
             using var scope = _factory.Services.NewTestScope();
-            
+
             using var eventInfo = await scope.CreateEventAsync();
             using var anotherEvent = await scope.CreateEventAsync();
             using var anotherExternalEvent = await scope.CreateExternalEventAsync(anotherEvent.Entity);
@@ -130,7 +130,7 @@ namespace Eventuras.Web.Tests.Controllers.Api.V1
             await client.LogInAsSuperAdminAsync();
 
             using var scope = _factory.Services.NewTestScope();
-            
+
             using var eventInfo = await scope.CreateEventAsync();
             var externalEvent = await scope.CreateExternalEventAsync(eventInfo.Entity); // will be deleted in controller
 

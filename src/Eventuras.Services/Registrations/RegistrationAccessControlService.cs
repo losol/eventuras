@@ -108,7 +108,16 @@ namespace Eventuras.Services.Registrations
                 return false;
             }
 
-            var org = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(null, cancellationToken);
+            var org = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(new OrganizationRetrievalOptions
+            {
+                LoadMembers = true
+            }, cancellationToken);
+
+            if (org.Members.All(m => m.UserId != user.GetUserId()))
+            {
+                return false;
+            }
+
             var @event = await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
             return @event.OrganizationId.HasValue && @event.OrganizationId.Value == org.OrganizationId;
         }
