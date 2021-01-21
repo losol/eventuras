@@ -15,7 +15,7 @@ import React from "react";
 interface EmailDrawerProps {
     isOpen: boolean,
     onClose: any,
-    participantGroups: string [],
+    recipientGroups: string [],
 }
 
 const EmailDrawer = (props: EmailDrawerProps): JSX.Element => {
@@ -35,7 +35,7 @@ const EmailDrawer = (props: EmailDrawerProps): JSX.Element => {
             </DrawerHeader>
 
                     <DrawerBody>
-                        <EmailEditor participantGroups={props.participantGroups} />
+                        <EmailEditor participantGroups={props.recipientGroups} />
                     </DrawerBody>
 
                     <DrawerFooter borderTopWidth="1px">

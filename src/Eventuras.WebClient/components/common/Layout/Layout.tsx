@@ -1,4 +1,4 @@
-import { Header } from "../../common";
+import { Header } from "..";
 import React from "react";
 
 const Layout = ({ children }) => {

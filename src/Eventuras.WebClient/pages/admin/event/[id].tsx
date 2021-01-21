@@ -21,7 +21,7 @@ const EventAdmin = (): JSX.Element => {
         </Button>
       </Container>
 
-      <EmailDrawer isOpen={isOpen} onClose={onClose} participantGroups={participantGroups} />
+      <EmailDrawer isOpen={isOpen} onClose={onClose} recipientGroups={participantGroups} />
     </Layout>
   );
 };

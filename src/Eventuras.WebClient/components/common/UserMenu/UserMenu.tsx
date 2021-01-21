@@ -13,7 +13,12 @@ import {
 import { ColorModeToggler } from "..";
 import React from "react";
 
-const UserMenu = (props) => {
+interface UserMenuProps {
+  name: string,
+  onClickLogout: () => void;
+}
+
+const UserMenu = (props: UserMenuProps) => {
   return (
     <>
       <Menu>
@@ -40,7 +45,7 @@ const UserMenu = (props) => {
             <ColorModeToggler />
           </MenuItem>
           <MenuItem>
-            <Button onClick={() => logout({ returnTo: window.location.origin })}>
+            <Button onClick={props.onClickLogout}>
               Logg av
             </Button>
           </MenuItem>
