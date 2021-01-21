@@ -31,14 +31,14 @@ namespace Eventuras.WebApi.Controllers.Registrations
 
         [HttpPost]
         public async Task<ActionResult<OrderDto>> CreateNewOrderForRegistration(int id,
-            [FromBody] RegistrationOrderItemDto[] dto,
+            [FromBody] RegistrationOrderDto dto,
             CancellationToken cancellationToken)
         {
             var registration = await _registrationRetrievalService
                 .GetRegistrationByIdAsync(id, cancellationToken: cancellationToken);
 
             var order = await _registrationOrderManagementService
-                .CreateOrderForRegistrationAsync(registration, dto
+                .CreateOrderForRegistrationAsync(registration, dto.Items
                         .Select(d => d.ToOrderItemDto())
                         .ToArray(), cancellationToken);
 
