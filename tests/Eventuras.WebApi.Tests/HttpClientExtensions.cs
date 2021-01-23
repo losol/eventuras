@@ -1,4 +1,7 @@
+using Eventuras.Domain;
+using Eventuras.Services;
 using Eventuras.TestAbstractions;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,10 +9,6 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Eventuras.Domain;
-using Eventuras.Services;
-using Microsoft.Rest;
-using Newtonsoft.Json;
 
 namespace Eventuras.WebApi.Tests
 {
@@ -93,7 +92,7 @@ namespace Eventuras.WebApi.Tests
             }
             if (!string.IsNullOrEmpty(email))
             {
-                claims.Add(new Claim(ClaimTypes.Surname, email));
+                claims.Add(new Claim(ClaimTypes.Email, email));
             }
             if (roles == null && role != null)
             {
