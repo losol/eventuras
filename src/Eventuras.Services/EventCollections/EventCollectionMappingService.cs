@@ -2,6 +2,7 @@ using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Services.Auth;
 using Eventuras.Services.Exceptions;
@@ -30,9 +31,9 @@ namespace Eventuras.Services.EventCollections
             _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw new ArgumentNullException(nameof(currentOrganizationAccessorService));
         }
 
-        public async Task AddEventToCollectionAsync(int eventId, int collectionId)
+        public async Task AddEventToCollectionAsync(int eventId, int collectionId, CancellationToken cancellationToken)
         {
-            var mapping = await CheckAndFindMappingAsync(eventId, collectionId);
+            var mapping = await CheckAndFindMappingAsync(eventId, collectionId, cancellationToken);
             if (mapping != null)
             {
                 return;
@@ -46,8 +47,8 @@ namespace Eventuras.Services.EventCollections
 
             try
             {
-                await _context.EventCollectionMappings.AddAsync(mapping);
-                await _context.SaveChangesAsync();
+                await _context.EventCollectionMappings.AddAsync(mapping, cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
             }
             catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
             {
@@ -64,36 +65,40 @@ namespace Eventuras.Services.EventCollections
             }
         }
 
-        public async Task RemoveEventFromCollectionAsync(int eventId, int collectionId)
+        public async Task RemoveEventFromCollectionAsync(int eventId, int collectionId, CancellationToken cancellationToken)
         {
-            var mapping = await CheckAndFindMappingAsync(eventId, collectionId);
+            var mapping = await CheckAndFindMappingAsync(eventId, collectionId, cancellationToken);
             if (mapping != null)
             {
                 _context.EventCollectionMappings.Remove(mapping);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
             }
         }
 
-        private async Task<EventCollectionMapping> CheckAndFindMappingAsync(int eventId, int collectionId)
+        private async Task<EventCollectionMapping> CheckAndFindMappingAsync(int eventId, int collectionId, CancellationToken cancellationToken)
         {
-            var @event = await _context.EventInfos.FirstOrDefaultAsync(e => e.EventInfoId == eventId);
+            var @event = await _context.EventInfos
+                .FirstOrDefaultAsync(e => e.EventInfoId == eventId,
+                    cancellationToken);
             if (@event == null)
             {
                 throw new NotFoundException($"Event {eventId} not found");
             }
 
-            var collection = await _context.EventCollections.FirstOrDefaultAsync(c => c.CollectionId == collectionId);
+            var collection = await _context.EventCollections
+                .FirstOrDefaultAsync(c => c.CollectionId == collectionId,
+                    cancellationToken);
             if (collection == null)
             {
                 throw new NotFoundException($"Event collection {collectionId} not found");
             }
 
-            if (@event.OrganizationId.HasValue && !await IsAccessibleForEditAsync(@event.OrganizationId.Value))
+            if (@event.OrganizationId.HasValue && !await IsAccessibleForEditAsync(@event.OrganizationId.Value, cancellationToken))
             {
                 throw new NotAccessibleException($"Event {eventId} not accessible not accessible for update");
             }
 
-            if (!await IsAccessibleForEditAsync(collection.OrganizationId))
+            if (!await IsAccessibleForEditAsync(collection.OrganizationId, cancellationToken))
             {
                 throw new NotAccessibleException($"Collection {collectionId} not accessible for update");
             }
@@ -101,11 +106,12 @@ namespace Eventuras.Services.EventCollections
             var mapping = await _context.EventCollectionMappings
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.EventId == eventId
-                                          && m.CollectionId == collectionId);
+                                          && m.CollectionId == collectionId,
+                    cancellationToken);
             return mapping;
         }
 
-        private async Task<bool> IsAccessibleForEditAsync(int organizationId)
+        private async Task<bool> IsAccessibleForEditAsync(int organizationId, CancellationToken cancellationToken)
         {
             var principal = _httpContextAccessor.HttpContext.User;
             if (!principal.IsAdmin())
@@ -116,7 +122,8 @@ namespace Eventuras.Services.EventCollections
             {
                 return true;
             }
-            var organization = await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
+            var organization = await _currentOrganizationAccessorService
+                .RequireCurrentOrganizationAsync(cancellationToken: cancellationToken);
             return organizationId == organization.OrganizationId;
         }
     }
