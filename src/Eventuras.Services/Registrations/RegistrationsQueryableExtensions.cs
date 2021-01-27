@@ -40,6 +40,16 @@ namespace Eventuras.Services.Registrations
                 query = query.Where(r => r.UserId == filter.UserId);
             }
 
+            if (filter.HavingStatuses?.Any() == true)
+            {
+                query = query.Where(r => filter.HavingStatuses.Contains(r.Status));
+            }
+
+            if (filter.HavingTypes?.Any() == true)
+            {
+                query = query.Where(r => filter.HavingTypes.Contains(r.Type));
+            }
+
             return query;
         }
 
