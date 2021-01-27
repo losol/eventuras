@@ -37,17 +37,22 @@ namespace Eventuras.Services.Registrations
 
             var reader = new PageReader<Registration>(async (offset, limit, token) =>
                 await _registrationRetrievalService.ListRegistrationsAsync(
-                    new IRegistrationRetrievalService.Request
+                    new RegistrationListRequest
                     {
                         Offset = offset,
                         Limit = limit,
-                        EventInfoId = options?.EventInfoId,
-                        IncludingUser = true,
-                        IncludingEventInfo = true,
-                        IncludingOrders = true,
-                        IncludingProducts = true,
-                        OrderBy = IRegistrationRetrievalService.Order.RegistrationTime,
-                        Descending = true
+                        OrderBy = RegistrationListOrder.RegistrationTime,
+                        Descending = true,
+                        Filter = new RegistrationFilter
+                        {
+                            EventInfoId = options?.EventInfoId
+                        }
+                    }, new RegistrationRetrievalOptions
+                    {
+                        IncludeUser = true,
+                        IncludeEventInfo = true,
+                        IncludeOrders = true,
+                        IncludeProducts = true,
                     }, token));
 
             while (await reader.HasMoreAsync())

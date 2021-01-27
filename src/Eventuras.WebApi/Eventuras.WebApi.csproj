@@ -6,9 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="5.0.0" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="5.0.0" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="5.0.0" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="5.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="5.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="5.0.1" />
     <PackageReference Include="Losol.Communication.Email" Version="$(LosolCommunicationLibraryVersion)" /> 
     <PackageReference Include="Losol.Communication.Email.Smtp" Version="$(LosolCommunicationLibraryVersion)" />
     <PackageReference Include="Losol.Communication.Email.SendGrid" Version="$(LosolCommunicationLibraryVersion)" />
@@ -19,9 +19,9 @@
     <PackageReference Include="Losol.Communication.Sms" Version="$(LosolCommunicationLibraryVersion)" />
     <PackageReference Include="Losol.Communication.Sms.Twilio" Version="$(LosolCommunicationLibraryVersion)" />
     <PackageReference Include="Losol.Communication.Sms.Mock" Version="$(LosolCommunicationLibraryVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.1" NoWarn="NU1605" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.1" NoWarn="NU1605" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.2" NoWarn="NU1605" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.2" NoWarn="NU1605" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0-preview.2" />
     <PackageReference Include="Microsoft.FeatureManagement" Version="2.2.0" />
     <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />

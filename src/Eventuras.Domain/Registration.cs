@@ -150,6 +150,12 @@ namespace Eventuras.Domain
             AddLog();
         }
 
+        public void MarkAsCancelled()
+        {
+            Status = RegistrationStatus.Cancelled;
+            AddLog();
+        }
+
         public bool HasOrder => Orders != null && Orders.Count > 0;
         public bool HasCertificate => CertificateId != null;
 
@@ -167,7 +173,7 @@ namespace Eventuras.Domain
             Log += logText + "\n";
         }
 
-        public void CreateOrder(IEnumerable<OrderDTO> orders, IEnumerable<OrderLine> refundlines = null)
+        public Order CreateOrder(IEnumerable<OrderDTO> orders, IEnumerable<OrderLine> refundlines = null)
         {
             _ = orders ?? throw new ArgumentNullException(nameof(orders));
 
@@ -209,6 +215,7 @@ namespace Eventuras.Domain
             // ... and add it to the current registration
             this.Orders = this.Orders ?? new List<Order>();
             this.Orders.Add(order);
+            return order;
         }
 
         /// <summary>

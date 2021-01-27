@@ -71,7 +71,8 @@ namespace Eventuras.WebApi
             services.AddApplicationServices(Configuration);
             services.AddFeatureManagement();
 
-            services.AddControllers();
+            services.AddControllers(options =>
+                options.Filters.Add(new HttpResponseExceptionFilter())); // See https://docs.microsoft.com/en-us/aspnet/core/web-api/handle-errors?view=aspnetcore-5.0#use-exceptions-to-modify-the-response
 
             services.AddCors(options =>
             {

@@ -88,7 +88,8 @@ namespace Eventuras.Web.Extensions
             this IServiceCollection services)
         {
             services
-                .AddControllersWithViews()
+                .AddControllersWithViews(options =>
+                    options.Filters.Add(new HttpResponseExceptionFilter())) // See https://docs.microsoft.com/en-us/aspnet/core/web-api/handle-errors?view=aspnetcore-5.0#use-exceptions-to-modify-the-response
                 .AddNewtonsoftJson();
 
             services

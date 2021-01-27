@@ -6,7 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Eventuras.Services.Auth;
+using Eventuras.Services.Exceptions;
 
 namespace Eventuras.Services.Events
 {
@@ -26,46 +29,66 @@ namespace Eventuras.Services.Events
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
-        public async Task<EventInfo> GetEventInfoByIdAsync(int id, EventInfoRetrievalOptions options = null)
+        public async Task<EventInfo> GetEventInfoByIdAsync(int id,
+            EventInfoRetrievalOptions options,
+            CancellationToken cancellationToken)
         {
             var query = _context.EventInfos
                 .AsNoTracking()
                 .Where(e => e.EventInfoId == id)
                 .UseOptions(options ?? new EventInfoRetrievalOptions());
 
-            return await query.SingleAsync();
+            var @event = await query.SingleOrDefaultAsync(cancellationToken);
+            if (@event == null)
+            {
+                throw new NotFoundException($"Event {id} not found");
+            }
+
+            return @event;
         }
 
         public async Task<List<EventInfo>> ListEventsAsync(
-            EventInfoFilter filter = null,
-            EventRetrievalOrder order = EventRetrievalOrder.StartDate,
-            EventInfoRetrievalOptions options = null)
+            EventInfoFilter filter,
+            EventRetrievalOrder order,
+            EventInfoRetrievalOptions options,
+            CancellationToken cancellationToken)
         {
-            var query = _context.EventInfos.AsNoTracking()
+            filter ??= new EventInfoFilter();
+
+            var query = _context.EventInfos
+                .AsNoTracking()
                 .UseOptions(options ?? new EventInfoRetrievalOptions())
-                .UseFilter(filter ?? new EventInfoFilter())
+                .UseFilter(filter)
                 .UseOrder(order);
 
-            query = await AddOrgFilterIfNeededAsync(query);
+            if (filter.AccessibleOnly)
+            {
+                query = await AddOrgFilterIfNeededAsync(query, cancellationToken);
+            }
 
-            return await query.ToListAsync();
+            return await query.ToListAsync(cancellationToken);
         }
 
-        private async Task<IQueryable<EventInfo>> AddOrgFilterIfNeededAsync(IQueryable<EventInfo> query)
+        private async Task<IQueryable<EventInfo>> AddOrgFilterIfNeededAsync(
+            IQueryable<EventInfo> query,
+            CancellationToken cancellationToken)
         {
             var principal = _httpContextAccessor.HttpContext.User;
-
-            if (!principal.Identity.IsAuthenticated)
+            if (principal.IsAnonymous())
             {
-                var organization = await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
+                var organization = await _currentOrganizationAccessorService
+                    .GetCurrentOrganizationAsync(null, cancellationToken);
+
                 return organization?.IsRoot == true
                     ? query
                     : query.HavingNoOrganizationOr(organization);
             }
 
-            if (!principal.IsInRole(Roles.SuperAdmin))
+            if (!principal.IsPowerAdmin())
             {
-                var organization = await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
+                var organization = await _currentOrganizationAccessorService
+                    .GetCurrentOrganizationAsync(null, cancellationToken);
+
                 return principal.IsInRole(Roles.Admin)
                     ? query.HavingOrganization(organization) // admins can't manage no-org events
                     : query.HavingNoOrganizationOr(organization);

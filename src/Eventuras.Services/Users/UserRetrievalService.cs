@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using Eventuras.Services.Exceptions;
 
 namespace Eventuras.Services.Users
 {
@@ -25,18 +27,30 @@ namespace Eventuras.Services.Users
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
-        public async Task<ApplicationUser> GetUserByIdAsync(string userId)
+        public async Task<ApplicationUser> GetUserByIdAsync(string userId, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
                 throw new ArgumentException(nameof(userId));
             }
 
-            return await _context.ApplicationUsers
+            var user = await _context.ApplicationUsers
                 .AsNoTracking()
-                .SingleAsync(u => u.Id == userId);
+                .SingleOrDefaultAsync(u => u.Id == userId, cancellationToken: cancellationToken);
+
+            if (user == null)
+            {
+                throw new NotFoundException($"User {userId} not found.");
+            }
+
+            // TODO: check org access
+
+            return user;
         }
-        public async Task<List<ApplicationUser>> ListUsers(UserFilter filter, UserRetrievalOptions options)
+        public async Task<List<ApplicationUser>> ListUsers(
+            UserFilter filter,
+            UserRetrievalOptions options,
+            CancellationToken cancellationToken)
         {
             filter ??= new UserFilter();
             options ??= new UserRetrievalOptions();
@@ -45,7 +59,7 @@ namespace Eventuras.Services.Users
                 .AsNoTracking()
                 .UseOptions(options);
 
-            if (filter.AccessibleToOrgOnly)
+            if (filter.AccessibleOnly)
             {
                 var user = _httpContextAccessor.HttpContext.User;
                 if (!user.IsInRole(Roles.Admin) &&
@@ -56,7 +70,7 @@ namespace Eventuras.Services.Users
 
                 if (!user.IsInRole(Roles.SuperAdmin))
                 {
-                    var organization = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync();
+                    var organization = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(cancellationToken: cancellationToken);
                     if (!organization.IsRoot)
                     {
                         query = query.HavingOrganization(organization);
@@ -64,7 +78,7 @@ namespace Eventuras.Services.Users
                 }
             }
 
-            return await query.ToListAsync();
+            return await query.ToListAsync(cancellationToken);
         }
     }
 }

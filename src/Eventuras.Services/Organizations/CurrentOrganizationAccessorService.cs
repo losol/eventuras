@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Eventuras.Services.Organizations
@@ -21,7 +22,9 @@ namespace Eventuras.Services.Organizations
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
-        public async Task<Organization> GetCurrentOrganizationAsync(OrganizationRetrievalOptions options = null)
+        public async Task<Organization> GetCurrentOrganizationAsync(
+            OrganizationRetrievalOptions options,
+            CancellationToken cancellationToken)
         {
             var host = _httpContextAccessor.HttpContext.Request.Host;
             if (!host.HasValue)
@@ -33,12 +36,14 @@ namespace Eventuras.Services.Organizations
                 .AsNoTracking()
                 .UseOptions(options ?? new OrganizationRetrievalOptions())
                 .Where(o => o.Hostnames.Any(h => h.Active && h.Hostname == host.Value))
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<Organization> RequireCurrentOrganizationAsync(OrganizationRetrievalOptions options = null)
+        public async Task<Organization> RequireCurrentOrganizationAsync(
+            OrganizationRetrievalOptions options,
+            CancellationToken cancellationToken)
         {
-            return await GetCurrentOrganizationAsync(options) ??
+            return await GetCurrentOrganizationAsync(options, cancellationToken) ??
                    throw new OrganizationMisconfigurationException(_httpContextAccessor.HttpContext.Request.Host.Value);
         }
     }

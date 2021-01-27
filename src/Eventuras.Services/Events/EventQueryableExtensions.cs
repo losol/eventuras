@@ -80,7 +80,12 @@ namespace Eventuras.Services.Events
 
             if (options.LoadOrganization)
             {
-                query = query.Include(e => e.Organization);
+                var includableQueryable = query.Include(e => e.Organization);
+                if (options.LoadOrganizationMembers)
+                {
+                    includableQueryable.ThenInclude(o => o.Members);
+                }
+                query = includableQueryable;
             }
 
             if (options.LoadProducts)
