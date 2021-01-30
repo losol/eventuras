@@ -1,3 +1,5 @@
+using Eventuras.Domain;
+
 namespace Eventuras.Services.Registrations
 {
     public class RegistrationFilter
@@ -13,5 +15,9 @@ namespace Eventuras.Services.Registrations
         public bool HavingEmailConfirmedOnly { get; set; }
 
         public bool AccessibleOnly { get; set; }
+
+        public Registration.RegistrationStatus[] HavingStatuses { get; set; }
+
+        public Registration.RegistrationType[] HavingTypes { get; set; }
     }
 }

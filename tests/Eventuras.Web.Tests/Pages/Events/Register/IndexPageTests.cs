@@ -48,7 +48,7 @@ namespace Eventuras.Web.Tests.Pages.Events.Register
 
             
             using var eventInfo = await scope.CreateEventAsync();
-            using var user = await scope.CreateUserAsync(Email);
+            using var user = await scope.CreateUserAsync(email: Email);
             using var registration = await scope.CreateRegistrationAsync(eventInfo.Entity, user.Entity);
 
             var emailExpectation = this.factory.EmailSenderMock
@@ -88,7 +88,7 @@ namespace Eventuras.Web.Tests.Pages.Events.Register
 
             
             using var eventInfo = await scope.CreateEventAsync();
-            using var user = await scope.CreateUserAsync(Email);
+            using var user = await scope.CreateUserAsync(email: Email);
 
             var emailExpectation = this.factory.EmailSenderMock
                 .ExpectEmail()

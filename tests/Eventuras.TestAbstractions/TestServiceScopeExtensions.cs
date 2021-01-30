@@ -10,6 +10,7 @@ namespace Eventuras.TestAbstractions
     {
         public static async Task<IDisposableEntity<ApplicationUser>> CreateUserAsync(
             this TestServiceScope scope,
+            string name = TestingConstants.Placeholder,
             string email = TestingConstants.Placeholder,
             string password = TestingConstants.Placeholder,
             string phone = TestingConstants.Placeholder,
@@ -21,6 +22,11 @@ namespace Eventuras.TestAbstractions
             if (email == TestingConstants.Placeholder)
             {
                 email = $"{Guid.NewGuid()}@email.com";
+            }
+
+            if (name == TestingConstants.Placeholder)
+            {
+                name = email;
             }
 
             if (password == TestingConstants.Placeholder)
@@ -40,7 +46,7 @@ namespace Eventuras.TestAbstractions
 
             var user = new ApplicationUser
             {
-                Name = email,
+                Name = name,
                 UserName = email,
                 Email = email,
                 EmailConfirmed = true,
@@ -225,6 +231,7 @@ namespace Eventuras.TestAbstractions
             EventInfo eventInfo,
             ApplicationUser user,
             Registration.RegistrationStatus status = Registration.RegistrationStatus.Verified,
+            Registration.RegistrationType type = Registration.RegistrationType.Participant,
             DateTime? time = null)
         {
             var registration = new Registration
@@ -232,6 +239,7 @@ namespace Eventuras.TestAbstractions
                 EventInfoId = eventInfo.EventInfoId,
                 User = user,
                 Status = status,
+                Type = type,
                 ParticipantName = user.Name,
                 RegistrationTime = time ?? DateTime.UtcNow
                 // TODO: add other params

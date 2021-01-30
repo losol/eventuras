@@ -3,6 +3,7 @@ using Eventuras.Services.EventCollections;
 using Eventuras.Services.Events;
 using Eventuras.Services.Invoicing;
 using Eventuras.Services.ExternalSync;
+using Eventuras.Services.Notifications;
 using Eventuras.Services.Orders;
 using Eventuras.Services.Organizations;
 using Eventuras.Services.Registrations;
@@ -22,6 +23,7 @@ namespace Eventuras.Services
             services.AddScoped<ICertificatesService, CertificatesService>();
             services.AddScoped<IMessageLogService, MessageLogService>();
             services.AddRegistrationServices();
+            services.AddNotificationServices();
             services.AddOrganizationServices();
             services.AddUserServices();
             services.AddAuthServices();
