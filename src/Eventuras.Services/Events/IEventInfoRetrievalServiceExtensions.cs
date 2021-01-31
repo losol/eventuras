@@ -29,7 +29,6 @@ namespace Eventuras.Services.Events
             {
                 StatusNoneOf = new[]
                 {
-                    EventInfo.EventInfoStatus.Cancelled,
                     EventInfo.EventInfoStatus.Draft
                 },
                 StartDateAfter = DateTime.Now
