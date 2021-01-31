@@ -28,7 +28,7 @@ namespace Eventuras.WebApi
         public async Task<ActionResult<IQueryable<EventDto>>> Get()
         {
             // TODO: add event type filter
-            var events = from e in await _eventInfoService.ListEventsAsync()
+            var events = from e in await _eventInfoService.GetUpcomingEventsAsync()
                          select new EventDto()
                          {
                              Id = e.EventInfoId,
