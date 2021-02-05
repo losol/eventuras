@@ -1,0 +1,25 @@
+type: object
+title: Common error response structure.
+required:
+  - message
+properties:
+  message:
+    type: string
+    description: User-friendly error message.
+  code:
+    type: string
+    description: Machine-friendly error code.
+  fields:
+    type: array
+    items:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: string
+example:
+  message: Phone and password don't match
+  code: password-mismatch
+  fields:
+    password:
+      - Invalid password

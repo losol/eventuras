@@ -1,0 +1,847 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Eventuras API</title>
+    <style type="text/css">
+      body {
+	font-family: Trebuchet MS, sans-serif;
+	font-size: 15px;
+	color: #444;
+	margin-right: 24px;
+}
+
+h1	{
+	font-size: 25px;
+}
+h2	{
+	font-size: 20px;
+}
+h3	{
+	font-size: 16px;
+	font-weight: bold;
+}
+hr	{
+	height: 1px;
+	border: 0;
+	color: #ddd;
+	background-color: #ddd;
+}
+
+.app-desc {
+  clear: both;
+  margin-left: 20px;
+}
+.param-name {
+  width: 100%;
+}
+.license-info {
+  margin-left: 20px;
+}
+
+.license-url {
+  margin-left: 20px;
+}
+
+.model {
+  margin: 0 0 0px 20px;
+}
+
+.method {
+  margin-left: 20px;
+}
+
+.method-notes	{
+	margin: 10px 0 20px 0;
+	font-size: 90%;
+	color: #555;
+}
+
+pre {
+  padding: 10px;
+  margin-bottom: 2px;
+}
+
+.http-method {
+ text-transform: uppercase;
+}
+
+pre.get {
+  background-color: #0f6ab4;
+}
+
+pre.post {
+  background-color: #10a54a;
+}
+
+pre.put {
+  background-color: #c5862b;
+}
+
+pre.delete {
+  background-color: #a41e22;
+}
+
+.huge	{
+	color: #fff;
+}
+
+pre.example {
+  background-color: #f3f3f3;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+code {
+  white-space: pre;
+}
+
+.nickname {
+  font-weight: bold;
+}
+
+.method-path {
+  font-size: 1.5em;
+  background-color: #0f6ab4;
+}
+
+.up {
+  float:right;
+}
+
+.parameter {
+  width: 500px;
+}
+
+.param {
+  width: 500px;
+  padding: 10px 0 0 20px;
+  font-weight: bold;
+}
+
+.param-desc {
+  width: 700px;
+  padding: 0 0 0 20px;
+  color: #777;
+}
+
+.param-type {
+  font-style: italic;
+}
+
+.param-enum-header {
+width: 700px;
+padding: 0 0 0 60px;
+color: #777;
+font-weight: bold;
+}
+
+.param-enum {
+width: 700px;
+padding: 0 0 0 80px;
+color: #777;
+font-style: italic;
+}
+
+.field-label {
+  padding: 0;
+  margin: 0;
+  clear: both;
+}
+
+.field-items	{
+	padding: 0 0 15px 0;
+	margin-bottom: 15px;
+}
+
+.return-type {
+  clear: both;
+  padding-bottom: 10px;
+}
+
+.param-header {
+  font-weight: bold;
+}
+
+.method-tags {
+  text-align: right;
+}
+
+.method-tag {
+  background: none repeat scroll 0% 0% #24A600;
+  border-radius: 3px;
+  padding: 2px 10px;
+  margin: 2px;
+  color: #FFF;
+  display: inline-block;
+  text-decoration: none;
+}
+
+    </style>
+  </head>
+  <body>
+  <h1>Eventuras API</h1>
+    <div class="app-desc">Event Management API.</div>
+    <div class="app-desc">More information: <a href="http://losol.github.io/eventuras/openapi/v3/eventuras-api.v3.yaml">http://losol.github.io/eventuras/openapi/v3/eventuras-api.v3.yaml</a></div>
+    <div class="app-desc">Contact Info: <a href="contact@email.com">contact@email.com</a></div>
+    <div class="app-desc">Version: 3.0.1</div>
+    <div class="app-desc">BasePath:/v3</div>
+    <div class="license-info">GPL</div>
+    <div class="license-url">http://apache.org/licenses/LICENSE-2.0.html</div>
+  <h2>Access</h2>
+    <ol>
+      <li>HTTP Basic Authentication</li>
+    </ol>
+
+  <h2><a name="__Methods">Methods</a></h2>
+  [ Jump to <a href="#__Models">Models</a> ]
+
+  <h3>Table of Contents </h3>
+  <div class="method-summary"></div>
+  <h4><a href="#Notifications">Notifications</a></h4>
+  <ul>
+  <li><a href="#createNewEmailNotification"><code><span class="http-method">post</span> /notifications/email</code></a></li>
+  </ul>
+  <h4><a href="#Registrations">Registrations</a></h4>
+  <ul>
+  <li><a href="#addOrderToRegistration"><code><span class="http-method">post</span> /registrations/{id}/orders</code></a></li>
+  <li><a href="#cancelRegistration"><code><span class="http-method">delete</span> /registrations/{id}</code></a></li>
+  <li><a href="#createNewRegistration"><code><span class="http-method">post</span> /registrations</code></a></li>
+  <li><a href="#getRegistrationsList"><code><span class="http-method">get</span> /registrations</code></a></li>
+  <li><a href="#updateRegistration"><code><span class="http-method">put</span> /registrations/{id}</code></a></li>
+  </ul>
+
+  <h1><a name="Notifications">Notifications</a></h1>
+  <div class="method"><a name="createNewEmailNotification"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /notifications/email</code></pre></div>
+    <div class="method-summary">Create new email notification. (<span class="nickname">createNewEmailNotification</span>)</div>
+    <div class="method-notes">Create and send new email notification using either event registration filter
+or explicit email addresses.</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">EmailNotificationFormDto <a href="#EmailNotificationFormDto">EmailNotificationFormDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#NotificationResponseDto">NotificationResponseDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "totalRecipients" : 0
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#NotificationResponseDto">NotificationResponseDto</a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="Registrations">Registrations</a></h1>
+  <div class="method"><a name="addOrderToRegistration"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /registrations/{id}/orders</code></pre></div>
+    <div class="method-summary">Add order to registration. (<span class="nickname">addOrderToRegistration</span>)</div>
+    <div class="method-notes"></div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">RegistrationOrderDto <a href="#RegistrationOrderDto">RegistrationOrderDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#OrderDto">OrderDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "orderId" : 10001,
+  "items" : [ {
+    "product" : {
+      "productId" : 1001,
+      "name" : "Test Product",
+      "description" : "Test",
+      "more" : "More on this product...",
+      "price" : 19.99,
+      "vatPercent" : 17
+    },
+    "productVariant" : {
+      "productVariantId" : 34,
+      "name" : "Red Coloured Test Product",
+      "description" : "Some variant description...",
+      "price" : 21.99
+    },
+    "quantity" : 1
+  }, {
+    "product" : {
+      "productId" : 2001,
+      "name" : "Test Product 2",
+      "description" : "Test 2",
+      "more" : "More on this product...",
+      "price" : 29.99,
+      "vatPercent" : 17
+    },
+    "quantity" : 3
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#OrderDto">OrderDto</a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="cancelRegistration"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /registrations/{id}</code></pre></div>
+    <div class="method-summary">Cancel registration. (<span class="nickname">cancelRegistration</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Registration ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Registration cancelled.
+        <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="createNewRegistration"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /registrations</code></pre></div>
+    <div class="method-summary">Create new registration. (<span class="nickname">createNewRegistration</span>)</div>
+    <div class="method-notes"></div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">NewRegistrationDto <a href="#NewRegistrationDto">NewRegistrationDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#RegistrationDto">RegistrationDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "registrationId" : 1099,
+  "eventId" : 45,
+  "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+  "status" : 1,
+  "type" : 2,
+  "notes" : "Test"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#RegistrationDto">RegistrationDto</a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getRegistrationsList"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /registrations</code></pre></div>
+    <div class="method-summary">Get registrations list. (<span class="nickname">getRegistrationsList</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">page (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Page number. default: 1 format: int32</div><div class="param">count (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Page size. default: 100 format: int32</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#RegistrationPagedList">RegistrationPagedList</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "page" : 1,
+  "size" : 10,
+  "total" : 2,
+  "pages" : 1,
+  "data" : [ {
+    "registrationId" : 1099,
+    "eventId" : 45,
+    "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+    "status" : 1,
+    "type" : 2,
+    "notes" : "Test"
+  }, {
+    "registrationId" : 1346,
+    "eventId" : 674,
+    "userId" : "69056ce6-5fc4-11eb-b474-448a5b42a569",
+    "status" : 1,
+    "type" : 1,
+    "notes" : "Another test"
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="updateRegistration"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /registrations/{id}</code></pre></div>
+    <div class="method-summary">Update registration. (<span class="nickname">updateRegistration</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Registration ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">RegistrationFormDto <a href="#RegistrationFormDto">RegistrationFormDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#RegistrationDto">RegistrationDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "registrationId" : 1099,
+  "eventId" : 45,
+  "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+  "status" : 1,
+  "type" : 2,
+  "notes" : "Test"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Registration updated.
+        <a href="#RegistrationDto">RegistrationDto</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+
+  <h2><a name="__Models">Models</a></h2>
+  [ Jump to <a href="#__Methods">Methods</a> ]
+
+  <h3>Table of Contents</h3>
+  <ol>
+    <li><a href="#EmailNotificationFormDto"><code>EmailNotificationFormDto</code> - New email notification info</a></li>
+    <li><a href="#Error"><code>Error</code> - Common error response structure.</a></li>
+    <li><a href="#NewRegistrationDto"><code>NewRegistrationDto</code> - New registration info</a></li>
+    <li><a href="#New_registration_specific_properties"><code>New_registration_specific_properties</code> - New registration specific properties</a></li>
+    <li><a href="#NotificationRecipientsFilterDto"><code>NotificationRecipientsFilterDto</code> - Notification recipients filter</a></li>
+    <li><a href="#NotificationResponseDto"><code>NotificationResponseDto</code> - Notification response</a></li>
+    <li><a href="#OrderDto"><code>OrderDto</code> - Order information.</a></li>
+    <li><a href="#OrderLineDto"><code>OrderLineDto</code> - Order line data.</a></li>
+    <li><a href="#ProductDto"><code>ProductDto</code> - Product data.</a></li>
+    <li><a href="#ProductVariantDto"><code>ProductVariantDto</code> - Product variant data.</a></li>
+    <li><a href="#RegistrationCustomerInfoDto"><code>RegistrationCustomerInfoDto</code> - Registration customer data.</a></li>
+    <li><a href="#RegistrationDto"><code>RegistrationDto</code> - Registration information.</a></li>
+    <li><a href="#RegistrationFormDto"><code>RegistrationFormDto</code> - Registration data.</a></li>
+    <li><a href="#RegistrationOrderDto"><code>RegistrationOrderDto</code> - New order data.</a></li>
+    <li><a href="#RegistrationOrderItemDto"><code>RegistrationOrderItemDto</code> - Order line data.</a></li>
+    <li><a href="#RegistrationPagedList"><code>RegistrationPagedList</code> - Registration list with paging.</a></li>
+  </ol>
+
+  <div class="model">
+    <h3><a name="EmailNotificationFormDto"><code>EmailNotificationFormDto</code> - New email notification info</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">subject </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Email subject. </div>
+<div class="param">bodyMarkdown </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Email body (will be transformed to HTML before send). </div>
+<div class="param">recipients (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> List of email addresses. </div>
+<div class="param">filter (optional)</div><div class="param-desc"><span class="param-type"><a href="#NotificationRecipientsFilterDto">NotificationRecipientsFilterDto</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Error"><code>Error</code> - Common error response structure.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">message </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> User-friendly error message. </div>
+<div class="param">code (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Machine-friendly error code. </div>
+<div class="param">fields (optional)</div><div class="param-desc"><span class="param-type"><a href="#map">array[map[String, array[String]]]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="NewRegistrationDto"><code>NewRegistrationDto</code> - New registration info</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">customer (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationCustomerInfoDto">RegistrationCustomerInfoDto</a></span>  </div>
+<div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Draft = 0,
+Cancelled = 1,
+Verified = 2,
+NotAttended = 3,
+Attended = 4,
+Finished = 5 </div>
+<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Participant = 0,
+Student = 1,
+Staff = 2,
+Lecturer = 3,
+Artist = 4 </div>
+<div class="param">notes (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Additional notes. Can be managed by admin only. </div>
+<div class="param">userId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> User ID. </div>
+<div class="param">eventId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Event ID. format: int32</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="New_registration_specific_properties"><code>New_registration_specific_properties</code> - New registration specific properties</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">userId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> User ID. </div>
+<div class="param">eventId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Event ID. format: int32</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="NotificationRecipientsFilterDto"><code>NotificationRecipientsFilterDto</code> - Notification recipients filter</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'>Used to filter out notification recipients.
+All properties are optional.</div>
+    <div class="field-items">
+      <div class="param">eventId (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">registrationStatuses (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">array[Integer]</a></span>  </div>
+<div class="param">registrationTypes (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">array[Integer]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="NotificationResponseDto"><code>NotificationResponseDto</code> - Notification response</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">totalRecipients </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Notification recipients total. format: int32</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="OrderDto"><code>OrderDto</code> - Order information.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">orderId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Order ID. format: int32</div>
+<div class="param">items </div><div class="param-desc"><span class="param-type"><a href="#OrderLineDto">array[OrderLineDto]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="OrderLineDto"><code>OrderLineDto</code> - Order line data.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">product </div><div class="param-desc"><span class="param-type"><a href="#ProductDto">ProductDto</a></span>  </div>
+<div class="param">productVariant (optional)</div><div class="param-desc"><span class="param-type"><a href="#ProductVariantDto">ProductVariantDto</a></span>  </div>
+<div class="param">quantity </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="ProductDto"><code>ProductDto</code> - Product data.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">productId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Product name. </div>
+<div class="param">description </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Product description. </div>
+<div class="param">more (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> More information about the product. </div>
+<div class="param">price </div><div class="param-desc"><span class="param-type"><a href="#float">Float</a></span>  format: float</div>
+<div class="param">vatPercent (optional)</div><div class="param-desc"><span class="param-type"><a href="#float">Float</a></span>  format: float</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="ProductVariantDto"><code>ProductVariantDto</code> - Product variant data.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">productVariantId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Product variant name. </div>
+<div class="param">description </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Product variant description. </div>
+<div class="param">price </div><div class="param-desc"><span class="param-type"><a href="#float">Float</a></span>  format: float</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="RegistrationCustomerInfoDto"><code>RegistrationCustomerInfoDto</code> - Registration customer data.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">vatNumber (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">email (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">zip (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">city (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">country (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">invoiceReference (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="RegistrationDto"><code>RegistrationDto</code> - Registration information.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">registrationId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Registration ID. format: int32</div>
+<div class="param">eventId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Event ID. format: int32</div>
+<div class="param">userId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Registered user ID. </div>
+<div class="param">status </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Draft = 0,
+Cancelled = 1,
+Verified = 2,
+NotAttended = 3,
+Attended = 4,
+Finished = 5 </div>
+<div class="param">type </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Participant = 0,
+Student = 1,
+Staff = 2,
+Lecturer = 3,
+Artist = 4 </div>
+<div class="param">notes (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="RegistrationFormDto"><code>RegistrationFormDto</code> - Registration data.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'><code>customer</code>, <code>status</code>, <code>type</code> and <code>notes</code> can be set by admin only.</div>
+    <div class="field-items">
+      <div class="param">customer (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationCustomerInfoDto">RegistrationCustomerInfoDto</a></span>  </div>
+<div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Draft = 0,
+Cancelled = 1,
+Verified = 2,
+NotAttended = 3,
+Attended = 4,
+Finished = 5 </div>
+<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Participant = 0,
+Student = 1,
+Staff = 2,
+Lecturer = 3,
+Artist = 4 </div>
+<div class="param">notes (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Additional notes. Can be managed by admin only. </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="RegistrationOrderDto"><code>RegistrationOrderDto</code> - New order data.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">items </div><div class="param-desc"><span class="param-type"><a href="#RegistrationOrderItemDto">array[RegistrationOrderItemDto]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="RegistrationOrderItemDto"><code>RegistrationOrderItemDto</code> - Order line data.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">productId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">productVariantId (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">quantity </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="RegistrationPagedList"><code>RegistrationPagedList</code> - Registration list with paging.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">page </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Page number. format: int32</div>
+<div class="param">count </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Page size. format: int32</div>
+<div class="param">total </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total items. format: int32</div>
+<div class="param">pages </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total pages. format: int32</div>
+<div class="param">data </div><div class="param-desc"><span class="param-type"><a href="#RegistrationDto">array[RegistrationDto]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  </body>
+</html>

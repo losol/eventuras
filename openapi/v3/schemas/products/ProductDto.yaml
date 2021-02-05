@@ -1,0 +1,33 @@
+type: object
+title: Product data.
+required:
+  - productId
+  - name
+  - description
+  - price
+properties:
+  productId:
+    type: integer
+    format: int32
+  name:
+    type: string
+    description: Product name.
+  description:
+    type: string
+    description: Product description.
+  more:
+    type: string
+    description: More information about the product.
+  price:
+    type: number
+    format: float
+  vatPercent:
+    type: number
+    format: float
+example:
+  productId: 1001
+  name: Test Product
+  description: Test
+  more: More on this product...
+  price: 19.99
+  vatPercent: 17

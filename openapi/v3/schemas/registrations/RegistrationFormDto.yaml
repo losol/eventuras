@@ -1,0 +1,29 @@
+type: object
+title: Registration data.
+description: |
+  `customer`, `status`, `type` and `notes` can be set by admin only.
+properties:
+  customer:
+    $ref: './RegistrationCustomerInfoDto.yaml'
+    description: Customer info. Can be managed by admin only.
+  status:
+    $ref: './RegistrationStatus.yaml'
+    description: Registration status. Can be managed by admin only.
+  type:
+    $ref: './RegistrationType.yaml'
+    description: Registration type. Can be managed by admin only.
+  notes:
+    type: string
+    description: Additional notes. Can be managed by admin only.
+example:
+  customer:
+    name: John Doe
+    email: test@email.com
+    vatNumber: 1010
+    invoiceReference: 200
+    zip: 1234
+    city: Oslo
+    country: Norway
+  status: 1
+  type: 2
+  notes: Testing

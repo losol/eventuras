@@ -1,0 +1,105 @@
+﻿openapi: 3.0.0
+
+info:
+  title: Eventuras API
+  description: Event Management API.
+  version: 3.0.1
+  contact:
+    name: Contact Name
+    email: contact@email.com
+    url: http://losol.github.io/eventuras/openapi/v3/eventuras-api.v3.yaml
+  license:
+    name: GPL
+
+externalDocs:
+  description: Generated API HTML
+  url: http://losol.github.io/eventuras/openapi/v3/
+
+servers:
+  - url: https://full.path.to/v3/
+
+paths:
+
+  # Registrations
+  /registrations:
+    $ref: './paths/registrations.yaml'
+  /registrations/{id}:
+    $ref: './paths/registrations/id.yaml'
+  /registrations/{id}/orders:
+    $ref: './paths/registrations/orders.yaml'
+
+  # Notifications
+  /notifications/email:
+    $ref: './paths/notifications/email.yaml'
+
+components:
+
+  schemas:
+    Error:
+      $ref: './schemas/Error.yaml'
+
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    pageNumber:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int32
+        default: 1
+      description: Page number.
+    pageSize:
+      name: count
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int32
+        default: 100
+      description: Page size.
+
+  responses:
+
+    NotFound:
+      description: The requested resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    InvalidRequestError:
+      description: Missing or invalid request parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    UnauthorizedError:
+      description: Access token is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    ForbiddenError:
+      description: Access forbidden.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    InternalServerError:
+      description: Unexpected server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+security:
+  - bearer: [ ]

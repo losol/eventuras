@@ -1,0 +1,22 @@
+type: object
+title: Registration customer data.
+properties:
+  vatNumber:
+    type: string
+  name:
+    type: string
+  email:
+    type: string
+  zip:
+    type: string
+  city:
+    type: string
+  country:
+    type: string
+  invoiceReference:
+    type: string
+example:
+  customer:
+  surname: Doe
+  bday: 2010-01-01
+  relation: Son

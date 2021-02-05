@@ -1,0 +1,12 @@
+type: object
+title: Notification response
+required:
+  - totalRecipients
+properties:
+  totalRecipients:
+    type: integer
+    format: int32
+    description: Notification recipients total.
+examples:
+  - totalRecipients: 0
+  - totalRecipients: 1001

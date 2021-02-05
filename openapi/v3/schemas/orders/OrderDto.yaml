@@ -1,0 +1,38 @@
+type: object
+title: Order information.
+required:
+  - orderId
+  - items
+properties:
+  orderId:
+    type: integer
+    format: int32
+    description: Order ID.
+  items:
+    type: array
+    items:
+      $ref: './OrderLineDto.yaml'
+example:
+  orderId: 10001
+  items:
+    - product:
+        productId: 1001
+        name: Test Product
+        description: Test
+        more: More on this product...
+        price: 19.99
+        vatPercent: 17
+      productVariant:
+        productVariantId: 34
+        name: Red Coloured Test Product
+        description: Some variant description...
+        price: 21.99
+      quantity: 1
+    - product:
+        productId: 2001
+        name: Test Product 2
+        description: Test 2
+        more: More on this product...
+        price: 29.99
+        vatPercent: 17
+      quantity: 3
