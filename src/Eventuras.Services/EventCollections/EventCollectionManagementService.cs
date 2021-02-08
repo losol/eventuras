@@ -51,8 +51,7 @@ namespace Eventuras.Services.EventCollections
             {
                 throw new NotAccessibleException();
             }
-            await _context.EventCollections.AddAsync(collection, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.CreateAsync(collection, cancellationToken);
         }
 
         public async Task UpdateCollectionAsync(EventCollection collection, CancellationToken cancellationToken)

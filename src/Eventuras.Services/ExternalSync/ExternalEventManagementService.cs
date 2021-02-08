@@ -62,11 +62,9 @@ namespace Eventuras.Services.ExternalSync
                 ExternalEventId = externalEventId
             };
 
-            await _context.AddAsync(newExternalEvent);
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _context.CreateAsync(newExternalEvent);
             }
             catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
             {
