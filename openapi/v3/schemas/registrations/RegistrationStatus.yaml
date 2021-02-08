@@ -1,0 +1,9 @@
+type: integer
+title: Registration status enum.
+description: |
+  Draft = 0,
+  Cancelled = 1,
+  Verified = 2,
+  NotAttended = 3,
+  Attended = 4,
+  Finished = 5

@@ -1,0 +1,828 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: contact@email.com
+    name: Contact Name
+    url: http://losol.github.io/eventuras/openapi/v3/eventuras-api.v3.yaml
+  description: Event Management API.
+  license:
+    name: GPL
+  title: Eventuras API
+  version: 3.0.1
+externalDocs:
+  description: Generated API HTML
+  url: http://losol.github.io/eventuras/openapi/v3/
+servers:
+- url: https://full.path.to/v3/
+security:
+- bearer: []
+paths:
+  /registrations:
+    get:
+      operationId: getRegistrationsList
+      parameters:
+      - description: Page number.
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          format: int32
+          type: integer
+      - description: Page size.
+        in: query
+        name: count
+        required: false
+        schema:
+          default: 100
+          format: int32
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/RegistrationPagedList'
+                type: array
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Missing or invalid request parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Get registrations list.
+      tags:
+      - registrations
+    post:
+      operationId: createNewRegistration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewRegistrationDto'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationDto'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Missing or invalid request parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Create new registration.
+      tags:
+      - registrations
+  /registrations/{id}:
+    delete:
+      operationId: cancelRegistration
+      parameters:
+      - description: Registration ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          description: Registration cancelled.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Cancel registration.
+      tags:
+      - registrations
+    put:
+      operationId: updateRegistration
+      parameters:
+      - description: Registration ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationFormDto'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationDto'
+          description: Registration updated.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Update registration.
+      tags:
+      - registrations
+  /registrations/{id}/orders:
+    post:
+      operationId: addOrderToRegistration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationOrderDto'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderDto'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Missing or invalid request parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Add order to registration.
+      tags:
+      - registrations
+  /notifications/email:
+    post:
+      description: |
+        Create and send new email notification using either event registration filter
+        or explicit email addresses.
+      operationId: createNewEmailNotification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailNotificationFormDto'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationResponseDto'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Missing or invalid request parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Create new email notification.
+      tags:
+      - notifications
+components:
+  parameters:
+    pageNumber:
+      description: Page number.
+      explode: true
+      in: query
+      name: page
+      required: false
+      schema:
+        default: 1
+        format: int32
+        type: integer
+      style: form
+    pageSize:
+      description: Page size.
+      explode: true
+      in: query
+      name: count
+      required: false
+      schema:
+        default: 100
+        format: int32
+        type: integer
+      style: form
+  responses:
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: The requested resource not found.
+    InvalidRequestError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Missing or invalid request parameters.
+    UnauthorizedError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Access token is missing or invalid.
+    ForbiddenError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Access forbidden.
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Unexpected server error.
+  schemas:
+    Error:
+      example:
+        message: Phone and password don't match
+        code: password-mismatch
+        fields:
+          password:
+          - Invalid password
+      properties:
+        message:
+          description: User-friendly error message.
+          type: string
+        code:
+          description: Machine-friendly error code.
+          type: string
+        fields:
+          items:
+            additionalProperties:
+              items:
+                type: string
+              type: array
+            type: object
+          type: array
+      required:
+      - message
+      title: Common error response structure.
+      type: object
+    RegistrationPagedList:
+      example:
+        page: 1
+        size: 10
+        total: 2
+        pages: 1
+        data:
+        - registrationId: 1099
+          eventId: 45
+          userId: 3fa94776-5fc1-11eb-b353-448a5b42a569
+          status: 1
+          type: 2
+          notes: Test
+        - registrationId: 1346
+          eventId: 674
+          userId: 69056ce6-5fc4-11eb-b474-448a5b42a569
+          status: 1
+          type: 1
+          notes: Another test
+      properties:
+        page:
+          description: Page number.
+          format: int32
+          type: integer
+        count:
+          description: Page size.
+          format: int32
+          type: integer
+        total:
+          description: Total items.
+          format: int32
+          type: integer
+        pages:
+          description: Total pages.
+          format: int32
+          type: integer
+        data:
+          items:
+            $ref: '#/components/schemas/RegistrationDto'
+          type: array
+      required:
+      - count
+      - data
+      - page
+      - pages
+      - total
+      title: Registration list with paging.
+      type: object
+    NewRegistrationDto:
+      allOf:
+      - $ref: '#/components/schemas/RegistrationFormDto'
+      - $ref: '#/components/schemas/New_registration_specific_properties'
+      example:
+        userId: 3fa94776-5fc1-11eb-b353-448a5b42a569
+        eventId: 643
+        customer:
+          name: John Doe
+          email: test@email.com
+          vatNumber: 1010
+          invoiceReference: 200
+          zip: 1234
+          city: Oslo
+          country: Norway
+        status: 1
+        type: 2
+        notes: Testing
+      title: New registration info
+    RegistrationDto:
+      example:
+        registrationId: 1099
+        eventId: 45
+        userId: 3fa94776-5fc1-11eb-b353-448a5b42a569
+        status: 1
+        type: 2
+        notes: Test
+      properties:
+        registrationId:
+          description: Registration ID.
+          format: int32
+          type: integer
+        eventId:
+          description: Event ID.
+          format: int32
+          type: integer
+        userId:
+          description: Registered user ID.
+          type: string
+        status:
+          description: |
+            Draft = 0,
+            Cancelled = 1,
+            Verified = 2,
+            NotAttended = 3,
+            Attended = 4,
+            Finished = 5
+          title: Registration status enum.
+          type: integer
+        type:
+          description: |-
+            Participant = 0,
+            Student = 1,
+            Staff = 2,
+            Lecturer = 3,
+            Artist = 4
+          title: Registration type enum.
+          type: integer
+        notes:
+          type: string
+      required:
+      - eventId
+      - registrationId
+      - status
+      - type
+      - userId
+      title: Registration information.
+      type: object
+    RegistrationFormDto:
+      description: |
+        `customer`, `status`, `type` and `notes` can be set by admin only.
+      example:
+        customer:
+          name: John Doe
+          email: test@email.com
+          vatNumber: 1010
+          invoiceReference: 200
+          zip: 1234
+          city: Oslo
+          country: Norway
+        status: 1
+        type: 2
+        notes: Testing
+      properties:
+        customer:
+          $ref: '#/components/schemas/RegistrationCustomerInfoDto'
+        status:
+          description: |
+            Draft = 0,
+            Cancelled = 1,
+            Verified = 2,
+            NotAttended = 3,
+            Attended = 4,
+            Finished = 5
+          title: Registration status enum.
+          type: integer
+        type:
+          description: |-
+            Participant = 0,
+            Student = 1,
+            Staff = 2,
+            Lecturer = 3,
+            Artist = 4
+          title: Registration type enum.
+          type: integer
+        notes:
+          description: Additional notes. Can be managed by admin only.
+          type: string
+      title: Registration data.
+      type: object
+    RegistrationOrderDto:
+      example:
+        items:
+        - productId: 1001
+          productVariantId: 34
+          quantity: 1
+        - productId: 3244
+          quantity: 3
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/RegistrationOrderItemDto'
+          type: array
+      required:
+      - items
+      title: New order data.
+      type: object
+    OrderDto:
+      example:
+        orderId: 10001
+        items:
+        - product:
+            productId: 1001
+            name: Test Product
+            description: Test
+            more: More on this product...
+            price: 19.99
+            vatPercent: 17
+          productVariant:
+            productVariantId: 34
+            name: Red Coloured Test Product
+            description: Some variant description...
+            price: 21.99
+          quantity: 1
+        - product:
+            productId: 2001
+            name: Test Product 2
+            description: Test 2
+            more: More on this product...
+            price: 29.99
+            vatPercent: 17
+          quantity: 3
+      properties:
+        orderId:
+          description: Order ID.
+          format: int32
+          type: integer
+        items:
+          items:
+            $ref: '#/components/schemas/OrderLineDto'
+          type: array
+      required:
+      - items
+      - orderId
+      title: Order information.
+      type: object
+    EmailNotificationFormDto:
+      example:
+        filter:
+          eventId: 0
+          registrationTypes:
+          - null
+          - null
+          registrationStatuses:
+          - null
+          - null
+        bodyMarkdown: bodyMarkdown
+        subject: subject
+        recipients:
+        - recipients
+        - recipients
+      properties:
+        subject:
+          description: Email subject.
+          type: string
+        bodyMarkdown:
+          description: Email body (will be transformed to HTML before send).
+          type: string
+        recipients:
+          description: List of email addresses.
+          items:
+            description: Email address.
+            type: string
+          type: array
+        filter:
+          $ref: '#/components/schemas/NotificationRecipientsFilterDto'
+      required:
+      - bodyMarkdown
+      - subject
+      title: New email notification info
+      type: object
+    NotificationResponseDto:
+      example:
+        totalRecipients: 0
+      properties:
+        totalRecipients:
+          description: Notification recipients total.
+          format: int32
+          type: integer
+      required:
+      - totalRecipients
+      title: Notification response
+      type: object
+    RegistrationStatus:
+      description: |
+        Draft = 0,
+        Cancelled = 1,
+        Verified = 2,
+        NotAttended = 3,
+        Attended = 4,
+        Finished = 5
+      title: Registration status enum.
+      type: integer
+    RegistrationType:
+      description: |-
+        Participant = 0,
+        Student = 1,
+        Staff = 2,
+        Lecturer = 3,
+        Artist = 4
+      title: Registration type enum.
+      type: integer
+    RegistrationCustomerInfoDto:
+      example:
+        surname: Doe
+        bday: 2010-01-01
+        relation: Son
+      properties:
+        vatNumber:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        zip:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        invoiceReference:
+          type: string
+      title: Registration customer data.
+      type: object
+    RegistrationOrderItemDto:
+      example:
+        productId: 1001
+        productVariantId: 34
+        quantity: 1
+      properties:
+        productId:
+          format: int32
+          type: integer
+        productVariantId:
+          format: int32
+          type: integer
+        quantity:
+          format: int32
+          type: integer
+      required:
+      - productId
+      - quantity
+      title: Order line data.
+      type: object
+    OrderLineDto:
+      example:
+        product:
+          productId: 1001
+          name: Test Product
+          description: Test
+          more: More on this product...
+          price: 19.99
+          vatPercent: 17
+        productVariant:
+          productVariantId: 34
+          name: Red Coloured Test Product
+          description: Some variant description...
+          price: 21.99
+        quantity: 1
+      properties:
+        product:
+          $ref: '#/components/schemas/ProductDto'
+        productVariant:
+          $ref: '#/components/schemas/ProductVariantDto'
+        quantity:
+          format: int32
+          type: integer
+      required:
+      - product
+      - quantity
+      title: Order line data.
+      type: object
+    NotificationRecipientsFilterDto:
+      description: |
+        Used to filter out notification recipients.
+        All properties are optional.
+      example:
+        eventId: 0
+        registrationTypes:
+        - null
+        - null
+        registrationStatuses:
+        - null
+        - null
+      properties:
+        eventId:
+          format: int32
+          type: integer
+        registrationStatuses:
+          items:
+            $ref: '#/components/schemas/RegistrationStatus'
+          type: array
+        registrationTypes:
+          items:
+            $ref: '#/components/schemas/RegistrationType'
+          type: array
+      title: Notification recipients filter
+      type: object
+    ProductDto:
+      example:
+        productId: 1001
+        name: Test Product
+        description: Test
+        more: More on this product...
+        price: 19.99
+        vatPercent: 17
+      properties:
+        productId:
+          format: int32
+          type: integer
+        name:
+          description: Product name.
+          type: string
+        description:
+          description: Product description.
+          type: string
+        more:
+          description: More information about the product.
+          type: string
+        price:
+          format: float
+          type: number
+        vatPercent:
+          format: float
+          type: number
+      required:
+      - description
+      - name
+      - price
+      - productId
+      title: Product data.
+      type: object
+    ProductVariantDto:
+      example:
+        productVariantId: 34
+        name: Red Coloured Test Product
+        description: Some variant description...
+        price: 21.99
+      properties:
+        productVariantId:
+          format: int32
+          type: integer
+        name:
+          description: Product variant name.
+          type: string
+        description:
+          description: Product variant description.
+          type: string
+        price:
+          format: float
+          type: number
+      required:
+      - description
+      - name
+      - price
+      - productVariantId
+      title: Product variant data.
+      type: object
+    New_registration_specific_properties:
+      properties:
+        userId:
+          description: User ID.
+          type: string
+        eventId:
+          description: Event ID.
+          format: int32
+          type: integer
+      required:
+      - eventId
+      - userId
+      title: New registration specific properties
+      type: object
+  securitySchemes:
+    bearer:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http

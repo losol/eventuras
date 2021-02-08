@@ -1,0 +1,29 @@
+post:
+  summary: Create new email notification.
+  operationId: createNewEmailNotification
+  description: |
+    Create and send new email notification using either event registration filter
+    or explicit email addresses.
+  tags:
+    - notifications
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/notifications/EmailNotificationFormDto.yaml'
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/notifications/NotificationResponseDto.yaml'
+    '400':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/InvalidRequestError'
+    '401':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/UnauthorizedError'
+    '403':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/ForbiddenError'
+    '500':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/InternalServerError'

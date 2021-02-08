@@ -1,0 +1,16 @@
+type: object
+title: New order data.
+required:
+  - items
+properties:
+  items:
+    type: array
+    items:
+      $ref: './RegistrationOrderItemDto.yaml'
+example:
+  items:
+    - productId: 1001
+      productVariantId: 34
+      quantity: 1
+    - productId: 3244
+      quantity: 3
