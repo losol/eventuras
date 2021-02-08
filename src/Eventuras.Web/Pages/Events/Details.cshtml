@@ -32,16 +32,14 @@
     <div class="container hero-text">
         <h1 class="display-1">@Model.EventInfo.Title</h1>
         <p class="lead pb-5">@Model.EventInfo.Description</p>
-        @{ // Dates
-            if(Model.EventInfo.DateStart != null) 
-            {
-                <div class="py-1">
-                <i class="material-icons  align-top">date_range</i> @Model.EventInfo.DateStart.Value.ToString("d")
-                    
-                        @if(Model.EventInfo.DateEnd != null) {
-                        <text>- @Model.EventInfo.DateEnd.Value.ToString("d")</text>
-                        }
-                </div>
+        @{ 
+            @* Dates *@
+                @if (Model.EventInfo.DateStart != null) {
+                    <i class="material-icons align-top">date_range</i>
+                    @String.Format("{0:dd/MM/yyyy}", Model.EventInfo.DateStart)
+                }
+                @if (Model.EventInfo.DateEnd != null) {
+                        <span> - @String.Format("{0:dd/MM/yyyy}", Model.EventInfo.DateEnd)</span>
             }
     
         }
