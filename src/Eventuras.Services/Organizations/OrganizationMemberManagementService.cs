@@ -76,8 +76,7 @@ namespace Eventuras.Services.Organizations
                         OrganizationId = organization.OrganizationId,
                         UserId = user.Id
                     };
-                    await _context.OrganizationMembers.AddAsync(member);
-                    await _context.SaveChangesAsync();
+                    await _context.CreateAsync(member);
                 }
                 catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
                 {

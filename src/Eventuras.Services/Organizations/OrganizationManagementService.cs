@@ -40,8 +40,7 @@ namespace Eventuras.Services.Organizations
 
             try
             {
-                await _context.Organizations.AddAsync(organization);
-                await _context.SaveChangesAsync();
+                await _context.CreateAsync(organization);
             }
             catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
             {
@@ -126,7 +125,7 @@ namespace Eventuras.Services.Organizations
                 }
                 else
                 {
-                    await _context.OrganizationHostnames.AddAsync(new OrganizationHostname
+                    await _context.CreateAsync(new OrganizationHostname
                     {
                         OrganizationId = id,
                         Hostname = hostname,

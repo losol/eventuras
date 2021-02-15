@@ -28,8 +28,7 @@ namespace Eventuras.Services.Events
                 throw new ArgumentNullException(nameof(info));
             }
 
-            await _context.EventInfos.AddAsync(info);
-            await _context.SaveChangesAsync();
+            await _context.CreateAsync(info);
         }
 
         public async Task UpdateEventAsync(EventInfo info)

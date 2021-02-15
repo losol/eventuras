@@ -78,8 +78,7 @@ namespace Eventuras.Services.ExternalSync
 
             try
             {
-                await _context.ExternalRegistrations.AddAsync(externalRegistration);
-                await _context.SaveChangesAsync();
+                await _context.CreateAsync(externalRegistration);
             }
             catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
             {
@@ -109,8 +108,7 @@ namespace Eventuras.Services.ExternalSync
 
             try
             {
-                await _context.ExternalAccounts.AddAsync(externalAccount);
-                await _context.SaveChangesAsync();
+                await _context.CreateAsync(externalAccount);
                 return externalAccount;
             }
             catch (DbUpdateException e) when (e.IsUniqueKeyViolation())

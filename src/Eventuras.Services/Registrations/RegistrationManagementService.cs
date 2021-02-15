@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Services.Events;
 using Eventuras.Services.Users;
+using Microsoft.EntityFrameworkCore;
 
 namespace Eventuras.Services.Registrations
 {
@@ -54,8 +55,7 @@ namespace Eventuras.Services.Registrations
 
             await _registrationAccessControlService.CheckRegistrationCreateAccessAsync(registration, cancellationToken);
 
-            await _context.Registrations.AddAsync(registration, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.CreateAsync(registration, cancellationToken);
 
             return registration;
         }
