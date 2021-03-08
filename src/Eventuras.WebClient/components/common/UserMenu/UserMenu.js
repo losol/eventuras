@@ -1,5 +1,6 @@
-import { Avatar, AvatarBadge } from "@chakra-ui/react";
+import React from "react";
 import {
+  Avatar,
   Button,
   Link,
   Menu,
@@ -11,9 +12,9 @@ import {
 } from "@chakra-ui/react";
 
 import { ColorModeToggler } from "..";
-import React from "react";
 
 const UserMenu = (props) => {
+  const { signOut} = props
   return (
     <>
       <Menu>
@@ -40,7 +41,7 @@ const UserMenu = (props) => {
             <ColorModeToggler />
           </MenuItem>
           <MenuItem>
-            <Button onClick={() => logout({ returnTo: window.location.origin })}>
+            <Button onClick={() => signOut()}>
               Logg av
             </Button>
           </MenuItem>
