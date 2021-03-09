@@ -15,7 +15,6 @@ git clone https://github.com/losol/eventuras.git
 cd eventuras
 
 # Build and run the application
-docker-compose build
 docker-compose up
 ```
 
