@@ -15,12 +15,6 @@ COPY ./src/Eventuras.Services.TalentLms/*.csproj ./src/Eventuras.Services.Talent
 COPY ./src/Eventuras.Services.Zoom/*.csproj ./src/Eventuras.Services.Zoom/
 COPY ./src/Eventuras.Infrastructure/*.csproj ./src/Eventuras.Infrastructure/
 COPY ./src/Eventuras.Domain/*.csproj ./src/Eventuras.Domain/
-COPY ./tests/Eventuras.UnitTests/*.csproj ./tests/Eventuras.UnitTests/
-COPY ./tests/Eventuras.Web.Tests/*.csproj ./tests/Eventuras.Web.Tests/
-COPY ./tests/Eventuras.WebApi.Tests/*.csproj ./tests/Eventuras.WebApi.Tests/
-COPY ./tests/Eventuras.Services.Converto.Tests/*.csproj ./tests/Eventuras.Services.Converto.Tests/
-COPY ./tests/Eventuras.Services.TalentLms.Tests/*.csproj ./tests/Eventuras.Services.TalentLms.Tests/
-COPY ./tests/Eventuras.TestAbstractions/*.csproj ./tests/Eventuras.TestAbstractions/
 RUN dotnet restore
 
 # copy everything else

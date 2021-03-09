@@ -2,12 +2,9 @@ version: "3"
 
 services:
   web:
-    image: losolio/eventuras:${TAG:-latest}
+    image: losolio/eventuras
     environment:
       ConnectionStrings__DefaultConnection: "Host=db;Database=eventuras_db;Username=eventuras;Password=Str0ng!Pasword"
-    build:
-      context: .
-      dockerfile: ./Dockerfile
     ports:
       - "5100:80"
     depends_on:
