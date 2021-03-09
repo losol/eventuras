@@ -1,19 +1,11 @@
-import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
-import { Container, Heading, Text } from "@chakra-ui/react";
-
-import { Layout } from "../../components/common";
 import React from "react";
+import { Container, Heading, Text } from "@chakra-ui/react";
+import { Layout } from "../../components/common";
 import useApi from "../../lib/useApi";
+import {useSession} from 'next-auth/client';
 
 function UserProfile() {
-  const {
-    isLoading,
-    isAuthenticated,
-    error,
-    user,
-    loginWithRedirect,
-    logout,
-  } = useAuth0();
+  const [session, loading] = useSession();
 
   const { data: registrations } = useApi("/v3/registrations");
 
@@ -21,12 +13,15 @@ function UserProfile() {
     <Layout>
       <Container marginTop="16">
         <Heading>Min bruker</Heading>
-        <Text>Navn: {user.name}</Text>
-        <Text>E-post: {user.email}</Text>
+        {/* <Text>Navn: {user.name}</Text>
+        <Text>E-post: {user.email}</Text> */}
+        {
+          session && session.user.name || 'Loading'
+        }
       </Container>
     </Layout>
   );
 
 }
 
-export default withAuthenticationRequired(UserProfile);
+export default UserProfile;

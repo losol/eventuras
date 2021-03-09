@@ -12,6 +12,7 @@ function EventCard({ id, title, description }) {
           mt="1"
           fontWeight="semibold"
           fontSize="20px"
+          color="black"
           as="h3"
           lineHeight="tight"
           isTruncated
@@ -19,7 +20,7 @@ function EventCard({ id, title, description }) {
           {title}
         </Box>
 
-        <Box>{description}</Box>
+        <Box color="black">{description}</Box>
       </Box>
     </Link>
   );
