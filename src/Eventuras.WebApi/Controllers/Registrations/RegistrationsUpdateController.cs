@@ -11,6 +11,7 @@ namespace Eventuras.WebApi.Controllers.Registrations
 {
     [ApiVersion("3")]
     [Route("v{version:apiVersion}/registrations")]
+    [Authorize]
     [ApiController]
     public class RegistrationsUpdateController : ControllerBase
     {
