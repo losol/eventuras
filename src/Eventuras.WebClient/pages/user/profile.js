@@ -13,15 +13,12 @@ function UserProfile() {
     <Layout>
       <Container marginTop="16">
         <Heading>Min bruker</Heading>
-        {/* <Text>Navn: {user.name}</Text>
-        <Text>E-post: {user.email}</Text> */}
-        {
-          session && session.user.name || 'Loading'
-        }
+        {!registrations && <loader/>}
+        <Text>Navn: {session && session.user.name}</Text>
+        <Text>E-post: {session && session.user.email}</Text>
       </Container>
     </Layout>
   );
-
 }
 
 export default UserProfile;

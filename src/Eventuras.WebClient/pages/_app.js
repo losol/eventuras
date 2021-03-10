@@ -3,7 +3,6 @@ import { Provider } from 'next-auth/client'
 import theme from "../theme/index";
 
 const onRedirectCallback = (appState) => {
-  // Use Next.js's Router.replace method to replace the url
   Router.replace(appState?.returnTo || "/");
 };
 

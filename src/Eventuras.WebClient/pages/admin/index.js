@@ -1,4 +1,3 @@
-// import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import React from "react";
 import {useSession, signIn} from 'next-auth/client'
 import { Container, Heading } from "@chakra-ui/react";
@@ -25,7 +24,6 @@ function AdminIndex() {
       <Layout>
         <Container paddingTop="32">
           <Heading as="h1">Admin</Heading>
-
           <Heading as="h2" paddingTop="16">Siste registreringer</Heading>
           {registrations && registrations.map((r) => <p>{r.registrationId}, {r.userId}</p>)}
         </Container>
