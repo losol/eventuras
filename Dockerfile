@@ -27,7 +27,7 @@ RUN dotnet restore
 COPY . ./
 
 # Publish
-WORKDIR /app/src/src/Eventuras.Web
+WORKDIR /app/src/src/Eventuras.WebApi
 RUN dotnet publish -c Release -o /app/out
 
 #
