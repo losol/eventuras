@@ -39,4 +39,4 @@ FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine AS base
 WORKDIR /app
 COPY --from=build /app/out .
 
-ENTRYPOINT ["dotnet", "Eventuras.Web.dll"]
+ENTRYPOINT ["dotnet", "Eventuras.WebApi.dll"]
