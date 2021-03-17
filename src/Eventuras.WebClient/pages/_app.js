@@ -1,5 +1,5 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import { Provider } from 'next-auth/client'
+import { Provider } from "next-auth/client";
 import theme from "../theme/index";
 
 const onRedirectCallback = (appState) => {
@@ -9,8 +9,8 @@ const onRedirectCallback = (appState) => {
 function App({ Component, pageProps }) {
   return (
     <Provider
-      domain={process.env.NEXT_PUBLIC_AUTH0_DOMAIN}
-      clientId={process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID}
+      domain={process.env.AUTH0_DOMAIN}
+      clientId={process.env.AUTH0_CLIENT_ID}
       redirectUri={process.env.NEXT_PUBLIC_APPLICATION_URL}
       onRedirectCallback={onRedirectCallback}
       audience="https://eventuras/api"
