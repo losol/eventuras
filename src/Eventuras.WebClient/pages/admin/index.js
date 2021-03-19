@@ -1,5 +1,5 @@
 import React from "react";
-import {useSession, signIn} from 'next-auth/client'
+import { useSession, signIn } from 'next-auth/client'
 import { Container, Heading } from "@chakra-ui/react";
 import { Layout } from "../../components/common";
 import useApi from "../../lib/useApi";
@@ -9,7 +9,7 @@ function AdminIndex() {
     session,
     loading,
     error
-   ] = useSession();
+  ] = useSession();
 
   const { data: registrations } = useApi("/v3/registrations");
   if (loading) {

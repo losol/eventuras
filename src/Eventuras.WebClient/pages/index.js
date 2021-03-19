@@ -7,7 +7,7 @@ import useRequest from "../lib/useRequest";
 export default function Index() {
   const { data: events } = useRequest("/v3/events");
   const { data: onlinecourses } = useRequest("/v3/onlinecourses");
-
+  console.log(events)
   return (
     <>
       <Head>

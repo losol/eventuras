@@ -1,5 +1,6 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { Provider } from "next-auth/client";
+import { Auth0Provider } from '@auth0/auth0-react';
 import theme from "../theme/index";
 
 const onRedirectCallback = (appState) => {
@@ -8,9 +9,9 @@ const onRedirectCallback = (appState) => {
 
 function App({ Component, pageProps }) {
   return (
-    <Provider
-      domain={process.env.AUTH0_DOMAIN}
-      clientId={process.env.AUTH0_CLIENT_ID}
+    <Auth0Provider
+      domain={"eventuras.eu.auth0.com"}
+      clientId={"hmSU5P9lJKzszTvcXWVA9hGG1kQxMgTM"}
       redirectUri={process.env.NEXT_PUBLIC_APPLICATION_URL}
       onRedirectCallback={onRedirectCallback}
       audience="https://eventuras/api"
@@ -19,7 +20,7 @@ function App({ Component, pageProps }) {
       <ChakraProvider theme={theme}>
         <Component {...pageProps} />
       </ChakraProvider>
-    </Provider>
+    </Auth0Provider>
   );
 }
 

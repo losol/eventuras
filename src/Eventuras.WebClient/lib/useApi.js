@@ -27,6 +27,7 @@ export const useApi = (url, options = {}) => {
       try {
         const token = await getAccessTokenSilently({ audience: "https://eventuras/api", scope: "openid profile email registrations:read" });
         setToken(token);
+
         setState({
           ...state,
           error,
@@ -38,6 +39,7 @@ export const useApi = (url, options = {}) => {
           error: tokenError,
           loading: false,
         });
+        console.log(tokenError, 'tokenError')
         setToken("");
       }
     })();
@@ -51,7 +53,7 @@ export const useApi = (url, options = {}) => {
       loading: error ? true : state.loading,
     });
   }, [data, error]);
-
+  console.log(token, 'token')
   return {
     ...state,
     refresh: () => setRefreshIndex(refreshIndex + 1),
