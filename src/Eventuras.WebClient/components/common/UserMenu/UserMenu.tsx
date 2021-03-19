@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Avatar,
   Button,
@@ -12,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 
 import { ColorModeToggler } from "..";
+import React from "react";
 
 const UserMenu = (props) => {
   const { signOut} = props
