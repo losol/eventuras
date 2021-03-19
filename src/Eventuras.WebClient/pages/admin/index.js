@@ -1,9 +1,8 @@
 import React from "react";
-import { signIn, useSession, signIn } from 'next-auth/client'
+import { signIn, useSession } from 'next-auth/client'
 import { Container, Heading } from "@chakra-ui/react";
 
 import { Layout } from "../../components/common";
-import React from "react";
 import useApi from "../../lib/useApi";
 
 function AdminIndex() {

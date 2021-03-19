@@ -1,6 +1,6 @@
 export const fetcher = (url, token, fetchOptions) => {
-  console.log(url,)
-  console.log(token,)
+  console.log(url)
+  console.log(token)
   console.log(fetchOptions)
   fetch(url, {
     ...fetchOptions,
