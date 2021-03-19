@@ -1,16 +1,14 @@
+import React from "react";
 import { Button, Flex, Heading, useColorModeValue } from "@chakra-ui/react";
 import { Link, UserMenu } from "..";
+import {
+  useSession, signIn, signOut
+} from 'next-auth/client'
 
-import React from "react";
-import { useAuth0 } from "@auth0/auth0-react";
 
 const Header = (props) => {
-  const {
-    isAuthenticated,
-    user,
-    loginWithRedirect,
-    logout,
-  } = useAuth0();
+
+  const [ session, loading ] = useSession()
 
   return (
     <Flex
@@ -29,16 +27,16 @@ const Header = (props) => {
         </Heading>
       </Flex>
 
-      {!isAuthenticated && (
+      {!session && (
         <Button
-          onClick={loginWithRedirect}
+          onClick={() => signIn()}
           colorScheme="teal"
           variant="outline"
         >
           Logg på
         </Button>
-      )}
-      {isAuthenticated && <UserMenu name={user.name} />}
+      )} 
+      {session && <UserMenu signOut={signOut} name={session.user.name} />}
     </Flex>
   );
 };

@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-
+import React, { useEffect, useState } from "react";
 import { fetcher } from "./fetcher";
 import { useAuth0 } from "@auth0/auth0-react";
 import useSWR from "swr";
