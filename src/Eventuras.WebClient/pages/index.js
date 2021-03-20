@@ -1,13 +1,11 @@
-import { Box, Heading, SimpleGrid } from "@chakra-ui/react";
-import { Layout, Loading } from "../components/common";
-import EventCard from "../components/event/EventCard/EventCard";
-import Head from "next/head";
-import useRequest from "../lib/useRequest";
+import { Box, Heading, SimpleGrid } from '@chakra-ui/react';
+import { Layout, Loading } from '../components/common';
 
-export default function Index() {
-  const { data: events } = useRequest("/v3/events");
-  const { data: onlinecourses } = useRequest("/v3/onlinecourses");
-  console.log(events)
+import EventCard from '../components/event/EventCard/EventCard';
+import { GetStaticProps } from 'next';
+import Head from 'next/head';
+
+export default function Index(props) {
   return (
     <>
       <Head>
@@ -21,10 +19,10 @@ export default function Index() {
             <Heading as="h2" marginTop="16" marginBottom="4">
               Arrangementer
             </Heading>
-            {!events && <Loading />}
+            {!props.events && <Loading />}
             <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing="20px">
-              {events &&
-                events.map((item) => (
+              {props.events &&
+                props.events.map((item) => (
                   <EventCard
                     id={item.id}
                     title={item.name}
@@ -36,10 +34,10 @@ export default function Index() {
             <Heading as="h2" marginTop="16" marginBottom="4">
               Nettkurs
             </Heading>
-            {!onlinecourses && <Loading />}
+            {!props.onlinecourses && <Loading />}
             <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing="20px">
-              {onlinecourses &&
-                onlinecourses.map((item) => (
+              {props.onlinecourses &&
+                props.onlinecourses.map((item) => (
                   <EventCard
                     id={item.id}
                     title={item.name}
@@ -53,4 +51,24 @@ export default function Index() {
       </Layout>
     </>
   );
+}
+
+export async function getStaticProps() {
+  const eventsResponse = await fetch(
+    process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/events'
+  );
+  const events = await eventsResponse.json();
+
+  const onlinecoursesResponse = await fetch(
+    process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/onlinecourses'
+  );
+  const onlinecourses = await onlinecoursesResponse.json();
+
+  return {
+    props: {
+      events,
+      onlinecourses,
+    },
+    revalidate: 1, // In seconds
+  };
 }
