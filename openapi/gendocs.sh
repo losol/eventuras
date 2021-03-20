@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 SCRIPT=$(basename "$0")
 OUT_DIR=build
 GEN_HTML=1
@@ -16,9 +14,9 @@ ${SCRIPT} [OPTIONS] path/to/spec.yaml
 Options:
   -o	Output directory. Default: ${OUT_DIR}.
   -a	Use alternative HTML format.
-  -H	Don't generate HTML.
-  -J	Don't generate JSON schema.
-  -Y	Don't generate YAML schema.
+  -H	Do not generate HTML.
+  -J	Do not generate JSON schema.
+  -Y	Do not generate YAML schema.
   -y	Generated YAML spec file name. Default is the same as the input spec file name.
   -j	Generated JSON spec file name. Default is the same as the input spec file name plus .json suffix.
 EOF
@@ -81,14 +79,14 @@ gen_html() {
 }
 
 gen_yaml() {
-  if ["$YAML_FILE_NAME" == ""]; then
+  if [ "$YAML_FILE_NAME" == "" ]; then
     YAML_FILE_NAME=$(basename "$SPEC")
   fi
   $MAIN_JS generate -i $SPEC -g openapi-yaml -o $OUT_DIR -p outputFile=$YAML_FILE_NAME > /dev/null
 }
 
 gen_json() {
-  if ["$JSON_FILE_NAME" == ""]; then
+  if [ "$JSON_FILE_NAME" == "" ]; then
     JSON_FILE_NAME="$(basename "$SPEC").json"
   fi
   $MAIN_JS generate -i $SPEC -g openapi -o $OUT_DIR -p outputFile=$JSON_FILE_NAME > /dev/null
@@ -97,4 +95,3 @@ gen_json() {
 [ "$GEN_HTML" -eq "1" ] && gen_html
 [ "$GEN_YAML" -eq "1" ] && gen_yaml
 [ "$GEN_JSON" -eq "1" ] && gen_json
-

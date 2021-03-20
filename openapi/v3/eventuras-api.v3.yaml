@@ -32,6 +32,9 @@ paths:
   /notifications/email:
     $ref: './paths/notifications/email.yaml'
 
+  /users/me:
+    $ref: './paths/users/me.yaml'
+
 components:
 
   schemas:

@@ -289,6 +289,30 @@ paths:
       summary: Create new email notification.
       tags:
       - notifications
+  /users/me:
+    get:
+      operationId: getOwnProfile
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Get own profile.
+      tags:
+      - users
 components:
   parameters:
     pageNumber:
@@ -631,6 +655,29 @@ components:
       required:
       - totalRecipients
       title: Notification response
+      type: object
+    UserDto:
+      example:
+        id: 3fa94776-5fc1-11eb-b353-448a5b42a569
+        email: test@email.com
+        name: John Doe
+        phoneNumber: +11111111111
+      properties:
+        id:
+          description: User ID.
+          type: string
+        email:
+          format: email
+          type: string
+        name:
+          type: string
+        phoneNumber:
+          type: string
+      required:
+      - email
+      - id
+      - name
+      title: User info.
       type: object
     RegistrationStatus:
       description: |

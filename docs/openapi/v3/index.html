@@ -209,6 +209,10 @@ font-style: italic;
   <li><a href="#getRegistrationsList"><code><span class="http-method">get</span> /registrations</code></a></li>
   <li><a href="#updateRegistration"><code><span class="http-method">put</span> /registrations/{id}</code></a></li>
   </ul>
+  <h4><a href="#Users">Users</a></h4>
+  <ul>
+  <li><a href="#getOwnProfile"><code><span class="http-method">get</span> /users/me</code></a></li>
+  </ul>
 
   <h1><a name="Notifications">Notifications</a></h1>
   <div class="method"><a name="createNewEmailNotification"/>
@@ -635,6 +639,56 @@ or explicit email addresses.</div>
         <a href="#Error">Error</a>
   </div> <!-- method -->
   <hr/>
+  <h1><a name="Users">Users</a></h1>
+  <div class="method"><a name="getOwnProfile"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /users/me</code></pre></div>
+    <div class="method-summary">Get own profile. (<span class="nickname">getOwnProfile</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#UserDto">UserDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "id" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+  "email" : "test@email.com",
+  "name" : "John Doe",
+  "phoneNumber" : "+11111111111"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    
+        <a href="#UserDto">UserDto</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
 
   <h2><a name="__Models">Models</a></h2>
   [ Jump to <a href="#__Methods">Methods</a> ]
@@ -657,6 +711,7 @@ or explicit email addresses.</div>
     <li><a href="#RegistrationOrderDto"><code>RegistrationOrderDto</code> - New order data.</a></li>
     <li><a href="#RegistrationOrderItemDto"><code>RegistrationOrderItemDto</code> - Order line data.</a></li>
     <li><a href="#RegistrationPagedList"><code>RegistrationPagedList</code> - Registration list with paging.</a></li>
+    <li><a href="#UserDto"><code>UserDto</code> - User info.</a></li>
   </ol>
 
   <div class="model">
@@ -841,6 +896,16 @@ Artist = 4 </div>
 <div class="param">total </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total items. format: int32</div>
 <div class="param">pages </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total pages. format: int32</div>
 <div class="param">data </div><div class="param-desc"><span class="param-type"><a href="#RegistrationDto">array[RegistrationDto]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="UserDto"><code>UserDto</code> - User info.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">id </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> User ID. </div>
+<div class="param">email </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  format: email</div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">phoneNumber (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   </body>
