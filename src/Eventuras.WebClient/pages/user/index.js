@@ -1,31 +1,18 @@
-import { Container, Heading } from "@chakra-ui/react";
-import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+import { Container, Heading } from '@chakra-ui/react';
 
-import { Layout } from "../../components/common";
-import React from "react";
-import useApi from "../../lib/useApi";
+import { Layout } from '../../components/common';
+import React from 'react';
+import { useSession } from 'next-auth/client';
 
 function UserIndex() {
-  const {
-    isLoading,
-    isAuthenticated,
-    error,
-    user,
-    loginWithRedirect,
-    logout,
-  } = useAuth0();
-
-  const { data: registrations } = useApi("/v3/userprofile/registrations");
-
+  const [session, loading] = useSession();
   return (
     <Layout>
       <Container marginTop="16">
-        <Heading>Heihei {user.name} </Heading>
-
-        {registrations && registrations.map((r) => <p>{r.registrationId}</p>)}
+        <Heading>Heihei {session && session.user.name} </Heading>
       </Container>
     </Layout>
   );
 }
 
-export default withAuthenticationRequired(UserIndex);
+export default UserIndex;

@@ -23,7 +23,6 @@ const nextOptions = {
       if (account?.access_token) {
         token.access_token = account.access_token;
       }
-      console.log("ttt: " + token);
       return token;
     },
     async session(session, token) {
