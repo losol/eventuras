@@ -14,7 +14,7 @@ import { ColorModeToggler } from "..";
 import React from "react";
 
 const UserMenu = (props) => {
-  const { signOut} = props
+  const { signOut } = props;
   return (
     <>
       <Menu>
@@ -36,14 +36,8 @@ const UserMenu = (props) => {
           <MenuItem minH="48px">
             <Link href="/admin/">Admin</Link>
           </MenuItem>
-
           <MenuItem>
-            <ColorModeToggler />
-          </MenuItem>
-          <MenuItem>
-            <Button onClick={() => signOut()}>
-              Logg av
-            </Button>
+            <Link onClick={() => signOut()}>Logg av</Link>
           </MenuItem>
         </MenuList>
       </Menu>

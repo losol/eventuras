@@ -25,7 +25,7 @@ namespace Eventuras.WebApi.Auth
                     ValidAudiences = new List<string>
                     {
                         audience,
-                        issuer + "userinfo"
+                        issuer + "/userinfo"
                     }
                 };
 
