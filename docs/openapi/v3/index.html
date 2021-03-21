@@ -212,6 +212,7 @@ font-style: italic;
   <h4><a href="#Users">Users</a></h4>
   <ul>
   <li><a href="#getOwnProfile"><code><span class="http-method">get</span> /users/me</code></a></li>
+  <li><a href="#getUsers"><code><span class="http-method">get</span> /users</code></a></li>
   </ul>
 
   <h1><a name="Notifications">Notifications</a></h1>
@@ -684,6 +685,79 @@ or explicit email addresses.</div>
     <h4 class="field-label">401</h4>
     Access token is missing or invalid.
         <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getUsers"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /users</code></pre></div>
+    <div class="method-summary">Get accessible users list. (<span class="nickname">getUsers</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">page (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Page number. default: 1 format: int32</div><div class="param">count (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Page size. default: 100 format: int32</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#UsersPagedList">UsersPagedList</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "page" : 1,
+  "size" : 10,
+  "total" : 2,
+  "pages" : 1,
+  "data" : [ {
+    "id" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+    "email" : "test@email.com",
+    "name" : "Test User",
+    "phoneNumber" : "+11111111111"
+  }, {
+    "id" : "69056ce6-5fc4-11eb-b474-448a5b42a569",
+    "email" : "test2@email.com",
+    "name" : "Test User 2"
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
     <h4 class="field-label">500</h4>
     Unexpected server error.
         <a href="#Error">Error</a>
@@ -712,6 +786,7 @@ or explicit email addresses.</div>
     <li><a href="#RegistrationOrderItemDto"><code>RegistrationOrderItemDto</code> - Order line data.</a></li>
     <li><a href="#RegistrationPagedList"><code>RegistrationPagedList</code> - Registration list with paging.</a></li>
     <li><a href="#UserDto"><code>UserDto</code> - User info.</a></li>
+    <li><a href="#UsersPagedList"><code>UsersPagedList</code> - User list with paging.</a></li>
   </ol>
 
   <div class="model">
@@ -906,6 +981,17 @@ Artist = 4 </div>
 <div class="param">email </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  format: email</div>
 <div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">phoneNumber (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="UsersPagedList"><code>UsersPagedList</code> - User list with paging.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">page </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Page number. format: int32</div>
+<div class="param">count </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Page size. format: int32</div>
+<div class="param">total </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total items. format: int32</div>
+<div class="param">pages </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total pages. format: int32</div>
+<div class="param">data </div><div class="param-desc"><span class="param-type"><a href="#UserDto">array[UserDto]</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   </body>

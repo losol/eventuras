@@ -289,6 +289,56 @@ paths:
       summary: Create new email notification.
       tags:
       - notifications
+  /users:
+    get:
+      operationId: getUsers
+      parameters:
+      - description: Page number.
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          format: int32
+          type: integer
+      - description: Page size.
+        in: query
+        name: count
+        required: false
+        schema:
+          default: 100
+          format: int32
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/UsersPagedList'
+                type: array
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Missing or invalid request parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Get accessible users list.
+      tags:
+      - users
   /users/me:
     get:
       operationId: getOwnProfile
@@ -304,6 +354,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Access token is missing or invalid.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
         "500":
           content:
             application/json:
@@ -655,6 +711,49 @@ components:
       required:
       - totalRecipients
       title: Notification response
+      type: object
+    UsersPagedList:
+      example:
+        page: 1
+        size: 10
+        total: 2
+        pages: 1
+        data:
+        - id: 3fa94776-5fc1-11eb-b353-448a5b42a569
+          email: test@email.com
+          name: Test User
+          phoneNumber: +11111111111
+        - id: 69056ce6-5fc4-11eb-b474-448a5b42a569
+          email: test2@email.com
+          name: Test User 2
+      properties:
+        page:
+          description: Page number.
+          format: int32
+          type: integer
+        count:
+          description: Page size.
+          format: int32
+          type: integer
+        total:
+          description: Total items.
+          format: int32
+          type: integer
+        pages:
+          description: Total pages.
+          format: int32
+          type: integer
+        data:
+          items:
+            $ref: '#/components/schemas/UserDto'
+          type: array
+      required:
+      - count
+      - data
+      - page
+      - pages
+      - total
+      title: User list with paging.
       type: object
     UserDto:
       example:

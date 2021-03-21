@@ -1,0 +1,42 @@
+type: object
+title: User list with paging.
+required:
+  - page
+  - count
+  - total
+  - pages
+  - data
+properties:
+  page:
+    type: integer
+    format: int32
+    description: Page number.
+  count:
+    type: integer
+    format: int32
+    description: Page size.
+  total:
+    type: integer
+    format: int32
+    description: Total items.
+  pages:
+    type: integer
+    format: int32
+    description: Total pages.
+  data:
+    type: array
+    items:
+      $ref: './UserDto.yaml'
+example:
+  page: 1
+  size: 10
+  total: 2
+  pages: 1
+  data:
+    - id: '3fa94776-5fc1-11eb-b353-448a5b42a569'
+      email: 'test@email.com'
+      name: 'Test User'
+      phoneNumber: '+11111111111'
+    - id: '69056ce6-5fc4-11eb-b474-448a5b42a569'
+      email: 'test2@email.com'
+      name: 'Test User 2'

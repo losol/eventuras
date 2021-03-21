@@ -15,7 +15,8 @@ namespace Eventuras.TestAbstractions
             string password = TestingConstants.Placeholder,
             string phone = TestingConstants.Placeholder,
             string[] roles = null,
-            string role = null)
+            string role = null,
+            Organization organization = null)
         {
             var userManager = scope.GetService<UserManager<ApplicationUser>>();
 
@@ -59,6 +60,11 @@ namespace Eventuras.TestAbstractions
             if (roles?.Length > 0)
             {
                 await userManager.AddToRolesAsync(user, roles);
+            }
+
+            if (organization != null)
+            {
+                await scope.CreateOrganizationMemberAsync(user, organization, role: role, roles: roles);
             }
 
             return new DisposableUser(user, userManager);

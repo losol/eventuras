@@ -32,6 +32,8 @@ paths:
   /notifications/email:
     $ref: './paths/notifications/email.yaml'
 
+  /users:
+      $ref: './paths/users.yaml'
   /users/me:
     $ref: './paths/users/me.yaml'
 
