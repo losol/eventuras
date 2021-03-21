@@ -1,6 +1,5 @@
 import axios from 'axios';
-// import { getSession } from 'next-auth/client';
-import jwt from 'next-auth/jwt';
+import { getToken } from 'next-auth/jwt';
 
 const secret = process.env.NEXTAUTH_SECRET;
 let accessToken;
@@ -21,10 +20,9 @@ const getEventurasData = async (pageToken = '') => {
 };
 
 export default async (req, res) => {
-  const token = await jwt.getToken({ req, secret, raw: true });
-
-  accessToken = token;
-  console.log('thetoken: ' + token);
+  const token = await getToken({ req, secret });
+  accessToken = token.accessToken;
+  console.log('thetoken: ' + accessToken);
   const data = await getEventurasData();
 
   res.status(200).json(data);
