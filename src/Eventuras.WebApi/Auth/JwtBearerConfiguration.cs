@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authentication;
@@ -16,13 +17,16 @@ namespace Eventuras.WebApi.Auth
             return builder.AddJwtBearer(options =>
             {
                 options.Authority = issuer;
-                options.Audience = audience;
                 options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
-                    ValidateAudience = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+                    ValidAudiences = new List<string>
+                    {
+                        audience,
+                        issuer + "/userinfo"
+                    }
                 };
 
                 options.Events = new JwtBearerEvents()
