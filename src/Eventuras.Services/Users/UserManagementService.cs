@@ -88,5 +88,44 @@ namespace Eventuras.Services.Users
 
             return user;
         }
+
+        public async Task UpdateUserAsync(ApplicationUser user,
+            CancellationToken cancellationToken = default)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            var normalizedEmail = _userManager.NormalizeEmail(user.Email);
+            if (await _context.Users.AnyAsync(u => !u.Archived && u.NormalizedEmail == normalizedEmail && u.Id != user.Id,
+                cancellationToken))
+            {
+                throw new DuplicateException($"User with email {user.Email} already exists.");
+            }
+
+            var userPrincipal = _httpContextAccessor.HttpContext.User;
+            if (userPrincipal.GetUserId() != user.Id)
+            {
+                // other user is updating this user
+                if (!userPrincipal.IsAdmin())
+                {
+                    throw new NotAccessibleException("Only admins can update users");
+                }
+
+                if (!userPrincipal.IsPowerAdmin())
+                {
+                    var org = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync();
+                    if (!await _context.OrganizationMembers
+                        .AnyAsync(m => m.OrganizationId == org.OrganizationId && m.UserId == user.Id,
+                        cancellationToken))
+                    {
+                        throw new NotAccessibleException("User is not accessible for update");
+                    }
+                }
+            }
+
+            await _context.UpdateAsync(user);
+        }
     }
 }

@@ -36,6 +36,8 @@ paths:
       $ref: './paths/users.yaml'
   /users/me:
     $ref: './paths/users/me.yaml'
+  /users/{id}:
+      $ref: './paths/users/id.yaml'
 
 components:
 

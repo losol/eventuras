@@ -310,7 +310,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
         }
 
         [Fact]
-        public async Task Admnin_Should_Be_Able_To_Create_New_User_Within_Own_Organization()
+        public async Task Admin_Should_Be_Able_To_Create_New_User_Within_Own_Organization()
         {
             using var scope = _factory.Services.NewTestScope();
             using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
@@ -336,6 +336,203 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
 
             var json = await response.AsTokenAsync();
             json.CheckUser(user);
+        }
+
+        [Fact]
+        public async Task Update_User_Should_Return_Unauthorized_For_Not_Logged_In_User()
+        {
+            var client = _factory.CreateClient();
+
+            var response = await client.PutAsync($"/v3/users/{Guid.NewGuid()}", new { });
+            response.CheckUnauthorized();
+        }
+
+        [Fact]
+        public async Task Update_User_Should_Return_Forbidden_For_Non_Admin()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAs(user.Entity);
+
+            var response = await client.PutAsync($"/v3/users/{Guid.NewGuid()}", new { });
+            response.CheckForbidden();
+        }
+
+        [Fact]
+        public async Task Update_User_Should_Return_Conflict_If_Email_Is_Registered()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync(email: "test@email.com");
+            using var otherUser = await scope.CreateUserAsync(email: "another@email.com");
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin();
+
+            var response = await client.PutAsync($"/v3/users/{user.Entity.Id}", new
+            {
+                name = user.Entity.Name,
+                email = otherUser.Entity.Email
+            });
+
+            response.CheckConflict();
+        }
+
+        [Fact]
+        public async Task Update_User_Should_Not_Return_Conflict_If_Existing_Email_Is_Archived()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync(email: "test@email.com");
+            using var otherUser = await scope.CreateUserAsync(email: "another@email.com", archived: true);
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin();
+
+            var response = await client.PutAsync($"/v3/users/{user.Entity.Id}", new
+            {
+                name = user.Entity.Name,
+                email = otherUser.Entity.Email
+            });
+
+            response.CheckOk();
+
+            var updateUser = await scope.Db.Users
+                .AsNoTracking()
+                .SingleAsync(u => u.Id == user.Entity.Id);
+
+            Assert.Equal(updateUser.Name, user.Entity.Name);
+            Assert.Equal(updateUser.Email, otherUser.Entity.Email);
+            Assert.True(!updateUser.Archived);
+
+            var json = await response.AsTokenAsync();
+            json.CheckUser(updateUser);
+        }
+
+        [Theory]
+        [MemberData(nameof(GetInvalidUserInput))]
+        public async Task Update_User_Should_Validate_Input(object input)
+        {
+            var client = _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin();
+
+            var response = await client.PutAsync($"/v3/users/{Guid.NewGuid()}", input);
+            response.CheckBadRequest();
+        }
+
+        [Fact]
+        public async Task Should_Update_User_With_Max_Data()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync(phone: null);
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin();
+
+            var response = await client.PutAsync($"/v3/users/{user.Entity.Id}", new
+            {
+                name = "John Doe",
+                email = "another@email.com",
+                phoneNumber = "+1234567890"
+            });
+
+            response.CheckOk();
+
+            var updatedUser = await scope.Db.Users
+                .AsNoTracking()
+                .SingleAsync(u => u.Id == user.Entity.Id);
+
+            Assert.Equal("John Doe", updatedUser.Name);
+            Assert.Equal("another@email.com", updatedUser.Email);
+            Assert.Equal("+1234567890", updatedUser.PhoneNumber);
+            Assert.False(updatedUser.PhoneNumberConfirmed);
+            Assert.False(updatedUser.Archived);
+
+            var json = await response.AsTokenAsync();
+            json.CheckUser(updatedUser);
+        }
+
+        [Theory]
+        [InlineData(Roles.SuperAdmin)]
+        [InlineData(Roles.SystemAdmin)]
+        public async Task Power_Admin_Should_Be_Able_To_Update_User(string role)
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+
+            var client = _factory.CreateClient()
+                .Authenticated(role: role);
+
+            var response = await client.PutAsync($"/v3/users/{user.Entity.Id}", new
+            {
+                name = "John Doe",
+                email = "another@email.com"
+            });
+
+            response.CheckOk();
+
+            var updatedUser = await scope.Db.Users
+                .AsNoTracking()
+                .SingleAsync(u => u.Id == user.Entity.Id);
+
+            Assert.Equal("John Doe", updatedUser.Name);
+            Assert.Equal("another@email.com", updatedUser.Email);
+            Assert.False(updatedUser.Archived);
+
+            var json = await response.AsTokenAsync();
+            json.CheckUser(updatedUser);
+        }
+
+        [Fact]
+        public async Task Should_Not_Allow_Admin_To_Update_User_From_Other_Organization()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org2 = await scope.CreateOrganizationAsync();
+            using var admin = await scope.CreateUserAsync(name: "Test Admin", role: Roles.Admin, organization: org.Entity);
+            using var user = await scope.CreateUserAsync(organization: org2.Entity);
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAs(admin.Entity, Roles.Admin);
+
+            var response = await client.PutAsync($"/v3/users/{user.Entity.Id}", new
+            {
+                name = "John Doe",
+                email = "another@email.com"
+            });
+
+            response.CheckForbidden();
+        }
+
+        [Fact]
+        public async Task Admin_Should_Be_Able_To_Update_User_Within_Own_Organization()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var admin = await scope.CreateUserAsync(name: "Test Admin", role: Roles.Admin, organization: org.Entity);
+            using var user = await scope.CreateUserAsync(organization: org.Entity);
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAs(admin.Entity, Roles.Admin);
+
+            var response = await client.PutAsync($"/v3/users/{user.Entity.Id}", new
+            {
+                name = "John Doe",
+                email = "another@email.com"
+            });
+
+            response.CheckOk();
+
+            var updatedUser = await scope.Db.Users
+                .AsNoTracking()
+                .SingleAsync(u => u.Id == user.Entity.Id);
+
+            Assert.Equal("John Doe", updatedUser.Name);
+            Assert.Equal("another@email.com", updatedUser.Email);
+            Assert.False(updatedUser.Archived);
+
+            var json = await response.AsTokenAsync();
+            json.CheckUser(updatedUser);
         }
 
         public static object[][] GetInvalidUserInput()

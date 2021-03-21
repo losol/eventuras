@@ -414,6 +414,57 @@ paths:
       summary: Get own profile.
       tags:
       - users
+  /users/{id}:
+    put:
+      operationId: updateUser
+      parameters:
+      - description: User ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserFormDto'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+          description: User updated.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Update user profile.
+      tags:
+      - users
 components:
   parameters:
     pageNumber:
@@ -840,6 +891,24 @@ components:
       - id
       - name
       title: User info.
+      type: object
+    UserFormDto:
+      example:
+        email: test@email.com
+        name: John Doe
+        phoneNumber: +11111111111
+      properties:
+        email:
+          format: email
+          type: string
+        name:
+          type: string
+        phoneNumber:
+          type: string
+      required:
+      - email
+      - name
+      title: Update user form.
       type: object
     RegistrationStatus:
       description: |

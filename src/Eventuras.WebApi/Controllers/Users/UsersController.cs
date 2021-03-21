@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Eventuras.Domain;
 using Eventuras.Services.Auth;
 using Eventuras.Services.Users;
 using Eventuras.WebApi.Models;
@@ -78,6 +77,23 @@ namespace Eventuras.WebApi.Controllers.Users
 
             var user = await _userManagementService
                 .CreateNewUserAsync(dto.Name, dto.Email, dto.PhoneNumber);
+
+            return Ok(new UserDto(user));
+        }
+
+        // PUT /v3/users/{id}
+        [HttpPut("{id}")]
+        [Authorize(Policy = Constants.Auth.AdministratorRole)]
+        public async Task<IActionResult> UpdateUser(string id, [FromBody] UserFormDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(); // TODO: report validation errors!
+            }
+
+            var user = await _userRetrievalService.GetUserByIdAsync(id);
+            dto.CopyTo(user);
+            await _userManagementService.UpdateUserAsync(user);
 
             return Ok(new UserDto(user));
         }
