@@ -339,6 +339,51 @@ paths:
       summary: Get accessible users list.
       tags:
       - users
+    post:
+      description: |
+        Accessible to admins only.
+        Org admin can only create members of the own org.
+      operationId: createNewUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUserDto'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Missing or invalid request parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Create new user.
+      tags:
+      - users
   /users/me:
     get:
       operationId: getOwnProfile
@@ -754,6 +799,24 @@ components:
       - pages
       - total
       title: User list with paging.
+      type: object
+    NewUserDto:
+      example:
+        email: test@email.com
+        name: John Doe
+        phoneNumber: +11111111111
+      properties:
+        email:
+          format: email
+          type: string
+        name:
+          type: string
+        phoneNumber:
+          type: string
+      required:
+      - email
+      - name
+      title: New user form.
       type: object
     UserDto:
       example:

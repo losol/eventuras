@@ -16,7 +16,8 @@ namespace Eventuras.TestAbstractions
             string phone = TestingConstants.Placeholder,
             string[] roles = null,
             string role = null,
-            Organization organization = null)
+            Organization organization = null,
+            bool archived = false)
         {
             var userManager = scope.GetService<UserManager<ApplicationUser>>();
 
@@ -52,7 +53,8 @@ namespace Eventuras.TestAbstractions
                 Email = email,
                 EmailConfirmed = true,
                 PhoneNumber = phone,
-                PhoneNumberConfirmed = !string.IsNullOrEmpty(phone)
+                PhoneNumberConfirmed = !string.IsNullOrEmpty(phone),
+                Archived = archived
             };
 
             await userManager.CreateAsync(user, password);

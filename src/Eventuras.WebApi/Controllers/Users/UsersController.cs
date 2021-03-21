@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Eventuras.Services;
+using Eventuras.Domain;
 using Eventuras.Services.Auth;
 using Eventuras.Services.Users;
 using Eventuras.WebApi.Models;
@@ -17,20 +17,26 @@ namespace Eventuras.WebApi.Controllers.Users
     public class UsersController : Controller
     {
         private readonly IUserRetrievalService _userRetrievalService;
+        private readonly IUserManagementService _userManagementService;
 
-        public UsersController(IUserRetrievalService userRetrievalService)
+        public UsersController(
+            IUserRetrievalService userRetrievalService,
+            IUserManagementService userManagementService)
         {
             _userRetrievalService = userRetrievalService ??
                 throw new ArgumentNullException(nameof(userRetrievalService));
+
+            _userManagementService = userManagementService ??
+                throw new ArgumentNullException(nameof(userManagementService));
         }
 
         // GET: /v3/users/me
         [HttpGet("me")]
-        public async Task<IActionResult> Me(CancellationToken cancellationToken)
+        public async Task<UserDto> Me(CancellationToken cancellationToken)
         {
             var userId = HttpContext.User.GetUserId();
             var user = await _userRetrievalService.GetUserByIdAsync(userId, cancellationToken);
-            return Ok(new UserDto(user));
+            return new UserDto(user);
         }
 
         // GET: /v3/users
@@ -58,6 +64,22 @@ namespace Eventuras.WebApi.Controllers.Users
 
             return PageResponseDto<UserDto>.FromPaging(
                 query, paging, u => new UserDto(u));
+        }
+
+        // POST /v3/users
+        [HttpPost]
+        [Authorize(Policy = Constants.Auth.AdministratorRole)]
+        public async Task<IActionResult> CreateNewUser([FromBody] NewUserDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(); // TODO: report validation errors!
+            }
+
+            var user = await _userManagementService
+                .CreateNewUserAsync(dto.Name, dto.Email, dto.PhoneNumber);
+
+            return Ok(new UserDto(user));
         }
     }
 }

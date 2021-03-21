@@ -1,17 +1,33 @@
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Users
 {
-    public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory<Startup>>
+    public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory<Startup>>, IDisposable
     {
         private readonly CustomWebApiApplicationFactory<Startup> _factory;
 
         public UsersControllerTests(CustomWebApiApplicationFactory<Startup> factory)
         {
             _factory = factory;
+            Cleanup();
+        }
+
+        private void Cleanup()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            scope.Db.Users.Clean();
+            scope.Db.SaveChanges();
+        }
+
+        public void Dispose()
+        {
+            Cleanup();
         }
 
         [Fact]
@@ -146,6 +162,196 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
             json.CheckPaging(1, 3,
                 (token, u) => token.CheckUser(u),
                 admin.Entity, user1.Entity, user2.Entity);
+        }
+
+        [Fact]
+        public async Task Create_New_User_Should_Return_Unauthorized_For_Not_Logged_In_User()
+        {
+            var client = _factory.CreateClient();
+
+            var response = await client.PostAsync("/v3/users", new { });
+            response.CheckUnauthorized();
+        }
+
+        [Fact]
+        public async Task Create_New_User_Should_Return_Forbidden_For_Non_Admin()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAs(user.Entity);
+
+            var response = await client.PostAsync("/v3/users", new { });
+            response.CheckForbidden();
+        }
+
+        [Fact]
+        public async Task Create_New_User_Should_Return_Conflict_If_Email_Is_Registered()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync(email: "test@email.com");
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin();
+
+            var response = await client.PostAsync("/v3/users", new
+            {
+                name = "Test Person",
+                email = "test@email.com"
+            });
+
+            response.CheckConflict();
+        }
+
+        [Fact]
+        public async Task Create_New_User_Should_Not_Return_Conflict_If_Existing_Email_Is_Archived()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync(email: "test@email.com", archived: true);
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin();
+
+            var response = await client.PostAsync("/v3/users", new
+            {
+                name = "Test Person",
+                email = "test@email.com"
+            });
+
+            response.CheckOk();
+
+            var newUser = await scope.Db.Users.SingleAsync(u => u.Email == "test@email.com" && !u.Archived);
+            Assert.NotEqual(newUser.Id, user.Entity.Id);
+
+            var json = await response.AsTokenAsync();
+            json.CheckUser(newUser);
+        }
+
+        [Theory]
+        [MemberData(nameof(GetInvalidUserInput))]
+        public async Task Create_New_User_Should_Validate_Input(object input)
+        {
+            var client = _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin();
+
+            var response = await client.PostAsync("/v3/users", input);
+            response.CheckBadRequest();
+        }
+
+        [Fact]
+        public async Task Should_Create_New_User()
+        {
+            var client = _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin();
+
+            var response = await client.PostAsync("/v3/users", new
+            {
+                name = "John Doe",
+                email = "test@email.com"
+            });
+
+            response.CheckOk();
+
+            using var scope = _factory.Services.NewTestScope();
+            var user = await scope.Db.Users.SingleAsync(u => u.Email == "test@email.com" && !u.Archived);
+
+            var json = await response.AsTokenAsync();
+            json.CheckUser(user);
+        }
+
+        [Fact]
+        public async Task Should_Create_New_User_With_Max_Data()
+        {
+            var client = _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin();
+
+            var response = await client.PostAsync("/v3/users", new
+            {
+                name = "John Doe",
+                email = "test@email.com",
+                phoneNumber = "+11111111111"
+            });
+
+            response.CheckOk();
+
+            using var scope = _factory.Services.NewTestScope();
+            var user = await scope.Db.Users.SingleAsync(u => u.Email == "test@email.com");
+            Assert.Equal("John Doe", user.Name);
+            Assert.Equal("+11111111111", user.PhoneNumber);
+            Assert.False(user.PhoneNumberConfirmed);
+            Assert.False(user.Archived);
+
+            var json = await response.AsTokenAsync();
+            json.CheckUser(user);
+        }
+
+        [Theory]
+        [InlineData(Roles.SuperAdmin)]
+        [InlineData(Roles.SystemAdmin)]
+        public async Task Power_Admin_Should_Be_Able_To_Create_New_User(string role)
+        {
+            var client = _factory.CreateClient()
+                .Authenticated(role: role);
+
+            var response = await client.PostAsync("/v3/users", new
+            {
+                name = "John Doe",
+                email = "test@email.com"
+            });
+
+            response.CheckOk();
+
+            using var scope = _factory.Services.NewTestScope();
+            var user = await scope.Db.Users.SingleAsync(u => u.Email == "test@email.com");
+
+            var json = await response.AsTokenAsync();
+            json.CheckUser(user);
+        }
+
+        [Fact]
+        public async Task Admnin_Should_Be_Able_To_Create_New_User_Within_Own_Organization()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var admin = await scope.CreateUserAsync(name: "Test Admin", role: Roles.Admin, organization: org.Entity);
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAs(admin.Entity, Roles.Admin);
+
+            var response = await client.PostAsync("/v3/users", new
+            {
+                name = "John Doe",
+                email = "test@email.com"
+            });
+
+            response.CheckOk();
+
+            var user = await scope.Db.Users
+                .Include(u => u.OrganizationMembership)
+                .SingleAsync(u => u.Email == "test@email.com");
+
+            Assert.Equal(org.Entity.OrganizationId,
+                user.OrganizationMembership.Single().OrganizationId);
+
+            var json = await response.AsTokenAsync();
+            json.CheckUser(user);
+        }
+
+        public static object[][] GetInvalidUserInput()
+        {
+            return new object[][]
+            {
+                new [] { new {name = (string)null, email = "test@email.com"} },
+                new [] { new {name = "", email = "test@email.com"} },
+                new [] { new {name = " ", email = "test@email.com"} },
+                new [] { new {name = "Test Person", email = (string)null} },
+                new [] { new {name = "Test Person", email = ""} },
+                new [] { new {name = "Test Person", email = " "} },
+                new [] { new {name = "Test Person", email = "test"} },
+                new [] { new {name = "Test Person", email = "test.com"} },
+                new [] { new {name = "Test Person", email = "test@email.com", phoneNumber = "wrong"} }
+            };
         }
     }
 }
