@@ -113,7 +113,7 @@ namespace Eventuras.WebApi
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Eventuras.WebApi", Version = "v1" });
+                c.SwaggerDoc("v3", new OpenApiInfo { Title = "Eventuras.WebApi", Version = "v3" });
             });
         }
 
@@ -124,11 +124,17 @@ namespace Eventuras.WebApi
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Eventuras.WebApi v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v3/swagger.json", "Eventuras.WebApi v3"));
             }
 
             app.UseRouting();
-            app.UseCors();
+
+            // Use Cors only in production environments
+            if (env.IsProduction())
+            {
+                app.UseCors();
+            }
+
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
