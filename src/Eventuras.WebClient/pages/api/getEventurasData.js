@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { getToken } from 'next-auth/jwt';
 
 const secret = process.env.NEXTAUTH_SECRET;
