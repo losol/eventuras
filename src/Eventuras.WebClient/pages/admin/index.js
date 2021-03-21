@@ -3,27 +3,16 @@ import React, { useEffect } from 'react';
 import { signIn, useSession } from 'next-auth/client';
 
 import { Layout } from '../../components/common';
-import axios from 'axios';
 
 function AdminIndex() {
+  let registrations;
   const [session, loading, error] = useSession();
 
   useEffect(async () => {
     if (loading) {
-      const { data } = await axios.get('/api/getEventurasData', {
-        withCredentials: true,
-      });
-      //setSubsList(
-      //data.map((sub) => ({
-      //id: sub.id,
-      // title: sub.snippet.title,
-      //}))
-      //);
-      setLoading(false);
+      registrations = await fetch('/api/getEventurasData');
     }
   }, [loading]);
-
-  let registrations;
 
   // const { data: registrations } = useApi('/v3/registrations');
   if (loading) {

@@ -4,26 +4,29 @@ import { getToken } from 'next-auth/jwt';
 const secret = process.env.NEXTAUTH_SECRET;
 let accessToken;
 
-const getEventurasData = async (pageToken = '') => {
-  const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/v3/registrations`,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
+async function fetcher(route) {
+  const data = fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}${route}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((result) => {
+      return result;
+    });
 
-  console.log(data);
+  return data;
+}
 
-  return data.items;
+const getEventurasData = async () => {
+  const data = await fetcher('/v3/registrations');
+  return data;
 };
 
 export default async (req, res) => {
   const token = await getToken({ req, secret });
   accessToken = token.accessToken;
-  console.log('thetoken: ' + accessToken);
-  const data = await getEventurasData();
+  const data = getEventurasData();
 
   res.status(200).json(data);
 };

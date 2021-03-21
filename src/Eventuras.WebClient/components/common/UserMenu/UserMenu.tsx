@@ -36,10 +36,6 @@ const UserMenu = (props) => {
           <MenuItem minH="48px">
             <Link href="/admin/">Admin</Link>
           </MenuItem>
-
-          <MenuItem>
-            <ColorModeToggler />
-          </MenuItem>
           <MenuItem>
             <Link onClick={() => signOut()}>Logg av</Link>
           </MenuItem>
