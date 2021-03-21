@@ -1,5 +1,4 @@
 using System.Linq;
-using Eventuras.Services;
 using Eventuras.WebApi.Config;
 using Eventuras.WebApi.Constants;
 using Microsoft.AspNetCore.Builder;
@@ -105,7 +104,8 @@ namespace Eventuras.WebApi
                 })
                       .AddJwtBearerConfiguration(
                             Configuration["Auth:Issuer"],
-                            Configuration["Auth:Audience"]
+                            Configuration["Auth:ApiIdentifier"],
+                            Configuration["Auth:JwtSecret"]
                         );
 
 
