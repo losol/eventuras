@@ -209,6 +209,14 @@ font-style: italic;
   <li><a href="#getRegistrationsList"><code><span class="http-method">get</span> /registrations</code></a></li>
   <li><a href="#updateRegistration"><code><span class="http-method">put</span> /registrations/{id}</code></a></li>
   </ul>
+  <h4><a href="#Users">Users</a></h4>
+  <ul>
+  <li><a href="#createNewUser"><code><span class="http-method">post</span> /users</code></a></li>
+  <li><a href="#getOwnProfile"><code><span class="http-method">get</span> /users/me</code></a></li>
+  <li><a href="#getUserById"><code><span class="http-method">get</span> /users/{id}</code></a></li>
+  <li><a href="#getUsers"><code><span class="http-method">get</span> /users</code></a></li>
+  <li><a href="#updateUser"><code><span class="http-method">put</span> /users/{id}</code></a></li>
+  </ul>
 
   <h1><a name="Notifications">Notifications</a></h1>
   <div class="method"><a name="createNewEmailNotification"/>
@@ -635,6 +643,325 @@ or explicit email addresses.</div>
         <a href="#Error">Error</a>
   </div> <!-- method -->
   <hr/>
+  <h1><a name="Users">Users</a></h1>
+  <div class="method"><a name="createNewUser"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /users</code></pre></div>
+    <div class="method-summary">Create new user. (<span class="nickname">createNewUser</span>)</div>
+    <div class="method-notes">Accessible to admins only.
+Org admin can only create members of the own org.</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">NewUserDto <a href="#NewUserDto">NewUserDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#UserDto">UserDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "id" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+  "email" : "test@email.com",
+  "name" : "John Doe",
+  "phoneNumber" : "+11111111111"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#UserDto">UserDto</a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getOwnProfile"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /users/me</code></pre></div>
+    <div class="method-summary">Get own profile. (<span class="nickname">getOwnProfile</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#UserDto">UserDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "id" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+  "email" : "test@email.com",
+  "name" : "John Doe",
+  "phoneNumber" : "+11111111111"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    
+        <a href="#UserDto">UserDto</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getUserById"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /users/{id}</code></pre></div>
+    <div class="method-summary">Get user by id. (<span class="nickname">getUserById</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#UserDto">UserDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "id" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+  "email" : "test@email.com",
+  "name" : "John Doe",
+  "phoneNumber" : "+11111111111"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    
+        <a href="#UserDto">UserDto</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getUsers"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /users</code></pre></div>
+    <div class="method-summary">Get accessible users list. (<span class="nickname">getUsers</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">page (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Page number. default: 1 format: int32</div><div class="param">count (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Page size. default: 100 format: int32</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#UsersPagedList">UsersPagedList</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "page" : 1,
+  "size" : 10,
+  "total" : 2,
+  "pages" : 1,
+  "data" : [ {
+    "id" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+    "email" : "test@email.com",
+    "name" : "Test User",
+    "phoneNumber" : "+11111111111"
+  }, {
+    "id" : "69056ce6-5fc4-11eb-b474-448a5b42a569",
+    "email" : "test2@email.com",
+    "name" : "Test User 2"
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="updateUser"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /users/{id}</code></pre></div>
+    <div class="method-summary">Update user profile. (<span class="nickname">updateUser</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; User ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">UserFormDto <a href="#UserFormDto">UserFormDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#UserDto">UserDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "id" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+  "email" : "test@email.com",
+  "name" : "John Doe",
+  "phoneNumber" : "+11111111111"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    User updated.
+        <a href="#UserDto">UserDto</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
 
   <h2><a name="__Models">Models</a></h2>
   [ Jump to <a href="#__Methods">Methods</a> ]
@@ -644,6 +971,7 @@ or explicit email addresses.</div>
     <li><a href="#EmailNotificationFormDto"><code>EmailNotificationFormDto</code> - New email notification info</a></li>
     <li><a href="#Error"><code>Error</code> - Common error response structure.</a></li>
     <li><a href="#NewRegistrationDto"><code>NewRegistrationDto</code> - New registration info</a></li>
+    <li><a href="#NewUserDto"><code>NewUserDto</code> - New user form.</a></li>
     <li><a href="#New_registration_specific_properties"><code>New_registration_specific_properties</code> - New registration specific properties</a></li>
     <li><a href="#NotificationRecipientsFilterDto"><code>NotificationRecipientsFilterDto</code> - Notification recipients filter</a></li>
     <li><a href="#NotificationResponseDto"><code>NotificationResponseDto</code> - Notification response</a></li>
@@ -657,6 +985,9 @@ or explicit email addresses.</div>
     <li><a href="#RegistrationOrderDto"><code>RegistrationOrderDto</code> - New order data.</a></li>
     <li><a href="#RegistrationOrderItemDto"><code>RegistrationOrderItemDto</code> - Order line data.</a></li>
     <li><a href="#RegistrationPagedList"><code>RegistrationPagedList</code> - Registration list with paging.</a></li>
+    <li><a href="#UserDto"><code>UserDto</code> - User info.</a></li>
+    <li><a href="#UserFormDto"><code>UserFormDto</code> - Update user form.</a></li>
+    <li><a href="#UsersPagedList"><code>UsersPagedList</code> - User list with paging.</a></li>
   </ol>
 
   <div class="model">
@@ -697,6 +1028,15 @@ Artist = 4 </div>
 <div class="param">notes (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Additional notes. Can be managed by admin only. </div>
 <div class="param">userId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> User ID. </div>
 <div class="param">eventId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Event ID. format: int32</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="NewUserDto"><code>NewUserDto</code> - New user form.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">email </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  format: email</div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">phoneNumber (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -841,6 +1181,36 @@ Artist = 4 </div>
 <div class="param">total </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total items. format: int32</div>
 <div class="param">pages </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total pages. format: int32</div>
 <div class="param">data </div><div class="param-desc"><span class="param-type"><a href="#RegistrationDto">array[RegistrationDto]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="UserDto"><code>UserDto</code> - User info.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">id </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> User ID. </div>
+<div class="param">email </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  format: email</div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">phoneNumber (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="UserFormDto"><code>UserFormDto</code> - Update user form.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">email </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  format: email</div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">phoneNumber (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="UsersPagedList"><code>UsersPagedList</code> - User list with paging.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">page </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Page number. format: int32</div>
+<div class="param">count </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Page size. format: int32</div>
+<div class="param">total </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total items. format: int32</div>
+<div class="param">pages </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total pages. format: int32</div>
+<div class="param">data </div><div class="param-desc"><span class="param-type"><a href="#UserDto">array[UserDto]</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   </body>

@@ -68,7 +68,7 @@ namespace Eventuras.WebApi.Tests
                     // context (ApplicationDbContext).
                     using var scope = sp.CreateScope();
                     var initializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-                    initializer.SeedAsync().Wait();
+                    initializer.SeedAsync(createSuperAdmin: false).Wait();
                 });
 
             builder.ConfigureTestServices(services =>

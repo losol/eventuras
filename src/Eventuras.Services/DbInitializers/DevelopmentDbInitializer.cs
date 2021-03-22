@@ -16,7 +16,7 @@ namespace Eventuras.Services.DbInitializers
             : base(db, roleManager, userManager, config)
         { }
 
-        public async override Task SeedAsync()
+        public async override Task SeedAsync(bool createSuperUser)
         {
             _db.Database.Migrate();
 
@@ -37,7 +37,7 @@ namespace Eventuras.Services.DbInitializers
                 await _db.SaveChangesAsync();
             }
 
-            await base.SeedAsync();
+            await base.SeedAsync(createSuperUser);
         }
     }
 }

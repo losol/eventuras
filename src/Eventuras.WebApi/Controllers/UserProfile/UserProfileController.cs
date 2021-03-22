@@ -5,6 +5,8 @@ using System.Linq;
 
 namespace Eventuras.WebApi.Controllers.UserProfile
 {
+    // andy: as for me it's not needed at all. JWT can be decoded on the client side.
+
     [ApiController]
     public class UserProfileController : ControllerBase
     {

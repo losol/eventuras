@@ -7,6 +7,15 @@ namespace Eventuras.Services.Users
 {
     internal static class UserQueryableExtensions
     {
+        public static IQueryable<ApplicationUser> AddFilter(this IQueryable<ApplicationUser> query, UserFilter filter)
+        {
+            if (!filter.InlcudeArchived)
+            {
+                query = query.Where(u => !u.Archived);
+            }
+            return query;
+        }
+
         public static IQueryable<ApplicationUser> UseOptions(this IQueryable<ApplicationUser> query, UserRetrievalOptions options)
         {
             if (options == null)
@@ -32,6 +41,35 @@ namespace Eventuras.Services.Users
 
             return query.Where(u => u.OrganizationMembership
                 .Any(m => m.OrganizationId == organization.OrganizationId));
+        }
+
+        public static IQueryable<ApplicationUser> AddOrder(
+            this IQueryable<ApplicationUser> query,
+            UserListOrder order,
+            bool descending = false)
+        {
+            switch (order)
+            {
+                case UserListOrder.Name:
+                    query = descending
+                        ? query.OrderByDescending(a => a.Name)
+                        : query.OrderBy(a => a.Name);
+                    break;
+
+                case UserListOrder.Email:
+                    query = descending
+                        ? query.OrderByDescending(a => a.Email)
+                        : query.OrderBy(a => a.Email);
+                    break;
+
+                case UserListOrder.Phone:
+                    query = descending
+                        ? query.OrderByDescending(a => a.PhoneNumber)
+                        : query.OrderBy(a => a.PhoneNumber);
+                    break;
+            }
+
+            return query;
         }
     }
 }

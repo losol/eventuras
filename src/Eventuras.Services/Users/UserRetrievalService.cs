@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Services.Exceptions;
+using System.Linq;
+using Eventuras.Services.Auth;
 
 namespace Eventuras.Services.Users
 {
@@ -31,7 +33,7 @@ namespace Eventuras.Services.Users
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
-                throw new ArgumentException(nameof(userId));
+                throw new ArgumentException("User id argument must not be empty", nameof(userId));
             }
 
             var user = await _context.ApplicationUsers
@@ -47,28 +49,29 @@ namespace Eventuras.Services.Users
 
             return user;
         }
-        public async Task<List<ApplicationUser>> ListUsers(
-            UserFilter filter,
+
+        public async Task<Paging<ApplicationUser>> ListUsers(
+            UserListRequest request,
             UserRetrievalOptions options,
             CancellationToken cancellationToken)
         {
-            filter ??= new UserFilter();
             options ??= new UserRetrievalOptions();
 
             var query = _context.Users
                 .AsNoTracking()
-                .UseOptions(options);
+                .UseOptions(options)
+                .AddFilter(request.Filter)
+                .AddOrder(request.OrderBy, request.Descending);
 
-            if (filter.AccessibleOnly)
+            if (request.Filter.AccessibleOnly)
             {
                 var user = _httpContextAccessor.HttpContext.User;
-                if (!user.IsInRole(Roles.Admin) &&
-                    !user.IsInRole(Roles.SuperAdmin))
+                if (!user.IsAdmin())
                 {
-                    return new List<ApplicationUser>();
+                    return Paging<ApplicationUser>.Empty<ApplicationUser>();
                 }
 
-                if (!user.IsInRole(Roles.SuperAdmin))
+                if (!user.IsSuperAdmin())
                 {
                     var organization = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(cancellationToken: cancellationToken);
                     if (!organization.IsRoot)
@@ -78,7 +81,7 @@ namespace Eventuras.Services.Users
                 }
             }
 
-            return await query.ToListAsync(cancellationToken);
+            return await Paging<ApplicationUser>.CreateAsync(query, request, cancellationToken);
         }
     }
 }

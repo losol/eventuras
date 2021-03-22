@@ -20,14 +20,14 @@ namespace Eventuras.TestAbstractions
             : base(db, roleManager, userManager, config)
         { }
 
-        public override async Task SeedAsync()
+        public override async Task SeedAsync(bool createSuperUser)
         {
             await SemaphoreSlim.WaitAsync();
             try
             {
                 if (await _db.Database.EnsureCreatedAsync())
                 {
-                    await base.SeedAsync();
+                    await base.SeedAsync(createSuperUser);
                     await _db.EventInfos.AddRangeAsync(SeedData.Events);
                     await _db.SaveChangesAsync();
                 }
