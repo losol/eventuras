@@ -213,6 +213,7 @@ font-style: italic;
   <ul>
   <li><a href="#createNewUser"><code><span class="http-method">post</span> /users</code></a></li>
   <li><a href="#getOwnProfile"><code><span class="http-method">get</span> /users/me</code></a></li>
+  <li><a href="#getUserById"><code><span class="http-method">get</span> /users/{id}</code></a></li>
   <li><a href="#getUsers"><code><span class="http-method">get</span> /users</code></a></li>
   <li><a href="#updateUser"><code><span class="http-method">put</span> /users/{id}</code></a></li>
   </ul>
@@ -754,6 +755,61 @@ Org admin can only create members of the own org.</div>
         <a href="#UserDto">UserDto</a>
     <h4 class="field-label">401</h4>
     Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getUserById"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /users/{id}</code></pre></div>
+    <div class="method-summary">Get user by id. (<span class="nickname">getUserById</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#UserDto">UserDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "id" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+  "email" : "test@email.com",
+  "name" : "John Doe",
+  "phoneNumber" : "+11111111111"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    
+        <a href="#UserDto">UserDto</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
         <a href="#Error">Error</a>
     <h4 class="field-label">404</h4>
     The requested resource not found.

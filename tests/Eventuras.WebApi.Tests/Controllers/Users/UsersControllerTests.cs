@@ -76,6 +76,64 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
         }
 
         [Fact]
+        public async Task Get_Endpoint_Should_Return_Unauthorized_For_Not_Logged_In_User()
+        {
+            var client = _factory.CreateClient();
+
+            var response = await client.GetAsync($"/v3/users/{Guid.NewGuid()}");
+            response.CheckUnauthorized();
+        }
+
+        [Fact]
+        public async Task Get_Endpoint_Should_Return_Information_For_Current_User()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAs(user.Entity);
+
+            var response = await client.GetAsync($"/v3/users/{user.Entity.Id}");
+            response.CheckOk();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var token = await response.AsTokenAsync();
+            token.CheckUser(user.Entity);
+        }
+
+        [Fact]
+        public async Task Get_Endpoint_Should_Return_Forbidden_For_Regular_User()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAs(user.Entity);
+
+            var response = await client.GetAsync($"/v3/users/{Guid.NewGuid()}");
+            response.CheckForbidden();
+        }
+
+        [Theory]
+        [InlineData(Roles.Admin)]
+        [InlineData(Roles.SuperAdmin)]
+        [InlineData(Roles.SystemAdmin)]
+        public async Task Get_Endpoint_Should_Return_Data_For_Admin(string role)
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+
+            var client = _factory.CreateClient()
+                .Authenticated(role: role);
+
+            var response = await client.GetAsync($"/v3/users/{user.Entity.Id}");
+            response.CheckOk();
+
+            var json = await response.AsTokenAsync();
+            json.CheckUser(user.Entity);
+        }
+
+        [Fact]
         public async Task List_Users_Should_Return_Unauthorized_For_Not_Logged_In_User()
         {
             var client = _factory.CreateClient();

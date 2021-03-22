@@ -49,6 +49,7 @@ namespace Eventuras.Services.Users
 
             return user;
         }
+
         public async Task<Paging<ApplicationUser>> ListUsers(
             UserListRequest request,
             UserRetrievalOptions options,
