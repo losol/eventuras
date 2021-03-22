@@ -170,13 +170,16 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
             json.CheckEmptyPaging();
         }
 
-        [Fact]
-        public async Task List_Users_Should_Use_Paging()
+        [Theory]
+        [InlineData(Roles.Admin)]
+        [InlineData(Roles.SuperAdmin)]
+        [InlineData(Roles.SystemAdmin)]
+        public async Task List_Users_Should_Use_Paging(string role)
         {
             using var scope = _factory.Services.NewTestScope();
 
             var client = _factory.CreateClient()
-                .Authenticated(role: Roles.SuperAdmin);
+                .Authenticated(role: role);
 
             using var user3 = await scope.CreateUserAsync(name: "Test Person 3");
             using var user2 = await scope.CreateUserAsync(name: "Test Person 2");
@@ -197,29 +200,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
             json.CheckPaging(2, 2, 3,
                 (token, u) => token.CheckUser(u),
                 user3.Entity);
-        }
-
-        [Fact]
-        public async Task List_Users_Should_Restrict_Visibility_For_Org_Admin()
-        {
-            using var scope = _factory.Services.NewTestScope();
-            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
-            using var admin = await scope.CreateUserAsync(name: "Test Admin", role: Roles.Admin, organization: org.Entity);
-
-            var client = _factory.CreateClient()
-                .AuthenticatedAs(admin.Entity, Roles.Admin);
-
-            using var user1 = await scope.CreateUserAsync(name: "Test User 1", organization: org.Entity);
-            using var user2 = await scope.CreateUserAsync(name: "Test User 2", organization: org.Entity);
-            using var user3 = await scope.CreateUserAsync(name: "Test User 3");
-
-            var response = await client.GetAsync("/v3/users");
-            response.CheckOk();
-
-            var json = await response.AsTokenAsync();
-            json.CheckPaging(1, 3,
-                (token, u) => token.CheckUser(u),
-                admin.Entity, user1.Entity, user2.Entity);
         }
 
         [Fact]
@@ -345,9 +325,10 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
         }
 
         [Theory]
+        [InlineData(Roles.Admin)]
         [InlineData(Roles.SuperAdmin)]
         [InlineData(Roles.SystemAdmin)]
-        public async Task Power_Admin_Should_Be_Able_To_Create_New_User(string role)
+        public async Task Admin_Should_Be_Able_To_Create_New_User(string role)
         {
             var client = _factory.CreateClient()
                 .Authenticated(role: role);
@@ -362,35 +343,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
 
             using var scope = _factory.Services.NewTestScope();
             var user = await scope.Db.Users.SingleAsync(u => u.Email == "test@email.com");
-
-            var json = await response.AsTokenAsync();
-            json.CheckUser(user);
-        }
-
-        [Fact]
-        public async Task Admin_Should_Be_Able_To_Create_New_User_Within_Own_Organization()
-        {
-            using var scope = _factory.Services.NewTestScope();
-            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
-            using var admin = await scope.CreateUserAsync(name: "Test Admin", role: Roles.Admin, organization: org.Entity);
-
-            var client = _factory.CreateClient()
-                .AuthenticatedAs(admin.Entity, Roles.Admin);
-
-            var response = await client.PostAsync("/v3/users", new
-            {
-                name = "John Doe",
-                email = "test@email.com"
-            });
-
-            response.CheckOk();
-
-            var user = await scope.Db.Users
-                .Include(u => u.OrganizationMembership)
-                .SingleAsync(u => u.Email == "test@email.com");
-
-            Assert.Equal(org.Entity.OrganizationId,
-                user.OrganizationMembership.Single().OrganizationId);
 
             var json = await response.AsTokenAsync();
             json.CheckUser(user);
@@ -511,67 +463,16 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
         }
 
         [Theory]
+        [InlineData(Roles.Admin)]
         [InlineData(Roles.SuperAdmin)]
         [InlineData(Roles.SystemAdmin)]
-        public async Task Power_Admin_Should_Be_Able_To_Update_User(string role)
+        public async Task Admin_Should_Be_Able_To_Update_User(string role)
         {
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
 
             var client = _factory.CreateClient()
                 .Authenticated(role: role);
-
-            var response = await client.PutAsync($"/v3/users/{user.Entity.Id}", new
-            {
-                name = "John Doe",
-                email = "another@email.com"
-            });
-
-            response.CheckOk();
-
-            var updatedUser = await scope.Db.Users
-                .AsNoTracking()
-                .SingleAsync(u => u.Id == user.Entity.Id);
-
-            Assert.Equal("John Doe", updatedUser.Name);
-            Assert.Equal("another@email.com", updatedUser.Email);
-            Assert.False(updatedUser.Archived);
-
-            var json = await response.AsTokenAsync();
-            json.CheckUser(updatedUser);
-        }
-
-        [Fact]
-        public async Task Should_Not_Allow_Admin_To_Update_User_From_Other_Organization()
-        {
-            using var scope = _factory.Services.NewTestScope();
-            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
-            using var org2 = await scope.CreateOrganizationAsync();
-            using var admin = await scope.CreateUserAsync(name: "Test Admin", role: Roles.Admin, organization: org.Entity);
-            using var user = await scope.CreateUserAsync(organization: org2.Entity);
-
-            var client = _factory.CreateClient()
-                .AuthenticatedAs(admin.Entity, Roles.Admin);
-
-            var response = await client.PutAsync($"/v3/users/{user.Entity.Id}", new
-            {
-                name = "John Doe",
-                email = "another@email.com"
-            });
-
-            response.CheckForbidden();
-        }
-
-        [Fact]
-        public async Task Admin_Should_Be_Able_To_Update_User_Within_Own_Organization()
-        {
-            using var scope = _factory.Services.NewTestScope();
-            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
-            using var admin = await scope.CreateUserAsync(name: "Test Admin", role: Roles.Admin, organization: org.Entity);
-            using var user = await scope.CreateUserAsync(organization: org.Entity);
-
-            var client = _factory.CreateClient()
-                .AuthenticatedAs(admin.Entity, Roles.Admin);
 
             var response = await client.PutAsync($"/v3/users/{user.Entity.Id}", new
             {

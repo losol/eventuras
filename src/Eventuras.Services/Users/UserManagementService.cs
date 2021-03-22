@@ -3,10 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
-using Eventuras.Services.Auth;
 using Eventuras.Services.Exceptions;
-using Eventuras.Services.Organizations;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,24 +13,13 @@ namespace Eventuras.Services.Users
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
-        private readonly IOrganizationMemberManagementService _organizationMemberManagementService;
 
         public UserManagementService(
             ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager,
-            IHttpContextAccessor httpContextAccessor,
-            ICurrentOrganizationAccessorService currentOrganizationAccessorService,
-            IOrganizationMemberManagementService organizationMemberManagementService)
+            UserManager<ApplicationUser> userManager)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-            _currentOrganizationAccessorService = currentOrganizationAccessorService ??
-                throw new ArgumentNullException(nameof(currentOrganizationAccessorService));
-            _organizationMemberManagementService = organizationMemberManagementService ??
-                throw new ArgumentNullException(nameof(organizationMemberManagementService));
         }
 
         public async Task<ApplicationUser> CreateNewUserAsync(
@@ -75,17 +61,6 @@ namespace Eventuras.Services.Users
                 throw new DuplicateException($"User with email {email} already exists.");
             }
 
-            Organization org = null;
-            if (!_httpContextAccessor.HttpContext.User.IsPowerAdmin())
-            {
-                org = await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
-            }
-
-            if (org != null)
-            {
-                await _organizationMemberManagementService.AddToOrganizationAsync(user, org);
-            }
-
             return user;
         }
 
@@ -104,28 +79,14 @@ namespace Eventuras.Services.Users
                 throw new DuplicateException($"User with email {user.Email} already exists.");
             }
 
-            var userPrincipal = _httpContextAccessor.HttpContext.User;
-            if (userPrincipal.GetUserId() != user.Id)
+            try
             {
-                // other user is updating this user
-                if (!userPrincipal.IsAdmin())
-                {
-                    throw new NotAccessibleException("Only admins can update users");
-                }
-
-                if (!userPrincipal.IsPowerAdmin())
-                {
-                    var org = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync();
-                    if (!await _context.OrganizationMembers
-                        .AnyAsync(m => m.OrganizationId == org.OrganizationId && m.UserId == user.Id,
-                        cancellationToken))
-                    {
-                        throw new NotAccessibleException("User is not accessible for update");
-                    }
-                }
+                await _context.UpdateAsync(user);
             }
-
-            await _context.UpdateAsync(user);
+            catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
+            {
+                throw new DuplicateException($"User with email {user.Email} already exists.");
+            }
         }
     }
 }

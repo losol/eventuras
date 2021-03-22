@@ -65,12 +65,7 @@ namespace Eventuras.WebApi.Controllers.Users
                     {
                         Limit = query.Limit,
                         Offset = query.Offset,
-                        Filter = new UserFilter
-                        {
-                            AccessibleOnly = true
-                        },
-                        OrderBy = UserListOrder.Name,
-                        Descending = false
+                        OrderBy = UserListOrder.Name
                     },
                     UserRetrievalOptions.Default,
                     cancellationToken);
