@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -9,12 +12,23 @@ namespace Eventuras.WebApi.Auth
 {
     public static class JwtBearerConfiguration
     {
-        public static AuthenticationBuilder AddJwtBearerConfiguration(this AuthenticationBuilder builder, string issuer, string audience)
+        public static AuthenticationBuilder AddJwtBearerConfiguration(this AuthenticationBuilder builder, string issuer, string audience, string jwtSecret)
         {
             return builder.AddJwtBearer(options =>
             {
                 options.Authority = issuer;
-                options.Audience = audience;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+                    ValidAudiences = new List<string>
+                    {
+                        audience,
+                        issuer + "/userinfo"
+                    }
+                };
+
                 options.Events = new JwtBearerEvents()
                 {
                     OnChallenge = context =>

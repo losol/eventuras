@@ -4,6 +4,6 @@ namespace Eventuras.Services.DbInitializers
 {
     public interface IDbInitializer
     {
-        Task SeedAsync();
+        Task SeedAsync(bool createSuperAdmin = true);
     }
 }

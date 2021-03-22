@@ -58,5 +58,10 @@ namespace Eventuras.TestAbstractions
         {
             Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
         }
+
+        public static void CheckConflict(this HttpResponseMessage response)
+        {
+            Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        }
     }
 }

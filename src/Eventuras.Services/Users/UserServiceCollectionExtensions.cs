@@ -7,6 +7,7 @@ namespace Eventuras.Services.Users
         public static IServiceCollection AddUserServices(this IServiceCollection services)
         {
             services.AddTransient<IUserRetrievalService, UserRetrievalService>();
+            services.AddTransient<IUserManagementService, UserManagementService>();
             return services;
         }
     }

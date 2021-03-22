@@ -7,6 +7,14 @@ namespace Eventuras.WebApi.Tests
 {
     public static class JTokenExtensions
     {
+        public static void CheckUser(this JToken token, ApplicationUser user)
+        {
+            Assert.Equal(user.Id, token.Value<string>("id"));
+            Assert.Equal(user.Name, token.Value<string>("name"));
+            Assert.Equal(user.Email, token.Value<string>("email"));
+            Assert.Equal(user.PhoneNumber, token.Value<string>("phoneNumber"));
+        }
+
         public static void CheckRegistration(this JToken token, Registration registration)
         {
             Assert.Equal(registration.RegistrationId, token.Value<int>("registrationId"));
