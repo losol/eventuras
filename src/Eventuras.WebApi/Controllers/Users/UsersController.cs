@@ -31,11 +31,16 @@ namespace Eventuras.WebApi.Controllers.Users
 
         // GET: /v3/users/me
         [HttpGet("me")]
-        public async Task<UserDto> Me(CancellationToken cancellationToken)
+        public async Task<IActionResult> Me(CancellationToken cancellationToken)
         {
-            var userId = HttpContext.User.GetUserId();
-            var user = await _userRetrievalService.GetUserByIdAsync(userId, cancellationToken);
-            return new UserDto(user);
+            var userEmail = HttpContext.User.GetEmail();
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return BadRequest("No email provided.");
+            }
+            var user = await _userRetrievalService.GetUserByEmailAsync(userEmail, cancellationToken);
+
+            return Ok(new UserDto(user));
         }
 
         // GET: /v3/users/{id}

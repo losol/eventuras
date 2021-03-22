@@ -8,8 +8,8 @@ const nextOptions = {
       clientId: process.env.AUTH0_CLIENT_ID,
       clientSecret: process.env.AUTH0_CLIENT_SECRET,
       domain: process.env.AUTH0_DOMAIN,
-      audience: 'https://eventuras/api',
-      scope: 'openid profile email user',
+      audience: process.env.AUTH0_API_AUDIENCE,
+      scope: 'openid profile email',
       protection: 'pkce',
       idToken: true,
       authorizationUrl: `https://${

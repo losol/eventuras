@@ -7,9 +7,13 @@ namespace Eventuras.Services.Users
     public interface IUserRetrievalService
     {
         /// <exception cref="Exceptions.NotFoundException">User not found.</exception>
-        /// <exception cref="Exceptions.NotAccessibleException">User not accessible in the context of the current org.</exception>
         Task<ApplicationUser> GetUserByIdAsync(
             string userId,
+            CancellationToken cancellationToken = default);
+
+        /// <exception cref="Exceptions.NotFoundException">User not found.</exception>
+        Task<ApplicationUser> GetUserByEmailAsync(
+            string email,
             CancellationToken cancellationToken = default);
 
         Task<Paging<ApplicationUser>> ListUsers(

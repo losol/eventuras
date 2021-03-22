@@ -45,12 +45,29 @@ namespace Eventuras.Services.Users
                 throw new NotFoundException($"User {userId} not found.");
             }
 
-            // TODO: check org access
+            return user;
+        }
+
+        public async Task<ApplicationUser> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                throw new ArgumentException("User email argument must not be empty", nameof(email));
+            }
+
+            var user = await _context.ApplicationUsers
+                .AsNoTracking()
+                .SingleOrDefaultAsync(u => u.NormalizedEmail == email.ToUpper(), cancellationToken: cancellationToken);
+
+            if (user == null)
+            {
+                throw new NotFoundException($"User with email {email} not found.");
+            }
 
             return user;
         }
 
-        public async Task<Paging<ApplicationUser>> ListUsers(
+        public async Task<Paging<ApplicationUser>>   ListUsers(
             UserListRequest request,
             UserRetrievalOptions options,
             CancellationToken cancellationToken)
