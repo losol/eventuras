@@ -28,10 +28,10 @@ namespace Eventuras.Services.DbInitializers
             _userManager = userManager;
         }
 
-        public virtual async Task SeedAsync()
+        public virtual async Task SeedAsync(bool createSuperUser)
         {
             // Add administrator role if it does not exist
-            string[] roleNames = { Roles.Admin, Roles.SuperAdmin };
+            string[] roleNames = { Roles.Admin, Roles.SuperAdmin, Roles.SystemAdmin };
             IdentityResult roleResult;
             foreach (var roleName in roleNames)
             {
@@ -42,30 +42,33 @@ namespace Eventuras.Services.DbInitializers
                 }
             }
 
-            // Add super-admin if none exists
-            if (!_userManager.GetUsersInRoleAsync(Roles.SuperAdmin).Result.Any())
+            if (createSuperUser)
             {
-                _ = _config?.SuperAdmin?.Email ?? throw new ArgumentException("SuperAdmin email not set. Please check install documentation");
-                _ = _config?.SuperAdmin?.Password ?? throw new ArgumentException("SuperAdmin password not set. Please check install documentation");
-
-                var user = await _userManager.FindByEmailAsync(_config.SuperAdmin.Email);
-
-                if (user == null)
+                // Add super-admin if none exists
+                if (!_userManager.GetUsersInRoleAsync(Roles.SuperAdmin).Result.Any())
                 {
-                    var superadmin = new ApplicationUser
-                    {
-                        UserName = _config.SuperAdmin.Email,
-                        Email = _config.SuperAdmin.Email,
-                        EmailConfirmed = true
-                    };
-                    string UserPassword = _config.SuperAdmin.Password;
-                    var createSuperAdmin = await _userManager.CreateAsync(superadmin, UserPassword);
-                    if (createSuperAdmin.Succeeded)
-                    {
-                        await _userManager.AddToRoleAsync(superadmin, Roles.SuperAdmin);
-                    }
-                }
+                    _ = _config?.SuperAdmin?.Email ?? throw new ArgumentException("SuperAdmin email not set. Please check install documentation");
+                    _ = _config?.SuperAdmin?.Password ?? throw new ArgumentException("SuperAdmin password not set. Please check install documentation");
 
+                    var user = await _userManager.FindByEmailAsync(_config.SuperAdmin.Email);
+
+                    if (user == null)
+                    {
+                        var superadmin = new ApplicationUser
+                        {
+                            UserName = _config.SuperAdmin.Email,
+                            Email = _config.SuperAdmin.Email,
+                            EmailConfirmed = true
+                        };
+                        string UserPassword = _config.SuperAdmin.Password;
+                        var createSuperAdmin = await _userManager.CreateAsync(superadmin, UserPassword);
+                        if (createSuperAdmin.Succeeded)
+                        {
+                            await _userManager.AddToRoleAsync(superadmin, Roles.SuperAdmin);
+                        }
+                    }
+
+                }
             }
 
             // Seed the payment methods if none exist

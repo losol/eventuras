@@ -21,7 +21,7 @@ namespace Eventuras.Web.Controllers.Api.V0
         [HttpGet("")]
         public async Task<IActionResult> GetUsers()
         {
-            var users = (await _userRetrievalService.ListUsers())
+            var users = (await _userRetrievalService.ListUsersAsync())
                                  .Select(u => new { u.Id, u.Name, u.Email, Phone = u.PhoneNumber })
                                  .ToList();
             return Ok(users);

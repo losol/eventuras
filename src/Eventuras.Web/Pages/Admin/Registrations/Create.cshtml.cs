@@ -36,7 +36,7 @@ namespace Eventuras.Pages.Admin.Registrations
         {
             ViewData["EventInfoId"] = new SelectList(await _eventInfoRetrievalService.ListEventsAsync(), "EventInfoId", "Code");
             ViewData["PaymentMethod"] = new SelectList(await _paymentMethods.GetActivePaymentMethodsAsync(), "Provider", "Name");
-            ViewData["UserId"] = new SelectList(await _userListingService.ListUsers(), "Id", "Id");
+            ViewData["UserId"] = new SelectList(await _userListingService.ListUsersAsync(), "Id", "Id");
             return Page();
         }
 

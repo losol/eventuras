@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
@@ -13,8 +12,8 @@ namespace Eventuras.Services.Users
             string userId,
             CancellationToken cancellationToken = default);
 
-        Task<List<ApplicationUser>> ListUsers(
-            UserFilter filter = null,
+        Task<Paging<ApplicationUser>> ListUsers(
+            UserListRequest request,
             UserRetrievalOptions options = null,
             CancellationToken cancellationToken = default);
     }
@@ -26,5 +25,10 @@ namespace Eventuras.Services.Users
         /// in user via org membership.
         /// </summary>
         public bool AccessibleOnly { get; set; }
+
+        /// <summary>
+        /// Whether to select archived users, too.
+        /// </summary>
+        public bool InlcudeArchived { get; set; }
     }
 }
