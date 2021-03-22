@@ -1,4 +1,4 @@
-.container {
+/* .container {
   min-height: 100vh;
   padding: 0 0.5rem;
   display: flex;
@@ -33,7 +33,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
+} */
 
 .title a {
   color: #0070f3;

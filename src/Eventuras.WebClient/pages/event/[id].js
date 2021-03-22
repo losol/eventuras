@@ -1,7 +1,6 @@
 import { Container, Heading } from "@chakra-ui/react";
 import { Layout } from "../../components/common";
 import { useRouter } from "next/router";
-import useSWR from "swr";
 
 const EventInfo = (props) => {
   const { name = "...", description = "..." } = props;

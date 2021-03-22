@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Eventuras.WebApi.Controllers.Registrations
 {
     [ApiVersion("3")]
-    [Authorize("registrations:read")]
+    [Authorize]
     [Route("v{version:apiVersion}/registrations")]
     [ApiController]
     public class RegistrationsReadController : ControllerBase
