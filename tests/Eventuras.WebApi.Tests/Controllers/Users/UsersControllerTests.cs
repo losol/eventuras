@@ -258,12 +258,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
             });
 
             response.CheckConflict();
-
-            var newUser = await scope.Db.Users.SingleAsync(u => u.Email == "test@email.com" && !u.Archived);
-            Assert.NotEqual(newUser.Id, user.Entity.Id);
-
-            var json = await response.AsTokenAsync();
-            json.CheckUser(newUser);
         }
 
         [Theory]
