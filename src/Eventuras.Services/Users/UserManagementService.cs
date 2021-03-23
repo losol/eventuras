@@ -42,7 +42,15 @@ namespace Eventuras.Services.Users
 
             if (finduser != null)
             {
-                throw new DuplicateException($"User with email {email} already exists.");
+                if (finduser.Archived)
+                {
+                    throw new DuplicateException($"An archived user with email {email} already exists. Contact admin to unarchive the user.");
+                }
+                else
+                {
+                    throw new DuplicateException($"An user with email {email} already exists.");
+                }
+
             }
 
 

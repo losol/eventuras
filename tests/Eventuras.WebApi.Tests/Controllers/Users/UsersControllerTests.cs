@@ -243,7 +243,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
         }
 
         [Fact]
-        public async Task Create_New_User_Should_Not_Return_Conflict_If_Existing_Email_Is_Archived()
+        public async Task Create_New_User_Should_Return_Conflict_If_Existing_Email_Is_Archived()
         {
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync(email: "test@email.com", archived: true);
@@ -257,7 +257,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
                 email = "test@email.com"
             });
 
-            response.CheckOk();
+            response.CheckConflict();
 
             var newUser = await scope.Db.Users.SingleAsync(u => u.Email == "test@email.com" && !u.Archived);
             Assert.NotEqual(newUser.Id, user.Entity.Id);
