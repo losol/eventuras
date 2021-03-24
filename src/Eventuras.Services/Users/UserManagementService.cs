@@ -30,36 +30,50 @@ namespace Eventuras.Services.Users
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentException("user name must not be emmpty", nameof(name));
+                throw new ArgumentException("User should have a name.", nameof(name));
             }
 
             if (string.IsNullOrEmpty(email))
             {
-                throw new ArgumentException("email must not be emmpty", nameof(email));
+                throw new ArgumentException("User should have an email.", nameof(email));
             }
 
-            var normalizedEmail = _userManager.NormalizeEmail(email);
-            if (await _context.Users.AnyAsync(u => !u.Archived && u.NormalizedEmail == normalizedEmail,
-                cancellationToken))
+            var finduser = await _userManager.FindByEmailAsync(email);
+
+            if (finduser != null)
             {
-                throw new DuplicateException($"User with email {email} already exists.");
+                if (finduser.Archived)
+                {
+                    throw new DuplicateException($"An archived user with email {email} already exists. Contact admin to unarchive the user.");
+                }
+                else
+                {
+                    throw new DuplicateException($"An user with email {email} already exists.");
+                }
+
             }
 
-            var user = new ApplicationUser
+
+            var user = new ApplicationUser()
             {
+                UserName = email,
                 Name = name,
                 Email = email,
                 PhoneNumber = phoneNumber
             };
 
-            try
+
+            var create = await _userManager.CreateAsync(user);
+            if (!create.Succeeded)
             {
-                await _context.CreateAsync(user, cancellationToken);
+                var errormessage = "";
+                foreach (var error in create.Errors)
+                {
+                    errormessage += $"CODE: {error.Code}. DESCRIPTION: {error.Description}";
+                }
+                throw new Exception($"Trouble with creating user with email {email}. Error: {errormessage}");
             }
-            catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
-            {
-                throw new DuplicateException($"User with email {email} already exists.");
-            }
+
 
             return user;
         }
