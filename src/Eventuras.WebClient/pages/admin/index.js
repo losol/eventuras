@@ -1,8 +1,8 @@
 import { Container, Heading } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
-import { signIn, useSession } from 'next-auth/client';
 
 import { Layout } from '../../components/common';
+import { useSession } from 'next-auth/client';
 
 function AdminIndex() {
   let registrations;
