@@ -17,15 +17,14 @@ async function fetcher(route) {
   return data;
 }
 
-const getEventurasData = async () => {
-  const data = await fetcher('/v3/registrations');
-  return data;
+const getUsers = async () => {
+  const data = await fetcher('/v3/users');
+  return data.data;
 };
 
 export default async (req, res) => {
   const token = await getToken({ req, secret });
   accessToken = token.accessToken;
-  const data = getEventurasData();
-
+  const data = await getUsers();
   res.status(200).json(data);
 };

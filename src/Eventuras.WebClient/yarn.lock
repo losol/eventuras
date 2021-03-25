@@ -3477,9 +3477,9 @@ supports-color@^7.0.0, supports-color@^7.1.0:
   dependencies:
     has-flag "^4.0.0"
 
-swr@0.5.4:
+swr@^0.5.4:
   version "0.5.4"
-  resolved "https://registry.npmjs.org/swr/-/swr-0.5.4.tgz"
+  resolved "https://registry.yarnpkg.com/swr/-/swr-0.5.4.tgz#9516af6ffd84ba2c23a804ff771be2eb83ba8d46"
   integrity sha512-TUSxxuC8uP/4JKV22ml91WQ0tbif+9HVhm683xm8KYfwZIW5ogwcnU634dg3x6N7azpIDIOLokoIi+z5vCz/yA==
 
 tapable@^2.1.1, tapable@^2.2.0:
