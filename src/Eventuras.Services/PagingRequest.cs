@@ -15,6 +15,35 @@ namespace Eventuras.Services
         private int _offset;
         private int _limit = MaxRecordsPerPage;
 
+        public PagingRequest()
+        {
+        }
+
+        public PagingRequest(int offset, int limit)
+        {
+            if (offset < 0)
+            {
+                throw new ArgumentException("negative offset", nameof(offset));
+            }
+
+            if (limit < 0)
+            {
+                throw new ArgumentException("negative limit", nameof(offset));
+            }
+
+            Offset = offset;
+            Limit = limit;
+        }
+
+        public PagingRequest(PagingRequest request)
+        {
+            if (request == null)
+            {
+                return;
+            }
+            Offset = request.Offset;
+            Limit = request.Limit;
+        }
 
         public int Offset
         {

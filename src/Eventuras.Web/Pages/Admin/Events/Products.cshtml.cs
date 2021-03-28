@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
-using Eventuras.Services;
 using Eventuras.Services.Events;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,13 +15,16 @@ namespace Eventuras.Pages.Admin.Events
         public EventInfo EventInfo { get; set; }
         private readonly IEventInfoRetrievalService _eventsService;
         private readonly IEventManagementService _eventManagementService;
+        private readonly IEventProductsManagementService _eventProductsManagementService;
 
         public EventProductsModel(
             IEventInfoRetrievalService eventsService,
-            IEventManagementService eventManagementService)
+            IEventManagementService eventManagementService,
+            IEventProductsManagementService eventProductsManagementService)
         {
             _eventsService = eventsService;
             _eventManagementService = eventManagementService;
+            _eventProductsManagementService = eventProductsManagementService;
         }
 
         public async Task<IActionResult> OnGet(int id)
@@ -54,7 +56,7 @@ namespace Eventuras.Pages.Admin.Events
                 }
             }
 
-            await _eventManagementService.UpdateEventProductsAsync(Vm.EventInfoId, Vm.Products);
+            await _eventProductsManagementService.UpdateEventProductsAsync(Vm.EventInfoId, Vm.Products);
             return RedirectToPage("./Details", new { id = Vm.EventInfoId });
         }
     }

@@ -132,7 +132,8 @@ namespace Eventuras.TestAbstractions
             Organization organization = null,
             int? organizationId = null,
             EventCollection collection = null,
-            EventCollection[] collections = null)
+            EventCollection[] collections = null,
+            bool archived = false)
         {
             if (title == TestingConstants.Placeholder)
             {
@@ -171,6 +172,7 @@ namespace Eventuras.TestAbstractions
                 City = city,
                 Status = status,
                 Products = products?.ToList(),
+                Archived = archived,
                 OrganizationId = organizationId ?? organization?.OrganizationId,
                 CollectionMappings = collections?.Select(c => new EventCollectionMapping
                 {

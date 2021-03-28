@@ -1,0 +1,82 @@
+get:
+  summary: List events.
+  operationId: getEvents
+  tags:
+    - events
+  parameters:
+    - $ref: 'eventuras-api.v3.yaml#/components/parameters/pageNumber'
+    - $ref: 'eventuras-api.v3.yaml#/components/parameters/pageSize'
+    - name: type
+      description: Event type.
+      in: query
+      required: false
+      schema:
+        $ref: '../schemas/events/EventType.yaml'
+    - name: start
+      description: Event start date (inclusive).
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+    - name: end
+      description: Event end date (inclusive).
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+    - name: period
+      description: |
+        Event period matching kind.
+        Applies to `start` and `end` filter params.
+        Use `match` (default) for exact match, `intersect` for partial event dates intersection, and `contain` for the whole event period inclusion check.
+      in: query
+      required: false
+      schema:
+        type: string
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '../schemas/events/EventsPagedList.yaml'
+    '400':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/InvalidRequestError'
+    '401':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/UnauthorizedError'
+    '500':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/InternalServerError'
+
+post:
+  summary: Create new event.
+  description: Available for admins only.
+  operationId: createNewEvent
+  tags:
+    - events
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../schemas/events/EventFormDto.yaml'
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/events/EventDto.yaml'
+    '400':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/InvalidRequestError'
+    '401':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/UnauthorizedError'
+    '403':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/ForbiddenError'
+    '409':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/Conflict'
+    '500':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/InternalServerError'
