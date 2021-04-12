@@ -1335,7 +1335,7 @@ components:
         practicalInformation: Some info
         onDemand: true
         location:
-        - name: Some demo locaiton
+          name: Some demo locaiton
           address:
             addressLocality: Oslo
         startDate: 2021-01-01
