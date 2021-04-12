@@ -500,6 +500,268 @@ paths:
       summary: Update user profile.
       tags:
       - users
+  /events:
+    get:
+      operationId: getEvents
+      parameters:
+      - description: Page number.
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          format: int32
+          type: integer
+      - description: Page size.
+        in: query
+        name: count
+        required: false
+        schema:
+          default: 100
+          format: int32
+          type: integer
+      - description: Event type.
+        in: query
+        name: type
+        required: false
+        schema:
+          $ref: '#/components/schemas/EventType'
+      - description: Event start date (inclusive).
+        in: query
+        name: start
+        required: false
+        schema:
+          format: date
+          type: string
+      - description: Event end date (inclusive).
+        in: query
+        name: end
+        required: false
+        schema:
+          format: date
+          type: string
+      - description: |
+          Event period matching kind.
+          Applies to `start` and `end` filter params.
+          Use `match` (default) for exact match, `intersect` for partial event dates intersection, and `contain` for the whole event period inclusion check.
+        in: query
+        name: period
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/EventsPagedList'
+                type: array
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Missing or invalid request parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: List events.
+      tags:
+      - events
+    post:
+      description: Available for admins only.
+      operationId: createNewEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventFormDto'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventDto'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Missing or invalid request parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Data conflict.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Create new event.
+      tags:
+      - events
+  /events/{id}:
+    delete:
+      operationId: deleteEvent
+      parameters:
+      - description: Event ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          description: Event deleted.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Delete event.
+      tags:
+      - events
+    get:
+      operationId: getEventById
+      parameters:
+      - description: Event ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventDto'
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Get event by id.
+      tags:
+      - events
+    put:
+      operationId: updateEvent
+      parameters:
+      - description: Event ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventFormDto'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventDto'
+          description: Event updated.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Data conflict.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Update event.
+      tags:
+      - events
 components:
   parameters:
     pageNumber:
@@ -549,6 +811,12 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: Access forbidden.
+    Conflict:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Data conflict.
     InternalServerError:
       content:
         application/json:
@@ -945,6 +1213,181 @@ components:
       - name
       title: Update user form.
       type: object
+    EventType:
+      description: |
+        Course = 0,
+        Conference = 1,
+        OnlineCourse = 2,
+        Social = 3,
+        Other = 9
+      title: Event type enum.
+      type: integer
+    EventsPagedList:
+      example:
+        page: 1
+        size: 10
+        total: 2
+        pages: 1
+        data:
+        - id: 10001
+          slug: evt1
+          name: 'Demo Event #1'
+        - id: 10002
+          slug: evt2
+          name: 'Demo Event #2'
+      properties:
+        page:
+          description: Page number.
+          format: int32
+          type: integer
+        count:
+          description: Page size.
+          format: int32
+          type: integer
+        total:
+          description: Total items.
+          format: int32
+          type: integer
+        pages:
+          description: Total pages.
+          format: int32
+          type: integer
+        data:
+          items:
+            $ref: '#/components/schemas/EventDto'
+          type: array
+      required:
+      - count
+      - data
+      - page
+      - pages
+      - total
+      title: Event list with paging.
+      type: object
+    EventFormDto:
+      example:
+        type: 3
+        name: Demo event
+        slug: demo
+        category: Some category
+        description: Some demo event
+        featured: false
+        program: Some program
+        practicalInformation: Some info
+        onDemand: true
+        location:
+        - name: Some demo locaiton
+          address:
+            addressLocality: Oslo
+        startDate: 2021-01-01
+        endDate: 2021-01-10
+        manageRegistrations: true
+      properties:
+        type:
+          description: |
+            Course = 0,
+            Conference = 1,
+            OnlineCourse = 2,
+            Social = 3,
+            Other = 9
+          title: Event type enum.
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        category:
+          type: string
+        description:
+          type: string
+        featured:
+          type: boolean
+        program:
+          type: string
+        practicalInformation:
+          type: string
+        onDemand:
+          type: boolean
+        location:
+          $ref: '#/components/schemas/LocationDto'
+        startDate:
+          format: date
+          type: string
+        endDate:
+          format: date
+          type: string
+        manageRegistrations:
+          type: boolean
+      required:
+      - slug
+      title: Event form data.
+      type: object
+    EventDto:
+      example:
+        id: 10001
+        type: 3
+        name: Demo event
+        slug: demo
+        category: Some category
+        description: Some demo event
+        featured: false
+        program: Some program
+        practicalInformation: Some info
+        onDemand: true
+        location:
+        - name: Some demo locaiton
+          address:
+            addressLocality: Oslo
+        startDate: 2021-01-01
+        endDate: 2021-01-10
+        lastRegistrationDate: 2020-11-12
+      properties:
+        id:
+          description: Event ID.
+          format: int32
+          type: integer
+        type:
+          description: |
+            Course = 0,
+            Conference = 1,
+            OnlineCourse = 2,
+            Social = 3,
+            Other = 9
+          title: Event type enum.
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        category:
+          type: string
+        description:
+          type: string
+        featured:
+          type: boolean
+        program:
+          type: string
+        practicalInformation:
+          type: string
+        onDemand:
+          type: boolean
+        location:
+          $ref: '#/components/schemas/LocationDto'
+        startDate:
+          format: date
+          type: string
+        endDate:
+          format: date
+          type: string
+        lastRegistrationDate:
+          format: date
+          type: string
+      required:
+      - id
+      - slug
+      - type
+      title: Event information.
+      type: object
     RegistrationStatus:
       description: |
         Draft = 0,
@@ -1060,6 +1503,16 @@ components:
           type: array
       title: Notification recipients filter
       type: object
+    LocationDto:
+      properties:
+        name:
+          type: string
+        address:
+          $ref: '#/components/schemas/AddressDto'
+      required:
+      - name
+      title: Location info.
+      type: object
     ProductDto:
       example:
         productId: 1001
@@ -1119,6 +1572,20 @@ components:
       - price
       - productVariantId
       title: Product variant data.
+      type: object
+    AddressDto:
+      properties:
+        streetAddress:
+          type: string
+        addressLocality:
+          type: string
+        postalCode:
+          type: string
+        addressRegion:
+          type: string
+        addressCountry:
+          type: string
+      title: Address info.
       type: object
     New_registration_specific_properties:
       properties:
