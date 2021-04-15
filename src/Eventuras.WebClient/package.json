@@ -14,6 +14,7 @@
     "@emotion/react": "11.1.5",
     "@emotion/styled": "11.1.5",
     "@losol/ckeditor5-build-markdown": "^26.0.0",
+    "axios": "^0.21.1",
     "framer-motion": "4.0.3",
     "next": "10.0.9",
     "next-auth": "3.13.3",
