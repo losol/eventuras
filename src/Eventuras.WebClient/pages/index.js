@@ -1,5 +1,5 @@
-import {Box, Heading, SimpleGrid} from '@chakra-ui/react';
-import {Layout, Loading} from '../components/common';
+import { Box, Heading, SimpleGrid } from '@chakra-ui/react';
+import { Layout, Loading } from '../components/common';
 
 import EventCard from '../components/event/EventCard/EventCard';
 import Head from 'next/head';

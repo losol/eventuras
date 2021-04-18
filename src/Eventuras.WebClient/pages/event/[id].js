@@ -1,18 +1,18 @@
-import {Container, Heading, Button, useDisclosure} from '@chakra-ui/react';
+import { Container, Heading, Button, useDisclosure } from '@chakra-ui/react';
 
-import {Layout} from '../../components/common';
-import React, {useContext, useEffect, useState} from "react";
-import {UserContext} from "../../context/UserContext";
-import {useSession, signIn} from "next-auth/client";
+import { Layout } from '../../components/common';
+import React, { useContext, useEffect, useState } from "react";
+import { UserContext } from "../../context/UserContext";
+import { useSession, signIn } from "next-auth/client";
 import AlertModal from "../../components/common/Modals";
-import {usePrevious} from "../../hooks/usePrevious";
+import { usePrevious } from "../../hooks/usePrevious";
 
 const EventInfo = (props) => {
     const [session, loading] = useSession();
-    const {name = '...', description = '...'} = props;
-    const {user} = useContext(UserContext);
-    const [modal, setModal] = useState({title: '', text: ''})
-    const {isOpen, onOpen, onClose} = useDisclosure();
+    const { name = '...', description = '...' } = props;
+    const { user } = useContext(UserContext);
+    const [modal, setModal] = useState({ title: '', text: '' })
+    const { isOpen, onOpen, onClose } = useDisclosure();
     const prevUser = usePrevious(user);
     const handleRegistrationEventRequest = async () => {
       fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/registrations/',
