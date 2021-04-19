@@ -2,8 +2,8 @@ import { Button, Container, Heading, useDisclosure } from '@chakra-ui/react';
 import { signIn, useSession } from 'next-auth/client';
 import { useContext, useEffect, useState } from 'react';
 
-import { Layout } from '../../components/common';
 import AlertModal from '../../components/common/Modals';
+import { Layout } from '../../components/common';
 import { UserContext } from '../../context/UserContext';
 import { usePrevious } from '../../hooks/usePrevious';
 
@@ -18,10 +18,11 @@ const EventInfo = (props) => {
     fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/registrations/', {
       method: 'POST',
       body: JSON.stringify({
-        UserId: user.id,
-        EventId: props.id,
+        userId: user.id,
+        eventId: props.id,
       }),
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${JSON.parse(
           JSON.stringify(session.accessToken)
         )}`,
