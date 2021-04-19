@@ -3,7 +3,7 @@ import { Provider as NextAuthProvider } from "next-auth/client";
 import theme from "../theme/index";
 import { UserProvider } from "../context/UserContext";
 
-function App({Component, pageProps}) {
+function App({ Component, pageProps }) {
   return (
 
     <NextAuthProvider session={pageProps.session}>

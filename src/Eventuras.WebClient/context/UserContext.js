@@ -3,12 +3,12 @@ import useSWR from "swr";
 import { useSession } from "next-auth/client";
 
 export const UserContext = createContext({});
-export const UserProvider = ({children}) => {
+export const UserProvider = ({ children }) => {
   const [user, setUser] = useState({});
   const [session] = useSession()
   const { data: userDetails } = useSWR(session ? '/api/getUser' : '')
-  const updateUser = (user) => {
-    setUser(user);
+  const updateUser = (updated_user) => {
+    setUser(updated_user);
   };
   useEffect(() => {
     setUser(userDetails)

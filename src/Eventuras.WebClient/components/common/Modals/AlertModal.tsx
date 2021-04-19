@@ -1,13 +1,15 @@
-import { Text, Button } from "@chakra-ui/react";
 import {
+  Text,
+  Button,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalFooter,
   ModalBody,
-  ModalCloseButton,
-} from "@chakra-ui/react"
+  ModalCloseButton
+} from "@chakra-ui/react";
+
 export interface ModalProps {
   isOpen: false;
   onClose: () => void;

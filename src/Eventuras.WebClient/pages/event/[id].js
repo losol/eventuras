@@ -1,7 +1,7 @@
 import { Container, Heading, Button, useDisclosure } from '@chakra-ui/react';
 
 import { Layout } from '../../components/common';
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/UserContext";
 import { useSession, signIn } from "next-auth/client";
 import AlertModal from "../../components/common/Modals";
@@ -93,7 +93,7 @@ const EventInfo = (props) => {
   }
 ;
 
-export async function getStaticProps({params}) {
+export async function getStaticProps({ params }) {
   const res = await fetch(
     process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/events/' + params.id
   );
