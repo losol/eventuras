@@ -1,10 +1,7 @@
-import { Container, Heading } from '@chakra-ui/react';
+import { Container, Heading, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { Layout, Link } from '@components/common';
-import { Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
-
-import React from 'react';
-import useSWR from 'swr';
 import { useSession } from 'next-auth/client';
+import useSWR from 'swr';
 
 function AdminUsersIndex() {
   const { data: users } = useSWR('/api/getUsers');
