@@ -82,6 +82,84 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                 .SendEmailAsync(It.IsAny<EmailModel>()), Times.Never);
         }
 
+        [Fact(Skip = "Await new membership model")]
+        public async Task Should_Not_Send_Notifications_To_Inaccessible_Events()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var otherUser = await scope.CreateUserAsync();
+            using var admin = await scope.CreateUserAsync();
+            using var otherAdmin = await scope.CreateUserAsync();
+            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var otherOrg = await scope.CreateOrganizationAsync();
+
+            await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
+            await scope.CreateOrganizationMemberAsync(otherAdmin.Entity, otherOrg.Entity, role: Roles.Admin);
+
+            using var e1 = await scope.CreateEventAsync(organization: org.Entity);
+            using var e2 = await scope.CreateEventAsync(organization: otherOrg.Entity);
+            using var r1 = await scope.CreateRegistrationAsync(e1.Entity, user.Entity);
+            using var r2 = await scope.CreateRegistrationAsync(e1.Entity, otherUser.Entity);
+            using var r3 = await scope.CreateRegistrationAsync(e2.Entity, otherUser.Entity);
+
+            // Check 1. admin should not send to any user of the otherOrg
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAs(admin.Entity, Roles.Admin);
+
+            var response = await client.PostAsync("/v3/notifications/email", new
+            {
+                subject = "Test 1",
+                bodyMarkdown = "Test email 1",
+                eventParticipants = new
+                {
+                    eventId = e2.Entity.EventInfoId // should not send to the registrants of this event
+                }
+            });
+            response.CheckOk();
+
+            _factory.EmailSenderMock.Verify(s => s
+                .SendEmailAsync(It.IsAny<EmailModel>()), Times.Never);
+
+            // Check 2. admin should send to all users of the org
+
+            _factory.EmailSenderMock.Reset();
+
+            response = await client.PostAsync("/v3/notifications/email", new
+            {
+                subject = "Test 2",
+                bodyMarkdown = "Test email 2",
+                eventParticipants = new
+                {
+                    eventId = e1.Entity.EventInfoId
+                }
+            });
+            response.CheckOk();
+
+            CheckEmailSentTo("Test 2", "Test email 2",
+                user.Entity, otherUser.Entity); // should send to both users
+
+            // Check 3. otherAdmin should not send to any user since the current org is different.
+
+            client.AuthenticatedAs(otherAdmin.Entity, Roles.Admin);
+
+            _factory.EmailSenderMock.Reset();
+
+            response = await client.PostAsync("/v3/notifications/email", new
+            {
+                subject = "Test 3",
+                bodyMarkdown = "Test email 3",
+                eventParticipants = new
+                {
+                    eventId = e2.Entity.EventInfoId
+                }
+            });
+            response.CheckOk();
+
+            _factory.EmailSenderMock.Verify(s => s
+                .SendEmailAsync(It.IsAny<EmailModel>()), Times.Never);
+        }
+
         /// <summary>
         /// 100 is a page size, need to ensure it sends out messages to more than 1 page of users.
         /// </summary>
