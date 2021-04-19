@@ -17,7 +17,7 @@ export interface ModalProps {
   text?: string;
 
 }
-const AlertModal: React.FC<ModalProps> = ({ isOpen = false, onClose = () => {}, title = '', text = ''}) => {
+const AlertModal: React.FC<ModalProps> = ({ isOpen = false, onClose, title = '', text = ''}) => {
 
   return (
     <>
