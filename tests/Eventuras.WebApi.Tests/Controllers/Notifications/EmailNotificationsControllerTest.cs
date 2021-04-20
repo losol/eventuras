@@ -71,7 +71,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             {
                 subject = "Test",
                 bodyMarkdown = "Test email",
-                filter = new
+                eventParticipants = new
                 {
                     eventId = 10001
                 }
@@ -82,7 +82,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                 .SendEmailAsync(It.IsAny<EmailModel>()), Times.Never);
         }
 
-        [Fact]
+        [Fact(Skip = "Await new membership model")]
         public async Task Should_Not_Send_Notifications_To_Inaccessible_Events()
         {
             using var scope = _factory.Services.NewTestScope();
@@ -111,7 +111,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             {
                 subject = "Test 1",
                 bodyMarkdown = "Test email 1",
-                filter = new
+                eventParticipants = new
                 {
                     eventId = e2.Entity.EventInfoId // should not send to the registrants of this event
                 }
@@ -129,7 +129,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             {
                 subject = "Test 2",
                 bodyMarkdown = "Test email 2",
-                filter = new
+                eventParticipants = new
                 {
                     eventId = e1.Entity.EventInfoId
                 }
@@ -149,7 +149,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             {
                 subject = "Test 3",
                 bodyMarkdown = "Test email 3",
-                filter = new
+                eventParticipants = new
                 {
                     eventId = e2.Entity.EventInfoId
                 }
@@ -188,7 +188,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     {
                         subject = "Test",
                         bodyMarkdown = "Test email",
-                        filter = new
+                        eventParticipants = new
                         {
                             eventId = e.Entity.EventInfoId
                         }
@@ -238,7 +238,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             {
                 subject = "Test 1",
                 bodyMarkdown = "Test email 1",
-                filter = new
+                eventParticipants = new
                 {
                     eventId = e1.Entity.EventInfoId
                 }
@@ -254,7 +254,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             {
                 subject = "Test 2",
                 bodyMarkdown = "Test email 2",
-                filter = new
+                eventParticipants = new
                 {
                     eventId = e2.Entity.EventInfoId
                 }
@@ -330,10 +330,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             {
                 subject = "Letter to verified users",
                 bodyMarkdown = "Letter to verified users body",
-                filter = new
+                eventParticipants = new
                 {
                     eventId = e.Entity.EventInfoId,
-                    registrationStatuses = new[] { Registration.RegistrationStatus.Verified }
+                    registrationStatuses = new[] { "Verified" },
+                    registrationTypes = new[] { "Participant", "Student", "Lecturer" }
                 }
             });
             response.CheckOk();
@@ -349,10 +350,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             {
                 subject = "Letter to draft users",
                 bodyMarkdown = "Letter to draft users body",
-                filter = new
+                eventParticipants = new
                 {
                     eventId = e.Entity.EventInfoId,
-                    registrationStatuses = new[] { Registration.RegistrationStatus.Draft }
+                    registrationStatuses = new[] { Registration.RegistrationStatus.Draft },
+                    registrationTypes = new[] { "Participant", "Student", "Lecturer" }
                 }
             });
             response.CheckOk();
@@ -368,7 +370,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             {
                 subject = "Letter to participants",
                 bodyMarkdown = "Letter to participants body",
-                filter = new
+                eventParticipants = new
                 {
                     eventId = e.Entity.EventInfoId,
                     registrationTypes = new[] { Registration.RegistrationType.Participant }
@@ -387,7 +389,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             {
                 subject = "Letter to verified lecturers",
                 bodyMarkdown = "Letter to verified lecturers body",
-                filter = new
+                eventParticipants = new
                 {
                     eventId = e.Entity.EventInfoId,
                     registrationStatuses = new[] { Registration.RegistrationStatus.Verified },
@@ -407,7 +409,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             {
                 subject = "Letter to everyone",
                 bodyMarkdown = "Letter to everyone body",
-                filter = new
+                eventParticipants = new
                 {
                     eventId = e.Entity.EventInfoId,
                     registrationStatuses = new[]
@@ -477,9 +479,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                 new object[] {new {subject = "Test", bodyMarkdown = "Test", recipients = new[] {""}}},
                 new object[] {new {subject = "Test", bodyMarkdown = "Test", recipients = new[] {"test"}}},
                 new object[] {new {subject = "Test", bodyMarkdown = "Test"}},
-                new object[] {new {subject = "Test", bodyMarkdown = "Test", filter = new { }}},
-                new object[] {new {subject = "Test", bodyMarkdown = "Test", filter = new { eventId = 0 }}},
-                new object[] {new {subject = "Test", bodyMarkdown = "Test", filter = new { eventId = -1 }}},
+                new object[] {new {subject = "Test", bodyMarkdown = "Test", eventParticipants = new { }}},
+                new object[] {new {subject = "Test", bodyMarkdown = "Test", eventParticipants = new { eventId = 0 }}},
+                new object[] {new {subject = "Test", bodyMarkdown = "Test", eventParticipants = new { eventId = -1 }}},
             };
         }
     }
