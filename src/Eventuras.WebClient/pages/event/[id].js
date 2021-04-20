@@ -2,8 +2,8 @@ import { Button, Container, Heading, useDisclosure } from '@chakra-ui/react';
 import { signIn, useSession } from 'next-auth/client';
 import { useContext, useEffect, useState } from 'react';
 
-import AlertModal from '../../components/common/Modals';
 import { Layout } from '../../components/common';
+import AlertModal from '../../components/common/Modals';
 import { UserContext } from '../../context/UserContext';
 import { usePrevious } from '../../hooks/usePrevious';
 

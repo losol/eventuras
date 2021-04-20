@@ -33,7 +33,7 @@ module.exports = {
     'react/prop-types': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     'simple-import-sort/imports': 'error',
-    quotes: [2, 'single', { avoidEscape: true }],
+    quotes: [2, 'single', { avoidEscape: true, allowTemplateLiterals: true }],
     'jsx-a11y/anchor-is-valid': [
       'error',
       {
