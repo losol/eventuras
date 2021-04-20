@@ -7,6 +7,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Eventuras.Services.Events;
 using Eventuras.Web;
+using System.Globalization;
 
 namespace Eventuras.Web.Controllers
 {
@@ -47,11 +48,12 @@ namespace Eventuras.Web.Controllers
             vm.Title = eventInfo.Title;
             vm.Description = eventInfo.CertificateDescription;
 
+            CultureInfo norwegianCulture = new CultureInfo("nb-NO");
             vm.EvidenceDescription = $"{eventInfo.Title} {eventInfo.City}";
             if (eventInfo.DateStart.HasValue)
-            { vm.EvidenceDescription += " - " + eventInfo.DateStart.Value.ToString("d"); };
+            { vm.EvidenceDescription += " - " + eventInfo.DateStart.Value.ToString("d", norwegianCulture); };
             if (eventInfo.DateEnd.HasValue)
-            { vm.EvidenceDescription += " - " + eventInfo.DateEnd.Value.ToString("d"); };
+            { vm.EvidenceDescription += " - " + eventInfo.DateEnd.Value.ToString("d", norwegianCulture); };
 
             vm.IssuedInCity = eventInfo.City;
 
