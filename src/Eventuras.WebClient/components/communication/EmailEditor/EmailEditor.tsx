@@ -6,8 +6,9 @@ import {
   Input,
   Stack,
 } from '@chakra-ui/react';
-import dynamic from 'next/dynamic';
 import { Dispatch, SetStateAction } from 'react';
+
+import dynamic from 'next/dynamic';
 
 const DynamicMarkdownEditor = dynamic(
   () => import('../MarkdownEditor/MarkdownEditor'),
@@ -28,9 +29,6 @@ const EmailEditor = (props: EmailEditorProps): JSX.Element => {
   return (
     <>
       <Stack spacing="24px" marginTop="16">
-        <Badge colorScheme="red" padding="2">
-          Not implemented
-        </Badge>
         <CheckboxGroup>
           {props.participantGroups &&
             props.participantGroups.map((group) => (
