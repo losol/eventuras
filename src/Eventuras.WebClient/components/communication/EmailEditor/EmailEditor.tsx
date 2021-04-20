@@ -5,23 +5,26 @@ import {
   Heading,
   Input,
   Stack,
-  Textarea,
-} from "@chakra-ui/react";
-import React, { useState } from "react";
+} from '@chakra-ui/react';
+import dynamic from 'next/dynamic';
+import { Dispatch, SetStateAction } from 'react';
 
-import { Header } from "../../common";
-import dynamic from "next/dynamic";
-
-const DynamicMarkdownEditor = dynamic(() => import("../MarkdownEditor/MarkdownEditor"), {
-  ssr: false,
-});
+const DynamicMarkdownEditor = dynamic(
+  () => import('../MarkdownEditor/MarkdownEditor'),
+  {
+    ssr: false,
+  }
+);
 
 interface EmailEditorProps {
   participantGroups: string[];
+  selectedRecipientGroups: string[];
+  handleParticipantGroupsChange: any;
+  setEmailBody: Dispatch<SetStateAction<string>>;
+  setSubject: Dispatch<SetStateAction<string>>;
 }
 
 const EmailEditor = (props: EmailEditorProps): JSX.Element => {
-  const [emailBody, setEmailBody] = useState("");
   return (
     <>
       <Stack spacing="24px" marginTop="16">
@@ -31,20 +34,36 @@ const EmailEditor = (props: EmailEditorProps): JSX.Element => {
         <CheckboxGroup>
           {props.participantGroups &&
             props.participantGroups.map((group) => (
-              <Checkbox name="{group}" id="{group}">
-                {group}
+              <Checkbox
+                name={group}
+                id={group}
+                isChecked={props.selectedRecipientGroups.includes(group)}
+                key={`participant_checkbox_${group}`}
+                onChange={(event) => props.handleParticipantGroupsChange(group)}
+              >
+                {group === 'Participant' || group === 'Lecturer'
+                  ? `${group}s`
+                  : group}
               </Checkbox>
             ))}
         </CheckboxGroup>
         <Heading as="h2" fontSize="xl">
           Subject
         </Heading>
-        <Input placeholder="Email subject" />
+        <Input
+          placeholder="Email subject"
+          onChange={(e) => {
+            console.log(e.target.value), props.setSubject(e.target.value);
+          }}
+        />
 
         <Heading as="h2" fontSize="xl">
           Content
         </Heading>
-        <DynamicMarkdownEditor data="" onChange={(v) => setEmailBody(v)} />
+        <DynamicMarkdownEditor
+          data=""
+          onChange={(v) => props.setEmailBody(v)}
+        />
       </Stack>
     </>
   );
