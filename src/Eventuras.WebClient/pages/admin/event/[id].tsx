@@ -5,8 +5,9 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-import { Layout } from '@components/common';
+
 import { EmailDrawer } from '@components/communication';
+import { Layout } from '@components/common';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/client';
 import { useState } from 'react';
@@ -28,7 +29,7 @@ const EventAdmin = (): JSX.Element => {
       method: 'POST',
       body: JSON.stringify({
         eventParticipants: {
-          eventId: parseInt(router.query.id),
+          eventId: router.query.id,
           registrationTypes: selectedParticipantGroups,
           registrationStatuses: ['Verified', 'Draft'],
         },

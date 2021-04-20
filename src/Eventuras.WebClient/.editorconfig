@@ -11,5 +11,5 @@ trim_trailing_whitespace = true
 max_line_length = 0
 trim_trailing_whitespace = false
 
-[*.js]
+[*.{js,jsx,ts,tsx}]
 quote_type = single
