@@ -11,6 +11,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Services;
 using Microsoft.Extensions.Logging;
+using static Eventuras.Domain.Registration;
+using System.Text.Json.Serialization;
 
 namespace Eventuras.WebApi.Controllers.Notifications
 {
@@ -50,35 +52,50 @@ namespace Eventuras.WebApi.Controllers.Notifications
                 BodyMarkdown = dto.BodyMarkdown
             };
 
-            if (dto.Recipients?.Any() != true && dto.Filter?.IsDefined != true)
+            if (dto.Recipients?.Any() != true && dto.EventParticipants?.IsDefined != true)
             {
-                return BadRequest("Either recipient list of registrant filter must be specified");
+                return BadRequest("Either recipient list of eventparticipant filter must be specified");
+            }
+
+            if (dto.Recipients?.Any() == true && dto.EventParticipants?.IsDefined == true)
+            {
+                return BadRequest("Please provider either of recipient list or eventparticipants.");
             }
 
             var recipients = dto.Recipients ?? Array.Empty<string>();
 
-            if (dto.Filter?.IsDefined == true)
+            if (dto.EventParticipants?.IsDefined == true)
             {
+                // Default status if not provided: Verified, attended and finished
+                dto.EventParticipants.RegistrationStatuses ??= new[] {
+                        RegistrationStatus.Verified,
+                        RegistrationStatus.Attended,
+                        RegistrationStatus.Finished
+                        };
+
+                // Default registration type is participants
+                dto.EventParticipants.RegistrationTypes ??= new[] {
+                        RegistrationType.Participant
+                        };
+
                 var reader = new PageReader<Registration>(async (offset, limit, token) =>
-                    await _registrationRetrievalService.ListRegistrationsAsync(
-                        new RegistrationListRequest
-                        {
-                            Limit = limit,
-                            Offset = offset,
-                            Filter = new RegistrationFilter
+                        await _registrationRetrievalService.ListRegistrationsAsync(
+                            new RegistrationListRequest
                             {
-                                EventInfoId = dto.Filter.EventId,
-                                AccessibleOnly = true,
-                                ActiveUsersOnly = true,
-                                HavingEmailConfirmedOnly = true,
-                                HavingStatuses = dto.Filter.RegistrationStatuses,
-                                HavingTypes = dto.Filter.RegistrationTypes
-                            }
-                        },
-                        new RegistrationRetrievalOptions
-                        {
-                            IncludeUser = true
-                        }, token));
+                                Limit = limit,
+                                Offset = offset,
+                                Filter = new RegistrationFilter
+                                {
+                                    EventInfoId = dto.EventParticipants.EventId,
+                                    ActiveUsersOnly = true,
+                                    HavingStatuses = dto.EventParticipants.RegistrationStatuses,
+                                    HavingTypes = dto.EventParticipants.RegistrationTypes
+                                }
+                            },
+                            new RegistrationRetrievalOptions
+                            {
+                                IncludeUser = true
+                            }, token));
 
                 var recipientList = new List<string>();
 
@@ -115,6 +132,11 @@ namespace Eventuras.WebApi.Controllers.Notifications
 
     public class EmailNotificationDto
     {
+        [EmailRecipientList]
+        public string[] Recipients { get; set; }
+
+        public EventParticipantsDto EventParticipants { get; set; }
+
         [Required]
         [MinLength(3)]
         public string Subject { get; set; }
@@ -123,13 +145,10 @@ namespace Eventuras.WebApi.Controllers.Notifications
         [MinLength(10)]
         public string BodyMarkdown { get; set; }
 
-        [EmailRecipientList]
-        public string[] Recipients { get; set; }
 
-        public NotificationRecipientsFilterDto Filter { get; set; }
     }
 
-    public class NotificationRecipientsFilterDto
+    public class EventParticipantsDto
     {
         [Range(1, int.MaxValue)]
         public int? EventId { get; set; }
@@ -138,9 +157,7 @@ namespace Eventuras.WebApi.Controllers.Notifications
 
         public Registration.RegistrationType[] RegistrationTypes { get; set; }
 
-        public bool IsDefined => EventId.HasValue ||
-                             RegistrationStatuses?.Any() == true ||
-                             RegistrationTypes?.Any() == true;
+        public bool IsDefined => EventId.HasValue;
     }
 
     public class NotificationResponseDto

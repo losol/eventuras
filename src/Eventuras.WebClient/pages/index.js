@@ -1,9 +1,8 @@
 import { Box, Heading, SimpleGrid } from '@chakra-ui/react';
-import { Layout, Loading } from '../components/common';
-
-import EventCard from '../components/event/EventCard/EventCard';
-import { GetStaticProps } from 'next';
 import Head from 'next/head';
+
+import { Layout, Loading } from '../components/common';
+import EventCard from '../components/event/EventCard/EventCard';
 
 export default function Index(props) {
   return (

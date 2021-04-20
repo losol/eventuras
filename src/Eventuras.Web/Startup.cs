@@ -23,7 +23,6 @@ namespace Eventuras
     {
         private static readonly string[] SupportedCultures = new[]
         {
-            "en-US",
             "nb-NO"
         };
 
@@ -80,6 +79,7 @@ namespace Eventuras
             services.AddInvoicingServices(AppSettings, Configuration);
             services.AddApplicationServices(Configuration);
             services.AddAntiforgery();
+            services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddApiVersioning(o =>
             {
@@ -105,7 +105,7 @@ namespace Eventuras
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                app.UseMigrationsEndPoint();
             }
             else
             {

@@ -1,8 +1,7 @@
 import { Container, Heading } from '@chakra-ui/react';
+import { useSession } from 'next-auth/client';
 
 import { Layout } from '../../components/common';
-import React from 'react';
-import { useSession } from 'next-auth/client';
 
 function UserIndex() {
   const [session, loading] = useSession();

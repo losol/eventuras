@@ -4,31 +4,39 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export",
-    "start": "next start"
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint --fix --ext .js,.jsx ."
   },
   "dependencies": {
-    "@chakra-ui/icons": "1.0.7",
-    "@chakra-ui/react": "1.4.1",
+    "@chakra-ui/icons": "1.0.11",
+    "@chakra-ui/react": "1.5.2",
     "@ckeditor/ckeditor5-react": "3.0.2",
     "@emotion/react": "11.1.5",
-    "@emotion/styled": "11.1.5",
-    "@losol/ckeditor5-build-markdown": "^24.0.0",
-    "framer-motion": "4.0.0",
-    "next": "10.0.9",
-    "next-auth": "3.13.2",
-    "react": "17.0.1",
-    "react-dom": "17.0.1",
-    "swr": "0.5.4"
+    "@emotion/styled": "11.3.0",
+    "@losol/ckeditor5-build-markdown": "^27.0.0",
+    "axios": "^0.21.1",
+    "framer-motion": "4.1.5",
+    "next": "10.1.3",
+    "next-auth": "3.14.8",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "swr": "^0.5.5"
   },
   "devDependencies": {
-    "@types/next-auth": "^3.7.2",
-    "@types/node": "14.14.35",
+    "@types/next-auth": "^3.13.0",
+    "@types/node": "14.14.41",
     "@types/react": "17.0.3",
-    "@typescript-eslint/eslint-plugin": "^4.18.0",
-    "@typescript-eslint/parser": "^4.18.0",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "eslint": "^7.24.0",
+    "eslint-config-prettier": "^8.2.0",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.23.2",
     "eslint-plugin-simple-import-sort": "^7.0.0",
-    "prettier": "2.2.1",
-    "typescript": "4.2.3"
+    "prettier": "^2.2.1",
+    "typescript": "4.2.4",
+    "webpack": "5.34.0"
   }
 }

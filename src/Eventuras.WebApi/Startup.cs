@@ -16,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using Eventuras.WebApi.Auth;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.Json.Serialization;
 
 namespace Eventuras.WebApi
 {
@@ -71,7 +72,12 @@ namespace Eventuras.WebApi
             services.AddFeatureManagement();
 
             services.AddControllers(options =>
-                options.Filters.Add(new HttpResponseExceptionFilter())); // See https://docs.microsoft.com/en-us/aspnet/core/web-api/handle-errors?view=aspnetcore-5.0#use-exceptions-to-modify-the-response
+                options.Filters.Add(new HttpResponseExceptionFilter()))
+                    .AddJsonOptions(j =>
+                    {
+                        j.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    }
+                    );
 
             services.AddCors(options =>
             {
