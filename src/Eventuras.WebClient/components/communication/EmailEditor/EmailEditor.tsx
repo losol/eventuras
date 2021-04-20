@@ -53,7 +53,7 @@ const EmailEditor = (props: EmailEditorProps): JSX.Element => {
         <Input
           placeholder="Email subject"
           onChange={(e) => {
-            console.log(e.target.value), props.setSubject(e.target.value);
+            props.setSubject(e.target.value);
           }}
         />
 
