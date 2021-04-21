@@ -5,7 +5,6 @@ import { useContext, useEffect, useState } from 'react';
 import { Layout } from '../../components/common';
 import AlertModal from '../../components/common/Modals';
 import { UserContext } from '../../context/UserContext';
-import { usePrevious } from '../../hooks/usePrevious';
 
 const EventInfo = (props) => {
   const [session, loading] = useSession();
@@ -13,7 +12,6 @@ const EventInfo = (props) => {
   const { user } = useContext(UserContext);
   const [modal, setModal] = useState({ title: '', text: '' });
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const prevUser = usePrevious(user);
   const handleRegistrationEventRequest = async () => {
     fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/registrations/', {
       method: 'POST',
@@ -55,14 +53,20 @@ const EventInfo = (props) => {
   const handleLoginAndRegistrationEvent = async () => {
     try {
       await signIn('auth');
+      localStorage.setItem('EVENT_REGISTRATION_AFTER_LOGIN', 'true');
     } catch (e) {
       console.log(e);
     }
   };
 
   useEffect(() => {
-    if (!prevUser && user && user.id) {
+    if (
+      user &&
+      user.id &&
+      localStorage.getItem('EVENT_REGISTRATION_AFTER_LOGIN')
+    ) {
       handleRegistrationEventRequest();
+      localStorage.removeItem('EVENT_REGISTRATION_AFTER_LOGIN');
     }
   }, [user]);
   return (
