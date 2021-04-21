@@ -1,22 +1,70 @@
-import {
-  Container,
-  Heading,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from '@chakra-ui/react';
-import { Layout, Link } from '@components/common';
-
-import useSWR from 'swr';
-import { useSession } from 'next-auth/client';
+import { Container, Heading } from '@chakra-ui/react';
+import { CustomTable, Layout, Link } from '@components/common';
+import { getSession, useSession } from 'next-auth/client';
+import React, { useEffect, useMemo, useState } from 'react';
 
 function AdminUsersIndex() {
-  const { data: users } = useSWR('/api/getUsers');
   const [session, loading, error] = useSession();
+  const [users, setUsers] = useState([]);
+  const [pages, setPages] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const count = 100;
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Navn',
+        accessor: 'name',
+      },
+      {
+        Header: 'E-post',
+        accessor: 'email',
+      },
+      {
+        Header: 'Telefon',
+        accessor: 'phoneNumber',
+      },
+    ],
+    []
+  );
+  const getUsersList = async (page) => {
+    const token = await getSession();
+    fetch(
+      process.env.NEXT_PUBLIC_API_BASE_URL +
+        `/v3/users?page=${page}&count=${count}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${JSON.parse(
+            JSON.stringify(token.accessToken)
+          )}`,
+        },
+      }
+    )
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Something went wrong');
+        }
+      })
+      .then((res) => {
+        setUsers(res.data);
+        setPages(res.pages);
+        setCurrentPage(res.page);
+      })
+      .catch(() => {
+        console.log(error);
+      });
+  };
 
+  const handlePageClick = (page) => {
+    getUsersList(page);
+  };
+
+  useEffect(async () => {
+    getUsersList(currentPage);
+  }, []);
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -39,25 +87,13 @@ function AdminUsersIndex() {
             <Link href="/admin/">Admin</Link> &gt; Brukere
           </Heading>
 
-          <Table size="md" paddingTop="32">
-            <Thead>
-              <Tr>
-                <Th>Navn</Th>
-                <Th>E-post</Th>
-                <Th>Telefon</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {users &&
-                users.map((user) => (
-                  <Tr key={user.id}>
-                    <Td>{user.name}</Td>
-                    <Td>{user.email}</Td>
-                    <Td>{user.phoneNumber}</Td>
-                  </Tr>
-                ))}
-            </Tbody>
-          </Table>
+          <CustomTable
+            columns={columns}
+            data={users}
+            handlePageClick={handlePageClick}
+            pagesCount={pages}
+            page={currentPage}
+          />
         </Container>
       </Layout>
     );
