@@ -86,9 +86,9 @@ namespace Eventuras.Services
             // Add evidence description
             certificate.EvidenceDescription = $"{registration.EventInfo.Title} {registration.EventInfo.City}";
             if (registration.EventInfo.DateStart.HasValue)
-            { certificate.EvidenceDescription += " – " + registration.EventInfo.DateStart.Value.ToString(culture); };
+            { certificate.EvidenceDescription += " – " + registration.EventInfo.DateStart.Value.ToString("dd.MM.yyyy"); };
             if (registration.EventInfo.DateEnd.HasValue)
-            { certificate.EvidenceDescription += "-" + registration.EventInfo.DateEnd.Value.ToString(culture); };
+            { certificate.EvidenceDescription += "-" + registration.EventInfo.DateEnd.Value.ToString("dd.MM.yyyy"); };
 
             // Add organization
             if (registration.EventInfo.OrganizationId != null)
@@ -190,9 +190,9 @@ namespace Eventuras.Services
                 // Add evidence description
                 certificate.EvidenceDescription = $"{registration.EventInfo.Title} {registration.EventInfo.City}";
                 if (registration.EventInfo.DateStart.HasValue)
-                { certificate.EvidenceDescription += " – " + registration.EventInfo.DateStart.Value.ToString(culture); };
+                { certificate.EvidenceDescription += " – " + registration.EventInfo.DateStart.Value.ToString("dd.MM.yyyy"); };
                 if (registration.EventInfo.DateEnd.HasValue)
-                { certificate.EvidenceDescription += "-" + registration.EventInfo.DateEnd.Value.ToString(culture); };
+                { certificate.EvidenceDescription += "-" + registration.EventInfo.DateEnd.Value.ToString("dd.MM.yyyy"); };
 
                 // Add organization
                 if (registration.EventInfo.OrganizationId != null)

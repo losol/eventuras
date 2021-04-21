@@ -51,9 +51,9 @@ namespace Eventuras.Web.Controllers
             CultureInfo norwegianCulture = new CultureInfo("nb-NO");
             vm.EvidenceDescription = $"{eventInfo.Title} {eventInfo.City}";
             if (eventInfo.DateStart.HasValue)
-            { vm.EvidenceDescription += " - " + eventInfo.DateStart.Value.ToString(norwegianCulture); };
+            { vm.EvidenceDescription += " - " + eventInfo.DateStart.Value.ToString("dd.MM.yyyy"); };
             if (eventInfo.DateEnd.HasValue)
-            { vm.EvidenceDescription += " - " + eventInfo.DateEnd.Value.ToString(norwegianCulture); };
+            { vm.EvidenceDescription += " - " + eventInfo.DateEnd.Value.ToString("dd.MM.yyyy"); };
 
             vm.IssuedInCity = eventInfo.City;
 
