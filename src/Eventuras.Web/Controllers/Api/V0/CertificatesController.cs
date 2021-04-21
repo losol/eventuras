@@ -5,6 +5,7 @@ using Eventuras.Web.ViewModels;
 using Losol.Communication.Email;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,7 +27,8 @@ namespace Eventuras.Web.Controllers.Api.V0
         [HttpPost("event/{eventId}/email")]
         public async Task<IActionResult> GenerateCertificatesAndSendEmails([FromRoute] int eventId, [FromServices] CertificatePdfRenderer writer, [FromServices] StandardEmailSender emailSender)
         {
-            var certificates = await _certificatesService.CreateCertificatesForEvent(eventId);
+            CultureInfo norwegianCulture = new CultureInfo("nb-NO");
+            var certificates = await _certificatesService.CreateCertificatesForEvent(eventId, norwegianCulture);
 
             foreach (var certificate in certificates)
             {
@@ -38,7 +40,7 @@ namespace Eventuras.Web.Controllers.Api.V0
                     Email = certificate.RecipientEmail,
                     Subject = $"Kursbevis for {certificate.Title}",
                     Message = "Her er kursbeviset! Gratulere!",
-                    Attachment = new Attachment { Filename = "kursbevis.pdf", Bytes = memoryStream.ToArray(), ContentType = "application/pdf"}
+                    Attachment = new Attachment { Filename = "kursbevis.pdf", Bytes = memoryStream.ToArray(), ContentType = "application/pdf" }
                 });
             }
             return Ok();
@@ -48,7 +50,8 @@ namespace Eventuras.Web.Controllers.Api.V0
         [HttpPost("event/{eventId}/update")]
         public async Task<IActionResult> UpdateCertificatesForEvent([FromRoute] int eventId)
         {
-            var result = await _certificatesService.UpdateCertificatesForEvent(eventId);
+            CultureInfo norwegianCulture = new CultureInfo("nb-NO");
+            var result = await _certificatesService.UpdateCertificatesForEvent(eventId, norwegianCulture);
             return Ok($"Oppdaterte {result.Count()}");
         }
 
