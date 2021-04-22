@@ -1,3 +1,5 @@
+import '../styles/pagination.css';
+
 import { ChakraProvider } from '@chakra-ui/react';
 import { Provider as NextAuthProvider } from 'next-auth/client';
 

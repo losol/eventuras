@@ -80,7 +80,7 @@ function AdminIndex() {
               </Tr>
             </Thead>
             <Tbody>
-              {registrations &&
+              {registrations?.data &&
                 registrations.data.map((r) => (
                   <Tr key={r.registrationId}>
                     <Th>{r.userId}</Th>
