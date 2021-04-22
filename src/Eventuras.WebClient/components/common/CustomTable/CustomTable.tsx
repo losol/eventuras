@@ -16,7 +16,6 @@ import {
   Tooltip,
   Tr,
 } from '@chakra-ui/react';
-import React, { useMemo } from 'react';
 import { usePagination, useTable } from 'react-table';
 
 export default function CustomTable({
@@ -32,7 +31,6 @@ export default function CustomTable({
     headerGroups,
     prepareRow,
     rows,
-    state: { pageIndex, pageSize },
   } = useTable(
     {
       columns,
@@ -44,7 +42,6 @@ export default function CustomTable({
     usePagination
   );
 
-  // @ts-ignore
   return (
     <>
       <Table {...getTableProps()}>
