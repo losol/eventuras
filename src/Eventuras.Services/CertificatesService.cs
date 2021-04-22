@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
@@ -53,7 +54,7 @@ namespace Eventuras.Services
             }
         }
 
-        public async Task<Certificate> AddCertificate(int registrationId)
+        public async Task<Certificate> AddCertificate(int registrationId, CultureInfo culture)
         {
 
             var registration = await _db.Registrations
@@ -85,9 +86,9 @@ namespace Eventuras.Services
             // Add evidence description
             certificate.EvidenceDescription = $"{registration.EventInfo.Title} {registration.EventInfo.City}";
             if (registration.EventInfo.DateStart.HasValue)
-            { certificate.EvidenceDescription += " – " + registration.EventInfo.DateStart.Value.ToString("d"); };
+            { certificate.EvidenceDescription += " – " + registration.EventInfo.DateStart.Value.ToString("dd.MM.yyyy"); };
             if (registration.EventInfo.DateEnd.HasValue)
-            { certificate.EvidenceDescription += "-" + registration.EventInfo.DateEnd.Value.ToString("d"); };
+            { certificate.EvidenceDescription += "-" + registration.EventInfo.DateEnd.Value.ToString("dd.MM.yyyy"); };
 
             // Add organization
             if (registration.EventInfo.OrganizationId != null)
@@ -123,7 +124,7 @@ namespace Eventuras.Services
             return certificate;
         }
 
-        public async Task<List<Certificate>> CreateCertificatesForEvent(int eventInfoId)
+        public async Task<List<Certificate>> CreateCertificatesForEvent(int eventInfoId, CultureInfo culture)
         {
             var eventInfo = await _db.EventInfos
                 .Include(m => m.Registrations)
@@ -146,14 +147,14 @@ namespace Eventuras.Services
                 foreach (var registration in newRegistrations)
                 {
                     _logger.LogInformation($"*** Trying to add certificate for registration: {registration.RegistrationId} ***");
-                    result.Add(await AddCertificate(registration.RegistrationId));
+                    result.Add(await AddCertificate(registration.RegistrationId, culture));
                 }
             }
 
             return result;
         }
 
-        public async Task<List<Certificate>> UpdateCertificatesForEvent(int eventInfoId)
+        public async Task<List<Certificate>> UpdateCertificatesForEvent(int eventInfoId, CultureInfo culture)
         {
             var eventInfo = await _db.EventInfos
                 .Include(m => m.Registrations)
@@ -189,9 +190,9 @@ namespace Eventuras.Services
                 // Add evidence description
                 certificate.EvidenceDescription = $"{registration.EventInfo.Title} {registration.EventInfo.City}";
                 if (registration.EventInfo.DateStart.HasValue)
-                { certificate.EvidenceDescription += " – " + registration.EventInfo.DateStart.Value.ToString("d"); };
+                { certificate.EvidenceDescription += " – " + registration.EventInfo.DateStart.Value.ToString("dd.MM.yyyy"); };
                 if (registration.EventInfo.DateEnd.HasValue)
-                { certificate.EvidenceDescription += "-" + registration.EventInfo.DateEnd.Value.ToString("d"); };
+                { certificate.EvidenceDescription += "-" + registration.EventInfo.DateEnd.Value.ToString("dd.MM.yyyy"); };
 
                 // Add organization
                 if (registration.EventInfo.OrganizationId != null)
