@@ -4,4 +4,4 @@ export { default as Layout } from './Layout';
 export { default as Link } from './Link';
 export { default as Loading } from './Loading';
 export { default as Header } from './Header';
-export { default as CustomTable } from './CustomTable';
+export { default as DataTable } from './DataTable';

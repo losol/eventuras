@@ -1,7 +1,7 @@
 import { Container, Heading } from '@chakra-ui/react';
-import { CustomTable, Layout, Link } from '@components/common';
-import { getSession, useSession } from 'next-auth/client';
+import { DataTable, Layout, Link } from '@components/common';
 import React, { useEffect, useMemo, useState } from 'react';
+import { getSession, useSession } from 'next-auth/client';
 
 function AdminUsersIndex() {
   const [session, loading, error] = useSession();
@@ -12,15 +12,15 @@ function AdminUsersIndex() {
   const columns = useMemo(
     () => [
       {
-        Header: 'Navn',
+        Header: 'Name',
         accessor: 'name',
       },
       {
-        Header: 'E-post',
+        Header: 'E-mail',
         accessor: 'email',
       },
       {
-        Header: 'Telefon',
+        Header: 'Phone',
         accessor: 'phoneNumber',
       },
     ],
@@ -51,6 +51,7 @@ function AdminUsersIndex() {
       .then((res) => {
         setUsers(res.data);
         setPages(res.pages);
+        //setTotalPages(res.)
         setCurrentPage(res.page);
       })
       .catch(() => {
@@ -87,11 +88,11 @@ function AdminUsersIndex() {
             <Link href="/admin/">Admin</Link> &gt; Brukere
           </Heading>
 
-          <CustomTable
+          <DataTable
             columns={columns}
             data={users}
             handlePageClick={handlePageClick}
-            pagesCount={pages}
+            totalPages={pages}
             page={currentPage}
           />
         </Container>
