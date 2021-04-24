@@ -60,6 +60,12 @@ namespace Eventuras.Infrastructure
             builder.Entity<OrganizationMemberRole>()
                 .HasKey(o => new { o.OrganizationMemberId, o.Role });
 
+            // TODO: uncomment sometimes after db cleanup
+            // builder.Entity<EventInfo>()
+            //     .HasIndex(o => o.Code)
+            //     .HasFilter($@"""{nameof(EventInfo.Archived)}"" = false")
+            //     .IsUnique();
+
             builder.Entity<EventCollection>()
                 .HasMany(c => c.Events)
                 .WithMany(e => e.Collections)

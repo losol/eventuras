@@ -1,0 +1,13 @@
+type: object
+title: Address info.
+properties:
+  streetAddress:
+    type: string
+  addressLocality:
+    type: string
+  postalCode:
+    type: string
+  addressRegion:
+    type: string
+  addressCountry:
+    type: string

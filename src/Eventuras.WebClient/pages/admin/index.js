@@ -1,5 +1,15 @@
 import { PhoneIcon } from '@chakra-ui/icons';
-import { Button, Container, Heading, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import {
+  Button,
+  Container,
+  Heading,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from '@chakra-ui/react';
 import { useSession } from 'next-auth/client';
 import useSWR from 'swr';
 
@@ -70,7 +80,7 @@ function AdminIndex() {
               </Tr>
             </Thead>
             <Tbody>
-              {registrations &&
+              {registrations?.data &&
                 registrations.data.map((r) => (
                   <Tr key={r.registrationId}>
                     <Th>{r.userId}</Th>

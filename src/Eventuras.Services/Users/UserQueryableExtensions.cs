@@ -9,7 +9,7 @@ namespace Eventuras.Services.Users
     {
         public static IQueryable<ApplicationUser> AddFilter(this IQueryable<ApplicationUser> query, UserFilter filter)
         {
-            if (!filter.InlcudeArchived)
+            if (!filter.IncludeArchived)
             {
                 query = query.Where(u => !u.Archived);
             }

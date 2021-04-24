@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Eventuras.Domain;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -23,6 +24,28 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(registration.Status.ToString(), token.Value<string>("status"));
             Assert.Equal(registration.Type.ToString(), token.Value<string>("type"));
             Assert.Equal(registration.Notes, token.Value<string>("notes"));
+        }
+
+        public static void CheckEvent(this JToken token, EventInfo eventInfo)
+        {
+            Assert.Equal(eventInfo.EventInfoId, token.Value<int>("id"));
+            Assert.Equal(eventInfo.Type.ToString(), token.Value<string>("type"));
+            Assert.Equal(eventInfo.Title, token.Value<string>("name"));
+            Assert.Equal(eventInfo.Code, token.Value<string>("slug"));
+            Assert.Equal(eventInfo.Category, token.Value<string>("category"));
+            Assert.Equal(eventInfo.Description, token.Value<string>("description"));
+            Assert.Equal(eventInfo.Program, token.Value<string>("program"));
+            Assert.Equal(eventInfo.PracticalInformation, token.Value<string>("practicalInformation"));
+            Assert.Equal(eventInfo.OnDemand, token.Value<bool>("onDemand"));
+            Assert.Equal(eventInfo.Featured, token.Value<bool>("featured"));
+            Assert.Equal(eventInfo.DateStart, token.Value<DateTime?>("startDate"));
+            Assert.Equal(eventInfo.DateEnd, token.Value<DateTime?>("endDate"));
+            Assert.Equal(eventInfo.LastRegistrationDate, token.Value<DateTime?>("lastRegistrationDate"));
+
+            var location = token.Value<JToken>("location");
+            var address = location?.Value<JToken>("address");
+            Assert.Equal(eventInfo.Location, location?.Value<string>("name"));
+            Assert.Equal(eventInfo.City, address?.Any() == true ? address.Value<string>("addressLocality") : null);
         }
 
         public static JArray CheckArray<T>(this JArray token, Action<JToken, T> f, params T[] values)

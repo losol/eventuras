@@ -44,7 +44,6 @@ openapi-generator generate -i eventuras-api.v3.yaml -g openapi -o build/openapi 
 
 ## TODO
 
- - Event management API
  - External event API
  - Event collections API
  - User management API

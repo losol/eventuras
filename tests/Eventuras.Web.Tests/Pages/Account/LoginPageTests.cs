@@ -25,7 +25,6 @@ namespace Eventuras.Web.Tests.Pages.Account
 
         [Theory]
         [InlineData("nb-NO", "Logg inn", "Innloggingslenke Kursinord.no")]
-        [InlineData("en-US", "Sign in", "Login link Kursinord.no")]
         public async Task Should_Send_Magic_Link_Email(string languageCode, string textToCheck, string subject)
         {
             var client = this.factory.CreateClient();

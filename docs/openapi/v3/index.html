@@ -197,6 +197,14 @@ font-style: italic;
 
   <h3>Table of Contents </h3>
   <div class="method-summary"></div>
+  <h4><a href="#Events">Events</a></h4>
+  <ul>
+  <li><a href="#createNewEvent"><code><span class="http-method">post</span> /events</code></a></li>
+  <li><a href="#deleteEvent"><code><span class="http-method">delete</span> /events/{id}</code></a></li>
+  <li><a href="#getEventById"><code><span class="http-method">get</span> /events/{id}</code></a></li>
+  <li><a href="#getEvents"><code><span class="http-method">get</span> /events</code></a></li>
+  <li><a href="#updateEvent"><code><span class="http-method">put</span> /events/{id}</code></a></li>
+  </ul>
   <h4><a href="#Notifications">Notifications</a></h4>
   <ul>
   <li><a href="#createNewEmailNotification"><code><span class="http-method">post</span> /notifications/email</code></a></li>
@@ -218,6 +226,383 @@ font-style: italic;
   <li><a href="#updateUser"><code><span class="http-method">put</span> /users/{id}</code></a></li>
   </ul>
 
+  <h1><a name="Events">Events</a></h1>
+  <div class="method"><a name="createNewEvent"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /events</code></pre></div>
+    <div class="method-summary">Create new event. (<span class="nickname">createNewEvent</span>)</div>
+    <div class="method-notes">Available for admins only.</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">EventFormDto <a href="#EventFormDto">EventFormDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#EventDto">EventDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "id" : 10001,
+  "type" : 3,
+  "name" : "Demo event",
+  "slug" : "demo",
+  "category" : "Some category",
+  "description" : "Some demo event",
+  "featured" : false,
+  "program" : "Some program",
+  "practicalInformation" : "Some info",
+  "onDemand" : true,
+  "location" : {
+    "name" : "Some demo locaiton",
+    "address" : {
+      "addressLocality" : "Oslo"
+    }
+  },
+  "startDate" : "2021-01-01",
+  "endDate" : "2021-01-10",
+  "lastRegistrationDate" : "2020-11-12"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#EventDto">EventDto</a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">409</h4>
+    Data conflict.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="deleteEvent"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /events/{id}</code></pre></div>
+    <div class="method-summary">Delete event. (<span class="nickname">deleteEvent</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Event ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Event deleted.
+        <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getEventById"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /events/{id}</code></pre></div>
+    <div class="method-summary">Get event by id. (<span class="nickname">getEventById</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Event ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#EventDto">EventDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "id" : 10001,
+  "type" : 3,
+  "name" : "Demo event",
+  "slug" : "demo",
+  "category" : "Some category",
+  "description" : "Some demo event",
+  "featured" : false,
+  "program" : "Some program",
+  "practicalInformation" : "Some info",
+  "onDemand" : true,
+  "location" : {
+    "name" : "Some demo locaiton",
+    "address" : {
+      "addressLocality" : "Oslo"
+    }
+  },
+  "startDate" : "2021-01-01",
+  "endDate" : "2021-01-10",
+  "lastRegistrationDate" : "2020-11-12"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    
+        <a href="#EventDto">EventDto</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getEvents"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /events</code></pre></div>
+    <div class="method-summary">List events. (<span class="nickname">getEvents</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">page (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Page number. default: 1 format: int32</div><div class="param">count (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Page size. default: 100 format: int32</div><div class="param">type (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Event type. default: null </div><div class="param">start (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Event start date (inclusive). default: null format: date</div><div class="param">end (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Event end date (inclusive). default: null format: date</div><div class="param">period (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Event period matching kind.
+Applies to <code>start</code> and <code>end</code> filter params.
+Use <code>match</code> (default) for exact match, <code>intersect</code> for partial event dates intersection, and <code>contain</code> for the whole event period inclusion check. default: null </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#EventsPagedList">EventsPagedList</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "page" : 1,
+  "size" : 10,
+  "total" : 2,
+  "pages" : 1,
+  "data" : [ {
+    "id" : 10001,
+    "slug" : "evt1",
+    "name" : "Demo Event #1"
+  }, {
+    "id" : 10002,
+    "slug" : "evt2",
+    "name" : "Demo Event #2"
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="updateEvent"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /events/{id}</code></pre></div>
+    <div class="method-summary">Update event. (<span class="nickname">updateEvent</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Event ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">EventFormDto <a href="#EventFormDto">EventFormDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#EventDto">EventDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "id" : 10001,
+  "type" : 3,
+  "name" : "Demo event",
+  "slug" : "demo",
+  "category" : "Some category",
+  "description" : "Some demo event",
+  "featured" : false,
+  "program" : "Some program",
+  "practicalInformation" : "Some info",
+  "onDemand" : true,
+  "location" : {
+    "name" : "Some demo locaiton",
+    "address" : {
+      "addressLocality" : "Oslo"
+    }
+  },
+  "startDate" : "2021-01-01",
+  "endDate" : "2021-01-10",
+  "lastRegistrationDate" : "2020-11-12"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Event updated.
+        <a href="#EventDto">EventDto</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">409</h4>
+    Data conflict.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
   <h1><a name="Notifications">Notifications</a></h1>
   <div class="method"><a name="createNewEmailNotification"/>
     <div class="method-path">
@@ -968,8 +1353,13 @@ Org admin can only create members of the own org.</div>
 
   <h3>Table of Contents</h3>
   <ol>
+    <li><a href="#AddressDto"><code>AddressDto</code> - Address info.</a></li>
     <li><a href="#EmailNotificationFormDto"><code>EmailNotificationFormDto</code> - New email notification info</a></li>
     <li><a href="#Error"><code>Error</code> - Common error response structure.</a></li>
+    <li><a href="#EventDto"><code>EventDto</code> - Event information.</a></li>
+    <li><a href="#EventFormDto"><code>EventFormDto</code> - Event form data.</a></li>
+    <li><a href="#EventsPagedList"><code>EventsPagedList</code> - Event list with paging.</a></li>
+    <li><a href="#LocationDto"><code>LocationDto</code> - Location info.</a></li>
     <li><a href="#NewRegistrationDto"><code>NewRegistrationDto</code> - New registration info</a></li>
     <li><a href="#NewUserDto"><code>NewUserDto</code> - New user form.</a></li>
     <li><a href="#New_registration_specific_properties"><code>New_registration_specific_properties</code> - New registration specific properties</a></li>
@@ -991,6 +1381,17 @@ Org admin can only create members of the own org.</div>
   </ol>
 
   <div class="model">
+    <h3><a name="AddressDto"><code>AddressDto</code> - Address info.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">streetAddress (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">addressLocality (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">postalCode (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">addressRegion (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">addressCountry (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
     <h3><a name="EmailNotificationFormDto"><code>EmailNotificationFormDto</code> - New email notification info</a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
@@ -1007,6 +1408,72 @@ Org admin can only create members of the own org.</div>
       <div class="param">message </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> User-friendly error message. </div>
 <div class="param">code (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Machine-friendly error code. </div>
 <div class="param">fields (optional)</div><div class="param-desc"><span class="param-type"><a href="#map">array[map[String, array[String]]]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="EventDto"><code>EventDto</code> - Event information.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">id </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Event ID. format: int32</div>
+<div class="param">type </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Course = 0,
+Conference = 1,
+OnlineCourse = 2,
+Social = 3,
+Other = 9 </div>
+<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">slug </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">category (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">description (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">featured (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">program (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">practicalInformation (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">onDemand (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">location (optional)</div><div class="param-desc"><span class="param-type"><a href="#LocationDto">LocationDto</a></span>  </div>
+<div class="param">startDate (optional)</div><div class="param-desc"><span class="param-type"><a href="#date">date</a></span>  format: date</div>
+<div class="param">endDate (optional)</div><div class="param-desc"><span class="param-type"><a href="#date">date</a></span>  format: date</div>
+<div class="param">lastRegistrationDate (optional)</div><div class="param-desc"><span class="param-type"><a href="#date">date</a></span>  format: date</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="EventFormDto"><code>EventFormDto</code> - Event form data.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Course = 0,
+Conference = 1,
+OnlineCourse = 2,
+Social = 3,
+Other = 9 </div>
+<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">slug </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">category (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">description (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">featured (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">program (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">practicalInformation (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">onDemand (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">location (optional)</div><div class="param-desc"><span class="param-type"><a href="#LocationDto">LocationDto</a></span>  </div>
+<div class="param">startDate (optional)</div><div class="param-desc"><span class="param-type"><a href="#date">date</a></span>  format: date</div>
+<div class="param">endDate (optional)</div><div class="param-desc"><span class="param-type"><a href="#date">date</a></span>  format: date</div>
+<div class="param">manageRegistrations (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="EventsPagedList"><code>EventsPagedList</code> - Event list with paging.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">page </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Page number. format: int32</div>
+<div class="param">count </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Page size. format: int32</div>
+<div class="param">total </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total items. format: int32</div>
+<div class="param">pages </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total pages. format: int32</div>
+<div class="param">data </div><div class="param-desc"><span class="param-type"><a href="#EventDto">array[EventDto]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="LocationDto"><code>LocationDto</code> - Location info.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">address (optional)</div><div class="param-desc"><span class="param-type"><a href="#AddressDto">AddressDto</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">

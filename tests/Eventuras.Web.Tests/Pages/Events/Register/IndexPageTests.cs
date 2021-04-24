@@ -27,7 +27,7 @@ namespace Eventuras.Web.Tests.Pages.Events.Register
 
             using var scope = this.factory.Services.NewTestScope();
 
-            
+
             var user = scope.Db.Users.FirstOrDefault(u => u.Email == Email);
             if (user != null)
             {
@@ -38,7 +38,6 @@ namespace Eventuras.Web.Tests.Pages.Events.Register
 
         [Theory]
         [InlineData("nb-NO", "Du var allerede påmeldt!", "Vi hadde allerede en registrering for deg.")]
-        [InlineData("en-US", "You were already signed up!", "We already had a registration for you.")]
         public async Task Should_Send_Email_When_Already_Registered(string language, string subject, string body)
         {
             var client = this.factory.CreateClient();
@@ -46,7 +45,7 @@ namespace Eventuras.Web.Tests.Pages.Events.Register
 
             using var scope = this.factory.Services.NewTestScope();
 
-            
+
             using var eventInfo = await scope.CreateEventAsync();
             using var user = await scope.CreateUserAsync(email: Email);
             using var registration = await scope.CreateRegistrationAsync(eventInfo.Entity, user.Entity);
@@ -78,7 +77,6 @@ namespace Eventuras.Web.Tests.Pages.Events.Register
 
         [Theory]
         [InlineData("nb-NO", "Velkommen på kurs!", "Vi fikk registreringen din")]
-        [InlineData("en-US", "Welcome to the course!", "We received your registration")]
         public async Task Should_Create_New_Registration_For_Existing_User(string language, string subject, string body)
         {
             var client = this.factory.CreateClient();
@@ -86,7 +84,7 @@ namespace Eventuras.Web.Tests.Pages.Events.Register
 
             using var scope = this.factory.Services.NewTestScope();
 
-            
+
             using var eventInfo = await scope.CreateEventAsync();
             using var user = await scope.CreateUserAsync(email: Email);
 
@@ -127,7 +125,6 @@ namespace Eventuras.Web.Tests.Pages.Events.Register
 
         [Theory]
         [InlineData("nb-NO", "Velkommen på kurs!", "Vi fikk registreringen din")]
-        [InlineData("en-US", "Welcome to the course!", "We received your registration")]
         public async Task Should_Create_New_User_And_Registration(string language, string subject, string body)
         {
             var client = this.factory.CreateClient();
@@ -135,7 +132,7 @@ namespace Eventuras.Web.Tests.Pages.Events.Register
 
             using var scope = this.factory.Services.NewTestScope();
 
-            
+
             using var eventInfo = await scope.CreateEventAsync();
 
             var emailExpectation = this.factory.EmailSenderMock

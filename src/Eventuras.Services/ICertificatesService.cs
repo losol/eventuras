@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 
@@ -8,11 +9,11 @@ namespace Eventuras.Services
     public interface ICertificatesService
     {
         /// <summary>
-		/// Returns a certificate by certificate id.
-		/// </summary>
-		/// <param name="certificateId">The certificateId for the certificate to get.</param>
-		/// <returns>Certificate</returns>
-		Task<Certificate> GetAsync(int certificateId);
+        /// Returns a certificate by certificate id.
+        /// </summary>
+        /// <param name="certificateId">The certificateId for the certificate to get.</param>
+        /// <returns>Certificate</returns>
+        Task<Certificate> GetAsync(int certificateId);
 
         /// <summary>
         /// Returns a certificate by registration Id.
@@ -27,7 +28,7 @@ namespace Eventuras.Services
         /// </summary>
         /// <param name="eventId">The eventId to create certificates for.</param>
         /// <returns></returns>
-        Task<List<Certificate>> CreateCertificatesForEvent(int eventId);
+        Task<List<Certificate>> CreateCertificatesForEvent(int eventId, CultureInfo culture);
 
 
         /// <summary>
@@ -36,7 +37,7 @@ namespace Eventuras.Services
         /// </summary>
         /// <param name="eventId">The eventId to create certificates for.</param>
         /// <returns></returns>
-        Task<List<Certificate>> UpdateCertificatesForEvent(int eventId);
+        Task<List<Certificate>> UpdateCertificatesForEvent(int eventId, CultureInfo culture);
 
     }
 }

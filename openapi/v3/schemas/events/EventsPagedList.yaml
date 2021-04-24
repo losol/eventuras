@@ -1,0 +1,41 @@
+type: object
+title: Event list with paging.
+required:
+  - page
+  - count
+  - total
+  - pages
+  - data
+properties:
+  page:
+    type: integer
+    format: int32
+    description: Page number.
+  count:
+    type: integer
+    format: int32
+    description: Page size.
+  total:
+    type: integer
+    format: int32
+    description: Total items.
+  pages:
+    type: integer
+    format: int32
+    description: Total pages.
+  data:
+    type: array
+    items:
+      $ref: './EventDto.yaml'
+example:
+  page: 1
+  size: 10
+  total: 2
+  pages: 1
+  data:
+    - id: 10001
+      slug: 'evt1'
+      name: 'Demo Event #1'
+    - id: 10002
+      slug: 'evt2'
+      name: 'Demo Event #2'

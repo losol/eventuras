@@ -1,15 +1,14 @@
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Services.Auth;
+using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Eventuras.Services.Auth;
-using Eventuras.Services.Exceptions;
 
 namespace Eventuras.Services.Events
 {
@@ -24,9 +23,14 @@ namespace Eventuras.Services.Events
             ICurrentOrganizationAccessorService currentOrganizationAccessorService,
             IHttpContextAccessor httpContextAccessor)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw new ArgumentNullException(nameof(currentOrganizationAccessorService));
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+            _context = context ?? throw
+                new ArgumentNullException(nameof(context));
+
+            _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw
+                new ArgumentNullException(nameof(currentOrganizationAccessorService));
+
+            _httpContextAccessor = httpContextAccessor ?? throw
+                new ArgumentNullException(nameof(httpContextAccessor));
         }
 
         public async Task<EventInfo> GetEventInfoByIdAsync(int id,
@@ -47,26 +51,23 @@ namespace Eventuras.Services.Events
             return @event;
         }
 
-        public async Task<List<EventInfo>> ListEventsAsync(
-            EventInfoFilter filter,
-            EventRetrievalOrder order,
+        public async Task<Paging<EventInfo>> ListEventsAsync(
+            EventListRequest request,
             EventInfoRetrievalOptions options,
             CancellationToken cancellationToken)
         {
-            filter ??= new EventInfoFilter();
-
             var query = _context.EventInfos
                 .AsNoTracking()
                 .UseOptions(options ?? new EventInfoRetrievalOptions())
-                .UseFilter(filter)
-                .UseOrder(order);
+                .UseFilter(request.Filter)
+                .UseOrder(request.Order);
 
-            if (filter.AccessibleOnly)
+            if (request.Filter.AccessibleOnly)
             {
                 query = await AddOrgFilterIfNeededAsync(query, cancellationToken);
             }
 
-            return await query.ToListAsync(cancellationToken);
+            return await Paging<EventInfo>.CreateAsync(query, request, cancellationToken);
         }
 
         private async Task<IQueryable<EventInfo>> AddOrgFilterIfNeededAsync(

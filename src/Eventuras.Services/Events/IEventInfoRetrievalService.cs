@@ -1,5 +1,4 @@
 using Eventuras.Domain;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,9 +20,8 @@ namespace Eventuras.Services.Events
         /// List all accessible events. <see cref="Roles.SuperAdmin"/> can see all events. Others may only see
         /// events related to the current org, or events without org.
         /// </summary>
-        Task<List<EventInfo>> ListEventsAsync(
-            EventInfoFilter filter = null,
-            EventRetrievalOrder order = EventRetrievalOrder.StartDate,
+        Task<Paging<EventInfo>> ListEventsAsync(
+            EventListRequest request,
             EventInfoRetrievalOptions options = null,
             CancellationToken cancellationToken = default);
     }

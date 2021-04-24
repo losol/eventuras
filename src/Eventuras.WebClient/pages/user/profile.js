@@ -12,8 +12,8 @@ function UserProfile() {
         <Heading>Min bruker</Heading>
         {session && (
           <>
-            <Text>Navn: {session && session.user.name}</Text>
-            <Text>E-post: {session && session.user.email}</Text>
+            <Text>Navn: {session && session.user?.name}</Text>
+            <Text>E-post: {session && session.user?.email}</Text>
           </>
         )}
       </Container>

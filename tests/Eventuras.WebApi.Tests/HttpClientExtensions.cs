@@ -14,6 +14,11 @@ namespace Eventuras.WebApi.Tests
 {
     internal static class HttpClientExtensions
     {
+        public static HttpClient AuthenticatedAsAdmin(this HttpClient httpClient)
+        {
+            return httpClient.Authenticated(role: Roles.Admin);
+        }
+
         public static HttpClient AuthenticatedAsSystemAdmin(this HttpClient httpClient)
         {
             return httpClient.Authenticated(role: Roles.SystemAdmin);

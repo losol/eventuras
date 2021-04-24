@@ -42,7 +42,7 @@ namespace Eventuras.Pages.Admin.Temp.Products
             {
                 return NotFound();
             }
-            ViewData["EventInfoId"] = new SelectList(await _eventInfoRetrievalService.ListEventsAsync(), "EventInfoId", "Code");
+            ViewData["EventInfoId"] = new SelectList(await _eventInfoRetrievalService.GetAllEventsAsync(), "EventInfoId", "Code");
             return Page();
         }
 

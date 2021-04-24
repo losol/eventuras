@@ -1,0 +1,9 @@
+type: object
+title: Location info.
+required:
+  - name
+properties:
+  name:
+    type: string
+  address:
+    $ref: './AddressDto.yaml'
