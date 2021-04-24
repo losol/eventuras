@@ -1,9 +1,9 @@
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Eventuras.Services.Events
@@ -17,8 +17,11 @@ namespace Eventuras.Services.Events
             ApplicationDbContext context,
             IProductsService productsService)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _productsService = productsService ?? throw new ArgumentNullException(nameof(productsService));
+            _context = context ?? throw
+                new ArgumentNullException(nameof(context));
+
+            _productsService = productsService ?? throw
+                new ArgumentNullException(nameof(productsService));
         }
 
         public async Task CreateNewEventAsync(EventInfo info)
@@ -28,7 +31,22 @@ namespace Eventuras.Services.Events
                 throw new ArgumentNullException(nameof(info));
             }
 
-            await _context.CreateAsync(info);
+            if (await _context.EventInfos
+                .AnyAsync(e => e.Code == info.Code &&
+                               !e.Archived))
+            {
+                throw new DuplicateException($"Event with code {info.Code} already exists");
+            }
+
+            try
+            {
+                await _context.CreateAsync(info);
+            }
+            catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
+            {
+                _context.EventInfos.Remove(info);
+                throw new DuplicateException($"Event with code {info.Code} already exists");
+            }
         }
 
         public async Task UpdateEventAsync(EventInfo info)
@@ -66,73 +84,23 @@ namespace Eventuras.Services.Events
                 await _context.SaveChangesAsync();
             }
 
-            // Save the updates
-            _context.DetachAllEntities();
-            _context.EventInfos.Update(info);
-
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task UpdateEventProductsAsync(int eventId, List<Product> products)
-        {
-            if (products is null)
+            if (await _context.EventInfos
+                .AnyAsync(e => e.Code == info.Code &&
+                               e.EventInfoId != info.EventInfoId &&
+                               !e.Archived))
             {
-                throw new ArgumentNullException(paramName: nameof(products));
+                throw new DuplicateException($"Event with code {info.Code} already exists");
             }
 
-            var originalProducts = await _context.Products
-                .Where(p => p.EventInfoId == eventId)
-                .Include(p => p.ProductVariants)
-                .AsNoTracking()
-                .ToArrayAsync();
-
-            var originalVariants = originalProducts
-                .SelectMany(p => p.ProductVariants)
-                .ToArray();
-
-            // Delete the variants that don't exist in the provided object
-            var providedVariants = products
-                                       .Where(p => p.ProductVariants != null)
-                                       .SelectMany(p => p.ProductVariants);
-
-            var variantsToDelete = originalVariants
-                .Where(originalVariant => providedVariants.All(variant =>
-                    variant.ProductVariantId != originalVariant.ProductVariantId))
-                .ToList();
-
-            if (variantsToDelete.Any())
+            try
             {
-                _context.ProductVariants.AttachRange(variantsToDelete);
-                _context.ProductVariants.RemoveRange(variantsToDelete);
-                await _context.SaveChangesAsync();
+                await _context.UpdateAsync(info);
             }
-
-            // Delete the products that don't exist in the provided object
-            var productsToDelete = originalProducts
-                .Where(op => products.All(p =>
-                    p.ProductId != op.ProductId)).ToList();
-
-            if (productsToDelete.Any())
+            catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
             {
-                _context.Products.AttachRange(productsToDelete);
-                _context.Products.RemoveRange(productsToDelete);
-                await _context.SaveChangesAsync();
+                _context.DisableChangeTracking(info);
+                throw new DuplicateException($"Event with code {info.Code} already exists");
             }
-
-            // Save the updates
-            var info = await _context.EventInfos
-                .Where(e => e.EventInfoId == eventId)
-                .Include(ei => ei.Products)
-                .ThenInclude(p => p.ProductVariants)
-                .AsNoTracking()
-                .SingleAsync();
-
-            info.Products = products;
-
-            _context.DetachAllEntities();
-            _context.EventInfos.Update(info);
-
-            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteEventAsync(int id)
@@ -140,8 +108,8 @@ namespace Eventuras.Services.Events
             var eventInfo = await _context.EventInfos.FindAsync(id);
             if (eventInfo != null)
             {
-                _context.EventInfos.Remove(eventInfo);
-                await _context.SaveChangesAsync();
+                eventInfo.Archived = true;
+                await _context.UpdateAsync(eventInfo);
             }
         }
     }

@@ -1,6 +1,6 @@
-using System;
 using Eventuras.Domain;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,20 +19,32 @@ namespace Eventuras.Services.Events
             return service.GetEventInfoByIdAsync(id, null, cancellationToken);
         }
 
+        public static async Task<List<EventInfo>> GetAllEventsAsync(
+            this IEventInfoRetrievalService service,
+            EventInfoFilter filter = null,
+            EventInfoRetrievalOptions options = null,
+            CancellationToken cancellationToken = default)
+        {
+            return (await PageReader<EventInfo>.ReadAllAsync((offset, limit, token) =>
+                    service.ListEventsAsync(new EventListRequest(offset, limit)
+                    {
+                        Filter = filter
+                    }, options, token), cancellationToken))
+                .ToList();
+        }
+
         public static async Task<List<EventInfo>> GetUpcomingEventsAsync(
             this IEventInfoRetrievalService service,
             EventInfoFilter filter = null,
             EventInfoRetrievalOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            return await service.ListEventsAsync(new EventInfoFilter(filter ?? new EventInfoFilter())
-            {
-                StatusNoneOf = new[]
+            return (await PageReader<EventInfo>.ReadAllAsync((offset, limit, token) =>
+                service.ListEventsAsync(new EventListRequest(offset, limit)
                 {
-                    EventInfo.EventInfoStatus.Draft
-                },
-                StartDateAfter = DateTime.Now
-            }, EventRetrievalOrder.StartDate, options, cancellationToken);
+                    Filter = EventInfoFilter.UpcomingEvents(filter)
+                }, options, token), cancellationToken))
+                .ToList();
         }
 
         public static async Task<List<EventInfo>> GetFeaturedEventsAsync(
@@ -41,16 +53,12 @@ namespace Eventuras.Services.Events
             EventInfoRetrievalOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            return await service.ListEventsAsync(new EventInfoFilter(filter ?? new EventInfoFilter())
-            {
-                FeaturedOnly = true,
-                StatusNoneOf = new[]
-                {
-                    EventInfo.EventInfoStatus.Cancelled,
-                    EventInfo.EventInfoStatus.Draft
-                },
-                StartDateAfter = DateTime.Now
-            }, EventRetrievalOrder.StartDate, options, cancellationToken);
+            return (await PageReader<EventInfo>.ReadAllAsync((offset, limit, token) =>
+                    service.ListEventsAsync(new EventListRequest(offset, limit)
+                    {
+                        Filter = EventInfoFilter.FeaturedEvents(filter)
+                    }, options, token), cancellationToken))
+                .ToList();
         }
 
         public static async Task<List<EventInfo>> GetUnpublishedEventsAsync(
@@ -59,14 +67,12 @@ namespace Eventuras.Services.Events
             EventInfoRetrievalOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            return await service.ListEventsAsync(new EventInfoFilter(filter ?? new EventInfoFilter())
-            {
-                StatusOneOf = new[]
-                {
-                    EventInfo.EventInfoStatus.Cancelled,
-                    EventInfo.EventInfoStatus.Draft
-                }
-            }, EventRetrievalOrder.StartDate, options, cancellationToken);
+            return (await PageReader<EventInfo>.ReadAllAsync((offset, limit, token) =>
+                    service.ListEventsAsync(new EventListRequest(offset, limit)
+                    {
+                        Filter = EventInfoFilter.UnpublishedEvents(filter)
+                    }, options, token), cancellationToken))
+                .ToList();
         }
 
         public static async Task<List<EventInfo>> GetPastEventsAsync(
@@ -75,15 +81,12 @@ namespace Eventuras.Services.Events
             EventInfoRetrievalOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            return await service.ListEventsAsync(new EventInfoFilter(filter ?? new EventInfoFilter())
-            {
-                PastEventsOnly = true,
-                StatusNoneOf = new[]
-                {
-                    EventInfo.EventInfoStatus.Cancelled,
-                    EventInfo.EventInfoStatus.Draft
-                }
-            }, EventRetrievalOrder.StartDate, options, cancellationToken);
+            return (await PageReader<EventInfo>.ReadAllAsync((offset, limit, token) =>
+                    service.ListEventsAsync(new EventListRequest(offset, limit)
+                    {
+                        Filter = EventInfoFilter.PastEvents(filter)
+                    }, options, token), cancellationToken))
+                .ToList();
         }
 
         public static async Task<List<EventInfo>> GetOnDemandEventsAsync(
@@ -92,18 +95,13 @@ namespace Eventuras.Services.Events
             EventInfoRetrievalOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            return await service.ListEventsAsync(new EventInfoFilter(filter ?? new EventInfoFilter())
-            {
-                StatusNoneOf = new[]
-                {
-                    EventInfo.EventInfoStatus.Cancelled,
-                    EventInfo.EventInfoStatus.Draft
-                },
-                TypeOneOf = new[]
-                {
-                    EventInfo.EventInfoType.OnlineCourse
-                }
-            }, EventRetrievalOrder.Title, options, cancellationToken);
+            return (await PageReader<EventInfo>.ReadAllAsync((offset, limit, token) =>
+                    service.ListEventsAsync(new EventListRequest(offset, limit)
+                    {
+                        Filter = EventInfoFilter.OnDemandEvents(filter),
+                        Order = EventRetrievalOrder.Title
+                    }, options, token), cancellationToken))
+                .ToList();
         }
 
         public static async Task<List<EventInfo>> GetOngoingEventsAsync(
@@ -112,15 +110,12 @@ namespace Eventuras.Services.Events
             EventInfoRetrievalOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            return await service.ListEventsAsync(new EventInfoFilter(filter ?? new EventInfoFilter())
-            {
-                TodaysEventsOnly = true,
-                StatusNoneOf = new[]
-                {
-                    EventInfo.EventInfoStatus.Cancelled,
-                    EventInfo.EventInfoStatus.Draft
-                }
-            }, EventRetrievalOrder.StartDate, options, cancellationToken);
+            return (await PageReader<EventInfo>.ReadAllAsync((offset, limit, token) =>
+                    service.ListEventsAsync(new EventListRequest(offset, limit)
+                    {
+                        Filter = EventInfoFilter.OngoingEvents(filter)
+                    }, options, token), cancellationToken))
+                .ToList();
         }
     }
 }

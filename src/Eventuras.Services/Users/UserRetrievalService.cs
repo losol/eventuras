@@ -1,15 +1,13 @@
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Services.Auth;
+using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Eventuras.Services.Exceptions;
-using System.Linq;
-using Eventuras.Services.Auth;
 
 namespace Eventuras.Services.Users
 {
@@ -67,7 +65,7 @@ namespace Eventuras.Services.Users
             return user;
         }
 
-        public async Task<Paging<ApplicationUser>>   ListUsers(
+        public async Task<Paging<ApplicationUser>> ListUsers(
             UserListRequest request,
             UserRetrievalOptions options,
             CancellationToken cancellationToken)

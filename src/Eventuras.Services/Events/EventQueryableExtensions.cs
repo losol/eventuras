@@ -14,6 +14,11 @@ namespace Eventuras.Services.Events
                 throw new ArgumentNullException(nameof(filter));
             }
 
+            if (!filter.IncludeArchived)
+            {
+                query = query.Where(e => !e.Archived);
+            }
+
             if (filter.StatusOneOf?.Any() == true)
             {
                 query = query.Where(e => filter.StatusOneOf.Contains(e.Status));
@@ -51,9 +56,44 @@ namespace Eventuras.Services.Events
                     i.DateStart.HasValue && i.DateEnd.HasValue && i.DateStart.Value.Date <= DateTime.Now.Date && i.DateEnd.Value.Date >= DateTime.Now.Date);
             }
 
+            if (filter.StartDate.HasValue)
+            {
+                query = query.Where(e => e.DateStart == filter.StartDate);
+            }
+
+            if (filter.EndDate.HasValue)
+            {
+                query = query.Where(e => e.DateEnd == filter.EndDate);
+            }
+
+            if (filter.StartDateBefore.HasValue)
+            {
+                query = query.Where(e => e.DateStart <= filter.StartDateBefore);
+            }
+
             if (filter.StartDateAfter.HasValue)
             {
                 query = query.Where(e => e.DateStart >= filter.StartDateAfter);
+            }
+
+            if (filter.EndDateIsNullOrBefore.HasValue)
+            {
+                query = query.Where(e => !e.DateEnd.HasValue || e.DateEnd <= filter.EndDateIsNullOrBefore);
+            }
+
+            if (filter.EndDateIsNullOrAfter.HasValue)
+            {
+                query = query.Where(e => !e.DateEnd.HasValue || e.DateEnd >= filter.EndDateIsNullOrAfter);
+            }
+
+            if (filter.EndDateBefore.HasValue)
+            {
+                query = query.Where(e => e.DateEnd <= filter.EndDateBefore);
+            }
+
+            if (filter.EndDateAfter.HasValue)
+            {
+                query = query.Where(e => e.DateEnd >= filter.EndDateAfter);
             }
 
             if (filter.CollectionIds?.Any() == true)

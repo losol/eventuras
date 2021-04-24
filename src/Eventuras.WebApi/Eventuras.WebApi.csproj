@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
         <LosolCommunicationLibraryVersion>0.5.2</LosolCommunicationLibraryVersion>
+        <UserSecretsId>23ad1f65-ced2-4c24-87cb-6735ecf42528</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

@@ -33,6 +33,6 @@ namespace Eventuras.Services.Users
         /// <summary>
         /// Whether to select archived users, too.
         /// </summary>
-        public bool InlcudeArchived { get; set; }
+        public bool IncludeArchived { get; set; }
     }
 }

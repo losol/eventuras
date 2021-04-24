@@ -1,0 +1,50 @@
+type: object
+title: Event form data.
+required:
+  - slug
+properties:
+  type:
+    $ref: './EventType.yaml'
+  name:
+    type: string
+  slug:
+    type: string
+  category:
+    type: string
+  description:
+    type: string
+  featured:
+    type: boolean
+  program:
+    type: string
+  practicalInformation:
+    type: string
+  onDemand:
+    type: boolean
+  location:
+    $ref: './LocationDto.yaml'
+  startDate:
+    type: string
+    format: date
+  endDate:
+    type: string
+    format: date
+  manageRegistrations:
+    type: boolean
+example:
+  type: 3
+  name: 'Demo event'
+  slug: 'demo'
+  category: 'Some category'
+  description: 'Some demo event'
+  featured: false
+  program: 'Some program'
+  practicalInformation: 'Some info'
+  onDemand: true
+  location:
+    - name: Some demo locaiton
+      address:
+        addressLocality: Oslo
+  startDate: '2021-01-01'
+  endDate: '2021-01-10'
+  manageRegistrations: true

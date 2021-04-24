@@ -32,12 +32,19 @@ paths:
   /notifications/email:
     $ref: './paths/notifications/email.yaml'
 
+  # Users
   /users:
-      $ref: './paths/users.yaml'
+    $ref: './paths/users.yaml'
   /users/me:
     $ref: './paths/users/me.yaml'
   /users/{id}:
-      $ref: './paths/users/id.yaml'
+    $ref: './paths/users/id.yaml'
+
+  # Events
+  /events:
+    $ref: './paths/events.yaml'
+  /events/{id}:
+    $ref: './paths/events/id.yaml'
 
 components:
 
@@ -96,6 +103,13 @@ components:
 
     ForbiddenError:
       description: Access forbidden.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Conflict:
+      description: Data conflict.
       content:
         application/json:
           schema:
