@@ -27,7 +27,6 @@ namespace Eventuras.Web.Tests.Controllers.Api.V0
 
         [Theory]
         [InlineData("nb-NO", "Velkommen til")]
-        [InlineData("en-US", "Welcome to")]
         public async Task Should_Send_Register_Email(string languageCode, string textToCheck)
         {
             var client = this.factory.CreateClient();

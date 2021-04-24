@@ -27,7 +27,6 @@ namespace Eventuras.Web.Tests.Controllers.Api.V0
 
         [Theory]
         [InlineData("nb-NO", "Nordland legeforening")]
-        [InlineData("en-US", "Nordland Medical Association")]
         public async Task Should_Send_Email_To_Participants(string languageCode, string textToCheck)
         {
             var client = this.factory.CreateClient();

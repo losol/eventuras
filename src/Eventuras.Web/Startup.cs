@@ -21,12 +21,6 @@ namespace Eventuras
 {
     public class Startup
     {
-        private static readonly string[] SupportedCultures = new[]
-        {
-            "en-US",
-            "nb-NO"
-        };
-
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
@@ -80,6 +74,7 @@ namespace Eventuras
             services.AddInvoicingServices(AppSettings, Configuration);
             services.AddApplicationServices(Configuration);
             services.AddAntiforgery();
+            services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddApiVersioning(o =>
             {
@@ -105,7 +100,7 @@ namespace Eventuras
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                app.UseMigrationsEndPoint();
             }
             else
             {
@@ -113,25 +108,9 @@ namespace Eventuras
             }
 
             // Localization
-            var cultureInfoList = SupportedCultures.Select(c => new CultureInfo(c)).ToList();
-            var requestCultureProviders = new List<IRequestCultureProvider>
-                {
-                    new QueryStringRequestCultureProvider(),
-                    new CookieRequestCultureProvider()
-                };
-
-            // Use localization by language header only in development environment
-            if (env.IsDevelopment())
-            {
-                requestCultureProviders.Add(new AcceptLanguageHeaderRequestCultureProvider());
-            }
-
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
-                DefaultRequestCulture = new RequestCulture(Configuration["Site:DefaultLocale"]),
-                SupportedCultures = cultureInfoList,
-                SupportedUICultures = cultureInfoList,
-                RequestCultureProviders = requestCultureProviders
+                DefaultRequestCulture = new RequestCulture(Configuration["Site:DefaultLocale"])
             });
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.

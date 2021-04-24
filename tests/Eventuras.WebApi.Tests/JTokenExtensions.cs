@@ -21,8 +21,8 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(registration.RegistrationId, token.Value<int>("registrationId"));
             Assert.Equal(registration.EventInfoId, token.Value<int>("eventId"));
             Assert.Equal(registration.UserId, token.Value<string>("userId"));
-            Assert.Equal((int)registration.Status, token.Value<int>("status"));
-            Assert.Equal((int)registration.Type, token.Value<int>("type"));
+            Assert.Equal(registration.Status.ToString(), token.Value<string>("status"));
+            Assert.Equal(registration.Type.ToString(), token.Value<string>("type"));
             Assert.Equal(registration.Notes, token.Value<string>("notes"));
         }
 
