@@ -8,7 +8,7 @@ function UserIndex() {
   return (
     <Layout>
       <Container marginTop="16">
-        <Heading>Heihei {session && session.user.name} </Heading>
+        <Heading>Heihei {session && session.user?.name} </Heading>
       </Container>
     </Layout>
   );
