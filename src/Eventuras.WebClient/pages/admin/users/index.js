@@ -35,9 +35,7 @@ function AdminUsersIndex() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${JSON.parse(
-            JSON.stringify(token.accessToken)
-          )}`,
+          Authorization: `Bearer ${token?.accessToken}`,
         },
       }
     )

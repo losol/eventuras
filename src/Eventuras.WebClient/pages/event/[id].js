@@ -52,7 +52,7 @@ const EventInfo = (props) => {
 
   const handleLoginAndRegistrationEvent = async () => {
     try {
-      await signIn('auth');
+      await signIn('auth0');
       localStorage.setItem('EVENT_REGISTRATION_AFTER_LOGIN', 'true');
     } catch (e) {
       console.log(e);
