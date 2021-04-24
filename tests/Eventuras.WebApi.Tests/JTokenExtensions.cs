@@ -29,7 +29,7 @@ namespace Eventuras.WebApi.Tests
         public static void CheckEvent(this JToken token, EventInfo eventInfo)
         {
             Assert.Equal(eventInfo.EventInfoId, token.Value<int>("id"));
-            Assert.Equal(eventInfo.Type, (EventInfo.EventInfoType)token.Value<int>("type"));
+            Assert.Equal(eventInfo.Type.ToString(), token.Value<string>("type"));
             Assert.Equal(eventInfo.Title, token.Value<string>("name"));
             Assert.Equal(eventInfo.Code, token.Value<string>("slug"));
             Assert.Equal(eventInfo.Category, token.Value<string>("category"));
