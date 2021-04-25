@@ -72,7 +72,11 @@ function AdminIndex() {
                     <Td>{event.id}</Td>
                     <Td>{event.name}</Td>
                     <Td>
-                      <Link href={`/admin/event/${event.id}`}>Se mer</Link>
+                      <Link href={`/admin/event/${event.id}`}>
+                        <Button colorScheme="teal" variant="solid">
+                          Mer...
+                        </Button>
+                      </Link>
                     </Td>
                   </Tr>
                 ))}
