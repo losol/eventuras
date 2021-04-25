@@ -1,7 +1,7 @@
 import { Container, Heading } from '@chakra-ui/react';
 import { DataTable, Layout, Link } from '@components/common';
-import React, { useEffect, useMemo, useState } from 'react';
 import { getSession, useSession } from 'next-auth/client';
+import React, { useEffect, useMemo, useState } from 'react';
 
 function AdminUsersIndex() {
   const [session, loading, error] = useSession();

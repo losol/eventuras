@@ -16,8 +16,10 @@ import useSWR from 'swr';
 import { Layout, Link } from '../../components/common';
 
 function AdminIndex() {
-  const { data: events } = useSWR('/api/getEvents');
-  const { data: registrations } = useSWR('/api/getRegistrations');
+  const { data: events, error: eventsError } = useSWR('/api/getEvents');
+  const { data: registrations, error: registrationsError } = useSWR(
+    '/api/getRegistrations'
+  );
   const [session, loading, error] = useSession();
 
   if (loading) {
@@ -25,6 +27,15 @@ function AdminIndex() {
   }
   if (error) {
     return <div>Oops... {error.message}</div>;
+  }
+
+  if (eventsError) {
+    console.log(eventsError);
+    return <div>Oops... {eventsError}</div>;
+  }
+
+  if (registrationsError) {
+    return <div>Oops... {registrationsError}</div>;
   }
 
   if (!loading && !session)
@@ -56,7 +67,7 @@ function AdminIndex() {
             </Thead>
             <Tbody>
               {events &&
-                events.map((event) => (
+                events.data.map((event) => (
                   <Tr key={event.id}>
                     <Td>{event.id}</Td>
                     <Td>{event.name}</Td>

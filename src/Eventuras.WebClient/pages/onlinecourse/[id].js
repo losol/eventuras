@@ -1,10 +1,9 @@
 import { Button, Container, Heading, useDisclosure } from '@chakra-ui/react';
-import AlertModal from '@components/common/Modals';
 import { signIn, useSession } from 'next-auth/client';
 import { useContext, useEffect, useState } from 'react';
 
-import { Layout } from '@components/common';
-
+import { Layout } from '../../components/common';
+import AlertModal from '../../components/common/Modals';
 import { UserContext } from '../../context/UserContext';
 
 const EventInfo = (props) => {
@@ -95,7 +94,7 @@ const EventInfo = (props) => {
             isLoading={loading}
             onClick={handleRegistrationEventRequest}
           >
-            Register for event
+            Register for online course
           </Button>
         )}
         <AlertModal
@@ -117,11 +116,13 @@ export async function getStaticProps({ params }) {
 }
 
 export async function getStaticPaths() {
-  const res = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/events/');
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/onlinecourses/'
+  );
   const events = await res.json();
 
   // TODO: loop through pagination?
-  const paths = events.data.map((e) => ({
+  const paths = events.map((e) => ({
     params: {
       id: e.id.toString(),
     },
