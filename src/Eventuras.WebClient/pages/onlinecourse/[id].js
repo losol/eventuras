@@ -121,7 +121,6 @@ export async function getStaticPaths() {
   );
   const events = await res.json();
 
-  // TODO: loop through pagination?
   const paths = events.map((e) => ({
     params: {
       id: e.id.toString(),
