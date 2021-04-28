@@ -2,6 +2,7 @@ import { Button, Container, Heading } from '@chakra-ui/react';
 import { DataTable, Layout, Link } from '@components/common';
 import { Loading, UserDrawer } from '@components/common';
 import Unauthorized from '@components/common/Unauthorized/Unauthorized';
+import { fetcher } from '@lib/fetcher';
 import { getUser, User } from '@lib/User';
 import { getSession, useSession } from 'next-auth/client';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -48,32 +49,13 @@ const AdminUsersIndex = (): JSX.Element => {
 
   const getUsersList = async (page) => {
     const session = await getSession({});
-    fetch(
-      process.env.NEXT_PUBLIC_API_BASE_URL +
-        `/v3/users?page=${page}&count=${count}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.accessToken}`,
-        },
-      }
-    )
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Something went wrong');
-        }
-      })
-      .then((result) => {
-        setUsers(result.data);
-        setPages(result.pages);
-        setCurrentPage(result.page);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    const users = await fetcher.get(`/v3/users?page=${page}&count=${count}`, {
+      accessToken: session.accessToken,
+    });
+
+    setUsers(users.data);
+    setPages(users.pages);
+    setCurrentPage(users.page);
   };
 
   const handlePageClick = (page) => {
