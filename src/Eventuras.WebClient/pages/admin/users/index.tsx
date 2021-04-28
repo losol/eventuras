@@ -1,13 +1,18 @@
-import { Container, Heading } from '@chakra-ui/react';
+import { Button, Container, Heading } from '@chakra-ui/react';
 import { DataTable, Layout, Link } from '@components/common';
+import { Loading, UserDrawer } from '@components/common';
+import Unauthorized from '@components/common/Unauthorized/Unauthorized';
+import { getUser, User } from '@lib/User';
 import { getSession, useSession } from 'next-auth/client';
 import React, { useEffect, useMemo, useState } from 'react';
 
-function AdminUsersIndex() {
-  const [session, loading, error] = useSession();
+const AdminUsersIndex = (): JSX.Element => {
+  const [session, loading] = useSession();
   const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState<User>();
   const [pages, setPages] = useState();
   const [currentPage, setCurrentPage] = useState(1);
+  const [userDrawerOpen, setUserDrawerOpen] = useState(false);
   const count = 100;
   const columns = useMemo(
     () => [
@@ -23,11 +28,26 @@ function AdminUsersIndex() {
         Header: 'Phone',
         accessor: 'phoneNumber',
       },
+      {
+        Header: 'Actions',
+        accessor: 'actions',
+        Cell: function RenderCell({ row }) {
+          return (
+            <Button
+              key={row.original.id}
+              onClick={() => openUserdetails(row.original.id)}
+            >
+              Detaljer
+            </Button>
+          );
+        },
+      },
     ],
     []
   );
+
   const getUsersList = async (page) => {
-    const token = await getSession();
+    const session = await getSession({});
     fetch(
       process.env.NEXT_PUBLIC_API_BASE_URL +
         `/v3/users?page=${page}&count=${count}`,
@@ -35,7 +55,7 @@ function AdminUsersIndex() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token?.accessToken}`,
+          Authorization: `Bearer ${session?.accessToken}`,
         },
       }
     )
@@ -46,13 +66,12 @@ function AdminUsersIndex() {
           throw new Error('Something went wrong');
         }
       })
-      .then((res) => {
-        setUsers(res.data);
-        setPages(res.pages);
-        //setTotalPages(res.)
-        setCurrentPage(res.page);
+      .then((result) => {
+        setUsers(result.data);
+        setPages(result.pages);
+        setCurrentPage(result.page);
       })
-      .catch(() => {
+      .catch((error) => {
         console.log(error);
       });
   };
@@ -61,26 +80,53 @@ function AdminUsersIndex() {
     getUsersList(page);
   };
 
-  useEffect(async () => {
+  const userDrawerToggle = () => {
+    setUserDrawerOpen(!userDrawerOpen);
+  };
+
+  const openUserdetails = async (userId: string) => {
+    const session = await getSession({});
+    const user = await getUser(userId, session.accessToken);
+    if (user) {
+      setSelectedUser(user);
+    }
+
+    userDrawerToggle();
+  };
+
+  useEffect(() => {
     getUsersList(currentPage);
   }, []);
+
   if (loading) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>Oops... {error.message}</div>;
+    return (
+      <Layout>
+        <Loading />
+      </Layout>
+    );
   }
 
   if (!loading && !session)
     return (
       <Layout>
-        <p> Access Denied</p>
+        <Unauthorized />
       </Layout>
     );
 
   if (session) {
     return (
       <Layout>
+        {selectedUser && (
+          <UserDrawer
+            user={selectedUser}
+            isOpen={userDrawerOpen}
+            onClose={userDrawerToggle}
+            onSubmit={() => {
+              return;
+            }}
+          />
+        )}
+
         <Container paddingTop="32">
           <Heading as="h1" paddingBottom="16">
             <Link href="/admin/">Admin</Link> &gt; Brukere
@@ -97,6 +143,6 @@ function AdminUsersIndex() {
       </Layout>
     );
   }
-}
+};
 
 export default AdminUsersIndex;

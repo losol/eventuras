@@ -5,9 +5,8 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-
-import { EmailDrawer } from '@components/communication';
 import { Layout } from '@components/common';
+import { EmailDrawer } from '@components/communication';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/client';
 import { useState } from 'react';
