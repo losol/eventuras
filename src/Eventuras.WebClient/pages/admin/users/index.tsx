@@ -1,6 +1,11 @@
 import { Button, Container, Heading } from '@chakra-ui/react';
-import { DataTable, Layout, Link } from '@components/common';
-import { Loading, UserDrawer } from '@components/common';
+import {
+  DataTable,
+  Layout,
+  Link,
+  Loading,
+  UserDrawer,
+} from '@components/common';
 import Unauthorized from '@components/common/Unauthorized/Unauthorized';
 import { fetcher } from '@lib/fetcher';
 import { getUser, User } from '@lib/User';

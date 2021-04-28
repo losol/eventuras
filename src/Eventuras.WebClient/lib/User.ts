@@ -11,8 +11,7 @@ export const getUser = async (
   userId: string,
   accessToken: string
 ): Promise<User> => {
-  const user = await fetcher.get(`/v3/users/${userId}`, {
+  return await fetcher.get(`/v3/users/${userId}`, {
     accessToken: accessToken,
   });
-  return user;
 };
