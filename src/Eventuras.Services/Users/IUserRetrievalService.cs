@@ -34,5 +34,10 @@ namespace Eventuras.Services.Users
         /// Whether to select archived users, too.
         /// </summary>
         public bool IncludeArchived { get; set; }
+
+        /// <summary>
+        /// Match users by name, phone or email containing the specified string.
+        /// </summary>
+        public string Query { get; set; }
     }
 }

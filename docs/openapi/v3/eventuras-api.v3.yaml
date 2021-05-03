@@ -309,6 +309,29 @@ paths:
           default: 100
           format: int32
           type: integer
+      - description: |
+          Search users by name, email, or phone.
+        in: query
+        name: query
+        required: false
+        schema:
+          type: string
+      - description: |
+          `name`, `email` or `phone`. Default is `name`.
+        in: query
+        name: order
+        required: false
+        schema:
+          type: string
+      - description: |
+          Whether to apply descending sort.
+          Applicable to `order` param only.
+          Default is `false`.
+        in: query
+        name: descending
+        required: false
+        schema:
+          type: boolean
       responses:
         "200":
           content:
