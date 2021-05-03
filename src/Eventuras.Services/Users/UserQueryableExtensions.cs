@@ -13,6 +13,15 @@ namespace Eventuras.Services.Users
             {
                 query = query.Where(u => !u.Archived);
             }
+
+            if (!string.IsNullOrWhiteSpace(filter.Query))
+            {
+                var q = filter.Query.Trim().ToLower();
+                query = query.Where(u => u.Name.ToLower().Contains(q) ||
+                    u.Email.ToLower().Contains(q) ||
+                    u.PhoneNumber.ToLower().Contains(q));
+            }
+
             return query;
         }
 
