@@ -35,6 +35,14 @@ get:
       required: false
       schema:
         type: string
+    - name: organizationId
+      description: |
+        Organization id.
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int32
   responses:
     '200':
       description: OK
