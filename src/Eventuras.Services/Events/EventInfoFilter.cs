@@ -41,6 +41,8 @@ namespace Eventuras.Services.Events
 
         public int[] CollectionIds { get; set; }
 
+        public int? OrganizationId { get; set; }
+
         public EventInfoFilter()
         {
         }
@@ -51,6 +53,7 @@ namespace Eventuras.Services.Events
             {
                 throw new ArgumentNullException(nameof(copy));
             }
+            AccessibleOnly = copy.AccessibleOnly;
             StatusNoneOf = copy.StatusNoneOf;
             StatusNoneOf = copy.StatusNoneOf;
             TypeOneOf = copy.TypeOneOf;
@@ -63,6 +66,7 @@ namespace Eventuras.Services.Events
             EndDateBefore = copy.EndDateBefore;
             EndDateAfter = copy.EndDateAfter;
             CollectionIds = copy.CollectionIds;
+            OrganizationId = copy.OrganizationId;
         }
 
         public override string ToString()
@@ -81,7 +85,8 @@ namespace Eventuras.Services.Events
                    $"{nameof(EndDateIsNullOrAfter)}: {EndDateIsNullOrAfter},\n" +
                    $"{nameof(EndDateBefore)}: {EndDateBefore},\n" +
                    $"{nameof(EndDateAfter)}: {EndDateAfter},\n" +
-                   $"{nameof(CollectionIds)}: {CollectionIds}";
+                   $"{nameof(CollectionIds)}: {CollectionIds}\n" +
+                   $"{nameof(OrganizationId)}: {OrganizationId}";
         }
 
         public static EventInfoFilter UpcomingEvents(EventInfoFilter filter = null)

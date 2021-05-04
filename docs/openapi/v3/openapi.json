@@ -847,6 +847,15 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "description" : "Organization id.\n",
+          "in" : "query",
+          "name" : "organizationId",
+          "required" : false,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
         } ],
         "responses" : {
           "200" : {

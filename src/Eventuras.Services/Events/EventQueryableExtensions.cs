@@ -103,6 +103,11 @@ namespace Eventuras.Services.Events
                         .Contains(m.CollectionId)));
             }
 
+            if (filter.OrganizationId.HasValue)
+            {
+                query = query.Where(e => e.OrganizationId == filter.OrganizationId.Value);
+            }
+
             return query;
         }
 
