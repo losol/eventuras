@@ -32,7 +32,9 @@ namespace Eventuras.WebApi.Controllers.Events
         // GET: v3/events
         [AllowAnonymous]
         [HttpGet]
-        public async Task<PageResponseDto<EventDto>> List([FromQuery] EventsQueryDto query, CancellationToken cancellationToken)
+        public async Task<PageResponseDto<EventDto>> List(
+            [FromQuery] EventsQueryDto query,
+            CancellationToken cancellationToken)
         {
             var events = await _eventInfoService
                 .ListEventsAsync(new EventListRequest(query.Offset, query.Limit)

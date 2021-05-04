@@ -2,6 +2,7 @@ using Eventuras.Domain;
 using Eventuras.Services.Events;
 using Eventuras.WebApi.Models;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Eventuras.WebApi.Controllers.Events
 {
@@ -12,6 +13,9 @@ namespace Eventuras.WebApi.Controllers.Events
         public DateTime? End { get; set; }
         public PeriodMatchingKind Period { get; set; } = PeriodMatchingKind.Match;
 
+        [Range(1, int.MaxValue)]
+        public int? OrganizationId { get; set; }
+
         public EventInfoFilter ToEventInfoFilter()
         {
             var filter = new EventInfoFilter
@@ -20,7 +24,9 @@ namespace Eventuras.WebApi.Controllers.Events
                 StatusNoneOf = new[]
                 {
                     EventInfo.EventInfoStatus.Draft
-                }
+                },
+                OrganizationId = OrganizationId,
+                AccessibleOnly = false
             };
 
             if (!Start.HasValue && !End.HasValue)
