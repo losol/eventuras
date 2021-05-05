@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   Drawer,
   DrawerBody,
@@ -7,13 +8,19 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
+  FormControl,
+  FormLabel,
+  Input,
+  VStack,
 } from '@chakra-ui/react';
 import { User } from '@lib/User';
+import React from 'react';
 
 interface UserDrawerProps {
-  user?: User;
+  user: User;
   isOpen: boolean;
   onClose: () => void;
+  handleUserChange: (event) => void;
   onSubmit: () => void;
 }
 
@@ -31,13 +38,33 @@ const UserDrawer = (props: UserDrawerProps): JSX.Element => {
           <DrawerHeader borderBottomWidth="1px">{props.user.name}</DrawerHeader>
 
           <DrawerBody>
-            Id: {props.user.id}
-            <br />
-            Navn: {props.user.name}
-            <br />
-            Navn: {props.user.email}
-            <br />
-            Navn: {props.user.phoneNumber}
+            <VStack spacing={8}>
+              <Badge>{props.user.id}</Badge>
+              <FormControl id="name" isRequired={true}>
+                <FormLabel>Name</FormLabel>
+                <Input
+                  type="text"
+                  value={props.user.name}
+                  onChange={props.handleUserChange}
+                />
+              </FormControl>
+              <FormControl id="email" isRequired={true}>
+                <FormLabel>Email</FormLabel>
+                <Input
+                  type="email"
+                  value={props.user.email}
+                  onChange={props.handleUserChange}
+                />
+              </FormControl>
+              <FormControl id="phone">
+                <FormLabel>Phone number</FormLabel>
+                <Input
+                  type="email"
+                  value={props.user.phoneNumber}
+                  onChange={props.handleUserChange}
+                />
+              </FormControl>
+            </VStack>
           </DrawerBody>
 
           <DrawerFooter borderTopWidth="1px">

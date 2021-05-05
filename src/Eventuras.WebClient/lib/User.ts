@@ -1,10 +1,10 @@
 import { fetcher } from '@lib/fetcher';
 
 export interface User {
-  id: string;
+  id?: string;
   email: string;
   name: string;
-  phoneNumber: string;
+  phoneNumber?: string;
 }
 
 export const getUser = async (

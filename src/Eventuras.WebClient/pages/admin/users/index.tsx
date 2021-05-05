@@ -15,7 +15,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 const AdminUsersIndex = (): JSX.Element => {
   const [session, loading] = useSession();
   const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState<User>();
+  const [activeUser, setActiveUser] = useState<User>();
   const [pages, setPages] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [userDrawerOpen, setUserDrawerOpen] = useState(false);
@@ -71,11 +71,17 @@ const AdminUsersIndex = (): JSX.Element => {
     setUserDrawerOpen(!userDrawerOpen);
   };
 
+  const handleAddUserClick = () => {
+    const newUser: User = { email: '', name: '' };
+    setActiveUser(newUser);
+    userDrawerToggle();
+  };
+
   const openUserdetails = async (userId: string) => {
     const session = await getSession({});
     const user = await getUser(userId, session.accessToken);
     if (user) {
-      setSelectedUser(user);
+      setActiveUser(user);
     }
 
     userDrawerToggle();
@@ -103,11 +109,17 @@ const AdminUsersIndex = (): JSX.Element => {
   if (session) {
     return (
       <Layout>
-        {selectedUser && (
+        {activeUser && (
           <UserDrawer
-            user={selectedUser}
+            user={activeUser}
             isOpen={userDrawerOpen}
             onClose={userDrawerToggle}
+            handleUserChange={(event) =>
+              setActiveUser({
+                ...activeUser,
+                [event.target.id]: event.target.value,
+              })
+            }
             onSubmit={() => {
               return;
             }}
@@ -118,6 +130,14 @@ const AdminUsersIndex = (): JSX.Element => {
           <Heading as="h1" paddingBottom="16">
             <Link href="/admin/">Admin</Link> &gt; Brukere
           </Heading>
+
+          <Button
+            colorScheme="teal"
+            variant="outline"
+            onClick={handleAddUserClick}
+          >
+            Add user
+          </Button>
 
           <DataTable
             columns={columns}
