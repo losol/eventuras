@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
+using Eventuras.Services.Exceptions;
 using Microsoft.Extensions.Logging;
 
 namespace Eventuras.Services.Organizations
@@ -133,21 +134,20 @@ namespace Eventuras.Services.Organizations
             var userId = principal.GetUserId();
             if (string.IsNullOrWhiteSpace(userId))
             {
-                throw new AccessViolationException("Not authenticated.");
+                throw new NotAccessibleException("Not authenticated.");
             }
 
-            if (!principal.IsInRole(Roles.Admin) &&
-                !principal.IsInRole(Roles.SuperAdmin))
+            if (!principal.IsAdmin())
             {
-                throw new AccessViolationException($"Should have at least {Roles.Admin} role to manage org membership.");
+                throw new NotAccessibleException($"Should have at least {Roles.Admin} role to manage org membership.");
             }
 
-            if (!principal.IsInRole(Roles.SuperAdmin) &&
+            if (!principal.IsPowerAdmin() &&
                 !await _context.OrganizationMembers
                     .AnyAsync(m => m.UserId == userId &&
                                    m.OrganizationId == organization.OrganizationId))
             {
-                throw new AccessViolationException($"Cannot access organization {organization.OrganizationId}.");
+                throw new NotAccessibleException($"Cannot access organization {organization.OrganizationId}.");
             }
         }
     }

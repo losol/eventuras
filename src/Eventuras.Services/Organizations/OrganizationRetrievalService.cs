@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Services.Auth;
+using Eventuras.Services.Exceptions;
 
 namespace Eventuras.Services.Organizations
 {
@@ -51,21 +53,28 @@ namespace Eventuras.Services.Organizations
             var user = _httpContextAccessor.HttpContext.User;
             if (!user.Identity.IsAuthenticated)
             {
-                throw new AccessViolationException("Not authenticated.");
+                throw new NotAccessibleException("Not authenticated.");
             }
 
             var query = _context.Organizations
                 .AsNoTracking()
                 .Where(m => m.OrganizationId == id);
 
-            if (!user.IsInRole(Roles.SuperAdmin)) // Super admin can see all orgs.
+            if (!user.IsPowerAdmin()) // Power admins can see all orgs.
             {
                 query = query.HasOrganizationMember(user);
             }
 
-            return await query
+            var org = await query
                 .UseOptions(options)
-                .SingleOrDefaultAsync();
+                .FirstOrDefaultAsync();
+
+            if (org == null)
+            {
+                throw new NotFoundException($"Organization {id} not found");
+            }
+
+            return org;
         }
     }
 }

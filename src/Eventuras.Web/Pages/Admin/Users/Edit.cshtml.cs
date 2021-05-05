@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Services.Exceptions;
 
 namespace Eventuras.Web.Pages.Admin.Users
 {
@@ -148,7 +149,7 @@ namespace Eventuras.Web.Pages.Admin.Users
                     }
                 }
             }
-            catch (AccessViolationException e)
+            catch (NotAccessibleException e)
             {
                 _logger.LogError(e, e.Message);
                 return Forbid();
