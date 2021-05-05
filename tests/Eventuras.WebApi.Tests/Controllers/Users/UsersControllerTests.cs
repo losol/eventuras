@@ -1,6 +1,11 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
 using Microsoft.EntityFrameworkCore;
@@ -171,6 +176,32 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
         }
 
         [Theory]
+        [MemberData(nameof(GetInvalidListQueryParams))]
+        public async Task List_Users_Should_Validate_Query_Params(string query)
+        {
+            var client = _factory.CreateClient()
+                .Authenticated(role: Roles.Admin);
+
+            var response = await client.GetAsync($"/v3/users?{query}");
+            response.CheckBadRequest();
+        }
+
+        public static object[][] GetInvalidListQueryParams()
+        {
+            return new object[][]
+            {
+                new object[] { "page=-1" },
+                new object[] { "page=0" },
+                new object[] { "page=asd" },
+                new object[] { "count=-1" },
+                new object[] { "count=asd" },
+                new object[] { "order=1001" },
+                new object[] { "order=invalid" },
+                new object[] { "descending=invalid" }
+            };
+        }
+
+        [Theory]
         [InlineData(Roles.Admin)]
         [InlineData(Roles.SuperAdmin)]
         [InlineData(Roles.SystemAdmin)]
@@ -200,6 +231,84 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
             json.CheckPaging(2, 2, 3,
                 (token, u) => token.CheckUser(u),
                 user3.Entity);
+        }
+
+
+        [Fact]
+        public async Task List_Should_Filter_By_Query_Param()
+        {
+            using var scope = _factory.Services.NewTestScope();
+
+            var client = _factory.CreateClient()
+                .Authenticated(role: Roles.Admin);
+
+            using var user5 = await scope.CreateUserAsync(name: "Test Person 5", email: "other@email.com", phone: null); // no phone
+            using var user4 = await scope.CreateUserAsync(name: "Test Person 4", email: "testperson4@email.com", phone: "+1234567890");
+            using var user3 = await scope.CreateUserAsync(name: "Test Person 3", email: "testperson3@email.com", phone: "+11122223333444");
+            using var user2 = await scope.CreateUserAsync(name: "Test Person 2", email: "testperson2@email.com", phone: "+2222222221");
+            using var user1 = await scope.CreateUserAsync(name: "Test Person 1", email: "testperson1@email.com", phone: "+11111111111");
+
+            // 1. search by name (case-insensitive)
+            await CheckListAsync(client, new { query = "Test Person" }, user1, user2, user3, user4, user5);
+            await CheckListAsync(client, new { query = "test person" }, user1, user2, user3, user4, user5);
+
+            // 2. search by email (case-insensitive) 
+            await CheckListAsync(client, new { query = "email" }, user1, user2, user3, user4, user5);
+            await CheckListAsync(client, new { query = "EMAIL" }, user1, user2, user3, user4, user5);
+            await CheckListAsync(client, new { query = "testperson" }, user1, user2, user3, user4);
+
+            // 3. search by phone
+            await CheckListAsync(client, new { query = "123" }, user4);
+            await CheckListAsync(client, new { query = "111" }, user1, user3);
+            await CheckListAsync(client, new { query = "1" }, user1, user2, user3, user4);
+            await CheckListAsync(client, new { query = "+1" }, user1, user3, user4);
+            await CheckListAsync(client, new { query = "2222" }, user2, user3);
+            await CheckListAsync(client, new { query = "444" }, user3);
+        }
+
+        private static async Task CheckListAsync(
+            HttpClient client,
+            object queryParams,
+            params IDisposableEntity<ApplicationUser>[] users)
+        {
+            var response = await client.GetAsync($"/v3/users", queryParams);
+            response.CheckOk();
+
+            var json = await response.AsTokenAsync();
+            json.CheckPaging((token, u) => token.CheckUser(u.Entity), users);
+        }
+
+        [Fact]
+        public async Task List_Should_Use_Order_Param()
+        {
+            using var scope = _factory.Services.NewTestScope();
+
+            var client = _factory.CreateClient()
+                .Authenticated(role: Roles.Admin);
+
+            using var user5 = await scope.CreateUserAsync(name: "Test Person 5", email: "other@email.com", phone: null); // no phone
+            using var user4 = await scope.CreateUserAsync(name: "Test Person 4", email: "testperson1@email.com", phone: "+1234567890");
+            using var user3 = await scope.CreateUserAsync(name: "Test Person 3", email: "testperson2@email.com", phone: "+11122223333444");
+            using var user2 = await scope.CreateUserAsync(name: "Test Person 2", email: "testperson3@email.com", phone: "+2222222221");
+            using var user1 = await scope.CreateUserAsync(name: "Test Person 1", email: "testperson4@email.com", phone: "+11111111111");
+
+            // 1. default
+            await CheckListAsync(client, new { }, user1, user2, user3, user4, user5);
+            await CheckListAsync(client, new { order = "name" }, user1, user2, user3, user4, user5);
+            await CheckListAsync(client, new { order = "email" }, user5, user4, user3, user2, user1);
+            await CheckListAsync(client, new { order = "phone" }, user5, user1, user3, user4, user2);
+
+            // 2. ascending
+            await CheckListAsync(client, new { descending = false }, user1, user2, user3, user4, user5);
+            await CheckListAsync(client, new { order = "name", descending = false }, user1, user2, user3, user4, user5);
+            await CheckListAsync(client, new { order = "email", descending = false }, user5, user4, user3, user2, user1);
+            await CheckListAsync(client, new { order = "phone", descending = false }, user5, user1, user3, user4, user2);
+
+            // 3. descending
+            await CheckListAsync(client, new { descending = true }, user5, user4, user3, user2, user1);
+            await CheckListAsync(client, new { order = "name", descending = true }, user5, user4, user3, user2, user1);
+            await CheckListAsync(client, new { order = "email", descending = true }, user1, user2, user3, user4, user5);
+            await CheckListAsync(client, new { order = "phone", descending = true }, user2, user4, user3, user1, user5);
         }
 
         [Fact]

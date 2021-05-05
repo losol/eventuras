@@ -73,6 +73,12 @@ namespace Eventuras.WebApi.Tests
             return token;
         }
 
+        public static JToken CheckPaging<T>(this JToken token, Action<JToken, T> f,
+            params T[] data)
+        {
+            return CheckPaging(token, 1, null, null, f, data);
+        }
+
         public static JToken CheckPaging<T>(this JToken token, int page, int? total, Action<JToken, T> f,
             params T[] data)
         {
