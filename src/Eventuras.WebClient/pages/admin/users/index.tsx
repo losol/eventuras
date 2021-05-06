@@ -10,7 +10,7 @@ import Unauthorized from '@components/common/Unauthorized/Unauthorized';
 import { fetcher } from '@lib/fetcher';
 import { toaster } from '@lib/toaster';
 import { createUser, getUser, updateUser, User } from '@lib/User';
-import { getSession, useSession } from 'next-auth/client';
+import { useSession } from 'next-auth/client';
 import React, { useEffect, useMemo, useState } from 'react';
 
 const AdminUsersIndex = (): JSX.Element => {
@@ -54,13 +54,16 @@ const AdminUsersIndex = (): JSX.Element => {
   );
 
   const getUsersList = async (page) => {
-    const users = await fetcher.get(`/v3/users?page=${page}&count=${count}`, {
-      accessToken: session.accessToken,
-    });
+    const userList = await fetcher.get(
+      `/v3/users?page=${page}&count=${count}`,
+      {
+        accessToken: session.accessToken,
+      }
+    );
 
-    setUsers(users.data);
-    setPages(users.pages);
-    setCurrentPage(users.page);
+    setUsers(userList.data);
+    setPages(userList.pages);
+    setCurrentPage(userList.page);
   };
 
   const handlePageClick = (page) => {
