@@ -10,7 +10,6 @@ const AUTH0_AUTHORIZE_URL =
 const AUTH0_TOKEN_URL = `https://${process.env.AUTH0_DOMAIN}/oauth/token?`;
 
 const nextOptions = {
-  debug: true,
   site: process.env.NEXTAUTH_URL,
   providers: [
     Providers.Auth0({
