@@ -13,7 +13,7 @@ const post = (url, body, options = null) => {
     headers: getHeaders(options),
     body: JSON.stringify(body),
   };
-  return fetch(url, requestOptions).then(handleResponse);
+  return fetch(addBaseUrl(url), requestOptions).then(handleResponse);
 };
 
 const put = (url, body, options = null) => {
@@ -22,7 +22,7 @@ const put = (url, body, options = null) => {
     headers: getHeaders(options),
     body: JSON.stringify(body),
   };
-  return fetch(url, requestOptions).then(handleResponse);
+  return fetch(addBaseUrl(url), requestOptions).then(handleResponse);
 };
 
 const deleter = (url, options) => {
@@ -30,16 +30,16 @@ const deleter = (url, options) => {
     method: 'DELETE',
     headers: getHeaders(options),
   };
-  return fetch(url, requestOptions).then(handleResponse);
+  return fetch(addBaseUrl(url), requestOptions).then(handleResponse);
 };
 
 const handleResponse = async (response) => {
-  const json = await response.json();
-
   if (response.ok) {
+    const json = await response.json();
     return json;
   } else {
-    const error = new Error(response.status + ': ' + response.statusText);
+    const text = await response.text();
+    const error = response.status + ' ' + response.statusText + ': ' + text;
     return Promise.reject(error);
   }
 };

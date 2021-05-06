@@ -56,10 +56,10 @@ const UserDrawer = (props: UserDrawerProps): JSX.Element => {
                   onChange={props.handleUserChange}
                 />
               </FormControl>
-              <FormControl id="phone">
+              <FormControl id="phoneNumber">
                 <FormLabel>Phone number</FormLabel>
                 <Input
-                  type="email"
+                  type="tel"
                   value={props.user.phoneNumber}
                   onChange={props.handleUserChange}
                 />

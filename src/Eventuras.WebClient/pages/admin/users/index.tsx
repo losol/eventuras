@@ -8,7 +8,8 @@ import {
 } from '@components/common';
 import Unauthorized from '@components/common/Unauthorized/Unauthorized';
 import { fetcher } from '@lib/fetcher';
-import { getUser, User } from '@lib/User';
+import { toaster } from '@lib/toaster';
+import { createUser, getUser, updateUser, User } from '@lib/User';
 import { getSession, useSession } from 'next-auth/client';
 import React, { useEffect, useMemo, useState } from 'react';
 
@@ -77,6 +78,33 @@ const AdminUsersIndex = (): JSX.Element => {
     userDrawerToggle();
   };
 
+  const handleSubmitNewUser = async (user: User) => {
+    const session = await getSession({});
+    const newUser = await createUser(user, session.accessToken).catch((error) =>
+      toaster.error(error)
+    );
+
+    if (newUser) {
+      toaster.success(`${newUser.name} is now a user.`);
+      setActiveUser(null);
+      getUsersList(currentPage);
+    }
+  };
+
+  const handleSubmitUpdateUser = async (user: User) => {
+    const session = await getSession({});
+    const updatedUser = await updateUser(
+      user,
+      session.accessToken
+    ).catch((error) => toaster.error(error));
+
+    if (updatedUser) {
+      toaster.success(`${updatedUser.name} was updated.`);
+      setActiveUser(null);
+      getUsersList(currentPage);
+    }
+  };
+
   const openUserdetails = async (userId: string) => {
     const session = await getSession({});
     const user = await getUser(userId, session.accessToken);
@@ -121,7 +149,11 @@ const AdminUsersIndex = (): JSX.Element => {
               })
             }
             onSubmit={() => {
-              return;
+              if (activeUser.id) {
+                handleSubmitUpdateUser(activeUser);
+              } else {
+                handleSubmitNewUser(activeUser);
+              }
             }}
           />
         )}
