@@ -11,7 +11,7 @@ export const getUser = async (
   userId: string,
   accessToken: string
 ): Promise<User> => {
-  return await fetcher.get(`/v3/users/${userId}`, {
+  return fetcher.get(`/v3/users/${userId}`, {
     accessToken: accessToken,
   });
 };
@@ -34,11 +34,9 @@ export const createUser = async (
   }
   validateUser(user);
 
-  const newUser = fetcher.post(`/v3/users`, user, {
+  return fetcher.post(`/v3/users`, user, {
     accessToken: accessToken,
   });
-
-  return newUser;
 };
 
 export const updateUser = async (
@@ -50,8 +48,7 @@ export const updateUser = async (
   }
   validateUser(user);
 
-  const updatedUser = await fetcher.put(`/v3/users/${user.id}`, user, {
+  return fetcher.put(`/v3/users/${user.id}`, user, {
     accessToken: accessToken,
   });
-  return updatedUser;
 };

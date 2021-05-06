@@ -35,8 +35,7 @@ const deleter = (url, options) => {
 
 const handleResponse = async (response) => {
   if (response.ok) {
-    const json = await response.json();
-    return json;
+    return response.json();
   } else {
     const text = await response.text();
     const error = response.status + ' ' + response.statusText + ': ' + text;

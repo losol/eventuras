@@ -54,7 +54,6 @@ const AdminUsersIndex = (): JSX.Element => {
   );
 
   const getUsersList = async (page) => {
-    const session = await getSession({});
     const users = await fetcher.get(`/v3/users?page=${page}&count=${count}`, {
       accessToken: session.accessToken,
     });
@@ -79,7 +78,6 @@ const AdminUsersIndex = (): JSX.Element => {
   };
 
   const handleSubmitNewUser = async (user: User) => {
-    const session = await getSession({});
     const newUser = await createUser(user, session.accessToken).catch((error) =>
       toaster.error(error)
     );
@@ -92,7 +90,6 @@ const AdminUsersIndex = (): JSX.Element => {
   };
 
   const handleSubmitUpdateUser = async (user: User) => {
-    const session = await getSession({});
     const updatedUser = await updateUser(
       user,
       session.accessToken
@@ -106,7 +103,6 @@ const AdminUsersIndex = (): JSX.Element => {
   };
 
   const openUserdetails = async (userId: string) => {
-    const session = await getSession({});
     const user = await getUser(userId, session.accessToken);
     if (user) {
       setActiveUser(user);
