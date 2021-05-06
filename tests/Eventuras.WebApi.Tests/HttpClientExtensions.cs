@@ -5,7 +5,9 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -128,6 +130,23 @@ namespace Eventuras.WebApi.Tests
             return await httpClient.PutAsync(requestUri,
                 new StringContent(JsonConvert.SerializeObject(data),
                     Encoding.UTF8, "application/json"));
+        }
+
+        public static async Task<HttpResponseMessage> GetAsync(
+            this HttpClient httpClient,
+            string requestUri,
+            object data)
+        {
+            var props = new List<PropertyInfo>(data.GetType().GetProperties());
+            var pairs = new List<string>(props.Count);
+            foreach (PropertyInfo prop in props)
+            {
+                var propValue = prop.GetValue(data, null);
+                var encoded = propValue != null ? WebUtility.UrlEncode(propValue.ToString()) : null;
+                pairs.Add($"{prop.Name}={encoded}");
+            }
+            var query = string.Join("&", pairs);
+            return await httpClient.GetAsync($"{requestUri}?{query}");
         }
     }
 }

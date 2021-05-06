@@ -1,8 +1,8 @@
 import { Box, Heading, SimpleGrid } from '@chakra-ui/react';
 import Head from 'next/head';
 
-import { Layout, Loading } from '../components/common';
-import EventCard from '../components/event/EventCard/EventCard';
+import { Layout, Loading } from '@components/common';
+import EventCard from '@components/event/EventCard/EventCard';
 
 export default function Index(props) {
   return (
@@ -27,6 +27,7 @@ export default function Index(props) {
                     title={item.name}
                     description={item.description}
                     key={item.id}
+                    href={`/event/${item.id}`}
                   />
                 ))}
             </SimpleGrid>
@@ -42,6 +43,7 @@ export default function Index(props) {
                     title={item.name}
                     description={item.description}
                     key={item.id}
+                    href={`/onlinecourse/${item.id}`}
                   />
                 ))}
             </SimpleGrid>
@@ -65,7 +67,7 @@ export async function getStaticProps() {
 
   return {
     props: {
-      events,
+      events: events.data,
       onlinecourses,
     },
     revalidate: 1, // In seconds

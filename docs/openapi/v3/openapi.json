@@ -465,6 +465,30 @@
             "format" : "int32",
             "type" : "integer"
           }
+        }, {
+          "description" : "Search users by name, email, or phone.\n",
+          "in" : "query",
+          "name" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "`name`, `email` or `phone`. Default is `name`.\n",
+          "in" : "query",
+          "name" : "order",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Whether to apply descending sort.\nApplicable to `order` param only.\nDefault is `false`.\n",
+          "in" : "query",
+          "name" : "descending",
+          "required" : false,
+          "schema" : {
+            "type" : "boolean"
+          }
         } ],
         "responses" : {
           "200" : {

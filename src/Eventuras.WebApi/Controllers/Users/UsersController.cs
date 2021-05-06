@@ -61,22 +61,24 @@ namespace Eventuras.WebApi.Controllers.Users
         [HttpGet]
         [Authorize(Policy = Constants.Auth.AdministratorRole)]
         public async Task<PageResponseDto<UserDto>> List(
-            [FromQuery] PageQueryDto query,
+            [FromQuery] UsersQueryDto request,
             CancellationToken cancellationToken)
         {
             var paging = await _userRetrievalService
                 .ListUsers(
                     new UserListRequest
                     {
-                        Limit = query.Limit,
-                        Offset = query.Offset,
-                        OrderBy = UserListOrder.Name
+                        Filter = request.ToUserFilter(),
+                        Limit = request.Limit,
+                        Offset = request.Offset,
+                        OrderBy = request.Order,
+                        Descending = request.Descending
                     },
                     UserRetrievalOptions.Default,
                     cancellationToken);
 
             return PageResponseDto<UserDto>.FromPaging(
-                query, paging, u => new UserDto(u));
+                request, paging, u => new UserDto(u));
         }
 
         // POST /v3/users

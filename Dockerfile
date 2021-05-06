@@ -1,7 +1,7 @@
 #
 # Stage 0
 # Build the project
-FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /app/src
 
 # copy csproj and restore dependencies
@@ -33,7 +33,7 @@ RUN dotnet publish -c Release -o /app/out
 #
 # Stage 1
 # Copy the built files over
-FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine AS base
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS publish
 
 # Copy files over from the build stage
 WORKDIR /app
