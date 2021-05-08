@@ -12,12 +12,12 @@ namespace Eventuras.Services.Users
             this IUserRetrievalService userRetrievalService)
         {
             return (await PageReader<ApplicationUser>.ReadAllAsync(
-                (limit, offset, token) => userRetrievalService
-                .ListUsers(new UserListRequest
-                {
-                    Limit = limit,
-                    Offset = offset
-                }, UserRetrievalOptions.Default, token)))
+                    (offset, limit, token) => userRetrievalService
+                        .ListUsers(new UserListRequest
+                        {
+                            Limit = limit,
+                            Offset = offset
+                        }, UserRetrievalOptions.Default, token)))
                 .ToList();
         }
     }

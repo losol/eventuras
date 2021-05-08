@@ -51,7 +51,7 @@ namespace Eventuras.Services
                 _lastPage = await _func.Invoke(0, _count, cancellationToken);
                 _recordsRead += _lastPage.Data.Length;
             }
-            else if (_lastPageRead && _recordsRead < _lastPage.TotalRecords)
+            else if (_lastPageRead && _recordsRead > 0 && _recordsRead < _lastPage.TotalRecords)
             {
                 _lastPage = await _func.Invoke(_page * _count, _count, cancellationToken);
                 _lastPageRead = false;
