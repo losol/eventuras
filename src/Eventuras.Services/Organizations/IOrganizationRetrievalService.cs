@@ -15,7 +15,7 @@ namespace Eventuras.Services.Organizations
             OrganizationFilter filter = null,
             OrganizationRetrievalOptions options = null);
 
-        /// <exception cref="System.AccessViolationException">Not signed in or has no access to the given org.</exception>
+        /// <exception cref="Exceptions.NotAccessibleException">Not signed in or has no access to the given org.</exception>
         Task<Organization> GetOrganizationByIdAsync(int id, OrganizationRetrievalOptions options = null);
     }
 }

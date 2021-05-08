@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Eventuras.Services.Exceptions;
 
 namespace Eventuras.Services.Organizations
 {
@@ -35,7 +36,7 @@ namespace Eventuras.Services.Organizations
 
             if (!_httpContextAccessor.HttpContext.User.IsInRole(Roles.SuperAdmin))
             {
-                throw new AccessViolationException($"Only {Roles.SuperAdmin} users can create new org.");
+                throw new NotAccessibleException($"Only {Roles.SuperAdmin} users can create new org.");
             }
 
             try
@@ -59,7 +60,7 @@ namespace Eventuras.Services.Organizations
 
             if (!_httpContextAccessor.HttpContext.User.IsInRole(Roles.SuperAdmin))
             {
-                throw new AccessViolationException($"Only {Roles.SuperAdmin} users can update org.");
+                throw new NotAccessibleException($"Only {Roles.SuperAdmin} users can update org.");
             }
 
             try

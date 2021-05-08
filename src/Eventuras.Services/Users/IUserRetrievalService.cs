@@ -9,11 +9,13 @@ namespace Eventuras.Services.Users
         /// <exception cref="Exceptions.NotFoundException">User not found.</exception>
         Task<ApplicationUser> GetUserByIdAsync(
             string userId,
+            UserRetrievalOptions options = null,
             CancellationToken cancellationToken = default);
 
         /// <exception cref="Exceptions.NotFoundException">User not found.</exception>
         Task<ApplicationUser> GetUserByEmailAsync(
             string email,
+            UserRetrievalOptions options = null,
             CancellationToken cancellationToken = default);
 
         Task<Paging<ApplicationUser>> ListUsers(

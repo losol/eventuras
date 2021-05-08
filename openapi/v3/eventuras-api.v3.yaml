@@ -46,6 +46,12 @@ paths:
   /events/{id}:
     $ref: './paths/events/id.yaml'
 
+  # Organization members
+  /organizations/{id}/members:
+    $ref: './paths/organizations/members.yaml'
+  /organizations/{id}/members/{memberId}/roles:
+    $ref: './paths/organizations/members/roles.yaml'
+
 components:
 
   schemas:
