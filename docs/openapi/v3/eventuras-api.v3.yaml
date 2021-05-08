@@ -572,6 +572,14 @@ paths:
         required: false
         schema:
           type: string
+      - description: |
+          Organization id.
+        in: query
+        name: organizationId
+        required: false
+        schema:
+          format: int32
+          type: integer
       responses:
         "200":
           content:
