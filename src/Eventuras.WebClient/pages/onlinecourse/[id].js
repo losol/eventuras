@@ -6,7 +6,7 @@ import { registerForEvent } from '@lib/Registration';
 import { signIn, useSession } from 'next-auth/client';
 import { useContext, useEffect, useState } from 'react';
 
-const EventInfo = (props): JSX.Element => {
+const EventInfo = (props) => {
   const [session, loading] = useSession();
   const { name = '...', description = '...' } = props;
   const { user } = useContext(UserContext);
