@@ -19,6 +19,9 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
+      "@context/*": [
+        "context/*"
+      ],
       "@lib/*": [
         "lib/*"
       ],
