@@ -107,7 +107,7 @@ namespace Eventuras.WebApi.Controllers.Users
                 return BadRequest(); // TODO: report validation errors!
             }
 
-            var user = await _userRetrievalService.GetUserByIdAsync(id);
+            var user = await _userRetrievalService.GetUserByIdAsync(id, cancellationToken);
             dto.CopyTo(user);
             await _userManagementService.UpdateUserAsync(user, cancellationToken);
 
