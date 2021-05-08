@@ -43,6 +43,7 @@ namespace Eventuras.Services.Registrations
         {
             var existingRegistration = await _context.Registrations.FirstOrDefaultAsync(m => m.EventInfoId == eventId && m.UserId == userId);
             if (existingRegistration != null) {
+                await _registrationAccessControlService.CheckRegistrationCreateAccessAsync(existingRegistration, cancellationToken);
                 return existingRegistration;
             }
             
