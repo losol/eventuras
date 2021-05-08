@@ -23,10 +23,10 @@ namespace Eventuras.WebApi.Controllers.Users
             IUserManagementService userManagementService)
         {
             _userRetrievalService = userRetrievalService ??
-                throw new ArgumentNullException(nameof(userRetrievalService));
+                                    throw new ArgumentNullException(nameof(userRetrievalService));
 
             _userManagementService = userManagementService ??
-                throw new ArgumentNullException(nameof(userManagementService));
+                                     throw new ArgumentNullException(nameof(userManagementService));
         }
 
         // GET: /v3/users/me
@@ -38,7 +38,8 @@ namespace Eventuras.WebApi.Controllers.Users
             {
                 return BadRequest("No email provided.");
             }
-            var user = await _userRetrievalService.GetUserByEmailAsync(userEmail, cancellationToken);
+
+            var user = await _userRetrievalService.GetUserByEmailAsync(userEmail, null, cancellationToken);
 
             return Ok(new UserDto(user));
         }
@@ -53,7 +54,7 @@ namespace Eventuras.WebApi.Controllers.Users
                 return Forbid();
             }
 
-            var user = await _userRetrievalService.GetUserByIdAsync(id, cancellationToken);
+            var user = await _userRetrievalService.GetUserByIdAsync(id, null, cancellationToken);
             return Ok(new UserDto(user));
         }
 
@@ -100,14 +101,15 @@ namespace Eventuras.WebApi.Controllers.Users
         // PUT /v3/users/{id}
         [HttpPut("{id}")]
         [Authorize(Policy = Constants.Auth.AdministratorRole)]
-        public async Task<IActionResult> UpdateUser(string id, [FromBody] UserFormDto dto, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateUser(string id, [FromBody] UserFormDto dto,
+            CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(); // TODO: report validation errors!
             }
 
-            var user = await _userRetrievalService.GetUserByIdAsync(id, cancellationToken);
+            var user = await _userRetrievalService.GetUserByIdAsync(id, null, cancellationToken);
             dto.CopyTo(user);
             await _userManagementService.UpdateUserAsync(user, cancellationToken);
 

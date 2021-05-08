@@ -33,7 +33,7 @@ namespace Eventuras.WebApi.Controllers.Organizations
 
         [HttpPut]
         [Authorize(Roles = Roles.SystemAdmin)]
-        public async Task<IActionResult> PutAsync(int organizationId, string userId)
+        public async Task<IActionResult> Put(int organizationId, string userId)
         {
             var user = await _userRetrievalService.GetUserByIdAsync(userId);
             var org = await _orgRetrievalService.GetOrganizationByIdAsync(organizationId);
@@ -43,7 +43,7 @@ namespace Eventuras.WebApi.Controllers.Organizations
 
         [HttpDelete]
         [Authorize(Roles = Roles.SystemAdmin)]
-        public async Task DeleteAsync(int organizationId, string userId)
+        public async Task Delete(int organizationId, string userId)
         {
             var user = await _userRetrievalService.GetUserByIdAsync(userId);
             var org = await _orgRetrievalService.GetOrganizationByIdAsync(organizationId);

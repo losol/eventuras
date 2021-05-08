@@ -27,7 +27,10 @@ namespace Eventuras.Services.Users
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
-        public async Task<ApplicationUser> GetUserByIdAsync(string userId, CancellationToken cancellationToken)
+        public async Task<ApplicationUser> GetUserByIdAsync(
+            string userId,
+            UserRetrievalOptions options,
+            CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
@@ -36,6 +39,7 @@ namespace Eventuras.Services.Users
 
             var user = await _context.ApplicationUsers
                 .AsNoTracking()
+                .UseOptions(options ?? UserRetrievalOptions.Default)
                 .SingleOrDefaultAsync(u => u.Id == userId, cancellationToken: cancellationToken);
 
             if (user == null)
@@ -46,7 +50,10 @@ namespace Eventuras.Services.Users
             return user;
         }
 
-        public async Task<ApplicationUser> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
+        public async Task<ApplicationUser> GetUserByEmailAsync(
+            string email,
+            UserRetrievalOptions options,
+            CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(email))
             {
@@ -55,6 +62,7 @@ namespace Eventuras.Services.Users
 
             var user = await _context.ApplicationUsers
                 .AsNoTracking()
+                .UseOptions(options ?? UserRetrievalOptions.Default)
                 .SingleOrDefaultAsync(u => u.NormalizedEmail == email.ToUpper(), cancellationToken: cancellationToken);
 
             if (user == null)
@@ -70,7 +78,7 @@ namespace Eventuras.Services.Users
             UserRetrievalOptions options,
             CancellationToken cancellationToken)
         {
-            options ??= new UserRetrievalOptions();
+            options ??= UserRetrievalOptions.Default;
 
             var query = _context.Users
                 .AsNoTracking()

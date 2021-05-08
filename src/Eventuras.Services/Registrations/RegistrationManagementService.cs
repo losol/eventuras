@@ -42,7 +42,7 @@ namespace Eventuras.Services.Registrations
             CancellationToken cancellationToken)
         {
             var @event = await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventId, null, cancellationToken); // To check event reference only
-            var user = await _userRetrievalService.GetUserByIdAsync(userId, cancellationToken);
+            var user = await _userRetrievalService.GetUserByIdAsync(userId, null, cancellationToken);
 
             var registration = new Registration
             {

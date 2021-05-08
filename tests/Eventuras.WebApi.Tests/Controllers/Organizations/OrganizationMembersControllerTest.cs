@@ -41,7 +41,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
         {
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
-            var scope = _factory.Services.NewTestScope();
+            using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             var response = await client.PutAsync($"/v3/organizations/10001/members/{user.Entity.Id}", new { });
             response.CheckNotFound();
@@ -52,7 +52,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
         {
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
-            var scope = _factory.Services.NewTestScope();
+            using var scope = _factory.Services.NewTestScope();
             using var org = await scope.CreateOrganizationAsync();
             var response =
                 await client.PutAsync($"/v3/organizations/{org.Entity.OrganizationId}/members/any", new { });
@@ -64,7 +64,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
         {
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
-            var scope = _factory.Services.NewTestScope();
+            using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             using var org = await scope.CreateOrganizationAsync();
             var response =
@@ -85,7 +85,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
         {
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
-            var scope = _factory.Services.NewTestScope();
+            using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             using var org = await scope.CreateOrganizationAsync();
             using var m = await scope.CreateOrganizationMemberAsync(user.Entity, org.Entity);
@@ -129,7 +129,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
         {
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
-            var scope = _factory.Services.NewTestScope();
+            using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             var response = await client.DeleteAsync($"/v3/organizations/10001/members/{user.Entity.Id}");
             response.CheckNotFound();
@@ -140,7 +140,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
         {
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
-            var scope = _factory.Services.NewTestScope();
+            using var scope = _factory.Services.NewTestScope();
             using var org = await scope.CreateOrganizationAsync();
             var response =
                 await client.DeleteAsync($"/v3/organizations/{org.Entity.OrganizationId}/members/any");
@@ -152,7 +152,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
         {
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
-            var scope = _factory.Services.NewTestScope();
+            using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             var org = await scope.CreateOrganizationAsync();
             await scope.CreateOrganizationMemberAsync(user.Entity, org.Entity);
@@ -174,7 +174,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
         {
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
-            var scope = _factory.Services.NewTestScope();
+            using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             using var org = await scope.CreateOrganizationAsync();
 

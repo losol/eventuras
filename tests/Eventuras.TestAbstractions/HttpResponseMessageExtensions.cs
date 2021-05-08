@@ -32,7 +32,7 @@ namespace Eventuras.TestAbstractions
             return JToken.Parse(content);
         }
 
-        public static async Task<JToken> AsArrayAsync(this HttpResponseMessage response)
+        public static async Task<JArray> AsArrayAsync(this HttpResponseMessage response)
         {
             response.CheckOk();
             var content = await response.Content.ReadAsStringAsync();
