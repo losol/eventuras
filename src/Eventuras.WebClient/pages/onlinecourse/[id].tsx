@@ -1,54 +1,31 @@
 import { Button, Container, Heading, useDisclosure } from '@chakra-ui/react';
+import { Layout } from '@components/common';
 import AlertModal from '@components/common/Modals';
+import { UserContext } from '@context/UserContext';
+import { registerForEvent } from '@lib/Registration';
 import { signIn, useSession } from 'next-auth/client';
 import { useContext, useEffect, useState } from 'react';
 
-import { Layout } from '@components/common';
-
-import { UserContext } from '../../context/UserContext';
-
-const EventInfo = (props) => {
+const EventInfo = (props): JSX.Element => {
   const [session, loading] = useSession();
   const { name = '...', description = '...' } = props;
   const { user } = useContext(UserContext);
   const [modal, setModal] = useState({ title: '', text: '' });
   const { isOpen, onOpen, onClose } = useDisclosure();
+
   const handleRegistrationEventRequest = async () => {
-    fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/registrations/', {
-      method: 'POST',
-      body: JSON.stringify({
+    await registerForEvent(
+      {
         userId: user.id,
         eventId: props.id,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${JSON.parse(
-          JSON.stringify(session.accessToken)
-        )}`,
       },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Something went wrong');
-        }
-      })
-      .then(() => {
-        setModal({
-          title: 'Success!',
-          text: `Welcome to ${props.name}`,
-        });
-
-        onOpen();
-      })
-      .catch(() => {
-        setModal({
-          title: 'Oops!',
-          text: 'Sorry, we failed',
-        });
-        onOpen();
-      });
+      session.accessToken
+    );
+    setModal({
+      title: 'Welcome!',
+      text: `Welcome to ${props.name}`,
+    });
+    onOpen();
   };
 
   const handleLoginAndRegistrationEvent = async () => {
@@ -95,7 +72,7 @@ const EventInfo = (props) => {
             isLoading={loading}
             onClick={handleRegistrationEventRequest}
           >
-            Register for event
+            Register for online course
           </Button>
         )}
         <AlertModal
@@ -117,11 +94,12 @@ export async function getStaticProps({ params }) {
 }
 
 export async function getStaticPaths() {
-  const res = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/events/');
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/onlinecourses/'
+  );
   const events = await res.json();
 
-  // TODO: loop through pagination?
-  const paths = events.data.map((e) => ({
+  const paths = events.map((e) => ({
     params: {
       id: e.id.toString(),
     },
