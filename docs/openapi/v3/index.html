@@ -209,6 +209,14 @@ font-style: italic;
   <ul>
   <li><a href="#createNewEmailNotification"><code><span class="http-method">post</span> /notifications/email</code></a></li>
   </ul>
+  <h4><a href="#Organizations">Organizations</a></h4>
+  <ul>
+  <li><a href="#addMemberToOrganization"><code><span class="http-method">put</span> /organizations/{id}/members</code></a></li>
+  <li><a href="#addOrganizationMemberRole"><code><span class="http-method">post</span> /organizations/{id}/members/{memberId}/roles</code></a></li>
+  <li><a href="#getOrganizationMemberRoles"><code><span class="http-method">get</span> /organizations/{id}/members/{memberId}/roles</code></a></li>
+  <li><a href="#removeMemberFromOrganization"><code><span class="http-method">delete</span> /organizations/{id}/members</code></a></li>
+  <li><a href="#removeMemberFromOrganization_1"><code><span class="http-method">delete</span> /organizations/{id}/members/{memberId}/roles</code></a></li>
+  </ul>
   <h4><a href="#Registrations">Registrations</a></h4>
   <ul>
   <li><a href="#addOrderToRegistration"><code><span class="http-method">post</span> /registrations/{id}/orders</code></a></li>
@@ -657,6 +665,250 @@ or explicit email addresses.</div>
     <h4 class="field-label">200</h4>
     OK
         <a href="#NotificationResponseDto">NotificationResponseDto</a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="Organizations">Organizations</a></h1>
+  <div class="method"><a name="addMemberToOrganization"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /organizations/{id}/members</code></pre></div>
+    <div class="method-summary">Add member to organization. (<span class="nickname">addMemberToOrganization</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="addOrganizationMemberRole"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /organizations/{id}/members/{memberId}/roles</code></pre></div>
+    <div class="method-summary">Add org member role. (<span class="nickname">addOrganizationMemberRole</span>)</div>
+    <div class="method-notes"></div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">inline_object <a href="#inline_object">inline_object</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      array[String]
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>""</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getOrganizationMemberRoles"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /organizations/{id}/members/{memberId}/roles</code></pre></div>
+    <div class="method-summary">List org member roles. (<span class="nickname">getOrganizationMemberRoles</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      array[String]
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>""</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="removeMemberFromOrganization"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /organizations/{id}/members</code></pre></div>
+    <div class="method-summary">Remove member from organization. (<span class="nickname">removeMemberFromOrganization</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="removeMemberFromOrganization_1"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /organizations/{id}/members/{memberId}/roles</code></pre></div>
+    <div class="method-summary">Remove org member role. (<span class="nickname">removeMemberFromOrganization_1</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      array[String]
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>""</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
     <h4 class="field-label">400</h4>
     Missing or invalid request parameters.
         <a href="#Error">Error</a>
@@ -1388,6 +1640,7 @@ Default is <code>false</code>. default: null </div>
     <li><a href="#UserDto"><code>UserDto</code> - User info.</a></li>
     <li><a href="#UserFormDto"><code>UserFormDto</code> - Update user form.</a></li>
     <li><a href="#UsersPagedList"><code>UsersPagedList</code> - User list with paging.</a></li>
+    <li><a href="#inline_object"><code>inline_object</code> - </a></li>
   </ol>
 
   <div class="model">
@@ -1688,6 +1941,13 @@ Artist = 4 </div>
 <div class="param">total </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total items. format: int32</div>
 <div class="param">pages </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total pages. format: int32</div>
 <div class="param">data </div><div class="param-desc"><span class="param-type"><a href="#UserDto">array[UserDto]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="inline_object"><code>inline_object</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">role (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   </body>
