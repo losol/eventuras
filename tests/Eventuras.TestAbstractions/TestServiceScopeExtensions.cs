@@ -123,7 +123,7 @@ namespace Eventuras.TestAbstractions
             string description = TestingConstants.Placeholder,
             string code = TestingConstants.Placeholder,
             string city = TestingConstants.Placeholder,
-            EventInfo.EventInfoStatus status = EventInfo.EventInfoStatus.Planned,
+            EventInfo.EventInfoStatus status = EventInfo.EventInfoStatus.RegistrationsOpen,
             EventInfo.EventInfoType eventInfoType = EventInfo.EventInfoType.Conference,
             bool featured = false,
             DateTime? dateStart = null,

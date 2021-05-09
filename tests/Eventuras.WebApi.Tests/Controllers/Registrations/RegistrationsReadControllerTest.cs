@@ -132,8 +132,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
             await scope.CreateOrganizationMemberAsync(otherAdmin.Entity, otherOrg.Entity, role: Roles.Admin);
 
-            using var e1 = await scope.CreateEventAsync(organization: org.Entity);
-            using var e2 = await scope.CreateEventAsync(organization: otherOrg.Entity);
+            using var e1 = await scope.CreateEventAsync(organization: org.Entity, organizationId: org.Entity.OrganizationId);
+            using var e2 = await scope.CreateEventAsync(organization: otherOrg.Entity, organizationId: otherOrg.Entity.OrganizationId);
             using var r1 = await scope.CreateRegistrationAsync(e1.Entity, user.Entity, time: DateTime.Now.AddDays(3));
             using var r2 = await scope.CreateRegistrationAsync(e1.Entity, otherUser.Entity, time: DateTime.Now.AddDays(2));
             using var r3 = await scope.CreateRegistrationAsync(e2.Entity, otherUser.Entity, time: DateTime.Now.AddDays(1));

@@ -181,7 +181,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var admin = await scope.CreateUserAsync(role: Roles.Admin);
             using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
             using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
-            using var e = await scope.CreateEventAsync(organization: org.Entity);
+            using var e = await scope.CreateEventAsync(organization: org.Entity, organizationId: org.Entity.OrganizationId);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
             var response = await client.PostAsync("/v3/registrations", f(user.Entity.Id, e.Entity.EventInfoId));
