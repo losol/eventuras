@@ -83,7 +83,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
 
             response = await client.GetAsync("/v3/registrations?page=2&count=2");
             paging = await response.AsTokenAsync();
-            paging.CheckPaging(2, 1, 3,
+            paging.CheckPaging(2, 2, 3,
                 (token, r) => token.CheckRegistration(r),
                 r3.Entity);
         }
