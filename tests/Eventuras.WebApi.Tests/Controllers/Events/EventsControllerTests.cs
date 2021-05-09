@@ -636,13 +636,15 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             var client = _factory.CreateClient().AuthenticatedAsAdmin();
             var response = await client.PostAsync("/v3/events", new
             {
+                title = "asdf",
+                organizationId = 1,
                 slug = evt.Entity.Slug
             });
             response.CheckConflict();
         }
 
         [Fact]
-        public async Task Should_Ignore_Duplicate_Archived_Slug_When_Creating_Event()
+        public async Task Should_Not_Ignore_Duplicate_Archived_Slug_When_Creating_Event()
         {
             using var scope = _factory.Services.NewTestScope();
             using var evt = await scope.CreateEventAsync(title: "asdf", organizationId: 1, slug: "test", archived: true);
@@ -654,14 +656,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                 organizationId = 1,
                 slug = evt.Entity.Slug
             });
-            response.CheckOk();
-
-            var token = await response.AsTokenAsync();
-            var e = await scope.Db.EventInfos
-                .AsNoTracking()
-                .SingleAsync(e => e.Slug == "test" &&
-                                  e.EventInfoId != evt.Entity.EventInfoId);
-            token.CheckEvent(e);
+            response.CheckConflict();
         }
 
         [Theory]

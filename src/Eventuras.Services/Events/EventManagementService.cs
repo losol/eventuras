@@ -32,8 +32,7 @@ namespace Eventuras.Services.Events
             }
 
             if (await _context.EventInfos
-                .AnyAsync(e => e.Slug == info.Slug &&
-                               !e.Archived))
+                .AnyAsync(e => e.Slug == info.Slug))
             {
                 throw new DuplicateException($"Event with code {info.Slug} already exists");
             }
