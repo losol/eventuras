@@ -7,7 +7,8 @@ namespace Eventuras.WebApi.Models
     {
         public int Id { get; set; }
         public EventInfo.EventInfoType Type { get; set; }
-        public string Name { get; set; }
+        public EventInfo.EventInfoStatus Status { get; set; }
+        public string Title { get; set; }
         public string Slug { get; set; }
         public string Category { get; set; }
         public string Description { get; set; }
@@ -29,7 +30,8 @@ namespace Eventuras.WebApi.Models
         {
             Id = e.EventInfoId;
             Type = e.Type;
-            Name = e.Title;
+            Status = e.Status;
+            Title = e.Title;
             Slug = e.Slug;
             Category = e.Category;
             Description = e.Description;
