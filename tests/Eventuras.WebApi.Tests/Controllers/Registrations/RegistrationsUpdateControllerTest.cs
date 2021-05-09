@@ -122,7 +122,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         {
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
-            using var e = await scope.CreateEventAsync();
+            using var e = await scope.CreateEventAsync(status: EventInfo.EventInfoStatus.Planned);
 
             var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
             var response = await client.PostAsync("/v3/registrations", new
@@ -154,7 +154,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var admin = await scope.CreateUserAsync(role: Roles.Admin);
             using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
             using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
-            using var e = await scope.CreateEventAsync(organization: org.Entity);
+            using var e = await scope.CreateEventAsync(organization: org.Entity, organizationId: org.Entity.OrganizationId);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
             var response = await client.PostAsync("/v3/registrations", new
@@ -420,7 +420,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var admin = await scope.CreateUserAsync(role: Roles.Admin);
             using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
             using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
-            using var e = await scope.CreateEventAsync(organization: org.Entity);
+            using var e = await scope.CreateEventAsync(organization: org.Entity, organizationId: org.Entity.OrganizationId);
             using var registration = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
             Assert.Equal(Registration.RegistrationType.Participant, registration.Entity.Type);
 

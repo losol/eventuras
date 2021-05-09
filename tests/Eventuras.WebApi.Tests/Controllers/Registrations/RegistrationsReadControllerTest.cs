@@ -83,7 +83,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
 
             response = await client.GetAsync("/v3/registrations?page=2&count=2");
             paging = await response.AsTokenAsync();
-            paging.CheckPaging(2, 2, 3,
+            paging.CheckPaging(2, 1, 3,
                 (token, r) => token.CheckRegistration(r),
                 r3.Entity);
         }
@@ -168,28 +168,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
 
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
-
-            var response = await client.GetAsync("/v3/registrations");
-            var paging = await response.AsTokenAsync();
-            paging.CheckPaging(1, 3,
-                (token, r) => token.CheckRegistration(r),
-                r1.Entity, r2.Entity, r3.Entity);
-        }
-
-        [Fact]
-        public async Task Should_Not_Limit_Registrations_For_Super_Admin()
-        {
-            using var scope = _factory.Services.NewTestScope();
-            using var user = await scope.CreateUserAsync();
-            using var otherUser = await scope.CreateUserAsync();
-
-            using var e = await scope.CreateEventAsync();
-            using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(3));
-            using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(2));
-            using var r3 = await scope.CreateRegistrationAsync(e.Entity, otherUser.Entity, time: DateTime.Now.AddDays(1));
-
-            var client = _factory.CreateClient()
-                .AuthenticatedAsSuperAdmin();
 
             var response = await client.GetAsync("/v3/registrations");
             var paging = await response.AsTokenAsync();
