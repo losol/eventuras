@@ -20,7 +20,7 @@ namespace Eventuras.Domain
             NotAttended = 3,
             Attended = 4,
             Finished = 5,
-
+            WaitingList = 6
         }
 
         public enum RegistrationType

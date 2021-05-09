@@ -74,7 +74,7 @@ namespace Eventuras.Web.Pages.Admin.Events
             {
                 EventInfo = new EventInfo
                 {
-                    OrganizationId = Organization?.OrganizationId
+                    OrganizationId = Organization.OrganizationId
                 };
             }
 

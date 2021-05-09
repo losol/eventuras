@@ -130,7 +130,7 @@ namespace Eventuras.TestAbstractions
             DateTime? dateEnd = null,
             Product[] products = null,
             Organization organization = null,
-            int? organizationId = null,
+            int organizationId = TestingConstants.OrganizationId,
             EventCollection collection = null,
             EventCollection[] collections = null,
             bool archived = false)
@@ -173,7 +173,7 @@ namespace Eventuras.TestAbstractions
                 Status = status,
                 Products = products?.ToList(),
                 Archived = archived,
-                OrganizationId = organizationId ?? organization?.OrganizationId,
+                OrganizationId = organizationId,
                 CollectionMappings = collections?.Select(c => new EventCollectionMapping
                 {
                     CollectionId = c.CollectionId
