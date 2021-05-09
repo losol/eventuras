@@ -2,6 +2,7 @@ using Eventuras.Domain;
 using Eventuras.Services.Events;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading;
@@ -32,7 +33,9 @@ namespace Eventuras.WebApi.Controllers.Events
         // GET: v3/events
         [AllowAnonymous]
         [HttpGet]
-        public async Task<PageResponseDto<EventDto>> List([FromQuery] EventsQueryDto query, CancellationToken cancellationToken)
+        public async Task<PageResponseDto<EventDto>> List(
+            [FromQuery] EventsQueryDto query,
+            CancellationToken cancellationToken)
         {
             var events = await _eventInfoService
                 .ListEventsAsync(new EventListRequest(query.Offset, query.Limit)
@@ -79,6 +82,32 @@ namespace Eventuras.WebApi.Controllers.Events
             dto.CopyTo(eventInfo);
             await _eventManagementService.UpdateEventAsync(eventInfo);
             return Ok(new EventDto(eventInfo));
+        }
+
+        // PATCH: api/events/5
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> JsonPatchWithModelState(
+            int id,
+            [FromBody] JsonPatchDocument<EventInfo> patchDoc)
+        {
+            if (patchDoc != null)
+            {
+                var eventInfo = await _eventInfoService.GetEventInfoByIdAsync(id);
+
+                patchDoc.ApplyTo(eventInfo, ModelState);
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                await _eventManagementService.UpdateEventAsync(eventInfo);
+                return Ok(new ObjectResult(eventInfo));
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
 
         // DELETE: api/events/5

@@ -48,6 +48,11 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(eventInfo.City, address?.Any() == true ? address.Value<string>("addressLocality") : null);
         }
 
+        public static void CheckStringArray(this JArray array, params string[] roles)
+        {
+            array.CheckArray((t, r) => Assert.Equal(r, t.ToString()), roles);
+        }
+
         public static JArray CheckArray<T>(this JArray token, Action<JToken, T> f, params T[] values)
         {
             Assert.Equal(values.Length, token.Count);
@@ -55,6 +60,7 @@ namespace Eventuras.WebApi.Tests
             {
                 f(token[i], values[i]);
             }
+
             return token;
         }
 
@@ -85,17 +91,20 @@ namespace Eventuras.WebApi.Tests
             return CheckPaging(token, page, null, total, f, data);
         }
 
-        public static JToken CheckPaging<T>(this JToken token, int page, int? count, int? total, Action<JToken, T> f, params T[] data)
+        public static JToken CheckPaging<T>(this JToken token, int page, int? count, int? total, Action<JToken, T> f,
+            params T[] data)
         {
             Assert.Equal(page, token.Value<int>("page"));
             if (count.HasValue)
             {
                 Assert.Equal(count.Value, token.Value<int>("count"));
             }
+
             if (total.HasValue)
             {
                 Assert.Equal(total.Value, token.Value<int>("total"));
             }
+
             var arr = token.Value<JArray>("data");
             arr.CheckArray(f, data);
             return token;

@@ -68,6 +68,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                 new object[]{ "period=asd" },
                 new object[]{ "period=-1" },
                 new object[]{ "period=100" },
+                new object[]{ "organizationId=-1" },
+                new object[]{ "organizationId=0" },
+                new object[]{ "organizationId=abc" },
             };
         }
 
@@ -495,6 +498,30 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                  */
                 new object[]{ DateFilter.Contain("~C3.6", now.AddDays(-5), now.AddDays(5), now.AddDays(5), now.AddDays(10)) }
             };
+        }
+
+        [Fact]
+        public async Task Should_Filter_Event_List_By_OrganizationId()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org1 = await scope.CreateOrganizationAsync();
+            using var org2 = await scope.CreateOrganizationAsync();
+            using var evt1 = await scope.CreateEventAsync(organization: org1.Entity, organizationId: org1.Entity.OrganizationId, dateStart: DateTime.UtcNow.AddDays(1));
+            using var evt2 = await scope.CreateEventAsync(organization: org2.Entity, organizationId: org2.Entity.OrganizationId, dateStart: DateTime.UtcNow.AddDays(1));
+
+            var client = _factory.CreateClient();
+
+            var response = await client.GetAsync("/v3/events", new { organizationId = org1.Entity.OrganizationId });
+            response.CheckOk();
+
+            var token = await response.AsTokenAsync();
+            token.CheckPaging((t, e) => t.CheckEvent(e), evt1.Entity);
+
+            response = await client.GetAsync("/v3/events", new { organizationId = org2.Entity.OrganizationId });
+            response.CheckOk();
+
+            token = await response.AsTokenAsync();
+            token.CheckPaging((t, e) => t.CheckEvent(e), evt2.Entity);
         }
 
         #endregion

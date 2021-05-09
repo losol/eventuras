@@ -32,7 +32,8 @@ namespace Eventuras.Services.Users
 
             if (options.IncludeOrgMembership)
             {
-                query = query.Include(o => o.OrganizationMembership);
+                query = query.Include(o => o.OrganizationMembership)
+                    .ThenInclude(m => m.Roles);
             }
 
             return query;

@@ -16,6 +16,7 @@ namespace Eventuras.Domain
             WaitingList = 3,
             RegistrationsClosed = 4,
             Finished = 5,
+            Archived = 8,
             Cancelled = 9,
 
         }
@@ -32,7 +33,6 @@ namespace Eventuras.Domain
         public int EventInfoId { get; set; }
         public EventInfoStatus Status { get; set; } = EventInfoStatus.Draft;
         public EventInfoType Type { get; set; } = EventInfoType.Course;
-
 
         [Display(Name = "Tittel på kurset")]
         public string Title { get; set; }
@@ -66,9 +66,6 @@ namespace Eventuras.Domain
         [Display(Name = "Velkomstbrev")]
         [DataType(DataType.MultilineText)]
         public string WelcomeLetter { get; set; }
-
-        [Display(Name = "Nettkurs?")]
-        public bool OnDemand { get; set; } = false;
 
         [Display(Name = "Publisert?")]
         public bool Published { get; set; } = false;
@@ -127,21 +124,23 @@ namespace Eventuras.Domain
         [Display(Name = "Prosjekt-kode for regnskap")]
         public string ProjectCode { get; set; }
 
+        public int OrganizationId { get; set; }
+
+        // Consider to remove this
+        public bool Archived { get; set; }
+        public string OrganizerUserId { get; set; }
         public bool HasFeaturedImage => !string.IsNullOrWhiteSpace(FeaturedImageUrl);
         public bool HasExternalInfoPage => !string.IsNullOrWhiteSpace(ExternalInfoPageUrl);
         public bool HasExternalRegistrationPage => !string.IsNullOrWhiteSpace(ExternalRegistrationsUrl);
-
-        public string OrganizerUserId { get; set; }
-        [ForeignKey("OrganizerUserId")]
-        public ApplicationUser OrganizerUser { get; set; }
-
-        public int? OrganizationId { get; set; }
-        [ForeignKey("OrganizationId")]
-        public Organization Organization { get; set; }
-
-        public bool Archived { get; set; }
+        [Display(Name = "Nettkurs?")]
+        public bool OnDemand { get; set; } = false;
+        // Consider removing end
 
         #region Navigational properties
+        [ForeignKey("OrganizerUserId")]
+        public ApplicationUser OrganizerUser { get; set; }
+        [ForeignKey("OrganizationId")]
+        public Organization Organization { get; set; }
         public List<Registration> Registrations { get; set; }
         public List<Product> Products { get; set; }
         public List<ExternalEvent> ExternalEvents { get; set; }

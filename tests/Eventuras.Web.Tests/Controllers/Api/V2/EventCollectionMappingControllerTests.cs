@@ -209,7 +209,7 @@ namespace Eventuras.Web.Tests.Controllers.Api.V2
             Assert.True(await scope.Db.EventCollections.AnyAsync(e => e.CollectionId == collection.Entity.CollectionId));
         }
 
-        [Fact]
+        [Fact(Skip = "Rework the orgaccessor.")]
         public async Task Should_Not_Allow_To_Remove_Mapping_For_Not_Accessible_Event()
         {
             var client = _factory.CreateClient();

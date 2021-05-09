@@ -1,9 +1,9 @@
 using System.Linq;
 using Eventuras.WebApi.Config;
-using Eventuras.WebApi.Constants;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,11 +12,10 @@ using Microsoft.OpenApi.Models;
 using Microsoft.FeatureManagement;
 using Eventuras.WebApi.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 using Eventuras.WebApi.Auth;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Options;
 
 namespace Eventuras.WebApi
 {
@@ -72,12 +71,14 @@ namespace Eventuras.WebApi
             services.AddFeatureManagement();
 
             services.AddControllers(options =>
-                options.Filters.Add(new HttpResponseExceptionFilter()))
-                    .AddJsonOptions(j =>
-                    {
-                        j.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                    }
-                    );
+            {
+                options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+                options.Filters.Add(new HttpResponseExceptionFilter());
+            })
+                .AddJsonOptions(j =>
+                {
+                    j.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
 
             services.AddCors(options =>
             {
@@ -121,6 +122,22 @@ namespace Eventuras.WebApi
             {
                 c.SwaggerDoc("v3", new OpenApiInfo { Title = "Eventuras.WebApi", Version = "v3" });
             });
+        }
+
+        private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
+        {
+            var builder = new ServiceCollection()
+                .AddLogging()
+                .AddMvc()
+                .AddNewtonsoftJson()
+                .Services.BuildServiceProvider();
+
+            return builder
+                .GetRequiredService<IOptions<MvcOptions>>()
+                .Value
+                .InputFormatters
+                .OfType<NewtonsoftJsonPatchInputFormatter>()
+                .First();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

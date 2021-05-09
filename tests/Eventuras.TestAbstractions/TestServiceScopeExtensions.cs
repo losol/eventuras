@@ -123,14 +123,14 @@ namespace Eventuras.TestAbstractions
             string description = TestingConstants.Placeholder,
             string code = TestingConstants.Placeholder,
             string city = TestingConstants.Placeholder,
-            EventInfo.EventInfoStatus status = EventInfo.EventInfoStatus.Planned,
+            EventInfo.EventInfoStatus status = EventInfo.EventInfoStatus.RegistrationsOpen,
             EventInfo.EventInfoType eventInfoType = EventInfo.EventInfoType.Conference,
             bool featured = false,
             DateTime? dateStart = null,
             DateTime? dateEnd = null,
             Product[] products = null,
             Organization organization = null,
-            int? organizationId = null,
+            int organizationId = TestingConstants.OrganizationId,
             EventCollection collection = null,
             EventCollection[] collections = null,
             bool archived = false)
@@ -173,7 +173,7 @@ namespace Eventuras.TestAbstractions
                 Status = status,
                 Products = products?.ToList(),
                 Archived = archived,
-                OrganizationId = organizationId ?? organization?.OrganizationId,
+                OrganizationId = organizationId,
                 CollectionMappings = collections?.Select(c => new EventCollectionMapping
                 {
                     CollectionId = c.CollectionId

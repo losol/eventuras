@@ -31,7 +31,8 @@ namespace Eventuras.WebApi.Tests
             return httpClient.Authenticated(role: Roles.SuperAdmin);
         }
 
-        public static HttpClient AuthenticatedAs(this HttpClient httpClient, ApplicationUser user, params string[] roles)
+        public static HttpClient AuthenticatedAs(this HttpClient httpClient, ApplicationUser user,
+            params string[] roles)
         {
             return httpClient.Authenticated(
                 user.Id,
@@ -71,18 +72,22 @@ namespace Eventuras.WebApi.Tests
             {
                 id = Guid.NewGuid().ToString();
             }
+
             if (TestingConstants.Placeholder.Equals(firstName))
             {
                 firstName = "Test";
             }
+
             if (TestingConstants.Placeholder.Equals(lastName))
             {
                 lastName = $"Person {Guid.NewGuid()}";
             }
+
             if (TestingConstants.Placeholder.Equals(email))
             {
                 email = $"test-person+{Guid.NewGuid()}@email.com";
             }
+
             scopes ??= TestingConstants.DefaultScopes;
             var claims = new List<Claim>
             {
@@ -93,22 +98,27 @@ namespace Eventuras.WebApi.Tests
             {
                 claims.Add(new Claim(ClaimTypes.Name, firstName));
             }
+
             if (!string.IsNullOrEmpty(lastName))
             {
                 claims.Add(new Claim(ClaimTypes.Surname, lastName));
             }
+
             if (!string.IsNullOrEmpty(email))
             {
                 claims.Add(new Claim(ClaimTypes.Email, email));
             }
+
             if (roles == null && role != null)
             {
-                roles = new[] { role };
+                roles = new[] {role};
             }
+
             if (roles != null && roles.Any())
             {
                 claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
             }
+
             return claims.ToArray();
         }
 
@@ -132,6 +142,19 @@ namespace Eventuras.WebApi.Tests
                     Encoding.UTF8, "application/json"));
         }
 
+        public static async Task<HttpResponseMessage> DeleteAsync(
+            this HttpClient httpClient,
+            string requestUri,
+            object data)
+        {
+            return await httpClient.SendAsync(
+                new HttpRequestMessage(HttpMethod.Delete, requestUri)
+                {
+                    Content = new StringContent(JsonConvert.SerializeObject(data),
+                        Encoding.UTF8, "application/json")
+                });
+        }
+
         public static async Task<HttpResponseMessage> GetAsync(
             this HttpClient httpClient,
             string requestUri,
@@ -145,6 +168,7 @@ namespace Eventuras.WebApi.Tests
                 var encoded = propValue != null ? WebUtility.UrlEncode(propValue.ToString()) : null;
                 pairs.Add($"{prop.Name}={encoded}");
             }
+
             var query = string.Join("&", pairs);
             return await httpClient.GetAsync($"{requestUri}?{query}");
         }
