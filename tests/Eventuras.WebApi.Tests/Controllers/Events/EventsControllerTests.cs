@@ -631,40 +631,36 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         public async Task Should_Check_For_Duplicate_Slug_When_Creating_Event()
         {
             using var scope = _factory.Services.NewTestScope();
-            using var evt = await scope.CreateEventAsync(code: "test");
+            using var evt = await scope.CreateEventAsync(slug: "test");
 
             var client = _factory.CreateClient().AuthenticatedAsAdmin();
             var response = await client.PostAsync("/v3/events", new
             {
-                slug = evt.Entity.Code
+                title = "asdf",
+                organizationId = 1,
+                slug = evt.Entity.Slug
             });
             response.CheckConflict();
         }
 
         [Fact]
-        public async Task Should_Ignore_Duplicate_Archived_Slug_When_Creating_Event()
+        public async Task Should_Not_Ignore_Duplicate_Archived_Slug_When_Creating_Event()
         {
             using var scope = _factory.Services.NewTestScope();
-            using var evt = await scope.CreateEventAsync(code: "test", archived: true);
+            using var evt = await scope.CreateEventAsync(title: "asdf", organizationId: 1, slug: "test", archived: true);
 
             var client = _factory.CreateClient().AuthenticatedAsAdmin();
             var response = await client.PostAsync("/v3/events", new
             {
-                slug = evt.Entity.Code
+                title = "asdf",
+                organizationId = 1,
+                slug = evt.Entity.Slug
             });
-            response.CheckOk();
-
-            var token = await response.AsTokenAsync();
-            var e = await scope.Db.EventInfos
-                .AsNoTracking()
-                .SingleAsync(e => e.Code == "test" &&
-                                  e.EventInfoId != evt.Entity.EventInfoId);
-            token.CheckEvent(e);
+            response.CheckConflict();
         }
 
         [Theory]
         [InlineData(Roles.Admin)]
-        [InlineData(Roles.SuperAdmin)]
         [InlineData(Roles.SystemAdmin)]
         public async Task Should_Create_Event_With_Min_Data(string role)
         {
@@ -673,11 +669,13 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             var client = _factory.CreateClient().Authenticated(role: role);
             var response = await client.PostAsync("/v3/events", new
             {
+                title = "test title",
+                organizationId = 1,
                 slug = "test"
             });
             response.CheckOk();
 
-            var e = await scope.Db.EventInfos.AsNoTracking().SingleAsync(e => e.Code == "test");
+            var e = await scope.Db.EventInfos.AsNoTracking().SingleAsync(e => e.Slug == "test");
             Assert.Equal(EventInfo.EventInfoType.Course, e.Type);
 
             var token = await response.AsTokenAsync();
@@ -696,8 +694,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             var response = await client.PostAsync("/v3/events", new
             {
                 type = (int)EventInfo.EventInfoType.Conference,
-                name = "Test Event",
+                title = "Test Event",
                 slug = "test",
+                organizationId = 1,
                 category = "Test event category",
                 description = "Test event description",
                 manageRegistrations = true,
@@ -705,14 +704,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                 featured = true,
                 program = "Test event program",
                 practicalInformation = "Test information",
-                location = new
-                {
-                    name = "Test event location",
-                    address = new
-                    {
-                        addressLocality = "Test event city"
-                    }
-                },
                 startDate = "2030-01-01",
                 endDate = "2030-01-02"
             });
@@ -720,7 +711,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
 
             var evt = await scope.Db.EventInfos
                 .AsNoTracking()
-                .SingleAsync(e => e.Code == "test");
+                .SingleAsync(e => e.Slug == "test");
 
             Assert.Equal(EventInfo.EventInfoType.Conference, evt.Type);
             Assert.Equal("Test Event", evt.Title);
@@ -731,8 +722,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             Assert.True(evt.Featured);
             Assert.Equal("Test event program", evt.Program);
             Assert.Equal("Test information", evt.PracticalInformation);
-            Assert.Equal("Test event location", evt.Location);
-            Assert.Equal("Test event city", evt.City);
             Assert.Equal(new DateTime(2030, 1, 1), evt.DateStart?.Date);
             Assert.Equal(new DateTime(2030, 1, 2), evt.DateEnd?.Date);
 
@@ -776,7 +765,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         public async Task Should_Return_Not_Found_When_Updating_Non_Existing_Event()
         {
             var client = _factory.CreateClient().Authenticated(role: Roles.Admin);
-            var response = await client.PutAsync("/v3/events/10001", new { slug = "test" });
+            var response = await client.PutAsync("/v3/events/10001", new { title = "asdf", organizationId = 1, slug = "test" });
             response.CheckNotFound();
         }
 
@@ -787,7 +776,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             using var evt = await scope.CreateEventAsync(archived: true);
 
             var client = _factory.CreateClient().Authenticated(role: Roles.Admin);
-            var response = await client.PutAsync($"/v3/events/{evt.Entity.EventInfoId}", new { slug = "test" });
+            var response = await client.PutAsync($"/v3/events/{evt.Entity.EventInfoId}", new { title = "asf", organizationId = 1, slug = "test" });
             response.CheckNotFound();
         }
 
@@ -801,7 +790,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             var client = _factory.CreateClient().AuthenticatedAsAdmin();
             var response = await client.PutAsync($"/v3/events/{e1.Entity.EventInfoId}", new
             {
-                slug = e2.Entity.Code
+                organizationId = 1,
+                title = "test title",
+                slug = e2.Entity.Slug
             });
             response.CheckConflict();
         }
@@ -810,12 +801,14 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         public async Task Should_Allow_To_Specify_Same_Slug_When_Updating_Event()
         {
             using var scope = _factory.Services.NewTestScope();
-            using var evt = await scope.CreateEventAsync(code: "test");
+            using var evt = await scope.CreateEventAsync(slug: "test");
 
             var client = _factory.CreateClient().AuthenticatedAsAdmin();
             var response = await client.PutAsync($"/v3/events/{evt.Entity.EventInfoId}", new
             {
-                slug = evt.Entity.Code
+                title = "asdf",
+                organizationId = 1,
+                slug = evt.Entity.Slug
             });
             response.CheckOk();
 
@@ -823,13 +816,12 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                 .AsNoTracking()
                 .SingleAsync(e => e.EventInfoId == evt.Entity.EventInfoId);
 
-            Assert.Equal(evt.Entity.Code, updatedEvent.Code);
+            Assert.Equal(evt.Entity.Slug, updatedEvent.Slug);
         }
 
         [Theory]
         [InlineData(Roles.Admin)]
         [InlineData(Roles.SystemAdmin)]
-        [InlineData(Roles.SuperAdmin)]
         public async Task Should_Update_Event(string role)
         {
             using var scope = _factory.Services.NewTestScope();
@@ -838,9 +830,10 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             var client = _factory.CreateClient().Authenticated(role: role);
             var response = await client.PutAsync($"/v3/events/{evt.Entity.EventInfoId}", new
             {
-                type = (int)EventInfo.EventInfoType.Other,
-                name = "Test Event",
+                type = EventInfo.EventInfoType.Other,
+                title = "Test Event",
                 slug = "test",
+                organizationId = 1,
                 category = "Test event category",
                 description = "Test event description",
                 manageRegistrations = true,
@@ -848,14 +841,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                 featured = true,
                 program = "Test event program",
                 practicalInformation = "Test information",
-                location = new
-                {
-                    name = "Test event location",
-                    address = new
-                    {
-                        addressLocality = "Test event city"
-                    }
-                },
                 startDate = "2030-01-01",
                 endDate = "2030-01-02"
             });
@@ -874,8 +859,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             Assert.True(updated.Featured);
             Assert.Equal("Test event program", updated.Program);
             Assert.Equal("Test information", updated.PracticalInformation);
-            Assert.Equal("Test event location", updated.Location);
-            Assert.Equal("Test event city", updated.City);
             Assert.Equal(new DateTime(2030, 1, 1), updated.DateStart?.Date);
             Assert.Equal(new DateTime(2030, 1, 2), updated.DateEnd?.Date);
 

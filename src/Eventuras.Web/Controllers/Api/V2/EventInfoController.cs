@@ -35,7 +35,7 @@ namespace Eventuras.Web.Controllers.Api.V2
                          {
                              Id = e.EventInfoId,
                              Name = e.Title,
-                             Slug = e.Code,
+                             Slug = e.Slug,
                              Description = e.Description,
                              StartDate = e.DateStart,
                              EndDate = e.DateEnd,
@@ -64,7 +64,7 @@ namespace Eventuras.Web.Controllers.Api.V2
             {
                 Id = eventInfo.EventInfoId,
                 Name = eventInfo.Title,
-                Slug = eventInfo.Code,
+                Slug = eventInfo.Slug,
                 Description = eventInfo.Description,
                 StartDate = eventInfo.DateStart,
                 EndDate = eventInfo.DateEnd,

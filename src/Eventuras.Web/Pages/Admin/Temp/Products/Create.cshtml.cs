@@ -26,7 +26,7 @@ namespace Eventuras.Pages.Admin.Temp.Products
 
         public async Task<IActionResult> OnGet()
         {
-            ViewData["EventInfoId"] = new SelectList(await _eventInfoRetrievalService.GetAllEventsAsync(), "EventInfoId", "Code");
+            ViewData["EventInfoId"] = new SelectList(await _eventInfoRetrievalService.GetAllEventsAsync(), "EventInfoId", "Slug");
             return Page();
         }
 

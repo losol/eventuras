@@ -8,10 +8,14 @@ namespace Eventuras.WebApi.Controllers.Events
 {
     public class EventFormDto : IValidatableObject
     {
-        public EventInfo.EventInfoType Type { get; set; } = EventInfo.EventInfoType.Course;
-        public string Name { get; set; }
+
+        [Required]
+        public string Title { get; set; }
         [Required]
         public string Slug { get; set; }
+        public EventInfo.EventInfoType Type { get; set; } = EventInfo.EventInfoType.Course;
+        public EventInfo.EventInfoStatus Status { get; set; } = EventInfo.EventInfoStatus.Draft;
+        public int OrganizationId { get; set; }
         public string Category { get; set; }
         public string Description { get; set; }
         public bool ManageRegistrations { get; set; }
@@ -19,7 +23,8 @@ namespace Eventuras.WebApi.Controllers.Events
         public bool Featured { get; set; } = false;
         public string Program { get; set; }
         public string PracticalInformation { get; set; }
-        public LocationDto Location { get; set; }
+        public string Location { get; set; }
+        public string City { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 
@@ -31,8 +36,10 @@ namespace Eventuras.WebApi.Controllers.Events
             }
 
             eventInfo.Type = Type;
-            eventInfo.Title = Name;
-            eventInfo.Code = Slug;
+            eventInfo.Status = Status;
+            eventInfo.Title = Title;
+            eventInfo.Slug = Slug;
+            eventInfo.OrganizationId = OrganizationId;
             eventInfo.Category = Category;
             eventInfo.Description = Description;
             eventInfo.ManageRegistrations = ManageRegistrations;
@@ -40,8 +47,8 @@ namespace Eventuras.WebApi.Controllers.Events
             eventInfo.Featured = Featured;
             eventInfo.Program = Program;
             eventInfo.PracticalInformation = PracticalInformation;
-            eventInfo.Location = Location?.Name;
-            eventInfo.City = Location?.Address?.AddressLocality;
+            eventInfo.Location = Location;
+            eventInfo.City = City;
             eventInfo.DateStart = StartDate;
             eventInfo.DateEnd = EndDate;
         }

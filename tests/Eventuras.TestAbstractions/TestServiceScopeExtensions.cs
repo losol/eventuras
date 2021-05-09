@@ -121,7 +121,7 @@ namespace Eventuras.TestAbstractions
             this TestServiceScope scope,
             string title = TestingConstants.Placeholder,
             string description = TestingConstants.Placeholder,
-            string code = TestingConstants.Placeholder,
+            string slug = TestingConstants.Placeholder,
             string city = TestingConstants.Placeholder,
             EventInfo.EventInfoStatus status = EventInfo.EventInfoStatus.RegistrationsOpen,
             EventInfo.EventInfoType eventInfoType = EventInfo.EventInfoType.Conference,
@@ -145,9 +145,9 @@ namespace Eventuras.TestAbstractions
                 description = $"Test Event Description {Guid.NewGuid()}";
             }
 
-            if (code == TestingConstants.Placeholder)
+            if (slug == TestingConstants.Placeholder)
             {
-                code = Guid.NewGuid().ToString();
+                slug = Guid.NewGuid().ToString();
             }
 
             if (city == TestingConstants.Placeholder)
@@ -164,7 +164,7 @@ namespace Eventuras.TestAbstractions
             {
                 Title = title,
                 Description = description,
-                Code = code,
+                Slug = slug,
                 Featured = featured,
                 DateStart = dateStart,
                 DateEnd = dateEnd,

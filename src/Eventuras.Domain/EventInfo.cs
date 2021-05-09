@@ -36,10 +36,11 @@ namespace Eventuras.Domain
 
         [Display(Name = "Tittel på kurset")]
         public string Title { get; set; }
+        public string Headline { get; set; }
 
         [Required]
         [Display(Name = "Kode for kurset")]
-        public string Code { get; set; }
+        public string Slug { get; set; }
 
         public string Category { get; set; }
 
