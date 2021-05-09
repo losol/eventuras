@@ -14,8 +14,9 @@ namespace Eventuras.WebApi.Models
         public bool Featured { get; set; } = false;
         public string Program { get; set; }
         public string PracticalInformation { get; set; }
+        public string Location { get; set; }
+        public string City { get; set; }
         public bool OnDemand { get; set; }
-        public LocationDto Location { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public DateTime? LastRegistrationDate { get; set; }
@@ -29,7 +30,7 @@ namespace Eventuras.WebApi.Models
             Id = e.EventInfoId;
             Type = e.Type;
             Name = e.Title;
-            Slug = e.Code;
+            Slug = e.Slug;
             Category = e.Category;
             Description = e.Description;
             Featured = e.Featured;
@@ -39,14 +40,8 @@ namespace Eventuras.WebApi.Models
             StartDate = e.DateStart;
             EndDate = e.DateEnd;
             LastRegistrationDate = e.LastRegistrationDate;
-            Location = new LocationDto
-            {
-                Name = e.Location,
-                Address = e.City != null ? new AddressDto
-                {
-                    AddressLocality = e.City
-                } : null
-            };
+            Location = e.Location;
+            City = e.City;
         }
     }
 }

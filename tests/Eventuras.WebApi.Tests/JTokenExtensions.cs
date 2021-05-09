@@ -31,7 +31,7 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(eventInfo.EventInfoId, token.Value<int>("id"));
             Assert.Equal(eventInfo.Type.ToString(), token.Value<string>("type"));
             Assert.Equal(eventInfo.Title, token.Value<string>("name"));
-            Assert.Equal(eventInfo.Code, token.Value<string>("slug"));
+            Assert.Equal(eventInfo.Slug, token.Value<string>("slug"));
             Assert.Equal(eventInfo.Category, token.Value<string>("category"));
             Assert.Equal(eventInfo.Description, token.Value<string>("description"));
             Assert.Equal(eventInfo.Program, token.Value<string>("program"));

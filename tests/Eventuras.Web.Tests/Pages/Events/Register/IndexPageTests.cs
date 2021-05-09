@@ -58,7 +58,7 @@ namespace Eventuras.Web.Tests.Pages.Events.Register
                 .Setup();
 
             var token = await client.GetAntiForgeryTokenAsync("/Account/Login");
-            var response = await client.PostAsync($"/events/{eventInfo.Entity.EventInfoId}/{eventInfo.Entity.Code}/register",
+            var response = await client.PostAsync($"/events/{eventInfo.Entity.EventInfoId}/{eventInfo.Entity.Slug}/register",
                 new Dictionary<string, string>
             {
                 { "Email", Email },
@@ -96,7 +96,7 @@ namespace Eventuras.Web.Tests.Pages.Events.Register
                 .Setup();
 
             var token = await client.GetAntiForgeryTokenAsync("/Account/Login");
-            var response = await client.PostAsync($"/events/{eventInfo.Entity.EventInfoId}/{eventInfo.Entity.Code}/register",
+            var response = await client.PostAsync($"/events/{eventInfo.Entity.EventInfoId}/{eventInfo.Entity.Slug}/register",
                 new Dictionary<string, string>
             {
                 { "Email", Email },
@@ -143,7 +143,7 @@ namespace Eventuras.Web.Tests.Pages.Events.Register
                 .Setup();
 
             var token = await client.GetAntiForgeryTokenAsync("/Account/Login");
-            var response = await client.PostAsync($"/events/{eventInfo.Entity.EventInfoId}/{eventInfo.Entity.Code}/register",
+            var response = await client.PostAsync($"/events/{eventInfo.Entity.EventInfoId}/{eventInfo.Entity.Slug}/register",
                 new Dictionary<string, string>
             {
                 { "Email", Email },

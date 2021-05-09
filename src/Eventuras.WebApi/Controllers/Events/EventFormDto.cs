@@ -19,7 +19,8 @@ namespace Eventuras.WebApi.Controllers.Events
         public bool Featured { get; set; } = false;
         public string Program { get; set; }
         public string PracticalInformation { get; set; }
-        public LocationDto Location { get; set; }
+        public string Location { get; set; }
+        public string City { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 
@@ -32,7 +33,7 @@ namespace Eventuras.WebApi.Controllers.Events
 
             eventInfo.Type = Type;
             eventInfo.Title = Name;
-            eventInfo.Code = Slug;
+            eventInfo.Slug = Slug;
             eventInfo.Category = Category;
             eventInfo.Description = Description;
             eventInfo.ManageRegistrations = ManageRegistrations;
@@ -40,8 +41,8 @@ namespace Eventuras.WebApi.Controllers.Events
             eventInfo.Featured = Featured;
             eventInfo.Program = Program;
             eventInfo.PracticalInformation = PracticalInformation;
-            eventInfo.Location = Location?.Name;
-            eventInfo.City = Location?.Address?.AddressLocality;
+            eventInfo.Location = Location;
+            eventInfo.City = City;
             eventInfo.DateStart = StartDate;
             eventInfo.DateEnd = EndDate;
         }

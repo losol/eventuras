@@ -14,7 +14,7 @@ namespace Eventuras.TestAbstractions
                     EventInfoId = 1,
                     Title = "The first great event",
                     Description = "All other event are fake. This is a great mega event!",
-                    Code = "first-great-event",
+                    Slug = "first-great-event",
                     Featured = true,
                     DateStart = DateTime.UtcNow.AddDays(-1),
                     DateEnd = DateTime.UtcNow.AddDays(1),
@@ -62,7 +62,7 @@ namespace Eventuras.TestAbstractions
                 {
                     EventInfoId = 2,
                     Title = "The next event",
-                    Code = "the-next-event",
+                    Slug = "the-next-event",
                     Description = "The second event is much more difficult. ",
                     Featured = true,
                     City = "White City",

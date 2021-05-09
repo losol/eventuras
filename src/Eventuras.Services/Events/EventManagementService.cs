@@ -32,10 +32,10 @@ namespace Eventuras.Services.Events
             }
 
             if (await _context.EventInfos
-                .AnyAsync(e => e.Code == info.Code &&
+                .AnyAsync(e => e.Slug == info.Slug &&
                                !e.Archived))
             {
-                throw new DuplicateException($"Event with code {info.Code} already exists");
+                throw new DuplicateException($"Event with code {info.Slug} already exists");
             }
 
             try
@@ -45,7 +45,7 @@ namespace Eventuras.Services.Events
             catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
             {
                 _context.EventInfos.Remove(info);
-                throw new DuplicateException($"Event with code {info.Code} already exists");
+                throw new DuplicateException($"Event with code {info.Slug} already exists");
             }
         }
 
@@ -85,11 +85,11 @@ namespace Eventuras.Services.Events
             }
 
             if (await _context.EventInfos
-                .AnyAsync(e => e.Code == info.Code &&
+                .AnyAsync(e => e.Slug == info.Slug &&
                                e.EventInfoId != info.EventInfoId &&
                                !e.Archived))
             {
-                throw new DuplicateException($"Event with code {info.Code} already exists");
+                throw new DuplicateException($"Event with code {info.Slug} already exists");
             }
 
             try
@@ -99,7 +99,7 @@ namespace Eventuras.Services.Events
             catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
             {
                 _context.DisableChangeTracking(info);
-                throw new DuplicateException($"Event with code {info.Code} already exists");
+                throw new DuplicateException($"Event with code {info.Slug} already exists");
             }
         }
 

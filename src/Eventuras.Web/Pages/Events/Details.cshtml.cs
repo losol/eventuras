@@ -33,9 +33,9 @@ namespace Eventuras.Pages.Events
                 return NotFound();
             }
 
-            if (EventInfo.Code != slug)
+            if (EventInfo.Slug != slug)
             {
-                return RedirectToPage("./Details", new { id, slug = EventInfo.Code });
+                return RedirectToPage("./Details", new { id, slug = EventInfo.Slug });
             }
 
             return Page();

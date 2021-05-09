@@ -636,7 +636,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             var client = _factory.CreateClient().AuthenticatedAsAdmin();
             var response = await client.PostAsync("/v3/events", new
             {
-                slug = evt.Entity.Code
+                slug = evt.Entity.Slug
             });
             response.CheckConflict();
         }
@@ -650,14 +650,14 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             var client = _factory.CreateClient().AuthenticatedAsAdmin();
             var response = await client.PostAsync("/v3/events", new
             {
-                slug = evt.Entity.Code
+                slug = evt.Entity.Slug
             });
             response.CheckOk();
 
             var token = await response.AsTokenAsync();
             var e = await scope.Db.EventInfos
                 .AsNoTracking()
-                .SingleAsync(e => e.Code == "test" &&
+                .SingleAsync(e => e.Slug == "test" &&
                                   e.EventInfoId != evt.Entity.EventInfoId);
             token.CheckEvent(e);
         }
@@ -677,7 +677,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             });
             response.CheckOk();
 
-            var e = await scope.Db.EventInfos.AsNoTracking().SingleAsync(e => e.Code == "test");
+            var e = await scope.Db.EventInfos.AsNoTracking().SingleAsync(e => e.Slug == "test");
             Assert.Equal(EventInfo.EventInfoType.Course, e.Type);
 
             var token = await response.AsTokenAsync();
@@ -720,7 +720,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
 
             var evt = await scope.Db.EventInfos
                 .AsNoTracking()
-                .SingleAsync(e => e.Code == "test");
+                .SingleAsync(e => e.Slug == "test");
 
             Assert.Equal(EventInfo.EventInfoType.Conference, evt.Type);
             Assert.Equal("Test Event", evt.Title);
@@ -801,7 +801,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             var client = _factory.CreateClient().AuthenticatedAsAdmin();
             var response = await client.PutAsync($"/v3/events/{e1.Entity.EventInfoId}", new
             {
-                slug = e2.Entity.Code
+                slug = e2.Entity.Slug
             });
             response.CheckConflict();
         }
@@ -815,7 +815,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             var client = _factory.CreateClient().AuthenticatedAsAdmin();
             var response = await client.PutAsync($"/v3/events/{evt.Entity.EventInfoId}", new
             {
-                slug = evt.Entity.Code
+                slug = evt.Entity.Slug
             });
             response.CheckOk();
 
@@ -823,7 +823,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                 .AsNoTracking()
                 .SingleAsync(e => e.EventInfoId == evt.Entity.EventInfoId);
 
-            Assert.Equal(evt.Entity.Code, updatedEvent.Code);
+            Assert.Equal(evt.Entity.Slug, updatedEvent.Slug);
         }
 
         [Theory]
