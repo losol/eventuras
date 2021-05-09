@@ -38,8 +38,8 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(eventInfo.PracticalInformation, token.Value<string>("practicalInformation"));
             Assert.Equal(eventInfo.OnDemand, token.Value<bool>("onDemand"));
             Assert.Equal(eventInfo.Featured, token.Value<bool>("featured"));
-            Assert.Equal(eventInfo.DateStart, token.Value<DateTime?>("startDate"));
-            Assert.Equal(eventInfo.DateEnd, token.Value<DateTime?>("endDate"));
+            Assert.Equal(eventInfo.DateStart, token.Value<DateTime?>("dateStart"));
+            Assert.Equal(eventInfo.DateEnd, token.Value<DateTime?>("dateEnd"));
             Assert.Equal(eventInfo.LastRegistrationDate, token.Value<DateTime?>("lastRegistrationDate"));
             Assert.Equal(eventInfo.Location, token.Value<string>("location"));
             Assert.Equal(eventInfo.City, token.Value<string>("city"));

@@ -18,8 +18,8 @@ namespace Eventuras.WebApi.Models
         public string Location { get; set; }
         public string City { get; set; }
         public bool OnDemand { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+        public DateTime? DateStart { get; set; }
+        public DateTime? DateEnd { get; set; }
         public DateTime? LastRegistrationDate { get; set; }
 
         public EventDto()
@@ -39,8 +39,8 @@ namespace Eventuras.WebApi.Models
             Program = e.Program;
             PracticalInformation = e.PracticalInformation;
             OnDemand = e.OnDemand;
-            StartDate = e.DateStart;
-            EndDate = e.DateEnd;
+            DateStart = e.DateStart;
+            DateEnd = e.DateEnd;
             LastRegistrationDate = e.LastRegistrationDate;
             Location = e.Location;
             City = e.City;
