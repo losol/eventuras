@@ -645,11 +645,13 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         public async Task Should_Ignore_Duplicate_Archived_Slug_When_Creating_Event()
         {
             using var scope = _factory.Services.NewTestScope();
-            using var evt = await scope.CreateEventAsync(slug: "test", archived: true);
+            using var evt = await scope.CreateEventAsync(title: "asdf", organizationId: 1, slug: "test", archived: true);
 
             var client = _factory.CreateClient().AuthenticatedAsAdmin();
             var response = await client.PostAsync("/v3/events", new
             {
+                title = "asdf",
+                organizationId = 1,
                 slug = evt.Entity.Slug
             });
             response.CheckOk();
@@ -697,8 +699,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             var response = await client.PostAsync("/v3/events", new
             {
                 type = (int)EventInfo.EventInfoType.Conference,
-                name = "Test Event",
+                title = "Test Event",
                 slug = "test",
+                organizationId = 1,
                 category = "Test event category",
                 description = "Test event description",
                 manageRegistrations = true,
@@ -706,14 +709,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                 featured = true,
                 program = "Test event program",
                 practicalInformation = "Test information",
-                location = new
-                {
-                    name = "Test event location",
-                    address = new
-                    {
-                        addressLocality = "Test event city"
-                    }
-                },
                 startDate = "2030-01-01",
                 endDate = "2030-01-02"
             });
@@ -732,8 +727,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             Assert.True(evt.Featured);
             Assert.Equal("Test event program", evt.Program);
             Assert.Equal("Test information", evt.PracticalInformation);
-            Assert.Equal("Test event location", evt.Location);
-            Assert.Equal("Test event city", evt.City);
             Assert.Equal(new DateTime(2030, 1, 1), evt.DateStart?.Date);
             Assert.Equal(new DateTime(2030, 1, 2), evt.DateEnd?.Date);
 
@@ -777,7 +770,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         public async Task Should_Return_Not_Found_When_Updating_Non_Existing_Event()
         {
             var client = _factory.CreateClient().Authenticated(role: Roles.Admin);
-            var response = await client.PutAsync("/v3/events/10001", new { slug = "test" });
+            var response = await client.PutAsync("/v3/events/10001", new { title = "asdf", organizationId = 1, slug = "test" });
             response.CheckNotFound();
         }
 
@@ -788,7 +781,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             using var evt = await scope.CreateEventAsync(archived: true);
 
             var client = _factory.CreateClient().Authenticated(role: Roles.Admin);
-            var response = await client.PutAsync($"/v3/events/{evt.Entity.EventInfoId}", new { slug = "test" });
+            var response = await client.PutAsync($"/v3/events/{evt.Entity.EventInfoId}", new { title = "asf", organizationId = 1, slug = "test" });
             response.CheckNotFound();
         }
 
@@ -802,6 +795,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             var client = _factory.CreateClient().AuthenticatedAsAdmin();
             var response = await client.PutAsync($"/v3/events/{e1.Entity.EventInfoId}", new
             {
+                organizationId = 1,
+                title = "test title",
                 slug = e2.Entity.Slug
             });
             response.CheckConflict();
@@ -816,6 +811,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             var client = _factory.CreateClient().AuthenticatedAsAdmin();
             var response = await client.PutAsync($"/v3/events/{evt.Entity.EventInfoId}", new
             {
+                title = "asdf",
+                organizationId = 1,
                 slug = evt.Entity.Slug
             });
             response.CheckOk();
@@ -830,7 +827,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         [Theory]
         [InlineData(Roles.Admin)]
         [InlineData(Roles.SystemAdmin)]
-        [InlineData(Roles.SuperAdmin)]
         public async Task Should_Update_Event(string role)
         {
             using var scope = _factory.Services.NewTestScope();
@@ -839,9 +835,10 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             var client = _factory.CreateClient().Authenticated(role: role);
             var response = await client.PutAsync($"/v3/events/{evt.Entity.EventInfoId}", new
             {
-                type = (int)EventInfo.EventInfoType.Other,
-                name = "Test Event",
+                type = EventInfo.EventInfoType.Other,
+                title = "Test Event",
                 slug = "test",
+                organizationId = 1,
                 category = "Test event category",
                 description = "Test event description",
                 manageRegistrations = true,
@@ -849,14 +846,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                 featured = true,
                 program = "Test event program",
                 practicalInformation = "Test information",
-                location = new
-                {
-                    name = "Test event location",
-                    address = new
-                    {
-                        addressLocality = "Test event city"
-                    }
-                },
                 startDate = "2030-01-01",
                 endDate = "2030-01-02"
             });
@@ -875,8 +864,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             Assert.True(updated.Featured);
             Assert.Equal("Test event program", updated.Program);
             Assert.Equal("Test information", updated.PracticalInformation);
-            Assert.Equal("Test event location", updated.Location);
-            Assert.Equal("Test event city", updated.City);
             Assert.Equal(new DateTime(2030, 1, 1), updated.DateStart?.Date);
             Assert.Equal(new DateTime(2030, 1, 2), updated.DateEnd?.Date);
 
