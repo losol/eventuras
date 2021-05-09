@@ -30,7 +30,7 @@ namespace Eventuras.WebApi.Tests
         {
             Assert.Equal(eventInfo.EventInfoId, token.Value<int>("id"));
             Assert.Equal(eventInfo.Type.ToString(), token.Value<string>("type"));
-            Assert.Equal(eventInfo.Title, token.Value<string>("name"));
+            Assert.Equal(eventInfo.Title, token.Value<string>("title"));
             Assert.Equal(eventInfo.Slug, token.Value<string>("slug"));
             Assert.Equal(eventInfo.Category, token.Value<string>("category"));
             Assert.Equal(eventInfo.Description, token.Value<string>("description"));
@@ -41,11 +41,8 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(eventInfo.DateStart, token.Value<DateTime?>("startDate"));
             Assert.Equal(eventInfo.DateEnd, token.Value<DateTime?>("endDate"));
             Assert.Equal(eventInfo.LastRegistrationDate, token.Value<DateTime?>("lastRegistrationDate"));
-
-            var location = token.Value<JToken>("location");
-            var address = location?.Value<JToken>("address");
-            Assert.Equal(eventInfo.Location, location?.Value<string>("name"));
-            Assert.Equal(eventInfo.City, address?.Any() == true ? address.Value<string>("addressLocality") : null);
+            Assert.Equal(eventInfo.Location, token.Value<string>("location"));
+            Assert.Equal(eventInfo.City, token.Value<string>("city"));
         }
 
         public static void CheckStringArray(this JArray array, params string[] roles)

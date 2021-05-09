@@ -664,7 +664,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
 
         [Theory]
         [InlineData(Roles.Admin)]
-        [InlineData(Roles.SuperAdmin)]
         [InlineData(Roles.SystemAdmin)]
         public async Task Should_Create_Event_With_Min_Data(string role)
         {
@@ -673,6 +672,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             var client = _factory.CreateClient().Authenticated(role: role);
             var response = await client.PostAsync("/v3/events", new
             {
+                title = "test title",
+                organizationId = 1,
                 slug = "test"
             });
             response.CheckOk();

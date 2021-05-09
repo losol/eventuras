@@ -8,10 +8,14 @@ namespace Eventuras.WebApi.Controllers.Events
 {
     public class EventFormDto : IValidatableObject
     {
-        public EventInfo.EventInfoType Type { get; set; } = EventInfo.EventInfoType.Course;
-        public string Name { get; set; }
+
+        [Required]
+        public string Title { get; set; }
         [Required]
         public string Slug { get; set; }
+        public EventInfo.EventInfoType Type { get; set; } = EventInfo.EventInfoType.Course;
+        public EventInfo.EventInfoStatus Status { get; set; } = EventInfo.EventInfoStatus.Draft;
+        public int OrganizationId { get; set; }
         public string Category { get; set; }
         public string Description { get; set; }
         public bool ManageRegistrations { get; set; }
@@ -32,8 +36,10 @@ namespace Eventuras.WebApi.Controllers.Events
             }
 
             eventInfo.Type = Type;
-            eventInfo.Title = Name;
+            eventInfo.Status = Status;
+            eventInfo.Title = Title;
             eventInfo.Slug = Slug;
+            eventInfo.OrganizationId = OrganizationId;
             eventInfo.Category = Category;
             eventInfo.Description = Description;
             eventInfo.ManageRegistrations = ManageRegistrations;
