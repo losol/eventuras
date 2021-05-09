@@ -92,7 +92,7 @@ namespace Eventuras.Services.EventCollections
                 throw new NotFoundException($"Event collection {collectionId} not found");
             }
 
-            if (@event.OrganizationId.HasValue && !await IsAccessibleForEditAsync(@event.OrganizationId.Value, cancellationToken))
+            if (!await IsAccessibleForEditAsync(@event.OrganizationId, cancellationToken))
             {
                 throw new NotAccessibleException($"Event {eventId} not accessible not accessible for update");
             }

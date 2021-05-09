@@ -31,7 +31,7 @@ namespace Eventuras.Web.Tests.Controllers.Api.V2
             JArray.Parse(content).CheckEmptyArray();
         }
 
-        [Fact]
+        [Fact(Skip = "Use tests for v3.")]
         public async Task Should_List_Upcoming_Events()
         {
             var client = _factory.CreateClient();
@@ -51,7 +51,7 @@ namespace Eventuras.Web.Tests.Controllers.Api.V2
                 e1.Entity, e2.Entity);
         }
 
-        [Fact]
+        [Fact(Skip = "Use test for v3.")]
         public async Task List_Events_Should_Support_Collection_Query_Param()
         {
             var client = _factory.CreateClient();

@@ -42,9 +42,9 @@ namespace Eventuras.Services.Registrations
             CancellationToken cancellationToken)
         {
             var existingRegistration = await _context.Registrations.FirstOrDefaultAsync(m => m.EventInfoId == eventId && m.UserId == userId);
-            if (existingRegistration != null) {
-                await _registrationAccessControlService.CheckRegistrationCreateAccessAsync(existingRegistration, cancellationToken);
-                return existingRegistration;
+            if (existingRegistration != null) 
+            {
+                throw new Exceptions.DuplicateException("Found existing registration for user on event.");
             }
             
             var @event = await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventId, null, cancellationToken); 

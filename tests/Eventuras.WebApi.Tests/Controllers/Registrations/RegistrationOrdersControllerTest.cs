@@ -136,7 +136,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var admin = await scope.CreateUserAsync(role: Roles.Admin);
             using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
             using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
-            using var e = await scope.CreateEventAsync(organization: org.Entity);
+            using var e = await scope.CreateEventAsync(organization: org.Entity, organizationId: org.Entity.OrganizationId);
             using var reg = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
             using var product = await scope.CreateProductAsync(e.Entity);
 
@@ -166,31 +166,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var reg = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
 
             var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
-            var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders", new
-            {
-                items = new[]
-                {
-                    new {
-                        productId = product.Entity.ProductId,
-                        quantity = 1
-                    }
-                }
-            });
-            response.CheckOk();
-
-            await CheckOrderCreatedAsync(scope, reg.Entity, product.Entity);
-        }
-
-        [Fact]
-        public async Task Should_Allow_Super_Admin_To_Create_Order_For_Any_Reg()
-        {
-            using var scope = _factory.Services.NewTestScope();
-            using var user = await scope.CreateUserAsync();
-            using var e = await scope.CreateEventAsync();
-            using var product = await scope.CreateProductAsync(e.Entity);
-            using var reg = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
-
-            var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
             var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders", new
             {
                 items = new[]

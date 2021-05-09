@@ -49,6 +49,13 @@ namespace Eventuras.Services.Registrations
             CancellationToken cancellationToken)
         {
             var user = _httpContextAccessor.HttpContext.User;
+            var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
+
+            // Add possibility for organizaton admin to override later
+            if (!user.IsSystemAdmin() && eventInfo.Status != EventInfo.EventInfoStatus.RegistrationsOpen) {
+                throw new NotAccessibleException($"Registrations are closed for event {eventInfo.Title} with id {eventInfo.EventInfoId}.");
+            }
+
             if (!await CheckOwnerOrAdminAccessAsync(user, registration, cancellationToken))
             {
                 throw new NotAccessibleException($"User {user.GetUserId()} cannot create registration for event {registration.EventInfoId} and user {registration.UserId}");
@@ -119,7 +126,7 @@ namespace Eventuras.Services.Registrations
             }
 
             var @event = await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
-            return @event.OrganizationId.HasValue && @event.OrganizationId.Value == org.OrganizationId;
+            return @event.OrganizationId == org.OrganizationId;
         }
 
         private async Task<bool> CheckOwnerOrAdminAccessAsync(
