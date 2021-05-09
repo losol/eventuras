@@ -506,9 +506,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             using var scope = _factory.Services.NewTestScope();
             using var org1 = await scope.CreateOrganizationAsync();
             using var org2 = await scope.CreateOrganizationAsync();
-            using var evt1 = await scope.CreateEventAsync(organization: org1.Entity, dateStart: DateTime.UtcNow.AddDays(1));
-            using var evt2 = await scope.CreateEventAsync(organization: org2.Entity, dateStart: DateTime.UtcNow.AddDays(1));
-            using var evt3 = await scope.CreateEventAsync(dateStart: DateTime.UtcNow.AddDays(1));
+            using var evt1 = await scope.CreateEventAsync(organization: org1.Entity, organizationId: org1.Entity.OrganizationId, dateStart: DateTime.UtcNow.AddDays(1));
+            using var evt2 = await scope.CreateEventAsync(organization: org2.Entity, organizationId: org2.Entity.OrganizationId, dateStart: DateTime.UtcNow.AddDays(1));
 
             var client = _factory.CreateClient();
 
