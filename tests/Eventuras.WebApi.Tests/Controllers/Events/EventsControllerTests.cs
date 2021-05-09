@@ -631,7 +631,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         public async Task Should_Check_For_Duplicate_Slug_When_Creating_Event()
         {
             using var scope = _factory.Services.NewTestScope();
-            using var evt = await scope.CreateEventAsync(code: "test");
+            using var evt = await scope.CreateEventAsync(slug: "test");
 
             var client = _factory.CreateClient().AuthenticatedAsAdmin();
             var response = await client.PostAsync("/v3/events", new
@@ -645,7 +645,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         public async Task Should_Ignore_Duplicate_Archived_Slug_When_Creating_Event()
         {
             using var scope = _factory.Services.NewTestScope();
-            using var evt = await scope.CreateEventAsync(code: "test", archived: true);
+            using var evt = await scope.CreateEventAsync(slug: "test", archived: true);
 
             var client = _factory.CreateClient().AuthenticatedAsAdmin();
             var response = await client.PostAsync("/v3/events", new
@@ -810,7 +810,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         public async Task Should_Allow_To_Specify_Same_Slug_When_Updating_Event()
         {
             using var scope = _factory.Services.NewTestScope();
-            using var evt = await scope.CreateEventAsync(code: "test");
+            using var evt = await scope.CreateEventAsync(slug: "test");
 
             var client = _factory.CreateClient().AuthenticatedAsAdmin();
             var response = await client.PutAsync($"/v3/events/{evt.Entity.EventInfoId}", new
