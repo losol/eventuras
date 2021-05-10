@@ -74,7 +74,7 @@ namespace Eventuras.Web.Tests
             }
             Assert.Equal(e.EventInfoId, token.Value<int>("id"));
             Assert.Equal(e.Title, token.Value<string>("name"));
-            Assert.Equal(e.Code, token.Value<string>("slug"));
+            Assert.Equal(e.Slug, token.Value<string>("slug"));
             Assert.Equal(e.Description, token.Value<string>("description"));
             Assert.Equal(e.Featured, token.Value<bool>("featured"));
             Assert.Equal(e.DateStart, token.Value<DateTime?>("startDate"));

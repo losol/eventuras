@@ -36,7 +36,7 @@ namespace Eventuras.WebApi.Controllers
                          {
                              Id = e.EventInfoId,
                              Name = e.Title,
-                             Slug = e.Code,
+                             Slug = e.Slug,
                              Description = e.Description,
                              Featured = e.Featured
                          };
@@ -58,7 +58,7 @@ namespace Eventuras.WebApi.Controllers
             {
                 Id = eventInfo.EventInfoId,
                 Name = eventInfo.Title,
-                Slug = eventInfo.Code,
+                Slug = eventInfo.Slug,
                 Description = eventInfo.Description,
                 Featured = eventInfo.Featured
             };

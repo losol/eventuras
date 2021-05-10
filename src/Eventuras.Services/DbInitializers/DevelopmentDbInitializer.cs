@@ -25,8 +25,8 @@ namespace Eventuras.Services.DbInitializers
             {
                 var eventInfos = new EventInfo[]
                 {
-                    new EventInfo{Title="Test event 01", Code="Test01", Description="A test event."},
-                    new EventInfo{Title="Test event 02", Code="Test02", Description="Another test event."}
+                    new EventInfo{Title="Test event 01", Slug="Test01", Description="A test event."},
+                    new EventInfo{Title="Test event 02", Slug="Test02", Description="Another test event."}
                 };
 
                 foreach (var item in eventInfos)

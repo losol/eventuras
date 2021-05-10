@@ -17,7 +17,7 @@ const EventAdmin = (): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [session] = useSession();
   const toast = useToast();
-  const [eventInfo, setEventInfo] = useState();
+  const [eventInfo, setEventInfo] = useState({ title: '' });
   const participantGroups = ['Participant', 'Lecturer', 'Staff'];
   const [
     selectedParticipantGroups,
@@ -102,7 +102,7 @@ const EventAdmin = (): JSX.Element => {
     <Layout>
       <Container marginTop="32">
         <Heading as="h1" paddingY="4">
-          Event admin page - {eventInfo && eventInfo.name}
+          {eventInfo.title}
         </Heading>
         <Button colorScheme="teal" onClick={onOpen}>
           Send e-mail

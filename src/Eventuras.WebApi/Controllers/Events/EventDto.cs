@@ -7,17 +7,19 @@ namespace Eventuras.WebApi.Models
     {
         public int Id { get; set; }
         public EventInfo.EventInfoType Type { get; set; }
-        public string Name { get; set; }
+        public EventInfo.EventInfoStatus Status { get; set; }
+        public string Title { get; set; }
         public string Slug { get; set; }
         public string Category { get; set; }
         public string Description { get; set; }
         public bool Featured { get; set; } = false;
         public string Program { get; set; }
         public string PracticalInformation { get; set; }
+        public string Location { get; set; }
+        public string City { get; set; }
         public bool OnDemand { get; set; }
-        public LocationDto Location { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+        public DateTime? DateStart { get; set; }
+        public DateTime? DateEnd { get; set; }
         public DateTime? LastRegistrationDate { get; set; }
 
         public EventDto()
@@ -28,25 +30,20 @@ namespace Eventuras.WebApi.Models
         {
             Id = e.EventInfoId;
             Type = e.Type;
-            Name = e.Title;
-            Slug = e.Code;
+            Status = e.Status;
+            Title = e.Title;
+            Slug = e.Slug;
             Category = e.Category;
             Description = e.Description;
             Featured = e.Featured;
             Program = e.Program;
             PracticalInformation = e.PracticalInformation;
             OnDemand = e.OnDemand;
-            StartDate = e.DateStart;
-            EndDate = e.DateEnd;
+            DateStart = e.DateStart;
+            DateEnd = e.DateEnd;
             LastRegistrationDate = e.LastRegistrationDate;
-            Location = new LocationDto
-            {
-                Name = e.Location,
-                Address = e.City != null ? new AddressDto
-                {
-                    AddressLocality = e.City
-                } : null
-            };
+            Location = e.Location;
+            City = e.City;
         }
     }
 }
