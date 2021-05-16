@@ -43,7 +43,7 @@ namespace Eventuras.Services.Registrations
             }
 
             await _registrationAccessControlService
-                .CheckRegistrationReadAccessAsync(registration);
+                .CheckRegistrationReadAccessAsync(registration, cancellationToken);
 
             return registration;
         }

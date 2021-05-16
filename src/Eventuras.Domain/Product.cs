@@ -29,6 +29,8 @@ namespace Eventuras.Domain
         public int Inventory { get; set; } = 0;
         public bool Published { get; set; } = true;
 
+        public bool Archived { get; set; }
+
         // Order used to display the products
         // Products with lower values should be shown first.
         public int DisplayOrder { get; set; } = int.MaxValue;

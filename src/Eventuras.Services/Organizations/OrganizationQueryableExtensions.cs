@@ -26,14 +26,16 @@ namespace Eventuras.Services.Organizations
             return query;
         }
 
-        public static IQueryable<Organization> UseOptions(this IQueryable<Organization> query, OrganizationRetrievalOptions options)
+        public static IQueryable<Organization> UseOptions(this IQueryable<Organization> query,
+            OrganizationRetrievalOptions options)
         {
             if (options == null)
                 throw new ArgumentNullException(nameof(options));
 
             if (options.LoadMembers)
             {
-                query = query.Include(o => o.Members);
+                query = query.Include(o => o.Members)
+                    .ThenInclude(m => m.Roles);
             }
 
             if (options.LoadHostnames)
@@ -44,7 +46,8 @@ namespace Eventuras.Services.Organizations
             return query;
         }
 
-        public static IQueryable<Organization> HasOrganizationMember(this IQueryable<Organization> query, ClaimsPrincipal user)
+        public static IQueryable<Organization> HasOrganizationMember(this IQueryable<Organization> query,
+            ClaimsPrincipal user)
         {
             return query.Where(o => o.Members.Any(m => m.UserId == user.GetUserId()));
         }

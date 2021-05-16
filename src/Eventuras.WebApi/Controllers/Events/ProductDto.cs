@@ -1,7 +1,7 @@
 using System;
 using Eventuras.Domain;
 
-namespace Eventuras.WebApi.Controllers.Products
+namespace Eventuras.WebApi.Controllers.Events
 {
     public class ProductDto
     {

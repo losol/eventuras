@@ -60,7 +60,7 @@ namespace Eventuras.WebApi.Controllers.Events
             return Ok(new EventDto(eventInfo));
         }
 
-        // POST: api/events
+        // POST: v3/events
         [HttpPost]
         public async Task<EventDto> Post([FromBody] EventFormDto dto)
         {
@@ -70,7 +70,7 @@ namespace Eventuras.WebApi.Controllers.Events
             return new EventDto(eventInfo);
         }
 
-        // PUT: api/events/5
+        // PUT: v3/events/5
         [HttpPut("{id}")]
         public async Task<ActionResult<EventDto>> Put(int id, [FromBody] EventFormDto dto)
         {
@@ -84,7 +84,7 @@ namespace Eventuras.WebApi.Controllers.Events
             return Ok(new EventDto(eventInfo));
         }
 
-        // PATCH: api/events/5
+        // PATCH: v3/events/5
         [HttpPatch("{id}")]
         public async Task<IActionResult> JsonPatchWithModelState(
             int id,
@@ -110,7 +110,7 @@ namespace Eventuras.WebApi.Controllers.Events
             }
         }
 
-        // DELETE: api/events/5
+        // DELETE: v3/events/5
         [HttpDelete("{id}")]
         public async Task Delete(int id)
         {

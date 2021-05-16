@@ -1,6 +1,6 @@
 using System;
 using Eventuras.Domain;
-using Eventuras.WebApi.Controllers.Products;
+using Eventuras.WebApi.Controllers.Events;
 
 namespace Eventuras.WebApi.Controllers.Orders
 {

@@ -1,7 +1,7 @@
 using Eventuras.Domain;
 using static Eventuras.Domain.Registration;
 
-namespace Eventuras.WebApi.Models
+namespace Eventuras.WebApi.Controllers.Registrations
 {
     public class RegistrationDto
     {

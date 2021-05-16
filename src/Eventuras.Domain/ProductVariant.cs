@@ -26,6 +26,8 @@ namespace Eventuras.Domain
         public int Inventory { get; set; } = 0;
         public bool Published { get; set; } = true;
 
+        public bool Archived { get; set; }
+
         // Navigational properties
         public int ProductId { get; set; }
         public Product Product { get; set; }
