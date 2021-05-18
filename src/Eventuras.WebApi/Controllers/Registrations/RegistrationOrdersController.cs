@@ -48,7 +48,7 @@ namespace Eventuras.WebApi.Controllers.Registrations
         // POST: v3/registrations/667/orders
         [HttpPost]
         public async Task<OrderDto> CreateNewOrderForRegistration(int id,
-            [FromBody] RegistrationOrderDto dto,
+            [FromBody] NewRegistrationOrderDto dto,
             CancellationToken token)
         {
             var registration = await _registrationRetrievalService
