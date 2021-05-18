@@ -36,6 +36,7 @@ namespace Eventuras.WebApi.Controllers.Events
 
         // GET v3/events/1/products
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ProductDto[]> List(int eventId, CancellationToken token)
         {
             await _eventInfoAccessControlService.CheckEventReadAccessAsync(eventId, token);

@@ -69,7 +69,7 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(item.Quantity, token.Value<int>("quantity"));
         }
 
-        public static void CheckProduct(this JToken token, Product product)
+        public static void CheckProduct(this JToken token, Product product, params ProductVariant[] variants)
         {
             Assert.Equal(product.ProductId, token.Value<int>("productId"));
             Assert.Equal(product.Name, token.Value<string>("name"));
@@ -77,6 +77,13 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(product.MoreInformation, token.Value<string>("more"));
             Assert.Equal(product.Price, token.Value<decimal>("price"));
             Assert.Equal(product.VatPercent, token.Value<int>("vatPercent"));
+
+            if (variants.Any())
+            {
+                token.Value<JArray>("variants")
+                    .CheckArray((t, v) => t
+                        .CheckProductVariant(v), variants);
+            }
         }
 
         public static void CheckProductVariant(this JToken token, ProductVariant productVariant)

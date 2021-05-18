@@ -43,7 +43,7 @@ namespace Eventuras.TestAbstractions
 
             if (roles == null && !string.IsNullOrEmpty(role))
             {
-                roles = new[] { role };
+                roles = new[] {role};
             }
 
             var user = new ApplicationUser
@@ -83,7 +83,6 @@ namespace Eventuras.TestAbstractions
             Organization organization = null,
             int? organizationId = null)
         {
-
             if (name == TestingConstants.Placeholder)
             {
                 name = $"Test Collection {Guid.NewGuid()}";
@@ -157,7 +156,7 @@ namespace Eventuras.TestAbstractions
 
             if (collections == null && collection != null)
             {
-                collections = new[] { collection };
+                collections = new[] {collection};
             }
 
             var eventInfo = new EventInfo
@@ -190,9 +189,9 @@ namespace Eventuras.TestAbstractions
             string name = TestingConstants.Placeholder,
             int vatPercent = 5,
             int minimumQuantity = 1,
+            bool archived = false,
             ProductVariant[] variants = null)
         {
-
             if (name == TestingConstants.Placeholder)
             {
                 name = $"Test Product {Guid.NewGuid()}";
@@ -204,7 +203,8 @@ namespace Eventuras.TestAbstractions
                 Eventinfo = eventInfo,
                 VatPercent = vatPercent,
                 MinimumQuantity = minimumQuantity,
-                ProductVariants = variants?.ToList()
+                ProductVariants = variants?.ToList(),
+                Archived = archived
             };
 
             await scope.Db.Products.AddAsync(product);
@@ -216,7 +216,8 @@ namespace Eventuras.TestAbstractions
             this TestServiceScope scope,
             Product product,
             string name = TestingConstants.Placeholder,
-            int vatPercent = 5)
+            int vatPercent = 5,
+            bool archived = false)
         {
             if (name == TestingConstants.Placeholder)
             {
@@ -227,7 +228,8 @@ namespace Eventuras.TestAbstractions
             {
                 Product = product,
                 Name = name,
-                VatPercent = vatPercent
+                VatPercent = vatPercent,
+                Archived = archived
                 // TODO: add other props
             };
 
@@ -296,9 +298,9 @@ namespace Eventuras.TestAbstractions
             Order.OrderStatus status = Order.OrderStatus.Verified)
         {
             return await scope.CreateOrderAsync(registration,
-                new[] { product },
-                variant != null ? new[] { variant } : null,
-                new[] { quantity },
+                new[] {product},
+                variant != null ? new[] {variant} : null,
+                new[] {quantity},
                 status);
         }
 
@@ -342,7 +344,7 @@ namespace Eventuras.TestAbstractions
 
             if (hostnames == null && hostname != null)
             {
-                hostnames = new[] { hostname };
+                hostnames = new[] {hostname};
             }
 
             var org = new Organization
@@ -372,7 +374,7 @@ namespace Eventuras.TestAbstractions
 
             if (roles == null && role != null)
             {
-                roles = new[] { role };
+                roles = new[] {role};
             }
 
             var member = new OrganizationMember
