@@ -136,7 +136,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             {
                 new object[] {new {name = (string) null}},
                 new object[] {new {name = ""}},
-                new object[] {new {name = "   "}}
+                new object[] {new {name = "   "}},
+                new object[] {new {name = "test", price = -1}}, // price=0 is OK
+                new object[] {new {name = "test", vatPercent = -1}} // vatPercent=0 is OK
             };
         }
 

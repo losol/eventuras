@@ -55,11 +55,13 @@ namespace Eventuras.WebApi.Controllers.Events
 
             var product = await GetProductAsync(eventId, productId);
 
-            product.ProductVariants.Add(dto.ToVariant());
+            var productVariant = dto.ToVariant();
+            productVariant.ProductId = productId;
+            product.ProductVariants.Add(productVariant);
 
             await _eventProductsManagementService.UpdateProductAsync(product);
 
-            return Ok();
+            return Ok(new ProductVariantDto(productVariant));
         }
 
         // DELETE: v3/events/1001/products/203/variants/99
