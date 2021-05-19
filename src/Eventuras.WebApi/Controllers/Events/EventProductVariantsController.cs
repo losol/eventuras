@@ -32,12 +32,14 @@ namespace Eventuras.WebApi.Controllers.Events
 
         // GET: v3/events/1001/products/203/variants
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ProductVariantDto[]> List(int eventId, int productId, CancellationToken token)
         {
             var product = await GetProductAsync(eventId, productId, token);
 
             return product.ProductVariants?
                 .Where(v => !v.Archived)
+                .OrderBy(v => v.Name)
                 .Select(v => new ProductVariantDto(v))
                 .ToArray() ?? Array.Empty<ProductVariantDto>();
         }
