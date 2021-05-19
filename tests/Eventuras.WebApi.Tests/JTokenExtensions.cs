@@ -92,6 +92,7 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(productVariant.Name, token.Value<string>("name"));
             Assert.Equal(productVariant.Description, token.Value<string>("description"));
             Assert.Equal(productVariant.Price, token.Value<decimal>("price"));
+            Assert.Equal(productVariant.VatPercent, token.Value<int>("vatPercent"));
         }
 
         public static void CheckStringArray(this JArray array, params string[] roles)

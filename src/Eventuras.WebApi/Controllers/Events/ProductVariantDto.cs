@@ -12,6 +12,8 @@ namespace Eventuras.WebApi.Controllers.Events
 
         public decimal Price { get; set; }
 
+        public int VatPercent { get; set; }
+
         public ProductVariantDto()
         {
         }
@@ -22,10 +24,12 @@ namespace Eventuras.WebApi.Controllers.Events
             {
                 throw new ArgumentNullException(nameof(variant));
             }
+
             ProductVariantId = variant.ProductVariantId;
             Name = variant.Name;
             Description = variant.Description;
             Price = variant.Price;
+            VatPercent = variant.VatPercent;
         }
     }
 }
