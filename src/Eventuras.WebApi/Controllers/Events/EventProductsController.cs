@@ -73,7 +73,7 @@ namespace Eventuras.WebApi.Controllers.Events
         }
 
         // DELETE v3/events/1/products/23
-        [HttpDelete("{id}")]
+        [HttpDelete("{productId}")]
         public async Task Archive(int eventId, int productId)
         {
             var eventInfo = await _eventInfoRetrievalService

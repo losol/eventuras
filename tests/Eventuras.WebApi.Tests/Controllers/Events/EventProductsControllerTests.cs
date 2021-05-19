@@ -167,7 +167,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         }
 
         [Fact]
-        public async Task Add_Should_Be_Forbidden_For_Other_Org_Admin()
+        public async Task Add_Should_Check_Admin_Org()
         {
             using var scope = _factory.Services.NewTestScope();
             using var org1 = await scope.CreateOrganizationAsync(hostname: "localhost");
@@ -183,7 +183,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         }
 
         [Fact]
-        public async Task Add_Should_Be_Forbidden_For_Other_Org()
+        public async Task Add_Should_Check_Event_Org()
         {
             using var scope = _factory.Services.NewTestScope();
             using var org1 = await scope.CreateOrganizationAsync(hostname: "localhost");
@@ -259,6 +259,146 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
 
             var token = await response.AsTokenAsync();
             token.CheckProduct(product);
+        }
+
+        #endregion
+
+        #region Archive
+
+        [Fact]
+        public async Task Should_Require_Auth_To_Archive_Product()
+        {
+            var client = _factory.CreateClient();
+            var response = await client.DeleteAsync("/v3/events/1/products/2");
+            response.CheckUnauthorized();
+        }
+
+        [Fact]
+        public async Task Should_Return_NotFound_For_Non_Existing_Event()
+        {
+            var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+            var response = await client.DeleteAsync("/v3/events/1001/products/2");
+            response.CheckNotFound();
+        }
+
+        [Fact]
+        public async Task Should_Return_NotFound_For_Non_Existing_Product()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+
+            var client = _factory.CreateClient().AuthenticatedAsAdmin();
+            var response = await client.DeleteAsync($"/v3/events/{evt.Entity.EventInfoId}/products/23");
+            response.CheckNotFound();
+        }
+
+        [Fact]
+        public async Task Should_Return_Ok_For_Archived_Product()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+            using var product = await scope.CreateProductAsync(evt.Entity, archived: true);
+
+            var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+            var response =
+                await client.DeleteAsync($"/v3/events/{evt.Entity.EventInfoId}/products/{product.Entity.ProductId}");
+            response.CheckOk();
+        }
+
+        [Fact]
+        public async Task Should_Require_Admin_Role_To_Archive_Product()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+            using var product = await scope.CreateProductAsync(evt.Entity, archived: true);
+
+            var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+            var response =
+                await client.DeleteAsync($"/v3/events/{evt.Entity.EventInfoId}/products/{product.Entity.ProductId}");
+            response.CheckOk();
+        }
+
+        [Fact]
+        public async Task Should_Check_Admin_Org_When_Archiving_Product()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org1 = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org2 = await scope.CreateOrganizationAsync();
+            using var admin = await scope.CreateUserAsync();
+            using var m = await scope.CreateOrganizationMemberAsync(admin.Entity, org2.Entity, role: Roles.Admin);
+            using var evt = await scope.CreateEventAsync(organization: org1.Entity);
+            using var product = await scope.CreateProductAsync(evt.Entity);
+
+            var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
+            var response =
+                await client.DeleteAsync($"/v3/events/{evt.Entity.EventInfoId}/products/{product.Entity.ProductId}");
+            response.CheckForbidden();
+        }
+
+        [Fact]
+        public async Task Should_Check_Event_Org_When_Archiving_Product()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org1 = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org2 = await scope.CreateOrganizationAsync();
+            using var admin = await scope.CreateUserAsync();
+            using var m = await scope.CreateOrganizationMemberAsync(admin.Entity, org1.Entity, role: Roles.Admin);
+            using var evt = await scope.CreateEventAsync(organization: org2.Entity);
+            using var product = await scope.CreateProductAsync(evt.Entity);
+
+            var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
+            var response =
+                await client.DeleteAsync($"/v3/events/{evt.Entity.EventInfoId}/products/{product.Entity.ProductId}");
+            response.CheckForbidden();
+        }
+
+        [Fact]
+        public async Task Should_Allow_Org_Admin_To_Archive_Product()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var admin = await scope.CreateUserAsync();
+            using var m = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
+            using var evt = await scope.CreateEventAsync(organization: org.Entity);
+            using var product = await scope.CreateProductAsync(evt.Entity);
+            Assert.False(product.Entity.Archived);
+
+            var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
+            var response =
+                await client.DeleteAsync($"/v3/events/{evt.Entity.EventInfoId}/products/{product.Entity.ProductId}");
+            response.CheckOk();
+
+            var updatedProduct =
+                await scope.Db.Products
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(p => p.ProductId == product.Entity.ProductId);
+
+            Assert.NotNull(updatedProduct);
+            Assert.True(updatedProduct.Archived);
+        }
+
+        [Theory]
+        [InlineData(Roles.SuperAdmin)]
+        [InlineData(Roles.SystemAdmin)]
+        public async Task Should_Allow_Power_Admin_To_Archive_Product(string role)
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+            using var product = await scope.CreateProductAsync(evt.Entity);
+            Assert.False(product.Entity.Archived);
+
+            var client = _factory.CreateClient().Authenticated(role: role);
+            var response =
+                await client.DeleteAsync($"/v3/events/{evt.Entity.EventInfoId}/products/{product.Entity.ProductId}");
+            response.CheckOk();
+
+            var updatedProduct =
+                await scope.Db.Products
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(p => p.ProductId == product.Entity.ProductId);
+
+            Assert.NotNull(updatedProduct);
+            Assert.True(updatedProduct.Archived);
         }
 
         #endregion
