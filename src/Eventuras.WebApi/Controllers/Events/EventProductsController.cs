@@ -63,10 +63,13 @@ namespace Eventuras.WebApi.Controllers.Events
                 return BadRequest();
             }
 
-            await _eventProductsManagementService
-                .AddProductAsync(dto.ToProduct());
+            var product = dto.ToProduct();
+            product.EventInfoId = eventId;
 
-            return Ok();
+            await _eventProductsManagementService
+                .AddProductAsync(product);
+
+            return Ok(new ProductDto(product));
         }
 
         // DELETE v3/events/1/products/23

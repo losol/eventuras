@@ -172,7 +172,7 @@ namespace Eventuras.TestAbstractions
                 Status = status,
                 Products = products?.ToList(),
                 Archived = archived,
-                OrganizationId = organizationId,
+                OrganizationId = organization?.OrganizationId ?? organizationId,
                 CollectionMappings = collections?.Select(c => new EventCollectionMapping
                 {
                     CollectionId = c.CollectionId

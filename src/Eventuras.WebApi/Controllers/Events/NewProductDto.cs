@@ -1,9 +1,11 @@
+using System.ComponentModel.DataAnnotations;
 using Eventuras.Domain;
 
 namespace Eventuras.WebApi.Controllers.Events
 {
     public class NewProductDto
     {
+        [Required]
         public string Name { get; set; }
 
         public string Description { get; set; }

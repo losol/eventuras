@@ -50,13 +50,13 @@ namespace Eventuras.Services.Events
                     $"Event {eventInfoId} is not accessible for update by user {user.GetUserId()}");
             }
 
+            var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventInfoId, token);
             var org = await _currentOrganizationAccessorService
                 .RequireCurrentOrganizationAsync(new OrganizationRetrievalOptions
                 {
                     LoadMembers = true
                 }, token);
 
-            var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventInfoId, token);
             if (eventInfo.OrganizationId != org.OrganizationId)
             {
                 throw new NotAccessibleException(

@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Events
@@ -115,6 +116,149 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
 
             arr = await response.AsArrayAsync();
             arr.CheckArray((t, p) => t.CheckProduct(p), p2.Entity);
+        }
+
+        #endregion
+
+        #region Add
+
+        [Fact]
+        public async Task Add_Should_Require_Auth()
+        {
+            var client = _factory.CreateClient();
+            var response = await client.PostAsync("/v3/events/1/products");
+            response.CheckUnauthorized();
+        }
+
+        public static object[][] GetInvalidAddFormInput()
+        {
+            return new[]
+            {
+                new object[] {new {name = (string) null}},
+                new object[] {new {name = ""}},
+                new object[] {new {name = "   "}}
+            };
+        }
+
+        [Theory]
+        [MemberData(nameof(GetInvalidAddFormInput))]
+        public async Task Add_Should_Validate_Request_Body(object body)
+        {
+            var client = _factory.CreateClient().Authenticated(role: Roles.Admin);
+            var response = await client.PostAsync("/v3/events/1/products", body);
+            response.CheckBadRequest();
+        }
+
+        [Fact]
+        public async Task Add_Should_Return_Not_Found_For_Non_Existing_Event()
+        {
+            var client = _factory.CreateClient().Authenticated(role: Roles.Admin);
+            using var scope = _factory.Services.NewTestScope();
+            var response = await client.PostAsync("/v3/events/1001/products", new {name = "test"});
+            response.CheckNotFound();
+        }
+
+        [Fact]
+        public async Task Add_Should_Require_Admin_Role()
+        {
+            var client = _factory.CreateClient().Authenticated();
+            var response = await client.PostAsync("/v3/events/1/products", new {name = "test"});
+            response.CheckForbidden();
+        }
+
+        [Fact]
+        public async Task Add_Should_Be_Forbidden_For_Other_Org_Admin()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org1 = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org2 = await scope.CreateOrganizationAsync();
+            using var admin = await scope.CreateUserAsync();
+            using var m = await scope.CreateOrganizationMemberAsync(admin.Entity, org2.Entity, role: Roles.Admin);
+            using var evt = await scope.CreateEventAsync(organization: org1.Entity);
+
+            var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
+
+            var response = await client.PostAsync($"/v3/events/{evt.Entity.EventInfoId}/products", new {name = "test"});
+            response.CheckForbidden();
+        }
+
+        [Fact]
+        public async Task Add_Should_Be_Forbidden_For_Other_Org()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org1 = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org2 = await scope.CreateOrganizationAsync();
+            using var admin = await scope.CreateUserAsync();
+            using var m = await scope.CreateOrganizationMemberAsync(admin.Entity, org1.Entity, role: Roles.Admin);
+            using var evt = await scope.CreateEventAsync(organization: org2.Entity);
+
+            var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
+
+            var response = await client.PostAsync($"/v3/events/{evt.Entity.EventInfoId}/products", new {name = "test"});
+            response.CheckForbidden();
+        }
+
+        [Theory]
+        [InlineData(Roles.SuperAdmin)]
+        [InlineData(Roles.SystemAdmin)]
+        public async Task Add_Should_Be_Available_For_Power_Admin(string role)
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+
+            var client = _factory.CreateClient().Authenticated(role: role);
+            var response = await client.PostAsync($"/v3/events/{evt.Entity.EventInfoId}/products", new {name = "test"});
+            response.CheckOk();
+
+            var product = await scope.Db.Products
+                .SingleOrDefaultAsync(p => p.EventInfoId == evt.Entity.EventInfoId);
+
+            Assert.NotNull(product);
+            Assert.Equal("test", product.Name);
+            Assert.Null(product.Description);
+            Assert.Null(product.MoreInformation);
+            Assert.False(product.Archived);
+            Assert.Equal(0, product.Price);
+            Assert.Equal(0, product.VatPercent);
+
+            var token = await response.AsTokenAsync();
+            token.CheckProduct(product);
+        }
+
+        [Fact]
+        public async Task Add_Should_Allow_Org_Admin_To_Add_New_Product_With_Max_Data()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var admin = await scope.CreateUserAsync();
+            using var m = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
+            using var evt = await scope.CreateEventAsync(organization: org.Entity);
+
+            var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
+
+            var response = await client.PostAsync($"/v3/events/{evt.Entity.EventInfoId}/products", new
+            {
+                name = "test",
+                description = "desc",
+                more = "more",
+                price = 999.44,
+                vatPercent = 10
+            });
+            response.CheckOk();
+
+            var product = await scope.Db.Products
+                .SingleOrDefaultAsync(p => p.EventInfoId == evt.Entity.EventInfoId);
+
+            Assert.NotNull(product);
+            Assert.Equal("test", product.Name);
+            Assert.Equal("desc", product.Description);
+            Assert.Equal("more", product.MoreInformation);
+            Assert.False(product.Archived);
+            Assert.Equal((decimal) 999.44, product.Price);
+            Assert.Equal(10, product.VatPercent);
+
+            var token = await response.AsTokenAsync();
+            token.CheckProduct(product);
         }
 
         #endregion
