@@ -1,0 +1,26 @@
+type: object
+title: New product form.
+required:
+  - name
+properties:
+  name:
+    type: string
+    description: Product name.
+  description:
+    type: string
+    description: Product description.
+  more:
+    type: string
+    description: More information about the product.
+  price:
+    type: number
+    format: float
+  vatPercent:
+    type: number
+    format: float
+example:
+  name: Test Product
+  description: Test
+  more: More on this product...
+  price: 19.99
+  vatPercent: 17

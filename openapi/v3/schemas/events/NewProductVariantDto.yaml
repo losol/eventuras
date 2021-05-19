@@ -1,0 +1,19 @@
+type: object
+title: New product variant form.
+properties:
+  name:
+    type: string
+    description: Product variant name.
+  description:
+    type: string
+    description: Product variant description.
+  price:
+    type: number
+    format: float
+  vatPercent:
+    type: number
+    format: int32
+example:
+  name: Red Coloured Test Product
+  description: Some variant description...
+  price: 21.99
