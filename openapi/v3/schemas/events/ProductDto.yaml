@@ -5,6 +5,7 @@ required:
   - name
   - description
   - price
+  - variants
 properties:
   productId:
     type: integer
@@ -24,6 +25,10 @@ properties:
   vatPercent:
     type: number
     format: float
+  variants:
+    type: array
+    items:
+      $ref: './ProductVariantDto.yaml'
 example:
   productId: 1001
   name: Test Product
@@ -31,3 +36,14 @@ example:
   more: More on this product...
   price: 19.99
   vatPercent: 17
+  variants:
+    - productVariantId: 34
+      name: Red Coloured Test Product
+      description: Some variant description...
+      price: 21.99
+    - productVariantId: 35
+      name: Green Coloured Test Product
+      description: Some variant description...
+      price: 22.99
+
+

@@ -1,9 +1,9 @@
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Domain;
+using Eventuras.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace Eventuras.Services.Events
@@ -11,10 +11,17 @@ namespace Eventuras.Services.Events
     internal class EventProductsManagementService : IEventProductsManagementService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IEventInfoAccessControlService _accessControlService;
 
-        public EventProductsManagementService(ApplicationDbContext context)
+        public EventProductsManagementService(
+            ApplicationDbContext context,
+            IEventInfoAccessControlService accessControlService)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _context = context ?? throw
+                new ArgumentNullException(nameof(context));
+
+            _accessControlService = accessControlService ?? throw
+                new ArgumentNullException(nameof(accessControlService));
         }
 
         public async Task UpdateEventProductsAsync(int eventId, List<Product> products)
@@ -23,6 +30,8 @@ namespace Eventuras.Services.Events
             {
                 throw new ArgumentNullException(paramName: nameof(products));
             }
+
+            await _accessControlService.CheckEventUpdateAccessAsync(eventId);
 
             var originalProducts = await _context.Products
                 .Where(p => p.EventInfoId == eventId)
@@ -36,8 +45,8 @@ namespace Eventuras.Services.Events
 
             // Delete the variants that don't exist in the provided object
             var providedVariants = products
-                                       .Where(p => p.ProductVariants != null)
-                                       .SelectMany(p => p.ProductVariants);
+                .Where(p => p.ProductVariants != null)
+                .SelectMany(p => p.ProductVariants);
 
             var variantsToDelete = originalVariants
                 .Where(originalVariant => providedVariants.All(variant =>
@@ -67,7 +76,7 @@ namespace Eventuras.Services.Events
             var info = await _context.EventInfos
                 .Where(e => e.EventInfoId == eventId)
                 .Include(ei => ei.Products)
-                .ThenInclude(p => p.ProductVariants)
+                .ThenInclude<EventInfo, Product, List<ProductVariant>>(p => p.ProductVariants)
                 .AsNoTracking()
                 .SingleAsync();
 
@@ -77,6 +86,44 @@ namespace Eventuras.Services.Events
             _context.EventInfos.Update(info);
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task AddProductAsync(Product product)
+        {
+            if (product == null)
+            {
+                throw new ArgumentNullException(nameof(product));
+            }
+
+            await _accessControlService.CheckEventUpdateAccessAsync(product.EventInfoId);
+
+            await _context.CreateAsync(product);
+        }
+
+        public async Task UpdateProductAsync(Product product)
+        {
+            if (product == null)
+            {
+                throw new ArgumentNullException(nameof(product));
+            }
+
+            await _accessControlService.CheckEventUpdateAccessAsync(product.EventInfoId);
+
+            await _context.UpdateAsync(product);
+        }
+
+        public async Task ArchiveProductAsync(Product product)
+        {
+            if (product == null)
+            {
+                throw new ArgumentNullException(nameof(product));
+            }
+
+            await _accessControlService.CheckEventUpdateAccessAsync(product.EventInfoId);
+
+            product.Archived = true;
+
+            await _context.UpdateAsync(product);
         }
     }
 }

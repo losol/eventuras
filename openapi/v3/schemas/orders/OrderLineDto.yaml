@@ -5,9 +5,9 @@ required:
   - quantity
 properties:
   product:
-    $ref: '../products/ProductDto.yaml'
+    $ref: '../events/ProductDto.yaml'
   productVariant:
-    $ref: '../products/ProductVariantDto.yaml'
+    $ref: '../events/ProductVariantDto.yaml'
   quantity:
     type: integer
     format: int32

@@ -3,7 +3,7 @@ using Eventuras.Services.Registrations;
 
 namespace Eventuras.WebApi.Controllers.Registrations
 {
-    public class RegistrationOrderItemDto
+    public class NewRegistrationOrderItemDto
     {
         [Range(1, int.MaxValue)]
         public int ProductId { get; set; }

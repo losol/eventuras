@@ -132,6 +132,13 @@ namespace Eventuras.WebApi.Tests
                     Encoding.UTF8, "application/json"));
         }
 
+        public static async Task<HttpResponseMessage> PostAsync(
+            this HttpClient httpClient,
+            string requestUri)
+        {
+            return await httpClient.PostAsync(requestUri, new { });
+        }
+
         public static async Task<HttpResponseMessage> PutAsync(
             this HttpClient httpClient,
             string requestUri,

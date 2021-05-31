@@ -1,9 +1,17 @@
 get:
-  summary: Get registration orders list.
-  operationId: getRegistrationOrdersList
+  summary: Get event products list.
+  operationId: getEventProductsList
   tags:
-    - registrations
-    - orders
+    - events
+    - products
+  parameters:
+    - name: id
+      in: path
+      description: Event ID.
+      required: true
+      schema:
+        type: integer
+        format: int32
   responses:
     '200':
       description: OK
@@ -12,31 +20,41 @@ get:
           schema:
             type: array
             items:
-              $ref: '../../schemas/orders/OrderDto.yaml'
+              $ref: '../../schemas/events/ProductDto.yaml'
     '400':
       $ref: 'eventuras-api.v3.yaml#/components/responses/InvalidRequestError'
+    '404':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/NotFound'
     '500':
       $ref: 'eventuras-api.v3.yaml#/components/responses/InternalServerError'
 
 post:
-  summary: Add order to registration.
-  operationId: addOrderToRegistration
+  summary: Add product to event.
+  operationId: addProductToEvent
   tags:
-    - registrations
-    - orders
+    - events
+    - products
+  parameters:
+    - name: id
+      in: path
+      description: Event ID.
+      required: true
+      schema:
+        type: integer
+        format: int32
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: '../../schemas/registrations/RegistrationOrderDto.yaml'
+          $ref: '../../schemas/events/NewProductDto.yaml'
   responses:
     '200':
       description: OK
       content:
         application/json:
           schema:
-            $ref: '../../schemas/orders/OrderDto.yaml'
+            $ref: '../../schemas/events/ProductDto.yaml'
     '400':
       $ref: 'eventuras-api.v3.yaml#/components/responses/InvalidRequestError'
     '401':

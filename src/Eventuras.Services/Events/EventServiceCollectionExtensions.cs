@@ -9,6 +9,7 @@ namespace Eventuras.Services.Events
             services.AddTransient<IEventInfoRetrievalService, EventInfoRetrievalService>();
             services.AddTransient<IEventManagementService, EventManagementService>();
             services.AddTransient<IEventProductsManagementService, EventProductsManagementService>();
+            services.AddTransient<IEventInfoAccessControlService, EventInfoAccessControlService>();
             return services;
         }
     }
