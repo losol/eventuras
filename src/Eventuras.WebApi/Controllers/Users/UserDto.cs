@@ -1,4 +1,3 @@
-using System;
 using Eventuras.Domain;
 
 namespace Eventuras.WebApi.Controllers.Users

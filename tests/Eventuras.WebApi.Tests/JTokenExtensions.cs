@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Eventuras.Domain;
 using Newtonsoft.Json.Linq;
@@ -17,7 +16,9 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(user.PhoneNumber, token.Value<string>("phoneNumber"));
         }
 
-        public static void CheckRegistration(this JToken token, Registration registration)
+        public static void CheckRegistration(this JToken token, Registration registration,
+            bool checkUserInfo = false,
+            bool checkEventInfo = false)
         {
             Assert.Equal(registration.RegistrationId, token.Value<int>("registrationId"));
             Assert.Equal(registration.EventInfoId, token.Value<int>("eventId"));
@@ -25,6 +26,16 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(registration.Status.ToString(), token.Value<string>("status"));
             Assert.Equal(registration.Type.ToString(), token.Value<string>("type"));
             Assert.Equal(registration.Notes, token.Value<string>("notes"));
+
+            if (checkUserInfo)
+            {
+                token.Value<JToken>("user").CheckUser(registration.User);
+            }
+
+            if (checkEventInfo)
+            {
+                token.Value<JToken>("event").CheckEvent(registration.EventInfo);
+            }
         }
 
         public static void CheckEvent(this JToken token, EventInfo eventInfo)
