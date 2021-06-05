@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -10,9 +11,7 @@ namespace Eventuras.Domain
     {
         public int OrganizationId { get; set; }
 
-        [Required]
-        [Display(Name = "Navn")]
-        public string Name { get; set; }
+        [Required] [Display(Name = "Navn")] public string Name { get; set; }
 
         [StringLength(300, ErrorMessage = "Beskrivelsen kan bare være 300 tegn.")]
         [Display(Name = "Kort beskrivelse av organisasjonen.")]
@@ -34,25 +33,27 @@ namespace Eventuras.Domain
         [StringLength(300, ErrorMessage = "Logo-url kan bare være 300 tegn.")]
         [Display(Name = "Lenke til profilbilde for organisasjonen.")]
         public string LogoUrl { get; set; }
+
         public string LogoBase64 { get; set; }
 
         public string VatId { get; set; }
         public string AccountNumber { get; set; }
 
-        [DisplayName("Er rotorganisasjon")]
-        public bool IsRoot { get; set; }
+        [DisplayName("Er rotorganisasjon")] public bool IsRoot { get; set; }
 
-        [DisplayName("Aktiv")]
-        public bool Active { get; set; } = true;
+        [DisplayName("Aktiv")] public bool Active { get; set; } = true;
 
         public List<OrganizationMember> Members { get; set; }
 
         public List<OrganizationHostname> Hostnames { get; set; }
 
+        public List<OrganizationSetting> Settings { get; set; }
+
         [NotMapped]
         public string NameAndHostname =>
             Hostnames?.Any(h => h.Active) == true
-                ? $"{Name} ({CommaSeparatedHostnames})" : Name;
+                ? $"{Name} ({CommaSeparatedHostnames})"
+                : Name;
 
         [NotMapped]
         [DisplayName("Kommaseparerte Eventuras vertsnavn")]
@@ -61,5 +62,15 @@ namespace Eventuras.Domain
                 .Select(h => h.Hostname)
                 .ToList()
             ?? new List<string>());
+
+        public string GetSettingValue(string name)
+        {
+            if (name == null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            return Settings?.FirstOrDefault(s => s.Name == name)?.Value;
+        }
     }
 }

@@ -69,7 +69,8 @@ namespace Eventuras.WebApi
             services.AddInvoicingServices(Configuration, Features);
             services.AddApplicationServices(Configuration);
             services.AddFeatureManagement();
-
+            services.AddMemoryCache();
+            
             services.AddControllers(options =>
             {
                 options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());

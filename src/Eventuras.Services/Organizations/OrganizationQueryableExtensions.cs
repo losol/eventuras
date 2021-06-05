@@ -43,6 +43,11 @@ namespace Eventuras.Services.Organizations
                 query = query.Include(o => o.Hostnames);
             }
 
+            if (options.LoadSettings)
+            {
+                query = query.Include(o => o.Settings);
+            }
+
             return query;
         }
 

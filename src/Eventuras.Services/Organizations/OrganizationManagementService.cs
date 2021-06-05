@@ -1,30 +1,32 @@
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Eventuras.Domain;
+using Eventuras.Infrastructure;
 using Eventuras.Services.Exceptions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Eventuras.Services.Organizations
 {
     internal class OrganizationManagementService : IOrganizationManagementService
     {
         private readonly ApplicationDbContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger<OrganizationManagementService> _logger;
+        private readonly IOrganizationAccessControlService _organizationAccessControlService;
 
         public OrganizationManagementService(
             ApplicationDbContext context,
-            IHttpContextAccessor httpContextAccessor,
-            ILogger<OrganizationManagementService> logger)
+            ILogger<OrganizationManagementService> logger,
+            IOrganizationAccessControlService organizationAccessControlService)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _context = context ?? throw
+                new ArgumentNullException(nameof(context));
+            _logger = logger ?? throw
+                new ArgumentNullException(nameof(logger));
+            _organizationAccessControlService = organizationAccessControlService ?? throw
+                new ArgumentNullException(nameof(organizationAccessControlService));
         }
 
         public async Task CreateNewOrganizationAsync(Organization organization)
@@ -34,10 +36,8 @@ namespace Eventuras.Services.Organizations
                 throw new ArgumentNullException(nameof(organization));
             }
 
-            if (!_httpContextAccessor.HttpContext.User.IsInRole(Roles.SuperAdmin))
-            {
-                throw new NotAccessibleException($"Only {Roles.SuperAdmin} users can create new org.");
-            }
+            await _organizationAccessControlService
+                .CheckOrganizationUpdateAccessAsync(organization.OrganizationId);
 
             try
             {
@@ -47,7 +47,7 @@ namespace Eventuras.Services.Organizations
             {
                 _logger.LogWarning(e, e.Message);
                 _context.Remove(organization);
-                throw new DuplicateOrganizationHostnameException();
+                throw new DuplicateException();
             }
         }
 
@@ -58,10 +58,8 @@ namespace Eventuras.Services.Organizations
                 throw new ArgumentNullException(nameof(organization));
             }
 
-            if (!_httpContextAccessor.HttpContext.User.IsInRole(Roles.SuperAdmin))
-            {
-                throw new NotAccessibleException($"Only {Roles.SuperAdmin} users can update org.");
-            }
+            await _organizationAccessControlService
+                .CheckOrganizationUpdateAccessAsync(organization.OrganizationId);
 
             try
             {
@@ -72,7 +70,7 @@ namespace Eventuras.Services.Organizations
             {
                 _logger.LogWarning(e, e.Message);
                 _context.Entry(organization).State = EntityState.Detached;
-                throw new DuplicateOrganizationHostnameException();
+                throw new DuplicateException();
             }
         }
 
@@ -84,17 +82,13 @@ namespace Eventuras.Services.Organizations
             }
 
             var organization = await _context.Organizations
-                .Include(o => o.Hostnames)
-                .SingleOrDefaultAsync(o => o.OrganizationId == id);
-
-            if (organization == null)
-            {
-                throw new InvalidOperationException($"Organization {id} not found");
-            }
+                                   .Include(o => o.Hostnames)
+                                   .SingleOrDefaultAsync(o => o.OrganizationId == id)
+                               ?? throw new NotFoundException($"Organization {id} not found");
 
             if (!organization.Active)
             {
-                throw new InvalidOperationException($"Organization {id} is deleted");
+                throw new NotFoundException($"Organization {id} is deleted");
             }
 
             var normalizedHostnames = hostnames
@@ -107,10 +101,10 @@ namespace Eventuras.Services.Organizations
             {
                 if (await _context.OrganizationHostnames
                     .AnyAsync(h => h.OrganizationId != id &&
-                                  h.Active &&
-                                  h.Hostname == hostname))
+                                   h.Active &&
+                                   h.Hostname == hostname))
                 {
-                    throw new DuplicateOrganizationHostnameException(hostname);
+                    throw new DuplicateException($"Duplicate org hostname: {hostname}");
                 }
             }
 
@@ -141,9 +135,12 @@ namespace Eventuras.Services.Organizations
 
         public async Task DeleteOrganizationAsync(int id)
         {
+            await _organizationAccessControlService.CheckOrganizationUpdateAccessAsync(id);
+
             var organization = await _context.Organizations
-                .Include(o => o.Hostnames)
-                .SingleOrDefaultAsync(o => o.OrganizationId == id);
+                                   .Include(o => o.Hostnames)
+                                   .SingleOrDefaultAsync(o => o.OrganizationId == id)
+                               ?? throw new NotFoundException($"Organization {id} not found");
 
             organization.Active = false;
             organization.Hostnames.ForEach(h => h.Active = false);
