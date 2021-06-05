@@ -11,6 +11,8 @@ namespace Eventuras.Services.Organizations
 {
     internal class CurrentOrganizationAccessorService : ICurrentOrganizationAccessorService
     {
+        private const string OrgIdParamName = "orgId";
+
         private readonly ApplicationDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -26,6 +28,18 @@ namespace Eventuras.Services.Organizations
             OrganizationRetrievalOptions options,
             CancellationToken cancellationToken)
         {
+            // Retrieve current organization by orgId param first
+            var orgIdParamValue = _httpContextAccessor.HttpContext.Request.Query[OrgIdParamName];
+            if (!string.IsNullOrEmpty(orgIdParamValue) && int.TryParse(orgIdParamValue, out var organizationId))
+            {
+                return await _context.Organizations
+                    .AsNoTracking()
+                    .UseOptions(options ?? new OrganizationRetrievalOptions())
+                    .Where(o => o.OrganizationId == organizationId)
+                    .FirstOrDefaultAsync(cancellationToken);
+            }
+
+            // Try hostname approach, if no orgId is present in the query
             var host = _httpContextAccessor.HttpContext.Request.Host;
             if (!host.HasValue)
             {
