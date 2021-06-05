@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Eventuras.Services.Exceptions;
 
 namespace Eventuras.Services.Organizations
 {
@@ -58,7 +59,7 @@ namespace Eventuras.Services.Organizations
             CancellationToken cancellationToken)
         {
             return await GetCurrentOrganizationAsync(options, cancellationToken) ??
-                   throw new OrganizationMisconfigurationException(_httpContextAccessor.HttpContext.Request.Host.Value);
+                   throw new OrgNotSpecifiedException(_httpContextAccessor.HttpContext.Request.Host.Value);
         }
     }
 }
