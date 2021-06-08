@@ -10,8 +10,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Collections.Generic;
 using System.Linq;
+using Eventuras.Services.Organizations.Settings;
 using Eventuras.TestAbstractions;
 using Eventuras.WebApi.Auth;
+using Eventuras.WebApi.Tests.Controllers.Organizations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
@@ -31,22 +33,24 @@ namespace Eventuras.WebApi.Tests
                 .ConfigureAppConfiguration(app => app
                     .AddInMemoryCollection(new Dictionary<string, string>
                     {
-                        { "AppSettings:EmailProvider", "Mock" },
-                        { "AppSettings:SmsProvider", "Mock" },
-                        { "AppSettings:UsePowerOffice", "false" },
-                        { "AppSettings:UseStripeInvoice", "false" },
-                        { "SuperAdmin:Email", TestingConstants.SuperAdminEmail },
-                        { "SuperAdmin:Password", TestingConstants.SuperAdminPassword }
+                        {"AppSettings:EmailProvider", "Mock"},
+                        {"AppSettings:SmsProvider", "Mock"},
+                        {"AppSettings:UsePowerOffice", "false"},
+                        {"AppSettings:UseStripeInvoice", "false"},
+                        {"SuperAdmin:Email", TestingConstants.SuperAdminEmail},
+                        {"SuperAdmin:Password", TestingConstants.SuperAdminPassword},
+                        {"Zoom:Enabled", "true"}
                     }))
                 .ConfigureServices(services =>
                 {
                     // Override already added email sender with the true mock
                     services.AddSingleton(EmailSenderMock.Object);
+                    services.AddSingleton<IOrganizationSettingsRegistryComponent, OrgSettingsTestRegistryComponent>();
 
                     // Remove the app's ApplicationDbContext registration.
                     var descriptor = services.SingleOrDefault(
-                    d => d.ServiceType ==
-                         typeof(DbContextOptions<ApplicationDbContext>));
+                        d => d.ServiceType ==
+                             typeof(DbContextOptions<ApplicationDbContext>));
 
                     if (descriptor != null)
                     {
@@ -85,12 +89,11 @@ namespace Eventuras.WebApi.Tests
 
                 services.PostConfigure<AuthorizationOptions>(options =>
                 {
-                    foreach (var scope in TestingConstants.DefaultScopes) // replace default scope policies having original auth0 Issuer
+                    foreach (var scope in
+                        TestingConstants.DefaultScopes) // replace default scope policies having original auth0 Issuer
                     {
-                        options.AddPolicy(scope, policy =>
-                        {
-                            policy.Requirements.Add(new ScopeRequirement(FakeJwtManager.Issuer, scope));
-                        });
+                        options.AddPolicy(scope,
+                            policy => { policy.Requirements.Add(new ScopeRequirement(FakeJwtManager.Issuer, scope)); });
                     }
                 });
             });

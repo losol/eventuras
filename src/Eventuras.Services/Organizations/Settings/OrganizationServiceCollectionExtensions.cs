@@ -6,10 +6,11 @@ namespace Eventuras.Services.Organizations.Settings
     {
         public static IServiceCollection AddOrganizationSettingsServices(this IServiceCollection services)
         {
+            services.AddSingleton<IStartupService, OrganizationSettingsRegistryInitializer>();
+            services.AddSingleton<IOrganizationSettingsRegistry, OrganizationSettingsRegistry>();
             services.AddTransient<IOrganizationSettingsCache, OrganizationSettingsCache>();
             services.AddTransient<IOrganizationSettingsAccessorService, OrganizationSettingsAccessorService>();
             services.AddTransient<IOrganizationSettingsManagementService, OrganizationSettingsManagementService>();
-            services.AddTransient<IOrganizationSettingsRegistry, OrganizationSettingsRegistry>();
             return services;
         }
     }

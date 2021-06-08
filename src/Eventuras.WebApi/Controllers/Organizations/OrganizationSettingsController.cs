@@ -1,8 +1,10 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
+using Eventuras.Services.Exceptions;
+using Eventuras.Services.Organizations;
 using Eventuras.Services.Organizations.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,11 +20,15 @@ namespace Eventuras.WebApi.Controllers.Organizations
         private readonly IOrganizationSettingsRegistry _organizationSettingsRegistry;
         private readonly IOrganizationSettingsCache _organizationSettingsCache;
         private readonly IOrganizationSettingsManagementService _organizationSettingsManagementService;
+        private readonly IOrganizationRetrievalService _organizationRetrievalService;
+        private readonly IOrganizationAccessControlService _organizationAccessControlService;
 
         public OrganizationSettingsController(
             IOrganizationSettingsCache organizationSettingsCache,
             IOrganizationSettingsManagementService organizationSettingsManagementService,
-            IOrganizationSettingsRegistry organizationSettingsRegistry)
+            IOrganizationSettingsRegistry organizationSettingsRegistry,
+            IOrganizationRetrievalService organizationRetrievalService,
+            IOrganizationAccessControlService organizationAccessControlService)
         {
             _organizationSettingsCache = organizationSettingsCache ?? throw
                 new ArgumentNullException(nameof(organizationSettingsCache));
@@ -30,12 +36,23 @@ namespace Eventuras.WebApi.Controllers.Organizations
             _organizationSettingsManagementService = organizationSettingsManagementService ?? throw
                 new ArgumentNullException(nameof(organizationSettingsManagementService));
 
-            _organizationSettingsRegistry = organizationSettingsRegistry;
+            _organizationSettingsRegistry = organizationSettingsRegistry ?? throw
+                new ArgumentNullException(nameof(organizationSettingsRegistry));
+
+            _organizationRetrievalService = organizationRetrievalService ?? throw
+                new ArgumentNullException(nameof(organizationRetrievalService));
+
+            _organizationAccessControlService = organizationAccessControlService ?? throw
+                new ArgumentNullException(nameof(organizationAccessControlService));
         }
 
         [HttpGet]
-        public async Task<OrgSettingDto[]> List(int organizationId)
+        public async Task<OrgSettingDto[]> List(int organizationId, CancellationToken cancellationToken)
         {
+            await _organizationRetrievalService
+                .GetOrganizationByIdAsync(organizationId,
+                    cancellationToken: cancellationToken); // to check for org existence
+
             var settings = await _organizationSettingsCache
                 .GetAllSettingsForOrganizationAsync(organizationId);
 
@@ -53,44 +70,65 @@ namespace Eventuras.WebApi.Controllers.Organizations
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(int organizationId, OrgSettingValueDto dto)
+        public async Task<IActionResult> Update(int organizationId, OrganizationSettingValueDto dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
+            await _organizationRetrievalService
+                .GetOrganizationByIdAsync(organizationId); // to check for org existence
+
+            await _organizationAccessControlService
+                .CheckOrganizationUpdateAccessAsync(organizationId);
+
             var settings = (await _organizationSettingsCache
                     .GetAllSettingsForOrganizationAsync(organizationId))
                 .ToDictionary(s => s.Name, s => s);
 
-            if (settings.ContainsKey(dto.Name))
+            var entry = _organizationSettingsRegistry.GetEntries()
+                .FirstOrDefault(e => e.Name == dto.Name);
+
+            if (entry == null)
             {
-                if (string.IsNullOrEmpty(dto.Value))
+                throw new NotFoundException($"Setting name {dto.Name} doesn't exist");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.Value))
+            {
+                if (settings.ContainsKey(dto.Name))
                 {
                     await _organizationSettingsManagementService.RemoveOrganizationSettingAsync(settings[dto.Name]);
-                    return Ok();
                 }
 
+                return Ok(new OrgSettingDto(entry)
+                {
+                    Value = null
+                });
+            }
+
+            if (settings.ContainsKey(dto.Name))
+            {
                 var setting = settings[dto.Name];
                 setting.Value = dto.Value;
                 await _organizationSettingsManagementService.UpdateOrganizationSettingAsync(setting);
             }
             else
             {
-                if (!string.IsNullOrEmpty(dto.Value))
-                {
-                    await _organizationSettingsManagementService
-                        .CreateOrganizationSettingAsync(new OrganizationSetting
-                        {
-                            OrganizationId = organizationId,
-                            Name = dto.Name,
-                            Value = dto.Value
-                        });
-                }
+                await _organizationSettingsManagementService
+                    .CreateOrganizationSettingAsync(new OrganizationSetting
+                    {
+                        OrganizationId = organizationId,
+                        Name = dto.Name,
+                        Value = dto.Value
+                    });
             }
 
-            return Ok();
+            return Ok(new OrgSettingDto(entry)
+            {
+                Value = dto.Value
+            });
         }
     }
 
@@ -113,12 +151,5 @@ namespace Eventuras.WebApi.Controllers.Organizations
             Description = entry.Description;
             Type = entry.Type;
         }
-    }
-
-    public class OrgSettingValueDto
-    {
-        [Required] public string Name { get; set; }
-
-        public string Value { get; set; }
     }
 }

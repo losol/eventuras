@@ -39,29 +39,34 @@ namespace Eventuras.TestAbstractions
             return JArray.Parse(content);
         }
 
-        public static void CheckOk(this HttpResponseMessage response)
+        public static HttpResponseMessage CheckOk(this HttpResponseMessage response)
         {
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            return response;
         }
 
-        public static void CheckNotFound(this HttpResponseMessage response)
+        public static HttpResponseMessage CheckNotFound(this HttpResponseMessage response)
         {
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            return response;
         }
 
-        public static void CheckUnauthorized(this HttpResponseMessage response)
+        public static HttpResponseMessage CheckUnauthorized(this HttpResponseMessage response)
         {
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+            return response;
         }
 
-        public static void CheckForbidden(this HttpResponseMessage response)
+        public static HttpResponseMessage CheckForbidden(this HttpResponseMessage response)
         {
             Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+            return response;
         }
 
-        public static void CheckConflict(this HttpResponseMessage response)
+        public static HttpResponseMessage CheckConflict(this HttpResponseMessage response)
         {
             Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+            return response;
         }
     }
 }

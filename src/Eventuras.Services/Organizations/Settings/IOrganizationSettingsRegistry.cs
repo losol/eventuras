@@ -15,7 +15,7 @@ namespace Eventuras.Services.Organizations.Settings
         /// <param name="section">The name of the settings section. Required.</param>
         /// <param name="description">The description of the setting. Will be displayed as the label for the input in the UI. Required.</param>
         /// <param name="type">The type of the setting.</param>
-        void RegisterSettingAsync(string name, string section, string description, OrganizationSettingType type);
+        void RegisterSetting(string name, string section, string description, OrganizationSettingType type);
 
         /// <summary>
         /// Returns all registered organization settings entries.

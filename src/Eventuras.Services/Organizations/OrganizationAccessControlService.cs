@@ -21,7 +21,17 @@ namespace Eventuras.Services.Organizations
             _httpContextAccessor = httpContextAccessor;
         }
 
+        public async Task CheckOrganizationReadAccessAsync(int organizationId)
+        {
+            await CheckAdminRoleAsync(organizationId);
+        }
+
         public async Task CheckOrganizationUpdateAccessAsync(int organizationId)
+        {
+            await CheckAdminRoleAsync(organizationId);
+        }
+
+        private async Task CheckAdminRoleAsync(int organizationId)
         {
             var user = _httpContextAccessor.HttpContext.User;
             if (user.IsPowerAdmin())

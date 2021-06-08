@@ -10,7 +10,7 @@ namespace Eventuras.Services.Organizations.Settings
         private readonly IDictionary<string, OrganizationSettingEntry> _entries =
             new Dictionary<string, OrganizationSettingEntry>();
 
-        public void RegisterSettingAsync(
+        public void RegisterSetting(
             string name,
             string section,
             string description,
