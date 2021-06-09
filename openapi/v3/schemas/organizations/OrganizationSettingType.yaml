@@ -1,0 +1,7 @@
+type: integer
+title: Organization setting type enum.
+description: |
+  String = 1,
+  Number = 2,
+  Url = 3,
+  Email = 4

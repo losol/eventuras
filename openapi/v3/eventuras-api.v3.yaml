@@ -60,6 +60,10 @@ paths:
   /organizations/{id}/members/{memberId}/roles:
     $ref: './paths/organizations/members/roles.yaml'
 
+  # Organization settings
+  /organizations/{id}/settings:
+    $ref: './paths/organizations/settings.yaml'
+
 components:
 
   schemas:

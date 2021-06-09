@@ -47,7 +47,7 @@ namespace Eventuras.WebApi.Controllers.Organizations
         }
 
         [HttpGet]
-        public async Task<OrgSettingDto[]> List(int organizationId, CancellationToken cancellationToken)
+        public async Task<OrganizationSettingDto[]> List(int organizationId, CancellationToken cancellationToken)
         {
             await _organizationRetrievalService
                 .GetOrganizationByIdAsync(organizationId,
@@ -63,7 +63,7 @@ namespace Eventuras.WebApi.Controllers.Organizations
             return _organizationSettingsRegistry.GetEntries()
                 .OrderBy(e => e.Section)
                 .ThenBy(e => e.Name)
-                .Select(e => new OrgSettingDto(e)
+                .Select(e => new OrganizationSettingDto(e)
                 {
                     Value = values.ContainsKey(e.Name) ? values[e.Name] : null
                 }).ToArray();
@@ -102,7 +102,7 @@ namespace Eventuras.WebApi.Controllers.Organizations
                     await _organizationSettingsManagementService.RemoveOrganizationSettingAsync(settings[dto.Name]);
                 }
 
-                return Ok(new OrgSettingDto(entry)
+                return Ok(new OrganizationSettingDto(entry)
                 {
                     Value = null
                 });
@@ -125,14 +125,14 @@ namespace Eventuras.WebApi.Controllers.Organizations
                     });
             }
 
-            return Ok(new OrgSettingDto(entry)
+            return Ok(new OrganizationSettingDto(entry)
             {
                 Value = dto.Value
             });
         }
     }
 
-    public class OrgSettingDto
+    public class OrganizationSettingDto
     {
         public string Name { get; }
 
@@ -144,7 +144,7 @@ namespace Eventuras.WebApi.Controllers.Organizations
 
         public string Value { get; set; }
 
-        public OrgSettingDto(OrganizationSettingEntry entry)
+        public OrganizationSettingDto(OrganizationSettingEntry entry)
         {
             Name = entry.Name;
             Section = entry.Section;
