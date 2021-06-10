@@ -5,6 +5,7 @@ using Eventuras.Infrastructure;
 using Eventuras.Services;
 using Eventuras.Services.DbInitializers;
 using Eventuras.Services.Invoicing;
+using Eventuras.Services.Organizations.Settings;
 using Eventuras.Services.TalentLms;
 using Eventuras.Services.Zoom;
 using Eventuras.WebApi.Auth;
@@ -143,6 +144,7 @@ namespace Eventuras.WebApi.Extensions
             if (features.UsePowerOffice)
             {
                 services.Configure<PowerOfficeOptions>(config.GetSection("PowerOffice"));
+                services.AddSingleton<IOrganizationSettingsRegistryComponent, PowerOfficeSettingsRegistryComponent>();
                 services.AddScoped<IPowerOfficeService, PowerOfficeService>();
             }
             else
