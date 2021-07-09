@@ -9,7 +9,9 @@ namespace Eventuras.Web
     {
         public int Order { get; } = int.MaxValue - 10;
 
-        public void OnActionExecuting(ActionExecutingContext context) { }
+        public void OnActionExecuting(ActionExecutingContext context)
+        {
+        }
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
@@ -18,6 +20,7 @@ namespace Eventuras.Web
             {
                 return;
             }
+
             context.Result = result;
             context.ExceptionHandled = true;
         }
@@ -28,6 +31,7 @@ namespace Eventuras.Web
             {
                 NotFoundException => new NotFoundObjectResult(e.Message),
                 NotAccessibleException => new ForbidResult(),
+                OrgNotSpecifiedException => new BadRequestObjectResult(e.Message),
                 DuplicateException => new ConflictObjectResult(e.Message),
                 _ => null
             };
