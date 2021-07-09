@@ -9,6 +9,7 @@ using GoApi.Invoices;
 using GoApi.Party;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Services.Organizations.Settings;
 using GoApi.Core.Global;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -20,26 +21,48 @@ namespace Eventuras.Services.Invoicing
     {
         private readonly ApplicationDbContext _db;
         private readonly IOptions<PowerOfficeOptions> _options;
+        private readonly IOrganizationSettingsAccessorService _organizationSettingsAccessorService;
         private readonly ILogger _logger;
         private Go _api;
 
         public PowerOfficeService(
             IOptions<PowerOfficeOptions> options,
             ApplicationDbContext db,
-            ILogger<PowerOfficeService> logger)
+            ILogger<PowerOfficeService> logger, 
+            IOrganizationSettingsAccessorService organizationSettingsAccessorService)
         {
-            _db = db ?? throw new ArgumentNullException(nameof(db));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _options = options ?? throw new ArgumentNullException(nameof(options));
-            _logger.LogInformation($"Using PowerOffice Client with applicationKey: {options.Value.ApplicationKey}");
+            _db = db ?? throw 
+                new ArgumentNullException(nameof(db));
+            
+            _logger = logger ?? throw 
+                new ArgumentNullException(nameof(logger));
+            
+            _organizationSettingsAccessorService = organizationSettingsAccessorService ?? throw 
+                new ArgumentNullException(nameof(organizationSettingsAccessorService));
+            
+            _options = options ?? throw 
+                new ArgumentNullException(nameof(options));
         }
 
         private async Task<Go> GetApiAsync()
         {
+            // read per-org power office settings,
+            // fallback to system-wide settings if not set.
+            
+            var appKey = await _organizationSettingsAccessorService
+                             .GetOrganizationSettingByNameAsync(PowerOfficeConstants.ApplicationKey)
+                         ?? _options.Value.ApplicationKey;
+
+            var clientKey = await _organizationSettingsAccessorService
+                .GetOrganizationSettingByNameAsync(PowerOfficeConstants.ClientKey)
+                            ?? _options.Value.ClientKey;
+            
+            _logger.LogInformation("Using PowerOffice Client with applicationKey: {AppKey}", appKey);
+            
             return _api ??= await Go.CreateAsync(new AuthorizationSettings
             {
-                ApplicationKey = _options.Value.ApplicationKey,
-                ClientKey = _options.Value.ClientKey,
+                ApplicationKey = appKey,
+                ClientKey = clientKey,
                 TokenStore = new BasicTokenStore(_options.Value.TokenStoreName),
                 EndPointHost = new Settings.Host(_options.Value.Mode)
             });

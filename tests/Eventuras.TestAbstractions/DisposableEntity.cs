@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Eventuras.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,8 @@ namespace Eventuras.TestAbstractions
     public interface IDisposableEntity<out T> : IDisposable where T : class
     {
         public T Entity { get; }
+
+        public Task SaveAsync();
     }
 
     public class DisposableEntity<T> : IDisposableEntity<T> where T : class
@@ -32,6 +35,11 @@ namespace Eventuras.TestAbstractions
         {
             _context.Remove(Entity);
             _context.SaveChanges();
+        }
+
+        public async Task SaveAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 
@@ -52,6 +60,12 @@ namespace Eventuras.TestAbstractions
         public void Dispose()
         {
             _userManager.DeleteAsync(Entity).Wait();
+        }
+
+        public Task SaveAsync()
+        {
+            // Stub
+            return Task.CompletedTask;
         }
     }
 }

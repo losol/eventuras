@@ -391,5 +391,22 @@ namespace Eventuras.TestAbstractions
             await scope.Db.SaveChangesAsync();
             return new DisposableEntity<OrganizationMember>(member, scope.Db);
         }
+
+        public static async Task<IDisposableEntity<OrganizationSetting>> CreateOrganizationSettingAsync(
+            this TestServiceScope scope,
+            Organization organization,
+            string name, string value)
+        {
+            var setting = new OrganizationSetting
+            {
+                OrganizationId = organization.OrganizationId,
+                Name = name,
+                Value = value
+            };
+
+            await scope.Db.OrganizationSettings.AddAsync(setting);
+            await scope.Db.SaveChangesAsync();
+            return new DisposableEntity<OrganizationSetting>(setting, scope.Db);
+        }
     }
 }

@@ -1,0 +1,25 @@
+type: object
+title: Organization setting properties.
+required:
+  - name
+  - section
+  - description
+  - type
+properties:
+  name:
+    type: string
+    description: Unique setting key.
+  section:
+    type: string
+    description: Human-friendly section name, used to group settings together.
+  description:
+    type: string
+    description: Human-friendly setting name.
+  type:
+    $ref: './OrganizationSettingType.yaml'
+  value:
+    type: string
+    description: Current setting value, if set.
+example:
+  name: 'ZOOM_API_KEY'
+  value: '12345'

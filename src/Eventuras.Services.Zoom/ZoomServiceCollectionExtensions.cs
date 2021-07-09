@@ -1,4 +1,5 @@
 using Eventuras.Services.ExternalSync;
+using Eventuras.Services.Organizations.Settings;
 using Eventuras.Services.Zoom.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,13 +9,15 @@ namespace Eventuras.Services.Zoom
 {
     public static class ZoomServiceCollectionExtensions
     {
-        public static IServiceCollection AddZoomIfEnabled(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddZoomIfEnabled(this IServiceCollection services,
+            IConfiguration configuration)
         {
             if (configuration?.GetValue<bool>("Enabled") != true)
             {
                 return services;
             }
 
+            services.AddSingleton<IOrganizationSettingsRegistryComponent, ZoomSettingsRegistryComponent>();
             services.AddTransient<IZoomCredentialsAccessor, ZoomCredentialsAccessor>();
             services.AddTransient<IZoomApiClient, ZoomApiClient>();
             services.AddTransient<IExternalSyncProviderService, ZoomSyncProviderService>();

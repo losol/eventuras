@@ -1709,6 +1709,16 @@
     "/organizations/{id}/members" : {
       "delete" : {
         "operationId" : "removeMemberFromOrganization",
+        "parameters" : [ {
+          "description" : "Organization ID.",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
         "responses" : {
           "200" : {
             "description" : "OK"
@@ -1759,6 +1769,16 @@
       },
       "put" : {
         "operationId" : "addMemberToOrganization",
+        "parameters" : [ {
+          "description" : "Organization ID.",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
         "responses" : {
           "200" : {
             "description" : "OK"
@@ -1985,6 +2005,158 @@
         },
         "summary" : "Add org member role.",
         "tags" : [ "organizations" ]
+      }
+    },
+    "/organizations/{id}/settings" : {
+      "get" : {
+        "operationId" : "getOrganizationSettingsList",
+        "parameters" : [ {
+          "description" : "Organization ID.",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/OrganizationSettingDto"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Access token is missing or invalid."
+          },
+          "404" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "The requested resource not found."
+          },
+          "403" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Access forbidden."
+          },
+          "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Unexpected server error."
+          }
+        },
+        "summary" : "Get organization settings list.",
+        "tags" : [ "organizations", "settings" ]
+      },
+      "put" : {
+        "operationId" : "updateOrganizationSettings",
+        "parameters" : [ {
+          "description" : "Organization ID.",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OrganizationSettingValueDto"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Missing or invalid request parameters."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Access token is missing or invalid."
+          },
+          "404" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "The requested resource not found."
+          },
+          "403" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Access forbidden."
+          },
+          "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Unexpected server error."
+          }
+        },
+        "summary" : "Update organization settings.",
+        "tags" : [ "organizations", "settings" ]
       }
     }
   },
@@ -2857,6 +3029,55 @@
         },
         "type" : "array"
       },
+      "OrganizationSettingDto" : {
+        "example" : {
+          "name" : "ZOOM_API_KEY",
+          "value" : "12345"
+        },
+        "properties" : {
+          "name" : {
+            "description" : "Unique setting key.",
+            "type" : "string"
+          },
+          "section" : {
+            "description" : "Human-friendly section name, used to group settings together.",
+            "type" : "string"
+          },
+          "description" : {
+            "description" : "Human-friendly setting name.",
+            "type" : "string"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/OrganizationSettingType"
+          },
+          "value" : {
+            "description" : "Current setting value, if set.",
+            "type" : "string"
+          }
+        },
+        "required" : [ "description", "name", "section", "type" ],
+        "title" : "Organization setting properties.",
+        "type" : "object"
+      },
+      "OrganizationSettingValueDto" : {
+        "example" : {
+          "name" : "ZOOM_API_KEY",
+          "value" : "12345"
+        },
+        "properties" : {
+          "name" : {
+            "description" : "Unique setting key.",
+            "type" : "string"
+          },
+          "value" : {
+            "description" : "If empty, the setting value will be removed.",
+            "type" : "string"
+          }
+        },
+        "required" : [ "name", "value" ],
+        "title" : "Org setting key value pair.",
+        "type" : "object"
+      },
       "RegistrationStatus" : {
         "description" : "Draft = 0,\nCancelled = 1,\nVerified = 2,\nNotAttended = 3,\nAttended = 4,\nFinished = 5\n",
         "title" : "Registration status enum.",
@@ -2992,6 +3213,11 @@
         "required" : [ "name" ],
         "title" : "Location info.",
         "type" : "object"
+      },
+      "OrganizationSettingType" : {
+        "description" : "String = 1,\nNumber = 2,\nUrl = 3,\nEmail = 4\n",
+        "title" : "Organization setting type enum.",
+        "type" : "integer"
       },
       "AddressDto" : {
         "properties" : {
