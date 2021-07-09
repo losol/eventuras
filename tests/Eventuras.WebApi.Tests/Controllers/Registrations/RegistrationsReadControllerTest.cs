@@ -126,7 +126,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var otherUser = await scope.CreateUserAsync();
             using var admin = await scope.CreateUserAsync();
             using var otherAdmin = await scope.CreateUserAsync();
-            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org = await scope.CreateOrganizationAsync();
             using var otherOrg = await scope.CreateOrganizationAsync();
 
             await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
@@ -141,7 +141,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             var client = _factory.CreateClient()
                 .AuthenticatedAs(admin.Entity, Roles.Admin);
 
-            var response = await client.GetAsync("/v3/registrations");
+            var response = await client.GetAsync($"/v3/registrations?orgId={org.Entity.OrganizationId}");
             var paging = await response.AsTokenAsync();
             paging.CheckPaging(1, 2,
                 (token, r) => token.CheckRegistration(r),
@@ -149,7 +149,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
 
             client.AuthenticatedAs(otherAdmin.Entity, Roles.Admin);
 
-            response = await client.GetAsync("/v3/registrations");
+            response = await client.GetAsync($"/v3/registrations?orgId={org.Entity.OrganizationId}");
             paging = await response.AsTokenAsync();
             paging.CheckEmptyPaging();
         }

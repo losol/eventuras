@@ -90,7 +90,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             using var otherUser = await scope.CreateUserAsync();
             using var admin = await scope.CreateUserAsync();
             using var otherAdmin = await scope.CreateUserAsync();
-            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org = await scope.CreateOrganizationAsync();
             using var otherOrg = await scope.CreateOrganizationAsync();
 
             await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
@@ -107,7 +107,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             var client = _factory.CreateClient()
                 .AuthenticatedAs(admin.Entity, Roles.Admin);
 
-            var response = await client.PostAsync("/v3/notifications/email", new
+            var response = await client.PostAsync($"/v3/notifications/email?orgId={org.Entity.OrganizationId}", new
             {
                 subject = "Test 1",
                 bodyMarkdown = "Test email 1",

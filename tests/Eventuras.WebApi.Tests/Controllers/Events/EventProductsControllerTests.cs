@@ -172,7 +172,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         public async Task Add_Should_Check_Admin_Org()
         {
             using var scope = _factory.Services.NewTestScope();
-            using var org1 = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org1 = await scope.CreateOrganizationAsync();
             using var org2 = await scope.CreateOrganizationAsync();
             using var admin = await scope.CreateUserAsync();
             using var m = await scope.CreateOrganizationMemberAsync(admin.Entity, org2.Entity, role: Roles.Admin);
@@ -180,7 +180,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
 
-            var response = await client.PostAsync($"/v3/events/{evt.Entity.EventInfoId}/products", new {name = "test"});
+            var response = await client.PostAsync($"/v3/events/{evt.Entity.EventInfoId}/products?orgId={org1.Entity.OrganizationId}", new {name = "test"});
             response.CheckForbidden();
         }
 
@@ -188,7 +188,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         public async Task Add_Should_Check_Event_Org()
         {
             using var scope = _factory.Services.NewTestScope();
-            using var org1 = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org1 = await scope.CreateOrganizationAsync();
             using var org2 = await scope.CreateOrganizationAsync();
             using var admin = await scope.CreateUserAsync();
             using var m = await scope.CreateOrganizationMemberAsync(admin.Entity, org1.Entity, role: Roles.Admin);
@@ -196,7 +196,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
 
-            var response = await client.PostAsync($"/v3/events/{evt.Entity.EventInfoId}/products", new {name = "test"});
+            var response = await client.PostAsync($"/v3/events/{evt.Entity.EventInfoId}/products?orgId={org1.Entity.OrganizationId}", new {name = "test"});
             response.CheckForbidden();
         }
 
@@ -231,14 +231,14 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         public async Task Add_Should_Allow_Org_Admin_To_Add_New_Product_With_Max_Data()
         {
             using var scope = _factory.Services.NewTestScope();
-            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org = await scope.CreateOrganizationAsync();
             using var admin = await scope.CreateUserAsync();
             using var m = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
             using var evt = await scope.CreateEventAsync(organization: org.Entity);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
 
-            var response = await client.PostAsync($"/v3/events/{evt.Entity.EventInfoId}/products", new
+            var response = await client.PostAsync($"/v3/events/{evt.Entity.EventInfoId}/products?orgId={org.Entity.OrganizationId}", new
             {
                 name = "test",
                 description = "desc",
@@ -324,7 +324,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         public async Task Should_Check_Admin_Org_When_Archiving_Product()
         {
             using var scope = _factory.Services.NewTestScope();
-            using var org1 = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org1 = await scope.CreateOrganizationAsync();
             using var org2 = await scope.CreateOrganizationAsync();
             using var admin = await scope.CreateUserAsync();
             using var m = await scope.CreateOrganizationMemberAsync(admin.Entity, org2.Entity, role: Roles.Admin);
@@ -333,7 +333,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
             var response =
-                await client.DeleteAsync($"/v3/events/{evt.Entity.EventInfoId}/products/{product.Entity.ProductId}");
+                await client.DeleteAsync($"/v3/events/{evt.Entity.EventInfoId}/products/{product.Entity.ProductId}?orgId={org1.Entity.OrganizationId}");
             response.CheckForbidden();
         }
 
@@ -341,7 +341,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         public async Task Should_Check_Event_Org_When_Archiving_Product()
         {
             using var scope = _factory.Services.NewTestScope();
-            using var org1 = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org1 = await scope.CreateOrganizationAsync();
             using var org2 = await scope.CreateOrganizationAsync();
             using var admin = await scope.CreateUserAsync();
             using var m = await scope.CreateOrganizationMemberAsync(admin.Entity, org1.Entity, role: Roles.Admin);
@@ -350,7 +350,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
             var response =
-                await client.DeleteAsync($"/v3/events/{evt.Entity.EventInfoId}/products/{product.Entity.ProductId}");
+                await client.DeleteAsync($"/v3/events/{evt.Entity.EventInfoId}/products/{product.Entity.ProductId}?orgId={org1.Entity.OrganizationId}");
             response.CheckForbidden();
         }
 
@@ -358,7 +358,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         public async Task Should_Allow_Org_Admin_To_Archive_Product()
         {
             using var scope = _factory.Services.NewTestScope();
-            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org = await scope.CreateOrganizationAsync();
             using var admin = await scope.CreateUserAsync();
             using var m = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
             using var evt = await scope.CreateEventAsync(organization: org.Entity);
@@ -367,7 +367,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
             var response =
-                await client.DeleteAsync($"/v3/events/{evt.Entity.EventInfoId}/products/{product.Entity.ProductId}");
+                await client.DeleteAsync($"/v3/events/{evt.Entity.EventInfoId}/products/{product.Entity.ProductId}?orgId={org.Entity.OrganizationId}");
             response.CheckOk();
 
             var updatedProduct =

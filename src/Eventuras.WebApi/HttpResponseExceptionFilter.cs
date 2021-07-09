@@ -28,6 +28,7 @@ namespace Eventuras.WebApi
             {
                 NotFoundException => new NotFoundObjectResult(e.Message),
                 NotAccessibleException => new ForbidResult(),
+                OrgNotSpecifiedException => new BadRequestObjectResult(e.Message),
                 DuplicateException => new ConflictObjectResult(e.Message),
                 _ => null
             };
