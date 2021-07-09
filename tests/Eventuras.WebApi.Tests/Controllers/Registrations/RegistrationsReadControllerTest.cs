@@ -1,9 +1,10 @@
-using Eventuras.TestAbstractions;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Eventuras.Services;
+using Eventuras.TestAbstractions;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Registrations
@@ -174,6 +175,75 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             paging.CheckPaging(1, 3,
                 (token, r) => token.CheckRegistration(r),
                 r1.Entity, r2.Entity, r3.Entity);
+        }
+
+        [Fact]
+        public async Task Should_Not_Include_User_And_Event_Info_By_Default()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var otherUser = await scope.CreateUserAsync();
+
+            using var evt = await scope.CreateEventAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity, time: DateTime.Now.AddDays(3));
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin();
+
+            var response = await client.GetAsync("/v3/registrations");
+            var paging = await response.AsTokenAsync();
+            paging.CheckPaging((token, r) =>
+            {
+                token.CheckRegistration(r);
+                Assert.Empty(token.Value<JToken>("user"));
+                Assert.Empty(token.Value<JToken>("event"));
+            }, reg.Entity);
+        }
+
+        [Fact]
+        public async Task Should_Use_IncludeUserInfo_Param()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var otherUser = await scope.CreateUserAsync();
+
+            using var evt = await scope.CreateEventAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity, time: DateTime.Now.AddDays(3));
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin();
+
+            var response = await client.GetAsync("/v3/registrations?includeUserInfo=true");
+            var paging = await response.AsTokenAsync();
+            paging.CheckPaging((token, r) =>
+            {
+                token.CheckRegistration(r, checkUserInfo: true);
+                Assert.NotEmpty(token.Value<JToken>("user"));
+                Assert.Empty(token.Value<JToken>("event"));
+            }, reg.Entity);
+        }
+
+        [Fact]
+        public async Task Should_Use_IncludeEventInfo_Param()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var otherUser = await scope.CreateUserAsync();
+
+            using var evt = await scope.CreateEventAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity, time: DateTime.Now.AddDays(3));
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin();
+
+            var response = await client.GetAsync("/v3/registrations?includeEventInfo=true");
+            var paging = await response.AsTokenAsync();
+            paging.CheckPaging((token, r) =>
+            {
+                token.CheckRegistration(r, checkUserInfo: false, checkEventInfo: true);
+                Assert.NotEmpty(token.Value<JToken>("event"));
+                Assert.Empty(token.Value<JToken>("user"));
+            }, reg.Entity);
         }
     }
 }
