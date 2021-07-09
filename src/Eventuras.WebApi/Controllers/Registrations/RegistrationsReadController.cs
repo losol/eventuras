@@ -24,7 +24,7 @@ namespace Eventuras.WebApi.Controllers.Registrations
 
         [HttpGet]
         public async Task<PageResponseDto<RegistrationDto>> GetRegistrations(
-            [FromQuery] PageQueryDto query,
+            [FromQuery] RegistrationsQueryDto query,
             CancellationToken cancellationToken)
         {
             var paging = await _registrationRetrievalService
@@ -40,7 +40,11 @@ namespace Eventuras.WebApi.Controllers.Registrations
                         OrderBy = RegistrationListOrder.RegistrationTime,
                         Descending = true
                     },
-                    RegistrationRetrievalOptions.Default,
+                    new RegistrationRetrievalOptions
+                    {
+                        IncludeUser = query.IncludeUserInfo,
+                        IncludeEventInfo = query.IncludeEventInfo
+                    },
                     cancellationToken);
 
             return PageResponseDto<RegistrationDto>.FromPaging(
