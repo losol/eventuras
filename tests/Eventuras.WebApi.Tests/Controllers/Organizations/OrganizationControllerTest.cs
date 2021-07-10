@@ -6,13 +6,20 @@ using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Organizations
 {
-    public class OrganizationControllerTest : IClassFixture<CustomWebApiApplicationFactory<Startup>>
+    public class OrganizationControllerTest : IClassFixture<CustomWebApiApplicationFactory<Startup>>, IDisposable
     {
         private readonly CustomWebApiApplicationFactory<Startup> _factory;
 
         public OrganizationControllerTest(CustomWebApiApplicationFactory<Startup> factory)
         {
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        }
+
+        public void Dispose()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            scope.Db.Organizations.Clean();
+            scope.Db.SaveChanges();
         }
 
         [Fact]

@@ -35,7 +35,7 @@ namespace Eventuras.Services.Organizations
             {
                 return await _context.Organizations
                     .AsNoTracking()
-                    .UseOptions(options ?? new OrganizationRetrievalOptions())
+                    .WithOptions(options ?? new OrganizationRetrievalOptions())
                     .Where(o => o.OrganizationId == organizationId)
                     .FirstOrDefaultAsync(cancellationToken);
             }
