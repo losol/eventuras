@@ -1,8 +1,29 @@
+get:
+  summary: Get registration orders list.
+  operationId: getRegistrationOrdersList
+  tags:
+    - registrations
+    - orders
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '../../schemas/orders/OrderDto.yaml'
+    '400':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/InvalidRequestError'
+    '500':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/InternalServerError'
+
 post:
   summary: Add order to registration.
   operationId: addOrderToRegistration
   tags:
     - registrations
+    - orders
   requestBody:
     required: true
     content:
@@ -22,5 +43,7 @@ post:
       $ref: 'eventuras-api.v3.yaml#/components/responses/UnauthorizedError'
     '403':
       $ref: 'eventuras-api.v3.yaml#/components/responses/ForbiddenError'
+    '404':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/NotFound'
     '500':
       $ref: 'eventuras-api.v3.yaml#/components/responses/InternalServerError'

@@ -1,5 +1,12 @@
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
+using Eventuras.Services;
+using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Config;
+using Eventuras.WebApi.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -8,14 +15,9 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using Microsoft.FeatureManagement;
-using Eventuras.WebApi.Extensions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Eventuras.WebApi.Auth;
-using Microsoft.AspNetCore.Authorization;
-using System.Text.Json.Serialization;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
+using Microsoft.OpenApi.Models;
 
 namespace Eventuras.WebApi
 {
@@ -31,6 +33,7 @@ namespace Eventuras.WebApi
         private readonly IWebHostEnvironment _env;
 
         private AppSettings appSettings;
+
         public AppSettings AppSettings
         {
             get
@@ -39,12 +42,14 @@ namespace Eventuras.WebApi
                 {
                     appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
                 }
+
                 return appSettings;
             }
             protected set => appSettings = value;
         }
 
         private FeatureManagement features;
+
         public FeatureManagement Features
         {
             get
@@ -53,6 +58,7 @@ namespace Eventuras.WebApi
                 {
                     features = Configuration.GetSection("FeatureManagement").Get<FeatureManagement>();
                 }
+
                 return features;
             }
             protected set => features = value;
@@ -69,16 +75,14 @@ namespace Eventuras.WebApi
             services.AddInvoicingServices(Configuration, Features);
             services.AddApplicationServices(Configuration);
             services.AddFeatureManagement();
+            services.AddMemoryCache();
 
             services.AddControllers(options =>
-            {
-                options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
-                options.Filters.Add(new HttpResponseExceptionFilter());
-            })
-                .AddJsonOptions(j =>
                 {
-                    j.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                });
+                    options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+                    options.Filters.Add(new HttpResponseExceptionFilter());
+                })
+                .AddJsonOptions(j => { j.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
             services.AddCors(options =>
             {
@@ -89,9 +93,9 @@ namespace Eventuras.WebApi
                                 .Select(x => x.Trim())
                                 .Where(x => !string.IsNullOrWhiteSpace(x))
                                 .ToArray())
-                                .AllowAnyHeader()
-                                .AllowCredentials()
-                                .AllowAnyMethod());
+                            .AllowAnyHeader()
+                            .AllowCredentials()
+                            .AllowAnyMethod());
             });
 
             services.AddApiVersioning(o =>
@@ -109,18 +113,18 @@ namespace Eventuras.WebApi
                     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
-                      .AddJwtBearerConfiguration(
-                            Configuration["Auth:Issuer"],
-                            Configuration["Auth:ApiIdentifier"],
-                            Configuration["Auth:JwtSecret"]
-                        );
+                .AddJwtBearerConfiguration(
+                    Configuration["Auth:Issuer"],
+                    Configuration["Auth:ApiIdentifier"],
+                    Configuration["Auth:JwtSecret"]
+                );
 
 
             services.AddSingleton<IAuthorizationHandler, RequireScopeHandler>();
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v3", new OpenApiInfo { Title = "Eventuras.WebApi", Version = "v3" });
+                c.SwaggerDoc("v3", new OpenApiInfo {Title = "Eventuras.WebApi", Version = "v3"});
             });
         }
 
@@ -143,6 +147,11 @@ namespace Eventuras.WebApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            foreach (var service in app.ApplicationServices.GetServices<IStartupService>())
+            {
+                service.OnStartup();
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -160,10 +169,7 @@ namespace Eventuras.WebApi
 
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

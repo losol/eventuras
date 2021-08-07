@@ -45,12 +45,30 @@ paths:
     $ref: './paths/events.yaml'
   /events/{id}:
     $ref: './paths/events/id.yaml'
+  /events/{id}/products:
+    $ref: './paths/events/products.yaml'
+  /events/{id}/products/{productId}:
+    $ref: './paths/events/products/id.yaml'
+  /events/{id}/products/{productId}/variants:
+    $ref: './paths/events/products/variants.yaml'
+  /events/{id}/products/{productId}/variants/{variantId}:
+    $ref: './paths/events/products/variants/id.yaml'
+
+  # Organizations
+  /organizations:
+    $ref: './paths/organizations.yaml'
+  /organizations/{id}:
+    $ref: './paths/organizations/id.yaml'
 
   # Organization members
   /organizations/{id}/members:
     $ref: './paths/organizations/members.yaml'
   /organizations/{id}/members/{memberId}/roles:
     $ref: './paths/organizations/members/roles.yaml'
+
+  # Organization settings
+  /organizations/{id}/settings:
+    $ref: './paths/organizations/settings.yaml'
 
 components:
 

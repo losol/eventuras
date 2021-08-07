@@ -1,6 +1,6 @@
 using System;
 using Eventuras.Domain;
-using Eventuras.WebApi.Controllers.Products;
+using Eventuras.WebApi.Controllers.Events;
 
 namespace Eventuras.WebApi.Controllers.Orders
 {
@@ -10,7 +10,7 @@ namespace Eventuras.WebApi.Controllers.Orders
 
         public ProductVariantDto ProductVariant { get; set; }
 
-        public int? Quantity { get; set; }
+        public int Quantity { get; set; }
 
         public OrderLineDto()
         {
@@ -22,11 +22,13 @@ namespace Eventuras.WebApi.Controllers.Orders
             {
                 throw new ArgumentNullException(nameof(orderLine));
             }
+
             Product = new ProductDto(orderLine.Product);
             if (orderLine.ProductVariant != null)
             {
                 ProductVariant = new ProductVariantDto(orderLine.ProductVariant);
             }
+
             Quantity = orderLine.Quantity;
         }
     }

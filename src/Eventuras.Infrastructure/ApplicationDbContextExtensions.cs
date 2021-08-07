@@ -6,16 +6,26 @@ namespace Eventuras.Infrastructure
 {
     public static class ApplicationDbContextExtensions
     {
-        public static async Task CreateAsync<T>(this ApplicationDbContext context, T entity, CancellationToken cancellationToken = default)
+        public static async Task CreateAsync<T>(this ApplicationDbContext context, T entity,
+            CancellationToken cancellationToken = default)
         {
             await context.AddAsync(entity, cancellationToken);
             await context.SaveChangesAsync(cancellationToken);
             context.DisableChangeTracking(entity);
         }
 
-        public static async Task UpdateAsync<T>(this ApplicationDbContext context, T entity, CancellationToken cancellationToken = default)
+        public static async Task UpdateAsync<T>(this ApplicationDbContext context, T entity,
+            CancellationToken cancellationToken = default)
         {
             context.Update(entity);
+            await context.SaveChangesAsync(cancellationToken);
+            context.DisableChangeTracking(entity);
+        }
+
+        public static async Task DeleteAsync<T>(this ApplicationDbContext context, T entity,
+            CancellationToken cancellationToken = default)
+        {
+            context.Remove(entity);
             await context.SaveChangesAsync(cancellationToken);
             context.DisableChangeTracking(entity);
         }

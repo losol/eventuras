@@ -1,7 +1,7 @@
 using System;
 using Eventuras.Domain;
 
-namespace Eventuras.WebApi.Controllers.Products
+namespace Eventuras.WebApi.Controllers.Events
 {
     public class ProductVariantDto
     {
@@ -11,6 +11,8 @@ namespace Eventuras.WebApi.Controllers.Products
         public string Description { get; set; }
 
         public decimal Price { get; set; }
+
+        public int VatPercent { get; set; }
 
         public ProductVariantDto()
         {
@@ -22,10 +24,12 @@ namespace Eventuras.WebApi.Controllers.Products
             {
                 throw new ArgumentNullException(nameof(variant));
             }
+
             ProductVariantId = variant.ProductVariantId;
             Name = variant.Name;
             Description = variant.Description;
             Price = variant.Price;
+            VatPercent = variant.VatPercent;
         }
     }
 }

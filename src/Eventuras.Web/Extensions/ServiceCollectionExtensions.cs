@@ -30,6 +30,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using System.Globalization;
 using System.Net.Http.Headers;
+using Eventuras.Services.Organizations.Settings;
 using Eventuras.Services.Zoom;
 using Losol.Communication.HealthCheck.Abstractions;
 using Losol.Communication.HealthCheck.Email;
@@ -209,6 +210,7 @@ namespace Eventuras.Web.Extensions
             if (appsettings.UsePowerOffice)
             {
                 services.Configure<PowerOfficeOptions>(config.GetSection("PowerOffice"));
+                services.AddSingleton<IOrganizationSettingsRegistryComponent, PowerOfficeSettingsRegistryComponent>();
                 services.AddScoped<IPowerOfficeService, PowerOfficeService>();
             }
             else

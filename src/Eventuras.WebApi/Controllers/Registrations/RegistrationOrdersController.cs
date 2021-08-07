@@ -1,11 +1,11 @@
-using Eventuras.Services.Registrations;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Eventuras.Services.Registrations;
 using Eventuras.WebApi.Controllers.Orders;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Eventuras.WebApi.Controllers.Registrations
 {
@@ -29,20 +29,37 @@ namespace Eventuras.WebApi.Controllers.Registrations
                 new ArgumentNullException(nameof(registrationOrderManagementService));
         }
 
+        // GET: v3/registrations/667/orders
+        [HttpGet]
+        public async Task<OrderDto[]> GetOrdersForRegistration(int id, CancellationToken token)
+        {
+            var r = await _registrationRetrievalService.GetRegistrationByIdAsync(id,
+                new RegistrationRetrievalOptions
+                {
+                    IncludeOrders = true,
+                    IncludeProducts = true
+                }, token);
+
+            return r.Orders
+                .Select(o => new OrderDto(o))
+                .ToArray();
+        }
+
+        // POST: v3/registrations/667/orders
         [HttpPost]
-        public async Task<ActionResult<OrderDto>> CreateNewOrderForRegistration(int id,
-            [FromBody] RegistrationOrderDto dto,
-            CancellationToken cancellationToken)
+        public async Task<OrderDto> CreateNewOrderForRegistration(int id,
+            [FromBody] NewRegistrationOrderDto dto,
+            CancellationToken token)
         {
             var registration = await _registrationRetrievalService
-                .GetRegistrationByIdAsync(id, cancellationToken: cancellationToken);
+                .GetRegistrationByIdAsync(id, cancellationToken: token);
 
             var order = await _registrationOrderManagementService
                 .CreateOrderForRegistrationAsync(registration, dto.Items
-                        .Select(d => d.ToOrderItemDto())
-                        .ToArray(), cancellationToken);
+                    .Select(d => d.ToOrderItemDto())
+                    .ToArray(), token);
 
-            return Ok(new OrderDto(order));
+            return new OrderDto(order);
         }
     }
 }

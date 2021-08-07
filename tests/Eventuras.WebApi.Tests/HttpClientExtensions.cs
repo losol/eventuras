@@ -1,7 +1,3 @@
-using Eventuras.Domain;
-using Eventuras.Services;
-using Eventuras.TestAbstractions;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +7,10 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Eventuras.Domain;
+using Eventuras.Services;
+using Eventuras.TestAbstractions;
+using Newtonsoft.Json;
 
 namespace Eventuras.WebApi.Tests
 {
@@ -132,6 +132,13 @@ namespace Eventuras.WebApi.Tests
                     Encoding.UTF8, "application/json"));
         }
 
+        public static async Task<HttpResponseMessage> PostAsync(
+            this HttpClient httpClient,
+            string requestUri)
+        {
+            return await httpClient.PostAsync(requestUri, new { });
+        }
+
         public static async Task<HttpResponseMessage> PutAsync(
             this HttpClient httpClient,
             string requestUri,
@@ -140,6 +147,13 @@ namespace Eventuras.WebApi.Tests
             return await httpClient.PutAsync(requestUri,
                 new StringContent(JsonConvert.SerializeObject(data),
                     Encoding.UTF8, "application/json"));
+        }
+
+        public static async Task<HttpResponseMessage> PutAsync(
+            this HttpClient httpClient,
+            string requestUri)
+        {
+            return await httpClient.PutAsync(requestUri, new { });
         }
 
         public static async Task<HttpResponseMessage> DeleteAsync(

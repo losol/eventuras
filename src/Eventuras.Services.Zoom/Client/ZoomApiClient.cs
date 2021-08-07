@@ -1,9 +1,9 @@
-using Pathoschild.Http.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Pathoschild.Http.Client;
 using ZoomNet;
 using ZoomNet.Models;
 
@@ -11,24 +11,26 @@ namespace Eventuras.Services.Zoom.Client
 {
     internal class ZoomApiClient : IZoomApiClient
     {
-        private readonly ZoomClient _thirdPartyClient; // encapsulate third party code, don't expose its API, make it replaceable
+        private readonly IZoomCredentialsAccessor _zoomCredentialsAccessor;
+
+        /// <summary>
+        /// encapsulate third party code, don't expose its API, make it replaceable.
+        /// </summary>
+        private ZoomClient _thirdPartyClient;
 
         public ZoomApiClient(IZoomCredentialsAccessor zoomCredentialsAccessor)
         {
-            if (zoomCredentialsAccessor == null)
-            {
-                throw new ArgumentNullException(nameof(zoomCredentialsAccessor));
-            }
-
-            var zoomCredentials = zoomCredentialsAccessor.GetJwtCredentials();
-            _thirdPartyClient = new ZoomClient(new JwtConnectionInfo(zoomCredentials.ApiKey, zoomCredentials.ApiSecret));
+            _zoomCredentialsAccessor = zoomCredentialsAccessor ?? throw
+                new ArgumentNullException(nameof(zoomCredentialsAccessor));
         }
 
         public async Task HealthCheckAsync(CancellationToken cancellationToken)
         {
             try
             {
-                await _thirdPartyClient.Meetings.GetAllAsync("me", pagingToken: null, cancellationToken: cancellationToken);
+                var client = await GetClientAsync();
+                await client.Meetings.GetAllAsync("me", pagingToken: null,
+                    cancellationToken: cancellationToken);
             }
             catch (ApiException e)
             {
@@ -50,7 +52,8 @@ namespace Eventuras.Services.Zoom.Client
 
                 do
                 {
-                    paginatedResponse = await _thirdPartyClient.Meetings.GetRegistrantsAsync(meetingId,
+                    var client = await GetClientAsync();
+                    paginatedResponse = await client.Meetings.GetRegistrantsAsync(meetingId,
                         RegistrantStatus.Approved,
                         pagingToken: nextPageToken,
                         cancellationToken: cancellationToken);
@@ -62,7 +65,6 @@ namespace Eventuras.Services.Zoom.Client
                         Email = r.Email,
                         RegistrantId = r.Id
                     }).ToArray());
-
                 } while (paginatedResponse.MoreRecordsAvailable);
             }
             catch (ApiException e)
@@ -80,7 +82,8 @@ namespace Eventuras.Services.Zoom.Client
         {
             try
             {
-                var registrant = await _thirdPartyClient.Meetings.AddRegistrantAsync(meetingId,
+                var client = await GetClientAsync();
+                var registrant = await client.Meetings.AddRegistrantAsync(meetingId,
                     requestDto.Email,
                     requestDto.FirstName,
                     requestDto.LastName,
@@ -94,8 +97,22 @@ namespace Eventuras.Services.Zoom.Client
             }
             catch (ApiException e)
             {
-                throw new ZoomClientException($"Failed to create new registrant {requestDto.Email} for meeting {meetingId}", e);
+                throw new ZoomClientException(
+                    $"Failed to create new registrant {requestDto.Email} for meeting {meetingId}", e);
             }
+        }
+
+        private async Task<ZoomClient> GetClientAsync()
+        {
+            if (_thirdPartyClient != null)
+            {
+                return _thirdPartyClient;
+            }
+
+            var zoomCredentials = await _zoomCredentialsAccessor.GetJwtCredentialsAsync();
+
+            return _thirdPartyClient = new ZoomClient(new JwtConnectionInfo(
+                zoomCredentials.ApiKey, zoomCredentials.ApiSecret));
         }
     }
 }

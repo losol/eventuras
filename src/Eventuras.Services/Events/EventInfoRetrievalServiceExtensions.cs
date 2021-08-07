@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Eventuras.Services.Events
 {
-    public static class IEventInfoRetrievalServiceExtensions
+    public static class EventInfoRetrievalServiceExtensions
     {
         /// <summary>
         /// Shortcut for <see cref="IEventInfoRetrievalService.GetEventInfoByIdAsync"/>.

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Threading.Tasks;
+using Eventuras.Services.Exceptions;
 
 namespace Eventuras.Web.Pages.Admin.Organizations
 {
@@ -43,7 +44,7 @@ namespace Eventuras.Web.Pages.Admin.Organizations
                     await _organizationManagementService.UpdateOrganizationHostnames(Organization.OrganizationId,
                         Hostnames.Split(","));
                 }
-                catch (DuplicateOrganizationHostnameException e)
+                catch (DuplicateException e)
                 {
                     ModelState.AddModelError(nameof(Hostnames), e.Message);
                     return Page();

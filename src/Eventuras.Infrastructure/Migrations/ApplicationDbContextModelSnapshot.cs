@@ -683,6 +683,22 @@ namespace Eventuras.Infrastructure.Migrations
                     b.ToTable("OrganizationMemberRoles");
                 });
 
+            modelBuilder.Entity("Eventuras.Domain.OrganizationSetting", b =>
+                {
+                    b.Property<int>("OrganizationId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text");
+
+                    b.HasKey("OrganizationId", "Name");
+
+                    b.ToTable("OrganizationSettings");
+                });
+
             modelBuilder.Entity("Eventuras.Domain.PaymentMethod", b =>
                 {
                     b.Property<int>("Provider")
@@ -714,6 +730,9 @@ namespace Eventuras.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
+
+                    b.Property<bool>("Archived")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Description")
                         .HasMaxLength(300)
@@ -765,6 +784,9 @@ namespace Eventuras.Infrastructure.Migrations
                         .UseIdentityByDefaultColumn();
 
                     b.Property<bool>("AdminOnly")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("Archived")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Description")
@@ -1248,6 +1270,17 @@ namespace Eventuras.Infrastructure.Migrations
                     b.Navigation("OrganizationMember");
                 });
 
+            modelBuilder.Entity("Eventuras.Domain.OrganizationSetting", b =>
+                {
+                    b.HasOne("Eventuras.Domain.Organization", "Organization")
+                        .WithMany("Settings")
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Organization");
+                });
+
             modelBuilder.Entity("Eventuras.Domain.Product", b =>
                 {
                     b.HasOne("Eventuras.Domain.EventInfo", "Eventinfo")
@@ -1387,6 +1420,8 @@ namespace Eventuras.Infrastructure.Migrations
                     b.Navigation("Hostnames");
 
                     b.Navigation("Members");
+
+                    b.Navigation("Settings");
                 });
 
             modelBuilder.Entity("Eventuras.Domain.OrganizationMember", b =>

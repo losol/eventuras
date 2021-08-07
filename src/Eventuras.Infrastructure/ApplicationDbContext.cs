@@ -28,6 +28,7 @@ namespace Eventuras.Infrastructure
         public DbSet<ExternalRegistration> ExternalRegistrations { get; set; }
         public DbSet<EventCollection> EventCollections { get; set; }
         public DbSet<EventCollectionMapping> EventCollectionMappings { get; set; }
+        public DbSet<OrganizationSetting> OrganizationSettings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -59,6 +60,9 @@ namespace Eventuras.Infrastructure
 
             builder.Entity<OrganizationMemberRole>()
                 .HasKey(o => new { o.OrganizationMemberId, o.Role });
+
+            builder.Entity<OrganizationSetting>()
+                .HasKey(s => new { s.OrganizationId, s.Name });
 
             // TODO: uncomment sometimes after db cleanup
             // builder.Entity<EventInfo>()

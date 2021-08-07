@@ -1,13 +1,14 @@
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Eventuras.Domain;
+using Eventuras.Infrastructure;
 using Eventuras.Services.Auth;
 using Eventuras.Services.Exceptions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace Eventuras.Services.Organizations
 {
@@ -15,18 +16,28 @@ namespace Eventuras.Services.Organizations
     {
         private readonly ApplicationDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IOrganizationAccessControlService _organizationAccessControlService;
 
         public OrganizationRetrievalService(
             ApplicationDbContext context,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IOrganizationAccessControlService organizationAccessControlService)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+            _context = context ?? throw
+                new ArgumentNullException(nameof(context));
+
+            _httpContextAccessor = httpContextAccessor ?? throw
+                new ArgumentNullException(nameof(httpContextAccessor));
+
+            _organizationAccessControlService = organizationAccessControlService ?? throw
+                new ArgumentNullException(nameof(organizationAccessControlService));
         }
 
         public async Task<List<Organization>> ListOrganizationsAsync(
+            OrganizationListRequest request,
             OrganizationFilter filter,
-            OrganizationRetrievalOptions options)
+            OrganizationRetrievalOptions options,
+            CancellationToken cancellationToken)
         {
             var user = _httpContextAccessor.HttpContext.User;
             if (!user.Identity.IsAuthenticated)
@@ -35,44 +46,40 @@ namespace Eventuras.Services.Organizations
             }
 
             var query = _context.Organizations.AsNoTracking();
-            if (!user.IsInRole(Roles.SuperAdmin)) // Super admin can see all orgs.
+            if (!user.IsPowerAdmin()) // Power admin can see all orgs.
             {
                 query = query.HasOrganizationMember(user);
             }
 
             return await query
-                .UseFilter(filter ?? new OrganizationFilter())
-                .UseOptions(options ?? new OrganizationRetrievalOptions())
-                .ToListAsync();
+                .AddFilter(filter ?? new OrganizationFilter())
+                .AddOrder(request.OrderBy, request.Descending)
+                .WithOptions(options ?? new OrganizationRetrievalOptions())
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task<Organization> GetOrganizationByIdAsync(int id, OrganizationRetrievalOptions options)
+        public async Task<Organization> GetOrganizationByIdAsync(
+            int id,
+            OrganizationRetrievalOptions options,
+            CancellationToken cancellationToken)
         {
             options ??= new OrganizationRetrievalOptions();
-
-            var user = _httpContextAccessor.HttpContext.User;
-            if (!user.Identity.IsAuthenticated)
-            {
-                throw new NotAccessibleException("Not authenticated.");
-            }
 
             var query = _context.Organizations
                 .AsNoTracking()
                 .Where(m => m.OrganizationId == id);
 
-            if (!user.IsPowerAdmin()) // Power admins can see all orgs.
-            {
-                query = query.HasOrganizationMember(user);
-            }
-
             var org = await query
-                .UseOptions(options)
-                .FirstOrDefaultAsync();
+                .WithOptions(options)
+                .FirstOrDefaultAsync(cancellationToken);
 
-            if (org == null)
+            if (org == null || !org.Active)
             {
                 throw new NotFoundException($"Organization {id} not found");
             }
+
+            await _organizationAccessControlService
+                .CheckOrganizationReadAccessAsync(id);
 
             return org;
         }

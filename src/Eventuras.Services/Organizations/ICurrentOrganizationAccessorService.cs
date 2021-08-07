@@ -1,6 +1,7 @@
 using System.Threading;
 using Eventuras.Domain;
 using System.Threading.Tasks;
+using Eventuras.Services.Exceptions;
 
 namespace Eventuras.Services.Organizations
 {
@@ -16,7 +17,7 @@ namespace Eventuras.Services.Organizations
             OrganizationRetrievalOptions options = null,
             CancellationToken cancellationToken = default);
 
-        /// <exception cref="OrganizationMisconfigurationException">Organization not configured for the current hostname.</exception>
+        /// <exception cref="OrgNotSpecifiedException">Organization not configured for the current hostname.</exception>
         Task<Organization> RequireCurrentOrganizationAsync(
             OrganizationRetrievalOptions options = null,
             CancellationToken cancellationToken = default);

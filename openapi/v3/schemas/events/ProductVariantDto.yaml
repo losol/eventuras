@@ -18,6 +18,9 @@ properties:
   price:
     type: number
     format: float
+  vatPercent:
+    type: number
+    format: int32
 example:
   productVariantId: 34
   name: Red Coloured Test Product

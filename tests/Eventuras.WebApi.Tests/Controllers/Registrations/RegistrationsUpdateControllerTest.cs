@@ -82,11 +82,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             using var admin = await scope.CreateUserAsync(role: Roles.Admin);
-            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org = await scope.CreateOrganizationAsync();
             using var e = await scope.CreateEventAsync(organization: org.Entity);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-            var response = await client.PostAsync("/v3/registrations", new
+            var response = await client.PostAsync($"/v3/registrations?orgId={org.Entity.OrganizationId}", new
             {
                 userId = user.Entity.Id,
                 eventId = e.Entity.EventInfoId
@@ -152,12 +152,12 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             using var admin = await scope.CreateUserAsync(role: Roles.Admin);
-            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org = await scope.CreateOrganizationAsync();
             using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
             using var e = await scope.CreateEventAsync(organization: org.Entity, organizationId: org.Entity.OrganizationId);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-            var response = await client.PostAsync("/v3/registrations", new
+            var response = await client.PostAsync($"/v3/registrations?orgId={org.Entity.OrganizationId}", new
             {
                 userId = user.Entity.Id,
                 eventId = e.Entity.EventInfoId
@@ -179,12 +179,12 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             using var admin = await scope.CreateUserAsync(role: Roles.Admin);
-            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org = await scope.CreateOrganizationAsync();
             using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
             using var e = await scope.CreateEventAsync(organization: org.Entity, organizationId: org.Entity.OrganizationId);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-            var response = await client.PostAsync("/v3/registrations", f(user.Entity.Id, e.Entity.EventInfoId));
+            var response = await client.PostAsync($"/v3/registrations?orgId={org.Entity.OrganizationId}", f(user.Entity.Id, e.Entity.EventInfoId));
             response.CheckOk();
 
             var reg = await scope.Db.Registrations.SingleAsync(r =>
@@ -281,12 +281,12 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             using var admin = await scope.CreateUserAsync(role: Roles.Admin);
-            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org = await scope.CreateOrganizationAsync();
             using var e = await scope.CreateEventAsync(organization: org.Entity);
             using var registration = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-            var response = await client.PutAsync($"/v3/registrations/{registration.Entity.RegistrationId}", new
+            var response = await client.PutAsync($"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}", new
             {
                 type = 2
             });
@@ -299,14 +299,14 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             using var admin = await scope.CreateUserAsync(role: Roles.SystemAdmin);
-            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org = await scope.CreateOrganizationAsync();
             using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
             using var e = await scope.CreateEventAsync(organization: org.Entity);
             using var registration = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
             Assert.Equal(Registration.RegistrationType.Participant, registration.Entity.Type);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.SystemAdmin);
-            var response = await client.PutAsync($"/v3/registrations/{registration.Entity.RegistrationId}", new
+            var response = await client.PutAsync($"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}", new
             {
                 type = 2
             });
@@ -325,14 +325,14 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             using var admin = await scope.CreateUserAsync(role: Roles.Admin);
-            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org = await scope.CreateOrganizationAsync();
             using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
             using var e = await scope.CreateEventAsync(organization: org.Entity);
             using var registration = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
             Assert.Equal(Registration.RegistrationType.Participant, registration.Entity.Type);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-            var response = await client.PutAsync($"/v3/registrations/{registration.Entity.RegistrationId}", new
+            var response = await client.PutAsync($"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}", new
             {
                 type = 2
             });
@@ -403,12 +403,12 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             using var admin = await scope.CreateUserAsync(role: Roles.Admin);
-            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org = await scope.CreateOrganizationAsync();
             using var e = await scope.CreateEventAsync(organization: org.Entity);
             using var registration = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-            var response = await client.DeleteAsync($"/v3/registrations/{registration.Entity.RegistrationId}");
+            var response = await client.DeleteAsync($"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}");
             response.CheckForbidden();
         }
 
@@ -418,14 +418,14 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             using var admin = await scope.CreateUserAsync(role: Roles.Admin);
-            using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
+            using var org = await scope.CreateOrganizationAsync();
             using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
             using var e = await scope.CreateEventAsync(organization: org.Entity, organizationId: org.Entity.OrganizationId);
             using var registration = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
             Assert.Equal(Registration.RegistrationType.Participant, registration.Entity.Type);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-            var response = await client.DeleteAsync($"/v3/registrations/{registration.Entity.RegistrationId}");
+            var response = await client.DeleteAsync($"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}");
             response.CheckOk();
 
             await LoadAndCheckAsync(scope, registration.Entity, updated =>

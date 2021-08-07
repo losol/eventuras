@@ -6,11 +6,14 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Eventuras.Services.Exceptions;
 
 namespace Eventuras.Services.Organizations
 {
     internal class CurrentOrganizationAccessorService : ICurrentOrganizationAccessorService
     {
+        private const string OrgIdParamName = "orgId";
+
         private readonly ApplicationDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -26,6 +29,18 @@ namespace Eventuras.Services.Organizations
             OrganizationRetrievalOptions options,
             CancellationToken cancellationToken)
         {
+            // Retrieve current organization by orgId param first
+            var orgIdParamValue = _httpContextAccessor.HttpContext.Request.Query[OrgIdParamName];
+            if (!string.IsNullOrEmpty(orgIdParamValue) && int.TryParse(orgIdParamValue, out var organizationId))
+            {
+                return await _context.Organizations
+                    .AsNoTracking()
+                    .WithOptions(options ?? new OrganizationRetrievalOptions())
+                    .Where(o => o.OrganizationId == organizationId)
+                    .FirstOrDefaultAsync(cancellationToken);
+            }
+
+            // Try hostname approach, if no orgId is present in the query
             var host = _httpContextAccessor.HttpContext.Request.Host;
             if (!host.HasValue)
             {
@@ -34,7 +49,7 @@ namespace Eventuras.Services.Organizations
 
             return await _context.Organizations
                 .AsNoTracking()
-                .UseOptions(options ?? new OrganizationRetrievalOptions())
+                .WithOptions(options ?? new OrganizationRetrievalOptions())
                 .Where(o => o.Hostnames.Any(h => h.Active && h.Hostname == host.Value))
                 .FirstOrDefaultAsync(cancellationToken);
         }
@@ -44,7 +59,7 @@ namespace Eventuras.Services.Organizations
             CancellationToken cancellationToken)
         {
             return await GetCurrentOrganizationAsync(options, cancellationToken) ??
-                   throw new OrganizationMisconfigurationException(_httpContextAccessor.HttpContext.Request.Host.Value);
+                   throw new OrgNotSpecifiedException(_httpContextAccessor.HttpContext.Request.Host.Value);
         }
     }
 }

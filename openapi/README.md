@@ -6,10 +6,10 @@
 ./gendocs.sh -o ../docs/openapi/v3 v3/eventuras-api.v3.yaml
 ```
 
-OR alternatively to use other HTML format for the generated docs:
+To use an alternate HTML format for the generated docs:
 
 ```
-./gendocs.sh -o ../docs/openapi/v3 -a v3/eventuras-api.v3.yaml
+./gendocs.sh -o ../docs/openapi2/v3 -a v3/eventuras-api.v3.yaml
 ```
 
 ## Generating code manually

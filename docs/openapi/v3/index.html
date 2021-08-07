@@ -199,31 +199,63 @@ font-style: italic;
   <div class="method-summary"></div>
   <h4><a href="#Events">Events</a></h4>
   <ul>
+  <li><a href="#addProductToEvent"><code><span class="http-method">post</span> /events/{id}/products</code></a></li>
+  <li><a href="#addVariantToProduct"><code><span class="http-method">post</span> /events/{id}/products/{productId}/variants</code></a></li>
+  <li><a href="#archiveProduct"><code><span class="http-method">delete</span> /events/{id}/products/{productId}</code></a></li>
+  <li><a href="#archiveProductVariant"><code><span class="http-method">delete</span> /events/{id}/products/{productId}/variants/{variantId}</code></a></li>
   <li><a href="#createNewEvent"><code><span class="http-method">post</span> /events</code></a></li>
   <li><a href="#deleteEvent"><code><span class="http-method">delete</span> /events/{id}</code></a></li>
   <li><a href="#getEventById"><code><span class="http-method">get</span> /events/{id}</code></a></li>
+  <li><a href="#getEventProductsList"><code><span class="http-method">get</span> /events/{id}/products</code></a></li>
   <li><a href="#getEvents"><code><span class="http-method">get</span> /events</code></a></li>
+  <li><a href="#getProductVariantsList"><code><span class="http-method">get</span> /events/{id}/products/{productId}/variants</code></a></li>
   <li><a href="#updateEvent"><code><span class="http-method">put</span> /events/{id}</code></a></li>
   </ul>
   <h4><a href="#Notifications">Notifications</a></h4>
   <ul>
   <li><a href="#createNewEmailNotification"><code><span class="http-method">post</span> /notifications/email</code></a></li>
   </ul>
+  <h4><a href="#Orders">Orders</a></h4>
+  <ul>
+  <li><a href="#addOrderToRegistration"><code><span class="http-method">post</span> /registrations/{id}/orders</code></a></li>
+  <li><a href="#getRegistrationOrdersList"><code><span class="http-method">get</span> /registrations/{id}/orders</code></a></li>
+  </ul>
   <h4><a href="#Organizations">Organizations</a></h4>
   <ul>
   <li><a href="#addMemberToOrganization"><code><span class="http-method">put</span> /organizations/{id}/members</code></a></li>
   <li><a href="#addOrganizationMemberRole"><code><span class="http-method">post</span> /organizations/{id}/members/{memberId}/roles</code></a></li>
+  <li><a href="#createNewOrganization"><code><span class="http-method">post</span> /organizations</code></a></li>
+  <li><a href="#deleteOrganization"><code><span class="http-method">delete</span> /organizations/{id}</code></a></li>
   <li><a href="#getOrganizationMemberRoles"><code><span class="http-method">get</span> /organizations/{id}/members/{memberId}/roles</code></a></li>
+  <li><a href="#getOrganizationSettingsList"><code><span class="http-method">get</span> /organizations/{id}/settings</code></a></li>
+  <li><a href="#getOrganizationsList"><code><span class="http-method">get</span> /organizations</code></a></li>
   <li><a href="#removeMemberFromOrganization"><code><span class="http-method">delete</span> /organizations/{id}/members</code></a></li>
   <li><a href="#removeMemberFromOrganization_1"><code><span class="http-method">delete</span> /organizations/{id}/members/{memberId}/roles</code></a></li>
+  <li><a href="#updateOrganization"><code><span class="http-method">put</span> /organizations/{id}</code></a></li>
+  <li><a href="#updateOrganizationSettings"><code><span class="http-method">put</span> /organizations/{id}/settings</code></a></li>
+  </ul>
+  <h4><a href="#Products">Products</a></h4>
+  <ul>
+  <li><a href="#addProductToEvent"><code><span class="http-method">post</span> /events/{id}/products</code></a></li>
+  <li><a href="#addVariantToProduct"><code><span class="http-method">post</span> /events/{id}/products/{productId}/variants</code></a></li>
+  <li><a href="#archiveProduct"><code><span class="http-method">delete</span> /events/{id}/products/{productId}</code></a></li>
+  <li><a href="#archiveProductVariant"><code><span class="http-method">delete</span> /events/{id}/products/{productId}/variants/{variantId}</code></a></li>
+  <li><a href="#getEventProductsList"><code><span class="http-method">get</span> /events/{id}/products</code></a></li>
+  <li><a href="#getProductVariantsList"><code><span class="http-method">get</span> /events/{id}/products/{productId}/variants</code></a></li>
   </ul>
   <h4><a href="#Registrations">Registrations</a></h4>
   <ul>
   <li><a href="#addOrderToRegistration"><code><span class="http-method">post</span> /registrations/{id}/orders</code></a></li>
   <li><a href="#cancelRegistration"><code><span class="http-method">delete</span> /registrations/{id}</code></a></li>
   <li><a href="#createNewRegistration"><code><span class="http-method">post</span> /registrations</code></a></li>
+  <li><a href="#getRegistrationOrdersList"><code><span class="http-method">get</span> /registrations/{id}/orders</code></a></li>
   <li><a href="#getRegistrationsList"><code><span class="http-method">get</span> /registrations</code></a></li>
   <li><a href="#updateRegistration"><code><span class="http-method">put</span> /registrations/{id}</code></a></li>
+  </ul>
+  <h4><a href="#Settings">Settings</a></h4>
+  <ul>
+  <li><a href="#getOrganizationSettingsList"><code><span class="http-method">get</span> /organizations/{id}/settings</code></a></li>
+  <li><a href="#updateOrganizationSettings"><code><span class="http-method">put</span> /organizations/{id}/settings</code></a></li>
   </ul>
   <h4><a href="#Users">Users</a></h4>
   <ul>
@@ -235,6 +267,275 @@ font-style: italic;
   </ul>
 
   <h1><a name="Events">Events</a></h1>
+  <div class="method"><a name="addProductToEvent"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /events/{id}/products</code></pre></div>
+    <div class="method-summary">Add product to event. (<span class="nickname">addProductToEvent</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Event ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">NewProductDto <a href="#NewProductDto">NewProductDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#ProductDto">ProductDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "productId" : 1001,
+  "name" : "Test Product",
+  "description" : "Test",
+  "more" : "More on this product...",
+  "price" : 19.99,
+  "vatPercent" : 17,
+  "variants" : [ {
+    "productVariantId" : 34,
+    "name" : "Red Coloured Test Product",
+    "description" : "Some variant description...",
+    "price" : 21.99
+  }, {
+    "productVariantId" : 35,
+    "name" : "Green Coloured Test Product",
+    "description" : "Some variant description...",
+    "price" : 22.99
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#ProductDto">ProductDto</a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="addVariantToProduct"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /events/{id}/products/{productId}/variants</code></pre></div>
+    <div class="method-summary">Add variant to product. (<span class="nickname">addVariantToProduct</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Event ID. default: null format: int32</div><div class="param">productId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Product ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">NewProductVariantDto <a href="#NewProductVariantDto">NewProductVariantDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#ProductVariantDto">ProductVariantDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "productVariantId" : 34,
+  "name" : "Red Coloured Test Product",
+  "description" : "Some variant description...",
+  "price" : 21.99
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#ProductVariantDto">ProductVariantDto</a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="archiveProduct"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /events/{id}/products/{productId}</code></pre></div>
+    <div class="method-summary">Archive product. (<span class="nickname">archiveProduct</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Event ID. default: null format: int32</div><div class="param">productId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Product ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Product archived.
+        <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="archiveProductVariant"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /events/{id}/products/{productId}/variants/{variantId}</code></pre></div>
+    <div class="method-summary">Archive product variant. (<span class="nickname">archiveProductVariant</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Event ID. default: null format: int32</div><div class="param">productId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Product ID. default: null format: int32</div><div class="param">variantId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Product variant ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Product variant archived.
+        <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
   <div class="method"><a name="createNewEvent"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
@@ -441,6 +742,77 @@ font-style: italic;
         <a href="#Error">Error</a>
   </div> <!-- method -->
   <hr/>
+  <div class="method"><a name="getEventProductsList"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /events/{id}/products</code></pre></div>
+    <div class="method-summary">Get event products list. (<span class="nickname">getEventProductsList</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Event ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#ProductDto">ProductDto</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "productId" : 1001,
+  "name" : "Test Product",
+  "description" : "Test",
+  "more" : "More on this product...",
+  "price" : 19.99,
+  "vatPercent" : 17,
+  "variants" : [ {
+    "productVariantId" : 34,
+    "name" : "Red Coloured Test Product",
+    "description" : "Some variant description...",
+    "price" : 21.99
+  }, {
+    "productVariantId" : 35,
+    "name" : "Green Coloured Test Product",
+    "description" : "Some variant description...",
+    "price" : 22.99
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
   <div class="method"><a name="getEvents"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
@@ -516,6 +888,66 @@ Use <code>match</code> (default) for exact match, <code>intersect</code> for par
         <a href="#Error">Error</a>
     <h4 class="field-label">401</h4>
     Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getProductVariantsList"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /events/{id}/products/{productId}/variants</code></pre></div>
+    <div class="method-summary">Get product variants list. (<span class="nickname">getProductVariantsList</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Event ID. default: null format: int32</div><div class="param">productId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Product ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#ProductVariantDto">ProductVariantDto</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "productVariantId" : 34,
+  "name" : "Red Coloured Test Product",
+  "description" : "Some variant description...",
+  "price" : 21.99
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
         <a href="#Error">Error</a>
     <h4 class="field-label">500</h4>
     Unexpected server error.
@@ -679,6 +1111,174 @@ or explicit email addresses.</div>
         <a href="#Error">Error</a>
   </div> <!-- method -->
   <hr/>
+  <h1><a name="Orders">Orders</a></h1>
+  <div class="method"><a name="addOrderToRegistration"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /registrations/{id}/orders</code></pre></div>
+    <div class="method-summary">Add order to registration. (<span class="nickname">addOrderToRegistration</span>)</div>
+    <div class="method-notes"></div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">RegistrationOrderDto <a href="#RegistrationOrderDto">RegistrationOrderDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#OrderDto">OrderDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "orderId" : 10001,
+  "items" : [ {
+    "product" : {
+      "productId" : 1001,
+      "name" : "Test Product",
+      "description" : "Test",
+      "more" : "More on this product...",
+      "price" : 19.99,
+      "vatPercent" : 17
+    },
+    "productVariant" : {
+      "productVariantId" : 34,
+      "name" : "Red Coloured Test Product",
+      "description" : "Some variant description...",
+      "price" : 21.99
+    },
+    "quantity" : 1
+  }, {
+    "product" : {
+      "productId" : 2001,
+      "name" : "Test Product 2",
+      "description" : "Test 2",
+      "more" : "More on this product...",
+      "price" : 29.99,
+      "vatPercent" : 17
+    },
+    "quantity" : 3
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#OrderDto">OrderDto</a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getRegistrationOrdersList"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /registrations/{id}/orders</code></pre></div>
+    <div class="method-summary">Get registration orders list. (<span class="nickname">getRegistrationOrdersList</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#OrderDto">OrderDto</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "orderId" : 10001,
+  "items" : [ {
+    "product" : {
+      "productId" : 1001,
+      "name" : "Test Product",
+      "description" : "Test",
+      "more" : "More on this product...",
+      "price" : 19.99,
+      "vatPercent" : 17
+    },
+    "productVariant" : {
+      "productVariantId" : 34,
+      "name" : "Red Coloured Test Product",
+      "description" : "Some variant description...",
+      "price" : 21.99
+    },
+    "quantity" : 1
+  }, {
+    "product" : {
+      "productId" : 2001,
+      "name" : "Test Product 2",
+      "description" : "Test 2",
+      "more" : "More on this product...",
+      "price" : 29.99,
+      "vatPercent" : 17
+    },
+    "quantity" : 3
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
   <h1><a name="Organizations">Organizations</a></h1>
   <div class="method"><a name="addMemberToOrganization"/>
     <div class="method-path">
@@ -687,6 +1287,12 @@ or explicit email addresses.</div>
     <div class="method-summary">Add member to organization. (<span class="nickname">addMemberToOrganization</span>)</div>
     <div class="method-notes"></div>
 
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Organization ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
 
 
 
@@ -784,6 +1390,118 @@ or explicit email addresses.</div>
         <a href="#Error">Error</a>
   </div> <!-- method -->
   <hr/>
+  <div class="method"><a name="createNewOrganization"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /organizations</code></pre></div>
+    <div class="method-summary">Create new organization (system admin only). (<span class="nickname">createNewOrganization</span>)</div>
+    <div class="method-notes"></div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">OrganizationFormDto <a href="#OrganizationFormDto">OrganizationFormDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#OrganizationDto">OrganizationDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "name" : "Test org"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#OrganizationDto">OrganizationDto</a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="deleteOrganization"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /organizations/{id}</code></pre></div>
+    <div class="method-summary">Delete organization (system admin only). (<span class="nickname">deleteOrganization</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Organization ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Organization deleted.
+        <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
   <div class="method"><a name="getOrganizationMemberRoles"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
@@ -831,6 +1549,114 @@ or explicit email addresses.</div>
         <a href="#Error">Error</a>
   </div> <!-- method -->
   <hr/>
+  <div class="method"><a name="getOrganizationSettingsList"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /organizations/{id}/settings</code></pre></div>
+    <div class="method-summary">Get organization settings list. (<span class="nickname">getOrganizationSettingsList</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Organization ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#OrganizationSettingDto">OrganizationSettingDto</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "name" : "ZOOM_API_KEY",
+  "value" : "12345"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getOrganizationsList"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /organizations</code></pre></div>
+    <div class="method-summary">Get organizations list (system admin only). (<span class="nickname">getOrganizationsList</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#OrganizationDto">OrganizationDto</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "name" : "Test org"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
   <div class="method"><a name="removeMemberFromOrganization"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
@@ -838,6 +1664,12 @@ or explicit email addresses.</div>
     <div class="method-summary">Remove member from organization. (<span class="nickname">removeMemberFromOrganization</span>)</div>
     <div class="method-notes"></div>
 
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Organization ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
 
 
 
@@ -917,6 +1749,540 @@ or explicit email addresses.</div>
         <a href="#Error">Error</a>
     <h4 class="field-label">403</h4>
     Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="updateOrganization"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /organizations/{id}</code></pre></div>
+    <div class="method-summary">Update organization (system admin only). (<span class="nickname">updateOrganization</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Organization ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">OrganizationFormDto <a href="#OrganizationFormDto">OrganizationFormDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#OrganizationDto">OrganizationDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "name" : "Test org"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Registration updated.
+        <a href="#OrganizationDto">OrganizationDto</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="updateOrganizationSettings"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /organizations/{id}/settings</code></pre></div>
+    <div class="method-summary">Update organization settings. (<span class="nickname">updateOrganizationSettings</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Organization ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">OrganizationSettingValueDto <a href="#OrganizationSettingValueDto">OrganizationSettingValueDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="Products">Products</a></h1>
+  <div class="method"><a name="addProductToEvent"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /events/{id}/products</code></pre></div>
+    <div class="method-summary">Add product to event. (<span class="nickname">addProductToEvent</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Event ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">NewProductDto <a href="#NewProductDto">NewProductDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#ProductDto">ProductDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "productId" : 1001,
+  "name" : "Test Product",
+  "description" : "Test",
+  "more" : "More on this product...",
+  "price" : 19.99,
+  "vatPercent" : 17,
+  "variants" : [ {
+    "productVariantId" : 34,
+    "name" : "Red Coloured Test Product",
+    "description" : "Some variant description...",
+    "price" : 21.99
+  }, {
+    "productVariantId" : 35,
+    "name" : "Green Coloured Test Product",
+    "description" : "Some variant description...",
+    "price" : 22.99
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#ProductDto">ProductDto</a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="addVariantToProduct"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /events/{id}/products/{productId}/variants</code></pre></div>
+    <div class="method-summary">Add variant to product. (<span class="nickname">addVariantToProduct</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Event ID. default: null format: int32</div><div class="param">productId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Product ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">NewProductVariantDto <a href="#NewProductVariantDto">NewProductVariantDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#ProductVariantDto">ProductVariantDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "productVariantId" : 34,
+  "name" : "Red Coloured Test Product",
+  "description" : "Some variant description...",
+  "price" : 21.99
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#ProductVariantDto">ProductVariantDto</a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="archiveProduct"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /events/{id}/products/{productId}</code></pre></div>
+    <div class="method-summary">Archive product. (<span class="nickname">archiveProduct</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Event ID. default: null format: int32</div><div class="param">productId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Product ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Product archived.
+        <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="archiveProductVariant"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /events/{id}/products/{productId}/variants/{variantId}</code></pre></div>
+    <div class="method-summary">Archive product variant. (<span class="nickname">archiveProductVariant</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Event ID. default: null format: int32</div><div class="param">productId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Product ID. default: null format: int32</div><div class="param">variantId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Product variant ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Product variant archived.
+        <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getEventProductsList"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /events/{id}/products</code></pre></div>
+    <div class="method-summary">Get event products list. (<span class="nickname">getEventProductsList</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Event ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#ProductDto">ProductDto</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "productId" : 1001,
+  "name" : "Test Product",
+  "description" : "Test",
+  "more" : "More on this product...",
+  "price" : 19.99,
+  "vatPercent" : 17,
+  "variants" : [ {
+    "productVariantId" : 34,
+    "name" : "Red Coloured Test Product",
+    "description" : "Some variant description...",
+    "price" : 21.99
+  }, {
+    "productVariantId" : 35,
+    "name" : "Green Coloured Test Product",
+    "description" : "Some variant description...",
+    "price" : 22.99
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getProductVariantsList"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /events/{id}/products/{productId}/variants</code></pre></div>
+    <div class="method-summary">Get product variants list. (<span class="nickname">getProductVariantsList</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Event ID. default: null format: int32</div><div class="param">productId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Product ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#ProductVariantDto">ProductVariantDto</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "productVariantId" : 34,
+  "name" : "Red Coloured Test Product",
+  "description" : "Some variant description...",
+  "price" : 21.99
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
         <a href="#Error">Error</a>
     <h4 class="field-label">500</h4>
     Unexpected server error.
@@ -1009,6 +2375,9 @@ or explicit email addresses.</div>
         <a href="#Error">Error</a>
     <h4 class="field-label">403</h4>
     Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
         <a href="#Error">Error</a>
     <h4 class="field-label">500</h4>
     Unexpected server error.
@@ -1126,6 +2495,79 @@ or explicit email addresses.</div>
         <a href="#Error">Error</a>
     <h4 class="field-label">403</h4>
     Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getRegistrationOrdersList"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /registrations/{id}/orders</code></pre></div>
+    <div class="method-summary">Get registration orders list. (<span class="nickname">getRegistrationOrdersList</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#OrderDto">OrderDto</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "orderId" : 10001,
+  "items" : [ {
+    "product" : {
+      "productId" : 1001,
+      "name" : "Test Product",
+      "description" : "Test",
+      "more" : "More on this product...",
+      "price" : 19.99,
+      "vatPercent" : 17
+    },
+    "productVariant" : {
+      "productVariantId" : 34,
+      "name" : "Red Coloured Test Product",
+      "description" : "Some variant description...",
+      "price" : 21.99
+    },
+    "quantity" : 1
+  }, {
+    "product" : {
+      "productId" : 2001,
+      "name" : "Test Product 2",
+      "description" : "Test 2",
+      "more" : "More on this product...",
+      "price" : 29.99,
+      "vatPercent" : 17
+    },
+    "quantity" : 3
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
         <a href="#Error">Error</a>
     <h4 class="field-label">500</h4>
     Unexpected server error.
@@ -1276,6 +2718,129 @@ or explicit email addresses.</div>
         <a href="#Error">Error</a>
     <h4 class="field-label">404</h4>
     The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="Settings">Settings</a></h1>
+  <div class="method"><a name="getOrganizationSettingsList"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /organizations/{id}/settings</code></pre></div>
+    <div class="method-summary">Get organization settings list. (<span class="nickname">getOrganizationSettingsList</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Organization ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#OrganizationSettingDto">OrganizationSettingDto</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "name" : "ZOOM_API_KEY",
+  "value" : "12345"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="updateOrganizationSettings"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /organizations/{id}/settings</code></pre></div>
+    <div class="method-summary">Update organization settings. (<span class="nickname">updateOrganizationSettings</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Organization ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">OrganizationSettingValueDto <a href="#OrganizationSettingValueDto">OrganizationSettingValueDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
         <a href="#Error">Error</a>
     <h4 class="field-label">500</h4>
     Unexpected server error.
@@ -1622,6 +3187,8 @@ Default is <code>false</code>. default: null </div>
     <li><a href="#EventFormDto"><code>EventFormDto</code> - Event form data.</a></li>
     <li><a href="#EventsPagedList"><code>EventsPagedList</code> - Event list with paging.</a></li>
     <li><a href="#LocationDto"><code>LocationDto</code> - Location info.</a></li>
+    <li><a href="#NewProductDto"><code>NewProductDto</code> - New product form.</a></li>
+    <li><a href="#NewProductVariantDto"><code>NewProductVariantDto</code> - New product variant form.</a></li>
     <li><a href="#NewRegistrationDto"><code>NewRegistrationDto</code> - New registration info</a></li>
     <li><a href="#NewUserDto"><code>NewUserDto</code> - New user form.</a></li>
     <li><a href="#New_registration_specific_properties"><code>New_registration_specific_properties</code> - New registration specific properties</a></li>
@@ -1629,6 +3196,10 @@ Default is <code>false</code>. default: null </div>
     <li><a href="#NotificationResponseDto"><code>NotificationResponseDto</code> - Notification response</a></li>
     <li><a href="#OrderDto"><code>OrderDto</code> - Order information.</a></li>
     <li><a href="#OrderLineDto"><code>OrderLineDto</code> - Order line data.</a></li>
+    <li><a href="#OrganizationDto"><code>OrganizationDto</code> - Organization properties.</a></li>
+    <li><a href="#OrganizationFormDto"><code>OrganizationFormDto</code> - Organization data.</a></li>
+    <li><a href="#OrganizationSettingDto"><code>OrganizationSettingDto</code> - Organization setting properties.</a></li>
+    <li><a href="#OrganizationSettingValueDto"><code>OrganizationSettingValueDto</code> - Org setting key value pair.</a></li>
     <li><a href="#ProductDto"><code>ProductDto</code> - Product data.</a></li>
     <li><a href="#ProductVariantDto"><code>ProductVariantDto</code> - Product variant data.</a></li>
     <li><a href="#RegistrationCustomerInfoDto"><code>RegistrationCustomerInfoDto</code> - Registration customer data.</a></li>
@@ -1740,6 +3311,27 @@ Other = 9 </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
+    <h3><a name="NewProductDto"><code>NewProductDto</code> - New product form.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Product name. </div>
+<div class="param">description (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Product description. </div>
+<div class="param">more (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> More information about the product. </div>
+<div class="param">price (optional)</div><div class="param-desc"><span class="param-type"><a href="#float">Float</a></span>  format: float</div>
+<div class="param">vatPercent (optional)</div><div class="param-desc"><span class="param-type"><a href="#float">Float</a></span>  format: float</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="NewProductVariantDto"><code>NewProductVariantDto</code> - New product variant form.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Product variant name. </div>
+<div class="param">description (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Product variant description. </div>
+<div class="param">price (optional)</div><div class="param-desc"><span class="param-type"><a href="#float">Float</a></span>  format: float</div>
+<div class="param">vatPercent (optional)</div><div class="param-desc"><span class="param-type"><a href="#number">BigDecimal</a></span>  format: int32</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
     <h3><a name="NewRegistrationDto"><code>NewRegistrationDto</code> - New registration info</a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
@@ -1812,6 +3404,55 @@ All properties are optional.</div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
+    <h3><a name="OrganizationDto"><code>OrganizationDto</code> - Organization properties.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">organizationId (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Organization ID. format: int32</div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">description (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">url (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">phone (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">email (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">logoUrl (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">løogoBase64 (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="OrganizationFormDto"><code>OrganizationFormDto</code> - Organization data.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">description (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">url (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">phone (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">email (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">logoUrl (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">løogoBase64 (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="OrganizationSettingDto"><code>OrganizationSettingDto</code> - Organization setting properties.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Unique setting key. </div>
+<div class="param">section </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Human-friendly section name, used to group settings together. </div>
+<div class="param">description </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Human-friendly setting name. </div>
+<div class="param">type </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> String = 1,
+Number = 2,
+Url = 3,
+Email = 4 </div>
+<div class="param">value (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Current setting value, if set. </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="OrganizationSettingValueDto"><code>OrganizationSettingValueDto</code> - Org setting key value pair.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Unique setting key. </div>
+<div class="param">value </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> If empty, the setting value will be removed. </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
     <h3><a name="ProductDto"><code>ProductDto</code> - Product data.</a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
@@ -1821,6 +3462,7 @@ All properties are optional.</div>
 <div class="param">more (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> More information about the product. </div>
 <div class="param">price </div><div class="param-desc"><span class="param-type"><a href="#float">Float</a></span>  format: float</div>
 <div class="param">vatPercent (optional)</div><div class="param-desc"><span class="param-type"><a href="#float">Float</a></span>  format: float</div>
+<div class="param">variants </div><div class="param-desc"><span class="param-type"><a href="#ProductVariantDto">array[ProductVariantDto]</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -1831,6 +3473,7 @@ All properties are optional.</div>
 <div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Product variant name. </div>
 <div class="param">description </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Product variant description. </div>
 <div class="param">price </div><div class="param-desc"><span class="param-type"><a href="#float">Float</a></span>  format: float</div>
+<div class="param">vatPercent (optional)</div><div class="param-desc"><span class="param-type"><a href="#number">BigDecimal</a></span>  format: int32</div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">

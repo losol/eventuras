@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
+using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -49,7 +50,7 @@ namespace Eventuras.Web.Pages.Admin.Organizations
                 {
                     await _organizationManagementService.UpdateOrganizationHostnames(id, Hostnames.Split(','));
                 }
-                catch (DuplicateOrganizationHostnameException e)
+                catch (DuplicateException e)
                 {
                     ModelState.AddModelError(nameof(Hostnames), e.Message);
                     return await PageAsync(id);
