@@ -51,10 +51,10 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: ${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}
-          tags: 
-            type=raw,value={{ github.ref }}{{ github.BUILD_TIME }}
-          flavor:
-            latest: false
+          flavor: |
+            latest=false
+            prefix={{ github.ref }}
+            suffix={{ github.BUILD_TIME }}
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
