@@ -36,14 +36,6 @@ jobs:
     if: github.event_name == 'push'
 
     steps:
-      - name: Branch name
-        id: branch
-        run: |
-          echo "::group::Branch"
-          echo Running on branch ${GITHUB_REF##*/}
-          echo '::set-output name=BRANCHNAME::${{GITHUB_REF##*/}}'
-          echo "::endgroup::"
-
       - name: Checkout
         uses: actions/checkout@v2
 
