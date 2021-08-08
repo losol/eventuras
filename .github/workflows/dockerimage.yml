@@ -4,7 +4,7 @@ on:
   push:
     branches: 
       - master
-      - "feature/*"
+      - 'feature/*'
   pull_request:
     branches: [master] 
 
@@ -63,7 +63,7 @@ jobs:
           tags: ${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}:latest
 
       - name: Build and push (feature)
-        if: contains(github.ref, "refs/heads/feature")
+        if: contains(github.ref, 'refs/heads/feature')
         uses: docker/build-push-action@v2
         with:
           context: .
