@@ -53,8 +53,7 @@ jobs:
           images: ${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}
           flavor: |
             latest=false
-            prefix=${{ github.ref }}
-            suffix=${{ github.BUILD_TIME }}
+            suffix=${{ env.BUILD_TIME }}
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
