@@ -77,7 +77,6 @@ jobs:
     needs: test
 
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
 
     steps:
       - name: Checkout
@@ -89,7 +88,6 @@ jobs:
           echo "BUILD_TIME=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
   
       - name: Docker meta (master)
-        if: github.ref == 'refs/heads/master'
         id: meta
         uses: docker/metadata-action@v3
         with:
