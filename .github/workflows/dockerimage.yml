@@ -41,7 +41,7 @@ jobs:
         run: |
           echo "::group::Branch"
           echo Running on branch ${GITHUB_REF##*/}
-          echo '::set-output name=BRANCHNAME::${GITHUB_REF##*/}'
+          echo '::set-output name=BRANCHNAME::${{GITHUB_REF##*/}}'
           echo "::endgroup::"
 
       - name: Checkout
