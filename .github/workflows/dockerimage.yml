@@ -63,9 +63,9 @@ jobs:
           tags: ${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}:latest
 
       - name: Build and push (feature)
-            if: contains(github.ref, "feature")
-            uses: docker/build-push-action@v2
-            with:
-              context: .
-              push: true
-              tags: ${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}:${GITHUB_REF#refs/heads/feature/}
+        if: contains(github.ref, "refs/heads/feature")
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}:${GITHUB_REF#refs/heads/feature/}
