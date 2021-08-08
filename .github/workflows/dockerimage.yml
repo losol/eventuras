@@ -43,8 +43,9 @@ jobs:
 
       - name: Set Environment Variables
         run: |
-          echo "RUN_NUMBER=1.0.$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
-          echo "BUILD_TIME=$(date +'%Y%m%d_%H%M%S')" >> $GITHUB_ENV
+          echo "RUN_NUMBER=$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+          echo "BUILD_DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
+          echo "BUILD_TIME=$(date +'%H%M%S')" >> $GITHUB_ENV
 
       - name: Docker meta (feature)
         id: meta
@@ -53,7 +54,7 @@ jobs:
           images: ${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}
           flavor: |
             latest=false
-            suffix=-${{ env.BUILD_TIME }}
+            suffix=-${{ env.BUILD_DATE }}.${{ env.RUN_NUMBER }}
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
@@ -83,8 +84,9 @@ jobs:
 
       - name: Set Environment Variables
         run: |
-          echo "RUN_NUMBER=1.0.$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
-          echo "BUILD_TIME=$(date +'%Y%m%d_%H%M%S')" >> $GITHUB_ENV
+          echo "RUN_NUMBER=$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+          echo "BUILD_DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
+          echo "BUILD_TIME=$(date +'%H%M%S')" >> $GITHUB_ENV
   
       - name: Docker meta (master)
         id: meta
@@ -93,7 +95,7 @@ jobs:
           images: ${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}
           flavor: |
             latest=true
-            suffix=-${{ env.BUILD_TIME }}
+            suffix=-${{ env.BUILD_DATE }}.${{ env.RUN_NUMBER }}
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
