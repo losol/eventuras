@@ -42,9 +42,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set Environment Variables
-      run: |
-        echo "RUN_NUMBER=1.0.$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
-        echo "BUILD_TIME=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+        run: |
+          echo "RUN_NUMBER=1.0.$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+          echo "BUILD_TIME=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
 
       - name: Docker meta (feature)
         id: meta
@@ -84,10 +84,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set Environment Variables
-      run: |
-        echo "RUN_NUMBER=1.0.$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
-        echo "BUILD_TIME=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
- 
+        run: |
+          echo "RUN_NUMBER=1.0.$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+          echo "BUILD_TIME=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+  
       - name: Docker meta (master)
         if: github.ref == 'refs/heads/master'
         id: meta
