@@ -1,0 +1,35 @@
+version: "3.3"
+services:
+  app:
+    container_name: "devcontainer_app"
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5433;Database=eventuras_db;Username=pguser;Password=Str0ng!PaSsw0rd
+    volumes:
+      - ..:/workspace:cached
+
+    ports:
+      - "5001:5001"
+
+    depends_on:
+      - postgres
+
+  postgres:
+    image: "postgres"
+    container_name: "devcontainer_postgres"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=pguser
+      - POSTGRES_PASSWORD=Str0ng!PaSsw0rd
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/
+    restart: unless-stopped
+    ports:
+      - "5433:5433"
+
+volumes:
+  postgres_data:
