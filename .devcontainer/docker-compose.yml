@@ -37,9 +37,9 @@ services:
   db:
     image: "postgres:latest"
     environment:
-      - POSTGRES_DB=eventuras_db
+      - POSTGRES_DB=eventuras
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD="Str0ng!Pasword"
     volumes:
       - ./postgres_data:/var/lib/postgresql/data/
     restart: unless-stopped

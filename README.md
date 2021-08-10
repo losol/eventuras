@@ -39,7 +39,7 @@ Password: Str0ng!PaSsw0rd
 
 1. Set up postgres database. By default the application connects to
 
-    - Database `eventuras_db`
+    - Database `eventuras`
     - Username `eventuras`
     - Password `Str0ng!PaSsw0rd`
 

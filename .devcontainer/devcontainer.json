@@ -15,15 +15,15 @@
         "previewLimit": 100,
         "server": "localhost",
         "port": 5432,
-        "database": "postgres",
-        "username": "postgres",
-        "password": "postgres"
+        "database": "eventuras",
+        "username": "eventuras",
+        "password": "Str0ng!Pasword"
       }
     ]
   },
 
   // Add the IDs of extensions you want installed when the container is created.
-  "extensions": ["ms-dotnettools.csharp", "ms-mssql.mssql"],
+  "extensions": ["ms-dotnettools.csharp"],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [5000, 5001],
@@ -48,6 +48,6 @@
   //      3. Open a terminal in VS Code and run "mkdir -p /home/vscode/.aspnet/https && mv aspnetapp.pfx /home/vscode/.aspnet/https"
 
   // postCreateCommand.sh parameters: $1=SA password, $2=dacpac path, $3=sql script(s) path
-  "postCreateCommand": "",
-  "remoteUser": "vscode"
+  "postCreateCommand": ""
+  // "remoteUser": "vscode"
 }
