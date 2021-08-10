@@ -11,13 +11,13 @@
         "previewLimit": 50,
         "server": "localhost",
         "port": 5432,
-        "database": "postgres",
-        "username": "postgres",
-        "password": "postgres"
+        "database": "eventuras_db",
+        "username": "pguser",
+        "password": "pgpwd"
       }
     ]
   },
   "extensions": ["ms-dotnettools.csharp"],
   "remoteUser": "vscode",
-  "forwardPorts": [3000, 3030, 5432]
+  "forwardPorts": [3000, 3030, 5001, 5433]
 }
