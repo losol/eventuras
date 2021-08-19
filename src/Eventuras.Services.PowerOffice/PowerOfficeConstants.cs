@@ -1,4 +1,4 @@
-namespace Eventuras.Services.Invoicing
+namespace Eventuras.Services.PowerOffice
 {
     internal static class PowerOfficeConstants
     {

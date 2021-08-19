@@ -1,5 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using Eventuras.Infrastructure;
 using Eventuras.Services.DbInitializers;
+using Eventuras.Services.Invoicing;
+using Eventuras.TestAbstractions;
+using Eventuras.Web.Tests;
 using Losol.Communication.Email;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -8,9 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using System.Collections.Generic;
-using System.Linq;
-using Eventuras.TestAbstractions;
 
 namespace Eventuras.IntegrationTests
 {
@@ -27,12 +29,12 @@ namespace Eventuras.IntegrationTests
                 .ConfigureAppConfiguration(app => app
                     .AddInMemoryCollection(new Dictionary<string, string>
                     {
-                        { "AppSettings:EmailProvider", "Mock" },
-                        { "AppSettings:SmsProvider", "Mock" },
-                        { "AppSettings:UsePowerOffice", "false" },
-                        { "AppSettings:UseStripeInvoice", "false" },
-                        { "SuperAdmin:Email", TestingConstants.SuperAdminEmail },
-                        { "SuperAdmin:Password", TestingConstants.SuperAdminPassword }
+                        {"AppSettings:EmailProvider", "Mock"},
+                        {"AppSettings:SmsProvider", "Mock"},
+                        {"AppSettings:UsePowerOffice", "false"},
+                        {"AppSettings:UseStripeInvoice", "false"},
+                        {"SuperAdmin:Email", TestingConstants.SuperAdminEmail},
+                        {"SuperAdmin:Password", TestingConstants.SuperAdminPassword}
                     }))
                 .ConfigureServices(services =>
                 {
@@ -41,8 +43,8 @@ namespace Eventuras.IntegrationTests
 
                     // Remove the app's ApplicationDbContext registration.
                     var descriptor = services.SingleOrDefault(
-                    d => d.ServiceType ==
-                         typeof(DbContextOptions<ApplicationDbContext>));
+                        d => d.ServiceType ==
+                             typeof(DbContextOptions<ApplicationDbContext>));
 
                     if (descriptor != null)
                     {
@@ -56,6 +58,7 @@ namespace Eventuras.IntegrationTests
                     });
 
                     services.AddScoped<IDbInitializer, TestDbInitializer>();
+                    services.AddTransient<IInvoicingProvider, TestInvoicingProvider>();
 
                     // Build the service provider.
                     var sp = services.BuildServiceProvider();

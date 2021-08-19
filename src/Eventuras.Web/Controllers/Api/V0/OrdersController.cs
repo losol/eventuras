@@ -1,13 +1,14 @@
-using Eventuras.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Services;
+using Eventuras.Services.Invoicing;
 using Eventuras.Services.Orders;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using static Eventuras.Domain.Order;
 using static Eventuras.Domain.PaymentMethod;
 
@@ -19,10 +20,17 @@ namespace Eventuras.Web.Controllers.Api.V0
     public class OrdersController : Controller
     {
         private readonly IOrderService _orderService;
+        private readonly IInvoicingService _invoicingService;
+        private readonly IOrderRetrievalService _orderRetrievalService;
 
-        public OrdersController(IOrderService orderService)
+        public OrdersController(
+            IOrderService orderService, 
+            IInvoicingService invoicingService, 
+            IOrderRetrievalService orderRetrievalService)
         {
             _orderService = orderService;
+            _invoicingService = invoicingService;
+            _orderRetrievalService = orderRetrievalService;
         }
 
         [HttpPost("{id}/update/ordercomment")]
@@ -62,7 +70,9 @@ namespace Eventuras.Web.Controllers.Api.V0
                         await _orderService.MarkAsVerifiedAsync(id);
                         break;
                     case OrderStatus.Invoiced:
-                        await _orderService.CreateInvoiceAsync(id);
+                        var order = await _orderRetrievalService.GetOrderByIdAsync(id, 
+                            OrderRetrievalOptions.ForInvoicing());
+                        await _invoicingService.CreateInvoiceAsync(new[] {order});
                         break;
                     case OrderStatus.Cancelled:
                         await _orderService.MarkAsCancelledAsync(id);

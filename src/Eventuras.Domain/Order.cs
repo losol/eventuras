@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using static Eventuras.Domain.PaymentMethod;
 
@@ -18,12 +19,17 @@ namespace Eventuras.Domain
         }
 
 
-        [Required]
-        public int OrderId { get; set; }
+        [Required] public int OrderId { get; set; }
         public string UserId { get; set; }
         public int RegistrationId { get; set; }
+
+        [Obsolete("Use Invoice.ExternalInvoiceId")]
         public string ExternalInvoiceId { get; set; }
-        public bool Paid { get; set; } = false;
+
+        [Obsolete("Use Invoice.Paid")]
+        public bool Paid { get; set; }
+
+        public int? InvoiceId { get; set; }
 
         /**
 			Allowed transitions:
@@ -34,6 +40,7 @@ namespace Eventuras.Domain
 			Draft -> Verified -> Invoiced -> Cancelled
 		 */
         private OrderStatus _status = OrderStatus.Draft;
+
         public OrderStatus Status
         {
             get => _status;
@@ -48,12 +55,14 @@ namespace Eventuras.Domain
                         {
                             throw new InvalidOperationException("Only draft orders can be verified.");
                         }
+
                         break;
                     case OrderStatus.Invoiced:
                         if (_status != OrderStatus.Verified)
                         {
                             throw new InvalidOperationException("Only verified orders can be invoiced.");
                         }
+
                         break;
 
                     case OrderStatus.Refunded:
@@ -61,12 +70,13 @@ namespace Eventuras.Domain
                         {
                             throw new InvalidOperationException("Only invoiced orders can be refunded.");
                         }
+
                         break;
 
                     case OrderStatus.Cancelled:
                         break;
-
                 }
+
                 _status = value;
             }
         }
@@ -93,6 +103,7 @@ namespace Eventuras.Domain
         public ApplicationUser User { get; set; }
         public List<OrderLine> OrderLines { get; set; }
 
+        [ForeignKey(nameof(InvoiceId))] public Invoice Invoice { get; set; }
 
         public void AddLog(string text = null)
         {
@@ -105,6 +116,7 @@ namespace Eventuras.Domain
             {
                 logText += $"{Status}";
             }
+
             Log += logText + "\n";
         }
 
@@ -145,6 +157,7 @@ namespace Eventuras.Domain
             {
                 throw new InvalidOperationException("Only invoiced orders can be refunded.");
             }
+
             var refund = new Order
             {
                 CustomerEmail = CustomerEmail,
@@ -159,8 +172,8 @@ namespace Eventuras.Domain
             {
                 refund.OrderLines.Add(line.CreateRefundOrderLine());
             }
+
             return refund;
         }
-
     }
 }

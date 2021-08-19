@@ -17,6 +17,7 @@ namespace Eventuras.Infrastructure
         public DbSet<ProductVariant> ProductVariants { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderLine> OrderLines { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<OrganizationMember> OrganizationMembers { get; set; }
         public DbSet<OrganizationMemberRole> OrganizationMemberRoles { get; set; }

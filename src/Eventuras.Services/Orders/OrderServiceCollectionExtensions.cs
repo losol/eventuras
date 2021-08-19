@@ -8,6 +8,7 @@ namespace Eventuras.Services.Orders
         {
             services.AddScoped<IOrderService, OrderService>();
             services.AddTransient<IOrderVmConversionService, OrderVmConversionService>();
+            services.AddTransient<IOrderRetrievalService, OrderRetrievalService>();
         }
     }
 }

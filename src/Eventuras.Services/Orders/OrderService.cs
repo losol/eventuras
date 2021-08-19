@@ -4,11 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
-using Eventuras.Services.Invoicing;
 using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using static Eventuras.Domain.Order;
 using static Eventuras.Domain.PaymentMethod;
 
@@ -17,24 +15,15 @@ namespace Eventuras.Services.Orders
     internal class OrderService : IOrderService
     {
         private readonly ApplicationDbContext _db;
-        private readonly IPowerOfficeService _powerOfficeService;
-        private readonly IStripeInvoiceService _stripeInvoiceService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
-        private readonly ILogger _logger;
 
         public OrderService(
             ApplicationDbContext db,
-            IPowerOfficeService powerOfficeService,
-            IStripeInvoiceService stripeInvoiceService,
-            ILogger<OrderService> logger,
             ICurrentOrganizationAccessorService currentOrganizationAccessorService,
             IHttpContextAccessor httpContextAccessor)
         {
             _db = db;
-            _powerOfficeService = powerOfficeService;
-            _stripeInvoiceService = stripeInvoiceService;
-            _logger = logger;
             _currentOrganizationAccessorService = currentOrganizationAccessorService;
             _httpContextAccessor = httpContextAccessor;
         }
@@ -216,39 +205,6 @@ namespace Eventuras.Services.Orders
             order.MarkAsCancelled();
             _db.Orders.Update(order);
             return await _db.SaveChangesAsync() > 0;
-        }
-
-        public async Task<bool> CreateInvoiceAsync(int orderId)
-        {
-            var order = await (await AddCurrentOrgFilterForAdminAsync(_db.Orders))
-                .Include(o => o.OrderLines)
-                .Include(o => o.User)
-                .Include(o => o.Registration)
-                .ThenInclude(r => r.EventInfo)
-                .SingleOrDefaultAsync(o => o.OrderId == orderId);
-
-            _logger.LogInformation($"Making invoice for order: {order.OrderId}, paymenmethod: {order.PaymentMethod}");
-
-            bool invoiceCreated = false;
-
-            if (order.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice || order.PaymentMethod == PaymentProvider.PowerOfficeEmailInvoice)
-            {
-                _logger.LogInformation("* Using PowerOffice for invoicing");
-                invoiceCreated = await _powerOfficeService.CreateInvoiceAsync(order);
-            }
-            else if (order.PaymentMethod == PaymentProvider.StripeInvoice)
-            {
-                _logger.LogInformation("* Using StripeInvoice for invoicing");
-                invoiceCreated = await _stripeInvoiceService.CreateInvoiceAsync(order);
-            }
-
-            if (invoiceCreated)
-            {
-                order.MarkAsInvoiced();
-                _db.Orders.Update(order);
-                await _db.SaveChangesAsync();
-            }
-            return invoiceCreated;
         }
 
         public async Task<bool> UpdatePaymentMethod(int orderId, PaymentProvider paymentMethod)
