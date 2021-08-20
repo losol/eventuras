@@ -8,7 +8,7 @@ import { useContext, useEffect, useState } from 'react';
 
 const EventInfo = (props) => {
   const [session, loading] = useSession();
-  const { name = '...', description = '...' } = props;
+  const { title = '...', description = '...' } = props;
   const { user } = useContext(UserContext);
   const [modal, setModal] = useState({ title: '', text: '' });
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -22,7 +22,7 @@ const EventInfo = (props) => {
     );
     setModal({
       title: 'Welcome!',
-      text: `Welcome to ${props.name}`,
+      text: `Welcome to ${props.title}`,
     });
     onOpen();
   };
@@ -49,7 +49,7 @@ const EventInfo = (props) => {
   return (
     <Layout>
       <Container marginTop="32">
-        <Heading>{name}</Heading>
+        <Heading>{title}</Heading>
         {description}
         <br />
         {!session && (

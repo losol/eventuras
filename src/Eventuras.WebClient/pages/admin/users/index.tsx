@@ -93,10 +93,9 @@ const AdminUsersIndex = (): JSX.Element => {
   };
 
   const handleSubmitUpdateUser = async (user: User) => {
-    const updatedUser = await updateUser(
-      user,
-      session.accessToken
-    ).catch((error) => toaster.error(error));
+    const updatedUser = await updateUser(user, session.accessToken).catch(
+      (error) => toaster.error(error)
+    );
 
     if (updatedUser) {
       toaster.success(`${updatedUser.name} was updated.`);

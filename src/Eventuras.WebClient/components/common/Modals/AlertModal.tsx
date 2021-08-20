@@ -1,24 +1,27 @@
 import {
-  Text,
   Button,
   Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
   ModalBody,
-  ModalCloseButton
-} from "@chakra-ui/react";
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+} from '@chakra-ui/react';
 
 export interface ModalProps {
   isOpen: false;
   onClose: () => void;
   title?: string;
   text?: string;
-
 }
-const AlertModal: React.FC<ModalProps> = ({ isOpen = false, onClose, title = '', text = ''}) => {
-
+const AlertModal: React.FC<ModalProps> = ({
+  isOpen = false,
+  onClose,
+  title = '',
+  text = '',
+}) => {
   return (
     <>
       <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
@@ -39,7 +42,7 @@ const AlertModal: React.FC<ModalProps> = ({ isOpen = false, onClose, title = '',
         </ModalContent>
       </Modal>
     </>
-  )
-}
+  );
+};
 
 export default AlertModal;

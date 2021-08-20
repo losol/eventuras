@@ -6,9 +6,8 @@ import {
   Input,
   Stack,
 } from '@chakra-ui/react';
-import { Dispatch, SetStateAction } from 'react';
-
 import dynamic from 'next/dynamic';
+import { Dispatch, SetStateAction } from 'react';
 
 const DynamicMarkdownEditor = dynamic(
   () => import('../MarkdownEditor/MarkdownEditor'),

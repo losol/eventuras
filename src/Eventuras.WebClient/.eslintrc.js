@@ -21,6 +21,7 @@ module.exports = {
   plugins: ['simple-import-sort'],
   extends: [
     'eslint:recommended',
+    'plugin:@next/next/recommended',
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
