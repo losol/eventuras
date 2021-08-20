@@ -128,13 +128,14 @@ jobs:
           echo "BUILD_DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
           echo "BUILD_TIME=$(date +'%H%M%S')" >> $GITHUB_ENV
 
-      - name: Docker meta (master)
+      - name: Docker meta (classic)
         id: meta
         uses: docker/metadata-action@v3
         with:
           images: ${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}
           flavor: |
-            latest=true
+            latest=false
+            prefix=classic-
             suffix=-${{ env.BUILD_DATE }}.${{ env.RUN_NUMBER }}
 
       - name: Login to DockerHub
