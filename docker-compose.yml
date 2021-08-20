@@ -4,7 +4,7 @@ services:
   web:
     image: losolio/eventuras
     environment:
-      ConnectionStrings__DefaultConnection: "Host=db;Database=eventuras_db;Username=eventuras;Password=Str0ng!Pasword"
+      ConnectionStrings__DefaultConnection: "Host=db;Database=eventuras;Username=eventuras;Password=Str0ng!Pasword"
     ports:
       - "5100:80"
     depends_on:
@@ -22,10 +22,9 @@ services:
     environment:
       POSTGRES_USER: eventuras
       POSTGRES_PASSWORD: "Str0ng!Pasword"
-      POSTGRES_DB: eventuras_db
+      POSTGRES_DB: eventuras
     healthcheck:
-      test:
-        ["CMD-SHELL", "pg_isready --dbname=eventuras_db --username=eventuras"]
+      test: ["CMD-SHELL", "pg_isready --dbname=eventuras --username=eventuras"]
       interval: 5s
       timeout: 5s
       retries: 10
