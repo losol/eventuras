@@ -94,7 +94,6 @@ jobs:
           images: ${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}
           flavor: |
             latest=true
-            prefix="classic-"
             suffix=-${{ env.BUILD_DATE }}.${{ env.RUN_NUMBER }}
 
       - name: Login to DockerHub
