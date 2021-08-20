@@ -20,23 +20,6 @@ namespace Eventuras.Services.DbInitializers
         {
             _db.Database.Migrate();
 
-            // Seed test events if no events exist.
-            if (!_db.EventInfos.Any())
-            {
-                var eventInfos = new EventInfo[]
-                {
-                    new EventInfo{Title="Test event 01", Slug="Test01", Description="A test event."},
-                    new EventInfo{Title="Test event 02", Slug="Test02", Description="Another test event."}
-                };
-
-                foreach (var item in eventInfos)
-                {
-                    await _db.EventInfos.AddAsync(item);
-                }
-
-                await _db.SaveChangesAsync();
-            }
-
             await base.SeedAsync(createSuperUser);
         }
     }

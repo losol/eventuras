@@ -1,1 +1,1 @@
-export { default } from "./ColorModeToggler";
+export { default } from './ColorModeToggler';

@@ -24,22 +24,17 @@ export default function DataTable({
   totalPages,
   page,
 }) {
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    rows,
-  } = useTable(
-    {
-      columns,
-      data,
-      initialState: {
-        pageIndex: 0,
+  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } =
+    useTable(
+      {
+        columns,
+        data,
+        initialState: {
+          pageIndex: 0,
+        },
       },
-    },
-    usePagination
-  );
+      usePagination
+    );
 
   return (
     <>

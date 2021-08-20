@@ -1,8 +1,8 @@
 import { Button, Flex, Heading, useColorModeValue } from '@chakra-ui/react';
-import { Link, UserMenu } from '..';
 import { signIn, signOut, useSession } from 'next-auth/client';
-
 import React, { useEffect } from 'react';
+
+import { Link, UserMenu } from '..';
 
 const Header = (props) => {
   const [session, loading] = useSession();

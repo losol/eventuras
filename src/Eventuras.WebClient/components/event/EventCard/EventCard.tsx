@@ -1,5 +1,6 @@
-import React from 'react';
 import { Box } from '@chakra-ui/react';
+import React from 'react';
+
 import { Link } from '../../common';
 
 function EventCard({ id, title, description, name, href }) {

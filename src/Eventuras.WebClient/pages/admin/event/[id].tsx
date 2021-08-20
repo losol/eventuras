@@ -19,10 +19,9 @@ const EventAdmin = (): JSX.Element => {
   const toast = useToast();
   const [eventInfo, setEventInfo] = useState({ title: '' });
   const participantGroups = ['Participant', 'Lecturer', 'Staff'];
-  const [
-    selectedParticipantGroups,
-    updateSelectedParticipantGroups,
-  ] = useState(['Participant']);
+  const [selectedParticipantGroups, updateSelectedParticipantGroups] = useState(
+    ['Participant']
+  );
   const [emailBody, setEmailBody] = useState<string>('');
   const [subject, setSubject] = useState<string>('');
 
