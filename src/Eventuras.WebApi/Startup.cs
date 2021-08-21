@@ -120,24 +120,7 @@ namespace Eventuras.WebApi
                     Configuration["Auth:Issuer"],
                     Configuration["Auth:ApiIdentifier"],
                     Configuration["Auth:ClientSecret"]
-                )
-                .AddOpenIdConnect("oidc", options =>
-                 {
-                     options.Authority = Configuration["Auth:Issuer"];
-                     options.ClientId = Configuration["Auth:ClientId"];
-                     options.ClientSecret = Configuration["Auth:ClientSecret"];
-
-                     options.Scope.Clear();
-                     options.Scope.Add("openid");
-                     options.Scope.Add("profile");
-                     options.Scope.Add("email");
-
-                     options.GetClaimsFromUserInfoEndpoint = true;
-
-
-
-                 });
-
+                );
 
             services.AddSingleton<IAuthorizationHandler, RequireScopeHandler>();
 
@@ -180,11 +163,7 @@ namespace Eventuras.WebApi
 
             app.UseRouting();
 
-            // Use Cors only in production environments
-            if (env.IsProduction())
-            {
-                app.UseCors();
-            }
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();
