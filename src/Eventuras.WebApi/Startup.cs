@@ -17,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace Eventuras.WebApi
@@ -106,6 +107,8 @@ namespace Eventuras.WebApi
             });
 
             services.ConfigureIdentity();
+
+            // TODO: Move to services? 
             services
                 .AddAuthentication(options =>
                 {
@@ -116,15 +119,31 @@ namespace Eventuras.WebApi
                 .AddJwtBearerConfiguration(
                     Configuration["Auth:Issuer"],
                     Configuration["Auth:ApiIdentifier"],
-                    Configuration["Auth:JwtSecret"]
-                );
+                    Configuration["Auth:ClientSecret"]
+                )
+                .AddOpenIdConnect("oidc", options =>
+                 {
+                     options.Authority = Configuration["Auth:Issuer"];
+                     options.ClientId = Configuration["Auth:ClientId"];
+                     options.ClientSecret = Configuration["Auth:ClientSecret"];
+
+                     options.Scope.Clear();
+                     options.Scope.Add("openid");
+                     options.Scope.Add("profile");
+                     options.Scope.Add("email");
+
+                     options.GetClaimsFromUserInfoEndpoint = true;
+
+
+
+                 });
 
 
             services.AddSingleton<IAuthorizationHandler, RequireScopeHandler>();
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v3", new OpenApiInfo {Title = "Eventuras.WebApi", Version = "v3"});
+                c.SwaggerDoc("v3", new OpenApiInfo { Title = "Eventuras.WebApi", Version = "v3" });
             });
         }
 
