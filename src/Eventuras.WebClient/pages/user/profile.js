@@ -1,24 +1,29 @@
 import { Container, Heading, Text } from '@chakra-ui/react';
+import { UserContext } from '@context/UserContext';
 import { useSession } from 'next-auth/client';
+import React, { useContext } from 'react';
 
-import { Layout } from '../../components/common';
+import { Layout, Loading } from '../../components/common';
 
-function UserProfile() {
+const UserProfile = () => {
   const [session, loading] = useSession();
+  const { user } = useContext(UserContext);
 
   return (
     <Layout>
       <Container marginTop="16">
         <Heading>Min bruker</Heading>
+        {loading && <Loading />}
         {session && (
           <>
-            <Text>Navn: {session && session.user?.name}</Text>
-            <Text>E-post: {session && session.user?.email}</Text>
+            <Text>Navn: {user && user.name}</Text>
+            <Text>E-post: {user && user.email}</Text>
+            <Text>Phone: {user && user.phoneNumber}</Text>
           </>
         )}
       </Container>
     </Layout>
   );
-}
+};
 
 export default UserProfile;
