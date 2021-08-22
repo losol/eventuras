@@ -17,7 +17,6 @@ namespace Eventuras.Services
         public static IServiceCollection AddCoreServices(this IServiceCollection services)
         {
             services.AddScoped<IPaymentMethodService, PaymentMethodService>();
-            services.AddScoped<StripeInvoiceProvider>();
             services.AddScoped<IRegistrationService, RegistrationService>();
             services.AddScoped<IProductsService, ProductsService>();
             services.AddScoped<ICertificatesService, CertificatesService>();
@@ -30,6 +29,7 @@ namespace Eventuras.Services
             services.AddEventServices();
             services.AddEventCollectionServices();
             services.AddOrderServices();
+            services.AddInvoicingServices();
             services.AddExternalSyncServices();
             return services;
         }

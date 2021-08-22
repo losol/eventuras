@@ -1,9 +1,8 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Eventuras.Domain;
 using Stripe;
 
-namespace Eventuras.Services.Invoicing
+namespace Eventuras.Services.Stripe
 {
     public class StripeInvoiceProvider
     {
@@ -22,7 +21,7 @@ namespace Eventuras.Services.Invoicing
             StripeCharge charge = await service.CreateAsync(options);
         }
 
-        private async Task<StripeCustomer> getOrCreateCustomer(string email)
+        private async Task<StripeCustomer> GetOrCreateCustomer(string email)
         {
 
             var service = new StripeCustomerService();

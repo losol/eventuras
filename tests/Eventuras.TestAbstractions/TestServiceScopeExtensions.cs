@@ -187,6 +187,8 @@ namespace Eventuras.TestAbstractions
             this TestServiceScope scope,
             EventInfo eventInfo,
             string name = TestingConstants.Placeholder,
+            string description = TestingConstants.Placeholder,
+            int price = 100,
             int vatPercent = 5,
             int minimumQuantity = 1,
             bool archived = false,
@@ -197,10 +199,17 @@ namespace Eventuras.TestAbstractions
                 name = $"Test Product {Guid.NewGuid()}";
             }
 
+            if (description == TestingConstants.Placeholder)
+            {
+                description = $"Test Product Description {Guid.NewGuid()}";
+            }
+
             var product = new Product
             {
                 Name = name,
+                Description = description,
                 Eventinfo = eventInfo,
+                Price = price,
                 VatPercent = vatPercent,
                 MinimumQuantity = minimumQuantity,
                 ProductVariants = variants?.ToList(),
@@ -216,6 +225,8 @@ namespace Eventuras.TestAbstractions
             this TestServiceScope scope,
             Product product,
             string name = TestingConstants.Placeholder,
+            string description = TestingConstants.Placeholder,
+            int price = 100,
             int vatPercent = 5,
             bool archived = false)
         {
@@ -224,10 +235,17 @@ namespace Eventuras.TestAbstractions
                 name = $"Test Product Variant {Guid.NewGuid()}";
             }
 
+            if (description == TestingConstants.Placeholder)
+            {
+                description = $"Test Product Variant Description {Guid.NewGuid()}";
+            }
+
             var variant = new ProductVariant
             {
                 Product = product,
                 Name = name,
+                Description = description,
+                Price = price,
                 VatPercent = vatPercent,
                 Archived = archived
                 // TODO: add other props
@@ -267,20 +285,25 @@ namespace Eventuras.TestAbstractions
             Product[] products = null,
             ProductVariant[] variants = null,
             int[] quantities = null,
-            Order.OrderStatus status = Order.OrderStatus.Verified)
+            Order.OrderStatus status = Order.OrderStatus.Verified,
+            PaymentMethod.PaymentProvider paymentProvider = PaymentMethod.PaymentProvider.EmailInvoice)
         {
             var order = new Order
             {
                 Registration = registration,
                 Status = status,
+                PaymentMethod = paymentProvider,
                 OrderLines = products?.Select((p, i) => new OrderLine
                 {
                     Product = p,
-                    ProductVariant = variants != null && variants.Length > i ? variants[i] : null,
-                    Quantity = quantities != null && quantities.Length > i ? quantities[i] : p.MinimumQuantity,
+                    ProductVariant = variants?.Length > i ? variants[i] : null,
+                    Quantity = quantities?.Length > i ? quantities[i] : p.MinimumQuantity,
+                    ProductDescription = products[i].Description,
+                    ProductVariantDescription = variants?.Length > i ? variants[i]?.Description : null,
                     VatPercent = p.VatPercent,
-                    Price = p.Price,
-                    ProductName = p.Name
+                    Price = variants?.Length > i ? variants[i]?.Price ?? p.Price : p.Price,
+                    ProductName = p.Name,
+                    ProductVariantName = variants?.Length > i ? variants[i]?.Name : null,
                 }).ToList()
             };
 
@@ -295,13 +318,14 @@ namespace Eventuras.TestAbstractions
             Product product,
             ProductVariant variant = null,
             int quantity = 1,
-            Order.OrderStatus status = Order.OrderStatus.Verified)
+            Order.OrderStatus status = Order.OrderStatus.Verified,
+            PaymentMethod.PaymentProvider paymentProvider = PaymentMethod.PaymentProvider.EmailInvoice)
         {
             return await scope.CreateOrderAsync(registration,
                 new[] {product},
                 variant != null ? new[] {variant} : null,
                 new[] {quantity},
-                status);
+                status, paymentProvider);
         }
 
         public static async Task<IDisposableEntity<ExternalEvent>> CreateExternalEventAsync(

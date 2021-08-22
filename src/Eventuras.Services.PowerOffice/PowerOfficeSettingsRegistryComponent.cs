@@ -1,6 +1,6 @@
 using Eventuras.Services.Organizations.Settings;
 
-namespace Eventuras.Services.Invoicing
+namespace Eventuras.Services.PowerOffice
 {
     public class PowerOfficeSettingsRegistryComponent : IOrganizationSettingsRegistryComponent
     {

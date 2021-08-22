@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Eventuras.Domain;
@@ -7,6 +8,7 @@ namespace Eventuras.Services.Orders
 {
     // FIXME: make refactoring, split into multiple services according to ISP and SRP
 
+    [Obsolete]
     public interface IOrderService
     {
         // Orders
@@ -34,7 +36,6 @@ namespace Eventuras.Services.Orders
 
         // Statuses
         Task<bool> MarkAsVerifiedAsync(int orderId);
-        Task<bool> CreateInvoiceAsync(int orderId);
         Task<bool> MarkAsCancelledAsync(int orderId);
         Task<Order> CreateDraftFromCancelledOrder(int orderId);
 

@@ -6,6 +6,8 @@ using Eventuras.Services;
 using Eventuras.Services.DbInitializers;
 using Eventuras.Services.Invoicing;
 using Eventuras.Services.Organizations.Settings;
+using Eventuras.Services.PowerOffice;
+using Eventuras.Services.Stripe;
 using Eventuras.Services.TalentLms;
 using Eventuras.Services.Zoom;
 using Eventuras.WebApi.Auth;
@@ -140,26 +142,14 @@ namespace Eventuras.WebApi.Extensions
                 IConfiguration config,
                 FeatureManagement features)
         {
-            // Register PowerOffice
             if (features.UsePowerOffice)
             {
-                services.Configure<PowerOfficeOptions>(config.GetSection("PowerOffice"));
-                services.AddSingleton<IOrganizationSettingsRegistryComponent, PowerOfficeSettingsRegistryComponent>();
-                services.AddScoped<IPowerOfficeService, PowerOfficeService>();
+                services.AddPowerOffice(config.GetSection("PowerOffice"));
             }
-            else
-            {
-                services.AddTransient<IPowerOfficeService, MockInvoicingService>();
-            }
+            
             if (features.UseStripeInvoice)
             {
-                var stripeConfig = config.GetSection("Stripe").Get<StripeOptions>();
-                StripeInvoicingService.Configure(stripeConfig.SecretKey);
-                services.AddScoped<IStripeInvoiceService, StripeInvoicingService>();
-            }
-            else
-            {
-                services.AddTransient<IStripeInvoiceService, MockInvoicingService>();
+                services.AddStripe(config.GetSection("Stripe"));
             }
         }
 

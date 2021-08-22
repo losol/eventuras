@@ -31,6 +31,8 @@ using Microsoft.Extensions.Hosting;
 using System.Globalization;
 using System.Net.Http.Headers;
 using Eventuras.Services.Organizations.Settings;
+using Eventuras.Services.PowerOffice;
+using Eventuras.Services.Stripe;
 using Eventuras.Services.Zoom;
 using Losol.Communication.HealthCheck.Abstractions;
 using Losol.Communication.HealthCheck.Email;
@@ -206,26 +208,14 @@ namespace Eventuras.Web.Extensions
             AppSettings appsettings,
             IConfiguration config)
         {
-            // Register PowerOffice
             if (appsettings.UsePowerOffice)
             {
-                services.Configure<PowerOfficeOptions>(config.GetSection("PowerOffice"));
-                services.AddSingleton<IOrganizationSettingsRegistryComponent, PowerOfficeSettingsRegistryComponent>();
-                services.AddScoped<IPowerOfficeService, PowerOfficeService>();
+                services.AddPowerOffice(config.GetSection("PowerOffice"));
             }
-            else
-            {
-                services.AddTransient<IPowerOfficeService, MockInvoicingService>();
-            }
+            
             if (appsettings.UseStripeInvoice)
             {
-                var stripeConfig = config.GetSection("Stripe").Get<StripeOptions>();
-                StripeInvoicingService.Configure(stripeConfig.SecretKey);
-                services.AddScoped<IStripeInvoiceService, StripeInvoicingService>();
-            }
-            else
-            {
-                services.AddTransient<IStripeInvoiceService, MockInvoicingService>();
+                services.AddStripe(config.GetSection("Stripe"));
             }
         }
 

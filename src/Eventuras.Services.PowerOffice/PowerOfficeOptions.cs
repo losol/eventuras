@@ -1,6 +1,6 @@
 using GoApi.Core.Global;
 
-namespace Eventuras.Services.Invoicing
+namespace Eventuras.Services.PowerOffice
 {
     public class PowerOfficeOptions
     {
