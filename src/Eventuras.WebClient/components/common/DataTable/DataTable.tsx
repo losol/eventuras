@@ -20,9 +20,9 @@ import { usePagination, useTable } from 'react-table';
 export default function DataTable({
   columns,
   data,
-  handlePageClick,
-  totalPages,
-  page,
+  handlePageClick = null,
+  totalPages = null,
+  page = null,
 }) {
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } =
     useTable(
