@@ -15,6 +15,16 @@ namespace Eventuras.Services.Auth
             return user.FindFirstValue(ClaimTypes.Email);
         }
 
+        public static string GetName(this ClaimsPrincipal user)
+        {
+            return user.FindFirstValue(ClaimTypes.Name);
+        }
+
+        public static string GetMobilePhone(this ClaimsPrincipal user)
+        {
+            return user.FindFirstValue(ClaimTypes.MobilePhone);
+        }
+
         public static bool IsAdmin(this ClaimsPrincipal user)
         {
             return new[] { Roles.Admin, Roles.SystemAdmin, Roles.SuperAdmin }.Any(user.IsInRole);

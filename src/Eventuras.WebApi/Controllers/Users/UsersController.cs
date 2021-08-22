@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Services.Auth;
@@ -33,13 +34,29 @@ namespace Eventuras.WebApi.Controllers.Users
         [HttpGet("me")]
         public async Task<IActionResult> Me(CancellationToken cancellationToken)
         {
-            var userEmail = HttpContext.User.GetEmail();
-            if (string.IsNullOrEmpty(userEmail))
+            var emailClaim = HttpContext.User.GetEmail();
+            var nameClaim = HttpContext.User.GetName();
+            var phoneClaim = HttpContext.User.GetMobilePhone();
+
+
+            if (string.IsNullOrEmpty(emailClaim))
             {
                 return BadRequest("No email provided.");
             }
 
-            var user = await _userRetrievalService.GetUserByEmailAsync(userEmail, null, cancellationToken);
+            var user = new Domain.ApplicationUser();
+            try
+            {
+                user = await _userRetrievalService.GetUserByEmailAsync(emailClaim, null, cancellationToken);
+            }
+            catch (Services.Exceptions.NotFoundException)
+            {
+                user = await _userManagementService.CreateNewUserAsync(
+                       nameClaim,
+                       emailClaim,
+                       phoneClaim
+                   );
+            }
 
             return Ok(new UserDto(user));
         }

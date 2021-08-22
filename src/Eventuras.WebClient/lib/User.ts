@@ -7,7 +7,19 @@ export interface User {
   phoneNumber?: string;
 }
 
-export const getUser = async (
+export const getUserProfile = async (accessToken: string): Promise<User> => {
+  return fetcher.get(`/v3/users/me`, {
+    accessToken: accessToken,
+  });
+};
+
+export const getUsers = async (accessToken: string): Promise<User> => {
+  return fetcher.get(`/v3/users/`, {
+    accessToken: accessToken,
+  });
+};
+
+export const getUserById = async (
   userId: string,
   accessToken: string
 ): Promise<User> => {

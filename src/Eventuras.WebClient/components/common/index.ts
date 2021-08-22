@@ -5,4 +5,5 @@ export { default as Link } from './Link';
 export { default as Loading } from './Loading';
 export { default as Header } from './Header';
 export { default as DataTable } from './DataTable';
+export { default as Unauthorized } from './Unauthorized';
 export { default as UserDrawer } from './UserDrawer';

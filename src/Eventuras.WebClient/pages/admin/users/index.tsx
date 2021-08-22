@@ -9,7 +9,7 @@ import {
 import Unauthorized from '@components/common/Unauthorized/Unauthorized';
 import { fetcher } from '@lib/fetcher';
 import { toaster } from '@lib/toaster';
-import { createUser, getUser, updateUser, User } from '@lib/User';
+import { createUser, getUserById, updateUser, User } from '@lib/User';
 import { useSession } from 'next-auth/client';
 import React, { useEffect, useMemo, useState } from 'react';
 
@@ -105,7 +105,7 @@ const AdminUsersIndex = (): JSX.Element => {
   };
 
   const openUserdetails = async (userId: string) => {
-    const user = await getUser(userId, session.accessToken);
+    const user = await getUserById(userId, session.accessToken);
     if (user) {
       setActiveUser(user);
     }
