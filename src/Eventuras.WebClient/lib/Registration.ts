@@ -13,3 +13,19 @@ export const registerForEvent = async (
     accessToken: accessToken,
   });
 };
+
+export const getRegistrationsForEvent = async (
+  eventId: number,
+  accessToken: string
+) => {
+  return fetcher.get(
+    '/v3/registrations?' +
+      new URLSearchParams({
+        eventId: eventId.toString(),
+        includeUserInfo: 'true',
+      }),
+    {
+      accessToken: accessToken,
+    }
+  );
+};

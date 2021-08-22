@@ -5,12 +5,13 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-import { Layout } from '@components/common';
+import { DataTable, Layout } from '@components/common';
 import { EmailDrawer } from '@components/communication';
 import { getEventInfo } from '@lib/EventInfo';
+import { getRegistrationsForEvent } from '@lib/Registration';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/client';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 const EventAdmin = (): JSX.Element => {
   const router = useRouter();
@@ -18,12 +19,44 @@ const EventAdmin = (): JSX.Element => {
   const [session] = useSession();
   const toast = useToast();
   const [eventInfo, setEventInfo] = useState({ title: '' });
+  const [registrations, setRegistrations] = useState([]);
   const participantGroups = ['Participant', 'Lecturer', 'Staff'];
   const [selectedParticipantGroups, updateSelectedParticipantGroups] = useState(
     ['Participant']
   );
   const [emailBody, setEmailBody] = useState<string>('');
   const [subject, setSubject] = useState<string>('');
+  const registrationsColumns = useMemo(
+    () => [
+      {
+        Header: 'Name',
+        accessor: 'user.name',
+      },
+      {
+        Header: 'E-mail',
+        accessor: 'user.email',
+      },
+      {
+        Header: 'Phone',
+        accessor: 'user.phoneNumber',
+      },
+      {
+        Header: 'Actions',
+        accessor: 'actions',
+        Cell: function RenderCell({ row }) {
+          return (
+            <Button
+              key={row.original.id}
+              onClick={() => window.alert(row.original.registrationId)}
+            >
+              Detaljer
+            </Button>
+          );
+        },
+      },
+    ],
+    []
+  );
 
   const loadEventInfo = async () => {
     router.query.id &&
@@ -36,9 +69,21 @@ const EventAdmin = (): JSX.Element => {
       );
   };
 
+  const loadRegistration = async () => {
+    if (session) {
+      const result = await getRegistrationsForEvent(
+        parseInt(router.query.id.toString()),
+        session.accessToken
+      );
+      console.log(result.data);
+      setRegistrations(result.data);
+    }
+  };
+
   useEffect(() => {
     loadEventInfo();
-  }, [router.query.id]);
+    loadRegistration();
+  }, [router.query.id, session]);
 
   const handleEmailDrawerSubmit = async () => {
     fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/notifications/email', {
@@ -104,8 +149,10 @@ const EventAdmin = (): JSX.Element => {
           {eventInfo.title}
         </Heading>
         <Button colorScheme="teal" onClick={onOpen}>
-          Send e-mail
+          E-mail all
         </Button>
+
+        <DataTable data={registrations} columns={registrationsColumns} />
       </Container>
 
       <EmailDrawer

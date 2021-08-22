@@ -35,7 +35,8 @@ namespace Eventuras.WebApi.Controllers.Registrations
                         Offset = query.Offset,
                         Filter = new RegistrationFilter
                         {
-                            AccessibleOnly = true
+                            AccessibleOnly = true,
+                            EventInfoId = query.EventId ?? null
                         },
                         OrderBy = RegistrationListOrder.RegistrationTime,
                         Descending = true
