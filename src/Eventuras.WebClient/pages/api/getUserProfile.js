@@ -17,7 +17,7 @@ async function fetcher(route) {
   return data;
 }
 
-const getUser = async () => {
+const getUserProfile = async () => {
   const data = await fetcher('/v3/users/me');
   return data;
 };
@@ -25,6 +25,6 @@ const getUser = async () => {
 export default async (req, res) => {
   const token = await getToken({ req, secret });
   accessToken = token.accessToken;
-  const data = await getUser();
+  const data = await getUserProfile();
   res.status(200).json(data);
 };

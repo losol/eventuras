@@ -1,109 +1,87 @@
-import { PhoneIcon } from '@chakra-ui/icons';
+import { Button, Container, Heading, Text } from '@chakra-ui/react';
 import {
-  Button,
-  Container,
-  Heading,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from '@chakra-ui/react';
+  DataTable,
+  Layout,
+  Link,
+  Loading,
+  Unauthorized,
+} from '@components/common';
+import { getEvents } from '@lib/EventInfo';
+import * as dayjs from 'dayjs';
 import { useSession } from 'next-auth/client';
-import useSWR from 'swr';
-
-import { Layout, Link } from '../../components/common';
+import { useEffect, useState } from 'react';
+import { FiUsers } from 'react-icons/fi';
 
 function AdminIndex() {
-  const { data: events, error: eventsError } = useSWR('/api/getEvents');
-  const { data: registrations, error: registrationsError } = useSWR(
-    '/api/getRegistrations'
-  );
-  const [session, loading, error] = useSession();
+  const [session, loading] = useSession();
+  const [eventinfos, setEventinfos] = useState([]);
+  const columns = [
+    {
+      Header: 'Title',
+      accessor: 'title',
+    },
+    {
+      Header: 'Location',
+      accessor: 'location',
+    },
+    {
+      Header: 'When',
+      accessor: 'when',
+      Cell: function RenderCell({ row }) {
+        return <Text>{dayjs(row.original.dateStart).format('D-MM-YYYY')}</Text>;
+      },
+    },
+    {
+      Header: 'Actions',
+      accessor: 'actions',
+      Cell: function RenderCell({ row }) {
+        return (
+          <Link key={row.original.id} href={`/admin/event/${row.original.id}`}>
+            <Button colorScheme="teal">Mer</Button>
+          </Link>
+        );
+      },
+    },
+  ];
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>Oops... {error.message}</div>;
-  }
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const result = await getEvents(1);
+      setEventinfos(result.data);
+    };
+    fetchEvents();
+  }, [session]);
 
-  if (eventsError) {
-    console.log(eventsError);
-    return <div>Oops... {eventsError}</div>;
-  }
-
-  if (registrationsError) {
-    return <div>Oops... {registrationsError}</div>;
-  }
-
-  if (!loading && !session)
+  if (loading)
     return (
       <Layout>
-        <p> Access Denied</p>
+        <Loading />
+      </Layout>
+    );
+  if (!session)
+    return (
+      <Layout>
+        <Unauthorized />
       </Layout>
     );
 
   if (session) {
     return (
       <Layout>
-        <Container paddingTop="32">
+        <Container paddingTop="24">
           <Heading as="h1">Admin</Heading>
 
           <Link href="/admin/users">
             {' '}
-            <Button leftIcon={<PhoneIcon />} colorScheme="teal" variant="solid">
+            <Button leftIcon={<FiUsers />} variant="outline">
               Users
             </Button>
           </Link>
 
-          <Table size="md" paddingTop="32">
-            <Thead>
-              <Tr>
-                <Th>EventId</Th>
-                <Th>Title</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {events &&
-                events.data.map((event) => (
-                  <Tr key={event.id}>
-                    <Td>{event.id}</Td>
-                    <Td>{event.name}</Td>
-                    <Td>
-                      <Link href={`/admin/event/${event.id}`}>
-                        <Button colorScheme="teal" variant="solid">
-                          Mer...
-                        </Button>
-                      </Link>
-                    </Td>
-                  </Tr>
-                ))}
-            </Tbody>
-          </Table>
-
           <Heading as="h2" fontSize="2xl" paddingTop="16" paddingBottom="4">
-            Siste registreringer
+            Arrangement
           </Heading>
-
-          <Table size="md" paddingTop="32">
-            <Thead>
-              <Tr>
-                <Th>UserId</Th>
-                <Th>EventId</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {registrations?.data &&
-                registrations.data.map((r) => (
-                  <Tr key={r.registrationId}>
-                    <Th>{r.userId}</Th>
-                    <Th>{r.eventId}</Th>
-                  </Tr>
-                ))}
-            </Tbody>
-          </Table>
+          <DataTable columns={columns} data={eventinfos} />
         </Container>
       </Layout>
     );

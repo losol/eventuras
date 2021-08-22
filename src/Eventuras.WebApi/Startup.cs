@@ -17,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace Eventuras.WebApi
@@ -106,6 +107,8 @@ namespace Eventuras.WebApi
             });
 
             services.ConfigureIdentity();
+
+            // TODO: Move to services? 
             services
                 .AddAuthentication(options =>
                 {
@@ -116,15 +119,14 @@ namespace Eventuras.WebApi
                 .AddJwtBearerConfiguration(
                     Configuration["Auth:Issuer"],
                     Configuration["Auth:ApiIdentifier"],
-                    Configuration["Auth:JwtSecret"]
+                    Configuration["Auth:ClientSecret"]
                 );
-
 
             services.AddSingleton<IAuthorizationHandler, RequireScopeHandler>();
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v3", new OpenApiInfo {Title = "Eventuras.WebApi", Version = "v3"});
+                c.SwaggerDoc("v3", new OpenApiInfo { Title = "Eventuras.WebApi", Version = "v3" });
             });
         }
 
@@ -161,11 +163,7 @@ namespace Eventuras.WebApi
 
             app.UseRouting();
 
-            // Use Cors only in production environments
-            if (env.IsProduction())
-            {
-                app.UseCors();
-            }
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();

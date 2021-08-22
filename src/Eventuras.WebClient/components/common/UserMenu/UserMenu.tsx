@@ -8,10 +8,10 @@ import {
   MenuList,
   Wrap,
   WrapItem,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
+import React from 'react';
 
-import { ColorModeToggler } from "..";
-import React from "react";
+import { ColorModeToggler } from '..';
 
 const UserMenu = (props) => {
   const { signOut } = props;

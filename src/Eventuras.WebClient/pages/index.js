@@ -23,7 +23,7 @@ export default function Index(props) {
                 props.events.map((item) => (
                   <EventCard
                     id={item.id}
-                    title={item.name}
+                    title={item.title}
                     description={item.description}
                     key={item.id}
                     href={`/event/${item.id}`}

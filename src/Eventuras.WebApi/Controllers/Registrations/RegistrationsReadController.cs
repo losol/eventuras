@@ -35,20 +35,37 @@ namespace Eventuras.WebApi.Controllers.Registrations
                         Offset = query.Offset,
                         Filter = new RegistrationFilter
                         {
-                            AccessibleOnly = true
+                            AccessibleOnly = true,
+                            EventInfoId = query.EventId ?? null
                         },
                         OrderBy = RegistrationListOrder.RegistrationTime,
                         Descending = true
                     },
-                    new RegistrationRetrievalOptions
-                    {
-                        IncludeUser = query.IncludeUserInfo,
-                        IncludeEventInfo = query.IncludeEventInfo
-                    },
+                    RetrievalOptions(query),
                     cancellationToken);
 
             return PageResponseDto<RegistrationDto>.FromPaging(
                 query, paging, r => new RegistrationDto(r));
+        }
+
+        // GET: v3/registrations/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<RegistrationDto>> GetRegistrationById(int id, [FromQuery] RegistrationsQueryDto query, CancellationToken cancellationToken)
+        {
+            var registration = await _registrationRetrievalService.GetRegistrationByIdAsync(id, RetrievalOptions(query));
+
+            return Ok(new RegistrationDto(registration));
+        }
+
+        private static RegistrationRetrievalOptions RetrievalOptions(RegistrationsQueryDto query)
+        {
+            return new RegistrationRetrievalOptions
+            {
+                IncludeUser = query.IncludeUserInfo,
+                IncludeEventInfo = query.IncludeEventInfo,
+                IncludeProducts = query.IncludeProducts,
+                IncludeOrders = query.IncludeOrders
+            };
         }
     }
 }

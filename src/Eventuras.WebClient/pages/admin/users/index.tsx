@@ -4,12 +4,12 @@ import {
   Layout,
   Link,
   Loading,
+  Unauthorized,
   UserDrawer,
 } from '@components/common';
-import Unauthorized from '@components/common/Unauthorized/Unauthorized';
 import { fetcher } from '@lib/fetcher';
 import { toaster } from '@lib/toaster';
-import { createUser, getUser, updateUser, User } from '@lib/User';
+import { createUser, getUserById, updateUser, User } from '@lib/User';
 import { useSession } from 'next-auth/client';
 import React, { useEffect, useMemo, useState } from 'react';
 
@@ -93,10 +93,9 @@ const AdminUsersIndex = (): JSX.Element => {
   };
 
   const handleSubmitUpdateUser = async (user: User) => {
-    const updatedUser = await updateUser(
-      user,
-      session.accessToken
-    ).catch((error) => toaster.error(error));
+    const updatedUser = await updateUser(user, session.accessToken).catch(
+      (error) => toaster.error(error)
+    );
 
     if (updatedUser) {
       toaster.success(`${updatedUser.name} was updated.`);
@@ -106,7 +105,7 @@ const AdminUsersIndex = (): JSX.Element => {
   };
 
   const openUserdetails = async (userId: string) => {
-    const user = await getUser(userId, session.accessToken);
+    const user = await getUserById(userId, session.accessToken);
     if (user) {
       setActiveUser(user);
     }

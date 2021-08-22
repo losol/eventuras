@@ -5,26 +5,72 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-import { Layout } from '@components/common';
+import {
+  DataTable,
+  Layout,
+  Loading,
+  RegistrationDrawer,
+  Unauthorized,
+} from '@components/common';
 import { EmailDrawer } from '@components/communication';
 import { getEventInfo } from '@lib/EventInfo';
+import {
+  getRegistrationById,
+  getRegistrationsForEvent,
+  Registration,
+} from '@lib/Registration';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/client';
-import { useEffect, useState } from 'react';
+import { getSession, useSession } from 'next-auth/client';
+import { useEffect, useMemo, useState } from 'react';
 
 const EventAdmin = (): JSX.Element => {
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [session] = useSession();
+  const [registrationDrawerOpen, setRegistrationDrawerOpen] = useState(false);
+  const [activeRegistration, setActiveRegistration] = useState<Registration>();
+  const [session, loading] = useSession();
   const toast = useToast();
   const [eventInfo, setEventInfo] = useState({ title: '' });
+  const [registrations, setRegistrations] = useState([]);
   const participantGroups = ['Participant', 'Lecturer', 'Staff'];
-  const [
-    selectedParticipantGroups,
-    updateSelectedParticipantGroups,
-  ] = useState(['Participant']);
+  const [selectedParticipantGroups, updateSelectedParticipantGroups] = useState(
+    ['Participant']
+  );
   const [emailBody, setEmailBody] = useState<string>('');
   const [subject, setSubject] = useState<string>('');
+  const registrationsColumns = useMemo(
+    () => [
+      {
+        Header: 'Name',
+        accessor: 'user.name',
+      },
+      {
+        Header: 'E-mail',
+        accessor: 'user.email',
+      },
+      {
+        Header: 'Phone',
+        accessor: 'user.phoneNumber',
+      },
+      {
+        Header: 'Actions',
+        accessor: 'actions',
+        Cell: function RenderCell({ row }) {
+          return (
+            <Button
+              key={row.original.id}
+              onClick={() =>
+                openRegistrationDetails(row.original.registrationId)
+              }
+            >
+              Detaljer
+            </Button>
+          );
+        },
+      },
+    ],
+    []
+  );
 
   const loadEventInfo = async () => {
     router.query.id &&
@@ -37,9 +83,37 @@ const EventAdmin = (): JSX.Element => {
       );
   };
 
+  const loadRegistrations = async () => {
+    if (session) {
+      const result = await getRegistrationsForEvent(
+        parseInt(router.query.id.toString()),
+        session.accessToken
+      );
+      setRegistrations(result.data);
+    }
+  };
+
+  const registrationDrawerToggle = () => {
+    setRegistrationDrawerOpen(!registrationDrawerOpen);
+  };
+
+  const openRegistrationDetails = async (registrationId: number) => {
+    const s = await getSession();
+    const registration = await getRegistrationById(
+      registrationId,
+      s.accessToken
+    );
+    if (registration) {
+      setActiveRegistration(registration);
+    }
+
+    registrationDrawerToggle();
+  };
+
   useEffect(() => {
     loadEventInfo();
-  }, [router.query.id]);
+    loadRegistrations();
+  }, [router.query.id, session]);
 
   const handleEmailDrawerSubmit = async () => {
     fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/notifications/email', {
@@ -85,6 +159,7 @@ const EventAdmin = (): JSX.Element => {
         });
       });
   };
+
   const handleParticipantGroupsChange = (group: string) => {
     const updatedSelectedGroups = [...selectedParticipantGroups];
     if (updatedSelectedGroups.includes(group)) {
@@ -98,6 +173,21 @@ const EventAdmin = (): JSX.Element => {
     updateSelectedParticipantGroups(updatedSelectedGroups);
   };
 
+  if (loading) {
+    return (
+      <Layout>
+        <Loading />
+      </Layout>
+    );
+  }
+
+  if (!loading && !session)
+    return (
+      <Layout>
+        <Unauthorized />
+      </Layout>
+    );
+
   return (
     <Layout>
       <Container marginTop="32">
@@ -105,10 +195,11 @@ const EventAdmin = (): JSX.Element => {
           {eventInfo.title}
         </Heading>
         <Button colorScheme="teal" onClick={onOpen}>
-          Send e-mail
+          E-mail all
         </Button>
-      </Container>
 
+        <DataTable data={registrations} columns={registrationsColumns} />
+      </Container>
       <EmailDrawer
         isOpen={isOpen}
         onClose={onClose}
@@ -121,6 +212,14 @@ const EventAdmin = (): JSX.Element => {
         setSubject={setSubject}
         onSubmit={() => handleEmailDrawerSubmit()}
       />
+
+      {activeRegistration && (
+        <RegistrationDrawer
+          registration={activeRegistration}
+          isOpen={registrationDrawerOpen}
+          onClose={registrationDrawerToggle}
+        />
+      )}
     </Layout>
   );
 };
