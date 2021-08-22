@@ -1,6 +1,11 @@
 import { Button, Container, Heading, Text } from '@chakra-ui/react';
-import { Layout, Link, Unauthorized } from '@components/common';
-import { DataTable, Loading } from '@components/common';
+import {
+  DataTable,
+  Layout,
+  Link,
+  Loading,
+  Unauthorized,
+} from '@components/common';
 import { getEvents } from '@lib/EventInfo';
 import * as dayjs from 'dayjs';
 import { useSession } from 'next-auth/client';

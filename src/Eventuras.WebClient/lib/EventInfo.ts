@@ -1,10 +1,29 @@
 import { fetcher } from './fetcher';
 
+export interface EventInfo {
+  id: number;
+  type: string;
+  status: string;
+  title: string;
+  slug: string;
+  category: string;
+  description: string;
+  featured: boolean;
+  program: string;
+  practicalInformation: string;
+  location: string;
+  city: string;
+  onDemand: boolean;
+  dateStart: string;
+  dateEnd: string;
+  lastRegistrationDate: string;
+}
+
 export const getEvents = async (
   organizationId: number,
   accessToken: string
 ) => {
-  return await fetcher.get(
+  return fetcher.get(
     '/v3/events?' +
       new URLSearchParams({ organizationId: organizationId.toString() }),
     {
@@ -17,7 +36,7 @@ export const getEventInfo = async (
   eventInfoId: number,
   accessToken: string
 ) => {
-  return await fetcher.get('/v3/events/' + eventInfoId, {
+  return fetcher.get('/v3/events/' + eventInfoId, {
     accessToken: accessToken,
   });
 };

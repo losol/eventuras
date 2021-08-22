@@ -4,9 +4,9 @@ import {
   Layout,
   Link,
   Loading,
+  Unauthorized,
   UserDrawer,
 } from '@components/common';
-import Unauthorized from '@components/common/Unauthorized/Unauthorized';
 import { fetcher } from '@lib/fetcher';
 import { toaster } from '@lib/toaster';
 import { createUser, getUserById, updateUser, User } from '@lib/User';
