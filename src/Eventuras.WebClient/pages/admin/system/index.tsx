@@ -1,4 +1,4 @@
-import { Container, Heading, Text } from '@chakra-ui/react';
+import { Container, Heading } from '@chakra-ui/react';
 import {
   DataTable,
   Layout,

@@ -5,18 +5,30 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-import { DataTable, Layout } from '@components/common';
+import {
+  DataTable,
+  Layout,
+  Loading,
+  RegistrationDrawer,
+  Unauthorized,
+} from '@components/common';
 import { EmailDrawer } from '@components/communication';
 import { getEventInfo } from '@lib/EventInfo';
-import { getRegistrationsForEvent } from '@lib/Registration';
+import {
+  getRegistrationById,
+  getRegistrationsForEvent,
+  Registration,
+} from '@lib/Registration';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/client';
+import { getSession, useSession } from 'next-auth/client';
 import { useEffect, useMemo, useState } from 'react';
 
 const EventAdmin = (): JSX.Element => {
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [session] = useSession();
+  const [registrationDrawerOpen, setRegistrationDrawerOpen] = useState(false);
+  const [activeRegistration, setActiveRegistration] = useState<Registration>();
+  const [session, loading] = useSession();
   const toast = useToast();
   const [eventInfo, setEventInfo] = useState({ title: '' });
   const [registrations, setRegistrations] = useState([]);
@@ -47,7 +59,9 @@ const EventAdmin = (): JSX.Element => {
           return (
             <Button
               key={row.original.id}
-              onClick={() => window.alert(row.original.registrationId)}
+              onClick={() =>
+                openRegistrationDetails(row.original.registrationId)
+              }
             >
               Detaljer
             </Button>
@@ -69,20 +83,36 @@ const EventAdmin = (): JSX.Element => {
       );
   };
 
-  const loadRegistration = async () => {
+  const loadRegistrations = async () => {
     if (session) {
       const result = await getRegistrationsForEvent(
         parseInt(router.query.id.toString()),
         session.accessToken
       );
-      console.log(result.data);
       setRegistrations(result.data);
     }
   };
 
+  const registrationDrawerToggle = () => {
+    setRegistrationDrawerOpen(!registrationDrawerOpen);
+  };
+
+  const openRegistrationDetails = async (registrationId: number) => {
+    const s = await getSession();
+    const registration = await getRegistrationById(
+      registrationId,
+      s.accessToken
+    );
+    if (registration) {
+      setActiveRegistration(registration);
+    }
+
+    registrationDrawerToggle();
+  };
+
   useEffect(() => {
     loadEventInfo();
-    loadRegistration();
+    loadRegistrations();
   }, [router.query.id, session]);
 
   const handleEmailDrawerSubmit = async () => {
@@ -129,6 +159,7 @@ const EventAdmin = (): JSX.Element => {
         });
       });
   };
+
   const handleParticipantGroupsChange = (group: string) => {
     const updatedSelectedGroups = [...selectedParticipantGroups];
     if (updatedSelectedGroups.includes(group)) {
@@ -142,6 +173,21 @@ const EventAdmin = (): JSX.Element => {
     updateSelectedParticipantGroups(updatedSelectedGroups);
   };
 
+  if (loading) {
+    return (
+      <Layout>
+        <Loading />
+      </Layout>
+    );
+  }
+
+  if (!loading && !session)
+    return (
+      <Layout>
+        <Unauthorized />
+      </Layout>
+    );
+
   return (
     <Layout>
       <Container marginTop="32">
@@ -154,7 +200,6 @@ const EventAdmin = (): JSX.Element => {
 
         <DataTable data={registrations} columns={registrationsColumns} />
       </Container>
-
       <EmailDrawer
         isOpen={isOpen}
         onClose={onClose}
@@ -167,6 +212,14 @@ const EventAdmin = (): JSX.Element => {
         setSubject={setSubject}
         onSubmit={() => handleEmailDrawerSubmit()}
       />
+
+      {activeRegistration && (
+        <RegistrationDrawer
+          registration={activeRegistration}
+          isOpen={registrationDrawerOpen}
+          onClose={registrationDrawerToggle}
+        />
+      )}
     </Layout>
   );
 };
