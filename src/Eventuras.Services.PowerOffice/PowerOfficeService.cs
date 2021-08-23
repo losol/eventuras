@@ -64,7 +64,7 @@ namespace Eventuras.Services.PowerOffice
             {
                 ApplicationKey = appKey,
                 ClientKey = clientKey,
-                TokenStore = new BasicTokenStore(_options.Value.TokenStoreName),
+                TokenStore = new BasicInMemoryTokenStore(),
                 EndPointHost = new Settings.Host(_options.Value.Mode)
             });
         }
