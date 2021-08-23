@@ -123,8 +123,8 @@ namespace Eventuras.Services.PowerOffice
                 }
             }
 
-            await api.OutgoingInvoice.SaveAsync(invoice);
-            result.InvoiceId = invoice.Id.ToString();
+            var outgoingInvoice = await api.OutgoingInvoice.SaveAsync(invoice);
+            result.InvoiceId = outgoingInvoice.Id.ToString();
             return result;
         }
 
