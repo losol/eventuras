@@ -23,7 +23,7 @@ namespace Eventuras.Services.Orders
         {
             return await _context.Orders
                 .WithOptions(options ?? new OrderRetrievalOptions())
-                .FirstOrDefaultAsync(cancellationToken);
+                .FirstOrDefaultAsync(o => o.OrderId == id, cancellationToken);
         }
     }
 }
