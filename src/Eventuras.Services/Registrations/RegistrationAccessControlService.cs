@@ -67,6 +67,12 @@ namespace Eventuras.Services.Registrations
             CancellationToken cancellationToken)
         {
             var user = _httpContextAccessor.HttpContext.User;
+            if (user.GetUserId() == registration.UserId)
+            {
+                // user can edit his own reg
+                return;
+            }
+            
             if (!await CheckAdminAccessAsync(user, registration, cancellationToken))
             {
                 throw new NotAccessibleException($"User {user.GetUserId()} cannot update registration {registration.RegistrationId}");

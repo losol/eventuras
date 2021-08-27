@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services.Auth;
-using Eventuras.Services.Exceptions;
 using Eventuras.Services.Registrations;
 using Eventuras.WebApi.Controllers.Users;
 using Eventuras.WebApi.Models;
@@ -76,42 +75,36 @@ namespace Eventuras.WebApi.Controllers.Registrations
             [FromBody] NewRegistrationDto dto,
             CancellationToken cancellationToken)
         {
-            try
-            {
-                var registration =
-                    await _registrationManagementService.CreateRegistrationAsync(dto.EventId, dto.UserId,
-                        cancellationToken: cancellationToken);
-
-                if (!dto.Empty)
-                {
-                    dto.CopyTo(registration);
-                    await _registrationManagementService
-                        .UpdateRegistrationAsync(registration, cancellationToken);
-                }
-
-                return Ok(new RegistrationDto(registration));
-            }
-            catch (DuplicateException)
-            {
-                var registration = await _registrationRetrievalService
-                    .FindRegistrationAsync(new RegistrationFilter
+            var registration =
+                await _registrationManagementService.CreateRegistrationAsync(dto.EventId, dto.UserId,
+                    new RegistrationOptions
                     {
-                        EventInfoId = dto.EventId,
-                        UserId = dto.UserId
-                    }, null, cancellationToken);
+                        CreateOrder = dto.CreateOrder
+                    },
+                    cancellationToken);
 
-                return Ok(new RegistrationDto(registration));
+            if (!dto.Empty)
+            {
+                dto.CopyTo(registration);
+                await _registrationManagementService
+                    .UpdateRegistrationAsync(registration, cancellationToken);
             }
+
+            return Ok(new RegistrationDto(registration));
         }
 
         /// <summary>
         /// Alias for POST /v3/registrations
         /// </summary>
         [HttpPost("me/{eventId}")]
-        public async Task<ActionResult<RegistrationDto>> RegisterSelf(int eventId)
+        public async Task<ActionResult<RegistrationDto>> RegisterSelf(
+            int eventId, [FromQuery(Name = "createOrder")] bool createOrder)
         {
             var registration = await _registrationManagementService
-                .CreateRegistrationAsync(eventId, User.GetUserId());
+                .CreateRegistrationAsync(eventId, User.GetUserId(), new RegistrationOptions
+                {
+                    CreateOrder = createOrder
+                });
 
             return Ok(new RegistrationDto(registration));
         }
@@ -159,6 +152,8 @@ namespace Eventuras.WebApi.Controllers.Registrations
         [Required] public string UserId { get; set; }
 
         [Required] [Range(1, int.MaxValue)] public int EventId { get; set; }
+
+        [FromQuery(Name = "createOrder")] public bool CreateOrder { get; set; }
     }
 
     public class RegistrationDto

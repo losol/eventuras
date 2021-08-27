@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Eventuras.Domain;
@@ -357,6 +358,81 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         }
 
         [Fact]
+        public async Task Should_Allow_Regular_User_To_Register_Via_Alias_Endpoint()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var e = await scope.CreateEventAsync(status: EventInfo.EventInfoStatus.RegistrationsOpen);
+
+            var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
+            var response = await client.PostAsync($"/v3/registrations/me/{e.Entity.EventInfoId}");
+            response.CheckOk();
+
+            var reg = await scope.Db.Registrations
+                .SingleAsync(r =>
+                    r.EventInfoId == e.Entity.EventInfoId &&
+                    r.UserId == user.Entity.Id);
+
+            var token = await response.AsTokenAsync();
+            token.CheckRegistration(reg);
+        }
+
+        [Fact]
+        public async Task Should_Not_Create_Order_When_Using_Alias_Endpoint_With_No_Params()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var e = await scope.CreateEventAsync(status: EventInfo.EventInfoStatus.RegistrationsOpen);
+            using var mandatoryProduct = await scope.CreateProductAsync(e.Entity, minimumQuantity: 1);
+
+            var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
+            var response = await client.PostAsync($"/v3/registrations/me/{e.Entity.EventInfoId}");
+            response.CheckOk();
+
+            var reg = await scope.Db.Registrations
+                .Include(r => r.Orders)
+                .SingleAsync(r =>
+                    r.EventInfoId == e.Entity.EventInfoId &&
+                    r.UserId == user.Entity.Id);
+
+            var token = await response.AsTokenAsync();
+            token.CheckRegistration(reg);
+            Assert.Empty(reg.Orders);
+        }
+
+        [Fact]
+        public async Task Self_Registration_Alias_Endpoint_Should_Support_CreateOrder_Param()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var e = await scope.CreateEventAsync(status: EventInfo.EventInfoStatus.RegistrationsOpen);
+            using var mandatoryProduct = await scope.CreateProductAsync(e.Entity, minimumQuantity: 2);
+            using var nonMandatoryProduct = await scope.CreateProductAsync(e.Entity, minimumQuantity: 0);
+
+            var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
+            var response = await client.PostAsync($"/v3/registrations/me/{e.Entity.EventInfoId}?createOrder=true");
+            response.CheckOk();
+
+            var reg = await scope.Db.Registrations
+                .Include(r => r.Orders)
+                .ThenInclude(o => o.OrderLines)
+                .SingleAsync(r =>
+                    r.EventInfoId == e.Entity.EventInfoId &&
+                    r.UserId == user.Entity.Id);
+
+            var token = await response.AsTokenAsync();
+            token.CheckRegistration(reg);
+            Assert.Single(reg.Orders);
+
+            var order = reg.Orders.Single();
+            Assert.Single(order.OrderLines);
+
+            var line = order.OrderLines.Single();
+            Assert.Equal(mandatoryProduct.Entity.ProductId, line.ProductId);
+            Assert.Equal(mandatoryProduct.Entity.MinimumQuantity, line.Quantity);
+        }
+
+        [Fact]
         public async Task Should_Not_Allow_Regular_User_To_Register_To_Event_Not_Open_For_Registrations()
         {
             using var scope = _factory.Services.NewTestScope();
@@ -370,6 +446,70 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
                 eventId = e.Entity.EventInfoId
             });
             response.CheckForbidden();
+        }
+
+        [Fact]
+        public async Task Should_Not_Create_Order_By_Default()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var e = await scope.CreateEventAsync(status: EventInfo.EventInfoStatus.RegistrationsOpen);
+            using var mandatoryProduct = await scope.CreateProductAsync(e.Entity, minimumQuantity: 1);
+
+            var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
+            var response = await client.PostAsync("/v3/registrations", new
+            {
+                userId = user.Entity.Id,
+                eventId = e.Entity.EventInfoId
+            });
+            response.CheckOk();
+
+            var reg = await scope.Db.Registrations
+                .Include(r => r.Orders)
+                .SingleAsync(r =>
+                    r.EventInfoId == e.Entity.EventInfoId &&
+                    r.UserId == user.Entity.Id);
+
+            var token = await response.AsTokenAsync();
+            token.CheckRegistration(reg);
+            Assert.Empty(reg.Orders);
+        }
+
+        [Fact]
+        public async Task Should_Use_CreateOrder_Param_When_Creating_New_Reg()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var e = await scope.CreateEventAsync(status: EventInfo.EventInfoStatus.RegistrationsOpen);
+            using var mandatoryProduct = await scope.CreateProductAsync(e.Entity, minimumQuantity: 2);
+            using var nonMandatoryProduct = await scope.CreateProductAsync(e.Entity, minimumQuantity: 0);
+
+            var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
+            var response = await client.PostAsync("/v3/registrations", new
+            {
+                userId = user.Entity.Id,
+                eventId = e.Entity.EventInfoId,
+                createOrder = true
+            });
+            response.CheckOk();
+
+            var reg = await scope.Db.Registrations
+                .Include(r => r.Orders)
+                .ThenInclude(o => o.OrderLines)
+                .SingleAsync(r =>
+                    r.EventInfoId == e.Entity.EventInfoId &&
+                    r.UserId == user.Entity.Id);
+
+            var token = await response.AsTokenAsync();
+            token.CheckRegistration(reg);
+            Assert.Single(reg.Orders);
+
+            var order = reg.Orders.Single();
+            Assert.Single(order.OrderLines);
+
+            var orderLine = order.OrderLines.First();
+            Assert.Equal(mandatoryProduct.Entity.ProductId, orderLine.ProductId);
+            Assert.Equal(mandatoryProduct.Entity.MinimumQuantity, orderLine.Quantity);
         }
 
         [Theory]
