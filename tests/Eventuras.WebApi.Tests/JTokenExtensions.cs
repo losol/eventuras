@@ -57,15 +57,91 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(eventInfo.City, token.Value<string>("city"));
         }
 
-        public static void CheckOrder(this JToken token, Order order)
+        public static JToken CheckOrder(this JToken token, Order order,
+            bool checkUser = false,
+            bool checkUserNull = false,
+            bool checkRegistration = false,
+            bool checkRegistrationNull = false,
+            bool checkItems = false)
+        {
+            Assert.Equal(order.OrderId, token.Value<int>("orderId"));
+            var statusStr = token.Value<string>("status");
+            Assert.NotNull(statusStr);
+            Assert.Equal(order.Status, Enum.Parse<Order.OrderStatus>(statusStr));
+            Assert.Equal(order.OrderTime, token.Value<DateTime>("time"));
+            Assert.Equal(order.UserId, token.Value<string>("userId"));
+            Assert.Equal(order.RegistrationId, token.Value<int>("registrationId"));
+
+            var userToken = token.Value<JToken>("user");
+            Assert.NotNull(userToken);
+            if (checkUser)
+            {
+                Assert.NotEmpty(userToken);
+                userToken.CheckUser(order.User);
+            }
+            else if (checkUserNull)
+            {
+                Assert.Empty(userToken);
+            }
+
+            var registrationToken = token.Value<JToken>("registration");
+            Assert.NotNull(registrationToken);
+            if (checkRegistration)
+            {
+                Assert.NotEmpty(registrationToken);
+                registrationToken.CheckOrderRegistration(order.Registration);
+            }
+            else if (checkRegistrationNull)
+            {
+                Assert.Empty(registrationToken);
+            }
+
+            if (checkItems)
+            {
+                var itemsToken = token.Value<JArray>("items");
+                Assert.NotNull(itemsToken);
+                itemsToken
+                    .CheckArray((t, item) => t.CheckOrderItem(item),
+                        order.OrderLines?.ToArray() ?? Array.Empty<OrderLine>());
+            }
+
+            return token;
+        }
+
+        public static void CheckOrderRegistration(this JToken token, Registration registration)
+        {
+            Assert.Equal(registration.RegistrationId, token.Value<int>("registrationId"));
+            Assert.Equal(registration.EventInfoId, token.Value<int>("eventId"));
+            Assert.Equal(registration.UserId, token.Value<string>("userId"));
+            Assert.Equal(registration.Status.ToString(), token.Value<string>("status"));
+            Assert.Equal(registration.Type.ToString(), token.Value<string>("type"));
+            Assert.Equal(registration.Notes, token.Value<string>("notes"));
+        }
+
+        public static void CheckOrderItem(this JToken token, OrderLine item)
+        {
+            if (item.ProductId.HasValue)
+            {
+                token.Value<JToken>("product").CheckProduct(item.Product);
+            }
+
+            if (item.ProductVariantId.HasValue)
+            {
+                token.Value<JToken>("productVariant").CheckProductVariant(item.ProductVariant);
+            }
+
+            Assert.Equal(item.Quantity, token.Value<int>("quantity"));
+        }
+
+        public static void CheckRegistrationOrder(this JToken token, Order order)
         {
             Assert.Equal(order.OrderId, token.Value<int>("orderId"));
             token.Value<JArray>("items")
                 .CheckArray((t, item) => t.CheckOrderItem(item),
-                    order.OrderLines.ToArray());
+                    order.OrderLines?.ToArray() ?? Array.Empty<OrderLine>());
         }
 
-        public static void CheckOrderItem(this JToken token, OrderLine item)
+        public static void CheckRegistrationOrderItem(this JToken token, OrderLine item)
         {
             if (item.ProductId.HasValue)
             {

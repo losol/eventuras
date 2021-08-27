@@ -1,8 +1,8 @@
-type: integer
+type: srting
 title: Registration type enum.
-description: |
-  Participant = 0,
-  Student = 1,
-  Staff = 2,
-  Lecturer = 3,
-  Artist = 4
+enum:
+  - participant
+  - student
+  - staff
+  - lecturer
+  - artist

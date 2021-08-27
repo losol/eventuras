@@ -1,14 +1,9 @@
 type: object
 title: Order line data.
 required:
-  - orderLineId
   - product
   - quantity
 properties:
-  orderLineId:
-    type: integer
-    format: int32
-    description: Order line ID.
   product:
     $ref: '../events/ProductDto.yaml'
   productVariant:
@@ -17,7 +12,6 @@ properties:
     type: integer
     format: int32
 example:
-  orderLineId: 100001
   product:
     productId: 1001
     name: Test Product

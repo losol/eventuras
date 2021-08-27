@@ -217,8 +217,9 @@ font-style: italic;
   </ul>
   <h4><a href="#Orders">Orders</a></h4>
   <ul>
-  <li><a href="#addOrderToRegistration"><code><span class="http-method">post</span> /registrations/{id}/orders</code></a></li>
-  <li><a href="#getRegistrationOrdersList"><code><span class="http-method">get</span> /registrations/{id}/orders</code></a></li>
+  <li><a href="#cancelOrder"><code><span class="http-method">delete</span> /orders/{id}</code></a></li>
+  <li><a href="#getOrderById"><code><span class="http-method">get</span> /orders/{id}</code></a></li>
+  <li><a href="#getOrders"><code><span class="http-method">get</span> /orders</code></a></li>
   </ul>
   <h4><a href="#Organizations">Organizations</a></h4>
   <ul>
@@ -1113,29 +1114,79 @@ or explicit email addresses.</div>
   </div> <!-- method -->
   <hr/>
   <h1><a name="Orders">Orders</a></h1>
-  <div class="method"><a name="addOrderToRegistration"/>
+  <div class="method"><a name="cancelOrder"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
-    <pre class="post"><code class="huge"><span class="http-method">post</span> /registrations/{id}/orders</code></pre></div>
-    <div class="method-summary">Add order to registration. (<span class="nickname">addOrderToRegistration</span>)</div>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /orders/{id}</code></pre></div>
+    <div class="method-summary">Cancel order. (<span class="nickname">cancelOrder</span>)</div>
     <div class="method-notes"></div>
 
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
 
-    <h3 class="field-label">Consumes</h3>
-    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Order ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
     <ul>
       <li><code>application/json</code></li>
     </ul>
 
-    <h3 class="field-label">Request body</h3>
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Order cancelled
+        <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getOrderById"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /orders/{id}</code></pre></div>
+    <div class="method-summary">Get order by id. (<span class="nickname">getOrderById</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
-      <div class="param">RegistrationOrderDto <a href="#RegistrationOrderDto">RegistrationOrderDto</a> (required)</div>
+      <div class="param">id (required)</div>
 
-      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
-
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Order ID. default: null format: int32</div>
     </div>  <!-- field-items -->
 
 
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">includeUser (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Whether to include user information into the response. default: false </div><div class="param">includeRegistration (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Whether to include registration information into the response. default: false </div>
+    </div>  <!-- field-items -->
 
 
     <h3 class="field-label">Return type</h3>
@@ -1150,7 +1201,26 @@ or explicit email addresses.</div>
     <div class="example-data-content-type">Content-Type: application/json</div>
     <pre class="example"><code>{
   "orderId" : 10001,
+  "status" : "verified",
+  "time" : "2017-07-21T17:32:28Z",
+  "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+  "registrationId" : 1099,
+  "user" : {
+    "id" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+    "email" : "test@email.com",
+    "name" : "John Doe",
+    "phoneNumber" : "+11111111111"
+  },
+  "registration" : {
+    "registrationId" : 1099,
+    "eventId" : 45,
+    "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+    "status" : "verified",
+    "type" : "participant",
+    "notes" : "Test"
+  },
   "items" : [ {
+    "orderLineId" : 103030,
     "product" : {
       "productId" : 1001,
       "name" : "Test Product",
@@ -1167,6 +1237,7 @@ or explicit email addresses.</div>
     },
     "quantity" : 1
   }, {
+    "orderLineId" : 103030,
     "product" : {
       "productId" : 2001,
       "name" : "Test Product 2",
@@ -1188,11 +1259,8 @@ or explicit email addresses.</div>
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    OK
+    
         <a href="#OrderDto">OrderDto</a>
-    <h4 class="field-label">400</h4>
-    Missing or invalid request parameters.
-        <a href="#Error">Error</a>
     <h4 class="field-label">401</h4>
     Access token is missing or invalid.
         <a href="#Error">Error</a>
@@ -1207,22 +1275,42 @@ or explicit email addresses.</div>
         <a href="#Error">Error</a>
   </div> <!-- method -->
   <hr/>
-  <div class="method"><a name="getRegistrationOrdersList"/>
+  <div class="method"><a name="getOrders"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
-    <pre class="get"><code class="huge"><span class="http-method">get</span> /registrations/{id}/orders</code></pre></div>
-    <div class="method-summary">Get registration orders list. (<span class="nickname">getRegistrationOrdersList</span>)</div>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /orders</code></pre></div>
+    <div class="method-summary">Get accessible orders list. (<span class="nickname">getOrders</span>)</div>
     <div class="method-notes"></div>
 
 
 
 
 
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">page (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Page number. default: 1 format: int32</div><div class="param">count (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Page size. default: 100 format: int32</div><div class="param">userId (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Search orders by userId. default: null </div><div class="param">registrationId (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Search orders by registrationId. default: null format: int32</div><div class="param">eventId (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Search orders by eventId. default: null format: int32</div><div class="param">status (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  default: null </div><div class="param">includeUser (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Whether to include user information into the response. default: false </div><div class="param">includeRegistration (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Whether to include registration information into the response. default: false </div>
+    </div>  <!-- field-items -->
 
 
     <h3 class="field-label">Return type</h3>
     <div class="return-type">
-      array[<a href="#OrderDto">OrderDto</a>]
+      array[<a href="#OrdersPagedList">OrdersPagedList</a>]
       
     </div>
 
@@ -1231,33 +1319,59 @@ or explicit email addresses.</div>
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
     <pre class="example"><code>{
-  "orderId" : 10001,
-  "items" : [ {
-    "product" : {
-      "productId" : 1001,
-      "name" : "Test Product",
-      "description" : "Test",
-      "more" : "More on this product...",
-      "price" : 19.99,
-      "vatPercent" : 17
+  "page" : 1,
+  "size" : 10,
+  "total" : 2,
+  "pages" : 1,
+  "data" : [ {
+    "orderId" : 10001,
+    "status" : "verified",
+    "time" : "2017-07-21T17:32:28Z",
+    "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+    "registrationId" : 1099,
+    "user" : {
+      "id" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+      "email" : "test@email.com",
+      "name" : "John Doe",
+      "phoneNumber" : "+11111111111"
     },
-    "productVariant" : {
-      "productVariantId" : 34,
-      "name" : "Red Coloured Test Product",
-      "description" : "Some variant description...",
-      "price" : 21.99
+    "registration" : {
+      "registrationId" : 1099,
+      "eventId" : 45,
+      "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+      "status" : "verified",
+      "type" : "participant",
+      "notes" : "Test"
     },
-    "quantity" : 1
-  }, {
-    "product" : {
-      "productId" : 2001,
-      "name" : "Test Product 2",
-      "description" : "Test 2",
-      "more" : "More on this product...",
-      "price" : 29.99,
-      "vatPercent" : 17
-    },
-    "quantity" : 3
+    "items" : [ {
+      "orderLineId" : 103030,
+      "product" : {
+        "productId" : 1001,
+        "name" : "Test Product",
+        "description" : "Test",
+        "more" : "More on this product...",
+        "price" : 19.99,
+        "vatPercent" : 17
+      },
+      "productVariant" : {
+        "productVariantId" : 34,
+        "name" : "Red Coloured Test Product",
+        "description" : "Some variant description...",
+        "price" : 21.99
+      },
+      "quantity" : 1
+    }, {
+      "orderLineId" : 103030,
+      "product" : {
+        "productId" : 2001,
+        "name" : "Test Product 2",
+        "description" : "Test 2",
+        "more" : "More on this product...",
+        "price" : 29.99,
+        "vatPercent" : 17
+      },
+      "quantity" : 3
+    } ]
   } ]
 }</code></pre>
 
@@ -1274,6 +1388,9 @@ or explicit email addresses.</div>
         
     <h4 class="field-label">400</h4>
     Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
         <a href="#Error">Error</a>
     <h4 class="field-label">500</h4>
     Unexpected server error.
@@ -2307,7 +2424,7 @@ or explicit email addresses.</div>
 
     <h3 class="field-label">Request body</h3>
     <div class="field-items">
-      <div class="param">RegistrationOrderDto <a href="#RegistrationOrderDto">RegistrationOrderDto</a> (required)</div>
+      <div class="param">NewRegistrationOrderDto <a href="#NewRegistrationOrderDto">NewRegistrationOrderDto</a> (required)</div>
 
       <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
 
@@ -2318,7 +2435,7 @@ or explicit email addresses.</div>
 
     <h3 class="field-label">Return type</h3>
     <div class="return-type">
-      <a href="#OrderDto">OrderDto</a>
+      <a href="#RegistrationOrderDto">RegistrationOrderDto</a>
       
     </div>
 
@@ -2367,7 +2484,7 @@ or explicit email addresses.</div>
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
     OK
-        <a href="#OrderDto">OrderDto</a>
+        <a href="#RegistrationOrderDto">RegistrationOrderDto</a>
     <h4 class="field-label">400</h4>
     Missing or invalid request parameters.
         <a href="#Error">Error</a>
@@ -2472,8 +2589,8 @@ or explicit email addresses.</div>
   "registrationId" : 1099,
   "eventId" : 45,
   "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
-  "status" : 1,
-  "type" : 2,
+  "status" : "verified",
+  "type" : "participant",
   "notes" : "Test"
 }</code></pre>
 
@@ -2517,7 +2634,7 @@ or explicit email addresses.</div>
 
     <h3 class="field-label">Return type</h3>
     <div class="return-type">
-      array[<a href="#OrderDto">OrderDto</a>]
+      array[<a href="#RegistrationOrderDto">RegistrationOrderDto</a>]
       
     </div>
 
@@ -2615,15 +2732,15 @@ or explicit email addresses.</div>
     "registrationId" : 1099,
     "eventId" : 45,
     "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
-    "status" : 1,
-    "type" : 2,
+    "status" : "verified",
+    "type" : "participant",
     "notes" : "Test"
   }, {
     "registrationId" : 1346,
     "eventId" : 674,
     "userId" : "69056ce6-5fc4-11eb-b474-448a5b42a569",
-    "status" : 1,
-    "type" : 1,
+    "status" : "verified",
+    "type" : "lecturer",
     "notes" : "Another test"
   } ]
 }</code></pre>
@@ -2683,8 +2800,8 @@ or explicit email addresses.</div>
   "registrationId" : 1099,
   "eventId" : 45,
   "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
-  "status" : 1,
-  "type" : 2,
+  "status" : "verified",
+  "type" : "participant",
   "notes" : "Test"
 }</code></pre>
 
@@ -2758,8 +2875,8 @@ or explicit email addresses.</div>
   "registrationId" : 1099,
   "eventId" : 45,
   "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
-  "status" : 1,
-  "type" : 2,
+  "status" : "verified",
+  "type" : "participant",
   "notes" : "Test"
 }</code></pre>
 
@@ -3039,6 +3156,12 @@ Org admin can only create members of the own org.</div>
     <div class="method-summary">Get user by id. (<span class="nickname">getUserById</span>)</div>
     <div class="method-notes"></div>
 
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; User ID. default: null </div>
+    </div>  <!-- field-items -->
 
 
 
@@ -3176,7 +3299,7 @@ Default is <code>false</code>. default: null </div>
     <div class="field-items">
       <div class="param">id (required)</div>
 
-      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; User ID. default: null format: int32</div>
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; User ID. default: null </div>
     </div>  <!-- field-items -->
 
     <h3 class="field-label">Consumes</h3>
@@ -3254,12 +3377,17 @@ Default is <code>false</code>. default: null </div>
     <li><a href="#NewProductDto"><code>NewProductDto</code> - New product form.</a></li>
     <li><a href="#NewProductVariantDto"><code>NewProductVariantDto</code> - New product variant form.</a></li>
     <li><a href="#NewRegistrationDto"><code>NewRegistrationDto</code> - New registration info</a></li>
+    <li><a href="#NewRegistrationOrderDto"><code>NewRegistrationOrderDto</code> - New order data.</a></li>
+    <li><a href="#NewRegistrationOrderItemDto"><code>NewRegistrationOrderItemDto</code> - Order line data.</a></li>
     <li><a href="#NewUserDto"><code>NewUserDto</code> - New user form.</a></li>
     <li><a href="#New_registration_specific_properties"><code>New_registration_specific_properties</code> - New registration specific properties</a></li>
     <li><a href="#NotificationRecipientsFilterDto"><code>NotificationRecipientsFilterDto</code> - Notification recipients filter</a></li>
     <li><a href="#NotificationResponseDto"><code>NotificationResponseDto</code> - Notification response</a></li>
     <li><a href="#OrderDto"><code>OrderDto</code> - Order information.</a></li>
     <li><a href="#OrderLineDto"><code>OrderLineDto</code> - Order line data.</a></li>
+    <li><a href="#OrderRegistrationDto"><code>OrderRegistrationDto</code> - Order registration information.</a></li>
+    <li><a href="#OrderStatus"><code>OrderStatus</code> - Order status enum.</a></li>
+    <li><a href="#OrdersPagedList"><code>OrdersPagedList</code> - User list with paging.</a></li>
     <li><a href="#OrganizationDto"><code>OrganizationDto</code> - Organization properties.</a></li>
     <li><a href="#OrganizationFormDto"><code>OrganizationFormDto</code> - Organization data.</a></li>
     <li><a href="#OrganizationSettingDto"><code>OrganizationSettingDto</code> - Organization setting properties.</a></li>
@@ -3269,9 +3397,10 @@ Default is <code>false</code>. default: null </div>
     <li><a href="#RegistrationCustomerInfoDto"><code>RegistrationCustomerInfoDto</code> - Registration customer data.</a></li>
     <li><a href="#RegistrationDto"><code>RegistrationDto</code> - Registration information.</a></li>
     <li><a href="#RegistrationFormDto"><code>RegistrationFormDto</code> - Registration data.</a></li>
-    <li><a href="#RegistrationOrderDto"><code>RegistrationOrderDto</code> - New order data.</a></li>
-    <li><a href="#RegistrationOrderItemDto"><code>RegistrationOrderItemDto</code> - Order line data.</a></li>
+    <li><a href="#RegistrationOrderDto"><code>RegistrationOrderDto</code> - Order information.</a></li>
+    <li><a href="#RegistrationOrderLineDto"><code>RegistrationOrderLineDto</code> - Order line data.</a></li>
     <li><a href="#RegistrationPagedList"><code>RegistrationPagedList</code> - Registration list with paging.</a></li>
+    <li><a href="#RegistrationStatus"><code>RegistrationStatus</code> - Registration status enum.</a></li>
     <li><a href="#UserDto"><code>UserDto</code> - User info.</a></li>
     <li><a href="#UserFormDto"><code>UserFormDto</code> - Update user form.</a></li>
     <li><a href="#UsersPagedList"><code>UsersPagedList</code> - User list with paging.</a></li>
@@ -3400,21 +3529,28 @@ Other = 9 </div>
     <div class='model-description'></div>
     <div class="field-items">
       <div class="param">customer (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationCustomerInfoDto">RegistrationCustomerInfoDto</a></span>  </div>
-<div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Draft = 0,
-Cancelled = 1,
-Verified = 2,
-NotAttended = 3,
-Attended = 4,
-Finished = 5 </div>
-<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Participant = 0,
-Student = 1,
-Staff = 2,
-Lecturer = 3,
-Artist = 4 </div>
+<div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationStatus">RegistrationStatus</a></span>  </div>
+<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationType.yaml">RegistrationType.yaml</a></span>  </div>
 <div class="param">notes (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Additional notes. Can be managed by admin only. </div>
 <div class="param">userId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> User ID. </div>
 <div class="param">eventId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Event ID. format: int32</div>
 <div class="param">createOrder (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> Automatically create order containing all the mandatory products. </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="NewRegistrationOrderDto"><code>NewRegistrationOrderDto</code> - New order data.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">items </div><div class="param-desc"><span class="param-type"><a href="#NewRegistrationOrderItemDto">array[NewRegistrationOrderItemDto]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="NewRegistrationOrderItemDto"><code>NewRegistrationOrderItemDto</code> - Order line data.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">productId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">productVariantId (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">quantity </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -3441,8 +3577,8 @@ Artist = 4 </div>
 All properties are optional.</div>
     <div class="field-items">
       <div class="param">eventId (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
-<div class="param">registrationStatuses (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">array[Integer]</a></span>  </div>
-<div class="param">registrationTypes (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">array[Integer]</a></span>  </div>
+<div class="param">registrationStatuses (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationStatus">array[RegistrationStatus]</a></span>  </div>
+<div class="param">registrationTypes (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationType.yaml">array[RegistrationType.yaml]</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -3457,6 +3593,12 @@ All properties are optional.</div>
     <div class='model-description'></div>
     <div class="field-items">
       <div class="param">orderId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Order ID. format: int32</div>
+<div class="param">status </div><div class="param-desc"><span class="param-type"><a href="#OrderStatus">OrderStatus</a></span>  </div>
+<div class="param">time </div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">userId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> User ID. </div>
+<div class="param">registrationId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Registration ID. format: int32</div>
+<div class="param">user (optional)</div><div class="param-desc"><span class="param-type"><a href="#UserDto">UserDto</a></span>  </div>
+<div class="param">registration (optional)</div><div class="param-desc"><span class="param-type"><a href="#OrderRegistrationDto">OrderRegistrationDto</a></span>  </div>
 <div class="param">items </div><div class="param-desc"><span class="param-type"><a href="#OrderLineDto">array[OrderLineDto]</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
@@ -3464,9 +3606,41 @@ All properties are optional.</div>
     <h3><a name="OrderLineDto"><code>OrderLineDto</code> - Order line data.</a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">product </div><div class="param-desc"><span class="param-type"><a href="#ProductDto">ProductDto</a></span>  </div>
+      <div class="param">orderLineId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Order line ID. format: int32</div>
+<div class="param">product </div><div class="param-desc"><span class="param-type"><a href="#ProductDto">ProductDto</a></span>  </div>
 <div class="param">productVariant (optional)</div><div class="param-desc"><span class="param-type"><a href="#ProductVariantDto">ProductVariantDto</a></span>  </div>
 <div class="param">quantity </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="OrderRegistrationDto"><code>OrderRegistrationDto</code> - Order registration information.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">registrationId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Registration ID. format: int32</div>
+<div class="param">eventId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Event ID. format: int32</div>
+<div class="param">userId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Registered user ID. </div>
+<div class="param">status </div><div class="param-desc"><span class="param-type"><a href="#RegistrationStatus">RegistrationStatus</a></span>  </div>
+<div class="param">type </div><div class="param-desc"><span class="param-type"><a href="#RegistrationType.yaml">RegistrationType.yaml</a></span>  </div>
+<div class="param">certificateId (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Registration certificate ID. format: int32</div>
+<div class="param">notes (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="OrderStatus"><code>OrderStatus</code> - Order status enum.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'>Search orders by status.
+Can be either <code>draft</code>, <code>verified</code>, <code>invoiced</code>, <code>cancelled</code>, or <code>refunded</code>.</div>
+    <div class="field-items">
+          </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="OrdersPagedList"><code>OrdersPagedList</code> - User list with paging.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">page </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Page number. format: int32</div>
+<div class="param">count </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Page size. format: int32</div>
+<div class="param">total </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total items. format: int32</div>
+<div class="param">pages </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total pages. format: int32</div>
+<div class="param">data </div><div class="param-desc"><span class="param-type"><a href="#OrderDto">array[OrderDto]</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -3562,17 +3736,8 @@ Email = 4 </div>
       <div class="param">registrationId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Registration ID. format: int32</div>
 <div class="param">eventId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Event ID. format: int32</div>
 <div class="param">userId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Registered user ID. </div>
-<div class="param">status </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Draft = 0,
-Cancelled = 1,
-Verified = 2,
-NotAttended = 3,
-Attended = 4,
-Finished = 5 </div>
-<div class="param">type </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Participant = 0,
-Student = 1,
-Staff = 2,
-Lecturer = 3,
-Artist = 4 </div>
+<div class="param">status </div><div class="param-desc"><span class="param-type"><a href="#RegistrationStatus">RegistrationStatus</a></span>  </div>
+<div class="param">type </div><div class="param-desc"><span class="param-type"><a href="#RegistrationType.yaml">RegistrationType.yaml</a></span>  </div>
 <div class="param">notes (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
@@ -3581,33 +3746,25 @@ Artist = 4 </div>
     <div class='model-description'><code>customer</code>, <code>status</code>, <code>type</code> and <code>notes</code> can be set by admin only.</div>
     <div class="field-items">
       <div class="param">customer (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationCustomerInfoDto">RegistrationCustomerInfoDto</a></span>  </div>
-<div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Draft = 0,
-Cancelled = 1,
-Verified = 2,
-NotAttended = 3,
-Attended = 4,
-Finished = 5 </div>
-<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Participant = 0,
-Student = 1,
-Staff = 2,
-Lecturer = 3,
-Artist = 4 </div>
+<div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationStatus">RegistrationStatus</a></span>  </div>
+<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationType.yaml">RegistrationType.yaml</a></span>  </div>
 <div class="param">notes (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Additional notes. Can be managed by admin only. </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
-    <h3><a name="RegistrationOrderDto"><code>RegistrationOrderDto</code> - New order data.</a> <a class="up" href="#__Models">Up</a></h3>
+    <h3><a name="RegistrationOrderDto"><code>RegistrationOrderDto</code> - Order information.</a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">items </div><div class="param-desc"><span class="param-type"><a href="#RegistrationOrderItemDto">array[RegistrationOrderItemDto]</a></span>  </div>
+      <div class="param">orderId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Order ID. format: int32</div>
+<div class="param">items </div><div class="param-desc"><span class="param-type"><a href="#RegistrationOrderLineDto">array[RegistrationOrderLineDto]</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
-    <h3><a name="RegistrationOrderItemDto"><code>RegistrationOrderItemDto</code> - Order line data.</a> <a class="up" href="#__Models">Up</a></h3>
+    <h3><a name="RegistrationOrderLineDto"><code>RegistrationOrderLineDto</code> - Order line data.</a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">productId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
-<div class="param">productVariantId (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+      <div class="param">product </div><div class="param-desc"><span class="param-type"><a href="#ProductDto">ProductDto</a></span>  </div>
+<div class="param">productVariant (optional)</div><div class="param-desc"><span class="param-type"><a href="#ProductVariantDto">ProductVariantDto</a></span>  </div>
 <div class="param">quantity </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
     </div>  <!-- field-items -->
   </div>
@@ -3621,6 +3778,12 @@ Artist = 4 </div>
 <div class="param">pages </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total pages. format: int32</div>
 <div class="param">data </div><div class="param-desc"><span class="param-type"><a href="#RegistrationDto">array[RegistrationDto]</a></span>  </div>
     </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="RegistrationStatus"><code>RegistrationStatus</code> - Registration status enum.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+          </div>  <!-- field-items -->
   </div>
   <div class="model">
     <h3><a name="UserDto"><code>UserDto</code> - User info.</a> <a class="up" href="#__Models">Up</a></h3>

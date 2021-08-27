@@ -2,20 +2,57 @@ type: object
 title: Order information.
 required:
   - orderId
+  - status
+  - time
+  - userId
+  - registrationId
   - items
 properties:
   orderId:
     type: integer
     format: int32
     description: Order ID.
+  status:
+    $ref: './OrderStatus.yaml'
+  time:
+    type: string
+    format: date-time
+  userId:
+    type: string
+    description: User ID.
+  registrationId:
+    type: integer
+    format: int32
+    description: Registration ID.
+  user:
+    $ref: '../users/UserDto.yaml'
+  registration:
+    $ref: './OrderRegistrationDto.yaml'
   items:
     type: array
     items:
       $ref: './OrderLineDto.yaml'
 example:
   orderId: 10001
+  status: verified
+  time: '2017-07-21T17:32:28Z'
+  userId: '3fa94776-5fc1-11eb-b353-448a5b42a569'
+  registrationId: 1099
+  user:
+    id: '3fa94776-5fc1-11eb-b353-448a5b42a569'
+    email: 'test@email.com'
+    name: 'John Doe'
+    phoneNumber: '+11111111111'
+  registration:
+    registrationId: 1099
+    eventId: 45
+    userId: '3fa94776-5fc1-11eb-b353-448a5b42a569'
+    status: verified
+    type: participant
+    notes: 'Test'
   items:
-    - product:
+    - orderLineId: 103030
+      product:
         productId: 1001
         name: Test Product
         description: Test
@@ -28,7 +65,8 @@ example:
         description: Some variant description...
         price: 21.99
       quantity: 1
-    - product:
+    - orderLineId: 103030
+      product:
         productId: 2001
         name: Test Product 2
         description: Test 2

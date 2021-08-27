@@ -1,0 +1,11 @@
+type: string
+title: Order status enum.
+description: |
+  Search orders by status.
+  Can be either `draft`, `verified`, `invoiced`, `cancelled`, or `refunded`.
+enum:
+  - draft
+  - verified
+  - invoiced
+  - cancelled
+  - refunded
