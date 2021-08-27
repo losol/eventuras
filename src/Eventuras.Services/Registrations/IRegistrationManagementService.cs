@@ -1,7 +1,6 @@
-using System;
 using System.Threading;
-using Eventuras.Domain;
 using System.Threading.Tasks;
+using Eventuras.Domain;
 
 namespace Eventuras.Services.Registrations
 {
@@ -17,10 +16,20 @@ namespace Eventuras.Services.Registrations
         Task<Registration> CreateRegistrationAsync(
             int eventId,
             string userId,
-            Action<Registration> fillAction = null,
+            RegistrationOptions options = null,
             CancellationToken cancellationToken = default);
 
         /// <exception cref="Exceptions.NotAccessibleException">Not permitted to update the given registration.</exception>
-        Task UpdateRegistrationAsync(Registration registration, CancellationToken cancellationToken = default);
+        Task UpdateRegistrationAsync(
+            Registration registration,
+            CancellationToken cancellationToken = default);
+    }
+
+    public class RegistrationOptions
+    {
+        /// <summary>
+        /// Create an order with all mandatory products included.
+        /// </summary>
+        public bool CreateOrder { get; set; }
     }
 }

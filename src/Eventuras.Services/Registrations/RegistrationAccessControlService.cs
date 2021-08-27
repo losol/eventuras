@@ -51,7 +51,7 @@ namespace Eventuras.Services.Registrations
             var user = _httpContextAccessor.HttpContext.User;
             var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
 
-            // Add possibility for organizaton admin to override later
+            // Add possibility for organization admin to override later
             if (!user.IsSystemAdmin() && eventInfo.Status != EventInfo.EventInfoStatus.RegistrationsOpen) {
                 throw new NotAccessibleException($"Registrations are closed for event {eventInfo.Title} with id {eventInfo.EventInfoId}.");
             }

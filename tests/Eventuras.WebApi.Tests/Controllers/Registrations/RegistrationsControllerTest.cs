@@ -1,21 +1,260 @@
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Registrations
 {
-    public class RegistrationsUpdateControllerTest : IClassFixture<CustomWebApiApplicationFactory<Startup>>
+    public class RegistrationsControllerTest : IClassFixture<CustomWebApiApplicationFactory<Startup>>
     {
         private readonly CustomWebApiApplicationFactory<Startup> _factory;
 
-        public RegistrationsUpdateControllerTest(CustomWebApiApplicationFactory<Startup> factory)
+        public RegistrationsControllerTest(CustomWebApiApplicationFactory<Startup> factory)
         {
             _factory = factory;
         }
+
+        [Fact]
+        public async Task Should_Return_Unauthorized_For_Not_Logged_In_User()
+        {
+            var client = _factory.CreateClient();
+
+            var response = await client.GetAsync("/v3/registrations");
+            response.CheckUnauthorized();
+        }
+
+        [Fact]
+        public async Task Should_Return_Empty_Registration_List()
+        {
+            var client = _factory.CreateClient()
+                .Authenticated();
+
+            var response = await client.GetAsync("/v3/registrations");
+            var paging = await response.AsTokenAsync();
+            paging.CheckEmptyPaging();
+        }
+
+        [Theory]
+        [InlineData("test", null)]
+        [InlineData(-1, null)]
+        [InlineData(0, null)]
+        [InlineData(null, "test")]
+        [InlineData(null, -1)]
+        [InlineData(null, 101)]
+        public async Task Should_Return_BadRequest_For_Invalid_Paging_Params(object page, object count)
+        {
+            var client = _factory.CreateClient().Authenticated();
+
+            var q = new List<object>();
+            if (page != null)
+            {
+                q.Add($"page={WebUtility.UrlEncode(page.ToString())}");
+            }
+
+            if (count != null)
+            {
+                q.Add($"count={WebUtility.UrlEncode(count.ToString())}");
+            }
+
+            var response = await client.GetAsync("/v3/registrations?" + string.Join("&", q));
+            response.CheckBadRequest();
+        }
+
+        [Fact]
+        public async Task Should_Use_Paging_For_Registration_List()
+        {
+            var client = _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin();
+
+            using var scope = _factory.Services.NewTestScope();
+            using var e = await scope.CreateEventAsync();
+            using var user = await scope.CreateUserAsync();
+            using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(3));
+            using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(2));
+            using var r3 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(1));
+
+            var response = await client.GetAsync("/v3/registrations?page=1&count=2");
+            var paging = await response.AsTokenAsync();
+            paging.CheckPaging(1, 2, 3,
+                (token, r) => token.CheckRegistration(r),
+                r1.Entity, r2.Entity);
+
+            response = await client.GetAsync("/v3/registrations?page=2&count=2");
+            paging = await response.AsTokenAsync();
+            paging.CheckPaging(2, 2, 3,
+                (token, r) => token.CheckRegistration(r),
+                r3.Entity);
+        }
+
+        [Fact]
+        public async Task Should_Limit_Registrations_For_Regular_User()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var otherUser = await scope.CreateUserAsync();
+
+            using var e = await scope.CreateEventAsync();
+            using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(3));
+            using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(2));
+            using var r3 =
+                await scope.CreateRegistrationAsync(e.Entity, otherUser.Entity, time: DateTime.Now.AddDays(1));
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAs(user.Entity);
+
+            var response = await client.GetAsync("/v3/registrations");
+            var paging = await response.AsTokenAsync();
+            paging.CheckPaging(1, 2,
+                (token, r) => token.CheckRegistration(r),
+                r1.Entity, r2.Entity);
+
+            client.AuthenticatedAs(otherUser.Entity);
+
+            response = await client.GetAsync("/v3/registrations");
+            paging = await response.AsTokenAsync();
+            paging.CheckPaging(1, 1,
+                (token, r) => token.CheckRegistration(r),
+                r3.Entity);
+        }
+
+        [Fact]
+        public async Task Should_Limit_Registrations_For_Admin()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var otherUser = await scope.CreateUserAsync();
+            using var admin = await scope.CreateUserAsync();
+            using var otherAdmin = await scope.CreateUserAsync();
+            using var org = await scope.CreateOrganizationAsync();
+            using var otherOrg = await scope.CreateOrganizationAsync();
+
+            await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
+            await scope.CreateOrganizationMemberAsync(otherAdmin.Entity, otherOrg.Entity, role: Roles.Admin);
+
+            using var e1 =
+                await scope.CreateEventAsync(organization: org.Entity, organizationId: org.Entity.OrganizationId);
+            using var e2 = await scope.CreateEventAsync(organization: otherOrg.Entity,
+                organizationId: otherOrg.Entity.OrganizationId);
+            using var r1 = await scope.CreateRegistrationAsync(e1.Entity, user.Entity, time: DateTime.Now.AddDays(3));
+            using var r2 =
+                await scope.CreateRegistrationAsync(e1.Entity, otherUser.Entity, time: DateTime.Now.AddDays(2));
+            using var r3 =
+                await scope.CreateRegistrationAsync(e2.Entity, otherUser.Entity, time: DateTime.Now.AddDays(1));
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAs(admin.Entity, Roles.Admin);
+
+            var response = await client.GetAsync($"/v3/registrations?orgId={org.Entity.OrganizationId}");
+            var paging = await response.AsTokenAsync();
+            paging.CheckPaging(1, 2,
+                (token, r) => token.CheckRegistration(r),
+                r1.Entity, r2.Entity);
+
+            client.AuthenticatedAs(otherAdmin.Entity, Roles.Admin);
+
+            response = await client.GetAsync($"/v3/registrations?orgId={org.Entity.OrganizationId}");
+            paging = await response.AsTokenAsync();
+            paging.CheckEmptyPaging();
+        }
+
+        [Fact]
+        public async Task Should_Not_Limit_Registrations_For_System_Admin()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var otherUser = await scope.CreateUserAsync();
+
+            using var e = await scope.CreateEventAsync();
+            using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(3));
+            using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(2));
+            using var r3 =
+                await scope.CreateRegistrationAsync(e.Entity, otherUser.Entity, time: DateTime.Now.AddDays(1));
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin();
+
+            var response = await client.GetAsync("/v3/registrations");
+            var paging = await response.AsTokenAsync();
+            paging.CheckPaging(1, 3,
+                (token, r) => token.CheckRegistration(r),
+                r1.Entity, r2.Entity, r3.Entity);
+        }
+
+        [Fact]
+        public async Task Should_Not_Include_User_And_Event_Info_By_Default()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var otherUser = await scope.CreateUserAsync();
+
+            using var evt = await scope.CreateEventAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity, time: DateTime.Now.AddDays(3));
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin();
+
+            var response = await client.GetAsync("/v3/registrations");
+            var paging = await response.AsTokenAsync();
+            paging.CheckPaging((token, r) =>
+            {
+                token.CheckRegistration(r);
+                Assert.Empty(token.Value<JToken>("user"));
+                Assert.Empty(token.Value<JToken>("event"));
+            }, reg.Entity);
+        }
+
+        [Fact]
+        public async Task Should_Use_IncludeUserInfo_Param()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var otherUser = await scope.CreateUserAsync();
+
+            using var evt = await scope.CreateEventAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity, time: DateTime.Now.AddDays(3));
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin();
+
+            var response = await client.GetAsync("/v3/registrations?includeUserInfo=true");
+            var paging = await response.AsTokenAsync();
+            paging.CheckPaging((token, r) =>
+            {
+                token.CheckRegistration(r, checkUserInfo: true);
+                Assert.NotEmpty(token.Value<JToken>("user"));
+                Assert.Empty(token.Value<JToken>("event"));
+            }, reg.Entity);
+        }
+
+        [Fact]
+        public async Task Should_Use_IncludeEventInfo_Param()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var otherUser = await scope.CreateUserAsync();
+
+            using var evt = await scope.CreateEventAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity, time: DateTime.Now.AddDays(3));
+
+            var client = _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin();
+
+            var response = await client.GetAsync("/v3/registrations?includeEventInfo=true");
+            var paging = await response.AsTokenAsync();
+            paging.CheckPaging((token, r) =>
+            {
+                token.CheckRegistration(r, checkUserInfo: false, checkEventInfo: true);
+                Assert.NotEmpty(token.Value<JToken>("event"));
+                Assert.Empty(token.Value<JToken>("user"));
+            }, reg.Entity);
+        }
+
 
         [Fact]
         public async Task Should_Require_Auth_For_Creating_New_Reg()
@@ -64,7 +303,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var user = await scope.CreateUserAsync();
 
             var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
-            var response = await client.PostAsync("/v3/registrations", new { userId = user.Entity.Id });
+            var response = await client.PostAsync("/v3/registrations", new {userId = user.Entity.Id});
             response.CheckBadRequest();
         }
 
@@ -72,7 +311,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         public async Task Should_Require_User_Id_For_Creating_New_Reg()
         {
             var client = _factory.CreateClient().Authenticated();
-            var response = await client.PostAsync("/v3/registrations", new { eventId = 10001 });
+            var response = await client.PostAsync("/v3/registrations", new {eventId = 10001});
             response.CheckBadRequest();
         }
 
@@ -135,7 +374,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
 
         [Theory]
         [MemberData(nameof(GetRegInfoWithAdditionalInfoFilled))]
-        public async Task Should_Not_Allow_Regular_User_To_Provide_Extra_Info(Func<string, int, object> f, Action<Registration> _)
+        public async Task Should_Not_Allow_Regular_User_To_Provide_Extra_Info(Func<string, int, object> f,
+            Action<Registration> _)
         {
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
@@ -154,7 +394,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var admin = await scope.CreateUserAsync(role: Roles.Admin);
             using var org = await scope.CreateOrganizationAsync();
             using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
-            using var e = await scope.CreateEventAsync(organization: org.Entity, organizationId: org.Entity.OrganizationId);
+            using var e =
+                await scope.CreateEventAsync(organization: org.Entity, organizationId: org.Entity.OrganizationId);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
             var response = await client.PostAsync($"/v3/registrations?orgId={org.Entity.OrganizationId}", new
@@ -174,17 +415,20 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
 
         [Theory]
         [MemberData(nameof(GetRegInfoWithAdditionalInfoFilled))]
-        public async Task Should_Allow_Admin_To_Provide_Extra_Info_When_Creating_New_Reg(Func<string, int, object> f, Action<Registration> check)
+        public async Task Should_Allow_Admin_To_Provide_Extra_Info_When_Creating_New_Reg(Func<string, int, object> f,
+            Action<Registration> check)
         {
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             using var admin = await scope.CreateUserAsync(role: Roles.Admin);
             using var org = await scope.CreateOrganizationAsync();
             using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
-            using var e = await scope.CreateEventAsync(organization: org.Entity, organizationId: org.Entity.OrganizationId);
+            using var e =
+                await scope.CreateEventAsync(organization: org.Entity, organizationId: org.Entity.OrganizationId);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-            var response = await client.PostAsync($"/v3/registrations?orgId={org.Entity.OrganizationId}", f(user.Entity.Id, e.Entity.EventInfoId));
+            var response = await client.PostAsync($"/v3/registrations?orgId={org.Entity.OrganizationId}",
+                f(user.Entity.Id, e.Entity.EventInfoId));
             response.CheckOk();
 
             var reg = await scope.Db.Registrations.SingleAsync(r =>
@@ -221,7 +465,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
 
         [Theory]
         [MemberData(nameof(GetRegInfoWithAdditionalInfoFilled))]
-        public async Task Should_Allow_System_Admin_To_Provide_Extra_Info(Func<string, int, object> f, Action<Registration> check)
+        public async Task Should_Allow_System_Admin_To_Provide_Extra_Info(Func<string, int, object> f,
+            Action<Registration> check)
         {
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
@@ -286,14 +531,15 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var registration = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-            var response = await client.PutAsync($"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}", new
-            {
-                type = 2
-            });
+            var response = await client.PutAsync(
+                $"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}", new
+                {
+                    type = 2
+                });
             response.CheckForbidden();
         }
 
-[Fact]
+        [Fact]
         public async Task Should_Allow_SystemAdmin_To_Update_Reg_For_Accessible_Event()
         {
             using var scope = _factory.Services.NewTestScope();
@@ -306,10 +552,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             Assert.Equal(Registration.RegistrationType.Participant, registration.Entity.Type);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.SystemAdmin);
-            var response = await client.PutAsync($"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}", new
-            {
-                type = 2
-            });
+            var response = await client.PutAsync(
+                $"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}", new
+                {
+                    type = 2
+                });
             response.CheckOk();
 
             var updated = await LoadAndCheckAsync(scope, registration.Entity, updated =>
@@ -332,10 +579,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             Assert.Equal(Registration.RegistrationType.Participant, registration.Entity.Type);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-            var response = await client.PutAsync($"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}", new
-            {
-                type = 2
-            });
+            var response = await client.PutAsync(
+                $"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}", new
+                {
+                    type = 2
+                });
             response.CheckOk();
 
             var updated = await LoadAndCheckAsync(scope, registration.Entity, updated =>
@@ -367,7 +615,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             token.CheckRegistration(updated);
         }
 
-       
 
         [Fact]
         public async Task Should_Require_Auth_For_Cancelling_Reg()
@@ -408,7 +655,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var registration = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-            var response = await client.DeleteAsync($"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}");
+            var response =
+                await client.DeleteAsync(
+                    $"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}");
             response.CheckForbidden();
         }
 
@@ -420,12 +669,15 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var admin = await scope.CreateUserAsync(role: Roles.Admin);
             using var org = await scope.CreateOrganizationAsync();
             using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
-            using var e = await scope.CreateEventAsync(organization: org.Entity, organizationId: org.Entity.OrganizationId);
+            using var e =
+                await scope.CreateEventAsync(organization: org.Entity, organizationId: org.Entity.OrganizationId);
             using var registration = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
             Assert.Equal(Registration.RegistrationType.Participant, registration.Entity.Type);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-            var response = await client.DeleteAsync($"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}");
+            var response =
+                await client.DeleteAsync(
+                    $"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}");
             response.CheckOk();
 
             await LoadAndCheckAsync(scope, registration.Entity, updated =>
@@ -454,7 +706,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             using var e = await scope.CreateEventAsync();
-            using var registration = await scope.CreateRegistrationAsync(e.Entity, user.Entity, Registration.RegistrationStatus.Cancelled);
+            using var registration =
+                await scope.CreateRegistrationAsync(e.Entity, user.Entity, Registration.RegistrationStatus.Cancelled);
 
             var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
             var response = await client.DeleteAsync($"/v3/registrations/{registration.Entity.RegistrationId}");
@@ -464,7 +717,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
                 Assert.Equal(Registration.RegistrationStatus.Cancelled, updated.Status));
         }
 
-        private async Task<Registration> LoadAndCheckAsync(TestServiceScope scope, Registration registration, Action<Registration> check)
+        private async Task<Registration> LoadAndCheckAsync(TestServiceScope scope, Registration registration,
+            Action<Registration> check)
         {
             var updated = await scope.Db.Registrations
                 .AsNoTracking()
@@ -492,11 +746,13 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
                 new object[]
                 {
                     new Func<string, int, object>((userId, eventId) => new {userId, eventId, paymentMethod = 1}),
-                    new Action<Registration>(reg => Assert.Equal(PaymentMethod.PaymentProvider.EmailInvoice, reg.PaymentMethod))
+                    new Action<Registration>(reg =>
+                        Assert.Equal(PaymentMethod.PaymentProvider.EmailInvoice, reg.PaymentMethod))
                 },
                 new object[]
                 {
-                    new Func<string, int, object>((userId, eventId) => new {userId, eventId, customer = new {name = "test"}}),
+                    new Func<string, int, object>((userId, eventId) =>
+                        new {userId, eventId, customer = new {name = "test"}}),
                     new Action<Registration>(reg => Assert.Equal("test", reg.CustomerName))
                 }
             };

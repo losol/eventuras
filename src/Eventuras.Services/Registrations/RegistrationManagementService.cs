@@ -1,9 +1,11 @@
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Eventuras.Domain;
+using Eventuras.Infrastructure;
 using Eventuras.Services.Events;
+using Eventuras.Services.Exceptions;
 using Eventuras.Services.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,12 +14,14 @@ namespace Eventuras.Services.Registrations
     internal class RegistrationManagementService : IRegistrationManagementService
     {
         private readonly IRegistrationAccessControlService _registrationAccessControlService;
+        private readonly IRegistrationOrderManagementService _registrationOrderManagementService;
         private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
         private readonly IUserRetrievalService _userRetrievalService;
         private readonly ApplicationDbContext _context;
 
         public RegistrationManagementService(
             IRegistrationAccessControlService registrationAccessControlService,
+            IRegistrationOrderManagementService registrationOrderManagementService,
             IEventInfoRetrievalService eventInfoRetrievalService,
             IUserRetrievalService userRetrievalService,
             ApplicationDbContext context)
@@ -33,21 +37,31 @@ namespace Eventuras.Services.Registrations
 
             _context = context ?? throw
                 new ArgumentNullException(nameof(context));
+            _registrationOrderManagementService = registrationOrderManagementService;
         }
 
         public async Task<Registration> CreateRegistrationAsync(
             int eventId,
             string userId,
-            Action<Registration> fillAction,
+            RegistrationOptions options,
             CancellationToken cancellationToken)
         {
-            var existingRegistration = await _context.Registrations.FirstOrDefaultAsync(m => m.EventInfoId == eventId && m.UserId == userId);
-            if (existingRegistration != null) 
+            var existingRegistration = await _context.Registrations
+                .FirstOrDefaultAsync(m => m.EventInfoId == eventId &&
+                                          m.UserId == userId, cancellationToken: cancellationToken);
+
+            if (existingRegistration != null)
             {
-                throw new Exceptions.DuplicateException("Found existing registration for user on event.");
+                throw new DuplicateException("Found existing registration for user on event.");
             }
-            
-            var @event = await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventId, null, cancellationToken); 
+
+            var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventId,
+                new EventInfoRetrievalOptions
+                {
+                    LoadProducts = true
+                },
+                cancellationToken);
+
             var user = await _userRetrievalService.GetUserByIdAsync(userId, null, cancellationToken);
 
             var registration = new Registration
@@ -57,11 +71,25 @@ namespace Eventuras.Services.Registrations
                 ParticipantName = user.Name // TODO: remove this property?
             };
 
-            fillAction?.Invoke(registration);
-
             await _registrationAccessControlService.CheckRegistrationCreateAccessAsync(registration, cancellationToken);
 
             await _context.CreateAsync(registration, cancellationToken);
+
+            options ??= new RegistrationOptions();
+
+            if (options.CreateOrder)
+            {
+                await _registrationOrderManagementService
+                    .CreateOrderForRegistrationAsync(registration,
+                        eventInfo.Products
+                            .Where(p => p.IsMandatory)
+                            .Select(p => new OrderItemDto
+                            {
+                                ProductId = p.ProductId,
+                                Quantity = p.MinimumQuantity
+                            }).ToArray(),
+                        cancellationToken);
+            }
 
             return registration;
         }

@@ -8,8 +8,7 @@ namespace Eventuras.WebApi.Controllers.Registrations
 
         public string Name { get; set; }
 
-        [EmailAddress]
-        public string Email { get; set; }
+        [EmailAddress] public string Email { get; set; }
 
         public string Zip { get; set; }
 
