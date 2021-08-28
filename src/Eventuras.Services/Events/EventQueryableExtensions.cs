@@ -1,6 +1,6 @@
-using Eventuras.Domain;
 using System;
 using System.Linq;
+using Eventuras.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Eventuras.Services.Events
@@ -53,7 +53,8 @@ namespace Eventuras.Services.Events
             {
                 query = query.Where(i =>
                     i.DateStart.HasValue && i.DateStart.Value.Date == DateTime.Now.Date ||
-                    i.DateStart.HasValue && i.DateEnd.HasValue && i.DateStart.Value.Date <= DateTime.Now.Date && i.DateEnd.Value.Date >= DateTime.Now.Date);
+                    i.DateStart.HasValue && i.DateEnd.HasValue && i.DateStart.Value.Date <= DateTime.Now.Date &&
+                    i.DateEnd.Value.Date >= DateTime.Now.Date);
             }
 
             if (filter.StartDate.HasValue)
@@ -111,11 +112,17 @@ namespace Eventuras.Services.Events
             return query;
         }
 
-        public static IQueryable<EventInfo> UseOptions(this IQueryable<EventInfo> query, EventInfoRetrievalOptions options)
+        public static IQueryable<EventInfo> UseOptions(this IQueryable<EventInfo> query,
+            EventInfoRetrievalOptions options)
         {
             if (options == null)
             {
                 throw new ArgumentNullException(nameof(options));
+            }
+
+            if (!options.ForUpdate)
+            {
+                query = query.AsNoTracking();
             }
 
             if (options.LoadOrganizerUser)
@@ -130,6 +137,7 @@ namespace Eventuras.Services.Events
                 {
                     includableQueryable.ThenInclude(o => o.Members);
                 }
+
                 query = includableQueryable;
             }
 
@@ -164,7 +172,8 @@ namespace Eventuras.Services.Events
             return query;
         }
 
-        public static IQueryable<EventInfo> HavingOrganization(this IQueryable<EventInfo> query, Organization organization)
+        public static IQueryable<EventInfo> HavingOrganization(this IQueryable<EventInfo> query,
+            Organization organization)
         {
             if (organization == null)
                 throw new ArgumentNullException(nameof(organization));
@@ -177,7 +186,8 @@ namespace Eventuras.Services.Events
             return HavingNoOrganizationOr(query, null);
         }
 
-        public static IQueryable<EventInfo> HavingNoOrganizationOr(this IQueryable<EventInfo> query, Organization organization = null)
+        public static IQueryable<EventInfo> HavingNoOrganizationOr(this IQueryable<EventInfo> query,
+            Organization organization = null)
         {
             if (organization != null)
             {

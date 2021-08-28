@@ -58,6 +58,8 @@ namespace Eventuras.Services.Registrations
             var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventId,
                 new EventInfoRetrievalOptions
                 {
+                    ForUpdate = true,
+                    LoadRegistrations = true,
                     LoadProducts = true
                 },
                 cancellationToken);
@@ -73,11 +75,16 @@ namespace Eventuras.Services.Registrations
 
             await _registrationAccessControlService.CheckRegistrationCreateAccessAsync(registration, cancellationToken);
 
+            if (eventInfo.Status == EventInfo.EventInfoStatus.WaitingList)
+            {
+                registration.Status = Registration.RegistrationStatus.WaitingList;
+            }
+
             await _context.CreateAsync(registration, cancellationToken);
 
             options ??= new RegistrationOptions();
 
-            if (options.CreateOrder)
+            if (options.CreateOrder && registration.Status != Registration.RegistrationStatus.WaitingList)
             {
                 await _registrationOrderManagementService
                     .CreateOrderForRegistrationAsync(registration,
@@ -89,6 +96,13 @@ namespace Eventuras.Services.Registrations
                                 Quantity = p.MinimumQuantity
                             }).ToArray(),
                         cancellationToken);
+            }
+
+            if (eventInfo.MaxParticipants > 0 && eventInfo
+                .Registrations.Count + 1 >= eventInfo.MaxParticipants)
+            {
+                eventInfo.Status = EventInfo.EventInfoStatus.WaitingList;
+                await _context.SaveChangesAsync(cancellationToken);
             }
 
             return registration;

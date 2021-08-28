@@ -476,6 +476,71 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         }
 
         [Fact]
+        public async Task Should_Move_Event_To_Waiting_List_Status()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var evt = await scope.CreateEventAsync(
+                status: EventInfo.EventInfoStatus.RegistrationsOpen,
+                maxParticipants: 1);
+            using var mandatoryProduct = await scope.CreateProductAsync(evt.Entity, minimumQuantity: 1);
+
+            var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
+            var response = await client.PostAsync("/v3/registrations", new
+            {
+                userId = user.Entity.Id,
+                eventId = evt.Entity.EventInfoId,
+                createOrder = true
+            });
+            response.CheckOk();
+
+            var reg = await scope.Db.Registrations
+                .Include(r => r.Orders)
+                .SingleAsync(r =>
+                    r.EventInfoId == evt.Entity.EventInfoId &&
+                    r.UserId == user.Entity.Id);
+
+            var token = await response.AsTokenAsync();
+            token.CheckRegistration(reg);
+            Assert.NotEmpty(reg.Orders);
+            Assert.Equal(Registration.RegistrationStatus.Draft, reg.Status);
+
+            var updatedEvent = await scope.Db.EventInfos
+                .AsNoTracking()
+                .SingleAsync(e => e.EventInfoId == evt.Entity.EventInfoId);
+            Assert.Equal(EventInfo.EventInfoStatus.WaitingList, updatedEvent.Status);
+        }
+
+        [Fact]
+        public async Task Should_Handle_Waiting_List_Status()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var e = await scope.CreateEventAsync(status: EventInfo.EventInfoStatus.WaitingList);
+            using var mandatoryProduct = await scope.CreateProductAsync(e.Entity, minimumQuantity: 1);
+
+            var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
+            var response = await client.PostAsync("/v3/registrations", new
+            {
+                userId = user.Entity.Id,
+                eventId = e.Entity.EventInfoId,
+                createOrder = true
+            });
+            response.CheckOk();
+
+            var reg = await scope.Db.Registrations
+                .Include(r => r.Orders)
+                .SingleAsync(r =>
+                    r.EventInfoId == e.Entity.EventInfoId &&
+                    r.UserId == user.Entity.Id);
+
+            var token = await response.AsTokenAsync();
+            token.CheckRegistration(reg);
+            Assert.Empty(reg.Orders);
+            Assert.Equal(Registration.RegistrationStatus.WaitingList, reg.Status);
+        }
+
+        [Fact]
         public async Task Should_Use_CreateOrder_Param_When_Creating_New_Reg()
         {
             using var scope = _factory.Services.NewTestScope();

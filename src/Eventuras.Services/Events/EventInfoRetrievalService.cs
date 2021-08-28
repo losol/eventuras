@@ -38,9 +38,8 @@ namespace Eventuras.Services.Events
             CancellationToken cancellationToken)
         {
             var query = _context.EventInfos
-                .AsNoTracking()
-                .Where(e => e.EventInfoId == id)
-                .UseOptions(options ?? new EventInfoRetrievalOptions());
+                .UseOptions(options ?? new EventInfoRetrievalOptions())
+                .Where(e => e.EventInfoId == id);
 
             var @event = await query.SingleOrDefaultAsync(cancellationToken);
             if (@event == null)

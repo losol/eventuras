@@ -2,6 +2,7 @@ namespace Eventuras.Services.Events
 {
     public class EventInfoRetrievalOptions
     {
+        public bool ForUpdate { get; set; }
         public bool LoadOrganization { get; set; }
         public bool LoadOrganizationMembers { get; set; }
         public bool LoadOrganizerUser { get; set; }

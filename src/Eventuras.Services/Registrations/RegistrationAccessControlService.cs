@@ -1,14 +1,14 @@
-using Eventuras.Domain;
-using Eventuras.Services.Auth;
-using Eventuras.Services.Exceptions;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using Eventuras.Domain;
+using Eventuras.Services.Auth;
 using Eventuras.Services.Events;
+using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
+using Microsoft.AspNetCore.Http;
 
 namespace Eventuras.Services.Registrations
 {
@@ -40,7 +40,8 @@ namespace Eventuras.Services.Registrations
             var user = _httpContextAccessor.HttpContext.User;
             if (!await CheckOwnerOrAdminAccessAsync(user, registration, cancellationToken))
             {
-                throw new NotAccessibleException($"User {user.GetUserId()} cannot read registration {registration.RegistrationId}");
+                throw new NotAccessibleException(
+                    $"User {user.GetUserId()} cannot read registration {registration.RegistrationId}");
             }
         }
 
@@ -49,16 +50,22 @@ namespace Eventuras.Services.Registrations
             CancellationToken cancellationToken)
         {
             var user = _httpContextAccessor.HttpContext.User;
-            var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
+            var eventInfo =
+                await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
 
             // Add possibility for organization admin to override later
-            if (!user.IsSystemAdmin() && eventInfo.Status != EventInfo.EventInfoStatus.RegistrationsOpen) {
-                throw new NotAccessibleException($"Registrations are closed for event {eventInfo.Title} with id {eventInfo.EventInfoId}.");
+            if (!user.IsSystemAdmin())
+            {
+                if (eventInfo.Status != EventInfo.EventInfoStatus.RegistrationsOpen &&
+                    eventInfo.Status != EventInfo.EventInfoStatus.WaitingList)
+                    throw new NotAccessibleException(
+                        $"Registrations are closed for event {eventInfo.Title} with id {eventInfo.EventInfoId}.");
             }
 
             if (!await CheckOwnerOrAdminAccessAsync(user, registration, cancellationToken))
             {
-                throw new NotAccessibleException($"User {user.GetUserId()} cannot create registration for event {registration.EventInfoId} and user {registration.UserId}");
+                throw new NotAccessibleException(
+                    $"User {user.GetUserId()} cannot create registration for event {registration.EventInfoId} and user {registration.UserId}");
             }
         }
 
@@ -72,10 +79,11 @@ namespace Eventuras.Services.Registrations
                 // user can edit his own reg
                 return;
             }
-            
+
             if (!await CheckAdminAccessAsync(user, registration, cancellationToken))
             {
-                throw new NotAccessibleException($"User {user.GetUserId()} cannot update registration {registration.RegistrationId}");
+                throw new NotAccessibleException(
+                    $"User {user.GetUserId()} cannot update registration {registration.RegistrationId}");
             }
         }
 
@@ -100,10 +108,13 @@ namespace Eventuras.Services.Registrations
                 return query.Where(r => r.UserId == user.GetUserId());
             }
 
-            var org = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(null, cancellationToken);
+            var org = await _currentOrganizationAccessorService
+                .RequireCurrentOrganizationAsync(null, cancellationToken);
             return query.Where(r => r.EventInfo.OrganizationId == org.OrganizationId &&
                                     r.EventInfo.Organization.Members
-                                        .Any(m => m.UserId == user.GetUserId())); // FIXME: it's not true anymore that if the user is Admin then he is an Admin of the current org.
+                                        .Any(m => m.UserId ==
+                                                  user
+                                                      .GetUserId())); // FIXME: it's not true anymore that if the user is Admin then he is an Admin of the current org.
         }
 
         private async Task<bool> CheckAdminAccessAsync(
@@ -121,17 +132,19 @@ namespace Eventuras.Services.Registrations
                 return false;
             }
 
-            var org = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(new OrganizationRetrievalOptions
-            {
-                LoadMembers = true
-            }, cancellationToken);
+            var org = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(
+                new OrganizationRetrievalOptions
+                {
+                    LoadMembers = true
+                }, cancellationToken);
 
             if (org.Members.All(m => m.UserId != user.GetUserId()))
             {
                 return false;
             }
 
-            var @event = await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
+            var @event =
+                await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
             return @event.OrganizationId == org.OrganizationId;
         }
 
