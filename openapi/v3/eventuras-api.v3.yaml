@@ -23,6 +23,8 @@ paths:
   # Registrations
   /registrations:
     $ref: './paths/registrations.yaml'
+  /registrations/me/{eventId}:
+    $ref: './paths/registrations/me.yaml'
   /registrations/{id}:
     $ref: './paths/registrations/id.yaml'
   /registrations/{id}/orders:

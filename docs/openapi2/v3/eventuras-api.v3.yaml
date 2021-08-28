@@ -109,6 +109,52 @@ paths:
       summary: Create new registration.
       tags:
       - registrations
+  /registrations/me/{eventId}:
+    post:
+      description: Alias for POST /registrations.
+      operationId: selfRegistration
+      parameters:
+      - description: |
+          Automatically create order containing all the mandatory products.
+        in: query
+        name: createOrder
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationDto'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Missing or invalid request parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Self registration.
+      tags:
+      - registrations
   /registrations/{id}:
     delete:
       operationId: cancelRegistration
@@ -2623,6 +2669,10 @@ components:
           description: Event ID.
           format: int32
           type: integer
+        createOrder:
+          default: false
+          description: Automatically create order containing all the mandatory products.
+          type: boolean
       required:
       - eventId
       - userId
