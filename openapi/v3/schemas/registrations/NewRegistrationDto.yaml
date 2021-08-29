@@ -14,7 +14,10 @@ allOf:
         type: integer
         format: int32
         description: Event ID.
-
+      createOrder:
+        type: boolean
+        description: Automatically create order containing all the mandatory products.
+        default: false
 example:
   userId: '3fa94776-5fc1-11eb-b353-448a5b42a569'
   eventId: 643

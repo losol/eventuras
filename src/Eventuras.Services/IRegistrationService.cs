@@ -8,7 +8,7 @@ namespace Eventuras.Services
 {
     // FIXME: ISP violation; have to split into IRegistrationManagementService (create, update), IRegistrationRetrievalService (get, list), and IRegistrationOrderManagementService.
     // FIXME (continue): or even 4 interfaces: IRegistrationService (create), IRegistrationUpdateService (update), IRegistrationRetrievalService (get, list), and IRegistrationOrderManagementService.
-
+    
     public interface IRegistrationService
     {
         Task<bool> RegistrationExists(int id);

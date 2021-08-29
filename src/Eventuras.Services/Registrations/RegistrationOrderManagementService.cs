@@ -1,8 +1,8 @@
-using Eventuras.Domain;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,12 +11,10 @@ namespace Eventuras.Services.Registrations
     internal class RegistrationOrderManagementService : IRegistrationOrderManagementService
     {
         private readonly IRegistrationAccessControlService _registrationAccessControlService;
-        private readonly IRegistrationManagementService _registrationManagementService;
         private readonly ApplicationDbContext _context;
 
         public RegistrationOrderManagementService(
             IRegistrationAccessControlService registrationAccessControlService,
-            IRegistrationManagementService registrationManagementService,
             ApplicationDbContext context)
         {
             _registrationAccessControlService = registrationAccessControlService ?? throw
@@ -24,7 +22,6 @@ namespace Eventuras.Services.Registrations
 
             _context = context ?? throw
                 new ArgumentNullException(nameof(context));
-            _registrationManagementService = registrationManagementService;
         }
 
         public async Task<Order> CreateOrderForRegistrationAsync(
@@ -56,7 +53,7 @@ namespace Eventuras.Services.Registrations
             });
 
             var order = registration.CreateOrder(lines);
-            await _registrationManagementService.UpdateRegistrationAsync(registration, cancellationToken);
+            await _context.UpdateAsync(registration, cancellationToken);
             return order;
         }
     }

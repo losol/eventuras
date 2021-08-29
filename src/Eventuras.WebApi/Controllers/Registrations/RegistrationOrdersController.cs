@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -60,6 +61,30 @@ namespace Eventuras.WebApi.Controllers.Registrations
                     .ToArray(), token);
 
             return new OrderDto(order);
+        }
+    }
+
+    public class NewRegistrationOrderDto
+    {
+        [Required] [MinLength(1)] public NewRegistrationOrderItemDto[] Items { get; set; }
+    }
+
+    public class NewRegistrationOrderItemDto
+    {
+        [Range(1, int.MaxValue)] public int ProductId { get; set; }
+
+        [Range(1, int.MaxValue)] public int? ProductVariantId { get; set; }
+
+        [Range(1, int.MaxValue)] public int Quantity { get; set; }
+
+        public OrderItemDto ToOrderItemDto()
+        {
+            return new OrderItemDto
+            {
+                ProductId = ProductId,
+                VariantId = ProductVariantId,
+                Quantity = Quantity
+            };
         }
     }
 }

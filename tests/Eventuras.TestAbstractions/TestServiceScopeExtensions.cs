@@ -130,6 +130,7 @@ namespace Eventuras.TestAbstractions
             Product[] products = null,
             Organization organization = null,
             int organizationId = TestingConstants.OrganizationId,
+            int maxParticipants = 0,
             EventCollection collection = null,
             EventCollection[] collections = null,
             bool archived = false)
@@ -170,6 +171,7 @@ namespace Eventuras.TestAbstractions
                 Type = eventInfoType,
                 City = city,
                 Status = status,
+                MaxParticipants = maxParticipants,
                 Products = products?.ToList(),
                 Archived = archived,
                 OrganizationId = organization?.OrganizationId ?? organizationId,

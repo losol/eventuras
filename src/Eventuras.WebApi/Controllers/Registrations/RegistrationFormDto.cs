@@ -41,5 +41,10 @@ namespace Eventuras.WebApi.Controllers.Registrations
                 registration.PaymentMethod = PaymentMethod.Value;
             }
         }
+
+        public bool Empty => !Type.HasValue &&
+                             Notes == null &&
+                             Customer == null &&
+                             !PaymentMethod.HasValue;
     }
 }
