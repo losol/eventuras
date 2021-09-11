@@ -11,6 +11,7 @@ COPY ./src/Eventuras.WebApi/*.csproj ./src/Eventuras.WebApi/
 COPY ./src/Eventuras.Services/*.csproj ./src/Eventuras.Services/
 COPY ./src/Eventuras.Services.Converto/*.csproj ./src/Eventuras.Services.Converto/
 COPY ./src/Eventuras.Services.Auth0/*.csproj ./src/Eventuras.Services.Auth0/
+COPY ./src/Eventuras.Services.Google.RecaptchaV3/*.csproj ./src/Eventuras.Services.Google.RecaptchaV3/
 COPY ./src/Eventuras.Services.PowerOffice/*.csproj ./src/Eventuras.Services.PowerOffice/
 COPY ./src/Eventuras.Services.Stripe/*.csproj ./src/Eventuras.Services.Stripe/
 COPY ./src/Eventuras.Services.TalentLms/*.csproj ./src/Eventuras.Services.TalentLms/
