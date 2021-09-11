@@ -29,6 +29,6 @@ example:
     zip: 1234
     city: Oslo
     country: Norway
-  status: 1
-  type: 2
+  status: verified
+  type: participant
   notes: Testing

@@ -1,22 +1,29 @@
 get:
-    summary: Get user by id.
-    operationId: getUserById
-    tags:
-        - users
-    responses:
-        '200':
-            content:
-                application/json:
-                    schema:
-                        $ref: '../../schemas/users/UserDto.yaml'
-        '401':
-            $ref: 'eventuras-api.v3.yaml#/components/responses/UnauthorizedError'
-        '403':
-            $ref: 'eventuras-api.v3.yaml#/components/responses/ForbiddenError'
-        '404':
-            $ref: 'eventuras-api.v3.yaml#/components/responses/NotFound'
-        '500':
-            $ref: 'eventuras-api.v3.yaml#/components/responses/InternalServerError'
+  summary: Get user by id.
+  operationId: getUserById
+  tags:
+    - users
+  parameters:
+    - name: id
+      in: path
+      description: User ID.
+      required: true
+      schema:
+        type: string
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/users/UserDto.yaml'
+    '401':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/UnauthorizedError'
+    '403':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/ForbiddenError'
+    '404':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/NotFound'
+    '500':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/InternalServerError'
 
 put:
   summary: Update user profile.
@@ -29,8 +36,7 @@ put:
       description: User ID.
       required: true
       schema:
-        type: integer
-        format: int32
+        type: string
   requestBody:
     required: true
     content:

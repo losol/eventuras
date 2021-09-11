@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Eventuras.Domain;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,35 @@ namespace Eventuras.Services.Orders
 {
     public static class OrdersQueryableExtensions
     {
+        public static IQueryable<Order> HavingOrganization(this IQueryable<Order> query, Organization organization)
+        {
+            if (organization == null)
+                throw new ArgumentNullException(nameof(organization));
+
+            return query.Where(o => o.Registration.EventInfo.OrganizationId == organization.OrganizationId);
+        }
+
+        public static IQueryable<Order> HavingNoOrganization(this IQueryable<Order> query)
+        {
+            return query.HavingNoOrganizationOr();
+        }
+
+        public static IQueryable<Order> HavingNoOrganizationOr(this IQueryable<Order> query,
+            Organization organization = null)
+        {
+            if (organization != null)
+            {
+                query = query.Where(e => e.Registration.EventInfo.OrganizationId == null ||
+                                         e.Registration.EventInfo.OrganizationId == organization.OrganizationId);
+            }
+            else
+            {
+                query = query.Where(e => e.Registration.EventInfo.OrganizationId == null);
+            }
+
+            return query;
+        }
+
         public static IQueryable<Order> WithOptions(
             this IQueryable<Order> query,
             OrderRetrievalOptions options)
@@ -31,7 +61,55 @@ namespace Eventuras.Services.Orders
 
             if (options.IncludeOrderLines)
             {
-                query = query.Include(o => o.OrderLines);
+                query = query.Include(o => o.OrderLines)
+                    .ThenInclude(l => l.Product);
+
+                query = query.Include(o => o.OrderLines)
+                    .ThenInclude(l => l.ProductVariant);
+            }
+
+            return query;
+        }
+
+        public static IQueryable<Order> WithFilter(
+            this IQueryable<Order> query,
+            OrderListFilter filter)
+        {
+            if (!string.IsNullOrEmpty(filter.UserId))
+            {
+                query = query.Where(o => o.UserId == filter.UserId);
+            }
+
+            if (filter.RegistrationId.HasValue)
+            {
+                query = query.Where(o => o.RegistrationId == filter.RegistrationId);
+            }
+            
+            if (filter.EventId.HasValue)
+            {
+                query = query.Where(o => o.Registration.EventInfoId == filter.EventId);
+            }
+
+            if (filter.Status.HasValue)
+            {
+                query = query.Where(o => o.Status == filter.Status);
+            }
+
+            return query;
+        }
+
+        public static IQueryable<Order> WithOrder(
+            this IQueryable<Order> query,
+            OrderListOrder order,
+            bool descending = false)
+        {
+            switch (order)
+            {
+                case OrderListOrder.Time:
+                    query = descending
+                        ? query.OrderByDescending(o => o.OrderTime)
+                        : query.OrderBy(o => o.OrderTime);
+                    break;
             }
 
             return query;

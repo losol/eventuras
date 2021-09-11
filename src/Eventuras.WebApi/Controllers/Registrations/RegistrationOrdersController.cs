@@ -32,7 +32,7 @@ namespace Eventuras.WebApi.Controllers.Registrations
 
         // GET: v3/registrations/667/orders
         [HttpGet]
-        public async Task<OrderDto[]> GetOrdersForRegistration(int id, CancellationToken token)
+        public async Task<RegistrationOrderDto[]> GetOrdersForRegistration(int id, CancellationToken token)
         {
             var r = await _registrationRetrievalService.GetRegistrationByIdAsync(id,
                 new RegistrationRetrievalOptions
@@ -42,13 +42,13 @@ namespace Eventuras.WebApi.Controllers.Registrations
                 }, token);
 
             return r.Orders
-                .Select(o => new OrderDto(o))
+                .Select(o => new RegistrationOrderDto(o))
                 .ToArray();
         }
 
         // POST: v3/registrations/667/orders
         [HttpPost]
-        public async Task<OrderDto> CreateNewOrderForRegistration(int id,
+        public async Task<RegistrationOrderDto> CreateNewOrderForRegistration(int id,
             [FromBody] NewRegistrationOrderDto dto,
             CancellationToken token)
         {
@@ -60,7 +60,7 @@ namespace Eventuras.WebApi.Controllers.Registrations
                     .Select(d => d.ToOrderItemDto())
                     .ToArray(), token);
 
-            return new OrderDto(order);
+            return new RegistrationOrderDto(order);
         }
     }
 
@@ -79,7 +79,7 @@ namespace Eventuras.WebApi.Controllers.Registrations
 
         public OrderItemDto ToOrderItemDto()
         {
-            return new OrderItemDto
+            return new()
             {
                 ProductId = ProductId,
                 VariantId = ProductVariantId,

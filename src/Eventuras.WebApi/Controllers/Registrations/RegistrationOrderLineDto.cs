@@ -2,29 +2,26 @@ using System;
 using Eventuras.Domain;
 using Eventuras.WebApi.Controllers.Events;
 
-namespace Eventuras.WebApi.Controllers.Orders
+namespace Eventuras.WebApi.Controllers.Registrations
 {
-    public class OrderLineDto
+    public class RegistrationOrderLineDto
     {
-        public int OrderLineId { get; set; }
         public ProductDto Product { get; set; }
 
         public ProductVariantDto ProductVariant { get; set; }
 
         public int Quantity { get; set; }
 
-        public OrderLineDto()
+        public RegistrationOrderLineDto()
         {
         }
 
-        public OrderLineDto(OrderLine orderLine)
+        public RegistrationOrderLineDto(OrderLine orderLine)
         {
             if (orderLine == null)
             {
                 throw new ArgumentNullException(nameof(orderLine));
             }
-
-            OrderLineId = orderLine.OrderLineId;
 
             Product = new ProductDto(orderLine.Product);
             if (orderLine.ProductVariant != null)

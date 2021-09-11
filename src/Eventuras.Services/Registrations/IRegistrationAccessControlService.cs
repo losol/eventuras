@@ -5,7 +5,7 @@ using Eventuras.Domain;
 
 namespace Eventuras.Services.Registrations
 {
-    internal interface IRegistrationAccessControlService
+    public interface IRegistrationAccessControlService
     {
         /// <summary>
         /// As a logged in user I could only read my own registrations.<br/>

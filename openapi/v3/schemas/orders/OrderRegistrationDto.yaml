@@ -1,5 +1,5 @@
 type: object
-title: Registration information.
+title: Order registration information.
 required:
   - registrationId
   - eventId
@@ -19,9 +19,13 @@ properties:
     type: string
     description: Registered user ID.
   status:
-    $ref: './RegistrationStatus.yaml'
+    $ref: '../registrations/RegistrationStatus.yaml'
   type:
-    $ref: './RegistrationType.yaml'
+    $ref: '../registrations/RegistrationType.yaml'
+  certificateId:
+    type: integer
+    format: int32
+    description: Registration certificate ID.
   notes:
     type: string
 example:

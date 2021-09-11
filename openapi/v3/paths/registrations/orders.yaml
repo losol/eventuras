@@ -3,7 +3,6 @@ get:
   operationId: getRegistrationOrdersList
   tags:
     - registrations
-    - orders
   responses:
     '200':
       description: OK
@@ -12,7 +11,7 @@ get:
           schema:
             type: array
             items:
-              $ref: '../../schemas/orders/OrderDto.yaml'
+              $ref: '../../schemas/registrations/RegistrationOrderDto.yaml'
     '400':
       $ref: 'eventuras-api.v3.yaml#/components/responses/InvalidRequestError'
     '500':
@@ -23,20 +22,19 @@ post:
   operationId: addOrderToRegistration
   tags:
     - registrations
-    - orders
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: '../../schemas/registrations/RegistrationOrderDto.yaml'
+          $ref: '../../schemas/registrations/NewRegistrationOrderDto.yaml'
   responses:
     '200':
       description: OK
       content:
         application/json:
           schema:
-            $ref: '../../schemas/orders/OrderDto.yaml'
+            $ref: '../../schemas/registrations/RegistrationOrderDto.yaml'
     '400':
       $ref: 'eventuras-api.v3.yaml#/components/responses/InvalidRequestError'
     '401':

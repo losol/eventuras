@@ -287,11 +287,16 @@ namespace Eventuras.TestAbstractions
             Product[] products = null,
             ProductVariant[] variants = null,
             int[] quantities = null,
+            ApplicationUser user = null,
+            string userId = null,
             Order.OrderStatus status = Order.OrderStatus.Verified,
-            PaymentMethod.PaymentProvider paymentProvider = PaymentMethod.PaymentProvider.EmailInvoice)
+            PaymentMethod.PaymentProvider paymentProvider = PaymentMethod.PaymentProvider.EmailInvoice,
+            DateTime? time = null)
         {
             var order = new Order
             {
+                OrderTime = time ?? DateTime.Now,
+                UserId = user?.Id ?? userId ?? registration.UserId,
                 Registration = registration,
                 Status = status,
                 PaymentMethod = paymentProvider,
@@ -321,12 +326,15 @@ namespace Eventuras.TestAbstractions
             ProductVariant variant = null,
             int quantity = 1,
             Order.OrderStatus status = Order.OrderStatus.Verified,
+            ApplicationUser user = null,
+            string userId = null,
             PaymentMethod.PaymentProvider paymentProvider = PaymentMethod.PaymentProvider.EmailInvoice)
         {
             return await scope.CreateOrderAsync(registration,
                 new[] {product},
                 variant != null ? new[] {variant} : null,
                 new[] {quantity},
+                user, userId,
                 status, paymentProvider);
         }
 

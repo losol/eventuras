@@ -82,14 +82,15 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         }
 
         [Fact]
-        public async Task Should_Not_Allow_Regular_User_To_Create_Order()
+        public async Task Should_Not_Allow_Regular_User_To_Create_Order_For_Someone_Elses_Reg()
         {
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
+            using var otherUser = await scope.CreateUserAsync();
             using var e = await scope.CreateEventAsync();
-            using var reg = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
+            using var reg = await scope.CreateRegistrationAsync(e.Entity, otherUser.Entity);
 
-            var client = _factory.CreateClient().Authenticated();
+            var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
 
             var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders", new
             {
@@ -104,6 +105,33 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
                 }
             });
             response.CheckForbidden();
+        }
+        
+        [Fact]
+        public async Task Should_Allow_Regular_User_To_Create_Order_For_Own_Reg()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var e = await scope.CreateEventAsync();
+            using var reg = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
+            using var product = await scope.CreateProductAsync(e.Entity);
+
+            var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
+
+            var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders", new
+            {
+                items = new[]
+                {
+                    new
+                    {
+                        productId = product.Entity.ProductId,
+                        quantity = 1
+                    }
+                }
+            });
+            response.CheckOk();
+
+            await CheckOrderCreatedAsync(scope, reg.Entity, product.Entity);
         }
 
         [Fact]
@@ -257,7 +285,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             response.CheckOk();
 
             var token = await response.AsArrayAsync();
-            token.CheckArray((t, o) => t.CheckOrder(o),
+            token.CheckArray((t, o) => t.CheckRegistrationOrder(o),
                 o1.Entity, o2.Entity);
         }
 
@@ -281,7 +309,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             response.CheckOk();
 
             var token = await response.AsArrayAsync();
-            token.CheckArray((t, o) => t.CheckOrder(o),
+            token.CheckArray((t, o) => t.CheckRegistrationOrder(o),
                 o1.Entity, o2.Entity);
         }
 

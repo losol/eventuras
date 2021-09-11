@@ -36,12 +36,12 @@ example:
     - registrationId: 1099
       eventId: 45
       userId: '3fa94776-5fc1-11eb-b353-448a5b42a569'
-      status: 1
-      type: 2
+      status: verified
+      type: participant
       notes: 'Test'
     - registrationId: 1346
       eventId: 674
       userId: '69056ce6-5fc4-11eb-b474-448a5b42a569'
-      status: 1
-      type: 1
+      status: verified
+      type: lecturer
       notes: 'Another test'

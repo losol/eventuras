@@ -255,7 +255,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/OrderDto'
+                  $ref: '#/components/schemas/RegistrationOrderDto'
                 type: array
           description: OK
         "400":
@@ -273,21 +273,20 @@ paths:
       summary: Get registration orders list.
       tags:
       - registrations
-      - orders
     post:
       operationId: addOrderToRegistration
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegistrationOrderDto'
+              $ref: '#/components/schemas/NewRegistrationOrderDto'
         required: true
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OrderDto'
+                $ref: '#/components/schemas/RegistrationOrderDto'
           description: OK
         "400":
           content:
@@ -322,7 +321,6 @@ paths:
       summary: Add order to registration.
       tags:
       - registrations
-      - orders
   /notifications/email:
     post:
       description: |
@@ -520,6 +518,13 @@ paths:
   /users/{id}:
     get:
       operationId: getUserById
+      parameters:
+      - description: User ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           content:
@@ -561,8 +566,7 @@ paths:
         name: id
         required: true
         schema:
-          format: int32
-          type: integer
+          type: string
       requestBody:
         content:
           application/json:
@@ -1190,6 +1194,200 @@ paths:
       tags:
       - events
       - products
+  /orders:
+    get:
+      operationId: getOrders
+      parameters:
+      - description: Page number.
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          format: int32
+          type: integer
+      - description: Page size.
+        in: query
+        name: count
+        required: false
+        schema:
+          default: 100
+          format: int32
+          type: integer
+      - description: |
+          Search orders by userId.
+        in: query
+        name: userId
+        required: false
+        schema:
+          type: string
+      - description: |
+          Search orders by registrationId.
+        in: query
+        name: registrationId
+        required: false
+        schema:
+          format: int32
+          type: integer
+      - description: |
+          Search orders by eventId.
+        in: query
+        name: eventId
+        required: false
+        schema:
+          format: int32
+          type: integer
+      - in: query
+        name: status
+        required: false
+        schema:
+          $ref: '#/components/schemas/OrderStatus'
+      - description: |
+          Whether to include user information into the response.
+        in: query
+        name: includeUser
+        required: false
+        schema:
+          default: false
+          type: boolean
+      - description: |
+          Whether to include registration information into the response.
+        in: query
+        name: includeRegistration
+        required: false
+        schema:
+          default: false
+          type: boolean
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/OrdersPagedList'
+                type: array
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Missing or invalid request parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Get accessible orders list.
+      tags:
+      - orders
+  /orders/{id}:
+    delete:
+      operationId: cancelOrder
+      parameters:
+      - description: Order ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          description: Order cancelled
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Cancel order.
+      tags:
+      - orders
+    get:
+      operationId: getOrderById
+      parameters:
+      - description: Order ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      - description: |
+          Whether to include user information into the response.
+        in: query
+        name: includeUser
+        required: false
+        schema:
+          default: false
+          type: boolean
+      - description: |
+          Whether to include registration information into the response.
+        in: query
+        name: includeRegistration
+        required: false
+        schema:
+          default: false
+          type: boolean
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderDto'
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Get order by id.
+      tags:
+      - orders
   /organizations:
     get:
       operationId: getOrganizationsList
@@ -1756,14 +1954,14 @@ components:
         - registrationId: 1099
           eventId: 45
           userId: 3fa94776-5fc1-11eb-b353-448a5b42a569
-          status: 1
-          type: 2
+          status: verified
+          type: participant
           notes: Test
         - registrationId: 1346
           eventId: 674
           userId: 69056ce6-5fc4-11eb-b474-448a5b42a569
-          status: 1
-          type: 1
+          status: verified
+          type: lecturer
           notes: Another test
       properties:
         page:
@@ -1809,8 +2007,8 @@ components:
           zip: 1234
           city: Oslo
           country: Norway
-        status: 1
-        type: 2
+        status: verified
+        type: participant
         notes: Testing
       title: New registration info
     RegistrationDto:
@@ -1818,8 +2016,8 @@ components:
         registrationId: 1099
         eventId: 45
         userId: 3fa94776-5fc1-11eb-b353-448a5b42a569
-        status: 1
-        type: 2
+        status: verified
+        type: participant
         notes: Test
       properties:
         registrationId:
@@ -1834,24 +2032,9 @@ components:
           description: Registered user ID.
           type: string
         status:
-          description: |
-            Draft = 0,
-            Cancelled = 1,
-            Verified = 2,
-            NotAttended = 3,
-            Attended = 4,
-            Finished = 5
-          title: Registration status enum.
-          type: integer
+          $ref: '#/components/schemas/RegistrationStatus'
         type:
-          description: |-
-            Participant = 0,
-            Student = 1,
-            Staff = 2,
-            Lecturer = 3,
-            Artist = 4
-          title: Registration type enum.
-          type: integer
+          $ref: '#/components/schemas/./schemas/registrations/RegistrationType.yaml'
         notes:
           type: string
       required:
@@ -1874,37 +2057,22 @@ components:
           zip: 1234
           city: Oslo
           country: Norway
-        status: 1
-        type: 2
+        status: verified
+        type: participant
         notes: Testing
       properties:
         customer:
           $ref: '#/components/schemas/RegistrationCustomerInfoDto'
         status:
-          description: |
-            Draft = 0,
-            Cancelled = 1,
-            Verified = 2,
-            NotAttended = 3,
-            Attended = 4,
-            Finished = 5
-          title: Registration status enum.
-          type: integer
+          $ref: '#/components/schemas/RegistrationStatus'
         type:
-          description: |-
-            Participant = 0,
-            Student = 1,
-            Staff = 2,
-            Lecturer = 3,
-            Artist = 4
-          title: Registration type enum.
-          type: integer
+          $ref: '#/components/schemas/./schemas/registrations/RegistrationType.yaml'
         notes:
           description: Additional notes. Can be managed by admin only.
           type: string
       title: Registration data.
       type: object
-    OrderDto:
+    RegistrationOrderDto:
       example:
         orderId: 10001
         items:
@@ -1936,14 +2104,14 @@ components:
           type: integer
         items:
           items:
-            $ref: '#/components/schemas/OrderLineDto'
+            $ref: '#/components/schemas/RegistrationOrderLineDto'
           type: array
       required:
       - items
       - orderId
       title: Order information.
       type: object
-    RegistrationOrderDto:
+    NewRegistrationOrderDto:
       example:
         items:
         - productId: 1001
@@ -1954,7 +2122,7 @@ components:
       properties:
         items:
           items:
-            $ref: '#/components/schemas/RegistrationOrderItemDto'
+            $ref: '#/components/schemas/NewRegistrationOrderItemDto'
           type: array
       required:
       - items
@@ -1965,8 +2133,8 @@ components:
         filter:
           eventId: 0
           registrationTypes:
-          - null
-          - null
+          - '{}'
+          - '{}'
           registrationStatuses:
           - null
           - null
@@ -2408,6 +2576,172 @@ components:
           type: number
       title: New product variant form.
       type: object
+    OrderStatus:
+      description: |
+        Search orders by status.
+        Can be either `draft`, `verified`, `invoiced`, `cancelled`, or `refunded`.
+      enum:
+      - draft
+      - verified
+      - invoiced
+      - cancelled
+      - refunded
+      title: Order status enum.
+      type: string
+    OrdersPagedList:
+      example:
+        page: 1
+        size: 10
+        total: 2
+        pages: 1
+        data:
+        - orderId: 10001
+          status: verified
+          time: 2017-07-21T17:32:28Z
+          userId: 3fa94776-5fc1-11eb-b353-448a5b42a569
+          registrationId: 1099
+          user:
+            id: 3fa94776-5fc1-11eb-b353-448a5b42a569
+            email: test@email.com
+            name: John Doe
+            phoneNumber: +11111111111
+          registration:
+            registrationId: 1099
+            eventId: 45
+            userId: 3fa94776-5fc1-11eb-b353-448a5b42a569
+            status: verified
+            type: participant
+            notes: Test
+          items:
+          - orderLineId: 103030
+            product:
+              productId: 1001
+              name: Test Product
+              description: Test
+              more: More on this product...
+              price: 19.99
+              vatPercent: 17
+            productVariant:
+              productVariantId: 34
+              name: Red Coloured Test Product
+              description: Some variant description...
+              price: 21.99
+            quantity: 1
+          - orderLineId: 103030
+            product:
+              productId: 2001
+              name: Test Product 2
+              description: Test 2
+              more: More on this product...
+              price: 29.99
+              vatPercent: 17
+            quantity: 3
+      properties:
+        page:
+          description: Page number.
+          format: int32
+          type: integer
+        count:
+          description: Page size.
+          format: int32
+          type: integer
+        total:
+          description: Total items.
+          format: int32
+          type: integer
+        pages:
+          description: Total pages.
+          format: int32
+          type: integer
+        data:
+          items:
+            $ref: '#/components/schemas/OrderDto'
+          type: array
+      required:
+      - count
+      - data
+      - page
+      - pages
+      - total
+      title: User list with paging.
+      type: object
+    OrderDto:
+      example:
+        orderId: 10001
+        status: verified
+        time: 2017-07-21T17:32:28Z
+        userId: 3fa94776-5fc1-11eb-b353-448a5b42a569
+        registrationId: 1099
+        user:
+          id: 3fa94776-5fc1-11eb-b353-448a5b42a569
+          email: test@email.com
+          name: John Doe
+          phoneNumber: +11111111111
+        registration:
+          registrationId: 1099
+          eventId: 45
+          userId: 3fa94776-5fc1-11eb-b353-448a5b42a569
+          status: verified
+          type: participant
+          notes: Test
+        items:
+        - orderLineId: 103030
+          product:
+            productId: 1001
+            name: Test Product
+            description: Test
+            more: More on this product...
+            price: 19.99
+            vatPercent: 17
+          productVariant:
+            productVariantId: 34
+            name: Red Coloured Test Product
+            description: Some variant description...
+            price: 21.99
+          quantity: 1
+        - orderLineId: 103030
+          product:
+            productId: 2001
+            name: Test Product 2
+            description: Test 2
+            more: More on this product...
+            price: 29.99
+            vatPercent: 17
+          quantity: 3
+      properties:
+        orderId:
+          description: Order ID.
+          format: int32
+          type: integer
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+        time:
+          format: date-time
+          type: string
+        userId:
+          description: User ID.
+          type: string
+        registrationId:
+          description: Registration ID.
+          format: int32
+          type: integer
+        user:
+          $ref: '#/components/schemas/UserDto'
+        registration:
+          $ref: '#/components/schemas/OrderRegistrationDto'
+        items:
+          items:
+            $ref: '#/components/schemas/OrderLineDto'
+          type: array
+      required:
+      - items
+      - orderId
+      - registrationId
+      - status
+      - time
+      - userId
+      title: Order information.
+      type: object
     OrganizationDto:
       example:
         name: Test org
@@ -2509,24 +2843,15 @@ components:
       title: Org setting key value pair.
       type: object
     RegistrationStatus:
-      description: |
-        Draft = 0,
-        Cancelled = 1,
-        Verified = 2,
-        NotAttended = 3,
-        Attended = 4,
-        Finished = 5
+      enum:
+      - draft
+      - cancelled
+      - verified
+      - notattended
+      - attended
+      - finished
       title: Registration status enum.
-      type: integer
-    RegistrationType:
-      description: |-
-        Participant = 0,
-        Student = 1,
-        Staff = 2,
-        Lecturer = 3,
-        Artist = 4
-      title: Registration type enum.
-      type: integer
+      type: string
     RegistrationCustomerInfoDto:
       example:
         surname: Doe
@@ -2549,7 +2874,7 @@ components:
           type: string
       title: Registration customer data.
       type: object
-    OrderLineDto:
+    RegistrationOrderLineDto:
       example:
         product:
           productId: 1001
@@ -2577,7 +2902,7 @@ components:
       - quantity
       title: Order line data.
       type: object
-    RegistrationOrderItemDto:
+    NewRegistrationOrderItemDto:
       example:
         productId: 1001
         productVariantId: 34
@@ -2604,8 +2929,8 @@ components:
       example:
         eventId: 0
         registrationTypes:
-        - null
-        - null
+        - '{}'
+        - '{}'
         registrationStatuses:
         - null
         - null
@@ -2619,7 +2944,7 @@ components:
           type: array
         registrationTypes:
           items:
-            $ref: '#/components/schemas/RegistrationType'
+            $ref: '#/components/schemas/./schemas/registrations/RegistrationType.yaml'
           type: array
       title: Notification recipients filter
       type: object
@@ -2632,6 +2957,78 @@ components:
       required:
       - name
       title: Location info.
+      type: object
+    OrderRegistrationDto:
+      example:
+        registrationId: 1099
+        eventId: 45
+        userId: 3fa94776-5fc1-11eb-b353-448a5b42a569
+        status: verified
+        type: participant
+        notes: Test
+      properties:
+        registrationId:
+          description: Registration ID.
+          format: int32
+          type: integer
+        eventId:
+          description: Event ID.
+          format: int32
+          type: integer
+        userId:
+          description: Registered user ID.
+          type: string
+        status:
+          $ref: '#/components/schemas/RegistrationStatus'
+        type:
+          $ref: '#/components/schemas/./schemas/registrations/RegistrationType.yaml'
+        certificateId:
+          description: Registration certificate ID.
+          format: int32
+          type: integer
+        notes:
+          type: string
+      required:
+      - eventId
+      - registrationId
+      - status
+      - type
+      - userId
+      title: Order registration information.
+      type: object
+    OrderLineDto:
+      example:
+        orderLineId: 100001
+        product:
+          productId: 1001
+          name: Test Product
+          description: Test
+          more: More on this product...
+          price: 19.99
+          vatPercent: 17
+        productVariant:
+          productVariantId: 34
+          name: Red Coloured Test Product
+          description: Some variant description...
+          price: 21.99
+        quantity: 1
+      properties:
+        orderLineId:
+          description: Order line ID.
+          format: int32
+          type: integer
+        product:
+          $ref: '#/components/schemas/ProductDto'
+        productVariant:
+          $ref: '#/components/schemas/ProductVariantDto'
+        quantity:
+          format: int32
+          type: integer
+      required:
+      - orderLineId
+      - product
+      - quantity
+      title: Order line data.
       type: object
     OrganizationSettingType:
       description: |

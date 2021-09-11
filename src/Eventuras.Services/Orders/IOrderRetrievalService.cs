@@ -9,5 +9,10 @@ namespace Eventuras.Services.Orders
         Task<Order> GetOrderByIdAsync(int id,
             OrderRetrievalOptions options = null,
             CancellationToken cancellationToken = default);
+
+        Task<Paging<Order>> ListOrdersAsync(
+            OrderListRequest request,
+            OrderRetrievalOptions options = default,
+            CancellationToken cancellationToken = default);
     }
 }
