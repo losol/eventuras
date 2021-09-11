@@ -76,6 +76,8 @@ namespace Eventuras.Web.Pages.Events.Register
 
         public RegistrationStatus Status { get; set; } = RegistrationStatus.Draft;
         public RegistrationType Type { get; set; } = RegistrationType.Participant;
+        
+        public string CaptchaResponse { get; set; }
 
         public RegisterVM() { }
         public RegisterVM(EventInfo eventinfo, PaymentProvider? defaultPaymentMethod = null)

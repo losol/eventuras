@@ -37,7 +37,9 @@ namespace Eventuras.Services.Registrations
 
             _context = context ?? throw
                 new ArgumentNullException(nameof(context));
-            _registrationOrderManagementService = registrationOrderManagementService;
+
+            _registrationOrderManagementService = registrationOrderManagementService ?? throw
+                new ArgumentNullException(nameof(registrationOrderManagementService));
         }
 
         public async Task<Registration> CreateRegistrationAsync(

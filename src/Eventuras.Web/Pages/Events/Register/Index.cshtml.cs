@@ -18,7 +18,9 @@ using System.Text;
 using static Eventuras.Domain.PaymentMethod;
 using System.Text.RegularExpressions;
 using Eventuras.Services.Events;
+using Eventuras.Services.Google.RecaptchaV3;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 
 namespace Eventuras.Web.Pages.Events.Register
 {
@@ -31,6 +33,8 @@ namespace Eventuras.Web.Pages.Events.Register
         private readonly IRegistrationService _registrationService;
         private readonly RegistrationEmailSender _registrationEmailSender;
         private readonly IStringLocalizer<EventRegistrationModel> _stringLocalizer;
+        private readonly IRecaptchaV3VerificationService _recaptchaV3VerificationService;
+        private readonly IOptions<RecaptchaV3Config> _recaptchaOptions;
 
         public EventRegistrationModel(
             UserManager<ApplicationUser> userManager,
@@ -39,7 +43,9 @@ namespace Eventuras.Web.Pages.Events.Register
             IEventInfoRetrievalService eventsService,
             IPaymentMethodService paymentMethodService,
             IRegistrationService registrationService,
-            IStringLocalizer<EventRegistrationModel> stringLocalizer)
+            IStringLocalizer<EventRegistrationModel> stringLocalizer, 
+            IRecaptchaV3VerificationService recaptchaV3VerificationService, 
+            IOptions<RecaptchaV3Config> recaptchaOptions)
         {
             _userManager = userManager;
             _logger = logger;
@@ -48,6 +54,8 @@ namespace Eventuras.Web.Pages.Events.Register
             _registrationService = registrationService;
             _stringLocalizer = stringLocalizer;
             _registrationEmailSender = registrationEmailSender;
+            _recaptchaV3VerificationService = recaptchaV3VerificationService;
+            _recaptchaOptions = recaptchaOptions;
         }
 
         [BindProperty]
@@ -76,11 +84,20 @@ namespace Eventuras.Web.Pages.Events.Register
             return Page();
         }
 
+        private async Task<bool> CheckCaptchaAsync()
+        {
+            return !_recaptchaOptions.Value.Enabled ||
+                   await _recaptchaV3VerificationService.VerifyTokenAsync(Registration.CaptchaResponse);
+        }
+
         public async Task<IActionResult> OnPostAsync(int id)
         {
-
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || !await CheckCaptchaAsync())
             {
+                EventInfo = await _eventsService.GetEventInfoByIdAsync(id, new EventInfoRetrievalOptions
+                {
+                    LoadProducts = true
+                });
                 PaymentMethods = await _paymentMethodService.GetActivePaymentMethodsAsync();
                 return Page();
             }

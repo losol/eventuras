@@ -30,6 +30,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using System.Globalization;
 using System.Net.Http.Headers;
+using Eventuras.Services.Google.RecaptchaV3;
 using Eventuras.Services.Organizations.Settings;
 using Eventuras.Services.PowerOffice;
 using Eventuras.Services.Stripe;
@@ -241,6 +242,8 @@ namespace Eventuras.Web.Extensions
 
             // Add Health Checks
             services.AddApplicationHealthChecks(configuration.GetSection(Constants.HealthCheckConfigurationKey));
+
+            services.AddRecaptchaV3(configuration.GetSection("Google:RecaptchaV3"));
 
             // Added for the renderpage service
             services.AddHttpContextAccessor();
