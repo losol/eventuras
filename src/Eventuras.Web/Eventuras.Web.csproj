@@ -44,6 +44,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Eventuras.Services.Auth0\Eventuras.Services.Auth0.csproj" />
     <ProjectReference Include="..\Eventuras.Services.Converto\Eventuras.Services.Converto.csproj" />
+    <ProjectReference Include="..\Eventuras.Services.Google.RecaptchaV3\Eventuras.Services.Google.RecaptchaV3.csproj" />
     <ProjectReference Include="..\Eventuras.Services.PowerOffice\Eventuras.Services.PowerOffice.csproj" />
     <ProjectReference Include="..\Eventuras.Services.Stripe\Eventuras.Services.Stripe.csproj" />
     <ProjectReference Include="..\Eventuras.Services.TalentLms\Eventuras.Services.TalentLms.csproj" />

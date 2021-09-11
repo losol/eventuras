@@ -1,6 +1,9 @@
 ﻿@page "{id:int}"
 @model Eventuras.Web.Pages.Events.Register.EventRegistrationModel
 @using static Eventuras.Domain.PaymentMethod;
+@using Microsoft.Extensions.Options
+@using Eventuras.Services.Google.RecaptchaV3
+@inject IOptions<RecaptchaV3Config> _options
 @{
     ViewData["Title"] = Model.EventInfo.Title + "- Påmelding";
 
@@ -21,7 +24,8 @@
 }
 
 @if (Model.EventInfo.Status == Eventuras.Domain.EventInfo.EventInfoStatus.RegistrationsOpen) {
-    <form method="post">
+    <form method="post" id="reg-form">
+    <input type="hidden" asp-for="Registration.CaptchaResponse" id="reg-captcha-response">
         <div class="row justify-content-between py-3">
             <div class="col-md-9">
                 <div class="form-group">
@@ -191,7 +195,10 @@
 
 
                 <div class="form-group py-3">
-                    <input type="submit" value="Registrer meg" class="btn btn-lg btn-success" />
+                    <input type="submit" value="Registrer meg" class="btn btn-lg btn-success g-recaptcha"
+                           data-sitekey="@_options.Value.SiteKey" 
+                                   data-callback='onSubmit' 
+                                   data-action='submit'/>
                 </div>
 
                     </div>
@@ -209,6 +216,13 @@
     }
 </script>
 @section Scripts {
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script>
+        function onSubmit(token) {
+            document.getElementById('reg-captcha-response').value = token;
+            document.getElementById("reg-form").submit();
+        }
+    </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
 

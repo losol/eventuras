@@ -33,6 +33,8 @@ namespace Eventuras.IntegrationTests
                         {"AppSettings:SmsProvider", "Mock"},
                         {"AppSettings:UsePowerOffice", "false"},
                         {"AppSettings:UseStripeInvoice", "false"},
+                        {"Google:RecaptchaV3:ApiSecret", "anything"},
+                        {"Google:RecaptchaV3:Enabled", "false"},
                         {"SuperAdmin:Email", TestingConstants.SuperAdminEmail},
                         {"SuperAdmin:Password", TestingConstants.SuperAdminPassword}
                     }))
