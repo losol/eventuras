@@ -2051,6 +2051,83 @@
         },
         "summary" : "Get order by id.",
         "tags" : [ "orders" ]
+      },
+      "put" : {
+        "operationId" : "updateOrder",
+        "parameters" : [ {
+          "description" : "Order ID.",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OrderUpdateRequestDto"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrderDto"
+                }
+              }
+            },
+            "description" : "Order updated."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Access token is missing or invalid."
+          },
+          "403" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Access forbidden."
+          },
+          "404" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "The requested resource not found."
+          },
+          "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Unexpected server error."
+          }
+        },
+        "summary" : "Update order.",
+        "tags" : [ "orders" ]
       }
     },
     "/organizations" : {
@@ -3813,6 +3890,28 @@
         "title" : "Order information.",
         "type" : "object"
       },
+      "OrderUpdateRequestDto" : {
+        "example" : {
+          "lines" : [ {
+            "productId" : 1001
+          }, {
+            "productVariantId" : 34
+          }, {
+            "quantity" : 1
+          } ]
+        },
+        "properties" : {
+          "lines" : {
+            "items" : {
+              "$ref" : "#/components/schemas/OrderLineUpdateDto"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "lines" ],
+        "title" : "Order update form.",
+        "type" : "object"
+      },
       "OrganizationDto" : {
         "example" : {
           "name" : "Test org"
@@ -4147,6 +4246,30 @@
         },
         "required" : [ "orderLineId", "product", "quantity" ],
         "title" : "Order line data.",
+        "type" : "object"
+      },
+      "OrderLineUpdateDto" : {
+        "example" : {
+          "productId" : 1001,
+          "productVariantId" : 34,
+          "quantity" : 1
+        },
+        "properties" : {
+          "productId" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "productVariantId" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "quantity" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "productId", "quantity" ],
+        "title" : "Order line update data.",
         "type" : "object"
       },
       "OrganizationSettingType" : {

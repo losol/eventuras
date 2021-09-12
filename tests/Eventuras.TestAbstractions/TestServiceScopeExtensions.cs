@@ -298,7 +298,6 @@ namespace Eventuras.TestAbstractions
                 OrderTime = time ?? DateTime.Now,
                 UserId = user?.Id ?? userId ?? registration.UserId,
                 Registration = registration,
-                Status = status,
                 PaymentMethod = paymentProvider,
                 OrderLines = products?.Select((p, i) => new OrderLine
                 {
@@ -314,8 +313,25 @@ namespace Eventuras.TestAbstractions
                 }).ToList()
             };
 
+            if (status == Order.OrderStatus.Invoiced ||
+                status == Order.OrderStatus.Refunded)
+            {
+                order.Status = Order.OrderStatus.Verified;
+            }
+
+            if (status == Order.OrderStatus.Refunded)
+            {
+                order.Status = Order.OrderStatus.Invoiced;
+            }
+
+            if (status != Order.OrderStatus.Draft)
+            {
+                order.Status = status;
+            }
+
             await scope.Db.Orders.AddAsync(order);
             await scope.Db.SaveChangesAsync();
+
             return new DisposableEntity<Order>(order, scope.Db);
         }
 

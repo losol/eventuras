@@ -220,6 +220,7 @@ font-style: italic;
   <li><a href="#cancelOrder"><code><span class="http-method">delete</span> /orders/{id}</code></a></li>
   <li><a href="#getOrderById"><code><span class="http-method">get</span> /orders/{id}</code></a></li>
   <li><a href="#getOrders"><code><span class="http-method">get</span> /orders</code></a></li>
+  <li><a href="#updateOrder"><code><span class="http-method">put</span> /orders/{id}</code></a></li>
   </ul>
   <h4><a href="#Organizations">Organizations</a></h4>
   <ul>
@@ -1391,6 +1392,123 @@ or explicit email addresses.</div>
         <a href="#Error">Error</a>
     <h4 class="field-label">401</h4>
     Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="updateOrder"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /orders/{id}</code></pre></div>
+    <div class="method-summary">Update order. (<span class="nickname">updateOrder</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Order ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">OrderUpdateRequestDto <a href="#OrderUpdateRequestDto">OrderUpdateRequestDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#OrderDto">OrderDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "orderId" : 10001,
+  "status" : "verified",
+  "time" : "2017-07-21T17:32:28Z",
+  "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+  "registrationId" : 1099,
+  "user" : {
+    "id" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+    "email" : "test@email.com",
+    "name" : "John Doe",
+    "phoneNumber" : "+11111111111"
+  },
+  "registration" : {
+    "registrationId" : 1099,
+    "eventId" : 45,
+    "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+    "status" : "verified",
+    "type" : "participant",
+    "notes" : "Test"
+  },
+  "items" : [ {
+    "orderLineId" : 103030,
+    "product" : {
+      "productId" : 1001,
+      "name" : "Test Product",
+      "description" : "Test",
+      "more" : "More on this product...",
+      "price" : 19.99,
+      "vatPercent" : 17
+    },
+    "productVariant" : {
+      "productVariantId" : 34,
+      "name" : "Red Coloured Test Product",
+      "description" : "Some variant description...",
+      "price" : 21.99
+    },
+    "quantity" : 1
+  }, {
+    "orderLineId" : 103030,
+    "product" : {
+      "productId" : 2001,
+      "name" : "Test Product 2",
+      "description" : "Test 2",
+      "more" : "More on this product...",
+      "price" : 29.99,
+      "vatPercent" : 17
+    },
+    "quantity" : 3
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Order updated.
+        <a href="#OrderDto">OrderDto</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
         <a href="#Error">Error</a>
     <h4 class="field-label">500</h4>
     Unexpected server error.
@@ -3385,8 +3503,10 @@ Default is <code>false</code>. default: null </div>
     <li><a href="#NotificationResponseDto"><code>NotificationResponseDto</code> - Notification response</a></li>
     <li><a href="#OrderDto"><code>OrderDto</code> - Order information.</a></li>
     <li><a href="#OrderLineDto"><code>OrderLineDto</code> - Order line data.</a></li>
+    <li><a href="#OrderLineUpdateDto"><code>OrderLineUpdateDto</code> - Order line update data.</a></li>
     <li><a href="#OrderRegistrationDto"><code>OrderRegistrationDto</code> - Order registration information.</a></li>
     <li><a href="#OrderStatus"><code>OrderStatus</code> - Order status enum.</a></li>
+    <li><a href="#OrderUpdateRequestDto"><code>OrderUpdateRequestDto</code> - Order update form.</a></li>
     <li><a href="#OrdersPagedList"><code>OrdersPagedList</code> - User list with paging.</a></li>
     <li><a href="#OrganizationDto"><code>OrganizationDto</code> - Organization properties.</a></li>
     <li><a href="#OrganizationFormDto"><code>OrganizationFormDto</code> - Organization data.</a></li>
@@ -3613,6 +3733,15 @@ All properties are optional.</div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
+    <h3><a name="OrderLineUpdateDto"><code>OrderLineUpdateDto</code> - Order line update data.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">productId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">productVariantId (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">quantity </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
     <h3><a name="OrderRegistrationDto"><code>OrderRegistrationDto</code> - Order registration information.</a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
@@ -3631,6 +3760,13 @@ All properties are optional.</div>
 Can be either <code>draft</code>, <code>verified</code>, <code>invoiced</code>, <code>cancelled</code>, or <code>refunded</code>.</div>
     <div class="field-items">
           </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="OrderUpdateRequestDto"><code>OrderUpdateRequestDto</code> - Order update form.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">lines </div><div class="param-desc"><span class="param-type"><a href="#OrderLineUpdateDto">array[OrderLineUpdateDto]</a></span>  </div>
+    </div>  <!-- field-items -->
   </div>
   <div class="model">
     <h3><a name="OrdersPagedList"><code>OrdersPagedList</code> - User list with paging.</a> <a class="up" href="#__Models">Up</a></h3>

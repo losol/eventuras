@@ -71,6 +71,33 @@ namespace Eventuras.WebApi.Controllers.Orders
                 query, paging, o => new OrderDto(o)));
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateOrder(int id, [FromBody] OrderUpdateRequestDto request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var order = await _orderRetrievalService
+                .GetOrderByIdAsync(id, new OrderRetrievalOptions
+                {
+                    IncludeRegistration = true,
+                    IncludeUser = true,
+                    IncludeOrderLines = true
+                });
+
+            try
+            {
+                await _orderManagementService.UpdateOrderAsync(order, request.ToOrderUpdates());
+                return Ok(new OrderDto(order));
+            }
+            catch (OrderUpdateException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task CancelOrder(int id)
         {

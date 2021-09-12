@@ -33,8 +33,16 @@ namespace Eventuras.TestAbstractions
 
         public void Dispose()
         {
-            _context.Remove(Entity);
-            _context.SaveChanges();
+            try
+            {
+                _context.Remove(Entity);
+                _context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                //  Attempted to update or delete an entity that does not exist in the store.
+                _context.Entry(Entity).State = EntityState.Detached;
+            }
         }
 
         public async Task SaveAsync()

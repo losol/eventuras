@@ -1214,8 +1214,8 @@ ul.nav-tabs {
       "city" : "Oslo",
       "country" : "Norway"
     },
-    "status" : 1,
-    "type" : 2,
+    "status" : "verified",
+    "type" : "participant",
     "notes" : "Testing"
   },
   "allOf" : [ {
@@ -1223,6 +1223,53 @@ ul.nav-tabs {
   }, {
     "$ref" : "#/components/schemas/New_registration_specific_properties"
   } ]
+};
+    defs["NewRegistrationOrderDto"] = {
+  "title" : "New order data.",
+  "required" : [ "items" ],
+  "type" : "object",
+  "properties" : {
+    "items" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/NewRegistrationOrderItemDto"
+      }
+    }
+  },
+  "example" : {
+    "items" : [ {
+      "productId" : 1001,
+      "productVariantId" : 34,
+      "quantity" : 1
+    }, {
+      "productId" : 3244,
+      "quantity" : 3
+    } ]
+  }
+};
+    defs["NewRegistrationOrderItemDto"] = {
+  "title" : "Order line data.",
+  "required" : [ "productId", "quantity" ],
+  "type" : "object",
+  "properties" : {
+    "productId" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "productVariantId" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "quantity" : {
+      "type" : "integer",
+      "format" : "int32"
+    }
+  },
+  "example" : {
+    "productId" : 1001,
+    "productVariantId" : 34,
+    "quantity" : 1
+  }
 };
     defs["New_registration_specific_properties"] = {
   "title" : "New registration specific properties",
@@ -1284,7 +1331,7 @@ ul.nav-tabs {
     "registrationTypes" : {
       "type" : "array",
       "items" : {
-        "$ref" : "#/components/schemas/RegistrationType"
+        "$ref" : "#/components/schemas/./schemas/registrations/RegistrationType.yaml"
       }
     }
   },
@@ -1304,13 +1351,35 @@ ul.nav-tabs {
 };
     defs["OrderDto"] = {
   "title" : "Order information.",
-  "required" : [ "items", "orderId" ],
+  "required" : [ "items", "orderId", "registrationId", "status", "time", "userId" ],
   "type" : "object",
   "properties" : {
     "orderId" : {
       "type" : "integer",
       "description" : "Order ID.",
       "format" : "int32"
+    },
+    "status" : {
+      "$ref" : "#/components/schemas/OrderStatus"
+    },
+    "time" : {
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "userId" : {
+      "type" : "string",
+      "description" : "User ID."
+    },
+    "registrationId" : {
+      "type" : "integer",
+      "description" : "Registration ID.",
+      "format" : "int32"
+    },
+    "user" : {
+      "$ref" : "#/components/schemas/UserDto"
+    },
+    "registration" : {
+      "$ref" : "#/components/schemas/OrderRegistrationDto"
     },
     "items" : {
       "type" : "array",
@@ -1321,7 +1390,26 @@ ul.nav-tabs {
   },
   "example" : {
     "orderId" : 10001,
+    "status" : "verified",
+    "time" : "2017-07-21T17:32:28Z",
+    "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+    "registrationId" : 1099,
+    "user" : {
+      "id" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+      "email" : "test@email.com",
+      "name" : "John Doe",
+      "phoneNumber" : "+11111111111"
+    },
+    "registration" : {
+      "registrationId" : 1099,
+      "eventId" : 45,
+      "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+      "status" : "verified",
+      "type" : "participant",
+      "notes" : "Test"
+    },
     "items" : [ {
+      "orderLineId" : 103030,
       "product" : {
         "productId" : 1001,
         "name" : "Test Product",
@@ -1338,6 +1426,7 @@ ul.nav-tabs {
       },
       "quantity" : 1
     }, {
+      "orderLineId" : 103030,
       "product" : {
         "productId" : 2001,
         "name" : "Test Product 2",
@@ -1352,9 +1441,14 @@ ul.nav-tabs {
 };
     defs["OrderLineDto"] = {
   "title" : "Order line data.",
-  "required" : [ "product", "quantity" ],
+  "required" : [ "orderLineId", "product", "quantity" ],
   "type" : "object",
   "properties" : {
+    "orderLineId" : {
+      "type" : "integer",
+      "description" : "Order line ID.",
+      "format" : "int32"
+    },
     "product" : {
       "$ref" : "#/components/schemas/ProductDto"
     },
@@ -1367,6 +1461,7 @@ ul.nav-tabs {
     }
   },
   "example" : {
+    "orderLineId" : 100001,
     "product" : {
       "productId" : 1001,
       "name" : "Test Product",
@@ -1382,6 +1477,190 @@ ul.nav-tabs {
       "price" : 21.99
     },
     "quantity" : 1
+  }
+};
+    defs["OrderLineUpdateDto"] = {
+  "title" : "Order line update data.",
+  "required" : [ "productId", "quantity" ],
+  "type" : "object",
+  "properties" : {
+    "productId" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "productVariantId" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "quantity" : {
+      "type" : "integer",
+      "format" : "int32"
+    }
+  },
+  "example" : {
+    "productId" : 1001,
+    "productVariantId" : 34,
+    "quantity" : 1
+  }
+};
+    defs["OrderRegistrationDto"] = {
+  "title" : "Order registration information.",
+  "required" : [ "eventId", "registrationId", "status", "type", "userId" ],
+  "type" : "object",
+  "properties" : {
+    "registrationId" : {
+      "type" : "integer",
+      "description" : "Registration ID.",
+      "format" : "int32"
+    },
+    "eventId" : {
+      "type" : "integer",
+      "description" : "Event ID.",
+      "format" : "int32"
+    },
+    "userId" : {
+      "type" : "string",
+      "description" : "Registered user ID."
+    },
+    "status" : {
+      "$ref" : "#/components/schemas/RegistrationStatus"
+    },
+    "type" : {
+      "$ref" : "#/components/schemas/./schemas/registrations/RegistrationType.yaml"
+    },
+    "certificateId" : {
+      "type" : "integer",
+      "description" : "Registration certificate ID.",
+      "format" : "int32"
+    },
+    "notes" : {
+      "type" : "string"
+    }
+  },
+  "example" : {
+    "registrationId" : 1099,
+    "eventId" : 45,
+    "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+    "status" : "verified",
+    "type" : "participant",
+    "notes" : "Test"
+  }
+};
+    defs["OrderStatus"] = {
+  "title" : "Order status enum.",
+  "type" : "string",
+  "description" : "Search orders by status.\nCan be either `draft`, `verified`, `invoiced`, `cancelled`, or `refunded`.\n",
+  "enum" : [ "draft", "verified", "invoiced", "cancelled", "refunded" ]
+};
+    defs["OrderUpdateRequestDto"] = {
+  "title" : "Order update form.",
+  "required" : [ "lines" ],
+  "type" : "object",
+  "properties" : {
+    "lines" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/OrderLineUpdateDto"
+      }
+    }
+  },
+  "example" : {
+    "lines" : [ {
+      "productId" : 1001
+    }, {
+      "productVariantId" : 34
+    }, {
+      "quantity" : 1
+    } ]
+  }
+};
+    defs["OrdersPagedList"] = {
+  "title" : "User list with paging.",
+  "required" : [ "count", "data", "page", "pages", "total" ],
+  "type" : "object",
+  "properties" : {
+    "page" : {
+      "type" : "integer",
+      "description" : "Page number.",
+      "format" : "int32"
+    },
+    "count" : {
+      "type" : "integer",
+      "description" : "Page size.",
+      "format" : "int32"
+    },
+    "total" : {
+      "type" : "integer",
+      "description" : "Total items.",
+      "format" : "int32"
+    },
+    "pages" : {
+      "type" : "integer",
+      "description" : "Total pages.",
+      "format" : "int32"
+    },
+    "data" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/OrderDto"
+      }
+    }
+  },
+  "example" : {
+    "page" : 1,
+    "size" : 10,
+    "total" : 2,
+    "pages" : 1,
+    "data" : [ {
+      "orderId" : 10001,
+      "status" : "verified",
+      "time" : "2017-07-21T17:32:28Z",
+      "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+      "registrationId" : 1099,
+      "user" : {
+        "id" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+        "email" : "test@email.com",
+        "name" : "John Doe",
+        "phoneNumber" : "+11111111111"
+      },
+      "registration" : {
+        "registrationId" : 1099,
+        "eventId" : 45,
+        "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
+        "status" : "verified",
+        "type" : "participant",
+        "notes" : "Test"
+      },
+      "items" : [ {
+        "orderLineId" : 103030,
+        "product" : {
+          "productId" : 1001,
+          "name" : "Test Product",
+          "description" : "Test",
+          "more" : "More on this product...",
+          "price" : 19.99,
+          "vatPercent" : 17
+        },
+        "productVariant" : {
+          "productVariantId" : 34,
+          "name" : "Red Coloured Test Product",
+          "description" : "Some variant description...",
+          "price" : 21.99
+        },
+        "quantity" : 1
+      }, {
+        "orderLineId" : 103030,
+        "product" : {
+          "productId" : 2001,
+          "name" : "Test Product 2",
+          "description" : "Test 2",
+          "more" : "More on this product...",
+          "price" : 29.99,
+          "vatPercent" : 17
+        },
+        "quantity" : 3
+      } ]
+    } ]
   }
 };
     defs["OrganizationDto"] = {
@@ -1644,7 +1923,7 @@ ul.nav-tabs {
       "$ref" : "#/components/schemas/RegistrationStatus"
     },
     "type" : {
-      "$ref" : "#/components/schemas/RegistrationType"
+      "$ref" : "#/components/schemas/./schemas/registrations/RegistrationType.yaml"
     },
     "notes" : {
       "type" : "string"
@@ -1654,8 +1933,8 @@ ul.nav-tabs {
     "registrationId" : 1099,
     "eventId" : 45,
     "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
-    "status" : 1,
-    "type" : 2,
+    "status" : "verified",
+    "type" : "participant",
     "notes" : "Test"
   }
 };
@@ -1670,7 +1949,7 @@ ul.nav-tabs {
       "$ref" : "#/components/schemas/RegistrationStatus"
     },
     "type" : {
-      "$ref" : "#/components/schemas/RegistrationType"
+      "$ref" : "#/components/schemas/./schemas/registrations/RegistrationType.yaml"
     },
     "notes" : {
       "type" : "string",
@@ -1688,46 +1967,69 @@ ul.nav-tabs {
       "city" : "Oslo",
       "country" : "Norway"
     },
-    "status" : 1,
-    "type" : 2,
+    "status" : "verified",
+    "type" : "participant",
     "notes" : "Testing"
   }
 };
     defs["RegistrationOrderDto"] = {
-  "title" : "New order data.",
-  "required" : [ "items" ],
+  "title" : "Order information.",
+  "required" : [ "items", "orderId" ],
   "type" : "object",
   "properties" : {
+    "orderId" : {
+      "type" : "integer",
+      "description" : "Order ID.",
+      "format" : "int32"
+    },
     "items" : {
       "type" : "array",
       "items" : {
-        "$ref" : "#/components/schemas/RegistrationOrderItemDto"
+        "$ref" : "#/components/schemas/RegistrationOrderLineDto"
       }
     }
   },
   "example" : {
+    "orderId" : 10001,
     "items" : [ {
-      "productId" : 1001,
-      "productVariantId" : 34,
+      "product" : {
+        "productId" : 1001,
+        "name" : "Test Product",
+        "description" : "Test",
+        "more" : "More on this product...",
+        "price" : 19.99,
+        "vatPercent" : 17
+      },
+      "productVariant" : {
+        "productVariantId" : 34,
+        "name" : "Red Coloured Test Product",
+        "description" : "Some variant description...",
+        "price" : 21.99
+      },
       "quantity" : 1
     }, {
-      "productId" : 3244,
+      "product" : {
+        "productId" : 2001,
+        "name" : "Test Product 2",
+        "description" : "Test 2",
+        "more" : "More on this product...",
+        "price" : 29.99,
+        "vatPercent" : 17
+      },
       "quantity" : 3
     } ]
   }
 };
-    defs["RegistrationOrderItemDto"] = {
+    defs["RegistrationOrderLineDto"] = {
   "title" : "Order line data.",
-  "required" : [ "productId", "quantity" ],
+  "required" : [ "product", "quantity" ],
   "type" : "object",
   "properties" : {
-    "productId" : {
-      "type" : "integer",
-      "format" : "int32"
+    "product" : {
+      "$ref" : "#/components/schemas/ProductDto"
     },
-    "productVariantId" : {
-      "type" : "integer",
-      "format" : "int32"
+    "productVariant" : {
+      "$ref" : "#/components/schemas/ProductVariantDto"
     },
     "quantity" : {
       "type" : "integer",
@@ -1735,8 +2037,20 @@ ul.nav-tabs {
     }
   },
   "example" : {
-    "productId" : 1001,
-    "productVariantId" : 34,
+    "product" : {
+      "productId" : 1001,
+      "name" : "Test Product",
+      "description" : "Test",
+      "more" : "More on this product...",
+      "price" : 19.99,
+      "vatPercent" : 17
+    },
+    "productVariant" : {
+      "productVariantId" : 34,
+      "name" : "Red Coloured Test Product",
+      "description" : "Some variant description...",
+      "price" : 21.99
+    },
     "quantity" : 1
   }
 };
@@ -1781,18 +2095,23 @@ ul.nav-tabs {
       "registrationId" : 1099,
       "eventId" : 45,
       "userId" : "3fa94776-5fc1-11eb-b353-448a5b42a569",
-      "status" : 1,
-      "type" : 2,
+      "status" : "verified",
+      "type" : "participant",
       "notes" : "Test"
     }, {
       "registrationId" : 1346,
       "eventId" : 674,
       "userId" : "69056ce6-5fc4-11eb-b474-448a5b42a569",
-      "status" : 1,
-      "type" : 1,
+      "status" : "verified",
+      "type" : "lecturer",
       "notes" : "Another test"
     } ]
   }
+};
+    defs["RegistrationStatus"] = {
+  "title" : "Registration status enum.",
+  "type" : "string",
+  "enum" : [ "draft", "cancelled", "verified", "notattended", "attended", "finished" ]
 };
     defs["UserDto"] = {
   "title" : "User info.",
@@ -1949,11 +2268,17 @@ ul.nav-tabs {
                       <a href="#api-Notifications-createNewEmailNotification">createNewEmailNotification</a>
                     </li>
                   <li class="nav-header" data-group="Orders"><a href="#api-Orders">API Methods - Orders</a></li>
-                    <li data-group="Orders" data-name="addOrderToRegistration" class="">
-                      <a href="#api-Orders-addOrderToRegistration">addOrderToRegistration</a>
+                    <li data-group="Orders" data-name="cancelOrder" class="">
+                      <a href="#api-Orders-cancelOrder">cancelOrder</a>
                     </li>
-                    <li data-group="Orders" data-name="getRegistrationOrdersList" class="">
-                      <a href="#api-Orders-getRegistrationOrdersList">getRegistrationOrdersList</a>
+                    <li data-group="Orders" data-name="getOrderById" class="">
+                      <a href="#api-Orders-getOrderById">getOrderById</a>
+                    </li>
+                    <li data-group="Orders" data-name="getOrders" class="">
+                      <a href="#api-Orders-getOrders">getOrders</a>
+                    </li>
+                    <li data-group="Orders" data-name="updateOrder" class="">
+                      <a href="#api-Orders-updateOrder">updateOrder</a>
                     </li>
                   <li class="nav-header" data-group="Organizations"><a href="#api-Organizations">API Methods - Organizations</a></li>
                     <li data-group="Organizations" data-name="addMemberToOrganization" class="">
@@ -10123,11 +10448,11 @@ $(document).ready(function() {
                   </section>
                 <section id="api-Orders">
                   <h1>Orders</h1>
-                    <div id="api-Orders-addOrderToRegistration">
-                      <article id="api-Orders-addOrderToRegistration-0" data-group="User" data-name="addOrderToRegistration" data-version="0">
+                    <div id="api-Orders-cancelOrder">
+                      <article id="api-Orders-cancelOrder-0" data-group="User" data-name="cancelOrder" data-version="0">
                         <div class="pull-left">
-                          <h1>addOrderToRegistration</h1>
-                          <p>Add order to registration.</p>
+                          <h1>cancelOrder</h1>
+                          <p>Cancel order.</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -10135,34 +10460,33 @@ $(document).ready(function() {
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/registrations/{id}/orders</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="delete"><code><span class="pln">/orders/{id}</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Orders-addOrderToRegistration-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Orders-addOrderToRegistration-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Orders-addOrderToRegistration-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Orders-addOrderToRegistration-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Orders-addOrderToRegistration-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Orders-addOrderToRegistration-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Orders-addOrderToRegistration-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Orders-addOrderToRegistration-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Orders-addOrderToRegistration-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Orders-addOrderToRegistration-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Orders-addOrderToRegistration-0-python">Python</a></li>
-                          <li class=""><a href="#examples-Orders-addOrderToRegistration-0-rust">Rust</a></li>
+                          <li class="active"><a href="#examples-Orders-cancelOrder-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Orders-cancelOrder-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Orders-cancelOrder-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Orders-cancelOrder-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Orders-cancelOrder-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Orders-cancelOrder-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Orders-cancelOrder-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Orders-cancelOrder-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Orders-cancelOrder-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Orders-cancelOrder-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Orders-cancelOrder-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Orders-cancelOrder-0-rust">Rust</a></li>
                         </ul>
 
                         <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Orders-addOrderToRegistration-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+                          <div class="tab-pane active" id="examples-Orders-cancelOrder-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
  -H "Authorization: Bearer [[accessToken]]"\
  -H "Accept: application/json"\
- -H "Content-Type: application/json"\
- "https://full.path.to/v3/registrations/{id}/orders"</code></pre>
+ "https://full.path.to/v3/orders/{id}"</code></pre>
                           </div>
-                          <div class="tab-pane" id="examples-Orders-addOrderToRegistration-0-java">
+                          <div class="tab-pane" id="examples-Orders-cancelOrder-0-java">
                             <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
 import org.openapitools.client.auth.*;
 import org.openapitools.client.model.*;
@@ -10181,13 +10505,12 @@ public class OrdersApiExample {
         
         // Create an instance of the API class
         OrdersApi apiInstance = new OrdersApi();
-        RegistrationOrderDto registrationOrderDto = ; // RegistrationOrderDto | 
+        Integer id = 56; // Integer | Order ID.
         
         try {
-            OrderDto result = apiInstance.addOrderToRegistration(registrationOrderDto);
-            System.out.println(result);
+            apiInstance.cancelOrder(id);
         } catch (ApiException e) {
-            System.err.println("Exception when calling OrdersApi#addOrderToRegistration");
+            System.err.println("Exception when calling OrdersApi#cancelOrder");
             e.printStackTrace();
         }
     }
@@ -10195,29 +10518,28 @@ public class OrdersApiExample {
 </code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-Orders-addOrderToRegistration-0-android">
+                          <div class="tab-pane" id="examples-Orders-cancelOrder-0-android">
                             <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.OrdersApi;
 
 public class OrdersApiExample {
     public static void main(String[] args) {
         OrdersApi apiInstance = new OrdersApi();
-        RegistrationOrderDto registrationOrderDto = ; // RegistrationOrderDto | 
+        Integer id = 56; // Integer | Order ID.
         
         try {
-            OrderDto result = apiInstance.addOrderToRegistration(registrationOrderDto);
-            System.out.println(result);
+            apiInstance.cancelOrder(id);
         } catch (ApiException e) {
-            System.err.println("Exception when calling OrdersApi#addOrderToRegistration");
+            System.err.println("Exception when calling OrdersApi#cancelOrder");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
   <!--
-  <div class="tab-pane" id="examples-Orders-addOrderToRegistration-0-groovy">
+  <div class="tab-pane" id="examples-Orders-cancelOrder-0-groovy">
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
-                            <div class="tab-pane" id="examples-Orders-addOrderToRegistration-0-objc">
+                            <div class="tab-pane" id="examples-Orders-cancelOrder-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
 
 // Configure Bearer (JWT) access token for authorization: bearer
@@ -10225,14 +10547,11 @@ public class OrdersApiExample {
 
 // Create an instance of the API class
 OrdersApi *apiInstance = [[OrdersApi alloc] init];
-RegistrationOrderDto *registrationOrderDto = ; // 
+Integer *id = 56; // Order ID. (default to null)
 
-// Add order to registration.
-[apiInstance addOrderToRegistrationWith:registrationOrderDto
-              completionHandler: ^(OrderDto output, NSError* error) {
-    if (output) {
-        NSLog(@"%@", output);
-    }
+// Cancel order.
+[apiInstance cancelOrderWith:id
+              completionHandler: ^(NSError* error) {
     if (error) {
         NSLog(@"Error: %@", error);
     }
@@ -10240,7 +10559,7 @@ RegistrationOrderDto *registrationOrderDto = ; //
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Orders-addOrderToRegistration-0-javascript">
+                            <div class="tab-pane" id="examples-Orders-cancelOrder-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var EventurasApi = require('eventuras_api');
 var defaultClient = EventurasApi.ApiClient.instance;
 
@@ -10250,23 +10569,23 @@ bearer.accessToken = "YOUR ACCESS TOKEN";
 
 // Create an instance of the API class
 var api = new EventurasApi.OrdersApi()
-var registrationOrderDto = ; // {RegistrationOrderDto} 
+var id = 56; // {Integer} Order ID.
 
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully. Returned data: ' + data);
+    console.log('API called successfully.');
   }
 };
-api.addOrderToRegistration(registrationOrderDto, callback);
+api.cancelOrder(id, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-Orders-addOrderToRegistration-0-angular">
+                            <!--<div class="tab-pane" id="examples-Orders-cancelOrder-0-angular">
               <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
             </div>-->
-                            <div class="tab-pane" id="examples-Orders-addOrderToRegistration-0-csharp">
+                            <div class="tab-pane" id="examples-Orders-cancelOrder-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
 using Org.OpenAPITools.Api;
@@ -10275,7 +10594,7 @@ using Org.OpenAPITools.Model;
 
 namespace Example
 {
-    public class addOrderToRegistrationExample
+    public class cancelOrderExample
     {
         public void main()
         {
@@ -10284,14 +10603,13 @@ namespace Example
             
             // Create an instance of the API class
             var apiInstance = new OrdersApi();
-            var registrationOrderDto = new RegistrationOrderDto(); // RegistrationOrderDto | 
+            var id = 56;  // Integer | Order ID. (default to null)
 
             try {
-                // Add order to registration.
-                OrderDto result = apiInstance.addOrderToRegistration(registrationOrderDto);
-                Debug.WriteLine(result);
+                // Cancel order.
+                apiInstance.cancelOrder(id);
             } catch (Exception e) {
-                Debug.Print("Exception when calling OrdersApi.addOrderToRegistration: " + e.Message );
+                Debug.Print("Exception when calling OrdersApi.cancelOrder: " + e.Message );
             }
         }
     }
@@ -10299,7 +10617,7 @@ namespace Example
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Orders-addOrderToRegistration-0-php">
+                            <div class="tab-pane" id="examples-Orders-cancelOrder-0-php">
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
@@ -10308,18 +10626,17 @@ OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('',
 
 // Create an instance of the API class
 $api_instance = new OpenAPITools\Client\Api\OrdersApi();
-$registrationOrderDto = ; // RegistrationOrderDto | 
+$id = 56; // Integer | Order ID.
 
 try {
-    $result = $api_instance->addOrderToRegistration($registrationOrderDto);
-    print_r($result);
+    $api_instance->cancelOrder($id);
 } catch (Exception $e) {
-    echo 'Exception when calling OrdersApi->addOrderToRegistration: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling OrdersApi->cancelOrder: ', $e->getMessage(), PHP_EOL;
 }
 ?></code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Orders-addOrderToRegistration-0-perl">
+                            <div class="tab-pane" id="examples-Orders-cancelOrder-0-perl">
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::OPenAPIClient::Configuration;
 use WWW::OPenAPIClient::OrdersApi;
@@ -10329,18 +10646,17 @@ $WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 # Create an instance of the API class
 my $api_instance = WWW::OPenAPIClient::OrdersApi->new();
-my $registrationOrderDto = WWW::OPenAPIClient::Object::RegistrationOrderDto->new(); # RegistrationOrderDto | 
+my $id = 56; # Integer | Order ID.
 
 eval { 
-    my $result = $api_instance->addOrderToRegistration(registrationOrderDto => $registrationOrderDto);
-    print Dumper($result);
+    $api_instance->cancelOrder(id => $id);
 };
 if ($@) {
-    warn "Exception when calling OrdersApi->addOrderToRegistration: $@\n";
+    warn "Exception when calling OrdersApi->cancelOrder: $@\n";
 }</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Orders-addOrderToRegistration-0-python">
+                            <div class="tab-pane" id="examples-Orders-cancelOrder-0-python">
                               <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
 import time
 import openapi_client
@@ -10352,24 +10668,23 @@ openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # Create an instance of the API class
 api_instance = openapi_client.OrdersApi()
-registrationOrderDto =  # RegistrationOrderDto | 
+id = 56 # Integer | Order ID. (default to null)
 
 try: 
-    # Add order to registration.
-    api_response = api_instance.add_order_to_registration(registrationOrderDto)
-    pprint(api_response)
+    # Cancel order.
+    api_instance.cancel_order(id)
 except ApiException as e:
-    print("Exception when calling OrdersApi->addOrderToRegistration: %s\n" % e)</code></pre>
+    print("Exception when calling OrdersApi->cancelOrder: %s\n" % e)</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Orders-addOrderToRegistration-0-rust">
+                            <div class="tab-pane" id="examples-Orders-cancelOrder-0-rust">
                               <pre class="prettyprint"><code class="language-rust">extern crate OrdersApi;
 
 pub fn main() {
-    let registrationOrderDto = ; // RegistrationOrderDto
+    let id = 56; // Integer
 
     let mut context = OrdersApi::Context::default();
-    let result = client.addOrderToRegistration(registrationOrderDto, &context).wait();
+    let result = client.cancelOrder(id, &context).wait();
 
     println!("{:?}", result);
 }
@@ -10384,50 +10699,35 @@ pub fn main() {
 
                           <h2>Parameters</h2>
 
-
-
-                            <div class="methodsubtabletitle">Body parameters</div>
+                            <div class="methodsubtabletitle">Path parameters</div>
                             <table id="methodsubtable">
-                              <tr>
-                                <th width="150px">Name</th>
-                                <th>Description</th>
-                              </tr>
-                                <tr><td style="width:150px;">registrationOrderDto <span style="color:red;">*</span></td>
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
 <td>
-<p class="marked"></p>
-<script>
-$(document).ready(function() {
-  var schemaWrapper = {
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/RegistrationOrderDto"
-      }
-    }
-  },
-  "required" : true
-};
 
-  var schema = findNode('schema',schemaWrapper).schema;
-  if (!schema) {
-    schema = schemaWrapper.schema;
-  }
-  if (schema.$ref != null) {
-    schema = defsParser.$refs.get(schema.$ref);
-  } else {
-    schemaWrapper.definitions = Object.assign({}, defs);
-    $RefParser.dereference(schemaWrapper).catch(function(err) {
-      console.log(err);
-    });
-  }
 
-  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
-  var result = $('#d2e199_addOrderToRegistration_registrationOrderDto');
-  result.empty();
-  result.append(view.render());
-});
-</script>
-<div id="d2e199_addOrderToRegistration_registrationOrderDto"></div>
+    <div id="d2e199_cancelOrder_id">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Order ID.
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
 </td>
 </tr>
 
@@ -10435,156 +10735,48 @@ $(document).ready(function() {
 
 
 
+
+
                           <h2>Responses</h2>
-                            <h3 id="examples-Orders-addOrderToRegistration-title-200"></h3>
-                            <p id="examples-Orders-addOrderToRegistration-description-200" class="marked"></p>
+                            <h3 id="examples-Orders-cancelOrder-title-200"></h3>
+                            <p id="examples-Orders-cancelOrder-description-200" class="marked"></p>
                             <script>
-                              var responseOrders200_description = `OK`;
+                              var responseOrders200_description = `Order cancelled`;
                               var responseOrders200_description_break = responseOrders200_description.indexOf('\n');
                               if (responseOrders200_description_break == -1) {
-                                $("#examples-Orders-addOrderToRegistration-title-200").text("Status: 200 - " + responseOrders200_description);
+                                $("#examples-Orders-cancelOrder-title-200").text("Status: 200 - " + responseOrders200_description);
                               } else {
-                                $("#examples-Orders-addOrderToRegistration-title-200").text("Status: 200 - " + responseOrders200_description.substring(0, responseOrders200_description_break));
-                                $("#examples-Orders-addOrderToRegistration-description-200").html(responseOrders200_description.substring(responseOrders200_description_break));
+                                $("#examples-Orders-cancelOrder-title-200").text("Status: 200 - " + responseOrders200_description.substring(0, responseOrders200_description_break));
+                                $("#examples-Orders-cancelOrder-description-200").html(responseOrders200_description.substring(responseOrders200_description_break));
                               }
                             </script>
 
 
-                            <ul id="responses-detail-Orders-addOrderToRegistration-200" class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-Orders-addOrderToRegistration-200-schema">Schema</a>
-                                </li>
-
-
+                            <ul id="responses-detail-Orders-cancelOrder-200" class="nav nav-tabs nav-tabs-examples" >
 
 
                             </ul>
 
 
-                            <div class="tab-content" id="responses-Orders-addOrderToRegistration-200-wrapper" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-Orders-addOrderToRegistration-200-schema">
-                                  <div id="responses-Orders-addOrderToRegistration-schema-200" class="exampleStyle">
-                                    <script>
-                                      $(document).ready(function() {
-                                        var schemaWrapper = {
-  "description" : "OK",
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/OrderDto"
-      }
-    }
-  }
-};
-                                        var schema = findNode('schema',schemaWrapper).schema;
-                                        if (!schema) {
-                                          schema = schemaWrapper.schema;
-                                        }
-                                        if (schema.$ref != null) {
-                                          schema = defsParser.$refs.get(schema.$ref);
-                                        } else if (schema.items != null && schema.items.$ref != null) {
-                                            schema.items = defsParser.$refs.get(schema.items.$ref);
-                                        } else {
-                                          schemaWrapper.definitions = Object.assign({}, defs);
-                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                            console.log(err);
-                                          });
-                                        }
-
-                                        var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-Orders-addOrderToRegistration-200-schema-data').val(JSON.stringify(schema));
-                                        var result = $('#responses-Orders-addOrderToRegistration-schema-200');
-                                        result.empty();
-                                        result.append(view.render());
-                                      });
-                                    </script>
-                                  </div>
-                                  <input id='responses-Orders-addOrderToRegistration-200-schema-data' type='hidden' value=''></input>
-                                </div>
+                            <div class="tab-content" id="responses-Orders-cancelOrder-200-wrapper" style='margin-bottom: 10px;'>
                             </div>
-                            <h3 id="examples-Orders-addOrderToRegistration-title-400"></h3>
-                            <p id="examples-Orders-addOrderToRegistration-description-400" class="marked"></p>
-                            <script>
-                              var responseOrders400_description = `Missing or invalid request parameters.`;
-                              var responseOrders400_description_break = responseOrders400_description.indexOf('\n');
-                              if (responseOrders400_description_break == -1) {
-                                $("#examples-Orders-addOrderToRegistration-title-400").text("Status: 400 - " + responseOrders400_description);
-                              } else {
-                                $("#examples-Orders-addOrderToRegistration-title-400").text("Status: 400 - " + responseOrders400_description.substring(0, responseOrders400_description_break));
-                                $("#examples-Orders-addOrderToRegistration-description-400").html(responseOrders400_description.substring(responseOrders400_description_break));
-                              }
-                            </script>
-
-
-                            <ul id="responses-detail-Orders-addOrderToRegistration-400" class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-Orders-addOrderToRegistration-400-schema">Schema</a>
-                                </li>
-
-
-
-
-                            </ul>
-
-
-                            <div class="tab-content" id="responses-Orders-addOrderToRegistration-400-wrapper" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-Orders-addOrderToRegistration-400-schema">
-                                  <div id="responses-Orders-addOrderToRegistration-schema-400" class="exampleStyle">
-                                    <script>
-                                      $(document).ready(function() {
-                                        var schemaWrapper = {
-  "description" : "Missing or invalid request parameters.",
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/Error"
-      }
-    }
-  }
-};
-                                        var schema = findNode('schema',schemaWrapper).schema;
-                                        if (!schema) {
-                                          schema = schemaWrapper.schema;
-                                        }
-                                        if (schema.$ref != null) {
-                                          schema = defsParser.$refs.get(schema.$ref);
-                                        } else if (schema.items != null && schema.items.$ref != null) {
-                                            schema.items = defsParser.$refs.get(schema.items.$ref);
-                                        } else {
-                                          schemaWrapper.definitions = Object.assign({}, defs);
-                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                            console.log(err);
-                                          });
-                                        }
-
-                                        var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-Orders-addOrderToRegistration-400-schema-data').val(JSON.stringify(schema));
-                                        var result = $('#responses-Orders-addOrderToRegistration-schema-400');
-                                        result.empty();
-                                        result.append(view.render());
-                                      });
-                                    </script>
-                                  </div>
-                                  <input id='responses-Orders-addOrderToRegistration-400-schema-data' type='hidden' value=''></input>
-                                </div>
-                            </div>
-                            <h3 id="examples-Orders-addOrderToRegistration-title-401"></h3>
-                            <p id="examples-Orders-addOrderToRegistration-description-401" class="marked"></p>
+                            <h3 id="examples-Orders-cancelOrder-title-401"></h3>
+                            <p id="examples-Orders-cancelOrder-description-401" class="marked"></p>
                             <script>
                               var responseOrders401_description = `Access token is missing or invalid.`;
                               var responseOrders401_description_break = responseOrders401_description.indexOf('\n');
                               if (responseOrders401_description_break == -1) {
-                                $("#examples-Orders-addOrderToRegistration-title-401").text("Status: 401 - " + responseOrders401_description);
+                                $("#examples-Orders-cancelOrder-title-401").text("Status: 401 - " + responseOrders401_description);
                               } else {
-                                $("#examples-Orders-addOrderToRegistration-title-401").text("Status: 401 - " + responseOrders401_description.substring(0, responseOrders401_description_break));
-                                $("#examples-Orders-addOrderToRegistration-description-401").html(responseOrders401_description.substring(responseOrders401_description_break));
+                                $("#examples-Orders-cancelOrder-title-401").text("Status: 401 - " + responseOrders401_description.substring(0, responseOrders401_description_break));
+                                $("#examples-Orders-cancelOrder-description-401").html(responseOrders401_description.substring(responseOrders401_description_break));
                               }
                             </script>
 
 
-                            <ul id="responses-detail-Orders-addOrderToRegistration-401" class="nav nav-tabs nav-tabs-examples" >
+                            <ul id="responses-detail-Orders-cancelOrder-401" class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-Orders-addOrderToRegistration-401-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-Orders-cancelOrder-401-schema">Schema</a>
                                 </li>
 
 
@@ -10593,9 +10785,9 @@ $(document).ready(function() {
                             </ul>
 
 
-                            <div class="tab-content" id="responses-Orders-addOrderToRegistration-401-wrapper" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-Orders-addOrderToRegistration-401-schema">
-                                  <div id="responses-Orders-addOrderToRegistration-schema-401" class="exampleStyle">
+                            <div class="tab-content" id="responses-Orders-cancelOrder-401-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Orders-cancelOrder-401-schema">
+                                  <div id="responses-Orders-cancelOrder-schema-401" class="exampleStyle">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
@@ -10624,33 +10816,33 @@ $(document).ready(function() {
                                         }
 
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-Orders-addOrderToRegistration-401-schema-data').val(JSON.stringify(schema));
-                                        var result = $('#responses-Orders-addOrderToRegistration-schema-401');
+                                        $('#responses-Orders-cancelOrder-401-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Orders-cancelOrder-schema-401');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-Orders-addOrderToRegistration-401-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-Orders-cancelOrder-401-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
-                            <h3 id="examples-Orders-addOrderToRegistration-title-403"></h3>
-                            <p id="examples-Orders-addOrderToRegistration-description-403" class="marked"></p>
+                            <h3 id="examples-Orders-cancelOrder-title-403"></h3>
+                            <p id="examples-Orders-cancelOrder-description-403" class="marked"></p>
                             <script>
                               var responseOrders403_description = `Access forbidden.`;
                               var responseOrders403_description_break = responseOrders403_description.indexOf('\n');
                               if (responseOrders403_description_break == -1) {
-                                $("#examples-Orders-addOrderToRegistration-title-403").text("Status: 403 - " + responseOrders403_description);
+                                $("#examples-Orders-cancelOrder-title-403").text("Status: 403 - " + responseOrders403_description);
                               } else {
-                                $("#examples-Orders-addOrderToRegistration-title-403").text("Status: 403 - " + responseOrders403_description.substring(0, responseOrders403_description_break));
-                                $("#examples-Orders-addOrderToRegistration-description-403").html(responseOrders403_description.substring(responseOrders403_description_break));
+                                $("#examples-Orders-cancelOrder-title-403").text("Status: 403 - " + responseOrders403_description.substring(0, responseOrders403_description_break));
+                                $("#examples-Orders-cancelOrder-description-403").html(responseOrders403_description.substring(responseOrders403_description_break));
                               }
                             </script>
 
 
-                            <ul id="responses-detail-Orders-addOrderToRegistration-403" class="nav nav-tabs nav-tabs-examples" >
+                            <ul id="responses-detail-Orders-cancelOrder-403" class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-Orders-addOrderToRegistration-403-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-Orders-cancelOrder-403-schema">Schema</a>
                                 </li>
 
 
@@ -10659,9 +10851,9 @@ $(document).ready(function() {
                             </ul>
 
 
-                            <div class="tab-content" id="responses-Orders-addOrderToRegistration-403-wrapper" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-Orders-addOrderToRegistration-403-schema">
-                                  <div id="responses-Orders-addOrderToRegistration-schema-403" class="exampleStyle">
+                            <div class="tab-content" id="responses-Orders-cancelOrder-403-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Orders-cancelOrder-403-schema">
+                                  <div id="responses-Orders-cancelOrder-schema-403" class="exampleStyle">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
@@ -10690,33 +10882,33 @@ $(document).ready(function() {
                                         }
 
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-Orders-addOrderToRegistration-403-schema-data').val(JSON.stringify(schema));
-                                        var result = $('#responses-Orders-addOrderToRegistration-schema-403');
+                                        $('#responses-Orders-cancelOrder-403-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Orders-cancelOrder-schema-403');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-Orders-addOrderToRegistration-403-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-Orders-cancelOrder-403-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
-                            <h3 id="examples-Orders-addOrderToRegistration-title-404"></h3>
-                            <p id="examples-Orders-addOrderToRegistration-description-404" class="marked"></p>
+                            <h3 id="examples-Orders-cancelOrder-title-404"></h3>
+                            <p id="examples-Orders-cancelOrder-description-404" class="marked"></p>
                             <script>
                               var responseOrders404_description = `The requested resource not found.`;
                               var responseOrders404_description_break = responseOrders404_description.indexOf('\n');
                               if (responseOrders404_description_break == -1) {
-                                $("#examples-Orders-addOrderToRegistration-title-404").text("Status: 404 - " + responseOrders404_description);
+                                $("#examples-Orders-cancelOrder-title-404").text("Status: 404 - " + responseOrders404_description);
                               } else {
-                                $("#examples-Orders-addOrderToRegistration-title-404").text("Status: 404 - " + responseOrders404_description.substring(0, responseOrders404_description_break));
-                                $("#examples-Orders-addOrderToRegistration-description-404").html(responseOrders404_description.substring(responseOrders404_description_break));
+                                $("#examples-Orders-cancelOrder-title-404").text("Status: 404 - " + responseOrders404_description.substring(0, responseOrders404_description_break));
+                                $("#examples-Orders-cancelOrder-description-404").html(responseOrders404_description.substring(responseOrders404_description_break));
                               }
                             </script>
 
 
-                            <ul id="responses-detail-Orders-addOrderToRegistration-404" class="nav nav-tabs nav-tabs-examples" >
+                            <ul id="responses-detail-Orders-cancelOrder-404" class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-Orders-addOrderToRegistration-404-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-Orders-cancelOrder-404-schema">Schema</a>
                                 </li>
 
 
@@ -10725,9 +10917,9 @@ $(document).ready(function() {
                             </ul>
 
 
-                            <div class="tab-content" id="responses-Orders-addOrderToRegistration-404-wrapper" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-Orders-addOrderToRegistration-404-schema">
-                                  <div id="responses-Orders-addOrderToRegistration-schema-404" class="exampleStyle">
+                            <div class="tab-content" id="responses-Orders-cancelOrder-404-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Orders-cancelOrder-404-schema">
+                                  <div id="responses-Orders-cancelOrder-schema-404" class="exampleStyle">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
@@ -10756,33 +10948,33 @@ $(document).ready(function() {
                                         }
 
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-Orders-addOrderToRegistration-404-schema-data').val(JSON.stringify(schema));
-                                        var result = $('#responses-Orders-addOrderToRegistration-schema-404');
+                                        $('#responses-Orders-cancelOrder-404-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Orders-cancelOrder-schema-404');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-Orders-addOrderToRegistration-404-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-Orders-cancelOrder-404-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
-                            <h3 id="examples-Orders-addOrderToRegistration-title-500"></h3>
-                            <p id="examples-Orders-addOrderToRegistration-description-500" class="marked"></p>
+                            <h3 id="examples-Orders-cancelOrder-title-500"></h3>
+                            <p id="examples-Orders-cancelOrder-description-500" class="marked"></p>
                             <script>
                               var responseOrders500_description = `Unexpected server error.`;
                               var responseOrders500_description_break = responseOrders500_description.indexOf('\n');
                               if (responseOrders500_description_break == -1) {
-                                $("#examples-Orders-addOrderToRegistration-title-500").text("Status: 500 - " + responseOrders500_description);
+                                $("#examples-Orders-cancelOrder-title-500").text("Status: 500 - " + responseOrders500_description);
                               } else {
-                                $("#examples-Orders-addOrderToRegistration-title-500").text("Status: 500 - " + responseOrders500_description.substring(0, responseOrders500_description_break));
-                                $("#examples-Orders-addOrderToRegistration-description-500").html(responseOrders500_description.substring(responseOrders500_description_break));
+                                $("#examples-Orders-cancelOrder-title-500").text("Status: 500 - " + responseOrders500_description.substring(0, responseOrders500_description_break));
+                                $("#examples-Orders-cancelOrder-description-500").html(responseOrders500_description.substring(responseOrders500_description_break));
                               }
                             </script>
 
 
-                            <ul id="responses-detail-Orders-addOrderToRegistration-500" class="nav nav-tabs nav-tabs-examples" >
+                            <ul id="responses-detail-Orders-cancelOrder-500" class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-Orders-addOrderToRegistration-500-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-Orders-cancelOrder-500-schema">Schema</a>
                                 </li>
 
 
@@ -10791,9 +10983,9 @@ $(document).ready(function() {
                             </ul>
 
 
-                            <div class="tab-content" id="responses-Orders-addOrderToRegistration-500-wrapper" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-Orders-addOrderToRegistration-500-schema">
-                                  <div id="responses-Orders-addOrderToRegistration-schema-500" class="exampleStyle">
+                            <div class="tab-content" id="responses-Orders-cancelOrder-500-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Orders-cancelOrder-500-schema">
+                                  <div id="responses-Orders-cancelOrder-schema-500" class="exampleStyle">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
@@ -10822,24 +11014,24 @@ $(document).ready(function() {
                                         }
 
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-Orders-addOrderToRegistration-500-schema-data').val(JSON.stringify(schema));
-                                        var result = $('#responses-Orders-addOrderToRegistration-schema-500');
+                                        $('#responses-Orders-cancelOrder-500-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Orders-cancelOrder-schema-500');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-Orders-addOrderToRegistration-500-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-Orders-cancelOrder-500-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
                         </article>
                       </div>
                       <hr>
-                    <div id="api-Orders-getRegistrationOrdersList">
-                      <article id="api-Orders-getRegistrationOrdersList-0" data-group="User" data-name="getRegistrationOrdersList" data-version="0">
+                    <div id="api-Orders-getOrderById">
+                      <article id="api-Orders-getOrderById-0" data-group="User" data-name="getOrderById" data-version="0">
                         <div class="pull-left">
-                          <h1>getRegistrationOrdersList</h1>
-                          <p>Get registration orders list.</p>
+                          <h1>getOrderById</h1>
+                          <p>Get order by id.</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -10847,33 +11039,33 @@ $(document).ready(function() {
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/registrations/{id}/orders</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/orders/{id}</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Orders-getRegistrationOrdersList-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Orders-getRegistrationOrdersList-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Orders-getRegistrationOrdersList-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Orders-getRegistrationOrdersList-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Orders-getRegistrationOrdersList-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Orders-getRegistrationOrdersList-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Orders-getRegistrationOrdersList-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Orders-getRegistrationOrdersList-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Orders-getRegistrationOrdersList-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Orders-getRegistrationOrdersList-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Orders-getRegistrationOrdersList-0-python">Python</a></li>
-                          <li class=""><a href="#examples-Orders-getRegistrationOrdersList-0-rust">Rust</a></li>
+                          <li class="active"><a href="#examples-Orders-getOrderById-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Orders-getOrderById-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Orders-getOrderById-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Orders-getOrderById-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Orders-getOrderById-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Orders-getOrderById-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Orders-getOrderById-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Orders-getOrderById-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Orders-getOrderById-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Orders-getOrderById-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Orders-getOrderById-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Orders-getOrderById-0-rust">Rust</a></li>
                         </ul>
 
                         <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Orders-getRegistrationOrdersList-0-curl">
+                          <div class="tab-pane active" id="examples-Orders-getOrderById-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X GET\
  -H "Authorization: Bearer [[accessToken]]"\
  -H "Accept: application/json"\
- "https://full.path.to/v3/registrations/{id}/orders"</code></pre>
+ "https://full.path.to/v3/orders/{id}?includeUser=&includeRegistration="</code></pre>
                           </div>
-                          <div class="tab-pane" id="examples-Orders-getRegistrationOrdersList-0-java">
+                          <div class="tab-pane" id="examples-Orders-getOrderById-0-java">
                             <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
 import org.openapitools.client.auth.*;
 import org.openapitools.client.model.*;
@@ -10892,12 +11084,17 @@ public class OrdersApiExample {
         
         // Create an instance of the API class
         OrdersApi apiInstance = new OrdersApi();
+        Integer id = 56; // Integer | Order ID.
+        Boolean includeUser = true; // Boolean | Whether to include user information into the response.
+
+        Boolean includeRegistration = true; // Boolean | Whether to include registration information into the response.
+
         
         try {
-            array[OrderDto] result = apiInstance.getRegistrationOrdersList();
+            OrderDto result = apiInstance.getOrderById(id, includeUser, includeRegistration);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling OrdersApi#getRegistrationOrdersList");
+            System.err.println("Exception when calling OrdersApi#getOrderById");
             e.printStackTrace();
         }
     }
@@ -10905,28 +11102,33 @@ public class OrdersApiExample {
 </code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-Orders-getRegistrationOrdersList-0-android">
+                          <div class="tab-pane" id="examples-Orders-getOrderById-0-android">
                             <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.OrdersApi;
 
 public class OrdersApiExample {
     public static void main(String[] args) {
         OrdersApi apiInstance = new OrdersApi();
+        Integer id = 56; // Integer | Order ID.
+        Boolean includeUser = true; // Boolean | Whether to include user information into the response.
+
+        Boolean includeRegistration = true; // Boolean | Whether to include registration information into the response.
+
         
         try {
-            array[OrderDto] result = apiInstance.getRegistrationOrdersList();
+            OrderDto result = apiInstance.getOrderById(id, includeUser, includeRegistration);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling OrdersApi#getRegistrationOrdersList");
+            System.err.println("Exception when calling OrdersApi#getOrderById");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
   <!--
-  <div class="tab-pane" id="examples-Orders-getRegistrationOrdersList-0-groovy">
+  <div class="tab-pane" id="examples-Orders-getOrderById-0-groovy">
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
-                            <div class="tab-pane" id="examples-Orders-getRegistrationOrdersList-0-objc">
+                            <div class="tab-pane" id="examples-Orders-getOrderById-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
 
 // Configure Bearer (JWT) access token for authorization: bearer
@@ -10934,10 +11136,17 @@ public class OrdersApiExample {
 
 // Create an instance of the API class
 OrdersApi *apiInstance = [[OrdersApi alloc] init];
+Integer *id = 56; // Order ID. (default to null)
+Boolean *includeUser = true; // Whether to include user information into the response.
+ (optional) (default to false)
+Boolean *includeRegistration = true; // Whether to include registration information into the response.
+ (optional) (default to false)
 
-// Get registration orders list.
-[apiInstance getRegistrationOrdersListWithCompletionHandler: 
-              ^(array[OrderDto] output, NSError* error) {
+// Get order by id.
+[apiInstance getOrderByIdWith:id
+    includeUser:includeUser
+    includeRegistration:includeRegistration
+              completionHandler: ^(OrderDto output, NSError* error) {
     if (output) {
         NSLog(@"%@", output);
     }
@@ -10948,7 +11157,7 @@ OrdersApi *apiInstance = [[OrdersApi alloc] init];
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Orders-getRegistrationOrdersList-0-javascript">
+                            <div class="tab-pane" id="examples-Orders-getOrderById-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var EventurasApi = require('eventuras_api');
 var defaultClient = EventurasApi.ApiClient.instance;
 
@@ -10958,6 +11167,14 @@ bearer.accessToken = "YOUR ACCESS TOKEN";
 
 // Create an instance of the API class
 var api = new EventurasApi.OrdersApi()
+var id = 56; // {Integer} Order ID.
+var opts = {
+  'includeUser': true, // {Boolean} Whether to include user information into the response.
+
+  'includeRegistration': true // {Boolean} Whether to include registration information into the response.
+
+};
+
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -10965,14 +11182,14 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.getRegistrationOrdersList(callback);
+api.getOrderById(id, opts, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-Orders-getRegistrationOrdersList-0-angular">
+                            <!--<div class="tab-pane" id="examples-Orders-getOrderById-0-angular">
               <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
             </div>-->
-                            <div class="tab-pane" id="examples-Orders-getRegistrationOrdersList-0-csharp">
+                            <div class="tab-pane" id="examples-Orders-getOrderById-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
 using Org.OpenAPITools.Api;
@@ -10981,7 +11198,7 @@ using Org.OpenAPITools.Model;
 
 namespace Example
 {
-    public class getRegistrationOrdersListExample
+    public class getOrderByIdExample
     {
         public void main()
         {
@@ -10990,13 +11207,18 @@ namespace Example
             
             // Create an instance of the API class
             var apiInstance = new OrdersApi();
+            var id = 56;  // Integer | Order ID. (default to null)
+            var includeUser = true;  // Boolean | Whether to include user information into the response.
+ (optional)  (default to false)
+            var includeRegistration = true;  // Boolean | Whether to include registration information into the response.
+ (optional)  (default to false)
 
             try {
-                // Get registration orders list.
-                array[OrderDto] result = apiInstance.getRegistrationOrdersList();
+                // Get order by id.
+                OrderDto result = apiInstance.getOrderById(id, includeUser, includeRegistration);
                 Debug.WriteLine(result);
             } catch (Exception e) {
-                Debug.Print("Exception when calling OrdersApi.getRegistrationOrdersList: " + e.Message );
+                Debug.Print("Exception when calling OrdersApi.getOrderById: " + e.Message );
             }
         }
     }
@@ -11004,7 +11226,7 @@ namespace Example
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Orders-getRegistrationOrdersList-0-php">
+                            <div class="tab-pane" id="examples-Orders-getOrderById-0-php">
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
@@ -11013,17 +11235,22 @@ OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('',
 
 // Create an instance of the API class
 $api_instance = new OpenAPITools\Client\Api\OrdersApi();
+$id = 56; // Integer | Order ID.
+$includeUser = true; // Boolean | Whether to include user information into the response.
+
+$includeRegistration = true; // Boolean | Whether to include registration information into the response.
+
 
 try {
-    $result = $api_instance->getRegistrationOrdersList();
+    $result = $api_instance->getOrderById($id, $includeUser, $includeRegistration);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling OrdersApi->getRegistrationOrdersList: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling OrdersApi->getOrderById: ', $e->getMessage(), PHP_EOL;
 }
 ?></code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Orders-getRegistrationOrdersList-0-perl">
+                            <div class="tab-pane" id="examples-Orders-getOrderById-0-perl">
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::OPenAPIClient::Configuration;
 use WWW::OPenAPIClient::OrdersApi;
@@ -11033,17 +11260,22 @@ $WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 # Create an instance of the API class
 my $api_instance = WWW::OPenAPIClient::OrdersApi->new();
+my $id = 56; # Integer | Order ID.
+my $includeUser = true; # Boolean | Whether to include user information into the response.
+
+my $includeRegistration = true; # Boolean | Whether to include registration information into the response.
+
 
 eval { 
-    my $result = $api_instance->getRegistrationOrdersList();
+    my $result = $api_instance->getOrderById(id => $id, includeUser => $includeUser, includeRegistration => $includeRegistration);
     print Dumper($result);
 };
 if ($@) {
-    warn "Exception when calling OrdersApi->getRegistrationOrdersList: $@\n";
+    warn "Exception when calling OrdersApi->getOrderById: $@\n";
 }</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Orders-getRegistrationOrdersList-0-python">
+                            <div class="tab-pane" id="examples-Orders-getOrderById-0-python">
                               <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
 import time
 import openapi_client
@@ -11055,22 +11287,822 @@ openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # Create an instance of the API class
 api_instance = openapi_client.OrdersApi()
+id = 56 # Integer | Order ID. (default to null)
+includeUser = true # Boolean | Whether to include user information into the response.
+ (optional) (default to false)
+includeRegistration = true # Boolean | Whether to include registration information into the response.
+ (optional) (default to false)
 
 try: 
-    # Get registration orders list.
-    api_response = api_instance.get_registration_orders_list()
+    # Get order by id.
+    api_response = api_instance.get_order_by_id(id, includeUser=includeUser, includeRegistration=includeRegistration)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling OrdersApi->getRegistrationOrdersList: %s\n" % e)</code></pre>
+    print("Exception when calling OrdersApi->getOrderById: %s\n" % e)</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Orders-getRegistrationOrdersList-0-rust">
+                            <div class="tab-pane" id="examples-Orders-getOrderById-0-rust">
                               <pre class="prettyprint"><code class="language-rust">extern crate OrdersApi;
 
 pub fn main() {
+    let id = 56; // Integer
+    let includeUser = true; // Boolean
+    let includeRegistration = true; // Boolean
 
     let mut context = OrdersApi::Context::default();
-    let result = client.getRegistrationOrdersList(&context).wait();
+    let result = client.getOrderById(id, includeUser, includeRegistration, &context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+<td>
+
+
+    <div id="d2e199_getOrderById_id">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Order ID.
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">includeUser</td>
+<td>
+
+
+    <div id="d2e199_getOrderById_includeUser">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Boolean
+                </span>
+
+                    <div class="inner description marked">
+Whether to include user information into the response.
+
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">includeRegistration</td>
+<td>
+
+
+    <div id="d2e199_getOrderById_includeRegistration">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Boolean
+                </span>
+
+                    <div class="inner description marked">
+Whether to include registration information into the response.
+
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Orders-getOrderById-title-200"></h3>
+                            <p id="examples-Orders-getOrderById-description-200" class="marked"></p>
+                            <script>
+                              var responseOrders200_description = ``;
+                              var responseOrders200_description_break = responseOrders200_description.indexOf('\n');
+                              if (responseOrders200_description_break == -1) {
+                                $("#examples-Orders-getOrderById-title-200").text("Status: 200 - " + responseOrders200_description);
+                              } else {
+                                $("#examples-Orders-getOrderById-title-200").text("Status: 200 - " + responseOrders200_description.substring(0, responseOrders200_description_break));
+                                $("#examples-Orders-getOrderById-description-200").html(responseOrders200_description.substring(responseOrders200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Orders-getOrderById-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Orders-getOrderById-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Orders-getOrderById-200-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Orders-getOrderById-200-schema">
+                                  <div id="responses-Orders-getOrderById-schema-200" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/OrderDto"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Orders-getOrderById-200-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Orders-getOrderById-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Orders-getOrderById-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Orders-getOrderById-title-401"></h3>
+                            <p id="examples-Orders-getOrderById-description-401" class="marked"></p>
+                            <script>
+                              var responseOrders401_description = `Access token is missing or invalid.`;
+                              var responseOrders401_description_break = responseOrders401_description.indexOf('\n');
+                              if (responseOrders401_description_break == -1) {
+                                $("#examples-Orders-getOrderById-title-401").text("Status: 401 - " + responseOrders401_description);
+                              } else {
+                                $("#examples-Orders-getOrderById-title-401").text("Status: 401 - " + responseOrders401_description.substring(0, responseOrders401_description_break));
+                                $("#examples-Orders-getOrderById-description-401").html(responseOrders401_description.substring(responseOrders401_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Orders-getOrderById-401" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Orders-getOrderById-401-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Orders-getOrderById-401-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Orders-getOrderById-401-schema">
+                                  <div id="responses-Orders-getOrderById-schema-401" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access token is missing or invalid.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Orders-getOrderById-401-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Orders-getOrderById-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Orders-getOrderById-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Orders-getOrderById-title-403"></h3>
+                            <p id="examples-Orders-getOrderById-description-403" class="marked"></p>
+                            <script>
+                              var responseOrders403_description = `Access forbidden.`;
+                              var responseOrders403_description_break = responseOrders403_description.indexOf('\n');
+                              if (responseOrders403_description_break == -1) {
+                                $("#examples-Orders-getOrderById-title-403").text("Status: 403 - " + responseOrders403_description);
+                              } else {
+                                $("#examples-Orders-getOrderById-title-403").text("Status: 403 - " + responseOrders403_description.substring(0, responseOrders403_description_break));
+                                $("#examples-Orders-getOrderById-description-403").html(responseOrders403_description.substring(responseOrders403_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Orders-getOrderById-403" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Orders-getOrderById-403-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Orders-getOrderById-403-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Orders-getOrderById-403-schema">
+                                  <div id="responses-Orders-getOrderById-schema-403" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access forbidden.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Orders-getOrderById-403-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Orders-getOrderById-schema-403');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Orders-getOrderById-403-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Orders-getOrderById-title-404"></h3>
+                            <p id="examples-Orders-getOrderById-description-404" class="marked"></p>
+                            <script>
+                              var responseOrders404_description = `The requested resource not found.`;
+                              var responseOrders404_description_break = responseOrders404_description.indexOf('\n');
+                              if (responseOrders404_description_break == -1) {
+                                $("#examples-Orders-getOrderById-title-404").text("Status: 404 - " + responseOrders404_description);
+                              } else {
+                                $("#examples-Orders-getOrderById-title-404").text("Status: 404 - " + responseOrders404_description.substring(0, responseOrders404_description_break));
+                                $("#examples-Orders-getOrderById-description-404").html(responseOrders404_description.substring(responseOrders404_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Orders-getOrderById-404" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Orders-getOrderById-404-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Orders-getOrderById-404-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Orders-getOrderById-404-schema">
+                                  <div id="responses-Orders-getOrderById-schema-404" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "The requested resource not found.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Orders-getOrderById-404-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Orders-getOrderById-schema-404');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Orders-getOrderById-404-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Orders-getOrderById-title-500"></h3>
+                            <p id="examples-Orders-getOrderById-description-500" class="marked"></p>
+                            <script>
+                              var responseOrders500_description = `Unexpected server error.`;
+                              var responseOrders500_description_break = responseOrders500_description.indexOf('\n');
+                              if (responseOrders500_description_break == -1) {
+                                $("#examples-Orders-getOrderById-title-500").text("Status: 500 - " + responseOrders500_description);
+                              } else {
+                                $("#examples-Orders-getOrderById-title-500").text("Status: 500 - " + responseOrders500_description.substring(0, responseOrders500_description_break));
+                                $("#examples-Orders-getOrderById-description-500").html(responseOrders500_description.substring(responseOrders500_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Orders-getOrderById-500" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Orders-getOrderById-500-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Orders-getOrderById-500-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Orders-getOrderById-500-schema">
+                                  <div id="responses-Orders-getOrderById-schema-500" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unexpected server error.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Orders-getOrderById-500-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Orders-getOrderById-schema-500');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Orders-getOrderById-500-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Orders-getOrders">
+                      <article id="api-Orders-getOrders-0" data-group="User" data-name="getOrders" data-version="0">
+                        <div class="pull-left">
+                          <h1>getOrders</h1>
+                          <p>Get accessible orders list.</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/orders</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Orders-getOrders-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Orders-getOrders-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Orders-getOrders-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Orders-getOrders-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Orders-getOrders-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Orders-getOrders-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Orders-getOrders-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Orders-getOrders-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Orders-getOrders-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Orders-getOrders-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Orders-getOrders-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Orders-getOrders-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Orders-getOrders-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+ -H "Accept: application/json"\
+ "https://full.path.to/v3/orders?page=&count=&userId=&registrationId=&eventId=&status=&includeUser=&includeRegistration="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Orders-getOrders-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.OrdersApi;
+
+import java.io.File;
+import java.util.*;
+
+public class OrdersApiExample {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        
+        // Configure Bearer (JWT) access token for authorization: bearer
+        HttpBearerAuth bearer = (HttpBearerAuth) defaultClient.getAuthentication("bearer");
+        bearer.setBearerToken("BEARER TOKEN");
+        
+        // Create an instance of the API class
+        OrdersApi apiInstance = new OrdersApi();
+        Integer page = 56; // Integer | Page number.
+        Integer count = 56; // Integer | Page size.
+        String userId = userId_example; // String | Search orders by userId.
+
+        Integer registrationId = 56; // Integer | Search orders by registrationId.
+
+        Integer eventId = 56; // Integer | Search orders by eventId.
+
+        OrderStatus status = ; // OrderStatus | 
+        Boolean includeUser = true; // Boolean | Whether to include user information into the response.
+
+        Boolean includeRegistration = true; // Boolean | Whether to include registration information into the response.
+
+        
+        try {
+            array[OrdersPagedList] result = apiInstance.getOrders(page, count, userId, registrationId, eventId, status, includeUser, includeRegistration);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling OrdersApi#getOrders");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Orders-getOrders-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.OrdersApi;
+
+public class OrdersApiExample {
+    public static void main(String[] args) {
+        OrdersApi apiInstance = new OrdersApi();
+        Integer page = 56; // Integer | Page number.
+        Integer count = 56; // Integer | Page size.
+        String userId = userId_example; // String | Search orders by userId.
+
+        Integer registrationId = 56; // Integer | Search orders by registrationId.
+
+        Integer eventId = 56; // Integer | Search orders by eventId.
+
+        OrderStatus status = ; // OrderStatus | 
+        Boolean includeUser = true; // Boolean | Whether to include user information into the response.
+
+        Boolean includeRegistration = true; // Boolean | Whether to include registration information into the response.
+
+        
+        try {
+            array[OrdersPagedList] result = apiInstance.getOrders(page, count, userId, registrationId, eventId, status, includeUser, includeRegistration);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling OrdersApi#getOrders");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Orders-getOrders-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Orders-getOrders-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+
+// Configure Bearer (JWT) access token for authorization: bearer
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+
+// Create an instance of the API class
+OrdersApi *apiInstance = [[OrdersApi alloc] init];
+Integer *page = 56; // Page number. (optional) (default to 1)
+Integer *count = 56; // Page size. (optional) (default to 100)
+String *userId = userId_example; // Search orders by userId.
+ (optional) (default to null)
+Integer *registrationId = 56; // Search orders by registrationId.
+ (optional) (default to null)
+Integer *eventId = 56; // Search orders by eventId.
+ (optional) (default to null)
+OrderStatus *status = ; //  (optional) (default to null)
+Boolean *includeUser = true; // Whether to include user information into the response.
+ (optional) (default to false)
+Boolean *includeRegistration = true; // Whether to include registration information into the response.
+ (optional) (default to false)
+
+// Get accessible orders list.
+[apiInstance getOrdersWith:page
+    count:count
+    userId:userId
+    registrationId:registrationId
+    eventId:eventId
+    status:status
+    includeUser:includeUser
+    includeRegistration:includeRegistration
+              completionHandler: ^(array[OrdersPagedList] output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Orders-getOrders-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var EventurasApi = require('eventuras_api');
+var defaultClient = EventurasApi.ApiClient.instance;
+
+// Configure Bearer (JWT) access token for authorization: bearer
+var bearer = defaultClient.authentications['bearer'];
+bearer.accessToken = "YOUR ACCESS TOKEN";
+
+// Create an instance of the API class
+var api = new EventurasApi.OrdersApi()
+var opts = {
+  'page': 56, // {Integer} Page number.
+  'count': 56, // {Integer} Page size.
+  'userId': userId_example, // {String} Search orders by userId.
+
+  'registrationId': 56, // {Integer} Search orders by registrationId.
+
+  'eventId': 56, // {Integer} Search orders by eventId.
+
+  'status': , // {OrderStatus} 
+  'includeUser': true, // {Boolean} Whether to include user information into the response.
+
+  'includeRegistration': true // {Boolean} Whether to include registration information into the response.
+
+};
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getOrders(opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Orders-getOrders-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Orders-getOrders-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class getOrdersExample
+    {
+        public void main()
+        {
+            // Configure Bearer (JWT) access token for authorization: bearer
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+            
+            // Create an instance of the API class
+            var apiInstance = new OrdersApi();
+            var page = 56;  // Integer | Page number. (optional)  (default to 1)
+            var count = 56;  // Integer | Page size. (optional)  (default to 100)
+            var userId = userId_example;  // String | Search orders by userId.
+ (optional)  (default to null)
+            var registrationId = 56;  // Integer | Search orders by registrationId.
+ (optional)  (default to null)
+            var eventId = 56;  // Integer | Search orders by eventId.
+ (optional)  (default to null)
+            var status = new OrderStatus(); // OrderStatus |  (optional)  (default to null)
+            var includeUser = true;  // Boolean | Whether to include user information into the response.
+ (optional)  (default to false)
+            var includeRegistration = true;  // Boolean | Whether to include registration information into the response.
+ (optional)  (default to false)
+
+            try {
+                // Get accessible orders list.
+                array[OrdersPagedList] result = apiInstance.getOrders(page, count, userId, registrationId, eventId, status, includeUser, includeRegistration);
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling OrdersApi.getOrders: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Orders-getOrders-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure Bearer (JWT) access token for authorization: bearer
+OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('', 'YOUR_ACCESS_TOKEN');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\OrdersApi();
+$page = 56; // Integer | Page number.
+$count = 56; // Integer | Page size.
+$userId = userId_example; // String | Search orders by userId.
+
+$registrationId = 56; // Integer | Search orders by registrationId.
+
+$eventId = 56; // Integer | Search orders by eventId.
+
+$status = ; // OrderStatus | 
+$includeUser = true; // Boolean | Whether to include user information into the response.
+
+$includeRegistration = true; // Boolean | Whether to include registration information into the response.
+
+
+try {
+    $result = $api_instance->getOrders($page, $count, $userId, $registrationId, $eventId, $status, $includeUser, $includeRegistration);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling OrdersApi->getOrders: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Orders-getOrders-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::OrdersApi;
+
+# Configure Bearer (JWT) access token for authorization: bearer
+$WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::OrdersApi->new();
+my $page = 56; # Integer | Page number.
+my $count = 56; # Integer | Page size.
+my $userId = userId_example; # String | Search orders by userId.
+
+my $registrationId = 56; # Integer | Search orders by registrationId.
+
+my $eventId = 56; # Integer | Search orders by eventId.
+
+my $status = ; # OrderStatus | 
+my $includeUser = true; # Boolean | Whether to include user information into the response.
+
+my $includeRegistration = true; # Boolean | Whether to include registration information into the response.
+
+
+eval { 
+    my $result = $api_instance->getOrders(page => $page, count => $count, userId => $userId, registrationId => $registrationId, eventId => $eventId, status => $status, includeUser => $includeUser, includeRegistration => $includeRegistration);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling OrdersApi->getOrders: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Orders-getOrders-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Configure Bearer (JWT) access token for authorization: bearer
+openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# Create an instance of the API class
+api_instance = openapi_client.OrdersApi()
+page = 56 # Integer | Page number. (optional) (default to 1)
+count = 56 # Integer | Page size. (optional) (default to 100)
+userId = userId_example # String | Search orders by userId.
+ (optional) (default to null)
+registrationId = 56 # Integer | Search orders by registrationId.
+ (optional) (default to null)
+eventId = 56 # Integer | Search orders by eventId.
+ (optional) (default to null)
+status =  # OrderStatus |  (optional) (default to null)
+includeUser = true # Boolean | Whether to include user information into the response.
+ (optional) (default to false)
+includeRegistration = true # Boolean | Whether to include registration information into the response.
+ (optional) (default to false)
+
+try: 
+    # Get accessible orders list.
+    api_response = api_instance.get_orders(page=page, count=count, userId=userId, registrationId=registrationId, eventId=eventId, status=status, includeUser=includeUser, includeRegistration=includeRegistration)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling OrdersApi->getOrders: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Orders-getOrders-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate OrdersApi;
+
+pub fn main() {
+    let page = 56; // Integer
+    let count = 56; // Integer
+    let userId = userId_example; // String
+    let registrationId = 56; // Integer
+    let eventId = 56; // Integer
+    let status = ; // OrderStatus
+    let includeUser = true; // Boolean
+    let includeRegistration = true; // Boolean
+
+    let mut context = OrdersApi::Context::default();
+    let result = client.getOrders(page, count, userId, registrationId, eventId, status, includeUser, includeRegistration, &context).wait();
 
     println!("{:?}", result);
 }
@@ -11089,25 +12121,206 @@ pub fn main() {
 
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">page</td>
+<td>
+
+
+    <div id="d2e199_getOrders_page">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Page number.
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">count</td>
+<td>
+
+
+    <div id="d2e199_getOrders_count">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Page size.
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">userId</td>
+<td>
+
+
+    <div id="d2e199_getOrders_userId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description marked">
+Search orders by userId.
+
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">registrationId</td>
+<td>
+
+
+    <div id="d2e199_getOrders_registrationId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Search orders by registrationId.
+
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">eventId</td>
+<td>
+
+
+    <div id="d2e199_getOrders_eventId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Search orders by eventId.
+
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">status</td>
+<td>
+
+
+    <div id="d2e199_getOrders_status">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    OrderStatus
+                </span>
+
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">includeUser</td>
+<td>
+
+
+    <div id="d2e199_getOrders_includeUser">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Boolean
+                </span>
+
+                    <div class="inner description marked">
+Whether to include user information into the response.
+
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">includeRegistration</td>
+<td>
+
+
+    <div id="d2e199_getOrders_includeRegistration">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Boolean
+                </span>
+
+                    <div class="inner description marked">
+Whether to include registration information into the response.
+
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
 
                           <h2>Responses</h2>
-                            <h3 id="examples-Orders-getRegistrationOrdersList-title-200"></h3>
-                            <p id="examples-Orders-getRegistrationOrdersList-description-200" class="marked"></p>
+                            <h3 id="examples-Orders-getOrders-title-200"></h3>
+                            <p id="examples-Orders-getOrders-description-200" class="marked"></p>
                             <script>
                               var responseOrders200_description = `OK`;
                               var responseOrders200_description_break = responseOrders200_description.indexOf('\n');
                               if (responseOrders200_description_break == -1) {
-                                $("#examples-Orders-getRegistrationOrdersList-title-200").text("Status: 200 - " + responseOrders200_description);
+                                $("#examples-Orders-getOrders-title-200").text("Status: 200 - " + responseOrders200_description);
                               } else {
-                                $("#examples-Orders-getRegistrationOrdersList-title-200").text("Status: 200 - " + responseOrders200_description.substring(0, responseOrders200_description_break));
-                                $("#examples-Orders-getRegistrationOrdersList-description-200").html(responseOrders200_description.substring(responseOrders200_description_break));
+                                $("#examples-Orders-getOrders-title-200").text("Status: 200 - " + responseOrders200_description.substring(0, responseOrders200_description_break));
+                                $("#examples-Orders-getOrders-description-200").html(responseOrders200_description.substring(responseOrders200_description_break));
                               }
                             </script>
 
 
-                            <ul id="responses-detail-Orders-getRegistrationOrdersList-200" class="nav nav-tabs nav-tabs-examples" >
+                            <ul id="responses-detail-Orders-getOrders-200" class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-Orders-getRegistrationOrdersList-200-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-Orders-getOrders-200-schema">Schema</a>
                                 </li>
 
 
@@ -11116,9 +12329,9 @@ pub fn main() {
                             </ul>
 
 
-                            <div class="tab-content" id="responses-Orders-getRegistrationOrdersList-200-wrapper" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-Orders-getRegistrationOrdersList-200-schema">
-                                  <div id="responses-Orders-getRegistrationOrdersList-schema-200" class="exampleStyle">
+                            <div class="tab-content" id="responses-Orders-getOrders-200-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Orders-getOrders-200-schema">
+                                  <div id="responses-Orders-getOrders-schema-200" class="exampleStyle">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
@@ -11128,7 +12341,7 @@ pub fn main() {
       "schema" : {
         "type" : "array",
         "items" : {
-          "$ref" : "#/components/schemas/OrderDto"
+          "$ref" : "#/components/schemas/OrdersPagedList"
         }
       }
     }
@@ -11150,33 +12363,33 @@ pub fn main() {
                                         }
 
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-Orders-getRegistrationOrdersList-200-schema-data').val(JSON.stringify(schema));
-                                        var result = $('#responses-Orders-getRegistrationOrdersList-schema-200');
+                                        $('#responses-Orders-getOrders-200-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Orders-getOrders-schema-200');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-Orders-getRegistrationOrdersList-200-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-Orders-getOrders-200-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
-                            <h3 id="examples-Orders-getRegistrationOrdersList-title-400"></h3>
-                            <p id="examples-Orders-getRegistrationOrdersList-description-400" class="marked"></p>
+                            <h3 id="examples-Orders-getOrders-title-400"></h3>
+                            <p id="examples-Orders-getOrders-description-400" class="marked"></p>
                             <script>
                               var responseOrders400_description = `Missing or invalid request parameters.`;
                               var responseOrders400_description_break = responseOrders400_description.indexOf('\n');
                               if (responseOrders400_description_break == -1) {
-                                $("#examples-Orders-getRegistrationOrdersList-title-400").text("Status: 400 - " + responseOrders400_description);
+                                $("#examples-Orders-getOrders-title-400").text("Status: 400 - " + responseOrders400_description);
                               } else {
-                                $("#examples-Orders-getRegistrationOrdersList-title-400").text("Status: 400 - " + responseOrders400_description.substring(0, responseOrders400_description_break));
-                                $("#examples-Orders-getRegistrationOrdersList-description-400").html(responseOrders400_description.substring(responseOrders400_description_break));
+                                $("#examples-Orders-getOrders-title-400").text("Status: 400 - " + responseOrders400_description.substring(0, responseOrders400_description_break));
+                                $("#examples-Orders-getOrders-description-400").html(responseOrders400_description.substring(responseOrders400_description_break));
                               }
                             </script>
 
 
-                            <ul id="responses-detail-Orders-getRegistrationOrdersList-400" class="nav nav-tabs nav-tabs-examples" >
+                            <ul id="responses-detail-Orders-getOrders-400" class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-Orders-getRegistrationOrdersList-400-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-Orders-getOrders-400-schema">Schema</a>
                                 </li>
 
 
@@ -11185,9 +12398,9 @@ pub fn main() {
                             </ul>
 
 
-                            <div class="tab-content" id="responses-Orders-getRegistrationOrdersList-400-wrapper" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-Orders-getRegistrationOrdersList-400-schema">
-                                  <div id="responses-Orders-getRegistrationOrdersList-schema-400" class="exampleStyle">
+                            <div class="tab-content" id="responses-Orders-getOrders-400-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Orders-getOrders-400-schema">
+                                  <div id="responses-Orders-getOrders-schema-400" class="exampleStyle">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
@@ -11216,33 +12429,33 @@ pub fn main() {
                                         }
 
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-Orders-getRegistrationOrdersList-400-schema-data').val(JSON.stringify(schema));
-                                        var result = $('#responses-Orders-getRegistrationOrdersList-schema-400');
+                                        $('#responses-Orders-getOrders-400-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Orders-getOrders-schema-400');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-Orders-getRegistrationOrdersList-400-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-Orders-getOrders-400-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
-                            <h3 id="examples-Orders-getRegistrationOrdersList-title-500"></h3>
-                            <p id="examples-Orders-getRegistrationOrdersList-description-500" class="marked"></p>
+                            <h3 id="examples-Orders-getOrders-title-401"></h3>
+                            <p id="examples-Orders-getOrders-description-401" class="marked"></p>
                             <script>
-                              var responseOrders500_description = `Unexpected server error.`;
-                              var responseOrders500_description_break = responseOrders500_description.indexOf('\n');
-                              if (responseOrders500_description_break == -1) {
-                                $("#examples-Orders-getRegistrationOrdersList-title-500").text("Status: 500 - " + responseOrders500_description);
+                              var responseOrders401_description = `Access token is missing or invalid.`;
+                              var responseOrders401_description_break = responseOrders401_description.indexOf('\n');
+                              if (responseOrders401_description_break == -1) {
+                                $("#examples-Orders-getOrders-title-401").text("Status: 401 - " + responseOrders401_description);
                               } else {
-                                $("#examples-Orders-getRegistrationOrdersList-title-500").text("Status: 500 - " + responseOrders500_description.substring(0, responseOrders500_description_break));
-                                $("#examples-Orders-getRegistrationOrdersList-description-500").html(responseOrders500_description.substring(responseOrders500_description_break));
+                                $("#examples-Orders-getOrders-title-401").text("Status: 401 - " + responseOrders401_description.substring(0, responseOrders401_description_break));
+                                $("#examples-Orders-getOrders-description-401").html(responseOrders401_description.substring(responseOrders401_description_break));
                               }
                             </script>
 
 
-                            <ul id="responses-detail-Orders-getRegistrationOrdersList-500" class="nav nav-tabs nav-tabs-examples" >
+                            <ul id="responses-detail-Orders-getOrders-401" class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-Orders-getRegistrationOrdersList-500-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-Orders-getOrders-401-schema">Schema</a>
                                 </li>
 
 
@@ -11251,9 +12464,75 @@ pub fn main() {
                             </ul>
 
 
-                            <div class="tab-content" id="responses-Orders-getRegistrationOrdersList-500-wrapper" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-Orders-getRegistrationOrdersList-500-schema">
-                                  <div id="responses-Orders-getRegistrationOrdersList-schema-500" class="exampleStyle">
+                            <div class="tab-content" id="responses-Orders-getOrders-401-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Orders-getOrders-401-schema">
+                                  <div id="responses-Orders-getOrders-schema-401" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access token is missing or invalid.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Orders-getOrders-401-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Orders-getOrders-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Orders-getOrders-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Orders-getOrders-title-500"></h3>
+                            <p id="examples-Orders-getOrders-description-500" class="marked"></p>
+                            <script>
+                              var responseOrders500_description = `Unexpected server error.`;
+                              var responseOrders500_description_break = responseOrders500_description.indexOf('\n');
+                              if (responseOrders500_description_break == -1) {
+                                $("#examples-Orders-getOrders-title-500").text("Status: 500 - " + responseOrders500_description);
+                              } else {
+                                $("#examples-Orders-getOrders-title-500").text("Status: 500 - " + responseOrders500_description.substring(0, responseOrders500_description_break));
+                                $("#examples-Orders-getOrders-description-500").html(responseOrders500_description.substring(responseOrders500_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Orders-getOrders-500" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Orders-getOrders-500-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Orders-getOrders-500-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Orders-getOrders-500-schema">
+                                  <div id="responses-Orders-getOrders-schema-500" class="exampleStyle">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
@@ -11282,14 +12561,703 @@ pub fn main() {
                                         }
 
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-Orders-getRegistrationOrdersList-500-schema-data').val(JSON.stringify(schema));
-                                        var result = $('#responses-Orders-getRegistrationOrdersList-schema-500');
+                                        $('#responses-Orders-getOrders-500-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Orders-getOrders-schema-500');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-Orders-getRegistrationOrdersList-500-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-Orders-getOrders-500-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Orders-updateOrder">
+                      <article id="api-Orders-updateOrder-0" data-group="User" data-name="updateOrder" data-version="0">
+                        <div class="pull-left">
+                          <h1>updateOrder</h1>
+                          <p>Update order.</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="put"><code><span class="pln">/orders/{id}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Orders-updateOrder-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Orders-updateOrder-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Orders-updateOrder-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Orders-updateOrder-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Orders-updateOrder-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Orders-updateOrder-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Orders-updateOrder-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Orders-updateOrder-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Orders-updateOrder-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Orders-updateOrder-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Orders-updateOrder-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Orders-updateOrder-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Orders-updateOrder-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X PUT\
+ -H "Authorization: Bearer [[accessToken]]"\
+ -H "Accept: application/json"\
+ -H "Content-Type: application/json"\
+ "https://full.path.to/v3/orders/{id}"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Orders-updateOrder-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.OrdersApi;
+
+import java.io.File;
+import java.util.*;
+
+public class OrdersApiExample {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        
+        // Configure Bearer (JWT) access token for authorization: bearer
+        HttpBearerAuth bearer = (HttpBearerAuth) defaultClient.getAuthentication("bearer");
+        bearer.setBearerToken("BEARER TOKEN");
+        
+        // Create an instance of the API class
+        OrdersApi apiInstance = new OrdersApi();
+        Integer id = 56; // Integer | Order ID.
+        OrderUpdateRequestDto orderUpdateRequestDto = ; // OrderUpdateRequestDto | 
+        
+        try {
+            OrderDto result = apiInstance.updateOrder(id, orderUpdateRequestDto);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling OrdersApi#updateOrder");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Orders-updateOrder-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.OrdersApi;
+
+public class OrdersApiExample {
+    public static void main(String[] args) {
+        OrdersApi apiInstance = new OrdersApi();
+        Integer id = 56; // Integer | Order ID.
+        OrderUpdateRequestDto orderUpdateRequestDto = ; // OrderUpdateRequestDto | 
+        
+        try {
+            OrderDto result = apiInstance.updateOrder(id, orderUpdateRequestDto);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling OrdersApi#updateOrder");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Orders-updateOrder-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Orders-updateOrder-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+
+// Configure Bearer (JWT) access token for authorization: bearer
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+
+// Create an instance of the API class
+OrdersApi *apiInstance = [[OrdersApi alloc] init];
+Integer *id = 56; // Order ID. (default to null)
+OrderUpdateRequestDto *orderUpdateRequestDto = ; // 
+
+// Update order.
+[apiInstance updateOrderWith:id
+    orderUpdateRequestDto:orderUpdateRequestDto
+              completionHandler: ^(OrderDto output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Orders-updateOrder-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var EventurasApi = require('eventuras_api');
+var defaultClient = EventurasApi.ApiClient.instance;
+
+// Configure Bearer (JWT) access token for authorization: bearer
+var bearer = defaultClient.authentications['bearer'];
+bearer.accessToken = "YOUR ACCESS TOKEN";
+
+// Create an instance of the API class
+var api = new EventurasApi.OrdersApi()
+var id = 56; // {Integer} Order ID.
+var orderUpdateRequestDto = ; // {OrderUpdateRequestDto} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.updateOrder(id, orderUpdateRequestDto, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Orders-updateOrder-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Orders-updateOrder-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class updateOrderExample
+    {
+        public void main()
+        {
+            // Configure Bearer (JWT) access token for authorization: bearer
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+            
+            // Create an instance of the API class
+            var apiInstance = new OrdersApi();
+            var id = 56;  // Integer | Order ID. (default to null)
+            var orderUpdateRequestDto = new OrderUpdateRequestDto(); // OrderUpdateRequestDto | 
+
+            try {
+                // Update order.
+                OrderDto result = apiInstance.updateOrder(id, orderUpdateRequestDto);
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling OrdersApi.updateOrder: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Orders-updateOrder-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure Bearer (JWT) access token for authorization: bearer
+OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('', 'YOUR_ACCESS_TOKEN');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\OrdersApi();
+$id = 56; // Integer | Order ID.
+$orderUpdateRequestDto = ; // OrderUpdateRequestDto | 
+
+try {
+    $result = $api_instance->updateOrder($id, $orderUpdateRequestDto);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling OrdersApi->updateOrder: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Orders-updateOrder-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::OrdersApi;
+
+# Configure Bearer (JWT) access token for authorization: bearer
+$WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::OrdersApi->new();
+my $id = 56; # Integer | Order ID.
+my $orderUpdateRequestDto = WWW::OPenAPIClient::Object::OrderUpdateRequestDto->new(); # OrderUpdateRequestDto | 
+
+eval { 
+    my $result = $api_instance->updateOrder(id => $id, orderUpdateRequestDto => $orderUpdateRequestDto);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling OrdersApi->updateOrder: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Orders-updateOrder-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Configure Bearer (JWT) access token for authorization: bearer
+openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# Create an instance of the API class
+api_instance = openapi_client.OrdersApi()
+id = 56 # Integer | Order ID. (default to null)
+orderUpdateRequestDto =  # OrderUpdateRequestDto | 
+
+try: 
+    # Update order.
+    api_response = api_instance.update_order(id, orderUpdateRequestDto)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling OrdersApi->updateOrder: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Orders-updateOrder-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate OrdersApi;
+
+pub fn main() {
+    let id = 56; // Integer
+    let orderUpdateRequestDto = ; // OrderUpdateRequestDto
+
+    let mut context = OrdersApi::Context::default();
+    let result = client.updateOrder(id, orderUpdateRequestDto, &context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+<td>
+
+
+    <div id="d2e199_updateOrder_id">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Order ID.
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">orderUpdateRequestDto <span style="color:red;">*</span></td>
+<td>
+<p class="marked"></p>
+<script>
+$(document).ready(function() {
+  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/OrderUpdateRequestDto"
+      }
+    }
+  },
+  "required" : true
+};
+
+  var schema = findNode('schema',schemaWrapper).schema;
+  if (!schema) {
+    schema = schemaWrapper.schema;
+  }
+  if (schema.$ref != null) {
+    schema = defsParser.$refs.get(schema.$ref);
+  } else {
+    schemaWrapper.definitions = Object.assign({}, defs);
+    $RefParser.dereference(schemaWrapper).catch(function(err) {
+      console.log(err);
+    });
+  }
+
+  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+  var result = $('#d2e199_updateOrder_orderUpdateRequestDto');
+  result.empty();
+  result.append(view.render());
+});
+</script>
+<div id="d2e199_updateOrder_orderUpdateRequestDto"></div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Orders-updateOrder-title-200"></h3>
+                            <p id="examples-Orders-updateOrder-description-200" class="marked"></p>
+                            <script>
+                              var responseOrders200_description = `Order updated.`;
+                              var responseOrders200_description_break = responseOrders200_description.indexOf('\n');
+                              if (responseOrders200_description_break == -1) {
+                                $("#examples-Orders-updateOrder-title-200").text("Status: 200 - " + responseOrders200_description);
+                              } else {
+                                $("#examples-Orders-updateOrder-title-200").text("Status: 200 - " + responseOrders200_description.substring(0, responseOrders200_description_break));
+                                $("#examples-Orders-updateOrder-description-200").html(responseOrders200_description.substring(responseOrders200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Orders-updateOrder-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Orders-updateOrder-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Orders-updateOrder-200-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Orders-updateOrder-200-schema">
+                                  <div id="responses-Orders-updateOrder-schema-200" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Order updated.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/OrderDto"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Orders-updateOrder-200-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Orders-updateOrder-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Orders-updateOrder-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Orders-updateOrder-title-401"></h3>
+                            <p id="examples-Orders-updateOrder-description-401" class="marked"></p>
+                            <script>
+                              var responseOrders401_description = `Access token is missing or invalid.`;
+                              var responseOrders401_description_break = responseOrders401_description.indexOf('\n');
+                              if (responseOrders401_description_break == -1) {
+                                $("#examples-Orders-updateOrder-title-401").text("Status: 401 - " + responseOrders401_description);
+                              } else {
+                                $("#examples-Orders-updateOrder-title-401").text("Status: 401 - " + responseOrders401_description.substring(0, responseOrders401_description_break));
+                                $("#examples-Orders-updateOrder-description-401").html(responseOrders401_description.substring(responseOrders401_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Orders-updateOrder-401" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Orders-updateOrder-401-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Orders-updateOrder-401-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Orders-updateOrder-401-schema">
+                                  <div id="responses-Orders-updateOrder-schema-401" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access token is missing or invalid.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Orders-updateOrder-401-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Orders-updateOrder-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Orders-updateOrder-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Orders-updateOrder-title-403"></h3>
+                            <p id="examples-Orders-updateOrder-description-403" class="marked"></p>
+                            <script>
+                              var responseOrders403_description = `Access forbidden.`;
+                              var responseOrders403_description_break = responseOrders403_description.indexOf('\n');
+                              if (responseOrders403_description_break == -1) {
+                                $("#examples-Orders-updateOrder-title-403").text("Status: 403 - " + responseOrders403_description);
+                              } else {
+                                $("#examples-Orders-updateOrder-title-403").text("Status: 403 - " + responseOrders403_description.substring(0, responseOrders403_description_break));
+                                $("#examples-Orders-updateOrder-description-403").html(responseOrders403_description.substring(responseOrders403_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Orders-updateOrder-403" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Orders-updateOrder-403-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Orders-updateOrder-403-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Orders-updateOrder-403-schema">
+                                  <div id="responses-Orders-updateOrder-schema-403" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access forbidden.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Orders-updateOrder-403-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Orders-updateOrder-schema-403');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Orders-updateOrder-403-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Orders-updateOrder-title-404"></h3>
+                            <p id="examples-Orders-updateOrder-description-404" class="marked"></p>
+                            <script>
+                              var responseOrders404_description = `The requested resource not found.`;
+                              var responseOrders404_description_break = responseOrders404_description.indexOf('\n');
+                              if (responseOrders404_description_break == -1) {
+                                $("#examples-Orders-updateOrder-title-404").text("Status: 404 - " + responseOrders404_description);
+                              } else {
+                                $("#examples-Orders-updateOrder-title-404").text("Status: 404 - " + responseOrders404_description.substring(0, responseOrders404_description_break));
+                                $("#examples-Orders-updateOrder-description-404").html(responseOrders404_description.substring(responseOrders404_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Orders-updateOrder-404" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Orders-updateOrder-404-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Orders-updateOrder-404-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Orders-updateOrder-404-schema">
+                                  <div id="responses-Orders-updateOrder-schema-404" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "The requested resource not found.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Orders-updateOrder-404-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Orders-updateOrder-schema-404');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Orders-updateOrder-404-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Orders-updateOrder-title-500"></h3>
+                            <p id="examples-Orders-updateOrder-description-500" class="marked"></p>
+                            <script>
+                              var responseOrders500_description = `Unexpected server error.`;
+                              var responseOrders500_description_break = responseOrders500_description.indexOf('\n');
+                              if (responseOrders500_description_break == -1) {
+                                $("#examples-Orders-updateOrder-title-500").text("Status: 500 - " + responseOrders500_description);
+                              } else {
+                                $("#examples-Orders-updateOrder-title-500").text("Status: 500 - " + responseOrders500_description.substring(0, responseOrders500_description_break));
+                                $("#examples-Orders-updateOrder-description-500").html(responseOrders500_description.substring(responseOrders500_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Orders-updateOrder-500" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Orders-updateOrder-500-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Orders-updateOrder-500-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Orders-updateOrder-500-schema">
+                                  <div id="responses-Orders-updateOrder-schema-500" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unexpected server error.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Orders-updateOrder-500-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Orders-updateOrder-schema-500');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Orders-updateOrder-500-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
                         </article>
@@ -22041,10 +24009,10 @@ public class RegistrationsApiExample {
         
         // Create an instance of the API class
         RegistrationsApi apiInstance = new RegistrationsApi();
-        RegistrationOrderDto registrationOrderDto = ; // RegistrationOrderDto | 
+        NewRegistrationOrderDto newRegistrationOrderDto = ; // NewRegistrationOrderDto | 
         
         try {
-            OrderDto result = apiInstance.addOrderToRegistration(registrationOrderDto);
+            RegistrationOrderDto result = apiInstance.addOrderToRegistration(newRegistrationOrderDto);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling RegistrationsApi#addOrderToRegistration");
@@ -22061,10 +24029,10 @@ public class RegistrationsApiExample {
 public class RegistrationsApiExample {
     public static void main(String[] args) {
         RegistrationsApi apiInstance = new RegistrationsApi();
-        RegistrationOrderDto registrationOrderDto = ; // RegistrationOrderDto | 
+        NewRegistrationOrderDto newRegistrationOrderDto = ; // NewRegistrationOrderDto | 
         
         try {
-            OrderDto result = apiInstance.addOrderToRegistration(registrationOrderDto);
+            RegistrationOrderDto result = apiInstance.addOrderToRegistration(newRegistrationOrderDto);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling RegistrationsApi#addOrderToRegistration");
@@ -22085,11 +24053,11 @@ public class RegistrationsApiExample {
 
 // Create an instance of the API class
 RegistrationsApi *apiInstance = [[RegistrationsApi alloc] init];
-RegistrationOrderDto *registrationOrderDto = ; // 
+NewRegistrationOrderDto *newRegistrationOrderDto = ; // 
 
 // Add order to registration.
-[apiInstance addOrderToRegistrationWith:registrationOrderDto
-              completionHandler: ^(OrderDto output, NSError* error) {
+[apiInstance addOrderToRegistrationWith:newRegistrationOrderDto
+              completionHandler: ^(RegistrationOrderDto output, NSError* error) {
     if (output) {
         NSLog(@"%@", output);
     }
@@ -22110,7 +24078,7 @@ bearer.accessToken = "YOUR ACCESS TOKEN";
 
 // Create an instance of the API class
 var api = new EventurasApi.RegistrationsApi()
-var registrationOrderDto = ; // {RegistrationOrderDto} 
+var newRegistrationOrderDto = ; // {NewRegistrationOrderDto} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -22119,7 +24087,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.addOrderToRegistration(registrationOrderDto, callback);
+api.addOrderToRegistration(newRegistrationOrderDto, callback);
 </code></pre>
                             </div>
 
@@ -22144,11 +24112,11 @@ namespace Example
             
             // Create an instance of the API class
             var apiInstance = new RegistrationsApi();
-            var registrationOrderDto = new RegistrationOrderDto(); // RegistrationOrderDto | 
+            var newRegistrationOrderDto = new NewRegistrationOrderDto(); // NewRegistrationOrderDto | 
 
             try {
                 // Add order to registration.
-                OrderDto result = apiInstance.addOrderToRegistration(registrationOrderDto);
+                RegistrationOrderDto result = apiInstance.addOrderToRegistration(newRegistrationOrderDto);
                 Debug.WriteLine(result);
             } catch (Exception e) {
                 Debug.Print("Exception when calling RegistrationsApi.addOrderToRegistration: " + e.Message );
@@ -22168,10 +24136,10 @@ OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('',
 
 // Create an instance of the API class
 $api_instance = new OpenAPITools\Client\Api\RegistrationsApi();
-$registrationOrderDto = ; // RegistrationOrderDto | 
+$newRegistrationOrderDto = ; // NewRegistrationOrderDto | 
 
 try {
-    $result = $api_instance->addOrderToRegistration($registrationOrderDto);
+    $result = $api_instance->addOrderToRegistration($newRegistrationOrderDto);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling RegistrationsApi->addOrderToRegistration: ', $e->getMessage(), PHP_EOL;
@@ -22189,10 +24157,10 @@ $WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 # Create an instance of the API class
 my $api_instance = WWW::OPenAPIClient::RegistrationsApi->new();
-my $registrationOrderDto = WWW::OPenAPIClient::Object::RegistrationOrderDto->new(); # RegistrationOrderDto | 
+my $newRegistrationOrderDto = WWW::OPenAPIClient::Object::NewRegistrationOrderDto->new(); # NewRegistrationOrderDto | 
 
 eval { 
-    my $result = $api_instance->addOrderToRegistration(registrationOrderDto => $registrationOrderDto);
+    my $result = $api_instance->addOrderToRegistration(newRegistrationOrderDto => $newRegistrationOrderDto);
     print Dumper($result);
 };
 if ($@) {
@@ -22212,11 +24180,11 @@ openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # Create an instance of the API class
 api_instance = openapi_client.RegistrationsApi()
-registrationOrderDto =  # RegistrationOrderDto | 
+newRegistrationOrderDto =  # NewRegistrationOrderDto | 
 
 try: 
     # Add order to registration.
-    api_response = api_instance.add_order_to_registration(registrationOrderDto)
+    api_response = api_instance.add_order_to_registration(newRegistrationOrderDto)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling RegistrationsApi->addOrderToRegistration: %s\n" % e)</code></pre>
@@ -22226,10 +24194,10 @@ except ApiException as e:
                               <pre class="prettyprint"><code class="language-rust">extern crate RegistrationsApi;
 
 pub fn main() {
-    let registrationOrderDto = ; // RegistrationOrderDto
+    let newRegistrationOrderDto = ; // NewRegistrationOrderDto
 
     let mut context = RegistrationsApi::Context::default();
-    let result = client.addOrderToRegistration(registrationOrderDto, &context).wait();
+    let result = client.addOrderToRegistration(newRegistrationOrderDto, &context).wait();
 
     println!("{:?}", result);
 }
@@ -22252,7 +24220,7 @@ pub fn main() {
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                <tr><td style="width:150px;">registrationOrderDto <span style="color:red;">*</span></td>
+                                <tr><td style="width:150px;">newRegistrationOrderDto <span style="color:red;">*</span></td>
 <td>
 <p class="marked"></p>
 <script>
@@ -22261,7 +24229,7 @@ $(document).ready(function() {
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/RegistrationOrderDto"
+        "$ref" : "#/components/schemas/NewRegistrationOrderDto"
       }
     }
   },
@@ -22282,12 +24250,12 @@ $(document).ready(function() {
   }
 
   var view = new JSONSchemaView(schema,2,{isBodyParam: true});
-  var result = $('#d2e199_addOrderToRegistration_registrationOrderDto');
+  var result = $('#d2e199_addOrderToRegistration_newRegistrationOrderDto');
   result.empty();
   result.append(view.render());
 });
 </script>
-<div id="d2e199_addOrderToRegistration_registrationOrderDto"></div>
+<div id="d2e199_addOrderToRegistration_newRegistrationOrderDto"></div>
 </td>
 </tr>
 
@@ -22331,7 +24299,7 @@ $(document).ready(function() {
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/OrderDto"
+        "$ref" : "#/components/schemas/RegistrationOrderDto"
       }
     }
   }
@@ -23979,7 +25947,7 @@ public class RegistrationsApiExample {
         RegistrationsApi apiInstance = new RegistrationsApi();
         
         try {
-            array[OrderDto] result = apiInstance.getRegistrationOrdersList();
+            array[RegistrationOrderDto] result = apiInstance.getRegistrationOrdersList();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling RegistrationsApi#getRegistrationOrdersList");
@@ -23998,7 +25966,7 @@ public class RegistrationsApiExample {
         RegistrationsApi apiInstance = new RegistrationsApi();
         
         try {
-            array[OrderDto] result = apiInstance.getRegistrationOrdersList();
+            array[RegistrationOrderDto] result = apiInstance.getRegistrationOrdersList();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling RegistrationsApi#getRegistrationOrdersList");
@@ -24022,7 +25990,7 @@ RegistrationsApi *apiInstance = [[RegistrationsApi alloc] init];
 
 // Get registration orders list.
 [apiInstance getRegistrationOrdersListWithCompletionHandler: 
-              ^(array[OrderDto] output, NSError* error) {
+              ^(array[RegistrationOrderDto] output, NSError* error) {
     if (output) {
         NSLog(@"%@", output);
     }
@@ -24078,7 +26046,7 @@ namespace Example
 
             try {
                 // Get registration orders list.
-                array[OrderDto] result = apiInstance.getRegistrationOrdersList();
+                array[RegistrationOrderDto] result = apiInstance.getRegistrationOrdersList();
                 Debug.WriteLine(result);
             } catch (Exception e) {
                 Debug.Print("Exception when calling RegistrationsApi.getRegistrationOrdersList: " + e.Message );
@@ -24213,7 +26181,7 @@ pub fn main() {
       "schema" : {
         "type" : "array",
         "items" : {
-          "$ref" : "#/components/schemas/OrderDto"
+          "$ref" : "#/components/schemas/RegistrationOrderDto"
         }
       }
     }
@@ -28877,9 +30845,10 @@ public class UsersApiExample {
         
         // Create an instance of the API class
         UsersApi apiInstance = new UsersApi();
+        String id = id_example; // String | User ID.
         
         try {
-            UserDto result = apiInstance.getUserById();
+            UserDto result = apiInstance.getUserById(id);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling UsersApi#getUserById");
@@ -28896,9 +30865,10 @@ public class UsersApiExample {
 public class UsersApiExample {
     public static void main(String[] args) {
         UsersApi apiInstance = new UsersApi();
+        String id = id_example; // String | User ID.
         
         try {
-            UserDto result = apiInstance.getUserById();
+            UserDto result = apiInstance.getUserById(id);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling UsersApi#getUserById");
@@ -28919,10 +30889,11 @@ public class UsersApiExample {
 
 // Create an instance of the API class
 UsersApi *apiInstance = [[UsersApi alloc] init];
+String *id = id_example; // User ID. (default to null)
 
 // Get user by id.
-[apiInstance getUserByIdWithCompletionHandler: 
-              ^(UserDto output, NSError* error) {
+[apiInstance getUserByIdWith:id
+              completionHandler: ^(UserDto output, NSError* error) {
     if (output) {
         NSLog(@"%@", output);
     }
@@ -28943,6 +30914,8 @@ bearer.accessToken = "YOUR ACCESS TOKEN";
 
 // Create an instance of the API class
 var api = new EventurasApi.UsersApi()
+var id = id_example; // {String} User ID.
+
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -28950,7 +30923,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.getUserById(callback);
+api.getUserById(id, callback);
 </code></pre>
                             </div>
 
@@ -28975,10 +30948,11 @@ namespace Example
             
             // Create an instance of the API class
             var apiInstance = new UsersApi();
+            var id = id_example;  // String | User ID. (default to null)
 
             try {
                 // Get user by id.
-                UserDto result = apiInstance.getUserById();
+                UserDto result = apiInstance.getUserById(id);
                 Debug.WriteLine(result);
             } catch (Exception e) {
                 Debug.Print("Exception when calling UsersApi.getUserById: " + e.Message );
@@ -28998,9 +30972,10 @@ OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('',
 
 // Create an instance of the API class
 $api_instance = new OpenAPITools\Client\Api\UsersApi();
+$id = id_example; // String | User ID.
 
 try {
-    $result = $api_instance->getUserById();
+    $result = $api_instance->getUserById($id);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling UsersApi->getUserById: ', $e->getMessage(), PHP_EOL;
@@ -29018,9 +30993,10 @@ $WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 # Create an instance of the API class
 my $api_instance = WWW::OPenAPIClient::UsersApi->new();
+my $id = id_example; # String | User ID.
 
 eval { 
-    my $result = $api_instance->getUserById();
+    my $result = $api_instance->getUserById(id => $id);
     print Dumper($result);
 };
 if ($@) {
@@ -29040,10 +31016,11 @@ openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # Create an instance of the API class
 api_instance = openapi_client.UsersApi()
+id = id_example # String | User ID. (default to null)
 
 try: 
     # Get user by id.
-    api_response = api_instance.get_user_by_id()
+    api_response = api_instance.get_user_by_id(id)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling UsersApi->getUserById: %s\n" % e)</code></pre>
@@ -29053,9 +31030,10 @@ except ApiException as e:
                               <pre class="prettyprint"><code class="language-rust">extern crate UsersApi;
 
 pub fn main() {
+    let id = id_example; // String
 
     let mut context = UsersApi::Context::default();
-    let result = client.getUserById(&context).wait();
+    let result = client.getUserById(id, &context).wait();
 
     println!("{:?}", result);
 }
@@ -29070,6 +31048,36 @@ pub fn main() {
 
                           <h2>Parameters</h2>
 
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+<td>
+
+
+    <div id="d2e199_getUserById_id">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description marked">
+User ID.
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
 
 
 
@@ -30202,7 +32210,7 @@ public class UsersApiExample {
         
         // Create an instance of the API class
         UsersApi apiInstance = new UsersApi();
-        Integer id = 56; // Integer | User ID.
+        String id = id_example; // String | User ID.
         UserFormDto userFormDto = ; // UserFormDto | 
         
         try {
@@ -30223,7 +32231,7 @@ public class UsersApiExample {
 public class UsersApiExample {
     public static void main(String[] args) {
         UsersApi apiInstance = new UsersApi();
-        Integer id = 56; // Integer | User ID.
+        String id = id_example; // String | User ID.
         UserFormDto userFormDto = ; // UserFormDto | 
         
         try {
@@ -30248,7 +32256,7 @@ public class UsersApiExample {
 
 // Create an instance of the API class
 UsersApi *apiInstance = [[UsersApi alloc] init];
-Integer *id = 56; // User ID. (default to null)
+String *id = id_example; // User ID. (default to null)
 UserFormDto *userFormDto = ; // 
 
 // Update user profile.
@@ -30275,7 +32283,7 @@ bearer.accessToken = "YOUR ACCESS TOKEN";
 
 // Create an instance of the API class
 var api = new EventurasApi.UsersApi()
-var id = 56; // {Integer} User ID.
+var id = id_example; // {String} User ID.
 var userFormDto = ; // {UserFormDto} 
 
 var callback = function(error, data, response) {
@@ -30310,7 +32318,7 @@ namespace Example
             
             // Create an instance of the API class
             var apiInstance = new UsersApi();
-            var id = 56;  // Integer | User ID. (default to null)
+            var id = id_example;  // String | User ID. (default to null)
             var userFormDto = new UserFormDto(); // UserFormDto | 
 
             try {
@@ -30335,7 +32343,7 @@ OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('',
 
 // Create an instance of the API class
 $api_instance = new OpenAPITools\Client\Api\UsersApi();
-$id = 56; // Integer | User ID.
+$id = id_example; // String | User ID.
 $userFormDto = ; // UserFormDto | 
 
 try {
@@ -30357,7 +32365,7 @@ $WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 # Create an instance of the API class
 my $api_instance = WWW::OPenAPIClient::UsersApi->new();
-my $id = 56; # Integer | User ID.
+my $id = id_example; # String | User ID.
 my $userFormDto = WWW::OPenAPIClient::Object::UserFormDto->new(); # UserFormDto | 
 
 eval { 
@@ -30381,7 +32389,7 @@ openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # Create an instance of the API class
 api_instance = openapi_client.UsersApi()
-id = 56 # Integer | User ID. (default to null)
+id = id_example # String | User ID. (default to null)
 userFormDto =  # UserFormDto | 
 
 try: 
@@ -30396,7 +32404,7 @@ except ApiException as e:
                               <pre class="prettyprint"><code class="language-rust">extern crate UsersApi;
 
 pub fn main() {
-    let id = 56; // Integer
+    let id = id_example; // String
     let userFormDto = ; // UserFormDto
 
     let mut context = UsersApi::Context::default();
@@ -30429,11 +32437,8 @@ pub fn main() {
         <div class="json-schema-view">
             <div class="primitive">
                 <span class="type">
-                    Integer
+                    String
                 </span>
-                    <span class="format">
-                        (int32)
-                    </span>
 
                     <div class="inner description marked">
 User ID.
