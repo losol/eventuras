@@ -222,20 +222,18 @@ namespace Eventuras.Domain
         /// Updates an existing order if it's not already been invoiced.
         /// Else creates a new order.
         /// </summary>
-        /// <param name="orders"></param>
-        /// <param name="variants"></param>
         public void CreateOrUpdateOrder(ICollection<OrderDTO> dtos)
         {
             // Check if any editable orders exist
-            var editableOrders = Orders.Where(o => o.CanEdit);
+            var editableOrders = Orders.Where(o => o.CanEdit).ToArray();
             var editableOrderExists = editableOrders.Any();
 
             // Get the existing productids
-            var products = editableOrderExists ? GetInvoicedProducts() : GetCurrentProducts();
             var orders = dtos.ToList();
 
             if (!editableOrderExists)
             {
+                var products = GetCurrentProducts();
                 var refundDtos = new List<OrderDTO>();
                 var refundLines = new List<OrderLine>();
                 foreach (var order in orders)
@@ -289,31 +287,46 @@ namespace Eventuras.Domain
             }
             else // an editable (uninvoiced) order exists
             {
-                var orderToUpdate = editableOrders.First();
-                var lines = orderToUpdate.OrderLines;
-                foreach (var order in orders)
+                UpdateOrder(editableOrders.First(), orders);
+            }
+        }
+
+        [Obsolete]
+        public void UpdateOrder(Order orderToUpdate, IEnumerable<OrderDTO> orders)
+        {
+            if (orderToUpdate.RegistrationId != RegistrationId)
+            {
+                throw new InvalidOperationException(
+                    $"Order {orderToUpdate.OrderId} doesn't belong to registration {RegistrationId}");
+            }
+
+            var lines = orderToUpdate.OrderLines;
+            var invoicedProducts = GetInvoicedProducts();
+            foreach (var order in orders)
+            {
+                var match = lines.Find(l => l.ProductId == order.Product.ProductId);
+                if (match != null)
                 {
-                    var match = lines.Find(l => l.ProductId == order.Product.ProductId);
-                    if (match != null)
-                    {
-                        lines.Remove(match);
-                    }
-                    var product = products.Find(p => p.Product.ProductId == order.Product.ProductId);
-                    var orderline = order.ToOrderLine();
-                    if (product != null && product.Variant?.ProductVariantId != order.Variant?.ProductVariantId) // if a product variant is being replaced
+                    lines.Remove(match);
+                }
+                
+                var product = invoicedProducts.Find(p => p.Product.ProductId == order.Product.ProductId);
+                var orderline = order.ToOrderLine();
+                if (product != null &&
+                    product.Variant?.ProductVariantId !=
+                    order.Variant?.ProductVariantId) // if a product variant is being replaced
+                {
+                    lines.Add(orderline);
+                    var refundLine = product.ToOrderLine();
+                    refundLine.Quantity = -refundLine.Quantity;
+                    lines.Add(refundLine);
+                }
+                else
+                {
+                    orderline.Quantity = order.Quantity - (product?.Quantity ?? 0);
+                    if (orderline.Quantity != 0)
                     {
                         lines.Add(orderline);
-                        var refundLine = product.ToOrderLine();
-                        refundLine.Quantity = -refundLine.Quantity;
-                        lines.Add(refundLine);
-                    }
-                    else
-                    {
-                        orderline.Quantity = order.Quantity - (product?.Quantity ?? 0);
-                        if (orderline.Quantity != 0)
-                        {
-                            lines.Add(orderline);
-                        }
                     }
                 }
             }

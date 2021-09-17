@@ -6,7 +6,7 @@ namespace Eventuras.Infrastructure
 {
     public static class ApplicationDbContextExtensions
     {
-        public static async Task CreateAsync<T>(this ApplicationDbContext context, T entity,
+        public static async Task CreateAsync<T>(this DbContext context, T entity,
             CancellationToken cancellationToken = default)
         {
             await context.AddAsync(entity, cancellationToken);
@@ -14,7 +14,7 @@ namespace Eventuras.Infrastructure
             context.DisableChangeTracking(entity);
         }
 
-        public static async Task UpdateAsync<T>(this ApplicationDbContext context, T entity,
+        public static async Task UpdateAsync<T>(this DbContext context, T entity,
             CancellationToken cancellationToken = default)
         {
             context.Update(entity);
@@ -22,7 +22,7 @@ namespace Eventuras.Infrastructure
             context.DisableChangeTracking(entity);
         }
 
-        public static async Task DeleteAsync<T>(this ApplicationDbContext context, T entity,
+        public static async Task DeleteAsync<T>(this DbContext context, T entity,
             CancellationToken cancellationToken = default)
         {
             context.Remove(entity);
@@ -30,7 +30,7 @@ namespace Eventuras.Infrastructure
             context.DisableChangeTracking(entity);
         }
 
-        public static void DisableChangeTracking<T>(this ApplicationDbContext context, T entity)
+        public static void DisableChangeTracking<T>(this DbContext context, T entity)
         {
             context.Entry(entity).State = EntityState.Detached;
         }
