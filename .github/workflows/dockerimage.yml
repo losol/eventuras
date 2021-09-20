@@ -3,11 +3,11 @@ name: Docker Image CI
 on:
   push:
     branches:
-      - master
+      - main
       - "feature/*"
   pull_request:
     branches:
-      - master
+      - main
 
 env:
   ORGANIZATION_NAME: losolio
@@ -72,7 +72,7 @@ jobs:
 
   release:
     name: Build image and push latest release to Docker Hub.
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     needs: test
 
     runs-on: ubuntu-latest
@@ -87,7 +87,7 @@ jobs:
           echo "BUILD_DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
           echo "BUILD_TIME=$(date +'%H%M%S')" >> $GITHUB_ENV
 
-      - name: Docker meta (master)
+      - name: Docker meta (main)
         id: meta
         uses: docker/metadata-action@v3
         with:
@@ -112,7 +112,7 @@ jobs:
 
   classic:
     name: Build image and push classic release to Docker Hub.
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     needs: test
 
     runs-on: ubuntu-latest
