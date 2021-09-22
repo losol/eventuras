@@ -88,16 +88,22 @@ namespace Eventuras.Services.Registrations
 
             if (options.CreateOrder && registration.Status != Registration.RegistrationStatus.WaitingList)
             {
-                await _registrationOrderManagementService
-                    .CreateOrderForRegistrationAsync(registration,
-                        eventInfo.Products
-                            .Where(p => p.IsMandatory)
-                            .Select(p => new OrderItemDto
-                            {
-                                ProductId = p.ProductId,
-                                Quantity = p.MinimumQuantity
-                            }).ToArray(),
-                        cancellationToken);
+                var mandatoryItems = eventInfo.Products
+                    .Where(p => p.IsMandatory)
+                    .Select(p => new OrderItemDto
+                    {
+                        ProductId = p.ProductId,
+                        Quantity = p.MinimumQuantity
+                    }).ToArray();
+
+                if (mandatoryItems.Any())
+                {
+                    await _registrationOrderManagementService
+                        .CreateOrderForRegistrationAsync(
+                            registration.RegistrationId,
+                            mandatoryItems,
+                            cancellationToken);
+                }
             }
 
             if (eventInfo.MaxParticipants > 0 && eventInfo

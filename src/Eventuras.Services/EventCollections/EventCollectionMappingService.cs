@@ -117,7 +117,7 @@ namespace Eventuras.Services.EventCollections
             {
                 return false;
             }
-            if (principal.IsSuperAdmin())
+            if (principal.IsPowerAdmin())
             {
                 return true;
             }

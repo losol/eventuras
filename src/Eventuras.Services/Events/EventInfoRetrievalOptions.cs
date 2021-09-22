@@ -8,5 +8,6 @@ namespace Eventuras.Services.Events
         public bool LoadOrganizerUser { get; set; }
         public bool LoadProducts { get; set; }
         public bool LoadRegistrations { get; set; }
+        public bool LoadCollections { get; set; }
     }
 }

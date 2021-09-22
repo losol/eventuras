@@ -6,6 +6,8 @@ namespace Eventuras.Services.EventCollections
     {
         public static IServiceCollection AddEventCollectionServices(this IServiceCollection services)
         {
+            services.AddTransient<IEventCollectionAccessControlService, EventCollectionAccessControlService>();
+            services.AddTransient<IEventCollectionRetrievalService, EventCollectionRetrievalService>();
             services.AddTransient<IEventCollectionManagementService, EventCollectionManagementService>();
             services.AddTransient<IEventCollectionMappingService, EventCollectionMappingService>();
             return services;

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Eventuras.Domain;
 
-namespace Eventuras.WebApi.Controllers.Events
+namespace Eventuras.WebApi.Controllers.Events.Products
 {
     public class NewProductDto
     {
@@ -16,6 +16,8 @@ namespace Eventuras.WebApi.Controllers.Events
         [Range(0, 99)]
         public int VatPercent { get; set; }
 
+        public ProductVisibility Visibility { get; set; } = ProductVisibility.Event;
+
         public Product ToProduct()
         {
             return new Product
@@ -24,7 +26,8 @@ namespace Eventuras.WebApi.Controllers.Events
                 Description = Description,
                 MoreInformation = More,
                 Price = Price,
-                VatPercent = VatPercent
+                VatPercent = VatPercent,
+                Visibility = Visibility
             };
         }
     }

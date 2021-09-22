@@ -1,6 +1,6 @@
+using System.Linq;
 using Eventuras.Domain;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Eventuras.Services.Registrations
 {
@@ -62,23 +62,28 @@ namespace Eventuras.Services.Registrations
                 return query;
             }
 
-            if (options.IncludeUser)
+            if (!options.ForUpdate)
+            {
+                query = query.AsNoTracking();
+            }
+
+            if (options.LoadUser)
             {
                 query = query.Include(r => r.User);
             }
 
-            if (options.IncludeEventInfo)
+            if (options.LoadEventInfo)
             {
                 query = query.Include(r => r.EventInfo);
             }
 
-            if (options.IncludeOrders)
+            if (options.LoadOrders)
             {
                 query = query.Include(r => r.Orders)
                     .ThenInclude(o => o.OrderLines);
             }
 
-            if (options.IncludeProducts)
+            if (options.LoadProducts)
             {
                 query = query.Include(r => r.Orders)
                     .ThenInclude(o => o.OrderLines)

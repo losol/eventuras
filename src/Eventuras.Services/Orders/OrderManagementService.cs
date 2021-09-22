@@ -67,8 +67,8 @@ namespace Eventuras.Services.Orders
                 .GetRegistrationByIdAsync(order.RegistrationId,
                     new RegistrationRetrievalOptions
                     {
-                        IncludeOrders = true,
-                        IncludeProducts = true
+                        LoadOrders = true,
+                        LoadProducts = true
                     }, cancellationToken);
 
             var productMap = await _context.Products

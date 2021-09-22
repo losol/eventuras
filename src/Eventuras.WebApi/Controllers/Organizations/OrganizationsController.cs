@@ -54,7 +54,7 @@ namespace Eventuras.WebApi.Controllers.Organizations
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState.FormatErrors());
             }
 
             var org = new Organization();
@@ -70,7 +70,7 @@ namespace Eventuras.WebApi.Controllers.Organizations
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState.FormatErrors());
             }
 
             var org = await _organizationRetrievalService.GetOrganizationByIdAsync(organizationId);

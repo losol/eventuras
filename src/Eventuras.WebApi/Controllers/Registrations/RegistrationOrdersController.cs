@@ -36,8 +36,8 @@ namespace Eventuras.WebApi.Controllers.Registrations
             var r = await _registrationRetrievalService.GetRegistrationByIdAsync(id,
                 new RegistrationRetrievalOptions
                 {
-                    IncludeOrders = true,
-                    IncludeProducts = true
+                    LoadOrders = true,
+                    LoadProducts = true
                 }, token);
 
             return r.Orders
@@ -47,19 +47,16 @@ namespace Eventuras.WebApi.Controllers.Registrations
 
         // POST: v3/registrations/667/orders
         [HttpPost]
-        public async Task<RegistrationOrderDto> CreateNewOrderForRegistration(int id,
+        public async Task<IActionResult> CreateNewOrderForRegistration(int id,
             [FromBody] NewRegistrationOrderDto dto,
-            CancellationToken token)
+            CancellationToken cancellationToken)
         {
-            var registration = await _registrationRetrievalService
-                .GetRegistrationByIdAsync(id, cancellationToken: token);
-
             var order = await _registrationOrderManagementService
-                .CreateOrderForRegistrationAsync(registration, dto.Items
+                .CreateOrderForRegistrationAsync(id, dto.Items
                     .Select(d => d.ToOrderItemDto())
-                    .ToArray(), token);
+                    .ToArray(), cancellationToken);
 
-            return new RegistrationOrderDto(order);
+            return Ok(new RegistrationOrderDto(order));
         }
     }
 

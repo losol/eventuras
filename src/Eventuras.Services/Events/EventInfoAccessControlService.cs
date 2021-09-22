@@ -30,10 +30,12 @@ namespace Eventuras.Services.Events
                 new ArgumentNullException(nameof(httpContextAccessor));
         }
 
-        public Task CheckEventReadAccessAsync(int eventInfoId, CancellationToken token)
+        public async Task CheckEventReadAccessAsync(int eventInfoId, CancellationToken token)
         {
+            // to check event exists
+            await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventInfoId, token);
+
             // For now, anyone can read any event information.
-            return Task.CompletedTask;
         }
 
         public async Task CheckEventUpdateAccessAsync(int eventInfoId, CancellationToken token)

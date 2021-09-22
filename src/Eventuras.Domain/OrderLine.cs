@@ -60,6 +60,44 @@ namespace Eventuras.Domain
         public Product Product { get; set; }
         public ProductVariant ProductVariant { get; set; }
 
+        public OrderLine()
+        {
+        }
+
+        public OrderLine(Product product, int quantity, ProductVariant variant = null)
+        {
+            if (product == null)
+            {
+                throw new ArgumentNullException(nameof(product));
+            }
+
+            if (quantity <= 0)
+            {
+                throw new ArgumentException($"{nameof(quantity)} must be greater than 0 but {quantity} was given");
+            }
+
+            if (variant != null && variant.ProductId != product.ProductId)
+            {
+                throw new ArgumentException(
+                    $"Product variant {variant.ProductVariantId} doesn't belong to product {product.ProductId}");
+            }
+
+            ProductId = product.ProductId;
+            ProductVariantId = variant?.ProductVariantId;
+            Product = product;
+            ProductVariant = variant;
+
+            Price = variant?.Price ?? product.Price;
+            VatPercent = variant?.VatPercent ?? product.VatPercent;
+            Quantity = quantity;
+
+            ProductName = product.Name;
+            ProductDescription = product.Description;
+
+            ProductVariantName = variant?.Name;
+            ProductVariantDescription = variant?.Description;
+        }
+
         public OrderLine CreateRefundOrderLine()
         {
             if (IsRefund)

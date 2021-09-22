@@ -152,6 +152,11 @@ namespace Eventuras.Services.Events
             {
                 query = query.Include(e => e.Registrations);
             }
+            
+            if (options.LoadCollections)
+            {
+                query = query.Include(e => e.Collections);
+            }
 
             return query;
         }

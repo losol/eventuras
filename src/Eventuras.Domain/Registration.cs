@@ -173,6 +173,7 @@ namespace Eventuras.Domain
             Log += logText + "\n";
         }
 
+        [Obsolete("Use IRegistrationOrderManagementService instead")]
         public Order CreateOrder(IEnumerable<OrderDTO> orders, IEnumerable<OrderLine> refundlines = null)
         {
             _ = orders ?? throw new ArgumentNullException(nameof(orders));
@@ -311,6 +312,10 @@ namespace Eventuras.Domain
                 }
                 
                 var product = invoicedProducts.Find(p => p.Product.ProductId == order.Product.ProductId);
+                if (order.Quantity == 0)
+                {
+                    return;
+                }
                 var orderline = order.ToOrderLine();
                 if (product != null &&
                     product.Variant?.ProductVariantId !=
@@ -382,26 +387,6 @@ namespace Eventuras.Domain
         }
 
         public static OrderLine ToOrderLine(this OrderDTO order) =>
-            new OrderLine
-            {
-                ProductId = order.Product.ProductId,
-                ProductVariantId = order.Variant?.ProductVariantId,
-
-                Product = order.Product,
-                ProductVariant = order.Variant,
-
-                Price = order.Variant?.Price ?? order.Product.Price,
-                VatPercent = order.Variant?.VatPercent ?? order.Product.VatPercent,
-                Quantity = Math.Max(order.Quantity, order.Product.MinimumQuantity),
-
-                ProductName = order.Product.Name,
-                ProductDescription = order.Product.Description,
-
-                ProductVariantName = order.Variant?.Name,
-                ProductVariantDescription = order.Variant?.Description
-
-                // Comments
-            };
-
+            new(order.Product, Math.Max(order.Quantity, order.Product.MinimumQuantity), order.Variant);
     }
 }

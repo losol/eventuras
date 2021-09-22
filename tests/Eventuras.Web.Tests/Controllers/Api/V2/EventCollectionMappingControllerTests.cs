@@ -195,11 +195,7 @@ namespace Eventuras.Web.Tests.Controllers.Api.V2
             await client.LogInAsSuperAdminAsync();
 
             using var scope = _factory.Services.NewTestScope();
-            
-            // FIXME: not removing them automatically by using "using" keyword
-            // because they both refer to the mapping entity deleted in API method.
-            // Possible solution??
-            var collection = await scope.CreateEventCollectionAsync();
+            using var collection = await scope.CreateEventCollectionAsync();
             var @event = await scope.CreateEventAsync(collection: collection.Entity);
 
             var response = await client.DeleteAsync($"/api/v2/events/{@event.Entity.EventInfoId}/collections/{collection.Entity.CollectionId}");

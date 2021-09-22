@@ -791,9 +791,7 @@ paths:
       responses:
         "200":
           content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EventDto'
+            schema: {}
         "401":
           content:
             application/json:
@@ -888,6 +886,15 @@ paths:
         schema:
           format: int32
           type: integer
+      - description: |
+          Product visibility level.
+          Set to `collection` to include all products which visibility is set to `event` or `collection`,
+          or set to `event` (default) to only return products visible within a single event.
+        in: query
+        name: visibility
+        required: false
+        schema:
+          $ref: '#/components/schemas/ProductVisibility'
       responses:
         "200":
           content:
@@ -1194,6 +1201,322 @@ paths:
       tags:
       - events
       - products
+  /events/collections:
+    get:
+      operationId: getEventCollectionsList
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/EventCollectionDto'
+                type: array
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Missing or invalid request parameters.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Get event collections list.
+      tags:
+      - events
+      - collections
+    post:
+      operationId: createNewEventCollection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventCollectionDto'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventCollectionDto'
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Missing or invalid request parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Create new event collection.
+      tags:
+      - events
+      - collections
+  /events/collections/{id}:
+    delete:
+      operationId: archiveEventCollection
+      parameters:
+      - description: Event collection ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          description: Event collection archived.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Archive event collection.
+      tags:
+      - events
+      - collections
+    get:
+      operationId: getEventCollectionById
+      parameters:
+      - description: Event collection ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventCollectionDto'
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Get event collection by id.
+      tags:
+      - events
+      - collections
+    put:
+      operationId: updateEventCollection
+      parameters:
+      - description: Event collection ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventCollectionDto'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventCollectionDto'
+          description: Event collection updated.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Data conflict.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Update event collection.
+      tags:
+      - events
+      - collections
+  /events/{id}/collections/{collectionId}:
+    delete:
+      operationId: removeEventFromCollection
+      parameters:
+      - description: Event ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      - description: Event collection ID.
+        in: path
+        name: collectionId
+        required: true
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          description: Event removed from collection.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Remove event from collection.
+      tags:
+      - events
+      - collections
+    put:
+      operationId: addEventToCollection
+      parameters:
+      - description: Event ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      - description: Event collection ID.
+        in: path
+        name: collectionId
+        required: true
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          description: Added.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Add event into collection.
+      tags:
+      - events
+      - collections
   /orders:
     get:
       operationId: getOrders
@@ -2502,6 +2825,15 @@ components:
       - type
       title: Event information.
       type: object
+    ProductVisibility:
+      default: event
+      description: |
+        `event` or `collection`.
+      enum:
+      - event
+      - collection
+      title: Product visibility level.
+      type: string
     ProductDto:
       example:
         productId: 1001
@@ -2519,6 +2851,7 @@ components:
           name: Green Coloured Test Product
           description: Some variant description...
           price: 22.99
+        visibility: event
       properties:
         productId:
           format: int32
@@ -2542,6 +2875,8 @@ components:
           items:
             $ref: '#/components/schemas/ProductVariantDto'
           type: array
+        visibility:
+          $ref: '#/components/schemas/ProductVisibility'
       required:
       - description
       - name
@@ -2573,6 +2908,8 @@ components:
         vatPercent:
           format: float
           type: number
+        visibility:
+          $ref: '#/components/schemas/ProductVisibility'
       required:
       - name
       title: New product form.
@@ -2625,6 +2962,40 @@ components:
           format: int32
           type: number
       title: New product variant form.
+      type: object
+    EventCollectionDto:
+      example:
+        id: 10001
+        organizationId: 91
+        name: Demo event collection
+        slug: demo
+        description: Some demo event collection
+        featured: false
+      properties:
+        id:
+          description: Event collection ID.
+          format: int32
+          type: integer
+        organizationId:
+          description: Organization ID.
+          format: int32
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        featured:
+          type: boolean
+        featuredImageUrl:
+          type: string
+        featuredImageCaption:
+          type: string
+      required:
+      - name
+      - organizationId
+      title: Event collection information.
       type: object
     OrderStatus:
       description: |

@@ -1,0 +1,10 @@
+type: object
+title: Update product form.
+properties:
+  published:
+    type: boolean
+  visibility:
+    $ref: './ProductVisibility.yaml'
+example:
+  published: true
+  visibility: collection

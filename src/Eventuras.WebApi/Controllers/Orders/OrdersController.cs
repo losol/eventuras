@@ -45,7 +45,7 @@ namespace Eventuras.WebApi.Controllers.Orders
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState.FormatErrors());
             }
 
             var paging = await _orderRetrievalService.ListOrdersAsync(new OrderListRequest
@@ -76,7 +76,7 @@ namespace Eventuras.WebApi.Controllers.Orders
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState.FormatErrors());
             }
 
             var order = await _orderRetrievalService
