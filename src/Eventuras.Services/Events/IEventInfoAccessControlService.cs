@@ -8,12 +8,14 @@ namespace Eventuras.Services.Events
         /// <summary>
         /// Checks whether the given even is accessible by the currently signed in user.
         /// </summary>
+        /// <exception cref="Exceptions.NotFoundException">Event with the given ID not found.</exception>
         /// <exception cref="Exceptions.NotAccessibleException">Not permitted to read the given event.</exception>
         Task CheckEventReadAccessAsync(int eventInfoId, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Checks whether the given even is accessible by the currently signed in user.
         /// </summary>
+        /// <exception cref="Exceptions.NotFoundException">Event with the given ID not found.</exception>
         /// <exception cref="Exceptions.NotAccessibleException">Not permitted to update the given event.</exception>
         Task CheckEventUpdateAccessAsync(int eventInfoId, CancellationToken cancellationToken = default);
     }

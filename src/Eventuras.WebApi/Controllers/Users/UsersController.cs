@@ -106,7 +106,7 @@ namespace Eventuras.WebApi.Controllers.Users
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(); // TODO: report validation errors!
+                return BadRequest(ModelState.FormatErrors());
             }
 
             var user = await _userManagementService
@@ -123,7 +123,7 @@ namespace Eventuras.WebApi.Controllers.Users
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(); // TODO: report validation errors!
+                return BadRequest(ModelState.FormatErrors());
             }
 
             var user = await _userRetrievalService.GetUserByIdAsync(id, null, cancellationToken);

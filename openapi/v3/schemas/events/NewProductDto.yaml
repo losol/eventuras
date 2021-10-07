@@ -18,6 +18,8 @@ properties:
   vatPercent:
     type: number
     format: float
+  visibility:
+    $ref: './ProductVisibility.yaml'
 example:
   name: Test Product
   description: Test

@@ -1,0 +1,8 @@
+type: string
+title: Product visibility level.
+default: event
+description: |
+  `event` or `collection`.
+enum:
+  - event
+  - collection

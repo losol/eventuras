@@ -8,7 +8,7 @@ using Eventuras.Services.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Eventuras.WebApi.Controllers.Events
+namespace Eventuras.WebApi.Controllers.Events.Products
 {
     [ApiVersion("3")]
     [Authorize(Policy = Constants.Auth.AdministratorRole)]
@@ -35,7 +35,7 @@ namespace Eventuras.WebApi.Controllers.Events
         [AllowAnonymous]
         public async Task<ProductVariantDto[]> List(int eventId, int productId, CancellationToken token)
         {
-            var product = await GetProductAsync(eventId, productId, token);
+            var product = await GetProductAsync(eventId, productId, token: token);
 
             return product.ProductVariants?
                 .Where(v => !v.Archived)
@@ -50,7 +50,7 @@ namespace Eventuras.WebApi.Controllers.Events
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState.FormatErrors());
             }
 
             var product = await GetProductAsync(eventId, productId);
@@ -79,11 +79,13 @@ namespace Eventuras.WebApi.Controllers.Events
             await _eventProductsManagementService.UpdateProductAsync(product);
         }
 
-        private async Task<Product> GetProductAsync(int eventId, int productId, CancellationToken token = default)
+        private async Task<Product> GetProductAsync(int eventId, int productId, bool forUpdate = false,
+            CancellationToken token = default)
         {
             var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventId,
                 new EventInfoRetrievalOptions
                 {
+                    ForUpdate = forUpdate,
                     LoadProducts = true
                 }, token);
 

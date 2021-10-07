@@ -29,6 +29,8 @@ properties:
     type: array
     items:
       $ref: './ProductVariantDto.yaml'
+  visibility:
+    $ref: './ProductVisibility.yaml'
 example:
   productId: 1001
   name: Test Product
@@ -45,5 +47,5 @@ example:
       name: Green Coloured Test Product
       description: Some variant description...
       price: 22.99
-
+  visibility: event
 

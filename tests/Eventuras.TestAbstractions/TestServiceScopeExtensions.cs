@@ -194,6 +194,8 @@ namespace Eventuras.TestAbstractions
             int vatPercent = 5,
             int minimumQuantity = 1,
             bool archived = false,
+            bool published = true,
+            ProductVisibility visibility = ProductVisibility.Event,
             ProductVariant[] variants = null)
         {
             if (name == TestingConstants.Placeholder)
@@ -215,7 +217,9 @@ namespace Eventuras.TestAbstractions
                 VatPercent = vatPercent,
                 MinimumQuantity = minimumQuantity,
                 ProductVariants = variants?.ToList(),
-                Archived = archived
+                Archived = archived,
+                Published = published,
+                Visibility = visibility
             };
 
             await scope.Db.Products.AddAsync(product);

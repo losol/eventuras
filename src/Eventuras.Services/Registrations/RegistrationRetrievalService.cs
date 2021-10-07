@@ -1,11 +1,10 @@
 using System;
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Eventuras.Domain;
+using Eventuras.Infrastructure;
 using Eventuras.Services.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Eventuras.Services.Registrations
 {
@@ -32,18 +31,20 @@ namespace Eventuras.Services.Registrations
             options ??= RegistrationRetrievalOptions.Default;
 
             var registration = await _context.Registrations
-                .AsNoTracking()
-                .WithOptions(options)
-                .Where(r => r.RegistrationId == id)
-                .FirstOrDefaultAsync(cancellationToken);
+                                   .WithOptions(options)
+                                   .FirstOrDefaultAsync(r => r.RegistrationId == id, cancellationToken)
+                               ?? throw new NotFoundException($"Registration {id} not found.");
 
-            if (registration == null)
+            if (options.ForUpdate)
             {
-                throw new NotFoundException($"Registration {id} not found.");
+                await _registrationAccessControlService
+                    .CheckRegistrationUpdateAccessAsync(registration, cancellationToken);
             }
-
-            await _registrationAccessControlService
-                .CheckRegistrationReadAccessAsync(registration, cancellationToken);
+            else
+            {
+                await _registrationAccessControlService
+                    .CheckRegistrationReadAccessAsync(registration, cancellationToken);
+            }
 
             return registration;
         }
@@ -56,7 +57,6 @@ namespace Eventuras.Services.Registrations
             options ??= RegistrationRetrievalOptions.Default;
 
             var query = _context.Registrations
-                .AsNoTracking()
                 .WithOptions(options)
                 .AddFilter(filter);
 
@@ -77,7 +77,6 @@ namespace Eventuras.Services.Registrations
             options ??= RegistrationRetrievalOptions.Default;
 
             var query = _context.Registrations
-                .AsNoTracking()
                 .WithOptions(options)
                 .AddFilter(request.Filter)
                 .AddOrder(request.OrderBy, request.Descending);

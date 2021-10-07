@@ -94,7 +94,7 @@ namespace Eventuras.WebApi.Controllers.Notifications
                             },
                             new RegistrationRetrievalOptions
                             {
-                                IncludeUser = true
+                                LoadUser = true
                             }, token));
 
                 var recipientList = new List<string>();

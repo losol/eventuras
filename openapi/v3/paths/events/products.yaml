@@ -12,6 +12,15 @@ get:
       schema:
         type: integer
         format: int32
+    - name: visibility
+      in: query
+      description: |
+        Product visibility level.
+        Set to `collection` to include all products which visibility is set to `event` or `collection`,
+        or set to `event` (default) to only return products visible within a single event.
+      required: false
+      schema:
+        $ref: '../../schemas/events/ProductVisibility.yaml'
   responses:
     '200':
       description: OK

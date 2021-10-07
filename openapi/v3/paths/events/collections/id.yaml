@@ -1,0 +1,92 @@
+get:
+  summary: Get event collection by id.
+  operationId: getEventCollectionById
+  tags:
+    - events
+    - collections
+  parameters:
+    - name: id
+      in: path
+      description: Event collection ID.
+      required: true
+      schema:
+        type: integer
+        format: int32
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: '../../../schemas/events/EventCollectionDto.yaml'
+    '401':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/UnauthorizedError'
+    '403':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/ForbiddenError'
+    '404':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/NotFound'
+    '500':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/InternalServerError'
+
+put:
+  summary: Update event collection.
+  operationId: updateEventCollection
+  tags:
+    - events
+    - collections
+  parameters:
+    - name: id
+      in: path
+      description: Event collection ID.
+      required: true
+      schema:
+        type: integer
+        format: int32
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../../schemas/events/EventCollectionDto.yaml'
+  responses:
+    '200':
+      description: Event collection updated.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../schemas/events/EventCollectionDto.yaml'
+    '401':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/UnauthorizedError'
+    '403':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/ForbiddenError'
+    '404':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/NotFound'
+    '409':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/Conflict'
+    '500':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/InternalServerError'
+
+delete:
+  summary: Archive event collection.
+  operationId: archiveEventCollection
+  tags:
+    - events
+    - collections
+  parameters:
+    - name: id
+      in: path
+      description: Event collection ID.
+      required: true
+      schema:
+        type: integer
+        format: int32
+  responses:
+    '200':
+      description: Event collection archived.
+    '401':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/UnauthorizedError'
+    '403':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/ForbiddenError'
+    '404':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/NotFound'
+    '500':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/InternalServerError'

@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using Eventuras.Domain;
 
-namespace Eventuras.WebApi.Controllers.Events
+namespace Eventuras.WebApi.Controllers.Events.Products
 {
     public class ProductDto
     {
@@ -18,7 +18,10 @@ namespace Eventuras.WebApi.Controllers.Events
 
         public int VatPercent { get; set; }
 
+        public ProductVisibility Visibility { get; set; }
+
         public ProductVariantDto[] Variants { get; set; }
+
 
         public ProductDto()
         {
@@ -37,6 +40,7 @@ namespace Eventuras.WebApi.Controllers.Events
             More = product.MoreInformation;
             Price = product.Price;
             VatPercent = product.VatPercent;
+            Visibility = product.Visibility;
             Variants = product.ProductVariants?
                 .Where(v => !v.Archived)
                 .Select(v => new ProductVariantDto(v))

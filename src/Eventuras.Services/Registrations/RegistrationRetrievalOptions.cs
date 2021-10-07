@@ -2,10 +2,11 @@ namespace Eventuras.Services.Registrations
 {
     public class RegistrationRetrievalOptions
     {
-        public bool IncludeUser { get; set; }
-        public bool IncludeEventInfo { get; set; }
-        public bool IncludeOrders { get; set; }
-        public bool IncludeProducts { get; set; }
+        public bool ForUpdate { get; set; }
+        public bool LoadUser { get; set; }
+        public bool LoadEventInfo { get; set; }
+        public bool LoadOrders { get; set; }
+        public bool LoadProducts { get; set; }
 
         /// <summary>
         /// Just a helpful shortcut for retrieving registrations
@@ -14,8 +15,8 @@ namespace Eventuras.Services.Registrations
         public static readonly RegistrationRetrievalOptions UserAndEvent =
             new RegistrationRetrievalOptions
             {
-                IncludeUser = true,
-                IncludeEventInfo = true
+                LoadUser = true,
+                LoadEventInfo = true
             };
 
         public static readonly RegistrationRetrievalOptions RegistrationInfoOnly =

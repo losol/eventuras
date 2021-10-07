@@ -55,6 +55,12 @@ paths:
     $ref: './paths/events/products/variants.yaml'
   /events/{id}/products/{productId}/variants/{variantId}:
     $ref: './paths/events/products/variants/id.yaml'
+  /events/collections:
+    $ref: './paths/events/collections.yaml'
+  /events/collections/{id}:
+    $ref: './paths/events/collections/id.yaml'
+  /events/{id}/collections/{collectionId}:
+    $ref: './paths/events/collections/mappings.yaml'
 
   # Orders
   /orders:

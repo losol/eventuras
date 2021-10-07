@@ -1,8 +1,8 @@
+using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Registrations
@@ -15,6 +15,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         {
             _factory = factory;
         }
+
+        #region Create
 
         [Fact]
         public async Task Should_Require_Auth_To_Create_Order()
@@ -39,14 +41,14 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         {
             return new[]
             {
-                new object[] {new { }},
-                new object[] {new {productId = "test"}},
-                new object[] {new {productId = -1}},
-                new object[] {new {productId = 0}},
-                new object[] {new {productId = 1, quantity = -1}},
-                new object[] {new {productId = 1, quantity = 0}},
-                new object[] {new {productId = 1, productVariantId = 0, quantity = 0}},
-                new object[] {new {productId = 1, productVariantId = -1, quantity = 0}}
+                new object[] { new { } },
+                new object[] { new { productId = "test" } },
+                new object[] { new { productId = -1 } },
+                new object[] { new { productId = 0 } },
+                new object[] { new { productId = 1, quantity = -1 } },
+                new object[] { new { productId = 1, quantity = 0 } },
+                new object[] { new { productId = 1, productVariantId = 0, quantity = 0 } },
+                new object[] { new { productId = 1, productVariantId = -1, quantity = 0 } }
             };
         }
 
@@ -57,7 +59,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             var client = _factory.CreateClient().Authenticated();
             var response = await client.PostAsync("/v3/registrations/1/orders", new
             {
-                items = new[] {item}
+                items = new[] { item }
             });
             response.CheckBadRequest();
         }
@@ -106,7 +108,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             });
             response.CheckForbidden();
         }
-        
+
         [Fact]
         public async Task Should_Allow_Regular_User_To_Create_Order_For_Own_Reg()
         {
@@ -145,18 +147,19 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var reg = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-            var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders?orgId={org.Entity.OrganizationId}", new
-            {
-                items = new[]
+            var response = await client.PostAsync(
+                $"/v3/registrations/{reg.Entity.RegistrationId}/orders?orgId={org.Entity.OrganizationId}", new
                 {
-                    new
+                    items = new[]
                     {
-                        productId = 1,
-                        productVariantId = 2,
-                        quantity = 3
+                        new
+                        {
+                            productId = 1,
+                            productVariantId = 2,
+                            quantity = 3
+                        }
                     }
-                }
-            });
+                });
             response.CheckForbidden();
         }
 
@@ -174,17 +177,18 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var product = await scope.CreateProductAsync(e.Entity);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-            var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders?orgId={org.Entity.OrganizationId}", new
-            {
-                items = new[]
+            var response = await client.PostAsync(
+                $"/v3/registrations/{reg.Entity.RegistrationId}/orders?orgId={org.Entity.OrganizationId}", new
                 {
-                    new
+                    items = new[]
                     {
-                        productId = product.Entity.ProductId,
-                        quantity = 1
+                        new
+                        {
+                            productId = product.Entity.ProductId,
+                            quantity = 1
+                        }
                     }
-                }
-            });
+                });
             response.CheckOk();
 
             await CheckOrderCreatedAsync(scope, reg.Entity, product.Entity);
@@ -217,6 +221,94 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
 
             await CheckOrderCreatedAsync(scope, reg.Entity, product.Entity);
         }
+
+        [Fact]
+        public async Task Should_Not_Allow_To_Include_Product_From_Other_Event_Having_Event_Only_Visibility()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var c = await scope.CreateEventCollectionAsync();
+            using var user = await scope.CreateUserAsync();
+            using var e1 = await scope.CreateEventAsync(collection: c.Entity);
+            using var e2 = await scope.CreateEventAsync(collection: c.Entity);
+            using var p1 = await scope.CreateProductAsync(e1.Entity, visibility: ProductVisibility.Event);
+            using var p2 = await scope.CreateProductAsync(e2.Entity, visibility: ProductVisibility.Event);
+            using var reg = await scope.CreateRegistrationAsync(e1.Entity, user.Entity);
+
+            var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+            var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders", new
+            {
+                items = new[]
+                {
+                    new
+                    {
+                        productId = p2.Entity.ProductId,
+                        quantity = 1
+                    }
+                }
+            });
+            response.CheckBadRequest();
+        }
+
+        [Fact]
+        public async Task Should_Not_Allow_To_Include_Product_From_Other_Collection_Having_Collection_Visibility()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var c1 = await scope.CreateEventCollectionAsync();
+            using var c2 = await scope.CreateEventCollectionAsync();
+            using var user = await scope.CreateUserAsync();
+            using var e1 = await scope.CreateEventAsync(collection: c1.Entity);
+            using var e2 = await scope.CreateEventAsync(collection: c2.Entity);
+            using var p1 = await scope.CreateProductAsync(e1.Entity, visibility: ProductVisibility.Collection);
+            using var p2 = await scope.CreateProductAsync(e2.Entity, visibility: ProductVisibility.Collection);
+            using var reg = await scope.CreateRegistrationAsync(e1.Entity, user.Entity);
+
+            var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+            var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders", new
+            {
+                items = new[]
+                {
+                    new
+                    {
+                        productId = p2.Entity.ProductId,
+                        quantity = 1
+                    }
+                }
+            });
+            response.CheckBadRequest();
+        }
+
+        [Fact]
+        public async Task Should_Allow_To_Include_Product_From_Other_Event_Having_Collection_Visibility()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var c = await scope.CreateEventCollectionAsync();
+            using var user = await scope.CreateUserAsync();
+            using var e1 = await scope.CreateEventAsync(collection: c.Entity);
+            using var e2 = await scope.CreateEventAsync(collection: c.Entity);
+            using var p1 = await scope.CreateProductAsync(e1.Entity, visibility: ProductVisibility.Collection);
+            using var p2 = await scope.CreateProductAsync(e2.Entity, visibility: ProductVisibility.Collection);
+            using var reg = await scope.CreateRegistrationAsync(e1.Entity, user.Entity);
+
+            var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+            var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders", new
+            {
+                items = new[]
+                {
+                    new
+                    {
+                        productId = p2.Entity.ProductId,
+                        quantity = 1
+                    }
+                }
+            });
+            response.CheckOk();
+
+            await CheckOrderCreatedAsync(scope, reg.Entity, p2.Entity);
+        }
+
+        #endregion
+
+        #region List
 
         [Fact]
         public async Task Should_Require_Auth_To_List_Orders_For_Registration()
@@ -259,7 +351,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var reg = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-            var response = await client.GetAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders?orgId={org.Entity.OrganizationId}");
+            var response =
+                await client.GetAsync(
+                    $"/v3/registrations/{reg.Entity.RegistrationId}/orders?orgId={org.Entity.OrganizationId}");
             response.CheckForbidden();
         }
 
@@ -281,7 +375,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var o2 = await scope.CreateOrderAsync(reg.Entity, product.Entity, v2.Entity);
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-            var response = await client.GetAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders?orgId={org.Entity.OrganizationId}");
+            var response =
+                await client.GetAsync(
+                    $"/v3/registrations/{reg.Entity.RegistrationId}/orders?orgId={org.Entity.OrganizationId}");
             response.CheckOk();
 
             var token = await response.AsArrayAsync();
@@ -313,7 +409,10 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
                 o1.Entity, o2.Entity);
         }
 
-        private async Task CheckOrderCreatedAsync(TestServiceScope scope, Registration reg, params Product[] products)
+        #endregion
+
+        private async Task<Order> CheckOrderCreatedAsync(TestServiceScope scope, Registration reg,
+            params Product[] products)
         {
             var order = await scope.Db.Orders
                 .AsNoTracking()
@@ -322,6 +421,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
 
             Assert.Equal(products.Length, order.OrderLines.Count);
             Assert.All(order.OrderLines, line => Assert.Contains(products, p => p.ProductId == line.ProductId));
+
+            return order;
         }
     }
 }

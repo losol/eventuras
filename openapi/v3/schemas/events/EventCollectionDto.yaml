@@ -1,0 +1,33 @@
+type: object
+title: Event collection information.
+required:
+  - organizationId
+  - name
+properties:
+  id:
+    type: integer
+    format: int32
+    description: Event collection ID.
+  organizationId:
+    type: integer
+    format: int32
+    description: Organization ID.
+  name:
+    type: string
+  slug:
+    type: string
+  description:
+    type: string
+  featured:
+    type: boolean
+  featuredImageUrl:
+    type: string
+  featuredImageCaption:
+    type: string
+example:
+  id: 10001
+  organizationId: 91
+  name: 'Demo event collection'
+  slug: 'demo'
+  description: 'Some demo event collection'
+  featured: false

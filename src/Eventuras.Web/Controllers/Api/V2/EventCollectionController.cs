@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services.EventCollections;
@@ -17,18 +18,27 @@ namespace Eventuras.Web.Controllers.Api.V2
     [Authorize(Policy = AuthPolicies.AdministratorRole)]
     public class EventCollectionController : ControllerBase
     {
-        private readonly IEventCollectionManagementService _service;
+        private readonly IEventCollectionManagementService _eventCollectionManagementService;
+        private readonly IEventCollectionRetrievalService _eventCollectionRetrievalService;
 
-        public EventCollectionController(IEventCollectionManagementService service)
+        public EventCollectionController(
+            IEventCollectionManagementService eventCollectionManagementService,
+            IEventCollectionRetrievalService eventCollectionRetrievalService)
         {
-            _service = service ?? throw new ArgumentNullException(nameof(service));
+            _eventCollectionManagementService = eventCollectionManagementService ?? throw
+                new ArgumentNullException(nameof(eventCollectionManagementService));
+
+            _eventCollectionRetrievalService = eventCollectionRetrievalService ?? throw
+                new ArgumentNullException(nameof(eventCollectionRetrievalService));
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> List()
+        public async Task<IActionResult> List(CancellationToken cancellationToken)
         {
-            var collections = await _service.ListCollectionsAsync();
+            var collections = await _eventCollectionRetrievalService
+                .ListCollectionsAsync(cancellationToken: cancellationToken);
+
             return Ok(collections
                 .Select(c => new EventCollectionDto(c))
                 .ToArray());
@@ -36,11 +46,13 @@ namespace Eventuras.Web.Controllers.Api.V2
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(int id, CancellationToken cancellationToken)
         {
             try
             {
-                var c = await _service.GetCollectionByIdAsync(id);
+                var c = await _eventCollectionRetrievalService
+                    .GetCollectionByIdAsync(id, cancellationToken: cancellationToken);
+
                 return Ok(new EventCollectionDto(c));
             }
             catch (NotFoundException e)
@@ -61,7 +73,7 @@ namespace Eventuras.Web.Controllers.Api.V2
             {
                 var collection = new EventCollection();
                 dto.CopyTo(collection);
-                await _service.CreateCollectionAsync(collection);
+                await _eventCollectionManagementService.CreateCollectionAsync(collection);
                 return Ok();
             }
             catch (NotAccessibleException e)
@@ -75,9 +87,15 @@ namespace Eventuras.Web.Controllers.Api.V2
         {
             try
             {
-                var collection = await _service.GetCollectionByIdAsync(id);
+                var collection = await _eventCollectionRetrievalService
+                    .GetCollectionByIdAsync(id, new EventCollectionRetrievalOptions
+                    {
+                        ForUpdate = true
+                    });
+
                 dto.CopyTo(collection);
-                await _service.UpdateCollectionAsync(collection);
+
+                await _eventCollectionManagementService.UpdateCollectionAsync(collection);
                 return Ok(new EventCollectionDto(collection));
             }
             catch (NotFoundException e)
@@ -95,8 +113,13 @@ namespace Eventuras.Web.Controllers.Api.V2
         {
             try
             {
-                var collection = await _service.GetCollectionByIdAsync(id);
-                await _service.DeleteCollectionAsync(collection);
+                var collection = await _eventCollectionRetrievalService
+                    .GetCollectionByIdAsync(id, new EventCollectionRetrievalOptions
+                    {
+                        ForUpdate = true
+                    });
+
+                await _eventCollectionManagementService.ArchiveCollectionAsync(collection);
                 return Ok();
             }
             catch (NotFoundException e)
@@ -115,12 +138,9 @@ namespace Eventuras.Web.Controllers.Api.V2
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public int? Id { get; set; }
 
-        [Required]
-        [Range(1, int.MaxValue)]
-        public int OrganizationId { get; set; }
+        [Required] [Range(1, int.MaxValue)] public int OrganizationId { get; set; }
 
-        [Required]
-        public string Name { get; set; }
+        [Required] public string Name { get; set; }
 
         public string Slug { get; set; }
 

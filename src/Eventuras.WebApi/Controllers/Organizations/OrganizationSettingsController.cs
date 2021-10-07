@@ -74,7 +74,7 @@ namespace Eventuras.WebApi.Controllers.Organizations
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState.FormatErrors());
             }
 
             await _organizationRetrievalService

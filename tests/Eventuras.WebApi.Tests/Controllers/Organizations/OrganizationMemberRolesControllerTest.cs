@@ -43,7 +43,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
                 .AuthenticatedAsSystemAdmin();
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
-            var response = await client.GetAsync($"/v3/organizations/1/members/{user.Entity.Id}/roles");
+            var response = await client.GetAsync($"/v3/organizations/999/members/{user.Entity.Id}/roles");
             response.CheckNotFound();
         }
 

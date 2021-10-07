@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Eventuras.Domain
 {
-
     public class EventCollection
     {
         [Required]
@@ -14,11 +12,9 @@ namespace Eventuras.Domain
 
         public int OrganizationId { get; set; }
 
-        [ForeignKey(nameof(OrganizationId))]
-        public Organization Organization { get; set; }
+        [ForeignKey(nameof(OrganizationId))] public Organization Organization { get; set; }
 
-        [Required]
-        public string Name { get; set; }
+        [Required] public string Name { get; set; }
 
         public string Slug { get; set; }
 
@@ -30,8 +26,17 @@ namespace Eventuras.Domain
 
         public string FeaturedImageCaption { get; set; }
 
+        public bool Archived { get; set; }
+
+        /// <summary>
+        /// The final result of mapping multiple collections to multiple events,
+        /// managed as a flat collection. 
+        /// </summary>
         public virtual ICollection<EventInfo> Events { get; set; }
 
+        /// <summary>
+        /// Intermediate entities used to map multiple collections to multiple events.
+        /// </summary>
         public virtual List<EventCollectionMapping> EventMappings { get; set; }
     }
 }

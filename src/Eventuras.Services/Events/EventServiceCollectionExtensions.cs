@@ -1,3 +1,4 @@
+using Eventuras.Services.Events.Products;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Eventuras.Services.Events
@@ -10,7 +11,7 @@ namespace Eventuras.Services.Events
             services.AddTransient<IEventManagementService, EventManagementService>();
             services.AddTransient<IEventProductsManagementService, EventProductsManagementService>();
             services.AddTransient<IEventInfoAccessControlService, EventInfoAccessControlService>();
-            return services;
+            return services.AddEventProductServices();
         }
     }
 }

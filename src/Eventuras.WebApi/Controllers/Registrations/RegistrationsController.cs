@@ -137,10 +137,10 @@ namespace Eventuras.WebApi.Controllers.Registrations
         {
             return new()
             {
-                IncludeUser = query.IncludeUserInfo,
-                IncludeEventInfo = query.IncludeEventInfo,
-                IncludeProducts = query.IncludeProducts,
-                IncludeOrders = query.IncludeOrders
+                LoadUser = query.IncludeUserInfo,
+                LoadEventInfo = query.IncludeEventInfo,
+                LoadProducts = query.IncludeProducts,
+                LoadOrders = query.IncludeOrders
             };
         }
     }

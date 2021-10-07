@@ -49,10 +49,10 @@ namespace Eventuras.Services.Registrations
                         }
                     }, new RegistrationRetrievalOptions
                     {
-                        IncludeUser = true,
-                        IncludeEventInfo = true,
-                        IncludeOrders = true,
-                        IncludeProducts = true,
+                        LoadUser = true,
+                        LoadEventInfo = true,
+                        LoadOrders = true,
+                        LoadProducts = true,
                     }, token));
 
             while (await reader.HasMoreAsync())

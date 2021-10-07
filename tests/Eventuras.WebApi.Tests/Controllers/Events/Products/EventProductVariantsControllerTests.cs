@@ -5,7 +5,7 @@ using Eventuras.TestAbstractions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-namespace Eventuras.WebApi.Tests.Controllers.Events
+namespace Eventuras.WebApi.Tests.Controllers.Events.Products
 {
     public class EventProductVariantsControllerTests : IClassFixture<CustomWebApiApplicationFactory<Startup>>
     {
@@ -139,8 +139,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         {
             return new[]
             {
-                new object[] {new {price = -1}}, // price=0 is OK
-                new object[] {new {vatPercent = -1}} // vatPercent=0 is OK
+                new object[] { new { price = -1 } }, // price=0 is OK
+                new object[] { new { vatPercent = -1 } } // vatPercent=0 is OK
             };
         }
 
@@ -178,7 +178,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             var response =
                 await client.PostAsync(
                     $"/v3/events/{evt.Entity.EventInfoId}/products/{p.Entity.ProductId}/variants?orgId={org1.Entity.OrganizationId}",
-                    new {name = "test"});
+                    new { name = "test" });
             response.CheckForbidden();
         }
 
@@ -198,7 +198,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             var response =
                 await client.PostAsync(
                     $"/v3/events/{evt.Entity.EventInfoId}/products/{p.Entity.ProductId}/variants?orgId={org1.Entity.OrganizationId}",
-                    new {name = "test"});
+                    new { name = "test" });
             response.CheckForbidden();
         }
 
@@ -285,7 +285,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             Assert.NotNull(variant);
             Assert.Equal("test", variant.Name);
             Assert.Equal("desc", variant.Description);
-            Assert.Equal((decimal) 999.99, variant.Price);
+            Assert.Equal((decimal)999.99, variant.Price);
             Assert.Equal(8, variant.VatPercent);
 
             var token = await response.AsTokenAsync();

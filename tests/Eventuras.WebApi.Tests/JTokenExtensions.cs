@@ -57,6 +57,23 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(eventInfo.City, token.Value<string>("city"));
         }
 
+        public static void CheckEventCollection(this JToken token, EventCollection c)
+        {
+            if (c == null)
+            {
+                Assert.Empty(token);
+                return;
+            }
+
+            Assert.Equal(c.CollectionId, token.Value<int>("id"));
+            Assert.Equal(c.Name, token.Value<string>("name"));
+            Assert.Equal(c.Slug, token.Value<string>("slug"));
+            Assert.Equal(c.Description, token.Value<string>("description"));
+            Assert.Equal(c.Featured, token.Value<bool>("featured"));
+            Assert.Equal(c.FeaturedImageUrl, token.Value<string>("featuredImageUrl"));
+            Assert.Equal(c.FeaturedImageCaption, token.Value<string>("featuredImageCaption"));
+        }
+
         public static JToken CheckOrder(this JToken token, Order order,
             bool checkUser = false,
             bool checkUserNull = false,
@@ -164,6 +181,7 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(product.MoreInformation, token.Value<string>("more"));
             Assert.Equal(product.Price, token.Value<decimal>("price"));
             Assert.Equal(product.VatPercent, token.Value<int>("vatPercent"));
+            Assert.Equal(product.Visibility.ToString(), token.Value<string>("visibility"));
 
             if (variants.Any())
             {

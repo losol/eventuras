@@ -551,11 +551,12 @@ namespace Eventuras.Web.Tests.Controllers.Api.V2
             using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
             await client.LoginAsync(admin.Entity.Email, TestingConstants.DefaultPassword);
 
-            var collection = await scope.CreateEventCollectionAsync(organization: org.Entity);
+            using var collection = await scope.CreateEventCollectionAsync(organization: org.Entity);
 
             var response = await client.DeleteAsync($"/api/v2/events/collections/{collection.Entity.CollectionId}");
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.False(await scope.Db.EventCollections.AnyAsync());
+            Assert.False(await scope.Db.EventCollections.AnyAsync(c => !c.Archived));
+            Assert.NotNull(await scope.Db.EventCollections.SingleAsync(c => c.Archived));
         }
 
         [Fact]
@@ -567,12 +568,13 @@ namespace Eventuras.Web.Tests.Controllers.Api.V2
             using var scope = _factory.Services.NewTestScope();
 
 
-            var collection = await scope.CreateEventCollectionAsync();
+            using var collection = await scope.CreateEventCollectionAsync();
 
             var response = await client.DeleteAsync($"/api/v2/events/collections/{collection.Entity.CollectionId}");
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.False(await scope.Db.EventCollections.AnyAsync());
+            Assert.False(await scope.Db.EventCollections.AnyAsync(c => !c.Archived));
+            Assert.NotNull(await scope.Db.EventCollections.SingleAsync(c => c.Archived));
         }
 
         private async Task CheckCollectionUpdatedAsync(EventCollection collection, string name)

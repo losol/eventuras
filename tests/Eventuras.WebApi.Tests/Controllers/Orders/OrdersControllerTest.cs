@@ -9,13 +9,27 @@ using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Orders
 {
-    public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory<Startup>>
+    public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory<Startup>>, IDisposable
     {
         private readonly CustomWebApiApplicationFactory<Startup> _factory;
 
         public OrdersControllerTest(CustomWebApiApplicationFactory<Startup> factory)
         {
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+
+            Cleanup();
+        }
+
+        public void Dispose()
+        {
+            Cleanup();
+        }
+
+        private void Cleanup()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            scope.Db.Orders.RemoveRange(scope.Db.Orders.ToArray());
+            scope.Db.SaveChanges();
         }
 
         [Fact]
@@ -668,7 +682,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Orders
                     new
                     {
                         productId = p2.Entity.ProductId,
-                        productVariantId = (int?) null,
+                        productVariantId = (int?)null,
                         quantity = 1
                     }
                 }

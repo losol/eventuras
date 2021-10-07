@@ -1,7 +1,7 @@
+using System;
 using Eventuras.Services.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System;
 
 namespace Eventuras.WebApi
 {
@@ -9,7 +9,9 @@ namespace Eventuras.WebApi
     {
         public int Order { get; } = int.MaxValue - 10;
 
-        public void OnActionExecuting(ActionExecutingContext context) { }
+        public void OnActionExecuting(ActionExecutingContext context)
+        {
+        }
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
@@ -18,6 +20,7 @@ namespace Eventuras.WebApi
             {
                 return;
             }
+
             context.Result = result;
             context.ExceptionHandled = true;
         }
@@ -27,6 +30,8 @@ namespace Eventuras.WebApi
             return e switch
             {
                 NotFoundException => new NotFoundObjectResult(e.Message),
+                InputException => new BadRequestObjectResult(e.Message),
+                NotSupportedException => new BadRequestObjectResult(e.Message),
                 NotAccessibleException => new ForbidResult(),
                 OrgNotSpecifiedException => new BadRequestObjectResult(e.Message),
                 DuplicateException => new ConflictObjectResult(e.Message),
