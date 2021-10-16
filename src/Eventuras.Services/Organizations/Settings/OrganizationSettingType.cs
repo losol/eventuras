@@ -5,6 +5,7 @@ namespace Eventuras.Services.Organizations.Settings
         String = 1,
         Number,
         Url,
-        Email
+        Email,
+        Boolean
     }
 }

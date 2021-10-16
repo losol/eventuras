@@ -1,5 +1,7 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Eventuras.Services.Organizations.Settings
@@ -30,6 +32,42 @@ namespace Eventuras.Services.Organizations.Settings
 
             var settings = await _organizationSettingsCache.GetAllSettingsForOrganizationAsync(org.OrganizationId);
             return settings.FirstOrDefault(s => s.Name == name)?.Value;
+        }
+
+        public async Task<T> ReadOrganizationSettingsAsync<T>()
+        {
+            var org = await _currentOrganizationAccessorService
+                .RequireCurrentOrganizationAsync();
+
+            var settings = await _organizationSettingsCache
+                .GetAllSettingsForOrganizationAsync(org.OrganizationId);
+
+            var settingsMap = settings
+                .ToDictionary(s => s.Name, s => s.Value);
+
+            var type = typeof(T);
+            var poco = Activator.CreateInstance<T>();
+            foreach (var property in type.GetProperties())
+            {
+                var settingKey = property.Name;
+                var orgSettingKey = property.GetCustomAttribute<OrgSettingKeyAttribute>();
+                if (orgSettingKey != null)
+                {
+                    settingKey = orgSettingKey.Name;
+                }
+
+                if (settingsMap.ContainsKey(settingKey))
+                {
+                    var settingValue = settingsMap[settingKey];
+                    property.SetValue(poco, Convert.ChangeType(settingValue, property.PropertyType));
+                }
+            }
+
+            Validator.ValidateObject(poco,
+                new ValidationContext(poco, serviceProvider: null, items: null),
+                true);
+
+            return poco;
         }
     }
 }

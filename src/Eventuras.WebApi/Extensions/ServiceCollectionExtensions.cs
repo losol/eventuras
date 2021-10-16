@@ -4,18 +4,15 @@ using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services;
 using Eventuras.Services.DbInitializers;
-using Eventuras.Services.Invoicing;
-using Eventuras.Services.Organizations.Settings;
+using Eventuras.Services.Email;
 using Eventuras.Services.PowerOffice;
+using Eventuras.Services.SendGrid;
+using Eventuras.Services.Smtp;
 using Eventuras.Services.Stripe;
 using Eventuras.Services.TalentLms;
 using Eventuras.Services.Zoom;
 using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Config;
-using Losol.Communication.Email.File;
-using Losol.Communication.Email.Mock;
-using Losol.Communication.Email.SendGrid;
-using Losol.Communication.Email.Smtp;
 using Losol.Communication.HealthCheck.Abstractions;
 using Losol.Communication.HealthCheck.Email;
 using Losol.Communication.HealthCheck.Sms;
@@ -99,26 +96,11 @@ namespace Eventuras.WebApi.Extensions
             }
         }
 
-        public static void AddEmailServices(this IServiceCollection services,
-            EmailProvider provider, IConfiguration Configuration)
+        public static void AddEmailServices(this IServiceCollection services)
         {
-            // Register the correct email provider depending on the config
-            switch (provider)
-            {
-                case EmailProvider.SendGrid:
-                    services.AddSendGridEmailServices(Configuration.GetSection("SendGrid"));
-                    break;
-                case EmailProvider.Smtp:
-                    services.AddSmtpEmailServices(Configuration.GetSection("Smtp"));
-                    break;
-                case EmailProvider.File:
-                    services.AddFileEmailServices(Configuration.GetSection("Files"));
-                    break;
-                case EmailProvider.Mock:
-                    services.AddMockEmailServices();
-                    break;
-            }
-
+            services.AddConfigurableEmailServices();
+            services.AddConfigurableSmtpServices();
+            services.AddConfigurableSendGridServices();
         }
 
         public static void AddSmsServices(

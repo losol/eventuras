@@ -19,7 +19,7 @@ namespace Eventuras.IntegrationTests
     public class CustomWebApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class
     {
-        public readonly Mock<IEmailSender> EmailSenderMock = new Mock<IEmailSender>();
+        public readonly Mock<IEmailSender> EmailSenderMock = new();
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -29,8 +29,6 @@ namespace Eventuras.IntegrationTests
                 .ConfigureAppConfiguration(app => app
                     .AddInMemoryCollection(new Dictionary<string, string>
                     {
-                        {"AppSettings:EmailProvider", "Mock"},
-                        {"AppSettings:SmsProvider", "Mock"},
                         {"AppSettings:UsePowerOffice", "false"},
                         {"AppSettings:UseStripeInvoice", "false"},
                         {"Google:RecaptchaV3:ApiSecret", "anything"},
@@ -41,7 +39,7 @@ namespace Eventuras.IntegrationTests
                 .ConfigureServices(services =>
                 {
                     // Override already added email sender with the true mock
-                    services.AddSingleton(this.EmailSenderMock.Object);
+                    services.AddSingleton(EmailSenderMock.Object);
 
                     // Remove the app's ApplicationDbContext registration.
                     var descriptor = services.SingleOrDefault(

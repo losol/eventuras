@@ -46,6 +46,8 @@
     <ProjectReference Include="..\Eventuras.Services.Converto\Eventuras.Services.Converto.csproj" />
     <ProjectReference Include="..\Eventuras.Services.Google.RecaptchaV3\Eventuras.Services.Google.RecaptchaV3.csproj" />
     <ProjectReference Include="..\Eventuras.Services.PowerOffice\Eventuras.Services.PowerOffice.csproj" />
+    <ProjectReference Include="..\Eventuras.Services.SendGrid\Eventuras.Services.SendGrid.csproj" />
+    <ProjectReference Include="..\Eventuras.Services.Smtp\Eventuras.Services.Smtp.csproj" />
     <ProjectReference Include="..\Eventuras.Services.Stripe\Eventuras.Services.Stripe.csproj" />
     <ProjectReference Include="..\Eventuras.Services.TalentLms\Eventuras.Services.TalentLms.csproj" />
     <ProjectReference Include="..\Eventuras.Services.Zoom\Eventuras.Services.Zoom.csproj" />

@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using Eventuras.Services.Exceptions;
 
 namespace Eventuras.Services.Organizations.Settings
@@ -38,6 +41,77 @@ namespace Eventuras.Services.Organizations.Settings
             }
 
             _entries.Add(key, new OrganizationSettingEntry(name, section, description, type));
+        }
+
+        public void RegisterSettings<T>(string section)
+        {
+            var type = typeof(T);
+
+            if (string.IsNullOrWhiteSpace(section))
+            {
+                var typeDisplayName = type.GetCustomAttribute<DisplayNameAttribute>();
+                if (typeDisplayName != null)
+                {
+                    section = typeDisplayName.DisplayName;
+                }
+                else
+                {
+                    section = type.Name;
+                }
+            }
+
+            foreach (var property in type.GetProperties())
+            {
+                var settingKey = property.Name;
+                var orgSettingKey = property.GetCustomAttribute<OrgSettingKeyAttribute>();
+                if (orgSettingKey != null)
+                {
+                    settingKey = orgSettingKey.Name;
+                }
+
+                var settingDescription = settingKey;
+                var propertyDisplayName = property.GetCustomAttribute<DisplayNameAttribute>();
+                if (propertyDisplayName != null)
+                {
+                    settingDescription = propertyDisplayName.DisplayName;
+                }
+
+                var settingType = GetSettingType(property);
+                RegisterSetting(settingKey, section, settingDescription, settingType);
+            }
+        }
+
+        private static OrganizationSettingType GetSettingType(PropertyInfo propertyInfo)
+        {
+            switch (Type.GetTypeCode(propertyInfo.PropertyType))
+            {
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                case TypeCode.Decimal:
+                case TypeCode.Double:
+                case TypeCode.Single:
+                    return OrganizationSettingType.Number;
+                case TypeCode.Boolean:
+                    return OrganizationSettingType.Boolean;
+                default:
+                    if (propertyInfo.GetCustomAttribute<EmailAddressAttribute>() != null)
+                    {
+                        return OrganizationSettingType.Email;
+                    }
+
+                    if (propertyInfo.GetCustomAttribute<UrlAttribute>() != null)
+                    {
+                        return OrganizationSettingType.Url;
+                    }
+
+                    return OrganizationSettingType.String;
+            }
         }
 
         public IEnumerable<OrganizationSettingEntry> GetEntries()

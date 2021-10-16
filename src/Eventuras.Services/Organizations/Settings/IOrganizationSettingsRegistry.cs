@@ -18,6 +18,17 @@ namespace Eventuras.Services.Organizations.Settings
         void RegisterSetting(string name, string section, string description, OrganizationSettingType type);
 
         /// <summary>
+        /// Register all properties of the specified type as an organization settings.
+        /// Use <see cref="System.ComponentModel.DisplayNameAttribute"/> to provide
+        /// human-friendly description for each property. If no <c>section</c> param is provided,
+        /// then it tries to read section name from <see cref="System.ComponentModel.DisplayNameAttribute"/>
+        /// applied to the given type. If type is not annotated with the display name attribute,
+        /// then the type name itself will be used as a section name.
+        /// </summary>
+        /// <param name="section">The optional name of the settings section.</param>
+        void RegisterSettings<T>(string section = null);
+
+        /// <summary>
         /// Returns all registered organization settings entries.
         /// </summary>
         /// <returns>An array of entries, not <c>null</c>.</returns>

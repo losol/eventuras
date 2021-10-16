@@ -16,6 +16,7 @@ using Eventuras.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using ServiceCollectionExtensions = Eventuras.Web.Extensions.ServiceCollectionExtensions;
 
 namespace Eventuras
 {
@@ -69,7 +70,7 @@ namespace Eventuras
             services.ConfigureMvc();
 
             services.AddSiteConfig(Configuration);
-            services.AddEmailServices(AppSettings.EmailProvider, Configuration);
+            services.AddEmailServices();
             services.AddSmsServices(AppSettings.SmsProvider, Configuration);
             services.AddInvoicingServices(AppSettings, Configuration);
             services.AddApplicationServices(Configuration);
