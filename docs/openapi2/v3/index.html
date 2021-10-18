@@ -2387,6 +2387,9 @@ ul.nav-tabs {
                     <li data-group="Organizations" data-name="addOrganizationMemberRole" class="">
                       <a href="#api-Organizations-addOrganizationMemberRole">addOrganizationMemberRole</a>
                     </li>
+                    <li data-group="Organizations" data-name="batchUpdateOrganizationSettings" class="">
+                      <a href="#api-Organizations-batchUpdateOrganizationSettings">batchUpdateOrganizationSettings</a>
+                    </li>
                     <li data-group="Organizations" data-name="createNewOrganization" class="">
                       <a href="#api-Organizations-createNewOrganization">createNewOrganization</a>
                     </li>
@@ -2456,6 +2459,9 @@ ul.nav-tabs {
                       <a href="#api-Registrations-updateRegistration">updateRegistration</a>
                     </li>
                   <li class="nav-header" data-group="Settings"><a href="#api-Settings">API Methods - Settings</a></li>
+                    <li data-group="Settings" data-name="batchUpdateOrganizationSettings" class="">
+                      <a href="#api-Settings-batchUpdateOrganizationSettings">batchUpdateOrganizationSettings</a>
+                    </li>
                     <li data-group="Settings" data-name="getOrganizationSettingsList" class="">
                       <a href="#api-Settings-getOrganizationSettingsList">getOrganizationSettingsList</a>
                     </li>
@@ -23340,6 +23346,711 @@ $(document).ready(function() {
                         </article>
                       </div>
                       <hr>
+                    <div id="api-Organizations-batchUpdateOrganizationSettings">
+                      <article id="api-Organizations-batchUpdateOrganizationSettings-0" data-group="User" data-name="batchUpdateOrganizationSettings" data-version="0">
+                        <div class="pull-left">
+                          <h1>batchUpdateOrganizationSettings</h1>
+                          <p>Update organization settings in batch.</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/organizations/{id}/settings</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Organizations-batchUpdateOrganizationSettings-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Organizations-batchUpdateOrganizationSettings-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Organizations-batchUpdateOrganizationSettings-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Organizations-batchUpdateOrganizationSettings-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Organizations-batchUpdateOrganizationSettings-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Organizations-batchUpdateOrganizationSettings-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Organizations-batchUpdateOrganizationSettings-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Organizations-batchUpdateOrganizationSettings-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Organizations-batchUpdateOrganizationSettings-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Organizations-batchUpdateOrganizationSettings-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Organizations-batchUpdateOrganizationSettings-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Organizations-batchUpdateOrganizationSettings-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Organizations-batchUpdateOrganizationSettings-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+ -H "Accept: application/json"\
+ -H "Content-Type: application/json"\
+ "https://full.path.to/v3/organizations/{id}/settings"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Organizations-batchUpdateOrganizationSettings-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.OrganizationsApi;
+
+import java.io.File;
+import java.util.*;
+
+public class OrganizationsApiExample {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        
+        // Configure Bearer (JWT) access token for authorization: bearer
+        HttpBearerAuth bearer = (HttpBearerAuth) defaultClient.getAuthentication("bearer");
+        bearer.setBearerToken("BEARER TOKEN");
+        
+        // Create an instance of the API class
+        OrganizationsApi apiInstance = new OrganizationsApi();
+        Integer id = 56; // Integer | Organization ID.
+        array[OrganizationSettingValueDto] organizationSettingValueDto = ; // array[OrganizationSettingValueDto] | 
+        
+        try {
+            apiInstance.batchUpdateOrganizationSettings(id, organizationSettingValueDto);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling OrganizationsApi#batchUpdateOrganizationSettings");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Organizations-batchUpdateOrganizationSettings-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.OrganizationsApi;
+
+public class OrganizationsApiExample {
+    public static void main(String[] args) {
+        OrganizationsApi apiInstance = new OrganizationsApi();
+        Integer id = 56; // Integer | Organization ID.
+        array[OrganizationSettingValueDto] organizationSettingValueDto = ; // array[OrganizationSettingValueDto] | 
+        
+        try {
+            apiInstance.batchUpdateOrganizationSettings(id, organizationSettingValueDto);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling OrganizationsApi#batchUpdateOrganizationSettings");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Organizations-batchUpdateOrganizationSettings-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Organizations-batchUpdateOrganizationSettings-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+
+// Configure Bearer (JWT) access token for authorization: bearer
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+
+// Create an instance of the API class
+OrganizationsApi *apiInstance = [[OrganizationsApi alloc] init];
+Integer *id = 56; // Organization ID. (default to null)
+array[OrganizationSettingValueDto] *organizationSettingValueDto = ; // 
+
+// Update organization settings in batch.
+[apiInstance batchUpdateOrganizationSettingsWith:id
+    organizationSettingValueDto:organizationSettingValueDto
+              completionHandler: ^(NSError* error) {
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Organizations-batchUpdateOrganizationSettings-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var EventurasApi = require('eventuras_api');
+var defaultClient = EventurasApi.ApiClient.instance;
+
+// Configure Bearer (JWT) access token for authorization: bearer
+var bearer = defaultClient.authentications['bearer'];
+bearer.accessToken = "YOUR ACCESS TOKEN";
+
+// Create an instance of the API class
+var api = new EventurasApi.OrganizationsApi()
+var id = 56; // {Integer} Organization ID.
+var organizationSettingValueDto = ; // {array[OrganizationSettingValueDto]} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.batchUpdateOrganizationSettings(id, organizationSettingValueDto, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Organizations-batchUpdateOrganizationSettings-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Organizations-batchUpdateOrganizationSettings-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class batchUpdateOrganizationSettingsExample
+    {
+        public void main()
+        {
+            // Configure Bearer (JWT) access token for authorization: bearer
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+            
+            // Create an instance of the API class
+            var apiInstance = new OrganizationsApi();
+            var id = 56;  // Integer | Organization ID. (default to null)
+            var organizationSettingValueDto = new array[OrganizationSettingValueDto](); // array[OrganizationSettingValueDto] | 
+
+            try {
+                // Update organization settings in batch.
+                apiInstance.batchUpdateOrganizationSettings(id, organizationSettingValueDto);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling OrganizationsApi.batchUpdateOrganizationSettings: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Organizations-batchUpdateOrganizationSettings-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure Bearer (JWT) access token for authorization: bearer
+OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('', 'YOUR_ACCESS_TOKEN');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\OrganizationsApi();
+$id = 56; // Integer | Organization ID.
+$organizationSettingValueDto = ; // array[OrganizationSettingValueDto] | 
+
+try {
+    $api_instance->batchUpdateOrganizationSettings($id, $organizationSettingValueDto);
+} catch (Exception $e) {
+    echo 'Exception when calling OrganizationsApi->batchUpdateOrganizationSettings: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Organizations-batchUpdateOrganizationSettings-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::OrganizationsApi;
+
+# Configure Bearer (JWT) access token for authorization: bearer
+$WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::OrganizationsApi->new();
+my $id = 56; # Integer | Organization ID.
+my $organizationSettingValueDto = [WWW::OPenAPIClient::Object::array[OrganizationSettingValueDto]->new()]; # array[OrganizationSettingValueDto] | 
+
+eval { 
+    $api_instance->batchUpdateOrganizationSettings(id => $id, organizationSettingValueDto => $organizationSettingValueDto);
+};
+if ($@) {
+    warn "Exception when calling OrganizationsApi->batchUpdateOrganizationSettings: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Organizations-batchUpdateOrganizationSettings-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Configure Bearer (JWT) access token for authorization: bearer
+openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# Create an instance of the API class
+api_instance = openapi_client.OrganizationsApi()
+id = 56 # Integer | Organization ID. (default to null)
+organizationSettingValueDto =  # array[OrganizationSettingValueDto] | 
+
+try: 
+    # Update organization settings in batch.
+    api_instance.batch_update_organization_settings(id, organizationSettingValueDto)
+except ApiException as e:
+    print("Exception when calling OrganizationsApi->batchUpdateOrganizationSettings: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Organizations-batchUpdateOrganizationSettings-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate OrganizationsApi;
+
+pub fn main() {
+    let id = 56; // Integer
+    let organizationSettingValueDto = ; // array[OrganizationSettingValueDto]
+
+    let mut context = OrganizationsApi::Context::default();
+    let result = client.batchUpdateOrganizationSettings(id, organizationSettingValueDto, &context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+<td>
+
+
+    <div id="d2e199_batchUpdateOrganizationSettings_id">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Organization ID.
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">organizationSettingValueDto <span style="color:red;">*</span></td>
+<td>
+<p class="marked"></p>
+<script>
+$(document).ready(function() {
+  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/OrganizationSettingValueDto"
+        }
+      }
+    }
+  },
+  "required" : true
+};
+
+  var schema = findNode('schema',schemaWrapper).schema;
+  if (!schema) {
+    schema = schemaWrapper.schema;
+  }
+  if (schema.$ref != null) {
+    schema = defsParser.$refs.get(schema.$ref);
+  } else {
+    schemaWrapper.definitions = Object.assign({}, defs);
+    $RefParser.dereference(schemaWrapper).catch(function(err) {
+      console.log(err);
+    });
+  }
+
+  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+  var result = $('#d2e199_batchUpdateOrganizationSettings_organizationSettingValueDto');
+  result.empty();
+  result.append(view.render());
+});
+</script>
+<div id="d2e199_batchUpdateOrganizationSettings_organizationSettingValueDto"></div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Organizations-batchUpdateOrganizationSettings-title-200"></h3>
+                            <p id="examples-Organizations-batchUpdateOrganizationSettings-description-200" class="marked"></p>
+                            <script>
+                              var responseOrganizations200_description = `OK`;
+                              var responseOrganizations200_description_break = responseOrganizations200_description.indexOf('\n');
+                              if (responseOrganizations200_description_break == -1) {
+                                $("#examples-Organizations-batchUpdateOrganizationSettings-title-200").text("Status: 200 - " + responseOrganizations200_description);
+                              } else {
+                                $("#examples-Organizations-batchUpdateOrganizationSettings-title-200").text("Status: 200 - " + responseOrganizations200_description.substring(0, responseOrganizations200_description_break));
+                                $("#examples-Organizations-batchUpdateOrganizationSettings-description-200").html(responseOrganizations200_description.substring(responseOrganizations200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Organizations-batchUpdateOrganizationSettings-200" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Organizations-batchUpdateOrganizationSettings-200-wrapper" style='margin-bottom: 10px;'>
+                            </div>
+                            <h3 id="examples-Organizations-batchUpdateOrganizationSettings-title-400"></h3>
+                            <p id="examples-Organizations-batchUpdateOrganizationSettings-description-400" class="marked"></p>
+                            <script>
+                              var responseOrganizations400_description = `Missing or invalid request parameters.`;
+                              var responseOrganizations400_description_break = responseOrganizations400_description.indexOf('\n');
+                              if (responseOrganizations400_description_break == -1) {
+                                $("#examples-Organizations-batchUpdateOrganizationSettings-title-400").text("Status: 400 - " + responseOrganizations400_description);
+                              } else {
+                                $("#examples-Organizations-batchUpdateOrganizationSettings-title-400").text("Status: 400 - " + responseOrganizations400_description.substring(0, responseOrganizations400_description_break));
+                                $("#examples-Organizations-batchUpdateOrganizationSettings-description-400").html(responseOrganizations400_description.substring(responseOrganizations400_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Organizations-batchUpdateOrganizationSettings-400" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Organizations-batchUpdateOrganizationSettings-400-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Organizations-batchUpdateOrganizationSettings-400-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Organizations-batchUpdateOrganizationSettings-400-schema">
+                                  <div id="responses-Organizations-batchUpdateOrganizationSettings-schema-400" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Missing or invalid request parameters.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Organizations-batchUpdateOrganizationSettings-400-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Organizations-batchUpdateOrganizationSettings-schema-400');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Organizations-batchUpdateOrganizationSettings-400-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Organizations-batchUpdateOrganizationSettings-title-401"></h3>
+                            <p id="examples-Organizations-batchUpdateOrganizationSettings-description-401" class="marked"></p>
+                            <script>
+                              var responseOrganizations401_description = `Access token is missing or invalid.`;
+                              var responseOrganizations401_description_break = responseOrganizations401_description.indexOf('\n');
+                              if (responseOrganizations401_description_break == -1) {
+                                $("#examples-Organizations-batchUpdateOrganizationSettings-title-401").text("Status: 401 - " + responseOrganizations401_description);
+                              } else {
+                                $("#examples-Organizations-batchUpdateOrganizationSettings-title-401").text("Status: 401 - " + responseOrganizations401_description.substring(0, responseOrganizations401_description_break));
+                                $("#examples-Organizations-batchUpdateOrganizationSettings-description-401").html(responseOrganizations401_description.substring(responseOrganizations401_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Organizations-batchUpdateOrganizationSettings-401" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Organizations-batchUpdateOrganizationSettings-401-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Organizations-batchUpdateOrganizationSettings-401-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Organizations-batchUpdateOrganizationSettings-401-schema">
+                                  <div id="responses-Organizations-batchUpdateOrganizationSettings-schema-401" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access token is missing or invalid.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Organizations-batchUpdateOrganizationSettings-401-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Organizations-batchUpdateOrganizationSettings-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Organizations-batchUpdateOrganizationSettings-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Organizations-batchUpdateOrganizationSettings-title-404"></h3>
+                            <p id="examples-Organizations-batchUpdateOrganizationSettings-description-404" class="marked"></p>
+                            <script>
+                              var responseOrganizations404_description = `The requested resource not found.`;
+                              var responseOrganizations404_description_break = responseOrganizations404_description.indexOf('\n');
+                              if (responseOrganizations404_description_break == -1) {
+                                $("#examples-Organizations-batchUpdateOrganizationSettings-title-404").text("Status: 404 - " + responseOrganizations404_description);
+                              } else {
+                                $("#examples-Organizations-batchUpdateOrganizationSettings-title-404").text("Status: 404 - " + responseOrganizations404_description.substring(0, responseOrganizations404_description_break));
+                                $("#examples-Organizations-batchUpdateOrganizationSettings-description-404").html(responseOrganizations404_description.substring(responseOrganizations404_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Organizations-batchUpdateOrganizationSettings-404" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Organizations-batchUpdateOrganizationSettings-404-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Organizations-batchUpdateOrganizationSettings-404-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Organizations-batchUpdateOrganizationSettings-404-schema">
+                                  <div id="responses-Organizations-batchUpdateOrganizationSettings-schema-404" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "The requested resource not found.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Organizations-batchUpdateOrganizationSettings-404-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Organizations-batchUpdateOrganizationSettings-schema-404');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Organizations-batchUpdateOrganizationSettings-404-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Organizations-batchUpdateOrganizationSettings-title-403"></h3>
+                            <p id="examples-Organizations-batchUpdateOrganizationSettings-description-403" class="marked"></p>
+                            <script>
+                              var responseOrganizations403_description = `Access forbidden.`;
+                              var responseOrganizations403_description_break = responseOrganizations403_description.indexOf('\n');
+                              if (responseOrganizations403_description_break == -1) {
+                                $("#examples-Organizations-batchUpdateOrganizationSettings-title-403").text("Status: 403 - " + responseOrganizations403_description);
+                              } else {
+                                $("#examples-Organizations-batchUpdateOrganizationSettings-title-403").text("Status: 403 - " + responseOrganizations403_description.substring(0, responseOrganizations403_description_break));
+                                $("#examples-Organizations-batchUpdateOrganizationSettings-description-403").html(responseOrganizations403_description.substring(responseOrganizations403_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Organizations-batchUpdateOrganizationSettings-403" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Organizations-batchUpdateOrganizationSettings-403-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Organizations-batchUpdateOrganizationSettings-403-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Organizations-batchUpdateOrganizationSettings-403-schema">
+                                  <div id="responses-Organizations-batchUpdateOrganizationSettings-schema-403" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access forbidden.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Organizations-batchUpdateOrganizationSettings-403-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Organizations-batchUpdateOrganizationSettings-schema-403');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Organizations-batchUpdateOrganizationSettings-403-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Organizations-batchUpdateOrganizationSettings-title-500"></h3>
+                            <p id="examples-Organizations-batchUpdateOrganizationSettings-description-500" class="marked"></p>
+                            <script>
+                              var responseOrganizations500_description = `Unexpected server error.`;
+                              var responseOrganizations500_description_break = responseOrganizations500_description.indexOf('\n');
+                              if (responseOrganizations500_description_break == -1) {
+                                $("#examples-Organizations-batchUpdateOrganizationSettings-title-500").text("Status: 500 - " + responseOrganizations500_description);
+                              } else {
+                                $("#examples-Organizations-batchUpdateOrganizationSettings-title-500").text("Status: 500 - " + responseOrganizations500_description.substring(0, responseOrganizations500_description_break));
+                                $("#examples-Organizations-batchUpdateOrganizationSettings-description-500").html(responseOrganizations500_description.substring(responseOrganizations500_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Organizations-batchUpdateOrganizationSettings-500" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Organizations-batchUpdateOrganizationSettings-500-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Organizations-batchUpdateOrganizationSettings-500-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Organizations-batchUpdateOrganizationSettings-500-schema">
+                                  <div id="responses-Organizations-batchUpdateOrganizationSettings-schema-500" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unexpected server error.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Organizations-batchUpdateOrganizationSettings-500-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Organizations-batchUpdateOrganizationSettings-schema-500');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Organizations-batchUpdateOrganizationSettings-500-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
                     <div id="api-Organizations-createNewOrganization">
                       <article id="api-Organizations-createNewOrganization-0" data-group="User" data-name="createNewOrganization" data-version="0">
                         <div class="pull-left">
@@ -37193,6 +37904,711 @@ $(document).ready(function() {
                   </section>
                 <section id="api-Settings">
                   <h1>Settings</h1>
+                    <div id="api-Settings-batchUpdateOrganizationSettings">
+                      <article id="api-Settings-batchUpdateOrganizationSettings-0" data-group="User" data-name="batchUpdateOrganizationSettings" data-version="0">
+                        <div class="pull-left">
+                          <h1>batchUpdateOrganizationSettings</h1>
+                          <p>Update organization settings in batch.</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/organizations/{id}/settings</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Settings-batchUpdateOrganizationSettings-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Settings-batchUpdateOrganizationSettings-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Settings-batchUpdateOrganizationSettings-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Settings-batchUpdateOrganizationSettings-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Settings-batchUpdateOrganizationSettings-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Settings-batchUpdateOrganizationSettings-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Settings-batchUpdateOrganizationSettings-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Settings-batchUpdateOrganizationSettings-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Settings-batchUpdateOrganizationSettings-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Settings-batchUpdateOrganizationSettings-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Settings-batchUpdateOrganizationSettings-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Settings-batchUpdateOrganizationSettings-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Settings-batchUpdateOrganizationSettings-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+ -H "Accept: application/json"\
+ -H "Content-Type: application/json"\
+ "https://full.path.to/v3/organizations/{id}/settings"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Settings-batchUpdateOrganizationSettings-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.SettingsApi;
+
+import java.io.File;
+import java.util.*;
+
+public class SettingsApiExample {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        
+        // Configure Bearer (JWT) access token for authorization: bearer
+        HttpBearerAuth bearer = (HttpBearerAuth) defaultClient.getAuthentication("bearer");
+        bearer.setBearerToken("BEARER TOKEN");
+        
+        // Create an instance of the API class
+        SettingsApi apiInstance = new SettingsApi();
+        Integer id = 56; // Integer | Organization ID.
+        array[OrganizationSettingValueDto] organizationSettingValueDto = ; // array[OrganizationSettingValueDto] | 
+        
+        try {
+            apiInstance.batchUpdateOrganizationSettings(id, organizationSettingValueDto);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling SettingsApi#batchUpdateOrganizationSettings");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Settings-batchUpdateOrganizationSettings-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.SettingsApi;
+
+public class SettingsApiExample {
+    public static void main(String[] args) {
+        SettingsApi apiInstance = new SettingsApi();
+        Integer id = 56; // Integer | Organization ID.
+        array[OrganizationSettingValueDto] organizationSettingValueDto = ; // array[OrganizationSettingValueDto] | 
+        
+        try {
+            apiInstance.batchUpdateOrganizationSettings(id, organizationSettingValueDto);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling SettingsApi#batchUpdateOrganizationSettings");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Settings-batchUpdateOrganizationSettings-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Settings-batchUpdateOrganizationSettings-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+
+// Configure Bearer (JWT) access token for authorization: bearer
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+
+// Create an instance of the API class
+SettingsApi *apiInstance = [[SettingsApi alloc] init];
+Integer *id = 56; // Organization ID. (default to null)
+array[OrganizationSettingValueDto] *organizationSettingValueDto = ; // 
+
+// Update organization settings in batch.
+[apiInstance batchUpdateOrganizationSettingsWith:id
+    organizationSettingValueDto:organizationSettingValueDto
+              completionHandler: ^(NSError* error) {
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Settings-batchUpdateOrganizationSettings-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var EventurasApi = require('eventuras_api');
+var defaultClient = EventurasApi.ApiClient.instance;
+
+// Configure Bearer (JWT) access token for authorization: bearer
+var bearer = defaultClient.authentications['bearer'];
+bearer.accessToken = "YOUR ACCESS TOKEN";
+
+// Create an instance of the API class
+var api = new EventurasApi.SettingsApi()
+var id = 56; // {Integer} Organization ID.
+var organizationSettingValueDto = ; // {array[OrganizationSettingValueDto]} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.batchUpdateOrganizationSettings(id, organizationSettingValueDto, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Settings-batchUpdateOrganizationSettings-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Settings-batchUpdateOrganizationSettings-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class batchUpdateOrganizationSettingsExample
+    {
+        public void main()
+        {
+            // Configure Bearer (JWT) access token for authorization: bearer
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+            
+            // Create an instance of the API class
+            var apiInstance = new SettingsApi();
+            var id = 56;  // Integer | Organization ID. (default to null)
+            var organizationSettingValueDto = new array[OrganizationSettingValueDto](); // array[OrganizationSettingValueDto] | 
+
+            try {
+                // Update organization settings in batch.
+                apiInstance.batchUpdateOrganizationSettings(id, organizationSettingValueDto);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling SettingsApi.batchUpdateOrganizationSettings: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Settings-batchUpdateOrganizationSettings-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure Bearer (JWT) access token for authorization: bearer
+OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('', 'YOUR_ACCESS_TOKEN');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\SettingsApi();
+$id = 56; // Integer | Organization ID.
+$organizationSettingValueDto = ; // array[OrganizationSettingValueDto] | 
+
+try {
+    $api_instance->batchUpdateOrganizationSettings($id, $organizationSettingValueDto);
+} catch (Exception $e) {
+    echo 'Exception when calling SettingsApi->batchUpdateOrganizationSettings: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Settings-batchUpdateOrganizationSettings-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::SettingsApi;
+
+# Configure Bearer (JWT) access token for authorization: bearer
+$WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::SettingsApi->new();
+my $id = 56; # Integer | Organization ID.
+my $organizationSettingValueDto = [WWW::OPenAPIClient::Object::array[OrganizationSettingValueDto]->new()]; # array[OrganizationSettingValueDto] | 
+
+eval { 
+    $api_instance->batchUpdateOrganizationSettings(id => $id, organizationSettingValueDto => $organizationSettingValueDto);
+};
+if ($@) {
+    warn "Exception when calling SettingsApi->batchUpdateOrganizationSettings: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Settings-batchUpdateOrganizationSettings-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Configure Bearer (JWT) access token for authorization: bearer
+openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# Create an instance of the API class
+api_instance = openapi_client.SettingsApi()
+id = 56 # Integer | Organization ID. (default to null)
+organizationSettingValueDto =  # array[OrganizationSettingValueDto] | 
+
+try: 
+    # Update organization settings in batch.
+    api_instance.batch_update_organization_settings(id, organizationSettingValueDto)
+except ApiException as e:
+    print("Exception when calling SettingsApi->batchUpdateOrganizationSettings: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Settings-batchUpdateOrganizationSettings-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate SettingsApi;
+
+pub fn main() {
+    let id = 56; // Integer
+    let organizationSettingValueDto = ; // array[OrganizationSettingValueDto]
+
+    let mut context = SettingsApi::Context::default();
+    let result = client.batchUpdateOrganizationSettings(id, organizationSettingValueDto, &context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+<td>
+
+
+    <div id="d2e199_batchUpdateOrganizationSettings_id">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Organization ID.
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">organizationSettingValueDto <span style="color:red;">*</span></td>
+<td>
+<p class="marked"></p>
+<script>
+$(document).ready(function() {
+  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/OrganizationSettingValueDto"
+        }
+      }
+    }
+  },
+  "required" : true
+};
+
+  var schema = findNode('schema',schemaWrapper).schema;
+  if (!schema) {
+    schema = schemaWrapper.schema;
+  }
+  if (schema.$ref != null) {
+    schema = defsParser.$refs.get(schema.$ref);
+  } else {
+    schemaWrapper.definitions = Object.assign({}, defs);
+    $RefParser.dereference(schemaWrapper).catch(function(err) {
+      console.log(err);
+    });
+  }
+
+  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+  var result = $('#d2e199_batchUpdateOrganizationSettings_organizationSettingValueDto');
+  result.empty();
+  result.append(view.render());
+});
+</script>
+<div id="d2e199_batchUpdateOrganizationSettings_organizationSettingValueDto"></div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Settings-batchUpdateOrganizationSettings-title-200"></h3>
+                            <p id="examples-Settings-batchUpdateOrganizationSettings-description-200" class="marked"></p>
+                            <script>
+                              var responseSettings200_description = `OK`;
+                              var responseSettings200_description_break = responseSettings200_description.indexOf('\n');
+                              if (responseSettings200_description_break == -1) {
+                                $("#examples-Settings-batchUpdateOrganizationSettings-title-200").text("Status: 200 - " + responseSettings200_description);
+                              } else {
+                                $("#examples-Settings-batchUpdateOrganizationSettings-title-200").text("Status: 200 - " + responseSettings200_description.substring(0, responseSettings200_description_break));
+                                $("#examples-Settings-batchUpdateOrganizationSettings-description-200").html(responseSettings200_description.substring(responseSettings200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Settings-batchUpdateOrganizationSettings-200" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Settings-batchUpdateOrganizationSettings-200-wrapper" style='margin-bottom: 10px;'>
+                            </div>
+                            <h3 id="examples-Settings-batchUpdateOrganizationSettings-title-400"></h3>
+                            <p id="examples-Settings-batchUpdateOrganizationSettings-description-400" class="marked"></p>
+                            <script>
+                              var responseSettings400_description = `Missing or invalid request parameters.`;
+                              var responseSettings400_description_break = responseSettings400_description.indexOf('\n');
+                              if (responseSettings400_description_break == -1) {
+                                $("#examples-Settings-batchUpdateOrganizationSettings-title-400").text("Status: 400 - " + responseSettings400_description);
+                              } else {
+                                $("#examples-Settings-batchUpdateOrganizationSettings-title-400").text("Status: 400 - " + responseSettings400_description.substring(0, responseSettings400_description_break));
+                                $("#examples-Settings-batchUpdateOrganizationSettings-description-400").html(responseSettings400_description.substring(responseSettings400_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Settings-batchUpdateOrganizationSettings-400" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Settings-batchUpdateOrganizationSettings-400-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Settings-batchUpdateOrganizationSettings-400-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Settings-batchUpdateOrganizationSettings-400-schema">
+                                  <div id="responses-Settings-batchUpdateOrganizationSettings-schema-400" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Missing or invalid request parameters.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Settings-batchUpdateOrganizationSettings-400-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Settings-batchUpdateOrganizationSettings-schema-400');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Settings-batchUpdateOrganizationSettings-400-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Settings-batchUpdateOrganizationSettings-title-401"></h3>
+                            <p id="examples-Settings-batchUpdateOrganizationSettings-description-401" class="marked"></p>
+                            <script>
+                              var responseSettings401_description = `Access token is missing or invalid.`;
+                              var responseSettings401_description_break = responseSettings401_description.indexOf('\n');
+                              if (responseSettings401_description_break == -1) {
+                                $("#examples-Settings-batchUpdateOrganizationSettings-title-401").text("Status: 401 - " + responseSettings401_description);
+                              } else {
+                                $("#examples-Settings-batchUpdateOrganizationSettings-title-401").text("Status: 401 - " + responseSettings401_description.substring(0, responseSettings401_description_break));
+                                $("#examples-Settings-batchUpdateOrganizationSettings-description-401").html(responseSettings401_description.substring(responseSettings401_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Settings-batchUpdateOrganizationSettings-401" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Settings-batchUpdateOrganizationSettings-401-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Settings-batchUpdateOrganizationSettings-401-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Settings-batchUpdateOrganizationSettings-401-schema">
+                                  <div id="responses-Settings-batchUpdateOrganizationSettings-schema-401" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access token is missing or invalid.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Settings-batchUpdateOrganizationSettings-401-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Settings-batchUpdateOrganizationSettings-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Settings-batchUpdateOrganizationSettings-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Settings-batchUpdateOrganizationSettings-title-404"></h3>
+                            <p id="examples-Settings-batchUpdateOrganizationSettings-description-404" class="marked"></p>
+                            <script>
+                              var responseSettings404_description = `The requested resource not found.`;
+                              var responseSettings404_description_break = responseSettings404_description.indexOf('\n');
+                              if (responseSettings404_description_break == -1) {
+                                $("#examples-Settings-batchUpdateOrganizationSettings-title-404").text("Status: 404 - " + responseSettings404_description);
+                              } else {
+                                $("#examples-Settings-batchUpdateOrganizationSettings-title-404").text("Status: 404 - " + responseSettings404_description.substring(0, responseSettings404_description_break));
+                                $("#examples-Settings-batchUpdateOrganizationSettings-description-404").html(responseSettings404_description.substring(responseSettings404_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Settings-batchUpdateOrganizationSettings-404" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Settings-batchUpdateOrganizationSettings-404-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Settings-batchUpdateOrganizationSettings-404-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Settings-batchUpdateOrganizationSettings-404-schema">
+                                  <div id="responses-Settings-batchUpdateOrganizationSettings-schema-404" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "The requested resource not found.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Settings-batchUpdateOrganizationSettings-404-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Settings-batchUpdateOrganizationSettings-schema-404');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Settings-batchUpdateOrganizationSettings-404-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Settings-batchUpdateOrganizationSettings-title-403"></h3>
+                            <p id="examples-Settings-batchUpdateOrganizationSettings-description-403" class="marked"></p>
+                            <script>
+                              var responseSettings403_description = `Access forbidden.`;
+                              var responseSettings403_description_break = responseSettings403_description.indexOf('\n');
+                              if (responseSettings403_description_break == -1) {
+                                $("#examples-Settings-batchUpdateOrganizationSettings-title-403").text("Status: 403 - " + responseSettings403_description);
+                              } else {
+                                $("#examples-Settings-batchUpdateOrganizationSettings-title-403").text("Status: 403 - " + responseSettings403_description.substring(0, responseSettings403_description_break));
+                                $("#examples-Settings-batchUpdateOrganizationSettings-description-403").html(responseSettings403_description.substring(responseSettings403_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Settings-batchUpdateOrganizationSettings-403" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Settings-batchUpdateOrganizationSettings-403-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Settings-batchUpdateOrganizationSettings-403-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Settings-batchUpdateOrganizationSettings-403-schema">
+                                  <div id="responses-Settings-batchUpdateOrganizationSettings-schema-403" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access forbidden.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Settings-batchUpdateOrganizationSettings-403-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Settings-batchUpdateOrganizationSettings-schema-403');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Settings-batchUpdateOrganizationSettings-403-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Settings-batchUpdateOrganizationSettings-title-500"></h3>
+                            <p id="examples-Settings-batchUpdateOrganizationSettings-description-500" class="marked"></p>
+                            <script>
+                              var responseSettings500_description = `Unexpected server error.`;
+                              var responseSettings500_description_break = responseSettings500_description.indexOf('\n');
+                              if (responseSettings500_description_break == -1) {
+                                $("#examples-Settings-batchUpdateOrganizationSettings-title-500").text("Status: 500 - " + responseSettings500_description);
+                              } else {
+                                $("#examples-Settings-batchUpdateOrganizationSettings-title-500").text("Status: 500 - " + responseSettings500_description.substring(0, responseSettings500_description_break));
+                                $("#examples-Settings-batchUpdateOrganizationSettings-description-500").html(responseSettings500_description.substring(responseSettings500_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Settings-batchUpdateOrganizationSettings-500" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Settings-batchUpdateOrganizationSettings-500-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Settings-batchUpdateOrganizationSettings-500-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Settings-batchUpdateOrganizationSettings-500-schema">
+                                  <div id="responses-Settings-batchUpdateOrganizationSettings-schema-500" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unexpected server error.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Settings-batchUpdateOrganizationSettings-500-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Settings-batchUpdateOrganizationSettings-schema-500');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Settings-batchUpdateOrganizationSettings-500-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
                     <div id="api-Settings-getOrganizationSettingsList">
                       <article id="api-Settings-getOrganizationSettingsList-0" data-group="User" data-name="getOrganizationSettingsList" data-version="0">
                         <div class="pull-left">

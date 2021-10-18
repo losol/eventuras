@@ -114,7 +114,7 @@ namespace Eventuras.Services.Tests.Organizations.Settings
         {
             _settings.Add(new OrganizationSetting
             {
-                Name = nameof(SettingsPocoWithNoFieldsMapped.Something),
+                Name = $"{nameof(SettingsPocoWithNoFieldsMapped)}.{nameof(SettingsPocoWithNoFieldsMapped.Something)}",
                 Value = "abc"
             });
 

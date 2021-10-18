@@ -49,7 +49,7 @@ namespace Eventuras.Services.Organizations.Settings
             var poco = Activator.CreateInstance<T>();
             foreach (var property in type.GetProperties())
             {
-                var settingKey = property.Name;
+                var settingKey = $"{type.Name}.{property.Name}";
                 var orgSettingKey = property.GetCustomAttribute<OrgSettingKeyAttribute>();
                 if (orgSettingKey != null)
                 {

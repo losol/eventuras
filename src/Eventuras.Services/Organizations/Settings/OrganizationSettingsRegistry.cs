@@ -62,14 +62,14 @@ namespace Eventuras.Services.Organizations.Settings
 
             foreach (var property in type.GetProperties())
             {
-                var settingKey = property.Name;
+                var settingKey = $"{type.Name}.{property.Name}";
                 var orgSettingKey = property.GetCustomAttribute<OrgSettingKeyAttribute>();
                 if (orgSettingKey != null)
                 {
                     settingKey = orgSettingKey.Name;
                 }
 
-                var settingDescription = settingKey;
+                var settingDescription = property.Name;
                 var propertyDisplayName = property.GetCustomAttribute<DisplayNameAttribute>();
                 if (propertyDisplayName != null)
                 {

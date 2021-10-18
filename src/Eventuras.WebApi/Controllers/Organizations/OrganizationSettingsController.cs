@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -129,6 +131,78 @@ namespace Eventuras.WebApi.Controllers.Organizations
             {
                 Value = dto.Value
             });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BatchUpdate(int organizationId,
+            [Required] [MinLength(1)] OrganizationSettingValueDto[] dtos)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.FormatErrors());
+            }
+
+            await _organizationRetrievalService
+                .GetOrganizationByIdAsync(organizationId); // to check for org existence
+
+            await _organizationAccessControlService
+                .CheckOrganizationUpdateAccessAsync(organizationId);
+
+            var settings = (await _organizationSettingsCache
+                    .GetAllSettingsForOrganizationAsync(organizationId))
+                .ToDictionary(s => s.Name);
+
+            var entries = _organizationSettingsRegistry.GetEntries()
+                .ToDictionary(e => e.Name);
+
+            // check all entries are registered
+            var nonExistingEntries = dtos.Select(d => d.Name)
+                .Where(name => !entries.ContainsKey(name))
+                .ToArray();
+
+            if (nonExistingEntries.Any())
+            {
+                var names = string.Join(", ", nonExistingEntries);
+                throw new NotFoundException($"Settings {names} not registered in the system");
+            }
+
+            var result = new List<OrganizationSettingDto>();
+            foreach (var dto in dtos)
+            {
+                if (string.IsNullOrWhiteSpace(dto.Value))
+                {
+                    if (settings.ContainsKey(dto.Name))
+                    {
+                        await _organizationSettingsManagementService.RemoveOrganizationSettingAsync(settings[dto.Name]);
+                    }
+
+                    continue;
+                }
+
+                if (settings.ContainsKey(dto.Name))
+                {
+                    var setting = settings[dto.Name];
+                    setting.Value = dto.Value;
+                    await _organizationSettingsManagementService.UpdateOrganizationSettingAsync(setting);
+                }
+                else
+                {
+                    await _organizationSettingsManagementService
+                        .CreateOrganizationSettingAsync(new OrganizationSetting
+                        {
+                            OrganizationId = organizationId,
+                            Name = dto.Name,
+                            Value = dto.Value
+                        });
+                }
+
+                result.Add(new OrganizationSettingDto(entries[dto.Name])
+                {
+                    Value = dto.Value
+                });
+            }
+
+            return Ok(result);
         }
     }
 

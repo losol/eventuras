@@ -2169,6 +2169,63 @@ paths:
       tags:
       - organizations
       - settings
+    post:
+      operationId: batchUpdateOrganizationSettings
+      parameters:
+      - description: Organization ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: Array of organization settings key value pairs.
+              items:
+                $ref: '#/components/schemas/OrganizationSettingValueDto'
+              type: array
+        description: Array of organization settings key value pairs.
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Missing or invalid request parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Update organization settings in batch.
+      tags:
+      - organizations
+      - settings
     put:
       operationId: updateOrganizationSettings
       parameters:

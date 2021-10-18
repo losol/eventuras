@@ -24,9 +24,11 @@ namespace Eventuras.Services.Tests.Organizations.Settings
             Assert.NotNull(entries);
 
             var entry = entries.Single();
-            Assert.Equal(nameof(SettingsPocoWithNoDisplayNameAttributes), entry.Section);
-            Assert.Equal(nameof(SettingsPocoWithNoDisplayNameAttributes.Anything), entry.Name);
-            Assert.Equal(nameof(SettingsPocoWithNoDisplayNameAttributes.Anything), entry.Description);
+            var typeName = nameof(SettingsPocoWithNoDisplayNameAttributes);
+            var propertyName = nameof(SettingsPocoWithNoDisplayNameAttributes.Anything);
+            Assert.Equal(typeName, entry.Section);
+            Assert.Equal($"{typeName}.{propertyName}", entry.Name);
+            Assert.Equal(propertyName, entry.Description);
         }
 
         [Fact]
@@ -40,7 +42,7 @@ namespace Eventuras.Services.Tests.Organizations.Settings
             var entry = entries.Single();
             Assert.Equal(nameof(SettingsPocoWithOrgSettingKeyAttribute), entry.Section);
             Assert.Equal("SOME", entry.Name);
-            Assert.Equal("SOME", entry.Description);
+            Assert.Equal(nameof(SettingsPocoWithOrgSettingKeyAttribute.Something), entry.Description);
         }
 
         [Fact]
@@ -52,8 +54,10 @@ namespace Eventuras.Services.Tests.Organizations.Settings
             Assert.NotNull(entries);
 
             var entry = entries.Single();
-            Assert.Equal(nameof(SettingsPocoWithDisplayNameAttribute), entry.Section);
-            Assert.Equal(nameof(SettingsPocoWithDisplayNameAttribute.Something), entry.Name);
+            var typeName = nameof(SettingsPocoWithDisplayNameAttribute);
+            var propertyName = nameof(SettingsPocoWithDisplayNameAttribute.Something);
+            Assert.Equal(typeName, entry.Section);
+            Assert.Equal($"{typeName}.{propertyName}", entry.Name);
             Assert.Equal("Anything", entry.Description);
         }
 
@@ -80,44 +84,46 @@ namespace Eventuras.Services.Tests.Organizations.Settings
             Assert.NotNull(entries);
             Assert.NotEmpty(entries);
 
+            var typeName = nameof(SettingsPocoWithAllPropertyTypes);
+
             Assert.Contains(entries, e =>
-                e.Section == nameof(SettingsPocoWithAllPropertyTypes) &&
-                e.Name == nameof(SettingsPocoWithAllPropertyTypes.String) &
+                e.Section == typeName &&
+                e.Name == $"{typeName}.{nameof(SettingsPocoWithAllPropertyTypes.String)}" &
                 e.Type == OrganizationSettingType.String);
 
             Assert.Contains(entries, e =>
-                e.Section == nameof(SettingsPocoWithAllPropertyTypes) &&
-                e.Name == nameof(SettingsPocoWithAllPropertyTypes.Email) &
+                e.Section == typeName &&
+                e.Name == $"{typeName}.{nameof(SettingsPocoWithAllPropertyTypes.Email)}" &
                 e.Type == OrganizationSettingType.Email);
 
             Assert.Contains(entries, e =>
-                e.Section == nameof(SettingsPocoWithAllPropertyTypes) &&
-                e.Name == nameof(SettingsPocoWithAllPropertyTypes.Url) &
+                e.Section == typeName &&
+                e.Name == $"{typeName}.{nameof(SettingsPocoWithAllPropertyTypes.Url)}" &
                 e.Type == OrganizationSettingType.Url);
 
             Assert.Contains(entries, e =>
-                e.Section == nameof(SettingsPocoWithAllPropertyTypes) &&
-                e.Name == nameof(SettingsPocoWithAllPropertyTypes.Integer) &
+                e.Section == typeName &&
+                e.Name == $"{typeName}.{nameof(SettingsPocoWithAllPropertyTypes.Integer)}" &
                 e.Type == OrganizationSettingType.Number);
 
             Assert.Contains(entries, e =>
-                e.Section == nameof(SettingsPocoWithAllPropertyTypes) &&
-                e.Name == nameof(SettingsPocoWithAllPropertyTypes.Long) &
+                e.Section == typeName &&
+                e.Name == $"{typeName}.{nameof(SettingsPocoWithAllPropertyTypes.Long)}" &
                 e.Type == OrganizationSettingType.Number);
 
             Assert.Contains(entries, e =>
-                e.Section == nameof(SettingsPocoWithAllPropertyTypes) &&
-                e.Name == nameof(SettingsPocoWithAllPropertyTypes.Short) &
+                e.Section == typeName &&
+                e.Name == $"{typeName}.{nameof(SettingsPocoWithAllPropertyTypes.Short)}" &
                 e.Type == OrganizationSettingType.Number);
 
             Assert.Contains(entries, e =>
-                e.Section == nameof(SettingsPocoWithAllPropertyTypes) &&
-                e.Name == nameof(SettingsPocoWithAllPropertyTypes.Byte) &
+                e.Section == typeName &&
+                e.Name == $"{typeName}.{nameof(SettingsPocoWithAllPropertyTypes.Byte)}" &
                 e.Type == OrganizationSettingType.Number);
 
             Assert.Contains(entries, e =>
-                e.Section == nameof(SettingsPocoWithAllPropertyTypes) &&
-                e.Name == nameof(SettingsPocoWithAllPropertyTypes.Boolean) &
+                e.Section == typeName &&
+                e.Name == $"{typeName}.{nameof(SettingsPocoWithAllPropertyTypes.Boolean)}" &
                 e.Type == OrganizationSettingType.Boolean);
         }
     }
