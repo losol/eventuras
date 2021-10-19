@@ -17,6 +17,7 @@ COPY ./src/Eventuras.Services.SendGrid/*.csproj ./src/Eventuras.Services.SendGri
 COPY ./src/Eventuras.Services.Smtp/*.csproj ./src/Eventuras.Services.Smtp/
 COPY ./src/Eventuras.Services.Stripe/*.csproj ./src/Eventuras.Services.Stripe/
 COPY ./src/Eventuras.Services.TalentLms/*.csproj ./src/Eventuras.Services.TalentLms/
+COPY ./src/Eventuras.Services.Twilio/*.csproj ./src/Eventuras.Services.Twilio/
 COPY ./src/Eventuras.Services.Zoom/*.csproj ./src/Eventuras.Services.Zoom/
 COPY ./src/Eventuras.Infrastructure/*.csproj ./src/Eventuras.Infrastructure/
 COPY ./src/Eventuras.Domain/*.csproj ./src/Eventuras.Domain/

@@ -38,6 +38,7 @@
     <ProjectReference Include="..\Eventuras.Services.Smtp\Eventuras.Services.Smtp.csproj" />
     <ProjectReference Include="..\Eventuras.Services.Stripe\Eventuras.Services.Stripe.csproj" />
     <ProjectReference Include="..\Eventuras.Services.TalentLms\Eventuras.Services.TalentLms.csproj" />
+    <ProjectReference Include="..\Eventuras.Services.Twilio\Eventuras.Services.Twilio.csproj" />
     <ProjectReference Include="..\Eventuras.Services.Zoom\Eventuras.Services.Zoom.csproj" />
     <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj" />
     <ProjectReference Include="..\Eventuras.Infrastructure\Eventuras.Infrastructure.csproj" />

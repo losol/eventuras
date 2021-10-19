@@ -49,6 +49,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventuras.Services.SendGrid
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventuras.Services.Smtp", "src\Eventuras.Services.Smtp\Eventuras.Services.Smtp.csproj", "{C5EF41F1-0631-470F-8B88-71D87D68B853}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventuras.Services.Twilio", "src\Eventuras.Services.Twilio\Eventuras.Services.Twilio.csproj", "{8DEB813B-1AF5-479E-9227-0932F53F7047}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -311,6 +313,18 @@ Global
 		{C5EF41F1-0631-470F-8B88-71D87D68B853}.Release|x64.Build.0 = Release|Any CPU
 		{C5EF41F1-0631-470F-8B88-71D87D68B853}.Release|x86.ActiveCfg = Release|Any CPU
 		{C5EF41F1-0631-470F-8B88-71D87D68B853}.Release|x86.Build.0 = Release|Any CPU
+		{8DEB813B-1AF5-479E-9227-0932F53F7047}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DEB813B-1AF5-479E-9227-0932F53F7047}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DEB813B-1AF5-479E-9227-0932F53F7047}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8DEB813B-1AF5-479E-9227-0932F53F7047}.Debug|x64.Build.0 = Debug|Any CPU
+		{8DEB813B-1AF5-479E-9227-0932F53F7047}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8DEB813B-1AF5-479E-9227-0932F53F7047}.Debug|x86.Build.0 = Debug|Any CPU
+		{8DEB813B-1AF5-479E-9227-0932F53F7047}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DEB813B-1AF5-479E-9227-0932F53F7047}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DEB813B-1AF5-479E-9227-0932F53F7047}.Release|x64.ActiveCfg = Release|Any CPU
+		{8DEB813B-1AF5-479E-9227-0932F53F7047}.Release|x64.Build.0 = Release|Any CPU
+		{8DEB813B-1AF5-479E-9227-0932F53F7047}.Release|x86.ActiveCfg = Release|Any CPU
+		{8DEB813B-1AF5-479E-9227-0932F53F7047}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -337,6 +351,7 @@ Global
 		{C7246369-B72F-4C6E-951A-63E86676E1ED} = {DBDA05E0-4065-4C83-8C2B-29C1A77BFA98}
 		{4C9A2C86-6649-48D8-8335-F7BC3E12C9A3} = {B280334D-A924-4F2E-9AF3-BA7566335FB0}
 		{C5EF41F1-0631-470F-8B88-71D87D68B853} = {B280334D-A924-4F2E-9AF3-BA7566335FB0}
+		{8DEB813B-1AF5-479E-9227-0932F53F7047} = {B280334D-A924-4F2E-9AF3-BA7566335FB0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {73E41161-D239-4EB6-8C90-A0FEA88D4E7C}

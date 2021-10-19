@@ -6,9 +6,7 @@ namespace Eventuras.Services.SendGrid
     {
         public void RegisterSettings(IOrganizationSettingsRegistry registry)
         {
-            registry
-                .RegisterSettings<OrganizationSendGridSettings>(
-                    SendGridConstants.SettingsSectionName);
+            registry.RegisterSettings<OrganizationSendGridSettings>();
         }
     }
 }

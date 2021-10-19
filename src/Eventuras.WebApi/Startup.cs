@@ -73,7 +73,7 @@ namespace Eventuras.WebApi
             services.ConfigureDbInitializationStrategy(Configuration, _env);
             services.ConfigureAuthorizationPolicies(Configuration);
             services.AddEmailServices();
-            services.AddSmsServices(AppSettings.SmsProvider, Configuration);
+            services.AddSmsServices();
             services.AddInvoicingServices(Configuration, Features);
             services.AddApplicationServices(Configuration);
             services.AddFeatureManagement();

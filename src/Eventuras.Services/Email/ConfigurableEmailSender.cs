@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Losol.Communication.Email;
 using Losol.Communication.HealthCheck.Abstractions;
-using Microsoft.Extensions.Logging;
 
 namespace Eventuras.Services.Email
 {
@@ -22,17 +21,11 @@ namespace Eventuras.Services.Email
     internal class ConfigurableEmailSender : IEmailSender
     {
         private readonly IConfigurableEmailSenderComponent[] _components;
-        private readonly ILogger<ConfigurableEmailSender> _logger;
 
-        public ConfigurableEmailSender(
-            IEnumerable<IConfigurableEmailSenderComponent> components,
-            ILogger<ConfigurableEmailSender> logger)
+        public ConfigurableEmailSender(IEnumerable<IConfigurableEmailSenderComponent> components)
         {
             _components = components?.ToArray() ?? throw
                 new ArgumentNullException(nameof(components));
-
-            _logger = logger ?? throw
-                new ArgumentNullException(nameof(logger));
         }
 
         public async Task<HealthCheckStatus> CheckHealthAsync(CancellationToken cancellationToken)

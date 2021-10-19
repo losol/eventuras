@@ -7,9 +7,11 @@ using Eventuras.Services.DbInitializers;
 using Eventuras.Services.Email;
 using Eventuras.Services.PowerOffice;
 using Eventuras.Services.SendGrid;
+using Eventuras.Services.Sms;
 using Eventuras.Services.Smtp;
 using Eventuras.Services.Stripe;
 using Eventuras.Services.TalentLms;
+using Eventuras.Services.Twilio;
 using Eventuras.Services.Zoom;
 using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Config;
@@ -103,20 +105,10 @@ namespace Eventuras.WebApi.Extensions
             services.AddConfigurableSendGridServices();
         }
 
-        public static void AddSmsServices(
-            this IServiceCollection services,
-            SmsProvider provider,
-            IConfiguration config)
+        public static void AddSmsServices(this IServiceCollection services)
         {
-            switch (provider)
-            {
-                case SmsProvider.Twilio:
-                    services.AddTwilioSmsServices(config.GetSection("Twilio"));
-                    break;
-                case SmsProvider.Mock:
-                    services.AddMockSmsServices();
-                    break;
-            }
+            services.AddConfigurableSmsServices();
+            services.AddConfigurableTwilioServices();
         }
 
         public static void AddInvoicingServices(

@@ -1,11 +1,13 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Eventuras.Services.Organizations.Settings;
 using Losol.Communication.Email.Smtp;
 
 namespace Eventuras.Services.Smtp
 {
-    [OrganizationSmtpSettingsValidation]
-    internal class OrganizationSmtpSettings
+    [DisplayName("SMTP")]
+    [ConfigurableSettingsValidation]
+    internal class OrganizationSmtpSettings : IConfigurableSettings
     {
         [DisplayName("SMTP enabled")] public bool Enabled { get; set; }
         [DisplayName("SMTP host")] public string Host { get; set; }

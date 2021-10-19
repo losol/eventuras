@@ -71,7 +71,7 @@ namespace Eventuras
 
             services.AddSiteConfig(Configuration);
             services.AddEmailServices();
-            services.AddSmsServices(AppSettings.SmsProvider, Configuration);
+            services.AddSmsServices();
             services.AddInvoicingServices(AppSettings, Configuration);
             services.AddApplicationServices(Configuration);
             services.AddAntiforgery();

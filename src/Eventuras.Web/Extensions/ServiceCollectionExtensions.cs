@@ -35,8 +35,10 @@ using Eventuras.Services.Google.RecaptchaV3;
 using Eventuras.Services.Organizations.Settings;
 using Eventuras.Services.PowerOffice;
 using Eventuras.Services.SendGrid;
+using Eventuras.Services.Sms;
 using Eventuras.Services.Smtp;
 using Eventuras.Services.Stripe;
+using Eventuras.Services.Twilio;
 using Eventuras.Services.Zoom;
 using Losol.Communication.HealthCheck.Abstractions;
 using Losol.Communication.HealthCheck.Email;
@@ -175,20 +177,10 @@ namespace Eventuras.Web.Extensions
             services.AddTransient<RegistrationEmailSender>();
         }
 
-        public static void AddSmsServices(
-            this IServiceCollection services,
-            SmsProvider provider,
-            IConfiguration config)
+        public static void AddSmsServices(this IServiceCollection services)
         {
-            switch (provider)
-            {
-                case SmsProvider.Twilio:
-                    services.AddTwilioSmsServices(config.GetSection("Twilio"));
-                    break;
-                case SmsProvider.Mock:
-                    services.AddMockSmsServices();
-                    break;
-            }
+            services.AddConfigurableSmsServices();
+            services.AddConfigurableTwilioServices();
         }
 
         public static void AddInvoicingServices(

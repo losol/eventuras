@@ -1,10 +1,13 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Eventuras.Services.Organizations.Settings;
 using Losol.Communication.Email.SendGrid;
 
 namespace Eventuras.Services.SendGrid
 {
-    internal class OrganizationSendGridSettings
+    [DisplayName("SendGrid")]
+    [ConfigurableSettingsValidation]
+    internal class OrganizationSendGridSettings : IConfigurableSettings
     {
         [DisplayName("SendGrid enabled")] public bool Enabled { get; set; }
 

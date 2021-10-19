@@ -6,7 +6,7 @@ namespace Eventuras.Services.Smtp
     {
         public void RegisterSettings(IOrganizationSettingsRegistry registry)
         {
-            registry.RegisterSettings<OrganizationSmtpSettings>(SmtpConstants.SettingsSectionName);
+            registry.RegisterSettings<OrganizationSmtpSettings>();
         }
     }
 }
