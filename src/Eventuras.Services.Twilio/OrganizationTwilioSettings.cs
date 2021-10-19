@@ -6,7 +6,6 @@ using Losol.Communication.Sms.Twilio;
 namespace Eventuras.Services.Twilio
 {
     [DisplayName("Twilio")]
-    [ConfigurableSettingsValidation]
     internal class OrganizationTwilioSettings : IConfigurableSettings
     {
         [DisplayName("Twilio enabled")] public bool Enabled { get; set; }

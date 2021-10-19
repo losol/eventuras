@@ -6,7 +6,6 @@ using Losol.Communication.Email.SendGrid;
 namespace Eventuras.Services.SendGrid
 {
     [DisplayName("SendGrid")]
-    [ConfigurableSettingsValidation]
     internal class OrganizationSendGridSettings : IConfigurableSettings
     {
         [DisplayName("SendGrid enabled")] public bool Enabled { get; set; }

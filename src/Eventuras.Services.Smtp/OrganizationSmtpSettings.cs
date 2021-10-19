@@ -6,7 +6,6 @@ using Losol.Communication.Email.Smtp;
 namespace Eventuras.Services.Smtp
 {
     [DisplayName("SMTP")]
-    [ConfigurableSettingsValidation]
     internal class OrganizationSmtpSettings : IConfigurableSettings
     {
         [DisplayName("SMTP enabled")] public bool Enabled { get; set; }

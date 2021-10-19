@@ -123,6 +123,29 @@ namespace Eventuras.Services.Tests.Organizations.Settings
 
             Assert.Equal("abc", poco.Something);
         }
+
+        [Fact]
+        public async Task Should_Not_Validate_Disabled_Setting()
+        {
+            var poco = await _service
+                .ReadOrganizationSettingsAsync<ConfigurableSettingsPocoWithSingleRequiredField>();
+
+            Assert.Null(poco.Setting);
+        }
+
+        [Fact]
+        public async Task Should_Validate_Enabled_Setting()
+        {
+            _settings.Add(new OrganizationSetting
+            {
+                Name =
+                    $"{nameof(ConfigurableSettingsPocoWithSingleRequiredField)}.{nameof(ConfigurableSettingsPocoWithSingleRequiredField.Enabled)}",
+                Value = "true"
+            });
+
+            await Assert.ThrowsAsync<ValidationException>(() => _service
+                .ReadOrganizationSettingsAsync<ConfigurableSettingsPocoWithSingleRequiredField>());
+        }
     }
 
     public class SettingsPocoWithNoFieldsMapped
@@ -147,6 +170,13 @@ namespace Eventuras.Services.Tests.Organizations.Settings
     {
         [OrgSettingKey(TestSettingsConstants.SettingsKey)]
         public int Setting { get; set; }
+    }
+
+    public class ConfigurableSettingsPocoWithSingleRequiredField : IConfigurableSettings
+    {
+        [Required] public string Setting { get; set; }
+
+        public bool Enabled { get; set; }
     }
 
     public static class TestSettingsConstants

@@ -63,9 +63,12 @@ namespace Eventuras.Services.Organizations.Settings
                 }
             }
 
-            Validator.ValidateObject(poco,
-                new ValidationContext(poco, serviceProvider: null, items: null),
-                true);
+            if (poco is not IConfigurableSettings { Enabled: false })
+            {
+                Validator.ValidateObject(poco,
+                    new ValidationContext(poco, serviceProvider: null, items: null),
+                    true);
+            }
 
             return poco;
         }
