@@ -175,7 +175,11 @@ namespace Eventuras.Web.Controllers.Api.V0
                 result = "Sendte SMS. Men fikk noen feil: " + Environment.NewLine + errors;
             }
 
-            await _messageLog.AddAsync(vm.EventInfoId, string.Join(";", vm.To), vm.Text, "SMS", "Twilio", result);
+            if (vm.EventInfoId.HasValue)
+            {
+                await _messageLog.AddAsync(vm.EventInfoId.Value,
+                    string.Join(";", vm.To), vm.Text, "SMS", "Twilio", result);
+            }
 
             return Ok(result.Replace(Environment.NewLine, "<br />"));
         }
@@ -198,7 +202,7 @@ namespace Eventuras.Web.Controllers.Api.V0
 
             [Required]
             public string Text { get; set; }
-            public int EventInfoId { get; set; }
+            public int? EventInfoId { get; set; }
         }
 
         public class EmailVM
