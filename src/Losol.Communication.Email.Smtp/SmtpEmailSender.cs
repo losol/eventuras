@@ -35,7 +35,7 @@ namespace Losol.Communication.Email.Smtp
 
             mimeMessage.From.Add(emailModel.From != null
                 ? new MailboxAddress(Encoding.UTF8, emailModel.From.Name, emailModel.From.Email)
-                : new MailboxAddress(_smtpConfig.From));
+                : new MailboxAddress(Encoding.UTF8, _smtpConfig.FromName, _smtpConfig.FromEmail));
 
             mimeMessage.To.AddRange(emailModel.Recipients.Select(a => new MailboxAddress(Encoding.UTF8, a.Name, a.Email)));
 
