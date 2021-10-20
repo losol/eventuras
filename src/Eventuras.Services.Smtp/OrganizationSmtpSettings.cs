@@ -17,7 +17,12 @@ namespace Eventuras.Services.Smtp
 
         [DisplayName("SMTP username")] public string User { get; set; }
         [DisplayName("SMTP password")] public string Password { get; set; }
-        [EmailAddress] [DisplayName("From:")] public string From { get; set; }
+
+        [EmailAddress]
+        [DisplayName("From: address")]
+        public string FromAddress { get; set; }
+
+        [DisplayName("From: name")] public string FromName { get; set; }
 
         public SmtpConfig ToSmtpConfig()
         {
@@ -27,7 +32,8 @@ namespace Eventuras.Services.Smtp
                 Port = Port,
                 Username = User,
                 Password = Password,
-                From = From
+                From = FromAddress
+                // TODO: release new Losol.Communications version, use FromName here
             };
         }
     }

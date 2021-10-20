@@ -11,10 +11,6 @@ namespace Eventuras.Services.SendGrid
         [DisplayName("SendGrid enabled")] public bool Enabled { get; set; }
 
         [Required]
-        [DisplayName("SendGrid user")]
-        public string Username { get; set; }
-
-        [Required]
         [DisplayName("SendGrid key")]
         public string Key { get; set; }
 
@@ -29,7 +25,6 @@ namespace Eventuras.Services.SendGrid
         {
             return new SendGridConfig
             {
-                User = Username,
                 Key = Key,
                 EmailAddress = FromAddress,
                 Name = FromName
