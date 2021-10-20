@@ -1,4 +1,5 @@
 ﻿using Eventuras.Services.Organizations.Settings;
+using Eventuras.Services.Sms;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Eventuras.Services.Twilio
@@ -9,6 +10,9 @@ namespace Eventuras.Services.Twilio
         {
             services.AddTransient<IOrganizationSettingsRegistryComponent,
                 TwilioSettingsRegistryComponent>();
+
+            services.AddTransient<IConfigurableSmsSenderComponent,
+                TwilioSmsSenderComponent>();
 
             return services;
         }

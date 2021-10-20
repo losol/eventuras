@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Eventuras.Web.Controllers.Api.V0
 {
@@ -22,16 +23,19 @@ namespace Eventuras.Web.Controllers.Api.V0
         private readonly ISmsSender _smsSender;
         private readonly IRegistrationService _registrationService;
         private readonly IMessageLogService _messageLog;
+        private readonly ILogger<MessagingController> _logger;
 
         public MessagingController(
             StandardEmailSender emailSender,
             ISmsSender smsSender,
             IRegistrationService registrationService,
             IMessageLogService messageLog,
-            RegistrationEmailSender registrationEmailSender)
+            RegistrationEmailSender registrationEmailSender, 
+            ILogger<MessagingController> logger)
         {
             _emailSender = emailSender;
             _registrationEmailSender = registrationEmailSender;
+            _logger = logger;
             _smsSender = smsSender;
             _messageLog = messageLog;
             _registrationService = registrationService;
@@ -163,6 +167,7 @@ namespace Eventuras.Web.Controllers.Api.V0
             }
             catch (Exception exc)
             {
+                _logger.LogError(exc, "Error occurred during SMS sending");
                 errors += exc.Message + Environment.NewLine;
             }
             var result = "";
