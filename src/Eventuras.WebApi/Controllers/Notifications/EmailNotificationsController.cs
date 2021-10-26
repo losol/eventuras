@@ -1,167 +1,133 @@
-using Eventuras.Domain;
-using Eventuras.Services.Notifications;
-using Eventuras.Services.Registrations;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Eventuras.Services;
-using Microsoft.Extensions.Logging;
+using Eventuras.Domain;
+using Eventuras.Services.Events.Products;
+using Eventuras.Services.Notifications;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using static Eventuras.Domain.Registration;
-using System.Text.Json.Serialization;
 
 namespace Eventuras.WebApi.Controllers.Notifications
 {
-    // TODO: Use "notifications:send" auth Scope?
     [ApiVersion("3")]
     [Authorize(Policy = Constants.Auth.AdministratorRole)]
     [Route("v{version:apiVersion}/notifications/email")]
     [ApiController]
-
     public class EmailNotificationsController : ControllerBase
     {
-        private readonly IRegistrationRetrievalService _registrationRetrievalService;
+        private readonly INotificationManagementService _notificationManagementService;
         private readonly IEmailNotificationService _emailNotificationService;
-        private readonly ILogger<EmailNotificationsController> _logger;
+        private readonly IProductRetrievalService _productRetrievalService;
 
         public EmailNotificationsController(
-            IRegistrationRetrievalService registrationRetrievalService,
+            INotificationManagementService notificationManagementService,
             IEmailNotificationService emailNotificationService,
-            ILogger<EmailNotificationsController> logger)
+            IProductRetrievalService productRetrievalService)
         {
-            _registrationRetrievalService = registrationRetrievalService ?? throw
-                new ArgumentNullException(nameof(registrationRetrievalService));
-
             _emailNotificationService = emailNotificationService ?? throw
                 new ArgumentNullException(nameof(emailNotificationService));
 
-            _logger = logger ?? throw
-                new ArgumentNullException(nameof(logger));
+            _notificationManagementService = notificationManagementService ?? throw
+                new ArgumentNullException(nameof(notificationManagementService));
+
+            _productRetrievalService = productRetrievalService ?? throw
+                new ArgumentNullException(nameof(productRetrievalService));
         }
 
         [HttpPost]
-        public async Task<ActionResult<NotificationResponseDto>> SendEmail(EmailNotificationDto dto, CancellationToken cancellationToken)
+        public async Task<ActionResult<NotificationResponseDto>> SendEmail(EmailNotificationDto dto,
+            CancellationToken cancellationToken)
         {
-            var email = new EmailNotification
-            {
-                Subject = dto.Subject,
-                BodyMarkdown = dto.BodyMarkdown
-            };
+            var eventFilter = dto.EventParticipants;
+            var eventFilterSet = eventFilter?.IsDefined == true;
 
-            if (dto.Recipients?.Any() != true && dto.EventParticipants?.IsDefined != true)
+            if (dto.Recipients?.Any() != true && !eventFilterSet)
             {
-                return BadRequest("Either recipient list of eventparticipant filter must be specified");
+                return BadRequest("Either recipient list of event participant filter must be specified");
             }
 
-            if (dto.Recipients?.Any() == true && dto.EventParticipants?.IsDefined == true)
+            if (dto.Recipients?.Any() == true && eventFilterSet)
             {
-                return BadRequest("Please provider either of recipient list or eventparticipants.");
+                return BadRequest("Please provider either of recipient list or event participants.");
             }
 
-            var recipients = dto.Recipients ?? Array.Empty<string>();
+            EmailNotification emailNotification;
 
-            if (dto.EventParticipants?.IsDefined == true)
+            if (eventFilterSet)
             {
-                // Default status if not provided: Verified, attended and finished
-                dto.EventParticipants.RegistrationStatuses ??= new[] {
-                        RegistrationStatus.Verified,
-                        RegistrationStatus.Attended,
-                        RegistrationStatus.Finished
-                        };
-
-                // Default registration type is participants
-                dto.EventParticipants.RegistrationTypes ??= new[] {
-                        RegistrationType.Participant
-                        };
-
-                var reader = new PageReader<Registration>(async (offset, limit, token) =>
-                        await _registrationRetrievalService.ListRegistrationsAsync(
-                            new RegistrationListRequest
-                            {
-                                Limit = limit,
-                                Offset = offset,
-                                Filter = new RegistrationFilter
-                                {
-                                    EventInfoId = dto.EventParticipants.EventId,
-                                    ActiveUsersOnly = true,
-                                    HavingStatuses = dto.EventParticipants.RegistrationStatuses,
-                                    HavingTypes = dto.EventParticipants.RegistrationTypes
-                                }
-                            },
-                            new RegistrationRetrievalOptions
-                            {
-                                LoadUser = true
-                            }, token));
-
-                var recipientList = new List<string>();
-
-                while (await reader.HasMoreAsync(cancellationToken))
+                if (eventFilter.ProductId.HasValue)
                 {
-                    recipientList.AddRange(from registration in await reader
-                            .ReadNextAsync(cancellationToken)
-                                           let userName = registration.User?.Name
-                                           let userEmail = registration.User?.Email
-                                           where !string.IsNullOrEmpty(userEmail)
-                                           select $"{userName} <{userEmail}>");
+                    var product =
+                        await _productRetrievalService
+                            .GetProductByIdAsync(eventFilter.ProductId.Value,
+                                cancellationToken: cancellationToken);
+
+                    if (eventFilter.EventId.HasValue)
+                    {
+                        if (product.EventInfoId != eventFilter.EventId.Value)
+                        {
+                            return BadRequest(
+                                $"Product {product.ProductId} doesn't belong to event {eventFilter.EventId}");
+                        }
+                    }
+                    else
+                    {
+                        eventFilter.EventId = product.EventInfoId;
+                    }
                 }
 
-                recipients = recipientList
-                    .Distinct()
-                    .ToArray();
-            }
-
-            if (recipients.Any())
-            {
-                await _emailNotificationService.SendEmailToRecipientsAsync(email, recipients, cancellationToken);
+                emailNotification = await _notificationManagementService
+                    .CreateEmailNotificationForEventAsync(
+                        dto.Subject,
+                        dto.BodyMarkdown,
+                        eventFilter.EventId.Value,
+                        eventFilter.ProductId,
+                        eventFilter.RegistrationStatuses,
+                        eventFilter.RegistrationTypes);
             }
             else
             {
-                _logger.LogWarning("No recipients were selected by the notification filter criteria");
+                emailNotification = await _notificationManagementService
+                    .CreateEmailNotificationAsync(
+                        dto.Subject,
+                        dto.BodyMarkdown,
+                        dto.Recipients);
             }
 
-            return Ok(new NotificationResponseDto
-            {
-                TotalRecipients = recipients.Length
-            });
+            // send notification right away, not queueing it or something.
+            // TODO: use queue for messages
+
+            await _emailNotificationService
+                .SendEmailNotificationAsync(emailNotification, cancellationToken);
+
+            return Ok(new NotificationResponseDto(emailNotification));
         }
     }
 
     public class EmailNotificationDto
     {
-        [EmailRecipientList]
-        public string[] Recipients { get; set; }
+        [EmailRecipientList] public string[] Recipients { get; set; }
 
-        public EventParticipantsDto EventParticipants { get; set; }
+        public EventParticipantsFilterDto EventParticipants { get; set; }
 
-        [Required]
-        [MinLength(3)]
-        public string Subject { get; set; }
+        [Required] [MinLength(3)] public string Subject { get; set; }
 
-        [Required]
-        [MinLength(10)]
-        public string BodyMarkdown { get; set; }
-
-
+        [Required] [MinLength(10)] public string BodyMarkdown { get; set; }
     }
 
-    public class EventParticipantsDto
+    public class EventParticipantsFilterDto
     {
-        [Range(1, int.MaxValue)]
-        public int? EventId { get; set; }
+        [Range(1, int.MaxValue)] public int? EventId { get; set; }
 
-        public Registration.RegistrationStatus[] RegistrationStatuses { get; set; }
+        [Range(1, int.MaxValue)] public int? ProductId { get; set; }
 
-        public Registration.RegistrationType[] RegistrationTypes { get; set; }
+        public RegistrationStatus[] RegistrationStatuses { get; set; }
 
-        public bool IsDefined => EventId.HasValue;
-    }
+        public RegistrationType[] RegistrationTypes { get; set; }
 
-    public class NotificationResponseDto
-    {
-        public int TotalRecipients { get; set; }
+        public bool IsDefined => EventId.HasValue || ProductId.HasValue;
     }
 }

@@ -24,6 +24,10 @@ namespace Eventuras.Infrastructure
         public DbSet<OrganizationHostname> OrganizationHostnames { get; set; }
         public DbSet<Certificate> Certificates { get; set; }
         public DbSet<MessageLog> MessageLogs { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<NotificationRecipient> NotificationRecipients { get; set; }
+        public DbSet<EmailNotification> EmailNotifications { get; set; }
+        public DbSet<SmsNotification> SmsNotifications { get; set; }
         public DbSet<ExternalAccount> ExternalAccounts { get; set; }
         public DbSet<ExternalEvent> ExternalEvents { get; set; }
         public DbSet<ExternalRegistration> ExternalRegistrations { get; set; }
@@ -81,6 +85,9 @@ namespace Eventuras.Infrastructure
                     j => j.HasOne(m => m.Collection)
                         .WithMany(c => c.EventMappings)
                         .OnDelete(DeleteBehavior.Cascade));
+
+            builder.Entity<Notification>()
+                .HasDiscriminator();
         }
 
         public void DetachAllEntities()

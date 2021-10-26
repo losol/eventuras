@@ -6,6 +6,8 @@ namespace Eventuras.Services.Registrations
     {
         public int? EventInfoId { get; set; }
 
+        public int[] ProductIds { get; set; }
+
         public string UserId { get; set; }
 
         public bool VerifiedOnly { get; set; }

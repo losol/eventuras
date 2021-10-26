@@ -1,0 +1,79 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Eventuras.Domain
+{
+    public abstract class Notification
+    {
+        [Required]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int NotificationId { get; set; }
+
+        public int? OrganizationId { get; set; }
+
+        public int? EventInfoId { get; set; }
+
+        public int? ProductId { get; set; }
+
+        [Required] public string CreatedByUserId { get; set; }
+
+        /// <summary>
+        /// Full message body.
+        /// </summary>
+        [Required]
+        public string Message { get; private set; }
+
+        public DateTime Created { get; private set; }
+
+        public DateTime StatusUpdated { get; private set; }
+
+        private NotificationStatus _status = NotificationStatus.New;
+
+        public NotificationStatus Status
+        {
+            get => _status;
+            set
+            {
+                _status = value;
+                StatusUpdated = DateTime.Now;
+            }
+        }
+
+        [ForeignKey(nameof(OrganizationId))] public Organization Organization { get; set; }
+
+        [ForeignKey(nameof(EventInfoId))] public EventInfo EventInfo { get; set; }
+
+        [ForeignKey(nameof(ProductId))] public Product Product { get; set; }
+
+        [ForeignKey(nameof(CreatedByUserId))] public ApplicationUser CreatedByUser { get; set; }
+
+        public IReadOnlyList<NotificationRecipient> Recipients { get; set; }
+
+        protected Notification()
+        {
+        }
+
+        protected Notification(string message)
+        {
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                throw new ArgumentException($"{nameof(message)} must not be empty");
+            }
+
+            Message = message;
+            Created = DateTime.Now;
+        }
+    }
+
+    public enum NotificationStatus
+    {
+        New = 1,
+        Queued,
+        Started,
+        Cancelled,
+        Failed,
+        Sent
+    }
+}

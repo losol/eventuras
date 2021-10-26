@@ -7,6 +7,7 @@ namespace Eventuras.Services.Notifications
         public static IServiceCollection AddNotificationServices(this IServiceCollection services)
         {
             services.AddTransient<IEmailNotificationService, EmailNotificationService>();
+            services.AddTransient<INotificationManagementService, NotificationManagementService>();
             return services;
         }
     }
