@@ -9,6 +9,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
         internal const string NumberKey = "TEST_NUMBER";
         internal const string UrlKey = "TEST_URL";
         internal const string EmailKey = "TEST_EMAIL";
+        internal const string BooleanKey = "TEST_BOOL";
 
         public void RegisterSettings(IOrganizationSettingsRegistry registry)
         {
@@ -16,6 +17,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
             registry.RegisterSetting(NumberKey, Section, "Testing number", OrganizationSettingType.Number);
             registry.RegisterSetting(UrlKey, Section, "Testing URL", OrganizationSettingType.Url);
             registry.RegisterSetting(EmailKey, Section, "Testing email", OrganizationSettingType.Email);
+            registry.RegisterSetting(BooleanKey, Section, "Testing boolean", OrganizationSettingType.Boolean);
         }
     }
 }

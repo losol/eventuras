@@ -23,7 +23,7 @@ namespace Eventuras.WebApi.Tests
     public class CustomWebApiApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class
     {
-        public readonly Mock<IEmailSender> EmailSenderMock = new Mock<IEmailSender>();
+        public readonly Mock<IEmailSender> EmailSenderMock = new();
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -33,8 +33,6 @@ namespace Eventuras.WebApi.Tests
                 .ConfigureAppConfiguration(app => app
                     .AddInMemoryCollection(new Dictionary<string, string>
                     {
-                        {"AppSettings:EmailProvider", "Mock"},
-                        {"AppSettings:SmsProvider", "Mock"},
                         {"AppSettings:UsePowerOffice", "false"},
                         {"AppSettings:UseStripeInvoice", "false"},
                         {"SuperAdmin:Email", TestingConstants.SuperAdminEmail},

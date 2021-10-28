@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using Eventuras.Services;
+using Eventuras.Services.Email;
 using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Config;
 using Eventuras.WebApi.Extensions;
@@ -71,8 +72,8 @@ namespace Eventuras.WebApi
             services.ConfigureEF(Configuration, _env);
             services.ConfigureDbInitializationStrategy(Configuration, _env);
             services.ConfigureAuthorizationPolicies(Configuration);
-            services.AddEmailServices(AppSettings.EmailProvider, Configuration);
-            services.AddSmsServices(AppSettings.SmsProvider, Configuration);
+            services.AddEmailServices();
+            services.AddSmsServices();
             services.AddInvoicingServices(Configuration, Features);
             services.AddApplicationServices(Configuration);
             services.AddFeatureManagement();

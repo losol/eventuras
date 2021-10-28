@@ -243,6 +243,7 @@ font-style: italic;
   <ul>
   <li><a href="#addMemberToOrganization"><code><span class="http-method">put</span> /organizations/{id}/members</code></a></li>
   <li><a href="#addOrganizationMemberRole"><code><span class="http-method">post</span> /organizations/{id}/members/{memberId}/roles</code></a></li>
+  <li><a href="#batchUpdateOrganizationSettings"><code><span class="http-method">post</span> /organizations/{id}/settings</code></a></li>
   <li><a href="#createNewOrganization"><code><span class="http-method">post</span> /organizations</code></a></li>
   <li><a href="#deleteOrganization"><code><span class="http-method">delete</span> /organizations/{id}</code></a></li>
   <li><a href="#getOrganizationMemberRoles"><code><span class="http-method">get</span> /organizations/{id}/members/{memberId}/roles</code></a></li>
@@ -274,6 +275,7 @@ font-style: italic;
   </ul>
   <h4><a href="#Settings">Settings</a></h4>
   <ul>
+  <li><a href="#batchUpdateOrganizationSettings"><code><span class="http-method">post</span> /organizations/{id}/settings</code></a></li>
   <li><a href="#getOrganizationSettingsList"><code><span class="http-method">get</span> /organizations/{id}/settings</code></a></li>
   <li><a href="#updateOrganizationSettings"><code><span class="http-method">put</span> /organizations/{id}/settings</code></a></li>
   </ul>
@@ -2451,6 +2453,69 @@ or explicit email addresses.</div>
         <a href="#Error">Error</a>
   </div> <!-- method -->
   <hr/>
+  <div class="method"><a name="batchUpdateOrganizationSettings"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /organizations/{id}/settings</code></pre></div>
+    <div class="method-summary">Update organization settings in batch. (<span class="nickname">batchUpdateOrganizationSettings</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Organization ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">OrganizationSettingValueDto <a href="#OrganizationSettingValueDto">OrganizationSettingValueDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
   <div class="method"><a name="createNewOrganization"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
@@ -3859,6 +3924,69 @@ or set to <code>event</code> (default) to only return products visible within a 
   </div> <!-- method -->
   <hr/>
   <h1><a name="Settings">Settings</a></h1>
+  <div class="method"><a name="batchUpdateOrganizationSettings"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /organizations/{id}/settings</code></pre></div>
+    <div class="method-summary">Update organization settings in batch. (<span class="nickname">batchUpdateOrganizationSettings</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Organization ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">OrganizationSettingValueDto <a href="#OrganizationSettingValueDto">OrganizationSettingValueDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
   <div class="method"><a name="getOrganizationSettingsList"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>

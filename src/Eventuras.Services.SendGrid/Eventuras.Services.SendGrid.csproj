@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Losol.Communication.Email.SendGrid" Version="0.5.2" />
+        <PackageReference Include="PowerOfficeGoSdk" Version="2.22.0" />
+        <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
+    </ItemGroup>
+
+</Project>

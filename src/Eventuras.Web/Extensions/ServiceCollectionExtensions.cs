@@ -30,10 +30,15 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using System.Globalization;
 using System.Net.Http.Headers;
+using Eventuras.Services.Email;
 using Eventuras.Services.Google.RecaptchaV3;
 using Eventuras.Services.Organizations.Settings;
 using Eventuras.Services.PowerOffice;
+using Eventuras.Services.SendGrid;
+using Eventuras.Services.Sms;
+using Eventuras.Services.Smtp;
 using Eventuras.Services.Stripe;
+using Eventuras.Services.Twilio;
 using Eventuras.Services.Zoom;
 using Losol.Communication.HealthCheck.Abstractions;
 using Losol.Communication.HealthCheck.Email;
@@ -162,46 +167,20 @@ namespace Eventuras.Web.Extensions
 
         }
 
-        public static void AddEmailServices(this IServiceCollection services,
-            EmailProvider provider, IConfiguration Configuration)
+        public static void AddEmailServices(this IServiceCollection services)
         {
-            // Register the correct email provider depending on the config
-            switch (provider)
-            {
-                case EmailProvider.SendGrid:
-                    services.AddSendGridEmailServices(Configuration.GetSection("SendGrid"));
-                    break;
-                case EmailProvider.Smtp:
-                    services.AddSmtpEmailServices(Configuration.GetSection("Smtp"));
-                    break;
-                case EmailProvider.File:
-                    services.AddFileEmailServices(Configuration.GetSection("Files"));
-                    break;
-                case EmailProvider.Mock:
-                    services.AddMockEmailServices();
-                    break;
-            }
-
-            // Register email services
+            services.AddConfigurableEmailServices();
+            services.AddConfigurableSmtpServices();
+            services.AddConfigurableSendGridServices();
             services.AddTransient<StandardEmailSender>();
             services.AddTransient<MagicLinkSender>();
             services.AddTransient<RegistrationEmailSender>();
         }
 
-        public static void AddSmsServices(
-            this IServiceCollection services,
-            SmsProvider provider,
-            IConfiguration config)
+        public static void AddSmsServices(this IServiceCollection services)
         {
-            switch (provider)
-            {
-                case SmsProvider.Twilio:
-                    services.AddTwilioSmsServices(config.GetSection("Twilio"));
-                    break;
-                case SmsProvider.Mock:
-                    services.AddMockSmsServices();
-                    break;
-            }
+            services.AddConfigurableSmsServices();
+            services.AddConfigurableTwilioServices();
         }
 
         public static void AddInvoicingServices(

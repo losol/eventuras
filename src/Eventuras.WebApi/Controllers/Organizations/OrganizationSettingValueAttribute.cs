@@ -47,6 +47,15 @@ namespace Eventuras.WebApi.Controllers.Organizations
                             }
 
                             break;
+                        
+                        case OrganizationSettingType.Boolean:
+                            if (!bool.TryParse(dto.Value, out _))
+                            {
+                                return new ValidationResult(
+                                    $"Invalid value for {dto.Name}: {dto.Value} (boolean true/false expected)");
+                            }
+
+                            break;
                     }
                 }
             }

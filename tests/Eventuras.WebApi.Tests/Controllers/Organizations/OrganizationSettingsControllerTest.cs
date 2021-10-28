@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Eventuras.Domain;
@@ -173,7 +174,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
             var response = await _factory.CreateClient()
                 .AuthenticatedAsAdmin()
                 .PutAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
-                    new {name = OrgSettingsTestRegistryComponent.StringKey});
+                    new { name = OrgSettingsTestRegistryComponent.StringKey });
             response.CheckForbidden();
         }
 
@@ -184,7 +185,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
             var response = await _factory.CreateClient()
                 .AuthenticatedAsSuperAdmin()
                 .PutAsync("/v3/organizations/1111/settings",
-                    new {name = "any"});
+                    new { name = "any" });
             response.CheckNotFound();
         }
 
@@ -196,7 +197,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
             var response = await _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin()
                 .PutAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
-                    new {name = "any"});
+                    new { name = "any" });
             response.CheckNotFound();
         }
 
@@ -204,12 +205,16 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
         {
             return new[]
             {
-                new object[] {OrgSettingsTestRegistryComponent.NumberKey, "abc"},
-                new object[] {OrgSettingsTestRegistryComponent.NumberKey, "#$%"},
-                new object[] {OrgSettingsTestRegistryComponent.UrlKey, "anything"},
-                new object[] {OrgSettingsTestRegistryComponent.UrlKey, "url.com"},
-                new object[] {OrgSettingsTestRegistryComponent.EmailKey, "anything"},
-                new object[] {OrgSettingsTestRegistryComponent.EmailKey, "http://url.com"}
+                new object[] { OrgSettingsTestRegistryComponent.NumberKey, "abc" },
+                new object[] { OrgSettingsTestRegistryComponent.NumberKey, "#$%" },
+                new object[] { OrgSettingsTestRegistryComponent.UrlKey, "anything" },
+                new object[] { OrgSettingsTestRegistryComponent.UrlKey, "url.com" },
+                new object[] { OrgSettingsTestRegistryComponent.EmailKey, "anything" },
+                new object[] { OrgSettingsTestRegistryComponent.EmailKey, "http://url.com" },
+                new object[] { OrgSettingsTestRegistryComponent.BooleanKey, "anything" },
+                new object[] { OrgSettingsTestRegistryComponent.BooleanKey, "1" },
+                new object[] { OrgSettingsTestRegistryComponent.BooleanKey, "yes" },
+                new object[] { OrgSettingsTestRegistryComponent.BooleanKey, "no" }
             };
         }
 
@@ -222,7 +227,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
             var response = await _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin()
                 .PutAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
-                    new {name, value});
+                    new { name, value });
             response.CheckBadRequest();
         }
 
@@ -230,19 +235,21 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
         {
             return new[]
             {
-                new object[] {OrgSettingsTestRegistryComponent.StringKey, "anything"},
-                new object[] {OrgSettingsTestRegistryComponent.StringKey, "0"},
-                new object[] {OrgSettingsTestRegistryComponent.StringKey, "1.1"},
-                new object[] {OrgSettingsTestRegistryComponent.NumberKey, "0"},
-                new object[] {OrgSettingsTestRegistryComponent.NumberKey, "-1"},
-                new object[] {OrgSettingsTestRegistryComponent.NumberKey, "-1.13"},
-                new object[] {OrgSettingsTestRegistryComponent.NumberKey, "0.13"},
-                new object[] {OrgSettingsTestRegistryComponent.NumberKey, "1.13"},
-                new object[] {OrgSettingsTestRegistryComponent.UrlKey, "http://url.com"},
-                new object[] {OrgSettingsTestRegistryComponent.UrlKey, "https://url.com"},
-                new object[] {OrgSettingsTestRegistryComponent.UrlKey, "any://url.com"},
-                new object[] {OrgSettingsTestRegistryComponent.UrlKey, "http://user:pass@url.com"},
-                new object[] {OrgSettingsTestRegistryComponent.EmailKey, "any@email.com"}
+                new object[] { OrgSettingsTestRegistryComponent.StringKey, "anything" },
+                new object[] { OrgSettingsTestRegistryComponent.StringKey, "0" },
+                new object[] { OrgSettingsTestRegistryComponent.StringKey, "1.1" },
+                new object[] { OrgSettingsTestRegistryComponent.NumberKey, "0" },
+                new object[] { OrgSettingsTestRegistryComponent.NumberKey, "-1" },
+                new object[] { OrgSettingsTestRegistryComponent.NumberKey, "-1.13" },
+                new object[] { OrgSettingsTestRegistryComponent.NumberKey, "0.13" },
+                new object[] { OrgSettingsTestRegistryComponent.NumberKey, "1.13" },
+                new object[] { OrgSettingsTestRegistryComponent.UrlKey, "http://url.com" },
+                new object[] { OrgSettingsTestRegistryComponent.UrlKey, "https://url.com" },
+                new object[] { OrgSettingsTestRegistryComponent.UrlKey, "any://url.com" },
+                new object[] { OrgSettingsTestRegistryComponent.UrlKey, "http://user:pass@url.com" },
+                new object[] { OrgSettingsTestRegistryComponent.EmailKey, "any@email.com" },
+                new object[] { OrgSettingsTestRegistryComponent.BooleanKey, "true" },
+                new object[] { OrgSettingsTestRegistryComponent.BooleanKey, "false" }
             };
         }
 
@@ -256,7 +263,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
             var response = await _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin()
                 .PutAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
-                    new {name, value});
+                    new { name, value });
 
             var t = await response.CheckOk().AsTokenAsync();
             Assert.NotEmpty(t);
@@ -282,7 +289,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
             var response = await _factory.CreateClient()
                 .AuthenticatedAs(admin.Entity, Roles.Admin)
                 .PutAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
-                    new {name = OrgSettingsTestRegistryComponent.StringKey, value = "any"});
+                    new { name = OrgSettingsTestRegistryComponent.StringKey, value = "any" });
 
             var t = await response.CheckOk().AsTokenAsync();
             Assert.NotEmpty(t);
@@ -301,7 +308,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
             var response = await _factory.CreateClient()
                 .Authenticated(role: role)
                 .PutAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
-                    new {name = OrgSettingsTestRegistryComponent.StringKey, value = "any"});
+                    new { name = OrgSettingsTestRegistryComponent.StringKey, value = "any" });
 
             var t = await response.CheckOk().AsTokenAsync();
             Assert.NotEmpty(t);
@@ -327,7 +334,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
 
             var response = await client
                 .PutAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
-                    new {name = OrgSettingsTestRegistryComponent.StringKey, value = "any"});
+                    new { name = OrgSettingsTestRegistryComponent.StringKey, value = "any" });
 
             response.CheckOk();
 
@@ -363,7 +370,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
 
             var response = await client
                 .PutAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
-                    new {name = OrgSettingsTestRegistryComponent.StringKey, value = "updated"});
+                    new { name = OrgSettingsTestRegistryComponent.StringKey, value = "updated" });
 
             response.CheckOk();
 
@@ -405,7 +412,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
 
             var response = await client
                 .PutAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
-                    new {name = OrgSettingsTestRegistryComponent.StringKey, value});
+                    new { name = OrgSettingsTestRegistryComponent.StringKey, value });
 
             response.CheckOk();
 
@@ -435,13 +442,234 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
 
             var response = await client
                 .PutAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
-                    new {name = OrgSettingsTestRegistryComponent.StringKey, value});
+                    new { name = OrgSettingsTestRegistryComponent.StringKey, value });
 
             response.CheckOk();
 
             Assert.False(await scope.Db.OrganizationSettings
                 .AsNoTracking()
                 .AnyAsync());
+        }
+
+        [Fact]
+        public async Task Batch_Update_Should_Require_Auth()
+        {
+            var response = await _factory.CreateClient()
+                .PostAsync("/v3/organizations/1/settings");
+            response.CheckUnauthorized();
+        }
+
+        [Fact]
+        public async Task Batch_Update_Should_Require_Admin_Role()
+        {
+            var response = await _factory.CreateClient()
+                .Authenticated()
+                .PostAsync("/v3/organizations/1/settings");
+            response.CheckForbidden();
+        }
+
+        [Fact]
+        public async Task Batch_Update_Should_Require_Request_Body()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org = await scope.CreateOrganizationAsync();
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin()
+                .PostAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings");
+            response.CheckBadRequest();
+        }
+
+        [Fact]
+        public async Task Batch_Update_Should_Require_At_Least_One_Setting()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org = await scope.CreateOrganizationAsync();
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin()
+                .PostAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
+                    Array.Empty<object>());
+            response.CheckBadRequest();
+        }
+
+        [Fact]
+        public async Task Batch_Update_Should_Not_Be_Available_To_Other_Org_Admin()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org = await scope.CreateOrganizationAsync();
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsAdmin()
+                .PostAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
+                    new[] { new { name = OrgSettingsTestRegistryComponent.StringKey } });
+            response.CheckForbidden();
+        }
+
+        [Fact]
+        public async Task Batch_Update_Should_Return_Not_Found_If_No_Org_Exists()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin()
+                .PostAsync("/v3/organizations/1111/settings",
+                    new[] { new { name = "any" } });
+            response.CheckNotFound();
+        }
+
+        [Fact]
+        public async Task Batch_Update_Should_Return_Not_Found_If_No_Setting_Registered()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org = await scope.CreateOrganizationAsync();
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin()
+                .PostAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
+                    new[] { new { name = "any" } });
+            response.CheckNotFound();
+        }
+
+        [Theory]
+        [MemberData(nameof(GetInvalidValuesForUpdate))]
+        public async Task Batch_Update_Should_Return_Bad_Request_For_Invalid_Value_Provided(string name, string value)
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org = await scope.CreateOrganizationAsync();
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin()
+                .PostAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
+                    new[] { new { name, value } });
+            response.CheckBadRequest();
+        }
+
+        [Theory]
+        [MemberData(nameof(GetValidValuesForUpdate))]
+        public async Task Batch_Update_Should_Return_Ok_If_Valid_Values_Provided(string name, string value)
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org = await scope.CreateOrganizationAsync();
+
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin()
+                .PostAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
+                    new[] { new { name, value } });
+
+            var arr = await response.CheckOk().AsArrayAsync();
+            Assert.NotEmpty(arr);
+
+            var t = arr[0];
+            Assert.Equal(name, t.Value<string>("name"));
+            Assert.Equal(value, t.Value<string>("value"));
+
+            var setting = await scope.Db.OrganizationSettings
+                .AsNoTracking()
+                .SingleAsync(s => s.Name == name &&
+                                  s.OrganizationId == org.Entity.OrganizationId);
+
+            Assert.Equal(value, setting.Value);
+        }
+
+        [Fact]
+        public async Task Batch_Update_Should_Be_Available_To_Org_Admin()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var admin = await scope.CreateUserAsync();
+            using var org = await scope.CreateOrganizationAsync();
+            using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
+
+            var response = await _factory.CreateClient()
+                .AuthenticatedAs(admin.Entity, Roles.Admin)
+                .PostAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
+                    new[] { new { name = OrgSettingsTestRegistryComponent.StringKey, value = "any" } });
+
+            var arr = await response.CheckOk().AsArrayAsync();
+            Assert.NotEmpty(arr);
+
+            var t = arr[0];
+            Assert.NotEmpty(t);
+            Assert.Equal(OrgSettingsTestRegistryComponent.StringKey, t.Value<string>("name"));
+            Assert.Equal("any", t.Value<string>("value"));
+        }
+
+        [Theory]
+        [InlineData(Roles.SystemAdmin)]
+        [InlineData(Roles.SuperAdmin)]
+        public async Task Batch_Update_Should_Be_Available_To_Power_Admin(string role)
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org = await scope.CreateOrganizationAsync();
+
+            var response = await _factory.CreateClient()
+                .Authenticated(role: role)
+                .PostAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
+                    new[] { new { name = OrgSettingsTestRegistryComponent.StringKey, value = "any" } });
+
+            var arr = await response.CheckOk().AsArrayAsync();
+            Assert.NotEmpty(arr);
+
+            var t = arr[0];
+            Assert.NotEmpty(t);
+            Assert.Equal(OrgSettingsTestRegistryComponent.StringKey, t.Value<string>("name"));
+            Assert.Equal("any", t.Value<string>("value"));
+        }
+
+        [Fact]
+        public async Task Batch_Update_Should_Create_Update_And_Delete_Entries()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org = await scope.CreateOrganizationAsync();
+
+            scope.Db.OrganizationSettings.Clean();
+
+            await scope.CreateOrganizationSettingAsync(org.Entity, OrgSettingsTestRegistryComponent.StringKey,
+                "to be updated");
+            await scope.CreateOrganizationSettingAsync(org.Entity, OrgSettingsTestRegistryComponent.EmailKey,
+                "to@be.removed");
+
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin()
+                .PostAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
+                    new[]
+                    {
+                        new { name = OrgSettingsTestRegistryComponent.BooleanKey, value = "true" },
+                        new { name = OrgSettingsTestRegistryComponent.StringKey, value = "updated string value" },
+                        new { name = OrgSettingsTestRegistryComponent.UrlKey, value = "https://something.com" },
+                        new { name = OrgSettingsTestRegistryComponent.EmailKey, value = "" }
+                    });
+
+            var arr = await response.CheckOk().AsArrayAsync();
+            Assert.NotEmpty(arr);
+            Assert.Equal(3, arr.Count);
+            Assert.Collection(arr.OrderBy(a => a.Value<string>("name")), t =>
+            {
+                Assert.Equal(OrgSettingsTestRegistryComponent.BooleanKey, t.Value<string>("name"));
+                Assert.Equal("true", t.Value<string>("value"));
+            }, t =>
+            {
+                Assert.Equal(OrgSettingsTestRegistryComponent.StringKey, t.Value<string>("name"));
+                Assert.Equal("updated string value", t.Value<string>("value"));
+            }, t =>
+            {
+                Assert.Equal(OrgSettingsTestRegistryComponent.UrlKey, t.Value<string>("name"));
+                Assert.Equal("https://something.com", t.Value<string>("value"));
+            });
+
+            var settings = await scope.Db.OrganizationSettings
+                .AsNoTracking()
+                .OrderBy(s => s.Name)
+                .ToArrayAsync();
+
+            Assert.Equal(3, settings.Length);
+            Assert.Collection(settings, s =>
+            {
+                Assert.Equal(OrgSettingsTestRegistryComponent.BooleanKey, s.Name);
+                Assert.Equal("true", s.Value);
+            }, s =>
+            {
+                Assert.Equal(OrgSettingsTestRegistryComponent.StringKey, s.Name);
+                Assert.Equal("updated string value", s.Value);
+            }, s =>
+            {
+                Assert.Equal(OrgSettingsTestRegistryComponent.UrlKey, s.Name);
+                Assert.Equal("https://something.com", s.Value);
+            });
         }
     }
 
