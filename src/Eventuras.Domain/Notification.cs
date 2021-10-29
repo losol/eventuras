@@ -29,6 +29,8 @@ namespace Eventuras.Domain
 
         public DateTime StatusUpdated { get; private set; }
 
+        public NotificationType Type { get; private set; }
+
         private NotificationStatus _status = NotificationStatus.New;
 
         public NotificationStatus Status
@@ -50,6 +52,8 @@ namespace Eventuras.Domain
         [ForeignKey(nameof(CreatedByUserId))] public ApplicationUser CreatedByUser { get; set; }
 
         public IReadOnlyList<NotificationRecipient> Recipients { get; set; }
+
+        public NotificationStatistics Statistics { get; set; }
 
         protected Notification()
         {

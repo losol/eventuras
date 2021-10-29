@@ -93,7 +93,7 @@ namespace Eventuras.Services.Registrations
             };
             order.AddLog();
 
-            await _context.CreateAsync(order, cancellationToken);
+            await _context.CreateAsync(order, cancellationToken: cancellationToken);
             return order;
         }
 

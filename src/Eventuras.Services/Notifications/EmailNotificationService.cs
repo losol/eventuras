@@ -15,11 +15,13 @@ namespace Eventuras.Services.Notifications
         private readonly IEmailSender _emailSender;
         private readonly ILogger<EmailNotificationService> _logger;
         private readonly INotificationManagementService _notificationManagementService;
+        private readonly INotificationStatisticsService _notificationStatisticsService;
 
         public EmailNotificationService(
             IEmailSender emailSender,
             ILogger<EmailNotificationService> logger,
-            INotificationManagementService notificationManagementService)
+            INotificationManagementService notificationManagementService,
+            INotificationStatisticsService notificationStatisticsService)
         {
             _emailSender = emailSender ?? throw
                 new ArgumentNullException(nameof(emailSender));
@@ -29,6 +31,9 @@ namespace Eventuras.Services.Notifications
 
             _notificationManagementService = notificationManagementService ?? throw
                 new ArgumentNullException(nameof(notificationManagementService));
+
+            _notificationStatisticsService = notificationStatisticsService ?? throw
+                new ArgumentNullException(nameof(notificationStatisticsService));
         }
 
         public async Task SendEmailNotificationAsync(
@@ -91,6 +96,7 @@ namespace Eventuras.Services.Notifications
 
             notification.Status = status;
             await _notificationManagementService.UpdateNotificationAsync(notification);
+            await _notificationStatisticsService.UpdateNotificationStatisticsAsync(notification);
 
             _logger.LogInformation("Notification {Id} {Status}; delivered to {Delivered} of {Total} recipients",
                 notification.NotificationId,

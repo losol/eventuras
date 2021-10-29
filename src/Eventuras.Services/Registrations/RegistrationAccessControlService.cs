@@ -97,7 +97,7 @@ namespace Eventuras.Services.Registrations
                 throw new NotAccessibleException("Anonymous users are not permitted to list any registrations.");
             }
 
-            if (user.IsSystemAdmin() || user.IsSuperAdmin())
+            if (user.IsPowerAdmin())
             {
                 return query; // super admins can ready any reg
             }
@@ -110,11 +110,9 @@ namespace Eventuras.Services.Registrations
 
             var org = await _currentOrganizationAccessorService
                 .RequireCurrentOrganizationAsync(null, cancellationToken);
+
             return query.Where(r => r.EventInfo.OrganizationId == org.OrganizationId &&
-                                    r.EventInfo.Organization.Members
-                                        .Any(m => m.UserId ==
-                                                  user
-                                                      .GetUserId())); // FIXME: it's not true anymore that if the user is Admin then he is an Admin of the current org.
+                                    r.EventInfo.Organization.Members.Any(m => m.UserId == user.GetUserId()));
         }
 
         private async Task<bool> CheckAdminAccessAsync(
@@ -122,7 +120,7 @@ namespace Eventuras.Services.Registrations
             Registration registration,
             CancellationToken cancellationToken)
         {
-            if (user.IsSystemAdmin() || user.IsSuperAdmin())
+            if (user.IsPowerAdmin())
             {
                 return true;
             }

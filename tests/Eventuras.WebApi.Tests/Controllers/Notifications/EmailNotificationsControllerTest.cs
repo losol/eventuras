@@ -466,9 +466,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
 
             var notification = await scope.Db.Notifications
                 .Include(n => n.Recipients)
+                .Include(n => n.Statistics)
                 .SingleAsync();
 
             Assert.IsType<EmailNotification>(notification);
+            Assert.Equal(NotificationType.Email, notification.Type);
             Assert.Equal(notification.CreatedByUserId, admin.Entity.Id);
             Assert.Null(notification.OrganizationId);
             Assert.Null(notification.EventInfoId);
@@ -483,6 +485,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             Assert.True(recipient.IsSent);
             Assert.Null(recipient.RecipientUserId);
             Assert.False(recipient.HasErrors);
+            
+            var statistics = notification.Statistics;
+            Assert.NotNull(statistics);
+            Assert.Equal(1, statistics.SentTotal);
+            Assert.Equal(0, statistics.ErrorsTotal);
         }
 
         [Fact]
@@ -514,8 +521,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
 
             var notification = await scope.Db.Notifications
                 .Include(n => n.Recipients)
+                .Include(n => n.Statistics)
                 .SingleAsync();
 
+            Assert.IsType<EmailNotification>(notification);
+            Assert.Equal(NotificationType.Email, notification.Type);
             Assert.Equal(notification.CreatedByUserId, admin.Entity.Id);
             Assert.Equal(org.Entity.OrganizationId, notification.OrganizationId);
             Assert.Equal(evt.Entity.EventInfoId, notification.EventInfoId);
@@ -530,6 +540,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             Assert.True(recipient.IsSent);
             Assert.Equal(user.Entity.Id, recipient.RecipientUserId);
             Assert.False(recipient.HasErrors);
+            
+            var statistics = notification.Statistics;
+            Assert.NotNull(statistics);
+            Assert.Equal(1, statistics.SentTotal);
+            Assert.Equal(0, statistics.ErrorsTotal);
         }
 
         [Fact]
@@ -567,8 +582,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
 
             var notification = await scope.Db.Notifications
                 .Include(n => n.Recipients)
+                .Include(n => n.Statistics)
                 .SingleAsync();
 
+            Assert.IsType<EmailNotification>(notification);
+            Assert.Equal(NotificationType.Email, notification.Type);
             Assert.Equal(notification.CreatedByUserId, admin.Entity.Id);
             Assert.Null(notification.OrganizationId);
             Assert.Equal(evt.Entity.EventInfoId, notification.EventInfoId);
@@ -583,6 +601,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             Assert.NotNull(recipient.Sent);
             Assert.True(recipient.IsSent);
             Assert.False(recipient.HasErrors);
+
+            var statistics = notification.Statistics;
+            Assert.NotNull(statistics);
+            Assert.Equal(1, statistics.SentTotal);
+            Assert.Equal(0, statistics.ErrorsTotal);
         }
 
         [Fact]
@@ -617,8 +640,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
 
             var notification = await scope.Db.Notifications
                 .Include(n => n.Recipients)
+                .Include(n => n.Statistics)
                 .SingleAsync();
 
+            Assert.IsType<EmailNotification>(notification);
+            Assert.Equal(NotificationType.Email, notification.Type);
             Assert.Equal(notification.CreatedByUserId, admin.Entity.Id);
             Assert.Equal(evt.Entity.EventInfoId, notification.EventInfoId);
             Assert.Null(notification.OrganizationId);
@@ -633,6 +659,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             Assert.Null(recipient.Sent);
             Assert.False(recipient.IsSent);
             Assert.True(recipient.HasErrors);
+
+            var statistics = notification.Statistics;
+            Assert.NotNull(statistics);
+            Assert.Equal(0, statistics.SentTotal);
+            Assert.Equal(1, statistics.ErrorsTotal);
         }
 
         private void CheckEmailSentTo(string subject, string body, params ApplicationUser[] users)

@@ -61,7 +61,7 @@ namespace Eventuras.Services.Notifications
                     Recipients = recipients
                         .Select(r => new NotificationRecipient(r))
                         .ToList()
-                });
+                }, leaveAttached: true);
         }
 
         public async Task<EmailNotification> CreateEmailNotificationForEventAsync(
@@ -134,7 +134,7 @@ namespace Eventuras.Services.Notifications
                     EventInfoId = eventId,
                     ProductId = productId,
                     Recipients = recipients
-                });
+                }, leaveAttached: true);
         }
 
         public async Task UpdateNotificationAsync(Notification notification)
