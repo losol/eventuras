@@ -11,6 +11,9 @@ namespace Eventuras.Services.Notifications
             services.AddTransient<INotificationRetrievalService, NotificationRetrievalService>();
             services.AddTransient<INotificationAccessControlService, NotificationAccessControlService>();
             services.AddTransient<INotificationStatisticsService, NotificationStatisticsService>();
+            services.AddTransient<INotificationRecipientRetrievalService, NotificationRecipientRetrievalService>();
+            services.AddTransient<INotificationRecipientAccessControlService,
+                NotificationRecipientAccessControlService>();
             return services;
         }
     }

@@ -30,7 +30,7 @@ namespace Eventuras.Services.Notifications
             CancellationToken cancellationToken = default)
         {
             var notification = await _context.Notifications
-                                   .WithOptions(options)
+                                   .WithOptions(options ?? new NotificationRetrievalOptions())
                                    .Where(n => n.NotificationId == id)
                                    .FirstOrDefaultAsync(cancellationToken) ??
                                throw new NotFoundException($"Notification {id} not found");
@@ -55,7 +55,7 @@ namespace Eventuras.Services.Notifications
             CancellationToken cancellationToken = default)
         {
             var query = _context.Notifications
-                .WithOptions(options)
+                .WithOptions(options ?? new NotificationRetrievalOptions())
                 .AddFilter(request.Filter)
                 .AddOrder(request.OrderBy, request.Descending);
 

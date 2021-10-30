@@ -246,6 +246,20 @@ namespace Eventuras.WebApi.Tests
             }
         }
 
+        public static void CheckNotificationRecipient(this JToken token, NotificationRecipient recipient)
+        {
+            Assert.NotEmpty(token);
+            Assert.Equal(recipient.RecipientId, token.Value<int>("recipientId"));
+            Assert.Equal(recipient.NotificationId, token.Value<int>("notificationId"));
+            Assert.Equal(recipient.RecipientUserId, token.Value<string>("recipientUserId"));
+            Assert.Equal(recipient.RegistrationId, token.Value<int?>("registrationId"));
+            Assert.Equal(recipient.RecipientName, token.Value<string>("recipientName"));
+            Assert.Equal(recipient.RecipientIdentifier, token.Value<string>("recipientIdentifier"));
+            Assert.Equal(recipient.Created, token.Value<DateTime>("created"));
+            Assert.Equal(recipient.Sent, token.Value<DateTime?>("sent"));
+            Assert.Equal(recipient.Errors, token.Value<string>("errors"));
+        }
+
         public static void CheckStringArray(this JArray array, params string[] roles)
         {
             array.CheckArray((t, r) => Assert.Equal(r, t.ToString()), roles);
