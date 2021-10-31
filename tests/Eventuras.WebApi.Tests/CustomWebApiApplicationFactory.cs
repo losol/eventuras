@@ -14,6 +14,7 @@ using Eventuras.Services.Organizations.Settings;
 using Eventuras.TestAbstractions;
 using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Tests.Controllers.Organizations;
+using Losol.Communication.Sms;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
@@ -24,6 +25,7 @@ namespace Eventuras.WebApi.Tests
         : WebApplicationFactory<TStartup> where TStartup : class
     {
         public readonly Mock<IEmailSender> EmailSenderMock = new();
+        public readonly Mock<ISmsSender> SmsSenderMock = new();
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -43,6 +45,7 @@ namespace Eventuras.WebApi.Tests
                 {
                     // Override already added email sender with the true mock
                     services.AddSingleton(EmailSenderMock.Object);
+                    services.AddSingleton(SmsSenderMock.Object);
                     services.AddSingleton<IOrganizationSettingsRegistryComponent, OrgSettingsTestRegistryComponent>();
 
                     // Remove the app's ApplicationDbContext registration.

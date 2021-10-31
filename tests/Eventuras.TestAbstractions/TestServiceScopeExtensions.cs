@@ -39,7 +39,7 @@ namespace Eventuras.TestAbstractions
 
             if (phone == TestingConstants.Placeholder)
             {
-                phone = "+11111111111";
+                phone = $"+{DateTimeOffset.Now.ToUnixTimeMilliseconds():####}";
             }
 
             if (roles == null && !string.IsNullOrEmpty(role))
@@ -496,19 +496,19 @@ namespace Eventuras.TestAbstractions
             if (emailAddresses != null)
             {
                 recipients.AddRange(emailAddresses
-                    .Select(a => new NotificationRecipient(a)));
+                    .Select(NotificationRecipient.Email));
             }
 
             if (recipientUsers != null)
             {
                 recipients.AddRange(recipientUsers
-                    .Select(u => new NotificationRecipient(u)));
+                    .Select(NotificationRecipient.Email));
             }
 
             if (registrations != null)
             {
                 recipients.AddRange(registrations
-                    .Select(r => new NotificationRecipient(r)));
+                    .Select(NotificationRecipient.Email));
             }
 
             NotificationStatistics stats = null;
@@ -564,19 +564,19 @@ namespace Eventuras.TestAbstractions
             if (phones != null)
             {
                 recipients.AddRange(phones
-                    .Select(num => new NotificationRecipient(num)));
+                    .Select(NotificationRecipient.Sms));
             }
 
             if (recipientUsers != null)
             {
                 recipients.AddRange(recipientUsers
-                    .Select(u => new NotificationRecipient(u)));
+                    .Select(NotificationRecipient.Sms));
             }
 
             if (registrations != null)
             {
                 recipients.AddRange(registrations
-                    .Select(r => new NotificationRecipient(r)));
+                    .Select(NotificationRecipient.Sms));
             }
 
             NotificationStatistics stats = null;

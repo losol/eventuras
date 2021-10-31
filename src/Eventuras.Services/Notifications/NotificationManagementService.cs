@@ -48,6 +48,8 @@ namespace Eventuras.Services.Notifications
             string body,
             string[] recipients)
         {
+            CheckSubjectAndBody(subject, body);
+
             var currentOrg =
                 await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
 
@@ -59,7 +61,7 @@ namespace Eventuras.Services.Notifications
                     CreatedByUserId = currentUser.GetUserId(),
                     OrganizationId = currentOrg?.OrganizationId,
                     Recipients = recipients
-                        .Select(r => new NotificationRecipient(r))
+                        .Select(NotificationRecipient.Email)
                         .ToList()
                 }, leaveAttached: true);
         }
@@ -72,9 +74,105 @@ namespace Eventuras.Services.Notifications
             Registration.RegistrationStatus[] registrationStatuses,
             Registration.RegistrationType[] registrationTypes)
         {
+            CheckSubjectAndBody(subject, body);
+
             await _eventInfoAccessControlService
                 .CheckEventUpdateAccessAsync(eventId);
 
+            var recipients = await GetRecipientsAsync(
+                NotificationType.Email,
+                eventId, productId,
+                registrationStatuses,
+                registrationTypes);
+
+            var currentOrg =
+                await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
+
+            var currentUser = _httpContextAccessor.HttpContext.User;
+
+            return await _context
+                .CreateAsync(new EmailNotification(subject, body)
+                {
+                    CreatedByUserId = currentUser.GetUserId(),
+                    OrganizationId = currentOrg?.OrganizationId,
+                    EventInfoId = eventId,
+                    ProductId = productId,
+                    Recipients = recipients
+                }, leaveAttached: true);
+        }
+
+        public async Task<SmsNotification> CreateSmsNotificationAsync(
+            string message,
+            params string[] recipients)
+        {
+            var currentOrg =
+                await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
+
+            var currentUser = _httpContextAccessor.HttpContext.User;
+
+            return await _context
+                .CreateAsync(new SmsNotification(message)
+                {
+                    CreatedByUserId = currentUser.GetUserId(),
+                    OrganizationId = currentOrg?.OrganizationId,
+                    Recipients = recipients
+                        .Select(NotificationRecipient.Sms)
+                        .ToList()
+                }, leaveAttached: true);
+        }
+
+        public async Task<SmsNotification> CreateSmsNotificationForEventAsync(
+            string message,
+            int eventId,
+            int? productId = null,
+            Registration.RegistrationStatus[] registrationStatuses = null,
+            Registration.RegistrationType[] registrationTypes = null)
+        {
+            await _eventInfoAccessControlService
+                .CheckEventUpdateAccessAsync(eventId);
+
+            var recipients = await GetRecipientsAsync(
+                NotificationType.Sms,
+                eventId, productId,
+                registrationStatuses,
+                registrationTypes);
+
+            var currentOrg =
+                await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
+
+            var currentUser = _httpContextAccessor.HttpContext.User;
+
+            return await _context
+                .CreateAsync(new SmsNotification(message)
+                {
+                    CreatedByUserId = currentUser.GetUserId(),
+                    OrganizationId = currentOrg?.OrganizationId,
+                    EventInfoId = eventId,
+                    ProductId = productId,
+                    Recipients = recipients
+                }, leaveAttached: true);
+        }
+
+        private static void CheckSubjectAndBody(string subject, string body)
+        {
+            if (string.IsNullOrEmpty(subject))
+            {
+                throw new ArgumentException($"{nameof(subject)} must not be empty");
+            }
+
+            if (string.IsNullOrEmpty(body))
+            {
+                throw new ArgumentException($"{nameof(body)} must not be empty");
+            }
+        }
+
+        private async Task<List<NotificationRecipient>> GetRecipientsAsync(
+            NotificationType notificationType,
+            int eventId,
+            int? productId,
+            Registration.RegistrationStatus[] registrationStatuses,
+            Registration.RegistrationType[] registrationTypes)
+        {
             var recipients = new List<NotificationRecipient>();
 
             // Default status if not provided: Verified, attended and finished
@@ -116,25 +214,13 @@ namespace Eventuras.Services.Notifications
 
             while (await reader.HasMoreAsync())
             {
-                recipients.AddRange(from registration in await reader
-                        .ReadNextAsync()
-                    select new NotificationRecipient(registration));
+                recipients.AddRange((from registration in await reader
+                            .ReadNextAsync()
+                        select NotificationRecipient.Create(registration, notificationType))
+                    .Where(r => r != null)); // user may have no phone, or email
             }
 
-            var currentOrg =
-                await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
-
-            var currentUser = _httpContextAccessor.HttpContext.User;
-
-            return await _context
-                .CreateAsync(new EmailNotification(subject, body)
-                {
-                    CreatedByUserId = currentUser.GetUserId(),
-                    OrganizationId = currentOrg?.OrganizationId,
-                    EventInfoId = eventId,
-                    ProductId = productId,
-                    Recipients = recipients
-                }, leaveAttached: true);
+            return recipients;
         }
 
         public async Task UpdateNotificationAsync(Notification notification)

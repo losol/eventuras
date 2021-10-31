@@ -28,6 +28,7 @@ namespace Eventuras.Domain
         /// <summary>
         /// The phone number or email address which the notification is sent to.
         /// </summary>
+        [Required]
         public string RecipientIdentifier { get; private set; }
 
         public DateTime Created { get; private set; }
@@ -46,37 +47,105 @@ namespace Eventuras.Domain
 
         [ForeignKey(nameof(RegistrationId))] public Registration Registration { get; set; }
 
-        internal NotificationRecipient()
+        private NotificationRecipient()
         {
         }
 
-        public NotificationRecipient(string recipientIdentifier)
+        private NotificationRecipient(string recipientIdentifier, NotificationType notificationType)
         {
             if (recipientIdentifier == null)
             {
                 throw new ArgumentNullException(nameof(recipientIdentifier));
             }
 
-            if (!MailAddress.TryCreate(recipientIdentifier, out var address))
+            Created = DateTime.Now;
+
+            if (notificationType == NotificationType.Email)
             {
-                throw new ArgumentException($"Invalid email address: {recipientIdentifier}");
+                if (!MailAddress.TryCreate(recipientIdentifier, out var address))
+                {
+                    throw new ArgumentException($"Invalid email address: {recipientIdentifier}");
+                }
+
+                RecipientIdentifier = address.Address;
+                RecipientName = address.DisplayName;
+            }
+            else
+            {
+                RecipientIdentifier = recipientIdentifier;
+            }
+        }
+
+        public static NotificationRecipient Create(ApplicationUser recipientUser, NotificationType notificationType)
+        {
+            var identifier = notificationType switch
+            {
+                NotificationType.Email => recipientUser.Email,
+                NotificationType.Sms => recipientUser.PhoneNumber,
+                _ => null
+            };
+
+            if (string.IsNullOrEmpty(identifier))
+            {
+                return null;
             }
 
-            RecipientIdentifier = address.Address;
-            RecipientName = address.DisplayName;
-            Created = DateTime.Now;
+            return new NotificationRecipient(identifier, notificationType)
+            {
+                RecipientUser = recipientUser,
+                RecipientName = recipientUser.Name
+            };
         }
 
-        public NotificationRecipient(ApplicationUser recipientUser) : this(recipientUser.Email)
+        public static NotificationRecipient Create(Registration registration, NotificationType notificationType)
         {
-            RecipientUser = recipientUser;
-            RecipientName = recipientUser.Name;
+            var recipient = Create(registration.User, notificationType);
+            if (recipient != null)
+            {
+                recipient.RecipientName = registration.ParticipantName ?? registration.User.Name;
+            }
+
+            return recipient;
         }
 
-        public NotificationRecipient(Registration registration) : this(registration.User)
+        public static NotificationRecipient Email(string address)
         {
-            Registration = registration;
-            RecipientName = registration.ParticipantName ?? registration.User.Name;
+            if (string.IsNullOrEmpty(address))
+            {
+                throw new ArgumentException($"{nameof(address)} must not be empty");
+            }
+
+            return new NotificationRecipient(address, NotificationType.Email);
+        }
+
+        public static NotificationRecipient Email(ApplicationUser user)
+        {
+            return Create(user, NotificationType.Email);
+        }
+
+        public static NotificationRecipient Email(Registration registration)
+        {
+            return Create(registration, NotificationType.Email);
+        }
+
+        public static NotificationRecipient Sms(string phoneNumber)
+        {
+            if (string.IsNullOrEmpty(phoneNumber))
+            {
+                throw new ArgumentException($"{nameof(phoneNumber)} must not be empty");
+            }
+
+            return new NotificationRecipient(phoneNumber, NotificationType.Sms);
+        }
+
+        public static NotificationRecipient Sms(ApplicationUser recipientUser)
+        {
+            return Create(recipientUser, NotificationType.Sms);
+        }
+
+        public static NotificationRecipient Sms(Registration registration)
+        {
+            return Create(registration, NotificationType.Sms);
         }
     }
 }

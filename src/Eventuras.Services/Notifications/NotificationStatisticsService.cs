@@ -32,6 +32,9 @@ namespace Eventuras.Services.Notifications
                 await _context.AddAsync(stats);
             }
 
+            stats.RecipientsTotal = await _context.NotificationRecipients
+                .CountAsync(r => r.NotificationId == notification.NotificationId);
+
             stats.SentTotal = await _context.NotificationRecipients
                 .CountAsync(r => r.NotificationId == notification.NotificationId && r.Sent.HasValue);
 

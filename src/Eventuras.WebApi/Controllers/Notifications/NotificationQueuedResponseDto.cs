@@ -3,13 +3,13 @@ using Eventuras.Domain;
 
 namespace Eventuras.WebApi.Controllers.Notifications
 {
-    public class NotificationResponseDto
+    public class NotificationQueuedResponseDto
     {
         public int NotificationId { get; }
 
         public int TotalRecipients { get; }
 
-        public NotificationResponseDto(Notification notification)
+        public NotificationQueuedResponseDto(Notification notification)
         {
             if (notification == null)
             {
@@ -17,7 +17,7 @@ namespace Eventuras.WebApi.Controllers.Notifications
             }
 
             NotificationId = notification.NotificationId;
-            TotalRecipients = notification.Recipients.Count;
+            TotalRecipients = notification.Recipients?.Count ?? 0;
         }
     }
 }

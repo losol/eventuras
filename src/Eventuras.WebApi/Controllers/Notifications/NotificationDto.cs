@@ -52,11 +52,14 @@ namespace Eventuras.WebApi.Controllers.Notifications
         public int Sent { get; }
 
         public int Errors { get; }
+        
+        public int Recipients { get; }
 
         public NotificationStatisticsDto(NotificationStatistics stats)
         {
             Sent = stats.SentTotal;
             Errors = stats.ErrorsTotal;
+            Recipients = stats.RecipientsTotal;
         }
     }
 }

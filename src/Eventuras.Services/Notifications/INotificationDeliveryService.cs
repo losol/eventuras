@@ -4,10 +4,10 @@ using Eventuras.Domain;
 
 namespace Eventuras.Services.Notifications
 {
-    public interface IEmailNotificationService
+    public interface INotificationDeliveryService
     {
-        Task SendEmailNotificationAsync(
-            EmailNotification notification,
+        Task SendNotificationAsync(
+            Notification notification,
             CancellationToken cancellationToken = default);
     }
 }

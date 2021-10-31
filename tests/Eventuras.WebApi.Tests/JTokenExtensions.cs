@@ -215,7 +215,8 @@ namespace Eventuras.WebApi.Tests
         public static void CheckNotification(this JToken token,
             Notification notification,
             int? totalSent = null,
-            int? totalErrors = null)
+            int? totalErrors = null, 
+            int? totalRecipients = null)
         {
             Assert.NotEmpty(token);
             Assert.Equal(notification.NotificationId, token.Value<int>("notificationId"));
@@ -228,7 +229,7 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(notification.Type.ToString(), token.Value<string>("type"));
             Assert.Equal(notification.Status.ToString(), token.Value<string>("status"));
 
-            if (totalSent.HasValue || totalErrors.HasValue)
+            if (totalSent.HasValue || totalErrors.HasValue || totalRecipients.HasValue)
             {
                 var stats = token.Value<JToken>("statistics");
                 Assert.NotNull(stats);
@@ -242,6 +243,11 @@ namespace Eventuras.WebApi.Tests
                 if (totalErrors.HasValue)
                 {
                     Assert.Equal(totalErrors, stats.Value<int>("errors"));
+                }
+
+                if (totalRecipients.HasValue)
+                {
+                    Assert.Equal(totalRecipients, stats.Value<int>("recipients"));
                 }
             }
         }

@@ -14,6 +14,8 @@ namespace Eventuras.Domain
 
         [ForeignKey(nameof(NotificationId))] public Notification Notification { get; private set; }
 
+        public int RecipientsTotal { get; set; }
+
         public int SentTotal { get; set; }
 
         public int ErrorsTotal { get; set; }
