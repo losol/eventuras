@@ -38,7 +38,7 @@ namespace Eventuras.WebApi.Controllers.Notifications
         }
 
         [HttpPost("email")]
-        public async Task<ActionResult<NotificationQueuedResponseDto>> SendEmail(
+        public async Task<ActionResult<NotificationResponseDto>> SendEmail(
             EmailNotificationDto dto,
             CancellationToken cancellationToken)
         {
@@ -70,11 +70,11 @@ namespace Eventuras.WebApi.Controllers.Notifications
             await _notificationDeliveryService
                 .SendNotificationAsync(emailNotification, cancellationToken);
 
-            return Ok(new NotificationQueuedResponseDto(emailNotification));
+            return Ok(new NotificationResponseDto(emailNotification));
         }
 
         [HttpPost("sms")]
-        public async Task<ActionResult<NotificationQueuedResponseDto>> SendSms(
+        public async Task<ActionResult<NotificationResponseDto>> SendSms(
             SmsNotificationDto dto,
             CancellationToken cancellationToken)
         {
@@ -104,7 +104,7 @@ namespace Eventuras.WebApi.Controllers.Notifications
             await _notificationDeliveryService
                 .SendNotificationAsync(smsNotification, cancellationToken);
 
-            return Ok(new NotificationQueuedResponseDto(smsNotification));
+            return Ok(new NotificationResponseDto(smsNotification));
         }
 
         private async Task<EventParticipantsFilterDto> GetEventParticipantFilterAsync(

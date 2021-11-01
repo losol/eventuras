@@ -221,9 +221,8 @@ namespace Eventuras.WebApi.Tests
             Assert.NotEmpty(token);
             Assert.Equal(notification.NotificationId, token.Value<int>("notificationId"));
             Assert.Equal(notification.OrganizationId, token.Value<int?>("organizationId"));
-            Assert.Equal(notification.EventInfoId, token.Value<int?>("eventInfoId"));
+            Assert.Equal(notification.EventInfoId, token.Value<int?>("eventId"));
             Assert.Equal(notification.ProductId, token.Value<int?>("productId"));
-            Assert.Equal(notification.CreatedByUserId, token.Value<string>("createdByUserId"));
             Assert.Equal(notification.Created, token.Value<DateTime>("created"));
             Assert.Equal(notification.StatusUpdated, token.Value<DateTime>("statusUpdated"));
             Assert.Equal(notification.Type.ToString(), token.Value<string>("type"));

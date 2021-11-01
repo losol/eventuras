@@ -8,13 +8,14 @@ namespace Eventuras.WebApi.Controllers.Notifications
     {
         public int NotificationId { get; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public int? OrganizationId { get; }
 
-        public int? EventInfoId { get; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public int? EventId { get; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public int? ProductId { get; }
-
-        public string CreatedByUserId { get; }
 
         public string Message { get; }
 
@@ -33,9 +34,8 @@ namespace Eventuras.WebApi.Controllers.Notifications
         {
             NotificationId = notification.NotificationId;
             OrganizationId = notification.OrganizationId;
-            EventInfoId = notification.EventInfoId;
+            EventId = notification.EventInfoId;
             ProductId = notification.ProductId;
-            CreatedByUserId = notification.CreatedByUserId;
             Message = notification.Message;
             Created = notification.Created;
             StatusUpdated = notification.StatusUpdated;
@@ -52,7 +52,7 @@ namespace Eventuras.WebApi.Controllers.Notifications
         public int Sent { get; }
 
         public int Errors { get; }
-        
+
         public int Recipients { get; }
 
         public NotificationStatisticsDto(NotificationStatistics stats)

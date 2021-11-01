@@ -3,13 +3,13 @@ using Eventuras.Domain;
 
 namespace Eventuras.WebApi.Controllers.Notifications
 {
-    public class NotificationQueuedResponseDto
+    public class NotificationResponseDto
     {
         public int NotificationId { get; }
 
         public int TotalRecipients { get; }
 
-        public NotificationQueuedResponseDto(Notification notification)
+        public NotificationResponseDto(Notification notification)
         {
             if (notification == null)
             {
