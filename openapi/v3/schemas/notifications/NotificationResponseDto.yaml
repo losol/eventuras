@@ -1,12 +1,19 @@
 type: object
-title: Notification response
+title: Created notification info
 required:
+  - notificationId
   - totalRecipients
 properties:
+  notificationId:
+    type: integer
+    format: int32
+    description: Notification identifier, which can later be used for monitoring notification sending stats.
   totalRecipients:
     type: integer
     format: int32
     description: Notification recipients total.
 examples:
   - totalRecipients: 0
+    notificationId: 101
   - totalRecipients: 1001
+    notificationId: 102

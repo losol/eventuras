@@ -16,8 +16,8 @@ properties:
       type: string
       description: Email address.
     description: List of email addresses.
-  filter:
-    $ref: './NotificationRecipientsFilterDto.yaml'
+  eventParticipants:
+    $ref: './EventParticipantsFilterDto.yaml'
     description: Recipient list filter.
 examples:
   - subject: Test direct email
@@ -31,7 +31,7 @@ examples:
       This _is_ an [example](https://example.com/).
     filter:
       registrationTypes:
-        - 2
-        - 3
+        - staff
+        - lecturer
       registrationStatuses:
-        - 2
+        - verified

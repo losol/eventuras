@@ -1,5 +1,5 @@
 {
   "devDependencies": {
-    "@openapitools/openapi-generator-cli": "^2.4.1"
+    "@openapitools/openapi-generator-cli": "^2.4.3"
   }
 }

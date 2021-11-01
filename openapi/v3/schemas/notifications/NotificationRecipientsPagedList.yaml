@@ -1,0 +1,51 @@
+type: object
+title: Notifications list with paging.
+required:
+  - page
+  - count
+  - total
+  - pages
+  - data
+properties:
+  page:
+    type: integer
+    format: int32
+    description: Page number.
+  count:
+    type: integer
+    format: int32
+    description: Page size.
+  total:
+    type: integer
+    format: int32
+    description: Total items.
+  pages:
+    type: integer
+    format: int32
+    description: Total pages.
+  data:
+    type: array
+    items:
+      $ref: './NotificationRecipientDto.yaml'
+example:
+  page: 1
+  size: 10
+  total: 2
+  pages: 1
+  data:
+    - notificationId: 101
+      created: 2021-11-01 13:22:00
+      type: sms
+      status: sent
+      message: Hi
+      statusUpdated: 2021-11-01 13:22:10
+    - notificationId: 10002
+      created: 2020-01-01 11:22:33
+      type: email
+      message: Test
+      status: queued
+      statusUpdated: 2020-01-01 22:33:44
+      eventId: 1001
+      productId: 30
+      organizationId: 1
+

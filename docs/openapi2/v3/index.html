@@ -888,8 +888,8 @@ ul.nav-tabs {
         "description" : "Email address."
       }
     },
-    "filter" : {
-      "$ref" : "#/components/schemas/NotificationRecipientsFilterDto"
+    "eventParticipants" : {
+      "$ref" : "#/components/schemas/EventParticipantsFilterDto"
     }
   }
 };
@@ -1112,6 +1112,33 @@ ul.nav-tabs {
     "endDate" : "2021-01-10",
     "manageRegistrations" : true
   }
+};
+    defs["EventParticipantsFilterDto"] = {
+  "title" : "Notification recipients filter",
+  "type" : "object",
+  "properties" : {
+    "eventId" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "productId" : {
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "registrationStatuses" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/RegistrationStatus"
+      }
+    },
+    "registrationTypes" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/RegistrationType"
+      }
+    }
+  },
+  "description" : "Used to filter out notification recipients.\nAll properties are optional.\n"
 };
     defs["EventsPagedList"] = {
   "title" : "Event list with paging.",
@@ -1360,39 +1387,265 @@ ul.nav-tabs {
     "phoneNumber" : "+11111111111"
   }
 };
-    defs["NotificationRecipientsFilterDto"] = {
-  "title" : "Notification recipients filter",
+    defs["NotificationDto"] = {
+  "title" : "Notification info",
+  "required" : [ "created", "message", "notificationId", "status", "statusUpdated", "type" ],
   "type" : "object",
   "properties" : {
-    "eventId" : {
+    "notificationId" : {
       "type" : "integer",
+      "description" : "Notification identifier.",
       "format" : "int32"
     },
-    "registrationStatuses" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/components/schemas/RegistrationStatus"
-      }
+    "organizationId" : {
+      "type" : "integer",
+      "description" : "Organization identifier the notification is related to.",
+      "format" : "int32"
     },
-    "registrationTypes" : {
+    "eventId" : {
+      "type" : "integer",
+      "description" : "Event identifier the notification is related to.",
+      "format" : "int32"
+    },
+    "productId" : {
+      "type" : "integer",
+      "description" : "Product identifier the notification is related to.",
+      "format" : "int32"
+    },
+    "message" : {
+      "type" : "string",
+      "description" : "Notification message text."
+    },
+    "created" : {
+      "type" : "string",
+      "description" : "Notification creation date and time.",
+      "format" : "date-time"
+    },
+    "status" : {
+      "$ref" : "#/components/schemas/NotificationStatus"
+    },
+    "type" : {
+      "$ref" : "#/components/schemas/NotificationType"
+    },
+    "statusUpdated" : {
+      "type" : "string",
+      "description" : "Last status update date and time.",
+      "format" : "date-time"
+    },
+    "statistics" : {
+      "$ref" : "#/components/schemas/NotificationStatisticsDto"
+    }
+  }
+};
+    defs["NotificationRecipientDto"] = {
+  "title" : "Notification recipient info",
+  "required" : [ "created", "notificationId", "recipientId", "recipientIdentifier" ],
+  "type" : "object",
+  "properties" : {
+    "recipientId" : {
+      "type" : "integer",
+      "description" : "Notification recipient identifier.",
+      "format" : "int32"
+    },
+    "notificationId" : {
+      "type" : "integer",
+      "description" : "Notification identifier.",
+      "format" : "int32"
+    },
+    "registrationId" : {
+      "type" : "integer",
+      "description" : "Event regisration ID.",
+      "format" : "int32"
+    },
+    "recipientIdentifier" : {
+      "type" : "string",
+      "description" : "Phone numner for SMS, or email address."
+    },
+    "recipientName" : {
+      "type" : "string",
+      "description" : "Recipient name."
+    },
+    "recipientUserId" : {
+      "type" : "string",
+      "description" : "Recipient user identifier."
+    },
+    "created" : {
+      "type" : "string",
+      "description" : "Notification creation date and time.",
+      "format" : "date-time"
+    },
+    "sent" : {
+      "type" : "string",
+      "description" : "Notification delivery date and time.",
+      "format" : "date-time"
+    },
+    "errors" : {
+      "type" : "string",
+      "description" : "Notification delivery errors."
+    }
+  }
+};
+    defs["NotificationRecipientsPagedList"] = {
+  "title" : "Notifications list with paging.",
+  "required" : [ "count", "data", "page", "pages", "total" ],
+  "type" : "object",
+  "properties" : {
+    "page" : {
+      "type" : "integer",
+      "description" : "Page number.",
+      "format" : "int32"
+    },
+    "count" : {
+      "type" : "integer",
+      "description" : "Page size.",
+      "format" : "int32"
+    },
+    "total" : {
+      "type" : "integer",
+      "description" : "Total items.",
+      "format" : "int32"
+    },
+    "pages" : {
+      "type" : "integer",
+      "description" : "Total pages.",
+      "format" : "int32"
+    },
+    "data" : {
       "type" : "array",
       "items" : {
-        "$ref" : "#/components/schemas/./schemas/registrations/RegistrationType.yaml"
+        "$ref" : "#/components/schemas/NotificationRecipientDto"
       }
     }
   },
-  "description" : "Used to filter out notification recipients.\nAll properties are optional.\n"
+  "example" : {
+    "page" : 1,
+    "size" : 10,
+    "total" : 2,
+    "pages" : 1,
+    "data" : [ {
+      "notificationId" : 101,
+      "created" : "2021-11-01 13:22:00",
+      "type" : "sms",
+      "status" : "sent",
+      "message" : "Hi",
+      "statusUpdated" : "2021-11-01 13:22:10"
+    }, {
+      "notificationId" : 10002,
+      "created" : "2020-01-01 11:22:33",
+      "type" : "email",
+      "message" : "Test",
+      "status" : "queued",
+      "statusUpdated" : "2020-01-01 22:33:44",
+      "eventId" : 1001,
+      "productId" : 30,
+      "organizationId" : 1
+    } ]
+  }
 };
     defs["NotificationResponseDto"] = {
-  "title" : "Notification response",
-  "required" : [ "totalRecipients" ],
+  "title" : "Created notification info",
+  "required" : [ "notificationId", "totalRecipients" ],
   "type" : "object",
   "properties" : {
+    "notificationId" : {
+      "type" : "integer",
+      "description" : "Notification identifier, which can later be used for monitoring notification sending stats.",
+      "format" : "int32"
+    },
     "totalRecipients" : {
       "type" : "integer",
       "description" : "Notification recipients total.",
       "format" : "int32"
     }
+  }
+};
+    defs["NotificationStatisticsDto"] = {
+  "title" : "Notification statistics info",
+  "required" : [ "errors", "recipients", "sent" ],
+  "type" : "object",
+  "properties" : {
+    "recipients" : {
+      "type" : "integer",
+      "description" : "Total number of recipients.",
+      "format" : "int32"
+    },
+    "sent" : {
+      "type" : "integer",
+      "description" : "Total number of notifications delivered.",
+      "format" : "int32"
+    },
+    "errors" : {
+      "type" : "integer",
+      "description" : "Total number of notifications NOT delivered because of an errors.",
+      "format" : "int32"
+    }
+  }
+};
+    defs["NotificationStatus"] = {
+  "title" : "Notification status enum (`new` | `queued` | `started` | `cancelled` | `failed` | `sent`).\n",
+  "type" : "string",
+  "enum" : [ "new", "queued", "started", "cancelled", "failed", "sent" ]
+};
+    defs["NotificationType"] = {
+  "title" : "Notification type enum (`email` | `sms`).",
+  "type" : "string",
+  "enum" : [ "email", "sms" ]
+};
+    defs["NotificationsPagedList"] = {
+  "title" : "Notifications list with paging.",
+  "required" : [ "count", "data", "page", "pages", "total" ],
+  "type" : "object",
+  "properties" : {
+    "page" : {
+      "type" : "integer",
+      "description" : "Page number.",
+      "format" : "int32"
+    },
+    "count" : {
+      "type" : "integer",
+      "description" : "Page size.",
+      "format" : "int32"
+    },
+    "total" : {
+      "type" : "integer",
+      "description" : "Total items.",
+      "format" : "int32"
+    },
+    "pages" : {
+      "type" : "integer",
+      "description" : "Total pages.",
+      "format" : "int32"
+    },
+    "data" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/NotificationDto"
+      }
+    }
+  },
+  "example" : {
+    "page" : 1,
+    "size" : 10,
+    "total" : 2,
+    "pages" : 1,
+    "data" : [ {
+      "notificationId" : 101,
+      "created" : "2021-11-01 13:22:00",
+      "type" : "sms",
+      "status" : "sent",
+      "message" : "Hi",
+      "statusUpdated" : "2021-11-01 13:22:10"
+    }, {
+      "notificationId" : 10002,
+      "created" : "2020-01-01 11:22:33",
+      "type" : "email",
+      "message" : "Test",
+      "status" : "queued",
+      "statusUpdated" : "2020-01-01 22:33:44",
+      "eventId" : 1001,
+      "productId" : 30,
+      "organizationId" : 1
+    } ]
   }
 };
     defs["OrderDto"] = {
@@ -1572,7 +1825,7 @@ ul.nav-tabs {
       "$ref" : "#/components/schemas/RegistrationStatus"
     },
     "type" : {
-      "$ref" : "#/components/schemas/./schemas/registrations/RegistrationType.yaml"
+      "$ref" : "#/components/schemas/RegistrationType"
     },
     "certificateId" : {
       "type" : "integer",
@@ -1980,7 +2233,7 @@ ul.nav-tabs {
       "$ref" : "#/components/schemas/RegistrationStatus"
     },
     "type" : {
-      "$ref" : "#/components/schemas/./schemas/registrations/RegistrationType.yaml"
+      "$ref" : "#/components/schemas/RegistrationType"
     },
     "notes" : {
       "type" : "string"
@@ -2006,7 +2259,7 @@ ul.nav-tabs {
       "$ref" : "#/components/schemas/RegistrationStatus"
     },
     "type" : {
-      "$ref" : "#/components/schemas/./schemas/registrations/RegistrationType.yaml"
+      "$ref" : "#/components/schemas/RegistrationType"
     },
     "notes" : {
       "type" : "string",
@@ -2169,6 +2422,33 @@ ul.nav-tabs {
   "title" : "Registration status enum.",
   "type" : "string",
   "enum" : [ "draft", "cancelled", "verified", "notattended", "attended", "finished" ]
+};
+    defs["RegistrationType"] = {
+  "title" : "Registration type enum (`participant` | `student` | `staff` | `lecturer` | `artist`).",
+  "type" : "string",
+  "enum" : [ "participant", "student", "staff", "lecturer", "artist" ]
+};
+    defs["SmsNotificationFormDto"] = {
+  "title" : "New SMS notification info",
+  "required" : [ "mssage" ],
+  "type" : "object",
+  "properties" : {
+    "message" : {
+      "type" : "string",
+      "description" : "SMS text."
+    },
+    "recipients" : {
+      "type" : "array",
+      "description" : "List of phone numbers.",
+      "items" : {
+        "type" : "string",
+        "description" : "Phone number."
+      }
+    },
+    "eventParticipants" : {
+      "$ref" : "#/components/schemas/EventParticipantsFilterDto"
+    }
+  }
 };
     defs["UserDto"] = {
   "title" : "User info.",
@@ -2366,6 +2646,18 @@ ul.nav-tabs {
                   <li class="nav-header" data-group="Notifications"><a href="#api-Notifications">API Methods - Notifications</a></li>
                     <li data-group="Notifications" data-name="createNewEmailNotification" class="">
                       <a href="#api-Notifications-createNewEmailNotification">createNewEmailNotification</a>
+                    </li>
+                    <li data-group="Notifications" data-name="createNewSMSNotification" class="">
+                      <a href="#api-Notifications-createNewSMSNotification">createNewSMSNotification</a>
+                    </li>
+                    <li data-group="Notifications" data-name="getNotificationById" class="">
+                      <a href="#api-Notifications-getNotificationById">getNotificationById</a>
+                    </li>
+                    <li data-group="Notifications" data-name="getNotificationRecipientList" class="">
+                      <a href="#api-Notifications-getNotificationRecipientList">getNotificationRecipientList</a>
+                    </li>
+                    <li data-group="Notifications" data-name="getNotificationsList" class="">
+                      <a href="#api-Notifications-getNotificationsList">getNotificationsList</a>
                     </li>
                   <li class="nav-header" data-group="Orders"><a href="#api-Orders">API Methods - Orders</a></li>
                     <li data-group="Orders" data-name="cancelOrder" class="">
@@ -19300,6 +19592,2781 @@ $(document).ready(function() {
                         </article>
                       </div>
                       <hr>
+                    <div id="api-Notifications-createNewSMSNotification">
+                      <article id="api-Notifications-createNewSMSNotification-0" data-group="User" data-name="createNewSMSNotification" data-version="0">
+                        <div class="pull-left">
+                          <h1>createNewSMSNotification</h1>
+                          <p>Create new SMS notification.</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Create and send new SMS notification using either event registration filter
+or explicit list of phone numbers.
+</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/notifications/sms</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Notifications-createNewSMSNotification-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Notifications-createNewSMSNotification-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Notifications-createNewSMSNotification-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Notifications-createNewSMSNotification-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Notifications-createNewSMSNotification-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Notifications-createNewSMSNotification-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Notifications-createNewSMSNotification-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Notifications-createNewSMSNotification-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Notifications-createNewSMSNotification-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Notifications-createNewSMSNotification-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Notifications-createNewSMSNotification-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Notifications-createNewSMSNotification-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Notifications-createNewSMSNotification-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+ -H "Accept: application/json"\
+ -H "Content-Type: application/json"\
+ "https://full.path.to/v3/notifications/sms"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Notifications-createNewSMSNotification-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.NotificationsApi;
+
+import java.io.File;
+import java.util.*;
+
+public class NotificationsApiExample {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        
+        // Configure Bearer (JWT) access token for authorization: bearer
+        HttpBearerAuth bearer = (HttpBearerAuth) defaultClient.getAuthentication("bearer");
+        bearer.setBearerToken("BEARER TOKEN");
+        
+        // Create an instance of the API class
+        NotificationsApi apiInstance = new NotificationsApi();
+        SmsNotificationFormDto smsNotificationFormDto = ; // SmsNotificationFormDto | 
+        
+        try {
+            NotificationResponseDto result = apiInstance.createNewSMSNotification(smsNotificationFormDto);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling NotificationsApi#createNewSMSNotification");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Notifications-createNewSMSNotification-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.NotificationsApi;
+
+public class NotificationsApiExample {
+    public static void main(String[] args) {
+        NotificationsApi apiInstance = new NotificationsApi();
+        SmsNotificationFormDto smsNotificationFormDto = ; // SmsNotificationFormDto | 
+        
+        try {
+            NotificationResponseDto result = apiInstance.createNewSMSNotification(smsNotificationFormDto);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling NotificationsApi#createNewSMSNotification");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Notifications-createNewSMSNotification-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Notifications-createNewSMSNotification-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+
+// Configure Bearer (JWT) access token for authorization: bearer
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+
+// Create an instance of the API class
+NotificationsApi *apiInstance = [[NotificationsApi alloc] init];
+SmsNotificationFormDto *smsNotificationFormDto = ; // 
+
+// Create new SMS notification.
+[apiInstance createNewSMSNotificationWith:smsNotificationFormDto
+              completionHandler: ^(NotificationResponseDto output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-createNewSMSNotification-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var EventurasApi = require('eventuras_api');
+var defaultClient = EventurasApi.ApiClient.instance;
+
+// Configure Bearer (JWT) access token for authorization: bearer
+var bearer = defaultClient.authentications['bearer'];
+bearer.accessToken = "YOUR ACCESS TOKEN";
+
+// Create an instance of the API class
+var api = new EventurasApi.NotificationsApi()
+var smsNotificationFormDto = ; // {SmsNotificationFormDto} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.createNewSMSNotification(smsNotificationFormDto, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Notifications-createNewSMSNotification-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Notifications-createNewSMSNotification-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class createNewSMSNotificationExample
+    {
+        public void main()
+        {
+            // Configure Bearer (JWT) access token for authorization: bearer
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+            
+            // Create an instance of the API class
+            var apiInstance = new NotificationsApi();
+            var smsNotificationFormDto = new SmsNotificationFormDto(); // SmsNotificationFormDto | 
+
+            try {
+                // Create new SMS notification.
+                NotificationResponseDto result = apiInstance.createNewSMSNotification(smsNotificationFormDto);
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling NotificationsApi.createNewSMSNotification: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-createNewSMSNotification-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure Bearer (JWT) access token for authorization: bearer
+OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('', 'YOUR_ACCESS_TOKEN');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\NotificationsApi();
+$smsNotificationFormDto = ; // SmsNotificationFormDto | 
+
+try {
+    $result = $api_instance->createNewSMSNotification($smsNotificationFormDto);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling NotificationsApi->createNewSMSNotification: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-createNewSMSNotification-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::NotificationsApi;
+
+# Configure Bearer (JWT) access token for authorization: bearer
+$WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::NotificationsApi->new();
+my $smsNotificationFormDto = WWW::OPenAPIClient::Object::SmsNotificationFormDto->new(); # SmsNotificationFormDto | 
+
+eval { 
+    my $result = $api_instance->createNewSMSNotification(smsNotificationFormDto => $smsNotificationFormDto);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling NotificationsApi->createNewSMSNotification: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-createNewSMSNotification-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Configure Bearer (JWT) access token for authorization: bearer
+openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# Create an instance of the API class
+api_instance = openapi_client.NotificationsApi()
+smsNotificationFormDto =  # SmsNotificationFormDto | 
+
+try: 
+    # Create new SMS notification.
+    api_response = api_instance.create_new_sms_notification(smsNotificationFormDto)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling NotificationsApi->createNewSMSNotification: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-createNewSMSNotification-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate NotificationsApi;
+
+pub fn main() {
+    let smsNotificationFormDto = ; // SmsNotificationFormDto
+
+    let mut context = NotificationsApi::Context::default();
+    let result = client.createNewSMSNotification(smsNotificationFormDto, &context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">smsNotificationFormDto <span style="color:red;">*</span></td>
+<td>
+<p class="marked"></p>
+<script>
+$(document).ready(function() {
+  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/SmsNotificationFormDto"
+      }
+    }
+  },
+  "required" : true
+};
+
+  var schema = findNode('schema',schemaWrapper).schema;
+  if (!schema) {
+    schema = schemaWrapper.schema;
+  }
+  if (schema.$ref != null) {
+    schema = defsParser.$refs.get(schema.$ref);
+  } else {
+    schemaWrapper.definitions = Object.assign({}, defs);
+    $RefParser.dereference(schemaWrapper).catch(function(err) {
+      console.log(err);
+    });
+  }
+
+  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+  var result = $('#d2e199_createNewSMSNotification_smsNotificationFormDto');
+  result.empty();
+  result.append(view.render());
+});
+</script>
+<div id="d2e199_createNewSMSNotification_smsNotificationFormDto"></div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Notifications-createNewSMSNotification-title-200"></h3>
+                            <p id="examples-Notifications-createNewSMSNotification-description-200" class="marked"></p>
+                            <script>
+                              var responseNotifications200_description = `OK`;
+                              var responseNotifications200_description_break = responseNotifications200_description.indexOf('\n');
+                              if (responseNotifications200_description_break == -1) {
+                                $("#examples-Notifications-createNewSMSNotification-title-200").text("Status: 200 - " + responseNotifications200_description);
+                              } else {
+                                $("#examples-Notifications-createNewSMSNotification-title-200").text("Status: 200 - " + responseNotifications200_description.substring(0, responseNotifications200_description_break));
+                                $("#examples-Notifications-createNewSMSNotification-description-200").html(responseNotifications200_description.substring(responseNotifications200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Notifications-createNewSMSNotification-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Notifications-createNewSMSNotification-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Notifications-createNewSMSNotification-200-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Notifications-createNewSMSNotification-200-schema">
+                                  <div id="responses-Notifications-createNewSMSNotification-schema-200" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/NotificationResponseDto"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Notifications-createNewSMSNotification-200-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Notifications-createNewSMSNotification-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Notifications-createNewSMSNotification-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Notifications-createNewSMSNotification-title-400"></h3>
+                            <p id="examples-Notifications-createNewSMSNotification-description-400" class="marked"></p>
+                            <script>
+                              var responseNotifications400_description = `Missing or invalid request parameters.`;
+                              var responseNotifications400_description_break = responseNotifications400_description.indexOf('\n');
+                              if (responseNotifications400_description_break == -1) {
+                                $("#examples-Notifications-createNewSMSNotification-title-400").text("Status: 400 - " + responseNotifications400_description);
+                              } else {
+                                $("#examples-Notifications-createNewSMSNotification-title-400").text("Status: 400 - " + responseNotifications400_description.substring(0, responseNotifications400_description_break));
+                                $("#examples-Notifications-createNewSMSNotification-description-400").html(responseNotifications400_description.substring(responseNotifications400_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Notifications-createNewSMSNotification-400" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Notifications-createNewSMSNotification-400-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Notifications-createNewSMSNotification-400-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Notifications-createNewSMSNotification-400-schema">
+                                  <div id="responses-Notifications-createNewSMSNotification-schema-400" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Missing or invalid request parameters.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Notifications-createNewSMSNotification-400-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Notifications-createNewSMSNotification-schema-400');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Notifications-createNewSMSNotification-400-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Notifications-createNewSMSNotification-title-401"></h3>
+                            <p id="examples-Notifications-createNewSMSNotification-description-401" class="marked"></p>
+                            <script>
+                              var responseNotifications401_description = `Access token is missing or invalid.`;
+                              var responseNotifications401_description_break = responseNotifications401_description.indexOf('\n');
+                              if (responseNotifications401_description_break == -1) {
+                                $("#examples-Notifications-createNewSMSNotification-title-401").text("Status: 401 - " + responseNotifications401_description);
+                              } else {
+                                $("#examples-Notifications-createNewSMSNotification-title-401").text("Status: 401 - " + responseNotifications401_description.substring(0, responseNotifications401_description_break));
+                                $("#examples-Notifications-createNewSMSNotification-description-401").html(responseNotifications401_description.substring(responseNotifications401_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Notifications-createNewSMSNotification-401" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Notifications-createNewSMSNotification-401-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Notifications-createNewSMSNotification-401-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Notifications-createNewSMSNotification-401-schema">
+                                  <div id="responses-Notifications-createNewSMSNotification-schema-401" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access token is missing or invalid.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Notifications-createNewSMSNotification-401-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Notifications-createNewSMSNotification-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Notifications-createNewSMSNotification-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Notifications-createNewSMSNotification-title-403"></h3>
+                            <p id="examples-Notifications-createNewSMSNotification-description-403" class="marked"></p>
+                            <script>
+                              var responseNotifications403_description = `Access forbidden.`;
+                              var responseNotifications403_description_break = responseNotifications403_description.indexOf('\n');
+                              if (responseNotifications403_description_break == -1) {
+                                $("#examples-Notifications-createNewSMSNotification-title-403").text("Status: 403 - " + responseNotifications403_description);
+                              } else {
+                                $("#examples-Notifications-createNewSMSNotification-title-403").text("Status: 403 - " + responseNotifications403_description.substring(0, responseNotifications403_description_break));
+                                $("#examples-Notifications-createNewSMSNotification-description-403").html(responseNotifications403_description.substring(responseNotifications403_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Notifications-createNewSMSNotification-403" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Notifications-createNewSMSNotification-403-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Notifications-createNewSMSNotification-403-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Notifications-createNewSMSNotification-403-schema">
+                                  <div id="responses-Notifications-createNewSMSNotification-schema-403" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access forbidden.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Notifications-createNewSMSNotification-403-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Notifications-createNewSMSNotification-schema-403');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Notifications-createNewSMSNotification-403-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Notifications-createNewSMSNotification-title-500"></h3>
+                            <p id="examples-Notifications-createNewSMSNotification-description-500" class="marked"></p>
+                            <script>
+                              var responseNotifications500_description = `Unexpected server error.`;
+                              var responseNotifications500_description_break = responseNotifications500_description.indexOf('\n');
+                              if (responseNotifications500_description_break == -1) {
+                                $("#examples-Notifications-createNewSMSNotification-title-500").text("Status: 500 - " + responseNotifications500_description);
+                              } else {
+                                $("#examples-Notifications-createNewSMSNotification-title-500").text("Status: 500 - " + responseNotifications500_description.substring(0, responseNotifications500_description_break));
+                                $("#examples-Notifications-createNewSMSNotification-description-500").html(responseNotifications500_description.substring(responseNotifications500_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Notifications-createNewSMSNotification-500" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Notifications-createNewSMSNotification-500-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Notifications-createNewSMSNotification-500-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Notifications-createNewSMSNotification-500-schema">
+                                  <div id="responses-Notifications-createNewSMSNotification-schema-500" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unexpected server error.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Notifications-createNewSMSNotification-500-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Notifications-createNewSMSNotification-schema-500');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Notifications-createNewSMSNotification-500-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Notifications-getNotificationById">
+                      <article id="api-Notifications-getNotificationById-0" data-group="User" data-name="getNotificationById" data-version="0">
+                        <div class="pull-left">
+                          <h1>getNotificationById</h1>
+                          <p>Get notification info by id.</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/notifications/{id}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Notifications-getNotificationById-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationById-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationById-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Notifications-getNotificationById-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Notifications-getNotificationById-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationById-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Notifications-getNotificationById-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Notifications-getNotificationById-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationById-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationById-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationById-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationById-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Notifications-getNotificationById-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+ -H "Accept: schema,application/json"\
+ "https://full.path.to/v3/notifications/{id}?includeStatistics="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Notifications-getNotificationById-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.NotificationsApi;
+
+import java.io.File;
+import java.util.*;
+
+public class NotificationsApiExample {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        
+        // Configure Bearer (JWT) access token for authorization: bearer
+        HttpBearerAuth bearer = (HttpBearerAuth) defaultClient.getAuthentication("bearer");
+        bearer.setBearerToken("BEARER TOKEN");
+        
+        // Create an instance of the API class
+        NotificationsApi apiInstance = new NotificationsApi();
+        Integer id = 56; // Integer | Notification ID.
+        Boolean includeStatistics = true; // Boolean | Whether to include notification statistics into the response.
+
+        
+        try {
+            apiInstance.getNotificationById(id, includeStatistics);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling NotificationsApi#getNotificationById");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Notifications-getNotificationById-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.NotificationsApi;
+
+public class NotificationsApiExample {
+    public static void main(String[] args) {
+        NotificationsApi apiInstance = new NotificationsApi();
+        Integer id = 56; // Integer | Notification ID.
+        Boolean includeStatistics = true; // Boolean | Whether to include notification statistics into the response.
+
+        
+        try {
+            apiInstance.getNotificationById(id, includeStatistics);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling NotificationsApi#getNotificationById");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Notifications-getNotificationById-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Notifications-getNotificationById-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+
+// Configure Bearer (JWT) access token for authorization: bearer
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+
+// Create an instance of the API class
+NotificationsApi *apiInstance = [[NotificationsApi alloc] init];
+Integer *id = 56; // Notification ID. (default to null)
+Boolean *includeStatistics = true; // Whether to include notification statistics into the response.
+ (optional) (default to false)
+
+// Get notification info by id.
+[apiInstance getNotificationByIdWith:id
+    includeStatistics:includeStatistics
+              completionHandler: ^(NSError* error) {
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-getNotificationById-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var EventurasApi = require('eventuras_api');
+var defaultClient = EventurasApi.ApiClient.instance;
+
+// Configure Bearer (JWT) access token for authorization: bearer
+var bearer = defaultClient.authentications['bearer'];
+bearer.accessToken = "YOUR ACCESS TOKEN";
+
+// Create an instance of the API class
+var api = new EventurasApi.NotificationsApi()
+var id = 56; // {Integer} Notification ID.
+var opts = {
+  'includeStatistics': true // {Boolean} Whether to include notification statistics into the response.
+
+};
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.getNotificationById(id, opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Notifications-getNotificationById-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Notifications-getNotificationById-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class getNotificationByIdExample
+    {
+        public void main()
+        {
+            // Configure Bearer (JWT) access token for authorization: bearer
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+            
+            // Create an instance of the API class
+            var apiInstance = new NotificationsApi();
+            var id = 56;  // Integer | Notification ID. (default to null)
+            var includeStatistics = true;  // Boolean | Whether to include notification statistics into the response.
+ (optional)  (default to false)
+
+            try {
+                // Get notification info by id.
+                apiInstance.getNotificationById(id, includeStatistics);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling NotificationsApi.getNotificationById: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-getNotificationById-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure Bearer (JWT) access token for authorization: bearer
+OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('', 'YOUR_ACCESS_TOKEN');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\NotificationsApi();
+$id = 56; // Integer | Notification ID.
+$includeStatistics = true; // Boolean | Whether to include notification statistics into the response.
+
+
+try {
+    $api_instance->getNotificationById($id, $includeStatistics);
+} catch (Exception $e) {
+    echo 'Exception when calling NotificationsApi->getNotificationById: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-getNotificationById-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::NotificationsApi;
+
+# Configure Bearer (JWT) access token for authorization: bearer
+$WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::NotificationsApi->new();
+my $id = 56; # Integer | Notification ID.
+my $includeStatistics = true; # Boolean | Whether to include notification statistics into the response.
+
+
+eval { 
+    $api_instance->getNotificationById(id => $id, includeStatistics => $includeStatistics);
+};
+if ($@) {
+    warn "Exception when calling NotificationsApi->getNotificationById: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-getNotificationById-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Configure Bearer (JWT) access token for authorization: bearer
+openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# Create an instance of the API class
+api_instance = openapi_client.NotificationsApi()
+id = 56 # Integer | Notification ID. (default to null)
+includeStatistics = true # Boolean | Whether to include notification statistics into the response.
+ (optional) (default to false)
+
+try: 
+    # Get notification info by id.
+    api_instance.get_notification_by_id(id, includeStatistics=includeStatistics)
+except ApiException as e:
+    print("Exception when calling NotificationsApi->getNotificationById: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-getNotificationById-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate NotificationsApi;
+
+pub fn main() {
+    let id = 56; // Integer
+    let includeStatistics = true; // Boolean
+
+    let mut context = NotificationsApi::Context::default();
+    let result = client.getNotificationById(id, includeStatistics, &context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+<td>
+
+
+    <div id="d2e199_getNotificationById_id">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Notification ID.
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">includeStatistics</td>
+<td>
+
+
+    <div id="d2e199_getNotificationById_includeStatistics">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Boolean
+                </span>
+
+                    <div class="inner description marked">
+Whether to include notification statistics into the response.
+
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Notifications-getNotificationById-title-200"></h3>
+                            <p id="examples-Notifications-getNotificationById-description-200" class="marked"></p>
+                            <script>
+                              var responseNotifications200_description = ``;
+                              var responseNotifications200_description_break = responseNotifications200_description.indexOf('\n');
+                              if (responseNotifications200_description_break == -1) {
+                                $("#examples-Notifications-getNotificationById-title-200").text("Status: 200 - " + responseNotifications200_description);
+                              } else {
+                                $("#examples-Notifications-getNotificationById-title-200").text("Status: 200 - " + responseNotifications200_description.substring(0, responseNotifications200_description_break));
+                                $("#examples-Notifications-getNotificationById-description-200").html(responseNotifications200_description.substring(responseNotifications200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Notifications-getNotificationById-200" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Notifications-getNotificationById-200-wrapper" style='margin-bottom: 10px;'>
+                            </div>
+                            <h3 id="examples-Notifications-getNotificationById-title-401"></h3>
+                            <p id="examples-Notifications-getNotificationById-description-401" class="marked"></p>
+                            <script>
+                              var responseNotifications401_description = `Access token is missing or invalid.`;
+                              var responseNotifications401_description_break = responseNotifications401_description.indexOf('\n');
+                              if (responseNotifications401_description_break == -1) {
+                                $("#examples-Notifications-getNotificationById-title-401").text("Status: 401 - " + responseNotifications401_description);
+                              } else {
+                                $("#examples-Notifications-getNotificationById-title-401").text("Status: 401 - " + responseNotifications401_description.substring(0, responseNotifications401_description_break));
+                                $("#examples-Notifications-getNotificationById-description-401").html(responseNotifications401_description.substring(responseNotifications401_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Notifications-getNotificationById-401" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Notifications-getNotificationById-401-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Notifications-getNotificationById-401-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Notifications-getNotificationById-401-schema">
+                                  <div id="responses-Notifications-getNotificationById-schema-401" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access token is missing or invalid.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Notifications-getNotificationById-401-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Notifications-getNotificationById-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Notifications-getNotificationById-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Notifications-getNotificationById-title-403"></h3>
+                            <p id="examples-Notifications-getNotificationById-description-403" class="marked"></p>
+                            <script>
+                              var responseNotifications403_description = `Access forbidden.`;
+                              var responseNotifications403_description_break = responseNotifications403_description.indexOf('\n');
+                              if (responseNotifications403_description_break == -1) {
+                                $("#examples-Notifications-getNotificationById-title-403").text("Status: 403 - " + responseNotifications403_description);
+                              } else {
+                                $("#examples-Notifications-getNotificationById-title-403").text("Status: 403 - " + responseNotifications403_description.substring(0, responseNotifications403_description_break));
+                                $("#examples-Notifications-getNotificationById-description-403").html(responseNotifications403_description.substring(responseNotifications403_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Notifications-getNotificationById-403" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Notifications-getNotificationById-403-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Notifications-getNotificationById-403-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Notifications-getNotificationById-403-schema">
+                                  <div id="responses-Notifications-getNotificationById-schema-403" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access forbidden.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Notifications-getNotificationById-403-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Notifications-getNotificationById-schema-403');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Notifications-getNotificationById-403-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Notifications-getNotificationById-title-404"></h3>
+                            <p id="examples-Notifications-getNotificationById-description-404" class="marked"></p>
+                            <script>
+                              var responseNotifications404_description = `The requested resource not found.`;
+                              var responseNotifications404_description_break = responseNotifications404_description.indexOf('\n');
+                              if (responseNotifications404_description_break == -1) {
+                                $("#examples-Notifications-getNotificationById-title-404").text("Status: 404 - " + responseNotifications404_description);
+                              } else {
+                                $("#examples-Notifications-getNotificationById-title-404").text("Status: 404 - " + responseNotifications404_description.substring(0, responseNotifications404_description_break));
+                                $("#examples-Notifications-getNotificationById-description-404").html(responseNotifications404_description.substring(responseNotifications404_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Notifications-getNotificationById-404" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Notifications-getNotificationById-404-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Notifications-getNotificationById-404-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Notifications-getNotificationById-404-schema">
+                                  <div id="responses-Notifications-getNotificationById-schema-404" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "The requested resource not found.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Notifications-getNotificationById-404-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Notifications-getNotificationById-schema-404');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Notifications-getNotificationById-404-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Notifications-getNotificationById-title-500"></h3>
+                            <p id="examples-Notifications-getNotificationById-description-500" class="marked"></p>
+                            <script>
+                              var responseNotifications500_description = `Unexpected server error.`;
+                              var responseNotifications500_description_break = responseNotifications500_description.indexOf('\n');
+                              if (responseNotifications500_description_break == -1) {
+                                $("#examples-Notifications-getNotificationById-title-500").text("Status: 500 - " + responseNotifications500_description);
+                              } else {
+                                $("#examples-Notifications-getNotificationById-title-500").text("Status: 500 - " + responseNotifications500_description.substring(0, responseNotifications500_description_break));
+                                $("#examples-Notifications-getNotificationById-description-500").html(responseNotifications500_description.substring(responseNotifications500_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Notifications-getNotificationById-500" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Notifications-getNotificationById-500-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Notifications-getNotificationById-500-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Notifications-getNotificationById-500-schema">
+                                  <div id="responses-Notifications-getNotificationById-schema-500" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unexpected server error.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Notifications-getNotificationById-500-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Notifications-getNotificationById-schema-500');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Notifications-getNotificationById-500-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Notifications-getNotificationRecipientList">
+                      <article id="api-Notifications-getNotificationRecipientList-0" data-group="User" data-name="getNotificationRecipientList" data-version="0">
+                        <div class="pull-left">
+                          <h1>getNotificationRecipientList</h1>
+                          <p>Get notification recipient list.</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/notifications/{id}/recipients</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Notifications-getNotificationRecipientList-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationRecipientList-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationRecipientList-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Notifications-getNotificationRecipientList-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Notifications-getNotificationRecipientList-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationRecipientList-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Notifications-getNotificationRecipientList-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Notifications-getNotificationRecipientList-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationRecipientList-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationRecipientList-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationRecipientList-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationRecipientList-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Notifications-getNotificationRecipientList-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+ -H "Accept: application/json"\
+ "https://full.path.to/v3/notifications/{id}/recipients?page=&count="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Notifications-getNotificationRecipientList-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.NotificationsApi;
+
+import java.io.File;
+import java.util.*;
+
+public class NotificationsApiExample {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        
+        // Configure Bearer (JWT) access token for authorization: bearer
+        HttpBearerAuth bearer = (HttpBearerAuth) defaultClient.getAuthentication("bearer");
+        bearer.setBearerToken("BEARER TOKEN");
+        
+        // Create an instance of the API class
+        NotificationsApi apiInstance = new NotificationsApi();
+        Integer id = 56; // Integer | Notification ID.
+        Integer page = 56; // Integer | Page number.
+        Integer count = 56; // Integer | Page size.
+        
+        try {
+            array[NotificationRecipientsPagedList] result = apiInstance.getNotificationRecipientList(id, page, count);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling NotificationsApi#getNotificationRecipientList");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Notifications-getNotificationRecipientList-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.NotificationsApi;
+
+public class NotificationsApiExample {
+    public static void main(String[] args) {
+        NotificationsApi apiInstance = new NotificationsApi();
+        Integer id = 56; // Integer | Notification ID.
+        Integer page = 56; // Integer | Page number.
+        Integer count = 56; // Integer | Page size.
+        
+        try {
+            array[NotificationRecipientsPagedList] result = apiInstance.getNotificationRecipientList(id, page, count);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling NotificationsApi#getNotificationRecipientList");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Notifications-getNotificationRecipientList-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Notifications-getNotificationRecipientList-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+
+// Configure Bearer (JWT) access token for authorization: bearer
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+
+// Create an instance of the API class
+NotificationsApi *apiInstance = [[NotificationsApi alloc] init];
+Integer *id = 56; // Notification ID. (default to null)
+Integer *page = 56; // Page number. (optional) (default to 1)
+Integer *count = 56; // Page size. (optional) (default to 100)
+
+// Get notification recipient list.
+[apiInstance getNotificationRecipientListWith:id
+    page:page
+    count:count
+              completionHandler: ^(array[NotificationRecipientsPagedList] output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-getNotificationRecipientList-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var EventurasApi = require('eventuras_api');
+var defaultClient = EventurasApi.ApiClient.instance;
+
+// Configure Bearer (JWT) access token for authorization: bearer
+var bearer = defaultClient.authentications['bearer'];
+bearer.accessToken = "YOUR ACCESS TOKEN";
+
+// Create an instance of the API class
+var api = new EventurasApi.NotificationsApi()
+var id = 56; // {Integer} Notification ID.
+var opts = {
+  'page': 56, // {Integer} Page number.
+  'count': 56 // {Integer} Page size.
+};
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getNotificationRecipientList(id, opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Notifications-getNotificationRecipientList-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Notifications-getNotificationRecipientList-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class getNotificationRecipientListExample
+    {
+        public void main()
+        {
+            // Configure Bearer (JWT) access token for authorization: bearer
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+            
+            // Create an instance of the API class
+            var apiInstance = new NotificationsApi();
+            var id = 56;  // Integer | Notification ID. (default to null)
+            var page = 56;  // Integer | Page number. (optional)  (default to 1)
+            var count = 56;  // Integer | Page size. (optional)  (default to 100)
+
+            try {
+                // Get notification recipient list.
+                array[NotificationRecipientsPagedList] result = apiInstance.getNotificationRecipientList(id, page, count);
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling NotificationsApi.getNotificationRecipientList: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-getNotificationRecipientList-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure Bearer (JWT) access token for authorization: bearer
+OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('', 'YOUR_ACCESS_TOKEN');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\NotificationsApi();
+$id = 56; // Integer | Notification ID.
+$page = 56; // Integer | Page number.
+$count = 56; // Integer | Page size.
+
+try {
+    $result = $api_instance->getNotificationRecipientList($id, $page, $count);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling NotificationsApi->getNotificationRecipientList: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-getNotificationRecipientList-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::NotificationsApi;
+
+# Configure Bearer (JWT) access token for authorization: bearer
+$WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::NotificationsApi->new();
+my $id = 56; # Integer | Notification ID.
+my $page = 56; # Integer | Page number.
+my $count = 56; # Integer | Page size.
+
+eval { 
+    my $result = $api_instance->getNotificationRecipientList(id => $id, page => $page, count => $count);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling NotificationsApi->getNotificationRecipientList: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-getNotificationRecipientList-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Configure Bearer (JWT) access token for authorization: bearer
+openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# Create an instance of the API class
+api_instance = openapi_client.NotificationsApi()
+id = 56 # Integer | Notification ID. (default to null)
+page = 56 # Integer | Page number. (optional) (default to 1)
+count = 56 # Integer | Page size. (optional) (default to 100)
+
+try: 
+    # Get notification recipient list.
+    api_response = api_instance.get_notification_recipient_list(id, page=page, count=count)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling NotificationsApi->getNotificationRecipientList: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-getNotificationRecipientList-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate NotificationsApi;
+
+pub fn main() {
+    let id = 56; // Integer
+    let page = 56; // Integer
+    let count = 56; // Integer
+
+    let mut context = NotificationsApi::Context::default();
+    let result = client.getNotificationRecipientList(id, page, count, &context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+<td>
+
+
+    <div id="d2e199_getNotificationRecipientList_id">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Notification ID.
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">page</td>
+<td>
+
+
+    <div id="d2e199_getNotificationRecipientList_page">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Page number.
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">count</td>
+<td>
+
+
+    <div id="d2e199_getNotificationRecipientList_count">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Page size.
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Notifications-getNotificationRecipientList-title-200"></h3>
+                            <p id="examples-Notifications-getNotificationRecipientList-description-200" class="marked"></p>
+                            <script>
+                              var responseNotifications200_description = `OK`;
+                              var responseNotifications200_description_break = responseNotifications200_description.indexOf('\n');
+                              if (responseNotifications200_description_break == -1) {
+                                $("#examples-Notifications-getNotificationRecipientList-title-200").text("Status: 200 - " + responseNotifications200_description);
+                              } else {
+                                $("#examples-Notifications-getNotificationRecipientList-title-200").text("Status: 200 - " + responseNotifications200_description.substring(0, responseNotifications200_description_break));
+                                $("#examples-Notifications-getNotificationRecipientList-description-200").html(responseNotifications200_description.substring(responseNotifications200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Notifications-getNotificationRecipientList-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Notifications-getNotificationRecipientList-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Notifications-getNotificationRecipientList-200-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Notifications-getNotificationRecipientList-200-schema">
+                                  <div id="responses-Notifications-getNotificationRecipientList-schema-200" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/NotificationRecipientsPagedList"
+        }
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Notifications-getNotificationRecipientList-200-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Notifications-getNotificationRecipientList-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Notifications-getNotificationRecipientList-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Notifications-getNotificationRecipientList-title-400"></h3>
+                            <p id="examples-Notifications-getNotificationRecipientList-description-400" class="marked"></p>
+                            <script>
+                              var responseNotifications400_description = `Missing or invalid request parameters.`;
+                              var responseNotifications400_description_break = responseNotifications400_description.indexOf('\n');
+                              if (responseNotifications400_description_break == -1) {
+                                $("#examples-Notifications-getNotificationRecipientList-title-400").text("Status: 400 - " + responseNotifications400_description);
+                              } else {
+                                $("#examples-Notifications-getNotificationRecipientList-title-400").text("Status: 400 - " + responseNotifications400_description.substring(0, responseNotifications400_description_break));
+                                $("#examples-Notifications-getNotificationRecipientList-description-400").html(responseNotifications400_description.substring(responseNotifications400_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Notifications-getNotificationRecipientList-400" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Notifications-getNotificationRecipientList-400-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Notifications-getNotificationRecipientList-400-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Notifications-getNotificationRecipientList-400-schema">
+                                  <div id="responses-Notifications-getNotificationRecipientList-schema-400" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Missing or invalid request parameters.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Notifications-getNotificationRecipientList-400-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Notifications-getNotificationRecipientList-schema-400');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Notifications-getNotificationRecipientList-400-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Notifications-getNotificationRecipientList-title-404"></h3>
+                            <p id="examples-Notifications-getNotificationRecipientList-description-404" class="marked"></p>
+                            <script>
+                              var responseNotifications404_description = `The requested resource not found.`;
+                              var responseNotifications404_description_break = responseNotifications404_description.indexOf('\n');
+                              if (responseNotifications404_description_break == -1) {
+                                $("#examples-Notifications-getNotificationRecipientList-title-404").text("Status: 404 - " + responseNotifications404_description);
+                              } else {
+                                $("#examples-Notifications-getNotificationRecipientList-title-404").text("Status: 404 - " + responseNotifications404_description.substring(0, responseNotifications404_description_break));
+                                $("#examples-Notifications-getNotificationRecipientList-description-404").html(responseNotifications404_description.substring(responseNotifications404_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Notifications-getNotificationRecipientList-404" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Notifications-getNotificationRecipientList-404-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Notifications-getNotificationRecipientList-404-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Notifications-getNotificationRecipientList-404-schema">
+                                  <div id="responses-Notifications-getNotificationRecipientList-schema-404" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "The requested resource not found.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Notifications-getNotificationRecipientList-404-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Notifications-getNotificationRecipientList-schema-404');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Notifications-getNotificationRecipientList-404-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Notifications-getNotificationRecipientList-title-500"></h3>
+                            <p id="examples-Notifications-getNotificationRecipientList-description-500" class="marked"></p>
+                            <script>
+                              var responseNotifications500_description = `Unexpected server error.`;
+                              var responseNotifications500_description_break = responseNotifications500_description.indexOf('\n');
+                              if (responseNotifications500_description_break == -1) {
+                                $("#examples-Notifications-getNotificationRecipientList-title-500").text("Status: 500 - " + responseNotifications500_description);
+                              } else {
+                                $("#examples-Notifications-getNotificationRecipientList-title-500").text("Status: 500 - " + responseNotifications500_description.substring(0, responseNotifications500_description_break));
+                                $("#examples-Notifications-getNotificationRecipientList-description-500").html(responseNotifications500_description.substring(responseNotifications500_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Notifications-getNotificationRecipientList-500" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Notifications-getNotificationRecipientList-500-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Notifications-getNotificationRecipientList-500-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Notifications-getNotificationRecipientList-500-schema">
+                                  <div id="responses-Notifications-getNotificationRecipientList-schema-500" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unexpected server error.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Notifications-getNotificationRecipientList-500-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Notifications-getNotificationRecipientList-schema-500');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Notifications-getNotificationRecipientList-500-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Notifications-getNotificationsList">
+                      <article id="api-Notifications-getNotificationsList-0" data-group="User" data-name="getNotificationsList" data-version="0">
+                        <div class="pull-left">
+                          <h1>getNotificationsList</h1>
+                          <p>Get notifications list.</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/notifications</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Notifications-getNotificationsList-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationsList-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationsList-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Notifications-getNotificationsList-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Notifications-getNotificationsList-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationsList-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Notifications-getNotificationsList-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Notifications-getNotificationsList-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationsList-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationsList-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationsList-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Notifications-getNotificationsList-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Notifications-getNotificationsList-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+ -H "Accept: application/json"\
+ "https://full.path.to/v3/notifications?page=&count=&eventId=&productId=&status=&type=&recipientUserId=&order=&desc=&includeStatistics="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Notifications-getNotificationsList-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.NotificationsApi;
+
+import java.io.File;
+import java.util.*;
+
+public class NotificationsApiExample {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        
+        // Configure Bearer (JWT) access token for authorization: bearer
+        HttpBearerAuth bearer = (HttpBearerAuth) defaultClient.getAuthentication("bearer");
+        bearer.setBearerToken("BEARER TOKEN");
+        
+        // Create an instance of the API class
+        NotificationsApi apiInstance = new NotificationsApi();
+        Integer page = 56; // Integer | Page number.
+        Integer count = 56; // Integer | Page size.
+        Integer eventId = 56; // Integer | Filter by event ID.
+        Integer productId = 56; // Integer | Filter by product ID.
+        String status = status_example; // String | Filter by notification status.
+        NotificationType type = ; // NotificationType | Filter by notification type (`sms` / `email`).
+        String recipientUserId = recipientUserId_example; // String | Filter by recipient ID.
+        String order = order_example; // String | Notifications list order.
+        Boolean desc = true; // Boolean | Whether to apply descending sorting.
+        Boolean includeStatistics = true; // Boolean | Whether to include notification statistics into the response.
+
+        
+        try {
+            array[NotificationsPagedList] result = apiInstance.getNotificationsList(page, count, eventId, productId, status, type, recipientUserId, order, desc, includeStatistics);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling NotificationsApi#getNotificationsList");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Notifications-getNotificationsList-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.NotificationsApi;
+
+public class NotificationsApiExample {
+    public static void main(String[] args) {
+        NotificationsApi apiInstance = new NotificationsApi();
+        Integer page = 56; // Integer | Page number.
+        Integer count = 56; // Integer | Page size.
+        Integer eventId = 56; // Integer | Filter by event ID.
+        Integer productId = 56; // Integer | Filter by product ID.
+        String status = status_example; // String | Filter by notification status.
+        NotificationType type = ; // NotificationType | Filter by notification type (`sms` / `email`).
+        String recipientUserId = recipientUserId_example; // String | Filter by recipient ID.
+        String order = order_example; // String | Notifications list order.
+        Boolean desc = true; // Boolean | Whether to apply descending sorting.
+        Boolean includeStatistics = true; // Boolean | Whether to include notification statistics into the response.
+
+        
+        try {
+            array[NotificationsPagedList] result = apiInstance.getNotificationsList(page, count, eventId, productId, status, type, recipientUserId, order, desc, includeStatistics);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling NotificationsApi#getNotificationsList");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Notifications-getNotificationsList-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Notifications-getNotificationsList-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+
+// Configure Bearer (JWT) access token for authorization: bearer
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+
+// Create an instance of the API class
+NotificationsApi *apiInstance = [[NotificationsApi alloc] init];
+Integer *page = 56; // Page number. (optional) (default to 1)
+Integer *count = 56; // Page size. (optional) (default to 100)
+Integer *eventId = 56; // Filter by event ID. (optional) (default to null)
+Integer *productId = 56; // Filter by product ID. (optional) (default to null)
+String *status = status_example; // Filter by notification status. (optional) (default to null)
+NotificationType *type = ; // Filter by notification type (`sms` / `email`). (optional) (default to null)
+String *recipientUserId = recipientUserId_example; // Filter by recipient ID. (optional) (default to null)
+String *order = order_example; // Notifications list order. (optional) (default to null)
+Boolean *desc = true; // Whether to apply descending sorting. (optional) (default to true)
+Boolean *includeStatistics = true; // Whether to include notification statistics into the response.
+ (optional) (default to false)
+
+// Get notifications list.
+[apiInstance getNotificationsListWith:page
+    count:count
+    eventId:eventId
+    productId:productId
+    status:status
+    type:type
+    recipientUserId:recipientUserId
+    order:order
+    desc:desc
+    includeStatistics:includeStatistics
+              completionHandler: ^(array[NotificationsPagedList] output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-getNotificationsList-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var EventurasApi = require('eventuras_api');
+var defaultClient = EventurasApi.ApiClient.instance;
+
+// Configure Bearer (JWT) access token for authorization: bearer
+var bearer = defaultClient.authentications['bearer'];
+bearer.accessToken = "YOUR ACCESS TOKEN";
+
+// Create an instance of the API class
+var api = new EventurasApi.NotificationsApi()
+var opts = {
+  'page': 56, // {Integer} Page number.
+  'count': 56, // {Integer} Page size.
+  'eventId': 56, // {Integer} Filter by event ID.
+  'productId': 56, // {Integer} Filter by product ID.
+  'status': status_example, // {String} Filter by notification status.
+  'type': , // {NotificationType} Filter by notification type (`sms` / `email`).
+  'recipientUserId': recipientUserId_example, // {String} Filter by recipient ID.
+  'order': order_example, // {String} Notifications list order.
+  'desc': true, // {Boolean} Whether to apply descending sorting.
+  'includeStatistics': true // {Boolean} Whether to include notification statistics into the response.
+
+};
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getNotificationsList(opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Notifications-getNotificationsList-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Notifications-getNotificationsList-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class getNotificationsListExample
+    {
+        public void main()
+        {
+            // Configure Bearer (JWT) access token for authorization: bearer
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+            
+            // Create an instance of the API class
+            var apiInstance = new NotificationsApi();
+            var page = 56;  // Integer | Page number. (optional)  (default to 1)
+            var count = 56;  // Integer | Page size. (optional)  (default to 100)
+            var eventId = 56;  // Integer | Filter by event ID. (optional)  (default to null)
+            var productId = 56;  // Integer | Filter by product ID. (optional)  (default to null)
+            var status = status_example;  // String | Filter by notification status. (optional)  (default to null)
+            var type = new NotificationType(); // NotificationType | Filter by notification type (`sms` / `email`). (optional)  (default to null)
+            var recipientUserId = recipientUserId_example;  // String | Filter by recipient ID. (optional)  (default to null)
+            var order = order_example;  // String | Notifications list order. (optional)  (default to null)
+            var desc = true;  // Boolean | Whether to apply descending sorting. (optional)  (default to true)
+            var includeStatistics = true;  // Boolean | Whether to include notification statistics into the response.
+ (optional)  (default to false)
+
+            try {
+                // Get notifications list.
+                array[NotificationsPagedList] result = apiInstance.getNotificationsList(page, count, eventId, productId, status, type, recipientUserId, order, desc, includeStatistics);
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling NotificationsApi.getNotificationsList: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-getNotificationsList-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure Bearer (JWT) access token for authorization: bearer
+OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('', 'YOUR_ACCESS_TOKEN');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\NotificationsApi();
+$page = 56; // Integer | Page number.
+$count = 56; // Integer | Page size.
+$eventId = 56; // Integer | Filter by event ID.
+$productId = 56; // Integer | Filter by product ID.
+$status = status_example; // String | Filter by notification status.
+$type = ; // NotificationType | Filter by notification type (`sms` / `email`).
+$recipientUserId = recipientUserId_example; // String | Filter by recipient ID.
+$order = order_example; // String | Notifications list order.
+$desc = true; // Boolean | Whether to apply descending sorting.
+$includeStatistics = true; // Boolean | Whether to include notification statistics into the response.
+
+
+try {
+    $result = $api_instance->getNotificationsList($page, $count, $eventId, $productId, $status, $type, $recipientUserId, $order, $desc, $includeStatistics);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling NotificationsApi->getNotificationsList: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-getNotificationsList-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::NotificationsApi;
+
+# Configure Bearer (JWT) access token for authorization: bearer
+$WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::NotificationsApi->new();
+my $page = 56; # Integer | Page number.
+my $count = 56; # Integer | Page size.
+my $eventId = 56; # Integer | Filter by event ID.
+my $productId = 56; # Integer | Filter by product ID.
+my $status = status_example; # String | Filter by notification status.
+my $type = ; # NotificationType | Filter by notification type (`sms` / `email`).
+my $recipientUserId = recipientUserId_example; # String | Filter by recipient ID.
+my $order = order_example; # String | Notifications list order.
+my $desc = true; # Boolean | Whether to apply descending sorting.
+my $includeStatistics = true; # Boolean | Whether to include notification statistics into the response.
+
+
+eval { 
+    my $result = $api_instance->getNotificationsList(page => $page, count => $count, eventId => $eventId, productId => $productId, status => $status, type => $type, recipientUserId => $recipientUserId, order => $order, desc => $desc, includeStatistics => $includeStatistics);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling NotificationsApi->getNotificationsList: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-getNotificationsList-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Configure Bearer (JWT) access token for authorization: bearer
+openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# Create an instance of the API class
+api_instance = openapi_client.NotificationsApi()
+page = 56 # Integer | Page number. (optional) (default to 1)
+count = 56 # Integer | Page size. (optional) (default to 100)
+eventId = 56 # Integer | Filter by event ID. (optional) (default to null)
+productId = 56 # Integer | Filter by product ID. (optional) (default to null)
+status = status_example # String | Filter by notification status. (optional) (default to null)
+type =  # NotificationType | Filter by notification type (`sms` / `email`). (optional) (default to null)
+recipientUserId = recipientUserId_example # String | Filter by recipient ID. (optional) (default to null)
+order = order_example # String | Notifications list order. (optional) (default to null)
+desc = true # Boolean | Whether to apply descending sorting. (optional) (default to true)
+includeStatistics = true # Boolean | Whether to include notification statistics into the response.
+ (optional) (default to false)
+
+try: 
+    # Get notifications list.
+    api_response = api_instance.get_notifications_list(page=page, count=count, eventId=eventId, productId=productId, status=status, type=type, recipientUserId=recipientUserId, order=order, desc=desc, includeStatistics=includeStatistics)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling NotificationsApi->getNotificationsList: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Notifications-getNotificationsList-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate NotificationsApi;
+
+pub fn main() {
+    let page = 56; // Integer
+    let count = 56; // Integer
+    let eventId = 56; // Integer
+    let productId = 56; // Integer
+    let status = status_example; // String
+    let type = ; // NotificationType
+    let recipientUserId = recipientUserId_example; // String
+    let order = order_example; // String
+    let desc = true; // Boolean
+    let includeStatistics = true; // Boolean
+
+    let mut context = NotificationsApi::Context::default();
+    let result = client.getNotificationsList(page, count, eventId, productId, status, type, recipientUserId, order, desc, includeStatistics, &context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">page</td>
+<td>
+
+
+    <div id="d2e199_getNotificationsList_page">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Page number.
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">count</td>
+<td>
+
+
+    <div id="d2e199_getNotificationsList_count">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Page size.
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">eventId</td>
+<td>
+
+
+    <div id="d2e199_getNotificationsList_eventId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Filter by event ID.
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">productId</td>
+<td>
+
+
+    <div id="d2e199_getNotificationsList_productId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Filter by product ID.
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">status</td>
+<td>
+
+
+    <div id="d2e199_getNotificationsList_status">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description marked">
+Filter by notification status.
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">type</td>
+<td>
+
+
+    <div id="d2e199_getNotificationsList_type">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    NotificationType
+                </span>
+
+                    <div class="inner description marked">
+Filter by notification type (&#x60;sms&#x60; / &#x60;email&#x60;).
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">recipientUserId</td>
+<td>
+
+
+    <div id="d2e199_getNotificationsList_recipientUserId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description marked">
+Filter by recipient ID.
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">order</td>
+<td>
+
+
+    <div id="d2e199_getNotificationsList_order">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description marked">
+Notifications list order.
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">desc</td>
+<td>
+
+
+    <div id="d2e199_getNotificationsList_desc">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Boolean
+                </span>
+
+                    <div class="inner description marked">
+Whether to apply descending sorting.
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">includeStatistics</td>
+<td>
+
+
+    <div id="d2e199_getNotificationsList_includeStatistics">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Boolean
+                </span>
+
+                    <div class="inner description marked">
+Whether to include notification statistics into the response.
+
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Notifications-getNotificationsList-title-200"></h3>
+                            <p id="examples-Notifications-getNotificationsList-description-200" class="marked"></p>
+                            <script>
+                              var responseNotifications200_description = `OK`;
+                              var responseNotifications200_description_break = responseNotifications200_description.indexOf('\n');
+                              if (responseNotifications200_description_break == -1) {
+                                $("#examples-Notifications-getNotificationsList-title-200").text("Status: 200 - " + responseNotifications200_description);
+                              } else {
+                                $("#examples-Notifications-getNotificationsList-title-200").text("Status: 200 - " + responseNotifications200_description.substring(0, responseNotifications200_description_break));
+                                $("#examples-Notifications-getNotificationsList-description-200").html(responseNotifications200_description.substring(responseNotifications200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Notifications-getNotificationsList-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Notifications-getNotificationsList-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Notifications-getNotificationsList-200-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Notifications-getNotificationsList-200-schema">
+                                  <div id="responses-Notifications-getNotificationsList-schema-200" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/NotificationsPagedList"
+        }
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Notifications-getNotificationsList-200-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Notifications-getNotificationsList-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Notifications-getNotificationsList-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Notifications-getNotificationsList-title-400"></h3>
+                            <p id="examples-Notifications-getNotificationsList-description-400" class="marked"></p>
+                            <script>
+                              var responseNotifications400_description = `Missing or invalid request parameters.`;
+                              var responseNotifications400_description_break = responseNotifications400_description.indexOf('\n');
+                              if (responseNotifications400_description_break == -1) {
+                                $("#examples-Notifications-getNotificationsList-title-400").text("Status: 400 - " + responseNotifications400_description);
+                              } else {
+                                $("#examples-Notifications-getNotificationsList-title-400").text("Status: 400 - " + responseNotifications400_description.substring(0, responseNotifications400_description_break));
+                                $("#examples-Notifications-getNotificationsList-description-400").html(responseNotifications400_description.substring(responseNotifications400_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Notifications-getNotificationsList-400" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Notifications-getNotificationsList-400-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Notifications-getNotificationsList-400-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Notifications-getNotificationsList-400-schema">
+                                  <div id="responses-Notifications-getNotificationsList-schema-400" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Missing or invalid request parameters.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Notifications-getNotificationsList-400-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Notifications-getNotificationsList-schema-400');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Notifications-getNotificationsList-400-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Notifications-getNotificationsList-title-401"></h3>
+                            <p id="examples-Notifications-getNotificationsList-description-401" class="marked"></p>
+                            <script>
+                              var responseNotifications401_description = `Access token is missing or invalid.`;
+                              var responseNotifications401_description_break = responseNotifications401_description.indexOf('\n');
+                              if (responseNotifications401_description_break == -1) {
+                                $("#examples-Notifications-getNotificationsList-title-401").text("Status: 401 - " + responseNotifications401_description);
+                              } else {
+                                $("#examples-Notifications-getNotificationsList-title-401").text("Status: 401 - " + responseNotifications401_description.substring(0, responseNotifications401_description_break));
+                                $("#examples-Notifications-getNotificationsList-description-401").html(responseNotifications401_description.substring(responseNotifications401_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Notifications-getNotificationsList-401" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Notifications-getNotificationsList-401-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Notifications-getNotificationsList-401-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Notifications-getNotificationsList-401-schema">
+                                  <div id="responses-Notifications-getNotificationsList-schema-401" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access token is missing or invalid.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Notifications-getNotificationsList-401-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Notifications-getNotificationsList-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Notifications-getNotificationsList-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Notifications-getNotificationsList-title-500"></h3>
+                            <p id="examples-Notifications-getNotificationsList-description-500" class="marked"></p>
+                            <script>
+                              var responseNotifications500_description = `Unexpected server error.`;
+                              var responseNotifications500_description_break = responseNotifications500_description.indexOf('\n');
+                              if (responseNotifications500_description_break == -1) {
+                                $("#examples-Notifications-getNotificationsList-title-500").text("Status: 500 - " + responseNotifications500_description);
+                              } else {
+                                $("#examples-Notifications-getNotificationsList-title-500").text("Status: 500 - " + responseNotifications500_description.substring(0, responseNotifications500_description_break));
+                                $("#examples-Notifications-getNotificationsList-description-500").html(responseNotifications500_description.substring(responseNotifications500_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Notifications-getNotificationsList-500" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Notifications-getNotificationsList-500-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Notifications-getNotificationsList-500-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Notifications-getNotificationsList-500-schema">
+                                  <div id="responses-Notifications-getNotificationsList-schema-500" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unexpected server error.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Notifications-getNotificationsList-500-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Notifications-getNotificationsList-schema-500');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Notifications-getNotificationsList-500-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
                   </section>
                 <section id="api-Orders">
                   <h1>Orders</h1>
@@ -23651,10 +26718,11 @@ Organization ID.
                               </tr>
                                 <tr><td style="width:150px;">organizationSettingValueDto <span style="color:red;">*</span></td>
 <td>
-<p class="marked"></p>
+<p class="marked">Array of organization settings key value pairs.</p>
 <script>
 $(document).ready(function() {
   var schemaWrapper = {
+  "description" : "Array of organization settings key value pairs.",
   "content" : {
     "application/json" : {
       "schema" : {
@@ -38209,10 +41277,11 @@ Organization ID.
                               </tr>
                                 <tr><td style="width:150px;">organizationSettingValueDto <span style="color:red;">*</span></td>
 <td>
-<p class="marked"></p>
+<p class="marked">Array of organization settings key value pairs.</p>
 <script>
 $(document).ready(function() {
   var schemaWrapper = {
+  "description" : "Array of organization settings key value pairs.",
   "content" : {
     "application/json" : {
       "schema" : {

@@ -1,0 +1,30 @@
+get:
+  summary: Get notification recipient list.
+  operationId: getNotificationRecipientList
+  tags:
+    - notifications
+  parameters:
+    - name: id
+      in: path
+      description: Notification ID.
+      required: true
+      schema:
+        type: integer
+        format: int32
+    - $ref: 'eventuras-api.v3.yaml#/components/parameters/pageNumber'
+    - $ref: 'eventuras-api.v3.yaml#/components/parameters/pageSize'
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '../../schemas/notifications/NotificationRecipientsPagedList.yaml'
+    '400':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/InvalidRequestError'
+    '404':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/NotFound'
+    '500':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/InternalServerError'
