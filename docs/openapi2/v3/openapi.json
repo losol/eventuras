@@ -650,7 +650,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/NotificationResponseDto"
+                  "$ref" : "#/components/schemas/NotificationDto"
                 }
               }
             },
@@ -720,7 +720,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/NotificationResponseDto"
+                  "$ref" : "#/components/schemas/NotificationDto"
                 }
               }
             },
@@ -796,7 +796,11 @@
         "responses" : {
           "200" : {
             "content" : {
-              "schema" : { }
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/NotificationDto"
+                }
+              }
             }
           },
           "401" : {
@@ -4215,21 +4219,54 @@
         "title" : "New email notification info",
         "type" : "object"
       },
-      "NotificationResponseDto" : {
+      "NotificationDto" : {
         "properties" : {
           "notificationId" : {
-            "description" : "Notification identifier, which can later be used for monitoring notification sending stats.",
+            "description" : "Notification identifier.",
             "format" : "int32",
             "type" : "integer"
           },
-          "totalRecipients" : {
-            "description" : "Notification recipients total.",
+          "organizationId" : {
+            "description" : "Organization identifier the notification is related to.",
             "format" : "int32",
             "type" : "integer"
+          },
+          "eventId" : {
+            "description" : "Event identifier the notification is related to.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "productId" : {
+            "description" : "Product identifier the notification is related to.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "message" : {
+            "description" : "Notification message text.",
+            "type" : "string"
+          },
+          "created" : {
+            "description" : "Notification creation date and time.",
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/NotificationStatus"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/NotificationType"
+          },
+          "statusUpdated" : {
+            "description" : "Last status update date and time.",
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "statistics" : {
+            "$ref" : "#/components/schemas/NotificationStatisticsDto"
           }
         },
-        "required" : [ "notificationId", "totalRecipients" ],
-        "title" : "Created notification info",
+        "required" : [ "created", "message", "notificationId", "status", "statusUpdated", "type" ],
+        "title" : "Notification info",
         "type" : "object"
       },
       "SmsNotificationFormDto" : {
@@ -5263,56 +5300,6 @@
         "title" : "Order line data.",
         "type" : "object"
       },
-      "NotificationDto" : {
-        "properties" : {
-          "notificationId" : {
-            "description" : "Notification identifier.",
-            "format" : "int32",
-            "type" : "integer"
-          },
-          "organizationId" : {
-            "description" : "Organization identifier the notification is related to.",
-            "format" : "int32",
-            "type" : "integer"
-          },
-          "eventId" : {
-            "description" : "Event identifier the notification is related to.",
-            "format" : "int32",
-            "type" : "integer"
-          },
-          "productId" : {
-            "description" : "Product identifier the notification is related to.",
-            "format" : "int32",
-            "type" : "integer"
-          },
-          "message" : {
-            "description" : "Notification message text.",
-            "type" : "string"
-          },
-          "created" : {
-            "description" : "Notification creation date and time.",
-            "format" : "date-time",
-            "type" : "string"
-          },
-          "status" : {
-            "$ref" : "#/components/schemas/NotificationStatus"
-          },
-          "type" : {
-            "$ref" : "#/components/schemas/NotificationType"
-          },
-          "statusUpdated" : {
-            "description" : "Last status update date and time.",
-            "format" : "date-time",
-            "type" : "string"
-          },
-          "statistics" : {
-            "$ref" : "#/components/schemas/NotificationStatisticsDto"
-          }
-        },
-        "required" : [ "created", "message", "notificationId", "status", "statusUpdated", "type" ],
-        "title" : "Notification info",
-        "type" : "object"
-      },
       "EventParticipantsFilterDto" : {
         "description" : "Used to filter out notification recipients.\nAll properties are optional.\n",
         "properties" : {
@@ -5338,6 +5325,33 @@
           }
         },
         "title" : "Notification recipients filter",
+        "type" : "object"
+      },
+      "NotificationStatus" : {
+        "enum" : [ "new", "queued", "started", "cancelled", "failed", "sent" ],
+        "title" : "Notification status enum (`new` | `queued` | `started` | `cancelled` | `failed` | `sent`).\n",
+        "type" : "string"
+      },
+      "NotificationStatisticsDto" : {
+        "properties" : {
+          "recipients" : {
+            "description" : "Total number of recipients.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "sent" : {
+            "description" : "Total number of notifications delivered.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "errors" : {
+            "description" : "Total number of notifications NOT delivered because of an errors.",
+            "format" : "int32",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "errors", "recipients", "sent" ],
+        "title" : "Notification statistics info",
         "type" : "object"
       },
       "NotificationRecipientDto" : {
@@ -5512,33 +5526,6 @@
         "description" : "String = 1,\nNumber = 2,\nUrl = 3,\nEmail = 4\n",
         "title" : "Organization setting type enum.",
         "type" : "integer"
-      },
-      "NotificationStatus" : {
-        "enum" : [ "new", "queued", "started", "cancelled", "failed", "sent" ],
-        "title" : "Notification status enum (`new` | `queued` | `started` | `cancelled` | `failed` | `sent`).\n",
-        "type" : "string"
-      },
-      "NotificationStatisticsDto" : {
-        "properties" : {
-          "recipients" : {
-            "description" : "Total number of recipients.",
-            "format" : "int32",
-            "type" : "integer"
-          },
-          "sent" : {
-            "description" : "Total number of notifications delivered.",
-            "format" : "int32",
-            "type" : "integer"
-          },
-          "errors" : {
-            "description" : "Total number of notifications NOT delivered because of an errors.",
-            "format" : "int32",
-            "type" : "integer"
-          }
-        },
-        "required" : [ "errors", "recipients", "sent" ],
-        "title" : "Notification statistics info",
-        "type" : "object"
       },
       "AddressDto" : {
         "properties" : {

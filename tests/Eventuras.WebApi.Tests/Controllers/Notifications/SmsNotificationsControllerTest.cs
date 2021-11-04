@@ -81,7 +81,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     eventId = 10001
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope);
 
             _factory.SmsSenderMock.Verify(s => s
                     .SendSmsAsync(It.IsAny<string>(), It.IsAny<string>()),
@@ -141,7 +142,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     eventId = e1.Entity.EventInfoId
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope,
+                user.Entity, otherUser.Entity);
 
             CheckSmsSentTo("Test message 2",
                 user.Entity, otherUser.Entity); // should send to both users
@@ -199,7 +202,10 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                             eventId = e.Entity.EventInfoId
                         }
                     });
-                    response.CheckOk();
+
+                    await response.CheckNotificationResponse(scope,
+                        users.Select(u => u.Entity)
+                            .ToArray());
 
                     _factory.SmsSenderMock.Verify(s => s
                             .SendSmsAsync(It.IsAny<string>(), It.IsAny<string>()),
@@ -249,7 +255,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     eventId = e1.Entity.EventInfoId
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope,
+                u1.Entity, u2.Entity);
 
             CheckSmsSentTo("Test message 1",
                 u1.Entity, u2.Entity); // both users registered to event 1
@@ -264,7 +272,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     eventId = e2.Entity.EventInfoId
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope, u2.Entity);
 
             CheckSmsSentTo("Test message 2",
                 u2.Entity); // only user 2 is registered to event 2
@@ -291,7 +300,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     "+22222222222"
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope, 2);
 
             _factory.SmsSenderMock.Verify(s => s
                     .SendSmsAsync("+11111111111", "Test message"),
@@ -340,7 +350,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     registrationTypes = new[] { "Participant", "Student", "Lecturer" }
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope, u1.Entity, u3.Entity);
 
             CheckSmsSentTo("Message to verified users", u1.Entity, u3.Entity);
             CheckEmailNotSentTo(u2.Entity);
@@ -359,7 +370,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     registrationTypes = new[] { "Participant", "Student", "Lecturer" }
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope, u2.Entity);
 
             CheckSmsSentTo("Message to draft users", u2.Entity);
             CheckEmailNotSentTo(u1.Entity, u3.Entity);
@@ -377,7 +389,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     registrationTypes = new[] { Registration.RegistrationType.Participant }
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope, u1.Entity);
 
             CheckSmsSentTo("Message to participants", u1.Entity);
             CheckEmailNotSentTo(u2.Entity, u3.Entity);
@@ -396,7 +409,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     registrationTypes = new[] { Registration.RegistrationType.Lecturer }
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope, u3.Entity);
 
             CheckSmsSentTo("Message to verified lecturers", u3.Entity);
             CheckEmailNotSentTo(u1.Entity, u2.Entity);
@@ -424,7 +438,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     }
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope,
+                u1.Entity, u2.Entity, u3.Entity);
 
             CheckSmsSentTo("Message to everyone",
                 u1.Entity, u2.Entity, u3.Entity);
@@ -448,7 +464,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                 recipients = new[] { phone }
             });
             var c = await response.Content.ReadAsStringAsync();
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope, 1);
 
             CheckSmsSentTo(message, phone);
 
@@ -502,7 +519,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     eventId = evt.Entity.EventInfoId
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope, user.Entity);
 
             CheckSmsSentTo("Test message 1", user.Entity);
 
@@ -562,7 +580,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                 }
             });
 
-            response.CheckOk();
+            await response.CheckNotificationResponse(scope, u1.Entity);
 
             CheckEmailNotSentTo(u1.Entity);
             CheckSmsSentTo("Test message 1", u2.Entity); // only user u2 has ordered product p 
@@ -622,7 +640,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     eventId = evt.Entity.EventInfoId
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope, 1, 0, 1);
 
             var notification = await scope.Db.Notifications
                 .Include(n => n.Recipients)

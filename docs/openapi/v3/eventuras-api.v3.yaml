@@ -442,7 +442,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotificationResponseDto'
+                $ref: '#/components/schemas/NotificationDto'
           description: OK
         "400":
           content:
@@ -488,7 +488,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotificationResponseDto'
+                $ref: '#/components/schemas/NotificationDto'
           description: OK
         "400":
           content:
@@ -2909,56 +2909,6 @@ components:
       - subject
       title: New email notification info
       type: object
-    NotificationResponseDto:
-      example:
-        totalRecipients: 6
-        notificationId: 0
-      properties:
-        notificationId:
-          description: Notification identifier, which can later be used for monitoring
-            notification sending stats.
-          format: int32
-          type: integer
-        totalRecipients:
-          description: Notification recipients total.
-          format: int32
-          type: integer
-      required:
-      - notificationId
-      - totalRecipients
-      title: Created notification info
-      type: object
-    SmsNotificationFormDto:
-      example:
-        eventParticipants:
-          eventId: 0
-          productId: 6
-          registrationTypes:
-          - null
-          - null
-          registrationStatuses:
-          - null
-          - null
-        recipients:
-        - recipients
-        - recipients
-        message: message
-      properties:
-        message:
-          description: SMS text.
-          type: string
-        recipients:
-          description: List of phone numbers.
-          items:
-            description: Phone number.
-            type: string
-          type: array
-        eventParticipants:
-          $ref: '#/components/schemas/EventParticipantsFilterDto'
-      required:
-      - mssage
-      title: New SMS notification info
-      type: object
     NotificationDto:
       example:
         organizationId: 6
@@ -3014,6 +2964,37 @@ components:
       - statusUpdated
       - type
       title: Notification info
+      type: object
+    SmsNotificationFormDto:
+      example:
+        eventParticipants:
+          eventId: 0
+          productId: 6
+          registrationTypes:
+          - null
+          - null
+          registrationStatuses:
+          - null
+          - null
+        recipients:
+        - recipients
+        - recipients
+        message: message
+      properties:
+        message:
+          description: SMS text.
+          type: string
+        recipients:
+          description: List of phone numbers.
+          items:
+            description: Phone number.
+            type: string
+          type: array
+        eventParticipants:
+          $ref: '#/components/schemas/EventParticipantsFilterDto'
+      required:
+      - mssage
+      title: New SMS notification info
       type: object
     NotificationRecipientsPagedList:
       example:

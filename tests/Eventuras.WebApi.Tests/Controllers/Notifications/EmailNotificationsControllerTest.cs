@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Http;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using Eventuras.Domain;
@@ -87,7 +88,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     eventId = 10001
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope);
 
             _factory.EmailSenderMock.Verify(s => s
                 .SendEmailAsync(It.IsAny<EmailModel>()), Times.Never);
@@ -147,7 +149,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     eventId = e1.Entity.EventInfoId
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope,
+                user.Entity, otherUser.Entity);
 
             CheckEmailSentTo("Test 2", "Test email 2",
                 user.Entity, otherUser.Entity); // should send to both users
@@ -206,7 +210,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                             eventId = e.Entity.EventInfoId
                         }
                     });
-                    response.CheckOk();
+
+                    await response.CheckNotificationResponse(scope,
+                        users.Select(u => u.Entity).ToArray());
 
                     _factory.EmailSenderMock.Verify(s => s
                         .SendEmailAsync(It.IsAny<EmailModel>()), Times.Exactly(users.Length));
@@ -256,7 +262,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     eventId = e1.Entity.EventInfoId
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope, u1.Entity, u2.Entity);
 
             CheckEmailSentTo("Test 1", "Test email 1",
                 u1.Entity, u2.Entity); // both users registered to event 1
@@ -272,7 +279,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     eventId = e2.Entity.EventInfoId
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope, u2.Entity);
 
             CheckEmailSentTo("Test 2", "Test email 2",
                 u2.Entity); // only user 2 is registered to event 2
@@ -300,7 +308,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     "Other Person <other@email.com>"
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope, 2);
 
             _factory.EmailSenderMock.Verify(s => s
                     .SendEmailAsync(It.Is(MatchUser("Test Person", "test@email.com", "Test", "Test email"))),
@@ -350,7 +359,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     registrationTypes = new[] { "Participant", "Student", "Lecturer" }
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope, u1.Entity, u3.Entity);
 
             CheckEmailSentTo("Letter to verified users", "Letter to verified users body", u1.Entity, u3.Entity);
             CheckEmailNotSentTo(u2.Entity);
@@ -370,7 +380,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     registrationTypes = new[] { "Participant", "Student", "Lecturer" }
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope, u2.Entity);
 
             CheckEmailSentTo("Letter to draft users", "Letter to draft users body", u2.Entity);
             CheckEmailNotSentTo(u1.Entity, u3.Entity);
@@ -389,7 +400,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     registrationTypes = new[] { Registration.RegistrationType.Participant }
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope, u1.Entity);
 
             CheckEmailSentTo("Letter to participants", "Letter to participants body", u1.Entity);
             CheckEmailNotSentTo(u2.Entity, u3.Entity);
@@ -409,7 +421,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     registrationTypes = new[] { Registration.RegistrationType.Lecturer }
                 }
             });
-            response.CheckOk();
+
+            await response.CheckNotificationResponse(scope, u3.Entity);
 
             CheckEmailSentTo("Letter to verified lecturers", "Letter to verified lecturers body", u3.Entity);
             CheckEmailNotSentTo(u1.Entity, u2.Entity);
@@ -438,7 +451,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     }
                 }
             });
-            response.CheckOk();
+            
+            await response.CheckNotificationResponse(scope,
+                u1.Entity, u2.Entity, u3.Entity);
 
             CheckEmailSentTo("Letter to everyone", "Letter to everyone body",
                 u1.Entity, u2.Entity, u3.Entity);
@@ -463,7 +478,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                 bodyMarkdown = body,
                 recipients = new[] { address }
             });
-            response.CheckOk();
+            
+            await response.CheckNotificationResponse(scope, 1);
 
             CheckEmailSentTo(subject, body, address);
 
@@ -518,7 +534,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     eventId = evt.Entity.EventInfoId
                 }
             });
-            response.CheckOk();
+            
+            await response.CheckNotificationResponse(scope, user.Entity);
 
             CheckEmailSentTo("Test 1", "Test email 1", user.Entity);
 
@@ -578,7 +595,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                 }
             });
 
-            response.CheckOk();
+            await response.CheckNotificationResponse(scope, u2.Entity);
 
             CheckEmailNotSentTo(u1.Entity);
             CheckEmailSentTo("Test 1", "Test email 1", u2.Entity); // only user u2 has ordered product p 
@@ -639,7 +656,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     eventId = evt.Entity.EventInfoId
                 }
             });
-            response.CheckOk();
+            
+            await response.CheckNotificationResponse(scope, 1, 0, 1);
 
             var notification = await scope.Db.Notifications
                 .Include(n => n.Recipients)

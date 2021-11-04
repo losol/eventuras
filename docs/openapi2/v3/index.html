@@ -1542,23 +1542,6 @@ ul.nav-tabs {
     } ]
   }
 };
-    defs["NotificationResponseDto"] = {
-  "title" : "Created notification info",
-  "required" : [ "notificationId", "totalRecipients" ],
-  "type" : "object",
-  "properties" : {
-    "notificationId" : {
-      "type" : "integer",
-      "description" : "Notification identifier, which can later be used for monitoring notification sending stats.",
-      "format" : "int32"
-    },
-    "totalRecipients" : {
-      "type" : "integer",
-      "description" : "Notification recipients total.",
-      "format" : "int32"
-    }
-  }
-};
     defs["NotificationStatisticsDto"] = {
   "title" : "Notification statistics info",
   "required" : [ "errors", "recipients", "sent" ],
@@ -19007,7 +18990,7 @@ public class NotificationsApiExample {
         EmailNotificationFormDto emailNotificationFormDto = ; // EmailNotificationFormDto | 
         
         try {
-            NotificationResponseDto result = apiInstance.createNewEmailNotification(emailNotificationFormDto);
+            NotificationDto result = apiInstance.createNewEmailNotification(emailNotificationFormDto);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling NotificationsApi#createNewEmailNotification");
@@ -19027,7 +19010,7 @@ public class NotificationsApiExample {
         EmailNotificationFormDto emailNotificationFormDto = ; // EmailNotificationFormDto | 
         
         try {
-            NotificationResponseDto result = apiInstance.createNewEmailNotification(emailNotificationFormDto);
+            NotificationDto result = apiInstance.createNewEmailNotification(emailNotificationFormDto);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling NotificationsApi#createNewEmailNotification");
@@ -19052,7 +19035,7 @@ EmailNotificationFormDto *emailNotificationFormDto = ; //
 
 // Create new email notification.
 [apiInstance createNewEmailNotificationWith:emailNotificationFormDto
-              completionHandler: ^(NotificationResponseDto output, NSError* error) {
+              completionHandler: ^(NotificationDto output, NSError* error) {
     if (output) {
         NSLog(@"%@", output);
     }
@@ -19111,7 +19094,7 @@ namespace Example
 
             try {
                 // Create new email notification.
-                NotificationResponseDto result = apiInstance.createNewEmailNotification(emailNotificationFormDto);
+                NotificationDto result = apiInstance.createNewEmailNotification(emailNotificationFormDto);
                 Debug.WriteLine(result);
             } catch (Exception e) {
                 Debug.Print("Exception when calling NotificationsApi.createNewEmailNotification: " + e.Message );
@@ -19294,7 +19277,7 @@ $(document).ready(function() {
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/NotificationResponseDto"
+        "$ref" : "#/components/schemas/NotificationDto"
       }
     }
   }
@@ -19655,7 +19638,7 @@ public class NotificationsApiExample {
         SmsNotificationFormDto smsNotificationFormDto = ; // SmsNotificationFormDto | 
         
         try {
-            NotificationResponseDto result = apiInstance.createNewSMSNotification(smsNotificationFormDto);
+            NotificationDto result = apiInstance.createNewSMSNotification(smsNotificationFormDto);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling NotificationsApi#createNewSMSNotification");
@@ -19675,7 +19658,7 @@ public class NotificationsApiExample {
         SmsNotificationFormDto smsNotificationFormDto = ; // SmsNotificationFormDto | 
         
         try {
-            NotificationResponseDto result = apiInstance.createNewSMSNotification(smsNotificationFormDto);
+            NotificationDto result = apiInstance.createNewSMSNotification(smsNotificationFormDto);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling NotificationsApi#createNewSMSNotification");
@@ -19700,7 +19683,7 @@ SmsNotificationFormDto *smsNotificationFormDto = ; //
 
 // Create new SMS notification.
 [apiInstance createNewSMSNotificationWith:smsNotificationFormDto
-              completionHandler: ^(NotificationResponseDto output, NSError* error) {
+              completionHandler: ^(NotificationDto output, NSError* error) {
     if (output) {
         NSLog(@"%@", output);
     }
@@ -19759,7 +19742,7 @@ namespace Example
 
             try {
                 // Create new SMS notification.
-                NotificationResponseDto result = apiInstance.createNewSMSNotification(smsNotificationFormDto);
+                NotificationDto result = apiInstance.createNewSMSNotification(smsNotificationFormDto);
                 Debug.WriteLine(result);
             } catch (Exception e) {
                 Debug.Print("Exception when calling NotificationsApi.createNewSMSNotification: " + e.Message );
@@ -19942,7 +19925,7 @@ $(document).ready(function() {
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/NotificationResponseDto"
+        "$ref" : "#/components/schemas/NotificationDto"
       }
     }
   }
@@ -20275,7 +20258,7 @@ $(document).ready(function() {
                           <div class="tab-pane active" id="examples-Notifications-getNotificationById-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X GET\
  -H "Authorization: Bearer [[accessToken]]"\
- -H "Accept: schema,application/json"\
+ -H "Accept: application/json"\
  "https://full.path.to/v3/notifications/{id}?includeStatistics="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Notifications-getNotificationById-0-java">
@@ -20302,7 +20285,8 @@ public class NotificationsApiExample {
 
         
         try {
-            apiInstance.getNotificationById(id, includeStatistics);
+            NotificationDto result = apiInstance.getNotificationById(id, includeStatistics);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling NotificationsApi#getNotificationById");
             e.printStackTrace();
@@ -20323,7 +20307,8 @@ public class NotificationsApiExample {
 
         
         try {
-            apiInstance.getNotificationById(id, includeStatistics);
+            NotificationDto result = apiInstance.getNotificationById(id, includeStatistics);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling NotificationsApi#getNotificationById");
             e.printStackTrace();
@@ -20350,7 +20335,10 @@ Boolean *includeStatistics = true; // Whether to include notification statistics
 // Get notification info by id.
 [apiInstance getNotificationByIdWith:id
     includeStatistics:includeStatistics
-              completionHandler: ^(NSError* error) {
+              completionHandler: ^(NotificationDto output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
     if (error) {
         NSLog(@"Error: %@", error);
     }
@@ -20378,7 +20366,7 @@ var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
 api.getNotificationById(id, opts, callback);
@@ -20412,7 +20400,8 @@ namespace Example
 
             try {
                 // Get notification info by id.
-                apiInstance.getNotificationById(id, includeStatistics);
+                NotificationDto result = apiInstance.getNotificationById(id, includeStatistics);
+                Debug.WriteLine(result);
             } catch (Exception e) {
                 Debug.Print("Exception when calling NotificationsApi.getNotificationById: " + e.Message );
             }
@@ -20436,7 +20425,8 @@ $includeStatistics = true; // Boolean | Whether to include notification statisti
 
 
 try {
-    $api_instance->getNotificationById($id, $includeStatistics);
+    $result = $api_instance->getNotificationById($id, $includeStatistics);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling NotificationsApi->getNotificationById: ', $e->getMessage(), PHP_EOL;
 }
@@ -20458,7 +20448,8 @@ my $includeStatistics = true; # Boolean | Whether to include notification statis
 
 
 eval { 
-    $api_instance->getNotificationById(id => $id, includeStatistics => $includeStatistics);
+    my $result = $api_instance->getNotificationById(id => $id, includeStatistics => $includeStatistics);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling NotificationsApi->getNotificationById: $@\n";
@@ -20483,7 +20474,8 @@ includeStatistics = true # Boolean | Whether to include notification statistics 
 
 try: 
     # Get notification info by id.
-    api_instance.get_notification_by_id(id, includeStatistics=includeStatistics)
+    api_response = api_instance.get_notification_by_id(id, includeStatistics=includeStatistics)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling NotificationsApi->getNotificationById: %s\n" % e)</code></pre>
                             </div>
@@ -20593,12 +20585,55 @@ Whether to include notification statistics into the response.
 
 
                             <ul id="responses-detail-Notifications-getNotificationById-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Notifications-getNotificationById-200-schema">Schema</a>
+                                </li>
+
+
 
 
                             </ul>
 
 
                             <div class="tab-content" id="responses-Notifications-getNotificationById-200-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Notifications-getNotificationById-200-schema">
+                                  <div id="responses-Notifications-getNotificationById-schema-200" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/NotificationDto"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Notifications-getNotificationById-200-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Notifications-getNotificationById-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Notifications-getNotificationById-200-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
                             <h3 id="examples-Notifications-getNotificationById-title-401"></h3>
                             <p id="examples-Notifications-getNotificationById-description-401" class="marked"></p>

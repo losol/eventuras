@@ -1908,7 +1908,7 @@ or explicit email addresses.</div>
 
     <h3 class="field-label">Return type</h3>
     <div class="return-type">
-      <a href="#NotificationResponseDto">NotificationResponseDto</a>
+      <a href="#NotificationDto">NotificationDto</a>
       
     </div>
 
@@ -1917,8 +1917,18 @@ or explicit email addresses.</div>
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
     <pre class="example"><code>{
-  "totalRecipients" : 6,
-  "notificationId" : 0
+  "organizationId" : 6,
+  "eventId" : 1,
+  "productId" : 5,
+  "created" : "2000-01-23T04:56:07.000+00:00",
+  "notificationId" : 0,
+  "message" : "message",
+  "statusUpdated" : "2000-01-23T04:56:07.000+00:00",
+  "statistics" : {
+    "recipients" : 5,
+    "sent" : 2,
+    "errors" : 7
+  }
 }</code></pre>
 
     <h3 class="field-label">Produces</h3>
@@ -1931,7 +1941,7 @@ or explicit email addresses.</div>
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
     OK
-        <a href="#NotificationResponseDto">NotificationResponseDto</a>
+        <a href="#NotificationDto">NotificationDto</a>
     <h4 class="field-label">400</h4>
     Missing or invalid request parameters.
         <a href="#Error">Error</a>
@@ -1974,7 +1984,7 @@ or explicit list of phone numbers.</div>
 
     <h3 class="field-label">Return type</h3>
     <div class="return-type">
-      <a href="#NotificationResponseDto">NotificationResponseDto</a>
+      <a href="#NotificationDto">NotificationDto</a>
       
     </div>
 
@@ -1983,8 +1993,18 @@ or explicit list of phone numbers.</div>
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
     <pre class="example"><code>{
-  "totalRecipients" : 6,
-  "notificationId" : 0
+  "organizationId" : 6,
+  "eventId" : 1,
+  "productId" : 5,
+  "created" : "2000-01-23T04:56:07.000+00:00",
+  "notificationId" : 0,
+  "message" : "message",
+  "statusUpdated" : "2000-01-23T04:56:07.000+00:00",
+  "statistics" : {
+    "recipients" : 5,
+    "sent" : 2,
+    "errors" : 7
+  }
 }</code></pre>
 
     <h3 class="field-label">Produces</h3>
@@ -1997,7 +2017,7 @@ or explicit list of phone numbers.</div>
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
     OK
-        <a href="#NotificationResponseDto">NotificationResponseDto</a>
+        <a href="#NotificationDto">NotificationDto</a>
     <h4 class="field-label">400</h4>
     Missing or invalid request parameters.
         <a href="#Error">Error</a>
@@ -4791,7 +4811,6 @@ Default is <code>false</code>. default: null </div>
     <li><a href="#NotificationDto"><code>NotificationDto</code> - Notification info</a></li>
     <li><a href="#NotificationRecipientDto"><code>NotificationRecipientDto</code> - Notification recipient info</a></li>
     <li><a href="#NotificationRecipientsPagedList"><code>NotificationRecipientsPagedList</code> - Notifications list with paging.</a></li>
-    <li><a href="#NotificationResponseDto"><code>NotificationResponseDto</code> - Created notification info</a></li>
     <li><a href="#NotificationStatisticsDto"><code>NotificationStatisticsDto</code> - Notification statistics info</a></li>
     <li><a href="#NotificationStatus"><code>NotificationStatus</code> - Notification status enum (<code>new</code> | <code>queued</code> | <code>started</code> | <code>cancelled</code> | <code>failed</code> | <code>sent</code>).</a></li>
     <li><a href="#NotificationType"><code>NotificationType</code> - Notification type enum (<code>email</code> | <code>sms</code>).</a></li>
@@ -5055,14 +5074,6 @@ All properties are optional.</div>
 <div class="param">total </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total items. format: int32</div>
 <div class="param">pages </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total pages. format: int32</div>
 <div class="param">data </div><div class="param-desc"><span class="param-type"><a href="#NotificationRecipientDto">array[NotificationRecipientDto]</a></span>  </div>
-    </div>  <!-- field-items -->
-  </div>
-  <div class="model">
-    <h3><a name="NotificationResponseDto"><code>NotificationResponseDto</code> - Created notification info</a> <a class="up" href="#__Models">Up</a></h3>
-    <div class='model-description'></div>
-    <div class="field-items">
-      <div class="param">notificationId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Notification identifier, which can later be used for monitoring notification sending stats. format: int32</div>
-<div class="param">totalRecipients </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Notification recipients total. format: int32</div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">

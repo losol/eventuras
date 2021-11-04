@@ -442,7 +442,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotificationResponseDto'
+                $ref: '#/components/schemas/NotificationDto'
           description: OK
         "400":
           content:
@@ -488,7 +488,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotificationResponseDto'
+                $ref: '#/components/schemas/NotificationDto'
           description: OK
         "400":
           content:
@@ -539,7 +539,9 @@ paths:
       responses:
         "200":
           content:
-            schema: {}
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationDto'
         "401":
           content:
             application/json:
@@ -2907,24 +2909,61 @@ components:
       - subject
       title: New email notification info
       type: object
-    NotificationResponseDto:
+    NotificationDto:
       example:
-        totalRecipients: 6
+        organizationId: 6
+        eventId: 1
+        productId: 5
+        created: 2000-01-23T04:56:07.000+00:00
         notificationId: 0
+        message: message
+        statusUpdated: 2000-01-23T04:56:07.000+00:00
+        statistics:
+          recipients: 5
+          sent: 2
+          errors: 7
       properties:
         notificationId:
-          description: Notification identifier, which can later be used for monitoring
-            notification sending stats.
+          description: Notification identifier.
           format: int32
           type: integer
-        totalRecipients:
-          description: Notification recipients total.
+        organizationId:
+          description: Organization identifier the notification is related to.
           format: int32
           type: integer
+        eventId:
+          description: Event identifier the notification is related to.
+          format: int32
+          type: integer
+        productId:
+          description: Product identifier the notification is related to.
+          format: int32
+          type: integer
+        message:
+          description: Notification message text.
+          type: string
+        created:
+          description: Notification creation date and time.
+          format: date-time
+          type: string
+        status:
+          $ref: '#/components/schemas/NotificationStatus'
+        type:
+          $ref: '#/components/schemas/NotificationType'
+        statusUpdated:
+          description: Last status update date and time.
+          format: date-time
+          type: string
+        statistics:
+          $ref: '#/components/schemas/NotificationStatisticsDto'
       required:
+      - created
+      - message
       - notificationId
-      - totalRecipients
-      title: Created notification info
+      - status
+      - statusUpdated
+      - type
+      title: Notification info
       type: object
     SmsNotificationFormDto:
       example:
@@ -3828,50 +3867,6 @@ components:
       - quantity
       title: Order line data.
       type: object
-    NotificationDto:
-      properties:
-        notificationId:
-          description: Notification identifier.
-          format: int32
-          type: integer
-        organizationId:
-          description: Organization identifier the notification is related to.
-          format: int32
-          type: integer
-        eventId:
-          description: Event identifier the notification is related to.
-          format: int32
-          type: integer
-        productId:
-          description: Product identifier the notification is related to.
-          format: int32
-          type: integer
-        message:
-          description: Notification message text.
-          type: string
-        created:
-          description: Notification creation date and time.
-          format: date-time
-          type: string
-        status:
-          $ref: '#/components/schemas/NotificationStatus'
-        type:
-          $ref: '#/components/schemas/NotificationType'
-        statusUpdated:
-          description: Last status update date and time.
-          format: date-time
-          type: string
-        statistics:
-          $ref: '#/components/schemas/NotificationStatisticsDto'
-      required:
-      - created
-      - message
-      - notificationId
-      - status
-      - statusUpdated
-      - type
-      title: Notification info
-      type: object
     EventParticipantsFilterDto:
       description: |
         Used to filter out notification recipients.
@@ -3901,6 +3896,41 @@ components:
             $ref: '#/components/schemas/RegistrationType'
           type: array
       title: Notification recipients filter
+      type: object
+    NotificationStatus:
+      enum:
+      - new
+      - queued
+      - started
+      - cancelled
+      - failed
+      - sent
+      title: |
+        Notification status enum (`new` | `queued` | `started` | `cancelled` | `failed` | `sent`).
+      type: string
+    NotificationStatisticsDto:
+      example:
+        recipients: 5
+        sent: 2
+        errors: 7
+      properties:
+        recipients:
+          description: Total number of recipients.
+          format: int32
+          type: integer
+        sent:
+          description: Total number of notifications delivered.
+          format: int32
+          type: integer
+        errors:
+          description: Total number of notifications NOT delivered because of an errors.
+          format: int32
+          type: integer
+      required:
+      - errors
+      - recipients
+      - sent
+      title: Notification statistics info
       type: object
     NotificationRecipientDto:
       properties:
@@ -4053,37 +4083,6 @@ components:
         Email = 4
       title: Organization setting type enum.
       type: integer
-    NotificationStatus:
-      enum:
-      - new
-      - queued
-      - started
-      - cancelled
-      - failed
-      - sent
-      title: |
-        Notification status enum (`new` | `queued` | `started` | `cancelled` | `failed` | `sent`).
-      type: string
-    NotificationStatisticsDto:
-      properties:
-        recipients:
-          description: Total number of recipients.
-          format: int32
-          type: integer
-        sent:
-          description: Total number of notifications delivered.
-          format: int32
-          type: integer
-        errors:
-          description: Total number of notifications NOT delivered because of an errors.
-          format: int32
-          type: integer
-      required:
-      - errors
-      - recipients
-      - sent
-      title: Notification statistics info
-      type: object
     AddressDto:
       properties:
         streetAddress:
