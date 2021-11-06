@@ -1,17 +1,11 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Eventuras.Domain;
 using Eventuras.Services.Events;
-using Eventuras.WebApi.Constants;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Eventuras.WebApi.Controllers
+namespace Eventuras.WebApi.Controllers.Events
 {
     [ApiVersion("3")]
     [Authorize(Policy = Constants.Auth.AdministratorRole)]
@@ -32,14 +26,14 @@ namespace Eventuras.WebApi.Controllers
         public async Task<ActionResult<IQueryable<OnlineCourseDto>>> Get()
         {
             var events = from e in await _eventInfoService.GetOnDemandEventsAsync()
-                         select new OnlineCourseDto()
-                         {
-                             Id = e.EventInfoId,
-                             Name = e.Title,
-                             Slug = e.Slug,
-                             Description = e.Description,
-                             Featured = e.Featured
-                         };
+                select new OnlineCourseDto()
+                {
+                    Id = e.EventInfoId,
+                    Name = e.Title,
+                    Slug = e.Slug,
+                    Description = e.Description,
+                    Featured = e.Featured
+                };
             return Ok(events);
         }
 

@@ -9,7 +9,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Losol.Communication.Sms.Twilio" Version="0.5.2" />
+      <PackageReference Include="Losol.Communication.Sms.Twilio" Version="0.6.0" />
     </ItemGroup>
 
 </Project>
