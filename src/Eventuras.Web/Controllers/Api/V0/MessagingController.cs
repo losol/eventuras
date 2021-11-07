@@ -1,5 +1,4 @@
 using Eventuras.Services;
-using Eventuras.ViewModels;
 using Eventuras.Web.Services;
 using Losol.Communication.Sms;
 using Microsoft.AspNetCore.Authorization;
@@ -9,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Services.Email;
 using Microsoft.Extensions.Logging;
 
 namespace Eventuras.Web.Controllers.Api.V0
@@ -18,7 +18,7 @@ namespace Eventuras.Web.Controllers.Api.V0
     [Route("/api/v0/messaging")]
     public class MessagingController : Controller
     {
-        private readonly StandardEmailSender _emailSender;
+        private readonly IApplicationEmailSender _emailSender;
         private readonly RegistrationEmailSender _registrationEmailSender;
         private readonly ISmsSender _smsSender;
         private readonly IRegistrationService _registrationService;
@@ -26,7 +26,7 @@ namespace Eventuras.Web.Controllers.Api.V0
         private readonly ILogger<MessagingController> _logger;
 
         public MessagingController(
-            StandardEmailSender emailSender,
+            IApplicationEmailSender emailSender,
             ISmsSender smsSender,
             IRegistrationService registrationService,
             IMessageLogService messageLog,
@@ -125,14 +125,8 @@ namespace Eventuras.Web.Controllers.Api.V0
         {
             if (!ModelState.IsValid) return BadRequest();
             var errors = "";
-            var emailTasks = vm.To.Select(r => _emailSender.SendStandardEmailAsync(
-               new EmailMessage
-               {
-                   Name = r.Name,
-                   Email = r.Email,
-                   Subject = vm.Subject,
-                   Message = vm.Message
-               }));
+            var emailTasks = vm.To.Select(r => _emailSender
+                .SendStandardEmailAsync($"{r.Name} <{r.Email}>", vm.Subject, vm.Message));
             try
             {
                 await Task.WhenAll(emailTasks);

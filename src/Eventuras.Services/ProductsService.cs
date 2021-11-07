@@ -35,7 +35,7 @@ namespace Eventuras.Services
             return _db.Products
                       .Where(p => p.ProductId == id)
                       .Include(p => p.ProductVariants)
-                      .Include(p => p.Eventinfo)
+                      .Include(p => p.EventInfo)
                       .AsNoTracking()
                       .SingleOrDefaultAsync();
         }

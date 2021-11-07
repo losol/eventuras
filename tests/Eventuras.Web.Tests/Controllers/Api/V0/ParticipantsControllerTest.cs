@@ -42,8 +42,8 @@ namespace Eventuras.Web.Tests.Controllers.Api.V0
                 .ExpectEmail()
                 .SentTo(user.Entity.Email)
                 .WithSubject("Test")
-                .ContainingText("Test Email Contents")
-                .ContainingText(textToCheck)
+                .ContainingHtml("Test Email Contents")
+                .ContainingHtml(textToCheck)
                 .Setup();
 
             client.AcceptLanguage(languageCode);

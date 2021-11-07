@@ -1,8 +1,6 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using Eventuras.Services;
-using Eventuras.Services.Email;
 using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Config;
 using Eventuras.WebApi.Extensions;
@@ -18,7 +16,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace Eventuras.WebApi
@@ -69,6 +66,14 @@ namespace Eventuras.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers(options =>
+                {
+                    options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+                    options.Filters.Add(new HttpResponseExceptionFilter());
+                })
+                .AddJsonOptions(j => { j.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+
+            services.AddRazorPages();
             services.ConfigureEF(Configuration, _env);
             services.ConfigureDbInitializationStrategy(Configuration, _env);
             services.ConfigureAuthorizationPolicies(Configuration);
@@ -78,13 +83,6 @@ namespace Eventuras.WebApi
             services.AddApplicationServices(Configuration);
             services.AddFeatureManagement();
             services.AddMemoryCache();
-
-            services.AddControllers(options =>
-                {
-                    options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
-                    options.Filters.Add(new HttpResponseExceptionFilter());
-                })
-                .AddJsonOptions(j => { j.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
             services.AddCors(options =>
             {

@@ -38,7 +38,7 @@ namespace Eventuras.Services.Events.Products
                 case ProductVisibility.Collection:
                     query = query.Where(p => p.EventInfoId == eventId ||
                                              p.Visibility == ProductVisibility.Collection &&
-                                             p.Eventinfo.Collections
+                                             p.EventInfo.Collections
                                                  .Any(c => c.Events
                                                      .Any(e => e.EventInfoId == eventId)));
                     break;
@@ -62,7 +62,7 @@ namespace Eventuras.Services.Events.Products
 
             if (options.LoadEvent)
             {
-                query = query.Include(e => e.Eventinfo);
+                query = query.Include(e => e.EventInfo);
             }
 
             if (options.LoadVariants)

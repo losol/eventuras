@@ -1,14 +1,12 @@
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Eventuras.Services;
-using Eventuras.ViewModels;
-using Eventuras.Web.Services;
-using Eventuras.Web.ViewModels;
-using Losol.Communication.Email;
+using Eventuras.Services.Certificates;
+using Eventuras.Services.Events;
+using Eventuras.Services.Registrations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Eventuras.Web.Controllers.Api.V0
 {
@@ -17,64 +15,63 @@ namespace Eventuras.Web.Controllers.Api.V0
     [Route("api/certificates")]
     public class CertificatesController : Controller
     {
-        private readonly ICertificatesService _certificatesService;
+        private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
+        private readonly ICertificateIssuingService _certificateIssuingService;
+        private readonly ICertificateDeliveryService _certificateDeliveryService;
 
-        public CertificatesController(ICertificatesService certificatesService)
+        public CertificatesController(
+            ICertificateIssuingService certificateIssuingService,
+            ICertificateDeliveryService certificateDeliveryService, 
+            IEventInfoRetrievalService eventInfoRetrievalService)
         {
-            _certificatesService = certificatesService;
+            _certificateIssuingService = certificateIssuingService;
+            _certificateDeliveryService = certificateDeliveryService;
+            _eventInfoRetrievalService = eventInfoRetrievalService;
         }
 
         [HttpPost("event/{eventId}/email")]
-        public async Task<IActionResult> GenerateCertificatesAndSendEmails([FromRoute] int eventId, [FromServices] CertificatePdfRenderer writer, [FromServices] StandardEmailSender emailSender)
+        public async Task<IActionResult> GenerateCertificatesAndSendEmails(int eventId,
+            CancellationToken cancellationToken)
         {
-            CultureInfo norwegianCulture = new CultureInfo("nb-NO");
-            var certificates = await _certificatesService.CreateCertificatesForEvent(eventId, norwegianCulture);
+            var eventInfo = await _eventInfoRetrievalService
+                .GetEventInfoByIdAsync(eventId, cancellationToken);
+            
+            var certificates = await _certificateIssuingService
+                .CreateCertificatesForEventAsync(eventInfo, cancellationToken);
 
-            foreach (var certificate in certificates)
+            foreach (var certificate in certificates
+                .TakeWhile(_ => !cancellationToken.IsCancellationRequested))
             {
-                var result = await writer.RenderAsync(CertificateVM.From(certificate));
-                var memoryStream = new MemoryStream();
-                await result.CopyToAsync(memoryStream);
-                await emailSender.SendStandardEmailAsync(new EmailMessage
-                {
-                    Email = certificate.RecipientEmail,
-                    Subject = $"Kursbevis for {certificate.Title}",
-                    Message = "Her er kursbeviset! Gratulere!",
-                    Attachment = new Attachment { Filename = "kursbevis.pdf", Bytes = memoryStream.ToArray(), ContentType = "application/pdf" }
-                });
+                await _certificateDeliveryService.SendCertificateAsync(certificate, cancellationToken);
             }
+
             return Ok();
         }
-
 
         [HttpPost("event/{eventId}/update")]
         public async Task<IActionResult> UpdateCertificatesForEvent([FromRoute] int eventId)
         {
-            CultureInfo norwegianCulture = new CultureInfo("nb-NO");
-            var result = await _certificatesService.UpdateCertificatesForEvent(eventId, norwegianCulture);
+            var eventInfo = await _eventInfoRetrievalService
+                .GetEventInfoByIdAsync(eventId);
+            
+            var result = await _certificateIssuingService.UpdateCertificatesForEventAsync(eventInfo);
             return Ok($"Oppdaterte {result.Count()}");
         }
 
         [HttpPost("registration/{regId}/email")]
-        public async Task<IActionResult> EmailCertificate([FromRoute] int regId, [FromServices] CertificatePdfRenderer writer, [FromServices] StandardEmailSender emailSender)
+        public async Task<IActionResult> EmailCertificate([FromRoute] int regId,
+            [FromServices] IRegistrationRetrievalService registrationRetrievalService)
         {
-            var c = await _certificatesService.GetForRegistrationAsync(regId);
-            var result = await writer.RenderAsync(CertificateVM.From(c));
-            var memoryStream = new MemoryStream();
-            await result.CopyToAsync(memoryStream);
-            var emailMessage = new EmailMessage
+            var reg = await registrationRetrievalService
+                .GetRegistrationByIdAsync(regId,
+                    RegistrationRetrievalOptions.ForCertificateRendering);
+
+            if (reg.Certificate == null)
             {
-                Email = c.RecipientEmail,
-                Subject = $"Kursbevis for {c.Title}",
-                Message = "Her er kursbeviset! Gratulere!",
-                Attachment = new Attachment
-                {
-                    Filename = "kursbevis.pdf",
-                    Bytes = memoryStream.ToArray(),
-                    ContentType = "application/pdf"
-                }
-            };
-            await emailSender.SendStandardEmailAsync(emailMessage);
+                return NotFound($"Registration {regId} doesn't have certificate");
+            }
+
+            await _certificateDeliveryService.SendCertificateAsync(reg.Certificate);
             return Ok();
         }
     }

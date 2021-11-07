@@ -1,37 +1,27 @@
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
+using System.Threading.Tasks;
 using Eventuras.Services;
-using Eventuras.ViewModels;
+using Eventuras.Services.Email;
 using Eventuras.Web.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Threading.Tasks;
 using static Eventuras.Domain.Registration;
 
 namespace Eventuras.Pages.Events.Register
 {
     public class ConfirmModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IRegistrationService _registrationService;
         private readonly RegistrationEmailSender _registrationEmailSender;
-        private readonly StandardEmailSender _standardEmailSender;
+        private readonly IApplicationEmailSender _standardEmailSender;
 
         public string Message { get; set; }
 
         public ConfirmModel(
-            ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager,
             RegistrationEmailSender registrationEmailSender,
             IRegistrationService registrationService,
-            StandardEmailSender standardEmailSender
-            )
+            IApplicationEmailSender standardEmailSender)
         {
-            _context = context;
             _registrationEmailSender = registrationEmailSender;
-            _userManager = userManager;
             _registrationService = registrationService;
             _standardEmailSender = standardEmailSender;
         }
@@ -60,15 +50,11 @@ namespace Eventuras.Pages.Events.Register
                 await _registrationEmailSender.SendRegistrationAsync("kurs@nordland-legeforening.no", $"KOPI: Påmelding {registration.EventInfo.Title}", adminmessage, registration.RegistrationId);
 
                 // Send welcome letter to participant
-                var participantEmail = new EmailMessage()
-                {
-                    Name = registration.ParticipantName,
-                    Email = registration.User.Email,
-                    Subject = $@"Velkommen til {registration.EventInfo.Title}!",
-                    Message = registration.EventInfo.WelcomeLetter
-                };
-
-                await _standardEmailSender.SendStandardEmailAsync(participantEmail);
+                await _standardEmailSender.SendStandardEmailAsync(
+                    $@"{registration.ParticipantName} <{registration.User.Email}>",
+                    $@"Velkommen til {registration.EventInfo.Title}!",
+                    registration.EventInfo.WelcomeLetter);
+                
                 return RedirectToPage("./Confirmed");
             }
 

@@ -30,9 +30,24 @@ namespace Eventuras.Services.Registrations
                 query = query.Where(r => r.User.EmailConfirmed);
             }
 
+            if (filter.HavingCertificateOnly)
+            {
+                query = query.Where(r => r.CertificateId.HasValue);
+            }
+
+            if (filter.HavingNoCertificateOnly)
+            {
+                query = query.Where(r => !r.CertificateId.HasValue);
+            }
+
             if (filter.EventInfoId.HasValue)
             {
                 query = query.Where(r => r.EventInfoId == filter.EventInfoId);
+            }
+
+            if (filter.CertificateId.HasValue)
+            {
+                query = query.Where(r => r.CertificateId == filter.CertificateId);
             }
 
             if (filter.ProductIds?.Any() == true)
@@ -84,6 +99,18 @@ namespace Eventuras.Services.Registrations
                 query = query.Include(r => r.EventInfo);
             }
 
+            if (options.LoadEventOrganization)
+            {
+                query = query.Include(r => r.EventInfo)
+                    .ThenInclude(e => e.Organization);
+            }
+
+            if (options.LoadEventOrganizer)
+            {
+                query = query.Include(r => r.EventInfo)
+                    .ThenInclude(e => e.OrganizerUser);
+            }
+
             if (options.LoadOrders)
             {
                 query = query.Include(r => r.Orders)
@@ -99,6 +126,15 @@ namespace Eventuras.Services.Registrations
                 query = query.Include(r => r.Orders)
                     .ThenInclude(o => o.OrderLines)
                     .ThenInclude(l => l.ProductVariant);
+            }
+
+            if (options.LoadCertificate)
+            {
+                query = query.Include(r => r.Certificate)
+                    .ThenInclude(c => c.IssuingOrganization);
+
+                query = query.Include(r => r.Certificate)
+                    .ThenInclude(c => c.IssuingUser);
             }
 
             return query;

@@ -54,7 +54,7 @@ namespace Eventuras.Web.Tests.Pages.Events.Register
                 .ExpectEmail()
                 .SentTo(Email)
                 .WithSubject(subject)
-                .ContainingText(body)
+                .ContainingHtml(body)
                 .Setup();
 
             var token = await client.GetAntiForgeryTokenAsync("/Account/Login");
@@ -92,7 +92,7 @@ namespace Eventuras.Web.Tests.Pages.Events.Register
                 .ExpectEmail()
                 .SentTo(Email)
                 .WithSubject(subject)
-                .ContainingText(body)
+                .ContainingHtml(body)
                 .Setup();
 
             var token = await client.GetAntiForgeryTokenAsync("/Account/Login");
@@ -139,7 +139,7 @@ namespace Eventuras.Web.Tests.Pages.Events.Register
                 .ExpectEmail()
                 .SentTo(Email)
                 .WithSubject(subject)
-                .ContainingText(body)
+                .ContainingHtml(body)
                 .Setup();
 
             var token = await client.GetAntiForgeryTokenAsync("/Account/Login");

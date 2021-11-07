@@ -43,7 +43,7 @@ namespace Eventuras.Domain
         // Navigational properties
         // "Child" of an eventinfo.
         public int EventInfoId { get; set; }
-        public EventInfo Eventinfo { get; set; }
+        public EventInfo EventInfo { get; set; }
 
         // Has a list of productvariants.
         public List<ProductVariant> ProductVariants { get; set; }

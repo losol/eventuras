@@ -1,8 +1,10 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services;
+using Eventuras.Services.Converto;
 using Eventuras.Services.DbInitializers;
 using Eventuras.Services.Email;
 using Eventuras.Services.PowerOffice;
@@ -22,6 +24,7 @@ using Losol.Communication.Sms.Mock;
 using Losol.Communication.Sms.Twilio;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -140,15 +143,12 @@ namespace Eventuras.WebApi.Extensions
 
             // Add Health Checks
             services.AddApplicationHealthChecks(configuration.GetSection(Constants.HealthChecks.HealthCheckConfigurationKey));
-
-            // Added for the renderpage service
-            /* 
+            
+            // for cert PDF rendering
             services.AddHttpContextAccessor();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            services.AddConvertoServices(configuration.GetSection("Converto"));
-            // services.AddTransient<CertificatePdfRenderer>();
             services.AddHttpClient();
-            */
+            services.AddConvertoServices(configuration.GetSection("Converto")); 
         }
 
 

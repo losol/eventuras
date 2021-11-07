@@ -213,7 +213,7 @@ namespace Eventuras.TestAbstractions
             {
                 Name = name,
                 Description = description,
-                Eventinfo = eventInfo,
+                EventInfo = eventInfo,
                 Price = price,
                 VatPercent = vatPercent,
                 MinimumQuantity = minimumQuantity,
@@ -284,6 +284,25 @@ namespace Eventuras.TestAbstractions
             await scope.Db.Registrations.AddAsync(registration);
             await scope.Db.SaveChangesAsync();
             return new DisposableEntity<Registration>(registration, scope.Db);
+        }
+
+        public static async Task<IDisposableEntity<Certificate>> CreateCertificateAsync(
+            this TestServiceScope scope,
+            Registration registration)
+        {
+            var cert = registration.CreateCertificate();
+            await scope.Db.Certificates.AddAsync(cert);
+            await scope.Db.SaveChangesAsync();
+            return new DisposableEntity<Certificate>(cert, scope.Db);
+        }
+        
+        public static async Task<IDisposableEntity<Certificate>> CreateCertificateAsync(
+            this TestServiceScope scope)
+        {
+            var cert = new Certificate();
+            await scope.Db.Certificates.AddAsync(cert);
+            await scope.Db.SaveChangesAsync();
+            return new DisposableEntity<Certificate>(cert, scope.Db);
         }
 
         public static async Task<IDisposableEntity<Order>> CreateOrderAsync(
@@ -521,7 +540,7 @@ namespace Eventuras.TestAbstractions
                 };
             }
 
-            eventInfo ??= product?.Eventinfo;
+            eventInfo ??= product?.EventInfo;
             organization ??= eventInfo?.Organization;
 
             var notification = new EmailNotification(subject, body)
@@ -589,7 +608,7 @@ namespace Eventuras.TestAbstractions
                 };
             }
 
-            eventInfo ??= product?.Eventinfo;
+            eventInfo ??= product?.EventInfo;
             organization ??= eventInfo?.Organization;
 
             var notification = new SmsNotification(message)

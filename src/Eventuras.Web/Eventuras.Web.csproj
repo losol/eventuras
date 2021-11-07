@@ -59,7 +59,10 @@
 
   <ItemGroup>
     <Folder Include="Pages\Admin\Products\" />
-    <Folder Include="Views\Shared\Templates\Certificates\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Shared\Templates\Certificate\Preview.cshtml" />
   </ItemGroup>
 
 </Project>

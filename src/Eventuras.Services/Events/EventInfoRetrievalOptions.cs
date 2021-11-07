@@ -9,5 +9,11 @@ namespace Eventuras.Services.Events
         public bool LoadProducts { get; set; }
         public bool LoadRegistrations { get; set; }
         public bool LoadCollections { get; set; }
+
+        public static readonly EventInfoRetrievalOptions ForCertificateRendering = new()
+        {
+            LoadOrganizerUser = true,
+            LoadOrganization = true
+        };
     }
 }

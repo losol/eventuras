@@ -24,7 +24,7 @@ namespace Eventuras.Pages.Admin.Temp.Products
         public async Task OnGetAsync()
         {
             Product = await _context.Products
-                .Include(p => p.Eventinfo).ToListAsync();
+                .Include(p => p.EventInfo).ToListAsync();
         }
     }
 }

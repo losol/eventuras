@@ -38,6 +38,25 @@ namespace Eventuras.WebApi.Tests
             }
         }
 
+        public static void CheckCertificate(this JToken token, Certificate certificate)
+        {
+            Assert.Equal(certificate.CertificateId, token.Value<int>("certificateId"));
+            Assert.Equal(certificate.CertificateGuid.ToString(), token.Value<string>("certificateGuid"));
+            Assert.Equal(certificate.Title, token.Value<string>("title"));
+            Assert.Equal(certificate.Description, token.Value<string>("description"));
+            Assert.Equal(certificate.Comment, token.Value<string>("comment"));
+            Assert.Equal(certificate.RecipientName, token.Value<string>("recipientName"));
+            Assert.Equal(certificate.EvidenceDescription, token.Value<string>("evidenceDescription"));
+            Assert.Equal(certificate.IssuedInCity, token.Value<string>("issuedInCity"));
+            Assert.Equal(certificate.IssuedDate, token.Value<DateTime>("issuingDate"));
+            Assert.Equal(certificate.IssuingOrganizationName, token.Value<string>("issuerOrganizationName"));
+            Assert.Equal(certificate.IssuingOrganization?.LogoBase64,
+                token.Value<string>("issuerOrganizationLogoBase64"));
+            Assert.Equal(certificate.IssuedByName, token.Value<string>("issuerPersonName"));
+            Assert.Equal(certificate.IssuingUser?.SignatureImageBase64,
+                token.Value<string>("issuerPersonSignatureImageBase64"));
+        }
+
         public static void CheckEvent(this JToken token, EventInfo eventInfo)
         {
             Assert.Equal(eventInfo.EventInfoId, token.Value<int>("id"));
@@ -215,7 +234,7 @@ namespace Eventuras.WebApi.Tests
         public static void CheckNotification(this JToken token,
             Notification notification,
             int? totalSent = null,
-            int? totalErrors = null, 
+            int? totalErrors = null,
             int? totalRecipients = null)
         {
             Assert.NotEmpty(token);

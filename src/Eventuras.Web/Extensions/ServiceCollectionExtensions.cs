@@ -1,25 +1,28 @@
-using Eventuras.Services.Auth0;
-using Eventuras.Services.Converto;
-using Eventuras.Services.TalentLms;
-using Eventuras.Web.Config;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services;
 using Eventuras.Services.Auth;
+using Eventuras.Services.Auth0;
+using Eventuras.Services.Converto;
 using Eventuras.Services.DbInitializers;
-using Eventuras.Services.Invoicing;
-using Eventuras.Web;
+using Eventuras.Services.Email;
+using Eventuras.Services.Google.RecaptchaV3;
+using Eventuras.Services.PowerOffice;
+using Eventuras.Services.SendGrid;
+using Eventuras.Services.Sms;
+using Eventuras.Services.Smtp;
+using Eventuras.Services.Stripe;
+using Eventuras.Services.TalentLms;
+using Eventuras.Services.Twilio;
+using Eventuras.Services.Zoom;
 using Eventuras.Web.Config;
-using Eventuras.Web.Extensions;
 using Eventuras.Web.Services;
-using Losol.Communication.Email.File;
-using Losol.Communication.Email.Mock;
-using Losol.Communication.Email.SendGrid;
-using Losol.Communication.Email.Smtp;
-using Losol.Communication.Sms.Mock;
-using Losol.Communication.Sms.Twilio;
+using Losol.Communication.HealthCheck.Abstractions;
+using Losol.Communication.HealthCheck.Email;
+using Losol.Communication.HealthCheck.Sms;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -28,23 +31,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using System.Globalization;
-using System.Net.Http.Headers;
-using Eventuras.Services.Email;
-using Eventuras.Services.Google.RecaptchaV3;
-using Eventuras.Services.Organizations.Settings;
-using Eventuras.Services.PowerOffice;
-using Eventuras.Services.SendGrid;
-using Eventuras.Services.Sms;
-using Eventuras.Services.Smtp;
-using Eventuras.Services.Stripe;
-using Eventuras.Services.Twilio;
-using Eventuras.Services.Zoom;
-using Losol.Communication.HealthCheck.Abstractions;
-using Losol.Communication.HealthCheck.Email;
-using Losol.Communication.HealthCheck.Sms;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.HttpOverrides;
 using DefaultAuthenticationService = Eventuras.Web.Services.DefaultAuthenticationService;
 
 namespace Eventuras.Web.Extensions
@@ -128,13 +114,6 @@ namespace Eventuras.Web.Extensions
             });
         }
 
-        public static void ConfigureLocalization(this IServiceCollection services, CultureInfo defaultCultureInfo)
-        {
-            services.AddLocalization(options => options.ResourcesPath = "Resources");
-            CultureInfo.DefaultThreadCurrentCulture = defaultCultureInfo;
-            CultureInfo.DefaultThreadCurrentUICulture = defaultCultureInfo;
-        }
-
         public static void ConfigureDbInitializationStrategy(this IServiceCollection services,
             IConfiguration config,
             IWebHostEnvironment hostingEnv)
@@ -172,7 +151,6 @@ namespace Eventuras.Web.Extensions
             services.AddConfigurableEmailServices();
             services.AddConfigurableSmtpServices();
             services.AddConfigurableSendGridServices();
-            services.AddTransient<StandardEmailSender>();
             services.AddTransient<MagicLinkSender>();
             services.AddTransient<RegistrationEmailSender>();
         }
@@ -204,9 +182,6 @@ namespace Eventuras.Web.Extensions
             // Register our application services
             services.AddCoreServices();
 
-            // Add Page render Service
-            services.AddScoped<IRenderService, ViewRenderService>();
-
             // Add default authentication handler (Razor Pages)
             services.TryAddTransient<IEventurasAuthenticationService, DefaultAuthenticationService>();
 
@@ -228,7 +203,6 @@ namespace Eventuras.Web.Extensions
             services.AddHttpContextAccessor();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddConvertoServices(configuration.GetSection("Converto"));
-            services.AddTransient<CertificatePdfRenderer>();
             services.AddHttpClient();
         }
 
