@@ -200,6 +200,7 @@ font-style: italic;
   <h4><a href="#Certificates">Certificates</a></h4>
   <ul>
   <li><a href="#getCertificateById"><code><span class="http-method">get</span> /certificates/{id}</code></a></li>
+  <li><a href="#getEventCertificates"><code><span class="http-method">get</span> /events/{id}/certificates</code></a></li>
   <li><a href="#issueCertificatesForEvent"><code><span class="http-method">post</span> /events/{id}/certificates/issue</code></a></li>
   <li><a href="#previewCertificateForEvent"><code><span class="http-method">get</span> /events/{id}/certificates/preview</code></a></li>
   <li><a href="#sendCertificateForRegistration"><code><span class="http-method">post</span> /registrations/{id}/certificate/send</code></a></li>
@@ -227,6 +228,7 @@ font-style: italic;
   <li><a href="#createNewEventCollection"><code><span class="http-method">post</span> /events/collections</code></a></li>
   <li><a href="#deleteEvent"><code><span class="http-method">delete</span> /events/{id}</code></a></li>
   <li><a href="#getEventById"><code><span class="http-method">get</span> /events/{id}</code></a></li>
+  <li><a href="#getEventCertificates"><code><span class="http-method">get</span> /events/{id}/certificates</code></a></li>
   <li><a href="#getEventCollectionById"><code><span class="http-method">get</span> /events/collections/{id}</code></a></li>
   <li><a href="#getEventCollectionsList"><code><span class="http-method">get</span> /events/collections</code></a></li>
   <li><a href="#getEventProductsList"><code><span class="http-method">get</span> /events/{id}/products</code></a></li>
@@ -367,6 +369,102 @@ font-style: italic;
     <h4 class="field-label">200</h4>
     
         <a href="#CertificateDto">CertificateDto</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getEventCertificates"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /events/{id}/certificates</code></pre></div>
+    <div class="method-summary">Get event certificates list. (<span class="nickname">getEventCertificates</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Event ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">page (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Page number. default: 1 format: int32</div><div class="param">count (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Page size. default: 100 format: int32</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#CertificatesPagedList">CertificatesPagedList</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "page" : 1,
+  "size" : 10,
+  "total" : 2,
+  "pages" : 1,
+  "data" : [ {
+    "certificateId" : 12380,
+    "certificateGuid" : "7383cefc-7e52-4e69-a044-38356885dd57",
+    "title" : "Demo Event",
+    "description" : "Some certificate description.",
+    "comment" : "Some certificate comment.",
+    "recipientName" : "John Doe",
+    "evidenceDescription" : "Some evidence description.",
+    "issuedInCity" : "Oslo",
+    "issuingDate" : "2021-01-01",
+    "issuerOrganizationName" : "Demo Org",
+    "issuerPersonName" : "Demo Issuer"
+  }, {
+    "certificateId" : 12345,
+    "certificateGuid" : "51009d9c-41d9-494b-9dd6-911b4fa3970f",
+    "title" : "Demo Event 2",
+    "description" : "Some certificate description.",
+    "recipientName" : "John Doe",
+    "evidenceDescription" : "Some evidence description.",
+    "issuedInCity" : "Oslo",
+    "issuingDate" : "2021-02-02",
+    "issuerOrganizationName" : "Demo Org",
+    "issuerPersonName" : "Demo Issuer"
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#CertificatesPagedList">CertificatesPagedList</a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
     <h4 class="field-label">401</h4>
     Access token is missing or invalid.
         <a href="#Error">Error</a>
@@ -860,6 +958,12 @@ font-style: italic;
     <div class="method-summary">Get event collections list. (<span class="nickname">getEventCollectionsList</span>)</div>
     <div class="method-notes"></div>
 
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Event ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
 
 
 
@@ -898,6 +1002,12 @@ font-style: italic;
         
     <h4 class="field-label">400</h4>
     Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
         <a href="#Error">Error</a>
     <h4 class="field-label">404</h4>
     The requested resource not found.
@@ -1652,6 +1762,102 @@ font-style: italic;
         <a href="#Error">Error</a>
   </div> <!-- method -->
   <hr/>
+  <div class="method"><a name="getEventCertificates"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /events/{id}/certificates</code></pre></div>
+    <div class="method-summary">Get event certificates list. (<span class="nickname">getEventCertificates</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Event ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">page (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Page number. default: 1 format: int32</div><div class="param">count (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Page size. default: 100 format: int32</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#CertificatesPagedList">CertificatesPagedList</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "page" : 1,
+  "size" : 10,
+  "total" : 2,
+  "pages" : 1,
+  "data" : [ {
+    "certificateId" : 12380,
+    "certificateGuid" : "7383cefc-7e52-4e69-a044-38356885dd57",
+    "title" : "Demo Event",
+    "description" : "Some certificate description.",
+    "comment" : "Some certificate comment.",
+    "recipientName" : "John Doe",
+    "evidenceDescription" : "Some evidence description.",
+    "issuedInCity" : "Oslo",
+    "issuingDate" : "2021-01-01",
+    "issuerOrganizationName" : "Demo Org",
+    "issuerPersonName" : "Demo Issuer"
+  }, {
+    "certificateId" : 12345,
+    "certificateGuid" : "51009d9c-41d9-494b-9dd6-911b4fa3970f",
+    "title" : "Demo Event 2",
+    "description" : "Some certificate description.",
+    "recipientName" : "John Doe",
+    "evidenceDescription" : "Some evidence description.",
+    "issuedInCity" : "Oslo",
+    "issuingDate" : "2021-02-02",
+    "issuerOrganizationName" : "Demo Org",
+    "issuerPersonName" : "Demo Issuer"
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#CertificatesPagedList">CertificatesPagedList</a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
   <div class="method"><a name="getEventCollectionById"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
@@ -1722,6 +1928,12 @@ font-style: italic;
     <div class="method-summary">Get event collections list. (<span class="nickname">getEventCollectionsList</span>)</div>
     <div class="method-notes"></div>
 
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Event ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
 
 
 
@@ -1760,6 +1972,12 @@ font-style: italic;
         
     <h4 class="field-label">400</h4>
     Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
         <a href="#Error">Error</a>
     <h4 class="field-label">404</h4>
     The requested resource not found.
@@ -2656,7 +2874,7 @@ or explicit list of phone numbers.</div>
 
     <h3 class="field-label">Return type</h3>
     <div class="return-type">
-      array[<a href="#NotificationRecipientsPagedList">NotificationRecipientsPagedList</a>]
+      <a href="#NotificationRecipientsPagedList">NotificationRecipientsPagedList</a>
       
     </div>
 
@@ -2699,7 +2917,7 @@ or explicit list of phone numbers.</div>
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
     OK
-        
+        <a href="#NotificationRecipientsPagedList">NotificationRecipientsPagedList</a>
     <h4 class="field-label">400</h4>
     Missing or invalid request parameters.
         <a href="#Error">Error</a>
@@ -5366,6 +5584,7 @@ Default is <code>false</code>. default: null </div>
     <li><a href="#AddressDto"><code>AddressDto</code> - Address info.</a></li>
     <li><a href="#CertificateDto"><code>CertificateDto</code> - Certificate info</a></li>
     <li><a href="#CertificateStatisticsDto"><code>CertificateStatisticsDto</code> - Event certificate issuing statistics.</a></li>
+    <li><a href="#CertificatesPagedList"><code>CertificatesPagedList</code> - Certificates list with paging.</a></li>
     <li><a href="#EmailNotificationFormDto"><code>EmailNotificationFormDto</code> - New email notification info</a></li>
     <li><a href="#Error"><code>Error</code> - Common error response structure.</a></li>
     <li><a href="#EventCollectionDto"><code>EventCollectionDto</code> - Event collection information.</a></li>
@@ -5453,6 +5672,17 @@ Default is <code>false</code>. default: null </div>
     <div class="field-items">
       <div class="param">issued (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Number of issued certificates. format: int32</div>
 <div class="param">updated (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Number of updated certificates. format: int32</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="CertificatesPagedList"><code>CertificatesPagedList</code> - Certificates list with paging.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">page </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Page number. format: int32</div>
+<div class="param">count </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Page size. format: int32</div>
+<div class="param">total </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total items. format: int32</div>
+<div class="param">pages </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total pages. format: int32</div>
+<div class="param">data </div><div class="param-desc"><span class="param-type"><a href="#CertificateDto">array[CertificateDto]</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">

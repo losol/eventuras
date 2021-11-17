@@ -2231,6 +2231,16 @@
     "/events/collections" : {
       "get" : {
         "operationId" : "getEventCollectionsList",
+        "parameters" : [ {
+          "description" : "Event ID.",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
         "responses" : {
           "200" : {
             "content" : {
@@ -2254,6 +2264,26 @@
               }
             },
             "description" : "Missing or invalid request parameters."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Access token is missing or invalid."
+          },
+          "403" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Access forbidden."
           },
           "404" : {
             "content" : {
@@ -2699,6 +2729,108 @@
         },
         "summary" : "Add event into collection.",
         "tags" : [ "events", "collections" ]
+      }
+    },
+    "/events/{id}/certificates" : {
+      "get" : {
+        "operationId" : "getEventCertificates",
+        "parameters" : [ {
+          "description" : "Event ID.",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "description" : "Page number.",
+          "in" : "query",
+          "name" : "page",
+          "required" : false,
+          "schema" : {
+            "default" : 1,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "description" : "Page size.",
+          "in" : "query",
+          "name" : "count",
+          "required" : false,
+          "schema" : {
+            "default" : 100,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/CertificateDto"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Missing or invalid request parameters."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Access token is missing or invalid."
+          },
+          "403" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Access forbidden."
+          },
+          "404" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "The requested resource not found."
+          },
+          "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Unexpected server error."
+          }
+        },
+        "summary" : "Get event certificates list.",
+        "tags" : [ "events", "certificates" ]
       }
     },
     "/events/{id}/certificates/preview" : {
@@ -5276,22 +5408,6 @@
         "title" : "Event collection information.",
         "type" : "object"
       },
-      "CertificateStatisticsDto" : {
-        "properties" : {
-          "issued" : {
-            "description" : "Number of issued certificates.",
-            "format" : "int32",
-            "type" : "integer"
-          },
-          "updated" : {
-            "description" : "Number of updated certificates.",
-            "format" : "int32",
-            "type" : "integer"
-          }
-        },
-        "title" : "Event certificate issuing statistics.",
-        "type" : "object"
-      },
       "CertificateDto" : {
         "example" : {
           "certificateId" : 12380,
@@ -5367,6 +5483,22 @@
         },
         "required" : [ "certificateGuid", "certificateId", "description", "issuedInCity", "issuerPersonName", "issuingDate", "recipientName", "title" ],
         "title" : "Certificate info",
+        "type" : "object"
+      },
+      "CertificateStatisticsDto" : {
+        "properties" : {
+          "issued" : {
+            "description" : "Number of issued certificates.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "updated" : {
+            "description" : "Number of updated certificates.",
+            "format" : "int32",
+            "type" : "integer"
+          }
+        },
+        "title" : "Event certificate issuing statistics.",
         "type" : "object"
       },
       "OrderStatus" : {

@@ -2646,6 +2646,9 @@ ul.nav-tabs {
                     <li data-group="Certificates" data-name="getCertificateById" class="">
                       <a href="#api-Certificates-getCertificateById">getCertificateById</a>
                     </li>
+                    <li data-group="Certificates" data-name="getEventCertificates" class="">
+                      <a href="#api-Certificates-getEventCertificates">getEventCertificates</a>
+                    </li>
                     <li data-group="Certificates" data-name="issueCertificatesForEvent" class="">
                       <a href="#api-Certificates-issueCertificatesForEvent">issueCertificatesForEvent</a>
                     </li>
@@ -2710,6 +2713,9 @@ ul.nav-tabs {
                     </li>
                     <li data-group="Events" data-name="getEventById" class="">
                       <a href="#api-Events-getEventById">getEventById</a>
+                    </li>
+                    <li data-group="Events" data-name="getEventCertificates" class="">
+                      <a href="#api-Events-getEventCertificates">getEventCertificates</a>
                     </li>
                     <li data-group="Events" data-name="getEventCollectionById" class="">
                       <a href="#api-Events-getEventCollectionById">getEventCollectionById</a>
@@ -3588,6 +3594,782 @@ Force response format (&#x60;json&#x60; | &#x60;pdf&#x60; | &#x60;html&#x60;).
                                     </script>
                                   </div>
                                   <input id='responses-Certificates-getCertificateById-500-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Certificates-getEventCertificates">
+                      <article id="api-Certificates-getEventCertificates-0" data-group="User" data-name="getEventCertificates" data-version="0">
+                        <div class="pull-left">
+                          <h1>getEventCertificates</h1>
+                          <p>Get event certificates list.</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/events/{id}/certificates</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Certificates-getEventCertificates-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Certificates-getEventCertificates-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Certificates-getEventCertificates-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Certificates-getEventCertificates-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Certificates-getEventCertificates-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Certificates-getEventCertificates-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Certificates-getEventCertificates-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Certificates-getEventCertificates-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Certificates-getEventCertificates-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Certificates-getEventCertificates-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Certificates-getEventCertificates-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Certificates-getEventCertificates-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Certificates-getEventCertificates-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+ -H "Accept: application/json"\
+ "https://full.path.to/v3/events/{id}/certificates?page=&count="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Certificates-getEventCertificates-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.CertificatesApi;
+
+import java.io.File;
+import java.util.*;
+
+public class CertificatesApiExample {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        
+        // Configure Bearer (JWT) access token for authorization: bearer
+        HttpBearerAuth bearer = (HttpBearerAuth) defaultClient.getAuthentication("bearer");
+        bearer.setBearerToken("BEARER TOKEN");
+        
+        // Create an instance of the API class
+        CertificatesApi apiInstance = new CertificatesApi();
+        Integer id = 56; // Integer | Event ID.
+        Integer page = 56; // Integer | Page number.
+        Integer count = 56; // Integer | Page size.
+        
+        try {
+            array[CertificateDto] result = apiInstance.getEventCertificates(id, page, count);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CertificatesApi#getEventCertificates");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Certificates-getEventCertificates-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.CertificatesApi;
+
+public class CertificatesApiExample {
+    public static void main(String[] args) {
+        CertificatesApi apiInstance = new CertificatesApi();
+        Integer id = 56; // Integer | Event ID.
+        Integer page = 56; // Integer | Page number.
+        Integer count = 56; // Integer | Page size.
+        
+        try {
+            array[CertificateDto] result = apiInstance.getEventCertificates(id, page, count);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling CertificatesApi#getEventCertificates");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Certificates-getEventCertificates-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Certificates-getEventCertificates-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+
+// Configure Bearer (JWT) access token for authorization: bearer
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+
+// Create an instance of the API class
+CertificatesApi *apiInstance = [[CertificatesApi alloc] init];
+Integer *id = 56; // Event ID. (default to null)
+Integer *page = 56; // Page number. (optional) (default to 1)
+Integer *count = 56; // Page size. (optional) (default to 100)
+
+// Get event certificates list.
+[apiInstance getEventCertificatesWith:id
+    page:page
+    count:count
+              completionHandler: ^(array[CertificateDto] output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Certificates-getEventCertificates-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var EventurasApi = require('eventuras_api');
+var defaultClient = EventurasApi.ApiClient.instance;
+
+// Configure Bearer (JWT) access token for authorization: bearer
+var bearer = defaultClient.authentications['bearer'];
+bearer.accessToken = "YOUR ACCESS TOKEN";
+
+// Create an instance of the API class
+var api = new EventurasApi.CertificatesApi()
+var id = 56; // {Integer} Event ID.
+var opts = {
+  'page': 56, // {Integer} Page number.
+  'count': 56 // {Integer} Page size.
+};
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getEventCertificates(id, opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Certificates-getEventCertificates-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Certificates-getEventCertificates-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class getEventCertificatesExample
+    {
+        public void main()
+        {
+            // Configure Bearer (JWT) access token for authorization: bearer
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+            
+            // Create an instance of the API class
+            var apiInstance = new CertificatesApi();
+            var id = 56;  // Integer | Event ID. (default to null)
+            var page = 56;  // Integer | Page number. (optional)  (default to 1)
+            var count = 56;  // Integer | Page size. (optional)  (default to 100)
+
+            try {
+                // Get event certificates list.
+                array[CertificateDto] result = apiInstance.getEventCertificates(id, page, count);
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling CertificatesApi.getEventCertificates: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Certificates-getEventCertificates-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure Bearer (JWT) access token for authorization: bearer
+OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('', 'YOUR_ACCESS_TOKEN');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\CertificatesApi();
+$id = 56; // Integer | Event ID.
+$page = 56; // Integer | Page number.
+$count = 56; // Integer | Page size.
+
+try {
+    $result = $api_instance->getEventCertificates($id, $page, $count);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling CertificatesApi->getEventCertificates: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Certificates-getEventCertificates-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::CertificatesApi;
+
+# Configure Bearer (JWT) access token for authorization: bearer
+$WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::CertificatesApi->new();
+my $id = 56; # Integer | Event ID.
+my $page = 56; # Integer | Page number.
+my $count = 56; # Integer | Page size.
+
+eval { 
+    my $result = $api_instance->getEventCertificates(id => $id, page => $page, count => $count);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling CertificatesApi->getEventCertificates: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Certificates-getEventCertificates-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Configure Bearer (JWT) access token for authorization: bearer
+openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# Create an instance of the API class
+api_instance = openapi_client.CertificatesApi()
+id = 56 # Integer | Event ID. (default to null)
+page = 56 # Integer | Page number. (optional) (default to 1)
+count = 56 # Integer | Page size. (optional) (default to 100)
+
+try: 
+    # Get event certificates list.
+    api_response = api_instance.get_event_certificates(id, page=page, count=count)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling CertificatesApi->getEventCertificates: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Certificates-getEventCertificates-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate CertificatesApi;
+
+pub fn main() {
+    let id = 56; // Integer
+    let page = 56; // Integer
+    let count = 56; // Integer
+
+    let mut context = CertificatesApi::Context::default();
+    let result = client.getEventCertificates(id, page, count, &context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+<td>
+
+
+    <div id="d2e199_getEventCertificates_id">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Event ID.
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">page</td>
+<td>
+
+
+    <div id="d2e199_getEventCertificates_page">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Page number.
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">count</td>
+<td>
+
+
+    <div id="d2e199_getEventCertificates_count">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Page size.
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Certificates-getEventCertificates-title-200"></h3>
+                            <p id="examples-Certificates-getEventCertificates-description-200" class="marked"></p>
+                            <script>
+                              var responseCertificates200_description = `OK`;
+                              var responseCertificates200_description_break = responseCertificates200_description.indexOf('\n');
+                              if (responseCertificates200_description_break == -1) {
+                                $("#examples-Certificates-getEventCertificates-title-200").text("Status: 200 - " + responseCertificates200_description);
+                              } else {
+                                $("#examples-Certificates-getEventCertificates-title-200").text("Status: 200 - " + responseCertificates200_description.substring(0, responseCertificates200_description_break));
+                                $("#examples-Certificates-getEventCertificates-description-200").html(responseCertificates200_description.substring(responseCertificates200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Certificates-getEventCertificates-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Certificates-getEventCertificates-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Certificates-getEventCertificates-200-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Certificates-getEventCertificates-200-schema">
+                                  <div id="responses-Certificates-getEventCertificates-schema-200" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/CertificateDto"
+        }
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Certificates-getEventCertificates-200-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Certificates-getEventCertificates-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Certificates-getEventCertificates-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Certificates-getEventCertificates-title-400"></h3>
+                            <p id="examples-Certificates-getEventCertificates-description-400" class="marked"></p>
+                            <script>
+                              var responseCertificates400_description = `Missing or invalid request parameters.`;
+                              var responseCertificates400_description_break = responseCertificates400_description.indexOf('\n');
+                              if (responseCertificates400_description_break == -1) {
+                                $("#examples-Certificates-getEventCertificates-title-400").text("Status: 400 - " + responseCertificates400_description);
+                              } else {
+                                $("#examples-Certificates-getEventCertificates-title-400").text("Status: 400 - " + responseCertificates400_description.substring(0, responseCertificates400_description_break));
+                                $("#examples-Certificates-getEventCertificates-description-400").html(responseCertificates400_description.substring(responseCertificates400_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Certificates-getEventCertificates-400" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Certificates-getEventCertificates-400-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Certificates-getEventCertificates-400-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Certificates-getEventCertificates-400-schema">
+                                  <div id="responses-Certificates-getEventCertificates-schema-400" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Missing or invalid request parameters.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Certificates-getEventCertificates-400-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Certificates-getEventCertificates-schema-400');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Certificates-getEventCertificates-400-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Certificates-getEventCertificates-title-401"></h3>
+                            <p id="examples-Certificates-getEventCertificates-description-401" class="marked"></p>
+                            <script>
+                              var responseCertificates401_description = `Access token is missing or invalid.`;
+                              var responseCertificates401_description_break = responseCertificates401_description.indexOf('\n');
+                              if (responseCertificates401_description_break == -1) {
+                                $("#examples-Certificates-getEventCertificates-title-401").text("Status: 401 - " + responseCertificates401_description);
+                              } else {
+                                $("#examples-Certificates-getEventCertificates-title-401").text("Status: 401 - " + responseCertificates401_description.substring(0, responseCertificates401_description_break));
+                                $("#examples-Certificates-getEventCertificates-description-401").html(responseCertificates401_description.substring(responseCertificates401_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Certificates-getEventCertificates-401" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Certificates-getEventCertificates-401-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Certificates-getEventCertificates-401-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Certificates-getEventCertificates-401-schema">
+                                  <div id="responses-Certificates-getEventCertificates-schema-401" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access token is missing or invalid.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Certificates-getEventCertificates-401-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Certificates-getEventCertificates-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Certificates-getEventCertificates-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Certificates-getEventCertificates-title-403"></h3>
+                            <p id="examples-Certificates-getEventCertificates-description-403" class="marked"></p>
+                            <script>
+                              var responseCertificates403_description = `Access forbidden.`;
+                              var responseCertificates403_description_break = responseCertificates403_description.indexOf('\n');
+                              if (responseCertificates403_description_break == -1) {
+                                $("#examples-Certificates-getEventCertificates-title-403").text("Status: 403 - " + responseCertificates403_description);
+                              } else {
+                                $("#examples-Certificates-getEventCertificates-title-403").text("Status: 403 - " + responseCertificates403_description.substring(0, responseCertificates403_description_break));
+                                $("#examples-Certificates-getEventCertificates-description-403").html(responseCertificates403_description.substring(responseCertificates403_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Certificates-getEventCertificates-403" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Certificates-getEventCertificates-403-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Certificates-getEventCertificates-403-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Certificates-getEventCertificates-403-schema">
+                                  <div id="responses-Certificates-getEventCertificates-schema-403" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access forbidden.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Certificates-getEventCertificates-403-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Certificates-getEventCertificates-schema-403');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Certificates-getEventCertificates-403-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Certificates-getEventCertificates-title-404"></h3>
+                            <p id="examples-Certificates-getEventCertificates-description-404" class="marked"></p>
+                            <script>
+                              var responseCertificates404_description = `The requested resource not found.`;
+                              var responseCertificates404_description_break = responseCertificates404_description.indexOf('\n');
+                              if (responseCertificates404_description_break == -1) {
+                                $("#examples-Certificates-getEventCertificates-title-404").text("Status: 404 - " + responseCertificates404_description);
+                              } else {
+                                $("#examples-Certificates-getEventCertificates-title-404").text("Status: 404 - " + responseCertificates404_description.substring(0, responseCertificates404_description_break));
+                                $("#examples-Certificates-getEventCertificates-description-404").html(responseCertificates404_description.substring(responseCertificates404_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Certificates-getEventCertificates-404" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Certificates-getEventCertificates-404-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Certificates-getEventCertificates-404-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Certificates-getEventCertificates-404-schema">
+                                  <div id="responses-Certificates-getEventCertificates-schema-404" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "The requested resource not found.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Certificates-getEventCertificates-404-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Certificates-getEventCertificates-schema-404');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Certificates-getEventCertificates-404-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Certificates-getEventCertificates-title-500"></h3>
+                            <p id="examples-Certificates-getEventCertificates-description-500" class="marked"></p>
+                            <script>
+                              var responseCertificates500_description = `Unexpected server error.`;
+                              var responseCertificates500_description_break = responseCertificates500_description.indexOf('\n');
+                              if (responseCertificates500_description_break == -1) {
+                                $("#examples-Certificates-getEventCertificates-title-500").text("Status: 500 - " + responseCertificates500_description);
+                              } else {
+                                $("#examples-Certificates-getEventCertificates-title-500").text("Status: 500 - " + responseCertificates500_description.substring(0, responseCertificates500_description_break));
+                                $("#examples-Certificates-getEventCertificates-description-500").html(responseCertificates500_description.substring(responseCertificates500_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Certificates-getEventCertificates-500" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Certificates-getEventCertificates-500-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Certificates-getEventCertificates-500-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Certificates-getEventCertificates-500-schema">
+                                  <div id="responses-Certificates-getEventCertificates-schema-500" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unexpected server error.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Certificates-getEventCertificates-500-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Certificates-getEventCertificates-schema-500');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Certificates-getEventCertificates-500-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
                         </article>
@@ -8891,9 +9673,10 @@ public class CollectionsApiExample {
         
         // Create an instance of the API class
         CollectionsApi apiInstance = new CollectionsApi();
+        Integer id = 56; // Integer | Event ID.
         
         try {
-            array[EventCollectionDto] result = apiInstance.getEventCollectionsList();
+            array[EventCollectionDto] result = apiInstance.getEventCollectionsList(id);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling CollectionsApi#getEventCollectionsList");
@@ -8910,9 +9693,10 @@ public class CollectionsApiExample {
 public class CollectionsApiExample {
     public static void main(String[] args) {
         CollectionsApi apiInstance = new CollectionsApi();
+        Integer id = 56; // Integer | Event ID.
         
         try {
-            array[EventCollectionDto] result = apiInstance.getEventCollectionsList();
+            array[EventCollectionDto] result = apiInstance.getEventCollectionsList(id);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling CollectionsApi#getEventCollectionsList");
@@ -8933,10 +9717,11 @@ public class CollectionsApiExample {
 
 // Create an instance of the API class
 CollectionsApi *apiInstance = [[CollectionsApi alloc] init];
+Integer *id = 56; // Event ID. (default to null)
 
 // Get event collections list.
-[apiInstance getEventCollectionsListWithCompletionHandler: 
-              ^(array[EventCollectionDto] output, NSError* error) {
+[apiInstance getEventCollectionsListWith:id
+              completionHandler: ^(array[EventCollectionDto] output, NSError* error) {
     if (output) {
         NSLog(@"%@", output);
     }
@@ -8957,6 +9742,8 @@ bearer.accessToken = "YOUR ACCESS TOKEN";
 
 // Create an instance of the API class
 var api = new EventurasApi.CollectionsApi()
+var id = 56; // {Integer} Event ID.
+
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -8964,7 +9751,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.getEventCollectionsList(callback);
+api.getEventCollectionsList(id, callback);
 </code></pre>
                             </div>
 
@@ -8989,10 +9776,11 @@ namespace Example
             
             // Create an instance of the API class
             var apiInstance = new CollectionsApi();
+            var id = 56;  // Integer | Event ID. (default to null)
 
             try {
                 // Get event collections list.
-                array[EventCollectionDto] result = apiInstance.getEventCollectionsList();
+                array[EventCollectionDto] result = apiInstance.getEventCollectionsList(id);
                 Debug.WriteLine(result);
             } catch (Exception e) {
                 Debug.Print("Exception when calling CollectionsApi.getEventCollectionsList: " + e.Message );
@@ -9012,9 +9800,10 @@ OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('',
 
 // Create an instance of the API class
 $api_instance = new OpenAPITools\Client\Api\CollectionsApi();
+$id = 56; // Integer | Event ID.
 
 try {
-    $result = $api_instance->getEventCollectionsList();
+    $result = $api_instance->getEventCollectionsList($id);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling CollectionsApi->getEventCollectionsList: ', $e->getMessage(), PHP_EOL;
@@ -9032,9 +9821,10 @@ $WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 # Create an instance of the API class
 my $api_instance = WWW::OPenAPIClient::CollectionsApi->new();
+my $id = 56; # Integer | Event ID.
 
 eval { 
-    my $result = $api_instance->getEventCollectionsList();
+    my $result = $api_instance->getEventCollectionsList(id => $id);
     print Dumper($result);
 };
 if ($@) {
@@ -9054,10 +9844,11 @@ openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # Create an instance of the API class
 api_instance = openapi_client.CollectionsApi()
+id = 56 # Integer | Event ID. (default to null)
 
 try: 
     # Get event collections list.
-    api_response = api_instance.get_event_collections_list()
+    api_response = api_instance.get_event_collections_list(id)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling CollectionsApi->getEventCollectionsList: %s\n" % e)</code></pre>
@@ -9067,9 +9858,10 @@ except ApiException as e:
                               <pre class="prettyprint"><code class="language-rust">extern crate CollectionsApi;
 
 pub fn main() {
+    let id = 56; // Integer
 
     let mut context = CollectionsApi::Context::default();
-    let result = client.getEventCollectionsList(&context).wait();
+    let result = client.getEventCollectionsList(id, &context).wait();
 
     println!("{:?}", result);
 }
@@ -9084,6 +9876,39 @@ pub fn main() {
 
                           <h2>Parameters</h2>
 
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+<td>
+
+
+    <div id="d2e199_getEventCollectionsList_id">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Event ID.
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
 
 
 
@@ -9223,6 +10048,138 @@ pub fn main() {
                                     </script>
                                   </div>
                                   <input id='responses-Collections-getEventCollectionsList-400-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Collections-getEventCollectionsList-title-401"></h3>
+                            <p id="examples-Collections-getEventCollectionsList-description-401" class="marked"></p>
+                            <script>
+                              var responseCollections401_description = `Access token is missing or invalid.`;
+                              var responseCollections401_description_break = responseCollections401_description.indexOf('\n');
+                              if (responseCollections401_description_break == -1) {
+                                $("#examples-Collections-getEventCollectionsList-title-401").text("Status: 401 - " + responseCollections401_description);
+                              } else {
+                                $("#examples-Collections-getEventCollectionsList-title-401").text("Status: 401 - " + responseCollections401_description.substring(0, responseCollections401_description_break));
+                                $("#examples-Collections-getEventCollectionsList-description-401").html(responseCollections401_description.substring(responseCollections401_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Collections-getEventCollectionsList-401" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Collections-getEventCollectionsList-401-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Collections-getEventCollectionsList-401-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Collections-getEventCollectionsList-401-schema">
+                                  <div id="responses-Collections-getEventCollectionsList-schema-401" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access token is missing or invalid.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Collections-getEventCollectionsList-401-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Collections-getEventCollectionsList-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Collections-getEventCollectionsList-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Collections-getEventCollectionsList-title-403"></h3>
+                            <p id="examples-Collections-getEventCollectionsList-description-403" class="marked"></p>
+                            <script>
+                              var responseCollections403_description = `Access forbidden.`;
+                              var responseCollections403_description_break = responseCollections403_description.indexOf('\n');
+                              if (responseCollections403_description_break == -1) {
+                                $("#examples-Collections-getEventCollectionsList-title-403").text("Status: 403 - " + responseCollections403_description);
+                              } else {
+                                $("#examples-Collections-getEventCollectionsList-title-403").text("Status: 403 - " + responseCollections403_description.substring(0, responseCollections403_description_break));
+                                $("#examples-Collections-getEventCollectionsList-description-403").html(responseCollections403_description.substring(responseCollections403_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Collections-getEventCollectionsList-403" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Collections-getEventCollectionsList-403-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Collections-getEventCollectionsList-403-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Collections-getEventCollectionsList-403-schema">
+                                  <div id="responses-Collections-getEventCollectionsList-schema-403" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access forbidden.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Collections-getEventCollectionsList-403-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Collections-getEventCollectionsList-schema-403');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Collections-getEventCollectionsList-403-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
                             <h3 id="examples-Collections-getEventCollectionsList-title-404"></h3>
@@ -17188,6 +18145,782 @@ Event ID.
                         </article>
                       </div>
                       <hr>
+                    <div id="api-Events-getEventCertificates">
+                      <article id="api-Events-getEventCertificates-0" data-group="User" data-name="getEventCertificates" data-version="0">
+                        <div class="pull-left">
+                          <h1>getEventCertificates</h1>
+                          <p>Get event certificates list.</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/events/{id}/certificates</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Events-getEventCertificates-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Events-getEventCertificates-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Events-getEventCertificates-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Events-getEventCertificates-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Events-getEventCertificates-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Events-getEventCertificates-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Events-getEventCertificates-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Events-getEventCertificates-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Events-getEventCertificates-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Events-getEventCertificates-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Events-getEventCertificates-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Events-getEventCertificates-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Events-getEventCertificates-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+ -H "Accept: application/json"\
+ "https://full.path.to/v3/events/{id}/certificates?page=&count="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Events-getEventCertificates-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.EventsApi;
+
+import java.io.File;
+import java.util.*;
+
+public class EventsApiExample {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        
+        // Configure Bearer (JWT) access token for authorization: bearer
+        HttpBearerAuth bearer = (HttpBearerAuth) defaultClient.getAuthentication("bearer");
+        bearer.setBearerToken("BEARER TOKEN");
+        
+        // Create an instance of the API class
+        EventsApi apiInstance = new EventsApi();
+        Integer id = 56; // Integer | Event ID.
+        Integer page = 56; // Integer | Page number.
+        Integer count = 56; // Integer | Page size.
+        
+        try {
+            array[CertificateDto] result = apiInstance.getEventCertificates(id, page, count);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling EventsApi#getEventCertificates");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Events-getEventCertificates-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.EventsApi;
+
+public class EventsApiExample {
+    public static void main(String[] args) {
+        EventsApi apiInstance = new EventsApi();
+        Integer id = 56; // Integer | Event ID.
+        Integer page = 56; // Integer | Page number.
+        Integer count = 56; // Integer | Page size.
+        
+        try {
+            array[CertificateDto] result = apiInstance.getEventCertificates(id, page, count);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling EventsApi#getEventCertificates");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Events-getEventCertificates-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Events-getEventCertificates-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+
+// Configure Bearer (JWT) access token for authorization: bearer
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+
+// Create an instance of the API class
+EventsApi *apiInstance = [[EventsApi alloc] init];
+Integer *id = 56; // Event ID. (default to null)
+Integer *page = 56; // Page number. (optional) (default to 1)
+Integer *count = 56; // Page size. (optional) (default to 100)
+
+// Get event certificates list.
+[apiInstance getEventCertificatesWith:id
+    page:page
+    count:count
+              completionHandler: ^(array[CertificateDto] output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Events-getEventCertificates-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var EventurasApi = require('eventuras_api');
+var defaultClient = EventurasApi.ApiClient.instance;
+
+// Configure Bearer (JWT) access token for authorization: bearer
+var bearer = defaultClient.authentications['bearer'];
+bearer.accessToken = "YOUR ACCESS TOKEN";
+
+// Create an instance of the API class
+var api = new EventurasApi.EventsApi()
+var id = 56; // {Integer} Event ID.
+var opts = {
+  'page': 56, // {Integer} Page number.
+  'count': 56 // {Integer} Page size.
+};
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getEventCertificates(id, opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Events-getEventCertificates-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Events-getEventCertificates-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class getEventCertificatesExample
+    {
+        public void main()
+        {
+            // Configure Bearer (JWT) access token for authorization: bearer
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+            
+            // Create an instance of the API class
+            var apiInstance = new EventsApi();
+            var id = 56;  // Integer | Event ID. (default to null)
+            var page = 56;  // Integer | Page number. (optional)  (default to 1)
+            var count = 56;  // Integer | Page size. (optional)  (default to 100)
+
+            try {
+                // Get event certificates list.
+                array[CertificateDto] result = apiInstance.getEventCertificates(id, page, count);
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling EventsApi.getEventCertificates: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Events-getEventCertificates-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure Bearer (JWT) access token for authorization: bearer
+OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('', 'YOUR_ACCESS_TOKEN');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\EventsApi();
+$id = 56; // Integer | Event ID.
+$page = 56; // Integer | Page number.
+$count = 56; // Integer | Page size.
+
+try {
+    $result = $api_instance->getEventCertificates($id, $page, $count);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling EventsApi->getEventCertificates: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Events-getEventCertificates-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::EventsApi;
+
+# Configure Bearer (JWT) access token for authorization: bearer
+$WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::EventsApi->new();
+my $id = 56; # Integer | Event ID.
+my $page = 56; # Integer | Page number.
+my $count = 56; # Integer | Page size.
+
+eval { 
+    my $result = $api_instance->getEventCertificates(id => $id, page => $page, count => $count);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling EventsApi->getEventCertificates: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Events-getEventCertificates-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Configure Bearer (JWT) access token for authorization: bearer
+openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# Create an instance of the API class
+api_instance = openapi_client.EventsApi()
+id = 56 # Integer | Event ID. (default to null)
+page = 56 # Integer | Page number. (optional) (default to 1)
+count = 56 # Integer | Page size. (optional) (default to 100)
+
+try: 
+    # Get event certificates list.
+    api_response = api_instance.get_event_certificates(id, page=page, count=count)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling EventsApi->getEventCertificates: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Events-getEventCertificates-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate EventsApi;
+
+pub fn main() {
+    let id = 56; // Integer
+    let page = 56; // Integer
+    let count = 56; // Integer
+
+    let mut context = EventsApi::Context::default();
+    let result = client.getEventCertificates(id, page, count, &context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+<td>
+
+
+    <div id="d2e199_getEventCertificates_id">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Event ID.
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">page</td>
+<td>
+
+
+    <div id="d2e199_getEventCertificates_page">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Page number.
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">count</td>
+<td>
+
+
+    <div id="d2e199_getEventCertificates_count">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Page size.
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Events-getEventCertificates-title-200"></h3>
+                            <p id="examples-Events-getEventCertificates-description-200" class="marked"></p>
+                            <script>
+                              var responseEvents200_description = `OK`;
+                              var responseEvents200_description_break = responseEvents200_description.indexOf('\n');
+                              if (responseEvents200_description_break == -1) {
+                                $("#examples-Events-getEventCertificates-title-200").text("Status: 200 - " + responseEvents200_description);
+                              } else {
+                                $("#examples-Events-getEventCertificates-title-200").text("Status: 200 - " + responseEvents200_description.substring(0, responseEvents200_description_break));
+                                $("#examples-Events-getEventCertificates-description-200").html(responseEvents200_description.substring(responseEvents200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Events-getEventCertificates-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Events-getEventCertificates-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Events-getEventCertificates-200-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Events-getEventCertificates-200-schema">
+                                  <div id="responses-Events-getEventCertificates-schema-200" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "OK",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/CertificateDto"
+        }
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Events-getEventCertificates-200-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Events-getEventCertificates-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Events-getEventCertificates-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Events-getEventCertificates-title-400"></h3>
+                            <p id="examples-Events-getEventCertificates-description-400" class="marked"></p>
+                            <script>
+                              var responseEvents400_description = `Missing or invalid request parameters.`;
+                              var responseEvents400_description_break = responseEvents400_description.indexOf('\n');
+                              if (responseEvents400_description_break == -1) {
+                                $("#examples-Events-getEventCertificates-title-400").text("Status: 400 - " + responseEvents400_description);
+                              } else {
+                                $("#examples-Events-getEventCertificates-title-400").text("Status: 400 - " + responseEvents400_description.substring(0, responseEvents400_description_break));
+                                $("#examples-Events-getEventCertificates-description-400").html(responseEvents400_description.substring(responseEvents400_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Events-getEventCertificates-400" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Events-getEventCertificates-400-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Events-getEventCertificates-400-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Events-getEventCertificates-400-schema">
+                                  <div id="responses-Events-getEventCertificates-schema-400" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Missing or invalid request parameters.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Events-getEventCertificates-400-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Events-getEventCertificates-schema-400');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Events-getEventCertificates-400-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Events-getEventCertificates-title-401"></h3>
+                            <p id="examples-Events-getEventCertificates-description-401" class="marked"></p>
+                            <script>
+                              var responseEvents401_description = `Access token is missing or invalid.`;
+                              var responseEvents401_description_break = responseEvents401_description.indexOf('\n');
+                              if (responseEvents401_description_break == -1) {
+                                $("#examples-Events-getEventCertificates-title-401").text("Status: 401 - " + responseEvents401_description);
+                              } else {
+                                $("#examples-Events-getEventCertificates-title-401").text("Status: 401 - " + responseEvents401_description.substring(0, responseEvents401_description_break));
+                                $("#examples-Events-getEventCertificates-description-401").html(responseEvents401_description.substring(responseEvents401_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Events-getEventCertificates-401" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Events-getEventCertificates-401-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Events-getEventCertificates-401-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Events-getEventCertificates-401-schema">
+                                  <div id="responses-Events-getEventCertificates-schema-401" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access token is missing or invalid.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Events-getEventCertificates-401-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Events-getEventCertificates-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Events-getEventCertificates-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Events-getEventCertificates-title-403"></h3>
+                            <p id="examples-Events-getEventCertificates-description-403" class="marked"></p>
+                            <script>
+                              var responseEvents403_description = `Access forbidden.`;
+                              var responseEvents403_description_break = responseEvents403_description.indexOf('\n');
+                              if (responseEvents403_description_break == -1) {
+                                $("#examples-Events-getEventCertificates-title-403").text("Status: 403 - " + responseEvents403_description);
+                              } else {
+                                $("#examples-Events-getEventCertificates-title-403").text("Status: 403 - " + responseEvents403_description.substring(0, responseEvents403_description_break));
+                                $("#examples-Events-getEventCertificates-description-403").html(responseEvents403_description.substring(responseEvents403_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Events-getEventCertificates-403" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Events-getEventCertificates-403-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Events-getEventCertificates-403-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Events-getEventCertificates-403-schema">
+                                  <div id="responses-Events-getEventCertificates-schema-403" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access forbidden.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Events-getEventCertificates-403-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Events-getEventCertificates-schema-403');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Events-getEventCertificates-403-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Events-getEventCertificates-title-404"></h3>
+                            <p id="examples-Events-getEventCertificates-description-404" class="marked"></p>
+                            <script>
+                              var responseEvents404_description = `The requested resource not found.`;
+                              var responseEvents404_description_break = responseEvents404_description.indexOf('\n');
+                              if (responseEvents404_description_break == -1) {
+                                $("#examples-Events-getEventCertificates-title-404").text("Status: 404 - " + responseEvents404_description);
+                              } else {
+                                $("#examples-Events-getEventCertificates-title-404").text("Status: 404 - " + responseEvents404_description.substring(0, responseEvents404_description_break));
+                                $("#examples-Events-getEventCertificates-description-404").html(responseEvents404_description.substring(responseEvents404_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Events-getEventCertificates-404" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Events-getEventCertificates-404-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Events-getEventCertificates-404-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Events-getEventCertificates-404-schema">
+                                  <div id="responses-Events-getEventCertificates-schema-404" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "The requested resource not found.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Events-getEventCertificates-404-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Events-getEventCertificates-schema-404');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Events-getEventCertificates-404-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Events-getEventCertificates-title-500"></h3>
+                            <p id="examples-Events-getEventCertificates-description-500" class="marked"></p>
+                            <script>
+                              var responseEvents500_description = `Unexpected server error.`;
+                              var responseEvents500_description_break = responseEvents500_description.indexOf('\n');
+                              if (responseEvents500_description_break == -1) {
+                                $("#examples-Events-getEventCertificates-title-500").text("Status: 500 - " + responseEvents500_description);
+                              } else {
+                                $("#examples-Events-getEventCertificates-title-500").text("Status: 500 - " + responseEvents500_description.substring(0, responseEvents500_description_break));
+                                $("#examples-Events-getEventCertificates-description-500").html(responseEvents500_description.substring(responseEvents500_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Events-getEventCertificates-500" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Events-getEventCertificates-500-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Events-getEventCertificates-500-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Events-getEventCertificates-500-schema">
+                                  <div id="responses-Events-getEventCertificates-schema-500" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unexpected server error.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Events-getEventCertificates-500-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Events-getEventCertificates-schema-500');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Events-getEventCertificates-500-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
                     <div id="api-Events-getEventCollectionById">
                       <article id="api-Events-getEventCollectionById-0" data-group="User" data-name="getEventCollectionById" data-version="0">
                         <div class="pull-left">
@@ -17876,9 +19609,10 @@ public class EventsApiExample {
         
         // Create an instance of the API class
         EventsApi apiInstance = new EventsApi();
+        Integer id = 56; // Integer | Event ID.
         
         try {
-            array[EventCollectionDto] result = apiInstance.getEventCollectionsList();
+            array[EventCollectionDto] result = apiInstance.getEventCollectionsList(id);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling EventsApi#getEventCollectionsList");
@@ -17895,9 +19629,10 @@ public class EventsApiExample {
 public class EventsApiExample {
     public static void main(String[] args) {
         EventsApi apiInstance = new EventsApi();
+        Integer id = 56; // Integer | Event ID.
         
         try {
-            array[EventCollectionDto] result = apiInstance.getEventCollectionsList();
+            array[EventCollectionDto] result = apiInstance.getEventCollectionsList(id);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling EventsApi#getEventCollectionsList");
@@ -17918,10 +19653,11 @@ public class EventsApiExample {
 
 // Create an instance of the API class
 EventsApi *apiInstance = [[EventsApi alloc] init];
+Integer *id = 56; // Event ID. (default to null)
 
 // Get event collections list.
-[apiInstance getEventCollectionsListWithCompletionHandler: 
-              ^(array[EventCollectionDto] output, NSError* error) {
+[apiInstance getEventCollectionsListWith:id
+              completionHandler: ^(array[EventCollectionDto] output, NSError* error) {
     if (output) {
         NSLog(@"%@", output);
     }
@@ -17942,6 +19678,8 @@ bearer.accessToken = "YOUR ACCESS TOKEN";
 
 // Create an instance of the API class
 var api = new EventurasApi.EventsApi()
+var id = 56; // {Integer} Event ID.
+
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -17949,7 +19687,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.getEventCollectionsList(callback);
+api.getEventCollectionsList(id, callback);
 </code></pre>
                             </div>
 
@@ -17974,10 +19712,11 @@ namespace Example
             
             // Create an instance of the API class
             var apiInstance = new EventsApi();
+            var id = 56;  // Integer | Event ID. (default to null)
 
             try {
                 // Get event collections list.
-                array[EventCollectionDto] result = apiInstance.getEventCollectionsList();
+                array[EventCollectionDto] result = apiInstance.getEventCollectionsList(id);
                 Debug.WriteLine(result);
             } catch (Exception e) {
                 Debug.Print("Exception when calling EventsApi.getEventCollectionsList: " + e.Message );
@@ -17997,9 +19736,10 @@ OpenAPITools\Client\Configuration::getDefaultConfiguration()->setAccessToken('',
 
 // Create an instance of the API class
 $api_instance = new OpenAPITools\Client\Api\EventsApi();
+$id = 56; // Integer | Event ID.
 
 try {
-    $result = $api_instance->getEventCollectionsList();
+    $result = $api_instance->getEventCollectionsList($id);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling EventsApi->getEventCollectionsList: ', $e->getMessage(), PHP_EOL;
@@ -18017,9 +19757,10 @@ $WWW::OPenAPIClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 # Create an instance of the API class
 my $api_instance = WWW::OPenAPIClient::EventsApi->new();
+my $id = 56; # Integer | Event ID.
 
 eval { 
-    my $result = $api_instance->getEventCollectionsList();
+    my $result = $api_instance->getEventCollectionsList(id => $id);
     print Dumper($result);
 };
 if ($@) {
@@ -18039,10 +19780,11 @@ openapi_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # Create an instance of the API class
 api_instance = openapi_client.EventsApi()
+id = 56 # Integer | Event ID. (default to null)
 
 try: 
     # Get event collections list.
-    api_response = api_instance.get_event_collections_list()
+    api_response = api_instance.get_event_collections_list(id)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling EventsApi->getEventCollectionsList: %s\n" % e)</code></pre>
@@ -18052,9 +19794,10 @@ except ApiException as e:
                               <pre class="prettyprint"><code class="language-rust">extern crate EventsApi;
 
 pub fn main() {
+    let id = 56; // Integer
 
     let mut context = EventsApi::Context::default();
-    let result = client.getEventCollectionsList(&context).wait();
+    let result = client.getEventCollectionsList(id, &context).wait();
 
     println!("{:?}", result);
 }
@@ -18069,6 +19812,39 @@ pub fn main() {
 
                           <h2>Parameters</h2>
 
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+<td>
+
+
+    <div id="d2e199_getEventCollectionsList_id">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Integer
+                </span>
+                    <span class="format">
+                        (int32)
+                    </span>
+
+                    <div class="inner description marked">
+Event ID.
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
 
 
 
@@ -18208,6 +19984,138 @@ pub fn main() {
                                     </script>
                                   </div>
                                   <input id='responses-Events-getEventCollectionsList-400-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Events-getEventCollectionsList-title-401"></h3>
+                            <p id="examples-Events-getEventCollectionsList-description-401" class="marked"></p>
+                            <script>
+                              var responseEvents401_description = `Access token is missing or invalid.`;
+                              var responseEvents401_description_break = responseEvents401_description.indexOf('\n');
+                              if (responseEvents401_description_break == -1) {
+                                $("#examples-Events-getEventCollectionsList-title-401").text("Status: 401 - " + responseEvents401_description);
+                              } else {
+                                $("#examples-Events-getEventCollectionsList-title-401").text("Status: 401 - " + responseEvents401_description.substring(0, responseEvents401_description_break));
+                                $("#examples-Events-getEventCollectionsList-description-401").html(responseEvents401_description.substring(responseEvents401_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Events-getEventCollectionsList-401" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Events-getEventCollectionsList-401-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Events-getEventCollectionsList-401-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Events-getEventCollectionsList-401-schema">
+                                  <div id="responses-Events-getEventCollectionsList-schema-401" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access token is missing or invalid.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Events-getEventCollectionsList-401-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Events-getEventCollectionsList-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Events-getEventCollectionsList-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+                            <h3 id="examples-Events-getEventCollectionsList-title-403"></h3>
+                            <p id="examples-Events-getEventCollectionsList-description-403" class="marked"></p>
+                            <script>
+                              var responseEvents403_description = `Access forbidden.`;
+                              var responseEvents403_description_break = responseEvents403_description.indexOf('\n');
+                              if (responseEvents403_description_break == -1) {
+                                $("#examples-Events-getEventCollectionsList-title-403").text("Status: 403 - " + responseEvents403_description);
+                              } else {
+                                $("#examples-Events-getEventCollectionsList-title-403").text("Status: 403 - " + responseEvents403_description.substring(0, responseEvents403_description_break));
+                                $("#examples-Events-getEventCollectionsList-description-403").html(responseEvents403_description.substring(responseEvents403_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Events-getEventCollectionsList-403" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Events-getEventCollectionsList-403-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Events-getEventCollectionsList-403-wrapper" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-Events-getEventCollectionsList-403-schema">
+                                  <div id="responses-Events-getEventCollectionsList-schema-403" class="exampleStyle">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Access forbidden.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Error"
+      }
+    }
+  }
+};
+                                        var schema = findNode('schema',schemaWrapper).schema;
+                                        if (!schema) {
+                                          schema = schemaWrapper.schema;
+                                        }
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else if (schema.items != null && schema.items.$ref != null) {
+                                            schema.items = defsParser.$refs.get(schema.items.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-Events-getEventCollectionsList-403-schema-data').val(JSON.stringify(schema));
+                                        var result = $('#responses-Events-getEventCollectionsList-schema-403');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-Events-getEventCollectionsList-403-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
                             <h3 id="examples-Events-getEventCollectionsList-title-404"></h3>

@@ -71,6 +71,8 @@ paths:
     $ref: './paths/events/collections/id.yaml'
   /events/{id}/collections/{collectionId}:
     $ref: './paths/events/collections/mappings.yaml'
+  /events/{id}/certificates:
+    $ref: './paths/events/certificates.yaml'
   /events/{id}/certificates/preview:
     $ref: './paths/events/certificates/preview.yaml'
   /events/{id}/certificates/issue:

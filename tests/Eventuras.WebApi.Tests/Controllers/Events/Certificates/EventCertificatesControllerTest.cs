@@ -33,6 +33,176 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Certificates
             scope.Db.SaveChanges();
         }
 
+        #region List
+
+        [Fact]
+        public async Task List_Should_Require_Auth()
+        {
+            var response = await _factory.CreateClient()
+                .GetAsync("/v3/event/1001/certificates");
+            response.CheckUnauthorized();
+        }
+
+        [Fact]
+        public async Task List_Should_Require_Admin_Role()
+        {
+            var response = await _factory.CreateClient()
+                .Authenticated()
+                .GetAsync("/v3/event/1001/certificates");
+            response.CheckForbidden();
+        }
+
+        [Fact]
+        public async Task List_Should_Return_Not_Found_For_Non_Existing_Event()
+        {
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin()
+                .GetAsync("/v3/event/1001/certificates");
+            response.CheckNotFound();
+        }
+
+        [Fact]
+        public async Task List_Should_Not_Allow_Other_Org_Admin_To_Display_Event_Certs()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org = await scope.CreateOrganizationAsync();
+            using var otherOrg = await scope.CreateOrganizationAsync();
+            using var otherOrgAdmin = await scope.CreateUserAsync();
+            using var mem = await scope.CreateOrganizationMemberAsync(otherOrgAdmin.Entity, otherOrg.Entity);
+            using var evt = await scope.CreateEventAsync(organization: org.Entity);
+
+            var response = await _factory.CreateClient()
+                .AuthenticatedAs(otherOrgAdmin.Entity, Roles.Admin)
+                .GetAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates?orgId={org.Entity.OrganizationId}");
+
+            response.CheckForbidden();
+        }
+
+        [Fact]
+        public async Task List_Should_Be_Available_For_Org_Admin()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var org = await scope.CreateOrganizationAsync();
+            using var admin = await scope.CreateUserAsync();
+            using var mem = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
+            using var evt = await scope.CreateEventAsync(organization: org.Entity);
+
+            var response = await _factory.CreateClient()
+                .AuthenticatedAs(admin.Entity, Roles.Admin)
+                .GetAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates?orgId={org.Entity.OrganizationId}");
+
+            response.CheckOk();
+        }
+
+        [Theory]
+        [InlineData(Roles.SuperAdmin)]
+        [InlineData(Roles.SystemAdmin)]
+        public async Task List_Should_Be_Available_For_Power_Admin(string role)
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+
+            var response = await _factory.CreateClient()
+                .Authenticated(role: role)
+                .GetAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates");
+
+            response.CheckOk();
+        }
+
+        [Fact]
+        public async Task List_Can_Be_Empty()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin()
+                .GetAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates");
+
+            var json = await response.CheckOk().AsTokenAsync();
+            json.CheckEmptyPaging();
+        }
+
+        [Fact]
+        public async Task List_Should_Not_List_Certificates_From_Another_Event()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var e1 = await scope.CreateEventAsync();
+            using var user = await scope.CreateUserAsync();
+            using var reg = await scope.CreateRegistrationAsync(e1.Entity, user.Entity);
+            using var cert = await scope.CreateCertificateAsync(reg.Entity);
+            using var e2 = await scope.CreateEventAsync();
+
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin()
+                .GetAsync($"/v3/event/{e2.Entity.EventInfoId}/certificates");
+
+            var json = await response.CheckOk().AsTokenAsync();
+            json.CheckEmptyPaging();
+        }
+
+        public static object[][] GetInvalidListQueryParams()
+        {
+            return new[]
+            {
+                new object[] { new { page = "invalid" } },
+                new object[] { new { count = "invalid" } },
+                new object[] { new { page = -1 } },
+                new object[] { new { page = 0 } },
+                new object[] { new { count = -1 } }
+            };
+        }
+
+        [Theory]
+        [MemberData(nameof(GetInvalidListQueryParams))]
+        public async Task List_Should_Validate_Query_Params(object queryParams)
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin()
+                .GetAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates", queryParams);
+
+            response.CheckBadRequest();
+        }
+
+        [Fact]
+        public async Task List_Should_Use_Paging()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+            using var u1 = await scope.CreateUserAsync();
+            using var u2 = await scope.CreateUserAsync();
+            using var u3 = await scope.CreateUserAsync();
+            using var r1 = await scope.CreateRegistrationAsync(evt.Entity, u1.Entity);
+            using var r2 = await scope.CreateRegistrationAsync(evt.Entity, u2.Entity);
+            using var r3 = await scope.CreateRegistrationAsync(evt.Entity, u3.Entity);
+            using var c1 = await scope.CreateCertificateAsync(r1.Entity);
+            using var c2 = await scope.CreateCertificateAsync(r2.Entity);
+            using var c3 = await scope.CreateCertificateAsync(r3.Entity);
+
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin()
+                .GetAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates?page=1&count=2");
+
+            var json = await response.CheckOk().AsTokenAsync();
+            json.CheckPaging(1, 3,
+                (token, c) => token.CheckCertificate(c),
+                c1.Entity, c2.Entity);
+
+            response = await _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin()
+                .GetAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates?page=2&count=2");
+
+            json = await response.CheckOk().AsTokenAsync();
+            json.CheckPaging(2, 3,
+                (token, c) => token.CheckCertificate(c),
+                c3.Entity);
+        }
+
+        #endregion
+
         #region Preview
 
         [Fact]

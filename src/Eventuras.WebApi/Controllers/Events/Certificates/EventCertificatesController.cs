@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services.Certificates;
 using Eventuras.Services.Events;
+using Eventuras.WebApi.Controllers.Certificates;
+using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,13 +24,15 @@ namespace Eventuras.WebApi.Controllers.Events.Certificates
         private readonly ICertificateRenderer _certificateRenderer;
         private readonly ICertificateIssuingService _certificateIssuingService;
         private readonly ICertificateDeliveryService _certificateDeliveryService;
+        private readonly ICertificateRetrievalService _certificateRetrievalService;
 
         public EventCertificatesController(
             IEventInfoRetrievalService eventInfoRetrievalService,
             ICertificateRenderer certificateRenderer,
             ICertificateIssuingService certificateIssuingService,
             ICertificateDeliveryService certificateDeliveryService,
-            IEventInfoAccessControlService eventInfoAccessControlService)
+            IEventInfoAccessControlService eventInfoAccessControlService,
+            ICertificateRetrievalService certificateRetrievalService)
         {
             _eventInfoRetrievalService = eventInfoRetrievalService ?? throw
                 new ArgumentNullException(nameof(eventInfoRetrievalService));
@@ -44,6 +48,43 @@ namespace Eventuras.WebApi.Controllers.Events.Certificates
 
             _eventInfoAccessControlService = eventInfoAccessControlService ?? throw
                 new ArgumentNullException(nameof(eventInfoAccessControlService));
+
+            _certificateRetrievalService = certificateRetrievalService ?? throw
+                new ArgumentNullException(nameof(certificateRetrievalService));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> List(int id,
+            [FromQuery] EventCertificateQueryDto query,
+            CancellationToken cancellationToken)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.FormatErrors());
+            }
+
+            var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(id, cancellationToken);
+            await _eventInfoAccessControlService.CheckEventManageAccessAsync(eventInfo, cancellationToken);
+
+            var certificates = await _certificateRetrievalService
+                .ListCertificatesAsync(new CertificateListRequest
+                {
+                    Limit = query.Limit,
+                    Offset = query.Offset,
+                    Filter = new CertificateFilter
+                    {
+                        EventId = id
+                    }
+                }, new CertificateRetrievalOptions
+                {
+                    LoadIssuingOrganization = true,
+                    LoadIssuingUser = true,
+                    LoadRecipientUser = true
+                }, cancellationToken);
+
+            return Ok(PageResponseDto<EventDto>.FromPaging(
+                query, certificates,
+                c => new CertificateDto(c)));
         }
 
         [HttpGet("preview")]

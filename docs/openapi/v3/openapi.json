@@ -958,10 +958,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "items" : {
-                    "$ref" : "#/components/schemas/NotificationRecipientsPagedList"
-                  },
-                  "type" : "array"
+                  "$ref" : "#/components/schemas/NotificationRecipientsPagedList"
                 }
               }
             },
@@ -2231,6 +2228,16 @@
     "/events/collections" : {
       "get" : {
         "operationId" : "getEventCollectionsList",
+        "parameters" : [ {
+          "description" : "Event ID.",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
         "responses" : {
           "200" : {
             "content" : {
@@ -2254,6 +2261,26 @@
               }
             },
             "description" : "Missing or invalid request parameters."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Access token is missing or invalid."
+          },
+          "403" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Access forbidden."
           },
           "404" : {
             "content" : {
@@ -2699,6 +2726,105 @@
         },
         "summary" : "Add event into collection.",
         "tags" : [ "events", "collections" ]
+      }
+    },
+    "/events/{id}/certificates" : {
+      "get" : {
+        "operationId" : "getEventCertificates",
+        "parameters" : [ {
+          "description" : "Event ID.",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "description" : "Page number.",
+          "in" : "query",
+          "name" : "page",
+          "required" : false,
+          "schema" : {
+            "default" : 1,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "description" : "Page size.",
+          "in" : "query",
+          "name" : "count",
+          "required" : false,
+          "schema" : {
+            "default" : 100,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CertificatesPagedList"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Missing or invalid request parameters."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Access token is missing or invalid."
+          },
+          "403" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Access forbidden."
+          },
+          "404" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "The requested resource not found."
+          },
+          "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Unexpected server error."
+          }
+        },
+        "summary" : "Get event certificates list.",
+        "tags" : [ "events", "certificates" ]
       }
     },
     "/events/{id}/certificates/preview" : {
@@ -5274,6 +5400,69 @@
         },
         "required" : [ "name", "organizationId" ],
         "title" : "Event collection information.",
+        "type" : "object"
+      },
+      "CertificatesPagedList" : {
+        "example" : {
+          "page" : 1,
+          "size" : 10,
+          "total" : 2,
+          "pages" : 1,
+          "data" : [ {
+            "certificateId" : 12380,
+            "certificateGuid" : "7383cefc-7e52-4e69-a044-38356885dd57",
+            "title" : "Demo Event",
+            "description" : "Some certificate description.",
+            "comment" : "Some certificate comment.",
+            "recipientName" : "John Doe",
+            "evidenceDescription" : "Some evidence description.",
+            "issuedInCity" : "Oslo",
+            "issuingDate" : "2021-01-01",
+            "issuerOrganizationName" : "Demo Org",
+            "issuerPersonName" : "Demo Issuer"
+          }, {
+            "certificateId" : 12345,
+            "certificateGuid" : "51009d9c-41d9-494b-9dd6-911b4fa3970f",
+            "title" : "Demo Event 2",
+            "description" : "Some certificate description.",
+            "recipientName" : "John Doe",
+            "evidenceDescription" : "Some evidence description.",
+            "issuedInCity" : "Oslo",
+            "issuingDate" : "2021-02-02",
+            "issuerOrganizationName" : "Demo Org",
+            "issuerPersonName" : "Demo Issuer"
+          } ]
+        },
+        "properties" : {
+          "page" : {
+            "description" : "Page number.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "count" : {
+            "description" : "Page size.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "total" : {
+            "description" : "Total items.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "pages" : {
+            "description" : "Total pages.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "data" : {
+            "items" : {
+              "$ref" : "#/components/schemas/CertificateDto"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "count", "data", "page", "pages", "total" ],
+        "title" : "Certificates list with paging.",
         "type" : "object"
       },
       "CertificateStatisticsDto" : {
