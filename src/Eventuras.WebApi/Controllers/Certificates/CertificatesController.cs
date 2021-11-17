@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Eventuras.Services.Certificates;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 
 namespace Eventuras.WebApi.Controllers.Certificates
 {
@@ -29,10 +30,13 @@ namespace Eventuras.WebApi.Controllers.Certificates
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id, [FromQuery] CertificateFormat format = CertificateFormat.Json)
+        public async Task<IActionResult> Get(int id, [FromQuery] CertificateFormat? format = null)
         {
             var cert = await _certificateRetrievalService
                 .GetCertificateByIdAsync(id, CertificateRetrievalOptions.ForRendering);
+
+            format ??= GetCertificateFormatFromMediaType(Request.Headers[HeaderNames.Accept])
+                       ?? CertificateFormat.Json;
 
             switch (format)
             {
@@ -55,6 +59,29 @@ namespace Eventuras.WebApi.Controllers.Certificates
                 default:
                     throw new InvalidOperationException($"Unsupported cert format: {format}");
             }
+        }
+
+        private static CertificateFormat? GetCertificateFormatFromMediaType(params string[] mediaTypes)
+        {
+            foreach (var mediaType in mediaTypes)
+            {
+                if (MediaTypeNames.Text.Html.ToLower().Equals(mediaType))
+                {
+                    return CertificateFormat.Html;
+                }
+
+                if (MediaTypeNames.Application.Pdf.ToLower().Equals(mediaType))
+                {
+                    return CertificateFormat.Pdf;
+                }
+
+                if (MediaTypeNames.Application.Json.ToLower().Equals(mediaType))
+                {
+                    return CertificateFormat.Json;
+                }
+            }
+
+            return null;
         }
     }
 }

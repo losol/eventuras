@@ -126,7 +126,25 @@ namespace Eventuras.WebApi.Tests.Controllers.Certificates
         }
 
         [Fact]
-        public async Task Should_Return_Certificate_Html()
+        public async Task Should_Return_Certificate_Json_Using_Accept_Header()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+            using var user = await scope.CreateUserAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+            using var cert = await scope.CreateCertificateAsync(reg.Entity);
+
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin()
+                .WithAcceptHeader(MediaTypeNames.Application.Json)
+                .GetAsync($"/v3/certificates/{cert.Entity.CertificateId}");
+
+            var json = await response.CheckOk().AsTokenAsync();
+            json.CheckCertificate(cert.Entity);
+        }
+
+        [Fact]
+        public async Task Should_Return_Certificate_Html_Using_Query_Param()
         {
             using var scope = _factory.Services.NewTestScope();
             using var evt = await scope.CreateEventAsync();
@@ -146,7 +164,28 @@ namespace Eventuras.WebApi.Tests.Controllers.Certificates
         }
 
         [Fact]
-        public async Task Should_Return_Certificate_Pdf()
+        public async Task Should_Return_Certificate_Html_Using_Accept_Header()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+            using var user = await scope.CreateUserAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+            using var cert = await scope.CreateCertificateAsync(reg.Entity);
+
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin()
+                .WithAcceptHeader(MediaTypeNames.Text.Html)
+                .GetAsync($"/v3/certificates/{cert.Entity.CertificateId}");
+
+            var html = await response.CheckOk().Content.ReadAsStringAsync();
+            Assert.Equal(MediaTypeNames.Text.Html, response.Content.Headers.ContentType?.MediaType);
+            Assert.Contains(cert.Entity.Title, html);
+            Assert.Contains(user.Entity.Name, html);
+            // TODO: check other properties?
+        }
+
+        [Fact]
+        public async Task Should_Return_Certificate_Pdf_Using_Query_Param()
         {
             using var scope = _factory.Services.NewTestScope();
             using var evt = await scope.CreateEventAsync();
@@ -157,6 +196,25 @@ namespace Eventuras.WebApi.Tests.Controllers.Certificates
             var response = await _factory.CreateClient()
                 .AuthenticatedAsSuperAdmin()
                 .GetAsync($"/v3/certificates/{cert.Entity.CertificateId}?format=pdf");
+
+            var text = await response.CheckOk().Content.ReadAsPdfStringAsync();
+            Assert.Contains(cert.Entity.Title, text);
+            Assert.Contains(user.Entity.Name, text);
+        }
+
+        [Fact]
+        public async Task Should_Return_Certificate_Pdf_Using_Accept_Header()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+            using var user = await scope.CreateUserAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+            using var cert = await scope.CreateCertificateAsync(reg.Entity);
+
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSuperAdmin()
+                .WithAcceptHeader(MediaTypeNames.Application.Pdf)
+                .GetAsync($"/v3/certificates/{cert.Entity.CertificateId}");
 
             var text = await response.CheckOk().Content.ReadAsPdfStringAsync();
             Assert.Contains(cert.Entity.Title, text);

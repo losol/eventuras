@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
+using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 
 namespace Eventuras.WebApi.Tests
@@ -40,6 +42,13 @@ namespace Eventuras.WebApi.Tests
                 null, // FIXME: we don't have surname in AspNetCore.Identity?
                 user.Email,
                 roles: roles);
+        }
+
+        public static HttpClient WithAcceptHeader(this HttpClient httpClient, string headerValue)
+        {
+            httpClient.DefaultRequestHeaders.Accept
+                .Add(new MediaTypeWithQualityHeaderValue(headerValue));
+            return httpClient;
         }
 
         public static HttpClient Authenticated(
@@ -111,7 +120,7 @@ namespace Eventuras.WebApi.Tests
 
             if (roles == null && role != null)
             {
-                roles = new[] {role};
+                roles = new[] { role };
             }
 
             if (roles != null && roles.Any())
