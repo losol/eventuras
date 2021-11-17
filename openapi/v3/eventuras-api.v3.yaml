@@ -7,13 +7,13 @@ info:
   contact:
     name: Contact Name
     email: contact@email.com
-    url: http://losol.github.io/eventuras/openapi/v3/eventuras-api.v3.yaml
+    url: https://losol.github.io/eventuras/openapi/v3/eventuras-api.v3.yaml
   license:
     name: GPL
 
 externalDocs:
   description: Generated API HTML
-  url: http://losol.github.io/eventuras/openapi/v3/
+  url: https://losol.github.io/eventuras/openapi/v3/
 
 servers:
   - url: https://full.path.to/v3/
@@ -29,6 +29,8 @@ paths:
     $ref: './paths/registrations/id.yaml'
   /registrations/{id}/orders:
     $ref: './paths/registrations/orders.yaml'
+  /registrations/{id}/certificate/send:
+    $ref: './paths/registrations/certificate/send.yaml'
 
   # Notifications
   /notifications:
@@ -69,6 +71,16 @@ paths:
     $ref: './paths/events/collections/id.yaml'
   /events/{id}/collections/{collectionId}:
     $ref: './paths/events/collections/mappings.yaml'
+  /events/{id}/certificates/preview:
+    $ref: './paths/events/certificates/preview.yaml'
+  /events/{id}/certificates/issue:
+    $ref: './paths/events/certificates/issue.yaml'
+  /events/{id}/certificates/update:
+    $ref: './paths/events/certificates/update.yaml'
+
+  # Certificates
+  /certificates/{id}:
+    $ref: './paths/certificates/id.yaml'
 
   # Orders
   /orders:

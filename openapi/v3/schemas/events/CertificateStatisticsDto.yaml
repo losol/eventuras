@@ -1,0 +1,16 @@
+type: object
+title: Event certificate issuing statistics.
+properties:
+  issued:
+    type: integer
+    format: int32
+    description: Number of issued certificates.
+  updated:
+    type: integer
+    format: int32
+    description: Number of updated certificates.
+examples:
+  - issued: 13
+  - issued: 0
+  - updated: 5
+  - updated: 0
