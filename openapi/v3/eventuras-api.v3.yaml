@@ -31,8 +31,16 @@ paths:
     $ref: './paths/registrations/orders.yaml'
 
   # Notifications
+  /notifications:
+    $ref: './paths/notifications.yaml'
   /notifications/email:
     $ref: './paths/notifications/email.yaml'
+  /notifications/sms:
+    $ref: './paths/notifications/sms.yaml'
+  /notifications/{id}:
+    $ref: './paths/notifications/id.yaml'
+  /notifications/{id}/recipients:
+    $ref: './paths/notifications/recipients.yaml'
 
   # Users
   /users:

@@ -231,6 +231,10 @@ font-style: italic;
   <h4><a href="#Notifications">Notifications</a></h4>
   <ul>
   <li><a href="#createNewEmailNotification"><code><span class="http-method">post</span> /notifications/email</code></a></li>
+  <li><a href="#createNewSMSNotification"><code><span class="http-method">post</span> /notifications/sms</code></a></li>
+  <li><a href="#getNotificationById"><code><span class="http-method">get</span> /notifications/{id}</code></a></li>
+  <li><a href="#getNotificationRecipientList"><code><span class="http-method">get</span> /notifications/{id}/recipients</code></a></li>
+  <li><a href="#getNotificationsList"><code><span class="http-method">get</span> /notifications</code></a></li>
   </ul>
   <h4><a href="#Orders">Orders</a></h4>
   <ul>
@@ -1904,7 +1908,7 @@ or explicit email addresses.</div>
 
     <h3 class="field-label">Return type</h3>
     <div class="return-type">
-      <a href="#NotificationResponseDto">NotificationResponseDto</a>
+      <a href="#NotificationDto">NotificationDto</a>
       
     </div>
 
@@ -1913,7 +1917,18 @@ or explicit email addresses.</div>
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
     <pre class="example"><code>{
-  "totalRecipients" : 0
+  "organizationId" : 6,
+  "eventId" : 1,
+  "productId" : 5,
+  "created" : "2000-01-23T04:56:07.000+00:00",
+  "notificationId" : 0,
+  "message" : "message",
+  "statusUpdated" : "2000-01-23T04:56:07.000+00:00",
+  "statistics" : {
+    "recipients" : 5,
+    "sent" : 2,
+    "errors" : 7
+  }
 }</code></pre>
 
     <h3 class="field-label">Produces</h3>
@@ -1926,7 +1941,7 @@ or explicit email addresses.</div>
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
     OK
-        <a href="#NotificationResponseDto">NotificationResponseDto</a>
+        <a href="#NotificationDto">NotificationDto</a>
     <h4 class="field-label">400</h4>
     Missing or invalid request parameters.
         <a href="#Error">Error</a>
@@ -1935,6 +1950,335 @@ or explicit email addresses.</div>
         <a href="#Error">Error</a>
     <h4 class="field-label">403</h4>
     Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="createNewSMSNotification"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /notifications/sms</code></pre></div>
+    <div class="method-summary">Create new SMS notification. (<span class="nickname">createNewSMSNotification</span>)</div>
+    <div class="method-notes">Create and send new SMS notification using either event registration filter
+or explicit list of phone numbers.</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">SmsNotificationFormDto <a href="#SmsNotificationFormDto">SmsNotificationFormDto</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#NotificationDto">NotificationDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "organizationId" : 6,
+  "eventId" : 1,
+  "productId" : 5,
+  "created" : "2000-01-23T04:56:07.000+00:00",
+  "notificationId" : 0,
+  "message" : "message",
+  "statusUpdated" : "2000-01-23T04:56:07.000+00:00",
+  "statistics" : {
+    "recipients" : 5,
+    "sent" : 2,
+    "errors" : 7
+  }
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#NotificationDto">NotificationDto</a>
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getNotificationById"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /notifications/{id}</code></pre></div>
+    <div class="method-summary">Get notification info by id. (<span class="nickname">getNotificationById</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Notification ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">includeStatistics (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Whether to include notification statistics into the response. default: false </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#NotificationDto">NotificationDto</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "organizationId" : 6,
+  "eventId" : 1,
+  "productId" : 5,
+  "created" : "2000-01-23T04:56:07.000+00:00",
+  "notificationId" : 0,
+  "message" : "message",
+  "statusUpdated" : "2000-01-23T04:56:07.000+00:00",
+  "statistics" : {
+    "recipients" : 5,
+    "sent" : 2,
+    "errors" : 7
+  }
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    
+        <a href="#NotificationDto">NotificationDto</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">403</h4>
+    Access forbidden.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getNotificationRecipientList"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /notifications/{id}/recipients</code></pre></div>
+    <div class="method-summary">Get notification recipient list. (<span class="nickname">getNotificationRecipientList</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Notification ID. default: null format: int32</div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">page (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Page number. default: 1 format: int32</div><div class="param">count (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Page size. default: 100 format: int32</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#NotificationRecipientsPagedList">NotificationRecipientsPagedList</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "page" : 1,
+  "size" : 10,
+  "total" : 2,
+  "pages" : 1,
+  "data" : [ {
+    "notificationId" : 101,
+    "created" : "2021-11-01 13:22:00",
+    "type" : "sms",
+    "status" : "sent",
+    "message" : "Hi",
+    "statusUpdated" : "2021-11-01 13:22:10"
+  }, {
+    "notificationId" : 10002,
+    "created" : "2020-01-01 11:22:33",
+    "type" : "email",
+    "message" : "Test",
+    "status" : "queued",
+    "statusUpdated" : "2020-01-01 22:33:44",
+    "eventId" : 1001,
+    "productId" : 30,
+    "organizationId" : 1
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">404</h4>
+    The requested resource not found.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">500</h4>
+    Unexpected server error.
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getNotificationsList"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /notifications</code></pre></div>
+    <div class="method-summary">Get notifications list. (<span class="nickname">getNotificationsList</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">page (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Page number. default: 1 format: int32</div><div class="param">count (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Page size. default: 100 format: int32</div><div class="param">eventId (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter by event ID. default: null format: int32</div><div class="param">productId (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter by product ID. default: null format: int32</div><div class="param">status (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter by notification status. default: null </div><div class="param">type (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter by notification type (<code>sms</code> / <code>email</code>). default: null </div><div class="param">recipientUserId (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter by recipient ID. default: null </div><div class="param">order (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Notifications list order. default: null </div><div class="param">desc (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Whether to apply descending sorting. default: true </div><div class="param">includeStatistics (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Whether to include notification statistics into the response. default: false </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#NotificationsPagedList">NotificationsPagedList</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "page" : 1,
+  "size" : 10,
+  "total" : 2,
+  "pages" : 1,
+  "data" : [ {
+    "notificationId" : 101,
+    "created" : "2021-11-01 13:22:00",
+    "type" : "sms",
+    "status" : "sent",
+    "message" : "Hi",
+    "statusUpdated" : "2021-11-01 13:22:10"
+  }, {
+    "notificationId" : 10002,
+    "created" : "2020-01-01 11:22:33",
+    "type" : "email",
+    "message" : "Test",
+    "status" : "queued",
+    "statusUpdated" : "2020-01-01 22:33:44",
+    "eventId" : 1001,
+    "productId" : 30,
+    "organizationId" : 1
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
+    <h4 class="field-label">400</h4>
+    Missing or invalid request parameters.
+        <a href="#Error">Error</a>
+    <h4 class="field-label">401</h4>
+    Access token is missing or invalid.
         <a href="#Error">Error</a>
     <h4 class="field-label">500</h4>
     Unexpected server error.
@@ -4454,6 +4798,7 @@ Default is <code>false</code>. default: null </div>
     <li><a href="#EventCollectionDto"><code>EventCollectionDto</code> - Event collection information.</a></li>
     <li><a href="#EventDto"><code>EventDto</code> - Event information.</a></li>
     <li><a href="#EventFormDto"><code>EventFormDto</code> - Event form data.</a></li>
+    <li><a href="#EventParticipantsFilterDto"><code>EventParticipantsFilterDto</code> - Notification recipients filter</a></li>
     <li><a href="#EventsPagedList"><code>EventsPagedList</code> - Event list with paging.</a></li>
     <li><a href="#LocationDto"><code>LocationDto</code> - Location info.</a></li>
     <li><a href="#NewProductDto"><code>NewProductDto</code> - New product form.</a></li>
@@ -4463,8 +4808,13 @@ Default is <code>false</code>. default: null </div>
     <li><a href="#NewRegistrationOrderItemDto"><code>NewRegistrationOrderItemDto</code> - Order line data.</a></li>
     <li><a href="#NewUserDto"><code>NewUserDto</code> - New user form.</a></li>
     <li><a href="#New_registration_specific_properties"><code>New_registration_specific_properties</code> - New registration specific properties</a></li>
-    <li><a href="#NotificationRecipientsFilterDto"><code>NotificationRecipientsFilterDto</code> - Notification recipients filter</a></li>
-    <li><a href="#NotificationResponseDto"><code>NotificationResponseDto</code> - Notification response</a></li>
+    <li><a href="#NotificationDto"><code>NotificationDto</code> - Notification info</a></li>
+    <li><a href="#NotificationRecipientDto"><code>NotificationRecipientDto</code> - Notification recipient info</a></li>
+    <li><a href="#NotificationRecipientsPagedList"><code>NotificationRecipientsPagedList</code> - Notifications list with paging.</a></li>
+    <li><a href="#NotificationStatisticsDto"><code>NotificationStatisticsDto</code> - Notification statistics info</a></li>
+    <li><a href="#NotificationStatus"><code>NotificationStatus</code> - Notification status enum (<code>new</code> | <code>queued</code> | <code>started</code> | <code>cancelled</code> | <code>failed</code> | <code>sent</code>).</a></li>
+    <li><a href="#NotificationType"><code>NotificationType</code> - Notification type enum (<code>email</code> | <code>sms</code>).</a></li>
+    <li><a href="#NotificationsPagedList"><code>NotificationsPagedList</code> - Notifications list with paging.</a></li>
     <li><a href="#OrderDto"><code>OrderDto</code> - Order information.</a></li>
     <li><a href="#OrderLineDto"><code>OrderLineDto</code> - Order line data.</a></li>
     <li><a href="#OrderLineUpdateDto"><code>OrderLineUpdateDto</code> - Order line update data.</a></li>
@@ -4486,6 +4836,8 @@ Default is <code>false</code>. default: null </div>
     <li><a href="#RegistrationOrderLineDto"><code>RegistrationOrderLineDto</code> - Order line data.</a></li>
     <li><a href="#RegistrationPagedList"><code>RegistrationPagedList</code> - Registration list with paging.</a></li>
     <li><a href="#RegistrationStatus"><code>RegistrationStatus</code> - Registration status enum.</a></li>
+    <li><a href="#RegistrationType"><code>RegistrationType</code> - Registration type enum (<code>participant</code> | <code>student</code> | <code>staff</code> | <code>lecturer</code> | <code>artist</code>).</a></li>
+    <li><a href="#SmsNotificationFormDto"><code>SmsNotificationFormDto</code> - New SMS notification info</a></li>
     <li><a href="#UserDto"><code>UserDto</code> - User info.</a></li>
     <li><a href="#UserFormDto"><code>UserFormDto</code> - Update user form.</a></li>
     <li><a href="#UsersPagedList"><code>UsersPagedList</code> - User list with paging.</a></li>
@@ -4510,7 +4862,7 @@ Default is <code>false</code>. default: null </div>
       <div class="param">subject </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Email subject. </div>
 <div class="param">bodyMarkdown </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Email body (will be transformed to HTML before send). </div>
 <div class="param">recipients (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> List of email addresses. </div>
-<div class="param">filter (optional)</div><div class="param-desc"><span class="param-type"><a href="#NotificationRecipientsFilterDto">NotificationRecipientsFilterDto</a></span>  </div>
+<div class="param">eventParticipants (optional)</div><div class="param-desc"><span class="param-type"><a href="#EventParticipantsFilterDto">EventParticipantsFilterDto</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -4584,6 +4936,17 @@ Other = 9 </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
+    <h3><a name="EventParticipantsFilterDto"><code>EventParticipantsFilterDto</code> - Notification recipients filter</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'>Used to filter out notification recipients.
+All properties are optional.</div>
+    <div class="field-items">
+      <div class="param">eventId (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">productId (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">registrationStatuses (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationStatus">array[RegistrationStatus]</a></span>  </div>
+<div class="param">registrationTypes (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationType">array[RegistrationType]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
     <h3><a name="EventsPagedList"><code>EventsPagedList</code> - Event list with paging.</a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
@@ -4630,7 +4993,7 @@ Other = 9 </div>
     <div class="field-items">
       <div class="param">customer (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationCustomerInfoDto">RegistrationCustomerInfoDto</a></span>  </div>
 <div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationStatus">RegistrationStatus</a></span>  </div>
-<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationType.yaml">RegistrationType.yaml</a></span>  </div>
+<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationType">RegistrationType</a></span>  </div>
 <div class="param">notes (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Additional notes. Can be managed by admin only. </div>
 <div class="param">userId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> User ID. </div>
 <div class="param">eventId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Event ID. format: int32</div>
@@ -4672,20 +5035,77 @@ Other = 9 </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
-    <h3><a name="NotificationRecipientsFilterDto"><code>NotificationRecipientsFilterDto</code> - Notification recipients filter</a> <a class="up" href="#__Models">Up</a></h3>
-    <div class='model-description'>Used to filter out notification recipients.
-All properties are optional.</div>
+    <h3><a name="NotificationDto"><code>NotificationDto</code> - Notification info</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">eventId (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
-<div class="param">registrationStatuses (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationStatus">array[RegistrationStatus]</a></span>  </div>
-<div class="param">registrationTypes (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationType.yaml">array[RegistrationType.yaml]</a></span>  </div>
+      <div class="param">notificationId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Notification identifier. format: int32</div>
+<div class="param">organizationId (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Organization identifier the notification is related to. format: int32</div>
+<div class="param">eventId (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Event identifier the notification is related to. format: int32</div>
+<div class="param">productId (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Product identifier the notification is related to. format: int32</div>
+<div class="param">message </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Notification message text. </div>
+<div class="param">created </div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span> Notification creation date and time. format: date-time</div>
+<div class="param">status </div><div class="param-desc"><span class="param-type"><a href="#NotificationStatus">NotificationStatus</a></span>  </div>
+<div class="param">type </div><div class="param-desc"><span class="param-type"><a href="#NotificationType">NotificationType</a></span>  </div>
+<div class="param">statusUpdated </div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span> Last status update date and time. format: date-time</div>
+<div class="param">statistics (optional)</div><div class="param-desc"><span class="param-type"><a href="#NotificationStatisticsDto">NotificationStatisticsDto</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
-    <h3><a name="NotificationResponseDto"><code>NotificationResponseDto</code> - Notification response</a> <a class="up" href="#__Models">Up</a></h3>
+    <h3><a name="NotificationRecipientDto"><code>NotificationRecipientDto</code> - Notification recipient info</a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">totalRecipients </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Notification recipients total. format: int32</div>
+      <div class="param">recipientId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Notification recipient identifier. format: int32</div>
+<div class="param">notificationId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Notification identifier. format: int32</div>
+<div class="param">registrationId (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Event regisration ID. format: int32</div>
+<div class="param">recipientIdentifier </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Phone numner for SMS, or email address. </div>
+<div class="param">recipientName (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Recipient name. </div>
+<div class="param">recipientUserId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Recipient user identifier. </div>
+<div class="param">created </div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span> Notification creation date and time. format: date-time</div>
+<div class="param">sent (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span> Notification delivery date and time. format: date-time</div>
+<div class="param">errors (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Notification delivery errors. </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="NotificationRecipientsPagedList"><code>NotificationRecipientsPagedList</code> - Notifications list with paging.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">page </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Page number. format: int32</div>
+<div class="param">count </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Page size. format: int32</div>
+<div class="param">total </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total items. format: int32</div>
+<div class="param">pages </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total pages. format: int32</div>
+<div class="param">data </div><div class="param-desc"><span class="param-type"><a href="#NotificationRecipientDto">array[NotificationRecipientDto]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="NotificationStatisticsDto"><code>NotificationStatisticsDto</code> - Notification statistics info</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">recipients </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total number of recipients. format: int32</div>
+<div class="param">sent </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total number of notifications delivered. format: int32</div>
+<div class="param">errors </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total number of notifications NOT delivered because of an errors. format: int32</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="NotificationStatus"><code>NotificationStatus</code> - Notification status enum (<code>new</code> | <code>queued</code> | <code>started</code> | <code>cancelled</code> | <code>failed</code> | <code>sent</code>).</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+          </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="NotificationType"><code>NotificationType</code> - Notification type enum (<code>email</code> | <code>sms</code>).</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+          </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="NotificationsPagedList"><code>NotificationsPagedList</code> - Notifications list with paging.</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">page </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Page number. format: int32</div>
+<div class="param">count </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Page size. format: int32</div>
+<div class="param">total </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total items. format: int32</div>
+<div class="param">pages </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total pages. format: int32</div>
+<div class="param">data </div><div class="param-desc"><span class="param-type"><a href="#NotificationDto">array[NotificationDto]</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -4729,7 +5149,7 @@ All properties are optional.</div>
 <div class="param">eventId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Event ID. format: int32</div>
 <div class="param">userId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Registered user ID. </div>
 <div class="param">status </div><div class="param-desc"><span class="param-type"><a href="#RegistrationStatus">RegistrationStatus</a></span>  </div>
-<div class="param">type </div><div class="param-desc"><span class="param-type"><a href="#RegistrationType.yaml">RegistrationType.yaml</a></span>  </div>
+<div class="param">type </div><div class="param-desc"><span class="param-type"><a href="#RegistrationType">RegistrationType</a></span>  </div>
 <div class="param">certificateId (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Registration certificate ID. format: int32</div>
 <div class="param">notes (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
     </div>  <!-- field-items -->
@@ -4860,7 +5280,7 @@ Email = 4 </div>
 <div class="param">eventId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Event ID. format: int32</div>
 <div class="param">userId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Registered user ID. </div>
 <div class="param">status </div><div class="param-desc"><span class="param-type"><a href="#RegistrationStatus">RegistrationStatus</a></span>  </div>
-<div class="param">type </div><div class="param-desc"><span class="param-type"><a href="#RegistrationType.yaml">RegistrationType.yaml</a></span>  </div>
+<div class="param">type </div><div class="param-desc"><span class="param-type"><a href="#RegistrationType">RegistrationType</a></span>  </div>
 <div class="param">notes (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
@@ -4870,7 +5290,7 @@ Email = 4 </div>
     <div class="field-items">
       <div class="param">customer (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationCustomerInfoDto">RegistrationCustomerInfoDto</a></span>  </div>
 <div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationStatus">RegistrationStatus</a></span>  </div>
-<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationType.yaml">RegistrationType.yaml</a></span>  </div>
+<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#RegistrationType">RegistrationType</a></span>  </div>
 <div class="param">notes (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Additional notes. Can be managed by admin only. </div>
     </div>  <!-- field-items -->
   </div>
@@ -4907,6 +5327,21 @@ Email = 4 </div>
     <div class='model-description'></div>
     <div class="field-items">
           </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="RegistrationType"><code>RegistrationType</code> - Registration type enum (<code>participant</code> | <code>student</code> | <code>staff</code> | <code>lecturer</code> | <code>artist</code>).</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+          </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="SmsNotificationFormDto"><code>SmsNotificationFormDto</code> - New SMS notification info</a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">message (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> SMS text. </div>
+<div class="param">recipients (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> List of phone numbers. </div>
+<div class="param">eventParticipants (optional)</div><div class="param-desc"><span class="param-type"><a href="#EventParticipantsFilterDto">EventParticipantsFilterDto</a></span>  </div>
+    </div>  <!-- field-items -->
   </div>
   <div class="model">
     <h3><a name="UserDto"><code>UserDto</code> - User info.</a> <a class="up" href="#__Models">Up</a></h3>

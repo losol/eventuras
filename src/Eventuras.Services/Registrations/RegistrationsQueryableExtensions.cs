@@ -35,6 +35,13 @@ namespace Eventuras.Services.Registrations
                 query = query.Where(r => r.EventInfoId == filter.EventInfoId);
             }
 
+            if (filter.ProductIds?.Any() == true)
+            {
+                query = query.Where(r => r.Orders.Any(o => o.OrderLines
+                    .Any(l => l.ProductId.HasValue &&
+                              filter.ProductIds.Contains(l.ProductId.Value))));
+            }
+
             if (!string.IsNullOrEmpty(filter.UserId))
             {
                 query = query.Where(r => r.UserId == filter.UserId);

@@ -18,7 +18,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/notifications/NotificationResponseDto.yaml'
+            $ref: '../../schemas/notifications/NotificationDto.yaml'
     '400':
       $ref: 'eventuras-api.v3.yaml#/components/responses/InvalidRequestError'
     '401':

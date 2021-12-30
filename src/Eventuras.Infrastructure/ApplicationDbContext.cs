@@ -7,7 +7,9 @@ namespace Eventuras.Infrastructure
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+        }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<EventInfo> EventInfos { get; set; }
@@ -24,6 +26,11 @@ namespace Eventuras.Infrastructure
         public DbSet<OrganizationHostname> OrganizationHostnames { get; set; }
         public DbSet<Certificate> Certificates { get; set; }
         public DbSet<MessageLog> MessageLogs { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<NotificationRecipient> NotificationRecipients { get; set; }
+        public DbSet<EmailNotification> EmailNotifications { get; set; }
+        public DbSet<SmsNotification> SmsNotifications { get; set; }
+        public DbSet<NotificationStatistics> NotificationStatistics { get; set; }
         public DbSet<ExternalAccount> ExternalAccounts { get; set; }
         public DbSet<ExternalEvent> ExternalEvents { get; set; }
         public DbSet<ExternalRegistration> ExternalRegistrations { get; set; }
@@ -81,6 +88,21 @@ namespace Eventuras.Infrastructure
                     j => j.HasOne(m => m.Collection)
                         .WithMany(c => c.EventMappings)
                         .OnDelete(DeleteBehavior.Cascade));
+
+            builder.Entity<Notification>()
+                .HasOne(n => n.Statistics)
+                .WithOne(s => s.Notification)
+                .HasForeignKey<NotificationStatistics>(s => s.NotificationId);
+
+            builder.Entity<Notification>()
+                .HasDiscriminator<NotificationType>(nameof(Notification.Type))
+                .HasValue<EmailNotification>(NotificationType.Email)
+                .HasValue<EmailNotification>(NotificationType.Email)
+                .HasValue<SmsNotification>(NotificationType.Sms);
+
+            builder.Entity<NotificationStatistics>()
+                .HasIndex(s => s.NotificationId)
+                .IsUnique();
         }
 
         public void DetachAllEntities()

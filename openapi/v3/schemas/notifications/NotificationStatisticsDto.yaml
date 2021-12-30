@@ -1,0 +1,29 @@
+type: object
+title: Notification statistics info
+required:
+  - recipients
+  - sent
+  - errors
+properties:
+  recipients:
+    type: integer
+    format: int32
+    description: Total number of recipients.
+  sent:
+    type: integer
+    format: int32
+    description: Total number of notifications delivered.
+  errors:
+    type: integer
+    format: int32
+    description: Total number of notifications NOT delivered because of an errors.
+examples:
+  - recipients: 0
+    sent: 0
+    errors: 0
+  - recipients: 13
+    sent: 0
+    errors: 13
+  - recipients: 154
+    sent: 153
+    errors: 1

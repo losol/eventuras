@@ -480,6 +480,123 @@ namespace Eventuras.Infrastructure.Migrations
                     b.ToTable("MessageLogs");
                 });
 
+            modelBuilder.Entity("Eventuras.Domain.Notification", b =>
+                {
+                    b.Property<int>("NotificationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("CreatedByUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("EventInfoId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("OrganizationId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("StatusUpdated")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.HasKey("NotificationId");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("EventInfoId");
+
+                    b.HasIndex("OrganizationId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Notifications");
+
+                    b.HasDiscriminator<int>("Type");
+                });
+
+            modelBuilder.Entity("Eventuras.Domain.NotificationRecipient", b =>
+                {
+                    b.Property<int>("RecipientId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Errors")
+                        .HasColumnType("text");
+
+                    b.Property<int>("NotificationId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RecipientIdentifier")
+                        .HasColumnType("text");
+
+                    b.Property<string>("RecipientName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("RecipientUserId")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("RegistrationId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("Sent")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("RecipientId");
+
+                    b.HasIndex("NotificationId");
+
+                    b.HasIndex("RecipientUserId");
+
+                    b.HasIndex("RegistrationId");
+
+                    b.ToTable("NotificationRecipients");
+                });
+
+            modelBuilder.Entity("Eventuras.Domain.NotificationStatistics", b =>
+                {
+                    b.Property<int>("NotificationStatisticsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("ErrorsTotal")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("NotificationId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SentTotal")
+                        .HasColumnType("integer");
+
+                    b.HasKey("NotificationStatisticsId");
+
+                    b.HasIndex("NotificationId")
+                        .IsUnique();
+
+                    b.ToTable("NotificationStatistics");
+                });
+
             modelBuilder.Entity("Eventuras.Domain.Order", b =>
                 {
                     b.Property<int>("OrderId")
@@ -1076,6 +1193,24 @@ namespace Eventuras.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Eventuras.Domain.EmailNotification", b =>
+                {
+                    b.HasBaseType("Eventuras.Domain.Notification");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasDiscriminator().HasValue(1);
+                });
+
+            modelBuilder.Entity("Eventuras.Domain.SmsNotification", b =>
+                {
+                    b.HasBaseType("Eventuras.Domain.Notification");
+
+                    b.HasDiscriminator().HasValue(2);
+                });
+
             modelBuilder.Entity("Eventuras.Domain.Certificate", b =>
                 {
                     b.HasOne("Eventuras.Domain.Organization", "IssuingOrganization")
@@ -1206,6 +1341,69 @@ namespace Eventuras.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("EventInfo");
+                });
+
+            modelBuilder.Entity("Eventuras.Domain.Notification", b =>
+                {
+                    b.HasOne("Eventuras.Domain.ApplicationUser", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Eventuras.Domain.EventInfo", "EventInfo")
+                        .WithMany()
+                        .HasForeignKey("EventInfoId");
+
+                    b.HasOne("Eventuras.Domain.Organization", "Organization")
+                        .WithMany()
+                        .HasForeignKey("OrganizationId");
+
+                    b.HasOne("Eventuras.Domain.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("EventInfo");
+
+                    b.Navigation("Organization");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Eventuras.Domain.NotificationRecipient", b =>
+                {
+                    b.HasOne("Eventuras.Domain.Notification", "Notification")
+                        .WithMany("Recipients")
+                        .HasForeignKey("NotificationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Eventuras.Domain.ApplicationUser", "RecipientUser")
+                        .WithMany()
+                        .HasForeignKey("RecipientUserId");
+
+                    b.HasOne("Eventuras.Domain.Registration", "Registration")
+                        .WithMany()
+                        .HasForeignKey("RegistrationId");
+
+                    b.Navigation("Notification");
+
+                    b.Navigation("RecipientUser");
+
+                    b.Navigation("Registration");
+                });
+
+            modelBuilder.Entity("Eventuras.Domain.NotificationStatistics", b =>
+                {
+                    b.HasOne("Eventuras.Domain.Notification", "Notification")
+                        .WithOne("Statistics")
+                        .HasForeignKey("Eventuras.Domain.NotificationStatistics", "NotificationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Notification");
                 });
 
             modelBuilder.Entity("Eventuras.Domain.Order", b =>
@@ -1448,6 +1646,13 @@ namespace Eventuras.Infrastructure.Migrations
             modelBuilder.Entity("Eventuras.Domain.Invoice", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("Eventuras.Domain.Notification", b =>
+                {
+                    b.Navigation("Recipients");
+
+                    b.Navigation("Statistics");
                 });
 
             modelBuilder.Entity("Eventuras.Domain.Order", b =>

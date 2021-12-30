@@ -28,7 +28,7 @@ namespace Eventuras.Services.EventCollections
                 .CheckEventCollectionUpdateAccessAsync(collection,
                     cancellationToken);
 
-            await _context.CreateAsync(collection, cancellationToken);
+            await _context.CreateAsync(collection, cancellationToken: cancellationToken);
         }
 
         public async Task UpdateCollectionAsync(EventCollection collection, CancellationToken cancellationToken)

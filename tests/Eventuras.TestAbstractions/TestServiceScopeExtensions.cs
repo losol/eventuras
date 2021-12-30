@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
@@ -38,12 +39,12 @@ namespace Eventuras.TestAbstractions
 
             if (phone == TestingConstants.Placeholder)
             {
-                phone = "+11111111111";
+                phone = $"+{DateTimeOffset.Now.ToUnixTimeMilliseconds():####}";
             }
 
             if (roles == null && !string.IsNullOrEmpty(role))
             {
-                roles = new[] {role};
+                roles = new[] { role };
             }
 
             var user = new ApplicationUser
@@ -157,7 +158,7 @@ namespace Eventuras.TestAbstractions
 
             if (collections == null && collection != null)
             {
-                collections = new[] {collection};
+                collections = new[] { collection };
             }
 
             var eventInfo = new EventInfo
@@ -351,9 +352,9 @@ namespace Eventuras.TestAbstractions
             PaymentMethod.PaymentProvider paymentProvider = PaymentMethod.PaymentProvider.EmailInvoice)
         {
             return await scope.CreateOrderAsync(registration,
-                new[] {product},
-                variant != null ? new[] {variant} : null,
-                new[] {quantity},
+                new[] { product },
+                variant != null ? new[] { variant } : null,
+                new[] { quantity },
                 user, userId,
                 status, paymentProvider);
         }
@@ -399,7 +400,7 @@ namespace Eventuras.TestAbstractions
 
             if (hostnames == null && hostname != null)
             {
-                hostnames = new[] {hostname};
+                hostnames = new[] { hostname };
             }
 
             var org = new Organization
@@ -430,7 +431,7 @@ namespace Eventuras.TestAbstractions
 
             if (roles == null && role != null)
             {
-                roles = new[] {role};
+                roles = new[] { role };
             }
 
             var member = new OrganizationMember
@@ -463,6 +464,148 @@ namespace Eventuras.TestAbstractions
             await scope.Db.OrganizationSettings.AddAsync(setting);
             await scope.Db.SaveChangesAsync();
             return new DisposableEntity<OrganizationSetting>(setting, scope.Db);
+        }
+
+        public static async Task<IDisposableEntity<EmailNotification>> CreateEmailNotificationAsync(
+            this TestServiceScope scope,
+            string subject = TestingConstants.Placeholder,
+            string body = TestingConstants.Placeholder,
+            EventInfo eventInfo = null,
+            Product product = null,
+            Organization organization = null,
+            ApplicationUser createdByUser = null,
+            NotificationStatus? status = null,
+            int? totalSent = null,
+            int? totalErrors = null,
+            IEnumerable<string> emailAddresses = null,
+            IEnumerable<ApplicationUser> recipientUsers = null,
+            IEnumerable<Registration> registrations = null)
+        {
+            if (TestingConstants.Placeholder.Equals(subject))
+            {
+                subject = $"Test email subject {Guid.NewGuid()}";
+            }
+
+            if (TestingConstants.Placeholder.Equals(body))
+            {
+                body = $"Test email body {Guid.NewGuid()}";
+            }
+
+            var recipients = new List<NotificationRecipient>();
+
+            if (emailAddresses != null)
+            {
+                recipients.AddRange(emailAddresses
+                    .Select(NotificationRecipient.Email));
+            }
+
+            if (recipientUsers != null)
+            {
+                recipients.AddRange(recipientUsers
+                    .Select(NotificationRecipient.Email));
+            }
+
+            if (registrations != null)
+            {
+                recipients.AddRange(registrations
+                    .Select(NotificationRecipient.Email));
+            }
+
+            NotificationStatistics stats = null;
+            if (totalSent.HasValue || totalErrors.HasValue)
+            {
+                stats = new NotificationStatistics
+                {
+                    SentTotal = totalSent ?? 0,
+                    ErrorsTotal = totalErrors ?? 0
+                };
+            }
+
+            eventInfo ??= product?.Eventinfo;
+            organization ??= eventInfo?.Organization;
+
+            var notification = new EmailNotification(subject, body)
+            {
+                EventInfo = eventInfo,
+                Product = product,
+                Organization = organization,
+                CreatedByUser = createdByUser,
+                Status = status ?? NotificationStatus.New,
+                Recipients = recipients,
+                Statistics = stats
+            };
+
+            await scope.Db.Notifications.AddAsync(notification);
+            await scope.Db.SaveChangesAsync();
+            return new DisposableEntity<EmailNotification>(notification, scope.Db);
+        }
+
+        public static async Task<IDisposableEntity<SmsNotification>> CreateSmsNotificationAsync(
+            this TestServiceScope scope,
+            string message = TestingConstants.Placeholder,
+            EventInfo eventInfo = null,
+            Product product = null,
+            Organization organization = null,
+            ApplicationUser createdByUser = null,
+            NotificationStatus? status = null,
+            int? totalSent = null,
+            int? totalErrors = null,
+            IEnumerable<string> phones = null,
+            IEnumerable<ApplicationUser> recipientUsers = null,
+            IEnumerable<Registration> registrations = null)
+        {
+            if (TestingConstants.Placeholder.Equals(message))
+            {
+                message = $"Test SMS message {Guid.NewGuid()}";
+            }
+
+            var recipients = new List<NotificationRecipient>();
+
+            if (phones != null)
+            {
+                recipients.AddRange(phones
+                    .Select(NotificationRecipient.Sms));
+            }
+
+            if (recipientUsers != null)
+            {
+                recipients.AddRange(recipientUsers
+                    .Select(NotificationRecipient.Sms));
+            }
+
+            if (registrations != null)
+            {
+                recipients.AddRange(registrations
+                    .Select(NotificationRecipient.Sms));
+            }
+
+            NotificationStatistics stats = null;
+            if (totalSent.HasValue || totalErrors.HasValue)
+            {
+                stats = new NotificationStatistics
+                {
+                    SentTotal = totalSent ?? 0,
+                    ErrorsTotal = totalErrors ?? 0
+                };
+            }
+
+            eventInfo ??= product?.Eventinfo;
+            organization ??= eventInfo?.Organization;
+
+            var notification = new SmsNotification(message)
+            {
+                EventInfo = eventInfo,
+                Product = product,
+                Organization = organization,
+                CreatedByUser = createdByUser,
+                Status = status ?? NotificationStatus.New,
+                Recipients = recipients,
+                Statistics = stats
+            };
+
+            await scope.Db.Notifications.AddAsync(notification);
+            await scope.Db.SaveChangesAsync();
+            return new DisposableEntity<SmsNotification>(notification, scope.Db);
         }
     }
 }

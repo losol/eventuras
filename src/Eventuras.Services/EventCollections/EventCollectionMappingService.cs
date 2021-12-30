@@ -47,7 +47,7 @@ namespace Eventuras.Services.EventCollections
 
             try
             {
-                await _context.CreateAsync(mapping, cancellationToken);
+                await _context.CreateAsync(mapping, cancellationToken: cancellationToken);
             }
             catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
             {

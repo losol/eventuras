@@ -1,0 +1,5 @@
+type: string
+title: Notification type enum (`email` | `sms`).
+enum:
+  - email
+  - sms

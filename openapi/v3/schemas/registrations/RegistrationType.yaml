@@ -1,5 +1,5 @@
-type: srting
-title: Registration type enum.
+type: string
+title: Registration type enum (`participant` | `student` | `staff` | `lecturer` | `artist`).
 enum:
   - participant
   - student

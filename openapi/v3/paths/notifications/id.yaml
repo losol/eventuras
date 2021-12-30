@@ -1,0 +1,35 @@
+get:
+  summary: Get notification info by id.
+  operationId: getNotificationById
+  tags:
+    - notifications
+  parameters:
+    - name: id
+      in: path
+      description: Notification ID.
+      required: true
+      schema:
+        type: integer
+        format: int32
+    - name: includeStatistics
+      description: |
+        Whether to include notification statistics into the response.
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: '../../schemas/notifications/NotificationDto.yaml'
+    '401':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/UnauthorizedError'
+    '403':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/ForbiddenError'
+    '404':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/NotFound'
+    '500':
+      $ref: 'eventuras-api.v3.yaml#/components/responses/InternalServerError'

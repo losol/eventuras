@@ -1,0 +1,49 @@
+type: object
+title: Notification info
+required:
+  - notificationId
+  - message
+  - created
+  - type
+  - status
+  - statusUpdated
+properties:
+  notificationId:
+    type: integer
+    format: int32
+    description: Notification identifier.
+  organizationId:
+    type: integer
+    format: int32
+    description: Organization identifier the notification is related to.
+  eventId:
+    type: integer
+    format: int32
+    description: Event identifier the notification is related to.
+  productId:
+    type: integer
+    format: int32
+    description: Product identifier the notification is related to.
+  message:
+    type: string
+    description: Notification message text.
+  created:
+    type: string
+    format: date-time
+    description: Notification creation date and time.
+  status:
+    $ref: './NotificationStatus.yaml'
+  type:
+    $ref: './NotificationType.yaml'
+  statusUpdated:
+    type: string
+    format: date-time
+    description: Last status update date and time.
+  statistics:
+    $ref: './NotificationStatisticsDto.yaml'
+examples:
+  - notificationId: 101
+    created: 2021-11-01 13:22:00
+    type: sms
+    status: sent
+    statusUpdated: 2021-11-01 13:22:10

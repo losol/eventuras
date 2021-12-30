@@ -1,0 +1,10 @@
+type: string
+title: |
+  Notification status enum (`new` | `queued` | `started` | `cancelled` | `failed` | `sent`).
+enum:
+  - new
+  - queued
+  - started
+  - cancelled
+  - failed
+  - sent

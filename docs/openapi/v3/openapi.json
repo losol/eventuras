@@ -491,6 +491,146 @@
         "tags" : [ "registrations" ]
       }
     },
+    "/notifications" : {
+      "get" : {
+        "operationId" : "getNotificationsList",
+        "parameters" : [ {
+          "description" : "Page number.",
+          "in" : "query",
+          "name" : "page",
+          "required" : false,
+          "schema" : {
+            "default" : 1,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "description" : "Page size.",
+          "in" : "query",
+          "name" : "count",
+          "required" : false,
+          "schema" : {
+            "default" : 100,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "description" : "Filter by event ID.",
+          "in" : "query",
+          "name" : "eventId",
+          "required" : false,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "description" : "Filter by product ID.",
+          "in" : "query",
+          "name" : "productId",
+          "required" : false,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "description" : "Filter by notification status.",
+          "in" : "query",
+          "name" : "status",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Filter by notification type (`sms` / `email`).",
+          "in" : "query",
+          "name" : "type",
+          "schema" : {
+            "$ref" : "#/components/schemas/NotificationType"
+          }
+        }, {
+          "description" : "Filter by recipient ID.",
+          "in" : "query",
+          "name" : "recipientUserId",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Notifications list order.",
+          "in" : "query",
+          "name" : "order",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "created", "statusUpdated" ],
+            "type" : "string"
+          }
+        }, {
+          "description" : "Whether to apply descending sorting.",
+          "in" : "query",
+          "name" : "desc",
+          "required" : false,
+          "schema" : {
+            "default" : true,
+            "type" : "boolean"
+          }
+        }, {
+          "description" : "Whether to include notification statistics into the response.\n",
+          "in" : "query",
+          "name" : "includeStatistics",
+          "required" : false,
+          "schema" : {
+            "default" : false,
+            "type" : "boolean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/NotificationsPagedList"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Missing or invalid request parameters."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Access token is missing or invalid."
+          },
+          "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Unexpected server error."
+          }
+        },
+        "summary" : "Get notifications list.",
+        "tags" : [ "notifications" ]
+      }
+    },
     "/notifications/email" : {
       "post" : {
         "description" : "Create and send new email notification using either event registration filter\nor explicit email addresses.\n",
@@ -510,7 +650,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/NotificationResponseDto"
+                  "$ref" : "#/components/schemas/NotificationDto"
                 }
               }
             },
@@ -558,6 +698,235 @@
           }
         },
         "summary" : "Create new email notification.",
+        "tags" : [ "notifications" ]
+      }
+    },
+    "/notifications/sms" : {
+      "post" : {
+        "description" : "Create and send new SMS notification using either event registration filter\nor explicit list of phone numbers.\n",
+        "operationId" : "createNewSMSNotification",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SmsNotificationFormDto"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/NotificationDto"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Missing or invalid request parameters."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Access token is missing or invalid."
+          },
+          "403" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Access forbidden."
+          },
+          "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Unexpected server error."
+          }
+        },
+        "summary" : "Create new SMS notification.",
+        "tags" : [ "notifications" ]
+      }
+    },
+    "/notifications/{id}" : {
+      "get" : {
+        "operationId" : "getNotificationById",
+        "parameters" : [ {
+          "description" : "Notification ID.",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "description" : "Whether to include notification statistics into the response.\n",
+          "in" : "query",
+          "name" : "includeStatistics",
+          "required" : false,
+          "schema" : {
+            "default" : false,
+            "type" : "boolean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/NotificationDto"
+                }
+              }
+            }
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Access token is missing or invalid."
+          },
+          "403" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Access forbidden."
+          },
+          "404" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "The requested resource not found."
+          },
+          "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Unexpected server error."
+          }
+        },
+        "summary" : "Get notification info by id.",
+        "tags" : [ "notifications" ]
+      }
+    },
+    "/notifications/{id}/recipients" : {
+      "get" : {
+        "operationId" : "getNotificationRecipientList",
+        "parameters" : [ {
+          "description" : "Notification ID.",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "description" : "Page number.",
+          "in" : "query",
+          "name" : "page",
+          "required" : false,
+          "schema" : {
+            "default" : 1,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        }, {
+          "description" : "Page size.",
+          "in" : "query",
+          "name" : "count",
+          "required" : false,
+          "schema" : {
+            "default" : 100,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/NotificationRecipientsPagedList"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Missing or invalid request parameters."
+          },
+          "404" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "The requested resource not found."
+          },
+          "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            },
+            "description" : "Unexpected server error."
+          }
+        },
+        "summary" : "Get notification recipient list.",
         "tags" : [ "notifications" ]
       }
     },
@@ -3253,7 +3622,6 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "description" : "Array of organization settings key value pairs.",
                 "items" : {
                   "$ref" : "#/components/schemas/OrganizationSettingValueDto"
                 },
@@ -3648,7 +4016,7 @@
             "$ref" : "#/components/schemas/RegistrationStatus"
           },
           "type" : {
-            "$ref" : "#/components/schemas/./schemas/registrations/RegistrationType.yaml"
+            "$ref" : "#/components/schemas/RegistrationType"
           },
           "notes" : {
             "type" : "string"
@@ -3682,7 +4050,7 @@
             "$ref" : "#/components/schemas/RegistrationStatus"
           },
           "type" : {
-            "$ref" : "#/components/schemas/./schemas/registrations/RegistrationType.yaml"
+            "$ref" : "#/components/schemas/RegistrationType"
           },
           "notes" : {
             "description" : "Additional notes. Can be managed by admin only.",
@@ -3763,6 +4131,68 @@
         "title" : "New order data.",
         "type" : "object"
       },
+      "NotificationType" : {
+        "enum" : [ "email", "sms" ],
+        "title" : "Notification type enum (`email` | `sms`).",
+        "type" : "string"
+      },
+      "NotificationsPagedList" : {
+        "example" : {
+          "page" : 1,
+          "size" : 10,
+          "total" : 2,
+          "pages" : 1,
+          "data" : [ {
+            "notificationId" : 101,
+            "created" : "2021-11-01 13:22:00",
+            "type" : "sms",
+            "status" : "sent",
+            "message" : "Hi",
+            "statusUpdated" : "2021-11-01 13:22:10"
+          }, {
+            "notificationId" : 10002,
+            "created" : "2020-01-01 11:22:33",
+            "type" : "email",
+            "message" : "Test",
+            "status" : "queued",
+            "statusUpdated" : "2020-01-01 22:33:44",
+            "eventId" : 1001,
+            "productId" : 30,
+            "organizationId" : 1
+          } ]
+        },
+        "properties" : {
+          "page" : {
+            "description" : "Page number.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "count" : {
+            "description" : "Page size.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "total" : {
+            "description" : "Total items.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "pages" : {
+            "description" : "Total pages.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "data" : {
+            "items" : {
+              "$ref" : "#/components/schemas/NotificationDto"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "count", "data", "page", "pages", "total" ],
+        "title" : "Notifications list with paging.",
+        "type" : "object"
+      },
       "EmailNotificationFormDto" : {
         "properties" : {
           "subject" : {
@@ -3781,24 +4211,141 @@
             },
             "type" : "array"
           },
-          "filter" : {
-            "$ref" : "#/components/schemas/NotificationRecipientsFilterDto"
+          "eventParticipants" : {
+            "$ref" : "#/components/schemas/EventParticipantsFilterDto"
           }
         },
         "required" : [ "bodyMarkdown", "subject" ],
         "title" : "New email notification info",
         "type" : "object"
       },
-      "NotificationResponseDto" : {
+      "NotificationDto" : {
         "properties" : {
-          "totalRecipients" : {
-            "description" : "Notification recipients total.",
+          "notificationId" : {
+            "description" : "Notification identifier.",
             "format" : "int32",
             "type" : "integer"
+          },
+          "organizationId" : {
+            "description" : "Organization identifier the notification is related to.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "eventId" : {
+            "description" : "Event identifier the notification is related to.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "productId" : {
+            "description" : "Product identifier the notification is related to.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "message" : {
+            "description" : "Notification message text.",
+            "type" : "string"
+          },
+          "created" : {
+            "description" : "Notification creation date and time.",
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/NotificationStatus"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/NotificationType"
+          },
+          "statusUpdated" : {
+            "description" : "Last status update date and time.",
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "statistics" : {
+            "$ref" : "#/components/schemas/NotificationStatisticsDto"
           }
         },
-        "required" : [ "totalRecipients" ],
-        "title" : "Notification response",
+        "required" : [ "created", "message", "notificationId", "status", "statusUpdated", "type" ],
+        "title" : "Notification info",
+        "type" : "object"
+      },
+      "SmsNotificationFormDto" : {
+        "properties" : {
+          "message" : {
+            "description" : "SMS text.",
+            "type" : "string"
+          },
+          "recipients" : {
+            "description" : "List of phone numbers.",
+            "items" : {
+              "description" : "Phone number.",
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "eventParticipants" : {
+            "$ref" : "#/components/schemas/EventParticipantsFilterDto"
+          }
+        },
+        "required" : [ "mssage" ],
+        "title" : "New SMS notification info",
+        "type" : "object"
+      },
+      "NotificationRecipientsPagedList" : {
+        "example" : {
+          "page" : 1,
+          "size" : 10,
+          "total" : 2,
+          "pages" : 1,
+          "data" : [ {
+            "notificationId" : 101,
+            "created" : "2021-11-01 13:22:00",
+            "type" : "sms",
+            "status" : "sent",
+            "message" : "Hi",
+            "statusUpdated" : "2021-11-01 13:22:10"
+          }, {
+            "notificationId" : 10002,
+            "created" : "2020-01-01 11:22:33",
+            "type" : "email",
+            "message" : "Test",
+            "status" : "queued",
+            "statusUpdated" : "2020-01-01 22:33:44",
+            "eventId" : 1001,
+            "productId" : 30,
+            "organizationId" : 1
+          } ]
+        },
+        "properties" : {
+          "page" : {
+            "description" : "Page number.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "count" : {
+            "description" : "Page size.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "total" : {
+            "description" : "Total items.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "pages" : {
+            "description" : "Total pages.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "data" : {
+            "items" : {
+              "$ref" : "#/components/schemas/NotificationRecipientDto"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "count", "data", "page", "pages", "total" ],
+        "title" : "Notifications list with paging.",
         "type" : "object"
       },
       "UsersPagedList" : {
@@ -4658,6 +5205,11 @@
         "title" : "Registration status enum.",
         "type" : "string"
       },
+      "RegistrationType" : {
+        "enum" : [ "participant", "student", "staff", "lecturer", "artist" ],
+        "title" : "Registration type enum (`participant` | `student` | `staff` | `lecturer` | `artist`).",
+        "type" : "string"
+      },
       "RegistrationCustomerInfoDto" : {
         "example" : {
           "surname" : "Doe",
@@ -4748,10 +5300,14 @@
         "title" : "Order line data.",
         "type" : "object"
       },
-      "NotificationRecipientsFilterDto" : {
+      "EventParticipantsFilterDto" : {
         "description" : "Used to filter out notification recipients.\nAll properties are optional.\n",
         "properties" : {
           "eventId" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "productId" : {
             "format" : "int32",
             "type" : "integer"
           },
@@ -4763,12 +5319,87 @@
           },
           "registrationTypes" : {
             "items" : {
-              "$ref" : "#/components/schemas/./schemas/registrations/RegistrationType.yaml"
+              "$ref" : "#/components/schemas/RegistrationType"
             },
             "type" : "array"
           }
         },
         "title" : "Notification recipients filter",
+        "type" : "object"
+      },
+      "NotificationStatus" : {
+        "enum" : [ "new", "queued", "started", "cancelled", "failed", "sent" ],
+        "title" : "Notification status enum (`new` | `queued` | `started` | `cancelled` | `failed` | `sent`).\n",
+        "type" : "string"
+      },
+      "NotificationStatisticsDto" : {
+        "properties" : {
+          "recipients" : {
+            "description" : "Total number of recipients.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "sent" : {
+            "description" : "Total number of notifications delivered.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "errors" : {
+            "description" : "Total number of notifications NOT delivered because of an errors.",
+            "format" : "int32",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "errors", "recipients", "sent" ],
+        "title" : "Notification statistics info",
+        "type" : "object"
+      },
+      "NotificationRecipientDto" : {
+        "properties" : {
+          "recipientId" : {
+            "description" : "Notification recipient identifier.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "notificationId" : {
+            "description" : "Notification identifier.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "registrationId" : {
+            "description" : "Event regisration ID.",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "recipientIdentifier" : {
+            "description" : "Phone numner for SMS, or email address.",
+            "type" : "string"
+          },
+          "recipientName" : {
+            "description" : "Recipient name.",
+            "type" : "string"
+          },
+          "recipientUserId" : {
+            "description" : "Recipient user identifier.",
+            "type" : "string"
+          },
+          "created" : {
+            "description" : "Notification creation date and time.",
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "sent" : {
+            "description" : "Notification delivery date and time.",
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "errors" : {
+            "description" : "Notification delivery errors.",
+            "type" : "string"
+          }
+        },
+        "required" : [ "created", "notificationId", "recipientId", "recipientIdentifier" ],
+        "title" : "Notification recipient info",
         "type" : "object"
       },
       "LocationDto" : {
@@ -4812,7 +5443,7 @@
             "$ref" : "#/components/schemas/RegistrationStatus"
           },
           "type" : {
-            "$ref" : "#/components/schemas/./schemas/registrations/RegistrationType.yaml"
+            "$ref" : "#/components/schemas/RegistrationType"
           },
           "certificateId" : {
             "description" : "Registration certificate ID.",
