@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
@@ -9,10 +9,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Losol.Communication.Email.SendGrid" Version="0.6.0" />
-        <PackageReference Include="PowerOfficeGoSdk" Version="2.22.0" />
-        <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="5.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
+        <PackageReference Include="Losol.Communication.Email.SendGrid" Version="0.7.0" />
+        <PackageReference Include="PowerOfficeGoSdk" Version="2.26.1" />
+        <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
     </ItemGroup>
 
 </Project>

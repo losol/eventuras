@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <LangVersion>preview</LangVersion>
     <RootNamespace>Eventuras.Web</RootNamespace>
     <AssemblyName>Eventuras.Web</AssemblyName>
@@ -12,34 +12,34 @@
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="5.0.1" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="5.0.1" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="5.0.1" />
-    <PackageReference Include="Losol.Communication.Email" Version="0.6.0" /> 
-    <PackageReference Include="Losol.Communication.Email.Smtp" Version="0.6.0" />
-    <PackageReference Include="Losol.Communication.Email.SendGrid" Version="0.6.0" />
-    <PackageReference Include="Losol.Communication.Email.File" Version="0.6.0" />
-    <PackageReference Include="Losol.Communication.Email.Mock" Version="0.6.0" />
-    <PackageReference Include="Losol.Communication.HealthCheck.Email" Version="0.6.0" />
-    <PackageReference Include="Losol.Communication.HealthCheck.Sms" Version="0.6.0" />
-    <PackageReference Include="Losol.Communication.Sms" Version="0.6.0" />
-    <PackageReference Include="Losol.Communication.Sms.Twilio" Version="0.6.0" />
-    <PackageReference Include="Losol.Communication.Sms.Mock" Version="0.6.0" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="6.0.2" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.2" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="6.0.2" />
+    <PackageReference Include="Losol.Communication.Email" Version="0.7.0" /> 
+    <PackageReference Include="Losol.Communication.Email.Smtp" Version="0.7.0" />
+    <PackageReference Include="Losol.Communication.Email.SendGrid" Version="0.7.0" />
+    <PackageReference Include="Losol.Communication.Email.File" Version="0.7.0" />
+    <PackageReference Include="Losol.Communication.Email.Mock" Version="0.7.0" />
+    <PackageReference Include="Losol.Communication.HealthCheck.Email" Version="0.7.0" />
+    <PackageReference Include="Losol.Communication.HealthCheck.Sms" Version="0.7.0" />
+    <PackageReference Include="Losol.Communication.Sms" Version="0.7.0" />
+    <PackageReference Include="Losol.Communication.Sms.Twilio" Version="0.7.0" />
+    <PackageReference Include="Losol.Communication.Sms.Mock" Version="0.7.0" />
     <PackageReference Include="Mapster" Version="7.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="5.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="6.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.9">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Sentry.AspNetCore" Version="3.9.0" />
+    <PackageReference Include="Sentry.AspNetCore" Version="3.12.3" />
     <PackageReference Include="Stripe.net" Version="[16.4.0]" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.9" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Eventuras.Services.Auth0\Eventuras.Services.Auth0.csproj" />

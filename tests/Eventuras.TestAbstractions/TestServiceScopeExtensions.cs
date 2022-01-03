@@ -530,6 +530,14 @@ namespace Eventuras.TestAbstractions
                     .Select(NotificationRecipient.Email));
             }
 
+            var disposables = new List<IDisposable>();
+            if (createdByUser == null)
+            {
+                var disposableUser = await scope.CreateUserAsync();
+                createdByUser = disposableUser.Entity;
+                disposables.Add(disposableUser);
+            }
+
             NotificationStatistics stats = null;
             if (totalSent.HasValue || totalErrors.HasValue)
             {
@@ -556,7 +564,7 @@ namespace Eventuras.TestAbstractions
 
             await scope.Db.Notifications.AddAsync(notification);
             await scope.Db.SaveChangesAsync();
-            return new DisposableEntity<EmailNotification>(notification, scope.Db);
+            return new DisposableEntity<EmailNotification>(notification, scope.Db, disposables.ToArray());
         }
 
         public static async Task<IDisposableEntity<SmsNotification>> CreateSmsNotificationAsync(
@@ -597,6 +605,14 @@ namespace Eventuras.TestAbstractions
                 recipients.AddRange(registrations
                     .Select(NotificationRecipient.Sms));
             }
+            
+            var disposables = new List<IDisposable>();
+            if (createdByUser == null)
+            {
+                var disposableUser = await scope.CreateUserAsync();
+                createdByUser = disposableUser.Entity;
+                disposables.Add(disposableUser);
+            }
 
             NotificationStatistics stats = null;
             if (totalSent.HasValue || totalErrors.HasValue)
@@ -624,7 +640,7 @@ namespace Eventuras.TestAbstractions
 
             await scope.Db.Notifications.AddAsync(notification);
             await scope.Db.SaveChangesAsync();
-            return new DisposableEntity<SmsNotification>(notification, scope.Db);
+            return new DisposableEntity<SmsNotification>(notification, scope.Db, disposables.ToArray());
         }
     }
 }
