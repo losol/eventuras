@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.ConstrainedExecution;
 
 namespace Eventuras.Domain
 {
@@ -115,6 +116,26 @@ namespace Eventuras.Domain
         [Display(Name = "Diplomtekst. Inkluder kursnummer og godkjenninger her!")]
         [DataType(DataType.MultilineText)]
         public string CertificateDescription { get; set; } //Text for the certificate if issued.
+        
+        [NotMapped]
+        public string CertificateEvidenceDescription
+        {
+            get
+            {
+                var evidenceDescription = $"{Title} {City}";
+                if (DateStart.HasValue)
+                {
+                    evidenceDescription += " - " + DateStart.Value.ToString("dd.MM.yyyy");
+                }
+
+                if (DateEnd.HasValue)
+                {
+                    evidenceDescription += " - " + DateEnd.Value.ToString("dd.MM.yyyy");
+                }
+
+                return evidenceDescription;
+            }
+        }
 
         [Display(Name = "Url til bilde for arrangementet")]
         public string FeaturedImageUrl { get; set; }
@@ -136,6 +157,23 @@ namespace Eventuras.Domain
         [Display(Name = "Nettkurs?")]
         public bool OnDemand { get; set; } = false;
         // Consider removing end
+
+        public Certificate FillCertificate(Certificate certificate)
+        {
+            if (certificate == null)
+            {
+                throw new ArgumentNullException(nameof(certificate));
+            }
+
+            certificate.Title = Title;
+            certificate.Description = CertificateDescription;
+            certificate.EvidenceDescription = CertificateEvidenceDescription;
+            certificate.IssuingOrganizationName = Organization?.Name ?? "Nordland Legeforening";
+            certificate.IssuingOrganizationId = OrganizationId;
+            certificate.IssuedByName = OrganizerUser?.Name ?? "Tove Myrbakk";
+            certificate.IssuingUserId = OrganizerUserId;
+            return certificate;
+        }
 
         #region Navigational properties
         [ForeignKey("OrganizerUserId")]

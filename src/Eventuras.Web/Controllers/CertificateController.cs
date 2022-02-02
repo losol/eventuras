@@ -1,13 +1,12 @@
-using Eventuras.Services;
-using Eventuras.Web.Services;
+using System;
+using System.IO;
+using System.Net.Mime;
+using System.Threading.Tasks;
+using Eventuras.Services.Certificates;
+using Eventuras.Services.Events;
 using Eventuras.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
-using System.Threading.Tasks;
-using Eventuras.Services.Events;
-using Eventuras.Web;
-using System.Globalization;
 
 namespace Eventuras.Web.Controllers
 {
@@ -15,85 +14,63 @@ namespace Eventuras.Web.Controllers
     [Route("certificate")]
     public class CertificateController : Controller
     {
+        private readonly ICertificateRetrievalService _certificateRetrievalService;
+        private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
+        private readonly ICertificateRenderer _certificateRenderer;
+
+        public CertificateController(
+            ICertificateRetrievalService certificateRetrievalService,
+            IEventInfoRetrievalService eventInfoRetrievalService,
+            ICertificateRenderer certificateRenderer)
+        {
+            _certificateRetrievalService = certificateRetrievalService ?? throw
+                new ArgumentNullException(nameof(certificateRetrievalService));
+
+            _eventInfoRetrievalService = eventInfoRetrievalService ?? throw
+                new ArgumentNullException(nameof(eventInfoRetrievalService));
+
+            _certificateRenderer = certificateRenderer ?? throw
+                new ArgumentNullException(nameof(certificateRenderer));
+        }
+
         [HttpGet("{id}")]
-        public async Task<IActionResult> ViewCertificate(
-            [FromRoute] int id,
-            [FromServices] ICertificatesService certificatesService)
+        public async Task<IActionResult> View(int id)
 
         {
-            var certificate = await certificatesService.GetAsync(id);
-            if (certificate == null)
-            {
-                return NotFound();
-            }
-            return View("Templates/Certificates/CourseCertificate", CertificateVM.From(certificate));
+            var certificate = await _certificateRetrievalService
+                .GetCertificateByIdAsync(id,
+                    CertificateRetrievalOptions.ForRendering);
+
+            var html = await _certificateRenderer
+                .RenderToHtmlAsStringAsync(new CertificateViewModel(certificate));
+
+            return Content(html, MediaTypeNames.Text.Html);
         }
 
         [HttpGet("preview/event/{id}")]
-        public async Task<IActionResult> ViewCertificateForEvent([FromRoute] int id,
-            [FromServices] IEventInfoRetrievalService eventInfoService)
+        public async Task<IActionResult> ViewCertificateForEvent(int id)
         {
-            var eventInfo = await eventInfoService.GetEventInfoByIdAsync(id, new EventInfoRetrievalOptions
-            {
-                LoadOrganizerUser = true,
-                LoadOrganization = true
-            });
+            var eventInfo = await _eventInfoRetrievalService
+                .GetEventInfoByIdAsync(id,
+                    EventInfoRetrievalOptions.ForCertificateRendering);
 
-            if (eventInfo == null)
-            {
-                return NotFound();
-            }
-            var vm = CertificateVM.Mock;
+            var html = await _certificateRenderer
+                .RenderToHtmlAsStringAsync(new CertificateViewModel(eventInfo));
 
-            vm.Title = eventInfo.Title;
-            vm.Description = eventInfo.CertificateDescription;
-
-            CultureInfo norwegianCulture = new CultureInfo("nb-NO");
-            vm.EvidenceDescription = $"{eventInfo.Title} {eventInfo.City}";
-            if (eventInfo.DateStart.HasValue)
-            { vm.EvidenceDescription += " - " + eventInfo.DateStart.Value.ToString("dd.MM.yyyy"); };
-            if (eventInfo.DateEnd.HasValue)
-            { vm.EvidenceDescription += " - " + eventInfo.DateEnd.Value.ToString("dd.MM.yyyy"); };
-
-            vm.IssuedInCity = eventInfo.City;
-
-            if (eventInfo.OrganizerUser != null)
-            {
-                vm.IssuerPersonName = eventInfo.OrganizerUser.Name;
-            }
-
-            if (eventInfo.OrganizerUser != null && !string.IsNullOrWhiteSpace(eventInfo.OrganizerUser.SignatureImageBase64))
-            {
-                vm.IssuerPersonSignatureImageBase64 = eventInfo.OrganizerUser.SignatureImageBase64;
-            }
-
-            if (eventInfo.Organization != null)
-            {
-                vm.IssuerOrganizationName = eventInfo.Organization.Name;
-            }
-
-            if (eventInfo.Organization != null && !string.IsNullOrWhiteSpace(eventInfo.Organization.LogoBase64))
-            {
-                vm.IssuerOrganizationLogoBase64 = eventInfo.Organization.LogoBase64;
-            }
-
-            return View("Templates/Certificates/CourseCertificate", vm);
+            return Content(html, MediaTypeNames.Text.Html);
         }
 
         [HttpGet("{id}/download")]
-        public async Task<IActionResult> DownloadCertificate(
-            [FromServices] CertificatePdfRenderer writer,
-            [FromServices] ICertificatesService certificatesService,
-            [FromRoute] int id)
+        public async Task<IActionResult> DownloadCertificate(int id)
         {
-            var certificate = await certificatesService.GetAsync(id);
-            if (certificate == null)
-            {
-                return NotFound();
-            }
+            var certificate = await _certificateRetrievalService
+                .GetCertificateByIdAsync(id,
+                    CertificateRetrievalOptions.ForRendering);
 
-            var stream = await writer.RenderAsync(CertificateVM.From(certificate));
-            MemoryStream memoryStream = new MemoryStream();
+            var stream = await _certificateRenderer
+                .RenderToPdfAsStreamAsync(new CertificateViewModel(certificate));
+
+            var memoryStream = new MemoryStream();
             await stream.CopyToAsync(memoryStream);
             return File(memoryStream.ToArray(), "application/pdf");
         }

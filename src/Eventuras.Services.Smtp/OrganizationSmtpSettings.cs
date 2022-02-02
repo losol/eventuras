@@ -32,8 +32,8 @@ namespace Eventuras.Services.Smtp
                 Port = Port,
                 Username = User,
                 Password = Password,
-                From = FromAddress
-                // TODO: release new Losol.Communications version, use FromName here
+                FromEmail = FromAddress,
+                FromName = FromName
             };
         }
     }

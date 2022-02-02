@@ -5,6 +5,8 @@ namespace Eventuras.Services.Registrations
     public class RegistrationFilter
     {
         public int? EventInfoId { get; set; }
+        
+        public int? CertificateId { get; set; }
 
         public int[] ProductIds { get; set; }
 
@@ -17,6 +19,10 @@ namespace Eventuras.Services.Registrations
         public bool HavingEmailConfirmedOnly { get; set; }
 
         public bool AccessibleOnly { get; set; }
+        
+        public bool HavingCertificateOnly { get; set; }
+
+        public bool HavingNoCertificateOnly { get; set; }
 
         public Registration.RegistrationStatus[] HavingStatuses { get; set; }
 

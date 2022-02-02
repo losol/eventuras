@@ -1,3 +1,7 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -7,14 +11,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
-using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Eventuras.Web.Services
+namespace Eventuras.Services.Views
 {
-    public class ViewRenderService : IRenderService
+    public class ViewRenderService : IViewRenderService
     {
         private readonly IRazorViewEngine _viewEngine;
         private readonly ITempDataProvider _tempDataProvider;
@@ -24,7 +24,7 @@ namespace Eventuras.Web.Services
             IRazorViewEngine viewEngine,
             ITempDataProvider tempDataProvider,
             IServiceProvider serviceProvider
-            )
+        )
         {
             _viewEngine = viewEngine;
             _tempDataProvider = tempDataProvider;
@@ -33,34 +33,28 @@ namespace Eventuras.Web.Services
 
         public async Task<string> RenderViewToStringAsync(string pageName, object model)
         {
-
             var actionContext = GetActionContext();
             var view = FindView(actionContext, pageName);
 
-            using (var sw = new StringWriter())
-            {
-                var viewContext = new ViewContext(
-                        actionContext,
-                        view,
-                        new ViewDataDictionary<object>(
-                        metadataProvider: new EmptyModelMetadataProvider(),
-                        modelState: new ModelStateDictionary())
-                        {
-                            Model = model
-                        },
-                        new TempDataDictionary(
-                        actionContext.HttpContext,
-                        _tempDataProvider),
-                        sw,
-                        new HtmlHelperOptions()
-                );
+            await using var sw = new StringWriter();
+            var viewContext = new ViewContext(
+                actionContext,
+                view,
+                new ViewDataDictionary<object>(
+                    metadataProvider: new EmptyModelMetadataProvider(),
+                    modelState: new ModelStateDictionary())
+                {
+                    Model = model
+                },
+                new TempDataDictionary(
+                    actionContext.HttpContext,
+                    _tempDataProvider),
+                sw,
+                new HtmlHelperOptions()
+            );
 
-                await view.RenderAsync(viewContext);
-                return sw.ToString();
-            }
-
-
-
+            await view.RenderAsync(viewContext);
+            return sw.ToString();
         }
 
         private IView FindView(ActionContext actionContext, string viewName)
@@ -80,17 +74,18 @@ namespace Eventuras.Web.Services
             var searchedLocations = getViewResult.SearchedLocations.Concat(findViewResult.SearchedLocations);
             var errorMessage = string.Join(
                 Environment.NewLine,
-                new[] { $"Unable to find view '{viewName}'. The following locations were searched:" }.Concat(searchedLocations)); ;
+                new[] { $"Unable to find view '{viewName}'. The following locations were searched:" }.Concat(
+                    searchedLocations));
 
             throw new InvalidOperationException(errorMessage);
         }
 
         private ActionContext GetActionContext()
         {
-            var httpContext = new DefaultHttpContext();
-            httpContext.RequestServices = _serviceProvider;
-
-            return new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
+            return new ActionContext(new DefaultHttpContext
+            {
+                RequestServices = _serviceProvider
+            }, new RouteData(), new ActionDescriptor());
         }
     }
 }

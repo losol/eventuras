@@ -1,37 +1,33 @@
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using Eventuras.Domain;
+using Eventuras.Pages.Account;
+using Eventuras.Services.Email;
+using Eventuras.Services.Views;
 using Eventuras.ViewModels;
-using Eventuras.Web.Services;
 using Losol.Communication.Email;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 
 namespace Eventuras.Pages.Account
 {
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
-        private readonly IEmailSender _emailSender;
-        private IRenderService _renderService;
+        private readonly IApplicationEmailSender _emailSender;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
             ILogger<LoginModel> logger,
-            IEmailSender emailSender,
-            IRenderService renderService
+            IApplicationEmailSender emailSender
         )
         {
             _userManager = userManager;
-            _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-            _renderService = renderService;
         }
 
         [BindProperty]
@@ -85,23 +81,16 @@ namespace Eventuras.Pages.Account
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
 
-                    var emailVM = new EmailMessage()
-                    {
-                        Name = Input.Name,
-                        Email = Input.Email,
-                        Subject = "En liten bekreftelse bare...",
-                        Message = $@"<p>Vi har snart laget en ny bruker til deg, men vil bare at du bekrefter med å trykke på lenken!</p>
+                    var subject = "En liten bekreftelse bare...";
+                    var message =
+                        $@"<p>Vi har snart laget en ny bruker til deg, men vil bare at du bekrefter med å trykke på lenken!</p>
 								<p><a href='{callbackUrl}'>Bekreft her</a></p>
 								<p></p>
 								<p>Hvis lenken ikke virker, så kan du kopiere inn teksten under i nettleseren:
-								{callbackUrl} </p>"
-                    };
-                    var emailString = await _renderService.RenderViewToStringAsync("Templates/Email/StandardEmail", emailVM);
-                    await _emailSender.SendEmailAsync(emailVM.Email, emailVM.Subject, emailString);
+								{callbackUrl} </p>";
+
+                    await _emailSender.SendStandardEmailAsync($"{Input.Name} <{Input.Email}>", subject, message);
                     return RedirectToPage("/Info/EmailSent");
-
-
-
                 }
                 foreach (var error in result.Errors)
                 {

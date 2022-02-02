@@ -3,7 +3,7 @@ info:
   contact:
     email: contact@email.com
     name: Contact Name
-    url: http://losol.github.io/eventuras/openapi/v3/eventuras-api.v3.yaml
+    url: https://losol.github.io/eventuras/openapi/v3/eventuras-api.v3.yaml
   description: Event Management API.
   license:
     name: GPL
@@ -11,7 +11,7 @@ info:
   version: 3.0.1
 externalDocs:
   description: Generated API HTML
-  url: http://losol.github.io/eventuras/openapi/v3/
+  url: https://losol.github.io/eventuras/openapi/v3/
 servers:
 - url: https://full.path.to/v3/
 security:
@@ -321,6 +321,54 @@ paths:
       summary: Add order to registration.
       tags:
       - registrations
+  /registrations/{id}/certificate/send:
+    post:
+      operationId: sendCertificateForRegistration
+      parameters:
+      - description: Registration ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Missing or invalid request parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Send certificate for registration.
+      tags:
+      - registrations
+      - certificates
   /notifications:
     get:
       operationId: getNotificationsList
@@ -1463,6 +1511,14 @@ paths:
   /events/collections:
     get:
       operationId: getEventCollectionsList
+      parameters:
+      - description: Event ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
       responses:
         "200":
           content:
@@ -1478,6 +1534,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Missing or invalid request parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
         "404":
           content:
             application/json:
@@ -1776,6 +1844,304 @@ paths:
       tags:
       - events
       - collections
+  /events/{id}/certificates:
+    get:
+      operationId: getEventCertificates
+      parameters:
+      - description: Event ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      - description: Page number.
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          format: int32
+          type: integer
+      - description: Page size.
+        in: query
+        name: count
+        required: false
+        schema:
+          default: 100
+          format: int32
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/CertificateDto'
+                type: array
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Missing or invalid request parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Get event certificates list.
+      tags:
+      - events
+      - certificates
+  /events/{id}/certificates/preview:
+    get:
+      operationId: previewCertificateForEvent
+      parameters:
+      - description: Event ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          content:
+            text/html:
+              schema:
+                type: string
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Preview certificate for event.
+      tags:
+      - events
+      - certificates
+  /events/{id}/certificates/issue:
+    post:
+      operationId: issueCertificatesForEvent
+      parameters:
+      - description: Event ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      - description: |
+          Whether to send certificates to the recipients.
+        in: query
+        name: send
+        required: false
+        schema:
+          default: true
+          type: boolean
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateStatisticsDto'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Missing or invalid request parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Issue certificates for event.
+      tags:
+      - events
+      - certificates
+  /events/{id}/certificates/update:
+    post:
+      operationId: updateCertificatesForEvent
+      parameters:
+      - description: Event ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      - description: |
+          Whether to send certificates to the recipients.
+        in: query
+        name: send
+        required: false
+        schema:
+          default: true
+          type: boolean
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateStatisticsDto'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Missing or invalid request parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Update certificates for event.
+      tags:
+      - events
+      - certificates
+  /certificates/{id}:
+    get:
+      operationId: getCertificateById
+      parameters:
+      - description: Certificate ID.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+      - description: |
+          Force response format (`json` | `pdf` | `html`).
+        in: query
+        name: format
+        required: false
+        schema:
+          default: json
+          enum:
+          - json
+          - pdf
+          - html
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateDto'
+            application/pdf:
+              schema:
+                format: binary
+                type: string
+            text/html:
+              schema:
+                type: string
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access token is missing or invalid.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The requested resource not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected server error.
+      summary: Get certificate info by id.
+      tags:
+      - certificates
   /orders:
     get:
       operationId: getOrders
@@ -3495,6 +3861,90 @@ components:
       - name
       - organizationId
       title: Event collection information.
+      type: object
+    CertificateDto:
+      example:
+        certificateId: 12380
+        certificateGuid: 7383cefc-7e52-4e69-a044-38356885dd57
+        title: Demo Event
+        description: Some certificate description.
+        comment: Some certificate comment.
+        recipientName: John Doe
+        evidenceDescription: Some evidence description.
+        issuedInCity: Oslo
+        issuingDate: 2021-01-01
+        issuerOrganizationName: Demo Org
+        issuerPersonName: Demo Issuer
+      properties:
+        certificateId:
+          description: Certificate numeric identifier.
+          format: int32
+          type: integer
+        certificateGuid:
+          description: Certificate string identifier.
+          type: string
+        title:
+          description: Certificate title.
+          type: string
+        description:
+          description: Certificate description.
+          type: string
+        comment:
+          description: Certificate comment.
+          type: string
+        recipientName:
+          description: Certificate recipient name.
+          type: string
+        evidenceDescription:
+          description: Certificate evidence description.
+          type: string
+        issuedInCity:
+          description: City name certificate issued in.
+          type: string
+        issuingDate:
+          description: Date certificate issued on.
+          format: date
+          type: string
+        issuerOrganizationName:
+          description: Certificate issuer organization name.
+          type: string
+        issuerOrganizationLogoBase64:
+          description: Certificate issuer organization logo.
+          format: byte
+          type: string
+        issuerPersonName:
+          description: Date certificate issued on.
+          format: date
+          type: string
+        issuerPersonSignatureImageBase64:
+          description: Certificate issuer person signature image.
+          format: byte
+          type: string
+      required:
+      - certificateGuid
+      - certificateId
+      - description
+      - issuedInCity
+      - issuerPersonName
+      - issuingDate
+      - recipientName
+      - title
+      title: Certificate info
+      type: object
+    CertificateStatisticsDto:
+      example:
+        issued: 0
+        updated: 6
+      properties:
+        issued:
+          description: Number of issued certificates.
+          format: int32
+          type: integer
+        updated:
+          description: Number of updated certificates.
+          format: int32
+          type: integer
+      title: Event certificate issuing statistics.
       type: object
     OrderStatus:
       description: |

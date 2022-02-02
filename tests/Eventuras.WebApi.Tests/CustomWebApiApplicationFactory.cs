@@ -1,23 +1,24 @@
+using System.Collections.Generic;
+using System.Linq;
 using Eventuras.Infrastructure;
 using Eventuras.Services.DbInitializers;
+using Eventuras.Services.Organizations.Settings;
+using Eventuras.Services.Pdf;
+using Eventuras.TestAbstractions;
+using Eventuras.WebApi.Auth;
+using Eventuras.WebApi.Tests.Controllers.Organizations;
 using Losol.Communication.Email;
+using Losol.Communication.Sms;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using System.Collections.Generic;
-using System.Linq;
-using Eventuras.Services.Organizations.Settings;
-using Eventuras.TestAbstractions;
-using Eventuras.WebApi.Auth;
-using Eventuras.WebApi.Tests.Controllers.Organizations;
-using Losol.Communication.Sms;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using Moq;
 
 namespace Eventuras.WebApi.Tests
 {
@@ -35,17 +36,18 @@ namespace Eventuras.WebApi.Tests
                 .ConfigureAppConfiguration(app => app
                     .AddInMemoryCollection(new Dictionary<string, string>
                     {
-                        {"AppSettings:UsePowerOffice", "false"},
-                        {"AppSettings:UseStripeInvoice", "false"},
-                        {"SuperAdmin:Email", TestingConstants.SuperAdminEmail},
-                        {"SuperAdmin:Password", TestingConstants.SuperAdminPassword},
-                        {"Zoom:Enabled", "true"}
+                        { "AppSettings:UsePowerOffice", "false" },
+                        { "AppSettings:UseStripeInvoice", "false" },
+                        { "SuperAdmin:Email", TestingConstants.SuperAdminEmail },
+                        { "SuperAdmin:Password", TestingConstants.SuperAdminPassword },
+                        { "Zoom:Enabled", "true" }
                     }))
                 .ConfigureServices(services =>
                 {
                     // Override already added email sender with the true mock
                     services.AddSingleton(EmailSenderMock.Object);
                     services.AddSingleton(SmsSenderMock.Object);
+                    services.AddTransient<IPdfRenderService, DummyPdfRenderService>();
                     services.AddSingleton<IOrganizationSettingsRegistryComponent, OrgSettingsTestRegistryComponent>();
 
                     // Remove the app's ApplicationDbContext registration.

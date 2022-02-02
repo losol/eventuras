@@ -47,7 +47,10 @@ namespace Eventuras
         // This method gets called by the runtime. Use this method to add services to the container.
         public virtual void ConfigureServices(IServiceCollection services)
         {
-
+            var defaultCultureInfo = new CultureInfo(Configuration["Site:DefaultLocale"]);
+            CultureInfo.DefaultThreadCurrentCulture = defaultCultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = defaultCultureInfo;
+            
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
@@ -66,7 +69,6 @@ namespace Eventuras
             services.ConfigureIdentity();
             services.ConfigureDbInitializationStrategy(Configuration, HostingEnvironment);
             services.ConfigureAuthorizationPolicies();
-            services.ConfigureLocalization(new CultureInfo(Configuration["Site:DefaultLocale"]));
             services.ConfigureMvc();
 
             services.AddSiteConfig(Configuration);

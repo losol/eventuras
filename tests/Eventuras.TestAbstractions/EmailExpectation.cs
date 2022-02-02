@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Losol.Communication.Email;
 using Moq;
-using Xunit;
 
 namespace Eventuras.TestAbstractions
 {
@@ -9,88 +10,64 @@ namespace Eventuras.TestAbstractions
     {
         private const string Placeholder = "___Placeholder___";
 
-        private readonly Mock<IEmailSender> mock;
+        private readonly Mock<IEmailSender> _mock;
 
-        private string email = Placeholder;
-        private string subject = Placeholder;
-        private string message = Placeholder;
-        private readonly List<string> subjectContains = new List<string>();
-        private readonly List<string> textContained = new List<string>();
-        private bool shouldNotHaveAttachment;
-        private bool shouldHaveAttachment;
-        private EmailMessageType type = EmailMessageType.Html;
+        private string _email = Placeholder;
+        private string _subject = Placeholder;
+        private string _message = Placeholder;
+        private readonly List<string> _subjectContains = new();
+        private readonly List<string> _htmlContained = new();
+        private bool _shouldNotHaveAttachment;
+        private bool _shouldHaveAttachment;
 
         public EmailExpectation(Mock<IEmailSender> mock)
         {
-            this.mock = mock;
+            _mock = mock;
         }
 
         public EmailExpectation SentTo(string email)
         {
-            this.email = email;
+            _email = email;
             return this;
         }
 
         public EmailExpectation WithSubject(string subject)
         {
-            this.subject = subject;
+            _subject = subject;
             return this;
         }
 
         public EmailExpectation WithMessage(string message)
         {
-            this.message = message;
-            return this;
-        }
-
-        public EmailExpectation WithType(EmailMessageType type)
-        {
-            this.type = type;
+            _message = message;
             return this;
         }
 
         public EmailExpectation HavingAttachment(bool hasAttachment = true)
         {
-            this.shouldHaveAttachment = hasAttachment;
-            this.shouldNotHaveAttachment = !hasAttachment;
+            _shouldHaveAttachment = hasAttachment;
+            _shouldNotHaveAttachment = !hasAttachment;
             return this;
         }
 
         public EmailExpectation SubjectContains(string text)
         {
-            this.subjectContains.Add(text);
+            _subjectContains.Add(text);
             return this;
         }
 
-        public EmailExpectation ContainingText(string text)
+        public EmailExpectation ContainingHtml(string html)
         {
-            this.textContained.Add(text);
+            _htmlContained.Add(html);
             return this;
         }
 
         public EmailExpectation Setup()
         {
-            this.mock.Setup(s => s.SendEmailAsync(
-                    this.EmailToCheck,
-                    this.SubjectToCheck,
-                    this.MessageToCheck,
-                    this.AttachmentToCheck,
-                    this.type))
-                .Callback((string email, string subject, string body, Attachment attachment, EmailMessageType emailType) =>
-                {
-                    foreach (var text in this.subjectContains)
-                    {
-                        Assert.Contains(text, subject);
-                    }
-
-                    foreach (var text in this.textContained)
-                    {
-                        Assert.Contains(text, body);
-                    }
-                });
-
+            _mock.Setup(s => s.SendEmailAsync(It.IsAny<EmailModel>()));
             return this;
         }
+
         public void VerifyEmailSent(Times? times = null)
         {
             if (times == null)
@@ -98,25 +75,49 @@ namespace Eventuras.TestAbstractions
                 times = Times.Once();
             }
 
-            this.mock.Verify(s => s.SendEmailAsync(
-                this.EmailToCheck,
-                this.SubjectToCheck,
-                this.MessageToCheck,
-                this.AttachmentToCheck,
-                this.type), times.Value);
+            Func<EmailModel, bool> compareFunc = m =>
+            {
+                if (!Placeholder.Equals(_email) && m.Recipients.All(r => r.Email != _email))
+                {
+                    return false;
+                }
+
+                if (!Placeholder.Equals(_subject) && m.Subject != _subject)
+                {
+                    return false;
+                }
+
+                if (!Placeholder.Equals(_message) && (m.TextBody ?? m.HtmlBody).Equals(_message))
+                {
+                    return false;
+                }
+
+                if (_subjectContains.Any() && !_subjectContains.Any(s => m.Subject.Contains(s)))
+                {
+                    return false;
+                }
+
+                if (_htmlContained.Any() && _htmlContained.All(s => m.HtmlBody?.Contains(s) != true))
+                {
+                    return false;
+                }
+
+                if (_shouldHaveAttachment && !m.Attachments.Any())
+                {
+                    return false;
+                }
+
+                if (_shouldNotHaveAttachment && m.Attachments.Any())
+                {
+                    return false;
+                }
+
+                return true;
+            };
+
+            _mock.Verify(s => s
+                    .SendEmailAsync(It.Is<EmailModel>(m => compareFunc(m))),
+                times.Value);
         }
-
-        private Attachment AttachmentToCheck =>
-            this.shouldHaveAttachment
-                ? It.IsNotNull<Attachment>()
-                : this.shouldNotHaveAttachment
-                    ? null
-                    : It.IsAny<Attachment>();
-
-        private string MessageToCheck => this.message != Placeholder ? this.message : It.IsAny<string>();
-
-        private string SubjectToCheck => this.subject != Placeholder ? this.subject : It.IsAny<string>();
-
-        private string EmailToCheck => this.email != Placeholder ? this.email : It.IsAny<string>();
     }
 }

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Threading.Tasks;
 using static Eventuras.Domain.Order;
 using static Eventuras.Domain.PaymentMethod;
 
 namespace Eventuras.Domain
 {
-
     public class Registration
     {
         public enum RegistrationStatus
@@ -62,8 +62,7 @@ namespace Eventuras.Domain
             }
         }
 
-        [NotMapped]
-        public string ParticipantLastName => NameParts?.LastOrDefault();
+        [NotMapped] public string ParticipantLastName => NameParts?.LastOrDefault();
 
         // Who pays for it?
         public string CustomerName { get; set; }
@@ -86,17 +85,17 @@ namespace Eventuras.Domain
         public DateTime? RegistrationTime { get; set; } = DateTime.UtcNow;
         public string RegistrationBy { get; set; }
 
-        [Display(Name = "Gratisdeltaker?")]
-        public bool FreeRegistration { get; set; } = false;
+        [Display(Name = "Gratisdeltaker?")] public bool FreeRegistration { get; set; } = false;
 
         [Display(Name = "Betalingsmetode")]
-        public PaymentProvider PaymentMethod { get; set; } = PaymentProvider.PowerOfficeEmailInvoice; // HACK: This ignores the actual default paymentmethod set in the database
+        public PaymentProvider PaymentMethod { get; set; } =
+            PaymentProvider
+                .PowerOfficeEmailInvoice; // HACK: This ignores the actual default paymentmethod set in the database
 
         [Display(Name = "Verifisert påmelding?")]
         public bool Verified { get; set; } = false;
 
-        [Display(Name = "Verifiseringskode")]
-        public string VerificationCode { get; set; }
+        [Display(Name = "Verifiseringskode")] public string VerificationCode { get; set; }
 
         public int? CertificateId { get; set; }
         public Certificate Certificate { get; set; }
@@ -112,14 +111,14 @@ namespace Eventuras.Domain
 
         public List<Order> Orders { get; set; }
 
-        [NotMapped]
-        public List<OrderDTO> Products => GetCurrentProducts();
+        [NotMapped] public List<OrderDTO> Products => GetCurrentProducts();
 
         public List<OrderDTO> GetCurrentProducts() =>
             _getProductsForOrders(Orders.Where(o => o.Status != OrderStatus.Cancelled));
 
         public List<OrderDTO> GetInvoicedProducts() =>
-            _getProductsForOrders(Orders.Where(o => o.Status == OrderStatus.Invoiced || o.Status == OrderStatus.Refunded));
+            _getProductsForOrders(
+                Orders.Where(o => o.Status == OrderStatus.Invoiced || o.Status == OrderStatus.Refunded));
 
         private static List<OrderDTO> _getProductsForOrders(IEnumerable<Order> orders)
         {
@@ -127,7 +126,8 @@ namespace Eventuras.Domain
                 .Select(l => new { product = l.Product, variant = l.ProductVariant, quantity = l.Quantity });
             return productOrderLines
                 .GroupBy(l => (product: l.product, variant: l.variant), new ProductAndVariantIdComparer())
-                .Select(g => new OrderDTO { Product = g.Key.product, Variant = g.Key.variant, Quantity = g.Sum(t => t.quantity) })
+                .Select(g => new OrderDTO
+                    { Product = g.Key.product, Variant = g.Key.variant, Quantity = g.Sum(t => t.quantity) })
                 .Where(p => p.Quantity > 0)
                 .ToList();
         }
@@ -138,6 +138,7 @@ namespace Eventuras.Domain
             Verified = true;
             AddLog();
         }
+
         public void MarkAsAttended()
         {
             Status = RegistrationStatus.Attended;
@@ -159,6 +160,44 @@ namespace Eventuras.Domain
         public bool HasOrder => Orders != null && Orders.Count > 0;
         public bool HasCertificate => CertificateId != null;
 
+        public Certificate CreateCertificate()
+        {
+            if (Certificate != null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(Registration)}.{nameof(Certificate)} is already set for registration {RegistrationId}");
+            }
+
+            Certificate = new Certificate();
+            UpdateCertificate();
+            return Certificate;
+        }
+
+        public Certificate UpdateCertificate()
+        {
+            if (Certificate == null)
+            {
+                throw new InvalidOperationException($"{nameof(Registration)}.{nameof(Certificate)} is null");
+            }
+
+            if (EventInfo == null)
+            {
+                throw new InvalidOperationException($"{nameof(Registration)}.{nameof(EventInfo)} is null");
+            }
+
+            if (User == null)
+            {
+                throw new InvalidOperationException($"{nameof(Registration)}.{nameof(User)} is null");
+            }
+
+            EventInfo.FillCertificate(Certificate);
+            Certificate.Comment = CertificateComment;
+            Certificate.RecipientName = User.Name;
+            Certificate.RecipientEmail = User.Email;
+            Certificate.RecipientUserId = User.Id;
+            return Certificate;
+        }
+
         public void AddLog(string text = null)
         {
             var logText = $"{DateTime.UtcNow.ToString("u")}: ";
@@ -170,6 +209,7 @@ namespace Eventuras.Domain
             {
                 logText += $"{Status}";
             }
+
             Log += logText + "\n";
         }
 
@@ -256,7 +296,8 @@ namespace Eventuras.Domain
                                 ProductVariant = order.Variant
                             };
 
-                            var shouldReplaceProductVariant = order.Variant?.ProductVariantId != p.Variant?.ProductVariantId;
+                            var shouldReplaceProductVariant =
+                                order.Variant?.ProductVariantId != p.Variant?.ProductVariantId;
                             if (shouldReplaceProductVariant)
                             {
                                 orderline.Quantity = -p.Quantity;
@@ -310,12 +351,13 @@ namespace Eventuras.Domain
                 {
                     lines.Remove(match);
                 }
-                
+
                 var product = invoicedProducts.Find(p => p.Product.ProductId == order.Product.ProductId);
                 if (order.Quantity == 0)
                 {
                     return;
                 }
+
                 var orderline = order.ToOrderLine();
                 if (product != null &&
                     product.Variant?.ProductVariantId !=
@@ -353,7 +395,8 @@ namespace Eventuras.Domain
         public ProductVariant Variant { get; set; }
         public int Quantity { get; set; } = 1; // FIXME: Should default to Product.MinimumQuantity
 
-        public override string ToString() => $"{Product.ProductId}-{Variant?.ProductVariantId.ToString() ?? "NA"}×{Quantity}";
+        public override string ToString() =>
+            $"{Product.ProductId}-{Variant?.ProductVariantId.ToString() ?? "NA"}×{Quantity}";
     }
 
     /// <summary>
@@ -361,7 +404,9 @@ namespace Eventuras.Domain
     /// </summary>
     public class OrderDTOProductAndVariantComparer : IEqualityComparer<OrderDTO>
     {
-        public bool Equals(OrderDTO x, OrderDTO y) => x.Product.ProductId == y.Product.ProductId && x.Variant?.ProductVariantId == y.Variant?.ProductVariantId;
+        public bool Equals(OrderDTO x, OrderDTO y) => x.Product.ProductId == y.Product.ProductId &&
+                                                      x.Variant?.ProductVariantId == y.Variant?.ProductVariantId;
+
         public int GetHashCode(OrderDTO obj) => obj.Product.ProductId;
     }
 

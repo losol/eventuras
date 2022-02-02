@@ -1,13 +1,15 @@
 using Eventuras.Services.Auth;
+using Eventuras.Services.Certificates;
 using Eventuras.Services.EventCollections;
 using Eventuras.Services.Events;
-using Eventuras.Services.Invoicing;
 using Eventuras.Services.ExternalSync;
+using Eventuras.Services.Invoicing;
 using Eventuras.Services.Notifications;
 using Eventuras.Services.Orders;
 using Eventuras.Services.Organizations;
 using Eventuras.Services.Registrations;
 using Eventuras.Services.Users;
+using Eventuras.Services.Views;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Eventuras.Services
@@ -19,11 +21,11 @@ namespace Eventuras.Services
             services.AddScoped<IPaymentMethodService, PaymentMethodService>();
             services.AddScoped<IRegistrationService, RegistrationService>();
             services.AddScoped<IProductsService, ProductsService>();
-            services.AddScoped<ICertificatesService, CertificatesService>();
             services.AddScoped<IMessageLogService, MessageLogService>();
             services.AddRegistrationServices();
             services.AddNotificationServices();
             services.AddOrganizationServices();
+            services.AddCertificateServices();
             services.AddUserServices();
             services.AddAuthServices();
             services.AddEventServices();
@@ -31,6 +33,7 @@ namespace Eventuras.Services
             services.AddOrderServices();
             services.AddInvoicingServices();
             services.AddExternalSyncServices();
+            services.AddViewServices();
             return services;
         }
     }

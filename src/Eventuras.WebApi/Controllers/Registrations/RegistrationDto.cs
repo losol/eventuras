@@ -1,4 +1,5 @@
 using Eventuras.Domain;
+using Eventuras.WebApi.Controllers.Events;
 using Eventuras.WebApi.Controllers.Users;
 using Eventuras.WebApi.Models;
 

@@ -14,6 +14,7 @@ namespace Eventuras.Services.Notifications
 {
     internal class NotificationManagementService : INotificationManagementService
     {
+        private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
         private readonly IEventInfoAccessControlService _eventInfoAccessControlService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
@@ -21,12 +22,16 @@ namespace Eventuras.Services.Notifications
         private readonly ApplicationDbContext _context;
 
         public NotificationManagementService(
+            IEventInfoRetrievalService eventInfoRetrievalService,
             IEventInfoAccessControlService eventInfoAccessControlService,
             ICurrentOrganizationAccessorService currentOrganizationAccessorService,
             IRegistrationRetrievalService registrationRetrievalService,
             IHttpContextAccessor httpContextAccessor,
             ApplicationDbContext context)
         {
+            _eventInfoRetrievalService = eventInfoRetrievalService ?? throw
+                new ArgumentNullException(nameof(eventInfoRetrievalService));
+
             _eventInfoAccessControlService = eventInfoAccessControlService ?? throw
                 new ArgumentNullException(nameof(eventInfoAccessControlService));
 
@@ -76,8 +81,7 @@ namespace Eventuras.Services.Notifications
         {
             CheckSubjectAndBody(subject, body);
 
-            await _eventInfoAccessControlService
-                .CheckEventUpdateAccessAsync(eventId);
+            await CheckEventAccessAsync(eventId);
 
             var recipients = await GetRecipientsAsync(
                 NotificationType.Email,
@@ -128,8 +132,7 @@ namespace Eventuras.Services.Notifications
             Registration.RegistrationStatus[] registrationStatuses = null,
             Registration.RegistrationType[] registrationTypes = null)
         {
-            await _eventInfoAccessControlService
-                .CheckEventUpdateAccessAsync(eventId);
+            await CheckEventAccessAsync(eventId);
 
             var recipients = await GetRecipientsAsync(
                 NotificationType.Sms,
@@ -151,6 +154,15 @@ namespace Eventuras.Services.Notifications
                     ProductId = productId,
                     Recipients = recipients
                 }, leaveAttached: true);
+        }
+
+        private async Task CheckEventAccessAsync(int eventId)
+        {
+            var eventInfo = await _eventInfoRetrievalService
+                .GetEventInfoByIdAsync(eventId);
+
+            await _eventInfoAccessControlService
+                .CheckEventManageAccessAsync(eventInfo);
         }
 
         private static void CheckSubjectAndBody(string subject, string body)
@@ -232,8 +244,7 @@ namespace Eventuras.Services.Notifications
 
             if (notification.EventInfoId.HasValue)
             {
-                await _eventInfoAccessControlService
-                    .CheckEventUpdateAccessAsync(notification.EventInfoId.Value);
+                await CheckEventAccessAsync(notification.EventInfoId.Value);
             }
 
             await _context.UpdateAsync(notification);

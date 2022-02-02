@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 
-namespace Eventuras.Web.Services
+namespace Eventuras.Services.Views
 {
-    public interface IRenderService
+    public interface IViewRenderService
     {
         Task<string> RenderViewToStringAsync(string pageName, object model);
     }

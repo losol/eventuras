@@ -30,7 +30,7 @@ namespace Eventuras.Pages.Admin.Temp.Products
             }
 
             Product = await _context.Products
-                .Include(p => p.Eventinfo).SingleOrDefaultAsync(m => m.ProductId == id);
+                .Include(p => p.EventInfo).SingleOrDefaultAsync(m => m.ProductId == id);
 
             if (Product == null)
             {

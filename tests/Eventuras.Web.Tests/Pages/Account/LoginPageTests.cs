@@ -37,8 +37,8 @@ namespace Eventuras.Web.Tests.Pages.Account
                 .ExpectEmail()
                 .SentTo(user.Entity.Email)
                 .WithSubject(subject)
-                .ContainingText("/magic")
-                .ContainingText(textToCheck)
+                .ContainingHtml("/magic")
+                .ContainingHtml(textToCheck)
                 .Setup();
 
             var response = await client.PostAsync($"/Account/Login?handler=SendMagicLink", new Dictionary<string, string>

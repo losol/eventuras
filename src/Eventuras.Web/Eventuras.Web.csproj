@@ -15,16 +15,16 @@
     <PackageReference Include="AspNetCore.HealthChecks.UI" Version="5.0.1" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="5.0.1" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="5.0.1" />
-    <PackageReference Include="Losol.Communication.Email" Version="$(LosolCommunicationLibraryVersion)" /> 
-    <PackageReference Include="Losol.Communication.Email.Smtp" Version="$(LosolCommunicationLibraryVersion)" />
-    <PackageReference Include="Losol.Communication.Email.SendGrid" Version="$(LosolCommunicationLibraryVersion)" />
-    <PackageReference Include="Losol.Communication.Email.File" Version="$(LosolCommunicationLibraryVersion)" />
-    <PackageReference Include="Losol.Communication.Email.Mock" Version="$(LosolCommunicationLibraryVersion)" />
-    <PackageReference Include="Losol.Communication.HealthCheck.Email" Version="$(LosolCommunicationLibraryVersion)" />
-    <PackageReference Include="Losol.Communication.HealthCheck.Sms" Version="$(LosolCommunicationLibraryVersion)" />
-    <PackageReference Include="Losol.Communication.Sms" Version="$(LosolCommunicationLibraryVersion)" />
-    <PackageReference Include="Losol.Communication.Sms.Twilio" Version="$(LosolCommunicationLibraryVersion)" />
-    <PackageReference Include="Losol.Communication.Sms.Mock" Version="$(LosolCommunicationLibraryVersion)" />
+    <PackageReference Include="Losol.Communication.Email" Version="0.6.0" /> 
+    <PackageReference Include="Losol.Communication.Email.Smtp" Version="0.6.0" />
+    <PackageReference Include="Losol.Communication.Email.SendGrid" Version="0.6.0" />
+    <PackageReference Include="Losol.Communication.Email.File" Version="0.6.0" />
+    <PackageReference Include="Losol.Communication.Email.Mock" Version="0.6.0" />
+    <PackageReference Include="Losol.Communication.HealthCheck.Email" Version="0.6.0" />
+    <PackageReference Include="Losol.Communication.HealthCheck.Sms" Version="0.6.0" />
+    <PackageReference Include="Losol.Communication.Sms" Version="0.6.0" />
+    <PackageReference Include="Losol.Communication.Sms.Twilio" Version="0.6.0" />
+    <PackageReference Include="Losol.Communication.Sms.Mock" Version="0.6.0" />
     <PackageReference Include="Mapster" Version="7.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="5.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.9" />
@@ -59,7 +59,10 @@
 
   <ItemGroup>
     <Folder Include="Pages\Admin\Products\" />
-    <Folder Include="Views\Shared\Templates\Certificates\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Shared\Templates\Certificate\Preview.cshtml" />
   </ItemGroup>
 
 </Project>

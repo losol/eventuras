@@ -1,0 +1,57 @@
+type: object
+title: Certificates list with paging.
+required:
+  - page
+  - count
+  - total
+  - pages
+  - data
+properties:
+  page:
+    type: integer
+    format: int32
+    description: Page number.
+  count:
+    type: integer
+    format: int32
+    description: Page size.
+  total:
+    type: integer
+    format: int32
+    description: Total items.
+  pages:
+    type: integer
+    format: int32
+    description: Total pages.
+  data:
+    type: array
+    items:
+      $ref: './CertificateDto.yaml'
+example:
+  page: 1
+  size: 10
+  total: 2
+  pages: 1
+  data:
+    - certificateId: 12380
+      certificateGuid: 7383cefc-7e52-4e69-a044-38356885dd57
+      title: Demo Event
+      description: Some certificate description.
+      comment: Some certificate comment.
+      recipientName: John Doe
+      evidenceDescription: Some evidence description.
+      issuedInCity: Oslo
+      issuingDate: 2021-01-01
+      issuerOrganizationName: Demo Org
+      issuerPersonName: Demo Issuer
+    - certificateId: 12345
+      certificateGuid: 51009d9c-41d9-494b-9dd6-911b4fa3970f
+      title: Demo Event 2
+      description: Some certificate description.
+      recipientName: John Doe
+      evidenceDescription: Some evidence description.
+      issuedInCity: Oslo
+      issuingDate: 2021-02-02
+      issuerOrganizationName: Demo Org
+      issuerPersonName: Demo Issuer
+

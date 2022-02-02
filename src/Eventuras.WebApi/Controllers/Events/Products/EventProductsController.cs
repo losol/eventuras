@@ -18,16 +18,21 @@ namespace Eventuras.WebApi.Controllers.Events.Products
     public class EventProductsController : ControllerBase
     {
         private readonly IProductRetrievalService _productRetrievalService;
+        private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
         private readonly IEventProductsManagementService _eventProductsManagementService;
         private readonly IEventInfoAccessControlService _eventInfoAccessControlService;
 
         public EventProductsController(
             IProductRetrievalService productRetrievalService,
+            IEventInfoRetrievalService eventInfoRetrievalService,
             IEventProductsManagementService eventProductsManagementService,
             IEventInfoAccessControlService eventInfoAccessControlService)
         {
             _productRetrievalService = productRetrievalService ?? throw
                 new ArgumentNullException(nameof(productRetrievalService));
+            
+            _eventInfoRetrievalService = eventInfoRetrievalService ?? throw
+                new ArgumentNullException(nameof(eventInfoRetrievalService));
 
             _eventProductsManagementService = eventProductsManagementService ?? throw
                 new ArgumentNullException(nameof(eventProductsManagementService));
@@ -42,7 +47,8 @@ namespace Eventuras.WebApi.Controllers.Events.Products
         public async Task<ProductDto[]> List(int eventId, [FromQuery] EventProductsQueryDto query,
             CancellationToken token)
         {
-            await _eventInfoAccessControlService.CheckEventReadAccessAsync(eventId, token);
+            var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventId, token);
+            await _eventInfoAccessControlService.CheckEventReadAccessAsync(eventInfo, token);
 
             var products = await _productRetrievalService
                 .ListProductsAsync(new ProductListRequest(eventId)

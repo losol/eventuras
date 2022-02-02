@@ -35,7 +35,7 @@
                     @Html.DisplayNameFor(model => model.Product[0].Inventory)
                 </th>
             <th>
-                @Html.DisplayNameFor(model => model.Product[0].Eventinfo)
+                @Html.DisplayNameFor(model => model.Product[0].EventInfo)
             </th>
             <th></th>
         </tr>
@@ -65,7 +65,7 @@
                 @Html.DisplayFor(modelItem => item.Inventory)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Eventinfo.Slug)
+                @Html.DisplayFor(modelItem => item.EventInfo.Slug)
             </td>
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.ProductId">Edit</a> |

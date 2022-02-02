@@ -11,14 +11,19 @@ namespace Eventuras.Services.Events
     internal class EventProductsManagementService : IEventProductsManagementService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
         private readonly IEventInfoAccessControlService _accessControlService;
 
         public EventProductsManagementService(
             ApplicationDbContext context,
+            IEventInfoRetrievalService eventInfoRetrievalService,
             IEventInfoAccessControlService accessControlService)
         {
             _context = context ?? throw
                 new ArgumentNullException(nameof(context));
+            
+            _eventInfoRetrievalService = eventInfoRetrievalService ?? throw 
+                new ArgumentNullException(nameof(eventInfoRetrievalService));
 
             _accessControlService = accessControlService ?? throw
                 new ArgumentNullException(nameof(accessControlService));
@@ -31,7 +36,7 @@ namespace Eventuras.Services.Events
                 throw new ArgumentNullException(paramName: nameof(products));
             }
 
-            await _accessControlService.CheckEventUpdateAccessAsync(eventId);
+            await CheckEventAccessAsync(eventId);
 
             var originalProducts = await _context.Products
                 .Where(p => p.EventInfoId == eventId)
@@ -87,7 +92,7 @@ namespace Eventuras.Services.Events
 
             await _context.SaveChangesAsync();
         }
-
+        
         public async Task AddProductAsync(Product product)
         {
             if (product == null)
@@ -95,7 +100,7 @@ namespace Eventuras.Services.Events
                 throw new ArgumentNullException(nameof(product));
             }
 
-            await _accessControlService.CheckEventUpdateAccessAsync(product.EventInfoId);
+            await CheckEventAccessAsync(product.EventInfoId);
 
             await _context.CreateAsync(product);
         }
@@ -107,7 +112,7 @@ namespace Eventuras.Services.Events
                 throw new ArgumentNullException(nameof(product));
             }
 
-            await _accessControlService.CheckEventUpdateAccessAsync(product.EventInfoId);
+            await CheckEventAccessAsync(product.EventInfoId);
 
             await _context.UpdateAsync(product);
         }
@@ -119,11 +124,17 @@ namespace Eventuras.Services.Events
                 throw new ArgumentNullException(nameof(product));
             }
 
-            await _accessControlService.CheckEventUpdateAccessAsync(product.EventInfoId);
+            await CheckEventAccessAsync(product.EventInfoId);
 
             product.Archived = true;
 
             await _context.UpdateAsync(product);
+        }
+        
+        private async Task CheckEventAccessAsync(int eventId)
+        {
+            var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventId);
+            await _accessControlService.CheckEventManageAccessAsync(eventInfo);
         }
     }
 }

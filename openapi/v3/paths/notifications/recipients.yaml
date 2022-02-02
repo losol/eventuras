@@ -19,9 +19,7 @@ get:
       content:
         application/json:
           schema:
-            type: array
-            items:
-              $ref: '../../schemas/notifications/NotificationRecipientsPagedList.yaml'
+            $ref: '../../schemas/notifications/NotificationRecipientsPagedList.yaml'
     '400':
       $ref: 'eventuras-api.v3.yaml#/components/responses/InvalidRequestError'
     '404':

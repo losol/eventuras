@@ -1,3 +1,7 @@
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.Auth;
@@ -5,10 +9,6 @@ using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Eventuras.Services.Events
 {
@@ -37,17 +37,10 @@ namespace Eventuras.Services.Events
             EventInfoRetrievalOptions options,
             CancellationToken cancellationToken)
         {
-            var query = _context.EventInfos
-                .UseOptions(options ?? new EventInfoRetrievalOptions())
-                .Where(e => e.EventInfoId == id);
-
-            var @event = await query.SingleOrDefaultAsync(cancellationToken);
-            if (@event == null)
-            {
-                throw new NotFoundException($"Event {id} not found");
-            }
-
-            return @event;
+            return await _context.EventInfos
+                       .UseOptions(options ?? new EventInfoRetrievalOptions())
+                       .FirstOrDefaultAsync(e => e.EventInfoId == id, cancellationToken)
+                   ?? throw new NotFoundException($"Event {id} not found");
         }
 
         public async Task<Paging<EventInfo>> ListEventsAsync(

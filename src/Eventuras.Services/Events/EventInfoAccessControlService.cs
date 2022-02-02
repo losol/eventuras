@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Eventuras.Domain;
 using Eventuras.Services.Auth;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
@@ -30,16 +31,24 @@ namespace Eventuras.Services.Events
                 new ArgumentNullException(nameof(httpContextAccessor));
         }
 
-        public async Task CheckEventReadAccessAsync(int eventInfoId, CancellationToken token)
+        public Task CheckEventReadAccessAsync(EventInfo eventInfo, CancellationToken token)
         {
-            // to check event exists
-            await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventInfoId, token);
+            if (eventInfo == null)
+            {
+                throw new ArgumentNullException(nameof(eventInfo));
+            }
 
             // For now, anyone can read any event information.
+            return Task.CompletedTask;
         }
 
-        public async Task CheckEventUpdateAccessAsync(int eventInfoId, CancellationToken token)
+        public async Task CheckEventManageAccessAsync(EventInfo eventInfo, CancellationToken token)
         {
+            if (eventInfo == null)
+            {
+                throw new ArgumentNullException(nameof(eventInfo));
+            }
+
             var user = _httpContextAccessor.HttpContext.User;
             if (user.IsPowerAdmin())
             {
@@ -49,10 +58,9 @@ namespace Eventuras.Services.Events
             if (!user.IsAdmin())
             {
                 throw new NotAccessibleException(
-                    $"Event {eventInfoId} is not accessible for update by user {user.GetUserId()}");
+                    $"Event {eventInfo.EventInfoId} is not accessible for update by user {user.GetUserId()}");
             }
 
-            var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventInfoId, token);
             var org = await _currentOrganizationAccessorService
                 .RequireCurrentOrganizationAsync(new OrganizationRetrievalOptions
                 {
@@ -62,13 +70,13 @@ namespace Eventuras.Services.Events
             if (eventInfo.OrganizationId != org.OrganizationId)
             {
                 throw new NotAccessibleException(
-                    $"Event {eventInfoId} is not accessible from organization {org.OrganizationId}");
+                    $"Event {eventInfo.EventInfoId} is not accessible from organization {org.OrganizationId}");
             }
 
             if (org.Members.All(m => m.UserId != user.GetUserId() || !m.HasRole(Roles.Admin)))
             {
                 throw new NotAccessibleException(
-                    $"Event {eventInfoId} is not accessible for update by user {user.GetUserId()}");
+                    $"Event {eventInfo.EventInfoId} is not accessible for update by user {user.GetUserId()}");
             }
         }
     }

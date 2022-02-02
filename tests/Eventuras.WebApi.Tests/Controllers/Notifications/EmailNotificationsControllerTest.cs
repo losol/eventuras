@@ -77,6 +77,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
         public async Task Should_Not_Send_Any_Email_Notification_If_No_Registrants_Found()
         {
             using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync(); 
 
             var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
             var response = await client.PostAsync("/v3/notifications/email", new
@@ -85,7 +86,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                 bodyMarkdown = "Test email",
                 eventParticipants = new
                 {
-                    eventId = 10001
+                    eventId = evt.Entity.EventInfoId
                 }
             });
 

@@ -1,6 +1,4 @@
-@using Eventuras.Web.ViewModels
-@using System.Globalization;
-@model CertificateVM
+@model Eventuras.Services.Certificates.CertificateViewModel
 @{
     Layout = null;
 }
@@ -167,7 +165,7 @@
 
 
         <div class="group">
-          <div class="line">@Model.IssuedInCity @Model.IssuingDate</div>
+          <div class="line">@Model.IssuedInCity @Model.IssuingDate.ToString("dd.MMM.yyyy")</div>
 
           @if(!string.IsNullOrEmpty(Model.IssuerPersonSignatureImageBase64)) {
             <div class="center">

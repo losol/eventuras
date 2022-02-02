@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Eventuras.Services.Email;
 using static Eventuras.Domain.Registration;
 
 namespace Eventuras.Web.Controllers.Api.V0
@@ -25,18 +26,13 @@ namespace Eventuras.Web.Controllers.Api.V0
 
 
         [HttpPost("order_emails/{eventId}")]
-        public async Task<IActionResult> OrderEmails([FromRoute] int eventId, [FromServices] StandardEmailSender emailSender, [FromServices] IRegistrationService registrationService, [FromBody] EmailVm vm)
+        public async Task<IActionResult> OrderEmails([FromRoute] int eventId, [FromServices] IApplicationEmailSender emailSender, [FromServices] IRegistrationService registrationService, [FromBody] EmailVm vm)
         {
             var registrations = await registrationService.GetRegistrationsWithOrders(eventId);
             var emailTasks = registrations.Select(r =>
             {
-                var message = new EmailMessage
-                {
-                    Name = r.ParticipantName,
-                    Email = r.User.Email,
-                    Subject = vm.Subject,
-                    Message = vm.Message
-                };
+                var message = vm.Message;
+
                 if (r.HasOrder)
                 {
                     StringBuilder builder = new StringBuilder();
@@ -49,9 +45,13 @@ namespace Eventuras.Web.Controllers.Api.V0
                         )
                     );
 
-                    message.Message += builder.ToString();
+                    message += builder.ToString();
                 }
-                return emailSender.SendStandardEmailAsync(message);
+
+                return emailSender
+                    .SendStandardEmailAsync(
+                        $"{r.ParticipantName} <{r.User.Email}>",
+                        vm.Subject, message);
             });
             await Task.WhenAll(emailTasks);
             return Ok();
