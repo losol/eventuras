@@ -17,7 +17,7 @@
         "port": 5432,
         "database": "eventuras",
         "username": "eventuras",
-        "password": "Str0ng!Pasword"
+        "password": "Str0ng!PaSsw0rd"
       }
     ]
   },
