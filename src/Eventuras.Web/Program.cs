@@ -35,7 +35,7 @@ namespace Eventuras
                     var config = new ConfigurationBuilder()
                         .SetBasePath(Directory.GetCurrentDirectory())
                         .AddJsonFile("appsettings.json", optional: false)
-                        .AddUserSecrets<Startup>()
+                        .AddUserSecrets<Startup>(true)
                         .AddEnvironmentVariables()
                         .Build();
 

@@ -25,14 +25,22 @@ namespace Eventuras.TestAbstractions
 
         private readonly DbContext _context;
 
-        public DisposableEntity(T entity, DbContext context)
+        private readonly IDisposable[] _disposables;
+
+        public DisposableEntity(T entity, DbContext context, params IDisposable[] disposables)
         {
             Entity = entity;
             _context = context;
+            _disposables = disposables;
         }
 
         public void Dispose()
         {
+            foreach (var disposable in _disposables)
+            {
+                disposable.Dispose();
+            }
+            
             try
             {
                 _context.Remove(Entity);

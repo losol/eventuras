@@ -98,6 +98,7 @@ namespace Eventuras.TestAbstractions
                     Published = true,
                     OnDemand = true,
                     City = "Bodø",
+                    Slug = "bodo"
                 },
 
 
@@ -108,6 +109,7 @@ namespace Eventuras.TestAbstractions
                     Featured = false,
                     Published = false,
                     OnDemand = false,
+                    Slug = "unpublished"
                 },
 
             };
