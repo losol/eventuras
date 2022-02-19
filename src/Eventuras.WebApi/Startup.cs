@@ -75,7 +75,7 @@ namespace Eventuras.WebApi
 
             services.AddRazorPages();
             services.ConfigureEF(Configuration, _env);
-            services.ConfigureDbInitializationStrategy(Configuration, _env);
+            services.ConfigureDbInitializationStrategy(Configuration);
             services.ConfigureAuthorizationPolicies(Configuration);
             services.AddEmailServices();
             services.AddSmsServices();

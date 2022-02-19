@@ -15,17 +15,7 @@ namespace Eventuras
         public static async Task Main(string[] args)
         {
             // Build the application host
-            var host = CreateHostBuilder(args).Build();
-
-            // Get a dbinitializer and use it to seed the database
-            using (var scope = host.Services.CreateScope())
-            {
-                var initializer = scope.ServiceProvider.GetService<IDbInitializer>();
-                await initializer.SeedAsync();
-            }
-
-            // Run the application
-            host.Run();
+            CreateHostBuilder(args).Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

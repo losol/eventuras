@@ -67,7 +67,7 @@ namespace Eventuras
 
             services.ConfigureEF(Configuration, HostingEnvironment);
             services.ConfigureIdentity();
-            services.ConfigureDbInitializationStrategy(Configuration, HostingEnvironment);
+            services.ConfigureDbInitializationStrategy(Configuration);
             services.ConfigureAuthorizationPolicies();
             services.ConfigureMvc();
 

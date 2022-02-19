@@ -83,22 +83,10 @@ namespace Eventuras.WebApi.Extensions
         }
 
         public static void ConfigureDbInitializationStrategy(this IServiceCollection services,
-            IConfiguration config,
-            IWebHostEnvironment hostingEnv)
+            IConfiguration config)
         {
             services.Configure<DbInitializerOptions>(config);
-            switch (hostingEnv)
-            {
-                case var env when env.IsProduction():
-                    services.AddScoped<IDbInitializer, ProductionDbInitializer>();
-                    break;
-                case var env when env.IsDevelopment():
-                    services.AddScoped<IDbInitializer, DevelopmentDbInitializer>();
-                    break;
-                default:
-                    services.AddScoped<IDbInitializer, DefaultDbInitializer>();
-                    break;
-            }
+            services.AddScoped<IDbInitializer, DbInitializer>();
         }
 
         public static void AddEmailServices(this IServiceCollection services)
