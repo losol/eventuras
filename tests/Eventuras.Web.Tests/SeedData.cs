@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using Eventuras.Domain;
 using static Eventuras.Domain.EventInfo;
 
-namespace Eventuras.TestAbstractions
+namespace Eventuras.Web.Tests
 {
+    [Obsolete("Tests that rely on this data should create")]
     public class SeedData
     {
         public static readonly EventInfo[] Events = {

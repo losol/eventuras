@@ -66,16 +66,18 @@ namespace Eventuras.WebApi.Tests
                         options.UseInMemoryDatabase("eventuras-web-api-tests");
                     });
 
-                    services.AddScoped<IDbInitializer, TestDbInitializer>();
-
                     // Build the service provider.
                     var sp = services.BuildServiceProvider();
 
                     // Create a scope to obtain a reference to the database
                     // context (ApplicationDbContext).
                     using var scope = sp.CreateScope();
+
+                    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                    db.Database.EnsureCreatedAsync().Wait();
+
                     var initializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-                    initializer.SeedAsync(createSuperAdmin: false).Wait();
+                    initializer.SeedAsync(createSuperAdmin: false, false).Wait();
                 });
 
             builder.ConfigureTestServices(services =>
