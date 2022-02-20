@@ -6,18 +6,19 @@ using Microsoft.Extensions.Options;
 
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using static Eventuras.Domain.PaymentMethod;
 
 namespace Eventuras.Services.DbInitializers
 {
-    public abstract class BaseDbInitializer : IDbInitializer
+    public class DbInitializer : IDbInitializer
     {
         protected readonly ApplicationDbContext _db;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly DbInitializerOptions _config;
 
-        public BaseDbInitializer(ApplicationDbContext db,
+        public DbInitializer(ApplicationDbContext db,
                                  RoleManager<IdentityRole> roleManager,
                                  UserManager<ApplicationUser> userManager,
                                  IOptions<DbInitializerOptions> config)
@@ -28,8 +29,15 @@ namespace Eventuras.Services.DbInitializers
             _userManager = userManager;
         }
 
-        public virtual async Task SeedAsync(bool createSuperUser)
+        public virtual async Task SeedAsync(
+            bool createSuperUser,
+            bool runMigrations)
         {
+            if (runMigrations)
+            {
+                await _db.Database.MigrateAsync();
+            }
+            
             // Add administrator role if it does not exist
             string[] roleNames = { Roles.Admin, Roles.SuperAdmin, Roles.SystemAdmin };
             IdentityResult roleResult;
