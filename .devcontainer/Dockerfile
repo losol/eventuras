@@ -1,9 +1,12 @@
-ARG VARIANT="5.0"
-FROM mcr.microsoft.com/vscode/devcontainers/dotnet:0-${VARIANT}-focal
+FROM mcr.microsoft.com/vscode/devcontainers/dotnet:6.0
 
 # Node.js version: none, lts, 16, 14, 12, 10
 ARG NODE_VERSION="16"
 RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1"; fi
+
+# Add dotnet ef tool
+RUN dotnet tool install --global dotnet-ef
+ENV PATH $PATH:/root/.dotnet/tools
 
 # Update args in docker-compose.yaml to set the UID/GID of the "vscode" user.
 #ARG USER_UID=1000
