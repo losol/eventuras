@@ -58,7 +58,7 @@ namespace Eventuras.Domain
                 throw new ArgumentNullException(nameof(recipientIdentifier));
             }
 
-            Created = DateTime.Now;
+            Created = DateTime.UtcNow;
 
             if (notificationType == NotificationType.Email)
             {

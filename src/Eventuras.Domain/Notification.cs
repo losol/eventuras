@@ -39,7 +39,7 @@ namespace Eventuras.Domain
             set
             {
                 _status = value;
-                StatusUpdated = DateTime.Now;
+                StatusUpdated = DateTime.UtcNow;
             }
         }
 
@@ -67,7 +67,7 @@ namespace Eventuras.Domain
             }
 
             Message = message;
-            Created = DateTime.Now;
+            Created = DateTime.UtcNow;
         }
     }
 

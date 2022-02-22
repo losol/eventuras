@@ -97,7 +97,7 @@ namespace Eventuras.Services.Events
                 {
                     EventInfo.EventInfoStatus.Draft
                 },
-                StartDateAfter = DateTime.Now
+                StartDateAfter = DateTime.UtcNow
             };
         }
 
@@ -111,7 +111,7 @@ namespace Eventuras.Services.Events
                     EventInfo.EventInfoStatus.Cancelled,
                     EventInfo.EventInfoStatus.Draft
                 },
-                StartDateAfter = DateTime.Now
+                StartDateAfter = DateTime.UtcNow
             };
         }
 

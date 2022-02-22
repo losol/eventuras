@@ -72,7 +72,7 @@ namespace Eventuras.Services.Notifications
                 {
                     await SendToRecipientAsync(notification, recipient, message);
 
-                    recipient.Sent = DateTime.Now;
+                    recipient.Sent = DateTime.UtcNow;
 
                     await _notificationManagementService
                         .UpdateNotificationRecipientAsync(recipient);

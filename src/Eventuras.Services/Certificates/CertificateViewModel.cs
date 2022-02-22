@@ -29,7 +29,7 @@ namespace Eventuras.Services.Certificates
             RecipientName = "Gerhard Henrik Armauer Hansen",
             Comment = "Eventuell tekst som er skrevet som kommentar på deltakers registrering kommer her",
             CertificateGuid = Guid.NewGuid(),
-            IssuedDate = DateTime.Now
+            IssuedDate = DateTime.UtcNow
         }))
         {
         }

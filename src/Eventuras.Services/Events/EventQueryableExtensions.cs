@@ -46,7 +46,7 @@ namespace Eventuras.Services.Events
 
             if (filter.PastEventsOnly)
             {
-                query = query.Where(e => e.DateStart <= DateTime.Now || !e.DateStart.HasValue);
+                query = query.Where(e => e.DateStart <= DateTime.UtcNow || !e.DateStart.HasValue);
             }
 
             if (filter.TodaysEventsOnly)
