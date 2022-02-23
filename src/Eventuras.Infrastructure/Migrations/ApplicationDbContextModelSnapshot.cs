@@ -17,7 +17,7 @@ namespace Eventuras.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("ProductVersion", "5.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -122,7 +122,7 @@ namespace Eventuras.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("IssuedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("IssuedInCity")
                         .HasColumnType("text");
@@ -163,7 +163,7 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.HasIndex("RecipientUserId");
 
-                    b.ToTable("Certificates");
+                    b.ToTable("Certificates", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.EventCollection", b =>
@@ -203,7 +203,7 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.HasIndex("OrganizationId");
 
-                    b.ToTable("EventCollections");
+                    b.ToTable("EventCollections", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.EventCollectionMapping", b =>
@@ -218,7 +218,7 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("EventCollectionMappings");
+                    b.ToTable("EventCollectionMappings", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.EventInfo", b =>
@@ -245,10 +245,10 @@ namespace Eventuras.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("DateEnd")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("DateStart")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .HasMaxLength(300)
@@ -276,10 +276,10 @@ namespace Eventuras.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("LastCancellationDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("LastRegistrationDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Location")
                         .HasColumnType("text");
@@ -336,7 +336,7 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.HasIndex("OrganizerUserId");
 
-                    b.ToTable("EventInfos");
+                    b.ToTable("EventInfos", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.ExternalAccount", b =>
@@ -374,7 +374,7 @@ namespace Eventuras.Infrastructure.Migrations
                     b.HasIndex("ExternalServiceName", "ExternalAccountId")
                         .IsUnique();
 
-                    b.ToTable("ExternalAccounts");
+                    b.ToTable("ExternalAccounts", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.ExternalEvent", b =>
@@ -401,7 +401,7 @@ namespace Eventuras.Infrastructure.Migrations
                     b.HasIndex("EventInfoId", "ExternalServiceName", "ExternalEventId")
                         .IsUnique();
 
-                    b.ToTable("ExternalEvents");
+                    b.ToTable("ExternalEvents", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.ExternalRegistration", b =>
@@ -433,7 +433,7 @@ namespace Eventuras.Infrastructure.Migrations
                     b.HasIndex("ExternalAccountId", "ExternalEventId")
                         .IsUnique();
 
-                    b.ToTable("ExternalRegistrations");
+                    b.ToTable("ExternalRegistrations", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.Invoice", b =>
@@ -452,7 +452,7 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.HasKey("InvoiceId");
 
-                    b.ToTable("Invoices");
+                    b.ToTable("Invoices", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.MessageLog", b =>
@@ -482,13 +482,13 @@ namespace Eventuras.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("MessageLogId");
 
                     b.HasIndex("EventInfoId");
 
-                    b.ToTable("MessageLogs");
+                    b.ToTable("MessageLogs", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.Notification", b =>
@@ -500,7 +500,7 @@ namespace Eventuras.Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("NotificationId"));
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("CreatedByUserId")
                         .IsRequired()
@@ -523,7 +523,7 @@ namespace Eventuras.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StatusUpdated")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Type")
                         .HasColumnType("integer");
@@ -538,7 +538,7 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
 
                     b.HasDiscriminator<int>("Type");
                 });
@@ -552,7 +552,7 @@ namespace Eventuras.Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RecipientId"));
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Errors")
                         .HasColumnType("text");
@@ -561,7 +561,6 @@ namespace Eventuras.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("RecipientIdentifier")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("RecipientName")
@@ -574,7 +573,7 @@ namespace Eventuras.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("Sent")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("RecipientId");
 
@@ -584,7 +583,7 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.HasIndex("RegistrationId");
 
-                    b.ToTable("NotificationRecipients");
+                    b.ToTable("NotificationRecipients", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.NotificationStatistics", b =>
@@ -601,9 +600,6 @@ namespace Eventuras.Infrastructure.Migrations
                     b.Property<int>("NotificationId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("RecipientsTotal")
-                        .HasColumnType("integer");
-
                     b.Property<int>("SentTotal")
                         .HasColumnType("integer");
 
@@ -612,7 +608,7 @@ namespace Eventuras.Infrastructure.Migrations
                     b.HasIndex("NotificationId")
                         .IsUnique();
 
-                    b.ToTable("NotificationStatistics");
+                    b.ToTable("NotificationStatistics", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.Order", b =>
@@ -648,7 +644,7 @@ namespace Eventuras.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("OrderTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<bool>("Paid")
                         .HasColumnType("boolean");
@@ -673,7 +669,7 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.OrderLine", b =>
@@ -735,7 +731,7 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.HasIndex("RefundOrderLineId");
 
-                    b.ToTable("OrderLines");
+                    b.ToTable("OrderLines", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.Organization", b =>
@@ -787,7 +783,7 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.HasKey("OrganizationId");
 
-                    b.ToTable("Organizations");
+                    b.ToTable("Organizations", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.OrganizationHostname", b =>
@@ -808,7 +804,7 @@ namespace Eventuras.Infrastructure.Migrations
                         .IsUnique()
                         .HasFilter("\"Active\" = true");
 
-                    b.ToTable("OrganizationHostnames");
+                    b.ToTable("OrganizationHostnames", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.OrganizationMember", b =>
@@ -832,7 +828,7 @@ namespace Eventuras.Infrastructure.Migrations
                     b.HasIndex("OrganizationId", "UserId")
                         .IsUnique();
 
-                    b.ToTable("OrganizationMembers");
+                    b.ToTable("OrganizationMembers", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.OrganizationMemberRole", b =>
@@ -845,7 +841,7 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.HasKey("OrganizationMemberId", "Role");
 
-                    b.ToTable("OrganizationMemberRoles");
+                    b.ToTable("OrganizationMemberRoles", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.OrganizationSetting", b =>
@@ -861,7 +857,7 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.HasKey("OrganizationId", "Name");
 
-                    b.ToTable("OrganizationSettings");
+                    b.ToTable("OrganizationSettings", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.PaymentMethod", b =>
@@ -886,7 +882,7 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.HasKey("Provider");
 
-                    b.ToTable("PaymentMethods");
+                    b.ToTable("PaymentMethods", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.Product", b =>
@@ -942,7 +938,7 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.HasIndex("EventInfoId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.ProductVariant", b =>
@@ -985,7 +981,7 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductVariants");
+                    b.ToTable("ProductVariants", (string)null);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.Registration", b =>
@@ -1060,7 +1056,7 @@ namespace Eventuras.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("RegistrationTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -1085,7 +1081,7 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Registrations");
+                    b.ToTable("Registrations", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -1227,8 +1223,6 @@ namespace Eventuras.Infrastructure.Migrations
                     b.Property<string>("Subject")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.HasDiscriminator().HasValue(1);
                 });
 
             modelBuilder.Entity("Eventuras.Domain.SmsNotification", b =>
@@ -1543,13 +1537,13 @@ namespace Eventuras.Infrastructure.Migrations
 
             modelBuilder.Entity("Eventuras.Domain.Product", b =>
                 {
-                    b.HasOne("Eventuras.Domain.EventInfo", "EventInfo")
+                    b.HasOne("Eventuras.Domain.EventInfo", "Eventinfo")
                         .WithMany("Products")
                         .HasForeignKey("EventInfoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("EventInfo");
+                    b.Navigation("Eventinfo");
                 });
 
             modelBuilder.Entity("Eventuras.Domain.ProductVariant", b =>
