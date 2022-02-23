@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Eventuras.Services.DbInitializers;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,8 @@ namespace Eventuras.WebApi
     {
         public static async Task Main(string[] args)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+            
             var host = CreateHostBuilder(args).Build();
             
             // Get a dbinitializer and use it to seed the database
