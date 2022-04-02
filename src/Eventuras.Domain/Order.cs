@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using NodaTime;
 using static Eventuras.Domain.PaymentMethod;
 
 namespace Eventuras.Domain
@@ -90,7 +91,7 @@ namespace Eventuras.Domain
         public string CustomerInvoiceReference { get; set; }
         public PaymentProvider PaymentMethod { get; set; }
 
-        public DateTime OrderTime { get; set; } = DateTime.UtcNow;
+        public Instant OrderTime { get; set; } = SystemClock.Instance.Now();
 
         // Comments are from the user registered
         public string Comments { get; set; }

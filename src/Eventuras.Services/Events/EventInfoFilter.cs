@@ -1,5 +1,6 @@
 using System;
 using Eventuras.Domain;
+using NodaTime;
 
 namespace Eventuras.Services.Events
 {
@@ -23,21 +24,21 @@ namespace Eventuras.Services.Events
 
         public bool IncludeArchived { get; set; }
 
-        public DateTime? StartDate { get; set; }
+        public LocalDate? StartDate { get; set; }
 
-        public DateTime? EndDate { get; set; }
+        public LocalDate? EndDate { get; set; }
 
-        public DateTime? StartDateBefore { get; set; }
+        public LocalDate? StartDateBefore { get; set; }
 
-        public DateTime? StartDateAfter { get; set; }
+        public LocalDate? StartDateAfter { get; set; }
 
-        public DateTime? EndDateIsNullOrBefore { get; set; }
+        public LocalDate? EndDateIsNullOrBefore { get; set; }
 
-        public DateTime? EndDateIsNullOrAfter { get; set; }
+        public LocalDate? EndDateIsNullOrAfter { get; set; }
 
-        public DateTime? EndDateBefore { get; set; }
+        public LocalDate? EndDateBefore { get; set; }
 
-        public DateTime? EndDateAfter { get; set; }
+        public LocalDate? EndDateAfter { get; set; }
 
         public int[] CollectionIds { get; set; }
 
@@ -97,7 +98,7 @@ namespace Eventuras.Services.Events
                 {
                     EventInfo.EventInfoStatus.Draft
                 },
-                StartDateAfter = DateTime.Now
+                StartDateAfter = SystemClock.Instance.Today()
             };
         }
 
@@ -111,7 +112,7 @@ namespace Eventuras.Services.Events
                     EventInfo.EventInfoStatus.Cancelled,
                     EventInfo.EventInfoStatus.Draft
                 },
-                StartDateAfter = DateTime.Now
+                StartDateAfter = SystemClock.Instance.Today()
             };
         }
 

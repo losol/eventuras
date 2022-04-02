@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Eventuras.Domain;
 using Newtonsoft.Json.Linq;
+using NodaTime;
 using Xunit;
 
 namespace Eventuras.Web.Tests
@@ -77,8 +78,8 @@ namespace Eventuras.Web.Tests
             Assert.Equal(e.Slug, token.Value<string>("slug"));
             Assert.Equal(e.Description, token.Value<string>("description"));
             Assert.Equal(e.Featured, token.Value<bool>("featured"));
-            Assert.Equal(e.DateStart, token.Value<DateTime?>("startDate"));
-            Assert.Equal(e.DateEnd, token.Value<DateTime?>("endDate"));
+            Assert.Equal(e.DateStart, token.Value<LocalDate?>("startDate"));
+            Assert.Equal(e.DateEnd, token.Value<LocalDate?>("endDate"));
         }
 
         public static void CheckEventCollection(this JToken token, EventCollection c)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.ConstrainedExecution;
+using NodaTime;
 
 namespace Eventuras.Domain
 {
@@ -93,19 +94,19 @@ namespace Eventuras.Domain
 
         [Display(Name = "Dato start")]
         [DataType(DataType.Date)]
-        public DateTime? DateStart { get; set; }
+        public LocalDate? DateStart { get; set; }
 
         [Display(Name = "Dato slutt")]
         [DataType(DataType.Date)]
-        public DateTime? DateEnd { get; set; }
+        public LocalDate? DateEnd { get; set; }
 
         [Display(Name = "Påmeldingsfrist", Description = "Frist for påmelding til arrangementet", GroupName = "Frister")]
         [DataType(DataType.Date)]
-        public DateTime? LastRegistrationDate { get; set; }
+        public LocalDate? LastRegistrationDate { get; set; }
 
         [Display(Name = "Avmeldingsfrist", Description = "Frist for å melde seg av arrangementet", GroupName = "Frister")]
         [DataType(DataType.Date)]
-        public DateTime? LastCancellationDate { get; set; }
+        public LocalDate? LastCancellationDate { get; set; }
 
         [Display(Name = "Antall deltakere", Description = "Maksimalt antall deltakere")]
         public int MaxParticipants { get; set; } = 0; //maks antall deltakere

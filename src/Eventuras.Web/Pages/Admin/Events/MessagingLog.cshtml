@@ -21,7 +21,7 @@
 <div class="container">
     @foreach (var message in Model.Messages) {
         <h3>@message.MessageType &nbsp;&nbsp;
-        <small><i class="fa fa-clock-o" aria-hidden="true"></i> @message.TimeStamp.ToLocalTime()</small></h3>
+        <small><i class="fa fa-clock-o" aria-hidden="true"></i> @message.TimeStamp</small></h3>
         <p>Til: @message.Recipients.ToString()</p>
         <p>Innhold: @message.MessageContent</p>
         <p>Resultat: @message.Result</p>

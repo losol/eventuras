@@ -168,7 +168,7 @@ namespace Eventuras.Web.Tests.Controllers.Api.V0
             Assert.Equal(user.Entity.Email, info.CustomerEmail);
             Assert.Equal(user.Entity.Name, info.CustomerName);
             Assert.Equal(order.Entity.OrderId.ToString(), info.OrderId);
-            Assert.Equal(order.Entity.OrderTime, info.OrderDate);
+            Assert.Equal(order.Entity.OrderTime.ToLocalDate(), info.OrderDate);
 
             var lines = info.Lines.ToArray();
             Assert.Equal(3, info.Lines.Count);

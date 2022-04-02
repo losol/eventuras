@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using NodaTime;
 
 namespace Eventuras.Domain
 {
@@ -47,7 +48,7 @@ namespace Eventuras.Domain
         public ApplicationUser IssuingUser { get; set; }
 
         public string IssuedInCity { get; set; }
-        public DateTime IssuedDate { get; set; } = DateTime.UtcNow;
+        public LocalDate IssuedDate { get; set; } = SystemClock.Instance.Today();
 
     }
 }

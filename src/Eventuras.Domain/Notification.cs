@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using NodaTime;
 
 namespace Eventuras.Domain
 {
@@ -25,9 +26,9 @@ namespace Eventuras.Domain
         [Required]
         public string Message { get; private set; }
 
-        public DateTime Created { get; private set; }
+        public Instant Created { get; private set; }
 
-        public DateTime StatusUpdated { get; private set; }
+        public Instant StatusUpdated { get; private set; }
 
         public NotificationType Type { get; private set; }
 
@@ -39,7 +40,7 @@ namespace Eventuras.Domain
             set
             {
                 _status = value;
-                StatusUpdated = DateTime.Now;
+                StatusUpdated = SystemClock.Instance.Now();
             }
         }
 
@@ -67,7 +68,7 @@ namespace Eventuras.Domain
             }
 
             Message = message;
-            Created = DateTime.Now;
+            Created = SystemClock.Instance.Now();
         }
     }
 

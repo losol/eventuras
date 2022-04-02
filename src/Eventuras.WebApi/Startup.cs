@@ -17,6 +17,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using Microsoft.OpenApi.Models;
+using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
 
 namespace Eventuras.WebApi
 {
@@ -71,7 +73,11 @@ namespace Eventuras.WebApi
                     options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
                     options.Filters.Add(new HttpResponseExceptionFilter());
                 })
-                .AddJsonOptions(j => { j.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+                .AddJsonOptions(j =>
+                {
+                    j.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+                    j.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
 
             services.AddRazorPages();
             services.ConfigureEF(Configuration, _env);

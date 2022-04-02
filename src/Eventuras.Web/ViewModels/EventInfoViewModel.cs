@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Eventuras.Domain;
+using NodaTime;
 using static Eventuras.Domain.EventInfo;
 using static Eventuras.Domain.Registration;
 
@@ -39,8 +40,8 @@ namespace Eventuras.ViewModels
 
         public int EventInfoId { get; set; }
         public string Name { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+        public LocalDate? StartDate { get; set; }
+        public LocalDate? EndDate { get; set; }
         public string Description { get; set; }
         public List<ImageInfo> Image { get; set; }
         public LocationInfo Location { get; set; }

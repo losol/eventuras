@@ -1,6 +1,6 @@
-using System;
 using Eventuras.Domain;
 using Newtonsoft.Json;
+using NodaTime;
 
 namespace Eventuras.WebApi.Controllers.Notifications
 {
@@ -19,9 +19,9 @@ namespace Eventuras.WebApi.Controllers.Notifications
 
         public string Message { get; }
 
-        public DateTime Created { get; }
+        public Instant Created { get; }
 
-        public DateTime StatusUpdated { get; }
+        public Instant StatusUpdated { get; }
 
         public NotificationType Type { get; }
 

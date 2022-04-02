@@ -1,5 +1,5 @@
-using System;
 using Eventuras.Domain;
+using NodaTime;
 
 namespace Eventuras.WebApi.Controllers.Events
 {
@@ -18,9 +18,9 @@ namespace Eventuras.WebApi.Controllers.Events
         public string Location { get; set; }
         public string City { get; set; }
         public bool OnDemand { get; set; }
-        public DateTime? DateStart { get; set; }
-        public DateTime? DateEnd { get; set; }
-        public DateTime? LastRegistrationDate { get; set; }
+        public LocalDate? DateStart { get; set; }
+        public LocalDate? DateEnd { get; set; }
+        public LocalDate? LastRegistrationDate { get; set; }
 
         public EventDto()
         {

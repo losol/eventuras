@@ -5,6 +5,7 @@ using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
 using Microsoft.EntityFrameworkCore;
+using NodaTime;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Orders
@@ -128,9 +129,12 @@ namespace Eventuras.WebApi.Tests.Controllers.Orders
             using var user = await scope.CreateUserAsync();
             using var evt = await scope.CreateEventAsync();
             using var r = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
-            using var o1 = await scope.CreateOrderAsync(r.Entity, time: DateTime.Now.AddDays(-1));
-            using var o2 = await scope.CreateOrderAsync(r.Entity, time: DateTime.Now.AddDays(-2));
-            using var o3 = await scope.CreateOrderAsync(r.Entity, time: DateTime.Now.AddDays(-3));
+            using var o1 =
+                await scope.CreateOrderAsync(r.Entity, time: SystemClock.Instance.Now().Minus(Duration.FromDays(1)));
+            using var o2 =
+                await scope.CreateOrderAsync(r.Entity, time: SystemClock.Instance.Now().Minus(Duration.FromDays(2)));
+            using var o3 =
+                await scope.CreateOrderAsync(r.Entity, time: SystemClock.Instance.Now().Minus(Duration.FromDays(3)));
 
             var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
             var response = await client.GetAsync("/v3/orders?page=1&count=2");
