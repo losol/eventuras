@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Eventuras.Domain;
+using NodaTime;
 using static Eventuras.Domain.EventInfo;
 
 namespace Eventuras.Web.Tests
@@ -17,8 +18,8 @@ namespace Eventuras.Web.Tests
                     Description = "All other event are fake. This is a great mega event!",
                     Slug = "first-great-event",
                     Featured = true,
-                    DateStart = DateTime.UtcNow.AddDays(-1),
-                    DateEnd = DateTime.UtcNow.AddDays(1),
+                    DateStart = SystemClock.Instance.Today().PlusDays(-1),
+                    DateEnd = SystemClock.Instance.Today().PlusDays(1),
                     Type = EventInfoType.Conference,
                     City = "Red city",
                     Products = new List<Product>

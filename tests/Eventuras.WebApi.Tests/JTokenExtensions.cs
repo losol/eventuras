@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Eventuras.Domain;
 using Newtonsoft.Json.Linq;
+using NodaTime;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests
@@ -48,7 +49,7 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(certificate.RecipientName, token.Value<string>("recipientName"));
             Assert.Equal(certificate.EvidenceDescription, token.Value<string>("evidenceDescription"));
             Assert.Equal(certificate.IssuedInCity, token.Value<string>("issuedInCity"));
-            Assert.Equal(certificate.IssuedDate, token.Value<DateTime>("issuingDate"));
+            Assert.Equal(certificate.IssuedDate.ToString("yyyy-MM-dd"), token.Value<string>("issuingDate"));
             Assert.Equal(certificate.IssuingOrganizationName, token.Value<string>("issuerOrganizationName"));
             Assert.Equal(certificate.IssuingOrganization?.LogoBase64,
                 token.Value<string>("issuerOrganizationLogoBase64"));
@@ -69,9 +70,9 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(eventInfo.PracticalInformation, token.Value<string>("practicalInformation"));
             Assert.Equal(eventInfo.OnDemand, token.Value<bool>("onDemand"));
             Assert.Equal(eventInfo.Featured, token.Value<bool>("featured"));
-            Assert.Equal(eventInfo.DateStart, token.Value<DateTime?>("dateStart"));
-            Assert.Equal(eventInfo.DateEnd, token.Value<DateTime?>("dateEnd"));
-            Assert.Equal(eventInfo.LastRegistrationDate, token.Value<DateTime?>("lastRegistrationDate"));
+            Assert.Equal(eventInfo.DateStart?.ToString("yyyy-MM-dd"), token.Value<string>("dateStart"));
+            Assert.Equal(eventInfo.DateEnd?.ToString("yyyy-MM-dd"), token.Value<string>("dateEnd"));
+            Assert.Equal(eventInfo.LastRegistrationDate, token.Value<LocalDate?>("lastRegistrationDate"));
             Assert.Equal(eventInfo.Location, token.Value<string>("location"));
             Assert.Equal(eventInfo.City, token.Value<string>("city"));
         }
@@ -104,7 +105,8 @@ namespace Eventuras.WebApi.Tests
             var statusStr = token.Value<string>("status");
             Assert.NotNull(statusStr);
             Assert.Equal(order.Status, Enum.Parse<Order.OrderStatus>(statusStr));
-            Assert.Equal(order.OrderTime, token.Value<DateTime>("time"));
+            Assert.Equal(order.OrderTime.ToString("yyyy-MM-ddTHH:mm:ss"),
+                token.Value<DateTime>("time").ToString("yyyy-MM-ddTHH:mm:ss"));
             Assert.Equal(order.UserId, token.Value<string>("userId"));
             Assert.Equal(order.RegistrationId, token.Value<int>("registrationId"));
 
@@ -242,8 +244,10 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(notification.OrganizationId, token.Value<int?>("organizationId"));
             Assert.Equal(notification.EventInfoId, token.Value<int?>("eventId"));
             Assert.Equal(notification.ProductId, token.Value<int?>("productId"));
-            Assert.Equal(notification.Created, token.Value<DateTime>("created"));
-            Assert.Equal(notification.StatusUpdated, token.Value<DateTime>("statusUpdated"));
+            Assert.Equal(notification.Created.ToString("yyyy-MM-ddTHH:mm:ss"),
+                token.Value<DateTime>("created").ToString("yyyy-MM-ddTHH:mm:ss"));
+            Assert.Equal(notification.StatusUpdated.ToString("yyyy-MM-ddTHH:mm:ss"),
+                token.Value<DateTime>("statusUpdated").ToString("yyyy-MM-ddTHH:mm:ss"));
             Assert.Equal(notification.Type.ToString(), token.Value<string>("type"));
             Assert.Equal(notification.Status.ToString(), token.Value<string>("status"));
 
@@ -279,8 +283,10 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(recipient.RegistrationId, token.Value<int?>("registrationId"));
             Assert.Equal(recipient.RecipientName, token.Value<string>("recipientName"));
             Assert.Equal(recipient.RecipientIdentifier, token.Value<string>("recipientIdentifier"));
-            Assert.Equal(recipient.Created, token.Value<DateTime>("created"));
-            Assert.Equal(recipient.Sent, token.Value<DateTime?>("sent"));
+            Assert.Equal(recipient.Created.ToString("yyyy-MM-ddTHH:mm:ss"),
+                token.Value<DateTime>("created").ToString("yyyy-MM-ddTHH:mm:ss"));
+            Assert.Equal(recipient.Sent?.ToString("yyyy-MM-ddTHH:mm:ss"),
+                token.Value<DateTime?>("sent")?.ToString("yyyy-MM-ddTHH:mm:ss"));
             Assert.Equal(recipient.Errors, token.Value<string>("errors"));
         }
 

@@ -3,14 +3,15 @@ using Eventuras.Services.Events;
 using Eventuras.WebApi.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
+using NodaTime;
 
 namespace Eventuras.WebApi.Controllers.Events
 {
     public class EventsQueryDto : PageQueryDto
     {
         public EventInfo.EventInfoType? Type { get; set; }
-        public DateTime? Start { get; set; }
-        public DateTime? End { get; set; }
+        public LocalDate? Start { get; set; }
+        public LocalDate? End { get; set; }
         public PeriodMatchingKind Period { get; set; } = PeriodMatchingKind.Match;
 
         [Range(1, int.MaxValue)]
@@ -44,7 +45,7 @@ namespace Eventuras.WebApi.Controllers.Events
                 case PeriodMatchingKind.Intersect:
                     if (Start.HasValue)
                     {
-                        filter.StartDateAfter = DateTime.MinValue; // to ensure event start date is set
+                        filter.StartDateAfter = LocalDate.MinIsoValue; // to ensure event start date is set
                         filter.EndDateIsNullOrAfter = Start;
                     }
                     if (End.HasValue)

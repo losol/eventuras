@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Microsoft.AspNetCore.Identity;
+using NodaTime;
 
 namespace Eventuras.TestAbstractions
 {
@@ -126,8 +127,8 @@ namespace Eventuras.TestAbstractions
             EventInfo.EventInfoStatus status = EventInfo.EventInfoStatus.RegistrationsOpen,
             EventInfo.EventInfoType eventInfoType = EventInfo.EventInfoType.Conference,
             bool featured = false,
-            DateTime? dateStart = null,
-            DateTime? dateEnd = null,
+            LocalDate? dateStart = null,
+            LocalDate? dateEnd = null,
             Product[] products = null,
             Organization organization = null,
             int organizationId = TestingConstants.OrganizationId,
@@ -269,7 +270,7 @@ namespace Eventuras.TestAbstractions
             ApplicationUser user,
             Registration.RegistrationStatus status = Registration.RegistrationStatus.Verified,
             Registration.RegistrationType type = Registration.RegistrationType.Participant,
-            DateTime? time = null)
+            Instant? time = null)
         {
             var registration = new Registration
             {
@@ -278,7 +279,7 @@ namespace Eventuras.TestAbstractions
                 Status = status,
                 Type = type,
                 ParticipantName = user.Name,
-                RegistrationTime = time ?? DateTime.UtcNow
+                RegistrationTime = time ?? SystemClock.Instance.Now()
                 // TODO: add other params
             };
             await scope.Db.Registrations.AddAsync(registration);
@@ -315,11 +316,11 @@ namespace Eventuras.TestAbstractions
             string userId = null,
             Order.OrderStatus status = Order.OrderStatus.Verified,
             PaymentMethod.PaymentProvider paymentProvider = PaymentMethod.PaymentProvider.EmailInvoice,
-            DateTime? time = null)
+            Instant? time = null)
         {
             var order = new Order
             {
-                OrderTime = time ?? DateTime.Now,
+                OrderTime = time ?? SystemClock.Instance.Now(),
                 UserId = user?.Id ?? userId ?? registration.UserId,
                 Registration = registration,
                 PaymentMethod = paymentProvider,

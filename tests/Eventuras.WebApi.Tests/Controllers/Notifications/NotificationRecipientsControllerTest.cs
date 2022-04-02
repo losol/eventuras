@@ -1,8 +1,10 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
+using NodaTime;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Notifications
@@ -201,9 +203,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
 
             var recipients = notification.Entity.Recipients.ToArray();
 
-            recipients[2].Sent = DateTime.Now.AddSeconds(-3);
-            recipients[1].Sent = DateTime.Now.AddSeconds(-2);
-            recipients[0].Sent = DateTime.Now.AddSeconds(-1);
+            recipients[2].Sent = SystemClock.Instance.Now().Minus(Duration.FromSeconds(3));
+            recipients[1].Sent = SystemClock.Instance.Now().Minus(Duration.FromSeconds(2));
+            recipients[0].Sent = SystemClock.Instance.Now().Minus(Duration.FromSeconds(1));
             await scope.Db.SaveChangesAsync();
 
             var client = _factory.CreateClient()
@@ -321,7 +323,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                 .CreateEmailNotificationAsync(recipientUsers: new[] { u1.Entity, u2.Entity });
 
             var recipients = notification.Entity.Recipients.ToArray();
-            recipients[1].Sent = DateTime.Now;
+            recipients[1].Sent = SystemClock.Instance.Now();
             await scope.Db.SaveChangesAsync();
 
             var client = _factory.CreateClient()

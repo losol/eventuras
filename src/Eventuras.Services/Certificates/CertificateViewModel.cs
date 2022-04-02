@@ -1,5 +1,6 @@
 using System;
 using Eventuras.Domain;
+using NodaTime;
 
 namespace Eventuras.Services.Certificates
 {
@@ -16,7 +17,7 @@ namespace Eventuras.Services.Certificates
         public string EvidenceDescription { get; }
 
         public string IssuedInCity { get; }
-        public DateTime IssuingDate { get; }
+        public LocalDate IssuingDate { get; }
 
         public string IssuerOrganizationName { get; }
         public string IssuerOrganizationLogoBase64 { get; }
@@ -29,7 +30,7 @@ namespace Eventuras.Services.Certificates
             RecipientName = "Gerhard Henrik Armauer Hansen",
             Comment = "Eventuell tekst som er skrevet som kommentar på deltakers registrering kommer her",
             CertificateGuid = Guid.NewGuid(),
-            IssuedDate = DateTime.Now
+            IssuedDate = SystemClock.Instance.Today()
         }))
         {
         }

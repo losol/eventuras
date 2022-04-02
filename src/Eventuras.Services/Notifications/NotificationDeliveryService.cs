@@ -7,6 +7,7 @@ using Losol.Communication.Email;
 using Losol.Communication.Sms;
 using Markdig;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 
 namespace Eventuras.Services.Notifications
 {
@@ -72,7 +73,7 @@ namespace Eventuras.Services.Notifications
                 {
                     await SendToRecipientAsync(notification, recipient, message);
 
-                    recipient.Sent = DateTime.Now;
+                    recipient.Sent = SystemClock.Instance.Now();
 
                     await _notificationManagementService
                         .UpdateNotificationRecipientAsync(recipient);

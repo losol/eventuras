@@ -43,7 +43,8 @@ namespace Eventuras.WebApi.Extensions
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options
-                    .UseNpgsql(config.GetConnectionString("DefaultConnection"))
+                    .UseNpgsql(config.GetConnectionString("DefaultConnection"),
+                        o => o.UseNodaTime())
                     .EnableSensitiveDataLogging(env.IsDevelopment());
             });
         }

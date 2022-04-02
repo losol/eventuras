@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Eventuras.Domain;
+using NodaTime;
 
 namespace Eventuras.Services.Invoicing
 {
@@ -40,7 +41,7 @@ namespace Eventuras.Services.Invoicing
                 .FirstOrDefault(s => !string.IsNullOrWhiteSpace(s));
         }
 
-        public static DateTime? CalculateDueDate(this IEnumerable<Order> orders)
+        public static LocalDate? CalculateDueDate(this IEnumerable<Order> orders)
         {
             return orders
                 .Select(o => o.Registration.EventInfo)

@@ -3,6 +3,7 @@ using System.Linq;
 using Eventuras.Domain;
 using Eventuras.WebApi.Controllers.Users;
 using Newtonsoft.Json;
+using NodaTime;
 
 namespace Eventuras.WebApi.Controllers.Orders
 {
@@ -12,7 +13,7 @@ namespace Eventuras.WebApi.Controllers.Orders
 
         public Order.OrderStatus Status { get; set; }
 
-        public DateTime Time { get; set; }
+        public Instant Time { get; set; }
 
         public string UserId { get; set; }
 

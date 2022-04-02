@@ -1,5 +1,6 @@
 using System;
 using Eventuras.Domain;
+using NodaTime;
 
 namespace Eventuras.WebApi.Controllers.Certificates
 {
@@ -17,7 +18,7 @@ namespace Eventuras.WebApi.Controllers.Certificates
         public string EvidenceDescription { get; }
 
         public string IssuedInCity { get; }
-        public DateTime IssuingDate { get; }
+        public LocalDate IssuingDate { get; }
 
         public string IssuerOrganizationName { get; }
         public string IssuerOrganizationLogoBase64 { get; }

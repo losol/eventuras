@@ -3,6 +3,7 @@ using Eventuras.WebApi.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using NodaTime;
 
 namespace Eventuras.WebApi.Controllers.Events
 {
@@ -25,8 +26,8 @@ namespace Eventuras.WebApi.Controllers.Events
         public string PracticalInformation { get; set; }
         public string Location { get; set; }
         public string City { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+        public LocalDate? StartDate { get; set; }
+        public LocalDate? EndDate { get; set; }
 
         public void CopyTo(EventInfo eventInfo)
         {

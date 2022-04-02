@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using NodaTime;
 
 namespace Eventuras.Domain
 {
@@ -16,7 +17,7 @@ namespace Eventuras.Domain
         public string Recipients { get; set; }
         public string MessageContent { get; set; }
         public string MessageType { get; set; }
-        public DateTime TimeStamp { get; set; } = DateTime.UtcNow;
+        public Instant TimeStamp { get; set; } = SystemClock.Instance.Now();
 
         public string Provider { get; set; }
         public string Result { get; set; }

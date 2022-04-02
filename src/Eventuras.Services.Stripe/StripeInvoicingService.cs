@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services.Invoicing;
 using Microsoft.Extensions.Options;
+using NodaTime;
 using Stripe;
 
 namespace Eventuras.Services.Stripe
@@ -45,7 +46,7 @@ namespace Eventuras.Services.Stripe
             {
                 Billing = StripeBilling.SendInvoice,
                 DaysUntilDue = info.DueDate.HasValue
-                    ? (info.DueDate - DateTime.UtcNow).Value.Days
+                    ? (info.DueDate.Value - SystemClock.Instance.Today()).Days
                     : 30,
                 Description = string.Join(", ", info.Lines
                     .Where(l => l.Type == InvoiceLineType.Text)

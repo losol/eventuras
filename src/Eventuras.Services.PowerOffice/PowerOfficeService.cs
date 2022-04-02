@@ -87,7 +87,7 @@ namespace Eventuras.Services.PowerOffice
             var invoice = new OutgoingInvoice
             {
                 Status = OutgoingInvoiceStatus.Draft,
-                OrderDate = info.OrderDate,
+                OrderDate = info.OrderDate?.ToDateTimeUnspecified(),
                 ContractNo = info.OrderId,
                 CustomerReference = info.CustomerInvoiceReference,
                 CustomerCode = customer.Code

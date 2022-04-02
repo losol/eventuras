@@ -9,6 +9,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using Eventuras.Domain;
 using Eventuras.IntegrationTests;
 using Eventuras.TestAbstractions;
+using NodaTime;
 using Xunit;
 
 namespace Eventuras.Web.Tests.Controllers.Api.V1
@@ -63,7 +64,7 @@ namespace Eventuras.Web.Tests.Controllers.Api.V1
             await client.LogInAsSuperAdminAsync();
 
             using var scope = _factory.Services.NewTestScope();
-            
+
             using var e1 = await scope.CreateEventAsync();
             using var e2 = await scope.CreateEventAsync();
             using var p1 = await scope.CreateProductAsync(e1.Entity);
@@ -72,9 +73,12 @@ namespace Eventuras.Web.Tests.Controllers.Api.V1
             using var v2 = await scope.CreateProductVariantAsync(p1.Entity);
             using var u1 = await scope.CreateUserAsync();
             using var u2 = await scope.CreateUserAsync();
-            using var r1 = await scope.CreateRegistrationAsync(e1.Entity, u1.Entity, time: DateTime.UtcNow.AddDays(-3));
-            using var r2 = await scope.CreateRegistrationAsync(e1.Entity, u2.Entity, time: DateTime.UtcNow.AddDays(-2));
-            using var r3 = await scope.CreateRegistrationAsync(e2.Entity, u2.Entity, time: DateTime.UtcNow.AddDays(-1));
+            using var r1 = await scope.CreateRegistrationAsync(e1.Entity, u1.Entity,
+                time: SystemClock.Instance.Now().Minus(Duration.FromDays(3)));
+            using var r2 = await scope.CreateRegistrationAsync(e1.Entity, u2.Entity,
+                time: SystemClock.Instance.Now().Minus(Duration.FromDays(2)));
+            using var r3 = await scope.CreateRegistrationAsync(e2.Entity, u2.Entity,
+                time: SystemClock.Instance.Now().Minus(Duration.FromDays(1)));
             using var o1 = await scope.CreateOrderAsync(r1.Entity, p1.Entity, v1.Entity);
             using var o2 = await scope.CreateOrderAsync(r3.Entity, p2.Entity, quantity: 10);
 
@@ -132,16 +136,21 @@ namespace Eventuras.Web.Tests.Controllers.Api.V1
             using var v2 = await scope.CreateProductVariantAsync(p1.Entity);
             using var u1 = await scope.CreateUserAsync();
             using var u2 = await scope.CreateUserAsync();
-            using var r1 = await scope.CreateRegistrationAsync(e1.Entity, u1.Entity, time: DateTime.UtcNow.AddDays(-3));
-            using var r2 = await scope.CreateRegistrationAsync(e1.Entity, u2.Entity, time: DateTime.UtcNow.AddDays(-2));
-            using var r3 = await scope.CreateRegistrationAsync(e2.Entity, u2.Entity, time: DateTime.UtcNow.AddDays(-1));
+            using var r1 = await scope.CreateRegistrationAsync(e1.Entity, u1.Entity,
+                time: SystemClock.Instance.Now().Minus(Duration.FromDays(3)));
+            using var r2 = await scope.CreateRegistrationAsync(e1.Entity, u2.Entity,
+                time: SystemClock.Instance.Now().Minus(Duration.FromDays(2)));
+            using var r3 = await scope.CreateRegistrationAsync(e2.Entity, u2.Entity,
+                time: SystemClock.Instance.Now().Minus(Duration.FromDays(1)));
             using var o1 = await scope.CreateOrderAsync(r1.Entity, p1.Entity, v1.Entity);
             using var o2 = await scope.CreateOrderAsync(r3.Entity, p2.Entity, quantity: 10);
 
-            var response = await client.GetAsync($"/api/v1/registrations/export/{e1.Entity.EventInfoId}?header={exportHeader}");
+            var response =
+                await client.GetAsync($"/api/v1/registrations/export/{e1.Entity.EventInfoId}?header={exportHeader}");
             await CheckSuccessfulResponseAsync(response, exportHeader, r2.Entity, r1.Entity);
 
-            response = await client.GetAsync($"/api/v1/registrations/export/{e2.Entity.EventInfoId}?header={exportHeader}");
+            response = await client.GetAsync(
+                $"/api/v1/registrations/export/{e2.Entity.EventInfoId}?header={exportHeader}");
             await CheckSuccessfulResponseAsync(response, exportHeader, r3.Entity);
         }
 

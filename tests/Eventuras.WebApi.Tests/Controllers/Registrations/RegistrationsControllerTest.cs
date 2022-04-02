@@ -8,6 +8,7 @@ using Eventuras.Services;
 using Eventuras.TestAbstractions;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
+using NodaTime;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Registrations
@@ -76,9 +77,12 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var scope = _factory.Services.NewTestScope();
             using var e = await scope.CreateEventAsync();
             using var user = await scope.CreateUserAsync();
-            using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(3));
-            using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(2));
-            using var r3 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(1));
+            using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity,
+                time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
+            using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity,
+                time: SystemClock.Instance.Now().Plus(Duration.FromDays(2)));
+            using var r3 = await scope.CreateRegistrationAsync(e.Entity, user.Entity,
+                time: SystemClock.Instance.Now().Plus(Duration.FromDays(1)));
 
             var response = await client.GetAsync("/v3/registrations?page=1&count=2");
             var paging = await response.AsTokenAsync();
@@ -101,10 +105,13 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var otherUser = await scope.CreateUserAsync();
 
             using var e = await scope.CreateEventAsync();
-            using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(3));
-            using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(2));
+            using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity,
+                time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
+            using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity,
+                time: SystemClock.Instance.Now().Plus(Duration.FromDays(2)));
             using var r3 =
-                await scope.CreateRegistrationAsync(e.Entity, otherUser.Entity, time: DateTime.Now.AddDays(1));
+                await scope.CreateRegistrationAsync(e.Entity, otherUser.Entity,
+                    time: SystemClock.Instance.Now().Plus(Duration.FromDays(1)));
 
             var client = _factory.CreateClient()
                 .AuthenticatedAs(user.Entity);
@@ -142,11 +149,14 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
                 await scope.CreateEventAsync(organization: org.Entity, organizationId: org.Entity.OrganizationId);
             using var e2 = await scope.CreateEventAsync(organization: otherOrg.Entity,
                 organizationId: otherOrg.Entity.OrganizationId);
-            using var r1 = await scope.CreateRegistrationAsync(e1.Entity, user.Entity, time: DateTime.Now.AddDays(3));
+            using var r1 = await scope.CreateRegistrationAsync(e1.Entity, user.Entity,
+                time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
             using var r2 =
-                await scope.CreateRegistrationAsync(e1.Entity, otherUser.Entity, time: DateTime.Now.AddDays(2));
+                await scope.CreateRegistrationAsync(e1.Entity, otherUser.Entity,
+                    time: SystemClock.Instance.Now().Plus(Duration.FromDays(2)));
             using var r3 =
-                await scope.CreateRegistrationAsync(e2.Entity, otherUser.Entity, time: DateTime.Now.AddDays(1));
+                await scope.CreateRegistrationAsync(e2.Entity, otherUser.Entity,
+                    time: SystemClock.Instance.Now().Plus(Duration.FromDays(1)));
 
             var client = _factory.CreateClient()
                 .AuthenticatedAs(admin.Entity, Roles.Admin);
@@ -172,10 +182,13 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var otherUser = await scope.CreateUserAsync();
 
             using var e = await scope.CreateEventAsync();
-            using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(3));
-            using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: DateTime.Now.AddDays(2));
+            using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity,
+                time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
+            using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity,
+                time: SystemClock.Instance.Now().Plus(Duration.FromDays(2)));
             using var r3 =
-                await scope.CreateRegistrationAsync(e.Entity, otherUser.Entity, time: DateTime.Now.AddDays(1));
+                await scope.CreateRegistrationAsync(e.Entity, otherUser.Entity,
+                    time: SystemClock.Instance.Now().Plus(Duration.FromDays(1)));
 
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
@@ -195,7 +208,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var otherUser = await scope.CreateUserAsync();
 
             using var evt = await scope.CreateEventAsync();
-            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity, time: DateTime.Now.AddDays(3));
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity,
+                time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
 
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
@@ -218,7 +232,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var otherUser = await scope.CreateUserAsync();
 
             using var evt = await scope.CreateEventAsync();
-            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity, time: DateTime.Now.AddDays(3));
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity,
+                time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
 
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
@@ -241,7 +256,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var otherUser = await scope.CreateUserAsync();
 
             using var evt = await scope.CreateEventAsync();
-            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity, time: DateTime.Now.AddDays(3));
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity,
+                time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
 
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
@@ -304,7 +320,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var user = await scope.CreateUserAsync();
 
             var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
-            var response = await client.PostAsync("/v3/registrations", new {userId = user.Entity.Id});
+            var response = await client.PostAsync("/v3/registrations", new { userId = user.Entity.Id });
             response.CheckBadRequest();
         }
 
@@ -312,7 +328,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         public async Task Should_Require_User_Id_For_Creating_New_Reg()
         {
             var client = _factory.CreateClient().Authenticated();
-            var response = await client.PostAsync("/v3/registrations", new {eventId = 10001});
+            var response = await client.PostAsync("/v3/registrations", new { eventId = 10001 });
             response.CheckBadRequest();
         }
 
@@ -940,24 +956,24 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             {
                 new object[]
                 {
-                    new Func<string, int, object>((userId, eventId) => new {userId, eventId, notes = "test"}),
+                    new Func<string, int, object>((userId, eventId) => new { userId, eventId, notes = "test" }),
                     new Action<Registration>(reg => Assert.Equal("test", reg.Notes))
                 },
                 new object[]
                 {
-                    new Func<string, int, object>((userId, eventId) => new {userId, eventId, type = 1}),
+                    new Func<string, int, object>((userId, eventId) => new { userId, eventId, type = 1 }),
                     new Action<Registration>(reg => Assert.Equal(Registration.RegistrationType.Student, reg.Type))
                 },
                 new object[]
                 {
-                    new Func<string, int, object>((userId, eventId) => new {userId, eventId, paymentMethod = 1}),
+                    new Func<string, int, object>((userId, eventId) => new { userId, eventId, paymentMethod = 1 }),
                     new Action<Registration>(reg =>
                         Assert.Equal(PaymentMethod.PaymentProvider.EmailInvoice, reg.PaymentMethod))
                 },
                 new object[]
                 {
                     new Func<string, int, object>((userId, eventId) =>
-                        new {userId, eventId, customer = new {name = "test"}}),
+                        new { userId, eventId, customer = new { name = "test" } }),
                     new Action<Registration>(reg => Assert.Equal("test", reg.CustomerName))
                 }
             };

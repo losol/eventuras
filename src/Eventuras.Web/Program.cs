@@ -1,13 +1,8 @@
-using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using Eventuras.Services.DbInitializers;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Builder;
 using System.IO;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace Eventuras
 {
@@ -16,7 +11,6 @@ namespace Eventuras
         public static async Task Main(string[] args)
         {
             // Build the application host
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             CreateHostBuilder(args).Build().Run();
         }
 

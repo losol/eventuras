@@ -31,6 +31,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using NodaTime;
+using NodaTime.Serialization.JsonNet;
 using DefaultAuthenticationService = Eventuras.Web.Services.DefaultAuthenticationService;
 
 namespace Eventuras.Web.Extensions
@@ -45,7 +47,8 @@ namespace Eventuras.Web.Extensions
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options
-                    .UseNpgsql(config.GetConnectionString("DefaultConnection"))
+                    .UseNpgsql(config.GetConnectionString("DefaultConnection"),
+                        o => o.UseNodaTime())
                     .EnableSensitiveDataLogging(env.IsDevelopment());
             });
         }
@@ -85,7 +88,8 @@ namespace Eventuras.Web.Extensions
             services
                 .AddControllersWithViews(options =>
                     options.Filters.Add(new HttpResponseExceptionFilter())) // See https://docs.microsoft.com/en-us/aspnet/core/web-api/handle-errors?view=aspnetcore-5.0#use-exceptions-to-modify-the-response
-                .AddNewtonsoftJson();
+                .AddNewtonsoftJson(s => 
+                    s.SerializerSettings.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb));
 
             services
                 .AddRazorPages()

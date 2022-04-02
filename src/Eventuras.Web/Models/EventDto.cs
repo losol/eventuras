@@ -1,4 +1,5 @@
 using System;
+using NodaTime;
 
 namespace Eventuras.Web.Models
 {
@@ -14,8 +15,8 @@ namespace Eventuras.Web.Models
         public string PracticalInformation { get; set; }
         public bool OnDemand { get; set; }
         public LocationDto Location { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
-        public DateTime? LastRegistrationDate { get; set; }
+        public LocalDate? StartDate { get; set; }
+        public LocalDate? EndDate { get; set; }
+        public LocalDate? LastRegistrationDate { get; set; }
     }
 }

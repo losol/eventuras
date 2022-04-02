@@ -1,5 +1,6 @@
 using System;
 using Eventuras.Domain;
+using NodaTime;
 
 namespace Eventuras.WebApi.Controllers.Notifications
 {
@@ -17,9 +18,9 @@ namespace Eventuras.WebApi.Controllers.Notifications
 
         public string RecipientIdentifier { get; }
 
-        public DateTime Created { get; }
+        public Instant Created { get; }
 
-        public DateTime? Sent { get; }
+        public Instant? Sent { get; }
 
         public string Errors { get; }
 

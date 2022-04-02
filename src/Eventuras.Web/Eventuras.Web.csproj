@@ -36,6 +36,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="NodaTime.Serialization.JsonNet" Version="3.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="6.0.3" />
     <PackageReference Include="Sentry.AspNetCore" Version="3.12.3" />
     <PackageReference Include="Stripe.net" Version="[16.4.0]" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />

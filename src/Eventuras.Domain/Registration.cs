@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Threading.Tasks;
+using NodaTime;
 using static Eventuras.Domain.Order;
 using static Eventuras.Domain.PaymentMethod;
 
@@ -82,7 +83,7 @@ namespace Eventuras.Domain
         [DataType(DataType.MultilineText)]
         public string Log { get; set; }
 
-        public DateTime? RegistrationTime { get; set; } = DateTime.UtcNow;
+        public Instant? RegistrationTime { get; set; } = SystemClock.Instance.Now();
         public string RegistrationBy { get; set; }
 
         [Display(Name = "Gratisdeltaker?")] public bool FreeRegistration { get; set; } = false;

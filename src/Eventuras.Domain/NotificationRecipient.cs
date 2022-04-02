@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Net.Mail;
+using NodaTime;
 
 namespace Eventuras.Domain
 {
@@ -31,9 +32,9 @@ namespace Eventuras.Domain
         [Required]
         public string RecipientIdentifier { get; private set; }
 
-        public DateTime Created { get; private set; }
+        public Instant Created { get; private set; }
 
-        public DateTime? Sent { get; set; }
+        public Instant? Sent { get; set; }
 
         public string Errors { get; set; }
 
@@ -58,7 +59,7 @@ namespace Eventuras.Domain
                 throw new ArgumentNullException(nameof(recipientIdentifier));
             }
 
-            Created = DateTime.Now;
+            Created = SystemClock.Instance.Now();
 
             if (notificationType == NotificationType.Email)
             {

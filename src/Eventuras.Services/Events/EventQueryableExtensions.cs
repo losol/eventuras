@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Eventuras.Domain;
 using Microsoft.EntityFrameworkCore;
+using NodaTime;
 
 namespace Eventuras.Services.Events
 {
@@ -44,22 +45,23 @@ namespace Eventuras.Services.Events
                 query = query.Where(e => e.Featured);
             }
 
+            var today = SystemClock.Instance.Today();
             if (filter.PastEventsOnly)
             {
-                query = query.Where(e => e.DateStart <= DateTime.Now || !e.DateStart.HasValue);
+                query = query.Where(e => e.DateStart <= today || !e.DateStart.HasValue);
             }
 
             if (filter.TodaysEventsOnly)
             {
                 query = query.Where(i =>
-                    i.DateStart.HasValue && i.DateStart.Value.Date == DateTime.Now.Date ||
-                    i.DateStart.HasValue && i.DateEnd.HasValue && i.DateStart.Value.Date <= DateTime.Now.Date &&
-                    i.DateEnd.Value.Date >= DateTime.Now.Date);
+                    i.DateStart.HasValue && i.DateStart.Value == today ||
+                    i.DateStart.HasValue && i.DateEnd.HasValue && i.DateStart.Value <= today &&
+                    i.DateEnd.Value >= today);
             }
 
             if (filter.StartDate.HasValue)
             {
-                query = query.Where(e => e.DateStart == filter.StartDate);
+                query = query.Where(e => e.DateStart == filter.StartDate.Value);
             }
 
             if (filter.EndDate.HasValue)
