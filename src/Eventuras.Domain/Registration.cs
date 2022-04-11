@@ -264,7 +264,7 @@ namespace Eventuras.Domain
         /// Updates an existing order if it's not already been invoiced.
         /// Else creates a new order.
         /// </summary>
-        public void CreateOrUpdateOrder(ICollection<OrderDTO> dtos)
+        public Order CreateOrUpdateOrder(ICollection<OrderDTO> dtos)
         {
             // Check if any editable orders exist
             var editableOrders = Orders.Where(o => o.CanEdit).ToArray();
@@ -284,12 +284,13 @@ namespace Eventuras.Domain
                     {
                         if (order.Product.ProductId == p.Product.ProductId)
                         {
+                            var orderQuantity = order.Quantity - p.Quantity;
                             var orderline = new OrderLine
                             {
                                 // OrderId = OrderId,
                                 ProductName = $"Korreksjon for {p.Product?.Name}",
                                 Price = order.Variant?.Price ?? order.Product.Price,
-                                Quantity = order.Quantity - p.Quantity,
+                                Quantity = orderQuantity,
                                 VatPercent = order.Variant?.VatPercent ?? order.Product.VatPercent,
                                 ProductId = order.Product.ProductId,
                                 ProductVariantId = order.Variant?.ProductVariantId,
@@ -326,11 +327,13 @@ namespace Eventuras.Domain
                 refundDtos = null;
 
                 // Create a new order
-                CreateOrder(orders, refundLines);
+                return CreateOrder(orders, refundLines);
             }
             else // an editable (uninvoiced) order exists
             {
-                UpdateOrder(editableOrders.First(), orders);
+                var order = editableOrders.First();
+                UpdateOrder(order, orders);
+                return order;
             }
         }
 

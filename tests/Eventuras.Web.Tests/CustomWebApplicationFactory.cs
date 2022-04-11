@@ -59,7 +59,6 @@ namespace Eventuras.IntegrationTests
 
                     services.AddScoped<IDbInitializer, TestDbInitializer>();
                     services.AddTransient<IInvoicingProvider, TestInvoicingProvider>();
-
                     // Build the service provider.
                     var sp = services.BuildServiceProvider();
 
