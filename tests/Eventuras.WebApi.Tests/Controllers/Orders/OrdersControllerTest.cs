@@ -586,6 +586,288 @@ namespace Eventuras.WebApi.Tests.Controllers.Orders
         }
 
         [Fact]
+        public async Task Should_Require_Auth_To_Create_Or_Update_Order()
+        {
+            var response = await _factory.CreateClient()
+                .PostAsync("/v3/orders");
+
+            response.CheckUnauthorized();
+        }
+
+        [Fact]
+        public async Task Should_Return_Bad_Request_When_Creating_Or_Updating_Order_Without_Registration_Id()
+        {
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin()
+                .PostAsync("/v3/orders");
+
+            response.CheckBadRequest();
+        }
+
+        [Fact]
+        public async Task Should_Return_Bad_Request_When_Creating_Or_Updating_Order_Without_Order_Lines()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+            using var user = await scope.CreateUserAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+            using var registration = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin()
+                .PostAsync("/v3/orders", new
+                {
+                    registrationId = registration.Entity.RegistrationId
+                });
+
+            response.CheckBadRequest();
+        }
+
+        [Fact]
+        public async Task Should_Return_Not_Found_When_Creating_Or_Updating_Order_With_Non_Existing_Registration_Id()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var e = await scope.CreateEventAsync();
+            using var p = await scope.CreateProductAsync(e.Entity);
+            using var v = await scope.CreateProductVariantAsync(p.Entity);
+
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin()
+                .PostAsync("/v3/orders", new
+                {
+                    registrationId = 1111,
+                    lines = new[]
+                    {
+                        new
+                        {
+                            productId = p.Entity.ProductId,
+                            quantity = 1
+                        }
+                    }
+                });
+
+            response.CheckNotFound();
+        }
+
+        [Fact]
+        public async Task Should_Return_Not_Found_When_Creating_Or_Updating_Order_With_Non_Existing_Product_Id()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var e = await scope.CreateEventAsync();
+            using var user = await scope.CreateUserAsync();
+            using var reg = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
+
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin()
+                .PostAsync("/v3/orders", new
+                {
+                    registrationId = reg.Entity.RegistrationId,
+                    lines = new[]
+                    {
+                        new
+                        {
+                            productId = 1111,
+                            quantity = 1
+                        }
+                    }
+                });
+
+            response.CheckNotFound();
+        }
+
+        [Fact]
+        public async Task Should_Return_Not_Found_When_Creating_Or_Updating_Order_With_Non_Existing_Variant_Id()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var e = await scope.CreateEventAsync();
+            using var user = await scope.CreateUserAsync();
+            using var reg = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
+            using var p = await scope.CreateProductAsync(e.Entity);
+
+            var response = await _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin()
+                .PostAsync("/v3/orders", new
+                {
+                    registrationId = reg.Entity.RegistrationId,
+                    lines = new[]
+                    {
+                        new
+                        {
+                            productId = p.Entity.ProductId,
+                            productVariantId = 11334,
+                            quantity = 1
+                        }
+                    }
+                });
+
+            response.CheckNotFound();
+        }
+
+        [Fact]
+        public async Task Create_Or_Update_Should_Not_Allow_To_Set_Quantity_Below_Min()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+            using var user = await scope.CreateUserAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+            using var p = await scope.CreateProductAsync(evt.Entity, minimumQuantity: 2, name: "Test");
+            using var v = await scope.CreateProductVariantAsync(p.Entity);
+
+            var response = await _factory
+                .CreateClient()
+                .AuthenticatedAsSystemAdmin()
+                .PostAsync("/v3/orders", new
+                {
+                    registrationId = reg.Entity.RegistrationId,
+                    lines = new[]
+                    {
+                        new
+                        {
+                            productId = p.Entity.ProductId,
+                            quantity = 1
+                        }
+                    }
+                });
+
+            await response.CheckBadRequestAsync("Product Test's min quantity is 2 but 1 was given");
+
+            Assert.False(await scope.Db.Orders.AnyAsync());
+        }
+
+        [Fact]
+        public async Task Should_Allow_Regular_User_To_Create_Order()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+            using var user = await scope.CreateUserAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+            using var p = await scope.CreateProductAsync(evt.Entity);
+            using var p2 = await scope.CreateProductAsync(evt.Entity);
+            using var v = await scope.CreateProductVariantAsync(p.Entity);
+
+            var response = await _factory
+                .CreateClient()
+                .AuthenticatedAs(user.Entity)
+                .PostAsync("/v3/orders",
+                    GetOrderCreateData(reg, p, v, p2));
+
+            var token = await response.CheckOk().AsTokenAsync();
+
+            var createdOrder = await CheckOrderCreatedAsync(scope, reg, p, v, p2);
+            Assert.Equal(reg.Entity.RegistrationId, createdOrder.RegistrationId);
+            Assert.Equal(2, createdOrder.OrderLines.Count);
+
+            var lines = createdOrder.OrderLines
+                .ToDictionary(l => l.ProductId);
+
+            Assert.True(lines.ContainsKey(p.Entity.ProductId));
+            Assert.Equal(2, lines[p.Entity.ProductId].Quantity);
+
+            Assert.True(lines.ContainsKey(p2.Entity.ProductId));
+            Assert.Equal(1, lines[p2.Entity.ProductId].Quantity);
+
+            token.CheckOrder(createdOrder);
+        }
+
+        [Fact]
+        public async Task Should_Not_Allow_Regular_User_To_Create_Order_For_Someone_Else()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+            using var u1 = await scope.CreateUserAsync();
+            using var u2 = await scope.CreateUserAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, u2.Entity);
+            using var p = await scope.CreateProductAsync(evt.Entity);
+            using var p2 = await scope.CreateProductAsync(evt.Entity);
+            using var v = await scope.CreateProductVariantAsync(p.Entity);
+
+            var response = await _factory
+                .CreateClient()
+                .AuthenticatedAs(u1.Entity)
+                .PostAsync("/v3/orders",
+                    GetOrderCreateData(reg, p, v, p2));
+
+            response.CheckForbidden();
+        }
+
+        [Fact]
+        public async Task Should_Allow_To_Create_Order_For_Admin()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var admin = await scope.CreateUserAsync(role: Roles.Admin);
+            using var org = await scope.CreateOrganizationAsync();
+            using var member = await scope
+                .CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
+            using var evt = await scope.CreateEventAsync(organization: org.Entity);
+            using var user = await scope.CreateUserAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+            using var p = await scope.CreateProductAsync(evt.Entity);
+            using var p2 = await scope.CreateProductAsync(evt.Entity);
+            using var v = await scope.CreateProductVariantAsync(p.Entity);
+
+            var response = await _factory
+                .CreateClient()
+                .AuthenticatedAs(admin.Entity, Roles.Admin)
+                .PostAsync($"/v3/orders?orgId={org.Entity.OrganizationId}",
+                    GetOrderCreateData(reg, p, v, p2));
+
+            var json = await response.CheckOk().AsTokenAsync();
+            json.CheckOrder(await CheckOrderCreatedAsync(scope, reg, p, v, p2));
+        }
+
+        [Fact]
+        public async Task Should_Not_Allow_Admin_To_Create_Order_From_Other_Org()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var admin = await scope.CreateUserAsync(role: Roles.Admin);
+            using var org = await scope.CreateOrganizationAsync();
+            using var otherOrg = await scope.CreateOrganizationAsync();
+            using var member = await scope
+                .CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
+            using var evt = await scope.CreateEventAsync(organization: otherOrg.Entity);
+            using var user = await scope.CreateUserAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+            using var p = await scope.CreateProductAsync(evt.Entity);
+            using var p2 = await scope.CreateProductAsync(evt.Entity);
+            using var v = await scope.CreateProductVariantAsync(p.Entity);
+            using var order = await scope.CreateOrderAsync(reg.Entity, product: p.Entity, variant: v.Entity);
+
+            var response = await _factory
+                .CreateClient()
+                .AuthenticatedAs(admin.Entity, Roles.Admin)
+                .PostAsync($"/v3/orders?orgId={org.Entity.OrganizationId}",
+                    GetOrderCreateData(reg, p, v, p2));
+
+            response.CheckForbidden();
+        }
+
+        [Theory]
+        [InlineData(Roles.SuperAdmin)]
+        [InlineData(Roles.SystemAdmin)]
+        public async Task Should_Allow_Power_Admin_To_Create_Any_Order(string role)
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+            using var user = await scope.CreateUserAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+            using var p = await scope.CreateProductAsync(evt.Entity);
+            using var p2 = await scope.CreateProductAsync(evt.Entity);
+            using var v = await scope.CreateProductVariantAsync(p.Entity);
+            using var order = await scope.CreateOrderAsync(reg.Entity, product: p.Entity, variant: v.Entity);
+
+            var response = await _factory
+                .CreateClient()
+                .Authenticated(role: role)
+                .PostAsync("/v3/orders",
+                    GetOrderCreateData(reg, p, v, p2));
+
+            response.CheckOk();
+
+            var json = await response.AsTokenAsync();
+            json.CheckOrder(await CheckOrderCreatedAsync(scope, reg, p, v, p2));
+        }
+
+        [Fact]
         public async Task Should_Require_Auth_To_Update_Order()
         {
             var response = await _factory.CreateClient()
@@ -615,7 +897,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Orders
         }
 
         [Fact]
-        public async Task Should_Not_Allow_To_Set_Quantity_Below_Min()
+        public async Task Update_Should_Not_Allow_To_Set_Quantity_Below_Min()
         {
             using var scope = _factory.Services.NewTestScope();
             using var evt = await scope.CreateEventAsync();
@@ -666,31 +948,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Orders
             var updatedOrder = await CheckOrderUpdatedAsync(scope, order, p, v, p2);
             var content = await response.AsTokenAsync();
             content.CheckOrder(updatedOrder);
-        }
-
-        private static object GetOrderUpdateData(
-            IDisposableEntity<Product> p,
-            IDisposableEntity<ProductVariant> v,
-            IDisposableEntity<Product> p2)
-        {
-            return new
-            {
-                lines = new[]
-                {
-                    new
-                    {
-                        productId = p.Entity.ProductId,
-                        productVariantId = v.Entity.ProductVariantId as int?,
-                        quantity = 2
-                    },
-                    new
-                    {
-                        productId = p2.Entity.ProductId,
-                        productVariantId = (int?)null,
-                        quantity = 1
-                    }
-                }
-            };
         }
 
         [Fact]
@@ -751,33 +1008,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Orders
             var updatedOrder = await CheckOrderUpdatedAsync(scope, order, p, v, p2);
             var json = await response.AsTokenAsync();
             json.CheckOrder(updatedOrder);
-        }
-
-        private static async Task<Order> CheckOrderUpdatedAsync(
-            TestServiceScope scope,
-            IDisposableEntity<Order> order,
-            IDisposableEntity<Product> p,
-            IDisposableEntity<ProductVariant> v,
-            IDisposableEntity<Product> p2)
-        {
-            var updatedOrder = await scope.Db.Orders
-                .AsNoTracking()
-                .Include(o => o.OrderLines)
-                .FirstOrDefaultAsync(o => o.OrderId == order.Entity.OrderId);
-
-            Assert.Equal(2, updatedOrder.OrderLines.Count);
-
-            var firstLine = updatedOrder.OrderLines.First();
-            Assert.Equal(p.Entity.ProductId, firstLine.ProductId);
-            Assert.Equal(v.Entity.ProductVariantId, firstLine.ProductVariantId);
-            Assert.Equal(2, firstLine.Quantity);
-
-            var secondLine = updatedOrder.OrderLines.Last();
-            Assert.Equal(p2.Entity.ProductId, secondLine.ProductId);
-            Assert.Null(secondLine.ProductVariantId);
-            Assert.Equal(1, secondLine.Quantity);
-
-            return updatedOrder;
         }
 
         [Fact]
@@ -885,6 +1115,216 @@ namespace Eventuras.WebApi.Tests.Controllers.Orders
 
             await response.CheckBadRequestAsync(
                 $"Order {order.Entity.OrderId} cannot be updated being in {status} status");
+        }
+
+        [Fact]
+        public async Task Should_Allow_Regular_User_To_Create_Or_Update_Own_Order()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+            using var user = await scope.CreateUserAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+            using var p = await scope.CreateProductAsync(evt.Entity);
+            using var p2 = await scope.CreateProductAsync(evt.Entity);
+            using var v = await scope.CreateProductVariantAsync(p.Entity);
+            using var order = await scope.CreateOrderAsync(reg.Entity, product: p.Entity, variant: v.Entity);
+
+            var response = await _factory
+                .CreateClient()
+                .AuthenticatedAs(user.Entity)
+                .PostAsync("/v3/orders",
+                    GetOrderCreateData(reg, p, v, p2));
+
+            response.CheckOk();
+
+            var updatedOrder = await CheckOrderUpdatedAsync(scope, order, p, v, p2);
+            var content = await response.AsTokenAsync();
+            content.CheckOrder(updatedOrder);
+        }
+
+        [Fact]
+        public async Task Should_Allow_To_Create_Or_Update_Order_For_Admin()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var admin = await scope.CreateUserAsync(role: Roles.Admin);
+            using var org = await scope.CreateOrganizationAsync();
+            using var member = await scope
+                .CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
+            using var evt = await scope.CreateEventAsync(organization: org.Entity);
+            using var user = await scope.CreateUserAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+            using var p = await scope.CreateProductAsync(evt.Entity);
+            using var p2 = await scope.CreateProductAsync(evt.Entity);
+            using var v = await scope.CreateProductVariantAsync(p.Entity);
+            using var order = await scope.CreateOrderAsync(reg.Entity, product: p.Entity, variant: v.Entity);
+
+            var response = await _factory
+                .CreateClient()
+                .AuthenticatedAs(admin.Entity, Roles.Admin)
+                .PostAsync($"/v3/orders?orgId={org.Entity.OrganizationId}",
+                    GetOrderCreateData(reg, p, v, p2));
+
+            response.CheckOk();
+
+            var updatedOrder = await CheckOrderUpdatedAsync(scope, order, p, v, p2);
+            var json = await response.AsTokenAsync();
+            json.CheckOrder(updatedOrder);
+        }
+
+        [Theory]
+        [InlineData(Roles.SuperAdmin)]
+        [InlineData(Roles.SystemAdmin)]
+        public async Task Should_Allow_Power_Admin_To_Create_Or_Update_Any_Order(string role)
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+            using var user = await scope.CreateUserAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+            using var p = await scope.CreateProductAsync(evt.Entity);
+            using var p2 = await scope.CreateProductAsync(evt.Entity);
+            using var v = await scope.CreateProductVariantAsync(p.Entity);
+            using var order = await scope.CreateOrderAsync(reg.Entity, product: p.Entity, variant: v.Entity);
+
+            var response = await _factory
+                .CreateClient()
+                .Authenticated(role: role)
+                .PostAsync("/v3/orders",
+                    GetOrderCreateData(reg, p, v, p2));
+
+            response.CheckOk();
+
+            var updatedOrder = await CheckOrderUpdatedAsync(scope, order, p, v, p2);
+            var json = await response.AsTokenAsync();
+            json.CheckOrder(updatedOrder);
+        }
+
+        [Theory]
+        [InlineData(Order.OrderStatus.Draft)]
+        [InlineData(Order.OrderStatus.Verified)]
+        public async Task Should_Allow_To_Create_Or_Update_Order_In_Status(Order.OrderStatus status)
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var evt = await scope.CreateEventAsync();
+            using var user = await scope.CreateUserAsync();
+            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+            using var p = await scope.CreateProductAsync(evt.Entity);
+            using var p2 = await scope.CreateProductAsync(evt.Entity);
+            using var v = await scope.CreateProductVariantAsync(p.Entity);
+            using var order =
+                await scope.CreateOrderAsync(reg.Entity, product: p.Entity, variant: v.Entity, status: status);
+
+            var response = await _factory
+                .CreateClient()
+                .AuthenticatedAsSystemAdmin()
+                .PostAsync("/v3/orders",
+                    GetOrderCreateData(reg, p, v, p2));
+
+            response.CheckOk();
+
+            var updatedOrder = await CheckOrderUpdatedAsync(scope, order, p, v, p2);
+            var json = await response.AsTokenAsync();
+            json.CheckOrder(updatedOrder);
+        }
+
+        private static async Task<Order> CheckOrderCreatedAsync(
+            TestServiceScope scope,
+            IDisposableEntity<Registration> reg,
+            IDisposableEntity<Product> p,
+            IDisposableEntity<ProductVariant> v,
+            IDisposableEntity<Product> p2)
+        {
+            var createdOrder = await scope.Db.Orders
+                .AsNoTracking()
+                .Include(o => o.OrderLines)
+                .SingleAsync();
+
+            Assert.Equal(reg.Entity.RegistrationId, createdOrder.RegistrationId);
+
+            CheckOrderAsync(createdOrder, p, v, p2);
+
+            return createdOrder;
+        }
+
+        private static async Task<Order> CheckOrderUpdatedAsync(
+            TestServiceScope scope,
+            IDisposableEntity<Order> order,
+            IDisposableEntity<Product> p,
+            IDisposableEntity<ProductVariant> v,
+            IDisposableEntity<Product> p2)
+        {
+            var updatedOrder = await scope.Db.Orders
+                .AsNoTracking()
+                .Include(o => o.OrderLines)
+                .FirstOrDefaultAsync(o => o.OrderId == order.Entity.OrderId);
+
+            CheckOrderAsync(updatedOrder, p, v, p2);
+
+            return updatedOrder;
+        }
+
+        private static void CheckOrderAsync(
+            Order order,
+            IDisposableEntity<Product> p,
+            IDisposableEntity<ProductVariant> v,
+            IDisposableEntity<Product> p2)
+        {
+            Assert.Equal(2, order.OrderLines.Count);
+
+            var firstLine = order.OrderLines.First();
+            Assert.Equal(p.Entity.ProductId, firstLine.ProductId);
+            Assert.Equal(v.Entity.ProductVariantId, firstLine.ProductVariantId);
+            Assert.Equal(2, firstLine.Quantity);
+
+            var secondLine = order.OrderLines.Last();
+            Assert.Equal(p2.Entity.ProductId, secondLine.ProductId);
+            Assert.Null(secondLine.ProductVariantId);
+            Assert.Equal(1, secondLine.Quantity);
+        }
+
+        private static object GetOrderCreateData(
+            IDisposableEntity<Registration> reg,
+            IDisposableEntity<Product> p,
+            IDisposableEntity<ProductVariant> v,
+            IDisposableEntity<Product> p2)
+        {
+            return new
+            {
+                registrationId = reg.Entity.RegistrationId,
+                lines = GetOrderLinesData(p, v, p2)
+            };
+        }
+
+        private static object GetOrderUpdateData(
+            IDisposableEntity<Product> p,
+            IDisposableEntity<ProductVariant> v,
+            IDisposableEntity<Product> p2)
+        {
+            return new
+            {
+                lines = GetOrderLinesData(p, v, p2)
+            };
+        }
+
+        private static object GetOrderLinesData(
+            IDisposableEntity<Product> p,
+            IDisposableEntity<ProductVariant> v,
+            IDisposableEntity<Product> p2)
+        {
+            return new[]
+            {
+                new
+                {
+                    productId = p.Entity.ProductId,
+                    productVariantId = v.Entity.ProductVariantId as int?,
+                    quantity = 2
+                },
+                new
+                {
+                    productId = p2.Entity.ProductId,
+                    productVariantId = (int?)null,
+                    quantity = 1
+                }
+            };
         }
     }
 }

@@ -173,7 +173,7 @@ namespace Eventuras.Services
             return await _db.SaveChangesAsync();
         }
 
-        public async Task<bool> AddProductToRegistration(string email, int eventId, int productId, int? variantId)
+        public async Task<Order> AddProductToRegistration(string email, int eventId, int productId, int? variantId)
         {
             var userId = await _db.Users.Where(u => u.Email == email)
                 .Select(u => u.Id)
@@ -201,7 +201,7 @@ namespace Eventuras.Services
             return await _createOrUpdateOrderAsync(registration, vm);
         }
 
-        public async Task<bool> CreateOrUpdateOrder(int registrationId, List<OrderVM> orders)
+        public async Task<Order> CreateOrUpdateOrder(int registrationId, List<OrderVM> orders)
         {
             var registration = await _db.Registrations
                 .Where(a => a.RegistrationId == registrationId)
@@ -218,7 +218,7 @@ namespace Eventuras.Services
             return await _createOrUpdateOrderAsync(registration, orders);
         }
 
-        public Task<bool> CreateOrUpdateOrder(int registrationId, int productId, int? productVariantId)
+        public Task<Order> CreateOrUpdateOrder(int registrationId, int productId, int? productVariantId)
         {
             var vm = new List<OrderVM>
             {
@@ -231,15 +231,17 @@ namespace Eventuras.Services
             return CreateOrUpdateOrder(registrationId, vm);
         }
 
-        private async Task<bool> _createOrUpdateOrderAsync(Registration registration, List<OrderVM> orders)
+        private async Task<Order> _createOrUpdateOrderAsync(Registration registration, List<OrderVM> orders)
         {
             var ordersDto = await _orderVmConversionService.OrderVmsToOrderDtos(orders);
 
             // Create/update an order as needed.
-            registration.CreateOrUpdateOrder(ordersDto.ToArray());
+            var order = registration.CreateOrUpdateOrder(ordersDto.ToArray());
 
             // Persist the changes
-            return await _db.SaveChangesAsync() > 0;
+            await _db.SaveChangesAsync();
+
+            return order;
         }
 
         public async Task<bool> UpdateParticipantInfo(int registrationId, string name, string jobTitle, string city, string Employer)
