@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Eventuras.Domain;
 using NodaTime;
-using NodaTime.TimeZones;
 
 namespace Eventuras.Services.Invoicing
 {
@@ -32,7 +30,7 @@ namespace Eventuras.Services.Invoicing
             return new InvoiceInfo
             {
                 OrderId = string.Join('-', orders.Select(o => o.OrderId)),
-                OrderDate = orders.Min(o => o.OrderTime.InZone(BclDateTimeZone.ForSystemDefault()).Date),
+                OrderDate = orders.Min(o => o.OrderTime.ToLocalDate()),
                 DueDate = orders.CalculateDueDate(),
                 CustomerEmail = orders.FirstFilled(o =>
                     o.CustomerEmail ?? o.Registration.CustomerEmail ?? o.Registration.User.Email),
