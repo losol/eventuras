@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29009.5
@@ -35,21 +35,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.Services.Zoom", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.WebApi", "src\Eventuras.WebApi\Eventuras.WebApi.csproj", "{8B8EC21D-A64F-402B-829A-E1E9187EE5A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventuras.WebApi.Tests", "tests\Eventuras.WebApi.Tests\Eventuras.WebApi.Tests.csproj", "{E1A9972C-62ED-4468-89ED-CFD928974C8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.WebApi.Tests", "tests\Eventuras.WebApi.Tests\Eventuras.WebApi.Tests.csproj", "{E1A9972C-62ED-4468-89ED-CFD928974C8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventuras.Services.PowerOffice", "src\Eventuras.Services.PowerOffice\Eventuras.Services.PowerOffice.csproj", "{4CE167A4-1CC3-4652-A61B-05F1D2C300C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.Services.PowerOffice", "src\Eventuras.Services.PowerOffice\Eventuras.Services.PowerOffice.csproj", "{4CE167A4-1CC3-4652-A61B-05F1D2C300C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventuras.Services.Stripe", "src\Eventuras.Services.Stripe\Eventuras.Services.Stripe.csproj", "{BED0F767-B5EB-4F98-A319-6A5185CFF159}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.Services.Stripe", "src\Eventuras.Services.Stripe\Eventuras.Services.Stripe.csproj", "{BED0F767-B5EB-4F98-A319-6A5185CFF159}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventuras.Services.Google.RecaptchaV3", "src\Eventuras.Services.Google.RecaptchaV3\Eventuras.Services.Google.RecaptchaV3.csproj", "{64812344-6DD5-49F1-BBF5-3874A20B062B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.Services.Google.RecaptchaV3", "src\Eventuras.Services.Google.RecaptchaV3\Eventuras.Services.Google.RecaptchaV3.csproj", "{64812344-6DD5-49F1-BBF5-3874A20B062B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventuras.Services.Tests", "tests\Eventuras.Services.Tests\Eventuras.Services.Tests.csproj", "{C7246369-B72F-4C6E-951A-63E86676E1ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.Services.Tests", "tests\Eventuras.Services.Tests\Eventuras.Services.Tests.csproj", "{C7246369-B72F-4C6E-951A-63E86676E1ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventuras.Services.SendGrid", "src\Eventuras.Services.SendGrid\Eventuras.Services.SendGrid.csproj", "{4C9A2C86-6649-48D8-8335-F7BC3E12C9A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.Services.SendGrid", "src\Eventuras.Services.SendGrid\Eventuras.Services.SendGrid.csproj", "{4C9A2C86-6649-48D8-8335-F7BC3E12C9A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventuras.Services.Smtp", "src\Eventuras.Services.Smtp\Eventuras.Services.Smtp.csproj", "{C5EF41F1-0631-470F-8B88-71D87D68B853}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.Services.Smtp", "src\Eventuras.Services.Smtp\Eventuras.Services.Smtp.csproj", "{C5EF41F1-0631-470F-8B88-71D87D68B853}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventuras.Services.Twilio", "src\Eventuras.Services.Twilio\Eventuras.Services.Twilio.csproj", "{8DEB813B-1AF5-479E-9227-0932F53F7047}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.Services.Twilio", "src\Eventuras.Services.Twilio\Eventuras.Services.Twilio.csproj", "{8DEB813B-1AF5-479E-9227-0932F53F7047}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
