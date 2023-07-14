@@ -1,15 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Losol.Communication.Email.Smtp" Version="0.7.0" />
-    </ItemGroup>
-
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Losol.Communication.Email.Smtp" Version="0.7.0" />
+  </ItemGroup>
 </Project>

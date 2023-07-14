@@ -1,16 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-        <LosolCommunicationLibraryVersion>0.5.2</LosolCommunicationLibraryVersion>
-        <UserSecretsId>23ad1f65-ced2-4c24-87cb-6735ecf42528</UserSecretsId>
+    <TargetFramework>net7.0</TargetFramework>
+    <LosolCommunicationLibraryVersion>0.5.2</LosolCommunicationLibraryVersion>
+    <UserSecretsId>23ad1f65-ced2-4c24-87cb-6735ecf42528</UserSecretsId>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.UI" Version="6.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="6.0.2" />
-    <PackageReference Include="Losol.Communication.Email" Version="0.7.0" /> 
+    <PackageReference Include="Losol.Communication.Email" Version="0.7.0" />
     <PackageReference Include="Losol.Communication.Email.Smtp" Version="0.7.0" />
     <PackageReference Include="Losol.Communication.Email.SendGrid" Version="0.7.0" />
     <PackageReference Include="Losol.Communication.Email.File" Version="0.7.0" />
@@ -20,17 +18,17 @@
     <PackageReference Include="Losol.Communication.Sms" Version="0.7.0" />
     <PackageReference Include="Losol.Communication.Sms.Twilio" Version="0.7.0" />
     <PackageReference Include="Losol.Communication.Sms.Mock" Version="0.7.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.1" NoWarn="NU1605" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.1" NoWarn="NU1605" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.FeatureManagement" Version="2.4.0" />
     <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.4.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.0.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="6.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.9" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Eventuras.Services.Auth0\Eventuras.Services.Auth0.csproj" />
@@ -46,5 +44,4 @@
     <ProjectReference Include="..\Eventuras.Infrastructure\Eventuras.Infrastructure.csproj" />
     <ProjectReference Include="..\Eventuras.Domain\Eventuras.Domain.csproj" />
   </ItemGroup>
-
 </Project>

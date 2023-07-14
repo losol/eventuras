@@ -1,11 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <PreserveCompilationContext>true</PreserveCompilationContext>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="iTextSharp" Version="5.5.13.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.1" />
@@ -23,12 +21,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\Eventuras.Infrastructure\Eventuras.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\Eventuras.Services\Eventuras.Services.csproj" />
     <ProjectReference Include="..\..\src\Eventuras.WebApi\Eventuras.WebApi.csproj" />
     <ProjectReference Include="..\Eventuras.TestAbstractions\Eventuras.TestAbstractions.csproj" />
   </ItemGroup>
-
 </Project>
