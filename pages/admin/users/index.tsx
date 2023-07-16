@@ -10,11 +10,11 @@ import {
 import { fetcher } from '@lib/fetcher';
 import { toaster } from '@lib/toaster';
 import { createUser, getUserById, updateUser, User } from '@lib/User';
-import { useSession } from 'next-auth/client';
+import { useSession } from 'next-auth/react';
 import React, { useEffect, useMemo, useState } from 'react';
 
 const AdminUsersIndex = (): JSX.Element => {
-  const [session, loading] = useSession();
+  const { data: session, status } = useSession();
   const [users, setUsers] = useState([]);
   const [activeUser, setActiveUser] = useState<User>();
   const [pages, setPages] = useState();
@@ -57,7 +57,7 @@ const AdminUsersIndex = (): JSX.Element => {
     const userList = await fetcher.get(
       `/v3/users?page=${page}&count=${count}`,
       {
-        accessToken: session.accessToken,
+        accessToken: session.user.accessToken,
       }
     );
 
@@ -81,7 +81,7 @@ const AdminUsersIndex = (): JSX.Element => {
   };
 
   const handleSubmitNewUser = async (user: User) => {
-    const newUser = await createUser(user, session.accessToken).catch((error) =>
+    const newUser = await createUser(user, session.user.accessToken).catch((error) =>
       toaster.error(error)
     );
 
@@ -93,7 +93,7 @@ const AdminUsersIndex = (): JSX.Element => {
   };
 
   const handleSubmitUpdateUser = async (user: User) => {
-    const updatedUser = await updateUser(user, session.accessToken).catch(
+    const updatedUser = await updateUser(user, session.user.accessToken).catch(
       (error) => toaster.error(error)
     );
 
@@ -105,7 +105,7 @@ const AdminUsersIndex = (): JSX.Element => {
   };
 
   const openUserdetails = async (userId: string) => {
-    const user = await getUserById(userId, session.accessToken);
+    const user = await getUserById(userId, session.user.accessToken);
     if (user) {
       setActiveUser(user);
     }
@@ -117,7 +117,7 @@ const AdminUsersIndex = (): JSX.Element => {
     getUsersList(currentPage);
   }, []);
 
-  if (loading) {
+  if ((status === "loading")) {
     return (
       <Layout>
         <Loading />
@@ -125,7 +125,7 @@ const AdminUsersIndex = (): JSX.Element => {
     );
   }
 
-  if (!loading && !session)
+  if (!session)
     return (
       <Layout>
         <Unauthorized />
