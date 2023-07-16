@@ -3,11 +3,11 @@ import { Layout } from '@components/common';
 import AlertModal from '@components/common/Modals';
 import { UserContext } from '@context/UserContext';
 import { registerForEvent } from '@lib/Registration';
-import { signIn, useSession } from 'next-auth/client';
+import { signIn, useSession } from 'next-auth/react';
 import { useContext, useEffect, useState } from 'react';
 
 const EventInfo = (props) => {
-  const [session, loading] = useSession();
+  const { data: session, status } = useSession();
   const { name = '...', description = '...' } = props;
   const { user } = useContext(UserContext);
   const [modal, setModal] = useState({ title: '', text: '' });
@@ -19,7 +19,7 @@ const EventInfo = (props) => {
         userId: user.id,
         eventId: props.id,
       },
-      session.accessToken
+      session.user.accessToken
     );
     setModal({
       title: 'Welcome!',
@@ -58,7 +58,7 @@ const EventInfo = (props) => {
             colorScheme="teal"
             mt={5}
             variant="outline"
-            isLoading={loading}
+            isLoading={(status === 'loading')}
             onClick={handleLoginAndRegistrationEvent}
           >
             Login and register for event
@@ -69,7 +69,7 @@ const EventInfo = (props) => {
             colorScheme="teal"
             variant="outline"
             mt={5}
-            isLoading={loading}
+            isLoading={(status === 'loading')}
             onClick={handleRegistrationEventRequest}
           >
             Register for online course

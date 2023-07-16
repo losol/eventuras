@@ -1,10 +1,10 @@
 import { Container, Heading } from '@chakra-ui/react';
-import { useSession } from 'next-auth/client';
+import { useSession } from 'next-auth/react';
 
 import { Layout } from '../../components/common';
 
 function UserIndex() {
-  const [session, loading] = useSession();
+  const { data: session, status } = useSession();
   return (
     <Layout>
       <Container marginTop="16">

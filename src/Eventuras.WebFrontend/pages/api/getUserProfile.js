@@ -24,7 +24,7 @@ const getUserProfile = async () => {
 
 export default async (req, res) => {
   const token = await getToken({ req, secret });
-  accessToken = token.accessToken;
+  accessToken = account.accessToken;
   const data = await getUserProfile();
   res.status(200).json(data);
 };

@@ -6,7 +6,7 @@ This is the front end for Eventuras event management system.
 
 First, ensure the backend api is running.
 
-If developing locally you could add ann `.env` file in the `src/Eventuras.WebClient` folder.
+If developing locally you could add ann `.env` file in the `src/Eventuras.WebFrontend` folder.
 
 ```
 NEXTAUTH_URL=http://localhost:3000

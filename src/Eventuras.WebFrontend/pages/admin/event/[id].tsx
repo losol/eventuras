@@ -20,7 +20,7 @@ import {
   Registration,
 } from '@lib/Registration';
 import { useRouter } from 'next/router';
-import { getSession, useSession } from 'next-auth/client';
+import { getSession, useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
 
 const EventAdmin = (): JSX.Element => {
@@ -28,7 +28,7 @@ const EventAdmin = (): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [registrationDrawerOpen, setRegistrationDrawerOpen] = useState(false);
   const [activeRegistration, setActiveRegistration] = useState<Registration>();
-  const [session, loading] = useSession();
+  const { data: session, status } = useSession();
   const toast = useToast();
   const [eventInfo, setEventInfo] = useState({ title: '' });
   const [registrations, setRegistrations] = useState([]);
@@ -78,7 +78,7 @@ const EventAdmin = (): JSX.Element => {
       setEventInfo(
         await getEventInfo(
           parseInt(router.query.id.toString()),
-          session.accessToken
+          session.user.accessToken
         )
       );
   };
@@ -87,7 +87,7 @@ const EventAdmin = (): JSX.Element => {
     if (session) {
       const result = await getRegistrationsForEvent(
         parseInt(router.query.id.toString()),
-        session.accessToken
+        session.user.accessToken
       );
       setRegistrations(result.data);
     }
@@ -130,7 +130,7 @@ const EventAdmin = (): JSX.Element => {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${JSON.parse(
-          JSON.stringify(session.accessToken)
+          JSON.stringify(session.user.accessToken)
         )}`,
       },
     })
@@ -173,7 +173,7 @@ const EventAdmin = (): JSX.Element => {
     updateSelectedParticipantGroups(updatedSelectedGroups);
   };
 
-  if (loading) {
+  if (status === "loading") {
     return (
       <Layout>
         <Loading />

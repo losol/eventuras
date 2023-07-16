@@ -5,6 +5,7 @@ export interface User {
   email: string;
   name: string;
   phoneNumber?: string;
+  acessToken?: string;
 }
 
 export const getUserProfile = async (accessToken: string): Promise<User> => {
