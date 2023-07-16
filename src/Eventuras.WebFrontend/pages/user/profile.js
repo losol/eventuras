@@ -1,19 +1,19 @@
 import { Container, Heading, Text } from '@chakra-ui/react';
 import { UserContext } from '@context/UserContext';
-import { useSession } from 'next-auth/client';
+import { useSession } from 'next-auth/react';
 import React, { useContext } from 'react';
 
 import { Layout, Loading } from '../../components/common';
 
 const UserProfile = () => {
-  const [session, loading] = useSession();
+  const { data: session, status } = useSession();
   const { user } = useContext(UserContext);
 
   return (
     <Layout>
       <Container marginTop="16">
         <Heading>Min bruker</Heading>
-        {loading && <Loading />}
+        {(status === 'loading') && <Loading />}
         {session && (
           <>
             <Text>Navn: {user && user.name}</Text>

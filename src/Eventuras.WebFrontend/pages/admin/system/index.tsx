@@ -7,11 +7,11 @@ import {
   Unauthorized,
 } from '@components/common';
 import { getOrganisationSettings } from '@lib/Organisation';
-import { useSession } from 'next-auth/client';
+import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 
 const SystemAdminIndex = () => {
-  const [session, loading] = useSession();
+  const { data: session, status } = useSession();
   const [settings, setSettings] = useState([]);
   const orgId = parseInt(process.env.NEXT_PUBLIC_ORGANIZATION_ID);
   const columns = [
@@ -30,7 +30,7 @@ const SystemAdminIndex = () => {
       const fetchSetting = async () => {
         const result = await getOrganisationSettings(
           orgId,
-          session.accessToken
+          session.user.accessToken
         );
         console.log(result);
         setSettings(result);
@@ -39,7 +39,7 @@ const SystemAdminIndex = () => {
     }
   }, [session]);
 
-  if (loading) {
+  if (status === "loading") {
     return (
       <Layout>
         <Loading />
@@ -47,7 +47,7 @@ const SystemAdminIndex = () => {
     );
   }
 
-  if (!loading && !session)
+  if (!session)
     return (
       <Layout>
         <Unauthorized />

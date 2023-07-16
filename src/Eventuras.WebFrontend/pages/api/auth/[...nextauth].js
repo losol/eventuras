@@ -1,5 +1,5 @@
 import NextAuth from 'next-auth';
-import Providers from 'next-auth/providers';
+import Auth0Provider from "next-auth/providers/auth0"
 
 const AUTH0_AUTHORIZE_URL =
   `https://${process.env.AUTH0_DOMAIN}/authorize?` +
@@ -12,10 +12,10 @@ const AUTH0_TOKEN_URL = `https://${process.env.AUTH0_DOMAIN}/oauth/token?`;
 const nextOptions = {
   site: process.env.NEXTAUTH_URL,
   providers: [
-    Providers.Auth0({
+    Auth0Provider({
       clientId: process.env.AUTH0_CLIENT_ID,
       clientSecret: process.env.AUTH0_CLIENT_SECRET,
-      domain: process.env.AUTH0_DOMAIN,
+      issuer: process.env.AUTH0_DOMAIN,
       audience: process.env.AUTH0_API_AUDIENCE,
       scope: 'openid profile email offline_access',
       protection: 'pkce',
@@ -52,7 +52,7 @@ const nextOptions = {
     async session(session, token) {
       if (token) {
         session.user = token.user;
-        session.accessToken = token.accessToken;
+        session.user.accessToken = token.accessToken;
         session.error = token.error;
       }
 

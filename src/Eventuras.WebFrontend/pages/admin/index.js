@@ -8,12 +8,12 @@ import {
 } from '@components/common';
 import { getEvents } from '@lib/EventInfo';
 import * as dayjs from 'dayjs';
-import { useSession } from 'next-auth/client';
+import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { FiUsers } from 'react-icons/fi';
 
 function AdminIndex() {
-  const [session, loading] = useSession();
+  const { data: session, status } = useSession();
   const [eventinfos, setEventinfos] = useState([]);
   const columns = [
     {
@@ -52,7 +52,7 @@ function AdminIndex() {
     fetchEvents();
   }, [session]);
 
-  if (loading)
+  if (status === "loading")
     return (
       <Layout>
         <Loading />

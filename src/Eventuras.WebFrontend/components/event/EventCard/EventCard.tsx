@@ -1,11 +1,11 @@
-import { Box } from '@chakra-ui/react';
+import { Box, LinkBox, LinkOverlay} from '@chakra-ui/react';
 import React from 'react';
 
 import { Link } from '../../common';
 
 function EventCard({ id, title, description, name, href }) {
   return (
-    <Link
+    <LinkBox
       href={href}
       borderWidth="1px"
       borderRadius="lg"
@@ -22,11 +22,13 @@ function EventCard({ id, title, description, name, href }) {
           lineHeight="tight"
           isTruncated
         >
-          {title}
+          <LinkOverlay href={href}>
+            {title}
+            </LinkOverlay>
         </Box>
         <Box color="black">{description}</Box>
       </Box>
-    </Link>
+    </LinkBox>
   );
 }
 
