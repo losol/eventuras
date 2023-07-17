@@ -9,19 +9,22 @@ import {
   Wrap,
   WrapItem,
 } from '@chakra-ui/react';
-import React from 'react';
 
-import { ColorModeToggler } from '..';
+type UserMenuProps = {
+  signOut: () => void;
+  name: string;
+};
 
-const UserMenu = (props) => {
-  const { signOut } = props;
+const UserMenu = (props: UserMenuProps) => {
+  const { signOut, name } = props;
+
   return (
     <>
       <Menu>
         <MenuButton as={Button} colorScheme="teal" size="lg" variant="outline">
           <Wrap>
             <WrapItem>
-              <Avatar name={props.name} size="xs" />
+              <Avatar name={name} size="xs" />
             </WrapItem>
             <WrapItem>Profil</WrapItem>
           </Wrap>
@@ -37,7 +40,7 @@ const UserMenu = (props) => {
             <Link href="/admin/">Admin</Link>
           </MenuItem>
           <MenuItem>
-            <Link onClick={() => signOut()}>Logg av</Link>
+            <Link onClick={signOut}>Logg av</Link>
           </MenuItem>
         </MenuList>
       </Menu>

@@ -1,9 +1,10 @@
-import { getToken } from 'next-auth/jwt';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getToken, JWT } from 'next-auth/jwt';
 
 const secret = process.env.NEXTAUTH_SECRET;
-let accessToken;
+let accessToken: JWT | null;
 
-async function fetcher(route) {
+async function fetcher(route: string) {
   const data = fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}${route}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -22,9 +23,9 @@ const getUserProfile = async () => {
   return data;
 };
 
-export default async (req, res) => {
+export default async (req: NextApiRequest, res: NextApiResponse) => {
   const token = await getToken({ req, secret });
-  accessToken = account.accessToken;
+  accessToken = token;
   const data = await getUserProfile();
   res.status(200).json(data);
 };

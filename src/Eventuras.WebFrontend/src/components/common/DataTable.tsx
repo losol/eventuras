@@ -17,20 +17,35 @@ import {
 } from '@chakra-ui/react';
 import { usePagination, useTable } from 'react-table';
 
-export default function DataTable({
-  columns,
-  data,
-  handlePageClick = null,
-  totalPages = null,
-  page = null,
-}) {
+type ColumnType = {
+  Header: string;
+  accessor: string;
+};
+
+type DataTableProps = {
+  columns: ColumnType[];
+  data: any[]; // TODO: Change to type
+  handlePageClick?: any; // TODO: Change to type
+  totalPages?: any; // TODO: Change to type
+  page?: any; // TODO: Change to type
+};
+
+const DataTable = (props: DataTableProps) => {
+  const {
+    columns,
+    data,
+    handlePageClick = null,
+    totalPages = null,
+    page = null,
+  } = props;
+
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } =
     useTable(
       {
         columns,
         data,
         initialState: {
-          pageIndex: 0,
+          // pageIndex: 0, // TODO: Update react-table to v8. Use similar option ot another way
         },
       },
       usePagination
@@ -124,4 +139,6 @@ export default function DataTable({
       }
     </>
   );
-}
+};
+
+export default DataTable;

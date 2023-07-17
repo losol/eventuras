@@ -1,10 +1,9 @@
 import { Container, Heading } from '@chakra-ui/react';
+import { Layout } from 'components';
 import { useSession } from 'next-auth/react';
 
-import { Layout } from '../../components/common';
-
 function UserIndex() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   return (
     <Layout>
       <Container marginTop="16">

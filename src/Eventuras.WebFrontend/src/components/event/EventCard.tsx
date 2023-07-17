@@ -1,11 +1,20 @@
+import { Box, LinkBox } from '@chakra-ui/react';
+import NextLink from 'next/link';
 import React from 'react';
-import { Box, LinkBox, LinkOverlay } from '@chakra-ui/react';
-import { Link } from 'components';
 
-function EventCard({ id, title, description, name, href }) {
+type EventCardProps = {
+  title: string;
+  description: string;
+  href: string;
+};
+
+const EventCard = (props: EventCardProps) => {
+  const { title, description, href } = props;
+
   return (
     <LinkBox
       href={href}
+      as={NextLink}
       borderWidth="1px"
       borderRadius="lg"
       overflow="hidden"
@@ -21,14 +30,12 @@ function EventCard({ id, title, description, name, href }) {
           lineHeight="tight"
           isTruncated
         >
-          <LinkOverlay href={href}>
-            {title}
-          </LinkOverlay>
+          {title}
         </Box>
         <Box color="black">{description}</Box>
       </Box>
     </LinkBox>
   );
-}
+};
 
 export default EventCard;

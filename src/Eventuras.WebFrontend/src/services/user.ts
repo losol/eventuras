@@ -1,7 +1,10 @@
-import { fetcher } from './fetcher';
 import { UserType } from 'types';
 
-export const getUserProfile = async (accessToken: string): Promise<UserType> => {
+import { fetcher } from './fetcher';
+
+export const getUserProfile = async (
+  accessToken: string
+): Promise<UserType> => {
   return fetcher.get(`/v3/users/me`, {
     accessToken: accessToken,
   });

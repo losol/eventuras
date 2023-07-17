@@ -6,17 +6,22 @@ import {
   Loading,
   Unauthorized,
   UserDrawer,
-} from '@components/common';
-import { fetcher } from '@lib/fetcher';
-import { toaster } from '@lib/toaster';
-import { createUser, getUserById, updateUser, User } from '@lib/User';
+} from 'components';
 import { useSession } from 'next-auth/react';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  createUser,
+  fetcher,
+  getUserById,
+  toaster,
+  updateUser,
+} from 'services';
+import { UserType } from 'types';
 
-const AdminUsersIndex = (): JSX.Element => {
+const AdminUsersIndex = () => {
   const { data: session, status } = useSession();
   const [users, setUsers] = useState([]);
-  const [activeUser, setActiveUser] = useState<User>();
+  const [activeUser, setActiveUser] = useState<UserType>();
   const [pages, setPages] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [userDrawerOpen, setUserDrawerOpen] = useState(false);
@@ -75,14 +80,14 @@ const AdminUsersIndex = (): JSX.Element => {
   };
 
   const handleAddUserClick = () => {
-    const newUser: User = { email: '', name: '' };
+    const newUser: UserType = { email: '', name: '' };
     setActiveUser(newUser);
     userDrawerToggle();
   };
 
-  const handleSubmitNewUser = async (user: User) => {
-    const newUser = await createUser(user, session.user.accessToken).catch((error) =>
-      toaster.error(error)
+  const handleSubmitNewUser = async (user: UserType) => {
+    const newUser = await createUser(user, session.user.accessToken).catch(
+      (error) => toaster.error(error)
     );
 
     if (newUser) {
@@ -92,7 +97,7 @@ const AdminUsersIndex = (): JSX.Element => {
     }
   };
 
-  const handleSubmitUpdateUser = async (user: User) => {
+  const handleSubmitUpdateUser = async (user: UserType) => {
     const updatedUser = await updateUser(user, session.user.accessToken).catch(
       (error) => toaster.error(error)
     );
@@ -117,7 +122,7 @@ const AdminUsersIndex = (): JSX.Element => {
     getUsersList(currentPage);
   }, []);
 
-  if ((status === "loading")) {
+  if (status === 'loading') {
     return (
       <Layout>
         <Loading />

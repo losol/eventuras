@@ -16,3 +16,4 @@ export {
 } from './user';
 
 export { toaster } from './toaster';
+export { fetcher } from './fetcher';
