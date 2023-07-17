@@ -1,17 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Stripe.net" Version="[16.4.0]" />
-        <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="6.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
-    </ItemGroup>
-
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Stripe.net" Version="[16.4.0]" />
+    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
+  </ItemGroup>
 </Project>
