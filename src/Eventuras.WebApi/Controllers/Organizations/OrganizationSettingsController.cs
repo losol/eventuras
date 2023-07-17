@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asp.Versioning;
 using Eventuras.Domain;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
@@ -135,7 +136,7 @@ namespace Eventuras.WebApi.Controllers.Organizations
 
         [HttpPost]
         public async Task<IActionResult> BatchUpdate(int organizationId,
-            [Required] [MinLength(1)] OrganizationSettingValueDto[] dtos)
+            [Required][MinLength(1)] OrganizationSettingValueDto[] dtos)
         {
             if (!ModelState.IsValid)
             {

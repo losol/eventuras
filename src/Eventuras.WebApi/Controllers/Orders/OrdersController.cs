@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Asp.Versioning;
 using Eventuras.Services;
 using Eventuras.Services.Orders;
 using Eventuras.Services.Registrations;

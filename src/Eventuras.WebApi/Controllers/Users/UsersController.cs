@@ -2,6 +2,7 @@ using System;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Asp.Versioning;
 using Eventuras.Services.Auth;
 using Eventuras.Services.Users;
 using Eventuras.WebApi.Models;

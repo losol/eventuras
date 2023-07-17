@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asp.Versioning;
 using Eventuras.Domain;
 using Eventuras.Services.Events;
 using Eventuras.Services.Exceptions;

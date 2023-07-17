@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asp.Versioning;
 using Eventuras.Domain;
 using Eventuras.Services.Events.Products;
 using Eventuras.Services.Exceptions;
@@ -167,9 +168,9 @@ namespace Eventuras.WebApi.Controllers.Notifications
 
         public EventParticipantsFilterDto EventParticipants { get; set; }
 
-        [Required] [MinLength(3)] public string Subject { get; set; }
+        [Required][MinLength(3)] public string Subject { get; set; }
 
-        [Required] [MinLength(10)] public string BodyMarkdown { get; set; }
+        [Required][MinLength(10)] public string BodyMarkdown { get; set; }
     }
 
     public class SmsNotificationDto : INotificationDto
@@ -178,6 +179,6 @@ namespace Eventuras.WebApi.Controllers.Notifications
 
         public EventParticipantsFilterDto EventParticipants { get; set; }
 
-        [Required] [MinLength(10)] public string Message { get; set; }
+        [Required][MinLength(10)] public string Message { get; set; }
     }
 }

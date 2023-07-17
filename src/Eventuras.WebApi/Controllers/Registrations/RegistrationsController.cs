@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
+using Asp.Versioning;
 using Eventuras.Services.Auth;
 using Eventuras.Services.Registrations;
 using Eventuras.WebApi.Models;
@@ -149,7 +150,7 @@ namespace Eventuras.WebApi.Controllers.Registrations
     {
         [Required] public string UserId { get; set; }
 
-        [Required] [Range(1, int.MaxValue)] public int EventId { get; set; }
+        [Required][Range(1, int.MaxValue)] public int EventId { get; set; }
 
         [FromQuery(Name = "createOrder")] public bool CreateOrder { get; set; }
     }
