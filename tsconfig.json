@@ -8,7 +8,7 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": false,
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -17,16 +17,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "baseUrl": ".",
+    "baseUrl": "./src/",
     "paths": {
-      "@context/*": [
-        "context/*"
-      ],
-      "@lib/*": [
-        "lib/*"
-      ],
-      "@components/*": [
-        "components/*"
+      "": [
+        "./*"
       ]
     },
     "incremental": true
@@ -34,8 +28,7 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx",
-    "pages/user/profile.js"
+    "**/*.tsx"
   ],
   "exclude": [
     "node_modules"

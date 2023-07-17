@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint --fix --ext .js,.jsx ."
+    "lint": "next lint",
+    "eslint-fix": "eslint --fix --ext .js,.jsx ."
   },
   "dependencies": {
     "@babel/core": "7.22.9",
