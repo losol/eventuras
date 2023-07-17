@@ -10,8 +10,8 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-export interface ModalProps {
-  isOpen: false;
+interface ModalProps {
+  isOpen: boolean;
   onClose: () => void;
   title?: string;
   text?: string;

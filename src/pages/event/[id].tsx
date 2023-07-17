@@ -1,10 +1,9 @@
 import { Button, Container, Heading, useDisclosure } from '@chakra-ui/react';
-import { Layout } from '@components/common';
-import AlertModal from '@components/common/Modals';
-import { UserContext } from '@context/UserContext';
-import { registerForEvent } from '@lib/Registration';
+import { AlertModal, Layout } from 'components';
+import { UserContext } from 'context';
 import { signIn, useSession } from 'next-auth/react';
 import { useContext, useEffect, useState } from 'react';
+import { registerForEvent } from 'services';
 
 const EventInfo = (props) => {
   const { data: session, status } = useSession();

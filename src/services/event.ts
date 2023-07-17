@@ -7,7 +7,7 @@ export const getEvents = async (
 ) => {
   return fetcher.get(
     '/v3/events?' +
-    new URLSearchParams({ organizationId: organizationId.toString() }),
+      new URLSearchParams({ organizationId: organizationId.toString() }),
     {
       accessToken: accessToken,
     }

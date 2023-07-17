@@ -1,10 +1,8 @@
 import { Button, Flex, Heading, useColorModeValue } from '@chakra-ui/react';
+import { UserMenu } from 'components';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import React, { useEffect } from 'react';
 
-import { Link, UserMenu } from '..';
-
-const Header = (props) => {
+const Header = () => {
   const { data: session } = useSession();
 
   // TODO: Send user to login page if refresh access token fails
@@ -16,7 +14,7 @@ const Header = (props) => {
     }
   }, [session]);
   */
-  
+
   return (
     <Flex
       as="nav"

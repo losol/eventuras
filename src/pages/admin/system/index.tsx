@@ -1,14 +1,8 @@
 import { Container, Heading } from '@chakra-ui/react';
-import {
-  DataTable,
-  Layout,
-  Link,
-  Loading,
-  Unauthorized,
-} from '@components/common';
-import { getOrganisationSettings } from '@lib/Organisation';
+import { DataTable, Layout, Link, Loading, Unauthorized } from 'components';
 import { useSession } from 'next-auth/react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getOrganisationSettings } from 'services';
 
 const SystemAdminIndex = () => {
   const { data: session, status } = useSession();
@@ -39,7 +33,7 @@ const SystemAdminIndex = () => {
     }
   }, [session]);
 
-  if (status === "loading") {
+  if (status === 'loading') {
     return (
       <Layout>
         <Loading />

@@ -25,9 +25,7 @@ interface MarkdownEditorProps {
 
 const MarkdownEditor = (props: MarkdownEditorProps): JSX.Element => {
   return (
-    <h2>
-      CKEditor turned off for now because of typescript error
-    </h2>
+    <h2>CKEditor turned off for now because of typescript error</h2>
     // TODO: Fix ts error and uncomment
     // <CKEditor
     //   data={props.data}

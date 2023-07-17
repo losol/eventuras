@@ -13,65 +13,57 @@ import {
   Input,
   VStack,
 } from '@chakra-ui/react';
-import { User } from '@lib/User';
-import React from 'react';
+import { FormEvent } from 'react';
+import { UserType } from 'types';
 
 interface UserDrawerProps {
-  user: User;
+  user: UserType;
   isOpen: boolean;
   onClose: () => void;
-  handleUserChange: (event) => void;
+  handleUserChange: (event: FormEvent<HTMLInputElement>) => void;
   onSubmit: () => void;
 }
 
 const UserDrawer = (props: UserDrawerProps): JSX.Element => {
+  const { user, isOpen, onClose, handleUserChange, onSubmit } = props;
+
+  // TODO: Use UserContext instead of props. This data repeating a lot. So this is state. Setup context globally. Perfectly with null user as initial state
+  const { id, name, email, phoneNumber } = user;
+
   return (
-    <Drawer
-      isOpen={props.isOpen}
-      placement="right"
-      onClose={props.onClose}
-      size="xl"
-    >
+    <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="xl">
       <DrawerOverlay>
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader borderBottomWidth="1px">{props.user.name}</DrawerHeader>
+          <DrawerHeader borderBottomWidth="1px">{name}</DrawerHeader>
 
           <DrawerBody>
             <VStack spacing={8}>
-              <Badge>{props.user.id}</Badge>
+              <Badge>{id}</Badge>
               <FormControl id="name" isRequired={true}>
                 <FormLabel>Name</FormLabel>
-                <Input
-                  type="text"
-                  value={props.user.name}
-                  onChange={props.handleUserChange}
-                />
+                <Input type="text" value={name} onChange={handleUserChange} />
               </FormControl>
               <FormControl id="email" isRequired={true}>
                 <FormLabel>Email</FormLabel>
-                <Input
-                  type="email"
-                  value={props.user.email}
-                  onChange={props.handleUserChange}
-                />
+                <Input type="email" value={email} onChange={handleUserChange} />
               </FormControl>
               <FormControl id="phoneNumber">
                 <FormLabel>Phone number</FormLabel>
                 <Input
                   type="tel"
-                  value={props.user.phoneNumber}
-                  onChange={props.handleUserChange}
+                  value={phoneNumber}
+                  onChange={handleUserChange}
                 />
               </FormControl>
             </VStack>
           </DrawerBody>
 
           <DrawerFooter borderTopWidth="1px">
-            <Button variant="outline" mr={3} onClick={props.onClose}>
+            <Button variant="outline" mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button colorScheme="blue" onClick={props.onSubmit}>
+            <Button colorScheme="blue" onClick={onSubmit}>
               Submit
             </Button>
           </DrawerFooter>

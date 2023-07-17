@@ -1,4 +1,4 @@
-import { UserType, EventType } from 'types';
+import { EventType, UserType } from 'types';
 
 export type UserEventRegistrationType = {
   userId: string;
@@ -13,6 +13,6 @@ export type RegistrationType = {
   type: string;
   certificateId: number;
   notes: string;
-  user?: UserType;
-  event?: EventType;
-}
+  user: UserType;
+  event: EventType;
+};

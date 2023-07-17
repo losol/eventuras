@@ -1,3 +1,4 @@
+// TODO: Think is this component needed. May be replaced with Chakra prop as={NextLink}
 import {
   Link as ChakraLink,
   LinkProps as ChakraLinkProps,

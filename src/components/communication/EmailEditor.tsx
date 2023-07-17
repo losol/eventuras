@@ -10,7 +10,7 @@ import { Dispatch, SetStateAction } from 'react';
 
 const DynamicMarkdownEditor = dynamic(
   () => import('components/communication/MarkdownEditor'),
-  { ssr: false, }
+  { ssr: false }
 );
 
 interface EmailEditorProps {
