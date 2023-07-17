@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT=$(basename "$0")
-OUT_DIR=build
+OUT_DIR=out-api-docs
 GEN_HTML=1
 GEN_YAML=1
 GEN_JSON=1
