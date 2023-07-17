@@ -1,0 +1,19 @@
+{
+  "name": "eventuras.docs",
+  "version": "0.1.0",
+  "description": "Documentation generator for eventuras",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "next": "^13.4.10",
+    "nextra": "^2.10.0",
+    "nextra-theme-docs": "^2.10.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "sharp": "^0.32.3"
+  }
+}
