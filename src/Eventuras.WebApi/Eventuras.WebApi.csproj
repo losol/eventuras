@@ -18,7 +18,8 @@
     <PackageReference Include="Losol.Communication.Sms" Version="0.7.0" />
     <PackageReference Include="Losol.Communication.Sms.Twilio" Version="0.7.0" />
     <PackageReference Include="Losol.Communication.Sms.Mock" Version="0.7.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
+    <PackageReference Include="Asp.Versioning.Mvc" Version="7.0.0" />
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="7.0.0" />
     <PackageReference Include="Microsoft.FeatureManagement" Version="2.6.1" />
     <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.6.1" />
     <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.0.0" />
@@ -44,4 +45,8 @@
     <ProjectReference Include="..\Eventuras.Infrastructure\Eventuras.Infrastructure.csproj" />
     <ProjectReference Include="..\Eventuras.Domain\Eventuras.Domain.csproj" />
   </ItemGroup>
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
 </Project>

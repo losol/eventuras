@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asp.Versioning;
 using Eventuras.Domain;
 using Eventuras.Infrastructure.Migrations;
 using Eventuras.Services;
@@ -128,6 +129,6 @@ namespace Eventuras.WebApi.Controllers.Organizations
 
     public class RoleRequestDto
     {
-        [Required] [Role] public string Role { get; set; }
+        [Required][Role] public string Role { get; set; }
     }
 }
