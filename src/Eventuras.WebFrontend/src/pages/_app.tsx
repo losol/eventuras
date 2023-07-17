@@ -1,7 +1,7 @@
-import type { AppProps } from 'next/app';
-import { SessionProvider } from 'next-auth/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { UserProvider } from 'context';
+import type { AppProps } from 'next/app';
+import { SessionProvider } from 'next-auth/react';
 import theme from 'styles/theme';
 
 function App({ Component, pageProps }: AppProps) {

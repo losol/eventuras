@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "eslint-fix": "eslint --fix --ext .js,.jsx ."
+    "lint-fix": "eslint --fix --ext .js,.jsx,.ts,.tsx ."
   },
   "dependencies": {
     "@babel/core": "7.22.9",
@@ -32,6 +32,7 @@
     "@next/eslint-plugin-next": "^13.4.10",
     "@types/node": "20.4.2",
     "@types/react": "18.2.15",
+    "@types/react-table": "^7.7.14",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.45.0",

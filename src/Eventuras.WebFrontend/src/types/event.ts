@@ -1,20 +1,20 @@
 // Event type according to API data
-// TODO: Check can props be null or always string. To prevent unnecessary null checks in components render
+// TODO: Think. Maybe, change to EventApiDataType or EventDataType - to indicate that this is backend data
 export type EventType = {
-  category: string | null;
-  city: string | null;
-  dateEnd: string | null;
-  dateStart: string | null;
-  description: string | null;
+  category: string;
+  city: string;
+  dateEnd: string;
+  dateStart: string;
+  description: string;
   featured: boolean;
   id: number;
-  lastRegistrationDate: string | null;
-  location: string | null;
+  lastRegistrationDate: string;
+  location: string;
   onDemand: boolean;
-  practicalInformation: string | null;
-  program: string | null;
-  slug: string | null;
-  status: string | null;
-  title: string | null;
-  type: string | null;
+  practicalInformation: string;
+  program: string;
+  slug: string;
+  status: string;
+  title: string;
+  type: string;
 };

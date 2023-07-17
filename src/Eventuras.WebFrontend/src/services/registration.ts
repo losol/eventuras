@@ -1,6 +1,7 @@
-import { fetcher } from './fetcher';
 // import { EventType, UserType, UserEventRegistrationType } from 'types';
 import { UserEventRegistrationType } from 'types';
+
+import { fetcher } from './fetcher';
 
 export const registerForEvent = async (
   registration: UserEventRegistrationType,
@@ -17,10 +18,10 @@ export const getRegistrationsForEvent = async (
 ) => {
   return fetcher.get(
     '/v3/registrations?' +
-    new URLSearchParams({
-      eventId: eventId.toString(),
-      includeUserInfo: 'true',
-    }),
+      new URLSearchParams({
+        eventId: eventId.toString(),
+        includeUserInfo: 'true',
+      }),
     {
       accessToken: accessToken,
     }
@@ -33,9 +34,9 @@ export const getRegistrationById = async (
 ) => {
   return fetcher.get(
     '/v3/registrations/' +
-    registrationId +
-    '?' +
-    new URLSearchParams({ includeUserinfo: 'true' }),
+      registrationId +
+      '?' +
+      new URLSearchParams({ includeUserinfo: 'true' }),
     {
       accessToken: accessToken,
     }

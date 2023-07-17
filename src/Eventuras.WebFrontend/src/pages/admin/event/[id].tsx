@@ -1,6 +1,3 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/router';
-import { getSession, useSession } from 'next-auth/react';
 import {
   Button,
   Container,
@@ -8,16 +5,17 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-
 import {
   DataTable,
+  EmailDrawer,
   Layout,
   Loading,
   RegistrationDrawer,
   Unauthorized,
-  EmailDrawer,
 } from 'components';
-
+import { useRouter } from 'next/router';
+import { getSession, useSession } from 'next-auth/react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   getEventInfo,
   getRegistrationById,
@@ -29,7 +27,8 @@ const EventAdmin = (): JSX.Element => {
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [registrationDrawerOpen, setRegistrationDrawerOpen] = useState(false);
-  const [activeRegistration, setActiveRegistration] = useState<RegistrationType>();
+  const [activeRegistration, setActiveRegistration] =
+    useState<RegistrationType>();
   const { data: session, status } = useSession();
   const toast = useToast();
   const [eventInfo, setEventInfo] = useState({ title: '' });
@@ -40,6 +39,7 @@ const EventAdmin = (): JSX.Element => {
   );
   const [emailBody, setEmailBody] = useState<string>('');
   const [subject, setSubject] = useState<string>('');
+
   const registrationsColumns = useMemo(
     () => [
       {
@@ -175,7 +175,7 @@ const EventAdmin = (): JSX.Element => {
     updateSelectedParticipantGroups(updatedSelectedGroups);
   };
 
-  if (status === "loading") {
+  if (status === 'loading') {
     return (
       <Layout>
         <Loading />

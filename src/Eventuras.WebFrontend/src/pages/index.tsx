@@ -1,14 +1,7 @@
-import type { InferGetStaticPropsType, GetStaticProps } from 'next';
-import Head from 'next/head';
 import { Box, Heading, SimpleGrid } from '@chakra-ui/react';
-import { Layout, Loading, EventCard } from 'components';
-import { EventType } from 'types';
-
-type OnlineCourseType = {
-  id: string;
-  name: string;
-  description: string;
-};
+import { EventCard, Layout, Loading } from 'components';
+import Head from 'next/head';
+import { EventType, OnlineCourseType } from 'types';
 
 type IndexProps = {
   events: EventType[];
@@ -31,15 +24,14 @@ export default function Index(props: IndexProps) {
             <Heading as="h2" marginTop="16" marginBottom="4">
               Arrangementer
             </Heading>
-            {!props.events && <Loading />}
+            {!events && <Loading />}
             <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing="20px">
-              {props.events &&
-                props.events.map((item: EventType) => (
+              {events &&
+                events.map((item: EventType) => (
                   <EventCard
-                    id={item.id}
+                    key={item.id}
                     title={item.title}
                     description={item.description}
-                    key={item.id}
                     href={`/event/${item.id}`}
                   />
                 ))}
@@ -47,16 +39,15 @@ export default function Index(props: IndexProps) {
             <Heading as="h2" marginTop="16" marginBottom="4">
               Nettkurs
             </Heading>
-            {!props.onlinecourses && <Loading />}
+            {!onlinecourses && <Loading />}
             <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing="20px">
-              {props.onlinecourses &&
-                props.onlinecourses.map((item: OnlineCourseType) => (
+              {onlinecourses &&
+                onlinecourses.map((onlineCourse: OnlineCourseType) => (
                   <EventCard
-                    id={item.id}
-                    title={item.name}
-                    description={item.description}
-                    key={item.id}
-                    href={`/onlinecourse/${item.id}`}
+                    key={onlineCourse.id}
+                    title={onlineCourse.name}
+                    description={onlineCourse.description}
+                    href={`/onlinecourse/${onlineCourse.id}`}
                   />
                 ))}
             </SimpleGrid>

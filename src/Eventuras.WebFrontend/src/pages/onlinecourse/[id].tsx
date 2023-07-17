@@ -1,12 +1,18 @@
 import { Button, Container, Heading, useDisclosure } from '@chakra-ui/react';
-import { Layout } from '@components/common';
-import AlertModal from '@components/common/Modals';
-import { UserContext } from '@context/UserContext';
-import { registerForEvent } from '@lib/Registration';
+import { AlertModal, Layout } from 'components';
+import { UserContext } from 'context';
 import { signIn, useSession } from 'next-auth/react';
 import { useContext, useEffect, useState } from 'react';
+import { registerForEvent } from 'services';
 
-const EventInfo = (props) => {
+import { EventType } from '../../types';
+
+type EventInfoProps = {
+  name: string;
+  description: string;
+};
+
+const EventInfo = (props: EventInfoProps) => {
   const { data: session, status } = useSession();
   const { name = '...', description = '...' } = props;
   const { user } = useContext(UserContext);
@@ -85,13 +91,19 @@ const EventInfo = (props) => {
     </Layout>
   );
 };
-export async function getStaticProps({ params }) {
+
+type StaticProps = {
+  id: string;
+  name: string;
+};
+
+export const getStaticProps = async ({ params }) => {
   const res = await fetch(
     process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/events/' + params.id
   );
   const json = await res.json();
   return { props: { ...json } };
-}
+};
 
 export async function getStaticPaths() {
   const res = await fetch(
@@ -99,9 +111,9 @@ export async function getStaticPaths() {
   );
   const events = await res.json();
 
-  const paths = events.map((e) => ({
+  const paths = events.map((event: EventType) => ({
     params: {
-      id: e.id.toString(),
+      id: event.id.toString(),
     },
   }));
 

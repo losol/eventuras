@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
 import { Header } from 'components';
+import { ReactNode } from 'react';
 
 type LayoutProps = {
   children: ReactNode;

@@ -10,23 +10,21 @@ import {
   Heading,
   Text,
 } from '@chakra-ui/react';
-import { Registration } from '@lib/Registration';
-import React from 'react';
+import { RegistrationType } from 'types';
 
 interface RegistrationDrawerProps {
-  registration: Registration;
+  registration: RegistrationType;
   isOpen: boolean;
   onClose: () => void;
 }
 
 const RegistrationDrawer = (props: RegistrationDrawerProps): JSX.Element => {
+  const { registration, onClose, isOpen } = props;
+  const { user, status, type, notes } = registration;
+  const { name, email, phoneNumber } = user;
+
   return (
-    <Drawer
-      isOpen={props.isOpen}
-      placement="right"
-      onClose={props.onClose}
-      size="xl"
-    >
+    <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="xl">
       <DrawerOverlay>
         <DrawerContent>
           <DrawerCloseButton />
@@ -36,24 +34,24 @@ const RegistrationDrawer = (props: RegistrationDrawerProps): JSX.Element => {
             <Heading as="h2" size="md" paddingTop="6">
               Bruker
             </Heading>
-            <Text>Navn: {props.registration.user.name}</Text>
-            <Text>E-post: {props.registration.user.email}</Text>
-            <Text>Mobil: {props.registration.user.phoneNumber}</Text>
+            <Text>Navn: {name}</Text>
+            <Text>E-post: {email}</Text>
+            <Text>Mobil: {phoneNumber}</Text>
 
             <Heading as="h2" size="md" paddingTop="6">
               Detaljer
             </Heading>
-            <Text>Status: {props.registration.status}</Text>
-            <Text>Type: {props.registration.type}</Text>
+            <Text>Status: {status}</Text>
+            <Text>Type: {type}</Text>
 
             <Heading as="h2" size="md" paddingTop="6">
               Notater
             </Heading>
-            <Text>{props.registration.notes}</Text>
+            <Text>{notes}</Text>
           </DrawerBody>
 
           <DrawerFooter borderTopWidth="1px">
-            <Button variant="outline" mr={3} onClick={props.onClose}>
+            <Button variant="outline" mr={3} onClick={onClose}>
               Cancel
             </Button>
           </DrawerFooter>

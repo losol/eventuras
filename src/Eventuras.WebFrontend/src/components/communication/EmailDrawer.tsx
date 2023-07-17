@@ -8,9 +8,8 @@ import {
   DrawerHeader,
   DrawerOverlay,
 } from '@chakra-ui/react';
-import { Dispatch, SetStateAction } from 'react';
-
 import { EmailEditor } from 'components';
+import { Dispatch, SetStateAction } from 'react';
 
 interface EmailDrawerProps {
   isOpen: boolean;
@@ -24,13 +23,19 @@ interface EmailDrawerProps {
 }
 
 const EmailDrawer = (props: EmailDrawerProps): JSX.Element => {
+  const {
+    isOpen,
+    onClose,
+    recipientGroups,
+    selectedRecipientGroups,
+    handleParticipantGroupsChange,
+    setEmailBody,
+    setSubject,
+    onSubmit,
+  } = props;
+
   return (
-    <Drawer
-      isOpen={props.isOpen}
-      placement="right"
-      onClose={props.onClose}
-      size="xl"
-    >
+    <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="xl">
       <DrawerOverlay>
         <DrawerContent>
           <DrawerCloseButton />
@@ -40,21 +45,21 @@ const EmailDrawer = (props: EmailDrawerProps): JSX.Element => {
 
           <DrawerBody>
             <EmailEditor
-              participantGroups={props.recipientGroups}
-              selectedRecipientGroups={props.selectedRecipientGroups}
-              handleParticipantGroupsChange={(group) =>
-                props.handleParticipantGroupsChange(group)
+              participantGroups={recipientGroups}
+              selectedRecipientGroups={selectedRecipientGroups}
+              handleParticipantGroupsChange={(group: string) =>
+                handleParticipantGroupsChange(group)
               }
-              setEmailBody={props.setEmailBody}
-              setSubject={props.setSubject}
+              setEmailBody={setEmailBody}
+              setSubject={setSubject}
             />
           </DrawerBody>
 
           <DrawerFooter borderTopWidth="1px">
-            <Button variant="outline" mr={3} onClick={props.onClose}>
+            <Button variant="outline" mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button colorScheme="blue" onClick={props.onSubmit}>
+            <Button colorScheme="blue" onClick={onSubmit}>
               Submit
             </Button>
           </DrawerFooter>
