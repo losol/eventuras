@@ -1,9 +1,12 @@
 import { Button, Flex, Heading, useColorModeValue } from '@chakra-ui/react';
-import { UserMenu } from 'components';
 import { signIn, signOut, useSession } from 'next-auth/react';
+import NextLink from 'next/link';
+import { useRouter } from 'next/router';
+import { UserMenu } from 'components';
 
 const Header = () => {
   const { data: session } = useSession();
+  const { locale, locales } = useRouter();
 
   // TODO: Send user to login page if refresh access token fails
   /*
@@ -30,6 +33,12 @@ const Header = () => {
           Eventuras
         </Heading>
       </Flex>
+
+      <NextLink href="/another" locale="fr">
+        {locale}
+        {locales}
+        Toggle Language
+      </NextLink>
 
       {!session && (
         <Button
