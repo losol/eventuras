@@ -1,0 +1,15 @@
+{
+  "locales": [
+    "en",
+    "nb"
+  ],
+  "defaultLocale": "en",
+  "pages": {
+    "*": [
+      "common"
+    ],
+    "/": [
+      "home"
+    ]
+  }
+}

@@ -20,8 +20,10 @@
     "axios": "^1.4.0",
     "dayjs": "^1.11.9",
     "framer-motion": "10.12.21",
+    "i18n": "^0.15.1",
     "next": "13.4.10",
     "next-auth": "4.22.1",
+    "next-translate": "^2.5.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.10.1",
@@ -41,6 +43,7 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-simple-import-sort": "^10.0.0",
+    "next-translate-plugin": "^2.5.0",
     "prettier": "^3.0.0",
     "typescript": "5.1.6",
     "webpack": "5.88.1"
