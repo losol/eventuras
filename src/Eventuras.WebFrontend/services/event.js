@@ -2,12 +2,12 @@ import { fetcher } from './fetcher';
 // import { EventType } from 'types';
 
 export const getEvents = async (
-  organizationId: number,
-  accessToken: string
+  organizationId,
+  accessToken
 ) => {
   return fetcher.get(
     '/v3/events?' +
-      new URLSearchParams({ organizationId: organizationId.toString() }),
+    new URLSearchParams({ organizationId: organizationId.toString() }),
     {
       accessToken: accessToken,
     }
@@ -15,8 +15,8 @@ export const getEvents = async (
 };
 
 export const getEventInfo = async (
-  eventInfoId: number,
-  accessToken: string
+  eventInfoId,
+  accessToken
 ) => {
   return fetcher.get('/v3/events/' + eventInfoId, {
     accessToken: accessToken,

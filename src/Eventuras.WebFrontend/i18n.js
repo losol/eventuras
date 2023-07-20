@@ -1,19 +1,12 @@
 const defaultLocale = process.env.NEXT_PUBLIC_DEFAULT_LOCALE;
 
 const i18config = {
-  locales: [
-    "en",
-    "nb"
-  ],
+  locales: ['nb', 'en'],
   defaultLocale: defaultLocale ? defaultLocale : 'en',
   pages: {
-    "*": [
-      "common"
-    ],
-    "/": [
-      "index"
-    ]
-  }
+    '*': ['common'],
+    '/': ['index'],
+  },
 };
 
 module.exports = i18config;

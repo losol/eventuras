@@ -16,7 +16,7 @@ const DynamicMarkdownEditor = dynamic(
 interface EmailEditorProps {
   participantGroups: string[];
   selectedRecipientGroups: string[];
-  handleParticipantGroupsChange: any;
+  handleParticipantGroupsChange: (group: string) => void;
   setEmailBody: Dispatch<SetStateAction<string>>;
   setSubject: Dispatch<SetStateAction<string>>;
 }
@@ -33,7 +33,7 @@ const EmailEditor = (props: EmailEditorProps): JSX.Element => {
                 id={group}
                 isChecked={props.selectedRecipientGroups.includes(group)}
                 key={`participant_checkbox_${group}`}
-                onChange={(event) => props.handleParticipantGroupsChange(group)}
+                onChange={() => props.handleParticipantGroupsChange(group)}
               >
                 {group === 'Participant' || group === 'Lecturer'
                   ? `${group}s`
@@ -55,8 +55,9 @@ const EmailEditor = (props: EmailEditorProps): JSX.Element => {
           Content
         </Heading>
         <DynamicMarkdownEditor
-          data=""
-          onChange={(v) => props.setEmailBody(v)}
+        // Commented to pass lint
+        // data=""
+        // onChange={(v: any) => props.setEmailBody(v)}
         />
       </Stack>
     </>

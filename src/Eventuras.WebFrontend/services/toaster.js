@@ -1,7 +1,7 @@
 import { createStandaloneToast } from '@chakra-ui/react';
 const toast = createStandaloneToast();
 
-const success = (text: string): void => {
+const success = text => {
   toast({
     title: 'Account created.',
     description: text,
@@ -11,7 +11,7 @@ const success = (text: string): void => {
   });
 };
 
-const error = (text: string): void => {
+const error = text => {
   toast({
     title: 'We failed.',
     description: text,

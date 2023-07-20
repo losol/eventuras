@@ -2,30 +2,28 @@ import { UserType } from 'types';
 
 import { fetcher } from './fetcher';
 
-export const getUserProfile = async (
-  accessToken: string
-): Promise<UserType> => {
+export const getUserProfile = async (accessToken) => {
   return fetcher.get(`/v3/users/me`, {
     accessToken: accessToken,
   });
 };
 
-export const getUsers = async (accessToken: string): Promise<UserType> => {
+export const getUsers = async (accessToken) => {
   return fetcher.get(`/v3/users/`, {
     accessToken: accessToken,
   });
 };
 
 export const getUserById = async (
-  userId: string,
-  accessToken: string
-): Promise<UserType> => {
+  userId,
+  accessToken
+) => {
   return fetcher.get(`/v3/users/${userId}`, {
     accessToken: accessToken,
   });
 };
 
-const validateUser = (user: User) => {
+const validateUser = user => {
   if (user.name.length < 5) {
     throw Error('Name is too short');
   }
@@ -35,9 +33,9 @@ const validateUser = (user: User) => {
 };
 
 export const createUser = async (
-  user: User,
-  accessToken: string
-): Promise<UserType> => {
+  user,
+  accessToken
+) => {
   if (user.id) {
     throw Error('User has an id. Did you mean to update the user instead?');
   }
@@ -49,9 +47,9 @@ export const createUser = async (
 };
 
 export const updateUser = async (
-  user: User,
-  accessToken: string
-): Promise<UserType> => {
+  user,
+  accessToken
+) => {
   if (!user.id) {
     throw Error('Missing user id.');
   }

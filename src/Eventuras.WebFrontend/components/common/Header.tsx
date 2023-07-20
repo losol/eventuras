@@ -1,12 +1,21 @@
-import { Button, Flex, Heading, useColorModeValue } from '@chakra-ui/react';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import {
+  Button,
+  ButtonGroup,
+  Flex,
+  Heading,
+  useColorModeValue,
+} from '@chakra-ui/react';
+import { UserMenu } from 'components';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { UserMenu } from 'components';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import useTranslation from 'next-translate/useTranslation';
 
 const Header = () => {
   const { data: session } = useSession();
   const { locale, locales } = useRouter();
+  const { t } = useTranslation('common');
+  const { asPath } = useRouter(); // Same page but change language
 
   // TODO: Send user to login page if refresh access token fails
   /*
@@ -34,32 +43,32 @@ const Header = () => {
         </Heading>
       </Flex>
 
+      <div>
+        <ButtonGroup colorScheme="teal" size="sm" mr={2} variant="ghost">
+          {locales?.map((lang) => (
+            <Button
+              key={lang}
+              as={NextLink}
+              href={asPath}
+              locale={lang}
+              bg={lang === locale ? 'teal.100' : ''}
+            >
+              {lang.toUpperCase()}
+            </Button>
+          ))}
+        </ButtonGroup>
 
-      {/* Current language: {locale}
-      <br />
-      All languages:
-      {' '}
-      {locales.map(local => local + ', ')}
-      <br /> */}
-
-      <NextLink href="/nb" locale="nb">
-        NB
-      </NextLink>
-
-      <NextLink href="/en" locale="en">
-        EN
-      </NextLink>
-
-      {!session && (
-        <Button
-          onClick={() => signIn('auth0')}
-          colorScheme="teal"
-          variant="outline"
-        >
-          Logg på
-        </Button>
-      )}
-      {session && <UserMenu signOut={signOut} name={session.user?.name} />}
+        {!session && (
+          <Button
+            onClick={() => signIn('auth0')}
+            colorScheme="teal"
+            variant="outline"
+          >
+            {t('header.auth.login')}
+          </Button>
+        )}
+        {session && <UserMenu signOut={signOut} name={session.user?.name} />}
+      </div>
     </Flex>
   );
 };

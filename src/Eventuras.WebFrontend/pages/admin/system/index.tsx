@@ -7,7 +7,8 @@ import { getOrganisationSettings } from 'services';
 const SystemAdminIndex = () => {
   const { data: session, status } = useSession();
   const [settings, setSettings] = useState([]);
-  const orgId = parseInt(process.env.NEXT_PUBLIC_ORGANIZATION_ID);
+  // Temporary fix. TODO: Change
+  const orgId = parseInt(process.env.NEXT_PUBLIC_ORGANIZATION_ID as string);
   const columns = [
     {
       Header: 'Name',
