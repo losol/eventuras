@@ -1,0 +1,1 @@
+export { formatLanguageName } from './text';
