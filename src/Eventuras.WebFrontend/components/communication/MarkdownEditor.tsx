@@ -1,29 +1,30 @@
-import { CKEditor } from '@ckeditor/ckeditor5-react';
+// import { CKEditor } from '@ckeditor/ckeditor5-react';
 // import Editor from '@losol/ckeditor5-build-markdown';
 
-const editorConfiguration = {
-  toolbar: [
-    'heading',
-    '|',
-    'bold',
-    'italic',
-    'link',
-    'bulletedList',
-    'numberedList',
-    '|',
-    'blockQuote',
-    '|',
-    'undo',
-    'redo',
-  ],
-};
+// const editorConfiguration = {
+//   toolbar: [
+//     'heading',
+//     '|',
+//     'bold',
+//     'italic',
+//     'link',
+//     'bulletedList',
+//     'numberedList',
+//     '|',
+//     'blockQuote',
+//     '|',
+//     'undo',
+//     'redo',
+//   ],
+// };
 
-interface MarkdownEditorProps {
-  data: string;
-  onChange: (data: string) => void;
-}
+// interface MarkdownEditorProps {
+//   data: string;
+//   onChange: (data: string) => void;
+// }
 
-const MarkdownEditor = (props: MarkdownEditorProps): JSX.Element => {
+// const MarkdownEditor = (props: MarkdownEditorProps): JSX.Element => {
+const MarkdownEditor = (): JSX.Element => {
   return (
     <h2>CKEditor turned off for now because of typescript error</h2>
     // TODO: Fix ts error and uncomment

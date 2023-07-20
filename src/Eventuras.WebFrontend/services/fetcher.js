@@ -43,7 +43,7 @@ const handleResponse = async (response) => {
   }
 };
 
-const addBaseUrl = (url): string => {
+const addBaseUrl = url => {
   return process.env.NEXT_PUBLIC_API_BASE_URL + url;
 };
 

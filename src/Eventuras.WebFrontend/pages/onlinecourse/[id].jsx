@@ -7,12 +7,12 @@ import { registerForEvent } from 'services';
 
 import { EventType } from '../../types';
 
-type EventInfoProps = {
-  name: string;
-  description: string;
-};
+// type EventInfoProps = {
+//   name: string;
+//   description: string;
+// };
 
-const EventInfo = (props: EventInfoProps) => {
+const EventInfo = props => {
   const { data: session, status } = useSession();
   const { name = '...', description = '...' } = props;
   const { user } = useContext(UserContext);
@@ -92,10 +92,10 @@ const EventInfo = (props: EventInfoProps) => {
   );
 };
 
-type StaticProps = {
-  id: string;
-  name: string;
-};
+// type StaticProps = {
+//   id: string;
+//   name: string;
+// };
 
 export const getStaticProps = async ({ params }) => {
   const res = await fetch(
@@ -111,7 +111,7 @@ export async function getStaticPaths() {
   );
   const events = await res.json();
 
-  const paths = events.map((event: EventType) => ({
+  const paths = events.map(event => ({
     params: {
       id: event.id.toString(),
     },

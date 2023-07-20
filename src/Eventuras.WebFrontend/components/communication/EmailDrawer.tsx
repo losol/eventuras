@@ -13,7 +13,7 @@ import { Dispatch, SetStateAction } from 'react';
 
 interface EmailDrawerProps {
   isOpen: boolean;
-  onClose: any;
+  onClose: () => void;
   recipientGroups: string[];
   selectedRecipientGroups: string[];
   onSubmit: () => void;
@@ -47,7 +47,7 @@ const EmailDrawer = (props: EmailDrawerProps): JSX.Element => {
             <EmailEditor
               participantGroups={recipientGroups}
               selectedRecipientGroups={selectedRecipientGroups}
-              handleParticipantGroupsChange={(group: string) =>
+              handleParticipantGroupsChange={group =>
                 handleParticipantGroupsChange(group)
               }
               setEmailBody={setEmailBody}

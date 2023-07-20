@@ -28,7 +28,9 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "services/fetcher.js",
+    "services/event.js"
   ],
   "exclude": [
     "node_modules"

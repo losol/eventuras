@@ -21,7 +21,7 @@ import { UserType } from 'types';
 const AdminUsersIndex = () => {
   const { data: session, status } = useSession();
   const [users, setUsers] = useState([]);
-  const [activeUser, setActiveUser] = useState<UserType>();
+  const [activeUser, setActiveUser] = useState();
   const [pages, setPages] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [userDrawerOpen, setUserDrawerOpen] = useState(false);
@@ -80,12 +80,12 @@ const AdminUsersIndex = () => {
   };
 
   const handleAddUserClick = () => {
-    const newUser: UserType = { email: '', name: '' };
+    const newUser = { email: '', name: '' };
     setActiveUser(newUser);
     userDrawerToggle();
   };
 
-  const handleSubmitNewUser = async (user: UserType) => {
+  const handleSubmitNewUser = async (user) => {
     const newUser = await createUser(user, session.user.accessToken).catch(
       (error) => toaster.error(error)
     );
@@ -97,7 +97,7 @@ const AdminUsersIndex = () => {
     }
   };
 
-  const handleSubmitUpdateUser = async (user: UserType) => {
+  const handleSubmitUpdateUser = async (user) => {
     const updatedUser = await updateUser(user, session.user.accessToken).catch(
       (error) => toaster.error(error)
     );
@@ -109,7 +109,7 @@ const AdminUsersIndex = () => {
     }
   };
 
-  const openUserdetails = async (userId: string) => {
+  const openUserdetails = async (userId) => {
     const user = await getUserById(userId, session.user.accessToken);
     if (user) {
       setActiveUser(user);
