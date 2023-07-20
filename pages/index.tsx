@@ -1,18 +1,9 @@
-import getT from 'next-translate/getT';
 import { Box, Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import { EventCard, Layout, Loading } from 'components';
 import Head from 'next/head';
-import { EventType, OnlineCourseType } from 'types';
 import { useRouter } from 'next/router';
-
-type LocalesType = {
-  component: {
-    [key: string]: string;
-  };
-  common: {
-    [key: string]: string;
-  };
-};
+import getT from 'next-translate/getT';
+import { EventType, LocalesType, OnlineCourseType } from 'types';
 
 type IndexProps = {
   events: EventType[];
@@ -39,9 +30,7 @@ export default function Index(props: IndexProps) {
             <Heading as="h2" marginTop="16" marginBottom="4">
               {demoTitleLocale} {locale?.toUpperCase()}
             </Heading>
-            <Text>
-              {demoTextLocale}
-            </Text>
+            <Text>{demoTextLocale}</Text>
           </Box>
 
           <Box margin="8">
@@ -120,4 +109,4 @@ export async function getStaticProps({ locale }: { locale: string }) {
     },
     revalidate: 1, // In seconds
   };
-};
+}

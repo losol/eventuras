@@ -17,20 +17,21 @@ import {
 } from '@chakra-ui/react';
 import { usePagination, useTable } from 'react-table';
 
-type ColumnType = {
-  Header: string;
-  accessor: string;
-};
+// type ColumnType = {
+//   Header: string;
+//   accessor: string;
+// };
 
-type DataTableProps = {
-  columns: ColumnType[];
-  data: any[]; // TODO: Change to type
-  handlePageClick?: any; // TODO: Change to type
-  totalPages?: any; // TODO: Change to type
-  page?: any; // TODO: Change to type
-};
+// type DataTableProps = {
+//   columns: ColumnType[];
+//   data: any[]; // TODO: Change to type
+//   handlePageClick?: any; // TODO: Change to type
+//   totalPages?: any; // TODO: Change to type
+//   page?: any; // TODO: Change to type
+// };
 
-const DataTable = (props: DataTableProps) => {
+// const DataTable = (props: DataTableProps) => {
+const DataTable = (props: any) => {
   const {
     columns,
     data,
@@ -66,7 +67,7 @@ const DataTable = (props: DataTableProps) => {
           ))}
         </Thead>
         <Tbody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
+          {rows.map((row) => {
             prepareRow(row);
             return (
               /* eslint-disable react/jsx-key */

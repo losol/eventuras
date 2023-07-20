@@ -23,12 +23,12 @@ import {
 } from 'services';
 import { RegistrationType } from 'types';
 
-const EventAdmin = (): JSX.Element => {
+const EventAdmin = () => {
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [registrationDrawerOpen, setRegistrationDrawerOpen] = useState(false);
   const [activeRegistration, setActiveRegistration] =
-    useState<RegistrationType>();
+    useState();
   const { data: session, status } = useSession();
   const toast = useToast();
   const [eventInfo, setEventInfo] = useState({ title: '' });
@@ -37,8 +37,8 @@ const EventAdmin = (): JSX.Element => {
   const [selectedParticipantGroups, updateSelectedParticipantGroups] = useState(
     ['Participant']
   );
-  const [emailBody, setEmailBody] = useState<string>('');
-  const [subject, setSubject] = useState<string>('');
+  const [emailBody, setEmailBody] = useState < string > ('');
+  const [subject, setSubject] = useState < string > ('');
 
   const registrationsColumns = useMemo(
     () => [
@@ -99,7 +99,7 @@ const EventAdmin = (): JSX.Element => {
     setRegistrationDrawerOpen(!registrationDrawerOpen);
   };
 
-  const openRegistrationDetails = async (registrationId: number) => {
+  const openRegistrationDetails = async (registrationId) => {
     const s = await getSession();
     const registration = await getRegistrationById(
       registrationId,
@@ -162,7 +162,7 @@ const EventAdmin = (): JSX.Element => {
       });
   };
 
-  const handleParticipantGroupsChange = (group: string) => {
+  const handleParticipantGroupsChange = (group) => {
     const updatedSelectedGroups = [...selectedParticipantGroups];
     if (updatedSelectedGroups.includes(group)) {
       const index = selectedParticipantGroups.findIndex(

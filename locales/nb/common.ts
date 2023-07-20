@@ -4,12 +4,12 @@ const LOCALES_COMMON_NO: LocalesCommonType = {
   // Header
   header: {
     auth: {
-      login: 'Login',
-      logout: 'Logout',
+      login: 'Logg på',
+      logout: 'Logg av',
     },
     userMenu: {
-      title: 'Profile',
-      profile: 'My profile',
+      title: 'Mine kurs',
+      profile: 'Min profil',
       myCourses: 'My courses',
       admin: 'Admin',
     },
