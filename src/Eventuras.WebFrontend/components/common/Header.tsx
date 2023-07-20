@@ -1,3 +1,7 @@
+import NextLink from 'next/link';
+import { useRouter } from 'next/router';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import useTranslation from 'next-translate/useTranslation';
 import {
   Button,
   ButtonGroup,
@@ -6,10 +10,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { UserMenu } from 'components';
-import NextLink from 'next/link';
-import { useRouter } from 'next/router';
-import { signIn, signOut, useSession } from 'next-auth/react';
-import useTranslation from 'next-translate/useTranslation';
+import { formatLanguageName } from 'helpers';
 
 const Header = () => {
   const { data: session } = useSession();
@@ -53,7 +54,7 @@ const Header = () => {
               locale={lang}
               bg={lang === locale ? 'teal.100' : ''}
             >
-              {lang.toUpperCase()}
+              {formatLanguageName(lang)}
             </Button>
           ))}
         </ButtonGroup>
@@ -74,3 +75,4 @@ const Header = () => {
 };
 
 export default Header;
+
