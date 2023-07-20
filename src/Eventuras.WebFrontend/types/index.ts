@@ -6,3 +6,4 @@ export type {
 } from './registration';
 export type { OrganisationSettingType } from './organization';
 export type { OnlineCourseType } from './onlinecourse';
+export type { LocalesType } from './locale';

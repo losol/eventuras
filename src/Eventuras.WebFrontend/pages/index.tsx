@@ -1,15 +1,30 @@
-import { Box, Heading, SimpleGrid } from '@chakra-ui/react';
+import getT from 'next-translate/getT';
+import { Box, Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import { EventCard, Layout, Loading } from 'components';
 import Head from 'next/head';
 import { EventType, OnlineCourseType } from 'types';
+import { useRouter } from 'next/router';
+
+type LocalesType = {
+  component: {
+    [key: string]: string;
+  };
+  common: {
+    [key: string]: string;
+  };
+};
 
 type IndexProps = {
   events: EventType[];
   onlinecourses: OnlineCourseType[];
+  locales: LocalesType;
 };
 
 export default function Index(props: IndexProps) {
-  const { events, onlinecourses } = props;
+  const { events, onlinecourses, locales } = props;
+  const { demoTitleLocale, demoTextLocale } = locales.component;
+  const { eventsTitle, onlineCoursesTitle } = locales.common;
+  const { locale } = useRouter();
 
   return (
     <>
@@ -22,7 +37,16 @@ export default function Index(props: IndexProps) {
         <main>
           <Box margin="8">
             <Heading as="h2" marginTop="16" marginBottom="4">
-              Arrangementer
+              {demoTitleLocale} {locale?.toUpperCase()}
+            </Heading>
+            <Text>
+              {demoTextLocale}
+            </Text>
+          </Box>
+
+          <Box margin="8">
+            <Heading as="h2" marginTop="16" marginBottom="4">
+              {eventsTitle}
             </Heading>
             {!events && <Loading />}
             <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing="20px">
@@ -37,7 +61,7 @@ export default function Index(props: IndexProps) {
                 ))}
             </SimpleGrid>
             <Heading as="h2" marginTop="16" marginBottom="4">
-              Nettkurs
+              {onlineCoursesTitle}
             </Heading>
             {!onlinecourses && <Loading />}
             <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing="20px">
@@ -58,7 +82,8 @@ export default function Index(props: IndexProps) {
   );
 }
 
-export async function getStaticProps() {
+export async function getStaticProps({ locale }: { locale: string }) {
+  // Data
   const eventsResponse = await fetch(
     process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/events'
   );
@@ -69,11 +94,30 @@ export async function getStaticProps() {
   );
   const onlinecourses = await onlinecoursesResponse.json();
 
+  // Locales
+  const translateComponent = await getT(locale, 'index');
+  const demoTitleLocale = translateComponent('demoTitle');
+  const demoTextLocale = translateComponent('demoText');
+
+  const translateCommon = await getT(locale, 'common');
+  const eventsTitle = translateCommon('events');
+  const onlineCoursesTitle = translateCommon('onlinecourses');
+
   return {
     props: {
       events: events.data,
       onlinecourses,
+      locales: {
+        component: {
+          demoTitleLocale,
+          demoTextLocale,
+        },
+        common: {
+          eventsTitle,
+          onlineCoursesTitle,
+        },
+      },
     },
     revalidate: 1, // In seconds
   };
-}
+};
