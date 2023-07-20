@@ -34,10 +34,20 @@ const Header = () => {
         </Heading>
       </Flex>
 
-      <NextLink href="/another" locale="fr">
-        {locale}
-        {locales}
-        Toggle Language
+
+      {/* Current language: {locale}
+      <br />
+      All languages:
+      {' '}
+      {locales.map(local => local + ', ')}
+      <br /> */}
+
+      <NextLink href="/nb" locale="nb">
+        NB
+      </NextLink>
+
+      <NextLink href="/en" locale="en">
+        EN
       </NextLink>
 
       {!session && (
