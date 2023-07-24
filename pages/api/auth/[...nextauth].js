@@ -1,12 +1,6 @@
 import NextAuth from 'next-auth';
 import Auth0Provider from 'next-auth/providers/auth0';
 
-const AUTH0_AUTHORIZE_URL =
-  `https://${process.env.AUTH0_DOMAIN}/authorize?` +
-  new URLSearchParams({
-    audience: process.env.AUTH0_API_AUDIENCE,
-    response_type: 'code',
-  });
 const AUTH0_TOKEN_URL = `https://${process.env.AUTH0_DOMAIN}/oauth/token?`;
 
 const nextOptions = {
@@ -16,48 +10,44 @@ const nextOptions = {
       clientId: process.env.AUTH0_CLIENT_ID,
       clientSecret: process.env.AUTH0_CLIENT_SECRET,
       issuer: `https://${process.env.AUTH0_DOMAIN}`,
-      audience: process.env.AUTH0_API_AUDIENCE,
       scope: 'openid profile email offline_access',
       protection: 'pkce',
       idToken: true,
       refreshToken: true,
     }),
+  
   ],
-  secret: process.env.NEXTAUTH_SECRET,
-  session: {
-    jwt: true,
-    secret: process.env.NEXTAUTH_SECRET,
-  },
-  callbacks: {
-    async jwt(token, user, account) {
-      // Initial sign in
-      if (account && user) {
-        return {
-          accessToken: account.accessToken,
-          accessTokenExpires: Date.now() + account.expires_in * 1000,
+  callbacks:{
+    async jwt({ token, user, account }){
+       // Initial sign in
+       if (account && user) {
+        if(!account.refresh_token){
+          console.error("No refresh token in account object :(")
+         }
+        const decoratedToken=
+        {
+          ...token,
+          accessToken: account.access_token,
           refreshToken: account.refresh_token,
+          accessTokenExpires:account.expires_at*1000,
           user,
         };
+        return decoratedToken
       }
 
-      // Return previous token if the access token has not expired yet
-      if (Date.now() < token.accessTokenExpires) {
-        return token;
-      }
 
-      // Access token has expired, try to update it
-      return refreshAccessToken(token);
-    },
-    async session(session, token) {
-      if (token) {
-        session.user = token.user;
-        session.user.accessToken = token.accessToken;
-        session.error = token.error;
+      //without a refresh token, we cant refresh, make sure it has one and it is expired before asking for one
+      if(token.refreshToken){
+        if (Date.now() > token.accessTokenExpires) {
+          return refreshAccessToken(token);
+        }
       }
-
-      return session;
-    },
-  },
+      
+      //by default, return token
+      return token
+      
+    }
+  }
 };
 
 /**
@@ -83,7 +73,6 @@ async function refreshAccessToken(token) {
     });
 
     const refreshedTokens = await response.json();
-
     if (!response.ok) {
       throw refreshedTokens;
     }
@@ -96,7 +85,6 @@ async function refreshAccessToken(token) {
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
     };
   } catch (error) {
-    console.log(error);
 
     return {
       ...token,
@@ -104,5 +92,5 @@ async function refreshAccessToken(token) {
     };
   }
 }
-
-export default (req, res) => NextAuth(req, res, nextOptions);
+const authGetter = (req, res) => NextAuth(req, res, nextOptions);
+export default authGetter
