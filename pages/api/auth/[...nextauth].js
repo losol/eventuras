@@ -10,44 +10,43 @@ const nextOptions = {
       clientId: process.env.AUTH0_CLIENT_ID,
       clientSecret: process.env.AUTH0_CLIENT_SECRET,
       issuer: `https://${process.env.AUTH0_DOMAIN}`,
-      scope: 'openid profile email offline_access',
       protection: 'pkce',
-      idToken: true,
-      refreshToken: true,
+      authorization: {
+        params: {
+          audience: process.env.AUTH0_AUDIENCE,
+          scope: 'openid email profile offline_access',
+        },
+      },
     }),
-  
   ],
-  callbacks:{
-    async jwt({ token, user, account }){
-       // Initial sign in
-       if (account && user) {
-        if(!account.refresh_token){
-          console.error("No refresh token in account object :(")
-         }
-        const decoratedToken=
-        {
+  callbacks: {
+    async jwt({ token, user, account }) {
+      // Initial sign in
+      if (account && user) {
+        if (!account.refresh_token) {
+          console.error('No refresh token in account object :(');
+        }
+        const decoratedToken = {
           ...token,
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
-          accessTokenExpires:account.expires_at*1000,
+          accessTokenExpires: account.expires_at * 1000,
           user,
         };
-        return decoratedToken
+        return decoratedToken;
       }
 
-
       //without a refresh token, we cant refresh, make sure it has one and it is expired before asking for one
-      if(token.refreshToken){
+      if (token.refreshToken) {
         if (Date.now() > token.accessTokenExpires) {
           return refreshAccessToken(token);
         }
       }
-      
+
       //by default, return token
-      return token
-      
-    }
-  }
+      return token;
+    },
+  },
 };
 
 /**
@@ -64,6 +63,7 @@ async function refreshAccessToken(token) {
       },
       method: 'POST',
       body: new URLSearchParams({
+        audience: process.env.AUTH0_AUDIENCE,
         grant_type: 'refresh_token',
         client_id: process.env.AUTH0_CLIENT_ID,
         client_secret: process.env.AUTH0_CLIENT_SECRET,
@@ -85,7 +85,6 @@ async function refreshAccessToken(token) {
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
     };
   } catch (error) {
-
     return {
       ...token,
       error: 'RefreshAccessTokenError',
@@ -93,4 +92,4 @@ async function refreshAccessToken(token) {
   }
 }
 const authGetter = (req, res) => NextAuth(req, res, nextOptions);
-export default authGetter
+export default authGetter;
