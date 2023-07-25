@@ -16,10 +16,12 @@ import {
   toaster,
   updateUser,
 } from 'services';
-import { UserType } from 'types';
 
 const AdminUsersIndex = () => {
   const { data: session, status } = useSession();
+
+
+  
   const [users, setUsers] = useState([]);
   const [activeUser, setActiveUser] = useState();
   const [pages, setPages] = useState();
@@ -119,8 +121,10 @@ const AdminUsersIndex = () => {
   };
 
   useEffect(() => {
-    getUsersList(currentPage);
-  }, []);
+    if(status!=='loading'){
+      getUsersList(currentPage);
+    }
+  }, [status]);
 
   if (status === 'loading') {
     return (

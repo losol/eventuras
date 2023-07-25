@@ -20,6 +20,13 @@ const nextOptions = {
     }),
   ],
   callbacks: {
+    async session({ session, token }) {
+      session.user={
+        ...session.user,
+        accessToken:token.accessToken
+      }
+      return session;
+    },
     async jwt({ token, user, account }) {
       // Initial sign in
       if (account && user) {
