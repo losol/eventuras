@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using Eventuras.Domain;
-using Eventuras.Services;
 using Eventuras.Services.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;

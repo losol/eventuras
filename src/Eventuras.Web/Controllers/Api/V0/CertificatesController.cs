@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Eventuras.Services;
 using Eventuras.Services.Certificates;
 using Eventuras.Services.Events;
 using Eventuras.Services.Registrations;

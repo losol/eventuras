@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eventuras.Web.Api.Controllers

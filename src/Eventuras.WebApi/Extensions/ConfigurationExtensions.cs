@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Configuration;
-using Eventuras.WebApi.Constants;
 
 namespace Eventuras.WebApi.Extensions
 {

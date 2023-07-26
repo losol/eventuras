@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
@@ -9,12 +8,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
 using Eventuras.Domain;
-using Eventuras.Pages.Account;
 using Eventuras.Services;
-using Eventuras.ViewModels;
 using Eventuras.Web.Services;
 using Eventuras.Services.Extensions;
-using System.Text;
 using static Eventuras.Domain.PaymentMethod;
 using System.Text.RegularExpressions;
 using Eventuras.Services.Events;

@@ -8,15 +8,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using HealthChecks.UI.Client;
 using Eventuras.Web;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Versioning;
-using ServiceCollectionExtensions = Eventuras.Web.Extensions.ServiceCollectionExtensions;
 
 namespace Eventuras
 {

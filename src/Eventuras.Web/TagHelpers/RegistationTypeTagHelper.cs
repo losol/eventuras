@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using static Eventuras.Domain.Order;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using static Eventuras.Domain.Registration;
 
 namespace Eventuras.Web.TagHelpers

@@ -1,5 +1,4 @@
 using Eventuras.Domain;
-using Eventuras.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;

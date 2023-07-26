@@ -1,5 +1,4 @@
 using Eventuras.Domain;
-using Eventuras.WebApi.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

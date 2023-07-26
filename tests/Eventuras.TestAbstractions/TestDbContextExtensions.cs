@@ -1,4 +1,3 @@
-using Eventuras.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace Eventuras.TestAbstractions

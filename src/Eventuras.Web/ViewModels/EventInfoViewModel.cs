@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using Eventuras.Domain;
 using NodaTime;
-using static Eventuras.Domain.EventInfo;
-using static Eventuras.Domain.Registration;
 
 namespace Eventuras.ViewModels
 {

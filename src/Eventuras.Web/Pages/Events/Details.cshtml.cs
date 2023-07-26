@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Eventuras.Domain;
-using Eventuras.Services;
 using Eventuras.Services.Events;
 
 namespace Eventuras.Pages.Events

@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Eventuras.Domain;
 using Eventuras.WebApi.Controllers.Users;

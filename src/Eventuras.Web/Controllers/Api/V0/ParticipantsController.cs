@@ -1,6 +1,4 @@
 using Eventuras.Services;
-using Eventuras.ViewModels;
-using Eventuras.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;

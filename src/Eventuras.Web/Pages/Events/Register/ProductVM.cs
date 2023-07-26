@@ -1,5 +1,4 @@
-﻿using System;
-namespace Eventuras.Web.Pages.Events.Register
+﻿namespace Eventuras.Web.Pages.Events.Register
 {
     public class ProductVM
     {

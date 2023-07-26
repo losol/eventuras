@@ -1,6 +1,5 @@
 using System;
 using Eventuras.Domain;
-using Eventuras.WebApi.Controllers.Events;
 using Eventuras.WebApi.Controllers.Events.Products;
 
 namespace Eventuras.WebApi.Controllers.Registrations

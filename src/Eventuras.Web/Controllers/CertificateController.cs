@@ -4,7 +4,6 @@ using System.Net.Mime;
 using System.Threading.Tasks;
 using Eventuras.Services.Certificates;
 using Eventuras.Services.Events;
-using Eventuras.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

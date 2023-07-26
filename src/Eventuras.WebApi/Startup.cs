@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Reflection;
 using System.Text.Json.Serialization;
 using Eventuras.Services;
 using Eventuras.WebApi.Auth;
@@ -16,12 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
-using Microsoft.OpenApi.Models;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
-using System.IO;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Asp.Versioning.ApiExplorer;
 using Asp.Versioning;
 

@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.Linq;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
@@ -20,8 +19,6 @@ using Eventuras.WebApi.Config;
 using Losol.Communication.HealthCheck.Abstractions;
 using Losol.Communication.HealthCheck.Email;
 using Losol.Communication.HealthCheck.Sms;
-using Losol.Communication.Sms.Mock;
-using Losol.Communication.Sms.Twilio;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;

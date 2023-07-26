@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
-using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 
 namespace Eventuras.WebApi.Tests

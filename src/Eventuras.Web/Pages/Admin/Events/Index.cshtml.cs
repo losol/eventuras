@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Eventuras.Domain;
-using Eventuras.Services;
 using Eventuras.Services.Events;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 

@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services.Exceptions;

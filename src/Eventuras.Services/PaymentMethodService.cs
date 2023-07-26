@@ -7,7 +7,6 @@ using Eventuras.Infrastructure;
 using static Eventuras.Domain.PaymentMethod;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace Eventuras.Services
 {

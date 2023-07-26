@@ -1,11 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Eventuras.Domain;
-using Eventuras.Pages.Account;
 using Eventuras.Services.Email;
-using Eventuras.Services.Views;
-using Eventuras.ViewModels;
-using Losol.Communication.Email;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

@@ -1,4 +1,3 @@
-using Eventuras.Services;
 using Eventuras.Services.Auth;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;

@@ -1,7 +1,6 @@
 using Eventuras.Domain;
 using Eventuras.Services.Events;
 using Eventuras.WebApi.Models;
-using System;
 using System.ComponentModel.DataAnnotations;
 using NodaTime;
 

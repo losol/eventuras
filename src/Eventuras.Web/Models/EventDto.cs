@@ -1,4 +1,3 @@
-using System;
 using NodaTime;
 
 namespace Eventuras.Web.Models

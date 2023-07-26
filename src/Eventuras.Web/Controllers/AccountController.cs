@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
-using Eventuras.Services;
 using Eventuras.Services.Auth;
 
 namespace Eventuras.Controllers

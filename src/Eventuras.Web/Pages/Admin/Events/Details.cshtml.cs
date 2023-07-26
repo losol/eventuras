@@ -10,7 +10,6 @@ using Eventuras.Infrastructure;
 using Eventuras.Services.Events;
 using Eventuras.Services.ExternalSync;
 using static Eventuras.Domain.Registration;
-using static Eventuras.Domain.Order;
 
 namespace Eventuras.Pages.Admin.Events
 {
