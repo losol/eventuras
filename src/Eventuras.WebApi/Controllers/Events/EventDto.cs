@@ -21,6 +21,13 @@ namespace Eventuras.WebApi.Controllers.Events
         public LocalDate? DateStart { get; set; }
         public LocalDate? DateEnd { get; set; }
         public LocalDate? LastRegistrationDate { get; set; }
+        public string FeaturedImageUrl { get; set; }
+        public string FeaturedImageCaption { get; set; }
+        public string Headline { get; set; }
+        public bool Published { get; set; }
+        public string MoreInformation { get; set; }
+        public string WelcomeLetter { get; set; }
+        public string InformationRequest { get; set; }
 
         public EventDto()
         {
@@ -44,6 +51,16 @@ namespace Eventuras.WebApi.Controllers.Events
             LastRegistrationDate = e.LastRegistrationDate;
             Location = e.Location;
             City = e.City;
+            FeaturedImageUrl = e.FeaturedImageUrl;
+            FeaturedImageCaption = e.FeaturedImageCaption;
+            Headline = e.Headline;
+            Published = e.Published;
+            MoreInformation = e.MoreInformation;
+            WelcomeLetter = e.WelcomeLetter;
+            InformationRequest = e.InformationRequest;
+
+
         }
     }
 }
+
