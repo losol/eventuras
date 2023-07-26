@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using Asp.Versioning;
 using Eventuras.Services.Certificates;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

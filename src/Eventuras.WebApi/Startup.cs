@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using Eventuras.Services;
 using Eventuras.WebApi.Auth;
@@ -10,7 +11,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -19,6 +19,11 @@ using Microsoft.FeatureManagement;
 using Microsoft.OpenApi.Models;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
+using System.IO;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Asp.Versioning.ApiExplorer;
+using Asp.Versioning;
 
 namespace Eventuras.WebApi
 {
@@ -104,16 +109,23 @@ namespace Eventuras.WebApi
                             .AllowAnyMethod());
             });
 
-            services.AddApiVersioning(o =>
+
+            var apiVersioningBuilder = services.AddApiVersioning(o =>
             {
                 o.ApiVersionReader = new UrlSegmentApiVersionReader();
                 o.AssumeDefaultVersionWhenUnspecified = true;
-                o.DefaultApiVersion = new ApiVersion(1, 0);
+                o.DefaultApiVersion = new ApiVersion(3, 0);
+                o.ReportApiVersions = true;
+            });
+
+            apiVersioningBuilder.AddApiExplorer(o =>
+            {
+                o.GroupNameFormat = "'v'VVV";
+                o.SubstituteApiVersionInUrl = true;
             });
 
             services.ConfigureIdentity();
 
-            // TODO: Move to services? 
             services
                 .AddAuthentication(options =>
                 {
@@ -129,10 +141,9 @@ namespace Eventuras.WebApi
 
             services.AddSingleton<IAuthorizationHandler, RequireScopeHandler>();
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v3", new OpenApiInfo { Title = "Eventuras.WebApi", Version = "v3" });
-            });
+            services.AddSwaggerGen();
+            services.ConfigureOptions<ConfigureSwaggerOptions>();
+
         }
 
         private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
@@ -152,7 +163,7 @@ namespace Eventuras.WebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider apiversions)
         {
             foreach (var service in app.ApplicationServices.GetServices<IStartupService>())
             {
@@ -163,10 +174,22 @@ namespace Eventuras.WebApi
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v3/swagger.json", "Eventuras.WebApi v3"));
+                app.UseSwaggerUI(c =>
+                {
+                    foreach (var description in apiversions.ApiVersionDescriptions)
+                    {
+                        c.SwaggerEndpoint(
+                            $"/swagger/{description.GroupName}/swagger.json",
+                            description.GroupName.ToUpperInvariant()
+                        );
+                    }
+
+                });
             }
 
             app.UseRouting();
+
+            app.UseStaticFiles();
 
             app.UseCors();
 

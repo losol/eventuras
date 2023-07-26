@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Eventuras.Domain;
 using Eventuras.Services.Events;
 using Eventuras.WebApi.Models;
@@ -14,6 +15,7 @@ namespace Eventuras.WebApi.Controllers.Events
     [Authorize(Policy = Constants.Auth.AdministratorRole)]
     [Route("v{version:apiVersion}/events")]
     [ApiController]
+    [Produces("application/json")]
     public class EventsController : ControllerBase
     {
         private readonly IEventInfoRetrievalService _eventInfoService;
@@ -31,8 +33,17 @@ namespace Eventuras.WebApi.Controllers.Events
         }
 
         // GET: v3/events
+        /// <summary>
+        /// Gets a list of events.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <response code="200">Returns a list of events.</response>
+        /// <response code="400">If the query is invalid.</response>
         [AllowAnonymous]
         [HttpGet]
+
         public async Task<PageResponseDto<EventDto>> List(
             [FromQuery] EventsQueryDto query,
             CancellationToken cancellationToken)

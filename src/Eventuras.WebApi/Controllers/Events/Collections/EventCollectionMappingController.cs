@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Asp.Versioning;
 using Eventuras.Services.EventCollections;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

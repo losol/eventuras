@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asp.Versioning;
 using Eventuras.Domain;
 using Eventuras.Services.Events;
 using Eventuras.Services.Events.Products;
@@ -30,7 +31,7 @@ namespace Eventuras.WebApi.Controllers.Events.Products
         {
             _productRetrievalService = productRetrievalService ?? throw
                 new ArgumentNullException(nameof(productRetrievalService));
-            
+
             _eventInfoRetrievalService = eventInfoRetrievalService ?? throw
                 new ArgumentNullException(nameof(eventInfoRetrievalService));
 

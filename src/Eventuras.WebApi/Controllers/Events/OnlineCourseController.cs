@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Asp.Versioning;
 using Eventuras.Services.Events;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -26,14 +27,14 @@ namespace Eventuras.WebApi.Controllers.Events
         public async Task<ActionResult<IQueryable<OnlineCourseDto>>> Get()
         {
             var events = from e in await _eventInfoService.GetOnDemandEventsAsync()
-                select new OnlineCourseDto()
-                {
-                    Id = e.EventInfoId,
-                    Name = e.Title,
-                    Slug = e.Slug,
-                    Description = e.Description,
-                    Featured = e.Featured
-                };
+                         select new OnlineCourseDto()
+                         {
+                             Id = e.EventInfoId,
+                             Name = e.Title,
+                             Slug = e.Slug,
+                             Description = e.Description,
+                             Featured = e.Featured
+                         };
             return Ok(events);
         }
 

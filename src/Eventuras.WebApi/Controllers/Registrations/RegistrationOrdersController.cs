@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asp.Versioning;
 using Eventuras.Services.Registrations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -62,7 +63,7 @@ namespace Eventuras.WebApi.Controllers.Registrations
 
     public class NewRegistrationOrderDto
     {
-        [Required] [MinLength(1)] public NewRegistrationOrderItemDto[] Items { get; set; }
+        [Required][MinLength(1)] public NewRegistrationOrderItemDto[] Items { get; set; }
     }
 
     public class NewRegistrationOrderItemDto

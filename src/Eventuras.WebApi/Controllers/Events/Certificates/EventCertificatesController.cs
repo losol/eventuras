@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
+using Asp.Versioning;
 using Eventuras.Domain;
 using Eventuras.Services.Certificates;
 using Eventuras.Services.Events;
