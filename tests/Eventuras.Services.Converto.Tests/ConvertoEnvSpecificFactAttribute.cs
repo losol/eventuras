@@ -5,9 +5,8 @@ namespace Eventuras.Services.Converto.Tests
     internal class ConvertoEnvSpecificFactAttribute : EnvDependentFactAttribute
     {
         public ConvertoEnvSpecificFactAttribute() : base(
-            ConvertoTestEnv.ApiBaseUriEnvKey,
-            ConvertoTestEnv.UsernameEnvKey,
-            ConvertoTestEnv.PasswordEnvKey)
+            ConvertoTestEnv.ApiBaseUri,
+            ConvertoTestEnv.ApiToken)
         {
         }
     }

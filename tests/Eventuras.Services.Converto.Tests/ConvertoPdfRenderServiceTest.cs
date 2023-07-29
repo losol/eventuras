@@ -1,11 +1,11 @@
-using Eventuras.Services.Pdf;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Moq;
 using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Eventuras.Services.Pdf;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Moq;
 using Xunit;
 
 namespace Eventuras.Services.Converto.Tests
@@ -29,29 +29,24 @@ namespace Eventuras.Services.Converto.Tests
         }
 
         private ConvertoPdfRenderService NewService(
-            string loginPath = "/auth/local",
-            string endpointPath = "/convert/html/to/pdf",
+            string pdfEndpointPath = "/api/pdfcreo",
             int defaultScale = 1,
             string defaultFormat = "A4",
-            string username = null,
-            string password = null)
+            string apitoken = null)
         {
-            var baseUri = Environment.GetEnvironmentVariable(ConvertoTestEnv.ApiBaseUriEnvKey);
+            var baseUri = Environment.GetEnvironmentVariable(ConvertoTestEnv.ApiBaseUri);
+            baseUri = baseUri.TrimEnd('/');
             Assert.NotNull(baseUri);
             Assert.NotEmpty(baseUri);
 
-            baseUri = baseUri.TrimEnd('/');
-            username ??= Environment.GetEnvironmentVariable(ConvertoTestEnv.UsernameEnvKey);
-            password ??= Environment.GetEnvironmentVariable(ConvertoTestEnv.PasswordEnvKey);
+            apitoken = Environment.GetEnvironmentVariable(ConvertoTestEnv.ApiToken);
 
             var options = Options.Create(new ConvertoConfig
             {
-                LoginEndpointUrl = $"{baseUri}{loginPath}",
-                Html2PdfEndpointUrl = $"{baseUri}{endpointPath}",
+                PdfEndpointUrl = $"{baseUri}{pdfEndpointPath}",
                 DefaultScale = defaultScale,
                 DefaultFormat = defaultFormat,
-                Username = username,
-                Password = password
+                ApiToken = apitoken
             });
 
             var loggerFactory = new LoggerFactory();
@@ -69,7 +64,7 @@ namespace Eventuras.Services.Converto.Tests
         [ConvertoEnvSpecificFact]
         public async Task ShouldReturnEmptyPdfStreamForInvalidLoginUrl()
         {
-            await using var stream = await NewService(loginPath: "/auth/login2")
+            await using var stream = await NewService()
                 .RenderHtmlAsync("<html></html>", new PdfRenderOptions());
             await CheckEmptyAsync(stream);
         }
@@ -77,7 +72,7 @@ namespace Eventuras.Services.Converto.Tests
         [ConvertoEnvSpecificFact]
         public async Task ShouldReturnEmptyPdfStreamForInvalidEndpointUrl()
         {
-            await using var stream = await NewService(endpointPath: "/convert/html/to/pdf2")
+            await using var stream = await NewService(pdfEndpointPath: "/convert/html/to/pdf2")
                 .RenderHtmlAsync("<html></html>",
                     new PdfRenderOptions());
             await CheckEmptyAsync(stream);
@@ -86,7 +81,7 @@ namespace Eventuras.Services.Converto.Tests
         [ConvertoEnvSpecificFact]
         public async Task ShouldReturnEmptyPdfStreamForInvalidCredentials()
         {
-            await using var stream = await NewService(username: "invalid")
+            await using var stream = await NewService(apitoken: "invalid")
                 .RenderHtmlAsync("<html></html>",
                     new PdfRenderOptions());
             await CheckEmptyAsync(stream);
