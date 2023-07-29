@@ -1,8 +1,8 @@
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Logging;
 
 namespace Eventuras.Services.Converto
 {
@@ -24,7 +24,7 @@ namespace Eventuras.Services.Converto
             try
             {
                 _logger.LogInformation("Performing converto service health check");
-                await _convertoClient.LoginAsync();
+                await _convertoClient.Html2PdfAsync("<html><body><h1>Converto service health check</h1></body></html>", 1, "A4");
                 _logger.LogInformation("Converto service health check was successful");
                 return HealthCheckResult.Healthy();
             }

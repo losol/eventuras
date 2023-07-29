@@ -4,17 +4,12 @@ namespace Eventuras.Services.Converto
 {
     internal class ConvertoConfig
     {
-        [Required]
-        public string LoginEndpointUrl { get; set; }
 
         [Required]
-        public string Html2PdfEndpointUrl { get; set; }
+        public string PdfEndpointUrl { get; set; }
 
         [Required]
-        public string Username { get; set; }
-
-        [Required]
-        public string Password { get; set; }
+        public string ApiToken { get; set; }
 
         public float? DefaultScale { get; set; }
 
