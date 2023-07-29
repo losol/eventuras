@@ -19,11 +19,15 @@ Create a database for eventuras, the default name is `eventuras`. Add the defaul
 
 ### Seed the system admin
 
-The database is seeded with admin user on the first run of the `Eventuras.WebApi` project. The default credentials are email `admin@email.com` with password `Str0ng!Pasword`.
+The database is seeded with admin user on the first run of the `Eventuras.WebApi` project. The default credentials are email `admin@email.com` with password `Str0ng!PaSsw0rd`.
 
 ### Run the classic project to edit events
 
 For now all events are created in the classic project. Run the `Eventuras.Web` project and login in with the system admin user to create events. The admin functionality is available in the top navbar after logging in with the system admin user.
+
+### Set up email sending
+
+Each organisation needs to have en email service. Take a look in [Email setup](../Setup/Email.md) for more information.
 
 ## Setting up the new frontend
 
