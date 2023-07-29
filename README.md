@@ -43,7 +43,7 @@ The solution is structured as a monorepo with the following projects:
 -   `Eventuras.Services.Stripe` - Integration with [Stripe](https://stripe.com/). Stripe is not current in use, but is considered for reimplementation.
 -   `Eventuras.Services.TalentLms` - Integration with [TalentLMS](https://www.talentlms.com/). TalentLMS integration was planned for automatic registering students at the Learning management system, but is not currently in use.
 -   `Eventuras.Services.Twilio` - Integration with [Twilio](https://www.twilio.com/). Twilio is used for sending SMS.
--   `Eventuras.Services.Zoom` - Integration with [Zoom](https://zoom.us/). Zoom is used for onlie courses.
+-   `Eventuras.Services.Zoom` - Integration with [Zoom](https://zoom.us/). Zoom is used for online courses.
 -   `Eventuras.Web` - ASP.NET Core application. This is the frontend application in current use. This project will be deprecated, and all UI functions should be replaced by `Eventuras.WebFrontend`.
 -   `Eventuras.WebApi` - ASP.NET Core Web API application. This is the backend application which is production ready, and partly in use. This is the application which will serve API requests.
 -   `Eventuras.WebFrontend` - React / Next.JS application. This is the frontend application which will replace `Eventuras.Web`. This application is currently under development.
