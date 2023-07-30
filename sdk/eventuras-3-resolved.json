@@ -1,0 +1,4842 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Eventuras API 3",
+    "version": "3"
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "paths": {
+    "/v3/certificates/{id}": {
+      "get": {
+        "tags": [
+          "Certificates"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/CertificateFormat"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/event/{id}/certificates": {
+      "get": {
+        "tags": [
+          "EventCertificates"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Count",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/event/{id}/certificates/preview": {
+      "get": {
+        "tags": [
+          "EventCertificates"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/event/{id}/certificates/issue": {
+      "post": {
+        "tags": [
+          "EventCertificates"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "send",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/event/{id}/certificates/update": {
+      "post": {
+        "tags": [
+          "EventCertificates"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/events/collections": {
+      "get": {
+        "tags": [
+          "EventCollection"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "EventCollection"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventCollectionDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventCollectionDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventCollectionDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventCollectionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/events/collections/{id}": {
+      "get": {
+        "tags": [
+          "EventCollection"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "EventCollection"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventCollectionDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventCollectionDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventCollectionDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventCollectionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "EventCollection"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/events/{eventId}/collections/{collectionId}": {
+      "put": {
+        "tags": [
+          "EventCollectionMapping"
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "collectionId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "EventCollectionMapping"
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "collectionId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/events/{eventId}/products": {
+      "get": {
+        "tags": [
+          "EventProducts"
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Visibility",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProductVisibility"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "EventProducts"
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewProductDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewProductDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewProductDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/events/{eventId}/products/{productId}": {
+      "put": {
+        "tags": [
+          "EventProducts"
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductFormDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductFormDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductFormDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductFormDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "EventProducts"
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/events/{eventId}/products/{productId}/variants": {
+      "get": {
+        "tags": [
+          "EventProductVariants"
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductVariantDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductVariantDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductVariantDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "EventProductVariants"
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewProductVariantDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewProductVariantDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewProductVariantDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewProductVariantDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/events/{eventId}/products/{productId}/variants/{id}": {
+      "delete": {
+        "tags": [
+          "EventProductVariants"
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/events": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Gets a list of events.",
+        "parameters": [
+          {
+            "name": "Type",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/EventInfoType"
+            }
+          },
+          {
+            "name": "Start",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/LocalDate"
+            }
+          },
+          {
+            "name": "End",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/LocalDate"
+            }
+          },
+          {
+            "name": "Period",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/PeriodMatchingKind"
+            }
+          },
+          {
+            "name": "OrganizationId",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Count",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a list of events.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventDtoPageResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the query is invalid."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventFormDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventFormDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventFormDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventFormDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/events/{id}": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Events"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventFormDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventFormDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventFormDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventFormDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Events"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Events"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventInfoJsonPatchDocument"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventInfoJsonPatchDocument"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventInfoJsonPatchDocument"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventInfoJsonPatchDocument"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/notifications/{id}/recipients": {
+      "get": {
+        "tags": [
+          "NotificationRecipients"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Query",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SentOnly",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "ErrorsOnly",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Order",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/NotificationRecipientListOrder"
+            }
+          },
+          {
+            "name": "Desc",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Count",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/notifications/{id}": {
+      "get": {
+        "tags": [
+          "Notifications"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "includeStatistics",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/notifications": {
+      "get": {
+        "tags": [
+          "Notifications"
+        ],
+        "parameters": [
+          {
+            "name": "EventId",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "ProductId",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Status",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/NotificationStatus"
+            }
+          },
+          {
+            "name": "Type",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/NotificationType"
+            }
+          },
+          {
+            "name": "RecipientUserId",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Order",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/NotificationListOrder"
+            }
+          },
+          {
+            "name": "Desc",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "IncludeStatistics",
+            "in": "query",
+            "description": "Whether to include delivery statistics into response.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Count",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/notifications/email": {
+      "post": {
+        "tags": [
+          "NotificationsQueueing"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailNotificationDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailNotificationDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailNotificationDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailNotificationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/notifications/sms": {
+      "post": {
+        "tags": [
+          "NotificationsQueueing"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SmsNotificationDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SmsNotificationDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SmsNotificationDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SmsNotificationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/onlinecourses": {
+      "get": {
+        "tags": [
+          "OnlineCourse"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OnlineCourseDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OnlineCourseDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OnlineCourseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/onlinecourses/{id}": {
+      "get": {
+        "tags": [
+          "OnlineCourse"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnlineCourseDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnlineCourseDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnlineCourseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/orders/{id}": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "IncludeUser",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "IncludeRegistration",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Orders"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderUpdateRequestDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderUpdateRequestDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderUpdateRequestDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderUpdateRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Orders"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/orders": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "EventId",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "RegistrationId",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Status",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/OrderStatus"
+            }
+          },
+          {
+            "name": "IncludeUser",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "IncludeRegistration",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Count",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewOrderRequestDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewOrderRequestDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewOrderRequestDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewOrderRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/organizations/{organizationId}/members/{userId}/roles": {
+      "get": {
+        "tags": [
+          "OrganizationMemberRoles"
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "OrganizationMemberRoles"
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleRequestDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleRequestDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleRequestDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "OrganizationMemberRoles"
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleRequestDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleRequestDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleRequestDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/organizations/{organizationId}/members/{userId}": {
+      "put": {
+        "tags": [
+          "OrganizationMembers"
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "OrganizationMembers"
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/organizations": {
+      "get": {
+        "tags": [
+          "Organizations"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrganizationDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrganizationDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrganizationDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Organizations"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganizationFormDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganizationFormDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganizationFormDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganizationFormDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/organizations/{organizationId}": {
+      "get": {
+        "tags": [
+          "Organizations"
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Organizations"
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganizationFormDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganizationFormDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganizationFormDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganizationFormDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Organizations"
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/organizations/{organizationId}/settings": {
+      "get": {
+        "tags": [
+          "OrganizationSettings"
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrganizationSettingDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrganizationSettingDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrganizationSettingDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "OrganizationSettings"
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganizationSettingValueDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganizationSettingValueDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganizationSettingValueDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganizationSettingValueDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "OrganizationSettings"
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OrganizationSettingValueDto"
+                }
+              }
+            },
+            "application/json": {
+              "schema": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OrganizationSettingValueDto"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OrganizationSettingValueDto"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OrganizationSettingValueDto"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/registrations/{id}/certificate/send": {
+      "post": {
+        "tags": [
+          "RegistrationCertificate"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/registrations/{id}/orders": {
+      "get": {
+        "tags": [
+          "RegistrationOrders"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RegistrationOrderDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RegistrationOrderDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RegistrationOrderDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "RegistrationOrders"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewRegistrationOrderDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewRegistrationOrderDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewRegistrationOrderDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewRegistrationOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/registrations": {
+      "get": {
+        "tags": [
+          "Registrations"
+        ],
+        "parameters": [
+          {
+            "name": "EventId",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "IncludeEventInfo",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "IncludeUserInfo",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "IncludeProducts",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "IncludeOrders",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Count",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationDtoPageResponseDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationDtoPageResponseDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationDtoPageResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Registrations"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewRegistrationDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewRegistrationDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewRegistrationDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewRegistrationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/registrations/{id}": {
+      "get": {
+        "tags": [
+          "Registrations"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "EventId",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "IncludeEventInfo",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "IncludeUserInfo",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "IncludeProducts",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "IncludeOrders",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Count",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Registrations"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationFormDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationFormDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationFormDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationFormDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Registrations"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/registrations/me/{eventId}": {
+      "post": {
+        "tags": [
+          "Registrations"
+        ],
+        "summary": "Alias for POST /v3/registrations",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "createOrder",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/users/me": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/users/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserFormDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserFormDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserFormDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserFormDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "Query",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Order",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "$ref": "#/components/schemas/UserListOrder"
+            }
+          },
+          {
+            "name": "Descending",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Count",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDtoPageResponseDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDtoPageResponseDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDtoPageResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewUserDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewUserDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewUserDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CalendarSystem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "minYear": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "maxYear": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "eras": {
+            "type": "array",
+            "nullable": true,
+            "readOnly": true,
+            "items": {
+              "$ref": "#/components/schemas/Era"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "CertificateFormat": {
+        "type": "string",
+        "enum": [
+          "Json",
+          "Html",
+          "Pdf"
+        ]
+      },
+      "EmailNotificationDto": {
+        "required": [
+          "bodyMarkdown",
+          "subject"
+        ],
+        "type": "object",
+        "properties": {
+          "recipients": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "eventParticipants": {
+            "$ref": "#/components/schemas/EventParticipantsFilterDto"
+          },
+          "subject": {
+            "minLength": 3,
+            "type": "string"
+          },
+          "bodyMarkdown": {
+            "minLength": 10,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Era": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EventCollectionDto": {
+        "required": [
+          "name",
+          "organizationId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "organizationId": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "slug": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "featuredImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "featuredImageCaption": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EventDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "$ref": "#/components/schemas/EventInfoType"
+          },
+          "status": {
+            "$ref": "#/components/schemas/EventInfoStatus"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "slug": {
+            "type": "string",
+            "nullable": true
+          },
+          "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "program": {
+            "type": "string",
+            "nullable": true
+          },
+          "practicalInformation": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "onDemand": {
+            "type": "boolean"
+          },
+          "dateStart": {
+            "$ref": "#/components/schemas/LocalDate"
+          },
+          "dateEnd": {
+            "$ref": "#/components/schemas/LocalDate"
+          },
+          "lastRegistrationDate": {
+            "$ref": "#/components/schemas/LocalDate"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EventDtoPageResponseDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pages": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "data": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/EventDto"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "EventFormDto": {
+        "required": [
+          "slug",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "slug": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/EventInfoType"
+          },
+          "status": {
+            "$ref": "#/components/schemas/EventInfoStatus"
+          },
+          "organizationId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "manageRegistrations": {
+            "type": "boolean"
+          },
+          "onDemand": {
+            "type": "boolean"
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "program": {
+            "type": "string",
+            "nullable": true
+          },
+          "practicalInformation": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "startDate": {
+            "$ref": "#/components/schemas/LocalDate"
+          },
+          "endDate": {
+            "$ref": "#/components/schemas/LocalDate"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EventInfoJsonPatchDocument": {
+        "type": "object",
+        "properties": {
+          "operations": {
+            "type": "array",
+            "nullable": true,
+            "readOnly": true,
+            "items": {
+              "$ref": "#/components/schemas/EventInfoOperation"
+            }
+          },
+          "contractResolver": {
+            "$ref": "#/components/schemas/IContractResolver"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EventInfoOperation": {
+        "type": "object",
+        "properties": {
+          "operationType": {
+            "$ref": "#/components/schemas/OperationType"
+          },
+          "path": {
+            "type": "string",
+            "nullable": true
+          },
+          "op": {
+            "type": "string",
+            "nullable": true
+          },
+          "from": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EventInfoStatus": {
+        "type": "string",
+        "enum": [
+          "Draft",
+          "Planned",
+          "RegistrationsOpen",
+          "WaitingList",
+          "RegistrationsClosed",
+          "Finished",
+          "Archived",
+          "Cancelled"
+        ]
+      },
+      "EventInfoType": {
+        "type": "string",
+        "enum": [
+          "Course",
+          "Conference",
+          "OnlineCourse",
+          "Social",
+          "Other"
+        ]
+      },
+      "EventParticipantsFilterDto": {
+        "type": "object",
+        "properties": {
+          "eventId": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "productId": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "registrationStatuses": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/RegistrationStatus"
+            }
+          },
+          "registrationTypes": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/RegistrationType"
+            }
+          },
+          "isDefined": {
+            "type": "boolean",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "IContractResolver": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Instant": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "IsoDayOfWeek": {
+        "type": "string",
+        "enum": [
+          "None",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ]
+      },
+      "LocalDate": {
+        "type": "object",
+        "properties": {
+          "calendar": {
+            "$ref": "#/components/schemas/CalendarSystem"
+          },
+          "year": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "month": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "day": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dayOfWeek": {
+            "$ref": "#/components/schemas/IsoDayOfWeek"
+          },
+          "yearOfEra": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "era": {
+            "$ref": "#/components/schemas/Era"
+          },
+          "dayOfYear": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "NewOrderRequestDto": {
+        "required": [
+          "lines",
+          "registrationId"
+        ],
+        "type": "object",
+        "properties": {
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderLineUpdateDto"
+            }
+          },
+          "registrationId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NewProductDto": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "more": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "minimum": 0,
+            "type": "number",
+            "format": "double"
+          },
+          "vatPercent": {
+            "maximum": 99,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "visibility": {
+            "$ref": "#/components/schemas/ProductVisibility"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NewProductVariantDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "minimum": 0,
+            "type": "number",
+            "format": "double"
+          },
+          "vatPercent": {
+            "maximum": 99,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NewRegistrationDto": {
+        "required": [
+          "eventId",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "customer": {
+            "$ref": "#/components/schemas/RegistrationCustomerInfoDto"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/RegistrationType"
+          },
+          "paymentMethod": {
+            "$ref": "#/components/schemas/PaymentProvider"
+          },
+          "empty": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "userId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "eventId": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "createOrder": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NewRegistrationOrderDto": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NewRegistrationOrderItemDto"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "NewRegistrationOrderItemDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "productVariantId": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "quantity": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NewUserDto": {
+        "required": [
+          "email",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "format": "tel",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "NotificationDto": {
+        "type": "object",
+        "properties": {
+          "notificationId": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "organizationId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "readOnly": true
+          },
+          "eventId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "readOnly": true
+          },
+          "productId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "readOnly": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "created": {
+            "$ref": "#/components/schemas/Instant"
+          },
+          "statusUpdated": {
+            "$ref": "#/components/schemas/Instant"
+          },
+          "type": {
+            "$ref": "#/components/schemas/NotificationType"
+          },
+          "status": {
+            "$ref": "#/components/schemas/NotificationStatus"
+          },
+          "statistics": {
+            "$ref": "#/components/schemas/NotificationStatisticsDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NotificationListOrder": {
+        "type": "string",
+        "enum": [
+          "Created",
+          "StatusUpdated"
+        ]
+      },
+      "NotificationRecipientListOrder": {
+        "type": "string",
+        "enum": [
+          "Created",
+          "Sent",
+          "Name",
+          "Identifier"
+        ]
+      },
+      "NotificationStatisticsDto": {
+        "type": "object",
+        "properties": {
+          "sent": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "errors": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "recipients": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "NotificationStatus": {
+        "type": "string",
+        "enum": [
+          "New",
+          "Queued",
+          "Started",
+          "Cancelled",
+          "Failed",
+          "Sent"
+        ]
+      },
+      "NotificationType": {
+        "type": "string",
+        "enum": [
+          "Email",
+          "Sms"
+        ]
+      },
+      "OnlineCourseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "slug": {
+            "type": "string",
+            "nullable": true
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "onDemand": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OperationType": {
+        "type": "string",
+        "enum": [
+          "Add",
+          "Remove",
+          "Replace",
+          "Move",
+          "Copy",
+          "Test",
+          "Invalid"
+        ]
+      },
+      "OrderDto": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "time": {
+            "$ref": "#/components/schemas/Instant"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "registrationId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "items": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/OrderLineDto"
+            }
+          },
+          "registration": {
+            "$ref": "#/components/schemas/OrderRegistrationDto"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderLineDto": {
+        "type": "object",
+        "properties": {
+          "orderLineId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "product": {
+            "$ref": "#/components/schemas/ProductDto"
+          },
+          "productVariant": {
+            "$ref": "#/components/schemas/ProductVariantDto"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderLineUpdateDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "productVariantId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderRegistrationDto": {
+        "type": "object",
+        "properties": {
+          "registrationId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "eventId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/RegistrationStatus"
+          },
+          "type": {
+            "$ref": "#/components/schemas/RegistrationType"
+          },
+          "certificateId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderStatus": {
+        "type": "string",
+        "enum": [
+          "Draft",
+          "Verified",
+          "Invoiced",
+          "Cancelled",
+          "Refunded"
+        ]
+      },
+      "OrderUpdateRequestDto": {
+        "required": [
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderLineUpdateDto"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrganizationDto": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "url": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "logoUrl": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "logoBase64": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrganizationFormDto": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "url": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "logoUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "logoBase64": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrganizationSettingDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "section": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/OrganizationSettingType"
+          },
+          "value": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrganizationSettingType": {
+        "type": "string",
+        "enum": [
+          "String",
+          "Number",
+          "Url",
+          "Email",
+          "Boolean"
+        ]
+      },
+      "OrganizationSettingValueDto": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "value": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PaymentProvider": {
+        "type": "string",
+        "enum": [
+          "EmailInvoice",
+          "PowerOfficeEmailInvoice",
+          "PowerOfficeEHFInvoice",
+          "StripeInvoice",
+          "StripeDirect",
+          "VippsInvoice",
+          "VippsDirect"
+        ]
+      },
+      "PeriodMatchingKind": {
+        "type": "string",
+        "enum": [
+          "Match",
+          "Intersect",
+          "Contain"
+        ]
+      },
+      "ProductDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "more": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "vatPercent": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "visibility": {
+            "$ref": "#/components/schemas/ProductVisibility"
+          },
+          "variants": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/ProductVariantDto"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductFormDto": {
+        "type": "object",
+        "properties": {
+          "published": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "visibility": {
+            "$ref": "#/components/schemas/ProductVisibility"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductVariantDto": {
+        "type": "object",
+        "properties": {
+          "productVariantId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "vatPercent": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductVisibility": {
+        "type": "string",
+        "enum": [
+          "Event",
+          "Collection"
+        ]
+      },
+      "RegistrationCustomerInfoDto": {
+        "type": "object",
+        "properties": {
+          "vatNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true
+          },
+          "zip": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoiceReference": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegistrationDto": {
+        "type": "object",
+        "properties": {
+          "registrationId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "eventId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/RegistrationStatus"
+          },
+          "type": {
+            "$ref": "#/components/schemas/RegistrationType"
+          },
+          "certificateId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          },
+          "event": {
+            "$ref": "#/components/schemas/EventDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegistrationDtoPageResponseDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pages": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "data": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/RegistrationDto"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegistrationFormDto": {
+        "type": "object",
+        "properties": {
+          "customer": {
+            "$ref": "#/components/schemas/RegistrationCustomerInfoDto"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/RegistrationType"
+          },
+          "paymentMethod": {
+            "$ref": "#/components/schemas/PaymentProvider"
+          },
+          "empty": {
+            "type": "boolean",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegistrationOrderDto": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "items": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/RegistrationOrderLineDto"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegistrationOrderLineDto": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "$ref": "#/components/schemas/ProductDto"
+          },
+          "productVariant": {
+            "$ref": "#/components/schemas/ProductVariantDto"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegistrationStatus": {
+        "type": "string",
+        "enum": [
+          "Draft",
+          "Cancelled",
+          "Verified",
+          "NotAttended",
+          "Attended",
+          "Finished",
+          "WaitingList"
+        ]
+      },
+      "RegistrationType": {
+        "type": "string",
+        "enum": [
+          "Participant",
+          "Student",
+          "Staff",
+          "Lecturer",
+          "Artist"
+        ]
+      },
+      "RoleRequestDto": {
+        "required": [
+          "role"
+        ],
+        "type": "object",
+        "properties": {
+          "role": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SmsNotificationDto": {
+        "required": [
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "recipients": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "eventParticipants": {
+            "$ref": "#/components/schemas/EventParticipantsFilterDto"
+          },
+          "message": {
+            "minLength": 10,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserDtoPageResponseDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pages": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "data": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/UserDto"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserFormDto": {
+        "required": [
+          "email",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "format": "tel",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserListOrder": {
+        "type": "string",
+        "enum": [
+          "Name",
+          "Email",
+          "Phone"
+        ]
+      }
+    }
+  }
+}

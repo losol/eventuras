@@ -1,0 +1,116 @@
+/* generated using openapi-typescript-codegen -- do no edit */
+/* istanbul ignore file */
+/* tslint:disable */
+/* eslint-disable */
+import type { NewUserDto } from '../models/NewUserDto';
+import type { UserDtoPageResponseDto } from '../models/UserDtoPageResponseDto';
+import type { UserFormDto } from '../models/UserFormDto';
+import type { UserListOrder } from '../models/UserListOrder';
+
+import type { CancelablePromise } from '../core/CancelablePromise';
+import { OpenAPI } from '../core/OpenAPI';
+import { request as __request } from '../core/request';
+
+export class UsersService {
+
+    /**
+     * @returns any Success
+     * @throws ApiError
+     */
+    public static getV3UsersMe(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/v3/users/me',
+        });
+    }
+
+    /**
+     * @param id
+     * @returns any Success
+     * @throws ApiError
+     */
+    public static getV3Users(
+        id: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/v3/users/{id}',
+            path: {
+                'id': id,
+            },
+        });
+    }
+
+    /**
+     * @param id
+     * @param requestBody
+     * @returns any Success
+     * @throws ApiError
+     */
+    public static putV3Users(
+        id: string,
+        requestBody?: UserFormDto,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/v3/users/{id}',
+            path: {
+                'id': id,
+            },
+            body: requestBody,
+            mediaType: 'application/json-patch+json',
+        });
+    }
+
+    /**
+     * @param query
+     * @param order
+     * @param descending
+     * @param page
+     * @param count
+     * @param limit
+     * @param offset
+     * @returns UserDtoPageResponseDto Success
+     * @throws ApiError
+     */
+    public static getV3Users1(
+        query?: string,
+        order?: UserListOrder,
+        descending?: boolean,
+        page?: number,
+        count?: number,
+        limit?: number,
+        offset?: number,
+    ): CancelablePromise<UserDtoPageResponseDto> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/v3/users',
+            query: {
+                'Query': query,
+                'Order': order,
+                'Descending': descending,
+                'Page': page,
+                'Count': count,
+                'Limit': limit,
+                'Offset': offset,
+            },
+        });
+    }
+
+    /**
+     * @param requestBody
+     * @returns any Success
+     * @throws ApiError
+     */
+    public static postV3Users(
+        requestBody?: NewUserDto,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/v3/users',
+            body: requestBody,
+            mediaType: 'application/json-patch+json',
+        });
+    }
+
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@losol/eventuras",
+  "version": "0.1.0",
+  "description": "Eventuras Typescript SDK",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ole Kristian Losvik",
+  "license": "GPL-3.0-or-later"
+}
+
