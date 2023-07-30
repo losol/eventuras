@@ -1,7 +1,15 @@
-// Event type according to API data
-// TODO: Think. Maybe, change to EventApiDataType or EventDataType - to indicate that this is backend data
-export type EventType = {
-  category: string;
+import { EVENT_STATUS, EVENT_TYPE } from 'const';
+import { HTMLString } from 'types';
+
+type ValueOf<T> = T[keyof T];
+
+// Partials
+export type EventStatusType = ValueOf<typeof EVENT_STATUS>;
+export type EventTypeType = ValueOf<typeof EVENT_TYPE>;
+
+// Event Preview (card)
+export type EventPreviewType = {
+  category: string | null;
   city: string;
   dateEnd: string;
   dateStart: string;
@@ -11,10 +19,10 @@ export type EventType = {
   lastRegistrationDate: string;
   location: string;
   onDemand: boolean;
-  practicalInformation: string;
-  program: string;
+  practicalInformation: HTMLString | null;
+  program: HTMLString;
   slug: string;
-  status: string;
+  status: EventStatusType;
   title: string;
-  type: string;
+  type: EventTypeType;
 };

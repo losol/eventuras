@@ -1,41 +1,92 @@
-import { Box, LinkBox } from '@chakra-ui/react';
+import { memo, useMemo } from 'react';
 import NextLink from 'next/link';
-import React from 'react';
+import { Text, Card, CardBody, CardHeader, Heading, CardFooter, Box, Badge, Button, Flex } from '@chakra-ui/react';
+import { CalendarIcon } from '@chakra-ui/icons';
+import { EventStatusBadge } from 'components';
+import { EventPreviewType } from 'types';
 
-type EventCardProps = {
-  title: string;
-  description: string;
-  href: string;
-};
+const EventCard = memo(function EventCard({ event }: { event: EventPreviewType }) {
+  const {
+    id,
+    category,
+    city,
+    dateEnd,
+    dateStart,
+    description,
+    featured,
+    location,
+    // slug,
+    status,
+    title,
+    type,
+  } = event;
 
-const EventCard = (props: EventCardProps) => {
-  const { title, description, href } = props;
+  const metas = useMemo(
+    () => [type, category].filter(meta => meta !== null),
+    [type, category]
+  );
 
   return (
-    <LinkBox
-      href={href}
-      as={NextLink}
-      borderWidth="1px"
-      borderRadius="lg"
-      overflow="hidden"
-      background="white"
+    <Card
     >
-      <Box p="6">
-        <Box
-          mt="1"
-          fontWeight="semibold"
-          fontSize="20px"
-          color="black"
-          as="h3"
-          lineHeight="tight"
-          isTruncated
+      <Flex justifyContent='space-between' alignItems='center'>
+        {
+          featured &&
+          <Badge colorScheme='orange' mt={2} ml={2}>
+            Featured
+          </Badge>
+        }
+        <EventStatusBadge status={status} />
+      </Flex>
+      <CardHeader pb='0'>
+        <NextLink href={`/events/${id}`}>
+          <Heading as='h3' size='lg' mb='2' noOfLines={2}>
+            {title}
+          </Heading>
+        </NextLink>
+        <Text fontSize='sm' mb='1' color='blackAlpha.800' fontWeight='bold' display='flex' alignItems='center'>
+          <CalendarIcon mr='2' />
+          {dateStart} - {dateEnd}
+        </Text>
+        <Text fontSize='sm' mb='1' color='blackAlpha.600' fontWeight='bold'>
+          {city && city + ', '}
+          {location}
+        </Text>
+      </CardHeader>
+      <CardBody>
+        <Text mb='3' noOfLines={3}>
+          {description}
+        </Text>
+        {
+          metas.length !== 0 &&
+          <Text fontSize='sm' mb='1' color='blackAlpha.600' display='flex' alignItems='baseline'>
+            {
+              metas.map((meta, index) => {
+                const isNotLast = index !== metas.length - 1;
+                // TODO: After create event page. Tink. Maybe, extract it into separate component
+                return (
+                  <Box mr={2} as='span' key={index}>
+                    {meta}
+                    {isNotLast && '•'}
+                  </Box>
+                );
+              })
+            }
+          </Text>
+        }
+      </CardBody>
+      <CardFooter display='block' pt='0'>
+        <Button
+          as={NextLink}
+          href={`/events/${id}`}
+          colorScheme='gray'
+          width='full'
         >
-          {title}
-        </Box>
-        <Box color="black">{description}</Box>
-      </Box>
-    </LinkBox>
+          Vis kurset &raquo;
+        </Button>
+      </CardFooter>
+    </Card >
   );
-};
+});
 
 export default EventCard;

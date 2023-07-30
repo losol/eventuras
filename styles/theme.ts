@@ -13,9 +13,12 @@ const theme = extendTheme({
       // styles for the `a`
       a: {
         color: 'teal.500',
-        _hover: {
-          textDecoration: 'underline',
-        },
+        // TODO: Check is this the best style option in Chakra
+        '&.chakra-card:hover': {
+          transitionProperty: 'box-shadow',
+          transitionDuration: '0.2s',
+          boxShadow: 'md',
+        }
       },
     }),
   },

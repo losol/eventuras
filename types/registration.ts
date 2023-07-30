@@ -1,4 +1,4 @@
-import { EventType, UserType } from 'types';
+import { EventPreviewType, UserType } from 'types';
 
 export type UserEventRegistrationType = {
   userId: string;
@@ -14,5 +14,5 @@ export type RegistrationType = {
   certificateId: number;
   notes: string;
   user: UserType;
-  event: EventType;
+  event: EventPreviewType;
 };

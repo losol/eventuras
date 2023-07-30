@@ -14,4 +14,9 @@ export {
 
 export { EmailDrawer, EmailEditor, MarkdownEditor } from './communication';
 
-export { EventCard } from './event';
+export {
+  EventCard,
+  EventStatusBadge,
+} from './event';
+
+export { OnlineCourseCard } from './online-course';

@@ -21,10 +21,10 @@ const nextOptions = {
   ],
   callbacks: {
     async session({ session, token }) {
-      session.user={
+      session.user = {
         ...session.user,
-        accessToken:token.accessToken
-      }
+        accessToken: token.accessToken,
+      };
       return session;
     },
     async jwt({ token, user, account }) {

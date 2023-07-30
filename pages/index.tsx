@@ -1,13 +1,13 @@
-import { Box, Heading, SimpleGrid, Text } from '@chakra-ui/react';
-import { EventCard, Layout, Loading } from 'components';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import getT from 'next-translate/getT';
-import { EventType, LocalesType, OnlineCourseType } from 'types';
+import { useRouter } from 'next/router';
+import { Box, Heading, SimpleGrid, Text } from '@chakra-ui/react';
+import { EventCard, Layout, Loading, OnlineCourseCard } from 'components';
+import { EventPreviewType, LocalesType, OnlineCoursePreviewType } from 'types';
 
 type IndexProps = {
-  events: EventType[];
-  onlinecourses: OnlineCourseType[];
+  events: EventPreviewType[];
+  onlinecourses: OnlineCoursePreviewType[];
   locales: LocalesType;
 };
 
@@ -34,42 +34,49 @@ export default function Index(props: IndexProps) {
           </Box>
 
           <Box margin="8">
-            <Heading as="h2" marginTop="16" marginBottom="4">
-              {eventsTitle}
-            </Heading>
             {!events && <Loading />}
-            <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing="20px">
-              {events &&
-                events.map((item: EventType) => (
-                  <EventCard
-                    key={item.id}
-                    title={item.title}
-                    description={item.description}
-                    href={`/event/${item.id}`}
-                  />
-                ))}
-            </SimpleGrid>
-            <Heading as="h2" marginTop="16" marginBottom="4">
-              {onlineCoursesTitle}
-            </Heading>
+            {
+              events.length !== 0 &&
+              <>
+                <Heading as="h2" marginTop="16" marginBottom="4">
+                  {eventsTitle}
+                </Heading>
+                <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing='5'>
+                  {events &&
+                    events.map((event: EventPreviewType) => (
+                      <EventCard
+                        key={event.id}
+                        event={event}
+                      />
+                    ))}
+                </SimpleGrid>
+              </>
+            }
+
             {!onlinecourses && <Loading />}
-            <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing="20px">
-              {onlinecourses &&
-                onlinecourses.map((onlineCourse: OnlineCourseType) => (
-                  <EventCard
-                    key={onlineCourse.id}
-                    title={onlineCourse.name}
-                    description={onlineCourse.description}
-                    href={`/onlinecourse/${onlineCourse.id}`}
-                  />
-                ))}
-            </SimpleGrid>
+            {
+              onlinecourses.length !== 0 &&
+              <>
+                <Heading as="h2" marginTop="16" marginBottom="4">
+                  {onlineCoursesTitle}
+                </Heading>
+                <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing="20px">
+                  {onlinecourses &&
+                    onlinecourses.map((onlineCourse: OnlineCoursePreviewType) => (
+                      <OnlineCourseCard
+                        key={onlineCourse.id}
+                        onlineCourse={onlineCourse}
+                      />
+                    ))}
+                </SimpleGrid>
+              </>
+            }
           </Box>
         </main>
-      </Layout>
+      </Layout >
     </>
   );
-}
+};
 
 export async function getStaticProps({ locale }: { locale: string }) {
   // Data
@@ -109,4 +116,4 @@ export async function getStaticProps({ locale }: { locale: string }) {
     },
     revalidate: 1, // In seconds
   };
-}
+};
