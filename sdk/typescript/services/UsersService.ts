@@ -25,13 +25,14 @@ export class UsersService {
     }
 
     /**
-     * @param id
      * @returns any Success
      * @throws ApiError
      */
-    public static getV3Users(
+    public static getV3Users({
+        id,
+    }: {
         id: string,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/users/{id}',
@@ -42,15 +43,16 @@ export class UsersService {
     }
 
     /**
-     * @param id
-     * @param requestBody
      * @returns any Success
      * @throws ApiError
      */
-    public static putV3Users(
+    public static putV3Users({
+        id,
+        requestBody,
+    }: {
         id: string,
         requestBody?: UserFormDto,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/v3/users/{id}',
@@ -63,17 +65,18 @@ export class UsersService {
     }
 
     /**
-     * @param query
-     * @param order
-     * @param descending
-     * @param page
-     * @param count
-     * @param limit
-     * @param offset
      * @returns UserDtoPageResponseDto Success
      * @throws ApiError
      */
-    public static getV3Users1(
+    public static getV3Users1({
+        query,
+        order,
+        descending,
+        page,
+        count,
+        limit,
+        offset,
+    }: {
         query?: string,
         order?: UserListOrder,
         descending?: boolean,
@@ -81,7 +84,7 @@ export class UsersService {
         count?: number,
         limit?: number,
         offset?: number,
-    ): CancelablePromise<UserDtoPageResponseDto> {
+    }): CancelablePromise<UserDtoPageResponseDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/users',
@@ -98,13 +101,14 @@ export class UsersService {
     }
 
     /**
-     * @param requestBody
      * @returns any Success
      * @throws ApiError
      */
-    public static postV3Users(
+    public static postV3Users({
+        requestBody,
+    }: {
         requestBody?: NewUserDto,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/users',

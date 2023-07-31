@@ -14,17 +14,18 @@ import { request as __request } from '../core/request';
 export class OrdersService {
 
     /**
-     * @param id
-     * @param includeUser
-     * @param includeRegistration
      * @returns OrderDto Success
      * @throws ApiError
      */
-    public static getV3Orders(
+    public static getV3Orders({
+        id,
+        includeUser,
+        includeRegistration,
+    }: {
         id: number,
         includeUser?: boolean,
         includeRegistration?: boolean,
-    ): CancelablePromise<OrderDto> {
+    }): CancelablePromise<OrderDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/orders/{id}',
@@ -39,15 +40,16 @@ export class OrdersService {
     }
 
     /**
-     * @param id
-     * @param requestBody
      * @returns any Success
      * @throws ApiError
      */
-    public static putV3Orders(
+    public static putV3Orders({
+        id,
+        requestBody,
+    }: {
         id: number,
         requestBody?: OrderUpdateRequestDto,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/v3/orders/{id}',
@@ -60,13 +62,14 @@ export class OrdersService {
     }
 
     /**
-     * @param id
      * @returns any Success
      * @throws ApiError
      */
-    public static deleteV3Orders(
+    public static deleteV3Orders({
+        id,
+    }: {
         id: number,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/v3/orders/{id}',
@@ -77,20 +80,21 @@ export class OrdersService {
     }
 
     /**
-     * @param userId
-     * @param eventId
-     * @param registrationId
-     * @param status
-     * @param includeUser
-     * @param includeRegistration
-     * @param page
-     * @param count
-     * @param limit
-     * @param offset
      * @returns any Success
      * @throws ApiError
      */
-    public static getV3Orders1(
+    public static getV3Orders1({
+        userId,
+        eventId,
+        registrationId,
+        status,
+        includeUser,
+        includeRegistration,
+        page,
+        count,
+        limit,
+        offset,
+    }: {
         userId?: string,
         eventId?: number,
         registrationId?: number,
@@ -101,7 +105,7 @@ export class OrdersService {
         count?: number,
         limit?: number,
         offset?: number,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/orders',
@@ -121,13 +125,14 @@ export class OrdersService {
     }
 
     /**
-     * @param requestBody
      * @returns any Success
      * @throws ApiError
      */
-    public static postV3Orders(
+    public static postV3Orders({
+        requestBody,
+    }: {
         requestBody?: NewOrderRequestDto,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/orders',

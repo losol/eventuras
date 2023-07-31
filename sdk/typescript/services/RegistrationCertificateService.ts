@@ -9,13 +9,14 @@ import { request as __request } from '../core/request';
 export class RegistrationCertificateService {
 
     /**
-     * @param id
      * @returns any Success
      * @throws ApiError
      */
-    public static postV3RegistrationsCertificateSend(
+    public static postV3RegistrationsCertificateSend({
+        id,
+    }: {
         id: number,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/registrations/{id}/certificate/send',

@@ -9,15 +9,16 @@ import { request as __request } from '../core/request';
 export class OrganizationMembersService {
 
     /**
-     * @param organizationId
-     * @param userId
      * @returns any Success
      * @throws ApiError
      */
-    public static putV3OrganizationsMembers(
+    public static putV3OrganizationsMembers({
+        organizationId,
+        userId,
+    }: {
         organizationId: number,
         userId: string,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/v3/organizations/{organizationId}/members/{userId}',
@@ -29,15 +30,16 @@ export class OrganizationMembersService {
     }
 
     /**
-     * @param organizationId
-     * @param userId
      * @returns any Success
      * @throws ApiError
      */
-    public static deleteV3OrganizationsMembers(
+    public static deleteV3OrganizationsMembers({
+        organizationId,
+        userId,
+    }: {
         organizationId: number,
         userId: string,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/v3/organizations/{organizationId}/members/{userId}',
