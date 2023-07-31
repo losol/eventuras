@@ -10,8 +10,11 @@ import { useEffect, useState } from 'react';
 const SystemAdminIndex = () => {
   const { data: session, status } = useSession();
   const [settings, setSettings] = useState<OrganizationSettingDto[]>([]);
-  // Temporary fix. TODO: Change
-  const orgId = parseInt(process.env.NEXT_PUBLIC_ORGANIZATION_ID as string);
+  var orgId = 1;
+  if (process.env.NEXT_PUBLIC_ORGANIZATION_ID !== undefined) {
+    orgId = parseInt(process.env.NEXT_PUBLIC_ORGANIZATION_ID.toString());
+  }
+
   const columns = [
     {
       Header: 'Name',
@@ -27,7 +30,9 @@ const SystemAdminIndex = () => {
     if (session) {
       const fetchSetting = async () => {
         const result =
-          await OrganizationSettingsService.getV3OrganizationsSettings(orgId);
+          await OrganizationSettingsService.getV3OrganizationsSettings({
+            organizationId: orgId,
+          });
         setSettings(result);
       };
       fetchSetting();

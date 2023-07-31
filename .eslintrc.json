@@ -1,8 +1,7 @@
 {
-  "plugins": ["simple-import-sort", "import", "plugin:prettier/recommended"],
+  "plugins": ["simple-import-sort", "import"],
   "extends": "next/core-web-vitals",
   "rules": {
-    "prettier/prettier": ["error", {}, { "usePrettierrc": true }],
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
     "import/first": "error",

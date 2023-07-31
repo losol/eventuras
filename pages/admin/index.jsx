@@ -1,10 +1,10 @@
 import { Button, Container, Heading, Text } from '@chakra-ui/react';
+import { EventsService } from '@losol/eventuras';
 import { DataTable, Layout, Link, Loading, Unauthorized } from 'components';
 import * as dayjs from 'dayjs';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { FiUsers } from 'react-icons/fi';
-import { EventsService } from '@losol/eventuras';
 
 function AdminIndex() {
   const { data: session, status } = useSession();
@@ -46,7 +46,7 @@ function AdminIndex() {
         organizationId: process.env.NEXT_PUBLIC_ORGANIZATION_ID;
       }
 
-      const result = await EventsService.getV3Events(organizationFilter);
+      const result = await EventsService.getV3Events({ organizationFilter });
       setEventinfos(result.data);
     };
     fetchEvents();

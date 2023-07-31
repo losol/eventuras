@@ -1,21 +1,20 @@
-import Head from 'next/head';
-import getT from 'next-translate/getT';
-import { useRouter } from 'next/router';
 import { Box, Heading, SimpleGrid, Text } from '@chakra-ui/react';
-import { EventCard, Layout, Loading, OnlineCourseCard } from 'components';
-import { LocalesType, OnlineCoursePreviewType } from 'types';
-import { EventDto, EventsService, OnlineCourseService } from '@losol/eventuras';
+import { EventDto, EventsService } from '@losol/eventuras';
+import { EventCard, Layout, Loading } from 'components';
+import getT from 'next-translate/getT';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { LocalesType } from 'types';
 
 type IndexProps = {
   events: EventDto[];
-  onlinecourses: OnlineCoursePreviewType[];
   locales: LocalesType;
 };
 
 export default function Index(props: IndexProps) {
-  const { events, onlinecourses, locales } = props;
+  const { events, locales } = props;
   const { demoTitleLocale, demoTextLocale } = locales.component;
-  const { eventsTitle, onlineCoursesTitle } = locales.common;
+  const { eventsTitle } = locales.common;
   const { locale } = useRouter();
 
   return (
@@ -68,7 +67,6 @@ export async function getStaticProps({ locale }: { locale: string }) {
 
   const translateCommon = await getT(locale, 'common');
   const eventsTitle = translateCommon('events');
-  const onlineCoursesTitle = translateCommon('onlinecourses');
 
   return {
     props: {

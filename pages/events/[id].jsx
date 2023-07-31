@@ -1,13 +1,16 @@
 import { Button, Container, Heading, useDisclosure } from '@chakra-ui/react';
+import { EventsService } from '@losol/eventuras';
 import { AlertModal, Layout } from 'components';
 import { UserContext } from 'context';
+import parse from 'html-react-parser';
 import { signIn, useSession } from 'next-auth/react';
+import useTranslation from 'next-translate/useTranslation';
 import { useContext, useEffect, useState } from 'react';
-import { EventsService, OnlineCourseService } from '@losol/eventuras';
 
 const EventInfo = props => {
   const { data: session, status } = useSession();
   const { title = '...', description = '...' } = props;
+  const { t } = useTranslation();
   const { user } = useContext(UserContext);
   const [modal, setModal] = useState({ title: '', text: '' });
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -73,6 +76,22 @@ const EventInfo = props => {
             Register for event
           </Button>
         )}
+
+        <Heading as="h2" size="md" paddingTop={16}>
+          {t('More information')}
+        </Heading>
+        {parse(props.moreInformation)}
+
+        <Heading as="h2" size="md" paddingTop={16}>
+          {t('Program')}
+        </Heading>
+        {parse(props.program)}
+
+        <Heading as="h2" size="md" paddingTop={16}>
+          {t('Practica Information')}
+        </Heading>
+        {parse(props.practicalInformation)}
+
         <AlertModal
           isOpen={isOpen}
           onClose={onClose}
@@ -87,6 +106,7 @@ const EventInfo = props => {
 export const getStaticProps = async ({ params }) => {
   const event = await EventsService.getV3Events1({ id: params.id }).catch(e => {
     console.log('getStaticProps error ', e);
+    console.log(event);
     return { props: null };
   });
   return { props: { ...event } };
