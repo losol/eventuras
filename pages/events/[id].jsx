@@ -3,7 +3,7 @@ import { AlertModal, Layout } from 'components';
 import { UserContext } from 'context';
 import { signIn, useSession } from 'next-auth/react';
 import { useContext, useEffect, useState } from 'react';
-import { registerForEvent } from 'services';
+import { EventsService, OnlineCourseService } from '@losol/eventuras';
 
 const EventInfo = (props) => {
   const { data: session, status } = useSession();
@@ -83,22 +83,21 @@ const EventInfo = (props) => {
     </Layout>
   );
 };
-export async function getStaticProps({ params }) {
-  const res = await fetch(
-    process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/events/' + params.id
-  );
-  const json = await res.json();
-  return { props: { ...json } };
-}
+
+
+export const getStaticProps = async ({ params }) => {
+  const event = await EventsService.getV3Events1(params.id)
+  return {props:{...event}}
+};
 
 export async function getStaticPaths() {
-  const res = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/events/');
-  const events = await res.json();
-
-  // TODO: loop through pagination?
-  const paths = events.data.map((e) => ({
+  const {data:onlineEvents} = await EventsService.getV3Events()
+  if(!onlineEvents?.length){
+    return null
+  }
+  const paths = onlineEvents.map(event => ({
     params: {
-      id: e.id.toString(),
+      id: event.id.toString(),
     },
   }));
 

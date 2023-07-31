@@ -1,12 +1,15 @@
 import { Container, Heading } from '@chakra-ui/react';
+import {
+  OrganizationSettingDto,
+  OrganizationSettingsService,
+} from '@losol/eventuras';
 import { DataTable, Layout, Link, Loading, Unauthorized } from 'components';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import { getOrganisationSettings } from 'services';
 
 const SystemAdminIndex = () => {
   const { data: session, status } = useSession();
-  const [settings, setSettings] = useState([]);
+  const [settings, setSettings] = useState<OrganizationSettingDto[]>([]);
   // Temporary fix. TODO: Change
   const orgId = parseInt(process.env.NEXT_PUBLIC_ORGANIZATION_ID as string);
   const columns = [
@@ -23,11 +26,8 @@ const SystemAdminIndex = () => {
   useEffect(() => {
     if (session) {
       const fetchSetting = async () => {
-        const result = await getOrganisationSettings(
-          orgId,
-          session.user.accessToken
-        );
-        console.log(result);
+        const result =
+          await OrganizationSettingsService.getV3OrganizationsSettings(orgId);
         setSettings(result);
       };
       fetchSetting();

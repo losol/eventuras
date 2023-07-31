@@ -10,18 +10,14 @@ import {
 import { useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
 import {
-  createUser,
-  fetcher,
-  getUserById,
   toaster,
-  updateUser,
 } from 'services';
+import { UsersService } from '@losol/eventuras';
+
 
 const AdminUsersIndex = () => {
   const { data: session, status } = useSession();
 
-
-  
   const [users, setUsers] = useState([]);
   const [activeUser, setActiveUser] = useState();
   const [pages, setPages] = useState();
@@ -61,16 +57,10 @@ const AdminUsersIndex = () => {
   );
 
   const getUsersList = async (page) => {
-    const userList = await fetcher.get(
-      `/v3/users?page=${page}&count=${count}`,
-      {
-        accessToken: session.user.accessToken,
-      }
-    );
-
-    setUsers(userList.data);
-    setPages(userList.pages);
-    setCurrentPage(userList.page);
+    const users = await UsersService.getV3Users1(undefined,undefined,undefined,page,count)
+    setUsers(users.data);
+    setPages(users.pages);
+    setCurrentPage(users.page);
   };
 
   const handlePageClick = (page) => {
@@ -88,7 +78,7 @@ const AdminUsersIndex = () => {
   };
 
   const handleSubmitNewUser = async (user) => {
-    const newUser = await createUser(user, session.user.accessToken).catch(
+    const newUser = await UsersService.postV3Users(user).catch(
       (error) => toaster.error(error)
     );
 
@@ -100,9 +90,7 @@ const AdminUsersIndex = () => {
   };
 
   const handleSubmitUpdateUser = async (user) => {
-    const updatedUser = await updateUser(user, session.user.accessToken).catch(
-      (error) => toaster.error(error)
-    );
+    const updatedUser = await UsersService.putV3Users(user.id,user).catch(toaster.error)
 
     if (updatedUser) {
       toaster.success(`${updatedUser.name} was updated.`);
@@ -112,7 +100,7 @@ const AdminUsersIndex = () => {
   };
 
   const openUserdetails = async (userId) => {
-    const user = await getUserById(userId, session.user.accessToken);
+    const user = await UsersService.getV3Users(userId)
     if (user) {
       setActiveUser(user);
     }

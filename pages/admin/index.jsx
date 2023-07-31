@@ -4,10 +4,12 @@ import * as dayjs from 'dayjs';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { FiUsers } from 'react-icons/fi';
-import { getEvents } from 'services';
+import { EventsService } from '@losol/eventuras';
+
 
 function AdminIndex() {
   const { data: session, status } = useSession();
+  
   const [eventinfos, setEventinfos] = useState([]);
   const columns = [
     {
@@ -40,7 +42,8 @@ function AdminIndex() {
 
   useEffect(() => {
     const fetchEvents = async () => {
-      const result = await getEvents(1);
+      //TODO try to adjust the Function signature so we do not have to pass parameters like this to pass organisation
+      const result = await EventsService.getV3Events(undefined,undefined,undefined,undefined,1)
       setEventinfos(result.data);
     };
     fetchEvents();

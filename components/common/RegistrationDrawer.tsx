@@ -10,10 +10,10 @@ import {
   Heading,
   Text,
 } from '@chakra-ui/react';
-import { RegistrationType } from 'types';
+import { RegistrationDto } from '@losol/eventuras';
 
 interface RegistrationDrawerProps {
-  registration: RegistrationType;
+  registration: RegistrationDto;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -21,7 +21,7 @@ interface RegistrationDrawerProps {
 const RegistrationDrawer = (props: RegistrationDrawerProps): JSX.Element => {
   const { registration, onClose, isOpen } = props;
   const { user, status, type, notes } = registration;
-  const { name, email, phoneNumber } = user;
+  const { name, email, phoneNumber } = user!;
 
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="xl">

@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { Box, Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import { EventCard, Layout, Loading, OnlineCourseCard } from 'components';
 import { EventPreviewType, LocalesType, OnlineCoursePreviewType } from 'types';
+import { EventsService, OnlineCourseService } from '@losol/eventuras';
 
 type IndexProps = {
   events: EventPreviewType[];
@@ -35,60 +36,49 @@ export default function Index(props: IndexProps) {
 
           <Box margin="8">
             {!events && <Loading />}
-            {
-              events.length !== 0 &&
+            {events.length !== 0 && (
               <>
                 <Heading as="h2" marginTop="16" marginBottom="4">
                   {eventsTitle}
                 </Heading>
-                <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing='5'>
+                <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing="5">
                   {events &&
                     events.map((event: EventPreviewType) => (
-                      <EventCard
-                        key={event.id}
-                        event={event}
-                      />
+                      <EventCard key={event.id} event={event} />
                     ))}
                 </SimpleGrid>
               </>
-            }
+            )}
 
             {!onlinecourses && <Loading />}
-            {
-              onlinecourses.length !== 0 &&
+            {onlinecourses.length !== 0 && (
               <>
                 <Heading as="h2" marginTop="16" marginBottom="4">
                   {onlineCoursesTitle}
                 </Heading>
                 <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing="20px">
                   {onlinecourses &&
-                    onlinecourses.map((onlineCourse: OnlineCoursePreviewType) => (
-                      <OnlineCourseCard
-                        key={onlineCourse.id}
-                        onlineCourse={onlineCourse}
-                      />
-                    ))}
+                    onlinecourses.map(
+                      (onlineCourse: OnlineCoursePreviewType) => (
+                        <OnlineCourseCard
+                          key={onlineCourse.id}
+                          onlineCourse={onlineCourse}
+                        />
+                      )
+                    )}
                 </SimpleGrid>
               </>
-            }
+            )}
           </Box>
         </main>
-      </Layout >
+      </Layout>
     </>
   );
-};
+}
 
 export async function getStaticProps({ locale }: { locale: string }) {
-  // Data
-  const eventsResponse = await fetch(
-    process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/events'
-  );
-  const events = await eventsResponse.json();
-
-  const onlinecoursesResponse = await fetch(
-    process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/onlinecourses'
-  );
-  const onlinecourses = await onlinecoursesResponse.json();
+  const events = await EventsService.getV3Events();
+  const onlinecourses = await OnlineCourseService.getV3Onlinecourses();
 
   // Locales
   const translateComponent = await getT(locale, 'index');
@@ -116,4 +106,4 @@ export async function getStaticProps({ locale }: { locale: string }) {
     },
     revalidate: 1, // In seconds
   };
-};
+}

@@ -1,16 +1,31 @@
-import NextAuth from 'next-auth';
+import { NextApiRequest, NextApiResponse } from 'next';
+import NextAuth, { AuthOptions, CookiesOptions } from 'next-auth';
 import Auth0Provider from 'next-auth/providers/auth0';
 
 const AUTH0_TOKEN_URL = `https://${process.env.AUTH0_DOMAIN}/oauth/token?`;
 
-const nextOptions = {
-  site: process.env.NEXTAUTH_URL,
+const cookies: Partial<CookiesOptions> = {
+  sessionToken: {
+    name: `next-auth.session-token`,
+    options: {
+      httpOnly: true,
+      sameSite: 'none',
+      path: '/',
+      domain: process.env.NEXT_PUBLIC_DOMAIN,
+      secure: true,
+    },
+  },
+};
+const nextOptions: AuthOptions = {
+  session: {
+    strategy: 'jwt',
+  },
+  cookies: cookies,
   providers: [
     Auth0Provider({
-      clientId: process.env.AUTH0_CLIENT_ID,
-      clientSecret: process.env.AUTH0_CLIENT_SECRET,
+      clientId: process.env.AUTH0_CLIENT_ID!,
+      clientSecret: process.env.AUTH0_CLIENT_SECRET!,
       issuer: `https://${process.env.AUTH0_DOMAIN}`,
-      protection: 'pkce',
       authorization: {
         params: {
           audience: process.env.AUTH0_AUDIENCE,
@@ -19,15 +34,17 @@ const nextOptions = {
       },
     }),
   ],
+
   callbacks: {
-    async session({ session, token }) {
-      session.user = {
-        ...session.user,
-        accessToken: token.accessToken,
-      };
-      return session;
-    },
-    async jwt({ token, user, account }) {
+    async jwt({
+      token,
+      user,
+      account,
+    }: {
+      token: any;
+      user: any;
+      account: any;
+    }) {
       // Initial sign in
       if (account && user) {
         if (!account.refresh_token) {
@@ -42,7 +59,6 @@ const nextOptions = {
         };
         return decoratedToken;
       }
-
       //without a refresh token, we cant refresh, make sure it has one and it is expired before asking for one
       if (token.refreshToken) {
         if (Date.now() > token.accessTokenExpires) {
@@ -62,7 +78,7 @@ const nextOptions = {
  * returns the old token and an error property
  * From: https://next-auth.js.org/tutorials/refresh-token-rotation
  */
-async function refreshAccessToken(token) {
+async function refreshAccessToken(token: any) {
   try {
     const response = await fetch(AUTH0_TOKEN_URL, {
       headers: {
@@ -70,10 +86,10 @@ async function refreshAccessToken(token) {
       },
       method: 'POST',
       body: new URLSearchParams({
-        audience: process.env.AUTH0_AUDIENCE,
+        audience: process.env.AUTH0_AUDIENCE!,
         grant_type: 'refresh_token',
-        client_id: process.env.AUTH0_CLIENT_ID,
-        client_secret: process.env.AUTH0_CLIENT_SECRET,
+        client_id: process.env.AUTH0_CLIENT_ID!,
+        client_secret: process.env.AUTH0_CLIENT_SECRET!,
         refresh_token: token.refreshToken,
         redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/auth0`,
       }),
@@ -98,5 +114,6 @@ async function refreshAccessToken(token) {
     };
   }
 }
-const authGetter = (req, res) => NextAuth(req, res, nextOptions);
+const authGetter = (req: NextApiRequest, res: NextApiResponse) =>
+  NextAuth(req, res, nextOptions);
 export default authGetter;

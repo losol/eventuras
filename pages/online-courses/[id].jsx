@@ -3,16 +3,9 @@ import { AlertModal, Layout } from 'components';
 import { UserContext } from 'context';
 import { signIn, useSession } from 'next-auth/react';
 import { useContext, useEffect, useState } from 'react';
-import { registerForEvent } from 'services';
+import { EventsService, OnlineCourseService,RegistrationsService } from '@losol/eventuras';
 
-import { EventType } from '../../types';
-
-// type EventInfoProps = {
-//   name: string;
-//   description: string;
-// };
-
-const EventInfo = props => {
+const OnlineCourses = props => {
   const { data: session, status } = useSession();
   const { name = '...', description = '...' } = props;
   const { user } = useContext(UserContext);
@@ -20,13 +13,10 @@ const EventInfo = props => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleRegistrationEventRequest = async () => {
-    await registerForEvent(
-      {
-        userId: user.id,
+    await RegistrationsService.postV3Registrations({
+      userId: user.id,
         eventId: props.id,
-      },
-      session.user.accessToken
-    );
+    })
     setModal({
       title: 'Welcome!',
       text: `Welcome to ${props.name}`,
@@ -92,31 +82,19 @@ const EventInfo = props => {
   );
 };
 
-// type StaticProps = {
-//   id: string;
-//   name: string;
-// };
-
 export const getStaticProps = async ({ params }) => {
-  const res = await fetch(
-    process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/events/' + params.id
-  );
-  const json = await res.json();
-  return { props: { ...json } };
+  const course = await OnlineCourseService.getV3Onlinecourses1(params.id)
+  return {props:{...course}}
 };
 
 export async function getStaticPaths() {
-  const res = await fetch(
-    process.env.NEXT_PUBLIC_API_BASE_URL + '/v3/onlinecourses/'
-  );
-  const events = await res.json();
-
-  const paths = events.map(event => ({
+  const onlineCourses = await OnlineCourseService.getV3Onlinecourses()
+  const paths = onlineCourses.map(course => ({
     params: {
-      id: event.id.toString(),
+      id: course.id.toString(),
     },
   }));
 
   return { paths, fallback: false };
 }
-export default EventInfo;
+export default OnlineCourses;
