@@ -11,15 +11,16 @@ import { request as __request } from '../core/request';
 export class OrganizationMemberRolesService {
 
     /**
-     * @param organizationId
-     * @param userId
      * @returns string Success
      * @throws ApiError
      */
-    public static getV3OrganizationsMembersRoles(
+    public static getV3OrganizationsMembersRoles({
+        organizationId,
+        userId,
+    }: {
         organizationId: number,
         userId: string,
-    ): CancelablePromise<Array<string>> {
+    }): CancelablePromise<Array<string>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/organizations/{organizationId}/members/{userId}/roles',
@@ -31,17 +32,18 @@ export class OrganizationMemberRolesService {
     }
 
     /**
-     * @param organizationId
-     * @param userId
-     * @param requestBody
      * @returns string Success
      * @throws ApiError
      */
-    public static postV3OrganizationsMembersRoles(
+    public static postV3OrganizationsMembersRoles({
+        organizationId,
+        userId,
+        requestBody,
+    }: {
         organizationId: number,
         userId: string,
         requestBody?: RoleRequestDto,
-    ): CancelablePromise<Array<string>> {
+    }): CancelablePromise<Array<string>> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/organizations/{organizationId}/members/{userId}/roles',
@@ -55,17 +57,18 @@ export class OrganizationMemberRolesService {
     }
 
     /**
-     * @param organizationId
-     * @param userId
-     * @param requestBody
      * @returns string Success
      * @throws ApiError
      */
-    public static deleteV3OrganizationsMembersRoles(
+    public static deleteV3OrganizationsMembersRoles({
+        organizationId,
+        userId,
+        requestBody,
+    }: {
         organizationId: number,
         userId: string,
         requestBody?: RoleRequestDto,
-    ): CancelablePromise<Array<string>> {
+    }): CancelablePromise<Array<string>> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/v3/organizations/{organizationId}/members/{userId}/roles',

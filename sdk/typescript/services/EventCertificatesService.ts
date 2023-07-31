@@ -9,21 +9,22 @@ import { request as __request } from '../core/request';
 export class EventCertificatesService {
 
     /**
-     * @param id
-     * @param page
-     * @param count
-     * @param limit
-     * @param offset
      * @returns any Success
      * @throws ApiError
      */
-    public static getV3EventCertificates(
+    public static getV3EventCertificates({
+        id,
+        page,
+        count,
+        limit,
+        offset,
+    }: {
         id: number,
         page?: number,
         count?: number,
         limit?: number,
         offset?: number,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/event/{id}/certificates',
@@ -40,13 +41,14 @@ export class EventCertificatesService {
     }
 
     /**
-     * @param id
      * @returns any Success
      * @throws ApiError
      */
-    public static getV3EventCertificatesPreview(
+    public static getV3EventCertificatesPreview({
+        id,
+    }: {
         id: number,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/event/{id}/certificates/preview',
@@ -57,15 +59,16 @@ export class EventCertificatesService {
     }
 
     /**
-     * @param id
-     * @param send
      * @returns any Success
      * @throws ApiError
      */
-    public static postV3EventCertificatesIssue(
+    public static postV3EventCertificatesIssue({
+        id,
+        send = true,
+    }: {
         id: number,
-        send: boolean = true,
-    ): CancelablePromise<any> {
+        send?: boolean,
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/event/{id}/certificates/issue',
@@ -79,13 +82,14 @@ export class EventCertificatesService {
     }
 
     /**
-     * @param id
      * @returns any Success
      * @throws ApiError
      */
-    public static postV3EventCertificatesUpdate(
+    public static postV3EventCertificatesUpdate({
+        id,
+    }: {
         id: number,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/event/{id}/certificates/update',

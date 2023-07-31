@@ -12,13 +12,14 @@ import { request as __request } from '../core/request';
 export class RegistrationOrdersService {
 
     /**
-     * @param id
      * @returns RegistrationOrderDto Success
      * @throws ApiError
      */
-    public static getV3RegistrationsOrders(
+    public static getV3RegistrationsOrders({
+        id,
+    }: {
         id: number,
-    ): CancelablePromise<Array<RegistrationOrderDto>> {
+    }): CancelablePromise<Array<RegistrationOrderDto>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/registrations/{id}/orders',
@@ -29,15 +30,16 @@ export class RegistrationOrdersService {
     }
 
     /**
-     * @param id
-     * @param requestBody
      * @returns any Success
      * @throws ApiError
      */
-    public static postV3RegistrationsOrders(
+    public static postV3RegistrationsOrders({
+        id,
+        requestBody,
+    }: {
         id: number,
         requestBody?: NewRegistrationOrderDto,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/registrations/{id}/orders',

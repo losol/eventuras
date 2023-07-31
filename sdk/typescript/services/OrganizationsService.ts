@@ -23,13 +23,14 @@ export class OrganizationsService {
     }
 
     /**
-     * @param requestBody
      * @returns OrganizationDto Success
      * @throws ApiError
      */
-    public static postV3Organizations(
+    public static postV3Organizations({
+        requestBody,
+    }: {
         requestBody?: OrganizationFormDto,
-    ): CancelablePromise<OrganizationDto> {
+    }): CancelablePromise<OrganizationDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/organizations',
@@ -39,13 +40,14 @@ export class OrganizationsService {
     }
 
     /**
-     * @param organizationId
      * @returns OrganizationDto Success
      * @throws ApiError
      */
-    public static getV3Organizations1(
+    public static getV3Organizations1({
+        organizationId,
+    }: {
         organizationId: number,
-    ): CancelablePromise<OrganizationDto> {
+    }): CancelablePromise<OrganizationDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/organizations/{organizationId}',
@@ -56,15 +58,16 @@ export class OrganizationsService {
     }
 
     /**
-     * @param organizationId
-     * @param requestBody
      * @returns OrganizationDto Success
      * @throws ApiError
      */
-    public static putV3Organizations(
+    public static putV3Organizations({
+        organizationId,
+        requestBody,
+    }: {
         organizationId: number,
         requestBody?: OrganizationFormDto,
-    ): CancelablePromise<OrganizationDto> {
+    }): CancelablePromise<OrganizationDto> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/v3/organizations/{organizationId}',
@@ -77,13 +80,14 @@ export class OrganizationsService {
     }
 
     /**
-     * @param organizationId
      * @returns any Success
      * @throws ApiError
      */
-    public static deleteV3Organizations(
+    public static deleteV3Organizations({
+        organizationId,
+    }: {
         organizationId: number,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/v3/organizations/{organizationId}',

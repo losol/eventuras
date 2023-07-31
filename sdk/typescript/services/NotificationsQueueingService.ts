@@ -13,13 +13,14 @@ import { request as __request } from '../core/request';
 export class NotificationsQueueingService {
 
     /**
-     * @param requestBody
      * @returns NotificationDto Success
      * @throws ApiError
      */
-    public static postV3NotificationsEmail(
+    public static postV3NotificationsEmail({
+        requestBody,
+    }: {
         requestBody?: EmailNotificationDto,
-    ): CancelablePromise<NotificationDto> {
+    }): CancelablePromise<NotificationDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/notifications/email',
@@ -29,13 +30,14 @@ export class NotificationsQueueingService {
     }
 
     /**
-     * @param requestBody
      * @returns NotificationDto Success
      * @throws ApiError
      */
-    public static postV3NotificationsSms(
+    public static postV3NotificationsSms({
+        requestBody,
+    }: {
         requestBody?: SmsNotificationDto,
-    ): CancelablePromise<NotificationDto> {
+    }): CancelablePromise<NotificationDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/notifications/sms',

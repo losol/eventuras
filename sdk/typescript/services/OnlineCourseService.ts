@@ -22,13 +22,14 @@ export class OnlineCourseService {
     }
 
     /**
-     * @param id
      * @returns OnlineCourseDto Success
      * @throws ApiError
      */
-    public static getV3Onlinecourses1(
+    public static getV3Onlinecourses1({
+        id,
+    }: {
         id: number,
-    ): CancelablePromise<OnlineCourseDto> {
+    }): CancelablePromise<OnlineCourseDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/onlinecourses/{id}',

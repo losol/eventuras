@@ -12,15 +12,16 @@ import { request as __request } from '../core/request';
 export class EventProductVariantsService {
 
     /**
-     * @param eventId
-     * @param productId
      * @returns ProductVariantDto Success
      * @throws ApiError
      */
-    public static getV3EventsProductsVariants(
+    public static getV3EventsProductsVariants({
+        eventId,
+        productId,
+    }: {
         eventId: number,
         productId: number,
-    ): CancelablePromise<Array<ProductVariantDto>> {
+    }): CancelablePromise<Array<ProductVariantDto>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/events/{eventId}/products/{productId}/variants',
@@ -32,17 +33,18 @@ export class EventProductVariantsService {
     }
 
     /**
-     * @param eventId
-     * @param productId
-     * @param requestBody
      * @returns any Success
      * @throws ApiError
      */
-    public static postV3EventsProductsVariants(
+    public static postV3EventsProductsVariants({
+        eventId,
+        productId,
+        requestBody,
+    }: {
         eventId: number,
         productId: number,
         requestBody?: NewProductVariantDto,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/events/{eventId}/products/{productId}/variants',
@@ -56,17 +58,18 @@ export class EventProductVariantsService {
     }
 
     /**
-     * @param eventId
-     * @param productId
-     * @param id
      * @returns any Success
      * @throws ApiError
      */
-    public static deleteV3EventsProductsVariants(
+    public static deleteV3EventsProductsVariants({
+        eventId,
+        productId,
+        id,
+    }: {
         eventId: number,
         productId: number,
         id: number,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/v3/events/{eventId}/products/{productId}/variants/{id}',

@@ -13,15 +13,16 @@ import { request as __request } from '../core/request';
 export class NotificationsService {
 
     /**
-     * @param id
-     * @param includeStatistics
      * @returns any Success
      * @throws ApiError
      */
-    public static getV3Notifications(
+    public static getV3Notifications({
+        id,
+        includeStatistics = false,
+    }: {
         id: number,
-        includeStatistics: boolean = false,
-    ): CancelablePromise<any> {
+        includeStatistics?: boolean,
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/notifications/{id}',
@@ -35,22 +36,23 @@ export class NotificationsService {
     }
 
     /**
-     * @param eventId
-     * @param productId
-     * @param status
-     * @param type
-     * @param recipientUserId
-     * @param order
-     * @param desc
-     * @param includeStatistics Whether to include delivery statistics into response.
-     * @param page
-     * @param count
-     * @param limit
-     * @param offset
      * @returns any Success
      * @throws ApiError
      */
-    public static getV3Notifications1(
+    public static getV3Notifications1({
+        eventId,
+        productId,
+        status,
+        type,
+        recipientUserId,
+        order,
+        desc,
+        includeStatistics,
+        page,
+        count,
+        limit,
+        offset,
+    }: {
         eventId?: number,
         productId?: number,
         status?: NotificationStatus,
@@ -58,12 +60,15 @@ export class NotificationsService {
         recipientUserId?: string,
         order?: NotificationListOrder,
         desc?: boolean,
+        /**
+         * Whether to include delivery statistics into response.
+         */
         includeStatistics?: boolean,
         page?: number,
         count?: number,
         limit?: number,
         offset?: number,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/notifications',

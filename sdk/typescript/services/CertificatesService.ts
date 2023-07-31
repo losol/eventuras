@@ -11,15 +11,16 @@ import { request as __request } from '../core/request';
 export class CertificatesService {
 
     /**
-     * @param id
-     * @param format
      * @returns any Success
      * @throws ApiError
      */
-    public static getV3Certificates(
+    public static getV3Certificates({
+        id,
+        format,
+    }: {
         id: number,
         format?: CertificateFormat,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/certificates/{id}',

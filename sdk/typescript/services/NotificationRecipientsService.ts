@@ -11,20 +11,21 @@ import { request as __request } from '../core/request';
 export class NotificationRecipientsService {
 
     /**
-     * @param id
-     * @param query
-     * @param sentOnly
-     * @param errorsOnly
-     * @param order
-     * @param desc
-     * @param page
-     * @param count
-     * @param limit
-     * @param offset
      * @returns any Success
      * @throws ApiError
      */
-    public static getV3NotificationsRecipients(
+    public static getV3NotificationsRecipients({
+        id,
+        query,
+        sentOnly,
+        errorsOnly,
+        order,
+        desc,
+        page,
+        count,
+        limit,
+        offset,
+    }: {
         id: number,
         query?: string,
         sentOnly?: boolean,
@@ -35,7 +36,7 @@ export class NotificationRecipientsService {
         count?: number,
         limit?: number,
         offset?: number,
-    ): CancelablePromise<any> {
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/notifications/{id}/recipients',
