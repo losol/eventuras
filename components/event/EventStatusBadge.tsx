@@ -1,8 +1,7 @@
 import { Box, Badge } from '@chakra-ui/react';
-import { EVENT_STATUS } from 'const';
-import { EventStatusType } from 'types';
+import { EventInfoStatus } from '@losol/eventuras';
 
-const EventStatusBadge = ({ status }: { status: EventStatusType }) => {
+const EventStatusBadge = ({ status }: { status: EventInfoStatus }) => {
   const {
     // Default properties
     colorScheme = 'gray',
@@ -11,13 +10,8 @@ const EventStatusBadge = ({ status }: { status: EventStatusType }) => {
   } = badges[status]; // Specific properties
 
   return (
-    <Box textAlign='right'>
-      <Badge
-        variant={variant}
-        colorScheme={colorScheme}
-        mt={2}
-        mr={2}
-      >
+    <Box textAlign="right">
+      <Badge variant={variant} colorScheme={colorScheme} mt={2} mr={2}>
         {text}
       </Badge>
     </Box>
@@ -31,35 +25,35 @@ type BadgeType = {
 };
 
 // Specific badge properties. Add only properties different from default (cpecified below in EventStatusBadge)
-const badges: { [key in EventStatusType]: BadgeType } = {
-  [EVENT_STATUS.DRAFT]: {
+const badges: { [key in EventInfoStatus]: BadgeType } = {
+  [EventInfoStatus.DRAFT]: {
     variant: 'subtle',
   },
-  [EVENT_STATUS.PLANNED]: {
+  [EventInfoStatus.PLANNED]: {
     colorScheme: 'blue',
     variant: 'subtle',
   },
-  [EVENT_STATUS.REGISTRATIONS_OPEN]: {
+  [EventInfoStatus.REGISTRATIONS_OPEN]: {
     colorScheme: 'green',
     text: 'Registrations Open',
   },
-  [EVENT_STATUS.WAITING_LIST]: {
+  [EventInfoStatus.WAITING_LIST]: {
     colorScheme: 'orange',
     text: 'Waiting List',
   },
-  [EVENT_STATUS.REGISTRATIONS_CLOSED]: {
+  [EventInfoStatus.REGISTRATIONS_CLOSED]: {
     colorScheme: 'pink',
     text: 'Registrations Closed',
   },
-  [EVENT_STATUS.FINISHED]: {
+  [EventInfoStatus.FINISHED]: {
     colorScheme: 'blackAlpha',
     variant: 'subtle',
   },
-  [EVENT_STATUS.ARCHIVED]: {
+  [EventInfoStatus.ARCHIVED]: {
     colorScheme: 'blackAlpha',
     variant: 'subtle',
   },
-  [EVENT_STATUS.CANCELLED]: {
+  [EventInfoStatus.CANCELLED]: {
     colorScheme: 'red',
   },
 };

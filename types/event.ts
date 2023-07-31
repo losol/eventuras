@@ -1,11 +1,11 @@
-import { EVENT_STATUS, EVENT_TYPE } from 'const';
+import { EventInfoStatus, EventInfoType } from '@losol/eventuras';
 import { HTMLString } from 'types';
 
 type ValueOf<T> = T[keyof T];
 
 // Partials
-export type EventStatusType = ValueOf<typeof EVENT_STATUS>;
-export type EventTypeType = ValueOf<typeof EVENT_TYPE>;
+export type EventStatusType = ValueOf<typeof EventInfoStatus>;
+export type EventTypeType = ValueOf<typeof EventInfoType>;
 
 // Event Preview (card)
 export type EventPreviewType = {
