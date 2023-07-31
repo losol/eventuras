@@ -5,7 +5,7 @@ import { SessionProvider } from 'next-auth/react';
 import theme from 'styles/theme';
 import { OpenAPI } from '@losol/eventuras';
 
-OpenAPI.BASE = 'http://localhost:3000/api/eventuras';
+OpenAPI.BASE = `${process.env.NEXT_PUBLIC_APPLICATION_URL}/api/eventuras`;
 
 function App({ Component, pageProps }: AppProps) {
   return (

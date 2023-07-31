@@ -49,26 +49,6 @@ export default function Index(props: IndexProps) {
                 </SimpleGrid>
               </>
             )}
-
-            {!onlinecourses && <Loading />}
-            {onlinecourses.length !== 0 && (
-              <>
-                <Heading as="h2" marginTop="16" marginBottom="4">
-                  {onlineCoursesTitle}
-                </Heading>
-                <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing="20px">
-                  {onlinecourses &&
-                    onlinecourses.map(
-                      (onlineCourse: OnlineCoursePreviewType) => (
-                        <OnlineCourseCard
-                          key={onlineCourse.id}
-                          onlineCourse={onlineCourse}
-                        />
-                      )
-                    )}
-                </SimpleGrid>
-              </>
-            )}
           </Box>
         </main>
       </Layout>
@@ -80,9 +60,6 @@ export async function getStaticProps({ locale }: { locale: string }) {
   const events = await EventsService.getV3Events().catch(() => {
     return { data: [] };
   });
-  const onlinecourses = await OnlineCourseService.getV3Onlinecourses().catch(
-    () => []
-  );
 
   // Locales
   const translateComponent = await getT(locale, 'index');
@@ -96,7 +73,6 @@ export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
       events: events.data,
-      onlinecourses,
       locales: {
         component: {
           demoTitleLocale,
@@ -104,7 +80,6 @@ export async function getStaticProps({ locale }: { locale: string }) {
         },
         common: {
           eventsTitle,
-          onlineCoursesTitle,
         },
       },
     },
