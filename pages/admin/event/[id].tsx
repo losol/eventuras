@@ -83,15 +83,19 @@ const EventAdmin = () => {
     router.query.id &&
       session &&
       setEventInfo(
-        await EventsService.getV3Events1(parseInt(router.query.id.toString()))
+        await EventsService.getV3Events1({
+          id: parseInt(router.query.id!.toString()),
+        })
       );
   };
 
   const loadRegistrations = async () => {
     if (session) {
-      const result = await RegistrationsService.getV3Registrations(
-        parseInt(router.query.id!.toString())
-      );
+      const result = await RegistrationsService.getV3Registrations({
+        eventId: parseInt(router.query.id!.toString()),
+        includeProducts: true,
+        includeUserInfo: true,
+      });
       setRegistrations(result.data!);
     }
   };
@@ -102,9 +106,12 @@ const EventAdmin = () => {
 
   const openRegistrationDetails = async (registrationId: number) => {
     const s = await getSession();
-    const registration = await RegistrationsService.getV3Registrations1(
-      registrationId
-    );
+    const registration = await RegistrationsService.getV3Registrations1({
+      id: registrationId,
+      includeProducts: true,
+      includeUserInfo: true,
+      includeOrders: true,
+    });
     if (registration) {
       setActiveRegistration(registration);
     }
@@ -119,16 +126,18 @@ const EventAdmin = () => {
 
   const handleEmailDrawerSubmit = async () => {
     NotificationsQueueingService.postV3NotificationsEmail({
-      eventParticipants: {
-        eventId: parseInt(router.query.id! as string, 10),
-        registrationTypes: selectedParticipantGroups as RegistrationType[],
-        registrationStatuses: [
-          RegistrationStatus.VERIFIED,
-          RegistrationStatus.DRAFT,
-        ],
+      requestBody: {
+        eventParticipants: {
+          eventId: parseInt(router.query.id! as string, 10),
+          registrationTypes: selectedParticipantGroups as RegistrationType[],
+          registrationStatuses: [
+            RegistrationStatus.VERIFIED,
+            RegistrationStatus.DRAFT,
+          ],
+        },
+        subject: subject,
+        bodyMarkdown: emailBody,
       },
-      subject: subject,
-      bodyMarkdown: emailBody,
     })
       .then(() => {
         onClose();

@@ -20,8 +20,8 @@ interface RegistrationDrawerProps {
 
 const RegistrationDrawer = (props: RegistrationDrawerProps): JSX.Element => {
   const { registration, onClose, isOpen } = props;
-  const { user, status, type, notes } = registration;
-  const { name, email, phoneNumber } = user!;
+  // const { user, status, type, notes } = registration;
+  // const { name, email, phoneNumber } = user!;
 
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="xl">
@@ -34,20 +34,20 @@ const RegistrationDrawer = (props: RegistrationDrawerProps): JSX.Element => {
             <Heading as="h2" size="md" paddingTop="6">
               Bruker
             </Heading>
-            <Text>Navn: {name}</Text>
-            <Text>E-post: {email}</Text>
-            <Text>Mobil: {phoneNumber}</Text>
+            <Text>Navn: {registration.user?.name}</Text>
+            <Text>E-post: {registration.user?.email}</Text>
+            <Text>Mobil: {registration.user?.phoneNumber}</Text>
 
             <Heading as="h2" size="md" paddingTop="6">
               Detaljer
             </Heading>
-            <Text>Status: {status}</Text>
-            <Text>Type: {type}</Text>
+            <Text>Status: {registration.status}</Text>
+            <Text>Type: {registration.type}</Text>
 
             <Heading as="h2" size="md" paddingTop="6">
               Notater
             </Heading>
-            <Text>{notes}</Text>
+            <Text>{registration.notes}</Text>
           </DrawerBody>
 
           <DrawerFooter borderTopWidth="1px">

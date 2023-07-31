@@ -57,7 +57,7 @@ export default function Index(props: IndexProps) {
 }
 
 export async function getStaticProps({ locale }: { locale: string }) {
-  const events = await EventsService.getV3Events().catch(() => {
+  const events = await EventsService.getV3Events({}).catch(() => {
     return { data: [] };
   });
 

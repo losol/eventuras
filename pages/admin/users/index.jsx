@@ -9,11 +9,8 @@ import {
 } from 'components';
 import { useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
-import {
-  toaster,
-} from 'services';
+import { toaster } from 'services';
 import { UsersService } from '@losol/eventuras';
-
 
 const AdminUsersIndex = () => {
   const { data: session, status } = useSession();
@@ -56,14 +53,14 @@ const AdminUsersIndex = () => {
     []
   );
 
-  const getUsersList = async (page) => {
-    const users = await UsersService.getV3Users1(undefined,undefined,undefined,page,count)
+  const getUsersList = async page => {
+    const users = await UsersService.getV3Users1({ page: page });
     setUsers(users.data);
     setPages(users.pages);
     setCurrentPage(users.page);
   };
 
-  const handlePageClick = (page) => {
+  const handlePageClick = page => {
     getUsersList(page);
   };
 
@@ -77,9 +74,9 @@ const AdminUsersIndex = () => {
     userDrawerToggle();
   };
 
-  const handleSubmitNewUser = async (user) => {
-    const newUser = await UsersService.postV3Users(user).catch(
-      (error) => toaster.error(error)
+  const handleSubmitNewUser = async user => {
+    const newUser = await UsersService.postV3Users(user).catch(error =>
+      toaster.error(error)
     );
 
     if (newUser) {
@@ -89,8 +86,10 @@ const AdminUsersIndex = () => {
     }
   };
 
-  const handleSubmitUpdateUser = async (user) => {
-    const updatedUser = await UsersService.putV3Users(user.id,user).catch(toaster.error)
+  const handleSubmitUpdateUser = async user => {
+    const updatedUser = await UsersService.putV3Users(user.id, user).catch(
+      toaster.error
+    );
 
     if (updatedUser) {
       toaster.success(`${updatedUser.name} was updated.`);
@@ -99,8 +98,8 @@ const AdminUsersIndex = () => {
     }
   };
 
-  const openUserdetails = async (userId) => {
-    const user = await UsersService.getV3Users(userId)
+  const openUserdetails = async userId => {
+    const user = await UsersService.getV3Users(userId);
     if (user) {
       setActiveUser(user);
     }
@@ -109,7 +108,7 @@ const AdminUsersIndex = () => {
   };
 
   useEffect(() => {
-    if(status!=='loading'){
+    if (status !== 'loading') {
       getUsersList(currentPage);
     }
   }, [status]);
@@ -137,7 +136,7 @@ const AdminUsersIndex = () => {
             user={activeUser}
             isOpen={userDrawerOpen}
             onClose={userDrawerToggle}
-            handleUserChange={(event) =>
+            handleUserChange={event =>
               setActiveUser({
                 ...activeUser,
                 [event.target.id]: event.target.value,

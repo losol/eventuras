@@ -5,7 +5,7 @@ import { signIn, useSession } from 'next-auth/react';
 import { useContext, useEffect, useState } from 'react';
 import { EventsService, OnlineCourseService } from '@losol/eventuras';
 
-const EventInfo = (props) => {
+const EventInfo = props => {
   const { data: session, status } = useSession();
   const { title = '...', description = '...' } = props;
   const { user } = useContext(UserContext);
@@ -84,22 +84,23 @@ const EventInfo = (props) => {
   );
 };
 
-
 export const getStaticProps = async ({ params }) => {
-  const event = await EventsService.getV3Events1(params.id).catch(e=>{
-    console.log('getStaticProps error ',e)
-    return {props:null}
-  })
-  return {props:{...event}}
+  const event = await EventsService.getV3Events1({ id: params.id }).catch(e => {
+    console.log('getStaticProps error ', e);
+    return { props: null };
+  });
+  return { props: { ...event } };
 };
 
 export async function getStaticPaths() {
-  const defaultPath =  {paths:[],fallback:false}
-  const {data:onlineEvents} = await EventsService.getV3Events().catch(e=>{
-    return {data:null}
-  })
-  if(!onlineEvents?.length){
-    return defaultPath
+  const defaultPath = { paths: [], fallback: false };
+  const { data: onlineEvents } = await EventsService.getV3Events({}).catch(
+    e => {
+      return { data: null };
+    }
+  );
+  if (!onlineEvents?.length) {
+    return defaultPath;
   }
   const paths = onlineEvents.map(event => ({
     params: {

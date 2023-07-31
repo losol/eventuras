@@ -6,10 +6,9 @@ import { useEffect, useState } from 'react';
 import { FiUsers } from 'react-icons/fi';
 import { EventsService } from '@losol/eventuras';
 
-
 function AdminIndex() {
   const { data: session, status } = useSession();
-  
+
   const [eventinfos, setEventinfos] = useState([]);
   const columns = [
     {
@@ -42,8 +41,12 @@ function AdminIndex() {
 
   useEffect(() => {
     const fetchEvents = async () => {
-      //TODO try to adjust the Function signature so we do not have to pass parameters like this to pass organisation
-      const result = await EventsService.getV3Events(undefined,undefined,undefined,undefined,1)
+      const organizationFilter = {};
+      if (process.env.NEXT_PUBLIC_ORGANIZATION_ID !== null) {
+        organizationId: process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+      }
+
+      const result = await EventsService.getV3Events(organizationFilter);
       setEventinfos(result.data);
     };
     fetchEvents();
