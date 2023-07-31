@@ -1,4 +1,4 @@
-import { Box, Badge } from '@chakra-ui/react';
+import { Badge,Box } from '@chakra-ui/react';
 import { EventInfoStatus } from '@losol/eventuras';
 
 const EventStatusBadge = ({ status }: { status: EventInfoStatus }) => {

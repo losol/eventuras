@@ -6,6 +6,15 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import {
+  EventDto,
+  EventsService,
+  NotificationsQueueingService,
+  RegistrationDto,
+  RegistrationsService,
+  RegistrationStatus,
+  RegistrationType,
+} from '@losol/eventuras';
+import {
   DataTable,
   EmailDrawer,
   Layout,
@@ -16,15 +25,6 @@ import {
 import { useRouter } from 'next/router';
 import { getSession, useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
-import {
-  EventDto,
-  EventsService,
-  RegistrationsService,
-  RegistrationDto,
-  NotificationsQueueingService,
-  RegistrationType,
-  RegistrationStatus,
-} from '@losol/eventuras';
 
 const EventAdmin = () => {
   const router = useRouter();

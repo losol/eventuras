@@ -1,4 +1,5 @@
 import { Button, Container, Heading } from '@chakra-ui/react';
+import { UsersService } from '@losol/eventuras';
 import {
   DataTable,
   Layout,
@@ -10,7 +11,6 @@ import {
 import { useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
 import { toaster } from 'services';
-import { UsersService } from '@losol/eventuras';
 
 const AdminUsersIndex = () => {
   const { data: session, status } = useSession();

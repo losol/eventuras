@@ -1,7 +1,3 @@
-import NextLink from 'next/link';
-import { useRouter } from 'next/router';
-import { signIn, signOut, useSession } from 'next-auth/react';
-import useTranslation from 'next-translate/useTranslation';
 import {
   Button,
   ButtonGroup,
@@ -11,6 +7,10 @@ import {
 } from '@chakra-ui/react';
 import { UserMenu } from 'components';
 import { formatLanguageName } from 'helpers';
+import NextLink from 'next/link';
+import { useRouter } from 'next/router';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import useTranslation from 'next-translate/useTranslation';
 
 const Header = () => {
   const { data: session } = useSession();

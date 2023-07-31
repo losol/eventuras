@@ -1,17 +1,14 @@
+export type { HTMLString } from './common';
 export type {
-  EventStatusType,
   EventPreviewType,
+  EventStatusType,
   EventTypeType,
 } from './event';
-
-export type { UserType } from './user';
-
-export type {
-  UserEventRegistrationType,
-  RegistrationType,
-} from './registration';
-
-export type { OrganisationSettingType } from './organization';
-export type { OnlineCoursePreviewType } from './online-course';
 export type { LocalesType } from './locale';
-export type { HTMLString } from './common';
+export type { OnlineCoursePreviewType } from './online-course';
+export type { OrganisationSettingType } from './organization';
+export type {
+  RegistrationType,
+  UserEventRegistrationType,
+} from './registration';
+export type { UserType } from './user';

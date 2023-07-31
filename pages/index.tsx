@@ -1,9 +1,9 @@
 import { Box, Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import { EventDto, EventsService } from '@losol/eventuras';
 import { EventCard, Layout, Loading } from 'components';
-import getT from 'next-translate/getT';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import getT from 'next-translate/getT';
 import { LocalesType } from 'types';
 
 type IndexProps = {

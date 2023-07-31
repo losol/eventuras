@@ -1,4 +1,5 @@
 import { createStandaloneToast } from '@chakra-ui/react';
+
 const toast = createStandaloneToast();
 
 const success = text => {

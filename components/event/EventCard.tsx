@@ -1,20 +1,20 @@
-import { memo, useMemo } from 'react';
-import NextLink from 'next/link';
+import { CalendarIcon } from '@chakra-ui/icons';
 import {
-  Text,
+  Badge,
+  Box,
+  Button,
   Card,
   CardBody,
-  CardHeader,
-  Heading,
   CardFooter,
-  Box,
-  Badge,
-  Button,
+  CardHeader,
   Flex,
+  Heading,
+  Text,
 } from '@chakra-ui/react';
-import { CalendarIcon } from '@chakra-ui/icons';
-import { EventStatusBadge } from 'components';
 import { EventDto } from '@losol/eventuras';
+import { EventStatusBadge } from 'components';
+import NextLink from 'next/link';
+import { memo, useMemo } from 'react';
 
 const EventCard = memo(function EventCard({ event }: { event: EventDto }) {
   const {
