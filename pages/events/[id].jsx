@@ -86,14 +86,20 @@ const EventInfo = (props) => {
 
 
 export const getStaticProps = async ({ params }) => {
-  const event = await EventsService.getV3Events1(params.id)
+  const event = await EventsService.getV3Events1(params.id).catch(e=>{
+    console.log('getStaticProps error ',e)
+    return {props:null}
+  })
   return {props:{...event}}
 };
 
 export async function getStaticPaths() {
-  const {data:onlineEvents} = await EventsService.getV3Events()
+  const defaultPath =  {paths:[],fallback:false}
+  const {data:onlineEvents} = await EventsService.getV3Events().catch(e=>{
+    return {data:null}
+  })
   if(!onlineEvents?.length){
-    return null
+    return defaultPath
   }
   const paths = onlineEvents.map(event => ({
     params: {
@@ -103,4 +109,5 @@ export async function getStaticPaths() {
 
   return { paths, fallback: false };
 }
+
 export default EventInfo;

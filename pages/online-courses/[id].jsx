@@ -83,12 +83,19 @@ const OnlineCourses = props => {
 };
 
 export const getStaticProps = async ({ params }) => {
-  const course = await OnlineCourseService.getV3Onlinecourses1(params.id)
+  const course = await OnlineCourseService.getV3Onlinecourses1(params.id).catch(err=>{
+    return {props:null}
+  })
   return {props:{...course}}
 };
 
 export async function getStaticPaths() {
-  const onlineCourses = await OnlineCourseService.getV3Onlinecourses()
+  const onlineCourses = await OnlineCourseService.getV3Onlinecourses().catch(err=>{
+    return null
+  })
+  if(!onlineCourses?.length){
+    return {paths:[],fallback:false}
+  }
   const paths = onlineCourses.map(course => ({
     params: {
       id: course.id.toString(),

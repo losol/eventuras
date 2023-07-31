@@ -3,11 +3,11 @@ import getT from 'next-translate/getT';
 import { useRouter } from 'next/router';
 import { Box, Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import { EventCard, Layout, Loading, OnlineCourseCard } from 'components';
-import { EventPreviewType, LocalesType, OnlineCoursePreviewType } from 'types';
-import { EventsService, OnlineCourseService } from '@losol/eventuras';
+import { LocalesType, OnlineCoursePreviewType } from 'types';
+import { EventDto, EventsService, OnlineCourseService } from '@losol/eventuras';
 
 type IndexProps = {
-  events: EventPreviewType[];
+  events: EventDto[];
   onlinecourses: OnlineCoursePreviewType[];
   locales: LocalesType;
 };
@@ -43,7 +43,7 @@ export default function Index(props: IndexProps) {
                 </Heading>
                 <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing="5">
                   {events &&
-                    events.map((event: EventPreviewType) => (
+                    events.map((event: EventDto) => (
                       <EventCard key={event.id} event={event} />
                     ))}
                 </SimpleGrid>
@@ -77,8 +77,12 @@ export default function Index(props: IndexProps) {
 }
 
 export async function getStaticProps({ locale }: { locale: string }) {
-  const events = await EventsService.getV3Events();
-  const onlinecourses = await OnlineCourseService.getV3Onlinecourses();
+  const events = await EventsService.getV3Events().catch(() => {
+    return { data: [] };
+  });
+  const onlinecourses = await OnlineCourseService.getV3Onlinecourses().catch(
+    () => []
+  );
 
   // Locales
   const translateComponent = await getT(locale, 'index');
