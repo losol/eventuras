@@ -76,22 +76,30 @@ const EventInfo = props => {
             Register for event
           </Button>
         )}
-
-        <Heading as="h2" size="md" paddingTop={16}>
-          {t('More information')}
-        </Heading>
-        {parse(props.moreInformation)}
-
-        <Heading as="h2" size="md" paddingTop={16}>
-          {t('Program')}
-        </Heading>
-        {parse(props.program)}
-
-        <Heading as="h2" size="md" paddingTop={16}>
-          {t('Practica Information')}
-        </Heading>
-        {parse(props.practicalInformation)}
-
+        {props.moreInformation && (
+          <>
+            <Heading as="h2" size="md" paddingTop={16}>
+              {t('More information')}
+            </Heading>
+            {parse(props.moreInformation)}
+          </>
+        )}
+        {props.program && (
+          <>
+            <Heading as="h2" size="md" paddingTop={16}>
+              {t('Program')}
+            </Heading>
+            {parse(props.program)}
+          </>
+        )}
+        {props.practicalInformation && (
+          <>
+            <Heading as="h2" size="md" paddingTop={16}>
+              {t('Practical Information')}
+            </Heading>
+            {parse(props.practicalInformation)}
+          </>
+        )}
         <AlertModal
           isOpen={isOpen}
           onClose={onClose}
