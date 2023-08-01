@@ -14,7 +14,6 @@ const LOCALES_COMMON_EN: LocalesCommonType = {
       admin: 'Admin',
     },
   },
-
   // Common section titles
   events: 'Events',
   onlinecourses: 'Online courses',

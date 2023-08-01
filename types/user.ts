@@ -3,5 +3,4 @@ export type UserType = {
   email: string;
   name: string;
   phoneNumber?: string;
-  acessToken?: string;
 };

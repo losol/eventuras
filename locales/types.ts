@@ -12,7 +12,6 @@ export type LocalesCommonType = {
       admin: string;
     };
   };
-
   // Common section titles
   events: string;
   onlinecourses: string;

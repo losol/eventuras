@@ -1,8 +1,10 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, Container } from '@chakra-ui/react';
 import { createStandaloneToast } from '@chakra-ui/toast';
 import { OpenAPI } from '@losol/eventuras';
+import { Layout } from 'components';
 import { UserProvider } from 'context';
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
 import { SessionProvider } from 'next-auth/react';
 import theme from 'styles/theme';
 
@@ -16,7 +18,15 @@ function App({ Component, pageProps }: AppProps) {
       <ToastContainer />
       <ChakraProvider theme={theme}>
         <UserProvider>
-          <Component {...pageProps} />
+          <Head>
+            <title>Eventuras</title>
+            <link rel="icon" href="/favicon.ico" />
+          </Head>
+          <Layout>
+            <Container>
+              <Component {...pageProps} />
+            </Container>
+          </Layout>
         </UserProvider>
       </ChakraProvider>
     </SessionProvider>

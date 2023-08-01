@@ -5,7 +5,6 @@ declare module 'next-auth' {
       email: string;
       image: string;
       id: string;
-      accessToken: string;
     };
     expires: string;
   }

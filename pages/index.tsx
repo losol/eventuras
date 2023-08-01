@@ -1,7 +1,6 @@
 import { Box, Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import { EventDto, EventsService } from '@losol/eventuras';
-import { EventCard, Layout, Loading } from 'components';
-import Head from 'next/head';
+import { EventCard, Loading } from 'components';
 import { useRouter } from 'next/router';
 import getT from 'next-translate/getT';
 import { LocalesType } from 'types';
@@ -19,39 +18,21 @@ export default function Index(props: IndexProps) {
 
   return (
     <>
-      <Head>
-        <title>Eventuras</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <Layout>
-        <main>
-          <Box margin="8">
-            <Heading as="h2" marginTop="16" marginBottom="4">
-              {demoTitleLocale} {locale?.toUpperCase()}
-            </Heading>
-            <Text>{demoTextLocale}</Text>
-          </Box>
-
-          <Box margin="8">
-            {!events && <Loading />}
-            {events.length !== 0 && (
-              <>
-                <Heading as="h2" marginTop="16" marginBottom="4">
-                  {eventsTitle}
-                </Heading>
-                <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing="5">
-                  {events &&
-                    events.map((event: EventDto) => <EventCard key={event.id} event={event} />)}
-                  {events.map((event: EventDto) => (
-                    <EventCard key={event.id} event={event} />
-                  ))}
-                </SimpleGrid>
-              </>
-            )}
-          </Box>
-        </main>
-      </Layout>
+      <Heading as="h2" marginBottom="4">
+        {demoTitleLocale} {locale?.toUpperCase()}
+      </Heading>
+      <Text>{demoTextLocale}</Text>
+      {!events && <Loading />}
+      {events.length !== 0 && (
+        <>
+          <Heading as="h2" marginTop="16" marginBottom="4">
+            {eventsTitle}
+          </Heading>
+          <SimpleGrid columns={{ sm: 1, md: 2, lg: events.length >= 3 ? 3 : 2 }} spacing="5">
+            {events && events.map((event: EventDto) => <EventCard key={event.id} event={event} />)}
+          </SimpleGrid>
+        </>
+      )}
     </>
   );
 }
