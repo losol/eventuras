@@ -1,10 +1,4 @@
-import {
-  Button,
-  ButtonGroup,
-  Flex,
-  Heading,
-  useColorModeValue,
-} from '@chakra-ui/react';
+import { Button, ButtonGroup, Flex, Heading, useColorModeValue } from '@chakra-ui/react';
 import { UserMenu } from 'components';
 import { formatLanguageName } from 'helpers';
 import NextLink from 'next/link';
@@ -17,16 +11,6 @@ const Header = () => {
   const { locale, locales } = useRouter();
   const { t } = useTranslation('common');
   const { asPath } = useRouter(); // Same page but change language
-
-  // TODO: Send user to login page if refresh access token fails
-  /*
-  useEffect(() => {
-    if (session?.error === 'RefreshAccessTokenError') {
-      // Try logging in again...
-      signIn('auth0');
-    }
-  }, [session]);
-  */
 
   return (
     <Flex
@@ -47,7 +31,11 @@ const Header = () => {
       <div>
         <ButtonGroup colorScheme="teal" size="sm" mr={2} variant="ghost">
           {locales?.map(lang => (
+<<<<<<< HEAD
             <NextLink
+=======
+            <Button
+>>>>>>> 860bece (refactor: lint all files to new standard)
               key={lang}
               href={asPath}
               locale={lang}
@@ -62,11 +50,7 @@ const Header = () => {
         </ButtonGroup>
 
         {!session && (
-          <Button
-            onClick={() => signIn('auth0')}
-            colorScheme="teal"
-            variant="outline"
-          >
+          <Button onClick={() => signIn('auth0')} colorScheme="teal" variant="outline">
             {t('header.auth.login')}
           </Button>
         )}

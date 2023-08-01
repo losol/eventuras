@@ -27,9 +27,5 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setUser(userDetails);
   }, [userDetails]);
 
-  return (
-    <UserContext.Provider value={{ user, updateUser }}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={{ user, updateUser }}>{children}</UserContext.Provider>;
 };

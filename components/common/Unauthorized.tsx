@@ -1,9 +1,4 @@
-import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
-} from '@chakra-ui/react';
+import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@chakra-ui/react';
 
 export default function Unauthorized() {
   return (
@@ -21,9 +16,7 @@ export default function Unauthorized() {
       <AlertTitle mt={4} mb={1} fontSize="lg">
         Ingen tilgang
       </AlertTitle>
-      <AlertDescription maxWidth="sm">
-        Logg inn for å se denne siden.
-      </AlertDescription>
+      <AlertDescription maxWidth="sm">Logg inn for å se denne siden.</AlertDescription>
     </Alert>
   );
 }

@@ -13,13 +13,11 @@ const MetaItem = (props: MetaItemProps) => {
   // Nothing if API data is null
   if (value === null) {
     return null;
-  };
+  }
 
   return (
     <Text>
-      {text}:
-      {' '}
-      {/* TODO: Remove toString after will understand what UI to create for booleans */}
+      {text}: {/* TODO: Remove toString after will understand what UI to create for booleans */}
       {value.toString()}
     </Text>
   );

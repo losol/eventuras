@@ -21,8 +21,6 @@ const EventCard = memo(function EventCard({ event }: { event: EventDto }) {
     id,
     category,
     city,
-    dateEnd,
-    dateStart,
     description,
     featured,
     location,
@@ -32,10 +30,7 @@ const EventCard = memo(function EventCard({ event }: { event: EventDto }) {
     type,
   } = event;
 
-  const metas = useMemo(
-    () => [type, category].filter(meta => meta !== null),
-    [type, category]
-  );
+  const metas = useMemo(() => [type, category].filter(meta => meta !== null), [type, category]);
   /**
  * TODO
  * handle:
@@ -79,13 +74,7 @@ const EventCard = memo(function EventCard({ event }: { event: EventDto }) {
           {description}
         </Text>
         {metas.length !== 0 && (
-          <Text
-            fontSize="sm"
-            mb="1"
-            color="blackAlpha.600"
-            display="flex"
-            alignItems="baseline"
-          >
+          <Text fontSize="sm" mb="1" color="blackAlpha.600" display="flex" alignItems="baseline">
             {metas.map((meta, index) => {
               const isNotLast = index !== metas.length - 1;
               // TODO: After create event page. Tink. Maybe, extract it into separate component
@@ -100,12 +89,7 @@ const EventCard = memo(function EventCard({ event }: { event: EventDto }) {
         )}
       </CardBody>
       <CardFooter display="block" pt="0">
-        <Button
-          as={NextLink}
-          href={`/events/${id}`}
-          colorScheme="gray"
-          width="full"
-        >
+        <Button as={NextLink} href={`/events/${id}`} colorScheme="gray" width="full">
           Vis kurset &raquo;
         </Button>
       </CardFooter>

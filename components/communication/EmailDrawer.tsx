@@ -39,17 +39,13 @@ const EmailDrawer = (props: EmailDrawerProps): JSX.Element => {
       <DrawerOverlay>
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader borderBottomWidth="1px">
-            Create a new email
-          </DrawerHeader>
+          <DrawerHeader borderBottomWidth="1px">Create a new email</DrawerHeader>
 
           <DrawerBody>
             <EmailEditor
               participantGroups={recipientGroups}
               selectedRecipientGroups={selectedRecipientGroups}
-              handleParticipantGroupsChange={group =>
-                handleParticipantGroupsChange(group)
-              }
+              handleParticipantGroupsChange={group => handleParticipantGroupsChange(group)}
               setEmailBody={setEmailBody}
               setSubject={setSubject}
             />

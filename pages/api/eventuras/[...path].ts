@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getToken, JWT } from 'next-auth/jwt';
+import { getToken } from 'next-auth/jwt';
 
 /**
  * Forwards requests from /api/venturas to the eventuras backend API, decorating with a bearer token if available

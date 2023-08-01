@@ -6,10 +6,10 @@ import React, { useContext } from 'react';
 
 const UserProfile = () => {
   const { data: session, status } = useSession();
-  const {user}  = useContext(UserContext);
-  const name = user?.name
-  const email = user?.email
-  const phoneNumber = user?.phoneNumber
+  const { user } = useContext(UserContext);
+  const name = user?.name;
+  const email = user?.email;
+  const phoneNumber = user?.phoneNumber;
 
   return (
     <Layout>

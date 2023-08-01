@@ -1,8 +1,5 @@
 import { Container, Heading } from '@chakra-ui/react';
-import {
-  OrganizationSettingDto,
-  OrganizationSettingsService,
-} from '@losol/eventuras';
+import { OrganizationSettingDto, OrganizationSettingsService } from '@losol/eventuras';
 import { DataTable, Layout, Link, Loading, Unauthorized } from 'components';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
@@ -10,7 +7,7 @@ import { useEffect, useState } from 'react';
 const SystemAdminIndex = () => {
   const { data: session, status } = useSession();
   const [settings, setSettings] = useState<OrganizationSettingDto[]>([]);
-  var orgId = 1;
+  let orgId = 1;
   if (process.env.NEXT_PUBLIC_ORGANIZATION_ID !== undefined) {
     orgId = parseInt(process.env.NEXT_PUBLIC_ORGANIZATION_ID.toString());
   }
@@ -29,10 +26,9 @@ const SystemAdminIndex = () => {
   useEffect(() => {
     if (session) {
       const fetchSetting = async () => {
-        const result =
-          await OrganizationSettingsService.getV3OrganizationsSettings({
-            organizationId: orgId,
-          });
+        const result = await OrganizationSettingsService.getV3OrganizationsSettings({
+          organizationId: orgId,
+        });
         setSettings(result);
       };
       fetchSetting();

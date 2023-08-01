@@ -1,17 +1,10 @@
-import {
-  Checkbox,
-  CheckboxGroup,
-  Heading,
-  Input,
-  Stack,
-} from '@chakra-ui/react';
+import { Checkbox, CheckboxGroup, Heading, Input, Stack } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
 import { Dispatch, SetStateAction } from 'react';
 
-const DynamicMarkdownEditor = dynamic(
-  () => import('components/communication/MarkdownEditor'),
-  { ssr: false }
-);
+const DynamicMarkdownEditor = dynamic(() => import('components/communication/MarkdownEditor'), {
+  ssr: false,
+});
 
 interface EmailEditorProps {
   participantGroups: string[];
@@ -27,7 +20,7 @@ const EmailEditor = (props: EmailEditorProps): JSX.Element => {
       <Stack spacing="24px" marginTop="16">
         <CheckboxGroup>
           {props.participantGroups &&
-            props.participantGroups.map((group) => (
+            props.participantGroups.map(group => (
               <Checkbox
                 name={group}
                 id={group}
@@ -35,9 +28,7 @@ const EmailEditor = (props: EmailEditorProps): JSX.Element => {
                 key={`participant_checkbox_${group}`}
                 onChange={() => props.handleParticipantGroupsChange(group)}
               >
-                {group === 'Participant' || group === 'Lecturer'
-                  ? `${group}s`
-                  : group}
+                {group === 'Participant' || group === 'Lecturer' ? `${group}s` : group}
               </Checkbox>
             ))}
         </CheckboxGroup>
@@ -46,7 +37,7 @@ const EmailEditor = (props: EmailEditorProps): JSX.Element => {
         </Heading>
         <Input
           placeholder="Email subject"
-          onChange={(e) => {
+          onChange={e => {
             props.setSubject(e.target.value);
           }}
         />

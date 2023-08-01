@@ -39,11 +39,7 @@ const EventInfo = props => {
   };
 
   useEffect(() => {
-    if (
-      user &&
-      user.id &&
-      localStorage.getItem('EVENT_REGISTRATION_AFTER_LOGIN')
-    ) {
+    if (user && user.id && localStorage.getItem('EVENT_REGISTRATION_AFTER_LOGIN')) {
       handleRegistrationEventRequest();
       localStorage.removeItem('EVENT_REGISTRATION_AFTER_LOGIN');
     }
@@ -100,12 +96,7 @@ const EventInfo = props => {
             {parse(props.practicalInformation)}
           </>
         )}
-        <AlertModal
-          isOpen={isOpen}
-          onClose={onClose}
-          title={modal.title}
-          text={modal.text}
-        />
+        <AlertModal isOpen={isOpen} onClose={onClose} title={modal.title} text={modal.text} />
       </Container>
     </Layout>
   );
@@ -122,11 +113,9 @@ export const getStaticProps = async ({ params }) => {
 
 export async function getStaticPaths() {
   const defaultPath = { paths: [], fallback: false };
-  const { data: onlineEvents } = await EventsService.getV3Events({}).catch(
-    e => {
-      return { data: null };
-    }
-  );
+  const { data: onlineEvents } = await EventsService.getV3Events({}).catch(() => {
+    return { data: null };
+  });
   if (!onlineEvents?.length) {
     return defaultPath;
   }

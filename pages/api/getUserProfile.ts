@@ -5,22 +5,19 @@ const secret = process.env.NEXTAUTH_SECRET;
 let accessToken: JWT | null;
 
 async function fetcher(route: string) {
-  const data = fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}${route}`, {
+  return fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}${route}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
   })
-    .then((response) => response.json())
-    .then((result) => {
+    .then(response => response.json())
+    .then(result => {
       return result;
     });
-
-  return data;
 }
 
 const getUserProfile = async () => {
-  const data = await fetcher('/v3/users/me');
-  return data;
+  return await fetcher('/v3/users/me');
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {

@@ -1,10 +1,6 @@
-import {
-  Button,
-  Container,
-  Heading,
-  useDisclosure,
-  useToast,
-} from '@chakra-ui/react';
+/* eslint-disable */
+
+import { Button, Container, Heading, useDisclosure, useToast } from '@chakra-ui/react';
 import {
   EventDto,
   EventsService,
@@ -30,18 +26,13 @@ const EventAdmin = () => {
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [registrationDrawerOpen, setRegistrationDrawerOpen] = useState(false);
-  const [activeRegistration, setActiveRegistration] =
-    useState<RegistrationDto | null>(null);
+  const [activeRegistration, setActiveRegistration] = useState<RegistrationDto | null>(null);
   const { data: session, status } = useSession();
   const toast = useToast();
   const [eventInfo, setEventInfo] = useState<EventDto | null>(null);
-  const [registrations, setRegistrations] = useState<RegistrationDto[] | null>(
-    []
-  );
+  const [registrations, setRegistrations] = useState<RegistrationDto[] | null>([]);
   const participantGroups = ['Participant', 'Lecturer', 'Staff'];
-  const [selectedParticipantGroups, updateSelectedParticipantGroups] = useState(
-    ['Participant']
-  );
+  const [selectedParticipantGroups, updateSelectedParticipantGroups] = useState(['Participant']);
   const [emailBody, setEmailBody] = useState<string>('');
   const [subject, setSubject] = useState<string>('');
 
@@ -66,9 +57,7 @@ const EventAdmin = () => {
           return (
             <Button
               key={row.original.id}
-              onClick={() =>
-                openRegistrationDetails(row.original.registrationId)
-              }
+              onClick={() => openRegistrationDetails(row.original.registrationId)}
             >
               Detaljer
             </Button>
@@ -130,10 +119,7 @@ const EventAdmin = () => {
         eventParticipants: {
           eventId: parseInt(router.query.id! as string, 10),
           registrationTypes: selectedParticipantGroups as RegistrationType[],
-          registrationStatuses: [
-            RegistrationStatus.VERIFIED,
-            RegistrationStatus.DRAFT,
-          ],
+          registrationStatuses: [RegistrationStatus.VERIFIED, RegistrationStatus.DRAFT],
         },
         subject: subject,
         bodyMarkdown: emailBody,
@@ -161,9 +147,7 @@ const EventAdmin = () => {
   const handleParticipantGroupsChange = (group: string) => {
     const updatedSelectedGroups = [...selectedParticipantGroups];
     if (updatedSelectedGroups.includes(group)) {
-      const index = selectedParticipantGroups.findIndex(
-        element => element === group
-      );
+      const index = selectedParticipantGroups.findIndex(element => element === group);
       updatedSelectedGroups.splice(index, 1);
     } else {
       updatedSelectedGroups.push(group);
@@ -203,9 +187,7 @@ const EventAdmin = () => {
         onClose={onClose}
         recipientGroups={participantGroups}
         selectedRecipientGroups={selectedParticipantGroups}
-        handleParticipantGroupsChange={group =>
-          handleParticipantGroupsChange(group)
-        }
+        handleParticipantGroupsChange={group => handleParticipantGroupsChange(group)}
         setEmailBody={setEmailBody}
         setSubject={setSubject}
         onSubmit={() => handleEmailDrawerSubmit()}

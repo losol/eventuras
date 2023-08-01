@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import NextAuth, { AuthOptions, CookiesOptions } from 'next-auth';
+import { AuthOptions, CookiesOptions } from 'next-auth/core/types';
+import NextAuth from 'next-auth/next';
 import Auth0Provider from 'next-auth/providers/auth0';
 
 const AUTH0_TOKEN_URL = `https://${process.env.AUTH0_DOMAIN}/oauth/token?`;
@@ -36,34 +37,23 @@ const nextOptions: AuthOptions = {
   ],
 
   callbacks: {
-    async jwt({
-      token,
-      user,
-      account,
-    }: {
-      token: any;
-      user: any;
-      account: any;
-    }) {
+    async jwt({ token, user, account }: { token: any; user: any; account: any }) {
       // Initial sign in
       if (account && user) {
         if (!account.refresh_token) {
           console.error('No refresh token in account object :(');
         }
-        const decoratedToken = {
+        return {
           ...token,
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
           accessTokenExpires: account.expires_at * 1000,
           user,
         };
-        return decoratedToken;
       }
       //without a refresh token, we cant refresh, make sure it has one and it is expired before asking for one
-      if (token.refreshToken) {
-        if (Date.now() > token.accessTokenExpires) {
-          return refreshAccessToken(token);
-        }
+      if (token.refreshToken && Date.now() > token.accessTokenExpires) {
+        return refreshAccessToken(token);
       }
 
       //by default, return token
@@ -114,6 +104,5 @@ async function refreshAccessToken(token: any) {
     };
   }
 }
-const authGetter = (req: NextApiRequest, res: NextApiResponse) =>
-  NextAuth(req, res, nextOptions);
+const authGetter = (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res, nextOptions);
 export default authGetter;

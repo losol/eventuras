@@ -16,12 +16,7 @@ interface ModalProps {
   title?: string;
   text?: string;
 }
-const AlertModal: React.FC<ModalProps> = ({
-  isOpen = false,
-  onClose,
-  title = '',
-  text = '',
-}) => {
+const AlertModal: React.FC<ModalProps> = ({ isOpen = false, onClose, title = '', text = '' }) => {
   return (
     <>
       <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
