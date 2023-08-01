@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import { Container, Heading } from '@chakra-ui/react';
 import { OrganizationSettingDto, OrganizationSettingsService } from '@losol/eventuras';
 import { DataTable, Layout, Link, Loading, Unauthorized } from 'components';
@@ -33,7 +35,6 @@ const SystemAdminIndex = () => {
       };
       fetchSetting();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   if (status === 'loading') {
