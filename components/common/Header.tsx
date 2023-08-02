@@ -31,20 +31,8 @@ const Header = () => {
       <div>
         <ButtonGroup colorScheme="teal" size="sm" mr={2} variant="ghost">
           {locales?.map(lang => (
-<<<<<<< HEAD
-            <NextLink
-=======
-            <Button
->>>>>>> 860bece (refactor: lint all files to new standard)
-              key={lang}
-              href={asPath}
-              locale={lang}
-              passHref
-              legacyBehavior
-            >
-              <Button bg={lang === locale ? 'teal.100' : ''}>
-                {formatLanguageName(lang)}
-              </Button>
+            <NextLink key={lang} href={asPath} locale={lang} passHref legacyBehavior>
+              <Button bg={lang === locale ? 'teal.100' : ''}>{formatLanguageName(lang)}</Button>
             </NextLink>
           ))}
         </ButtonGroup>
@@ -54,7 +42,7 @@ const Header = () => {
             {t('header.auth.login')}
           </Button>
         )}
-        {session && <UserMenu signOut={signOut} name={session.user?.name} />}
+        {session && <UserMenu signOut={signOut} name={session.user?.name ?? ''} />}
       </div>
     </Flex>
   );

@@ -4,7 +4,6 @@ about: Create a report to help us improve
 title: ''
 labels: bug
 assignees: ''
-
 ---
 
 **Describe the bug**
@@ -20,11 +19,13 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
- - Browser [e.g. chrome, safari]
+
+- Browser [e.g. chrome, safari]
 
 **Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - Browser [e.g. stock browser, safari]
+
+- Device: [e.g. iPhone6]
+- Browser [e.g. stock browser, safari]
 
 **Additional context**
 Add any other context about the problem here.

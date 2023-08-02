@@ -3,15 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prepare": "husky install",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "lint-fix": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
     "prettier-fix": "prettier . --write",
-    "tsc":"tsc",
     "fix-all": "npm run lint-fix && npm run prettier-fix"
-    
   },
   "dependencies": {
     "@babel/core": "7.22.9",
@@ -34,7 +33,8 @@
     "react-dom": "18.2.0",
     "react-icons": "^4.10.1",
     "react-table": "^7.8.0",
-    "swr": "^2.2.0"
+    "swr": "^2.2.0",
+    "tsc-files": "^1.1.4"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^13.4.12",
@@ -59,8 +59,11 @@
     "webpack": "5.88.2"
   },
   "lint-staged": {
-    "**/*.(ts|tsx)":"tsc --jsx react-jsx --skipLibCheck",
-    "*.js,*.ts,*.tsx": ["eslint --fix","prettier --cache --write"],
+    "**/*.(ts|tsx)": "tsc-files --noEmit",
+    "**/*.(ts|tsx|js)": [
+      "eslint --fix",
+      "prettier --cache --write"
+    ],
     "*.{css,json}": "prettier --cache --write"
   },
   "browserslist": [
@@ -68,4 +71,3 @@
     "maintained node versions"
   ]
 }
-

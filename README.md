@@ -30,6 +30,11 @@ npx next dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Precommit hook
+
+In package.json there is a lint-staged section which shows all the actions taken on staged files.
+Unfortunately tsc ignores tsconfig (see why section of https://github.com/gustavopch/tsc-files). So we use tsc-files to do these checks. Unfortunately it generates tsconfig.\*.tsbuildinfo files, but these should be automatically removed.
+
 ## Code style
 
 We are open to most standards, as long as there is one. We were inspired by [joshchus setup](https://dev.to/joshchu/how-to-setup-prettier-eslint-husky-and-lint-staged-with-a-nextjs-and-typescript-project-i7b)

@@ -1,17 +1,7 @@
 import { Button, Container, Heading } from '@chakra-ui/react';
 import { UsersService } from '@losol/eventuras';
-<<<<<<< HEAD
-import {
-  DataTable,
-  Layout,
-  Loading,
-  Unauthorized,
-  UserDrawer,
-} from 'components';
+import { DataTable, Layout, Loading, Unauthorized, UserDrawer } from 'components';
 import NextLink from 'next/link';
-=======
-import { DataTable, Layout, Link, Loading, Unauthorized, UserDrawer } from 'components';
->>>>>>> 860bece (refactor: lint all files to new standard)
 import { useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
 import { toaster } from 'services';
@@ -150,6 +140,7 @@ const AdminUsersIndex = () => {
 
         <Container paddingTop="32">
           <Heading as="h1" paddingBottom="16">
+            <NextLink href="/admin/">Admin</NextLink> &gt; Brukere
             <NextLink href="/admin/">Admin</NextLink> &gt; Brukere
           </Heading>
 
