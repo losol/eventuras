@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "lint-fix": "eslint --fix --ext .js,.jsx,.ts,.tsx ."
+    "lint-fix": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
+    "prettier-fix": "prettier . --write",
+    "fix-all": "npm run lint-fix && npm run prettier-fix"
   },
   "dependencies": {
     "@babel/core": "7.22.9",
@@ -53,6 +55,10 @@
     "prettier": "^3.0.0",
     "typescript": "5.1.6",
     "webpack": "5.88.2"
+  },
+  "lint-staged": {
+    "*.js,*.ts,*.tsx": "eslint --fix ",
+    "*.{js,*.ts,*.tsx,css,json}": "prettier --cache --write"
   },
   "browserslist": [
     "defaults and supports es6-module",
