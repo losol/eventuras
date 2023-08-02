@@ -1,4 +1,4 @@
-import { Card, CardBody, CardHeader, Heading,Text } from '@chakra-ui/react';
+import { Card, CardBody, CardHeader, Heading, Text } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { OnlineCoursePreviewType } from 'types';
 

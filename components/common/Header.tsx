@@ -46,7 +46,7 @@ const Header = () => {
 
       <div>
         <ButtonGroup colorScheme="teal" size="sm" mr={2} variant="ghost">
-          {locales?.map((lang) => (
+          {locales?.map(lang => (
             <Button
               key={lang}
               as={NextLink}
@@ -75,4 +75,3 @@ const Header = () => {
 };
 
 export default Header;
-
