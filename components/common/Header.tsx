@@ -47,15 +47,17 @@ const Header = () => {
       <div>
         <ButtonGroup colorScheme="teal" size="sm" mr={2} variant="ghost">
           {locales?.map(lang => (
-            <Button
+            <NextLink
               key={lang}
-              as={NextLink}
               href={asPath}
               locale={lang}
-              bg={lang === locale ? 'teal.100' : ''}
+              passHref
+              legacyBehavior
             >
-              {formatLanguageName(lang)}
-            </Button>
+              <Button bg={lang === locale ? 'teal.100' : ''}>
+                {formatLanguageName(lang)}
+              </Button>
+            </NextLink>
           ))}
         </ButtonGroup>
 

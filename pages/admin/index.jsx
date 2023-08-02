@@ -2,6 +2,7 @@ import { Button, Container, Heading, Text } from '@chakra-ui/react';
 import { EventsService } from '@losol/eventuras';
 import { DataTable, Layout, Link, Loading, Unauthorized } from 'components';
 import * as dayjs from 'dayjs';
+import NextLink from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { FiUsers } from 'react-icons/fi';
@@ -71,12 +72,11 @@ function AdminIndex() {
         <Container paddingTop="24">
           <Heading as="h1">Admin</Heading>
 
-          <Link href="/admin/users">
-            {' '}
+          <NextLink href="/admin/users">
             <Button leftIcon={<FiUsers />} variant="outline">
               Users
             </Button>
-          </Link>
+          </NextLink>
 
           <Heading as="h2" fontSize="2xl" paddingTop="16" paddingBottom="4">
             Arrangement
