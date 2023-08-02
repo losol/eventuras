@@ -3,11 +3,11 @@ import { UsersService } from '@losol/eventuras';
 import {
   DataTable,
   Layout,
-  Link,
   Loading,
   Unauthorized,
   UserDrawer,
 } from 'components';
+import NextLink from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
 import { toaster } from 'services';
@@ -154,7 +154,7 @@ const AdminUsersIndex = () => {
 
         <Container paddingTop="32">
           <Heading as="h1" paddingBottom="16">
-            <Link href="/admin/">Admin</Link> &gt; Brukere
+            <NextLink href="/admin/">Admin</NextLink> &gt; Brukere
           </Heading>
 
           <Button
