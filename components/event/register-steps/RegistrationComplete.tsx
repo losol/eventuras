@@ -2,7 +2,7 @@ import { Button, Heading } from '@chakra-ui/react';
 import useTranslation from 'next-translate/useTranslation';
 
 export type RegistrationCompleteProps = {
-  onSubmit: Function;
+  onSubmit: () => void;
 };
 const RegistrationComplete = ({ onSubmit }: RegistrationCompleteProps) => {
   const { t } = useTranslation('register');
@@ -10,12 +10,7 @@ const RegistrationComplete = ({ onSubmit }: RegistrationCompleteProps) => {
     <>
       <Heading>{t('complete.title')}</Heading>
       <p>{t('complete.description')}</p>
-      <Button
-        colorScheme="teal"
-        variant="solid"
-        width="100%"
-        onClick={() => onSubmit()}
-      >
+      <Button colorScheme="teal" variant="solid" width="100%" onClick={() => onSubmit()}>
         Continue
       </Button>
     </>

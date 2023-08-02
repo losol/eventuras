@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  CheckboxGroup,
-  Flex,
-  Heading,
-  Stack,
-} from '@chakra-ui/react';
+import { Box, Button, Checkbox, CheckboxGroup, Flex, Heading, Stack } from '@chakra-ui/react';
 import useTranslation from 'next-translate/useTranslation';
 import { useState } from 'react';
 
@@ -18,19 +10,15 @@ export type RegistrationProduct = {
 };
 export type RegistrationCustomizeProps = {
   products: RegistrationProduct[];
-  onSubmit: Function;
+  onSubmit: (values: string[]) => void;
 };
 
-const RegistrationCustomize = ({
-  products,
-  onSubmit,
-}: RegistrationCustomizeProps) => {
+const RegistrationCustomize = ({ products, onSubmit }: RegistrationCustomizeProps) => {
   const defaultSelected = products
     .filter(product => product.mandatory === true)
     .map(product => product.id.toString());
   const { t } = useTranslation('register');
-  const [selectedProducts, selectProducts] =
-    useState<string[]>(defaultSelected);
+  const [selectedProducts, selectProducts] = useState<string[]>(defaultSelected);
 
   return (
     <>
@@ -66,6 +54,7 @@ const RegistrationCustomize = ({
         variant="solid"
         width="100%"
         onClick={() => onSubmit(selectedProducts)}
+        mb="20px"
       >
         Continue
       </Button>

@@ -53,18 +53,13 @@ const EventInfo = (props: EventProps) => {
           {parse(props.practicalInformation)}
         </>
       )}
-      <AlertModal
-        isOpen={isOpen}
-        onClose={onClose}
-        title={modal.title}
-        text={modal.text}
-      />
+      <AlertModal isOpen={isOpen} onClose={onClose} title={modal.title} text={modal.text} />
     </>
   );
 };
 
 export const getStaticProps = async ({ params }: { params: any }) => {
-  const event = await EventsService.getV3Events1({ id: params.id }).catch(e => {
+  const event = await EventsService.getV3Events1({ id: params.id }).catch(() => {
     return { props: null };
   });
   return { props: { ...event } };
@@ -72,11 +67,9 @@ export const getStaticProps = async ({ params }: { params: any }) => {
 
 export async function getStaticPaths() {
   const defaultPath = { paths: [], fallback: false };
-  const { data: onlineEvents } = await EventsService.getV3Events({}).catch(
-    e => {
-      return { data: null };
-    }
-  );
+  const { data: onlineEvents } = await EventsService.getV3Events({}).catch(() => {
+    return { data: null };
+  });
   if (!onlineEvents?.length) {
     return defaultPath;
   }

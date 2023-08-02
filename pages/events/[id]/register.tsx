@@ -1,12 +1,12 @@
-import { Container, Heading } from '@chakra-ui/react';
-import { Layout } from 'components';
 import RegistrationCustomize, {
   RegistrationProduct,
 } from 'components/event/register-steps/RegistrationCustomize';
 import { useState } from 'react';
 
 import RegistrationComplete from '../../../components/event/register-steps/RegistrationComplete';
-import RegistrationPayment from '../../../components/event/register-steps/RegistrationPayment';
+import RegistrationPayment, {
+  RegistrationSubmitValues,
+} from '../../../components/event/register-steps/RegistrationPayment';
 
 //TODO grab from API
 const testProducts: RegistrationProduct[] = [
@@ -33,14 +33,20 @@ const testProducts: RegistrationProduct[] = [
 
 type PageStep = 'Customize' | 'Payment' | 'Complete';
 
-const EventRegistration = (props: any) => {
+const EventRegistration = () => {
   const [currentStep, setCurrentStep] = useState<PageStep>('Customize');
   const onCustomize = (selected: string[]) => {
     console.log(selected);
     setCurrentStep('Payment');
   };
 
-  const onPayment = () => {
+  const onPayment = ({ paymentDetails }: RegistrationSubmitValues) => {
+    if (paymentDetails) {
+      //company invoice
+      console.log(paymentDetails);
+    } else {
+      //customer is paying
+    }
     setCurrentStep('Complete');
   };
 
@@ -51,12 +57,7 @@ const EventRegistration = (props: any) => {
   const renderStep = (step: PageStep) => {
     switch (step) {
       case 'Customize':
-        return (
-          <RegistrationCustomize
-            products={testProducts}
-            onSubmit={onCustomize}
-          />
-        );
+        return <RegistrationCustomize products={testProducts} onSubmit={onCustomize} />;
       case 'Payment':
         return <RegistrationPayment onSubmit={onPayment} />;
       case 'Complete':
