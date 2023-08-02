@@ -18,7 +18,7 @@ const theme = extendTheme({
           transitionProperty: 'box-shadow',
           transitionDuration: '0.2s',
           boxShadow: 'md',
-        }
+        },
       },
     }),
   },
