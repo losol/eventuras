@@ -21,6 +21,7 @@ const AlertModal: React.FC<ModalProps> = ({ isOpen = false, onClose, title = '',
     <>
       <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
+
         <ModalContent>
           <ModalHeader>{title}</ModalHeader>
           <ModalCloseButton />
