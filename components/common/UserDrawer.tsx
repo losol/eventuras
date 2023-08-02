@@ -52,7 +52,7 @@ const UserDrawer = (props: UserDrawerProps): JSX.Element => {
                 <FormLabel>Phone number</FormLabel>
                 <Input
                   type="tel"
-                  value={phoneNumber}
+                  value={phoneNumber ?? ''}
                   onChange={handleUserChange}
                 />
               </FormControl>
