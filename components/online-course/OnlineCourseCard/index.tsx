@@ -1,8 +1,7 @@
 import { Card, CardBody, CardHeader, Heading, Text } from '@chakra-ui/react';
 import NextLink from 'next/link';
-import { OnlineCoursePreviewType } from 'types';
 
-const OnlineCourseCard = ({ onlineCourse }: { onlineCourse: OnlineCoursePreviewType }) => {
+const OnlineCourseCard = ({ onlineCourse }: { onlineCourse: any }) => {
   const { name, description } = onlineCourse;
 
   return (
