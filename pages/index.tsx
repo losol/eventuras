@@ -43,6 +43,9 @@ export default function Index(props: IndexProps) {
                 <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing="5">
                   {events &&
                     events.map((event: EventDto) => <EventCard key={event.id} event={event} />)}
+                  {events.map((event: EventDto) => (
+                    <EventCard key={event.id} event={event} />
+                  ))}
                 </SimpleGrid>
               </>
             )}

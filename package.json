@@ -10,9 +10,7 @@
     "lint": "next lint",
     "lint-fix": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
     "prettier-fix": "prettier . --write",
-    "tsc":"tsc",
     "fix-all": "npm run lint-fix && npm run prettier-fix"
-    
   },
   "dependencies": {
     "@babel/core": "7.22.9",
@@ -73,4 +71,3 @@
     "maintained node versions"
   ]
 }
-
