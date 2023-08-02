@@ -11,12 +11,13 @@ If developing locally you could add ann `.env` file in the `src/Eventuras.WebFro
 ```
 NEXTAUTH_URL=http://localhost:3000
 NEXT_PUBLIC_APPLICATION_URL=http://localhost:3000
-NEXT_PUBLIC_API_BASE_URL=http://localhost:5666
-AUTH0_DOMAIN=asdf.eu.auth0.com
-AUTH0_CLIENT_ID=asdf
-AUTH0_CLIENT_SECRET=asdf
+AUTH0_DOMAIN=
+AUTH0_CLIENT_ID=
+AUTH0_CLIENT_SECRET=
 AUTH0_API_AUDIENCE=https://eventuras/api
-NEXTAUTH_SECRET=asdf
+API_BASE_URL=http://localhost:5100
+NEXTAUTH_SECRET=
+NEXT_PUBLIC_ORGANIZATION_ID=test
 ```
 
 For production environment these variables should as environment variables.
