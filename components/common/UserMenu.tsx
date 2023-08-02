@@ -32,19 +32,19 @@ const UserMenu = (props: UserMenuProps) => {
       </MenuButton>
       <MenuList>
         <NextLink href="/user" passHref>
-          <MenuItem as="a" minH="48px">
+          <MenuItem as="div" minH="48px">
             {t('header.userMenu.title')}
           </MenuItem>
         </NextLink>
 
         <NextLink href="/user/profile" passHref>
-          <MenuItem as="a" minH="48px">
+          <MenuItem as="div" minH="48px">
             {t('header.userMenu.profile')}
           </MenuItem>
         </NextLink>
 
         <NextLink href="/admin" passHref>
-          <MenuItem as="a" minH="48px">
+          <MenuItem as="div" minH="48px">
             {t('header.userMenu.admin')}
           </MenuItem>
         </NextLink>
