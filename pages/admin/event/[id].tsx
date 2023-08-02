@@ -180,7 +180,7 @@ const EventAdmin = () => {
           E-mail all
         </Button>
 
-        <DataTable data={registrations} columns={registrationsColumns} />
+        <DataTable data={registrations ?? []} columns={registrationsColumns} />
       </Container>
       <EmailDrawer
         isOpen={isOpen}
