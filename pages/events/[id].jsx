@@ -43,6 +43,7 @@ const EventInfo = props => {
       handleRegistrationEventRequest();
       localStorage.removeItem('EVENT_REGISTRATION_AFTER_LOGIN');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
   return (
     <Layout>

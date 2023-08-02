@@ -1,7 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button, Container, Heading } from '@chakra-ui/react';
 import { UsersService } from '@losol/eventuras';
-import { DataTable, Layout, Loading, Unauthorized, UserDrawer } from 'components';
-import NextLink from 'next/link';
 import { DataTable, Layout, Loading, Unauthorized, UserDrawer } from 'components';
 import NextLink from 'next/link';
 import { useSession } from 'next-auth/react';

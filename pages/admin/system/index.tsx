@@ -33,6 +33,7 @@ const SystemAdminIndex = () => {
       };
       fetchSetting();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   if (status === 'loading') {
