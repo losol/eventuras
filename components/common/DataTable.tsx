@@ -17,28 +17,21 @@ import {
 } from '@chakra-ui/react';
 import { usePagination, useTable } from 'react-table';
 
-// type ColumnType = {
-//   Header: string;
-//   accessor: string;
-// };
+type ColumnType = {
+  Header: string;
+  accessor: string;
+};
 
-// type DataTableProps = {
-//   columns: ColumnType[];
-//   data: any[]; // TODO: Change to type
-//   handlePageClick?: any; // TODO: Change to type
-//   totalPages?: any; // TODO: Change to type
-//   page?: any; // TODO: Change to type
-// };
+type DataTableProps = {
+  columns: ColumnType[];
+  data: any[];
+  handlePageClick?: (page: number) => void;
+  totalPages?: number;
+  page?: number;
+};
 
-// const DataTable = (props: DataTableProps) => {
-const DataTable = (props: any) => {
-  const {
-    columns,
-    data,
-    handlePageClick = null,
-    totalPages = null,
-    page = null,
-  } = props;
+const DataTable = (props: DataTableProps) => {
+  const { columns, data, handlePageClick, totalPages, page } = props;
 
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } =
     useTable(
@@ -56,10 +49,10 @@ const DataTable = (props: any) => {
     <>
       <Table {...getTableProps()}>
         <Thead>
-          {headerGroups.map((headerGroup) => (
+          {headerGroups.map(headerGroup => (
             /* eslint-disable react/jsx-key */
             <Tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
+              {headerGroup.headers.map(column => (
                 <Th {...column.getHeaderProps()}>{column.render('Header')}</Th>
               ))}
             </Tr>
@@ -67,14 +60,14 @@ const DataTable = (props: any) => {
           ))}
         </Thead>
         <Tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
+          {rows.map(row => {
             prepareRow(row);
             return (
               /* eslint-disable react/jsx-key */
               <Tr {...row.getRowProps()}>
                 {
                   /* eslint-disable react/jsx-key */
-                  row.cells.map((cell) => {
+                  row.cells.map(cell => {
                     return (
                       <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>
                     );
@@ -89,7 +82,10 @@ const DataTable = (props: any) => {
 
       {
         // only show page navigation if handlePageClick is provided
-        handlePageClick && (
+        typeof page === 'number' &&
+        typeof totalPages === 'number' &&
+        handlePageClick &&
+        typeof handlePageClick === 'function' ? (
           <Flex justifyContent="space-between" m={4} alignItems="center">
             <Flex>
               <IconButton
@@ -136,7 +132,7 @@ const DataTable = (props: any) => {
               />
             </Flex>
           </Flex>
-        )
+        ) : null
       }
     </>
   );
