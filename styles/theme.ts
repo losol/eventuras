@@ -1,27 +1,5 @@
-import { extendTheme, StyleFunctionProps } from '@chakra-ui/react';
-import { mode } from '@chakra-ui/theme-tools';
-
-// Version 1: Using objects
-const theme = extendTheme({
-  styles: {
-    global: (props: StyleFunctionProps) => ({
-      // styles for the `body`
-      body: {
-        bg: mode('gray.100', 'gray.800')(props),
-        color: mode('black', 'gray.200')(props),
-      },
-      // styles for the `a`
-      a: {
-        color: 'teal.500',
-        // TODO: Check is this the best style option in Chakra
-        '&.chakra-card:hover': {
-          transitionProperty: 'box-shadow',
-          transitionDuration: '0.2s',
-          boxShadow: 'md',
-        },
-      },
-    }),
-  },
-});
-
+const theme = {
+  fontFamily: 'Open Sans, sans serif',
+  spacing: { xs: '1rem', sm: '1.2rem', md: '1.8rem', lg: '2.2rem', xl: '2.8rem' },
+};
 export default theme;

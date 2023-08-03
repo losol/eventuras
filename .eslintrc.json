@@ -17,8 +17,10 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "eslint-plugin-simple-import-sort"],
   "rules": {
+    "simple-import-sort/imports": "warn",
+    "simple-import-sort/exports": "warn",
     // Consider disabling this rule later
     "@typescript-eslint/no-explicit-any": "off"
   }

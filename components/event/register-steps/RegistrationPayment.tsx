@@ -1,12 +1,7 @@
-/* TODO 
-
-- styling and where to put it - really depends on future, whether we go for tailwind or not
-- validation and handling 
-
-*/
-import { Box, Button, Heading } from '@chakra-ui/react';
+import { Box, Input, Radio, Stack } from '@mantine/core';
+import { Button } from 'components/inputs';
+import { Heading, Text } from 'components/typography';
 import useTranslation from 'next-translate/useTranslation';
-import { Radio, RadioGroup, Stack, Text, Input } from '@chakra-ui/react';
 import { useState } from 'react';
 
 export type RegistrationPaymentOptions = 'payment-me' | 'payment-employer';
@@ -46,8 +41,8 @@ const RegistrationPayment = ({ onSubmit }: RegistrationPaymentProps) => {
 
   const renderForm = () => (
     <>
-      <Box mb="20px">
-        <Text mb="10px">Company</Text>
+      <Box>
+        <Text>Company</Text>
         <Input
           mb="5px"
           placeholder="Company Name"
@@ -62,7 +57,7 @@ const RegistrationPayment = ({ onSubmit }: RegistrationPaymentProps) => {
       </Box>
       <Box></Box>
       <Box mb="20px">
-        <Text mb="10px">Invoice</Text>
+        <Text>Invoice</Text>
         <Input
           mb="5px"
           placeholder="Email for invoice"
@@ -77,7 +72,7 @@ const RegistrationPayment = ({ onSubmit }: RegistrationPaymentProps) => {
         />
       </Box>
       <Box mb="20px">
-        <Text mb="10px">Address</Text>
+        <Text>Address</Text>
         <Input
           mb="5px"
           placeholder="City Name"
@@ -97,29 +92,19 @@ const RegistrationPayment = ({ onSubmit }: RegistrationPaymentProps) => {
       <Heading>{t('payment.title')}</Heading>
       <p>{t('payment.description')}</p>
       <p>{t('payment.subHeading')}</p>
-      <RadioGroup
+      <Radio.Group
         onChange={(value: RegistrationPaymentOptions) => {
           setPaymentOption(value);
         }}
         value={paymentOption}
-        colorScheme="teal"
       >
-        <Stack direction="column">
+        <Stack>
           <Radio value="payment-me">Me! Send me an invoice by email</Radio>
           <Radio value="payment-employer">My employer</Radio>
         </Stack>
-      </RadioGroup>
+      </Radio.Group>
       {paymentOption === 'payment-employer' && renderForm()}
-      <Button
-        colorScheme="teal"
-        variant="solid"
-        width="100%"
-        onClick={() => onSubmit({ paymentOption, paymentDetails })}
-        mt="20px"
-        mb="20px"
-      >
-        Continue
-      </Button>
+      <Button onClick={() => onSubmit({ paymentOption, paymentDetails })}>Continue</Button>
     </>
   );
 };

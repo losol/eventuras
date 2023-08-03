@@ -1,4 +1,5 @@
-import { Box, Button, Checkbox, CheckboxGroup, Flex, Heading, Stack } from '@chakra-ui/react';
+import { Box, Button, Checkbox, Flex, Stack } from '@mantine/core';
+import { Heading } from 'components/typography';
 import useTranslation from 'next-translate/useTranslation';
 import { useState } from 'react';
 
@@ -24,21 +25,19 @@ const RegistrationCustomize = ({ products, onSubmit }: RegistrationCustomizeProp
     <>
       <Heading>{t('customize.title')}</Heading>
       <p>{t('customize.description')}</p>
-      <Box marginTop="5" marginBottom="5">
-        <CheckboxGroup
-          colorScheme="teal"
+      <Box>
+        <Checkbox.Group
           defaultValue={selectedProducts}
           onChange={values => {
             selectProducts(values as string[]);
           }}
         >
-          <Stack direction={['column']}>
+          <Stack>
             {products.map(product => (
               <Flex align="flex-start" key={product.id}>
                 <Checkbox
                   value={product.id.toString()}
-                  verticalAlign="top"
-                  isDisabled={product.mandatory === true}
+                  disabled={product.mandatory === true}
                 ></Checkbox>
                 <Box>
                   <em>{product.title}</em>
@@ -47,15 +46,9 @@ const RegistrationCustomize = ({ products, onSubmit }: RegistrationCustomizeProp
               </Flex>
             ))}
           </Stack>
-        </CheckboxGroup>
+        </Checkbox.Group>
       </Box>
-      <Button
-        colorScheme="teal"
-        variant="solid"
-        width="100%"
-        onClick={() => onSubmit(selectedProducts)}
-        mb="20px"
-      >
+      <Button onClick={() => onSubmit(selectedProducts)} mb="20px">
         Continue
       </Button>
     </>

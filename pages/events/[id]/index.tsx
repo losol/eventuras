@@ -1,6 +1,11 @@
-import { Button, Heading, useDisclosure } from '@chakra-ui/react';
+/* eslint-disable */
+
 import { EventDto, EventsService } from '@losol/eventuras';
-import { AlertModal } from 'components';
+import { useDisclosure } from '@mantine/hooks';
+import { Button } from 'components/inputs';
+import { Layout } from 'components/layout';
+import { Modal } from 'components/overlays';
+import { Heading } from 'components/typography';
 import parse from 'html-react-parser';
 import { useRouter } from 'next/router';
 import useTranslation from 'next-translate/useTranslation';
@@ -13,48 +18,35 @@ const EventInfo = (props: EventProps) => {
   const { title = '...', description = '...' } = props;
   const { t } = useTranslation();
   const [modal] = useState({ title: '', text: '' });
-  const { isOpen, onClose } = useDisclosure();
+  const [opened, { close }] = useDisclosure(false);
 
   return (
-    <>
+    <Layout>
       <Heading>{title}</Heading>
       {description}
       <div>
-        <Button
-          colorScheme="teal"
-          variant="outline"
-          mt={5}
-          onClick={() => router.push(`${props.id}/register`)}
-        >
-          Register for event
-        </Button>
+        <Button onClick={() => router.push(`${props.id}/register`)}>Register for event</Button>
       </div>
       {props.moreInformation && (
         <>
-          <Heading as="h2" size="md" paddingTop={16}>
-            {t('More information')}
-          </Heading>
+          <Heading as="h2">{t('More information')}</Heading>
           {parse(props.moreInformation)}
         </>
       )}
       {props.program && (
         <>
-          <Heading as="h2" size="md" paddingTop={16}>
-            {t('Program')}
-          </Heading>
+          <Heading as="h2">{t('Program')}</Heading>
           {parse(props.program)}
         </>
       )}
       {props.practicalInformation && (
         <>
-          <Heading as="h2" size="md" paddingTop={16}>
-            {t('Practical Information')}
-          </Heading>
+          <Heading as="h2">{t('Practical Information')}</Heading>
           {parse(props.practicalInformation)}
         </>
       )}
-      <AlertModal isOpen={isOpen} onClose={onClose} title={modal.title} text={modal.text} />
-    </>
+      <Modal isOpen={opened} onClose={close} title={modal.title} text={modal.text} />
+    </Layout>
   );
 };
 

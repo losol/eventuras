@@ -1,8 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import { Container, Heading } from '@chakra-ui/react';
 import { OrganizationSettingDto, OrganizationSettingsService } from '@losol/eventuras';
-import { DataTable, Layout, Link, Loading, Unauthorized } from 'components';
+import { DataTable } from 'components/datadisplay';
+import { Loading, Unauthorized } from 'components/feedback';
+import { Container, Layout } from 'components/layout';
+import { Heading } from 'components/typography';
+import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 
@@ -54,8 +57,8 @@ const SystemAdminIndex = () => {
 
   return (
     <Layout>
-      <Container paddingTop="32">
-        <Heading as="h1" paddingBottom="16">
+      <Container>
+        <Heading as="h1">
           <Link href="/admin/">Admin</Link> &gt; System
         </Heading>
         <Heading as="h2">Organisation settings</Heading>

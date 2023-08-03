@@ -1,6 +1,5 @@
 /* eslint-disable */
 
-import { Button, Container, Heading, useDisclosure, useToast } from '@chakra-ui/react';
 import {
   EventDto,
   EventsService,
@@ -10,25 +9,24 @@ import {
   RegistrationStatus,
   RegistrationType,
 } from '@losol/eventuras';
-import {
-  DataTable,
-  EmailDrawer,
-  Layout,
-  Loading,
-  RegistrationDrawer,
-  Unauthorized,
-} from 'components';
 import { useRouter } from 'next/router';
 import { getSession, useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
+import { useDisclosure } from '@mantine/hooks';
+import { Button } from 'components/inputs';
+import { notifications } from '@mantine/notifications';
+import { Container, Layout } from 'components/layout';
+import { Loading, Unauthorized } from 'components/feedback';
+import { Heading } from 'components/typography';
+import { DataTable } from 'components/datadisplay';
+import { EmailDrawer, RegistrationDrawer } from 'components/overlays';
 
 const EventAdmin = () => {
   const router = useRouter();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [opened, { open, close }] = useDisclosure();
   const [registrationDrawerOpen, setRegistrationDrawerOpen] = useState(false);
   const [activeRegistration, setActiveRegistration] = useState<RegistrationDto | null>(null);
   const { data: session, status } = useSession();
-  const toast = useToast();
   const [eventInfo, setEventInfo] = useState<EventDto | null>(null);
   const [registrations, setRegistrations] = useState<RegistrationDto[] | null>([]);
   const participantGroups = ['Participant', 'Lecturer', 'Staff'];
@@ -126,20 +124,18 @@ const EventAdmin = () => {
       },
     })
       .then(() => {
-        onClose();
-        toast({
-          title: 'Successfully submitted!',
-          position: 'top',
-          isClosable: true,
-          status: 'success',
+        close();
+        notifications.show({
+          title: 'Sent some emails ',
+          message: 'Successfully submitted!',
+          color: 'green',
         });
       })
       .catch(() => {
-        toast({
-          title: 'Something went wrong!',
-          position: 'top',
-          status: 'error',
-          isClosable: true,
+        notifications.show({
+          title: 'Something went wrong! ',
+          message: 'Sorry!',
+          color: 'red',
         });
       });
   };
@@ -172,19 +168,15 @@ const EventAdmin = () => {
 
   return (
     <Layout>
-      <Container marginTop="32">
-        <Heading as="h1" paddingY="4">
-          {eventInfo!.title}
-        </Heading>
-        <Button colorScheme="teal" onClick={onOpen}>
-          E-mail all
-        </Button>
+      <Container>
+        <Heading as="h1">{eventInfo!.title}</Heading>
+        <Button onClick={open}>E-mail all</Button>
 
         <DataTable data={registrations ?? []} columns={registrationsColumns} />
       </Container>
       <EmailDrawer
-        isOpen={isOpen}
-        onClose={onClose}
+        isOpen={opened}
+        onClose={close}
         recipientGroups={participantGroups}
         selectedRecipientGroups={selectedParticipantGroups}
         handleParticipantGroupsChange={group => handleParticipantGroupsChange(group)}

@@ -1,6 +1,10 @@
-import { Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import { EventDto, EventsService } from '@losol/eventuras';
-import { EventCard, Loading } from 'components';
+import { SimpleGrid } from '@mantine/core';
+import { Card } from 'components/datadisplay';
+import { Loading } from 'components/feedback';
+import { Layout } from 'components/layout';
+import { Heading, Text } from 'components/typography';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import getT from 'next-translate/getT';
 import { LocalesType } from 'types';
@@ -17,23 +21,34 @@ export default function Index(props: IndexProps) {
   const { locale } = useRouter();
 
   return (
-    <>
-      <Heading as="h2" marginBottom="4">
+    <Layout>
+      <Heading as="h1">
         {demoTitleLocale} {locale?.toUpperCase()}
       </Heading>
       <Text>{demoTextLocale}</Text>
       {!events && <Loading />}
       {events.length !== 0 && (
         <>
-          <Heading as="h2" marginTop="16" marginBottom="4">
-            {eventsTitle}
-          </Heading>
-          <SimpleGrid columns={{ sm: 1, md: 2, lg: events.length >= 3 ? 3 : 2 }} spacing="5">
-            {events && events.map((event: EventDto) => <EventCard key={event.id} event={event} />)}
+          <Heading as="h2">{eventsTitle}</Heading>
+          <SimpleGrid
+            cols={4}
+            spacing="lg"
+            breakpoints={[
+              { maxWidth: 'md', cols: 3, spacing: 'md' },
+              { maxWidth: 'sm', cols: 2, spacing: 'sm' },
+              { maxWidth: 'xs', cols: 1, spacing: 'sm' },
+            ]}
+          >
+            {events &&
+              events.map((event: EventDto) => (
+                <Link key={event.id} href={`/events/${event.id}`}>
+                  <Card key={event.id} title={event.title!} description={event.description!} />
+                </Link>
+              ))}
           </SimpleGrid>
         </>
       )}
-    </>
+    </Layout>
   );
 }
 
