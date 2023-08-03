@@ -28,7 +28,11 @@ namespace Eventuras.WebApi.Controllers.Registrations
             Status = registration.Status;
             Type = registration.Type;
             Notes = registration.Notes;
-            Products = registration.Products.Select(ProductOrderDto.FromRegistrationOrderDto);
+
+            if (registration.Orders != null)
+            {
+                Products = registration.Products.Select(ProductOrderDto.FromRegistrationOrderDto);
+            }
 
             if (registration.User != null)
             {
