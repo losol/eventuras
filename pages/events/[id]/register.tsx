@@ -1,63 +1,55 @@
-import RegistrationCustomize, {
-  RegistrationProduct,
-} from 'components/event/register-steps/RegistrationCustomize';
+import RegistrationCustomize from 'components/event/register-steps/RegistrationCustomize';
 import { useState } from 'react';
-
-import RegistrationComplete from '../../../components/event/register-steps/RegistrationComplete';
+import { useRouter } from 'next/router';
+import RegistrationComplete from 'components/event/register-steps/RegistrationComplete';
 import RegistrationPayment, {
   RegistrationSubmitValues,
-} from '../../../components/event/register-steps/RegistrationPayment';
+} from 'components/event/register-steps/RegistrationPayment';
 
-//TODO grab from API
-const testProducts: RegistrationProduct[] = [
-  {
-    id: 'hello1',
-    title: 'Hello 1',
-    description:
-      'This is a test for a mandatory item - these will have to come form the api (next step)',
-    mandatory: true,
-  },
-  {
-    id: 'hello2',
-    title: 'Hello 2',
-    description: 'This is a test for a optional item - Product item 2',
-    mandatory: false,
-  },
-  {
-    id: 'hello3',
-    title: 'Another Test',
-    description: 'This is a test for a optional item - Product item 3',
-    mandatory: false,
-  },
-];
+import { useEventProducts, useMyUserProfile } from 'hooks';
+import { NewRegistrationDto, RegistrationsService } from '@losol/eventuras';
 
 type PageStep = 'Customize' | 'Payment' | 'Complete';
 
 const EventRegistration = () => {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState<PageStep>('Customize');
-  const onCustomize = (selected: string[]) => {
-    console.log(selected);
+  const eventId = parseInt(router.query.id as string, 10);
+  const { userProfile, loading: loadingUser } = useMyUserProfile();
+  const { registrationProducts, loading: loadingRegistrationProducts } = useEventProducts(eventId);
+
+  const onCustomize = (selectedProductIds: string[]) => {
+    console.log({ selectedProductIds });
     setCurrentStep('Payment');
   };
 
-  const onPayment = ({ paymentDetails }: RegistrationSubmitValues) => {
+  const onPayment = async ({ paymentDetails, paymentOption }: RegistrationSubmitValues) => {
+    console.log({ paymentOption });
     if (paymentDetails) {
       //company invoice
-      console.log(paymentDetails);
+      console.log({ paymentDetails });
     } else {
-      //customer is paying
+      //no payment details, so customer is paying
     }
+    const requestBody: NewRegistrationDto = {
+      userId: userProfile.id,
+      eventId,
+    };
+    await RegistrationsService.postV3Registrations({ requestBody });
     setCurrentStep('Complete');
   };
 
   const onComplete = () => {
     console.log('done');
+    router.push('/');
   };
+
+  if (loadingRegistrationProducts || loadingUser) return 'LOADING';
 
   const renderStep = (step: PageStep) => {
     switch (step) {
       case 'Customize':
-        return <RegistrationCustomize products={testProducts} onSubmit={onCustomize} />;
+        return <RegistrationCustomize products={registrationProducts} onSubmit={onCustomize} />;
       case 'Payment':
         return <RegistrationPayment onSubmit={onPayment} />;
       case 'Complete':
