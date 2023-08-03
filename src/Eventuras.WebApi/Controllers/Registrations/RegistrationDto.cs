@@ -1,7 +1,7 @@
+using System.Collections.Generic;
 using Eventuras.Domain;
 using Eventuras.WebApi.Controllers.Events;
 using Eventuras.WebApi.Controllers.Users;
-using Eventuras.WebApi.Models;
 
 namespace Eventuras.WebApi.Controllers.Registrations
 {
@@ -16,6 +16,7 @@ namespace Eventuras.WebApi.Controllers.Registrations
         public string Notes { get; set; }
         public UserDto User { get; set; }
         public EventDto Event { get; set; }
+        public List<OrderDTO> Products { get; set; }
 
         public RegistrationDto(Registration registration)
         {
@@ -25,6 +26,8 @@ namespace Eventuras.WebApi.Controllers.Registrations
             Status = registration.Status;
             Type = registration.Type;
             Notes = registration.Notes;
+            Products = registration.Products;
+
             if (registration.User != null)
             {
                 User = new UserDto(registration.User);
