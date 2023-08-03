@@ -1,4 +1,4 @@
-import { Box, Heading, SimpleGrid, Text } from '@chakra-ui/react';
+import { Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import { EventDto, EventsService } from '@losol/eventuras';
 import { EventCard, Loading } from 'components';
 import { useRouter } from 'next/router';
