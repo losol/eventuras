@@ -5,7 +5,6 @@ import { Loading } from 'components/feedback';
 import { Layout } from 'components/layout';
 import { Heading, Text } from 'components/typography';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import getT from 'next-translate/getT';
 import { LocalesType } from 'types';
 
@@ -18,13 +17,10 @@ export default function Index(props: IndexProps) {
   const { events, locales } = props;
   const { demoTitleLocale, demoTextLocale } = locales.component;
   const { eventsTitle } = locales.common;
-  const { locale } = useRouter();
 
   return (
     <Layout>
-      <Heading as="h1">
-        {demoTitleLocale} {locale?.toUpperCase()}
-      </Heading>
+      <Heading as="h1">{demoTitleLocale}</Heading>
       <Text>{demoTextLocale}</Text>
       {!events && <Loading />}
       {events.length !== 0 && (
