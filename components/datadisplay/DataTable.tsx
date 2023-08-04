@@ -1,4 +1,3 @@
-import { Center, Table } from '@mantine/core';
 import { Flex } from '@mantine/core';
 import {
   IconArrowLeft,
@@ -6,17 +5,17 @@ import {
   IconChevronsLeft,
   IconChevronsRight,
 } from '@tabler/icons-react';
+import {
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
 import { Button } from 'components/inputs';
 import { Text } from 'components/typography';
-import { usePagination, useTable } from 'react-table';
-
-type ColumnType = {
-  Header: string;
-  accessor: string;
-};
 
 type DataTableProps = {
-  columns: ColumnType[];
+  columns: any[];
   data: any[];
   handlePageClick?: (page: number) => void;
   totalPages?: number;
@@ -26,49 +25,39 @@ type DataTableProps = {
 const DataTable = (props: DataTableProps) => {
   const { columns, data, handlePageClick, totalPages, page } = props;
 
-  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
-    {
-      columns,
-      data,
-      initialState: {
-        // pageIndex: 0, // TODO: Update react-table to v8. Use similar option ot another way
-      },
-    },
-    usePagination
-  );
+  const table = useReactTable({
+    columns,
+    data,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
 
   return (
     <>
-      <Table {...getTableProps()}>
+      <table>
         <thead>
-          {headerGroups.map(headerGroup => (
-            /* eslint-disable react/jsx-key */
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+          {table.getHeaderGroups().map(headerGroup => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map(header => (
+                <th key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(header.column.columnDef.header, header.getContext())}
+                </th>
               ))}
             </tr>
-            /* eslint-enable react/jsx-key */
           ))}
         </thead>
-        <tbody {...getTableBodyProps()}>
-          {rows.map(row => {
-            prepareRow(row);
-            return (
-              /* eslint-disable react/jsx-key */
-              <tr {...row.getRowProps()}>
-                {
-                  /* eslint-disable react/jsx-key */
-                  row.cells.map(cell => {
-                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-                  })
-                }
-              </tr>
-              /* eslint-enable react/jsx-key */
-            );
-          })}
+        <tbody>
+          {table.getRowModel().rows.map(row => (
+            <tr key={row.id}>
+              {row.getVisibleCells().map(cell => (
+                <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+              ))}
+            </tr>
+          ))}
         </tbody>
-      </Table>
+      </table>
 
       {
         // only show page navigation if handlePageClick is provided
@@ -92,7 +81,7 @@ const DataTable = (props: DataTableProps) => {
               />
             </Flex>
 
-            <Flex align={Center}>
+            <Flex>
               <Text>
                 Page{' '}
                 <Text fontWeight={700} as="span">

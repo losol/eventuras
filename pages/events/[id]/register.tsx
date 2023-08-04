@@ -1,13 +1,12 @@
-import RegistrationCustomize from 'components/event/register-steps/RegistrationCustomize';
-import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { NewRegistrationDto, RegistrationsService } from '@losol/eventuras';
 import RegistrationComplete from 'components/event/register-steps/RegistrationComplete';
+import RegistrationCustomize from 'components/event/register-steps/RegistrationCustomize';
 import RegistrationPayment, {
   RegistrationSubmitValues,
 } from 'components/event/register-steps/RegistrationPayment';
-
 import { useEventProducts, useMyUserProfile } from 'hooks';
-import { NewRegistrationDto, RegistrationsService } from '@losol/eventuras';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 type PageStep = 'Customize' | 'Payment' | 'Complete';
 

@@ -20,6 +20,8 @@ import { Loading, Unauthorized } from 'components/feedback';
 import { Heading } from 'components/typography';
 import { DataTable } from 'components/datadisplay';
 import { EmailDrawer, RegistrationDrawer } from 'components/overlays';
+import { createColumnHelper } from '@tanstack/react-table';
+import Link from 'next/link';
 
 const EventAdmin = () => {
   const router = useRouter();
@@ -28,43 +30,38 @@ const EventAdmin = () => {
   const [activeRegistration, setActiveRegistration] = useState<RegistrationDto | null>(null);
   const { data: session, status } = useSession();
   const [eventInfo, setEventInfo] = useState<EventDto | null>(null);
-  const [registrations, setRegistrations] = useState<RegistrationDto[] | null>([]);
+  const [registrations, setRegistrations] = useState<RegistrationDto[]>([]);
   const participantGroups = ['Participant', 'Lecturer', 'Staff'];
   const [selectedParticipantGroups, updateSelectedParticipantGroups] = useState(['Participant']);
   const [emailBody, setEmailBody] = useState<string>('');
   const [subject, setSubject] = useState<string>('');
 
-  const registrationsColumns = useMemo(
-    () => [
-      {
-        Header: 'Name',
-        accessor: 'user.name',
-      },
-      {
-        Header: 'E-mail',
-        accessor: 'user.email',
-      },
-      {
-        Header: 'Phone',
-        accessor: 'user.phoneNumber',
-      },
-      {
-        Header: 'Actions',
-        accessor: 'actions',
-        Cell: function RenderCell({ row }: { row: any }) {
-          return (
-            <Button
-              key={row.original.id}
-              onClick={() => openRegistrationDetails(row.original.registrationId)}
-            >
-              Detaljer
-            </Button>
-          );
-        },
-      },
-    ],
-    []
-  );
+  const columnHelper = createColumnHelper<RegistrationDto>();
+
+  // consider useMemo here or something smarter
+  const columns = [
+    columnHelper.accessor('user.name', {
+      header: 'Name',
+      cell: info => info.getValue(),
+    }),
+
+    columnHelper.accessor('user.email', {
+      header: 'E-mail',
+      cell: info => info.getValue(),
+    }),
+    columnHelper.accessor('user.phoneNumber', {
+      header: 'Phone',
+      cell: info => info.getValue(),
+    }),
+    columnHelper.display({
+      id: 'actions',
+      cell: props => (
+        <Button onClick={() => openRegistrationDetails(props.row.original.registrationId!)}>
+          More
+        </Button>
+      ),
+    }),
+  ];
 
   const loadEventInfo = async () => {
     router.query.id &&
@@ -172,7 +169,7 @@ const EventAdmin = () => {
         <Heading as="h1">{eventInfo!.title}</Heading>
         <Button onClick={open}>E-mail all</Button>
 
-        <DataTable data={registrations ?? []} columns={registrationsColumns} />
+        <DataTable data={registrations} columns={columns} />
       </Container>
       <EmailDrawer
         isOpen={opened}
