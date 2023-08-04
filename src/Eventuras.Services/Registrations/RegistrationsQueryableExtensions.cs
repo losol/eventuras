@@ -50,7 +50,7 @@ namespace Eventuras.Services.Registrations
                 query = query.Where(r => r.CertificateId == filter.CertificateId);
             }
 
-            if (filter.ProductIds?.Any() == true)
+            if (filter.ProductIds.Any())
             {
                 query = query.Where(r => r.Orders.Any(o => o.OrderLines
                     .Any(l => l.ProductId.HasValue &&
@@ -62,12 +62,12 @@ namespace Eventuras.Services.Registrations
                 query = query.Where(r => r.UserId == filter.UserId);
             }
 
-            if (filter.HavingStatuses?.Any() == true)
+            if (filter.HavingStatuses.Any())
             {
                 query = query.Where(r => filter.HavingStatuses.Contains(r.Status));
             }
 
-            if (filter.HavingTypes?.Any() == true)
+            if (filter.HavingTypes.Any())
             {
                 query = query.Where(r => filter.HavingTypes.Contains(r.Type));
             }

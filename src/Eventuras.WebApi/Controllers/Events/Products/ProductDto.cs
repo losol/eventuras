@@ -22,6 +22,12 @@ namespace Eventuras.WebApi.Controllers.Events.Products
 
         public ProductVariantDto[] Variants { get; set; }
 
+        public int MinimumQuantity { get; set; }
+
+        public bool IsMandatory => MinimumQuantity > 0;
+
+        public bool EnableQuantity { get; set; }
+
 
         public ProductDto()
         {
@@ -45,6 +51,8 @@ namespace Eventuras.WebApi.Controllers.Events.Products
                 .Where(v => !v.Archived)
                 .Select(v => new ProductVariantDto(v))
                 .ToArray() ?? Array.Empty<ProductVariantDto>();
+            MinimumQuantity = product.MinimumQuantity;
+            EnableQuantity = product.EnableQuantity;
         }
     }
 }

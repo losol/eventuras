@@ -212,7 +212,7 @@ namespace Eventuras.Services.Notifications
                             EventInfoId = eventId,
                             ProductIds = productId.HasValue
                                 ? new[] { productId.Value }
-                                : null,
+                                : Array.Empty<int>(),
                             ActiveUsersOnly = true,
                             HavingStatuses = registrationStatuses,
                             HavingTypes = registrationTypes
