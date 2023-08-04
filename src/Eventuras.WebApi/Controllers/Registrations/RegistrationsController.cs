@@ -45,7 +45,8 @@ namespace Eventuras.WebApi.Controllers.Registrations
                         Filter = new RegistrationFilter
                         {
                             AccessibleOnly = true,
-                            EventInfoId = query.EventId
+                            EventInfoId = query.EventId,
+                            UserId = query.UserId
                         },
                         OrderBy = RegistrationListOrder.RegistrationTime,
                         Descending = true
