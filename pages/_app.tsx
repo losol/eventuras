@@ -1,3 +1,5 @@
+import 'app/globals.css';
+
 import { OpenAPI } from '@losol/eventuras';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';

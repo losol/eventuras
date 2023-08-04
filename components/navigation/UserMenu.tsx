@@ -21,10 +21,6 @@ const UserMenu = (props: UserMenuProps) => {
           <Menu.Item>{t('header.userMenu.title')}</Menu.Item>
         </Link>
 
-        <Link href="/user/profile" passHref>
-          <Menu.Item>{t('header.userMenu.profile')}</Menu.Item>
-        </Link>
-
         <Link href="/admin" passHref>
           <Menu.Item>{t('header.userMenu.admin')}</Menu.Item>
         </Link>

@@ -18,8 +18,13 @@
     "incremental": true,
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "middleware.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "middleware.ts", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
