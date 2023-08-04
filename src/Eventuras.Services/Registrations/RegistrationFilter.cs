@@ -1,3 +1,6 @@
+#nullable enable
+
+using System;
 using Eventuras.Domain;
 
 namespace Eventuras.Services.Registrations
@@ -5,12 +8,12 @@ namespace Eventuras.Services.Registrations
     public class RegistrationFilter
     {
         public int? EventInfoId { get; set; }
-        
+
         public int? CertificateId { get; set; }
 
-        public int[] ProductIds { get; set; }
+        public int[] ProductIds { get; set; } = Array.Empty<int>();
 
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
 
         public bool VerifiedOnly { get; set; }
 
@@ -19,13 +22,13 @@ namespace Eventuras.Services.Registrations
         public bool HavingEmailConfirmedOnly { get; set; }
 
         public bool AccessibleOnly { get; set; }
-        
+
         public bool HavingCertificateOnly { get; set; }
 
         public bool HavingNoCertificateOnly { get; set; }
 
-        public Registration.RegistrationStatus[] HavingStatuses { get; set; }
+        public Registration.RegistrationStatus[] HavingStatuses { get; set; } = Array.Empty<Registration.RegistrationStatus>();
 
-        public Registration.RegistrationType[] HavingTypes { get; set; }
+        public Registration.RegistrationType[] HavingTypes { get; set; } = Array.Empty<Registration.RegistrationType>();
     }
 }
