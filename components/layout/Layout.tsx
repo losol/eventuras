@@ -1,4 +1,4 @@
-import { Container, Header } from 'components/layout';
+import { Container, Footer, Header } from 'components/layout';
 import { ReactNode } from 'react';
 
 type LayoutProps = {
@@ -13,6 +13,7 @@ const Layout = (props: LayoutProps) => {
       <main>
         <Container>{children}</Container>
       </main>
+      <Footer />
     </>
   );
 };

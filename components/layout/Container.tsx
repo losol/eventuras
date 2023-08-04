@@ -1,5 +1,3 @@
-import { Container as MantineContainer } from '@mantine/core';
-
 interface ContainerProps {
   children: React.ReactNode;
 }
@@ -7,7 +5,7 @@ interface ContainerProps {
 const Container = (props: ContainerProps) => {
   return (
     <>
-      <MantineContainer>{props.children}</MantineContainer>
+      <div className="container mx-auto">{props.children}</div>
     </>
   );
 };

@@ -10,7 +10,9 @@ const Heading = ({ as = 'h1', children }: HeadingProps) => {
   const headingOrder = parseInt(as.replace('h', '')) as TitleOrder;
   return (
     <>
-      <Title order={headingOrder}>{children}</Title>
+      <Title order={headingOrder} pt={16}>
+        {children}
+      </Title>
     </>
   );
 };

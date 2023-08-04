@@ -1,19 +1,18 @@
-import 'app/globals.css';
+import 'styles/globals.css';
 
 import { OpenAPI } from '@losol/eventuras';
-import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
-import { UserProvider } from 'context';
+import { ThemeContextProvider, UserProvider } from 'context';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { SessionProvider } from 'next-auth/react';
 
 OpenAPI.BASE = `${process.env.NEXT_PUBLIC_APPLICATION_URL}/api/eventuras`;
 
-function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps }: AppProps) {
   return (
     <SessionProvider session={pageProps.session}>
-      <MantineProvider withGlobalStyles withNormalizeCSS>
+      <ThemeContextProvider>
         <Notifications />
         <UserProvider>
           <Head>
@@ -22,9 +21,7 @@ function App({ Component, pageProps }: AppProps) {
           </Head>
           <Component {...pageProps} />
         </UserProvider>
-      </MantineProvider>
+      </ThemeContextProvider>
     </SessionProvider>
   );
 }
-
-export default App;
