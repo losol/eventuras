@@ -1,5 +1,6 @@
 import { Box, Input, Radio, Stack } from '@mantine/core';
 import { Button } from 'components/inputs';
+import { Layout } from 'components/layout';
 import { Heading, Text } from 'components/typography';
 import useTranslation from 'next-translate/useTranslation';
 import { useState } from 'react';
@@ -40,7 +41,7 @@ const RegistrationPayment = ({ onSubmit }: RegistrationPaymentProps) => {
   };
 
   const renderForm = () => (
-    <>
+    <Layout>
       <Box>
         <Text>Company</Text>
         <Input
@@ -85,10 +86,10 @@ const RegistrationPayment = ({ onSubmit }: RegistrationPaymentProps) => {
           onChange={generateInputFieldStateUpdater('zipCode')}
         />
       </Box>
-    </>
+    </Layout>
   );
   return (
-    <>
+    <Layout>
       <Heading>{t('payment.title')}</Heading>
       <p>{t('payment.description')}</p>
       <p>{t('payment.subHeading')}</p>
@@ -105,7 +106,7 @@ const RegistrationPayment = ({ onSubmit }: RegistrationPaymentProps) => {
       </Radio.Group>
       {paymentOption === 'payment-employer' && renderForm()}
       <Button onClick={() => onSubmit({ paymentOption, paymentDetails })}>Continue</Button>
-    </>
+    </Layout>
   );
 };
 

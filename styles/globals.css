@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 @layer base {
-  body {
-    @apply dark:bg-gray-800;
+  #__next {
+    @apply flex flex-col min-h-screen antialiased text-gray-800 dark:text-gray-200;
   }
   main {
     @apply flex-grow p-16 bg-white text-gray-800 dark:bg-gray-800 dark:text-gray-200;
