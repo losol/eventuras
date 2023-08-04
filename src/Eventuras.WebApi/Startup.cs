@@ -1,6 +1,7 @@
 using System.Linq;
-using System.Reflection;
 using System.Text.Json.Serialization;
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 using Eventuras.Services;
 using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Config;
@@ -16,14 +17,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
-using Microsoft.OpenApi.Models;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
-using System.IO;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Asp.Versioning.ApiExplorer;
-using Asp.Versioning;
 
 namespace Eventuras.WebApi
 {
@@ -135,7 +130,7 @@ namespace Eventuras.WebApi
                 })
                 .AddJwtBearerConfiguration(
                     Configuration["Auth:Issuer"],
-                    Configuration["Auth:ApiIdentifier"],
+                    Configuration["Auth:Audience"],
                     Configuration["Auth:ClientSecret"]
                 );
 
