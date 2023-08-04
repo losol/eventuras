@@ -13,7 +13,6 @@ type Story = StoryObj<typeof Button>;
 export const Primary: Story = {
   args: {
     primary: true,
-    // label: 'Button',
   },
   render: args => <Button {...args}>Button</Button>,
 };
