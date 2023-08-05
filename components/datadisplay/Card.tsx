@@ -1,43 +1,41 @@
-import { Badge, Button, Card as MantineCard, Group, Image, Text } from '@mantine/core';
-import Link from 'next/link';
+import React, { ReactNode } from 'react';
 
 interface CardProps {
-  title: string;
-  description?: string;
-  imageUrl?: string;
-  href?: string;
-  tag?: string;
+  children: ReactNode;
 }
 
-const Card = (props: CardProps): React.JSX.Element => {
+const Card = (props: CardProps) => {
+  // Loop through the children and render them based on their types
+  const renderedChildren = React.Children.map(props.children, child => {
+    if (React.isValidElement(child) && (child.type === Card.Heading || child.type === Card.Text)) {
+      return <>{child}</>;
+    }
+    return null; // Ignore other types of children
+  });
+
   return (
-    <MantineCard shadow="sm" padding="lg" radius="md" withBorder>
-      {props.imageUrl && (
-        <MantineCard.Section>
-          <Image src={props.imageUrl} height={160} alt="Norway" />
-        </MantineCard.Section>
-      )}
-
-      <Group position="apart" mt="md" mb="xs">
-        <Text weight={500}>{props.title}</Text>
-        {props.tag && (
-          <Badge color="pink" variant="light">
-            props.tag
-          </Badge>
-        )}
-      </Group>
-
-      <Text size="sm">{props.description}</Text>
-
-      {props.href && (
-        <Link href={props.href} passHref>
-          <Button component="a" variant="light" color="blue" fullWidth mt="md" radius="md">
-            Read more
-          </Button>
-        </Link>
-      )}
-    </MantineCard>
+    <div className="max-w-md p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+      {renderedChildren}
+    </div>
   );
 };
+
+interface HeadingProps {
+  children: ReactNode;
+}
+const Heading: React.FC<HeadingProps> = ({ children }) => (
+  <h4 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+    {children}
+  </h4>
+);
+Card.Heading = Heading;
+
+interface TextProps {
+  children: ReactNode;
+}
+const Text: React.FC<TextProps> = ({ children }) => (
+  <p className="mb-3 font-normal text-gray-500 dark:text-gray-400">{children}</p>
+);
+Card.Text = Text;
 
 export default Card;

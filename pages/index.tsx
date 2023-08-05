@@ -38,7 +38,10 @@ export default function Index(props: IndexProps) {
             {events &&
               events.map((event: EventDto) => (
                 <Link key={event.id} href={`/events/${event.id}`}>
-                  <Card key={event.id} title={event.title!} description={event.description!} />
+                  <Card key={event.id}>
+                    <Card.Heading>{event.title}</Card.Heading>
+                    <Card.Text>{event.description!}</Card.Text>
+                  </Card>
                 </Link>
               ))}
           </SimpleGrid>

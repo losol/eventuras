@@ -1,4 +1,3 @@
-import type { Preview } from '@storybook/react';
 import '../styles/globals.css';
 
 import { withThemeByClassName } from '@storybook/addon-styling';
