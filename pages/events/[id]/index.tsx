@@ -5,7 +5,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { Button } from 'components/inputs';
 import { Layout } from 'components/layout';
 import { Modal } from 'components/overlays';
-import { Heading } from 'components/content';
+import { Heading, Image } from 'components/content';
 import parse from 'html-react-parser';
 import { useRouter } from 'next/router';
 import useTranslation from 'next-translate/useTranslation';
@@ -23,6 +23,15 @@ const EventInfo = (props: EventProps) => {
   return (
     <Layout>
       <Heading>{title}</Heading>
+      {props.featuredImageUrl && (
+        <Image
+          src={props.featuredImageUrl}
+          alt=""
+          width={600}
+          height={400}
+          caption={props.featuredImageCaption}
+        />
+      )}
       {description}
       <div>
         <Button onClick={() => router.push(`${props.id}/register`)}>Register for event</Button>
