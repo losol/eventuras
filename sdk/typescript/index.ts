@@ -54,6 +54,7 @@ export { PaymentProvider } from './models/PaymentProvider';
 export { PeriodMatchingKind } from './models/PeriodMatchingKind';
 export type { ProductDto } from './models/ProductDto';
 export type { ProductFormDto } from './models/ProductFormDto';
+export type { ProductOrderDto } from './models/ProductOrderDto';
 export type { ProductVariantDto } from './models/ProductVariantDto';
 export { ProductVisibility } from './models/ProductVisibility';
 export type { RegistrationCustomerInfoDto } from './models/RegistrationCustomerInfoDto';
