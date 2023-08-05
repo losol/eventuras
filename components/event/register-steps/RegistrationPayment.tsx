@@ -1,7 +1,7 @@
 import { Box, Input, Radio, Stack } from '@mantine/core';
+import { Heading, Text } from 'components/content';
 import { Button } from 'components/inputs';
 import { Layout } from 'components/layout';
-import { Heading, Text } from 'components/typography';
 import useTranslation from 'next-translate/useTranslation';
 import { useState } from 'react';
 

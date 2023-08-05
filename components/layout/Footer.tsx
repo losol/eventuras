@@ -1,4 +1,4 @@
-import DarkModeToggle from 'components/navigation/DarkModeToggle';
+import { DarkModeToggle } from 'components/layout';
 import Link from 'next/link';
 
 const Footer = () => {

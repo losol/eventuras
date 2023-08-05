@@ -5,7 +5,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { Button } from 'components/inputs';
 import { Layout } from 'components/layout';
 import { Modal } from 'components/overlays';
-import { Heading } from 'components/typography';
+import { Heading } from 'components/content';
 import parse from 'html-react-parser';
 import { useRouter } from 'next/router';
 import useTranslation from 'next-translate/useTranslation';

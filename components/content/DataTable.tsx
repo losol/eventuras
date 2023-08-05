@@ -11,8 +11,8 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { Text } from 'components/content';
 import { Button } from 'components/inputs';
-import { Text } from 'components/typography';
 
 type DataTableProps = {
   columns: any[];

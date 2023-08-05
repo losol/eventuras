@@ -1,6 +1,6 @@
 import { Box, Button, Checkbox, Flex, Stack } from '@mantine/core';
+import { Heading } from 'components/content';
 import { Layout } from 'components/layout';
-import { Heading } from 'components/typography';
 import useTranslation from 'next-translate/useTranslation';
 import { useState } from 'react';
 

@@ -1,5 +1,5 @@
 import { Button } from 'components/inputs';
-import { UserMenu } from 'components/navigation';
+import { UserMenu } from 'components/layout';
 import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import useTranslation from 'next-translate/useTranslation';

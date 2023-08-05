@@ -1,6 +1,6 @@
 import { Drawer } from '@mantine/core';
+import { Text } from 'components/content';
 import { Button } from 'components/inputs';
-import { Text } from 'components/typography';
 import { FormEvent } from 'react';
 import { useForm } from 'react-hook-form';
 import { UserType } from 'types';

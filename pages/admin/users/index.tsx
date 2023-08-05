@@ -1,12 +1,9 @@
 /* eslint-disable */
 
 import { UserDto, UsersService } from '@losol/eventuras';
-import { DataTable } from 'components/datadisplay';
 import { Loading, Unauthorized } from 'components/feedback';
-import { Button } from 'components/inputs';
 import { Container, Layout } from 'components/layout';
-import { UserDrawer } from 'components/overlays';
-import { Heading } from 'components/typography';
+import { DataTable, Heading } from 'components/content';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';

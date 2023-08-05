@@ -1,5 +1,5 @@
+import { Heading } from 'components/content';
 import { Container, Layout } from 'components/layout';
-import { Heading } from 'components/typography';
 import { useSession } from 'next-auth/react';
 
 function UserIndex() {

@@ -1,7 +1,7 @@
 import { RegistrationDto } from '@losol/eventuras';
 import { Drawer } from '@mantine/core';
+import { Heading, Text } from 'components/content';
 import { Button } from 'components/inputs';
-import { Heading, Text } from 'components/typography';
 
 interface RegistrationDrawerProps {
   registration: RegistrationDto;

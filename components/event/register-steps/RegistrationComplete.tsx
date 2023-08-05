@@ -1,6 +1,6 @@
+import { Heading } from 'components/content';
 import { Button } from 'components/inputs';
 import { Layout } from 'components/layout';
-import { Heading } from 'components/typography';
 import useTranslation from 'next-translate/useTranslation';
 
 export type RegistrationCompleteProps = {

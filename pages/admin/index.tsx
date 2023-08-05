@@ -2,10 +2,9 @@
 
 import { EventsService, EventDto } from '@losol/eventuras';
 import { Container } from '@mantine/core';
-import { DataTable } from 'components/datadisplay';
 import { Loading, Unauthorized } from 'components/feedback';
 import { Layout } from 'components/layout';
-import { Heading, Text } from 'components/typography';
+import { DataTable, Heading } from 'components/content';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';

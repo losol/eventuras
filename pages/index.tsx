@@ -1,9 +1,8 @@
 import { EventDto, EventsService } from '@losol/eventuras';
 import { SimpleGrid } from '@mantine/core';
-import { Card } from 'components/datadisplay';
+import { Card, Heading, Text } from 'components/content';
 import { Loading } from 'components/feedback';
 import { Layout } from 'components/layout';
-import { Heading, Text } from 'components/typography';
 import Link from 'next/link';
 import getT from 'next-translate/getT';
 import { LocalesType } from 'types';

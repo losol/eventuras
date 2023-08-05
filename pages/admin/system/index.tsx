@@ -1,10 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import { OrganizationSettingDto, OrganizationSettingsService } from '@losol/eventuras';
-import { DataTable } from 'components/datadisplay';
+import { DataTable, Heading } from 'components/content';
 import { Loading, Unauthorized } from 'components/feedback';
 import { Container, Layout } from 'components/layout';
-import { Heading } from 'components/typography';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';

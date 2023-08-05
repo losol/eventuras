@@ -1,5 +1,5 @@
 import { Checkbox, Input, Stack } from '@mantine/core';
-import { Heading } from 'components/typography';
+import { Heading } from 'components/content';
 import { Dispatch, SetStateAction } from 'react';
 
 interface EmailEditorProps {
