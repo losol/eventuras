@@ -1,15 +1,21 @@
 import { default as NextImage } from 'next/image';
 import React, { ReactNode } from 'react';
 
+import { default as HeadingComponent } from './Heading';
+
 interface CardChildProps {
   type?: 'Heading' | 'Text' | 'Image';
-  children: ReactNode;
   className?: string;
 }
 
-interface HeadingProps extends CardChildProps {}
+interface HeadingProps extends CardChildProps {
+  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  children: ReactNode;
+}
 
-interface TextProps extends CardChildProps {}
+interface TextProps extends CardChildProps {
+  children: ReactNode;
+}
 
 interface ImageProps extends CardChildProps {
   src: string;
@@ -32,15 +38,15 @@ const Card = (props: CardProps) => {
   });
 
   return (
-    <div className="max-w-md p-3 bg-white border border-gray-200 rounded-md shadow dark:bg-gray-800 dark:border-gray-700">
+    <div className="max-w-md p-3 bg-white border border-gray-200 rounded-md shadow text-gray-800 dark:text-gray-200 dark:bg-gray-900 dark:border-gray-700">
       {renderedChildren}
     </div>
   );
 };
 
 // Heading component
-const Heading: React.FC<HeadingProps> = ({ children }) => (
-  <h4 className="mb-2 text-2xl font-bold tracking-tight">{children}</h4>
+const Heading: React.FC<HeadingProps> = ({ as = 'h4', children }) => (
+  <HeadingComponent as={as}>{children}</HeadingComponent>
 );
 
 // Text component
