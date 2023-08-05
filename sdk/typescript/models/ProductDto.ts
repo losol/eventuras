@@ -15,5 +15,8 @@ export type ProductDto = {
     vatPercent?: number;
     visibility?: ProductVisibility;
     variants?: Array<ProductVariantDto> | null;
+    minimumQuantity?: number;
+    readonly isMandatory?: boolean;
+    enableQuantity?: boolean;
 };
 

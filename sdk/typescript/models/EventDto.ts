@@ -24,5 +24,12 @@ export type EventDto = {
     dateStart?: LocalDate;
     dateEnd?: LocalDate;
     lastRegistrationDate?: LocalDate;
+    featuredImageUrl?: string | null;
+    featuredImageCaption?: string | null;
+    headline?: string | null;
+    published?: boolean;
+    moreInformation?: string | null;
+    welcomeLetter?: string | null;
+    informationRequest?: string | null;
 };
 

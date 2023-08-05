@@ -19,6 +19,7 @@ export class RegistrationsService {
      */
     public static getV3Registrations({
         eventId,
+        userId,
         includeEventInfo,
         includeUserInfo,
         includeProducts,
@@ -29,6 +30,7 @@ export class RegistrationsService {
         offset,
     }: {
         eventId?: number,
+        userId?: string,
         includeEventInfo?: boolean,
         includeUserInfo?: boolean,
         includeProducts?: boolean,
@@ -43,6 +45,7 @@ export class RegistrationsService {
             url: '/v3/registrations',
             query: {
                 'EventId': eventId,
+                'UserId': userId,
                 'IncludeEventInfo': includeEventInfo,
                 'IncludeUserInfo': includeUserInfo,
                 'IncludeProducts': includeProducts,
@@ -79,6 +82,7 @@ export class RegistrationsService {
     public static getV3Registrations1({
         id,
         eventId,
+        userId,
         includeEventInfo,
         includeUserInfo,
         includeProducts,
@@ -90,6 +94,7 @@ export class RegistrationsService {
     }: {
         id: number,
         eventId?: number,
+        userId?: string,
         includeEventInfo?: boolean,
         includeUserInfo?: boolean,
         includeProducts?: boolean,
@@ -107,6 +112,7 @@ export class RegistrationsService {
             },
             query: {
                 'EventId': eventId,
+                'UserId': userId,
                 'IncludeEventInfo': includeEventInfo,
                 'IncludeUserInfo': includeUserInfo,
                 'IncludeProducts': includeProducts,

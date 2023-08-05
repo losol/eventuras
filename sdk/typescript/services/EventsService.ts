@@ -123,24 +123,6 @@ export class EventsService {
      * @returns any Success
      * @throws ApiError
      */
-    public static deleteV3Events({
-        id,
-    }: {
-        id: number,
-    }): CancelablePromise<any> {
-        return __request(OpenAPI, {
-            method: 'DELETE',
-            url: '/v3/events/{id}',
-            path: {
-                'id': id,
-            },
-        });
-    }
-
-    /**
-     * @returns any Success
-     * @throws ApiError
-     */
     public static patchV3Events({
         id,
         requestBody,
@@ -156,6 +138,24 @@ export class EventsService {
             },
             body: requestBody,
             mediaType: 'application/json-patch+json',
+        });
+    }
+
+    /**
+     * @returns any Success
+     * @throws ApiError
+     */
+    public static deleteV3Events({
+        id,
+    }: {
+        id: number,
+    }): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/v3/events/{id}',
+            path: {
+                'id': id,
+            },
         });
     }
 
