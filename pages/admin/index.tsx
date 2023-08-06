@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { createColumnHelper } from '@tanstack/react-table';
-import { CreateEvent } from './components/CreateEvent';
+import CreateEvent from './components/CreateEvent';
 
 function AdminIndex() {
   const { data: session, status } = useSession();
