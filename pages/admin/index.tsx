@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { createColumnHelper } from '@tanstack/react-table';
+import { CreateEvent } from './components/CreateEvent';
 
 function AdminIndex() {
   const { data: session, status } = useSession();
@@ -67,9 +68,13 @@ function AdminIndex() {
         <Container>
           <Heading as="h1">Admin</Heading>
 
-          <Link href="/admin/users">
-            <Link href="admin/users">Users</Link>
-          </Link>
+          <div className="inline-flex flex-col">
+            <Link href="/admin/users">
+              <Link href="admin/users">Users</Link>
+            </Link>
+
+            <CreateEvent />
+          </div>
 
           <Heading as="h2">Arrangement</Heading>
           <DataTable columns={columns} data={eventinfos} />
