@@ -1,9 +1,8 @@
 import { EventDto, EventsService } from '@losol/eventuras';
-import { SimpleGrid } from '@mantine/core';
-import { Card, Heading, Text } from 'components/content';
+import { Heading, Text } from 'components/content';
+import EventsGrid from 'components/event/common/EventsGrid';
 import { Loading } from 'components/feedback';
 import { Layout } from 'components/layout';
-import Link from 'next/link';
 import getT from 'next-translate/getT';
 import { LocalesType } from 'types';
 
@@ -21,30 +20,13 @@ export default function Index(props: IndexProps) {
     <Layout>
       <Heading as="h1">{demoTitleLocale}</Heading>
       <Text>{demoTextLocale}</Text>
-      {!events && <Loading />}
-      {events.length !== 0 && (
+      {events ? (
         <>
           <Heading as="h2">{eventsTitle}</Heading>
-          <SimpleGrid
-            cols={4}
-            spacing="lg"
-            breakpoints={[
-              { maxWidth: 'md', cols: 3, spacing: 'md' },
-              { maxWidth: 'sm', cols: 2, spacing: 'sm' },
-              { maxWidth: 'xs', cols: 1, spacing: 'sm' },
-            ]}
-          >
-            {events &&
-              events.map((event: EventDto) => (
-                <Link key={event.id} href={`/events/${event.id}`}>
-                  <Card key={event.id}>
-                    <Card.Heading>{event.title}</Card.Heading>
-                    <Card.Text>{event.description!}</Card.Text>
-                  </Card>
-                </Link>
-              ))}
-          </SimpleGrid>
+          <EventsGrid events={events} />
         </>
+      ) : (
+        <Loading />
       )}
     </Layout>
   );
