@@ -33,7 +33,11 @@ export default function CreateEvent() {
     if (!form.isValid()) return;
 
     const eventReturn = await EventsService.postV3Events({
-      requestBody: { ...form.values, slug: form.values.slug || slug },
+      requestBody: {
+        ...form.values,
+        slug: form.values.slug || slug,
+        organizationId: Number(process.env.NEXT_PUBLIC_ORGANIZATION_ID ?? '1'),
+      },
     });
     console.log(eventReturn);
 
