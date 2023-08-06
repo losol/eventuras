@@ -7,7 +7,7 @@ import { generateSlug } from 'random-word-slugs'; // TODO : replace with custom 
 const slug = generateSlug();
 
 // TODO : handle THEME  with Mantine Provider
-export function CreateEvent() {
+export default function CreateEvent() {
   //const { t } = useTranslation('register');
   const form = useForm<{ title: string; slug: string }>({
     validateInputOnChange: false,
