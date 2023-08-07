@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { createContext, ReactNode, useEffect, useState } from 'react';
+import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 //import { UserType } from 'types';
 
@@ -24,11 +24,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const { data: session } = useSession();
   const { data: userDetails } = useSWR(session ? '/api/getUserProfile' : '');
 
+  const proviederValue = useMemo(() => ({ user, updateUser: setUser }), [user, setUser]);
+
   useEffect(() => {
     setUser(userDetails);
   }, [userDetails]);
 
-  return (
-    <UserContext.Provider value={{ user, updateUser: setUser }}>{children}</UserContext.Provider>
-  );
+  return <UserContext.Provider value={proviederValue}>{children}</UserContext.Provider>;
 };

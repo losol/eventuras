@@ -12,27 +12,27 @@ import CreateEvent from './(components)/CreateEvent';
 
 //const ORGANIZATION_ID = process.env.NEXT_PUBLIC_ORGANIZATION_ID || '1';
 
+const columnHelper = createColumnHelper<EventDto>();
+
+const columns = [
+  columnHelper.accessor('title', {
+    header: 'Title',
+    cell: info => <Link href={`admin/events/${info.row.original.id}`}>{info.getValue()}</Link>,
+  }),
+  columnHelper.accessor('location', {
+    header: 'Location',
+    cell: info => info.getValue(),
+  }),
+  columnHelper.accessor('dateStart', {
+    header: 'When',
+    cell: info => info.getValue(),
+  }),
+];
+
 export default function AdminPage() {
   const { data: session, status } = useSession();
 
   const [eventinfos] = useState<EventDto[]>([]);
-
-  const columnHelper = createColumnHelper<EventDto>();
-
-  const columns = [
-    columnHelper.accessor('title', {
-      header: 'Title',
-      cell: info => <Link href={`admin/events/${info.row.original.id}`}>{info.getValue()}</Link>,
-    }),
-    columnHelper.accessor('location', {
-      header: 'Location',
-      cell: info => info.getValue(),
-    }),
-    columnHelper.accessor('dateStart', {
-      header: 'When',
-      cell: info => info.getValue(),
-    }),
-  ];
 
   //useEffect(() => {
   //  const fetchEvents = async () => {
