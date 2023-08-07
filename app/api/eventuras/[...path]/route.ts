@@ -1,5 +1,5 @@
 //import { authOptions } from 'app/api/auth/[...nextauth]/route';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 //import { getServerSession } from 'next-auth/next';
 
@@ -8,15 +8,13 @@ const eventurasAPI_URL = process.env.API_BASE_URL;
 /**
  * Forwards requests from /api/venturas to the eventuras backend API, decorating with a bearer token if available
  */
-async function forwarder(request: Request) {
-  const token = await getToken({ req: request as any });
+async function forwarder(request: NextRequest) {
+  const token = await getToken({ req: request });
   const accessToken = token?.accessToken ?? '';
 
   if (!eventurasAPI_URL) throw new Error('API_BASE_URL is not defined');
 
   const forwardUrl = request.url.replace(/^.*?\/api\/eventuras/, eventurasAPI_URL);
-
-  console.log(forwardUrl);
 
   // TODO : return fetch
   const fResponse = await fetch(forwardUrl, {
@@ -31,20 +29,21 @@ async function forwarder(request: Request) {
   const data = await fResponse.json();
   if (process.env.NODE_ENV === 'development') {
     //dev only, avoid token leaks into anything else than dev environment
-    console.log({
-      forwardUrl,
-      body: request.body,
-      method: request.method,
-      status: fResponse.status,
-      data,
-      accessToken,
-    });
+    //console.log(forwardUrl);
+    //console.log({
+    //  forwardUrl,
+    //  body: request.body,
+    //  method: request.method,
+    //  status: fResponse.status,
+    //  data,
+    //  accessToken,
+    //});
   }
 
   return { status: fResponse.status, data };
 }
 
-async function router(request: Request) {
+async function router(request: NextRequest) {
   //const session = await getServerSession(authOptions);
   const { status, data } = await forwarder(request);
 
