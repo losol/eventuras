@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import { UsersService } from '@losol/eventuras';
+import { useEffect, useState } from 'react';
 
 /*
   Consideration: this one maps ProductDto to RegistrationProduct (a 'view' type) directly.
@@ -19,6 +19,7 @@ const useMyUserProfile = () => {
     };
     getMyUserProfile();
   }, []);
+
   return { userProfile, loading };
 };
 

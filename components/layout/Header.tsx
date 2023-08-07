@@ -1,27 +1,39 @@
-import { Button } from 'components/inputs';
+'use client';
+
 import { UserMenu } from 'components/layout';
 import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import useTranslation from 'next-translate/useTranslation';
+
+import { Button } from '@/components/ui/button';
+import { siteConfig } from '@/config/site';
 
 const Header = () => {
   const { data: session } = useSession();
-  const { t } = useTranslation('common');
+
+  const userName = session?.user?.name ?? '';
+
+  function handleSignIn() {
+    signIn('auth0');
+  }
 
   return (
-    <nav className="bg-gray-200 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+    <header className="bg-gray-200 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+      <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4">
         <Link href="/" className="flex items-center">
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-            Eventuras
+          <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
+            {siteConfig.name}
           </span>
         </Link>
-        <div>
-          {!session && <Button onClick={() => signIn('auth0')}>{t('header.auth.login')}</Button>}
-          {session && <UserMenu signOut={signOut} name={session.user?.name ?? ''} />}
-        </div>
+        <nav>
+          {session ? <UserMenu signOut={signOut} name={userName} /> : null}
+          {session ? null : (
+            <Button variant="outline" onClick={handleSignIn}>
+              Login
+            </Button>
+          )}
+        </nav>
       </div>
-    </nav>
+    </header>
   );
 };
 

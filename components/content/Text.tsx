@@ -1,3 +1,5 @@
+'use client';
+
 import { Text as MantineText } from '@mantine/core';
 
 interface TextProps {

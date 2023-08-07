@@ -1,6 +1,5 @@
 import { Box, Button, Checkbox, Flex, Stack } from '@mantine/core';
 import { Heading } from 'components/content';
-import { Layout } from 'components/layout';
 import useTranslation from 'next-translate/useTranslation';
 import { useState } from 'react';
 
@@ -23,7 +22,7 @@ const RegistrationCustomize = ({ products, onSubmit }: RegistrationCustomizeProp
   const [selectedProducts, selectProducts] = useState<string[]>(defaultSelected);
 
   return (
-    <Layout>
+    <>
       <Heading>{t('customize.title')}</Heading>
       <p>{t('customize.description')}</p>
       <Box>
@@ -52,7 +51,7 @@ const RegistrationCustomize = ({ products, onSubmit }: RegistrationCustomizeProp
       <Button onClick={() => onSubmit(selectedProducts)} mb="20px">
         Continue
       </Button>
-    </Layout>
+    </>
   );
 };
 

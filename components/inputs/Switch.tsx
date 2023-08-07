@@ -1,5 +1,6 @@
 import { Switch as HeadlessSwitch } from '@headlessui/react';
-import React from 'react';
+
+import { cn } from '@/lib/utils';
 
 type SwitchProps = {
   label?: string;
@@ -7,7 +8,7 @@ type SwitchProps = {
   onChange: (checked: boolean) => void;
 };
 
-const Switch = (props: SwitchProps): React.JSX.Element => {
+const Switch = (props: SwitchProps): JSX.Element => {
   return (
     <HeadlessSwitch.Group>
       <div className="flex items-center">
@@ -22,9 +23,10 @@ const Switch = (props: SwitchProps): React.JSX.Element => {
           } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
         >
           <span
-            className={`${
-              props.checked ? 'translate-x-6' : 'translate-x-1'
-            } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+            className={cn(
+              props.checked ? 'translate-x-6' : 'translate-x-1',
+              'inline-block h-4 w-4 rounded-full bg-white transition-transform'
+            )}
           />
         </HeadlessSwitch>
       </div>

@@ -1,3 +1,5 @@
+'use client';
+
 import { EventDto } from '@losol/eventuras';
 import { SimpleGrid } from '@mantine/core';
 import { Card } from 'components/content';
@@ -21,8 +23,6 @@ function SingleEvent({ id, title, description }: SingleEventProps) {
 }
 
 export default function EventsGrid({ events }: EventsGridProps) {
-  if (events.length === 0) return <p className="font-normal">No Events</p>;
-
   return (
     <SimpleGrid cols={4} spacing="lg" breakpoints={BREAKPOINTS}>
       {events.map((event: EventDto) => (

@@ -5,16 +5,15 @@ type LayoutProps = {
   children: ReactNode;
 };
 
-const Layout = (props: LayoutProps) => {
-  const { children } = props;
+const Layout = ({ children }: LayoutProps) => {
   return (
-    <>
+    <div className="relative flex h-screen min-h-screen flex-col">
       <Header />
-      <main>
+      <main className="flex-1">
         <Container>{children}</Container>
       </main>
       <Footer />
-    </>
+    </div>
   );
 };
 

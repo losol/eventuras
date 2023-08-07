@@ -2,11 +2,7 @@ interface ContainerProps {
   children: React.ReactNode;
 }
 
-const Container = (props: ContainerProps) => {
-  return (
-    <>
-      <div className="container mx-auto">{props.children}</div>
-    </>
-  );
+const Container = ({ children }: ContainerProps) => {
+  return <section className="container mx-auto h-full">{children}</section>;
 };
 export default Container;

@@ -4,14 +4,14 @@ export type HeadingProps = {
   className?: string;
 };
 
-const Heading = (props: HeadingProps) => {
-  const HeadingComponent = props.as ?? 'h1';
+const Heading = ({ as, className, children }: HeadingProps) => {
+  const HeadingComponent = as ?? 'h1';
 
   // Define default Tailwind CSS classes for font size and padding
   let defaultClasses = '';
 
   // Adjust font size and padding based on heading level
-  if (props.className === undefined || props.className === null) {
+  if (className == null) {
     switch (HeadingComponent) {
       case 'h1':
         defaultClasses = ' text-6xl pt-16 pb-6';
@@ -36,13 +36,7 @@ const Heading = (props: HeadingProps) => {
     }
   }
 
-  return (
-    <>
-      <HeadingComponent className={props.className ?? defaultClasses}>
-        {props.children}
-      </HeadingComponent>
-    </>
-  );
+  return <HeadingComponent className={className ?? defaultClasses}>{children}</HeadingComponent>;
 };
 
 export default Heading;
