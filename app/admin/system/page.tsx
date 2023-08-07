@@ -2,7 +2,7 @@
 
 import { OrganizationSettingDto, OrganizationSettingsService } from '@losol/eventuras';
 import { DataTable, Heading } from 'components/content';
-import { Loading, Unauthorized } from 'components/feedback';
+import { Spinner, Unauthorized } from 'components/feedback';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
@@ -35,7 +35,7 @@ const SystemAdminPAge = () => {
     if (session) fetchSettings();
   }, [session]);
 
-  if (status === 'loading') return <Loading />;
+  if (status === 'loading') return <Spinner />;
   if (!session) return <Unauthorized />;
 
   return (

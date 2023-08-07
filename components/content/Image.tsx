@@ -1,5 +1,8 @@
 import { default as NextImage } from 'next/image';
 
+import { Text } from '@/components/content';
+import { cn } from '@/lib/utils';
+
 export type ImageProps = {
   src: string;
   alt?: string;
@@ -13,9 +16,9 @@ export type ImageProps = {
 
 const Image = (props: ImageProps) => {
   return (
-    <figure className={props.figureClassName ?? 'max-w-lg py-8'}>
+    <figure className={cn(props.figureClassName ?? 'max-w-lg py-8')}>
       <NextImage
-        className={props.imgClassName ?? 'h-auto max-w-full'}
+        className={cn(props.imgClassName ?? 'h-auto max-w-full')}
         src={props.src}
         alt={props.alt ?? ''}
         width={props.width}
@@ -23,11 +26,11 @@ const Image = (props: ImageProps) => {
       />
       {props.caption && (
         <figcaption
-          className={
-            props.figCaptionClassName ?? 'mt-2 text-sm text-center text-gray-500 dark:text-gray-400'
-          }
+          className={cn(
+            props.figCaptionClassName ?? 'mt-2 text-center text-sm text-gray-500 dark:text-gray-400'
+          )}
         >
-          <p>{props.caption}</p>
+          <Text>{props.caption}</Text>
         </figcaption>
       )}
     </figure>

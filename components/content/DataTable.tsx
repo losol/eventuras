@@ -1,6 +1,5 @@
 'use client';
 
-import { Flex } from '@mantine/core';
 import {
   IconArrowLeft,
   IconArrowRight,
@@ -67,8 +66,8 @@ const DataTable = (props: DataTableProps) => {
         typeof totalPages === 'number' &&
         handlePageClick &&
         typeof handlePageClick === 'function' ? (
-          <Flex m={4}>
-            <Flex>
+          <div className="m-4 flex">
+            <div className="flex">
               <Button
                 ariaLabel="First page"
                 onClick={() => handlePageClick(1)}
@@ -81,22 +80,22 @@ const DataTable = (props: DataTableProps) => {
                 disabled={page - 1 <= 0}
                 leftIcon={<IconChevronsLeft />}
               />
-            </Flex>
+            </div>
 
-            <Flex>
+            <div className="flex">
               <Text>
                 Page{' '}
-                <Text fontWeight={700} as="span">
-                  {page}
+                <Text fontWeight={700} asChild>
+                  <span>{page}</span>
                 </Text>{' '}
                 of{' '}
-                <Text fontWeight={700} as="span">
-                  {totalPages}
+                <Text fontWeight={700} asChild>
+                  <span>{totalPages}</span>
                 </Text>
               </Text>
-            </Flex>
+            </div>
 
-            <Flex>
+            <div className="flex">
               <Button
                 aria-label="Next Page"
                 onClick={() => handlePageClick(page + 1)}
@@ -109,8 +108,8 @@ const DataTable = (props: DataTableProps) => {
                 disabled={page === totalPages}
                 leftIcon={<IconArrowRight />}
               />
-            </Flex>
-          </Flex>
+            </div>
+          </div>
         ) : null
       }
     </>

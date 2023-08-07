@@ -1,8 +1,7 @@
 import { EventsService } from '@losol/eventuras';
 
-import { Heading } from '../components/content';
+import { Heading, Text } from '../components/content';
 import EventsGrid from '../components/event/common/EventsGrid';
-//import { Loading } from '../components/feedback';
 
 //{
 //  events: EventDto[];
@@ -27,7 +26,7 @@ export default async function Page() {
       {eventData && eventData.length > 0 ? (
         <EventsGrid events={eventData} />
       ) : (
-        <p className="font-normal">More events TBA</p>
+        <Text fontWeight={400}>More events TBA</Text>
       )}
     </>
   );

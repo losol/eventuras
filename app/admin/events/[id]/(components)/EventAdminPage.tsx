@@ -8,10 +8,9 @@ import {
   RegistrationStatus,
   RegistrationType,
 } from '@losol/eventuras';
-import { useDisclosure } from '@mantine/hooks';
 import { createColumnHelper } from '@tanstack/react-table';
 import { DataTable, Heading } from 'components/content';
-import { Loading, Unauthorized } from 'components/feedback';
+import { Spinner, Unauthorized } from 'components/feedback';
 import { Button } from 'components/inputs';
 import { EmailDrawer, RegistrationDrawer } from 'components/overlays';
 import { useSession } from 'next-auth/react';
@@ -54,7 +53,7 @@ const EventAdminPage = ({ pathId, eventInfo, registrations }: EventAdminPageProp
   const [emailBody, setEmailBody] = useState<string>('');
   const [subject, setSubject] = useState<string>('');
 
-  const [opened, { open, close }] = useDisclosure();
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
 
   columns.push(
     columnHelper.display({
@@ -118,19 +117,19 @@ const EventAdminPage = ({ pathId, eventInfo, registrations }: EventAdminPageProp
     updateSelectedParticipantGroups(updatedSelectedGroups);
   };
 
-  if (status === 'loading' || !eventInfo) return <Loading />;
+  if (status === 'loading' || !eventInfo) return <Spinner />;
   if (status === 'unauthenticated' || !session) return <Unauthorized />;
 
   return (
     <>
       <Heading as="h1">{eventInfo.title}</Heading>
-      <Button onClick={open}>E-mail all</Button>
+      <Button onClick={() => setEmailModalOpen(true)}>E-mail all</Button>
 
       {registrations ? <DataTable data={registrations} columns={columns} /> : null}
 
       <EmailDrawer
-        isOpen={opened}
-        onClose={close}
+        isOpen={emailModalOpen}
+        onClose={setEmailModalOpen}
         recipientGroups={participantGroups}
         selectedRecipientGroups={selectedParticipantGroups}
         handleParticipantGroupsChange={group => handleParticipantGroupsChange(group)}

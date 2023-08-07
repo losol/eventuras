@@ -1,9 +1,18 @@
-import { Drawer } from '@mantine/core';
 import { Text } from 'components/content';
-import { Button } from 'components/inputs';
 import { FormEvent } from 'react';
 import { useForm } from 'react-hook-form';
 import { UserType } from 'types';
+
+import { Button } from '@/components/ui/button';
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 
 interface UserDrawerProps {
   user: UserType;
@@ -13,8 +22,9 @@ interface UserDrawerProps {
   onSubmit: () => void;
 }
 
+// TODO
 const UserDrawer = (props: UserDrawerProps): JSX.Element => {
-  const { user, isOpen, onClose, onSubmit } = props;
+  const { user, onClose, onSubmit } = props;
   const { id, name, email, phoneNumber } = user;
   const {
     formState: { errors },
@@ -22,23 +32,48 @@ const UserDrawer = (props: UserDrawerProps): JSX.Element => {
   console.log(errors);
 
   return (
-    <Drawer opened={isOpen} position="right" onClose={onClose} size="xl">
-      <Drawer.Overlay>
-        <Drawer.Content>
-          <Drawer.CloseButton />
-          <Drawer.Header>{name}</Drawer.Header>
+    //<Drawer opened={isOpen} position="right" onClose={onClose} size="xl">
+    //  <Drawer.Overlay>
+    //    <Drawer.Content>
+    //      <Drawer.CloseButton />
+    //      <Drawer.Header>{name}</Drawer.Header>
 
-          <Drawer.Body>
-            <Text>{id}</Text>
-            <Text>Email: {email}</Text>
-            <Text>Phone number: {phoneNumber}</Text>
-          </Drawer.Body>
+    //      <Drawer.Body>
+    //        <Text>{id}</Text>
+    //        <Text>Email: {email}</Text>
+    //        <Text>Phone number: {phoneNumber}</Text>
+    //      </Drawer.Body>
 
-          <Button onClick={onClose}>Cancel</Button>
-          <Button onClick={onSubmit}>Submit</Button>
-        </Drawer.Content>
-      </Drawer.Overlay>
-    </Drawer>
+    //      <Button onClick={onClose}>Cancel</Button>
+    //      <Button onClick={onSubmit}>Submit</Button>
+    //    </Drawer.Content>
+    //  </Drawer.Overlay>
+    //</Drawer>
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="outline">Open</Button>
+      </SheetTrigger>
+      <SheetContent side="right">
+        <SheetHeader>
+          <SheetTitle>{name}</SheetTitle>
+        </SheetHeader>
+
+        <div>
+          <Text>{id}</Text>
+          <Text>Email: {email}</Text>
+          <Text>Phone number: {phoneNumber}</Text>
+        </div>
+
+        <SheetFooter>
+          <SheetClose asChild>
+            <Button onClick={onClose}>Cancel</Button>
+          </SheetClose>
+          <Button type="submit" onSubmit={onSubmit}>
+            Submit
+          </Button>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   );
 };
 

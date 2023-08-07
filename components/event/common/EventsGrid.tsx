@@ -1,15 +1,8 @@
 'use client';
 
 import { EventDto } from '@losol/eventuras';
-import { SimpleGrid } from '@mantine/core';
 import { Card } from 'components/content';
 import Link from 'next/link';
-
-const BREAKPOINTS = [
-  { maxWidth: 'md', cols: 3, spacing: 'md' },
-  { maxWidth: 'sm', cols: 2, spacing: 'sm' },
-  { maxWidth: 'xs', cols: 1, spacing: 'sm' },
-];
 
 function SingleEvent({ id, title, description }: SingleEventProps) {
   return (
@@ -24,7 +17,7 @@ function SingleEvent({ id, title, description }: SingleEventProps) {
 
 export default function EventsGrid({ events }: EventsGridProps) {
   return (
-    <SimpleGrid cols={4} spacing="lg" breakpoints={BREAKPOINTS}>
+    <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3 lg:gap-3 xl:grid-cols-4 xl:gap-4">
       {events.map((event: EventDto) => (
         <SingleEvent
           key={event.id}
@@ -33,7 +26,7 @@ export default function EventsGrid({ events }: EventsGridProps) {
           description={event.description}
         />
       ))}
-    </SimpleGrid>
+    </div>
   );
 }
 

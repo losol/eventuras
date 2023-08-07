@@ -1,7 +1,6 @@
 'use client';
 
 import { EventDto } from '@losol/eventuras';
-import { useDisclosure } from '@mantine/hooks';
 import { Heading, Image } from 'components/content';
 import { Button } from 'components/inputs';
 import { Modal } from 'components/overlays';
@@ -18,7 +17,7 @@ type EventProps = {
 
 export default function EventPage({ event }: EventProps) {
   const [modal] = useState({ title: '', text: '' });
-  const [opened, { close }] = useDisclosure(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const { t } = useTranslation();
   const router = useRouter();
@@ -68,7 +67,7 @@ export default function EventPage({ event }: EventProps) {
         </>
       ) : null}
 
-      <Modal isOpen={opened} onClose={close} title={modal.title} text={modal.text} />
+      <Modal isOpen={modalOpen} onClose={setModalOpen} title={modal.title} text={modal.text} />
     </>
   );
 }

@@ -1,20 +1,30 @@
 'use client';
 
-import { Text as MantineText } from '@mantine/core';
+import { Slot } from '@radix-ui/react-slot';
+
+import { cn } from '@/lib/utils';
 
 interface TextProps {
   children: React.ReactNode;
-  as?: 'div' | 'span' | 'p';
-  fontWeight?: number;
+  asChild?: boolean;
+  fontWeight?: 400 | 500 | 600 | 700;
+  className?: string;
+  //asChild?: 'div' | 'span' | 'p';
 }
 
-const Text = (props: TextProps) => {
+const fwSize = {
+  400: 'font-normal', // this should be the default somewhere in settings
+  500: 'font-medium',
+  600: 'font-semibold',
+  700: 'font-bold',
+};
+
+const Text = ({ asChild, children, fontWeight, className }: TextProps) => {
+  const Comp = asChild ? Slot : 'p';
   return (
-    <>
-      <MantineText fw={props.fontWeight} component={props.as}>
-        {props.children}
-      </MantineText>
-    </>
+    <Comp className={cn(className, fontWeight ? fwSize[fontWeight] : 'font-normal')}>
+      {children}
+    </Comp>
   );
 };
 

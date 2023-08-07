@@ -3,7 +3,7 @@
 import { UserDto } from '@losol/eventuras';
 import { createColumnHelper } from '@tanstack/react-table';
 import { DataTable, Heading } from 'components/content';
-import { Loading, Unauthorized } from 'components/feedback';
+import { Spinner, Unauthorized } from 'components/feedback';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
@@ -49,7 +49,7 @@ const AdminUsersPage = () => {
     }),
   ];
 
-  if (status === 'loading') return <Loading />;
+  if (status === 'loading') return <Spinner />;
   if (!session) return <Unauthorized />;
 
   return (
