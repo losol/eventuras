@@ -1,5 +1,6 @@
 import '@/style/global.css';
 
+import { OpenAPI } from '@losol/eventuras';
 import { authOptions } from 'app/api/auth/[...nextauth]/route';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth/next';
@@ -8,6 +9,8 @@ import { siteConfig } from '@/config/site';
 
 import { Layout } from '../components/layout';
 import Providers from './Providers';
+
+OpenAPI.BASE = `${process.env.NEXT_PUBLIC_APPLICATION_URL}/api/eventuras`;
 
 export const metadata: Metadata = {
   title: {
