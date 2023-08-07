@@ -1,3 +1,5 @@
+'use client';
+
 import { Box, Button, Checkbox, Flex, Stack } from '@mantine/core';
 import { Heading } from 'components/content';
 import useTranslation from 'next-translate/useTranslation';

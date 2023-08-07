@@ -1,3 +1,5 @@
+'use client';
+
 import { Box, Input, Radio, Stack } from '@mantine/core';
 import { Heading, Text } from 'components/content';
 import { Button } from 'components/inputs';

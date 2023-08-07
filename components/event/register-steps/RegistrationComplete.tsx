@@ -1,3 +1,5 @@
+'use client';
+
 import { Heading } from 'components/content';
 import { Button } from 'components/inputs';
 import { Layout } from 'components/layout';
@@ -12,7 +14,7 @@ const RegistrationComplete = ({ onSubmit }: RegistrationCompleteProps) => {
     <Layout>
       <Heading>{t('complete.title')}</Heading>
       <p>{t('complete.description')}</p>
-      <Button onClick={() => onSubmit()}>Continue</Button>
+      <Button onClick={onSubmit}>Continue</Button>
     </Layout>
   );
 };
