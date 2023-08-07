@@ -1,57 +1,62 @@
 'use client';
 
-/* eslint-disable */
-
 import {
   EventDto,
-  EventsService,
   NotificationsQueueingService,
   RegistrationDto,
   RegistrationsService,
   RegistrationStatus,
   RegistrationType,
 } from '@losol/eventuras';
-import { useRouter } from 'next/router';
-import { getSession, useSession } from 'next-auth/react';
-import { useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
-import { Button } from 'components/inputs';
 import { notifications } from '@mantine/notifications';
-import { Loading, Unauthorized } from 'components/feedback';
-import { DataTable, Heading } from 'components/content';
-import { EmailDrawer, RegistrationDrawer } from 'components/overlays';
 import { createColumnHelper } from '@tanstack/react-table';
+import { DataTable, Heading } from 'components/content';
+import { Loading, Unauthorized } from 'components/feedback';
+import { Button } from 'components/inputs';
+import { EmailDrawer, RegistrationDrawer } from 'components/overlays';
+import { useSession } from 'next-auth/react';
+import { useState } from 'react';
 
-const EventAdmin = () => {
-  const router = useRouter();
-  const [opened, { open, close }] = useDisclosure();
+type EventAdminPageProps = {
+  pathId: number;
+  eventInfo: EventDto;
+  registrations: RegistrationDto[] | null;
+};
+
+const participantGroups = ['Participant', 'Lecturer', 'Staff'];
+
+const columnHelper = createColumnHelper<RegistrationDto>();
+
+// consider useMemo here or something smarter
+const columns = [
+  columnHelper.accessor('user.name', {
+    header: 'Name',
+    cell: info => info.getValue(),
+  }),
+
+  columnHelper.accessor('user.email', {
+    header: 'E-mail',
+    cell: info => info.getValue(),
+  }),
+  columnHelper.accessor('user.phoneNumber', {
+    header: 'Phone',
+    cell: info => info.getValue(),
+  }),
+];
+
+const EventAdminPage = ({ pathId, eventInfo, registrations }: EventAdminPageProps) => {
+  const { data: session, status } = useSession();
+
   const [registrationDrawerOpen, setRegistrationDrawerOpen] = useState(false);
   const [activeRegistration, setActiveRegistration] = useState<RegistrationDto | null>(null);
-  const { data: session, status } = useSession();
-  const [eventInfo, setEventInfo] = useState<EventDto | null>(null);
-  const [registrations, setRegistrations] = useState<RegistrationDto[]>([]);
-  const participantGroups = ['Participant', 'Lecturer', 'Staff'];
   const [selectedParticipantGroups, updateSelectedParticipantGroups] = useState(['Participant']);
   const [emailBody, setEmailBody] = useState<string>('');
   const [subject, setSubject] = useState<string>('');
 
-  const columnHelper = createColumnHelper<RegistrationDto>();
+  const [opened, { open, close }] = useDisclosure();
 
-  // consider useMemo here or something smarter
-  const columns = [
-    columnHelper.accessor('user.name', {
-      header: 'Name',
-      cell: info => info.getValue(),
-    }),
-
-    columnHelper.accessor('user.email', {
-      header: 'E-mail',
-      cell: info => info.getValue(),
-    }),
-    columnHelper.accessor('user.phoneNumber', {
-      header: 'Phone',
-      cell: info => info.getValue(),
-    }),
+  columns.push(
     columnHelper.display({
       id: 'actions',
       cell: props => (
@@ -59,36 +64,15 @@ const EventAdmin = () => {
           More
         </Button>
       ),
-    }),
-  ];
-
-  const loadEventInfo = async () => {
-    router.query.id &&
-      session &&
-      setEventInfo(
-        await EventsService.getV3Events1({
-          id: parseInt(router.query.id!.toString()),
-        })
-      );
-  };
-
-  const loadRegistrations = async () => {
-    if (session) {
-      const result = await RegistrationsService.getV3Registrations({
-        eventId: parseInt(router.query.id!.toString()),
-        includeProducts: true,
-        includeUserInfo: true,
-      });
-      setRegistrations(result.data!);
-    }
-  };
+    })
+  );
 
   const registrationDrawerToggle = () => {
     setRegistrationDrawerOpen(!registrationDrawerOpen);
   };
 
   const openRegistrationDetails = async (registrationId: number) => {
-    const s = await getSession();
+    //const s = await getSession();
     const registration = await RegistrationsService.getV3Registrations1({
       id: registrationId,
       includeProducts: true,
@@ -102,16 +86,11 @@ const EventAdmin = () => {
     registrationDrawerToggle();
   };
 
-  //useEffect(() => {
-  //  loadEventInfo();
-  //  loadRegistrations();
-  //}, [router.query.id, session]);
-
   const handleEmailDrawerSubmit = async () => {
     NotificationsQueueingService.postV3NotificationsEmail({
       requestBody: {
         eventParticipants: {
-          eventId: parseInt(router.query.id! as string, 10),
+          eventId: pathId,
           registrationTypes: selectedParticipantGroups as RegistrationType[],
           registrationStatuses: [RegistrationStatus.VERIFIED, RegistrationStatus.DRAFT],
         },
@@ -148,14 +127,14 @@ const EventAdmin = () => {
   };
 
   if (status === 'loading' || !eventInfo) return <Loading />;
-  if (status === 'unauthenticated') return <Unauthorized />;
+  if (status === 'unauthenticated' || !session) return <Unauthorized />;
 
   return (
     <>
-      <Heading as="h1">{eventInfo!.title}</Heading>
+      <Heading as="h1">{eventInfo.title}</Heading>
       <Button onClick={open}>E-mail all</Button>
 
-      <DataTable data={registrations} columns={columns} />
+      {registrations ? <DataTable data={registrations} columns={columns} /> : null}
 
       <EmailDrawer
         isOpen={opened}
@@ -179,4 +158,4 @@ const EventAdmin = () => {
   );
 };
 
-export default EventAdmin;
+export default EventAdminPage;
