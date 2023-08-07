@@ -2,6 +2,7 @@ import { EventsService } from '@losol/eventuras';
 import { Box, Button, Group, Popover, TextInput } from '@mantine/core';
 import { isNotEmpty, matches, useForm } from '@mantine/form';
 import { generateSlug } from 'random-word-slugs'; // TODO : replace with custom function
+//import { toast } from 'sonner';
 
 const slug = generateSlug();
 

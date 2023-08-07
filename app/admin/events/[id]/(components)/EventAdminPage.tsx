@@ -9,7 +9,6 @@ import {
   RegistrationType,
 } from '@losol/eventuras';
 import { useDisclosure } from '@mantine/hooks';
-import { notifications } from '@mantine/notifications';
 import { createColumnHelper } from '@tanstack/react-table';
 import { DataTable, Heading } from 'components/content';
 import { Loading, Unauthorized } from 'components/feedback';
@@ -17,6 +16,7 @@ import { Button } from 'components/inputs';
 import { EmailDrawer, RegistrationDrawer } from 'components/overlays';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 type EventAdminPageProps = {
   pathId: number;
@@ -100,18 +100,10 @@ const EventAdminPage = ({ pathId, eventInfo, registrations }: EventAdminPageProp
     })
       .then(() => {
         close();
-        notifications.show({
-          title: 'Sent some emails ',
-          message: 'Successfully submitted!',
-          color: 'green',
-        });
+        toast.success('Sent some emails', { description: 'Successfully submitted!' });
       })
       .catch(() => {
-        notifications.show({
-          title: 'Something went wrong! ',
-          message: 'Sorry!',
-          color: 'red',
-        });
+        toast.error('Something went wrong!', { description: 'Sorry!' });
       });
   };
 
