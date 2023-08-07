@@ -1,6 +1,6 @@
 'use client';
 
-import { Moon, Sun } from 'lucide-react';
+import { IconMoon, IconSun } from '@tabler/icons-react';
 import { useTheme } from 'next-themes';
 import * as React from 'react';
 
@@ -15,8 +15,8 @@ export default function ThemeToggle() {
       size="icon"
       onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
     >
-      <Sun className="h-[1.5rem] w-[1.3rem] dark:hidden" />
-      <Moon className="hidden h-5 w-5 dark:block" />
+      <IconSun className="h-[1.5rem] w-[1.3rem] dark:hidden" />
+      <IconMoon className="hidden h-5 w-5 dark:block" />
       <span className="sr-only">Toggle theme</span>
     </Button>
   );
