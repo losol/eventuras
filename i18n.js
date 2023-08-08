@@ -6,6 +6,8 @@ const i18config = {
   pages: {
     '*': ['common'],
     '/': ['home'], // app/page.tsx
+    '/events': ['events'], // app/events/[id]/page.tsx
+    '/events/[id]': ['events'], // app/events/[id]/page.tsx
     'rgx:(.*?)events/(.*?)/register': ['register'],
   },
 };
