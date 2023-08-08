@@ -1,23 +1,34 @@
+#nullable enable
+
 using System;
+using System.Collections.Generic;
 using Eventuras.Services.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Eventuras.WebApi
 {
-    public class HttpResponseExceptionFilter : IActionFilter, IOrderedFilter
+    public class HttpResponseExceptionFilter : IExceptionFilter
     {
-        public int Order { get; } = int.MaxValue - 10;
-
-        public void OnActionExecuting(ActionExecutingContext context)
+        public void OnException(ExceptionContext context)
         {
-        }
+            var ex = context.Exception;
+            var result = (IActionResult?)(ex switch
+            {
+                NotFoundException => new NotFoundObjectResult(ex.Message),
+                InputException => new BadRequestObjectResult(ex.Message),
+                NotSupportedException => new BadRequestObjectResult(ex.Message),
+                NotAccessibleException => new ForbidResult(),
+                OrgNotSpecifiedException => new BadRequestObjectResult(ex.Message),
+                DuplicateException => new ConflictObjectResult(ex.Message),
+                ArgumentServiceException argEx => new BadRequestObjectResult(CreateBadRequestModel(argEx.Message, argEx.ParamName)),
+                InvalidOperationServiceException invEx => new BadRequestObjectResult(CreateBadRequestModel(invEx.Message)),
+                _ => null,
+            });
 
-        public void OnActionExecuted(ActionExecutedContext context)
-        {
-            var result = GetResult(context.Exception);
             if (result == null)
             {
+                context.ExceptionHandled = false;
                 return;
             }
 
@@ -25,18 +36,12 @@ namespace Eventuras.WebApi
             context.ExceptionHandled = true;
         }
 
-        private static IActionResult GetResult(Exception e)
+        private static ValidationProblemDetails CreateBadRequestModel(string message, string? paramName = null)
         {
-            return e switch
+            return new ValidationProblemDetails(new Dictionary<string, string[]>
             {
-                NotFoundException => new NotFoundObjectResult(e.Message),
-                InputException => new BadRequestObjectResult(e.Message),
-                NotSupportedException => new BadRequestObjectResult(e.Message),
-                NotAccessibleException => new ForbidResult(),
-                OrgNotSpecifiedException => new BadRequestObjectResult(e.Message),
-                DuplicateException => new ConflictObjectResult(e.Message),
-                _ => null
-            };
+                [paramName ?? string.Empty] = new[] { message }
+            });
         }
     }
 }
