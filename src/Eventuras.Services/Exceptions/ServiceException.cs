@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 
 namespace Eventuras.Services.Exceptions
@@ -5,18 +7,8 @@ namespace Eventuras.Services.Exceptions
     /// <summary>
     /// aka BusinessLogicException
     /// </summary>
-    public class ServiceException : Exception
+    public class ServiceException : ApplicationException
     {
-        public ServiceException()
-        {
-        }
-
-        public ServiceException(string message) : base(message)
-        {
-        }
-
-        public ServiceException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+        public ServiceException(string? message = null, Exception? innerException = null) : base(message, innerException) { }
     }
 }
