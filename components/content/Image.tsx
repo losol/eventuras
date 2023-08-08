@@ -12,6 +12,7 @@ export type ImageProps = {
   figCaptionClassName?: string;
   width?: number;
   height?: number;
+  priority?: true;
 };
 
 const Image = (props: ImageProps) => {
@@ -23,6 +24,7 @@ const Image = (props: ImageProps) => {
         alt={props.alt ?? ''}
         width={props.width}
         height={props.height}
+        {...(props.priority && { priority: true })}
       />
       {props.caption && (
         <figcaption

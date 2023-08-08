@@ -19,7 +19,7 @@ export default function EventPage({ event }: EventProps) {
   const [modal] = useState({ title: '', text: '' });
   const [modalOpen, setModalOpen] = useState(false);
 
-  const { t } = useTranslation();
+  const { t } = useTranslation('events');
   const router = useRouter();
 
   function handleRegister() {
@@ -37,6 +37,7 @@ export default function EventPage({ event }: EventProps) {
           width={600}
           height={400}
           caption={event?.featuredImageCaption ?? ''}
+          priority
         />
       ) : null}
 
@@ -48,21 +49,21 @@ export default function EventPage({ event }: EventProps) {
 
       {event?.moreInformation ? (
         <>
-          <Heading as="h2">{t('More information')}</Heading>
+          <Heading as="h2">{t('id.moreInformation')}</Heading>
           {event.moreInformation ? parse(event.moreInformation) : null}
         </>
       ) : null}
 
       {event?.program ? (
         <>
-          <Heading as="h2">{t('Program')}</Heading>
+          <Heading as="h2">{t('id.program')}</Heading>
           {event.program ? parse(event.program) : null}
         </>
       ) : null}
 
       {event?.practicalInformation ? (
         <>
-          <Heading as="h2">{t('Practical Information')}</Heading>
+          <Heading as="h2">{t('id.practicalInformation')}</Heading>
           {event.practicalInformation ? parse(event.practicalInformation) : null}
         </>
       ) : null}
