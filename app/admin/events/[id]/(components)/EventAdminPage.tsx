@@ -67,7 +67,7 @@ const EventAdminPage = ({ pathId, eventInfo, registrations }: EventAdminPageProp
   );
 
   const registrationDrawerToggle = () => {
-    setRegistrationDrawerOpen(!registrationDrawerOpen);
+    setRegistrationDrawerOpen(prevState => !prevState);
   };
 
   const openRegistrationDetails = async (registrationId: number) => {
@@ -142,7 +142,7 @@ const EventAdminPage = ({ pathId, eventInfo, registrations }: EventAdminPageProp
         <RegistrationDrawer
           registration={activeRegistration}
           isOpen={registrationDrawerOpen}
-          onClose={registrationDrawerToggle}
+          onClose={setRegistrationDrawerOpen}
         />
       )}
     </>
