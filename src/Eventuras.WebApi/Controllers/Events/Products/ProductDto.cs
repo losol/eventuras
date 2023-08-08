@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Linq;
 using Eventuras.Domain;
@@ -10,9 +12,9 @@ namespace Eventuras.WebApi.Controllers.Events.Products
 
         public string Name { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
-        public string More { get; set; }
+        public string? More { get; set; }
 
         public decimal Price { get; set; }
 
@@ -28,17 +30,9 @@ namespace Eventuras.WebApi.Controllers.Events.Products
 
         public bool EnableQuantity { get; set; }
 
-
-        public ProductDto()
-        {
-        }
-
         public ProductDto(Product product)
         {
-            if (product == null)
-            {
-                throw new ArgumentNullException(nameof(product));
-            }
+            ArgumentNullException.ThrowIfNull(product);
 
             ProductId = product.ProductId;
             Name = product.Name;

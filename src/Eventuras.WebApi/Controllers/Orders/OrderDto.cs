@@ -1,4 +1,5 @@
-using System;
+#nullable enable
+
 using System.Linq;
 using Eventuras.Domain;
 using Eventuras.WebApi.Controllers.Users;
@@ -19,17 +20,13 @@ namespace Eventuras.WebApi.Controllers.Orders
 
         public int RegistrationId { get; set; }
 
-        public OrderLineDto[] Items { get; set; }
+        public OrderLineDto[]? Items { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public OrderRegistrationDto Registration { get; set; }
+        public OrderRegistrationDto? Registration { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public UserDto User { get; set; }
-
-        public OrderDto()
-        {
-        }
+        public UserDto? User { get; set; }
 
         public OrderDto(Order order)
         {
