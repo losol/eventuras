@@ -6,6 +6,7 @@ using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.Events;
 using Eventuras.Services.Exceptions;
+using Eventuras.Services.Orders;
 using Eventuras.Services.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,14 +15,14 @@ namespace Eventuras.Services.Registrations
     internal class RegistrationManagementService : IRegistrationManagementService
     {
         private readonly IRegistrationAccessControlService _registrationAccessControlService;
-        private readonly IRegistrationOrderManagementService _registrationOrderManagementService;
+        private readonly IOrderManagementService _orderManagementService;
         private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
         private readonly IUserRetrievalService _userRetrievalService;
         private readonly ApplicationDbContext _context;
 
         public RegistrationManagementService(
             IRegistrationAccessControlService registrationAccessControlService,
-            IRegistrationOrderManagementService registrationOrderManagementService,
+            IOrderManagementService orderManagementService,
             IEventInfoRetrievalService eventInfoRetrievalService,
             IUserRetrievalService userRetrievalService,
             ApplicationDbContext context)
@@ -38,8 +39,8 @@ namespace Eventuras.Services.Registrations
             _context = context ?? throw
                 new ArgumentNullException(nameof(context));
 
-            _registrationOrderManagementService = registrationOrderManagementService ?? throw
-                new ArgumentNullException(nameof(registrationOrderManagementService));
+            _orderManagementService = orderManagementService ?? throw
+                new ArgumentNullException(nameof(orderManagementService));
         }
 
         public async Task<Registration> CreateRegistrationAsync(
@@ -90,15 +91,11 @@ namespace Eventuras.Services.Registrations
             {
                 var mandatoryItems = eventInfo.Products
                     .Where(p => p.IsMandatory)
-                    .Select(p => new OrderItemDto
-                    {
-                        ProductId = p.ProductId,
-                        Quantity = p.MinimumQuantity
-                    }).ToArray();
+                    .Select(p => new OrderLineModel(p.ProductId, null, p.MinimumQuantity) ).ToArray();
 
                 if (mandatoryItems.Any())
                 {
-                    await _registrationOrderManagementService
+                    await _orderManagementService
                         .CreateOrderForRegistrationAsync(
                             registration.RegistrationId,
                             mandatoryItems,

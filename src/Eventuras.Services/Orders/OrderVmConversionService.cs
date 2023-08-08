@@ -51,8 +51,8 @@ namespace Eventuras.Services.Orders
             if (o != null)
             {
                 var product = productMap[o.ProductId];
-                throw new OrderUpdateException(
-                    $"Product {product.Name}'s min quantity is {product.MinimumQuantity} but {o.Quantity} was given");
+                throw new ArgumentServiceException($"Product {product.Name}'s min quantity is {product.MinimumQuantity} but {o.Quantity} was given",
+                    nameof(o.Quantity));
             }
         }
 
