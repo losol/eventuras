@@ -56,8 +56,14 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         [MemberData(nameof(GetInvalidOrders))]
         public async Task Should_Validate_Order(object item)
         {
-            var client = _factory.CreateClient().Authenticated();
-            var response = await client.PostAsync("/v3/registrations/1/orders", new
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var e = await scope.CreateEventAsync();
+            using var reg = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
+
+            var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+
+            var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders", new
             {
                 items = new[] { item }
             });

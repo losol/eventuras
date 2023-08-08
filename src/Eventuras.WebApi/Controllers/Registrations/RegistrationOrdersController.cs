@@ -23,11 +23,13 @@ namespace Eventuras.WebApi.Controllers.Registrations
             IRegistrationRetrievalService registrationRetrievalService,
             IOrderManagementService orderManagementService)
         {
-            _registrationRetrievalService = registrationRetrievalService ?? throw
-                new ArgumentNullException(nameof(registrationRetrievalService));
+            _registrationRetrievalService = registrationRetrievalService
+                                         ?? throw
+                                                new ArgumentNullException(nameof(registrationRetrievalService));
 
-            _orderManagementService = orderManagementService ?? throw
-                new ArgumentNullException(nameof(orderManagementService));
+            _orderManagementService = orderManagementService
+                                   ?? throw
+                                          new ArgumentNullException(nameof(orderManagementService));
         }
 
         // GET: v3/registrations/667/orders
@@ -39,7 +41,8 @@ namespace Eventuras.WebApi.Controllers.Registrations
                 {
                     LoadOrders = true,
                     LoadProducts = true
-                }, token);
+                },
+                token);
 
             return r.Orders
                 .Select(o => new RegistrationOrderDto(o))
@@ -48,10 +51,16 @@ namespace Eventuras.WebApi.Controllers.Registrations
 
         // POST: v3/registrations/667/orders
         [HttpPost]
-        public async Task<IActionResult> CreateNewOrderForRegistration(int id,
+        public async Task<IActionResult> CreateNewOrderForRegistration(
+            int id,
             [FromBody] NewRegistrationOrderDto dto,
             CancellationToken cancellationToken)
         {
+            var registration = await _registrationRetrievalService.GetRegistrationByIdAsync(id,
+                new RegistrationRetrievalOptions(),
+                cancellationToken);
+            if (registration == null) return NotFound();
+
             var order = await _orderManagementService.CreateOrderForRegistrationAsync(id, dto.Items, cancellationToken);
 
             return Ok(new RegistrationOrderDto(order));
