@@ -59,6 +59,13 @@ namespace Eventuras.Services.Orders
 
             await _orderAccessControlService.CheckOrderUpdateAccessAsync(order, cancellationToken);
 
+            var registration = await _registrationRetrievalService.GetRegistrationByIdAsync(order.RegistrationId,
+                new RegistrationRetrievalOptions()
+                {
+                    LoadEventInfo = true
+                },
+                cancellationToken);
+
             // find order lines in order that were not existing in updatedOrderLines and then remove them
             order.OrderLines.RemoveAll(existing => updatedOrderLines.All(
                 updated => updated.ProductId != existing.ProductId || updated.ProductVariantId != existing.ProductVariantId));
@@ -76,7 +83,7 @@ namespace Eventuras.Services.Orders
                 }
                 else
                 { // if order line does not exist in the order - find product with variant and create order line for it
-                    var orderLine = await CreateOrderLine(line, updatedOrderLines, cancellationToken);
+                    var orderLine = await CreateOrderLine(registration.EventInfo, line, updatedOrderLines, cancellationToken);
                     order.OrderLines.Add(orderLine);
                 }
             }
@@ -95,7 +102,7 @@ namespace Eventuras.Services.Orders
             List<OrderLine> orderLinesMapped = new();
             foreach (var ol in orderLines)
             {
-                var orderLine = await CreateOrderLine(ol, orderLines, cancellationToken);
+                var orderLine = await CreateOrderLine(registration.EventInfo, ol, orderLines, cancellationToken);
                 orderLinesMapped.Add(orderLine);
             }
 
@@ -116,29 +123,56 @@ namespace Eventuras.Services.Orders
             return order;
         }
 
-        private async Task<Registration?> GetRegistrationForUpdate(int registrationId, CancellationToken cancellationToken)
+        private async Task<Registration> GetRegistrationForUpdate(int registrationId, CancellationToken cancellationToken)
         {
-            var registration = await _registrationRetrievalService.GetRegistrationByIdAsync(registrationId,
-                new RegistrationRetrievalOptions
-                {
-                    LoadUser = true,
-                    ForUpdate = true
-                },
-                cancellationToken);
-            if (registration == null)
-                throw new ArgumentServiceException($"Registration by id {registrationId} was not found", nameof(registrationId));
+            Registration registration;
+            try
+            {
+                registration = await _registrationRetrievalService.GetRegistrationByIdAsync(registrationId,
+                                   new RegistrationRetrievalOptions
+                                   {
+                                       LoadUser = true,
+                                       LoadEventInfo = true,
+                                       ForUpdate = true
+                                   },
+                                   cancellationToken)
+                            ?? throw new ArgumentServiceException($"Registration by id {registrationId} was not found", nameof(registrationId));
+            }
+            catch (NotFoundException e)
+            {
+                throw new ArgumentServiceException($"Registration with id {registrationId} was not found", nameof(registrationId), e);
+            }
 
             await _registrationAccessControlService.CheckRegistrationUpdateAccessAsync(registration, cancellationToken);
             return registration;
         }
 
-        private async Task<OrderLine> CreateOrderLine(OrderLineModel line, ICollection<OrderLineModel> allLines, CancellationToken cancellationToken)
+        private async Task<OrderLine> CreateOrderLine(
+            EventInfo eventInfo,
+            OrderLineModel line,
+            IEnumerable<OrderLineModel> allLines,
+            CancellationToken cancellationToken)
         {
-            var product = await _productRetrievalService.GetProductByIdAsync(line.ProductId,
-                new ProductRetrievalOptions { LoadVariants = true },
-                cancellationToken);
-            if (product == null) throw new ArgumentServiceException($"Product with id {line.ProductId} was not found");
+            if (line.Quantity <= 0) throw new ArgumentServiceException($"Quantity should be a positive number but got {line.Quantity}");
 
+            Product product;
+            try
+            {
+                product = await _productRetrievalService.GetProductByIdAsync(line.ProductId,
+                    new ProductRetrievalOptions
+                    {
+                        LoadVariants = true,
+                        LoadEvent = true,
+                        ForUpdate = true,
+                    },
+                    cancellationToken);
+            }
+            catch (NotFoundException e)
+            {
+                throw new ArgumentServiceException($"Product with id {line.ProductId} was not found", null, e);
+            }
+
+            await ValidateProductVisibility(product, eventInfo);
             ValidateMinimumQuantityForProduct(product, allLines);
 
             ProductVariant? productVariant = null;
@@ -171,5 +205,31 @@ namespace Eventuras.Services.Orders
                                                  + $"but {specifiedSumQuantity} in total for all product variants was specified");
         }
 
+        private async Task ValidateProductVisibility(Product product, EventInfo orderEventInfo)
+        {
+            if (product.Visibility == ProductVisibility.Collection)
+            {
+                await LoadEventCollections(product.EventInfo);
+                await LoadEventCollections(orderEventInfo);
+
+                // requires at least one common collection for event infos
+                var commonCollections = orderEventInfo.Collections
+                    .IntersectBy(product.EventInfo.Collections.Select(c => c.CollectionId), ec => ec.CollectionId);
+
+                if (!commonCollections.Any()) throw new ArgumentServiceException(
+                    $"Product with id {product.ProductId} is not visible for event with id {orderEventInfo.EventInfoId}");
+            }
+            else if (product.EventInfoId != orderEventInfo.EventInfoId)
+                throw new ArgumentServiceException(
+                    $"Product with id {product.ProductId} is not visible for event with id {orderEventInfo.EventInfoId}");
+
+            return;
+
+            async Task LoadEventCollections(EventInfo ei)
+            {
+                var collectionsNavigation = _context.Entry(ei).Collection(entity => entity.Collections);
+                if (!collectionsNavigation.IsLoaded) await collectionsNavigation.LoadAsync();
+            }
+        }
     }
 }

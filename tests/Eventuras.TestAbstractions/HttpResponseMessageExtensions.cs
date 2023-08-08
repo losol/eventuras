@@ -21,7 +21,7 @@ namespace Eventuras.TestAbstractions
             Assert.NotEmpty(str);
             if (expectedErrorText != null)
             {
-                Assert.Equal(expectedErrorText, str);
+                Assert.Contains(expectedErrorText, str);
             }
         }
 
