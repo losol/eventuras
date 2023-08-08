@@ -1,3 +1,5 @@
+#nullable enable
+
 using Eventuras.Domain;
 
 namespace Eventuras.WebApi.Controllers.Orders
@@ -6,11 +8,11 @@ namespace Eventuras.WebApi.Controllers.Orders
     {
         public int RegistrationId { get; set; }
         public int EventId { get; set; }
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
         public Registration.RegistrationStatus Status { get; set; }
         public Registration.RegistrationType Type { get; set; }
         public int? CertificateId { get; set; }
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
 
         public OrderRegistrationDto(Registration registration)
         {

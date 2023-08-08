@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Http;
 using System;
 using System.ComponentModel.DataAnnotations;
 using Eventuras.Services.Auth;
+using Microsoft.AspNetCore.Http;
 
 namespace Eventuras.WebApi.Controllers.Registrations
 {
@@ -11,7 +11,7 @@ namespace Eventuras.WebApi.Controllers.Registrations
 
     public class RegistrationFormAttribute : ValidationAttribute
     {
-        protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             var httpContext = ((IHttpContextAccessor)validationContext.GetService(typeof(IHttpContextAccessor)))?.HttpContext;
             if (httpContext == null)
