@@ -18,10 +18,11 @@ async function forwarder(request: NextRequest) {
 
   // TODO : return fetch
   const fResponse = await fetch(forwardUrl, {
+    method: request.method,
     body: request.method === 'GET' ? null : request.body,
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
+      'Content-Type': request.headers.get('Content-Type') ?? 'application/json',
     },
     redirect: 'manual',
   });
