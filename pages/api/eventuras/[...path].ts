@@ -19,7 +19,6 @@ const forwarder = async (req: NextApiRequest, res: NextApiResponse) => {
       Authorization: `Bearer ${accessToken}`, //if there is no token, it should not matter when a token is not required
       'Content-Type': 'application/json',
     },
-    redirect: 'manual',
   });
 
   const data = await fResponse.json();

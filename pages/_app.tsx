@@ -8,7 +8,6 @@ import Head from 'next/head';
 import { SessionProvider } from 'next-auth/react';
 
 OpenAPI.BASE = `${process.env.NEXT_PUBLIC_APPLICATION_URL}/api/eventuras`;
-
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <SessionProvider session={pageProps.session}>

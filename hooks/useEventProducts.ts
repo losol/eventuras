@@ -1,39 +1,36 @@
-import { RegistrationProduct } from 'components/event/register-steps/RegistrationCustomize';
+import { OpenAPI, ProductDto } from '@losol/eventuras';
 import { useEffect, useRef, useState } from 'react';
-import { EventsService, EventDto, EventProductsService, ProductDto } from '@losol/eventuras';
 
 /*
-  Consideration: this one maps ProductDto to RegistrationProduct (a 'view' type) directly.
-  Makes it easier to inject directly into views, but less portable.
+  Sometimes mysterious going on with the losol SDK => network call completes succesfully, but promise never resolved.
+  For now lets wrap these calls ourselves
 */
+
+const getAPIEventProducts = ({ eventId }: { eventId: number }) =>
+  fetch(`${OpenAPI.BASE}/${process.env.NEXT_PUBLIC_API_VERSION}/events/${eventId}/products`).then(
+    r => r.json()
+  );
+
 const useEventProducts = (eventId: number) => {
   const eventRef = useRef(eventId);
-  const [registrationProducts, setRegistrationProducts] = useState<RegistrationProduct[]>([]);
+  const [registrationProducts, setRegistrationProducts] = useState<ProductDto[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   //TODO handle edge cases
   useEffect(() => {
-    const getEventProducts = async () => {
+    const execute = async () => {
       setLoading(true);
-      const event: EventDto | null = await EventsService.getV3Events1({
-        id: eventRef.current,
+      const eventProducts = await getAPIEventProducts({
+        eventId: eventRef.current,
+      }).catch(err => {
+        console.error(err);
+        return [];
       });
-      if (!event) return null;
-      const eventProducts = await EventProductsService.getV3EventsProducts({
-        eventId: event.id!,
-      });
-      const registrationProducts = eventProducts.map((product: ProductDto) => {
-        return {
-          id: product.productId,
-          title: product.name,
-          description: product.description,
-          mandatory: false,
-        } as RegistrationProduct;
-      });
+
       setLoading(false);
-      setRegistrationProducts(registrationProducts);
+      setRegistrationProducts(eventProducts);
     };
-    getEventProducts();
+    execute();
   }, []);
   return { loading, registrationProducts };
 };

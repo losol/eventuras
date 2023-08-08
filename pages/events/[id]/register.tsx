@@ -1,14 +1,27 @@
-import { NewRegistrationDto, RegistrationsService } from '@losol/eventuras';
+import { NewRegistrationDto, ProductDto, RegistrationsService } from '@losol/eventuras';
 import RegistrationComplete from 'components/event/register-steps/RegistrationComplete';
-import RegistrationCustomize from 'components/event/register-steps/RegistrationCustomize';
+import RegistrationCustomize, {
+  RegistrationProduct,
+} from 'components/event/register-steps/RegistrationCustomize';
 import RegistrationPayment, {
   RegistrationSubmitValues,
 } from 'components/event/register-steps/RegistrationPayment';
-import { useEventProducts, useMyUserProfile } from 'hooks';
+import useEventProducts from 'hooks/useEventProducts';
+import useMyUserProfile from 'hooks/useMyUserProfile';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 type PageStep = 'Customize' | 'Payment' | 'Complete';
+
+const mapRegistrationProductsToView = (eventProducts: ProductDto[]): RegistrationProduct[] =>
+  eventProducts.map((product: ProductDto) => {
+    return {
+      id: product.productId,
+      title: product.name,
+      description: product.description,
+      mandatory: product.isMandatory,
+    } as RegistrationProduct;
+  });
 
 const EventRegistration = () => {
   const router = useRouter();
@@ -38,7 +51,7 @@ const EventRegistration = () => {
     setCurrentStep('Complete');
   };
 
-  const onComplete = () => {
+  const onCompleteFlow = () => {
     console.log('done');
     router.push('/');
   };
@@ -48,11 +61,16 @@ const EventRegistration = () => {
   const renderStep = (step: PageStep) => {
     switch (step) {
       case 'Customize':
-        return <RegistrationCustomize products={registrationProducts} onSubmit={onCustomize} />;
+        return (
+          <RegistrationCustomize
+            products={mapRegistrationProductsToView(registrationProducts)}
+            onSubmit={onCustomize}
+          />
+        );
       case 'Payment':
         return <RegistrationPayment onSubmit={onPayment} />;
       case 'Complete':
-        return <RegistrationComplete onSubmit={onComplete} />;
+        return <RegistrationComplete onSubmit={onCompleteFlow} />;
     }
   };
 
