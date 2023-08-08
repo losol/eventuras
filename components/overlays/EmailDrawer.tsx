@@ -1,19 +1,11 @@
+import { Drawer } from '@mantine/core';
 import { EmailEditor } from 'components/editors';
+import { Button } from 'components/inputs';
 import { Dispatch, SetStateAction } from 'react';
-
-import { Button } from '@/components/ui/button';
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet';
 
 interface EmailDrawerProps {
   isOpen: boolean;
-  onClose: (v: boolean) => void;
+  onClose: () => void;
   recipientGroups: string[];
   selectedRecipientGroups: string[];
   onSubmit: () => void;
@@ -34,37 +26,28 @@ const EmailDrawer = (props: EmailDrawerProps): JSX.Element => {
     onSubmit,
   } = props;
 
-  function handleOpenChange(open: boolean) {
-    if (!open) onClose(false);
-  }
-
   return (
-    <Sheet open={isOpen} onOpenChange={handleOpenChange}>
-      <SheetContent side="right">
-        <SheetHeader>
-          <SheetTitle>Create a new email</SheetTitle>
-        </SheetHeader>
+    <Drawer opened={isOpen} position="right" onClose={onClose} size="xl">
+      <Drawer.Overlay>
+        <Drawer.Content>
+          <Drawer.CloseButton />
+          <Drawer.Header>Create a new email</Drawer.Header>
 
-        <div>
-          <EmailEditor
-            participantGroups={recipientGroups}
-            selectedRecipientGroups={selectedRecipientGroups}
-            handleParticipantGroupsChange={group => handleParticipantGroupsChange(group)}
-            setEmailBody={setEmailBody}
-            setSubject={setSubject}
-          />
-        </div>
+          <Drawer.Body>
+            <EmailEditor
+              participantGroups={recipientGroups}
+              selectedRecipientGroups={selectedRecipientGroups}
+              handleParticipantGroupsChange={group => handleParticipantGroupsChange(group)}
+              setEmailBody={setEmailBody}
+              setSubject={setSubject}
+            />
+          </Drawer.Body>
 
-        <SheetFooter>
-          <SheetClose asChild>
-            <Button onClick={() => onClose(false)}>Cancel</Button>
-          </SheetClose>
-          <Button type="submit" onSubmit={onSubmit}>
-            Submit
-          </Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onSubmit}>Submit</Button>
+        </Drawer.Content>
+      </Drawer.Overlay>
+    </Drawer>
   );
 };
 

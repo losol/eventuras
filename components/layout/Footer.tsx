@@ -1,31 +1,21 @@
+import { DarkModeToggle } from 'components/layout';
 import Link from 'next/link';
-
-import ThemeToggle from '@/components/ThemeToggle';
-import { siteConfig } from '@/config/site';
 
 const Footer = () => {
   return (
-    <footer className="bg-white pt-4 shadow dark:bg-gray-800">
-      <div className="mx-auto w-full max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
-        <span className="text-sm text-gray-800 dark:text-gray-200 sm:text-center">
-          {siteConfig.name}
-        </span>
-        <ThemeToggle />
-        <ul className="mt-3 flex flex-wrap items-center text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
+    <footer className="bg-white shadow pt-4 dark:bg-gray-800">
+      <div className="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
+        <span className="text-sm text-gray-800 sm:text-center dark:text-gray-200">Eventuras</span>
+        <DarkModeToggle />
+        <ul className="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
           <li>
-            <Link
-              href={siteConfig.footer.links.privacy.href}
-              className="mr-4 hover:underline md:mr-6 "
-            >
-              {siteConfig.footer.links.privacy.title}
+            <Link href="/#privacy" className="mr-4 hover:underline md:mr-6 ">
+              Privacy Policy
             </Link>
           </li>
           <li>
-            <Link
-              href={siteConfig.footer.links.accesibility.href}
-              className="mr-4 hover:underline md:mr-6"
-            >
-              {siteConfig.footer.links.accesibility.title}
+            <Link href="/#accesibility" className="mr-4 hover:underline md:mr-6">
+              Accesibility
             </Link>
           </li>
         </ul>

@@ -5,7 +5,6 @@
  * This saves individual pages to have to check for authorization.
  */
 
-import { withAuth } from 'next-auth/middleware';
-export default withAuth;
+export { default } from 'next-auth/middleware';
 
 export const config = { matcher: ['/events/:id/register'] };

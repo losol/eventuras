@@ -1,6 +1,6 @@
-import { EventDto, EventProductsService, EventsService, ProductDto } from '@losol/eventuras';
 import { RegistrationProduct } from 'components/event/register-steps/RegistrationCustomize';
 import { useEffect, useRef, useState } from 'react';
+import { EventsService, EventDto, EventProductsService, ProductDto } from '@losol/eventuras';
 
 /*
   Consideration: this one maps ProductDto to RegistrationProduct (a 'view' type) directly.
@@ -35,7 +35,6 @@ const useEventProducts = (eventId: number) => {
     };
     getEventProducts();
   }, []);
-
   return { loading, registrationProducts };
 };
 

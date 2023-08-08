@@ -38,7 +38,7 @@ const Card = (props: CardProps) => {
   });
 
   return (
-    <div className="max-w-md rounded-md border border-gray-200 bg-white p-3 text-gray-800 shadow dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200">
+    <div className="max-w-md p-3 bg-white border border-gray-200 rounded-md shadow text-gray-800 dark:text-gray-200 dark:bg-gray-900 dark:border-gray-700">
       {renderedChildren}
     </div>
   );

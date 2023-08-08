@@ -1,12 +1,8 @@
-'use client';
-
-import { Heading, Text } from 'components/content';
+import { Box, Button, Checkbox, Flex, Stack } from '@mantine/core';
+import { Heading } from 'components/content';
+import { Layout } from 'components/layout';
 import useTranslation from 'next-translate/useTranslation';
 import { useState } from 'react';
-
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
 
 export type RegistrationProduct = {
   id: string | number;
@@ -26,41 +22,37 @@ const RegistrationCustomize = ({ products, onSubmit }: RegistrationCustomizeProp
   const { t } = useTranslation('register');
   const [selectedProducts, selectProducts] = useState<string[]>(defaultSelected);
 
-  function handleCheckboxChange(productId: string) {
-    if (selectedProducts.includes(productId)) {
-      selectProducts(selectedProducts.filter(id => id !== productId));
-    } else selectProducts(s => [...s, productId]);
-  }
-
   return (
-    <>
+    <Layout>
       <Heading>{t('customize.title')}</Heading>
-      <Text>{t('customize.description')}</Text>
-
-      <div className="flex flex-col">
-        {products.map(product => (
-          <div className="flex flex-col items-start" key={product.id}>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id={`check-${product.id.toString()}`}
-                disabled={product.mandatory === true}
-                checked={selectedProducts.includes(product.id.toString())}
-                onClick={() => handleCheckboxChange(product.id.toString())}
-              />
-              <Label htmlFor={`check-${product.id.toString()}`}>{product.id.toString()}</Label>
-            </div>
-            <Text asChild>
-              <em>{product.title}</em>
-            </Text>
-            <Text>{product.description}</Text>
-          </div>
-        ))}
-      </div>
-
-      <Button onClick={() => onSubmit(selectedProducts)} className="mb-5">
+      <p>{t('customize.description')}</p>
+      <Box>
+        <Checkbox.Group
+          defaultValue={selectedProducts}
+          onChange={values => {
+            selectProducts(values as string[]);
+          }}
+        >
+          <Stack>
+            {products.map(product => (
+              <Flex align="flex-start" key={product.id}>
+                <Checkbox
+                  value={product.id.toString()}
+                  disabled={product.mandatory === true}
+                ></Checkbox>
+                <Box>
+                  <em>{product.title}</em>
+                  <p>{product.description}</p>
+                </Box>
+              </Flex>
+            ))}
+          </Stack>
+        </Checkbox.Group>
+      </Box>
+      <Button onClick={() => onSubmit(selectedProducts)} mb="20px">
         Continue
       </Button>
-    </>
+    </Layout>
   );
 };
 

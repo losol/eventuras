@@ -1,13 +1,11 @@
 const defaultLocale = process.env.NEXT_PUBLIC_DEFAULT_LOCALE;
 
 const i18config = {
-  locales: ['nb', 'en'],
-  defaultLocale: defaultLocale ? defaultLocale : 'en',
+  locales: ['nb-NO', 'en-US'],
+  defaultLocale: defaultLocale ? defaultLocale : 'en-US',
   pages: {
     '*': ['common'],
-    '/': ['home'], // app/page.tsx
-    '/events': ['events'], // app/events/[id]/page.tsx
-    '/events/[id]': ['events'], // app/events/[id]/page.tsx
+    '/': ['index'],
     'rgx:(.*?)events/(.*?)/register': ['register'],
   },
 };

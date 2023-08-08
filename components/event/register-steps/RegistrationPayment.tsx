@@ -1,13 +1,9 @@
-'use client';
-
+import { Box, Input, Radio, Stack } from '@mantine/core';
 import { Heading, Text } from 'components/content';
 import { Button } from 'components/inputs';
+import { Layout } from 'components/layout';
 import useTranslation from 'next-translate/useTranslation';
 import { useState } from 'react';
-
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 export type RegistrationPaymentOptions = 'payment-me' | 'payment-employer';
 
@@ -45,11 +41,11 @@ const RegistrationPayment = ({ onSubmit }: RegistrationPaymentProps) => {
   };
 
   const renderForm = () => (
-    <>
-      <div>
+    <Layout>
+      <Box>
         <Text>Company</Text>
         <Input
-          className="mb-5"
+          mb="5px"
           placeholder="Company Name"
           value={paymentDetails?.companyName ?? ''}
           onChange={generateInputFieldStateUpdater('companyName')}
@@ -59,27 +55,27 @@ const RegistrationPayment = ({ onSubmit }: RegistrationPaymentProps) => {
           value={paymentDetails?.companyIdentity ?? ''}
           onChange={generateInputFieldStateUpdater('companyIdentity')}
         />
-      </div>
-      <div className="mb-5">
+      </Box>
+      <Box></Box>
+      <Box mb="20px">
         <Text>Invoice</Text>
         <Input
-          type="email"
-          className="mb-5"
+          mb="5px"
           placeholder="Email for invoice"
           value={paymentDetails?.invoiceEmail ?? ''}
           onChange={generateInputFieldStateUpdater('invoiceEmail')}
         />
         <Input
-          className="mb-5"
+          mb="5px"
           placeholder="Invoice ref"
           value={paymentDetails?.invoiceRef ?? ''}
           onChange={generateInputFieldStateUpdater('invoiceRef')}
         />
-      </div>
-      <div className="mb-5">
+      </Box>
+      <Box mb="20px">
         <Text>Address</Text>
         <Input
-          className="mb-5"
+          mb="5px"
           placeholder="City Name"
           value={paymentDetails?.cityName ?? ''}
           onChange={generateInputFieldStateUpdater('cityName')}
@@ -89,33 +85,28 @@ const RegistrationPayment = ({ onSubmit }: RegistrationPaymentProps) => {
           value={paymentDetails?.zipCode ?? ''}
           onChange={generateInputFieldStateUpdater('zipCode')}
         />
-      </div>
-    </>
+      </Box>
+    </Layout>
   );
-
   return (
-    <>
+    <Layout>
       <Heading>{t('payment.title')}</Heading>
-      <Text>{t('payment.description')}</Text>
-      <Text>{t('payment.subHeading')}</Text>
-      <RadioGroup
-        value={paymentOption}
-        onValueChange={value => {
-          setPaymentOption(value as RegistrationPaymentOptions);
+      <p>{t('payment.description')}</p>
+      <p>{t('payment.subHeading')}</p>
+      <Radio.Group
+        onChange={(value: RegistrationPaymentOptions) => {
+          setPaymentOption(value);
         }}
+        value={paymentOption}
       >
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="payment-me" id="payment-me" />
-          <Label htmlFor="payment-me">Me! Send me an invoice by email</Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="payment-employer" id="payment-employer" />
-          <Label htmlFor="payment-employer">My employer</Label>
-        </div>
-      </RadioGroup>
+        <Stack>
+          <Radio value="payment-me">Me! Send me an invoice by email</Radio>
+          <Radio value="payment-employer">My employer</Radio>
+        </Stack>
+      </Radio.Group>
       {paymentOption === 'payment-employer' && renderForm()}
       <Button onClick={() => onSubmit({ paymentOption, paymentDetails })}>Continue</Button>
-    </>
+    </Layout>
   );
 };
 

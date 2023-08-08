@@ -1,37 +1,33 @@
+import { Button, Menu } from '@mantine/core';
 import Link from 'next/link';
 import useTranslation from 'next-translate/useTranslation';
-
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 
 type UserMenuProps = {
   signOut(): void;
   name?: string;
 };
 
-const UserMenu = ({ signOut }: UserMenuProps) => {
+const UserMenu = (props: UserMenuProps) => {
+  const { signOut } = props;
   const { t } = useTranslation('common');
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">Menu</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuItem asChild>
-          <Link href="/user">{t('header.userMenu.title')}</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/admin">{t('header.userMenu.admin')}</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={signOut}>{t('header.auth.logout')}</DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Menu>
+      <Menu.Target>
+        <Button>Menu</Button>
+      </Menu.Target>
+      <Menu.Dropdown>
+        <Link href="/user" passHref>
+          <Menu.Item>{t('header.userMenu.title')}</Menu.Item>
+        </Link>
+
+        <Link href="/admin" passHref>
+          <Menu.Item>{t('header.userMenu.admin')}</Menu.Item>
+        </Link>
+
+        <Menu.Item onClick={signOut}>{t('header.auth.logout')}</Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
   );
 };
 

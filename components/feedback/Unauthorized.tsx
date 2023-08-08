@@ -1,13 +1,10 @@
-import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
-
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert } from '@mantine/core';
+import { IconHandStop } from '@tabler/icons-react';
 
 export default function Unauthorized() {
   return (
-    <Alert variant="destructive">
-      <ExclamationTriangleIcon className="h-4 w-4" />
-      <AlertTitle>Bummer!</AlertTitle>
-      <AlertDescription>No access...</AlertDescription>
+    <Alert icon={<IconHandStop size={16} />} title="Bummer!" color="red" variant="filled">
+      No access...
     </Alert>
   );
 }
