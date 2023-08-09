@@ -5,6 +5,7 @@ interface ButtonProps {
   leftIcon?: React.ReactNode;
   onClick: () => void;
   primary?: boolean;
+  className?: string;
 }
 
 const Button = (props: ButtonProps) => {
@@ -13,7 +14,10 @@ const Button = (props: ButtonProps) => {
       disabled={props.disabled}
       aria-label={props.ariaLabel}
       onClick={props.onClick}
-      className="bg-sky-400 dark:bg-sky-950 hover:bg-sky-700 text-white font-bold my-6 py-4 px-4"
+      className={
+        props.className ??
+        'bg-sky-400 dark:bg-sky-950 hover:bg-sky-700 text-white font-bold my-6 py-4 px-4'
+      }
     >
       {props.leftIcon && <span className="mr-2">{props.leftIcon}</span>}
       {props.children}

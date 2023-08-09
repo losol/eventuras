@@ -1,9 +1,8 @@
 /* eslint-disable */
 
 import { EventsService, EventDto } from '@losol/eventuras';
-import { Container } from '@mantine/core';
 import { Loading, Unauthorized } from 'components/feedback';
-import { Layout } from 'components/layout';
+import { Container, Drawer, Layout } from 'components/layout';
 import { DataTable, Heading } from 'components/content';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
@@ -12,7 +11,6 @@ import { createColumnHelper } from '@tanstack/react-table';
 
 function AdminIndex() {
   const { data: session, status } = useSession();
-
   const [eventinfos, setEventinfos] = useState<EventDto[]>([]);
 
   const columnHelper = createColumnHelper<EventDto>();
@@ -37,9 +35,11 @@ function AdminIndex() {
       type OrganizationFilter = {
         organizationId?: number;
       };
-      const organizationFilter: OrganizationFilter = {};
+      let organizationFilter: OrganizationFilter = {};
       if (process.env.NEXT_PUBLIC_ORGANIZATION_ID !== null) {
-        organizationId: process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+        organizationFilter = {
+          organizationId: parseInt(process.env.NEXT_PUBLIC_ORGANIZATION_ID as string),
+        };
       }
 
       const result = await EventsService.getV3Events(organizationFilter);
