@@ -1,14 +1,14 @@
-using Eventuras.Domain;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Eventuras.Domain;
 using static Eventuras.Domain.PaymentMethod;
 
 namespace Eventuras.Services
 {
-    // FIXME: ISP violation; have to split into IRegistrationManagementService (create, update), IRegistrationRetrievalService (get, list), and IRegistrationOrderManagementService.
-    // FIXME (continue): or even 4 interfaces: IRegistrationService (create), IRegistrationUpdateService (update), IRegistrationRetrievalService (get, list), and IRegistrationOrderManagementService.
-    
+    // FIXME: ISP violation; have to split into IRegistrationManagementService (create, update), IRegistrationRetrievalService (get, list)
+    // and IOrderManagementService.
+
     public interface IRegistrationService
     {
         Task<bool> RegistrationExists(int id);
@@ -46,16 +46,16 @@ namespace Eventuras.Services
         [Obsolete("Use IRegistrationManagementService")]
         Task<int> CreateRegistration(Registration registration);
 
-        [Obsolete("Use IRegistrationManagementService and IRegistrationOrderManagementService")]
+        [Obsolete("Use IRegistrationManagementService and IOrderManagementService services")]
         Task<int> CreateRegistration(Registration registration, List<OrderVM> ordersVm);
 
-        [Obsolete("Use IRegistrationOrderManagementService")]
+        [Obsolete("Use IOrderManagementService")]
         Task<Order> AddProductToRegistration(string email, int eventId, int productId, int? variantId);
 
-        [Obsolete("Use IRegistrationOrderManagementService")]
+        [Obsolete("Use IOrderManagementService")]
         Task<Order> CreateOrUpdateOrder(int registrationId, int productId, int? variantId);
 
-        [Obsolete("Use IRegistrationOrderManagementService")]
+        [Obsolete("Use IOrderManagementService")]
         Task<Order> CreateOrUpdateOrder(int registrationId, List<OrderVM> ordersVm);
 
         Task<bool> UpdateParticipantInfo(int registrationId, string name, string JobTitle, string city, string Employer);

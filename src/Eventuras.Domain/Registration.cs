@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Runtime.ConstrainedExecution;
-using System.Threading.Tasks;
 using NodaTime;
 using static Eventuras.Domain.Order;
 using static Eventuras.Domain.PaymentMethod;
@@ -214,7 +212,7 @@ namespace Eventuras.Domain
             Log += logText + "\n";
         }
 
-        [Obsolete("Use IRegistrationOrderManagementService instead")]
+        [Obsolete("Use IOrderManagementService instead")]
         public Order CreateOrder(IEnumerable<OrderDTO> orders, IEnumerable<OrderLine> refundlines = null)
         {
             _ = orders ?? throw new ArgumentNullException(nameof(orders));
@@ -264,6 +262,7 @@ namespace Eventuras.Domain
         /// Updates an existing order if it's not already been invoiced.
         /// Else creates a new order.
         /// </summary>
+        [Obsolete("Use IOrderManagementService service")]
         public Order CreateOrUpdateOrder(ICollection<OrderDTO> dtos)
         {
             // Check if any editable orders exist
@@ -337,7 +336,7 @@ namespace Eventuras.Domain
             }
         }
 
-        [Obsolete]
+        [Obsolete("Use IOrderManagementService instead")]
         public void UpdateOrder(Order orderToUpdate, IEnumerable<OrderDTO> orders)
         {
             if (orderToUpdate.RegistrationId != RegistrationId)
