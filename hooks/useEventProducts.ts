@@ -2,8 +2,8 @@ import { OpenAPI, ProductDto } from '@losol/eventuras';
 import { useEffect, useRef, useState } from 'react';
 
 /*
-  Sometimes mysterious going on with the losol SDK => network call completes succesfully, but promise never resolved.
-  For now lets wrap these calls ourselves
+  Something mysterious going on with the losol SDK => network call completes succesfully, but promise never resolved.
+  For now lets wrap these calls ourselves.
 */
 
 const getAPIEventProducts = ({ eventId }: { eventId: number }) =>

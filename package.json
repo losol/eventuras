@@ -36,6 +36,7 @@
     "@mantine/next": "^6.0.17",
     "@mantine/notifications": "^6.0.17",
     "@mantine/tiptap": "^6.0.17",
+    "@storybook/addon-console": "^2.0.0",
     "@tabler/icons-react": "^2.30.0",
     "@tanstack/react-table": "^8.9.3",
     "@tiptap/extension-link": "^2.0.4",
@@ -48,7 +49,7 @@
     "next-translate": "^2.5.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-hook-form": "^7.45.2",
+    "react-hook-form": "^7.45.4",
     "swr": "^2.2.0"
   },
   "devDependencies": {

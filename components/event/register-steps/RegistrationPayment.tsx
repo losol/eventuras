@@ -1,9 +1,14 @@
-import { Box, Input, Radio, Stack } from '@mantine/core';
-import { Heading, Text } from 'components/content';
-import { Button } from 'components/inputs';
-import { Layout } from 'components/layout';
+import { Heading } from 'components/content';
 import useTranslation from 'next-translate/useTranslation';
 import { useState } from 'react';
+import { RegisterOptions, useForm } from 'react-hook-form';
+
+type InputParams = {
+  ph: string; //placeholder
+  id: string; //identifier
+  opt?: RegisterOptions; //registration options
+};
+
 
 export type RegistrationPaymentOptions = 'payment-me' | 'payment-employer';
 
@@ -24,8 +29,13 @@ export type RegistrationPaymentProps = {
   onSubmit: (values: RegistrationSubmitValues) => void;
 };
 
+
 const RegistrationPayment = ({ onSubmit }: RegistrationPaymentProps) => {
   const { t } = useTranslation('register');
+  const { register, handleSubmit } = useForm();
+  const onSubmitForm = (data: any) => {
+    console.log(data);
+  };
   const [paymentOption, setPaymentOption] = useState<RegistrationPaymentOptions>('payment-me');
   const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null);
 
@@ -39,75 +49,143 @@ const RegistrationPayment = ({ onSubmit }: RegistrationPaymentProps) => {
       });
     };
   };
+  const generateTextInput = (params: InputParams) => {
+    const inputClass =
+      'mb-3 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline';
+    return (
+      <input
+        {...register(params.id, params.opt)}
+        placeholder={params.ph}
+        className={inputClass}
+        value={(paymentDetails as any)?.[params.id] ?? ''}
+        onChange={generateInputFieldStateUpdater(params.id)}
+      />
+    );
+  };
+
+  return <>
+     <Heading>{t('payment.title')}</Heading>
+     <p>{t('payment.description')}</p>
+     <form onSubmit={handleSubmit(onSubmitForm)} className="shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      {generateTextInput({
+        id: 'username',
+        ph: 'Company Name',
+        opt: { required: true, maxLength: 20 },
+      })}
+     </form>
+  </>
+}
+
+/*
+const RegistrationPayment = ({ onSubmit }: RegistrationPaymentProps) => {
+  const { t } = useTranslation('register');
+  const { register, handleSubmit } = useForm();
+  const onSubmitForm = (data: any) => {
+    console.log(data);
+  };
+  const [paymentOption, setPaymentOption] = useState<RegistrationPaymentOptions>('payment-me');
+  const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null);
+
+  const generateInputFieldStateUpdater = (fieldName: string) => {
+    return (event: any) => {
+      setPaymentDetails((prevState: PaymentDetails | null) => {
+        return {
+          ...prevState,
+          [fieldName]: event.target.value,
+        } as PaymentDetails;
+      });
+    };
+  };
+  const generateTextInput = (params: InputParams) => {
+    const inputClass =
+      'mb-3 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline';
+    return (
+      <input
+        {...register(params.id, params.opt)}
+        placeholder={params.ph}
+        className={inputClass}
+        value={(paymentDetails as any)?.[params.id] ?? ''}
+        onChange={generateInputFieldStateUpdater(params.id)}
+      />
+    );
+  };
 
   const renderForm = () => (
-    <Layout>
-      <Box>
-        <Text>Company</Text>
-        <Input
-          mb="5px"
-          placeholder="Company Name"
-          value={paymentDetails?.companyName ?? ''}
-          onChange={generateInputFieldStateUpdater('companyName')}
-        />
-        <Input
-          placeholder="Company Identity Number"
-          value={paymentDetails?.companyIdentity ?? ''}
-          onChange={generateInputFieldStateUpdater('companyIdentity')}
-        />
-      </Box>
-      <Box></Box>
-      <Box mb="20px">
-        <Text>Invoice</Text>
-        <Input
-          mb="5px"
-          placeholder="Email for invoice"
-          value={paymentDetails?.invoiceEmail ?? ''}
-          onChange={generateInputFieldStateUpdater('invoiceEmail')}
-        />
-        <Input
-          mb="5px"
-          placeholder="Invoice ref"
-          value={paymentDetails?.invoiceRef ?? ''}
-          onChange={generateInputFieldStateUpdater('invoiceRef')}
-        />
-      </Box>
-      <Box mb="20px">
-        <Text>Address</Text>
-        <Input
-          mb="5px"
-          placeholder="City Name"
-          value={paymentDetails?.cityName ?? ''}
-          onChange={generateInputFieldStateUpdater('cityName')}
-        />
-        <Input
-          placeholder="Zip Code"
-          value={paymentDetails?.zipCode ?? ''}
-          onChange={generateInputFieldStateUpdater('zipCode')}
-        />
-      </Box>
-    </Layout>
+    <form onSubmit={handleSubmit(onSubmitForm)} className="shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      {generateTextInput({
+        id: 'companyName',
+        ph: 'Company Name',
+        opt: { required: true, maxLength: 20 },
+      })}
+      {generateTextInput({
+        id: 'companyIdentity',
+        ph: 'Company Identity Number',
+        opt: { required: true, pattern: /^[A-Za-z]+$/i },
+      })}
+      {generateTextInput({
+        id: 'invoiceEmail',
+        ph: 'Email for invoice',
+        opt: { required: true, pattern: /^[A-Za-z]+$/i },
+      })}
+      {generateTextInput({
+        id: 'invoiceRef',
+        ph: 'Invoice Ref',
+        opt: { required: true, pattern: /^[A-Za-z]+$/i },
+      })}
+      {generateTextInput({
+        id: 'cityName',
+        ph: 'City Name',
+        opt: { required: true, pattern: /^[A-Za-z]+$/i },
+      })}
+      {generateTextInput({
+        id: 'zipCode',
+        ph: 'Zip Code',
+        opt: { required: true, pattern: /^[A-Za-z]+$/i },
+      })}
+    </form>
   );
   return (
-    <Layout>
+    <>
       <Heading>{t('payment.title')}</Heading>
       <p>{t('payment.description')}</p>
-      <p>{t('payment.subHeading')}</p>
-      <Radio.Group
-        onChange={(value: RegistrationPaymentOptions) => {
-          setPaymentOption(value);
-        }}
-        value={paymentOption}
-      >
-        <Stack>
-          <Radio value="payment-me">Me! Send me an invoice by email</Radio>
-          <Radio value="payment-employer">My employer</Radio>
-        </Stack>
-      </Radio.Group>
+
+      <fieldset>
+        <legend>{t('payment.subHeading')}</legend>
+        <ul className="flex flex-col">
+          <li>
+            <input
+              type="radio"
+              id="invoiceme"
+              name="invoice"
+              value="payment-me"
+              checked={paymentOption === 'payment-me'}
+              onChange={e => {
+                setPaymentOption(e.target.value as RegistrationPaymentOptions);
+              }}
+            />
+            <label htmlFor="invoiceme">Me! Send me an invoice by email</label>
+          </li>
+          <li>
+            <input
+              type="radio"
+              id="invoiceemployer"
+              name="invoice"
+              value="payment-employer"
+              checked={paymentOption === 'payment-employer'}
+              onChange={e => {
+                setPaymentOption(e.target.value as RegistrationPaymentOptions);
+              }}
+            />
+
+            <label htmlFor="invoiceemployer">My Employer</label>
+          </li>
+        </ul>
+      </fieldset>
       {paymentOption === 'payment-employer' && renderForm()}
-      <Button onClick={() => onSubmit({ paymentOption, paymentDetails })}>Continue</Button>
-    </Layout>
+    </>
   );
 };
 
+
+*/
 export default RegistrationPayment;
