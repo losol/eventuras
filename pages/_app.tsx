@@ -1,7 +1,6 @@
 import 'styles/globals.css';
 
 import { OpenAPI } from '@losol/eventuras';
-import { Notifications } from '@mantine/notifications';
 import { ThemeContextProvider, UserProvider } from 'context';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
@@ -12,7 +11,6 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <SessionProvider session={pageProps.session}>
       <ThemeContextProvider>
-        <Notifications />
         <UserProvider>
           <Head>
             <title>Eventuras</title>

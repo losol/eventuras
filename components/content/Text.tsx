@@ -1,17 +1,14 @@
-import { Text as MantineText } from '@mantine/core';
-
 interface TextProps {
   children: React.ReactNode;
   as?: 'div' | 'span' | 'p';
-  fontWeight?: number;
+  classname?: string;
 }
 
 const Text = (props: TextProps) => {
+  const TextComponent = props.as || 'div';
   return (
     <>
-      <MantineText fw={props.fontWeight} component={props.as}>
-        {props.children}
-      </MantineText>
+      <TextComponent className={props.classname}>{props.children}</TextComponent>
     </>
   );
 };

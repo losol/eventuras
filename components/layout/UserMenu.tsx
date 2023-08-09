@@ -1,4 +1,4 @@
-import { Button, Menu } from '@mantine/core';
+import { Button } from 'components/inputs';
 import Link from 'next/link';
 import useTranslation from 'next-translate/useTranslation';
 
@@ -12,22 +12,11 @@ const UserMenu = (props: UserMenuProps) => {
   const { t } = useTranslation('common');
 
   return (
-    <Menu>
-      <Menu.Target>
-        <Button>Menu</Button>
-      </Menu.Target>
-      <Menu.Dropdown>
-        <Link href="/user" passHref>
-          <Menu.Item>{t('header.userMenu.title')}</Menu.Item>
-        </Link>
-
-        <Link href="/admin" passHref>
-          <Menu.Item>{t('header.userMenu.admin')}</Menu.Item>
-        </Link>
-
-        <Menu.Item onClick={signOut}>{t('header.auth.logout')}</Menu.Item>
-      </Menu.Dropdown>
-    </Menu>
+    <div>
+      <Link href="/user">{t('header.userMenu.title')}</Link>
+      <Link href="/user">{t('header.userMenu.title')}</Link>
+      <Button onClick={signOut}>{t('header.auth.logout')}</Button>
+    </div>
   );
 };
 

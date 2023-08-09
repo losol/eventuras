@@ -1,5 +1,4 @@
 import { EventDto, EventsService } from '@losol/eventuras';
-import { SimpleGrid } from '@mantine/core';
 import { Card, Heading, Text } from 'components/content';
 import { Loading } from 'components/feedback';
 import { Layout } from 'components/layout';
@@ -25,25 +24,16 @@ export default function Index(props: IndexProps) {
       {events.length !== 0 && (
         <>
           <Heading as="h2">{eventsTitle}</Heading>
-          <SimpleGrid
-            cols={4}
-            spacing="lg"
-            breakpoints={[
-              { maxWidth: 'md', cols: 3, spacing: 'md' },
-              { maxWidth: 'sm', cols: 2, spacing: 'sm' },
-              { maxWidth: 'xs', cols: 1, spacing: 'sm' },
-            ]}
-          >
-            {events &&
-              events.map((event: EventDto) => (
-                <Link key={event.id} href={`/events/${event.id}`}>
-                  <Card key={event.id}>
-                    <Card.Heading>{event.title}</Card.Heading>
-                    <Card.Text>{event.description!}</Card.Text>
-                  </Card>
-                </Link>
-              ))}
-          </SimpleGrid>
+          <div className="grid grid-cols-4 gap-4">
+            {events?.map((event: EventDto) => (
+              <Link key={event.id} href={`/events/${event.id}`}>
+                <Card key={event.id}>
+                  <Card.Heading>{event.title}</Card.Heading>
+                  <Card.Text>{event.description!}</Card.Text>
+                </Card>
+              </Link>
+            ))}
+          </div>
         </>
       )}
     </Layout>

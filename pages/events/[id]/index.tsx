@@ -1,10 +1,8 @@
 /* eslint-disable */
 
 import { EventDto, EventsService } from '@losol/eventuras';
-import { useDisclosure } from '@mantine/hooks';
 import { Button } from 'components/inputs';
 import { Layout } from 'components/layout';
-import { Modal } from 'components/overlays';
 import { Heading, Image } from 'components/content';
 import parse from 'html-react-parser';
 import { useRouter } from 'next/router';
@@ -17,8 +15,6 @@ const EventInfo = (props: EventProps) => {
   const router = useRouter();
   const { title = '...', description = '...' } = props;
   const { t } = useTranslation();
-  const [modal] = useState({ title: '', text: '' });
-  const [opened, { close }] = useDisclosure(false);
 
   return (
     <Layout>
@@ -54,7 +50,6 @@ const EventInfo = (props: EventProps) => {
           {parse(props.practicalInformation)}
         </>
       )}
-      <Modal isOpen={opened} onClose={close} title={modal.title} text={modal.text} />
     </Layout>
   );
 };
