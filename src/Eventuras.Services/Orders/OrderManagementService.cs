@@ -153,7 +153,7 @@ namespace Eventuras.Services.Orders
             IEnumerable<OrderLineModel> allLines,
             CancellationToken cancellationToken)
         {
-            if (line.Quantity <= 0) throw new ArgumentServiceException($"Quantity should be a positive number but got {line.Quantity}");
+            if (line.Quantity == 0) throw new ArgumentServiceException($"Quantity should be a non-zero number");
 
             Product product;
             try
