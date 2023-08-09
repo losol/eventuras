@@ -18,6 +18,10 @@ npx next dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## API swagger documentation
+
+https://api.eventuras.losol.io/swagger/index.html
+
 ## Precommit hook
 
 In package.json there is a lint-staged section which shows all the actions taken on staged files.

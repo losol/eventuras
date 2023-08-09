@@ -3,10 +3,10 @@ import { Text } from 'components/content';
 import { Button } from 'components/inputs';
 import { FormEvent } from 'react';
 import { useForm } from 'react-hook-form';
-import { UserType } from 'types';
+import { UserProfile } from 'types/UserProfile';
 
 interface UserDrawerProps {
-  user: UserType;
+  user: UserProfile;
   isOpen: boolean;
   onClose: () => void;
   handleUserChange: (event: FormEvent<HTMLInputElement>) => void;

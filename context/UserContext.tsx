@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 import { createContext, ReactNode, useEffect, useState } from 'react';
 import useSWR from 'swr';
-import { UserType } from 'types';
+import { UserProfile } from 'types/UserProfile';
 
 // interface UserProviderProps {
 //   user: UserType; // TODO: Check does UserType fit API response
@@ -20,7 +20,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState(initialUser);
   const { data: session } = useSession();
   const { data: userDetails } = useSWR(session ? '/api/getUserProfile' : '');
-  const updateUser = (updated_user: UserType) => {
+  const updateUser = (updated_user: UserProfile) => {
     setUser(updated_user);
   };
   useEffect(() => {
