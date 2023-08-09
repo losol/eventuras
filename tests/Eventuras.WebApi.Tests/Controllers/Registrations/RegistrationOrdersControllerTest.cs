@@ -290,10 +290,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var c = await scope.CreateEventCollectionAsync();
             using var user = await scope.CreateUserAsync();
             using var e1 = await scope.CreateEventAsync(collection: c.Entity);
-            using var e2 = await scope.CreateEventAsync(collection: c.Entity);
-            using var p1 = await scope.CreateProductAsync(e1.Entity, visibility: ProductVisibility.Collection);
-            using var p2 = await scope.CreateProductAsync(e2.Entity, visibility: ProductVisibility.Collection);
             using var reg = await scope.CreateRegistrationAsync(e1.Entity, user.Entity);
+            using var e2 = await scope.CreateEventAsync(collection: c.Entity);
+            using var p2 = await scope.CreateProductAsync(e2.Entity, visibility: ProductVisibility.Collection);
 
             var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
             var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders", new

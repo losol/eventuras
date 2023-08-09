@@ -10,6 +10,7 @@ using Eventuras.Infrastructure;
 using Eventuras.Services.Events.Products;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Registrations;
+using Microsoft.EntityFrameworkCore;
 
 namespace Eventuras.Services.Orders
 {
@@ -56,13 +57,13 @@ namespace Eventuras.Services.Orders
 
             if (!order.CanEdit)
                 throw new InvalidOperationServiceException($"Order {order.OrderId} cannot be updated being in {order.Status} status");
-
             await _orderAccessControlService.CheckOrderUpdateAccessAsync(order, cancellationToken);
 
             var registration = await _registrationRetrievalService.GetRegistrationByIdAsync(order.RegistrationId,
                 new RegistrationRetrievalOptions()
                 {
-                    LoadEventInfo = true
+                    LoadEventInfo = true,
+                    ForUpdate = true,
                 },
                 cancellationToken);
 
@@ -78,17 +79,19 @@ namespace Eventuras.Services.Orders
 
                 if (existingOrderLine != null)
                 { // if order line existed in the order - update it's quantity
-                    ValidateMinimumQuantityForProduct(existingOrderLine.Product, updatedOrderLines);
                     existingOrderLine.Quantity = line.Quantity;
                 }
                 else
                 { // if order line does not exist in the order - find product with variant and create order line for it
-                    var orderLine = await CreateOrderLine(registration.EventInfo, line, updatedOrderLines, cancellationToken);
+                    var orderLine = await CreateOrderLine(registration.EventInfo, line, cancellationToken);
                     order.OrderLines.Add(orderLine);
                 }
             }
 
-            await _context.UpdateAsync(order, cancellationToken);
+            _context.Update(order);
+            await ValidateMinimumQuantityForProducts(registration, cancellationToken);
+
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<Order> CreateOrderForRegistrationAsync(
@@ -100,9 +103,9 @@ namespace Eventuras.Services.Orders
 
             orderLines ??= Array.Empty<OrderLineModel>();
             List<OrderLine> orderLinesMapped = new();
-            foreach (var ol in orderLines)
+            foreach (var line in orderLines)
             {
-                var orderLine = await CreateOrderLine(registration.EventInfo, ol, orderLines, cancellationToken);
+                var orderLine = await CreateOrderLine(registration.EventInfo, line, cancellationToken);
                 orderLinesMapped.Add(orderLine);
             }
 
@@ -119,7 +122,10 @@ namespace Eventuras.Services.Orders
             };
             order.AddLog();
 
-            await _context.CreateAsync(order, cancellationToken: cancellationToken);
+            await _context.AddAsync(order, cancellationToken);
+            await ValidateMinimumQuantityForProducts(registration, cancellationToken);
+
+            await _context.SaveChangesAsync(cancellationToken);
             return order;
         }
 
@@ -150,7 +156,6 @@ namespace Eventuras.Services.Orders
         private async Task<OrderLine> CreateOrderLine(
             EventInfo eventInfo,
             OrderLineModel line,
-            IEnumerable<OrderLineModel> allLines,
             CancellationToken cancellationToken)
         {
             if (line.Quantity == 0) throw new ArgumentServiceException($"Quantity should be a non-zero number");
@@ -172,8 +177,7 @@ namespace Eventuras.Services.Orders
                 throw new ArgumentServiceException($"Product with id {line.ProductId} was not found", null, e);
             }
 
-            await ValidateProductVisibility(product, eventInfo);
-            ValidateMinimumQuantityForProduct(product, allLines);
+            await ValidateProductVisibility(product, eventInfo, cancellationToken);
 
             ProductVariant? productVariant = null;
             if (line.ProductVariantId != null)
@@ -193,19 +197,55 @@ namespace Eventuras.Services.Orders
             return orderLine;
         }
 
-        private static void ValidateMinimumQuantityForProduct(Product product, IEnumerable<OrderLineModel> orderLines)
+        private async Task ValidateMinimumQuantityForProducts(Registration registration, CancellationToken cancellationToken = default)
         {
-            var productMinQuantity = product.MinimumQuantity;
-            var specifiedSumQuantity = orderLines
-                .Where(ol => ol.ProductId == product.ProductId)
-                .Sum(ol => ol.Quantity);
+            var eventInfo = registration.EventInfo;
 
-            if (specifiedSumQuantity < productMinQuantity)
-                throw new ArgumentServiceException($"Product with id {product.ProductId} has minimum quantity of {productMinQuantity}, "
-                                                 + $"but {specifiedSumQuantity} in total for all product variants was specified");
+            await LoadProductsInEventInfoWithMinimumAmount(eventInfo);
+            await LoadOrdersInRegistration();
+            foreach (var order in registration.Orders) await LoadLinesInOrder(order);
+
+            var mandatoryProducts = eventInfo.Products.Where(p => p.MinimumQuantity > 0);
+            var orderedProducts = registration.Orders
+                .SelectMany(o => o.OrderLines)
+                .GroupBy(ol => ol.ProductId)
+                .ToDictionary(group => (int)group.Key!, group => group.Sum(ol => ol.Quantity));
+
+            foreach (var mandatoryProduct in mandatoryProducts)
+            {
+                orderedProducts.TryGetValue(mandatoryProduct.ProductId, out var orderedSum);
+                if (orderedSum < mandatoryProduct.MinimumQuantity)
+                    throw new ArgumentServiceException($"Product with id {mandatoryProduct.ProductId} has minimum quantity "
+                                                     + $"{mandatoryProduct.MinimumQuantity}, but current registration has ordered only {orderedSum}");
+            }
+
+            return;
+
+            async Task LoadOrdersInRegistration()
+            {
+                var collectionNavigation = _context.Entry(registration).Collection(entity => entity.Orders);
+                if (!collectionNavigation.IsLoaded) await collectionNavigation.LoadAsync(cancellationToken);
+            }
+
+            async Task LoadProductsInEventInfoWithMinimumAmount(EventInfo ei)
+            {
+                var collectionNavigation = _context.Entry(ei).Collection(entity => entity.Products);
+                if (!collectionNavigation.IsLoaded)
+                {
+                    var query = collectionNavigation.Query()
+                        .Where(p => p.MinimumQuantity > 0);
+                    await query.LoadAsync(cancellationToken);
+                }
+            }
+
+            async Task LoadLinesInOrder(Order order)
+            {
+                var collectionNavigation = _context.Entry(order).Collection(entity => entity.OrderLines);
+                if (!collectionNavigation.IsLoaded) await collectionNavigation.LoadAsync(cancellationToken);
+            }
         }
 
-        private async Task ValidateProductVisibility(Product product, EventInfo orderEventInfo)
+        private async Task ValidateProductVisibility(Product product, EventInfo orderEventInfo, CancellationToken cancellationToken = default)
         {
             if (product.Visibility == ProductVisibility.Collection)
             {
@@ -216,8 +256,9 @@ namespace Eventuras.Services.Orders
                 var commonCollections = orderEventInfo.Collections
                     .IntersectBy(product.EventInfo.Collections.Select(c => c.CollectionId), ec => ec.CollectionId);
 
-                if (!commonCollections.Any()) throw new ArgumentServiceException(
-                    $"Product with id {product.ProductId} is not visible for event with id {orderEventInfo.EventInfoId}");
+                if (!commonCollections.Any())
+                    throw new ArgumentServiceException(
+                        $"Product with id {product.ProductId} is not visible for event with id {orderEventInfo.EventInfoId}");
             }
             else if (product.EventInfoId != orderEventInfo.EventInfoId)
                 throw new ArgumentServiceException(
@@ -228,7 +269,7 @@ namespace Eventuras.Services.Orders
             async Task LoadEventCollections(EventInfo ei)
             {
                 var collectionsNavigation = _context.Entry(ei).Collection(entity => entity.Collections);
-                if (!collectionsNavigation.IsLoaded) await collectionsNavigation.LoadAsync();
+                if (!collectionsNavigation.IsLoaded) await collectionsNavigation.LoadAsync(cancellationToken);
             }
         }
     }
