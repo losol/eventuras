@@ -201,6 +201,7 @@ namespace Eventuras.Services
             return await _createOrUpdateOrderAsync(registration, vm);
         }
 
+        [Obsolete("Use IOrderManagementService service")]
         public async Task<Order> CreateOrUpdateOrder(int registrationId, List<OrderVM> orders)
         {
             var registration = await _db.Registrations
@@ -218,6 +219,7 @@ namespace Eventuras.Services
             return await _createOrUpdateOrderAsync(registration, orders);
         }
 
+        [Obsolete("Use IOrderManagementService service")]
         public Task<Order> CreateOrUpdateOrder(int registrationId, int productId, int? productVariantId)
         {
             var vm = new List<OrderVM>
@@ -231,6 +233,7 @@ namespace Eventuras.Services
             return CreateOrUpdateOrder(registrationId, vm);
         }
 
+        [Obsolete("Use IOrderManagementService service")]
         private async Task<Order> _createOrUpdateOrderAsync(Registration registration, List<OrderVM> orders)
         {
             var ordersDto = await _orderVmConversionService.OrderVmsToOrderDtos(orders);
