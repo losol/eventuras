@@ -768,7 +768,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Orders
             using var user = await scope.CreateUserAsync();
             using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
             using var p = await scope.CreateProductAsync(evt.Entity, minimumQuantity: 2, name: "Test");
-            using var v = await scope.CreateProductVariantAsync(p.Entity);
 
             var response = await _factory
                 .CreateClient()
@@ -786,7 +785,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Orders
                     }
                 });
 
-            await response.CheckBadRequestAsync("has minimum quantity of 2, but 1 in total for all product variants was specified");
+            await response.CheckBadRequestAsync("has minimum quantity 2, but current registration has ordered only 1");
 
             Assert.False(await scope.Db.Orders.AnyAsync());
         }
@@ -973,12 +972,13 @@ namespace Eventuras.WebApi.Tests.Controllers.Orders
                         new
                         {
                             productId = p.Entity.ProductId,
+                            productVariantId = v.Entity.ProductVariantId,
                             quantity = 1
                         }
                     }
                 });
 
-            await response.CheckBadRequestAsync("has minimum quantity of 2, but 1 in total for all product variants was specified");
+            await response.CheckBadRequestAsync("has minimum quantity 2, but current registration has ordered only 1");
         }
 
         [Fact]
@@ -1169,8 +1169,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Orders
                 .PutAsync($"/v3/orders/{order.Entity.OrderId}",
                     GetOrderUpdateData(p, v, p2));
 
-            await response.CheckBadRequestAsync(
-                $"Order {order.Entity.OrderId} cannot be updated being in {status} status");
+            await response.CheckBadRequestAsync($"Order {order.Entity.OrderId} cannot be updated being in {status} status");
         }
 
         private static async Task<Order> CheckOrderCreatedAsync(
