@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 using Asp.Versioning;
@@ -145,14 +144,5 @@ namespace Eventuras.WebApi.Controllers.Registrations
                 LoadOrders = query.IncludeOrders
             };
         }
-    }
-
-    public class NewRegistrationDto : RegistrationFormDto
-    {
-        [Required] public string UserId { get; set; }
-
-        [Required] [Range(1, int.MaxValue)] public int EventId { get; set; }
-
-        [FromQuery(Name = "createOrder")] public bool CreateOrder { get; set; }
     }
 }

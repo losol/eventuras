@@ -45,6 +45,12 @@ namespace Eventuras.TestAbstractions
             return response;
         }
 
+        public static HttpResponseMessage CheckSuccess(this HttpResponseMessage response)
+        {
+            Assert.InRange((int)response.StatusCode, 200, 299);
+            return response;
+        }
+
         public static HttpResponseMessage CheckNotFound(this HttpResponseMessage response)
         {
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
