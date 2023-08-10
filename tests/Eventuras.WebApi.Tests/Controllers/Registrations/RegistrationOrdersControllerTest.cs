@@ -137,7 +137,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
                     }
                 }
             });
-            response.CheckOk();
+            response.CheckSuccess();
 
             await CheckOrderCreatedAsync(scope, reg.Entity, product.Entity);
         }
@@ -195,7 +195,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
                         }
                     }
                 });
-            response.CheckOk();
+            response.CheckSuccess();
 
             await CheckOrderCreatedAsync(scope, reg.Entity, product.Entity);
         }
@@ -223,7 +223,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
                     }
                 }
             });
-            response.CheckOk();
+            response.CheckSuccess();
 
             await CheckOrderCreatedAsync(scope, reg.Entity, product.Entity);
         }
@@ -306,7 +306,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
                     }
                 }
             });
-            response.CheckOk();
+            response.CheckSuccess();
 
             await CheckOrderCreatedAsync(scope, reg.Entity, p2.Entity);
         }

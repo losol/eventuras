@@ -2,7 +2,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asp.Versioning;
 using Eventuras.Services.Orders;
-using Eventuras.WebApi.Controllers.Registrations;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -64,7 +63,7 @@ namespace Eventuras.WebApi.Controllers.Orders
                 },
                 cancellationToken);
 
-            return Ok(PageResponseDto<RegistrationOrderDto>.FromPaging(
+            return Ok(PageResponseDto<OrderDto>.FromPaging(
                 query,
                 paging,
                 o => new OrderDto(o)));
