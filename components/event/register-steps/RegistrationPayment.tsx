@@ -1,3 +1,4 @@
+import { PaymentProvider } from '@losol/eventuras';
 import { Heading } from 'components/content';
 import useTranslation from 'next-translate/useTranslation';
 import { FieldErrors, SubmitHandler, useForm } from 'react-hook-form';
@@ -11,7 +12,7 @@ export type PaymentFormValues = {
   country: string;
   vatNumber: string;
   invoiceReference: string;
-  paymentMethod: string;
+  paymentMethod: PaymentProvider;
 };
 
 export type RegistrationPaymentProps = {
@@ -106,7 +107,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
               <input
                 type="radio"
                 id="emailinvoice"
-                value="PowerOfficeEmailInvoice"
+                value={PaymentProvider.POWER_OFFICE_EMAIL_INVOICE}
                 defaultChecked={true}
                 {...register('paymentMethod')}
               />
@@ -116,7 +117,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
               <input
                 type="radio"
                 id="ehfInvoice"
-                value="PowerOfficeEHFInvoice"
+                value={PaymentProvider.POWER_OFFICE_EHFINVOICE}
                 {...register('paymentMethod')}
               />
               <label htmlFor="ehfInvoice">Electronic Invoice</label>

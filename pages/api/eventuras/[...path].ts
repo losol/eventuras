@@ -20,8 +20,11 @@ const forwarder = async (req: NextApiRequest, res: NextApiResponse) => {
       'Content-Type': 'application/json',
     },
   });
+  let json = null;
+  try {
+    json = await fResponse.json();
+  } catch (err) {}
 
-  const data = await fResponse.json();
   if (process.env.NODE_ENV === 'development') {
     //dev only, avoid token leaks into anything else than dev environment
     console.log({
@@ -29,13 +32,13 @@ const forwarder = async (req: NextApiRequest, res: NextApiResponse) => {
       body: req.body,
       method: req.method,
       status: fResponse.status,
-      data,
+      json,
       accessToken,
     });
   }
 
   res.status(fResponse.status);
-  res.send(data);
+  res.send(json ?? fResponse.body);
 };
 
 export default forwarder;

@@ -1,4 +1,3 @@
-import { NewRegistrationDto, RegistrationsService } from '@losol/eventuras';
 import RegistrationComplete from 'components/event/register-steps/RegistrationComplete';
 import RegistrationCustomize from 'components/event/register-steps/RegistrationCustomize';
 import RegistrationPayment, {
@@ -6,14 +5,14 @@ import RegistrationPayment, {
 } from 'components/event/register-steps/RegistrationPayment';
 import { Loading } from 'components/feedback';
 import { Layout } from 'components/layout';
+import createEventRegistration from 'helpers/createEventRegistration';
 import { mapEventProductsToView } from 'helpers/modelviewMappers';
-import useEvent from 'hooks/useEvent';
 import useEventProducts from 'hooks/useEventProducts';
 import useMyUserProfile from 'hooks/useMyUserProfile';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
-type PageStep = 'Customize' | 'Payment' | 'Complete';
+type PageStep = 'Customize' | 'Payment' | 'Complete' | 'Error';
 
 const throwUserNotFoundError = () => {
   throw new Error(
@@ -22,15 +21,16 @@ const throwUserNotFoundError = () => {
 };
 
 const EventRegistration = () => {
+  let selectedProducts: Map<string, number> = new Map();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<PageStep>('Customize');
   const eventId = parseInt(router.query.id as string, 10);
   const { userProfile, loading: loadingUser } = useMyUserProfile();
-  const { event, loading: loadingEvent } = useEvent(eventId);
   const { registrationProducts, loading: loadingRegistrationProducts } = useEventProducts(eventId);
 
-  const onCustomize = (selectedProducts: Map<string, number>) => {
+  const onCustomize = (selected: Map<string, number>) => {
     console.log({ selectedProducts });
+    selectedProducts = selected;
     setCurrentStep('Payment');
   };
 
@@ -40,12 +40,16 @@ const EventRegistration = () => {
       throwUserNotFoundError();
       return;
     }
-
-    const requestBody: NewRegistrationDto = {
-      userId: userProfile.id,
+    const result = await createEventRegistration(
+      userProfile.id,
       eventId,
-    };
-    await RegistrationsService.postV3Registrations({ requestBody });
+      formValues,
+      selectedProducts
+    );
+    if (result.success === false) {
+      //TODO unhappy flow
+      setCurrentStep('Error');
+    }
     setCurrentStep('Complete');
   };
 
@@ -54,51 +58,31 @@ const EventRegistration = () => {
     router.push('/');
   };
 
-  const renderCustomization = () => {
-    if (registrationProducts.length === 0) {
-      return (
-        <>
-          <p>
-            Registration for <em>{event?.title}</em>. Would you like to register?
-          </p>
-          <button
-            onClick={() => {
-              onCustomize(new Map());
-            }}
-          >
-            Yes
-          </button>
-          <button
-            onClick={() => {
-              router.push('/');
-            }}
-          >
-            No
-          </button>
-        </>
-      );
-    }
-    return (
-      <RegistrationCustomize
-        products={mapEventProductsToView(registrationProducts)}
-        onSubmit={onCustomize}
-      />
-    );
-  };
-
-  if (loadingRegistrationProducts || loadingUser || loadingEvent) return <Loading />;
+  if (loadingRegistrationProducts || loadingUser) return <Loading />;
   if (!userProfile) {
     throwUserNotFoundError();
     return;
   }
+  if (currentStep === 'Customize' && registrationProducts.length === 0) {
+    //no need to customize order when there are no options, let's go straight to payment
+    setCurrentStep('Payment');
+  }
+
   const renderStep = (step: PageStep) => {
     switch (step) {
       case 'Customize':
-        return renderCustomization();
+        return (
+          <RegistrationCustomize
+            products={mapEventProductsToView(registrationProducts)}
+            onSubmit={onCustomize}
+          />
+        );
       case 'Payment':
         return <RegistrationPayment onSubmit={onPayment} userProfile={userProfile} />;
       case 'Complete':
         return <RegistrationComplete onSubmit={onCompleteFlow} />;
+      case 'Error':
+        return <p>OOps, something went wrong</p>;
     }
   };
 
