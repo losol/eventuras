@@ -60,5 +60,21 @@ namespace Eventuras.WebApi.Controllers.Registrations
 
             return CreatedAtAction(nameof(OrdersController.GetOrderById), "Orders", new { id = order.OrderId }, new OrderDto(order));
         }
+
+        // POST: v3/registrations/667/products
+        [HttpPost("products")]
+        public async Task<IActionResult> AutoCreateOrUpdateOrderForRegistration(
+            int id,
+            [FromBody] OrderUpdateRequestDto dto,
+            CancellationToken cancellationToken = default)
+        {
+            _ = await _registrationRetrievalService.GetRegistrationByIdAsync(id,
+                new RegistrationRetrievalOptions(),
+                cancellationToken); // check if registration exists
+
+            var order = await _orderManagementService.AutoCreateOrUpdateOrder(id, dto.Lines, cancellationToken);
+
+            return order != null ? Ok(order) : NoContent();
+        }
     }
 }

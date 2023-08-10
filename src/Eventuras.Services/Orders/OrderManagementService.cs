@@ -129,6 +129,87 @@ namespace Eventuras.Services.Orders
             return order;
         }
 
+        public async Task<Order?> AutoCreateOrUpdateOrder(
+            int registrationId,
+            IEnumerable<OrderLineModel> expectedOrderLines,
+            CancellationToken cancellationToken = default)
+        {
+            var expectedOrderLinesSanitized = SanitizeOrderLines(expectedOrderLines);
+
+            // Get order lines in registration
+            var registration = await GetRegistrationForUpdate(registrationId, cancellationToken);
+            var registrationOrderLines = registration.Orders
+                .SelectMany(o => o.OrderLines)
+                .Select(OrderLineModel.FromOrderLineDomainModel);
+            var registrationOrderLinesSanitized = SanitizeOrderLines(registrationOrderLines);
+
+            // Get order lines diff with registration lines, if there are no diff - exit early
+            var diff = GetDifferenceInOrderLines(expectedOrderLinesSanitized, registrationOrderLinesSanitized);
+            if (diff.Count == 0) return null;
+
+            // Find newest order viable to be updated
+            var order = registration.Orders.Where(o => o.CanEdit).MaxBy(o => o.OrderTime);
+            if (order != null)
+            {
+                var combinedDiffAndOrder = SanitizeOrderLines(diff.Union(order.OrderLines.Select(OrderLineModel.FromOrderLineDomainModel)));
+                await UpdateOrderLinesAsync(order, combinedDiffAndOrder.ToArray(), cancellationToken);
+                return order;
+            }
+
+            // if no order found for update - create a new order
+            order = await CreateOrderForRegistrationAsync(registrationId, diff, cancellationToken);
+            return order;
+
+            static ICollection<OrderLineModel> SanitizeOrderLines(IEnumerable<OrderLineModel> orderLineModels)
+            {
+                var sanitized = orderLineModels
+
+                    // combine duplications of same products in order lines into single order line
+                    .GroupBy(ol => new { ol.ProductId, ol.ProductVariantId })
+                    .Select(group => new OrderLineModel(group.Key.ProductId, group.Key.ProductVariantId, group.Sum(ol => ol.Quantity)))
+
+                    // remove order lines with zero quantity
+                    .Where(ol => ol.Quantity != 0);
+
+                return sanitized.ToArray();
+            }
+
+            static ICollection<OrderLineModel> GetDifferenceInOrderLines(
+                ICollection<OrderLineModel> expected,
+                ICollection<OrderLineModel> actual)
+            {
+                var toAdd = expected
+                    .ExceptBy(actual.Select(ol => new { ol.ProductId, ol.ProductVariantId }), ol => new { ol.ProductId, ol.ProductVariantId });
+
+                var toRemove = actual
+                    .ExceptBy(expected.Select(ol => new { ol.ProductId, ol.ProductVariantId }), ol => new { ol.ProductId, ol.ProductVariantId })
+                    .Select(ol => ol.CreateWithInvertedQuantity());
+
+                var toUpdate = GetUpdates(expected, actual);
+
+                return toAdd
+                    .Union(toRemove)
+                    .Union(toUpdate)
+                    .ToArray();
+
+                static IEnumerable<OrderLineModel> GetUpdates(
+                    ICollection<OrderLineModel> expected,
+                    IEnumerable<OrderLineModel> actual)
+                {
+                    var intersect = actual.IntersectBy(
+                        expected.Select(ol => new { ol.ProductId, ol.ProductVariantId }), ol => new { ol.ProductId, ol.ProductVariantId });
+
+                    foreach (var act in intersect)
+                    {
+                        var exp = expected.FirstOrDefault(ol => ol.ProductId == act.ProductId && ol.ProductVariantId == act.ProductVariantId);
+                        if (exp == null) continue;
+
+                        yield return act with { Quantity = exp.Quantity - act.Quantity };
+                    }
+                }
+            }
+        }
+
         private async Task<Registration> GetRegistrationForUpdate(int registrationId, CancellationToken cancellationToken)
         {
             Registration registration;
@@ -139,7 +220,8 @@ namespace Eventuras.Services.Orders
                                    {
                                        LoadUser = true,
                                        LoadEventInfo = true,
-                                       ForUpdate = true
+                                       ForUpdate = true,
+                                       LoadOrders = true
                                    },
                                    cancellationToken)
                             ?? throw new ArgumentServiceException($"Registration by id {registrationId} was not found", nameof(registrationId));
