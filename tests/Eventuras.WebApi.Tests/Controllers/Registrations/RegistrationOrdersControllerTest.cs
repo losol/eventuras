@@ -1,8 +1,15 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Eventuras.Domain;
+using Eventuras.Infrastructure;
 using Eventuras.Services;
+using Eventuras.Services.Orders;
 using Eventuras.TestAbstractions;
+using Eventuras.WebApi.Controllers.Orders;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Registrations
@@ -416,6 +423,154 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
 
         #endregion
 
+        #region AutoCreateOrUpdate
+
+        [Fact]
+        public async Task AutoCreateOrUpdate_Should_CreateNewOrder_When_ThereAreNoOrders()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var ev = await scope.CreateEventAsync();
+            using var reg = await scope.CreateRegistrationAsync( ev.Entity, user.Entity);
+            using var prod = await scope.CreateProductAsync(ev.Entity);
+
+            var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
+            var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/products",
+                new OrderUpdateRequestDto
+                {
+                    Lines = new [] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
+                });
+
+            response.CheckOk();
+
+            await CheckOrderCreatedAsync(scope, reg.Entity, prod.Entity);
+        }
+
+        [Fact]
+        public async Task AutoCreateOrUpdate_Should_CreateOrder_If_ThereAreNoEditableOrders()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var ev = await scope.CreateEventAsync();
+            using var reg = await scope.CreateRegistrationAsync( ev.Entity, user.Entity);
+            using var prod = await scope.CreateProductAsync(ev.Entity);
+            using var order = await scope.CreateOrderAsync(reg.Entity, status: Order.OrderStatus.Invoiced);
+
+            var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
+            var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/products",
+                new OrderUpdateRequestDto
+                {
+                    Lines = new [] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
+                });
+
+            response.CheckOk();
+
+            Assert.Equal(2, scope.Db.Orders.Count(o => o.RegistrationId == reg.Entity.RegistrationId));
+        }
+
+        [Fact]
+        public async Task AutoCreateOrUpdate_Should_UpdateOrder_If_ThereAreEditableOrders()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var ev = await scope.CreateEventAsync();
+            using var reg = await scope.CreateRegistrationAsync( ev.Entity, user.Entity);
+            using var prod = await scope.CreateProductAsync(ev.Entity);
+            using var order = await scope.CreateOrderAsync(reg.Entity);
+
+            var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
+            var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/products",
+                new OrderUpdateRequestDto
+                {
+                    Lines = new [] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
+                });
+
+            response.CheckOk();
+
+            await CheckOrderCreatedAsync(scope, reg.Entity, prod.Entity);
+            Assert.Single(scope.Db.Orders.Where(o => o.RegistrationId == reg.Entity.RegistrationId));
+        }
+
+        [Fact]
+        public async Task AutoCreateOrUpdate_Should_ReturnBadRequest_If_DataHasNegativeQuantity()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var ev = await scope.CreateEventAsync();
+            using var reg = await scope.CreateRegistrationAsync( ev.Entity, user.Entity);
+            using var prod = await scope.CreateProductAsync(ev.Entity);
+
+            var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
+            var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/products",
+                new OrderUpdateRequestDto
+                {
+                    Lines = new [] { new OrderLineModel(prod.Entity.ProductId, null, -1) }
+                });
+
+            response.CheckBadRequest();
+            Assert.Empty(scope.Db.Orders.Where(o => o.RegistrationId == reg.Entity.RegistrationId));
+        }
+
+        [Fact]
+        public async Task AutoCreateOrUpdate_Should_ReturnNoAction_If_NoDifferenceWithRegistration()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var ev = await scope.CreateEventAsync();
+            using var reg = await scope.CreateRegistrationAsync( ev.Entity, user.Entity);
+            using var prod = await scope.CreateProductAsync(ev.Entity);
+            using var order = await scope.CreateOrderAsync(reg.Entity, prod.Entity);
+
+            var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
+            var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/products",
+                new OrderUpdateRequestDto
+                {
+                    Lines = new [] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
+                });
+
+            response.CheckStatusCode(HttpStatusCode.NoContent);
+            Assert.Single(scope.Db.Orders.Where(o => o.RegistrationId == reg.Entity.RegistrationId));
+        }
+
+        [Fact]
+        public async Task AutoCreateOrUpdate_Should_CreateOrderToApplyDifference()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var ev = await scope.CreateEventAsync();
+            using var reg = await scope.CreateRegistrationAsync(ev.Entity, user.Entity);
+            using var prodToRemove = await scope.CreateProductAsync(ev.Entity, minimumQuantity: 0);
+            using var prodToUpdateReduceQuantity = await scope.CreateProductAsync(ev.Entity);
+            using var prodToUpdateAddQuantity = await scope.CreateProductAsync(ev.Entity);
+            using var prodToAdd = await scope.CreateProductAsync(ev.Entity, minimumQuantity: 0);
+            using var order = await scope.CreateOrderAsync(reg.Entity,
+                new[] { prodToRemove.Entity, prodToUpdateReduceQuantity.Entity, prodToUpdateAddQuantity.Entity },
+                null,
+                new[] { 1, 3, 1 });
+            var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
+
+            var lines = new[]
+            {
+                new OrderLineModel(prodToUpdateReduceQuantity.Entity.ProductId, null, 2),
+                new OrderLineModel(prodToUpdateAddQuantity.Entity.ProductId, null, 2),
+                new OrderLineModel(prodToAdd.Entity.ProductId, null, 2)
+            };
+
+            var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/products",
+                new OrderUpdateRequestDto
+                {
+                    Lines = lines
+                });
+
+            response.CheckOk();
+            Assert.Single(scope.Db.Orders.Where(o => o.RegistrationId == reg.Entity.RegistrationId));
+
+            using var newScope = _factory.Services.CreateScope();
+            CheckRegistrationOrderedProducts(newScope, reg.Entity.RegistrationId, lines);
+        }
+
+        #endregion
+
         private async Task<Order> CheckOrderCreatedAsync(TestServiceScope scope, Registration reg,
             params Product[] products)
         {
@@ -428,6 +583,39 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             Assert.All(order.OrderLines, line => Assert.Contains(products, p => p.ProductId == line.ProductId));
 
             return order;
+        }
+
+        private static void CheckRegistrationOrderedProducts(IServiceScope scope, int registrationId, params OrderLineModel[] expectedLines)
+        {
+            var dbCtx = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var reg = dbCtx.Registrations
+                .Include(registration => registration.Orders)
+                .ThenInclude(order => order.OrderLines)
+                .Single(r => r.RegistrationId == registrationId);
+
+            var expectedLinesSanitized = SanitizeOrderLines(expectedLines).OrderBy(ol => ol.ProductId).ThenBy(ol => ol.ProductVariantId);
+
+            var regOrderLines = reg.Orders.SelectMany(o => o.OrderLines).Select(OrderLineModel.FromOrderLineDomainModel);
+            var regOrderLinesSanitized = SanitizeOrderLines(regOrderLines).OrderBy(ol => ol.ProductId).ThenBy(ol => ol.ProductVariantId);
+
+            Assert.Equal(expectedLinesSanitized, regOrderLinesSanitized);
+
+            return;
+
+            static IEnumerable<OrderLineModel> SanitizeOrderLines(IEnumerable<OrderLineModel> orderLineModels)
+            {
+                var sanitized = orderLineModels
+
+                    // combine duplications of same products in order lines into single order line
+                    .GroupBy(ol => new { ol.ProductId, ol.ProductVariantId })
+                    .Select(group => new OrderLineModel(group.Key.ProductId, group.Key.ProductVariantId, group.Sum(ol => ol.Quantity)))
+
+                    // remove order lines with zero quantity
+                    .Where(ol => ol.Quantity != 0);
+
+                return sanitized.ToArray();
+            }
         }
     }
 }

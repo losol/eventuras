@@ -45,6 +45,12 @@ namespace Eventuras.TestAbstractions
             return response;
         }
 
+        public static HttpResponseMessage CheckStatusCode(this HttpResponseMessage response, params HttpStatusCode[] allowedStatuses)
+        {
+            Assert.Contains(response.StatusCode, allowedStatuses);
+            return response;
+        }
+
         public static HttpResponseMessage CheckSuccess(this HttpResponseMessage response)
         {
             Assert.InRange((int)response.StatusCode, 200, 299);
