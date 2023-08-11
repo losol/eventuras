@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
@@ -16,7 +18,7 @@ namespace Eventuras.Services.Registrations
         Task<Registration> CreateRegistrationAsync(
             int eventId,
             string userId,
-            RegistrationOptions options = null,
+            RegistrationOptions? options = null,
             CancellationToken cancellationToken = default);
 
         /// <exception cref="Exceptions.NotAccessibleException">Not permitted to update the given registration.</exception>

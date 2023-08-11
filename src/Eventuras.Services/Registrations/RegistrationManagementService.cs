@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Linq;
 using System.Threading;
@@ -27,31 +29,23 @@ namespace Eventuras.Services.Registrations
             IUserRetrievalService userRetrievalService,
             ApplicationDbContext context)
         {
-            _registrationAccessControlService = registrationAccessControlService ?? throw
-                new ArgumentNullException(nameof(context));
-
-            _eventInfoRetrievalService = eventInfoRetrievalService ?? throw
-                new ArgumentNullException(nameof(eventInfoRetrievalService));
-
-            _userRetrievalService = userRetrievalService ?? throw
-                new ArgumentNullException(nameof(userRetrievalService));
-
-            _context = context ?? throw
-                new ArgumentNullException(nameof(context));
-
-            _orderManagementService = orderManagementService ?? throw
-                new ArgumentNullException(nameof(orderManagementService));
+            _registrationAccessControlService = registrationAccessControlService;
+            _eventInfoRetrievalService = eventInfoRetrievalService;
+            _userRetrievalService = userRetrievalService;
+            _context = context;
+            _orderManagementService = orderManagementService;
         }
 
         public async Task<Registration> CreateRegistrationAsync(
             int eventId,
             string userId,
-            RegistrationOptions options,
-            CancellationToken cancellationToken)
+            RegistrationOptions? options = null,
+            CancellationToken cancellationToken = default)
         {
             var existingRegistration = await _context.Registrations
-                .FirstOrDefaultAsync(m => m.EventInfoId == eventId &&
-                                          m.UserId == userId, cancellationToken: cancellationToken);
+                .FirstOrDefaultAsync(m => m.EventInfoId == eventId
+                                       && m.UserId == userId,
+                    cancellationToken);
 
             if (existingRegistration != null)
             {
@@ -91,7 +85,8 @@ namespace Eventuras.Services.Registrations
             {
                 var mandatoryItems = eventInfo.Products
                     .Where(p => p.IsMandatory)
-                    .Select(p => new OrderLineModel(p.ProductId, null, p.MinimumQuantity) ).ToArray();
+                    .Select(p => new OrderLineModel(p.ProductId, null, p.MinimumQuantity))
+                    .ToArray();
 
                 if (mandatoryItems.Any())
                 {
@@ -103,8 +98,8 @@ namespace Eventuras.Services.Registrations
                 }
             }
 
-            if (eventInfo.MaxParticipants > 0 && eventInfo
-                .Registrations.Count + 1 >= eventInfo.MaxParticipants)
+            if (eventInfo.MaxParticipants > 0
+             && eventInfo.Registrations.Count + 1 >= eventInfo.MaxParticipants)
             {
                 eventInfo.Status = EventInfo.EventInfoStatus.WaitingList;
                 await _context.SaveChangesAsync(cancellationToken);
@@ -115,7 +110,7 @@ namespace Eventuras.Services.Registrations
 
         public async Task UpdateRegistrationAsync(
             Registration registration,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default)
         {
             if (registration == null)
             {
