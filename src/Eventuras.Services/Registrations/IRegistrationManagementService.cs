@@ -24,12 +24,4 @@ namespace Eventuras.Services.Registrations
             Registration registration,
             CancellationToken cancellationToken = default);
     }
-
-    public class RegistrationOptions
-    {
-        /// <summary>
-        /// Create an order with all mandatory products included.
-        /// </summary>
-        public bool CreateOrder { get; set; }
-    }
 }
