@@ -74,7 +74,7 @@ namespace Eventuras.WebApi.Controllers.Registrations
 
             var order = await _orderManagementService.AutoCreateOrUpdateOrder(id, dto.Lines, cancellationToken);
 
-            return order != null ? Ok(order) : NoContent();
+            return order != null ? Ok(new OrderDto(order)) : NoContent();
         }
     }
 }

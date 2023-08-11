@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Eventuras.Domain
 {
@@ -71,9 +68,9 @@ namespace Eventuras.Domain
                 throw new ArgumentNullException(nameof(product));
             }
 
-            if (quantity <= 0)
+            if (quantity == 0)
             {
-                throw new ArgumentException($"{nameof(quantity)} must be greater than 0 but {quantity} was given");
+                throw new ArgumentException($"{nameof(quantity)} must be a non-zero value");
             }
 
             if (variant != null && variant.ProductId != product.ProductId)

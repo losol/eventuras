@@ -151,7 +151,8 @@ namespace Eventuras.Services.Orders
             var order = registration.Orders.Where(o => o.CanEdit).MaxBy(o => o.OrderTime);
             if (order != null)
             {
-                var combinedDiffAndOrder = SanitizeOrderLines(diff.Union(order.OrderLines.Select(OrderLineModel.FromOrderLineDomainModel)));
+                var existingOrderLines = order.OrderLines.Select(OrderLineModel.FromOrderLineDomainModel);
+                var combinedDiffAndOrder = SanitizeOrderLines(diff.Concat(existingOrderLines));
                 await UpdateOrderLinesAsync(order, combinedDiffAndOrder.ToArray(), cancellationToken);
                 return order;
             }
@@ -159,20 +160,6 @@ namespace Eventuras.Services.Orders
             // if no order found for update - create a new order
             order = await CreateOrderForRegistrationAsync(registrationId, diff, cancellationToken);
             return order;
-
-            static ICollection<OrderLineModel> SanitizeOrderLines(IEnumerable<OrderLineModel> orderLineModels)
-            {
-                var sanitized = orderLineModels
-
-                    // combine duplications of same products in order lines into single order line
-                    .GroupBy(ol => new { ol.ProductId, ol.ProductVariantId })
-                    .Select(group => new OrderLineModel(group.Key.ProductId, group.Key.ProductVariantId, group.Sum(ol => ol.Quantity)))
-
-                    // remove order lines with zero quantity
-                    .Where(ol => ol.Quantity != 0);
-
-                return sanitized.ToArray();
-            }
 
             static ICollection<OrderLineModel> GetDifferenceInOrderLines(
                 ICollection<OrderLineModel> expected,
@@ -190,6 +177,7 @@ namespace Eventuras.Services.Orders
                 return toAdd
                     .Union(toRemove)
                     .Union(toUpdate)
+                    .Where(ol => ol.Quantity != 0)
                     .ToArray();
 
                 static IEnumerable<OrderLineModel> GetUpdates(
@@ -208,6 +196,20 @@ namespace Eventuras.Services.Orders
                     }
                 }
             }
+        }
+
+        private static ICollection<OrderLineModel> SanitizeOrderLines(IEnumerable<OrderLineModel> orderLineModels)
+        {
+            var sanitized = orderLineModels
+
+                // combine duplications of same products in order lines into single order line
+                .GroupBy(ol => new { ol.ProductId, ol.ProductVariantId })
+                .Select(group => new OrderLineModel(group.Key.ProductId, group.Key.ProductVariantId, group.Sum(ol => ol.Quantity)))
+
+                // remove order lines with zero quantity
+                .Where(ol => ol.Quantity != 0);
+
+            return sanitized.ToArray();
         }
 
         private async Task<Registration> GetRegistrationForUpdate(int registrationId, CancellationToken cancellationToken)
@@ -288,18 +290,26 @@ namespace Eventuras.Services.Orders
             foreach (var order in registration.Orders) await LoadLinesInOrder(order);
 
             var mandatoryProducts = eventInfo.Products.Where(p => p.MinimumQuantity > 0);
-            var orderedProducts = registration.Orders
+
+            var registrationOrderLines = SanitizeOrderLines(registration.Orders
                 .SelectMany(o => o.OrderLines)
+                .Select(OrderLineModel.FromOrderLineDomainModel));
+            var orderedProductsWithAllVariants = registrationOrderLines
                 .GroupBy(ol => ol.ProductId)
-                .ToDictionary(group => (int)group.Key!, group => group.Sum(ol => ol.Quantity));
+                .ToDictionary(group => group.Key, group => group.Sum(ol => ol.Quantity));
 
             foreach (var mandatoryProduct in mandatoryProducts)
             {
-                orderedProducts.TryGetValue(mandatoryProduct.ProductId, out var orderedSum);
+                orderedProductsWithAllVariants.TryGetValue(mandatoryProduct.ProductId, out var orderedSum);
                 if (orderedSum < mandatoryProduct.MinimumQuantity)
                     throw new ArgumentServiceException($"Product with id {mandatoryProduct.ProductId} has minimum quantity "
                                                      + $"{mandatoryProduct.MinimumQuantity}, but current registration has ordered only {orderedSum}");
             }
+
+            var orderedProductWithNegativeAmount = registrationOrderLines.FirstOrDefault(ol => ol.Quantity < 0);
+            if (orderedProductWithNegativeAmount != null)
+                throw new ArgumentServiceException($"Product with id {orderedProductWithNegativeAmount.ProductId} was ordered a negative amount "
+                                                 + $"({orderedProductWithNegativeAmount.Quantity}) in total for current registration.");
 
             return;
 
