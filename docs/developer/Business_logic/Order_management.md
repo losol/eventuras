@@ -316,6 +316,6 @@ To accomplish getting the right number of current products, we need to add a new
 | ItemCode | Product name           | Quantity | Price | Line total |
 | -------- | ---------------------- | -------- | ----- | ---------- |
 | K2-1     | Refund of Small dinner | -1       | 400   | -400       |
-| K2-1     | Large dinner           | 1        | 600   | 600        |
+| K2-2     | Large dinner           | 1        | 600   | 600        |
 | K5       | Guided walk            | 1        | 0     | 0          |
 
