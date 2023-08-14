@@ -18,5 +18,7 @@ namespace Eventuras.WebApi.Controllers.Orders
         public bool IncludeUser { get; set; } = false;
 
         public bool IncludeRegistration { get; set; } = false;
+
+        public int? OrganizationId { get; set; }
     }
 }

@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
+using Eventuras.WebApi.Controllers.Orders;
+using Eventuras.WebApi.Models;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
 using Xunit;
@@ -232,6 +234,31 @@ namespace Eventuras.WebApi.Tests.Controllers.Orders
             response = await client.GetAsync("/v3/orders?status=cancelled");
             json = await response.CheckOk().AsTokenAsync();
             json.CheckPaging((t, o) => t.CheckOrder(o), o2.Entity);
+        }
+
+        [Fact]
+        public async Task List_Should_Support_OrganizationId_Param()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var u = await scope.CreateUserAsync();
+
+            using var org1 = await scope.CreateOrganizationAsync();
+            using var e1 = await scope.CreateEventAsync(organization: org1.Entity);
+            using var r1 = await scope.CreateRegistrationAsync(e1.Entity, u.Entity);
+            using var o1 = await scope.CreateOrderAsync(r1.Entity);
+
+            using var org2 = await scope.CreateOrganizationAsync();
+            using var e2 = await scope.CreateEventAsync(organization: org2.Entity);
+            using var r2 = await scope.CreateRegistrationAsync(e2.Entity, u.Entity);
+            using var o2 = await scope.CreateOrderAsync(r2.Entity);
+
+            var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+
+            var response = await client.GetAsync($"/v3/orders?organizationId={org1.Entity.OrganizationId}");
+            var content = await response.CheckOkAndGetContentAsync<PageResponseDto<OrderDto>>();
+
+            Assert.NotEmpty(content.Data.Where(o => o.OrderId == o1.Entity.OrderId));
+            Assert.Empty(content.Data.Where(o => o.OrderId == o2.Entity.OrderId));
         }
 
         [Fact]

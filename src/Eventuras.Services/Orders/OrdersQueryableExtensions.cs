@@ -84,7 +84,7 @@ namespace Eventuras.Services.Orders
             {
                 query = query.Where(o => o.RegistrationId == filter.RegistrationId);
             }
-            
+
             if (filter.EventId.HasValue)
             {
                 query = query.Where(o => o.Registration.EventInfoId == filter.EventId);
@@ -93,6 +93,11 @@ namespace Eventuras.Services.Orders
             if (filter.Status.HasValue)
             {
                 query = query.Where(o => o.Status == filter.Status);
+            }
+
+            if (filter.OrganizationId.HasValue)
+            {
+                query = query.Where(o => o.Registration.EventInfo.OrganizationId == filter.OrganizationId);
             }
 
             return query;
