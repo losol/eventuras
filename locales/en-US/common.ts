@@ -7,12 +7,6 @@ const LOCALES_COMMON_EN: LocalesCommonType = {
       login: 'Login',
       logout: 'Logout',
     },
-    userMenu: {
-      title: 'Profile',
-      profile: 'My profile',
-      myCourses: 'My courses',
-      admin: 'Admin',
-    },
   },
   // Common section titles
   events: 'Events',

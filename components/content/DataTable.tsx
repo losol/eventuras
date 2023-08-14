@@ -1,3 +1,5 @@
+'use client';
+
 import {
   IconArrowLeft,
   IconArrowRight,
@@ -108,3 +110,4 @@ const DataTable = (props: DataTableProps) => {
 };
 
 export default DataTable;
+export { createColumnHelper } from '@tanstack/react-table';

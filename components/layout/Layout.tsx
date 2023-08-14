@@ -1,4 +1,4 @@
-import { Container, Footer, Header } from 'components/layout';
+import { Footer, Header } from 'components/layout';
 import { ReactNode } from 'react';
 
 type LayoutProps = {
@@ -9,10 +9,8 @@ const Layout = (props: LayoutProps) => {
   const { children } = props;
   return (
     <>
-      <Header />
-      <main>
-        <Container>{children}</Container>
-      </main>
+      <Header title="Eventuras" />
+      <main id="main-content">{children}</main>
       <Footer />
     </>
   );

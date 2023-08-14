@@ -1,3 +1,5 @@
+'use client';
+
 import { Switch as HeadlessSwitch } from '@headlessui/react';
 import React from 'react';
 

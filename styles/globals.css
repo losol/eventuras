@@ -3,10 +3,24 @@
 @tailwind utilities;
 
 @layer base {
-  #__next {
-    @apply flex flex-col min-h-screen antialiased text-gray-800 dark:text-gray-200;
+  body {
+    @apply flex flex-col min-h-screen antialiased bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200;
   }
   main {
-    @apply flex-grow p-16 bg-white text-gray-800 dark:bg-gray-800 dark:text-gray-200;
+    @apply flex-grow sm:px-2 md:p-3 lg:p-8;
+  }
+}
+
+@layer utilities {
+  .stretched-link::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    pointer-events: auto;
+    content: '';
+    background-color: rgba(0, 0, 0, 0);
   }
 }

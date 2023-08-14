@@ -18,11 +18,6 @@ export type LocalesCommonType = {
       login: string;
       logout: string;
     };
-    userMenu: {
-      profile: string;
-      myCourses: string;
-      admin: string;
-    } & Title;
   };
   // Common section titles
   events: string;

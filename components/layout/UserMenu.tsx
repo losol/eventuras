@@ -1,22 +1,22 @@
+'use client';
+
+import { Spinner } from 'components/feedback';
 import { Button } from 'components/inputs';
-import Link from 'next/link';
-import useTranslation from 'next-translate/useTranslation';
+import { signIn, signOut, useSession } from 'next-auth/react';
 
-type UserMenuProps = {
-  signOut(): void;
-  name?: string;
-};
-
-const UserMenu = (props: UserMenuProps) => {
-  const { signOut } = props;
-  const { t } = useTranslation('common');
+const UserMenu = () => {
+  const { status } = useSession();
 
   return (
-    <div>
-      <Link href="/user">{t('header.userMenu.title')}</Link>
-      <Link href="/user">{t('header.userMenu.title')}</Link>
-      <Button onClick={signOut}>{t('header.auth.logout')}</Button>
-    </div>
+    <>
+      {status === 'unauthenticated' && <Button onClick={() => signIn('auth0')}>Log in</Button>}
+      {status === 'authenticated' && <Button onClick={() => signOut()}>Log out</Button>}
+      {status === 'loading' && (
+        <Button className="cursor-not-allowed" disabled={true}>
+          <Spinner />
+        </Button>
+      )}
+    </>
   );
 };
 

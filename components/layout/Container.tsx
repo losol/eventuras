@@ -1,12 +1,16 @@
+import React from 'react';
+
 interface ContainerProps {
   children: React.ReactNode;
+  as?: 'div' | 'section';
 }
 
-const Container = (props: ContainerProps) => {
+const Container: React.FC<ContainerProps> = ({ children, as: Component = 'div', ...rest }) => {
   return (
-    <>
-      <div className="container mx-auto">{props.children}</div>
-    </>
+    <Component className="container-lg mx-auto sm:px-2 md:px-4" {...rest}>
+      {children}
+    </Component>
   );
 };
+
 export default Container;

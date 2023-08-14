@@ -1,6 +1,6 @@
-import { useSession } from 'next-auth/react';
-import { createContext, ReactNode, useEffect, useState } from 'react';
-import useSWR from 'swr';
+'use client';
+
+import { createContext, ReactNode, useState } from 'react';
 import { UserProfile } from 'types/UserProfile';
 
 // interface UserProviderProps {
@@ -18,14 +18,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     // phoneNumber: '',
   };
   const [user, setUser] = useState(initialUser);
-  const { data: session } = useSession();
-  const { data: userDetails } = useSWR(session ? '/api/getUserProfile' : '');
   const updateUser = (updated_user: UserProfile) => {
     setUser(updated_user);
   };
-  useEffect(() => {
-    setUser(userDetails);
-  }, [userDetails]);
 
   return <UserContext.Provider value={{ user, updateUser }}>{children}</UserContext.Provider>;
 };

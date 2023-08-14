@@ -3,7 +3,7 @@ interface ButtonProps {
   children?: React.ReactNode;
   disabled?: boolean;
   leftIcon?: React.ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
   primary?: boolean;
   className?: string;
 }
