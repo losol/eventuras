@@ -1,15 +1,15 @@
-import RegistrationComplete from 'components/event/register-steps/RegistrationComplete';
-import RegistrationCustomize from 'components/event/register-steps/RegistrationCustomize';
-import RegistrationPayment, {
-  PaymentFormValues,
-} from 'components/event/register-steps/RegistrationPayment';
+'use client';
+import { OpenAPI, UsersService } from '@losol/eventuras';
+import RegistrationComplete from './components/RegistrationComplete';
+import RegistrationCustomize from './components/RegistrationCustomize';
+import RegistrationPayment, { PaymentFormValues } from './components/RegistrationPayment';
 import { Loading } from 'components/feedback';
 import { Layout } from 'components/layout';
 import createEventRegistration from 'helpers/createEventRegistration';
 import { mapEventProductsToView } from 'helpers/modelviewMappers';
 import useEventProducts from 'hooks/useEventProducts';
 import useMyUserProfile from 'hooks/useMyUserProfile';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 type PageStep = 'Customize' | 'Payment' | 'Complete' | 'Error';
@@ -20,14 +20,13 @@ const throwUserNotFoundError = () => {
   );
 };
 
-const EventRegistration = () => {
+const UserEventRegistration = ({ params }: { params: any }) => {
   let selectedProducts: Map<string, number> = new Map();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<PageStep>('Customize');
-  const eventId = parseInt(router.query.id as string, 10);
+  const eventId = parseInt(params.id as string, 10);
   const { userProfile, loading: loadingUser } = useMyUserProfile();
   const { registrationProducts, loading: loadingRegistrationProducts } = useEventProducts(eventId);
-
   const onCustomize = (selected: Map<string, number>) => {
     console.log({ selectedProducts });
     selectedProducts = selected;
@@ -89,4 +88,4 @@ const EventRegistration = () => {
   return <Layout>{renderStep(currentStep)}</Layout>;
 };
 
-export default EventRegistration;
+export default UserEventRegistration;

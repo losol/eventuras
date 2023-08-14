@@ -1,9 +1,11 @@
-const UserEventRegistrationPage = () => {
+'use client';
+
+const UserEventPage = () => {
   return (
     <div>
-      <h1>UserEventRegistrationPage</h1>
+      <h1>User Event Page</h1>
     </div>
   );
 };
 
-export default UserEventRegistrationPage;
+export default UserEventPage;

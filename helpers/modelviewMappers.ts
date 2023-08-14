@@ -6,8 +6,9 @@ import { RegistrationProduct } from 'types/RegistrationProduct';
  * Prevent feeding Dto's or API shapes directly to views
  *
  */
-export const mapEventProductsToView = (eventProducts: ProductDto[]): RegistrationProduct[] =>
-  eventProducts
+export const mapEventProductsToView = (eventProducts: ProductDto[]): RegistrationProduct[] =>{
+  if(!eventProducts || !eventProducts.length)return []
+  return eventProducts
     .map((product: ProductDto) => {
       let minimumQuantity = 0;
       if (product.enableQuantity) {
@@ -27,3 +28,4 @@ export const mapEventProductsToView = (eventProducts: ProductDto[]): Registratio
       if (a.mandatory) return -1;
       return 0;
     });
+}

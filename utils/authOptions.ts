@@ -22,10 +22,7 @@ export const authOptions: AuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async session({ session, token }: any) {
-      session.accessToken = token.accessToken;
-      return session;
-    },
+ 
     async jwt({ token, user, account }: { token: any; user: any; account: any }) {
       // Initial sign in
       if (account && user) {
@@ -35,7 +32,6 @@ export const authOptions: AuthOptions = {
         console.log({ user, account });
         return {
           ...token,
-          accessToken: account.access_token,
           refreshToken: account.refresh_token,
           accessTokenExpires: account.expires_at * 1000,
           user,

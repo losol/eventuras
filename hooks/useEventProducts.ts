@@ -1,4 +1,5 @@
 import { OpenAPI, ProductDto } from '@losol/eventuras';
+import apiResponseHandler from 'helpers/apiResponseHandler';
 import { useEffect, useRef, useState } from 'react';
 
 /*
@@ -7,9 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 */
 
 const getAPIEventProducts = ({ eventId }: { eventId: number }) =>
-  fetch(`${OpenAPI.BASE}/${process.env.NEXT_PUBLIC_API_VERSION}/events/${eventId}/products`).then(
-    r => r.json()
-  );
+  fetch(`${OpenAPI.BASE}/${process.env.NEXT_PUBLIC_API_VERSION}/events/${eventId}/products`)
 
 const useEventProducts = (eventId: number) => {
   const eventRef = useRef(eventId);
@@ -22,7 +21,7 @@ const useEventProducts = (eventId: number) => {
       setLoading(true);
       const eventProducts = await getAPIEventProducts({
         eventId: eventRef.current,
-      }).catch(err => {
+      }).then(apiResponseHandler).catch(err => {
         console.error(err);
         return [];
       });

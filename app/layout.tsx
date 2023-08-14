@@ -18,22 +18,21 @@ export const dynamic = 'force-dynamic';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session: Session | null = await getServerSession(authOptions);
-  let clientSideSession: Session | null = null;
-
+  /**
+   *
+   * These are server-side configurations, not available client-side.
+   * For OpenAPI configuration on the client, check out providers.tsx
+   */
+  
   OpenAPI.BASE = process.env.API_BASE_URL!;
   OpenAPI.VERSION = process.env.NEXT_PUBLIC_API_VERSION!;
-
-  if (session) {
-    clientSideSession = { ...session };
-    delete clientSideSession.accessToken;
-
-    OpenAPI.TOKEN = session.accessToken ?? '';
-  }
+  OpenAPI.TOKEN = session?.accessToken ?? '';
+  const strippedSession = {...session,accessToken:undefined} as Session
 
   return (
     <html lang="en">
       <body>
-        <Providers session={clientSideSession}>{children}</Providers>
+        <Providers session={strippedSession}>{children}</Providers>
       </body>
     </html>
   );
