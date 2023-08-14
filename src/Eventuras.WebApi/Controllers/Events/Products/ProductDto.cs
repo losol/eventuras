@@ -30,6 +30,13 @@ namespace Eventuras.WebApi.Controllers.Events.Products
 
         public bool EnableQuantity { get; set; }
 
+        [Obsolete("For JSON deserialization only, do not use manually", true)]
+        public ProductDto()
+        {
+            Name = null!;
+            Variants = null!;
+        }
+
         public ProductDto(Product product)
         {
             ArgumentNullException.ThrowIfNull(product);

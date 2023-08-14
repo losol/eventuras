@@ -1,10 +1,10 @@
 #nullable enable
 
+using System;
 using System.Linq;
 using Eventuras.Domain;
 using Eventuras.WebApi.Controllers.Users;
 using Newtonsoft.Json;
-using NodaTime;
 
 namespace Eventuras.WebApi.Controllers.Orders
 {
@@ -14,7 +14,7 @@ namespace Eventuras.WebApi.Controllers.Orders
 
         public Order.OrderStatus Status { get; set; }
 
-        public Instant Time { get; set; }
+        public DateTimeOffset Time { get; set; }
 
         public string UserId { get; set; }
 
@@ -28,11 +28,18 @@ namespace Eventuras.WebApi.Controllers.Orders
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public UserDto? User { get; set; }
 
+
+        [Obsolete("For JSON deserialization only, do not use manually", true)]
+        public OrderDto()
+        {
+            UserId = null!;
+        }
+
         public OrderDto(Order order)
         {
             OrderId = order.OrderId;
             Status = order.Status;
-            Time = order.OrderTime;
+            Time = order.OrderTime.ToDateTimeOffset();
             UserId = order.UserId;
             RegistrationId = order.RegistrationId;
 
