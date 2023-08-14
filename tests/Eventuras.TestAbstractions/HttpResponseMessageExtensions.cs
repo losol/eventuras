@@ -1,5 +1,9 @@
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -43,6 +47,20 @@ namespace Eventuras.TestAbstractions
         {
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             return response;
+        }
+
+        public static async Task<TContent> CheckOkAndGetContentAsync<TContent>(
+            this HttpResponseMessage response,
+            CancellationToken cancellationToken = default)
+        {
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            var options = new JsonSerializerOptions
+            {
+                Converters = { new JsonStringEnumConverter() },
+                PropertyNameCaseInsensitive = true,
+            };
+            return await response.Content.ReadFromJsonAsync<TContent>(options, cancellationToken);
         }
 
         public static HttpResponseMessage CheckStatusCode(this HttpResponseMessage response, params HttpStatusCode[] allowedStatuses)
