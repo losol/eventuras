@@ -105,8 +105,7 @@ namespace Eventuras.WebApi.Tests
             var statusStr = token.Value<string>("status");
             Assert.NotNull(statusStr);
             Assert.Equal(order.Status, Enum.Parse<Order.OrderStatus>(statusStr));
-            Assert.Equal(order.OrderTime.ToString("yyyy-MM-ddTHH:mm:ss"),
-                token.Value<DateTime>("time").ToString("yyyy-MM-ddTHH:mm:ss"));
+            Assert.Equal(order.OrderTime.ToDateTimeUtc(), token.ReadAsDateTimeOffset("time"));
             Assert.Equal(order.UserId, token.Value<string>("userId"));
             Assert.Equal(order.RegistrationId, token.Value<int>("registrationId"));
 
@@ -350,6 +349,14 @@ namespace Eventuras.WebApi.Tests
             var arr = token.Value<JArray>("data");
             arr.CheckArray(f, data);
             return token;
+        }
+
+        static DateTimeOffset? ReadAsDateTimeOffset(this JToken t, string path)
+        {
+            var subToken = t.SelectToken(path);
+
+            using var reader = subToken?.CreateReader();
+            return reader?.ReadAsDateTimeOffset();
         }
     }
 }

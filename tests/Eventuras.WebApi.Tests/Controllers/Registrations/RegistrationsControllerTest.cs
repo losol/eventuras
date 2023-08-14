@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
+using Eventuras.WebApi.Controllers.Registrations;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using NodaTime;
@@ -572,7 +573,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
                 eventId = e.Entity.EventInfoId,
                 createOrder = true
             });
-            response.CheckOk();
+
+            // Validate response JSON has order and products:
+            var content = await response.CheckOkAndGetContentAsync<RegistrationDto>();
 
             var reg = await scope.Db.Registrations
                 .Include(r => r.Orders)
@@ -580,15 +583,15 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
                 .SingleAsync(r =>
                     r.EventInfoId == e.Entity.EventInfoId &&
                     r.UserId == user.Entity.Id);
+            ModelValidations.CheckRegistration(reg, content, checkAutoCreatedOrder: true, checkProducts: true);
 
-            var token = await response.AsTokenAsync();
-            token.CheckRegistration(reg);
+            // Validate order is saved in database:
             Assert.Single(reg.Orders);
+            var order = reg.Orders[0];
 
-            var order = reg.Orders.Single();
             Assert.Single(order.OrderLines);
+            var orderLine = order.OrderLines[0];
 
-            var orderLine = order.OrderLines.First();
             Assert.Equal(mandatoryProduct.Entity.ProductId, orderLine.ProductId);
             Assert.Equal(mandatoryProduct.Entity.MinimumQuantity, orderLine.Quantity);
         }
