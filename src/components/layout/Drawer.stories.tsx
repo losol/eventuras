@@ -15,7 +15,7 @@ const getRandomHipsterIpsum = () => {
 };
 
 const meta: Meta<typeof Drawer> = {
-  title: '@/components/Drawer',
+  title: 'Components/Drawer',
   component: Drawer,
   parameters: {
     tags: ['autodocs'],

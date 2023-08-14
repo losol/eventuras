@@ -1,5 +1,6 @@
 import { ProductDto } from '@losol/eventuras/models/ProductDto';
-import { RegistrationProduct } from 'types/RegistrationProduct';
+
+import { RegistrationProduct } from '@/types/RegistrationProduct';
 
 /**
  * Contains mappers which map Dto's from the API to whatever the view consumes.

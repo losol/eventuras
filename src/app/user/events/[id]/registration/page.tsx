@@ -6,12 +6,13 @@ import { Loading } from '@/components/feedback';
 import { Layout } from '@/components/layout';
 import useEventProducts from '@/hooks/useEventProducts';
 import useMyUserProfile from '@/hooks/useMyUserProfile';
+import PaymentFormValues from '@/types/PaymentFormValues';
 import createEventRegistration from '@/utils/createEventRegistration';
 import { mapEventProductsToView } from '@/utils/modelviewMappers';
 
 import RegistrationComplete from './components/RegistrationComplete';
 import RegistrationCustomize from './components/RegistrationCustomize';
-import RegistrationPayment, { PaymentFormValues } from './components/RegistrationPayment';
+import RegistrationPayment from './components/RegistrationPayment';
 
 type PageStep = 'Customize' | 'Payment' | 'Complete' | 'Error';
 

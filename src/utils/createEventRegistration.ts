@@ -6,7 +6,7 @@ import {
   RegistrationType,
 } from '@losol/eventuras';
 
-import { PaymentFormValues } from '@/components/event/register-steps/RegistrationPayment';
+import PaymentFormValues from '@/types/PaymentFormValues';
 
 import apiResponseHandler from './apiResponseHandler';
 

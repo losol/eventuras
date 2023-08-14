@@ -1,7 +1,8 @@
 'use client';
 
 import { createContext, ReactNode, useState } from 'react';
-import { UserProfile } from 'types/UserProfile';
+
+import { UserProfile } from '@/types/UserProfile';
 
 // interface UserProviderProps {
 //   user: UserType; // TODO: Check does UserType fit API response

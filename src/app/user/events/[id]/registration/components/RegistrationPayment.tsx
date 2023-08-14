@@ -3,18 +3,8 @@ import useTranslation from 'next-translate/useTranslation';
 import { FieldErrors, SubmitHandler, useForm } from 'react-hook-form';
 
 import { Heading } from '@/components/content';
+import PaymentFormValues from '@/types/PaymentFormValues';
 import { UserProfile } from '@/types/UserProfile';
-
-export type PaymentFormValues = {
-  username: string;
-  email: string;
-  city: string;
-  zip: string;
-  country: string;
-  vatNumber: string;
-  invoiceReference: string;
-  paymentMethod: PaymentProvider;
-};
 
 export type RegistrationPaymentProps = {
   onSubmit: (values: PaymentFormValues) => void;
