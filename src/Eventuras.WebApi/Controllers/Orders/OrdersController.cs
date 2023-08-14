@@ -52,7 +52,8 @@ namespace Eventuras.WebApi.Controllers.Orders
                         UserId = query.UserId,
                         RegistrationId = query.RegistrationId,
                         Status = query.Status,
-                        AccessibleOnly = true
+                        AccessibleOnly = true,
+                        OrganizationId = query.OrganizationId
                     }
                 },
                 new OrderRetrievalOptions

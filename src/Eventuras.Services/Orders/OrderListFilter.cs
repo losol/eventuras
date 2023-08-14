@@ -9,5 +9,6 @@ namespace Eventuras.Services.Orders
         public int? RegistrationId { get; set; }
         public Order.OrderStatus? Status { get; set; }
         public bool AccessibleOnly { get; set; }
+        public int? OrganizationId { get; set; }
     }
 }
