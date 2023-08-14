@@ -16,6 +16,12 @@ namespace Eventuras.WebApi.Controllers.Orders
 
         public int Quantity { get; set; }
 
+        [Obsolete("For JSON deserialization only, do not use manually", true)]
+        public OrderLineDto()
+        {
+            Product = null!;
+        }
+
         public OrderLineDto(OrderLine orderLine)
         {
             ArgumentNullException.ThrowIfNull(orderLine);

@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using Eventuras.Domain;
 
 namespace Eventuras.WebApi.Controllers.Orders
@@ -13,6 +14,9 @@ namespace Eventuras.WebApi.Controllers.Orders
         public Registration.RegistrationType Type { get; set; }
         public int? CertificateId { get; set; }
         public string? Notes { get; set; }
+
+        [Obsolete("For JSON deserialization only, do not use manually", true)]
+        public OrderRegistrationDto() { }
 
         public OrderRegistrationDto(Registration registration)
         {

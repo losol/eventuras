@@ -77,7 +77,7 @@ namespace Eventuras.Services.Registrations
                 registration.Status = Registration.RegistrationStatus.WaitingList;
             }
 
-            await _context.CreateAsync(registration, cancellationToken: cancellationToken);
+            await _context.CreateAsync(registration, true, cancellationToken);
 
             options ??= new RegistrationOptions();
 
