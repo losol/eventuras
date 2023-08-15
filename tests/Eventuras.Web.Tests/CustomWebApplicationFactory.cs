@@ -14,60 +14,48 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
-namespace Eventuras.IntegrationTests
+namespace Eventuras.IntegrationTests;
+
+public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
 {
-    public class CustomWebApplicationFactory<TStartup>
-        : WebApplicationFactory<TStartup> where TStartup : class
+    public readonly Mock<IEmailSender> EmailSenderMock = new();
+
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        public readonly Mock<IEmailSender> EmailSenderMock = new();
+        builder.UseSolutionRelativeContentRoot("src/Eventuras.Web")
+            .UseEnvironment("Development")
+            .ConfigureAppConfiguration(app => app.AddInMemoryCollection(new Dictionary<string, string>
+            {
+                { "AppSettings:UsePowerOffice", "false" },
+                { "AppSettings:UseStripeInvoice", "false" },
+                { "Google:RecaptchaV3:ApiSecret", "anything" },
+                { "Google:RecaptchaV3:Enabled", "false" },
+                { "SuperAdmin:Email", TestingConstants.SuperAdminEmail },
+                { "SuperAdmin:Password", TestingConstants.SuperAdminPassword },
+            }))
+            .ConfigureServices(services =>
+            {
+                // Override already added email sender with the true mock
+                services.AddSingleton(EmailSenderMock.Object);
 
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
-            builder
-                .UseSolutionRelativeContentRoot("src/Eventuras.Web")
-                .UseEnvironment("Development")
-                .ConfigureAppConfiguration(app => app
-                    .AddInMemoryCollection(new Dictionary<string, string>
-                    {
-                        {"AppSettings:UsePowerOffice", "false"},
-                        {"AppSettings:UseStripeInvoice", "false"},
-                        {"Google:RecaptchaV3:ApiSecret", "anything"},
-                        {"Google:RecaptchaV3:Enabled", "false"},
-                        {"SuperAdmin:Email", TestingConstants.SuperAdminEmail},
-                        {"SuperAdmin:Password", TestingConstants.SuperAdminPassword}
-                    }))
-                .ConfigureServices(services =>
-                {
-                    // Override already added email sender with the true mock
-                    services.AddSingleton(EmailSenderMock.Object);
+                // Remove the app's ApplicationDbContext registration.
+                var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
 
-                    // Remove the app's ApplicationDbContext registration.
-                    var descriptor = services.SingleOrDefault(
-                        d => d.ServiceType ==
-                             typeof(DbContextOptions<ApplicationDbContext>));
+                if (descriptor != null) services.Remove(descriptor);
 
-                    if (descriptor != null)
-                    {
-                        services.Remove(descriptor);
-                    }
+                // Add ApplicationDbContext using an in-memory database for testing.
+                services.AddDbContext<ApplicationDbContext>(options => { options.UseInMemoryDatabase("losol-eventmanagement-itests"); });
 
-                    // Add ApplicationDbContext using an in-memory database for testing.
-                    services.AddDbContext<ApplicationDbContext>(options =>
-                    {
-                        options.UseInMemoryDatabase("losol-eventmanagement-itests");
-                    });
+                services.AddScoped<IDbInitializer, TestDbInitializer>();
+                services.AddTransient<IInvoicingProvider, TestInvoicingProvider>();
+                // Build the service provider.
+                var sp = services.BuildServiceProvider();
 
-                    services.AddScoped<IDbInitializer, TestDbInitializer>();
-                    services.AddTransient<IInvoicingProvider, TestInvoicingProvider>();
-                    // Build the service provider.
-                    var sp = services.BuildServiceProvider();
-
-                    // Create a scope to obtain a reference to the database
-                    // context (ApplicationDbContext).
-                    using var scope = sp.CreateScope();
-                    var initializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-                    initializer.SeedAsync().Wait();
-                });
-        }
+                // Create a scope to obtain a reference to the database
+                // context (ApplicationDbContext).
+                using var scope = sp.CreateScope();
+                var initializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+                initializer.SeedAsync().Wait();
+            });
     }
 }

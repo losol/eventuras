@@ -8,75 +8,66 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Logging;
 using static Eventuras.Domain.Registration;
 
-namespace Eventuras.Web.Services
+namespace Eventuras.Web.Services;
+
+public sealed class RegistrationEmailSender
 {
-    public sealed class RegistrationEmailSender
+    private const string Template = "Templates/Email/Registration";
+
+    private readonly IApplicationEmailSender _applicationEmailSender;
+    private readonly IRegistrationService _registrationService;
+    private readonly IUrlHelper _urlHelper;
+    private readonly string _requestScheme;
+    private readonly ILogger<RegistrationEmailSender> _logger;
+
+    public RegistrationEmailSender(
+        IApplicationEmailSender applicationEmailSender,
+        IUrlHelperFactory urlHelperFactory,
+        IActionContextAccessor actionContextAccessor,
+        IRegistrationService registrationService,
+        ILogger<RegistrationEmailSender> logger)
     {
-        private const string Template = "Templates/Email/Registration";
+        _applicationEmailSender = applicationEmailSender;
+        _registrationService = registrationService;
+        _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
+        _requestScheme = actionContextAccessor.ActionContext.HttpContext.Request.Scheme;
+        _logger = logger;
+    }
 
-        private readonly IApplicationEmailSender _applicationEmailSender;
-        private readonly IRegistrationService _registrationService;
-        private readonly IUrlHelper _urlHelper;
-        private readonly string _requestScheme;
-        private readonly ILogger<RegistrationEmailSender> _logger;
+    public async Task SendRegistrationAsync(string emailAddress, string subject, string message, int registrationId)
+    {
+        var registration = await _registrationService.GetWithUserAndEventInfoAndOrders(registrationId);
 
-        public RegistrationEmailSender(
-            IApplicationEmailSender applicationEmailSender,
-            IUrlHelperFactory urlHelperFactory,
-            IActionContextAccessor actionContextAccessor,
-            IRegistrationService registrationService,
-            ILogger<RegistrationEmailSender> logger)
+        var eventRegistration = new EventRegistration
         {
-            _applicationEmailSender = applicationEmailSender;
-            _registrationService = registrationService;
-            _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
-            _requestScheme = actionContextAccessor.ActionContext.HttpContext.Request.Scheme;
-            _logger = logger;
-        }
+            ParticipantName = registration.ParticipantName,
+            EventInfo = registration.EventInfo,
+            Orders = registration.Orders,
+            Email = registration.User.Email,
+            Verified = registration.Status != RegistrationStatus.Draft ? true : false,
+            HasOrder = registration.Orders.Count > 0,
+            Message = message,
+        };
 
-        public async Task SendRegistrationAsync(string emailAddress, string subject, string message, int registrationId)
-        {
-            var registration = await _registrationService.GetWithUserAndEventInfoAndOrders(registrationId);
-
-            var eventRegistration = new EventRegistration
+        eventRegistration.VerificationUrl = _urlHelper.Page("/Events/Register/Confirm",
+            null,
+            new
             {
-                ParticipantName = registration.ParticipantName,
-                EventInfo = registration.EventInfo,
-                Orders = registration.Orders,
-                Email = registration.User.Email,
-                Verified = (registration.Status != RegistrationStatus.Draft) ? true : false,
-                HasOrder = registration.Orders.Count > 0,
-                Message = message
-            };
+                id = registration.RegistrationId,
+                auth = registration.VerificationCode,
+            },
+            _requestScheme);
 
-            eventRegistration.VerificationUrl = _urlHelper.Page(
-                pageName: "/Events/Register/Confirm",
-                pageHandler: null,
-                values: new
-                {
-                    id = registration.RegistrationId,
-                    auth = registration.VerificationCode
-                },
-                protocol: _requestScheme
-            );
+        eventRegistration.EventUrl = _urlHelper.Page("/Events/Details",
+            null,
+            new
+            {
+                id = registration.EventInfoId,
+            },
+            _requestScheme);
 
-            eventRegistration.EventUrl = _urlHelper.Page(
-                pageName: "/Events/Details",
-                pageHandler: null,
-                values: new
-                {
-                    id = registration.EventInfoId
-                },
-                protocol: _requestScheme
-            );
+        _logger.LogInformation("RegistrationEmailSender: Sending registration email for registrationId {RegistrationId}", registrationId);
 
-            _logger.LogInformation(
-                "RegistrationEmailSender: Sending registration email for registrationId {RegistrationId}",
-                registrationId);
-
-            await _applicationEmailSender
-                .SendEmailWithTemplateAsync(Template, emailAddress, subject,
-                    eventRegistration);
-        }
+        await _applicationEmailSender.SendEmailWithTemplateAsync(Template, emailAddress, subject, eventRegistration);
     }
 }

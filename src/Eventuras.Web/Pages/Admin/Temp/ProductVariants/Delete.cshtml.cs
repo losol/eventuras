@@ -1,60 +1,47 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Domain;
+using Eventuras.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
 
-namespace Eventuras.Pages.Admin.Temp.ProductVariants
+namespace Eventuras.Pages.Admin.Temp.ProductVariants;
+
+public class DeleteModel : PageModel
 {
-    public class DeleteModel : PageModel
+    private readonly ApplicationDbContext _context;
+
+    public DeleteModel(ApplicationDbContext context)
     {
-        private readonly ApplicationDbContext _context;
+        _context = context;
+    }
 
-        public DeleteModel(ApplicationDbContext context)
+    [BindProperty]
+    public ProductVariant ProductVariant { get; set; }
+
+    public async Task<IActionResult> OnGetAsync(int? id)
+    {
+        if (id == null) return NotFound();
+
+        ProductVariant = await _context.ProductVariants.Include(p => p.Product).SingleOrDefaultAsync(m => m.ProductVariantId == id);
+
+        if (ProductVariant == null) return NotFound();
+
+        return Page();
+    }
+
+    public async Task<IActionResult> OnPostAsync(int? id)
+    {
+        if (id == null) return NotFound();
+
+        ProductVariant = await _context.ProductVariants.FindAsync(id);
+
+        if (ProductVariant != null)
         {
-            _context = context;
+            _context.ProductVariants.Remove(ProductVariant);
+            await _context.SaveChangesAsync();
         }
 
-        [BindProperty]
-        public ProductVariant ProductVariant { get; set; }
-
-        public async Task<IActionResult> OnGetAsync(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            ProductVariant = await _context.ProductVariants
-                .Include(p => p.Product).SingleOrDefaultAsync(m => m.ProductVariantId == id);
-
-            if (ProductVariant == null)
-            {
-                return NotFound();
-            }
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            ProductVariant = await _context.ProductVariants.FindAsync(id);
-
-            if (ProductVariant != null)
-            {
-                _context.ProductVariants.Remove(ProductVariant);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToPage("./Index");
-        }
+        return RedirectToPage("./Index");
     }
 }

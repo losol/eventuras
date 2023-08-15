@@ -1,8 +1,7 @@
-namespace Eventuras.Services.Certificates
+namespace Eventuras.Services.Certificates;
+
+public enum CertificateListOrder
 {
-    public enum CertificateListOrder
-    {
-        Issued = 1,
-        Title
-    }
+    Issued = 1,
+    Title,
 }

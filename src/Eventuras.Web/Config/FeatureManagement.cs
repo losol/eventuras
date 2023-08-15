@@ -1,7 +1,6 @@
-namespace Eventuras.Web.Config
+namespace Eventuras.Web.Config;
+
+public class FeatureManagement
 {
-    public class FeatureManagement
-    {
-        public bool Sentry { get; set; } = false;
-    }
+    public bool Sentry { get; set; } = false;
 }

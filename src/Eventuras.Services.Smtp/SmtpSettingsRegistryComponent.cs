@@ -1,12 +1,11 @@
 using Eventuras.Services.Organizations.Settings;
 
-namespace Eventuras.Services.Smtp
+namespace Eventuras.Services.Smtp;
+
+internal class SmtpSettingsRegistryComponent : IOrganizationSettingsRegistryComponent
 {
-    internal class SmtpSettingsRegistryComponent : IOrganizationSettingsRegistryComponent
+    public void RegisterSettings(IOrganizationSettingsRegistry registry)
     {
-        public void RegisterSettings(IOrganizationSettingsRegistry registry)
-        {
-            registry.RegisterSettings<OrganizationSmtpSettings>();
-        }
+        registry.RegisterSettings<OrganizationSmtpSettings>();
     }
 }

@@ -3,84 +3,50 @@ using System.Linq;
 using Eventuras.Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace Eventuras.Services.EventCollections
+namespace Eventuras.Services.EventCollections;
+
+internal static class EventCollectionQueryableExtensions
 {
-    internal static class EventCollectionQueryableExtensions
+    public static IQueryable<EventCollection> UseOrder(this IQueryable<EventCollection> query, EventCollectionOrder order, bool descending)
     {
-        public static IQueryable<EventCollection> UseOrder(
-            this IQueryable<EventCollection> query,
-            EventCollectionOrder order,
-            bool descending)
+        switch (order)
         {
-            switch (order)
-            {
-                case EventCollectionOrder.Name:
-                    query = descending
-                        ? query.OrderByDescending(c => c.Name)
-                        : query.OrderBy(c => c.Name);
-                    break;
-            }
-
-            return query;
+            case EventCollectionOrder.Name:
+                query = descending ? query.OrderByDescending(c => c.Name) : query.OrderBy(c => c.Name);
+                break;
         }
 
-        public static IQueryable<EventCollection> UseFilter(
-            this IQueryable<EventCollection> query,
-            EventCollectionFilter filter)
-        {
-            if (filter == null)
-            {
-                throw new ArgumentNullException(nameof(filter));
-            }
+        return query;
+    }
 
-            if (!filter.IncludeArchived)
-            {
-                query = query.Where(c => !c.Archived);
-            }
+    public static IQueryable<EventCollection> UseFilter(this IQueryable<EventCollection> query, EventCollectionFilter filter)
+    {
+        if (filter == null) throw new ArgumentNullException(nameof(filter));
 
-            if (filter.EventInfoId.HasValue)
-            {
-                query = query.Where(c => c.EventMappings
-                    .Any(m => m.EventId == filter.EventInfoId));
-            }
+        if (!filter.IncludeArchived) query = query.Where(c => !c.Archived);
 
-            return query;
-        }
+        if (filter.EventInfoId.HasValue) query = query.Where(c => c.EventMappings.Any(m => m.EventId == filter.EventInfoId));
 
-        public static IQueryable<EventCollection> UseOptions(
-            this IQueryable<EventCollection> query,
-            EventCollectionRetrievalOptions options)
-        {
-            if (options == null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
+        return query;
+    }
 
-            if (!options.ForUpdate)
-            {
-                query = query.AsNoTracking();
-            }
+    public static IQueryable<EventCollection> UseOptions(this IQueryable<EventCollection> query, EventCollectionRetrievalOptions options)
+    {
+        if (options == null) throw new ArgumentNullException(nameof(options));
 
-            if (options.LoadEvents)
-            {
-                query = query.Include(c => c.Events);
-            }
+        if (!options.ForUpdate) query = query.AsNoTracking();
 
-            if (options.LoadMappings)
-            {
-                query = query.Include(c => c.EventMappings);
-            }
+        if (options.LoadEvents) query = query.Include(c => c.Events);
 
-            return query;
-        }
+        if (options.LoadMappings) query = query.Include(c => c.EventMappings);
 
-        public static IQueryable<EventCollection> HavingOrganization(this IQueryable<EventCollection> query,
-            Organization organization)
-        {
-            if (organization == null)
-                throw new ArgumentNullException(nameof(organization));
+        return query;
+    }
 
-            return query.Where(e => e.OrganizationId == organization.OrganizationId);
-        }
+    public static IQueryable<EventCollection> HavingOrganization(this IQueryable<EventCollection> query, Organization organization)
+    {
+        if (organization == null) throw new ArgumentNullException(nameof(organization));
+
+        return query.Where(e => e.OrganizationId == organization.OrganizationId);
     }
 }

@@ -8,58 +8,51 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 
-namespace Eventuras.Web.Tests.Pages.Events.Register
+namespace Eventuras.Web.Tests.Pages.Events.Register;
+
+public class IndexPageTests : IClassFixture<CustomWebApplicationFactory<Startup>>, IDisposable
 {
-    public class IndexPageTests : IClassFixture<CustomWebApplicationFactory<Startup>>, IDisposable
+    private const string Email = "some-test@email.com";
+
+    private readonly CustomWebApplicationFactory<Startup> factory;
+
+    public IndexPageTests(CustomWebApplicationFactory<Startup> factory)
     {
-        private const string Email = "some-test@email.com";
+        this.factory = factory;
+    }
 
-        private readonly CustomWebApplicationFactory<Startup> factory;
+    public void Dispose()
+    {
+        factory.EmailSenderMock.Reset();
 
-        public IndexPageTests(CustomWebApplicationFactory<Startup> factory)
+        using var scope = factory.Services.NewTestScope();
+
+        var user = scope.Db.Users.FirstOrDefault(u => u.Email == Email);
+        if (user != null)
         {
-            this.factory = factory;
+            scope.Db.Remove(user);
+            scope.Db.SaveChanges();
         }
+    }
 
-        public void Dispose()
-        {
-            this.factory.EmailSenderMock.Reset();
+    [Theory]
+    [InlineData("nb-NO", "Du var allerede påmeldt!", "Vi hadde allerede en registrering for deg.")]
+    public async Task Should_Send_Email_When_Already_Registered(string language, string subject, string body)
+    {
+        var client = factory.CreateClient();
+        client.AcceptLanguage(language);
 
-            using var scope = this.factory.Services.NewTestScope();
+        using var scope = factory.Services.NewTestScope();
 
+        using var eventInfo = await scope.CreateEventAsync();
+        using var user = await scope.CreateUserAsync(email: Email);
+        using var registration = await scope.CreateRegistrationAsync(eventInfo.Entity, user.Entity);
 
-            var user = scope.Db.Users.FirstOrDefault(u => u.Email == Email);
-            if (user != null)
-            {
-                scope.Db.Remove(user);
-                scope.Db.SaveChanges();
-            }
-        }
+        var emailExpectation = factory.EmailSenderMock.ExpectEmail().SentTo(Email).WithSubject(subject).ContainingHtml(body).Setup();
 
-        [Theory]
-        [InlineData("nb-NO", "Du var allerede påmeldt!", "Vi hadde allerede en registrering for deg.")]
-        public async Task Should_Send_Email_When_Already_Registered(string language, string subject, string body)
-        {
-            var client = this.factory.CreateClient();
-            client.AcceptLanguage(language);
-
-            using var scope = this.factory.Services.NewTestScope();
-
-
-            using var eventInfo = await scope.CreateEventAsync();
-            using var user = await scope.CreateUserAsync(email: Email);
-            using var registration = await scope.CreateRegistrationAsync(eventInfo.Entity, user.Entity);
-
-            var emailExpectation = this.factory.EmailSenderMock
-                .ExpectEmail()
-                .SentTo(Email)
-                .WithSubject(subject)
-                .ContainingHtml(body)
-                .Setup();
-
-            var token = await client.GetAntiForgeryTokenAsync("/Account/Login");
-            var response = await client.PostAsync($"/events/{eventInfo.Entity.EventInfoId}/{eventInfo.Entity.Slug}/register",
-                new Dictionary<string, string>
+        var token = await client.GetAntiForgeryTokenAsync("/Account/Login");
+        var response = await client.PostAsync($"/events/{eventInfo.Entity.EventInfoId}/{eventInfo.Entity.Slug}/register",
+            new Dictionary<string, string>
             {
                 { "Email", Email },
                 { "PhoneCountryCode", "+1" },
@@ -67,37 +60,32 @@ namespace Eventuras.Web.Tests.Pages.Events.Register
                 { "ParticipantName", "John Doe" },
                 { "ParticipantJobTitle", "Head" },
                 { "ParticipantCity", "Oslo" },
-                { "Notes", "Testing" }
-            }, token);
+                { "Notes", "Testing" },
+            },
+            token);
 
-            Assert.True(response.IsSuccessStatusCode, await response.Content.ReadAsStringAsync());
+        Assert.True(response.IsSuccessStatusCode, await response.Content.ReadAsStringAsync());
 
-            emailExpectation.VerifyEmailSent();
-        }
+        emailExpectation.VerifyEmailSent();
+    }
 
-        [Theory]
-        [InlineData("nb-NO", "Velkommen på kurs!", "Vi fikk registreringen din")]
-        public async Task Should_Create_New_Registration_For_Existing_User(string language, string subject, string body)
-        {
-            var client = this.factory.CreateClient();
-            client.AcceptLanguage(language);
+    [Theory]
+    [InlineData("nb-NO", "Velkommen på kurs!", "Vi fikk registreringen din")]
+    public async Task Should_Create_New_Registration_For_Existing_User(string language, string subject, string body)
+    {
+        var client = factory.CreateClient();
+        client.AcceptLanguage(language);
 
-            using var scope = this.factory.Services.NewTestScope();
+        using var scope = factory.Services.NewTestScope();
 
+        using var eventInfo = await scope.CreateEventAsync();
+        using var user = await scope.CreateUserAsync(email: Email);
 
-            using var eventInfo = await scope.CreateEventAsync();
-            using var user = await scope.CreateUserAsync(email: Email);
+        var emailExpectation = factory.EmailSenderMock.ExpectEmail().SentTo(Email).WithSubject(subject).ContainingHtml(body).Setup();
 
-            var emailExpectation = this.factory.EmailSenderMock
-                .ExpectEmail()
-                .SentTo(Email)
-                .WithSubject(subject)
-                .ContainingHtml(body)
-                .Setup();
-
-            var token = await client.GetAntiForgeryTokenAsync("/Account/Login");
-            var response = await client.PostAsync($"/events/{eventInfo.Entity.EventInfoId}/{eventInfo.Entity.Slug}/register",
-                new Dictionary<string, string>
+        var token = await client.GetAntiForgeryTokenAsync("/Account/Login");
+        var response = await client.PostAsync($"/events/{eventInfo.Entity.EventInfoId}/{eventInfo.Entity.Slug}/register",
+            new Dictionary<string, string>
             {
                 { "Email", Email },
                 { "PhoneCountryCode", "+1" },
@@ -105,46 +93,40 @@ namespace Eventuras.Web.Tests.Pages.Events.Register
                 { "ParticipantName", "John Doe" },
                 { "ParticipantJobTitle", "Head" },
                 { "ParticipantCity", "Oslo" },
-                { "Notes", "Testing" }
-            }, token);
+                { "Notes", "Testing" },
+            },
+            token);
 
-            Assert.True(response.IsSuccessStatusCode, await response.Content.ReadAsStringAsync());
+        Assert.True(response.IsSuccessStatusCode, await response.Content.ReadAsStringAsync());
 
-            var registration =
-                await scope.Db.Registrations.FirstOrDefaultAsync(r =>
-                    r.UserId == user.Entity.Id && r.EventInfoId == eventInfo.Entity.EventInfoId);
+        var registration =
+            await scope.Db.Registrations.FirstOrDefaultAsync(r => r.UserId == user.Entity.Id && r.EventInfoId == eventInfo.Entity.EventInfoId);
 
-            Assert.NotNull(registration);
-            Assert.Equal("John Doe", registration.ParticipantName);
-            Assert.Equal("Head", registration.ParticipantJobTitle);
-            Assert.Equal("Oslo", registration.ParticipantCity);
-            Assert.Equal("Testing", registration.Notes);
+        Assert.NotNull(registration);
+        Assert.Equal("John Doe", registration.ParticipantName);
+        Assert.Equal("Head", registration.ParticipantJobTitle);
+        Assert.Equal("Oslo", registration.ParticipantCity);
+        Assert.Equal("Testing", registration.Notes);
 
-            emailExpectation.VerifyEmailSent();
-        }
+        emailExpectation.VerifyEmailSent();
+    }
 
-        [Theory]
-        [InlineData("nb-NO", "Velkommen på kurs!", "Vi fikk registreringen din")]
-        public async Task Should_Create_New_User_And_Registration(string language, string subject, string body)
-        {
-            var client = this.factory.CreateClient();
-            client.AcceptLanguage(language);
+    [Theory]
+    [InlineData("nb-NO", "Velkommen på kurs!", "Vi fikk registreringen din")]
+    public async Task Should_Create_New_User_And_Registration(string language, string subject, string body)
+    {
+        var client = factory.CreateClient();
+        client.AcceptLanguage(language);
 
-            using var scope = this.factory.Services.NewTestScope();
+        using var scope = factory.Services.NewTestScope();
 
+        using var eventInfo = await scope.CreateEventAsync();
 
-            using var eventInfo = await scope.CreateEventAsync();
+        var emailExpectation = factory.EmailSenderMock.ExpectEmail().SentTo(Email).WithSubject(subject).ContainingHtml(body).Setup();
 
-            var emailExpectation = this.factory.EmailSenderMock
-                .ExpectEmail()
-                .SentTo(Email)
-                .WithSubject(subject)
-                .ContainingHtml(body)
-                .Setup();
-
-            var token = await client.GetAntiForgeryTokenAsync("/Account/Login");
-            var response = await client.PostAsync($"/events/{eventInfo.Entity.EventInfoId}/{eventInfo.Entity.Slug}/register",
-                new Dictionary<string, string>
+        var token = await client.GetAntiForgeryTokenAsync("/Account/Login");
+        var response = await client.PostAsync($"/events/{eventInfo.Entity.EventInfoId}/{eventInfo.Entity.Slug}/register",
+            new Dictionary<string, string>
             {
                 { "Email", Email },
                 { "PhoneCountryCode", "+1" },
@@ -152,28 +134,27 @@ namespace Eventuras.Web.Tests.Pages.Events.Register
                 { "ParticipantName", "John Doe" },
                 { "ParticipantJobTitle", "Head" },
                 { "ParticipantCity", "Oslo" },
-                { "Notes", "Testing" }
-            }, token);
+                { "Notes", "Testing" },
+            },
+            token);
 
-            Assert.True(response.IsSuccessStatusCode, await response.Content.ReadAsStringAsync());
+        Assert.True(response.IsSuccessStatusCode, await response.Content.ReadAsStringAsync());
 
-            var user = await scope.Db.Users.FirstOrDefaultAsync(u => u.Email == Email);
-            Assert.NotNull(user);
-            Assert.Equal("John Doe", user.Name);
-            Assert.Equal(Email, user.UserName);
-            Assert.Equal("+11111111111", user.PhoneNumber);
+        var user = await scope.Db.Users.FirstOrDefaultAsync(u => u.Email == Email);
+        Assert.NotNull(user);
+        Assert.Equal("John Doe", user.Name);
+        Assert.Equal(Email, user.UserName);
+        Assert.Equal("+11111111111", user.PhoneNumber);
 
-            var registration =
-                await scope.Db.Registrations.FirstOrDefaultAsync(r =>
-                    r.UserId == user.Id && r.EventInfoId == eventInfo.Entity.EventInfoId);
+        var registration =
+            await scope.Db.Registrations.FirstOrDefaultAsync(r => r.UserId == user.Id && r.EventInfoId == eventInfo.Entity.EventInfoId);
 
-            Assert.NotNull(registration);
-            Assert.Equal("John Doe", registration.ParticipantName);
-            Assert.Equal("Head", registration.ParticipantJobTitle);
-            Assert.Equal("Oslo", registration.ParticipantCity);
-            Assert.Equal("Testing", registration.Notes);
+        Assert.NotNull(registration);
+        Assert.Equal("John Doe", registration.ParticipantName);
+        Assert.Equal("Head", registration.ParticipantJobTitle);
+        Assert.Equal("Oslo", registration.ParticipantCity);
+        Assert.Equal("Testing", registration.Notes);
 
-            emailExpectation.VerifyEmailSent();
-        }
+        emailExpectation.VerifyEmailSent();
     }
 }

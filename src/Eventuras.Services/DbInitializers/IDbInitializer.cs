@@ -1,11 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Eventuras.Services.DbInitializers
+namespace Eventuras.Services.DbInitializers;
+
+public interface IDbInitializer
 {
-    public interface IDbInitializer
-    {
-        Task SeedAsync(
-            bool createSuperAdmin = true, 
-            bool runMigrations = true);
-    }
+    Task SeedAsync(bool createSuperAdmin = true, bool runMigrations = true);
 }

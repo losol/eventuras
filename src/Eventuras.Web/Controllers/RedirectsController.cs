@@ -1,12 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Eventuras.Web.Controllers
-{
-    public class RedirectsController : Controller
-    {
+namespace Eventuras.Web.Controllers;
 
-        [HttpGet("/Events/Details")]
-        public IActionResult RedirectOldEventLinks([FromQuery] int id) =>
-            RedirectToPage("/Events/Details", new { id = id });
-    }
+public class RedirectsController : Controller
+{
+    [HttpGet("/Events/Details")]
+    public IActionResult RedirectOldEventLinks([FromQuery] int id) => RedirectToPage("/Events/Details", new { id });
 }

@@ -1,7 +1,6 @@
-namespace Eventuras.Services.EventCollections
+namespace Eventuras.Services.EventCollections;
+
+public enum EventCollectionOrder
 {
-    public enum EventCollectionOrder
-    {
-        Name = 1
-    }
+    Name = 1,
 }

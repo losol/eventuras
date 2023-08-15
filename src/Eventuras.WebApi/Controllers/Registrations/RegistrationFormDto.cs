@@ -1,50 +1,37 @@
 using Eventuras.Domain;
 
-namespace Eventuras.WebApi.Controllers.Registrations
+namespace Eventuras.WebApi.Controllers.Registrations;
+
+[RegistrationForm]
+public class RegistrationFormDto
 {
-    [RegistrationForm]
-    public class RegistrationFormDto
+    public RegistrationCustomerInfoDto Customer { get; set; }
+
+    public string Notes { get; set; }
+
+    public Registration.RegistrationType? Type { get; set; }
+
+    public PaymentMethod.PaymentProvider? PaymentMethod { get; set; }
+
+    public void CopyTo(Registration registration)
     {
-        public RegistrationCustomerInfoDto Customer { get; set; }
+        if (Type.HasValue) registration.Type = Type.Value;
 
-        public string Notes { get; set; }
+        if (Notes != null) registration.Notes = Notes;
 
-        public Registration.RegistrationType? Type { get; set; }
-
-        public PaymentMethod.PaymentProvider? PaymentMethod { get; set; }
-
-        public void CopyTo(Registration registration)
+        if (Customer != null)
         {
-            if (Type.HasValue)
-            {
-                registration.Type = Type.Value;
-            }
-
-            if (Notes != null)
-            {
-                registration.Notes = Notes;
-            }
-
-            if (Customer != null)
-            {
-                registration.CustomerName = Customer.Name;
-                registration.CustomerEmail = Customer.Email;
-                registration.CustomerVatNumber = Customer.VatNumber;
-                registration.CustomerCity = Customer.City;
-                registration.CustomerCountry = Customer.Country;
-                registration.CustomerZip = Customer.Zip;
-                registration.CustomerInvoiceReference = Customer.InvoiceReference;
-            }
-
-            if (PaymentMethod.HasValue)
-            {
-                registration.PaymentMethod = PaymentMethod.Value;
-            }
+            registration.CustomerName = Customer.Name;
+            registration.CustomerEmail = Customer.Email;
+            registration.CustomerVatNumber = Customer.VatNumber;
+            registration.CustomerCity = Customer.City;
+            registration.CustomerCountry = Customer.Country;
+            registration.CustomerZip = Customer.Zip;
+            registration.CustomerInvoiceReference = Customer.InvoiceReference;
         }
 
-        public bool Empty => !Type.HasValue &&
-                             Notes == null &&
-                             Customer == null &&
-                             !PaymentMethod.HasValue;
+        if (PaymentMethod.HasValue) registration.PaymentMethod = PaymentMethod.Value;
     }
+
+    public bool Empty => !Type.HasValue && Notes == null && Customer == null && !PaymentMethod.HasValue;
 }

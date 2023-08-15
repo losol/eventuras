@@ -1,14 +1,13 @@
-using Microsoft.Extensions.DependencyInjection;
 using System;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Eventuras.TestAbstractions
+namespace Eventuras.TestAbstractions;
+
+public static class ServiceProviderExtensions
 {
-    public static class ServiceProviderExtensions
+    public static TestServiceScope NewTestScope(this IServiceProvider serviceProvider)
     {
-        public static TestServiceScope NewTestScope(this IServiceProvider serviceProvider)
-        {
-            var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
-            return new TestServiceScope(scope);
-        }
+        var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
+        return new TestServiceScope(scope);
     }
 }

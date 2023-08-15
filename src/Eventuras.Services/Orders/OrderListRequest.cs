@@ -1,11 +1,10 @@
-namespace Eventuras.Services.Orders
+namespace Eventuras.Services.Orders;
+
+public class OrderListRequest : PagingRequest
 {
-    public class OrderListRequest : PagingRequest
-    {
-        public OrderListFilter Filter { get; set; }
+    public OrderListFilter Filter { get; set; }
 
-        public OrderListOrder Order { get; set; } = OrderListOrder.Time;
+    public OrderListOrder Order { get; set; } = OrderListOrder.Time;
 
-        public bool Descending { get; set; }
-    }
+    public bool Descending { get; set; }
 }

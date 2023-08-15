@@ -1,12 +1,11 @@
 using System.Threading.Tasks;
 using Eventuras.Domain;
 
-namespace Eventuras.Services.Organizations.Settings
-{
-    public interface IOrganizationSettingsCache
-    {
-        Task<OrganizationSetting[]> GetAllSettingsForOrganizationAsync(int organizationId);
+namespace Eventuras.Services.Organizations.Settings;
 
-        void InvalidateCacheForOrganization(int organizationId);
-    }
+public interface IOrganizationSettingsCache
+{
+    Task<OrganizationSetting[]> GetAllSettingsForOrganizationAsync(int organizationId);
+
+    void InvalidateCacheForOrganization(int organizationId);
 }

@@ -1,9 +1,8 @@
-namespace Eventuras.Services.Users
+namespace Eventuras.Services.Users;
+
+public enum UserListOrder
 {
-    public enum UserListOrder
-    {
-        Name,
-        Email,
-        Phone
-    }
+    Name,
+    Email,
+    Phone,
 }

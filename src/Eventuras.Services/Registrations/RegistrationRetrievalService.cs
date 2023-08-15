@@ -6,88 +6,61 @@ using Eventuras.Infrastructure;
 using Eventuras.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Eventuras.Services.Registrations
+namespace Eventuras.Services.Registrations;
+
+internal class RegistrationRetrievalService : IRegistrationRetrievalService
 {
-    internal class RegistrationRetrievalService : IRegistrationRetrievalService
+    private readonly ApplicationDbContext _context;
+    private readonly IRegistrationAccessControlService _registrationAccessControlService;
+
+    public RegistrationRetrievalService(ApplicationDbContext context, IRegistrationAccessControlService registrationAccessControlService)
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IRegistrationAccessControlService _registrationAccessControlService;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
 
-        public RegistrationRetrievalService(
-            ApplicationDbContext context,
-            IRegistrationAccessControlService registrationAccessControlService)
-        {
-            _context = context ?? throw
-                new ArgumentNullException(nameof(context));
+        _registrationAccessControlService =
+            registrationAccessControlService ?? throw new ArgumentNullException(nameof(registrationAccessControlService));
+    }
 
-            _registrationAccessControlService = registrationAccessControlService ?? throw
-                new ArgumentNullException(nameof(registrationAccessControlService));
-        }
+    public async Task<Registration> GetRegistrationByIdAsync(int id, RegistrationRetrievalOptions options, CancellationToken cancellationToken)
+    {
+        options ??= RegistrationRetrievalOptions.Default;
 
-        public async Task<Registration> GetRegistrationByIdAsync(int id,
-            RegistrationRetrievalOptions options,
-            CancellationToken cancellationToken)
-        {
-            options ??= RegistrationRetrievalOptions.Default;
+        var registration = await _context.Registrations.WithOptions(options).FirstOrDefaultAsync(r => r.RegistrationId == id, cancellationToken)
+                        ?? throw new NotFoundException($"Registration {id} not found.");
 
-            var registration = await _context.Registrations
-                                   .WithOptions(options)
-                                   .FirstOrDefaultAsync(r => r.RegistrationId == id, cancellationToken)
-                               ?? throw new NotFoundException($"Registration {id} not found.");
+        if (options.ForUpdate)
+            await _registrationAccessControlService.CheckRegistrationUpdateAccessAsync(registration, cancellationToken);
+        else
+            await _registrationAccessControlService.CheckRegistrationReadAccessAsync(registration, cancellationToken);
 
-            if (options.ForUpdate)
-            {
-                await _registrationAccessControlService
-                    .CheckRegistrationUpdateAccessAsync(registration, cancellationToken);
-            }
-            else
-            {
-                await _registrationAccessControlService
-                    .CheckRegistrationReadAccessAsync(registration, cancellationToken);
-            }
+        return registration;
+    }
 
-            return registration;
-        }
+    public async Task<Registration> FindRegistrationAsync(
+        RegistrationFilter filter,
+        RegistrationRetrievalOptions options,
+        CancellationToken cancellationToken)
+    {
+        options ??= RegistrationRetrievalOptions.Default;
 
-        public async Task<Registration> FindRegistrationAsync(
-            RegistrationFilter filter,
-            RegistrationRetrievalOptions options,
-            CancellationToken cancellationToken)
-        {
-            options ??= RegistrationRetrievalOptions.Default;
+        var query = _context.Registrations.WithOptions(options).AddFilter(filter);
 
-            var query = _context.Registrations
-                .WithOptions(options)
-                .AddFilter(filter);
+        if (filter.AccessibleOnly) query = await _registrationAccessControlService.AddAccessFilterAsync(query, cancellationToken);
 
-            if (filter.AccessibleOnly)
-            {
-                query = await _registrationAccessControlService
-                    .AddAccessFilterAsync(query, cancellationToken);
-            }
+        return await query.FirstOrDefaultAsync(cancellationToken);
+    }
 
-            return await query.FirstOrDefaultAsync(cancellationToken);
-        }
+    public async Task<Paging<Registration>> ListRegistrationsAsync(
+        RegistrationListRequest request,
+        RegistrationRetrievalOptions options,
+        CancellationToken cancellationToken)
+    {
+        options ??= RegistrationRetrievalOptions.Default;
 
-        public async Task<Paging<Registration>> ListRegistrationsAsync(
-            RegistrationListRequest request,
-            RegistrationRetrievalOptions options,
-            CancellationToken cancellationToken)
-        {
-            options ??= RegistrationRetrievalOptions.Default;
+        var query = _context.Registrations.WithOptions(options).AddFilter(request.Filter).AddOrder(request.OrderBy, request.Descending);
 
-            var query = _context.Registrations
-                .WithOptions(options)
-                .AddFilter(request.Filter)
-                .AddOrder(request.OrderBy, request.Descending);
+        if (request.Filter.AccessibleOnly) query = await _registrationAccessControlService.AddAccessFilterAsync(query, cancellationToken);
 
-            if (request.Filter.AccessibleOnly)
-            {
-                query = await _registrationAccessControlService
-                    .AddAccessFilterAsync(query, cancellationToken);
-            }
-
-            return await Paging<Registration>.CreateAsync(query, request, cancellationToken);
-        }
+        return await Paging<Registration>.CreateAsync(query, request, cancellationToken);
     }
 }

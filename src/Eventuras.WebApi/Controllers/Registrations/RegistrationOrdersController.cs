@@ -11,70 +11,67 @@ using Eventuras.WebApi.Controllers.Orders;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Eventuras.WebApi.Controllers.Registrations
+namespace Eventuras.WebApi.Controllers.Registrations;
+
+[ApiVersion("3")]
+[Authorize("registrations:read")]
+[Route("v{version:apiVersion}/registrations/{id:int}")]
+[ApiController]
+public class RegistrationOrdersController : ControllerBase
 {
-    [ApiVersion("3")]
-    [Authorize("registrations:read")]
-    [Route("v{version:apiVersion}/registrations/{id:int}")]
-    [ApiController]
-    public class RegistrationOrdersController : ControllerBase
+    private readonly IRegistrationRetrievalService _registrationRetrievalService;
+    private readonly IOrderManagementService _orderManagementService;
+
+    public RegistrationOrdersController(IRegistrationRetrievalService registrationRetrievalService, IOrderManagementService orderManagementService)
     {
-        private readonly IRegistrationRetrievalService _registrationRetrievalService;
-        private readonly IOrderManagementService _orderManagementService;
+        _registrationRetrievalService = registrationRetrievalService;
+        _orderManagementService = orderManagementService;
+    }
 
-        public RegistrationOrdersController(
-            IRegistrationRetrievalService registrationRetrievalService,
-            IOrderManagementService orderManagementService)
-        {
-            _registrationRetrievalService = registrationRetrievalService;
-            _orderManagementService = orderManagementService;
-        }
+    // GET: v3/registrations/667/orders
+    [HttpGet("orders")]
+    public async Task<IEnumerable<OrderDto>> GetOrdersForRegistration(int id, CancellationToken cancellationToken = default)
+    {
+        var r = await _registrationRetrievalService.GetRegistrationByIdAsync(id,
+            new RegistrationRetrievalOptions
+            {
+                LoadOrders = true,
+                LoadProducts = true,
+            },
+            cancellationToken);
 
-        // GET: v3/registrations/667/orders
-        [HttpGet("orders")]
-        public async Task<IEnumerable<OrderDto>> GetOrdersForRegistration(int id, CancellationToken cancellationToken = default)
-        {
-            var r = await _registrationRetrievalService.GetRegistrationByIdAsync(id,
-                new RegistrationRetrievalOptions
-                {
-                    LoadOrders = true,
-                    LoadProducts = true
-                },
-                cancellationToken);
+        return r.Orders.Select(o => new OrderDto(o)).ToArray();
+    }
 
-            return r.Orders.Select(o => new OrderDto(o)).ToArray();
-        }
+    // POST: v3/registrations/667/orders
+    [HttpPost("orders")]
+    public async Task<IActionResult> CreateNewOrderForRegistration(
+        int id,
+        [FromBody] NewRegistrationOrderDto dto,
+        CancellationToken cancellationToken = default)
+    {
+        _ = await _registrationRetrievalService.GetRegistrationByIdAsync(id,
+            new RegistrationRetrievalOptions(),
+            cancellationToken); // check if registration exists
 
-        // POST: v3/registrations/667/orders
-        [HttpPost("orders")]
-        public async Task<IActionResult> CreateNewOrderForRegistration(
-            int id,
-            [FromBody] NewRegistrationOrderDto dto,
-            CancellationToken cancellationToken = default)
-        {
-            _ = await _registrationRetrievalService.GetRegistrationByIdAsync(id,
-                new RegistrationRetrievalOptions(),
-                cancellationToken); // check if registration exists
+        var order = await _orderManagementService.CreateOrderForRegistrationAsync(id, dto.Items, cancellationToken);
 
-            var order = await _orderManagementService.CreateOrderForRegistrationAsync(id, dto.Items, cancellationToken);
+        return CreatedAtAction(nameof(OrdersController.GetOrderById), "Orders", new { id = order.OrderId }, new OrderDto(order));
+    }
 
-            return CreatedAtAction(nameof(OrdersController.GetOrderById), "Orders", new { id = order.OrderId }, new OrderDto(order));
-        }
+    // POST: v3/registrations/667/products
+    [HttpPost("products")]
+    public async Task<IActionResult> AutoCreateOrUpdateOrderForRegistration(
+        int id,
+        [FromBody] OrderUpdateRequestDto dto,
+        CancellationToken cancellationToken = default)
+    {
+        _ = await _registrationRetrievalService.GetRegistrationByIdAsync(id,
+            new RegistrationRetrievalOptions(),
+            cancellationToken); // check if registration exists
 
-        // POST: v3/registrations/667/products
-        [HttpPost("products")]
-        public async Task<IActionResult> AutoCreateOrUpdateOrderForRegistration(
-            int id,
-            [FromBody] OrderUpdateRequestDto dto,
-            CancellationToken cancellationToken = default)
-        {
-            _ = await _registrationRetrievalService.GetRegistrationByIdAsync(id,
-                new RegistrationRetrievalOptions(),
-                cancellationToken); // check if registration exists
+        var order = await _orderManagementService.AutoCreateOrUpdateOrder(id, dto.Lines, cancellationToken);
 
-            var order = await _orderManagementService.AutoCreateOrUpdateOrder(id, dto.Lines, cancellationToken);
-
-            return order != null ? Ok(new OrderDto(order)) : NoContent();
-        }
+        return order != null ? Ok(new OrderDto(order)) : NoContent();
     }
 }

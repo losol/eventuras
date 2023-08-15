@@ -7,112 +7,93 @@ using Pathoschild.Http.Client;
 using ZoomNet;
 using ZoomNet.Models;
 
-namespace Eventuras.Services.Zoom.Client
+namespace Eventuras.Services.Zoom.Client;
+
+internal class ZoomApiClient : IZoomApiClient
 {
-    internal class ZoomApiClient : IZoomApiClient
+    private readonly IZoomCredentialsAccessor _zoomCredentialsAccessor;
+
+    /// <summary> encapsulate third party code, don't expose its API, make it replaceable. </summary>
+    private ZoomClient _thirdPartyClient;
+
+    public ZoomApiClient(IZoomCredentialsAccessor zoomCredentialsAccessor)
     {
-        private readonly IZoomCredentialsAccessor _zoomCredentialsAccessor;
+        _zoomCredentialsAccessor = zoomCredentialsAccessor ?? throw new ArgumentNullException(nameof(zoomCredentialsAccessor));
+    }
 
-        /// <summary>
-        /// encapsulate third party code, don't expose its API, make it replaceable.
-        /// </summary>
-        private ZoomClient _thirdPartyClient;
-
-        public ZoomApiClient(IZoomCredentialsAccessor zoomCredentialsAccessor)
+    public async Task HealthCheckAsync(CancellationToken cancellationToken)
+    {
+        try
         {
-            _zoomCredentialsAccessor = zoomCredentialsAccessor ?? throw
-                new ArgumentNullException(nameof(zoomCredentialsAccessor));
+            var client = await GetClientAsync();
+            await client.Meetings.GetAllAsync("me", pagingToken: null, cancellationToken: cancellationToken);
         }
+        catch (ApiException e) { throw new ZoomClientException("Failed to perform Zoom API health check", e); }
+    }
 
-        public async Task HealthCheckAsync(CancellationToken cancellationToken)
+    public async Task<MeetingRegistrantDto[]> ListMeetingRegistrantsAsync(long meetingId, CancellationToken cancellationToken)
+    {
+        var result = new List<MeetingRegistrantDto>();
+
+        string nextPageToken = null;
+
+        try
         {
-            try
+            PaginatedResponseWithToken<Registrant> paginatedResponse;
+
+            do
             {
                 var client = await GetClientAsync();
-                await client.Meetings.GetAllAsync("me", pagingToken: null,
+                paginatedResponse = await client.Meetings.GetRegistrantsAsync(meetingId,
+                    RegistrantStatus.Approved,
+                    pagingToken: nextPageToken,
                     cancellationToken: cancellationToken);
-            }
-            catch (ApiException e)
-            {
-                throw new ZoomClientException("Failed to perform Zoom API health check", e);
-            }
-        }
 
-        public async Task<MeetingRegistrantDto[]> ListMeetingRegistrantsAsync(
-            long meetingId,
-            CancellationToken cancellationToken)
-        {
-            var result = new List<MeetingRegistrantDto>();
+                nextPageToken = paginatedResponse.NextPageToken;
 
-            string nextPageToken = null;
-
-            try
-            {
-                PaginatedResponseWithToken<Registrant> paginatedResponse;
-
-                do
-                {
-                    var client = await GetClientAsync();
-                    paginatedResponse = await client.Meetings.GetRegistrantsAsync(meetingId,
-                        RegistrantStatus.Approved,
-                        pagingToken: nextPageToken,
-                        cancellationToken: cancellationToken);
-
-                    nextPageToken = paginatedResponse.NextPageToken;
-
-                    result.AddRange(paginatedResponse.Records.Select(r => new MeetingRegistrantDto
+                result.AddRange(paginatedResponse.Records.Select(r => new MeetingRegistrantDto
                     {
                         Email = r.Email,
-                        RegistrantId = r.Id
-                    }).ToArray());
-                } while (paginatedResponse.MoreRecordsAvailable);
+                        RegistrantId = r.Id,
+                    })
+                    .ToArray());
             }
-            catch (ApiException e)
-            {
-                throw new ZoomClientException($"Failed to retrieve registrants for meeting {meetingId}", e);
-            }
-
-            return result.ToArray();
+            while (paginatedResponse.MoreRecordsAvailable);
         }
+        catch (ApiException e) { throw new ZoomClientException($"Failed to retrieve registrants for meeting {meetingId}", e); }
 
-        public async Task<CreateMeetingRegistrantsResponseDto> CreateMeetingRegistrantsAsync(
-            long meetingId,
-            CreateMeetingRegistrantRequestDto requestDto,
-            CancellationToken cancellationToken)
+        return result.ToArray();
+    }
+
+    public async Task<CreateMeetingRegistrantsResponseDto> CreateMeetingRegistrantsAsync(
+        long meetingId,
+        CreateMeetingRegistrantRequestDto requestDto,
+        CancellationToken cancellationToken)
+    {
+        try
         {
-            try
-            {
-                var client = await GetClientAsync();
-                var registrant = await client.Meetings.AddRegistrantAsync(meetingId,
-                    requestDto.Email,
-                    requestDto.FirstName,
-                    requestDto.LastName,
-                    cancellationToken: cancellationToken);
+            var client = await GetClientAsync();
+            var registrant = await client.Meetings.AddRegistrantAsync(meetingId,
+                requestDto.Email,
+                requestDto.FirstName,
+                requestDto.LastName,
+                cancellationToken: cancellationToken);
 
-                return new CreateMeetingRegistrantsResponseDto
-                {
-                    MeetingId = meetingId,
-                    RegistrantId = registrant.Id
-                };
-            }
-            catch (ApiException e)
+            return new CreateMeetingRegistrantsResponseDto
             {
-                throw new ZoomClientException(
-                    $"Failed to create new registrant {requestDto.Email} for meeting {meetingId}", e);
-            }
+                MeetingId = meetingId,
+                RegistrantId = registrant.Id,
+            };
         }
+        catch (ApiException e) { throw new ZoomClientException($"Failed to create new registrant {requestDto.Email} for meeting {meetingId}", e); }
+    }
 
-        private async Task<ZoomClient> GetClientAsync()
-        {
-            if (_thirdPartyClient != null)
-            {
-                return _thirdPartyClient;
-            }
+    private async Task<ZoomClient> GetClientAsync()
+    {
+        if (_thirdPartyClient != null) return _thirdPartyClient;
 
-            var zoomCredentials = await _zoomCredentialsAccessor.GetJwtCredentialsAsync();
+        var zoomCredentials = await _zoomCredentialsAccessor.GetJwtCredentialsAsync();
 
-            return _thirdPartyClient = new ZoomClient(new JwtConnectionInfo(
-                zoomCredentials.ApiKey, zoomCredentials.ApiSecret));
-        }
+        return _thirdPartyClient = new ZoomClient(new JwtConnectionInfo(zoomCredentials.ApiKey, zoomCredentials.ApiSecret));
     }
 }

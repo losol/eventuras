@@ -1,96 +1,74 @@
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Domain;
+using Eventuras.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Eventuras.Services.ExternalSync
+namespace Eventuras.Services.ExternalSync;
+
+public class ExternalEventManagementService : IExternalEventManagementService
 {
-    public class ExternalEventManagementService : IExternalEventManagementService
+    private readonly ApplicationDbContext _context;
+    private readonly ILogger<ExternalEventManagementService> _logger;
+
+    public ExternalEventManagementService(ApplicationDbContext context, ILogger<ExternalEventManagementService> logger)
     {
-        private readonly ApplicationDbContext _context;
-        private readonly ILogger<ExternalEventManagementService> _logger;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
 
-        public ExternalEventManagementService(
-            ApplicationDbContext context,
-            ILogger<ExternalEventManagementService> logger)
+    public async Task<ExternalEvent> FindExternalEventByLocalIdAsync(int localId)
+    {
+        return await _context.ExternalEvents.FirstOrDefaultAsync(c => c.LocalId == localId);
+    }
+
+    public async Task<List<ExternalEvent>> ListExternalEventsAsync(int eventInfoId)
+    {
+        return await _context.ExternalEvents.Where(c => c.EventInfoId == eventInfoId).OrderBy(c => c.ExternalServiceName).ToListAsync();
+    }
+
+    public async Task<ExternalEvent> CreateNewExternalEventAsync(int eventInfoId, string externalServiceName, string externalEventId)
+    {
+        if (string.IsNullOrEmpty(externalServiceName)) throw new ArgumentException(nameof(externalServiceName));
+
+        if (string.IsNullOrEmpty(externalEventId)) throw new ArgumentException(nameof(externalEventId));
+
+        if (await _context.ExternalEvents.AnyAsync(c => c.ExternalServiceName == externalServiceName && c.ExternalEventId == externalEventId))
+            FireDuplicateExternalEventException(externalServiceName, externalEventId);
+
+        var newExternalEvent = new ExternalEvent
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            EventInfoId = eventInfoId,
+            ExternalServiceName = externalServiceName,
+            ExternalEventId = externalEventId,
+        };
+
+        try { await _context.CreateAsync(newExternalEvent); }
+        catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
+        {
+            _logger.LogWarning(e, e.Message);
+            FireDuplicateExternalEventException(externalServiceName, externalEventId);
         }
 
-        public async Task<ExternalEvent> FindExternalEventByLocalIdAsync(int localId)
+        return newExternalEvent;
+    }
+
+    public async Task DeleteExternalEventReferenceAsync(int localId)
+    {
+        var externalEvent = await _context.ExternalEvents.FirstOrDefaultAsync(c => c.LocalId == localId);
+
+        if (externalEvent != null)
         {
-            return await _context.ExternalEvents
-                .FirstOrDefaultAsync(c => c.LocalId == localId);
+            _context.ExternalEvents.Remove(externalEvent);
+            await _context.SaveChangesAsync();
         }
+    }
 
-        public async Task<List<ExternalEvent>> ListExternalEventsAsync(int eventInfoId)
-        {
-            return await _context.ExternalEvents
-                .Where(c => c.EventInfoId == eventInfoId)
-                .OrderBy(c => c.ExternalServiceName)
-                .ToListAsync();
-        }
-
-        public async Task<ExternalEvent> CreateNewExternalEventAsync(int eventInfoId, string externalServiceName, string externalEventId)
-        {
-            if (string.IsNullOrEmpty(externalServiceName))
-            {
-                throw new ArgumentException(nameof(externalServiceName));
-            }
-
-            if (string.IsNullOrEmpty(externalEventId))
-            {
-                throw new ArgumentException(nameof(externalEventId));
-            }
-
-            if (await _context.ExternalEvents
-                .AnyAsync(c => c.ExternalServiceName == externalServiceName &&
-                               c.ExternalEventId == externalEventId))
-            {
-                FireDuplicateExternalEventException(externalServiceName, externalEventId);
-            }
-
-            var newExternalEvent = new ExternalEvent
-            {
-                EventInfoId = eventInfoId,
-                ExternalServiceName = externalServiceName,
-                ExternalEventId = externalEventId
-            };
-
-            try
-            {
-                await _context.CreateAsync(newExternalEvent);
-            }
-            catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
-            {
-                _logger.LogWarning(e, e.Message);
-                FireDuplicateExternalEventException(externalServiceName, externalEventId);
-            }
-
-            return newExternalEvent;
-        }
-
-        public async Task DeleteExternalEventReferenceAsync(int localId)
-        {
-            var externalEvent = await _context.ExternalEvents
-                .FirstOrDefaultAsync(c => c.LocalId == localId);
-
-            if (externalEvent != null)
-            {
-                _context.ExternalEvents.Remove(externalEvent);
-                await _context.SaveChangesAsync();
-            }
-        }
-
-        private static void FireDuplicateExternalEventException(string externalServiceName, string externalEventId)
-        {
-            throw new DuplicateExternalEventException(
-                $"Eksternt {externalServiceName} -kurs med id {externalEventId} eksisterer allerede.");
-        }
+    private static void FireDuplicateExternalEventException(string externalServiceName, string externalEventId)
+    {
+        throw new DuplicateExternalEventException($"Eksternt {externalServiceName} -kurs med id {externalEventId} eksisterer allerede.");
     }
 }

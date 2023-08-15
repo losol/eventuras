@@ -7,48 +7,44 @@ using Eventuras.Services.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Eventuras.WebApi.Controllers.Organizations
+namespace Eventuras.WebApi.Controllers.Organizations;
+
+[ApiVersion("3")]
+[Authorize(Policy = Constants.Auth.AdministratorRole)]
+[Route("v{version:apiVersion}/organizations/{organizationId:int}/members/{userId}")]
+[ApiController]
+public class OrganizationMembersController : ControllerBase
 {
-    [ApiVersion("3")]
-    [Authorize(Policy = Constants.Auth.AdministratorRole)]
-    [Route("v{version:apiVersion}/organizations/{organizationId:int}/members/{userId}")]
-    [ApiController]
-    public class OrganizationMembersController : ControllerBase
+    private readonly IUserRetrievalService _userRetrievalService;
+    private readonly IOrganizationRetrievalService _orgRetrievalService;
+    private readonly IOrganizationMemberManagementService _orgMemberService;
+
+    public OrganizationMembersController(
+        IOrganizationMemberManagementService orgMemberService,
+        IUserRetrievalService userRetrievalService,
+        IOrganizationRetrievalService orgRetrievalService)
     {
-        private readonly IUserRetrievalService _userRetrievalService;
-        private readonly IOrganizationRetrievalService _orgRetrievalService;
-        private readonly IOrganizationMemberManagementService _orgMemberService;
+        _orgMemberService = orgMemberService ?? throw new ArgumentNullException(nameof(orgMemberService));
+        _userRetrievalService = userRetrievalService ?? throw new ArgumentNullException(nameof(userRetrievalService));
+        _orgRetrievalService = orgRetrievalService ?? throw new ArgumentNullException(nameof(orgRetrievalService));
+    }
 
-        public OrganizationMembersController(
-            IOrganizationMemberManagementService orgMemberService,
-            IUserRetrievalService userRetrievalService,
-            IOrganizationRetrievalService orgRetrievalService)
-        {
-            _orgMemberService = orgMemberService ?? throw
-                new ArgumentNullException(nameof(orgMemberService));
-            _userRetrievalService = userRetrievalService ?? throw
-                new ArgumentNullException(nameof(userRetrievalService));
-            _orgRetrievalService = orgRetrievalService ?? throw
-                new ArgumentNullException(nameof(orgRetrievalService));
-        }
+    [HttpPut]
+    [Authorize(Roles = Roles.SystemAdmin)]
+    public async Task<IActionResult> Put(int organizationId, string userId)
+    {
+        var user = await _userRetrievalService.GetUserByIdAsync(userId);
+        var org = await _orgRetrievalService.GetOrganizationByIdAsync(organizationId);
+        await _orgMemberService.AddToOrganizationAsync(user, org);
+        return Ok();
+    }
 
-        [HttpPut]
-        [Authorize(Roles = Roles.SystemAdmin)]
-        public async Task<IActionResult> Put(int organizationId, string userId)
-        {
-            var user = await _userRetrievalService.GetUserByIdAsync(userId);
-            var org = await _orgRetrievalService.GetOrganizationByIdAsync(organizationId);
-            await _orgMemberService.AddToOrganizationAsync(user, org);
-            return Ok();
-        }
-
-        [HttpDelete]
-        [Authorize(Roles = Roles.SystemAdmin)]
-        public async Task Delete(int organizationId, string userId)
-        {
-            var user = await _userRetrievalService.GetUserByIdAsync(userId);
-            var org = await _orgRetrievalService.GetOrganizationByIdAsync(organizationId);
-            await _orgMemberService.RemoveFromOrganizationAsync(user, org);
-        }
+    [HttpDelete]
+    [Authorize(Roles = Roles.SystemAdmin)]
+    public async Task Delete(int organizationId, string userId)
+    {
+        var user = await _userRetrievalService.GetUserByIdAsync(userId);
+        var org = await _orgRetrievalService.GetOrganizationByIdAsync(organizationId);
+        await _orgMemberService.RemoveFromOrganizationAsync(user, org);
     }
 }

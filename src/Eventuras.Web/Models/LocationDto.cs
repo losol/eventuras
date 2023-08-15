@@ -1,8 +1,8 @@
-namespace Eventuras.Web.Models
+namespace Eventuras.Web.Models;
+
+public class LocationDto
 {
-    public class LocationDto
-    {
-        public string Name { get; set; }
-        public AddressDto Address { get; set; }
-    }
+    public string Name { get; set; }
+
+    public AddressDto Address { get; set; }
 }

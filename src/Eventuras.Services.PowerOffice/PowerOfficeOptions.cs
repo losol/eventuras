@@ -1,12 +1,14 @@
 using GoApi.Core.Global;
 
-namespace Eventuras.Services.PowerOffice
+namespace Eventuras.Services.PowerOffice;
+
+public class PowerOfficeOptions
 {
-    public class PowerOfficeOptions
-    {
-        public string ApplicationKey { get; set; }
-        public string ClientKey { get; set; }
-        public Settings.EndPointMode Mode { get; set; }
-        public string TokenStoreName { get; set; }
-    }
+    public string ApplicationKey { get; set; }
+
+    public string ClientKey { get; set; }
+
+    public Settings.EndPointMode Mode { get; set; }
+
+    public string TokenStoreName { get; set; }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services.Exceptions;
@@ -8,75 +7,59 @@ using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Eventuras.Web.Pages.Admin.Organizations
+namespace Eventuras.Web.Pages.Admin.Organizations;
+
+public class DetailsModel : PageModel
 {
-    public class DetailsModel : PageModel
+    private readonly IOrganizationRetrievalService _organizationRetrievalService;
+    private readonly IOrganizationManagementService _organizationManagementService;
+
+    public DetailsModel(IOrganizationRetrievalService organizationRetrievalService, IOrganizationManagementService organizationManagementService)
     {
-        private readonly IOrganizationRetrievalService _organizationRetrievalService;
-        private readonly IOrganizationManagementService _organizationManagementService;
+        _organizationRetrievalService = organizationRetrievalService ?? throw new ArgumentNullException(nameof(organizationRetrievalService));
+        _organizationManagementService = organizationManagementService ?? throw new ArgumentNullException(nameof(organizationManagementService));
+    }
 
-        public DetailsModel(
-            IOrganizationRetrievalService organizationRetrievalService,
-            IOrganizationManagementService organizationManagementService)
-        {
-            _organizationRetrievalService = organizationRetrievalService ?? throw new ArgumentNullException(nameof(organizationRetrievalService));
-            _organizationManagementService = organizationManagementService ?? throw new ArgumentNullException(nameof(organizationManagementService));
-        }
+    [BindProperty]
+    public Organization Organization { get; set; }
 
-        [BindProperty]
-        public Organization Organization { get; set; }
+    [BindProperty]
+    [DisplayName("Kommaseparerte Eventuras vertsnavn")]
+    public string Hostnames { get; set; }
 
-        [BindProperty]
-        [DisplayName("Kommaseparerte Eventuras vertsnavn")]
-        public string Hostnames { get; set; }
+    public async Task<IActionResult> OnGetAsync(int id) => await PageAsync(id);
 
-        public async Task<IActionResult> OnGetAsync(int id)
-        {
-            return await PageAsync(id);
-        }
+    public async Task<IActionResult> OnPostAsync(int id)
+    {
+        if (!ModelState.IsValid) return await PageAsync(id);
 
-        public async Task<IActionResult> OnPostAsync(int id)
-        {
-            if (!ModelState.IsValid)
+        await _organizationManagementService.UpdateOrganizationAsync(Organization);
+
+        if (!string.IsNullOrWhiteSpace(Hostnames))
+            try { await _organizationManagementService.UpdateOrganizationHostnames(id, Hostnames.Split(',')); }
+            catch (DuplicateException e)
             {
+                ModelState.AddModelError(nameof(Hostnames), e.Message);
                 return await PageAsync(id);
             }
 
-            await _organizationManagementService.UpdateOrganizationAsync(Organization);
+        return RedirectToPage("./Index");
+    }
 
-            if (!string.IsNullOrWhiteSpace(Hostnames))
+    private async Task<IActionResult> PageAsync(int id)
+    {
+        var org = await _organizationRetrievalService.GetOrganizationByIdAsync(id,
+            new OrganizationRetrievalOptions
             {
-                try
-                {
-                    await _organizationManagementService.UpdateOrganizationHostnames(id, Hostnames.Split(','));
-                }
-                catch (DuplicateException e)
-                {
-                    ModelState.AddModelError(nameof(Hostnames), e.Message);
-                    return await PageAsync(id);
-                }
-            }
-
-            return RedirectToPage("./Index");
-        }
-
-        private async Task<IActionResult> PageAsync(int id)
-        {
-            var org = await _organizationRetrievalService.GetOrganizationByIdAsync(id, new OrganizationRetrievalOptions
-            {
-                LoadHostnames = true
+                LoadHostnames = true,
             });
 
-            Organization ??= org;
+        Organization ??= org;
 
-            if (Organization == null)
-            {
-                return NotFound();
-            }
+        if (Organization == null) return NotFound();
 
-            Hostnames ??= org.CommaSeparatedHostnames;
+        Hostnames ??= org.CommaSeparatedHostnames;
 
-            return Page();
-        }
+        return Page();
     }
 }

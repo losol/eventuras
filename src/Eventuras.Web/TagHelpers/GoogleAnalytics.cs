@@ -1,22 +1,20 @@
-using System;
-using System.Text;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace Eventuras.TagHelpers
+namespace Eventuras.TagHelpers;
+
+public class GoogleAnalyticsTagHelper : TagHelper
 {
-    public class GoogleAnalyticsTagHelper : TagHelper
+    // Usage: <google-analytics tracking-id="UA-XXXXXXXX-X" />
+
+    public string TrackingId { get; set; }
+
+    public override void Process(TagHelperContext context, TagHelperOutput output)
     {
-        // Usage: <google-analytics tracking-id="UA-XXXXXXXX-X" />
+        output.SuppressOutput();
 
-        public string TrackingId { get; set; }
-
-        public override void Process(TagHelperContext context, TagHelperOutput output)
+        if (!string.IsNullOrEmpty(TrackingId))
         {
-            output.SuppressOutput();
-
-            if (!String.IsNullOrEmpty(TrackingId))
-            {
-                var uaTag = @"<!-- Global site tag (gtag.js) - Google Analytics -->
+            var uaTag = @"<!-- Global site tag (gtag.js) - Google Analytics -->
 					<script async src='https://www.googletagmanager.com/gtag/js?id=***UA***'></script>
 					<script>
 					window.dataLayer = window.dataLayer || [];
@@ -24,11 +22,9 @@ namespace Eventuras.TagHelpers
 					gtag('js', new Date());
 
 					gtag('config', '***UA***');
-					</script>"
-                .Replace("***UA***", TrackingId);
+					</script>".Replace("***UA***", TrackingId);
 
-                output.Content.SetHtmlContent(uaTag.ToString());
-            }
+            output.Content.SetHtmlContent(uaTag);
         }
     }
 }

@@ -20,177 +20,144 @@ using Microsoft.FeatureManagement;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 
-namespace Eventuras.WebApi
+namespace Eventuras.WebApi;
+
+public class Startup
 {
-    public class Startup
+    public Startup(IConfiguration configuration, IWebHostEnvironment env)
     {
-        public Startup(IConfiguration configuration, IWebHostEnvironment env)
+        Configuration = configuration;
+        _env = env;
+    }
+
+    public IConfiguration Configuration { get; }
+
+    private readonly IWebHostEnvironment _env;
+
+    private AppSettings appSettings;
+
+    public AppSettings AppSettings
+    {
+        get
         {
-            Configuration = configuration;
-            _env = env;
+            if (appSettings == null) appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
+
+            return appSettings;
         }
+        protected set => appSettings = value;
+    }
 
-        public IConfiguration Configuration { get; }
-        private readonly IWebHostEnvironment _env;
+    private FeatureManagement features;
 
-        private AppSettings appSettings;
-
-        public AppSettings AppSettings
+    public FeatureManagement Features
+    {
+        get
         {
-            get
-            {
-                if (appSettings == null)
-                {
-                    appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
-                }
+            if (features == null) features = Configuration.GetSection("FeatureManagement").Get<FeatureManagement>();
 
-                return appSettings;
-            }
-            protected set => appSettings = value;
+            return features;
         }
+        protected set => features = value;
+    }
 
-        private FeatureManagement features;
-
-        public FeatureManagement Features
-        {
-            get
+    // This method gets called by the runtime. Use this method to add services to the container.
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddControllers(options =>
             {
-                if (features == null)
-                {
-                    features = Configuration.GetSection("FeatureManagement").Get<FeatureManagement>();
-                }
-
-                return features;
-            }
-            protected set => features = value;
-        }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddControllers(options =>
-                {
-                    options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
-                    options.Filters.Add(new HttpResponseExceptionFilter());
-                })
-                .AddJsonOptions(j =>
-                {
-                    j.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
-                    j.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                });
-
-            services.AddRazorPages();
-            services.ConfigureEF(Configuration, _env);
-            services.ConfigureDbInitializationStrategy(Configuration);
-            services.ConfigureAuthorizationPolicies(Configuration);
-            services.AddEmailServices();
-            services.AddSmsServices();
-            services.AddInvoicingServices(Configuration, Features);
-            services.AddApplicationServices(Configuration);
-            services.AddFeatureManagement();
-            services.AddMemoryCache();
-
-            services.AddCors(options =>
+                options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+                options.Filters.Add(new HttpResponseExceptionFilter());
+            })
+            .AddJsonOptions(j =>
             {
-                options.AddDefaultPolicy(
-                    builder =>
-                        builder
-                            .WithOrigins(AppSettings.AllowedOrigins.Split(',')
-                                .Select(x => x.Trim())
-                                .Where(x => !string.IsNullOrWhiteSpace(x))
-                                .ToArray())
-                            .AllowAnyHeader()
-                            .AllowCredentials()
-                            .AllowAnyMethod());
+                j.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+                j.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
+        services.AddRazorPages();
+        services.ConfigureEF(Configuration, _env);
+        services.ConfigureDbInitializationStrategy(Configuration);
+        services.ConfigureAuthorizationPolicies(Configuration);
+        services.AddEmailServices();
+        services.AddSmsServices();
+        services.AddInvoicingServices(Configuration, Features);
+        services.AddApplicationServices(Configuration);
+        services.AddFeatureManagement();
+        services.AddMemoryCache();
 
-            var apiVersioningBuilder = services.AddApiVersioning(o =>
-            {
-                o.ApiVersionReader = new UrlSegmentApiVersionReader();
-                o.AssumeDefaultVersionWhenUnspecified = true;
-                o.DefaultApiVersion = new ApiVersion(3, 0);
-                o.ReportApiVersions = true;
-            });
-
-            apiVersioningBuilder.AddApiExplorer(o =>
-            {
-                o.GroupNameFormat = "'v'VVV";
-                o.SubstituteApiVersionInUrl = true;
-            });
-
-            services.ConfigureIdentity();
-
-            services
-                .AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearerConfiguration(
-                    Configuration["Auth:Issuer"],
-                    Configuration["Auth:Audience"],
-                    Configuration["Auth:ClientSecret"]
-                );
-
-            services.AddSingleton<IAuthorizationHandler, RequireScopeHandler>();
-
-            services.AddSwaggerGen();
-            services.ConfigureOptions<ConfigureSwaggerOptions>();
-
-        }
-
-        private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
+        services.AddCors(options =>
         {
-            var builder = new ServiceCollection()
-                .AddLogging()
-                .AddMvc()
-                .AddNewtonsoftJson()
-                .Services.BuildServiceProvider();
+            options.AddDefaultPolicy(builder
+                => builder.WithOrigins(AppSettings.AllowedOrigins.Split(',')
+                        .Select(x => x.Trim())
+                        .Where(x => !string.IsNullOrWhiteSpace(x))
+                        .ToArray())
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+                    .AllowAnyMethod());
+        });
 
-            return builder
-                .GetRequiredService<IOptions<MvcOptions>>()
-                .Value
-                .InputFormatters
-                .OfType<NewtonsoftJsonPatchInputFormatter>()
-                .First();
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider apiversions)
+        var apiVersioningBuilder = services.AddApiVersioning(o =>
         {
-            foreach (var service in app.ApplicationServices.GetServices<IStartupService>())
+            o.ApiVersionReader = new UrlSegmentApiVersionReader();
+            o.AssumeDefaultVersionWhenUnspecified = true;
+            o.DefaultApiVersion = new ApiVersion(3, 0);
+            o.ReportApiVersions = true;
+        });
+
+        apiVersioningBuilder.AddApiExplorer(o =>
+        {
+            o.GroupNameFormat = "'v'VVV";
+            o.SubstituteApiVersionInUrl = true;
+        });
+
+        services.ConfigureIdentity();
+
+        services.AddAuthentication(options =>
             {
-                service.OnStartup();
-            }
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearerConfiguration(Configuration["Auth:Issuer"], Configuration["Auth:Audience"], Configuration["Auth:ClientSecret"]);
 
-            if (env.IsDevelopment())
+        services.AddSingleton<IAuthorizationHandler, RequireScopeHandler>();
+
+        services.AddSwaggerGen();
+        services.ConfigureOptions<ConfigureSwaggerOptions>();
+    }
+
+    private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
+    {
+        var builder = new ServiceCollection().AddLogging().AddMvc().AddNewtonsoftJson().Services.BuildServiceProvider();
+
+        return builder.GetRequiredService<IOptions<MvcOptions>>().Value.InputFormatters.OfType<NewtonsoftJsonPatchInputFormatter>().First();
+    }
+
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider apiversions)
+    {
+        foreach (var service in app.ApplicationServices.GetServices<IStartupService>()) service.OnStartup();
+
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
             {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    foreach (var description in apiversions.ApiVersionDescriptions)
-                    {
-                        c.SwaggerEndpoint(
-                            $"/swagger/{description.GroupName}/swagger.json",
-                            description.GroupName.ToUpperInvariant()
-                        );
-                    }
-
-                });
-            }
-
-            app.UseRouting();
-
-            app.UseStaticFiles();
-
-            app.UseCors();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+                foreach (var description in apiversions.ApiVersionDescriptions)
+                    c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+            });
         }
+
+        app.UseRouting();
+
+        app.UseStaticFiles();
+
+        app.UseCors();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
     }
 }

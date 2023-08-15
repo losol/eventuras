@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
 
-namespace Eventuras.Services.Zoom.Client
+namespace Eventuras.Services.Zoom.Client;
+
+internal interface IZoomCredentialsAccessor
 {
-    internal interface IZoomCredentialsAccessor
-    {
-        Task<ZoomJwtCredentials> GetJwtCredentialsAsync();
-    }
+    Task<ZoomJwtCredentials> GetJwtCredentialsAsync();
 }

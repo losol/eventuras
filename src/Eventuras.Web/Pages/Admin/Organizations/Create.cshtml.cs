@@ -1,57 +1,44 @@
+using System;
+using System.Threading.Tasks;
 using Eventuras.Domain;
+using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System;
-using System.Threading.Tasks;
-using Eventuras.Services.Exceptions;
 
-namespace Eventuras.Web.Pages.Admin.Organizations
+namespace Eventuras.Web.Pages.Admin.Organizations;
+
+public class CreateModel : PageModel
 {
-    public class CreateModel : PageModel
+    private readonly IOrganizationManagementService _organizationManagementService;
+
+    public CreateModel(IOrganizationManagementService organizationManagementService)
     {
-        private readonly IOrganizationManagementService _organizationManagementService;
+        _organizationManagementService = organizationManagementService ?? throw new ArgumentNullException(nameof(organizationManagementService));
+    }
 
-        public CreateModel(IOrganizationManagementService organizationManagementService)
-        {
-            _organizationManagementService = organizationManagementService ?? throw new ArgumentNullException(nameof(organizationManagementService));
-        }
+    public IActionResult OnGet() => Page();
 
-        public IActionResult OnGet()
-        {
-            return Page();
-        }
+    [BindProperty]
+    public Organization Organization { get; set; }
 
-        [BindProperty]
-        public Organization Organization { get; set; }
+    [BindProperty]
+    public string Hostnames { get; set; }
 
-        [BindProperty]
-        public string Hostnames { get; set; }
+    public async Task<IActionResult> OnPostAsync()
+    {
+        if (!ModelState.IsValid) return Page();
 
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
+        await _organizationManagementService.CreateNewOrganizationAsync(Organization);
+
+        if (!string.IsNullOrWhiteSpace(Hostnames))
+            try { await _organizationManagementService.UpdateOrganizationHostnames(Organization.OrganizationId, Hostnames.Split(",")); }
+            catch (DuplicateException e)
             {
+                ModelState.AddModelError(nameof(Hostnames), e.Message);
                 return Page();
             }
 
-            await _organizationManagementService.CreateNewOrganizationAsync(Organization);
-
-            if (!string.IsNullOrWhiteSpace(Hostnames))
-            {
-                try
-                {
-                    await _organizationManagementService.UpdateOrganizationHostnames(Organization.OrganizationId,
-                        Hostnames.Split(","));
-                }
-                catch (DuplicateException e)
-                {
-                    ModelState.AddModelError(nameof(Hostnames), e.Message);
-                    return Page();
-                }
-            }
-
-            return RedirectToPage("./Index");
-        }
+        return RedirectToPage("./Index");
     }
 }

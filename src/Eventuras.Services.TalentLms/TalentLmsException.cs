@@ -1,15 +1,10 @@
 using System;
 
-namespace Eventuras.Services.TalentLms
-{
-    public class TalentLmsException : Exception
-    {
-        public TalentLmsException(string message) : base(message)
-        {
-        }
+namespace Eventuras.Services.TalentLms;
 
-        public TalentLmsException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-    }
+public class TalentLmsException : Exception
+{
+    public TalentLmsException(string message) : base(message) { }
+
+    public TalentLmsException(string message, Exception innerException) : base(message, innerException) { }
 }

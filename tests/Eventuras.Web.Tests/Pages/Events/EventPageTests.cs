@@ -4,28 +4,26 @@ using System.Threading.Tasks;
 using Eventuras.IntegrationTests;
 using Xunit;
 
-namespace Eventuras.Web.Tests.Pages.Events
+namespace Eventuras.Web.Tests.Pages.Events;
+
+public class EventPageTests : IClassFixture<CustomWebApplicationFactory<Startup>>
 {
-    public class EventPageTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+    private readonly HttpClient _client;
+
+    public EventPageTests(CustomWebApplicationFactory<Startup> factory)
     {
-        private readonly HttpClient _client;
+        _client = factory.CreateClient();
+    }
 
-        public EventPageTests(CustomWebApplicationFactory<Startup> factory)
-        {
-            _client = factory.CreateClient();
-        }
+    [Fact]
+    public async Task Request_ReturnsEventDetails_WhenEventidIsValid()
+    {
+        // Arrange
 
-        [Fact]
-        public async Task Request_ReturnsEventDetails_WhenEventidIsValid()
-        {
-            // Arrange
+        // Act
+        var response = await _client.GetAsync("/events/2/mangfold-beriker-arbeidsmiljoet/register");
 
-            // Act
-            var response = await _client.GetAsync("/events/2/mangfold-beriker-arbeidsmiljoet/register");
-
-            // Assert
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        }
-
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 }

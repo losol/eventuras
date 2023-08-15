@@ -2,172 +2,165 @@ using System;
 using Eventuras.Domain;
 using NodaTime;
 
-namespace Eventuras.Services.Events
+namespace Eventuras.Services.Events;
+
+public class EventInfoFilter
 {
-    public class EventInfoFilter
+    public EventInfo.EventInfoStatus[] StatusOneOf { get; set; }
+
+    public EventInfo.EventInfoStatus[] StatusNoneOf { get; set; }
+
+    public EventInfo.EventInfoType[] TypeOneOf { get; set; }
+
+    public EventInfo.EventInfoType[] TypeNoneOf { get; set; }
+
+    public bool FeaturedOnly { get; set; }
+
+    public bool PastEventsOnly { get; set; }
+
+    public bool TodaysEventsOnly { get; set; }
+
+    public bool AccessibleOnly { get; set; } = true;
+
+    public bool IncludeArchived { get; set; }
+
+    public LocalDate? StartDate { get; set; }
+
+    public LocalDate? EndDate { get; set; }
+
+    public LocalDate? StartDateBefore { get; set; }
+
+    public LocalDate? StartDateAfter { get; set; }
+
+    public LocalDate? EndDateIsNullOrBefore { get; set; }
+
+    public LocalDate? EndDateIsNullOrAfter { get; set; }
+
+    public LocalDate? EndDateBefore { get; set; }
+
+    public LocalDate? EndDateAfter { get; set; }
+
+    public int[] CollectionIds { get; set; }
+
+    public int? OrganizationId { get; set; }
+
+    public EventInfoFilter() { }
+
+    public EventInfoFilter(EventInfoFilter copy)
     {
-        public EventInfo.EventInfoStatus[] StatusOneOf { get; set; }
+        if (copy == null) throw new ArgumentNullException(nameof(copy));
 
-        public EventInfo.EventInfoStatus[] StatusNoneOf { get; set; }
+        AccessibleOnly = copy.AccessibleOnly;
+        StatusNoneOf = copy.StatusNoneOf;
+        StatusNoneOf = copy.StatusNoneOf;
+        TypeOneOf = copy.TypeOneOf;
+        TypeNoneOf = copy.TypeNoneOf;
+        FeaturedOnly = copy.FeaturedOnly;
+        PastEventsOnly = copy.PastEventsOnly;
+        TodaysEventsOnly = copy.TodaysEventsOnly;
+        StartDateBefore = copy.StartDateBefore;
+        StartDateAfter = copy.StartDateAfter;
+        EndDateBefore = copy.EndDateBefore;
+        EndDateAfter = copy.EndDateAfter;
+        CollectionIds = copy.CollectionIds;
+        OrganizationId = copy.OrganizationId;
+    }
 
-        public EventInfo.EventInfoType[] TypeOneOf { get; set; }
+    public override string ToString()
+        => $"{nameof(StatusOneOf)}: {StatusOneOf},\n"
+         + $"{nameof(StatusNoneOf)}: {StatusNoneOf},\n"
+         + $"{nameof(TypeOneOf)}: {TypeOneOf},\n"
+         + $"{nameof(TypeNoneOf)}: {TypeNoneOf},\n"
+         + $"{nameof(FeaturedOnly)}: {FeaturedOnly},\n"
+         + $"{nameof(PastEventsOnly)}: {PastEventsOnly},\n"
+         + $"{nameof(TodaysEventsOnly)}: {TodaysEventsOnly},\n"
+         + $"{nameof(AccessibleOnly)}: {AccessibleOnly},\n"
+         + $"{nameof(StartDateBefore)}: {StartDateBefore},\n"
+         + $"{nameof(StartDateAfter)}: {StartDateAfter},\n"
+         + $"{nameof(EndDateIsNullOrBefore)}: {EndDateIsNullOrBefore},\n"
+         + $"{nameof(EndDateIsNullOrAfter)}: {EndDateIsNullOrAfter},\n"
+         + $"{nameof(EndDateBefore)}: {EndDateBefore},\n"
+         + $"{nameof(EndDateAfter)}: {EndDateAfter},\n"
+         + $"{nameof(CollectionIds)}: {CollectionIds}\n"
+         + $"{nameof(OrganizationId)}: {OrganizationId}";
 
-        public EventInfo.EventInfoType[] TypeNoneOf { get; set; }
-
-        public bool FeaturedOnly { get; set; }
-
-        public bool PastEventsOnly { get; set; }
-
-        public bool TodaysEventsOnly { get; set; }
-
-        public bool AccessibleOnly { get; set; } = true;
-
-        public bool IncludeArchived { get; set; }
-
-        public LocalDate? StartDate { get; set; }
-
-        public LocalDate? EndDate { get; set; }
-
-        public LocalDate? StartDateBefore { get; set; }
-
-        public LocalDate? StartDateAfter { get; set; }
-
-        public LocalDate? EndDateIsNullOrBefore { get; set; }
-
-        public LocalDate? EndDateIsNullOrAfter { get; set; }
-
-        public LocalDate? EndDateBefore { get; set; }
-
-        public LocalDate? EndDateAfter { get; set; }
-
-        public int[] CollectionIds { get; set; }
-
-        public int? OrganizationId { get; set; }
-
-        public EventInfoFilter()
+    public static EventInfoFilter UpcomingEvents(EventInfoFilter filter = null)
+    {
+        return new EventInfoFilter(filter ?? new EventInfoFilter())
         {
-        }
-
-        public EventInfoFilter(EventInfoFilter copy)
-        {
-            if (copy == null)
+            StatusNoneOf = new[]
             {
-                throw new ArgumentNullException(nameof(copy));
-            }
-            AccessibleOnly = copy.AccessibleOnly;
-            StatusNoneOf = copy.StatusNoneOf;
-            StatusNoneOf = copy.StatusNoneOf;
-            TypeOneOf = copy.TypeOneOf;
-            TypeNoneOf = copy.TypeNoneOf;
-            FeaturedOnly = copy.FeaturedOnly;
-            PastEventsOnly = copy.PastEventsOnly;
-            TodaysEventsOnly = copy.TodaysEventsOnly;
-            StartDateBefore = copy.StartDateBefore;
-            StartDateAfter = copy.StartDateAfter;
-            EndDateBefore = copy.EndDateBefore;
-            EndDateAfter = copy.EndDateAfter;
-            CollectionIds = copy.CollectionIds;
-            OrganizationId = copy.OrganizationId;
-        }
+                EventInfo.EventInfoStatus.Draft,
+            },
+            StartDateAfter = SystemClock.Instance.Today(),
+        };
+    }
 
-        public override string ToString()
+    public static EventInfoFilter FeaturedEvents(EventInfoFilter filter = null)
+    {
+        return new EventInfoFilter(filter ?? new EventInfoFilter())
         {
-            return $"{nameof(StatusOneOf)}: {StatusOneOf},\n" +
-                   $"{nameof(StatusNoneOf)}: {StatusNoneOf},\n" +
-                   $"{nameof(TypeOneOf)}: {TypeOneOf},\n" +
-                   $"{nameof(TypeNoneOf)}: {TypeNoneOf},\n" +
-                   $"{nameof(FeaturedOnly)}: {FeaturedOnly},\n" +
-                   $"{nameof(PastEventsOnly)}: {PastEventsOnly},\n" +
-                   $"{nameof(TodaysEventsOnly)}: {TodaysEventsOnly},\n" +
-                   $"{nameof(AccessibleOnly)}: {AccessibleOnly},\n" +
-                   $"{nameof(StartDateBefore)}: {StartDateBefore},\n" +
-                   $"{nameof(StartDateAfter)}: {StartDateAfter},\n" +
-                   $"{nameof(EndDateIsNullOrBefore)}: {EndDateIsNullOrBefore},\n" +
-                   $"{nameof(EndDateIsNullOrAfter)}: {EndDateIsNullOrAfter},\n" +
-                   $"{nameof(EndDateBefore)}: {EndDateBefore},\n" +
-                   $"{nameof(EndDateAfter)}: {EndDateAfter},\n" +
-                   $"{nameof(CollectionIds)}: {CollectionIds}\n" +
-                   $"{nameof(OrganizationId)}: {OrganizationId}";
-        }
-
-        public static EventInfoFilter UpcomingEvents(EventInfoFilter filter = null)
-        {
-            return new EventInfoFilter(filter ?? new EventInfoFilter())
+            FeaturedOnly = true,
+            StatusNoneOf = new[]
             {
-                StatusNoneOf = new[]
-                {
-                    EventInfo.EventInfoStatus.Draft
-                },
-                StartDateAfter = SystemClock.Instance.Today()
-            };
-        }
+                EventInfo.EventInfoStatus.Cancelled,
+                EventInfo.EventInfoStatus.Draft,
+            },
+            StartDateAfter = SystemClock.Instance.Today(),
+        };
+    }
 
-        public static EventInfoFilter FeaturedEvents(EventInfoFilter filter = null)
+    public static EventInfoFilter UnpublishedEvents(EventInfoFilter filter = null)
+    {
+        return new EventInfoFilter(filter ?? new EventInfoFilter())
         {
-            return new EventInfoFilter(filter ?? new EventInfoFilter())
+            StatusOneOf = new[]
             {
-                FeaturedOnly = true,
-                StatusNoneOf = new[]
-                {
-                    EventInfo.EventInfoStatus.Cancelled,
-                    EventInfo.EventInfoStatus.Draft
-                },
-                StartDateAfter = SystemClock.Instance.Today()
-            };
-        }
+                EventInfo.EventInfoStatus.Cancelled,
+                EventInfo.EventInfoStatus.Draft,
+            },
+        };
+    }
 
-        public static EventInfoFilter UnpublishedEvents(EventInfoFilter filter = null)
+    public static EventInfoFilter PastEvents(EventInfoFilter filter = null)
+    {
+        return new EventInfoFilter(filter ?? new EventInfoFilter())
         {
-            return new EventInfoFilter(filter ?? new EventInfoFilter())
+            PastEventsOnly = true,
+            StatusNoneOf = new[]
             {
-                StatusOneOf = new[]
-                {
-                    EventInfo.EventInfoStatus.Cancelled,
-                    EventInfo.EventInfoStatus.Draft
-                }
-            };
-        }
+                EventInfo.EventInfoStatus.Cancelled,
+                EventInfo.EventInfoStatus.Draft,
+            },
+        };
+    }
 
-        public static EventInfoFilter PastEvents(EventInfoFilter filter = null)
+    public static EventInfoFilter OnDemandEvents(EventInfoFilter filter = null)
+    {
+        return new EventInfoFilter(filter ?? new EventInfoFilter())
         {
-            return new EventInfoFilter(filter ?? new EventInfoFilter())
+            StatusNoneOf = new[]
             {
-                PastEventsOnly = true,
-                StatusNoneOf = new[]
-                {
-                    EventInfo.EventInfoStatus.Cancelled,
-                    EventInfo.EventInfoStatus.Draft
-                }
-            };
-        }
+                EventInfo.EventInfoStatus.Cancelled,
+                EventInfo.EventInfoStatus.Draft,
+            },
+            TypeOneOf = new[]
+            {
+                EventInfo.EventInfoType.OnlineCourse,
+            },
+        };
+    }
 
-        public static EventInfoFilter OnDemandEvents(EventInfoFilter filter = null)
+    public static EventInfoFilter OngoingEvents(EventInfoFilter filter = null)
+    {
+        return new EventInfoFilter(filter ?? new EventInfoFilter())
         {
-            return new EventInfoFilter(filter ?? new EventInfoFilter())
+            TodaysEventsOnly = true,
+            StatusNoneOf = new[]
             {
-                StatusNoneOf = new[]
-                {
-                    EventInfo.EventInfoStatus.Cancelled,
-                    EventInfo.EventInfoStatus.Draft
-                },
-                TypeOneOf = new[]
-                {
-                    EventInfo.EventInfoType.OnlineCourse
-                }
-            };
-        }
-
-        public static EventInfoFilter OngoingEvents(EventInfoFilter filter = null)
-        {
-            return new EventInfoFilter(filter ?? new EventInfoFilter())
-            {
-                TodaysEventsOnly = true,
-                StatusNoneOf = new[]
-                {
-                    EventInfo.EventInfoStatus.Cancelled,
-                    EventInfo.EventInfoStatus.Draft
-                }
-            };
-        }
+                EventInfo.EventInfoStatus.Cancelled,
+                EventInfo.EventInfoStatus.Draft,
+            },
+        };
     }
 }

@@ -3,32 +3,31 @@ using System.ComponentModel.DataAnnotations;
 using Eventuras.Services.Organizations.Settings;
 using Losol.Communication.Email.SendGrid;
 
-namespace Eventuras.Services.SendGrid
+namespace Eventuras.Services.SendGrid;
+
+[DisplayName("SendGrid")]
+internal class OrganizationSendGridSettings : IConfigurableSettings
 {
-    [DisplayName("SendGrid")]
-    internal class OrganizationSendGridSettings : IConfigurableSettings
-    {
-        [DisplayName("SendGrid enabled")] public bool Enabled { get; set; }
+    [DisplayName("SendGrid enabled")]
+    public bool Enabled { get; set; }
 
-        [Required]
-        [DisplayName("SendGrid key")]
-        public string Key { get; set; }
+    [Required]
+    [DisplayName("SendGrid key")]
+    public string Key { get; set; }
 
-        [Required]
-        [EmailAddress]
-        [DisplayName("From: address")]
-        public string FromAddress { get; set; }
+    [Required]
+    [EmailAddress]
+    [DisplayName("From: address")]
+    public string FromAddress { get; set; }
 
-        [DisplayName("From: name")] public string FromName { get; set; }
+    [DisplayName("From: name")]
+    public string FromName { get; set; }
 
-        public SendGridConfig ToSendGridConfig()
+    public SendGridConfig ToSendGridConfig()
+        => new()
         {
-            return new SendGridConfig
-            {
-                Key = Key,
-                EmailAddress = FromAddress,
-                Name = FromName
-            };
-        }
-    }
+            Key = Key,
+            EmailAddress = FromAddress,
+            Name = FromName,
+        };
 }

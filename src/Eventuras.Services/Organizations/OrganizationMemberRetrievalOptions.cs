@@ -1,7 +1,6 @@
-namespace Eventuras.Services.Organizations
+namespace Eventuras.Services.Organizations;
+
+public class OrganizationMemberRetrievalOptions
 {
-    public class OrganizationMemberRetrievalOptions
-    {
-        public bool LoadRoles { get; set; }
-    }
+    public bool LoadRoles { get; set; }
 }

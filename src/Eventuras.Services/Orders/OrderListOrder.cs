@@ -1,7 +1,6 @@
-namespace Eventuras.Services.Orders
+namespace Eventuras.Services.Orders;
+
+public enum OrderListOrder
 {
-    public enum OrderListOrder
-    {
-        Time
-    }
+    Time,
 }

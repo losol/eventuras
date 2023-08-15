@@ -6,175 +6,162 @@ using System.Linq;
 using NodaTime;
 using static Eventuras.Domain.PaymentMethod;
 
-namespace Eventuras.Domain
+namespace Eventuras.Domain;
+
+public class Order
 {
-    public class Order
+    public enum OrderStatus
     {
-        public enum OrderStatus
+        Draft,
+        Verified,
+        Invoiced,
+        Cancelled,
+        Refunded,
+    }
+
+    [Required]
+    public int OrderId { get; set; }
+
+    public string UserId { get; set; }
+
+    public int RegistrationId { get; set; }
+
+    [Obsolete("Use Invoice.ExternalInvoiceId")]
+    public string ExternalInvoiceId { get; set; }
+
+    [Obsolete("Use Invoice.Paid")]
+    public bool Paid { get; set; }
+
+    public int? InvoiceId { get; set; }
+
+    /**
+     * Allowed transitions:
+     * Draft
+     * Draft -> Cancelled
+     * Draft -> Verified -> Cancelled
+     * Draft -> Verified -> Invoiced
+     * Draft -> Verified -> Invoiced -> Cancelled
+     */
+    private OrderStatus _status = OrderStatus.Draft;
+
+    public OrderStatus Status
+    {
+        get => _status;
+        set
         {
-            Draft,
-            Verified,
-            Invoiced,
-            Cancelled,
-            Refunded
-        }
-
-
-        [Required] public int OrderId { get; set; }
-        public string UserId { get; set; }
-        public int RegistrationId { get; set; }
-
-        [Obsolete("Use Invoice.ExternalInvoiceId")]
-        public string ExternalInvoiceId { get; set; }
-
-        [Obsolete("Use Invoice.Paid")]
-        public bool Paid { get; set; }
-
-        public int? InvoiceId { get; set; }
-
-        /**
-			Allowed transitions:
-			Draft
-			Draft -> Cancelled
-			Draft -> Verified -> Cancelled
-			Draft -> Verified -> Invoiced
-			Draft -> Verified -> Invoiced -> Cancelled
-		 */
-        private OrderStatus _status = OrderStatus.Draft;
-
-        public OrderStatus Status
-        {
-            get => _status;
-            set
+            switch (value)
             {
-                switch (value)
-                {
-                    case OrderStatus.Draft:
-                        throw new InvalidOperationException("Orders cannot be set as draft.");
-                    case OrderStatus.Verified:
-                        if (_status != OrderStatus.Draft)
-                        {
-                            throw new InvalidOperationException("Only draft orders can be verified.");
-                        }
+                case OrderStatus.Draft: throw new InvalidOperationException("Orders cannot be set as draft.");
 
-                        break;
-                    case OrderStatus.Invoiced:
-                        if (_status != OrderStatus.Verified)
-                        {
-                            throw new InvalidOperationException("Only verified orders can be invoiced.");
-                        }
+                case OrderStatus.Verified:
+                    if (_status != OrderStatus.Draft) throw new InvalidOperationException("Only draft orders can be verified.");
 
-                        break;
+                    break;
 
-                    case OrderStatus.Refunded:
-                        if (_status != OrderStatus.Invoiced)
-                        {
-                            throw new InvalidOperationException("Only invoiced orders can be refunded.");
-                        }
+                case OrderStatus.Invoiced:
+                    if (_status != OrderStatus.Verified) throw new InvalidOperationException("Only verified orders can be invoiced.");
 
-                        break;
+                    break;
 
-                    case OrderStatus.Cancelled:
-                        break;
-                }
+                case OrderStatus.Refunded:
+                    if (_status != OrderStatus.Invoiced) throw new InvalidOperationException("Only invoiced orders can be refunded.");
 
-                _status = value;
-            }
-        }
+                    break;
 
-        // From registration, should be Participant details, if Customer details
-        // does not exist.
-        // TODO: REMOVE, USE FROM REGISTRATION...
-        public string CustomerName { get; set; }
-        public string CustomerEmail { get; set; }
-        public string CustomerVatNumber { get; set; }
-        public string CustomerInvoiceReference { get; set; }
-        public PaymentProvider PaymentMethod { get; set; }
-
-        public Instant OrderTime { get; set; } = SystemClock.Instance.Now();
-
-        // Comments are from the user registered
-        public string Comments { get; set; }
-
-        // Log is information from the system. Ie registration time and user.
-        public string Log { get; set; }
-
-        // Navigational properties
-        public Registration Registration { get; set; }
-        public ApplicationUser User { get; set; }
-        public List<OrderLine> OrderLines { get; set; }
-
-        [ForeignKey(nameof(InvoiceId))] public Invoice Invoice { get; set; }
-
-        public void AddLog(string text = null)
-        {
-            var logText = $"{DateTime.UtcNow.ToString("u")}: ";
-            if (!string.IsNullOrWhiteSpace(text))
-            {
-                logText += $"{text}";
-            }
-            else
-            {
-                logText += $"{Status}";
+                case OrderStatus.Cancelled: break;
             }
 
-            Log += logText + "\n";
+            _status = value;
         }
+    }
 
-        public bool CanEdit =>
-            Status == OrderStatus.Draft || Status == OrderStatus.Verified;
+    // From registration, should be Participant details, if Customer details
+    // does not exist.
+    // TODO: REMOVE, USE FROM REGISTRATION...
+    public string CustomerName { get; set; }
 
-        // TODO: Write tests for this
-        public decimal TotalAmount =>
-            OrderLines.Sum(l => l.LineTotal);
+    public string CustomerEmail { get; set; }
 
-        public void MarkAsVerified()
+    public string CustomerVatNumber { get; set; }
+
+    public string CustomerInvoiceReference { get; set; }
+
+    public PaymentProvider PaymentMethod { get; set; }
+
+    public Instant OrderTime { get; set; } = SystemClock.Instance.Now();
+
+    // Comments are from the user registered
+    public string Comments { get; set; }
+
+    // Log is information from the system. Ie registration time and user.
+    public string Log { get; set; }
+
+    // Navigational properties
+    public Registration Registration { get; set; }
+
+    public ApplicationUser User { get; set; }
+
+    public List<OrderLine> OrderLines { get; set; }
+
+    [ForeignKey(nameof(InvoiceId))]
+    public Invoice Invoice { get; set; }
+
+    public void AddLog(string text = null)
+    {
+        var logText = $"{DateTime.UtcNow.ToString("u")}: ";
+        if (!string.IsNullOrWhiteSpace(text))
+            logText += $"{text}";
+        else
+            logText += $"{Status}";
+
+        Log += logText + "\n";
+    }
+
+    public bool CanEdit => Status == OrderStatus.Draft || Status == OrderStatus.Verified;
+
+    // TODO: Write tests for this
+    public decimal TotalAmount => OrderLines.Sum(l => l.LineTotal);
+
+    public void MarkAsVerified()
+    {
+        Status = OrderStatus.Verified;
+        AddLog();
+    }
+
+    public void MarkAsCancelled()
+    {
+        Status = OrderStatus.Cancelled;
+        AddLog();
+    }
+
+    public void MarkAsInvoiced()
+    {
+        Status = OrderStatus.Invoiced;
+        AddLog();
+    }
+
+    public void MarkAsRefunded()
+    {
+        Status = OrderStatus.Refunded;
+        AddLog();
+    }
+
+    public Order CreateRefundOrder()
+    {
+        if (Status != OrderStatus.Invoiced) throw new InvalidOperationException("Only invoiced orders can be refunded.");
+
+        var refund = new Order
         {
-            Status = OrderStatus.Verified;
-            this.AddLog();
-        }
+            CustomerEmail = CustomerEmail,
+            CustomerName = CustomerName,
+            CustomerVatNumber = CustomerVatNumber,
+            RegistrationId = RegistrationId,
+            UserId = UserId,
+            // TODO: Add other fields like payment method, etc.
+            OrderLines = new List<OrderLine>(),
+        };
+        foreach (var line in OrderLines) refund.OrderLines.Add(line.CreateRefundOrderLine());
 
-        public void MarkAsCancelled()
-        {
-            Status = OrderStatus.Cancelled;
-            this.AddLog();
-        }
-
-        public void MarkAsInvoiced()
-        {
-            Status = OrderStatus.Invoiced;
-            this.AddLog();
-        }
-
-        public void MarkAsRefunded()
-        {
-            Status = OrderStatus.Refunded;
-            this.AddLog();
-        }
-
-        public Order CreateRefundOrder()
-        {
-            if (Status != OrderStatus.Invoiced)
-            {
-                throw new InvalidOperationException("Only invoiced orders can be refunded.");
-            }
-
-            var refund = new Order
-            {
-                CustomerEmail = CustomerEmail,
-                CustomerName = CustomerName,
-                CustomerVatNumber = CustomerVatNumber,
-                RegistrationId = RegistrationId,
-                UserId = UserId,
-                // TODO: Add other fields like payment method, etc.
-                OrderLines = new List<OrderLine>()
-            };
-            foreach (var line in OrderLines)
-            {
-                refund.OrderLines.Add(line.CreateRefundOrderLine());
-            }
-
-            return refund;
-        }
+        return refund;
     }
 }

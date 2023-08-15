@@ -23,7 +23,7 @@ public static class ModelValidations
         bool checkAutoCreatedOrder = false,
         bool checkProducts = false)
     {
-        if (expected is not null) Assert.NotNull(actual);
+        if (expected is not null) { Assert.NotNull(actual); }
         else
         {
             Assert.Null(actual);
@@ -45,7 +45,7 @@ public static class ModelValidations
 
     private static void CheckProducts(ICollection<OrderDTO>? expected, IEnumerable<ProductOrderDto>? actual)
     {
-        if (expected is not null) Assert.NotNull(actual);
+        if (expected is not null) { Assert.NotNull(actual); }
         else
         {
             Assert.Null(actual);
@@ -63,7 +63,7 @@ public static class ModelValidations
 
     public static void CheckOrders(ICollection<Order>? expected, ICollection<OrderDto>? actual)
     {
-        if (expected is not null) Assert.NotNull(actual);
+        if (expected is not null) { Assert.NotNull(actual); }
         else
         {
             Assert.Null(actual);
@@ -83,9 +83,14 @@ public static class ModelValidations
             });
     }
 
-    public static void CheckOrder(Order? expected, OrderDto? actual, bool checkUserInfo = false, bool checkRegistration = false, bool checkItems = false)
+    public static void CheckOrder(
+        Order? expected,
+        OrderDto? actual,
+        bool checkUserInfo = false,
+        bool checkRegistration = false,
+        bool checkItems = false)
     {
-        if (expected is not null) Assert.NotNull(actual);
+        if (expected is not null) { Assert.NotNull(actual); }
         else
         {
             Assert.Null(actual);
@@ -108,15 +113,14 @@ public static class ModelValidations
 
     private static void CheckOrderItems(ICollection<OrderLine>? expected, IEnumerable<OrderLineDto>? actual)
     {
-        if (expected is not null) Assert.NotNull(actual);
+        if (expected is not null) { Assert.NotNull(actual); }
         else
         {
             Assert.Null(actual);
             return;
         }
 
-        var expectedMappedAndOrdered = expected
-            .Select(ol => new OrderLineDto(ol))
+        var expectedMappedAndOrdered = expected.Select(ol => new OrderLineDto(ol))
             .OrderBy(ol => new { ol.Product.ProductId, ol.ProductVariant?.ProductVariantId });
         var actualOrdered = actual.OrderBy(ol => new { ol.Product.ProductId, ol.ProductVariant?.ProductVariantId });
 
@@ -126,7 +130,7 @@ public static class ModelValidations
 
     public static void CheckEventInfo(EventInfo? expected, EventDto? actual)
     {
-        if (expected is not null) Assert.NotNull(actual);
+        if (expected is not null) { Assert.NotNull(actual); }
         else
         {
             Assert.Null(actual);
@@ -152,7 +156,7 @@ public static class ModelValidations
 
     public static void CheckUserInfo(ApplicationUser? expected, UserDto? actual)
     {
-        if (expected is not null) Assert.NotNull(actual);
+        if (expected is not null) { Assert.NotNull(actual); }
         else
         {
             Assert.Null(actual);

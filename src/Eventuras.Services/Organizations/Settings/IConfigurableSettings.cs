@@ -1,7 +1,6 @@
-namespace Eventuras.Services.Organizations.Settings
+namespace Eventuras.Services.Organizations.Settings;
+
+public interface IConfigurableSettings
 {
-    public interface IConfigurableSettings
-    {
-        public bool Enabled { get; set; }
-    }
+    public bool Enabled { get; set; }
 }

@@ -1,10 +1,9 @@
 using Newtonsoft.Json;
 
-namespace Eventuras.Services.TalentLms
+namespace Eventuras.Services.TalentLms;
+
+internal class TalentLmsDeleteUserResponse
 {
-    internal class TalentLmsDeleteUserResponse
-    {
-        [JsonProperty("message")]
-        public string Message { get; set; }
-    }
+    [JsonProperty("message")]
+    public string Message { get; set; }
 }

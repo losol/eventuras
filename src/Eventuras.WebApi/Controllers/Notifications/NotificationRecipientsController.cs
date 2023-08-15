@@ -7,67 +7,56 @@ using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Eventuras.WebApi.Controllers.Notifications
+namespace Eventuras.WebApi.Controllers.Notifications;
+
+[Authorize]
+[ApiController]
+[ApiVersion("3")]
+[Route("v{version:apiVersion}/notifications/{id}/recipients")]
+public class NotificationRecipientsController : ControllerBase
 {
-    [Authorize]
-    [ApiController]
-    [ApiVersion("3")]
-    [Route("v{version:apiVersion}/notifications/{id}/recipients")]
-    public class NotificationRecipientsController : ControllerBase
+    private readonly INotificationRetrievalService _notificationRetrievalService;
+    private readonly INotificationRecipientRetrievalService _notificationRecipientRetrievalService;
+
+    public NotificationRecipientsController(
+        INotificationRetrievalService notificationRetrievalService,
+        INotificationRecipientRetrievalService notificationRecipientRetrievalService)
     {
-        private readonly INotificationRetrievalService _notificationRetrievalService;
-        private readonly INotificationRecipientRetrievalService _notificationRecipientRetrievalService;
+        _notificationRetrievalService = notificationRetrievalService ?? throw new ArgumentNullException(nameof(notificationRetrievalService));
 
-        public NotificationRecipientsController(
-            INotificationRetrievalService notificationRetrievalService,
-            INotificationRecipientRetrievalService notificationRecipientRetrievalService)
-        {
-            _notificationRetrievalService = notificationRetrievalService ?? throw
-                new ArgumentNullException(nameof(notificationRetrievalService));
+        _notificationRecipientRetrievalService = notificationRecipientRetrievalService
+                                              ?? throw new ArgumentNullException(nameof(notificationRecipientRetrievalService));
+    }
 
-            _notificationRecipientRetrievalService = notificationRecipientRetrievalService ?? throw
-                new ArgumentNullException(nameof(notificationRecipientRetrievalService));
-        }
+    [HttpGet]
+    public async Task<IActionResult> List(int id, [FromQuery] NotificationRecipientsQueryDto request, CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState.FormatErrors());
 
-        [HttpGet]
-        public async Task<IActionResult> List(int id,
-            [FromQuery] NotificationRecipientsQueryDto request,
-            CancellationToken cancellationToken)
-        {
-            if (!ModelState.IsValid)
+        await _notificationRetrievalService.GetNotificationByIdAsync(id, cancellationToken: cancellationToken); // for ensuring notification exists
+
+        var paging = await _notificationRecipientRetrievalService.ListNotificationRecipientsAsync(new NotificationRecipientListRequest
             {
-                return BadRequest(ModelState.FormatErrors());
-            }
+                Limit = request.Limit,
+                Offset = request.Offset,
+                Filter = new NotificationRecipientFilter
+                {
+                    AccessibleOnly = true,
+                    NotificationIds = new[] { id },
+                    Query = request.Query,
+                    SentOnly = request.SentOnly,
+                    ErrorsOnly = request.ErrorsOnly,
+                },
+                OrderBy = request.Order,
+                Descending = request.Desc,
+            },
+            new NotificationRecipientRetrievalOptions
+            {
+                LoadRegistration = true,
+                LoadUser = true,
+            },
+            cancellationToken);
 
-            await _notificationRetrievalService.GetNotificationByIdAsync(id,
-                cancellationToken: cancellationToken); // for ensuring notification exists
-
-            var paging = await _notificationRecipientRetrievalService
-                .ListNotificationRecipientsAsync(
-                    new NotificationRecipientListRequest
-                    {
-                        Limit = request.Limit,
-                        Offset = request.Offset,
-                        Filter = new NotificationRecipientFilter
-                        {
-                            AccessibleOnly = true,
-                            NotificationIds = new[] { id },
-                            Query = request.Query,
-                            SentOnly = request.SentOnly,
-                            ErrorsOnly = request.ErrorsOnly
-                        },
-                        OrderBy = request.Order,
-                        Descending = request.Desc
-                    },
-                    new NotificationRecipientRetrievalOptions
-                    {
-                        LoadRegistration = true,
-                        LoadUser = true
-                    },
-                    cancellationToken);
-
-            return Ok(PageResponseDto<NotificationRecipientDto>.FromPaging(
-                request, paging, r => new NotificationRecipientDto(r)));
-        }
+        return Ok(PageResponseDto<NotificationRecipientDto>.FromPaging(request, paging, r => new NotificationRecipientDto(r)));
     }
 }

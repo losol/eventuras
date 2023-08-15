@@ -5,12 +5,7 @@ using Eventuras.Domain;
 
 namespace Eventuras.WebApi.Controllers.Events.Products;
 
-public record ProductOrderDto(
-    int ProductId,
-    int? ProductVariantId,
-    ProductDto Product,
-    ProductVariantDto? ProductVariant,
-    int Quantity)
+public record ProductOrderDto(int ProductId, int? ProductVariantId, ProductDto Product, ProductVariantDto? ProductVariant, int Quantity)
 {
     public static ProductOrderDto FromRegistrationOrderDto(OrderDTO order)
     {
@@ -28,13 +23,9 @@ public record ProductOrderDto(
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
-        return ProductId == other.ProductId
-            && ProductVariantId == other.ProductVariantId
-            && Quantity == other.Quantity;
+
+        return ProductId == other.ProductId && ProductVariantId == other.ProductVariantId && Quantity == other.Quantity;
     }
 
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(ProductId, ProductVariantId, Quantity);
-    }
+    public override int GetHashCode() => HashCode.Combine(ProductId, ProductVariantId, Quantity);
 }

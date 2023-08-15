@@ -1,15 +1,14 @@
 using System;
 using Microsoft.AspNetCore.Identity;
 
-namespace Eventuras.Web.Providers
+namespace Eventuras.Web.Providers;
+
+public class MagicLinkTokenProviderOptions : DataProtectionTokenProviderOptions
 {
-    public class MagicLinkTokenProviderOptions : DataProtectionTokenProviderOptions
+    public MagicLinkTokenProviderOptions()
     {
-        public MagicLinkTokenProviderOptions()
-        {
-            // update the defaults
-            Name = "MagicLinkTokenProvider";
-            TokenLifespan = TimeSpan.FromMinutes(10);
-        }
+        // update the defaults
+        Name = "MagicLinkTokenProvider";
+        TokenLifespan = TimeSpan.FromMinutes(10);
     }
 }

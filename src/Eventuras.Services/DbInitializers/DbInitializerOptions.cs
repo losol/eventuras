@@ -1,16 +1,13 @@
-﻿using System;
+﻿namespace Eventuras.Services.DbInitializers;
 
-namespace Eventuras.Services.DbInitializers
+public class DbInitializerOptions
 {
-    public class DbInitializerOptions
+    public DefaultUser SuperAdmin { get; set; }
+
+    public class DefaultUser
     {
-        public DefaultUser SuperAdmin { get; set; }
+        public string Email { get; set; }
 
-
-        public class DefaultUser
-        {
-            public string Email { get; set; }
-            public string Password { get; set; }
-        }
+        public string Password { get; set; }
     }
 }

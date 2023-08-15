@@ -1,18 +1,15 @@
 using Eventuras.Domain;
 using Eventuras.Services.Events.Products;
 
-namespace Eventuras.WebApi.Controllers.Events.Products
-{
-    public class EventProductsQueryDto
-    {
-        public ProductVisibility Visibility { get; set; } = ProductVisibility.Event;
+namespace Eventuras.WebApi.Controllers.Events.Products;
 
-        public ProductFilter ToProductFilter()
+public class EventProductsQueryDto
+{
+    public ProductVisibility Visibility { get; set; } = ProductVisibility.Event;
+
+    public ProductFilter ToProductFilter()
+        => new()
         {
-            return new ProductFilter
-            {
-                Visibility = Visibility
-            };
-        }
-    }
+            Visibility = Visibility,
+        };
 }

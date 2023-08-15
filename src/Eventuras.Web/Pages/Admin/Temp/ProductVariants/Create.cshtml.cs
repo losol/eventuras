@@ -1,44 +1,37 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Domain;
+using Eventuras.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
 
-namespace Eventuras.Pages.Admin.Temp.ProductVariants
+namespace Eventuras.Pages.Admin.Temp.ProductVariants;
+
+public class CreateModel : PageModel
 {
-    public class CreateModel : PageModel
+    private readonly ApplicationDbContext _context;
+
+    public CreateModel(ApplicationDbContext context)
     {
-        private readonly ApplicationDbContext _context;
+        _context = context;
+    }
 
-        public CreateModel(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+    public IActionResult OnGet()
+    {
+        ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "Name");
+        return Page();
+    }
 
-        public IActionResult OnGet()
-        {
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "Name");
-            return Page();
-        }
+    [BindProperty]
+    public ProductVariant ProductVariant { get; set; }
 
-        [BindProperty]
-        public ProductVariant ProductVariant { get; set; }
+    public async Task<IActionResult> OnPostAsync()
+    {
+        if (!ModelState.IsValid) return Page();
 
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+        _context.ProductVariants.Add(ProductVariant);
+        await _context.SaveChangesAsync();
 
-            _context.ProductVariants.Add(ProductVariant);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
-        }
+        return RedirectToPage("./Index");
     }
 }

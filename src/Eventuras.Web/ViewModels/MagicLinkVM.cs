@@ -1,7 +1,6 @@
-namespace Eventuras.Web.ViewModels
+namespace Eventuras.Web.ViewModels;
+
+public class MagicLinkVM
 {
-    public class MagicLinkVM
-    {
-        public string MagicLink { get; set; }
-    }
+    public string MagicLink { get; set; }
 }

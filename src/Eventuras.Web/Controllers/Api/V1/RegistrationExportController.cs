@@ -1,70 +1,65 @@
+using System.IO;
+using System.Threading.Tasks;
 using Eventuras.Services.Registrations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
-using System.Threading.Tasks;
 
-namespace Eventuras.Web.Controllers.Api.V1
+namespace Eventuras.Web.Controllers.Api.V1;
+
+[ApiVersion("1")]
+[Authorize(Policy = AuthPolicies.AdministratorRole)]
+[Route("api/v1/registrations/export")]
+[ApiController]
+public class RegistrationExportController : Controller
 {
-    [ApiVersion("1")]
-    [Authorize(Policy = AuthPolicies.AdministratorRole)]
-    [Route("api/v1/registrations/export")]
-    [ApiController]
-    public class RegistrationExportController : Controller
+    private readonly IRegistrationExportService _registrationExportService;
+
+    public RegistrationExportController(IRegistrationExportService registrationExportService)
     {
-        private readonly IRegistrationExportService _registrationExportService;
+        _registrationExportService = registrationExportService;
+    }
 
-        public RegistrationExportController(IRegistrationExportService registrationExportService)
-        {
-            _registrationExportService = registrationExportService;
-        }
+    [HttpGet]
+    public async Task<IActionResult> ExportAllRegistrations([FromQuery] RegistrationExportRequest request)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState.FormatErrors());
 
-        [HttpGet]
-        public async Task<IActionResult> ExportAllRegistrations([FromQuery] RegistrationExportRequest request)
-        {
-            if (!ModelState.IsValid)
+        var stream = new MemoryStream();
+        await _registrationExportService.ExportParticipantListToExcelAsync(stream,
+            new IRegistrationExportService.Options
             {
-                return BadRequest(ModelState.FormatErrors());
-            }
-
-            var stream = new MemoryStream();
-            await _registrationExportService.ExportParticipantListToExcelAsync(stream, new IRegistrationExportService.Options
-            {
-                ExportHeader = request.Header
+                ExportHeader = request.Header,
             });
-            return new FileContentResult(stream.GetBuffer(), MimeType)
-            {
-                FileDownloadName = FileDownloadName
-            };
-        }
-
-        [HttpGet("{eventId}")]
-        public async Task<IActionResult> ExportAllRegistrationsForEvent([FromRoute] int eventId, [FromQuery] RegistrationExportRequest request)
+        return new FileContentResult(stream.GetBuffer(), MimeType)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState.FormatErrors());
-            }
+            FileDownloadName = FileDownloadName,
+        };
+    }
 
-            var stream = new MemoryStream();
-            await _registrationExportService.ExportParticipantListToExcelAsync(stream, new IRegistrationExportService.Options
+    [HttpGet("{eventId}")]
+    public async Task<IActionResult> ExportAllRegistrationsForEvent([FromRoute] int eventId, [FromQuery] RegistrationExportRequest request)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState.FormatErrors());
+
+        var stream = new MemoryStream();
+        await _registrationExportService.ExportParticipantListToExcelAsync(stream,
+            new IRegistrationExportService.Options
             {
                 EventInfoId = eventId,
-                ExportHeader = request.Header
+                ExportHeader = request.Header,
             });
-            return new FileContentResult(stream.GetBuffer(), MimeType)
-            {
-                FileDownloadName = FileDownloadName
-            };
-        }
-
-        private const string MimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-        private const string FileDownloadName = "registrations.xlsx";
+        return new FileContentResult(stream.GetBuffer(), MimeType)
+        {
+            FileDownloadName = FileDownloadName,
+        };
     }
 
-    public class RegistrationExportRequest
-    {
-        [FromQuery(Name = "header")]
-        public bool Header { get; set; }
-    }
+    private const string MimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    private const string FileDownloadName = "registrations.xlsx";
+}
+
+public class RegistrationExportRequest
+{
+    [FromQuery(Name = "header")]
+    public bool Header { get; set; }
 }

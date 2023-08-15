@@ -4,93 +4,69 @@ using System.Threading.Tasks;
 using Eventuras.Services.Views;
 using Losol.Communication.Email;
 
-namespace Eventuras.Services.Email
+namespace Eventuras.Services.Email;
+
+internal class ApplicationEmailSender : IApplicationEmailSender
 {
-    internal class ApplicationEmailSender : IApplicationEmailSender
+    private const string StandardEmailViewName = "Templates/Email/StandardEmail";
+
+    private readonly IViewRenderService _viewRenderService;
+    private readonly IEmailSender _emailSender;
+
+    public ApplicationEmailSender(IViewRenderService viewRenderService, IEmailSender emailSender)
     {
-        private const string StandardEmailViewName = "Templates/Email/StandardEmail";
+        _viewRenderService = viewRenderService ?? throw new ArgumentNullException(nameof(viewRenderService));
 
-        private readonly IViewRenderService _viewRenderService;
-        private readonly IEmailSender _emailSender;
+        _emailSender = emailSender ?? throw new ArgumentNullException(nameof(emailSender));
+    }
 
-        public ApplicationEmailSender(
-            IViewRenderService viewRenderService,
-            IEmailSender emailSender)
+    public async Task SendEmailWithTemplateAsync(
+        string viewName,
+        string address,
+        string subject,
+        object viewModel = null,
+        params Attachment[] attachments)
+    {
+        if (string.IsNullOrEmpty(viewName)) throw new ArgumentException($"{nameof(viewName)} must not be empty");
+
+        if (string.IsNullOrEmpty(address)) throw new ArgumentException($"{nameof(address)} must not be empty");
+
+        if (string.IsNullOrEmpty(subject)) throw new ArgumentException($"{nameof(subject)} must not be empty");
+
+        var htmlBody = await _viewRenderService.RenderViewToStringAsync(viewName, viewModel ?? new object());
+
+        await _emailSender.SendEmailAsync(new EmailModel
         {
-            _viewRenderService = viewRenderService ?? throw
-                new ArgumentNullException(nameof(viewRenderService));
+            Subject = subject,
+            Recipients = new[] { new Address(address) },
+            HtmlBody = htmlBody,
+            Attachments = attachments.ToList(),
+        });
+    }
 
-            _emailSender = emailSender ?? throw
-                new ArgumentNullException(nameof(emailSender));
-        }
+    public async Task SendStandardEmailAsync(string address, string subject, string message, params Attachment[] attachments)
+    {
+        if (string.IsNullOrEmpty(address)) throw new ArgumentException($"{nameof(address)} must not be empty");
 
-        public async Task SendEmailWithTemplateAsync(
-            string viewName,
-            string address,
-            string subject,
-            object viewModel = null,
-            params Attachment[] attachments)
-        {
-            if (string.IsNullOrEmpty(viewName))
-            {
-                throw new ArgumentException($"{nameof(viewName)} must not be empty");
-            }
+        if (string.IsNullOrEmpty(subject)) throw new ArgumentException($"{nameof(subject)} must not be empty");
 
-            if (string.IsNullOrEmpty(address))
-            {
-                throw new ArgumentException($"{nameof(address)} must not be empty");
-            }
+        if (string.IsNullOrEmpty(message)) throw new ArgumentException($"{nameof(message)} must not be empty");
 
-            if (string.IsNullOrEmpty(subject))
-            {
-                throw new ArgumentException($"{nameof(subject)} must not be empty");
-            }
-
-            var htmlBody = await _viewRenderService
-                .RenderViewToStringAsync(viewName, viewModel ?? new object());
-
-            await _emailSender.SendEmailAsync(new EmailModel
+        await SendEmailWithTemplateAsync(StandardEmailViewName,
+            address,
+            subject,
+            new ApplicationEmailModel
             {
                 Subject = subject,
-                Recipients = new[] { new Address(address) },
-                HtmlBody = htmlBody,
-                Attachments = attachments.ToList()
-            });
-        }
-
-        public async Task SendStandardEmailAsync(
-            string address,
-            string subject,
-            string message,
-            params Attachment[] attachments)
-        {
-            if (string.IsNullOrEmpty(address))
-            {
-                throw new ArgumentException($"{nameof(address)} must not be empty");
-            }
-
-            if (string.IsNullOrEmpty(subject))
-            {
-                throw new ArgumentException($"{nameof(subject)} must not be empty");
-            }
-
-            if (string.IsNullOrEmpty(message))
-            {
-                throw new ArgumentException($"{nameof(message)} must not be empty");
-            }
-
-            await SendEmailWithTemplateAsync(StandardEmailViewName, address, subject, new ApplicationEmailModel
-            {
-                Subject = subject,
-                Message = message
-            }, attachments);
-        }
+                Message = message,
+            },
+            attachments);
     }
-    
-    public class ApplicationEmailModel
-    {
-        public string Subject { get; set; }
+}
 
-        public string Message { get; set; }
-    }
+public class ApplicationEmailModel
+{
+    public string Subject { get; set; }
+
+    public string Message { get; set; }
 }

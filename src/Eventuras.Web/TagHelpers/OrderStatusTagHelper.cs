@@ -1,45 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using static Eventuras.Domain.Order;
 
-namespace Eventuras.Web.TagHelpers
+namespace Eventuras.Web.TagHelpers;
+
+[HtmlTargetElement("order-status", TagStructure = TagStructure.WithoutEndTag)]
+public class OrderStatusTagHelper : TagHelper
 {
-    [HtmlTargetElement("order-status", TagStructure = TagStructure.WithoutEndTag)]
-    public class OrderStatusTagHelper : TagHelper
+    public OrderStatus Value { get; set; }
+
+    public override void Process(TagHelperContext context, TagHelperOutput output)
     {
-        public OrderStatus Value { get; set; }
+        output.TagMode = TagMode.StartTagAndEndTag;
+        output.TagName = "span";
+        output.Content.SetContent(Value.ToString());
 
-        public override void Process(TagHelperContext context, TagHelperOutput output)
+        TagHelperAttribute badgeClass;
+        switch (Value)
         {
-            output.TagMode = TagMode.StartTagAndEndTag;
-            output.TagName = "span";
-            output.Content.SetContent(Value.ToString());
+            case OrderStatus.Draft:
+                badgeClass = new TagHelperAttribute("class", "badge badge-light");
+                break;
 
-            TagHelperAttribute badgeClass;
-            switch (Value)
-            {
-                case OrderStatus.Draft:
-                    badgeClass = new TagHelperAttribute("class", "badge badge-light");
-                    break;
-                case OrderStatus.Invoiced:
-                    badgeClass = new TagHelperAttribute("class", "badge badge-success");
-                    break;
-                case OrderStatus.Verified:
-                    badgeClass = new TagHelperAttribute("class", "badge badge-info");
-                    break;
-                case OrderStatus.Cancelled:
-                    badgeClass = new TagHelperAttribute("class", "badge badge-warning");
-                    break;
-                default:
-                    badgeClass = new TagHelperAttribute("class", "badge badge-secondary");
-                    break;
-            }
+            case OrderStatus.Invoiced:
+                badgeClass = new TagHelperAttribute("class", "badge badge-success");
+                break;
 
-            output.Attributes.SetAttribute(badgeClass);
+            case OrderStatus.Verified:
+                badgeClass = new TagHelperAttribute("class", "badge badge-info");
+                break;
+
+            case OrderStatus.Cancelled:
+                badgeClass = new TagHelperAttribute("class", "badge badge-warning");
+                break;
+
+            default:
+                badgeClass = new TagHelperAttribute("class", "badge badge-secondary");
+                break;
         }
+
+        output.Attributes.SetAttribute(badgeClass);
     }
 }

@@ -12,148 +12,119 @@ using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Eventuras.WebApi.Controllers.Events.Certificates
+namespace Eventuras.WebApi.Controllers.Events.Certificates;
+
+[ApiController]
+[ApiVersion("3")]
+[Route("v{version:apiVersion}/event/{id}/certificates")]
+[Authorize(Policy = Constants.Auth.AdministratorRole)]
+public class EventCertificatesController : ControllerBase
 {
-    [ApiController]
-    [ApiVersion("3")]
-    [Route("v{version:apiVersion}/event/{id}/certificates")]
-    [Authorize(Policy = Constants.Auth.AdministratorRole)]
-    public class EventCertificatesController : ControllerBase
+    private readonly IEventInfoAccessControlService _eventInfoAccessControlService;
+    private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
+    private readonly ICertificateRenderer _certificateRenderer;
+    private readonly ICertificateIssuingService _certificateIssuingService;
+    private readonly ICertificateDeliveryService _certificateDeliveryService;
+    private readonly ICertificateRetrievalService _certificateRetrievalService;
+
+    public EventCertificatesController(
+        IEventInfoRetrievalService eventInfoRetrievalService,
+        ICertificateRenderer certificateRenderer,
+        ICertificateIssuingService certificateIssuingService,
+        ICertificateDeliveryService certificateDeliveryService,
+        IEventInfoAccessControlService eventInfoAccessControlService,
+        ICertificateRetrievalService certificateRetrievalService)
     {
-        private readonly IEventInfoAccessControlService _eventInfoAccessControlService;
-        private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
-        private readonly ICertificateRenderer _certificateRenderer;
-        private readonly ICertificateIssuingService _certificateIssuingService;
-        private readonly ICertificateDeliveryService _certificateDeliveryService;
-        private readonly ICertificateRetrievalService _certificateRetrievalService;
+        _eventInfoRetrievalService = eventInfoRetrievalService ?? throw new ArgumentNullException(nameof(eventInfoRetrievalService));
 
-        public EventCertificatesController(
-            IEventInfoRetrievalService eventInfoRetrievalService,
-            ICertificateRenderer certificateRenderer,
-            ICertificateIssuingService certificateIssuingService,
-            ICertificateDeliveryService certificateDeliveryService,
-            IEventInfoAccessControlService eventInfoAccessControlService,
-            ICertificateRetrievalService certificateRetrievalService)
-        {
-            _eventInfoRetrievalService = eventInfoRetrievalService ?? throw
-                new ArgumentNullException(nameof(eventInfoRetrievalService));
+        _certificateRenderer = certificateRenderer ?? throw new ArgumentNullException(nameof(certificateRenderer));
 
-            _certificateRenderer = certificateRenderer ?? throw
-                new ArgumentNullException(nameof(certificateRenderer));
+        _certificateIssuingService = certificateIssuingService ?? throw new ArgumentNullException(nameof(certificateIssuingService));
 
-            _certificateIssuingService = certificateIssuingService ?? throw
-                new ArgumentNullException(nameof(certificateIssuingService));
+        _certificateDeliveryService = certificateDeliveryService ?? throw new ArgumentNullException(nameof(certificateDeliveryService));
 
-            _certificateDeliveryService = certificateDeliveryService ?? throw
-                new ArgumentNullException(nameof(certificateDeliveryService));
+        _eventInfoAccessControlService = eventInfoAccessControlService ?? throw new ArgumentNullException(nameof(eventInfoAccessControlService));
 
-            _eventInfoAccessControlService = eventInfoAccessControlService ?? throw
-                new ArgumentNullException(nameof(eventInfoAccessControlService));
+        _certificateRetrievalService = certificateRetrievalService ?? throw new ArgumentNullException(nameof(certificateRetrievalService));
+    }
 
-            _certificateRetrievalService = certificateRetrievalService ?? throw
-                new ArgumentNullException(nameof(certificateRetrievalService));
-        }
+    [HttpGet]
+    public async Task<IActionResult> List(int id, [FromQuery] EventCertificateQueryDto query, CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState.FormatErrors());
 
-        [HttpGet]
-        public async Task<IActionResult> List(int id,
-            [FromQuery] EventCertificateQueryDto query,
-            CancellationToken cancellationToken)
-        {
-            if (!ModelState.IsValid)
+        var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(id, cancellationToken);
+        await _eventInfoAccessControlService.CheckEventManageAccessAsync(eventInfo, cancellationToken);
+
+        var certificates = await _certificateRetrievalService.ListCertificatesAsync(new CertificateListRequest
             {
-                return BadRequest(ModelState.FormatErrors());
-            }
-
-            var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(id, cancellationToken);
-            await _eventInfoAccessControlService.CheckEventManageAccessAsync(eventInfo, cancellationToken);
-
-            var certificates = await _certificateRetrievalService
-                .ListCertificatesAsync(new CertificateListRequest
+                Limit = query.Limit,
+                Offset = query.Offset,
+                Filter = new CertificateFilter
                 {
-                    Limit = query.Limit,
-                    Offset = query.Offset,
-                    Filter = new CertificateFilter
-                    {
-                        EventId = id
-                    }
-                }, new CertificateRetrievalOptions
-                {
-                    LoadIssuingOrganization = true,
-                    LoadIssuingUser = true,
-                    LoadRecipientUser = true
-                }, cancellationToken);
-
-            return Ok(PageResponseDto<EventDto>.FromPaging(
-                query, certificates,
-                c => new CertificateDto(c)));
-        }
-
-        [HttpGet("preview")]
-        public async Task<IActionResult> Preview(int id, CancellationToken cancellationToken)
-        {
-            var eventInfo =
-                await GetEventByIdAsync(id,
-                    EventInfoRetrievalOptions.ForCertificateRendering,
-                    cancellationToken);
-
-            var html = await _certificateRenderer
-                .RenderToHtmlAsStringAsync(new CertificateViewModel(eventInfo));
-
-            return Content(html, MediaTypeNames.Text.Html);
-        }
-
-        [HttpPost("issue")]
-        public async Task<IActionResult> Issue(int id,
-            [FromQuery] bool send = true,
-            CancellationToken cancellationToken = default)
-        {
-            var eventInfo = await _eventInfoRetrievalService
-                .GetEventInfoByIdAsync(id, cancellationToken);
-
-            var certificates = await _certificateIssuingService
-                .CreateCertificatesForEventAsync(eventInfo, cancellationToken);
-
-            if (send)
+                    EventId = id,
+                },
+            },
+            new CertificateRetrievalOptions
             {
-                foreach (var certificate in certificates
-                    .TakeWhile(_ => !cancellationToken.IsCancellationRequested))
-                {
-                    await _certificateDeliveryService.SendCertificateAsync(certificate, cancellationToken);
-                }
-            }
+                LoadIssuingOrganization = true,
+                LoadIssuingUser = true,
+                LoadRecipientUser = true,
+            },
+            cancellationToken);
 
-            return Ok(new CertificateStatisticsDto
-            {
-                Issued = certificates.Count
-            });
-        }
+        return Ok(PageResponseDto<EventDto>.FromPaging(query, certificates, c => new CertificateDto(c)));
+    }
 
-        [HttpPost("update")]
-        public async Task<IActionResult> Update(int id, CancellationToken cancellationToken)
+    [HttpGet("preview")]
+    public async Task<IActionResult> Preview(int id, CancellationToken cancellationToken)
+    {
+        var eventInfo = await GetEventByIdAsync(id, EventInfoRetrievalOptions.ForCertificateRendering, cancellationToken);
+
+        var html = await _certificateRenderer.RenderToHtmlAsStringAsync(new CertificateViewModel(eventInfo));
+
+        return Content(html, MediaTypeNames.Text.Html);
+    }
+
+    [HttpPost("issue")]
+    public async Task<IActionResult> Issue(int id, [FromQuery] bool send = true, CancellationToken cancellationToken = default)
+    {
+        var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(id, cancellationToken);
+
+        var certificates = await _certificateIssuingService.CreateCertificatesForEventAsync(eventInfo, cancellationToken);
+
+        if (send)
+            foreach (var certificate in certificates.TakeWhile(_ => !cancellationToken.IsCancellationRequested))
+                await _certificateDeliveryService.SendCertificateAsync(certificate, cancellationToken);
+
+        return Ok(new CertificateStatisticsDto
         {
-            var eventInfo = await GetEventByIdAsync(id, cancellationToken: cancellationToken);
+            Issued = certificates.Count,
+        });
+    }
 
-            var certificates = await _certificateIssuingService
-                .UpdateCertificatesForEventAsync(eventInfo, cancellationToken);
+    [HttpPost("update")]
+    public async Task<IActionResult> Update(int id, CancellationToken cancellationToken)
+    {
+        var eventInfo = await GetEventByIdAsync(id, cancellationToken: cancellationToken);
 
-            return Ok(new CertificateStatisticsDto
-            {
-                Updated = certificates.Count
-            });
-        }
+        var certificates = await _certificateIssuingService.UpdateCertificatesForEventAsync(eventInfo, cancellationToken);
 
-        private async Task<EventInfo> GetEventByIdAsync(
-            int id,
-            EventInfoRetrievalOptions options = default,
-            CancellationToken cancellationToken = default)
+        return Ok(new CertificateStatisticsDto
         {
-            var eventInfo = await _eventInfoRetrievalService
-                .GetEventInfoByIdAsync(id, options, cancellationToken);
+            Updated = certificates.Count,
+        });
+    }
 
-            await _eventInfoAccessControlService
-                .CheckEventManageAccessAsync(eventInfo, cancellationToken);
+    private async Task<EventInfo> GetEventByIdAsync(
+        int id,
+        EventInfoRetrievalOptions options = default,
+        CancellationToken cancellationToken = default)
+    {
+        var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(id, options, cancellationToken);
 
-            return eventInfo;
-        }
+        await _eventInfoAccessControlService.CheckEventManageAccessAsync(eventInfo, cancellationToken);
+
+        return eventInfo;
     }
 }

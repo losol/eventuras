@@ -1,35 +1,30 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using Eventuras.Domain;
-using Eventuras.Infrastructure;
 using Eventuras.Services;
 using Eventuras.Services.Events;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Eventuras.Pages.Admin.Events
+namespace Eventuras.Pages.Admin.Events;
+
+public class MessagingLogModel : PageModel
 {
-    public class MessagingLogModel : PageModel
+    private readonly IMessageLogService _messageLogService;
+    private readonly IEventInfoRetrievalService _eventinfos;
+
+    public MessagingLogModel(IMessageLogService messageLogService, IEventInfoRetrievalService eventinfos)
     {
-        private readonly IMessageLogService _messageLogService;
-        private readonly IEventInfoRetrievalService _eventinfos;
+        _messageLogService = messageLogService;
+        _eventinfos = eventinfos;
+    }
 
-        public MessagingLogModel(IMessageLogService messageLogService, IEventInfoRetrievalService eventinfos)
-        {
-            _messageLogService = messageLogService;
-            _eventinfos = eventinfos;
-        }
+    public IList<MessageLog> Messages { get; set; }
 
-        public IList<MessageLog> Messages { get; set; }
-        public EventInfo EventInfo { get; set; }
+    public EventInfo EventInfo { get; set; }
 
-        public async Task OnGetAsync(int id)
-        {
-            Messages = await _messageLogService.Get(id);
-            EventInfo = await _eventinfos.GetEventInfoByIdAsync(id);
-        }
+    public async Task OnGetAsync(int id)
+    {
+        Messages = await _messageLogService.Get(id);
+        EventInfo = await _eventinfos.GetEventInfoByIdAsync(id);
     }
 }

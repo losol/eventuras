@@ -1,7 +1,6 @@
-namespace Eventuras.Web
+namespace Eventuras.Web;
+
+public static class AuthPolicies
 {
-    public static class AuthPolicies
-    {
-        public const string AdministratorRole = "AdministratorRole";
-    }
+    public const string AdministratorRole = "AdministratorRole";
 }

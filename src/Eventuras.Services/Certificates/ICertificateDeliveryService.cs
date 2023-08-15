@@ -2,12 +2,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 
-namespace Eventuras.Services.Certificates
+namespace Eventuras.Services.Certificates;
+
+public interface ICertificateDeliveryService
 {
-    public interface ICertificateDeliveryService
-    {
-        Task SendCertificateAsync(
-            Certificate certificate,
-            CancellationToken cancellationToken = default);
-    }
+    Task SendCertificateAsync(Certificate certificate, CancellationToken cancellationToken = default);
 }

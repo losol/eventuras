@@ -1,20 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 
-namespace Eventuras.Services
+namespace Eventuras.Services;
+
+public interface IProductsService
 {
-    public interface IProductsService
-    {
-        Task<List<Product>> GetAsync();
-        Task<Product> GetAsync(int id);
+    Task<List<Product>> GetAsync();
 
-        Task<List<Product>> GetProductsForEventAsync(int eventId);
-        Task<List<Registration>> GetRegistrationsForProductAsync(int productId);
-        Task<List<Registration>> GetRegistrationsForProductVariantAsync(int productId);
+    Task<Product> GetAsync(int id);
 
-        Task<bool> UpdateProductAsync(int productId, bool published);
-        Task<bool> UpdateProductVariantAsync(int productVariantId, bool published);
-    }
+    Task<List<Product>> GetProductsForEventAsync(int eventId);
+
+    Task<List<Registration>> GetRegistrationsForProductAsync(int productId);
+
+    Task<List<Registration>> GetRegistrationsForProductVariantAsync(int productId);
+
+    Task<bool> UpdateProductAsync(int productId, bool published);
+
+    Task<bool> UpdateProductVariantAsync(int productVariantId, bool published);
 }

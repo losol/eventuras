@@ -6,5 +6,6 @@ namespace Eventuras.WebApi.Controllers.Orders;
 
 public class OrderUpdateRequestDto
 {
-    [Required] public ICollection<OrderLineModel> Lines { get; init; } = null!;
+    [Required]
+    public ICollection<OrderLineModel> Lines { get; init; } = null!;
 }

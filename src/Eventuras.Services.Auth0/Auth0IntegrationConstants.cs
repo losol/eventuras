@@ -1,7 +1,6 @@
-namespace Eventuras.Services.Auth0
+namespace Eventuras.Services.Auth0;
+
+internal static class Auth0IntegrationConstants
 {
-    internal static class Auth0IntegrationConstants
-    {
-        public const string AuthScheme = "Auth0";
-    }
+    public const string AuthScheme = "Auth0";
 }

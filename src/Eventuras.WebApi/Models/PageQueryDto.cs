@@ -1,18 +1,16 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Eventuras.WebApi.Models
+namespace Eventuras.WebApi.Models;
+
+public class PageQueryDto
 {
-    public class PageQueryDto
-    {
-        [Range(1, int.MaxValue)]
-        public int Page { get; set; } = 1;
+    [Range(1, int.MaxValue)]
+    public int Page { get; set; } = 1;
 
-        [Range(0, 100)]
-        public int Count { get; set; } = 100;
+    [Range(0, 100)]
+    public int Count { get; set; } = 100;
 
-        public int Limit => Count;
+    public int Limit => Count;
 
-        public int Offset => (Page - 1) * Count;
-    }
+    public int Offset => (Page - 1) * Count;
 }

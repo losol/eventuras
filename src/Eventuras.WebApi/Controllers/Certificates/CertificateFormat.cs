@@ -1,9 +1,8 @@
-namespace Eventuras.WebApi.Controllers.Certificates
+namespace Eventuras.WebApi.Controllers.Certificates;
+
+public enum CertificateFormat
 {
-    public enum CertificateFormat
-    {
-        Json,
-        Html,
-        Pdf
-    }
+    Json,
+    Html,
+    Pdf,
 }

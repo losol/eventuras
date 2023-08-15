@@ -1,9 +1,8 @@
-namespace Eventuras.Services.Zoom.Client
-{
-    public class CreateMeetingRegistrantsResponseDto
-    {
-        public long MeetingId { get; set; }
+namespace Eventuras.Services.Zoom.Client;
 
-        public string RegistrantId { get; set; }
-    }
+public class CreateMeetingRegistrantsResponseDto
+{
+    public long MeetingId { get; set; }
+
+    public string RegistrantId { get; set; }
 }

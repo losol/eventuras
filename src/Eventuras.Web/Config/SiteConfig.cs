@@ -1,9 +1,10 @@
-namespace Eventuras.Web.Config
+namespace Eventuras.Web.Config;
+
+public class Site
 {
-    public class Site
-    {
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string DefaultLocale { get; set; }
-    }
+    public string Title { get; set; }
+
+    public string Description { get; set; }
+
+    public string DefaultLocale { get; set; }
 }

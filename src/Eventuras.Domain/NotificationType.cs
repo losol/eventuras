@@ -1,8 +1,7 @@
-namespace Eventuras.Domain
+namespace Eventuras.Domain;
+
+public enum NotificationType
 {
-    public enum NotificationType
-    {
-        Email = 1,
-        Sms
-    }
+    Email = 1,
+    Sms,
 }

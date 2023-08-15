@@ -1,4 +1,5 @@
-using Eventuras.Services;
+using System;
+using System.Threading.Tasks;
 using Eventuras.Services.Auth;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -8,45 +9,39 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Threading.Tasks;
 
-namespace Eventuras.Services.Auth0
+namespace Eventuras.Services.Auth0;
+
+public static class Auth0IntegrationExtensions
 {
-    public static class Auth0IntegrationExtensions
+    public static IServiceCollection AddAuth0AuthenticationIfEnabled(this IServiceCollection services, IConfigurationSection configuration)
     {
-        public static IServiceCollection AddAuth0AuthenticationIfEnabled(
-            this IServiceCollection services,
-            IConfigurationSection configuration)
+        if (configuration?.GetValue<bool>("Enabled") != true) return services;
+
+        var settings = configuration.Get<Auth0IntegrationSettings>();
+        ValidationHelper.ValidateObject(settings);
+        services.AddSingleton(Options.Create(settings));
+
+        services.Configure<CookiePolicyOptions>(options =>
         {
-            if (configuration?.GetValue<bool>("Enabled") != true)
-            {
-                return services;
-            }
+            // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+            options.CheckConsentNeeded = context => settings.CheckConsentNeeded;
 
-            var settings = configuration.Get<Auth0IntegrationSettings>();
-            ValidationHelper.ValidateObject(settings);
-            services.AddSingleton(Options.Create(settings));
+            options.MinimumSameSitePolicy = SameSiteMode.None;
+        });
 
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => settings.CheckConsentNeeded;
+        services.AddTransient<IEventurasAuthenticationService, Auth0AuthenticationService>();
+        services.AddTransient<IOauthTicketReceivedHandler, OauthTicketReceivedHandler>();
 
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-
-            services.AddTransient<IEventurasAuthenticationService, Auth0AuthenticationService>();
-            services.AddTransient<IOauthTicketReceivedHandler, OauthTicketReceivedHandler>();
-
-            services.AddAuthentication(options =>
+        services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
-                .AddCookie()
-                .AddOpenIdConnect(Auth0IntegrationConstants.AuthScheme, options =>
+            .AddCookie()
+            .AddOpenIdConnect(Auth0IntegrationConstants.AuthScheme,
+                options =>
                 {
                     // Set the authority to your Auth0 domain
                     options.Authority = $"https://{settings.Domain}";
@@ -64,16 +59,13 @@ namespace Eventuras.Services.Auth0
 
                     // Configure the scope
                     options.Scope.Clear();
-                    foreach (var scope in settings.Scopes)
-                    {
-                        options.Scope.Add(scope);
-                    }
+                    foreach (var scope in settings.Scopes) options.Scope.Add(scope);
 
                     // Set the correct name claim type
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         NameClaimType = settings.NameClaimType,
-                        RoleClaimType = settings.RoleClaimType
+                        RoleClaimType = settings.RoleClaimType,
                     };
 
                     options.Events = new OpenIdConnectEvents
@@ -81,14 +73,12 @@ namespace Eventuras.Services.Auth0
                         OnRedirectToIdentityProvider = context =>
                         {
                             if (!string.IsNullOrEmpty(settings.ApiIdentifier))
-                            {
                                 context.ProtocolMessage.SetParameter("audience", settings.ApiIdentifier);
-                            }
                             return Task.FromResult(0);
                         },
 
                         // handle the logout redirection
-                        OnRedirectToIdentityProviderForSignOut = (context) =>
+                        OnRedirectToIdentityProviderForSignOut = context =>
                         {
                             var logoutUri = $"https://{settings.Domain}/v2/logout?client_id={settings.ClientId}";
 
@@ -101,7 +91,8 @@ namespace Eventuras.Services.Auth0
                                     var request = context.Request;
                                     postLogoutUri = request.Scheme + "://" + request.Host + request.PathBase + postLogoutUri;
                                 }
-                                logoutUri += $"&returnTo={ Uri.EscapeDataString(postLogoutUri)}";
+
+                                logoutUri += $"&returnTo={Uri.EscapeDataString(postLogoutUri)}";
                             }
 
                             context.Response.Redirect(logoutUri);
@@ -114,11 +105,10 @@ namespace Eventuras.Services.Auth0
                         {
                             var handler = context.HttpContext.RequestServices.GetRequiredService<IOauthTicketReceivedHandler>();
                             await handler.TicketReceivedAsync(context);
-                        }
+                        },
                     };
                 });
 
-            return services;
-        }
+        return services;
     }
 }

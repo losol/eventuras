@@ -1,11 +1,8 @@
 using System;
 
-namespace Eventuras.Services.Zoom.Client
+namespace Eventuras.Services.Zoom.Client;
+
+public class ZoomConfigurationException : Exception
 {
-    public class ZoomConfigurationException : Exception
-    {
-        public ZoomConfigurationException(string message) : base(message)
-        {
-        }
-    }
+    public ZoomConfigurationException(string message) : base(message) { }
 }

@@ -1,41 +1,31 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Domain;
+using Eventuras.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
 
-namespace Eventuras.Pages.Admin.Temp.ProductVariants
+namespace Eventuras.Pages.Admin.Temp.ProductVariants;
+
+public class DetailsModel : PageModel
 {
-    public class DetailsModel : PageModel
+    private readonly ApplicationDbContext _context;
+
+    public DetailsModel(ApplicationDbContext context)
     {
-        private readonly ApplicationDbContext _context;
+        _context = context;
+    }
 
-        public DetailsModel(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+    public ProductVariant ProductVariant { get; set; }
 
-        public ProductVariant ProductVariant { get; set; }
+    public async Task<IActionResult> OnGetAsync(int? id)
+    {
+        if (id == null) return NotFound();
 
-        public async Task<IActionResult> OnGetAsync(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        ProductVariant = await _context.ProductVariants.Include(p => p.Product).SingleOrDefaultAsync(m => m.ProductVariantId == id);
 
-            ProductVariant = await _context.ProductVariants
-                .Include(p => p.Product).SingleOrDefaultAsync(m => m.ProductVariantId == id);
+        if (ProductVariant == null) return NotFound();
 
-            if (ProductVariant == null)
-            {
-                return NotFound();
-            }
-            return Page();
-        }
+        return Page();
     }
 }

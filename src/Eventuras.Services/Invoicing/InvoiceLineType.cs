@@ -1,8 +1,7 @@
-namespace Eventuras.Services.Invoicing
+namespace Eventuras.Services.Invoicing;
+
+public enum InvoiceLineType
 {
-    public enum InvoiceLineType
-    {
-        Text = 1,
-        Product
-    }
+    Text = 1,
+    Product,
 }

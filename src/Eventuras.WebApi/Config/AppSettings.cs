@@ -1,7 +1,6 @@
-namespace Eventuras.WebApi.Config
+namespace Eventuras.WebApi.Config;
+
+public class AppSettings
 {
-    public class AppSettings
-    {
-        public string AllowedOrigins { get; set; }
-    }
+    public string AllowedOrigins { get; set; }
 }

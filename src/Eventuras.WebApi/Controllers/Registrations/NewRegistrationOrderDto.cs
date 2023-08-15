@@ -8,6 +8,7 @@ namespace Eventuras.WebApi.Controllers.Registrations;
 
 public class NewRegistrationOrderDto
 {
-    [Required, MinLength(1)]
+    [Required]
+    [MinLength(1)]
     public ICollection<OrderLineModel> Items { get; init; }
 }

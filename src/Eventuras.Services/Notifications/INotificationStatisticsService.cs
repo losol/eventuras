@@ -1,10 +1,9 @@
 using System.Threading.Tasks;
 using Eventuras.Domain;
 
-namespace Eventuras.Services.Notifications
+namespace Eventuras.Services.Notifications;
+
+public interface INotificationStatisticsService
 {
-    public interface INotificationStatisticsService
-    {
-        Task UpdateNotificationStatisticsAsync(Notification notification);
-    }
+    Task UpdateNotificationStatisticsAsync(Notification notification);
 }

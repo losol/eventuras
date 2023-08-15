@@ -20,88 +20,73 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
 
-namespace Eventuras.WebApi.Tests
+namespace Eventuras.WebApi.Tests;
+
+public class CustomWebApiApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
 {
-    public class CustomWebApiApplicationFactory<TStartup>
-        : WebApplicationFactory<TStartup> where TStartup : class
+    public readonly Mock<IEmailSender> EmailSenderMock = new();
+    public readonly Mock<ISmsSender> SmsSenderMock = new();
+
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        public readonly Mock<IEmailSender> EmailSenderMock = new();
-        public readonly Mock<ISmsSender> SmsSenderMock = new();
-
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
-            builder
-                .UseSolutionRelativeContentRoot("src/Eventuras.WebApi")
-                .UseEnvironment("Development")
-                .ConfigureAppConfiguration(app => app
-                    .AddInMemoryCollection(new Dictionary<string, string>
-                    {
-                        { "AppSettings:UsePowerOffice", "false" },
-                        { "AppSettings:UseStripeInvoice", "false" },
-                        { "SuperAdmin:Email", TestingConstants.SuperAdminEmail },
-                        { "SuperAdmin:Password", TestingConstants.SuperAdminPassword },
-                        { "Zoom:Enabled", "true" }
-                    }))
-                .ConfigureServices(services =>
-                {
-                    // Override already added email sender with the true mock
-                    services.AddSingleton(EmailSenderMock.Object);
-                    services.AddSingleton(SmsSenderMock.Object);
-                    services.AddTransient<IPdfRenderService, DummyPdfRenderService>();
-                    services.AddSingleton<IOrganizationSettingsRegistryComponent, OrgSettingsTestRegistryComponent>();
-
-                    // Remove the app's ApplicationDbContext registration.
-                    var descriptor = services.SingleOrDefault(
-                        d => d.ServiceType ==
-                             typeof(DbContextOptions<ApplicationDbContext>));
-
-                    if (descriptor != null)
-                    {
-                        services.Remove(descriptor);
-                    }
-
-                    // Add ApplicationDbContext using an in-memory database for testing.
-                    services.AddDbContext<ApplicationDbContext>(options =>
-                    {
-                        options.UseInMemoryDatabase("eventuras-web-api-tests");
-                    });
-
-                    // Build the service provider.
-                    var sp = services.BuildServiceProvider();
-
-                    // Create a scope to obtain a reference to the database
-                    // context (ApplicationDbContext).
-                    using var scope = sp.CreateScope();
-
-                    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                    db.Database.EnsureCreatedAsync().Wait();
-
-                    var initializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-                    initializer.SeedAsync(createSuperAdmin: false, false).Wait();
-                });
-
-            builder.ConfigureTestServices(services =>
+        builder.UseSolutionRelativeContentRoot("src/Eventuras.WebApi")
+            .UseEnvironment("Development")
+            .ConfigureAppConfiguration(app => app.AddInMemoryCollection(new Dictionary<string, string>
             {
-                services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
+                { "AppSettings:UsePowerOffice", "false" },
+                { "AppSettings:UseStripeInvoice", "false" },
+                { "SuperAdmin:Email", TestingConstants.SuperAdminEmail },
+                { "SuperAdmin:Password", TestingConstants.SuperAdminPassword },
+                { "Zoom:Enabled", "true" },
+            }))
+            .ConfigureServices(services =>
+            {
+                // Override already added email sender with the true mock
+                services.AddSingleton(EmailSenderMock.Object);
+                services.AddSingleton(SmsSenderMock.Object);
+                services.AddTransient<IPdfRenderService, DummyPdfRenderService>();
+                services.AddSingleton<IOrganizationSettingsRegistryComponent, OrgSettingsTestRegistryComponent>();
+
+                // Remove the app's ApplicationDbContext registration.
+                var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
+
+                if (descriptor != null) services.Remove(descriptor);
+
+                // Add ApplicationDbContext using an in-memory database for testing.
+                services.AddDbContext<ApplicationDbContext>(options => { options.UseInMemoryDatabase("eventuras-web-api-tests"); });
+
+                // Build the service provider.
+                var sp = services.BuildServiceProvider();
+
+                // Create a scope to obtain a reference to the database
+                // context (ApplicationDbContext).
+                using var scope = sp.CreateScope();
+
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                db.Database.EnsureCreatedAsync().Wait();
+
+                var initializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+                initializer.SeedAsync(false, false).Wait();
+            });
+
+        builder.ConfigureTestServices(services =>
+        {
+            services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme,
+                options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         IssuerSigningKey = FakeJwtManager.SecurityKey,
                         ValidIssuer = FakeJwtManager.Issuer,
-                        ValidAudience = FakeJwtManager.Audience
+                        ValidAudience = FakeJwtManager.Audience,
                     };
                 });
 
-                services.PostConfigure<AuthorizationOptions>(options =>
-                {
-                    foreach (var scope in
-                        TestingConstants.DefaultScopes) // replace default scope policies having original auth0 Issuer
-                    {
-                        options.AddPolicy(scope,
-                            policy => { policy.Requirements.Add(new ScopeRequirement(FakeJwtManager.Issuer, scope)); });
-                    }
-                });
+            services.PostConfigure<AuthorizationOptions>(options =>
+            {
+                foreach (var scope in TestingConstants.DefaultScopes) // replace default scope policies having original auth0 Issuer
+                    options.AddPolicy(scope, policy => { policy.Requirements.Add(new ScopeRequirement(FakeJwtManager.Issuer, scope)); });
             });
-        }
+        });
     }
 }

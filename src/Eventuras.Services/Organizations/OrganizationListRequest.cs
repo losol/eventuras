@@ -1,9 +1,8 @@
-namespace Eventuras.Services.Organizations
-{
-    public class OrganizationListRequest
-    {
-        public OrganizationListOrder OrderBy { get; set; } = OrganizationListOrder.Name;
+namespace Eventuras.Services.Organizations;
 
-        public bool Descending { get; set; }
-    }
+public class OrganizationListRequest
+{
+    public OrganizationListOrder OrderBy { get; set; } = OrganizationListOrder.Name;
+
+    public bool Descending { get; set; }
 }

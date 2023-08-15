@@ -1,73 +1,71 @@
 using System.Collections.Generic;
 using Eventuras.Domain;
 
-namespace Eventuras.UnitTests
+namespace Eventuras.UnitTests;
+
+internal static class Helpers
 {
-    internal static class Helpers
-    {
-        internal static OrderLine GetOrderLine(int productId, decimal price, int quantity = 1, int? variantId = null)
+    internal static OrderLine GetOrderLine(int productId, decimal price, int quantity = 1, int? variantId = null)
+        => new()
         {
-            return new OrderLine
+            ProductId = productId,
+            Product = new Product
             {
                 ProductId = productId,
-                Product = new Product
-                {
-                    ProductId = productId,
-                    Price = price
-                },
                 Price = price,
-                Quantity = quantity,
+            },
+            Price = price,
+            Quantity = quantity,
 
-                ProductVariantId = variantId,
-                ProductVariant = variantId.HasValue ? new ProductVariant
+            ProductVariantId = variantId,
+            ProductVariant = variantId.HasValue
+                ? new ProductVariant
                 {
                     ProductVariantId = variantId.Value,
                     ProductId = productId,
-                    Price = price
-                } : null
-            };
-        }
+                    Price = price,
+                }
+                : null,
+        };
 
-        internal static OrderDTO GetOrderDto(int productId, decimal price, int quantity = 1, int? variantId = null)
+    internal static OrderDTO GetOrderDto(int productId, decimal price, int quantity = 1, int? variantId = null)
+        => new()
         {
-            return new OrderDTO
-            {
-                Product = new Product { ProductId = productId, Price = price },
-                Variant = variantId.HasValue ? new ProductVariant
+            Product = new Product { ProductId = productId, Price = price },
+            Variant = variantId.HasValue
+                ? new ProductVariant
                 {
                     ProductVariantId = variantId.Value,
                     ProductId = productId,
-                    Price = price
-                } : null,
-                Quantity = quantity
-            };
-        }
+                    Price = price,
+                }
+                : null,
+            Quantity = quantity,
+        };
 
-        internal static Registration GetTestCaseRegistration()
+    internal static Registration GetTestCaseRegistration()
+    {
+        var registration = new Registration
         {
-            var registration = new Registration
+            Orders = new List<Order>
             {
-                Orders = new List<Order>
+                new()
                 {
-                    new Order
+                    OrderId = 255,
+                    OrderLines = new List<OrderLine>
                     {
-                        OrderId = 255,
-                        OrderLines = new List<OrderLine>
-                        {
-                            Helpers.GetOrderLine(productId: 1, price: 1000, quantity: 1), // Conference ticket (3 days)
-                            Helpers.GetOrderLine(productId: 2, variantId: 1, price: 400, quantity: 1), // Small Dinner
-                            Helpers.GetOrderLine(productId: 3, price: 200, quantity: 2) // Daily rate
-                        }
-                    }
-                }
-            };
-            registration.Orders.ForEach(o =>
-                {
-                    o.MarkAsVerified();
-                    o.MarkAsInvoiced();
-                }
-            );
-            return registration;
-        }
+                        GetOrderLine(1, 1000, 1), // Conference ticket (3 days)
+                        GetOrderLine(2, variantId: 1, price: 400, quantity: 1), // Small Dinner
+                        GetOrderLine(3, 200, 2), // Daily rate
+                    },
+                },
+            },
+        };
+        registration.Orders.ForEach(o =>
+        {
+            o.MarkAsVerified();
+            o.MarkAsInvoiced();
+        });
+        return registration;
     }
 }

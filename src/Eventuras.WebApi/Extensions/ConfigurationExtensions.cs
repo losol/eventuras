@@ -1,18 +1,11 @@
 using Microsoft.Extensions.Configuration;
-using Eventuras.WebApi.Constants;
 
-namespace Eventuras.WebApi.Extensions
+namespace Eventuras.WebApi.Extensions;
+
+internal static class ConfigurationExtensions
 {
-    internal static class ConfigurationExtensions
-    {
-        public static bool HealthChecksEnabled(this IConfiguration configuration)
-        {
-            return configuration.GetSection(Constants.HealthChecks.HealthCheckConfigurationKey).HealthChecksEnabled();
-        }
+    public static bool HealthChecksEnabled(this IConfiguration configuration)
+        => configuration.GetSection(Constants.HealthChecks.HealthCheckConfigurationKey).HealthChecksEnabled();
 
-        public static bool HealthChecksEnabled(this IConfigurationSection configuration)
-        {
-            return configuration.GetValue<bool?>("Enabled") == true;
-        }
-    }
+    public static bool HealthChecksEnabled(this IConfigurationSection configuration) => configuration.GetValue<bool?>("Enabled") == true;
 }
