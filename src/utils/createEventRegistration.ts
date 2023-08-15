@@ -9,6 +9,7 @@ import {
 import PaymentFormValues from '@/types/PaymentFormValues';
 
 import apiResponseHandler from './apiResponseHandler';
+import ApiResult from './ApiResult';
 
 /**
  *
@@ -29,10 +30,11 @@ import apiResponseHandler from './apiResponseHandler';
  */
 
 const registrationApiUrl = `${OpenAPI.BASE}/${process.env.NEXT_PUBLIC_API_VERSION}/registrations`;
-//const registrationOrderApiUrl = (registrationId: string) => `${registrationApiUrl}/${registrationId}/orders`; this one is not ready yet
+const registrationOrderApiUrl = (registrationId: string) =>
+  `${registrationApiUrl}/${registrationId}/orders`;
 const ordersApiUrl = `${OpenAPI.BASE}/${process.env.NEXT_PUBLIC_API_VERSION}/orders`;
-const registrationOrderApiUrl = (registrationId: number | string) =>
-  `${ordersApiUrl}?RegistrationId=${registrationId}`;
+//const registrationOrderApiUrl = (registrationId: number | string) =>
+//  `${ordersApiUrl}?RegistrationId=${registrationId}`;
 const orderApiUrl = (orderId: number | string) => `${ordersApiUrl}/${orderId}`;
 
 const createEventRegistration = async (
@@ -40,7 +42,7 @@ const createEventRegistration = async (
   eventId: number,
   paymentDetails: PaymentFormValues,
   selectedProducts: Map<string, number>
-) => {
+): Promise<ApiResult<any | undefined, Error | undefined>> => {
   const customer: RegistrationCustomerInfoDto = {
     vatNumber: paymentDetails.vatNumber,
     name: paymentDetails.username,
@@ -58,9 +60,10 @@ const createEventRegistration = async (
     type,
     createOrder: true,
     paymentMethod: paymentDetails.paymentMethod,
+    notes: 'note taking needs to be implemented',
   };
   const registrationBody = JSON.stringify(newRegistration);
-  /* (1) */
+  // (1) create registration*/
   return await fetch(registrationApiUrl, {
     method: 'POST',
     body: registrationBody,
@@ -69,13 +72,13 @@ const createEventRegistration = async (
     .then(async (result: RegistrationDto) => {
       if (!selectedProducts.entries.length) {
         //no selected products, so we don't need to do anything else
-        return { success: true };
+        return ApiResult.success({});
       }
       const registrationId = result.registrationId!.toString();
-      /* (2) */
+      // (2) get registration orders
       const orders = await fetch(registrationOrderApiUrl(registrationId)).then(apiResponseHandler);
-      if (!orders.data.length) return { success: true };
-      /* (3) */
+      if (!orders.data.length) return ApiResult.success({});
+      // (3) update the first order wth selected products
       const firstOrderId = orderApiUrl(orders.data[0].id);
       const orderUpdateBody = JSON.stringify({
         lines: Array.from(selectedProducts, ([productId, quantity]) => ({ productId, quantity })),
@@ -85,11 +88,10 @@ const createEventRegistration = async (
         body: orderUpdateBody,
       }).then(apiResponseHandler);
 
-      return { success: true };
+      return ApiResult.success({});
     })
     .catch(err => {
-      console.error(err);
-      return { success: false, error: err };
+      return ApiResult.error(err);
     });
 };
 

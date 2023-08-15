@@ -22,20 +22,28 @@ const throwUserNotFoundError = () => {
   );
 };
 
+type ErrorCause = {
+  statusCode: string | number;
+  statusText: string;
+};
+
 const UserEventRegistration = ({ params }: { params: any }) => {
   let selectedProducts: Map<string, number> = new Map();
   const router = useRouter();
+  const [loadingEventRegistration, setLoadingEventRegistration] = useState(false);
+  const [registrationError, setRegistrationError] = useState<Error | undefined>(undefined);
   const [currentStep, setCurrentStep] = useState<PageStep>('Customize');
   const eventId = parseInt(params.id as string, 10);
   const { userProfile, loading: loadingUser } = useMyUserProfile();
   const { registrationProducts, loading: loadingRegistrationProducts } = useEventProducts(eventId);
   const onCustomize = (selected: Map<string, number>) => {
-    console.log({ selectedProducts });
+    console.log({ selected });
     selectedProducts = selected;
     setCurrentStep('Payment');
   };
 
   const onPayment = async (formValues: PaymentFormValues) => {
+    setLoadingEventRegistration(true);
     console.log(formValues);
     if (!userProfile) {
       throwUserNotFoundError();
@@ -47,9 +55,14 @@ const UserEventRegistration = ({ params }: { params: any }) => {
       formValues,
       selectedProducts
     );
-    if (result.success === false) {
+    setLoadingEventRegistration(false);
+    console.log({ result });
+    if (result.isFailure()) {
       //TODO unhappy flow
+
+      setRegistrationError(result.getError());
       setCurrentStep('Error');
+      return;
     }
     setCurrentStep('Complete');
   };
@@ -59,7 +72,7 @@ const UserEventRegistration = ({ params }: { params: any }) => {
     router.push('/');
   };
 
-  if (loadingRegistrationProducts || loadingUser) return <Loading />;
+  if (loadingRegistrationProducts || loadingUser || loadingEventRegistration) return <Loading />;
   if (!userProfile) {
     throwUserNotFoundError();
     return;
@@ -67,6 +80,11 @@ const UserEventRegistration = ({ params }: { params: any }) => {
   if (currentStep === 'Customize' && registrationProducts.length === 0) {
     //no need to customize order when there are no options, let's go straight to payment
     setCurrentStep('Payment');
+  }
+
+  let errCause: ErrorCause | null = null;
+  if (registrationError) {
+    errCause = registrationError.cause as ErrorCause;
   }
 
   const renderStep = (step: PageStep) => {
@@ -83,7 +101,13 @@ const UserEventRegistration = ({ params }: { params: any }) => {
       case 'Complete':
         return <RegistrationComplete onSubmit={onCompleteFlow} />;
       case 'Error':
-        return <p>OOps, something went wrong</p>;
+        return (
+          <>
+            <p>OOps, something went wrong </p>
+            <p>{errCause?.statusCode}</p>
+            <textarea value={errCause?.statusText} />
+          </>
+        );
     }
   };
 
