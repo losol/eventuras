@@ -8,7 +8,7 @@ const eventurasAPI_URL = process.env.API_BASE_URL;
  */
 async function forwarder(request: NextRequest) {
   const token = await getToken({ req: request });
-  const accessToken = token?.accessToken ?? '';
+  const accessToken = token?.access_token ?? '';
 
   if (!eventurasAPI_URL) throw new Error('API_BASE_URL is not defined');
 
@@ -45,7 +45,7 @@ async function forwarder(request: NextRequest) {
     //dev only, avoid token leaks into anything else than dev environment
     console.log({
       forwardUrl,
-      body: jBody,
+      body: JSON.stringify(jBody),
       method: request.method,
       status: fResponse.status,
       data,

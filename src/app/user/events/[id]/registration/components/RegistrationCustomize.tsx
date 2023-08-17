@@ -2,6 +2,7 @@ import useTranslation from 'next-translate/useTranslation';
 import { useForm } from 'react-hook-form';
 
 import { Heading } from '@/components/content';
+import { Button } from '@/components/inputs';
 import { RegistrationProduct } from '@/types/RegistrationProduct';
 
 type SubmitCallback = (values: Map<string, number>) => void;
@@ -84,7 +85,7 @@ const RegistrationCustomize = ({ products, onSubmit }: RegistrationCustomizeProp
             </div>
           );
         })}
-        <button type="submit">Continue</button>
+        <Button type="submit">Continue</Button>
       </form>
     </>
   );

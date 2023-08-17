@@ -1,12 +1,13 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { MutableRefObject, useContext, useRef, useState } from 'react';
 
 import { Loading } from '@/components/feedback';
 import { Layout } from '@/components/layout';
+import { UserContext } from '@/context';
 import useEventProducts from '@/hooks/useEventProducts';
-import useMyUserProfile from '@/hooks/useMyUserProfile';
 import PaymentFormValues from '@/types/PaymentFormValues';
+import { UserProfile } from '@/types/UserProfile';
 import createEventRegistration from '@/utils/createEventRegistration';
 import { mapEventProductsToView } from '@/utils/modelviewMappers';
 
@@ -28,17 +29,18 @@ type ErrorCause = {
 };
 
 const UserEventRegistration = ({ params }: { params: any }) => {
-  let selectedProducts: Map<string, number> = new Map();
+  const { userState } = useContext(UserContext);
+  const userProfile: UserProfile = userState.profile as UserProfile;
+  const selectedProducts: MutableRefObject<Map<string, number>> = useRef(new Map());
   const router = useRouter();
   const [loadingEventRegistration, setLoadingEventRegistration] = useState(false);
   const [registrationError, setRegistrationError] = useState<Error | undefined>(undefined);
   const [currentStep, setCurrentStep] = useState<PageStep>('Customize');
   const eventId = parseInt(params.id as string, 10);
-  const { userProfile, loading: loadingUser } = useMyUserProfile();
   const { registrationProducts, loading: loadingRegistrationProducts } = useEventProducts(eventId);
   const onCustomize = (selected: Map<string, number>) => {
     console.log({ selected });
-    selectedProducts = selected;
+    selectedProducts.current = selected;
     setCurrentStep('Payment');
   };
 
@@ -53,7 +55,7 @@ const UserEventRegistration = ({ params }: { params: any }) => {
       userProfile.id,
       eventId,
       formValues,
-      selectedProducts
+      selectedProducts.current
     );
     setLoadingEventRegistration(false);
     console.log({ result });
@@ -72,7 +74,7 @@ const UserEventRegistration = ({ params }: { params: any }) => {
     router.push('/');
   };
 
-  if (loadingRegistrationProducts || loadingUser || loadingEventRegistration) return <Loading />;
+  if (loadingRegistrationProducts || loadingEventRegistration) return <Loading />;
   if (!userProfile) {
     throwUserNotFoundError();
     return;
@@ -105,7 +107,7 @@ const UserEventRegistration = ({ params }: { params: any }) => {
           <>
             <p>OOps, something went wrong </p>
             <p>{errCause?.statusCode}</p>
-            <textarea value={errCause?.statusText} />
+            <textarea defaultValue={errCause?.statusText} />
           </>
         );
     }

@@ -3,6 +3,7 @@ import useTranslation from 'next-translate/useTranslation';
 import { FieldErrors, SubmitHandler, useForm } from 'react-hook-form';
 
 import { Heading } from '@/components/content';
+import { Button } from '@/components/inputs';
 import PaymentFormValues from '@/types/PaymentFormValues';
 import { UserProfile } from '@/types/UserProfile';
 
@@ -115,7 +116,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
             </li>
           </ul>
         </fieldset>
-        <button type="submit">Continue</button>
+        <Button type="submit">Continue</Button>
       </form>
     </>
   );

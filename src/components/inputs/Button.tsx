@@ -1,4 +1,4 @@
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   ariaLabel?: string;
   children?: React.ReactNode;
   disabled?: boolean;

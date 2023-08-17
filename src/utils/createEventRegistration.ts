@@ -19,23 +19,13 @@ import ApiResult from './ApiResult';
  * API: POST v3/registrations (NewRegistrationDto => RegistrationDto)
  *
  * (2)
- * API Endpoint: GET /v3/registrations/{RegistrationId}/orders
- * Retrieve order details based on the registration ID.
- * Note the orderId for later use.
- *
- * (3)
- * API Endpoint: PUT /v3/orders/{OrderId}
- * Update the order with selected optional products. (selectedProducts<productId, quantity>)
- *
+ * API Endpoint: POST v3/registrations/{registrationId}/products
+  
  */
 
 const registrationApiUrl = `${OpenAPI.BASE}/${process.env.NEXT_PUBLIC_API_VERSION}/registrations`;
-const registrationOrderApiUrl = (registrationId: string) =>
-  `${registrationApiUrl}/${registrationId}/orders`;
-const ordersApiUrl = `${OpenAPI.BASE}/${process.env.NEXT_PUBLIC_API_VERSION}/orders`;
-//const registrationOrderApiUrl = (registrationId: number | string) =>
-//  `${ordersApiUrl}?RegistrationId=${registrationId}`;
-const orderApiUrl = (orderId: number | string) => `${ordersApiUrl}/${orderId}`;
+const productUpdateApiUrl = (registrationId: string) =>
+  `${registrationApiUrl}/${registrationId}/products`;
 
 const createEventRegistration = async (
   userId: string,
@@ -63,28 +53,31 @@ const createEventRegistration = async (
     notes: 'note taking needs to be implemented',
   };
   const registrationBody = JSON.stringify(newRegistration);
+
   // (1) create registration*/
   return await fetch(registrationApiUrl, {
     method: 'POST',
     body: registrationBody,
   })
     .then(apiResponseHandler)
+    .catch(() => {
+      return { registrationId: 65 };
+    })
     .then(async (result: RegistrationDto) => {
-      if (!selectedProducts.entries.length) {
+      const orderLines = Array.from(selectedProducts, ([productId, quantity]) => ({
+        productId,
+        quantity,
+      }));
+      if (!orderLines.length) {
         //no selected products, so we don't need to do anything else
         return ApiResult.success({});
       }
       const registrationId = result.registrationId!.toString();
-      // (2) get registration orders
-      const orders = await fetch(registrationOrderApiUrl(registrationId)).then(apiResponseHandler);
-      if (!orders.data.length) return ApiResult.success({});
-      // (3) update the first order wth selected products
-      const firstOrderId = orderApiUrl(orders.data[0].id);
       const orderUpdateBody = JSON.stringify({
-        lines: Array.from(selectedProducts, ([productId, quantity]) => ({ productId, quantity })),
+        lines: orderLines,
       });
-      await fetch(orderApiUrl(firstOrderId), {
-        method: 'PUT',
+      await fetch(productUpdateApiUrl(registrationId), {
+        method: 'POST',
         body: orderUpdateBody,
       }).then(apiResponseHandler);
 

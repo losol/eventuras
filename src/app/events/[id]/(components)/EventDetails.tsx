@@ -1,9 +1,9 @@
 import { EventDto } from '@losol/eventuras';
 import parse from 'html-react-parser';
-import Link from 'next/link';
 import useTranslation from 'next-translate/useTranslation';
 
 import { Heading, Image } from '@/components/content';
+import { BlockLink } from '@/components/inputs/Link';
 
 type EventProps = {
   eventinfo: EventDto;
@@ -29,7 +29,7 @@ export default function EventDetails({ eventinfo }: EventProps) {
       {eventinfo?.description ?? null}
 
       <div>
-        <Link href={`/user/events/${eventinfo.id}/registration`}>Register for event</Link>
+        <BlockLink href={`/user/events/${eventinfo.id}/registration`}>Register for event</BlockLink>
       </div>
 
       {eventinfo?.moreInformation ? (
