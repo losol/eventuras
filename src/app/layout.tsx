@@ -27,13 +27,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   OpenAPI.BASE = process.env.API_BASE_URL!;
   OpenAPI.VERSION = process.env.NEXT_PUBLIC_API_VERSION!;
-  OpenAPI.TOKEN = session?.accessToken ?? '';
-  const strippedSession = { ...session, accessToken: undefined } as Session;
 
   return (
     <html lang="en">
       <body>
-        <Providers session={strippedSession}>{children}</Providers>
+        <Providers session={session}> {children}</Providers>
       </body>
     </html>
   );

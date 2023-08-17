@@ -3,6 +3,8 @@ import { OpenAPI } from '@losol/eventuras';
 import { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 
+import { UserProvider } from '@/context';
+
 type ProvidersProps = {
   session: Session | null;
   children: React.ReactNode;
@@ -16,6 +18,10 @@ type ProvidersProps = {
 OpenAPI.BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 OpenAPI.VERSION = process.env.NEXT_PUBLIC_API_VERSION!;
 
-export default function Providers({ session, children }: ProvidersProps) {
-  return <SessionProvider session={session}>{children}</SessionProvider>;
+export default function Providers({ children, session }: ProvidersProps) {
+  return (
+    <SessionProvider session={session}>
+      <UserProvider>{children}</UserProvider>
+    </SessionProvider>
+  );
 }

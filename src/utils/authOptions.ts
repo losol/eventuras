@@ -23,12 +23,14 @@ export const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, user, account }: { token: any; user: any; account: any }) {
-      // Initial sign in
+      if (account) {
+        token = Object.assign({}, token, { access_token: account.access_token });
+      }
+
       if (account && user) {
         if (!account.refresh_token) {
           console.error('No refresh token in account object :(');
         }
-        console.log({ user, account });
         return {
           ...token,
           refreshToken: account.refresh_token,

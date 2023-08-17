@@ -1,22 +1,27 @@
 'use client';
 
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { signIn, signOut } from 'next-auth/react';
+import React, { useContext } from 'react';
 
-import { Spinner } from '@/components/feedback';
 import { Button } from '@/components/inputs';
+import { UserContext } from '@/context';
 
 const UserMenu = () => {
-  const { status } = useSession();
+  const { fetchUserProfile, userState } = useContext(UserContext);
+
+  const handleLogin = async () => {
+    await signIn('auth0');
+    fetchUserProfile();
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+  };
 
   return (
     <>
-      {status === 'unauthenticated' && <Button onClick={() => signIn('auth0')}>Log in</Button>}
-      {status === 'authenticated' && <Button onClick={() => signOut()}>Log out</Button>}
-      {status === 'loading' && (
-        <Button className="cursor-not-allowed" disabled={true}>
-          <Spinner />
-        </Button>
-      )}
+      {!userState.auth?.isAuthenticated && <Button onClick={handleLogin}>Log in</Button>}
+      {userState.auth?.isAuthenticated && <Button onClick={handleLogout}>Log out</Button>}
     </>
   );
 };

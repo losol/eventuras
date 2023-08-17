@@ -1,34 +1,17 @@
-import { UserDto, UsersService } from '@losol/eventuras';
-import { getServerSession, Session } from 'next-auth';
-
 import { Heading } from '@/components/content';
-import { Layout } from '@/components/layout';
-import { authOptions } from '@/utils/authOptions';
+import { Container, Layout } from '@/components/layout';
 
-async function UserIndex() {
-  const session: Session | null = await getServerSession(authOptions);
+import UserProfileCard from './(components)/UserProfile';
 
-  if (!session) {
-    return <Layout>Not logged in</Layout>;
-  }
-
-  const me: UserDto = await UsersService.getV3UsersMe();
-
+const UserProfilePage = () => {
   return (
     <Layout>
-      <Heading as="h1">Hei {me.name}</Heading>
-      <dl>
-        <dt>Name</dt>
-        <dd>{me.name}</dd>
-
-        <dt>Email</dt>
-        <dd>{me.email}</dd>
-
-        <dt>Phonenumber</dt>
-        <dd>{me.phoneNumber}</dd>
-      </dl>
+      <Heading>User profile</Heading>
+      <Container>
+        <UserProfileCard />
+      </Container>
     </Layout>
   );
-}
+};
 
-export default UserIndex;
+export default UserProfilePage;

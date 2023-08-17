@@ -3,7 +3,6 @@ import { EventDto, EventsService } from '@losol/eventuras';
 import { Heading, Text } from '@/components/content';
 import { EventGrid } from '@/components/event';
 import { Container, Layout } from '@/components/layout';
-// import Events from './Events';
 
 // Get events from eventuras
 const ORGANIZATION_ID: number =
@@ -13,12 +12,6 @@ const ORGANIZATION_ID: number =
 export const dynamic = 'force-dynamic';
 
 export default async function Homepage() {
-  /**
-   *
-   * These are server-side configurations, not available client-side.
-   * For OpenAPI configuration on the client, check out providers.tsx
-   */
-
   let eventinfos: EventDto[] = [];
   try {
     const response = await EventsService.getV3Events({
