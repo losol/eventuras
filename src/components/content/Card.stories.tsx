@@ -2,11 +2,13 @@ import React from 'react';
 
 import Card from './Card';
 
-export default {
+const CStory = {
   title: 'Components/Card',
   tags: ['autodocs'],
   component: Card,
 };
+
+export default CStory;
 
 export const Default = () => (
   <Card>

@@ -8,4 +8,4 @@
 import { withAuth } from 'next-auth/middleware';
 export default withAuth;
 
-export const config = { matcher: ['/admin', '/user/events/:id/registration'] };
+export const config = { matcher: ['/admin/:path*', '/user/:path*'] };

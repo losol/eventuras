@@ -4,6 +4,8 @@ import { UserDto as UserProfile } from '@losol/eventuras';
 import { useSession } from 'next-auth/react';
 import { createContext, ReactNode, useCallback, useEffect, useState } from 'react';
 
+import { getUserProfile } from '@/utils/api/functions/users';
+
 // Auth type definition
 interface Auth {
   isAuthenticated: boolean;
@@ -38,11 +40,6 @@ const defaultUserContextValue: UserContextProps = {
   fetchUserProfile: async () => {},
 };
 
-// Extend UserProfile to include potential error
-interface UserProfileResponse extends UserProfile {
-  error?: string;
-}
-
 // UserContext definition
 export const UserContext = createContext<UserContextProps>(defaultUserContextValue);
 
@@ -73,23 +70,14 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   const fetchUserProfile = useCallback(async () => {
     if (session) {
-      try {
-        const response = await fetch('/api/user/getUserProfile');
-        const data: UserProfileResponse = await response.json();
-
-        if (response.ok) {
-          updateUserProfile(data);
-          updateAuthStatus({ isAuthenticated: true });
-        } else {
-          setUserState(prevState => ({
-            ...prevState,
-            error: data.error || 'Failed to fetch user profile',
-          }));
-        }
-      } catch (error: any) {
+      const result = await getUserProfile();
+      if (result.ok) {
+        updateUserProfile(result.value);
+        updateAuthStatus({ isAuthenticated: true });
+      } else {
         setUserState(prevState => ({
           ...prevState,
-          error: error.message || 'Error fetching user profile',
+          error: result.error.message,
         }));
       }
     }

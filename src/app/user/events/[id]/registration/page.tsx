@@ -8,8 +8,8 @@ import { UserContext } from '@/context';
 import useEventProducts from '@/hooks/useEventProducts';
 import PaymentFormValues from '@/types/PaymentFormValues';
 import { UserProfile } from '@/types/UserProfile';
-import createEventRegistration from '@/utils/createEventRegistration';
-import { mapEventProductsToView } from '@/utils/modelviewMappers';
+import { createEventRegistration } from '@/utils/api/functions/events';
+import { mapEventProductsToView, mapToNewRegistration } from '@/utils/api/mappers';
 
 import RegistrationComplete from './components/RegistrationComplete';
 import RegistrationCustomize from './components/RegistrationCustomize';
@@ -51,18 +51,17 @@ const UserEventRegistration = ({ params }: { params: any }) => {
       throwUserNotFoundError();
       return;
     }
+
     const result = await createEventRegistration(
-      userProfile.id,
-      eventId,
-      formValues,
+      mapToNewRegistration(userProfile.id, eventId, formValues),
       selectedProducts.current
     );
     setLoadingEventRegistration(false);
     console.log({ result });
-    if (result.isFailure()) {
+    if (!result.ok) {
       //TODO unhappy flow
 
-      setRegistrationError(result.getError());
+      setRegistrationError(result.error);
       setCurrentStep('Error');
       return;
     }

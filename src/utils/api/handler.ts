@@ -1,3 +1,5 @@
+import ApiError from './ApiError';
+
 type StatusMap = {
   [status: number]: (response: Response) => Promise<any | string>;
 };
@@ -10,18 +12,22 @@ const statusMapper = {
     return response.text();
   },
   400: (response: Response) => {
-    throw new Error('Api Request Issue', {
-      cause: { statusCode: response.status, statusText: response.statusText },
+    throw new ApiError({
+      message: 'Api invalid request',
+      statusCode: response.status,
+      statusText: response.statusText,
     });
   },
   500: (response: Response) => {
-    throw new Error('Server broken', {
-      cause: { statusCode: response.status, statusText: response.statusText },
+    throw new ApiError({
+      message: 'Api fatal error',
+      statusCode: response.status,
+      statusText: response.statusText,
     });
   },
 } as StatusMap;
 
-const apiResponseHandler = (response: Response): Promise<any | string> => {
+const handler = (response: Response): Promise<any | string> => {
   const func = statusMapper[response.status];
   switch (true) {
     case func !== null && typeof func === 'function':
@@ -33,8 +39,12 @@ const apiResponseHandler = (response: Response): Promise<any | string> => {
     case response.status >= 500:
       return statusMapper[500](response);
     default:
-      throw new Error('Unable to handle API response');
+      throw new ApiError({
+        message: 'Unable to handle API response',
+        statusCode: -1,
+        statusText: "Api handler wasn't able to handle request",
+      });
   }
 };
 
-export default apiResponseHandler;
+export default handler;
