@@ -27,6 +27,13 @@ const registrationApiUrl = `${OpenAPI.BASE}/${process.env.NEXT_PUBLIC_API_VERSIO
 const productUpdateApiUrl = (registrationId: string) =>
   `${registrationApiUrl}/${registrationId}/products`;
 
+/**
+ * @param  {string} userId - from UserProfile
+ * @param  {number} eventId -from EventDto
+ * @param  {PaymentFormValues} paymentDetails - as entered in the PaymentScreen
+ * @param  {Map<string, number>} selectedProducts - A map of strings(product Ids) mapped to amount of orders for that product
+ * @return {Promise<ApiResult>} Either a success(with empty object) or failure (with error object)
+ */
 const createEventRegistration = async (
   userId: string,
   eventId: number,
@@ -55,14 +62,11 @@ const createEventRegistration = async (
   const registrationBody = JSON.stringify(newRegistration);
 
   // (1) create registration*/
-  return await fetch(registrationApiUrl, {
+  return fetch(registrationApiUrl, {
     method: 'POST',
     body: registrationBody,
   })
     .then(apiResponseHandler)
-    .catch(() => {
-      return { registrationId: 65 };
-    })
     .then(async (result: RegistrationDto) => {
       const orderLines = Array.from(selectedProducts, ([productId, quantity]) => ({
         productId,
