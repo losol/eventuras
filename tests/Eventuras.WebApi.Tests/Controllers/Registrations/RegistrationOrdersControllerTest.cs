@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -424,6 +425,28 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         #endregion
 
         #region AutoCreateOrUpdate
+
+        [Fact]
+        public async Task AutoCreateOrUpdate_Should_ReturnNotFound_When_RegistrationNotFound()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var user = await scope.CreateUserAsync();
+            using var ev = await scope.CreateEventAsync();
+            using var reg = await scope.CreateRegistrationAsync(ev.Entity, user.Entity);
+            using var prod = await scope.CreateProductAsync(ev.Entity);
+
+            var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
+            var wrongId = reg.Entity.RegistrationId + Random.Shared.Next(1, 100);
+            var response = await client.PostAsync($"/v3/registrations/{wrongId}/products",
+                new OrderUpdateRequestDto
+                {
+                    Lines = new [] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
+                });
+
+            response.CheckNotFound();
+
+            Assert.Empty(scope.Db.Orders.Where(o => o.RegistrationId == reg.Entity.RegistrationId));
+        }
 
         [Fact]
         public async Task AutoCreateOrUpdate_Should_CreateNewOrder_When_ThereAreNoOrders()
