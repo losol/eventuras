@@ -3,7 +3,7 @@
 import { signIn, signOut } from 'next-auth/react';
 import React, { useContext } from 'react';
 
-import { Button } from '@/components/inputs';
+import { BlockLink, Button } from '@/components/inputs';
 import { UserContext } from '@/context';
 
 const UserMenu = () => {
@@ -19,10 +19,15 @@ const UserMenu = () => {
   };
 
   return (
-    <>
+    <div className="flex items-end">
+      {userState.auth?.isAuthenticated && (
+        <BlockLink href="/user" className="mr-4">
+          My Profile
+        </BlockLink>
+      )}
       {!userState.auth?.isAuthenticated && <Button onClick={handleLogin}>Log in</Button>}
       {userState.auth?.isAuthenticated && <Button onClick={handleLogout}>Log out</Button>}
-    </>
+    </div>
   );
 };
 

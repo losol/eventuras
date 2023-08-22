@@ -1,44 +1,45 @@
 'use client';
 
+import { UserDto } from '@losol/eventuras';
 import { IconMail, IconPhone, IconUser } from '@tabler/icons-react';
-import React, { useContext } from 'react';
 
 import { Card } from '@/components/content';
-import { UserContext } from '@/context';
 
-const UserProfileCard = () => {
-  const { userState } = useContext(UserContext);
+export type UserProfileCardProps = {
+  profile: UserDto;
+};
 
+const UserProfileCard = ({ profile }: UserProfileCardProps) => {
   return (
     <Card>
       <dl className="py-5">
-        {userState?.profile?.name && (
+        {profile.name && (
           <>
             <dt className="pt-5">
               <IconUser size={24} />
               <span className="sr-only">User Name:</span>
             </dt>
-            <dd>{userState.profile.name}</dd>
+            <dd>{profile.name}</dd>
           </>
         )}
 
-        {userState?.profile?.email && (
+        {profile.email && (
           <>
             <dt className="pt-5">
               <IconMail size={24} />
               <span className="sr-only">Email:</span>
             </dt>
-            <dd>{userState.profile.email}</dd>
+            <dd>{profile.email}</dd>
           </>
         )}
 
-        {userState?.profile?.phoneNumber && (
+        {profile.phoneNumber && (
           <>
             <dt className="pt-5">
               <IconPhone size={24} />
               <span className="sr-only">Phone Number:</span>
             </dt>
-            <dd>{userState.profile.phoneNumber}</dd>
+            <dd>{profile.phoneNumber}</dd>
           </>
         )}
       </dl>
