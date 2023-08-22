@@ -3,11 +3,13 @@ import { useRouter } from 'next/navigation';
 import { MutableRefObject, useContext, useRef, useState } from 'react';
 
 import { Loading } from '@/components/feedback';
+import FatalError from '@/components/feedback/FatalError';
 import { Layout } from '@/components/layout';
 import { UserContext } from '@/context';
 import useEventProducts from '@/hooks/useEventProducts';
 import PaymentFormValues from '@/types/PaymentFormValues';
 import { UserProfile } from '@/types/UserProfile';
+import { ApiError } from '@/utils/api';
 import { createEventRegistration } from '@/utils/api/functions/events';
 import { mapEventProductsToView, mapToNewRegistration } from '@/utils/api/mappers';
 
@@ -23,18 +25,13 @@ const throwUserNotFoundError = () => {
   );
 };
 
-type ErrorCause = {
-  statusCode: string | number;
-  statusText: string;
-};
-
 const UserEventRegistration = ({ params }: { params: any }) => {
   const { userState } = useContext(UserContext);
   const userProfile: UserProfile = userState.profile as UserProfile;
   const selectedProducts: MutableRefObject<Map<string, number>> = useRef(new Map());
   const router = useRouter();
   const [loadingEventRegistration, setLoadingEventRegistration] = useState(false);
-  const [registrationError, setRegistrationError] = useState<Error | undefined>(undefined);
+  const [registrationError, setRegistrationError] = useState<ApiError | undefined>(undefined);
   const [currentStep, setCurrentStep] = useState<PageStep>('Customize');
   const eventId = parseInt(params.id as string, 10);
   const { registrationProducts, loading: loadingRegistrationProducts } = useEventProducts(eventId);
@@ -75,17 +72,11 @@ const UserEventRegistration = ({ params }: { params: any }) => {
 
   if (loadingRegistrationProducts || loadingEventRegistration) return <Loading />;
   if (!userProfile) {
-    throwUserNotFoundError();
-    return;
+    return null;
   }
   if (currentStep === 'Customize' && registrationProducts.length === 0) {
     //no need to customize order when there are no options, let's go straight to payment
     setCurrentStep('Payment');
-  }
-
-  let errCause: ErrorCause | null = null;
-  if (registrationError) {
-    errCause = registrationError.cause as ErrorCause;
   }
 
   const renderStep = (step: PageStep) => {
@@ -102,13 +93,13 @@ const UserEventRegistration = ({ params }: { params: any }) => {
       case 'Complete':
         return <RegistrationComplete onSubmit={onCompleteFlow} />;
       case 'Error':
-        return (
-          <>
-            <p>OOps, something went wrong </p>
-            <p>{errCause?.statusCode}</p>
-            <textarea defaultValue={errCause?.statusText} />
-          </>
-        );
+        let title = 'Server issue';
+        let description = `Something has gone wrong, please try again later ${registrationError?.statusCode} : ${registrationError?.statusText}`;
+        if (registrationError?.statusCode === 409) {
+          title = 'Oops';
+          description = 'Seems you already registered for this event';
+        }
+        return <FatalError title={title} description={description} />;
     }
   };
 
