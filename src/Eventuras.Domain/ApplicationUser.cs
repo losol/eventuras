@@ -1,20 +1,22 @@
-using Microsoft.AspNetCore.Identity;
+#nullable enable
+
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace Eventuras.Domain
 {
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         // Internal fields
-        public string SignatureImageBase64 { get; set; }
+        public string? SignatureImageBase64 { get; set; }
 
         public bool Archived { get; set; }
 
-        public ICollection<Registration> Registrations { get; set; }
+        public ICollection<Registration> Registrations { get; set; } = null!;
 
-        public ICollection<OrganizationMember> OrganizationMembership { get; set; }
+        public ICollection<OrganizationMember> OrganizationMembership { get; set; } = null!;
     }
 }
