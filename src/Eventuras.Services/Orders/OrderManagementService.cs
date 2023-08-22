@@ -170,7 +170,7 @@ namespace Eventuras.Services.Orders
 
                 var toRemove = actual
                     .ExceptBy(expected.Select(ol => new { ol.ProductId, ol.ProductVariantId }), ol => new { ol.ProductId, ol.ProductVariantId })
-                    .Select(ol => ol.CreateWithInvertedQuantity());
+                    .Select(ol => ol.CopyWithInvertedQuantity());
 
                 var toUpdate = GetUpdates(expected, actual);
 

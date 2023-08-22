@@ -9,7 +9,7 @@ namespace Eventuras.Services.Orders
             services.AddScoped<IOrderService, OrderService>();
             services.AddTransient<IOrderVmConversionService, OrderVmConversionService>();
             services.AddTransient<IOrderRetrievalService, OrderRetrievalService>();
-            services.AddTransient<IOrderManagementService, OrderManagementService>();
+            services.AddScoped<IOrderManagementService, OrderManagementService>();
             services.AddTransient<IOrderAccessControlService, OrderAccessControlService>();
         }
     }

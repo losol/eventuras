@@ -54,7 +54,7 @@ namespace Eventuras.WebApi.Controllers.Registrations
         {
             _ = await _registrationRetrievalService.GetRegistrationByIdAsync(id,
                 new RegistrationRetrievalOptions(),
-                cancellationToken); // check if registration exists
+                cancellationToken); // check if registration exists, will throw NotFoundException if not
 
             var order = await _orderManagementService.CreateOrderForRegistrationAsync(id, dto.Items, cancellationToken);
 
@@ -70,7 +70,7 @@ namespace Eventuras.WebApi.Controllers.Registrations
         {
             _ = await _registrationRetrievalService.GetRegistrationByIdAsync(id,
                 new RegistrationRetrievalOptions(),
-                cancellationToken); // check if registration exists
+                cancellationToken); // check if registration exists, will throw NotFoundException if not
 
             var order = await _orderManagementService.AutoCreateOrUpdateOrder(id, dto.Lines, cancellationToken);
 
