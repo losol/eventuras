@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Eventuras.WebApi.Controllers.Registrations
 {
     [ApiVersion("3")]
-    [Authorize("registrations:read")]
+    [Authorize]
     [Route("v{version:apiVersion}/registrations/{id:int}")]
     [ApiController]
     public class RegistrationOrdersController : ControllerBase
