@@ -1,6 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import { RegistrationProduct } from '@/types/RegistrationProduct';
+import Logger from '@/utils/Logger';
 
 import RegistrationCustomize from './RegistrationCustomize';
 
@@ -10,7 +11,7 @@ const meta: Meta<typeof RegistrationCustomize> = {
   component: RegistrationCustomize,
   args: {
     onSubmit: values => {
-      console.log(values);
+      Logger.info({}, values);
     },
   },
 };

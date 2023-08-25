@@ -17,6 +17,31 @@ Any API calls that require to be called during build time cannot go through the 
 
 If your API endpoint needs a bearer token, you need to go through the forwarder. For this call a helper function in api/functions, or create one there if it does not exist yet, look at the samples there to see how it works.
 
+## Using utils/api
+
+The pattern is quite straight forward:
+
+```
+const result = await getUserProfile();
+      if (result.ok) {
+        updateUserProfile(result.value);
+        updateAuthStatus({ isAuthenticated: true });
+      } else {
+        setUserState(prevState => ({
+          ...prevState,
+          error: result.error.message,
+        }));
+      }
+```
+
+Any implementation in api/functions should use the apiFetch provided, which will return standard API results - containing either a value on 'ok' or an error.
+
+The signature of that function looks like this:
+
+```
+const getUserProfile = (): Promise<ApiResult<UserDto, ApiError>> => apiFetch(ApiURLs.userprofile);
+```
+
 ## TODO/Issues
 
 Ideally `api/functions` would not need to exist at all, as `OpenAPI.BASE` should just be set to the 'internal' API url, unfortunately there are issues which are not solved yet which causes SDK calls to never resolve when making calls client-side.

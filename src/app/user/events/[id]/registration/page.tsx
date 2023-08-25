@@ -12,6 +12,7 @@ import { UserProfile } from '@/types/UserProfile';
 import { ApiError } from '@/utils/api';
 import { createEventRegistration } from '@/utils/api/functions/events';
 import { mapEventProductsToView, mapToNewRegistration } from '@/utils/api/mappers';
+import Logger from '@/utils/Logger';
 
 import RegistrationComplete from './components/RegistrationComplete';
 import RegistrationCustomize from './components/RegistrationCustomize';
@@ -24,7 +25,7 @@ const throwUserNotFoundError = () => {
     'event/register: User profile is not supposed to be null when registring for an event'
   );
 };
-
+const l = { namespace: 'events:registration' };
 const UserEventRegistration = ({ params }: { params: any }) => {
   const { userState } = useContext(UserContext);
   const userProfile: UserProfile = userState.profile as UserProfile;
@@ -36,14 +37,14 @@ const UserEventRegistration = ({ params }: { params: any }) => {
   const eventId = parseInt(params.id as string, 10);
   const { registrationProducts, loading: loadingRegistrationProducts } = useEventProducts(eventId);
   const onCustomize = (selected: Map<string, number>) => {
-    console.log({ selected });
+    Logger.info(l, { selected });
     selectedProducts.current = selected;
     setCurrentStep('Payment');
   };
 
   const onPayment = async (formValues: PaymentFormValues) => {
     setLoadingEventRegistration(true);
-    console.log(formValues);
+    Logger.info(l, formValues);
     if (!userProfile) {
       throwUserNotFoundError();
       return;
@@ -54,7 +55,7 @@ const UserEventRegistration = ({ params }: { params: any }) => {
       selectedProducts.current
     );
     setLoadingEventRegistration(false);
-    console.log({ result });
+    Logger.info(l, { result });
     if (!result.ok) {
       //TODO unhappy flow
 
@@ -66,7 +67,7 @@ const UserEventRegistration = ({ params }: { params: any }) => {
   };
 
   const onCompleteFlow = () => {
-    console.log('done');
+    Logger.info(l, 'done');
     router.push('/');
   };
 

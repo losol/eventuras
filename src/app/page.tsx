@@ -3,6 +3,7 @@ import { EventDto, EventsService } from '@losol/eventuras';
 import { Heading, Text } from '@/components/content';
 import { EventGrid } from '@/components/event';
 import { Container, Layout } from '@/components/layout';
+import Logger from '@/utils/Logger';
 
 // Get events from eventuras
 const ORGANIZATION_ID: number =
@@ -19,7 +20,7 @@ export default async function Homepage() {
     });
     eventinfos = response.data ?? [];
   } catch (error) {
-    console.error('Error fetching events:', error);
+    Logger.error({ namespace: 'homepage' }, 'Error fetching events:', error);
   }
 
   return (

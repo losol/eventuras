@@ -33,6 +33,8 @@
     "@next/bundle-analyzer": "^13.4.19",
     "@tabler/icons-react": "^2.32.0",
     "@tanstack/react-table": "^8.9.3",
+    "@types/debug": "^4.1.8",
+    "debug": "^4.3.4",
     "html-react-parser": "^4.2.1",
     "i18n": "^0.15.1",
     "next": "^13.4.19",

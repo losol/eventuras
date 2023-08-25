@@ -1,6 +1,8 @@
 import { AuthOptions } from 'next-auth';
 import Auth0Provider from 'next-auth/providers/auth0';
 
+import Logger from './Logger';
+
 export const authOptions: AuthOptions = {
   providers: [
     Auth0Provider({
@@ -29,7 +31,7 @@ export const authOptions: AuthOptions = {
 
       if (account && user) {
         if (!account.refresh_token) {
-          console.error('No refresh token in account object :(');
+          Logger.error({ namespace: 'auth' }, 'No refresh token in account object :(');
         }
         return {
           ...token,

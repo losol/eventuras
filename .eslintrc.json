@@ -19,6 +19,7 @@
   },
   "plugins": ["@typescript-eslint", "eslint-plugin-simple-import-sort"],
   "rules": {
+    "no-console": "error",
     "simple-import-sort/imports": "warn",
     "simple-import-sort/exports": "warn",
     // Consider disabling this rule later

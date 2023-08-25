@@ -18,6 +18,10 @@ npx next dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Logging
+Use `@/utils/Logger.ts` for Logging - it internally uses debugger and you can assign namespaces to filter out unwanted logs.
+Using console.log will throw an eslint error - which means for commits no console.log(or any use of console) will be allowed.
+
 ## API swagger documentation
 
 https://api.eventuras.losol.io/swagger/index.html
@@ -34,28 +38,3 @@ Unfortunately tsc ignores tsconfig (see why section of https://github.com/gustav
 ## Code style
 
 We are open to most standards, as long as there is one. We were inspired by [joshchus setup](https://dev.to/joshchu/how-to-setup-prettier-eslint-husky-and-lint-staged-with-a-nextjs-and-typescript-project-i7b)
-
-## Using utils/api
-
-The pattern is quite straight forward:
-
-```
-const result = await getUserProfile();
-      if (result.ok) {
-        updateUserProfile(result.value);
-        updateAuthStatus({ isAuthenticated: true });
-      } else {
-        setUserState(prevState => ({
-          ...prevState,
-          error: result.error.message,
-        }));
-      }
-```
-
-Any implementation in api/functions should use the apiFetch provided, which will return standard API results - containing either a value on 'ok' or an error.
-
-The signature of that function looks like this:
-
-```
-const getUserProfile = (): Promise<ApiResult<UserDto, ApiError>> => apiFetch(ApiURLs.userprofile);
-```

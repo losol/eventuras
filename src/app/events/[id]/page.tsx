@@ -1,6 +1,7 @@
 import { EventsService, OpenAPI } from '@losol/eventuras';
 
 import { Container, Layout } from '@/components/layout';
+import Logger from '@/utils/Logger';
 
 import EventDetails from './(components)/EventDetails';
 
@@ -11,17 +12,17 @@ type EventInfoProps = {
 };
 OpenAPI.BASE = process.env.API_BASE_URL!;
 OpenAPI.VERSION = process.env.NEXT_PUBLIC_API_VERSION!;
-
+const l = { namespace: 'events:detail' };
 async function getEvents() {
   return await EventsService.getV3Events({}).catch(e => {
-    console.error('Error fetching events:', e);
+    Logger.error(l, 'Error fetching events:', e);
     return null;
   });
 }
 
 async function getEvent(id: number) {
   return await EventsService.getV3Events1({ id }).catch(e => {
-    console.error('Error fetching specific event with ID:', id, e);
+    Logger.error(l, 'Error fetching events:', e);
     return null;
   });
 }
