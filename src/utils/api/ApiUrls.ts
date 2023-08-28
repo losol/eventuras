@@ -10,7 +10,7 @@ const ApiURLs = {
   eventProducts: (eventId: string) => `${aUri}/events/${eventId}/products`,
   products: (registrationId: string) => `${aUri}/registrations/${registrationId}/products`,
   userRegistrations: (userId: string) =>
-    `${aUri}/registrations?UserId=${userId}&includeEventInfo=true`,
+    `${aUri}/registrations?UserId=${userId}&includeEventInfo=true&includeProducts=true`,
 };
 
 export default ApiURLs;

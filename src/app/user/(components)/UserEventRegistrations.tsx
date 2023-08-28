@@ -27,6 +27,7 @@ const UserEventRegistrations = ({ registrations }: UserEventRegistrationsProps):
           eventDescription={description ?? ''}
           startDate={dateStart ?? ''}
           endDate={dateEnd ?? ''}
+          products={reg.products ?? []}
         />
       );
     })}

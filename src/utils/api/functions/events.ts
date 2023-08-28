@@ -3,10 +3,11 @@ import { NewRegistrationDto } from '@losol/eventuras/models/NewRegistrationDto';
 import { ProductDto } from '@losol/eventuras/models/ProductDto';
 import { RegistrationDto } from '@losol/eventuras/models/RegistrationDto';
 
+import Logger from '@/utils/Logger';
+
 import apiFetch from '../apiFetch';
 import ApiResult from '../ApiResult';
 import ApiURLs from '../ApiUrls';
-
 const createEventRegistration = async (
   newRegistration: NewRegistrationDto,
   selectedProducts?: Map<string, number>
@@ -22,6 +23,7 @@ const createEventRegistration = async (
     method: 'POST',
     body: JSON.stringify(newRegistration),
   });
+  Logger.info({ namespace: 'events:createEventRegistration' }, 'products selected', products);
 
   if (!products.length) return registration;
 

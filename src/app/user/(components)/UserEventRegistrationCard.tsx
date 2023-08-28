@@ -1,3 +1,4 @@
+import { ProductOrderDto } from '@losol/eventuras';
 import React, { ReactElement } from 'react';
 
 export type UserEventRegistrationCardProps = {
@@ -5,6 +6,7 @@ export type UserEventRegistrationCardProps = {
   eventDescription: string;
   startDate: any;
   endDate: any;
+  products: ProductOrderDto[];
 };
 /**
  * Single registration card
@@ -16,6 +18,7 @@ const UserEventRegistrationCard = ({
   eventDescription,
   startDate,
   endDate,
+  products,
 }: UserEventRegistrationCardProps): ReactElement => (
   <div className="mb-12 bg-white rounded-lg p-4 flex flex-col justify-between leading-normal">
     <h3 className="text-gray-900 font-bold text-l mb-2">{eventTitle}</h3>
@@ -23,6 +26,19 @@ const UserEventRegistrationCard = ({
     <p className="text-gray-900">
       {startDate} → {endDate}{' '}
     </p>
+    {products.length > 0 && <h3 className="text-gray-900">Products</h3>}
+    <ul>
+      {products.map(product => (
+        <li key={product.productId}>
+          <p className="text-gray-900">{product.product?.name}</p>
+          <p className="text-gray-900">{product.product?.description}</p>
+          <p className="text-gray-900">
+            <span>Quantity:</span>
+            {product.quantity}
+          </p>
+        </li>
+      ))}
+    </ul>
   </div>
 );
 
