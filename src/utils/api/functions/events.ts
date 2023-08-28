@@ -1,4 +1,5 @@
 import { EventDto } from '@losol/eventuras/models/EventDto';
+import { EventFormDto } from '@losol/eventuras/models/EventFormDto';
 import { NewRegistrationDto } from '@losol/eventuras/models/NewRegistrationDto';
 import { ProductDto } from '@losol/eventuras/models/ProductDto';
 import { RegistrationDto } from '@losol/eventuras/models/RegistrationDto';
@@ -41,10 +42,12 @@ const createEventRegistration = async (
     });
   });
 };
+const createEvent = (formValues: EventFormDto): Promise<ApiResult<EventDto>> =>
+  apiFetch(ApiURLs.events, { method: 'POST', body: JSON.stringify(formValues) });
 const getEvents = (): Promise<ApiResult<EventDto[]>> => apiFetch(ApiURLs.events);
 const getEvent = (eventId: string): Promise<ApiResult<EventDto>> =>
   apiFetch(ApiURLs.event(eventId));
 const getEventProducts = (eventId: string): Promise<ApiResult<ProductDto[]>> =>
   apiFetch(ApiURLs.eventProducts(eventId));
 
-export { createEventRegistration, getEvent, getEventProducts, getEvents };
+export { createEvent, createEventRegistration, getEvent, getEventProducts, getEvents };

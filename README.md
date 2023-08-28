@@ -19,6 +19,7 @@ npx next dev
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Logging
+
 Use `@/utils/Logger.ts` for Logging - it internally uses debugger and you can assign namespaces to filter out unwanted logs.
 Using console.log will throw an eslint error - which means for commits no console.log(or any use of console) will be allowed.
 

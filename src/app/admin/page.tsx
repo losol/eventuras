@@ -2,6 +2,7 @@ import { EventDto, EventsService, UserDto, UsersService } from '@losol/eventuras
 import Link from 'next/link';
 
 import { Heading } from '@/components/content';
+import { BlockLink } from '@/components/inputs/Link';
 import { Layout } from '@/components/layout';
 import Logger from '@/utils/Logger';
 
@@ -35,7 +36,9 @@ export default async function AdminPage() {
     <>
       <Layout>
         <Heading as="h1">Admin</Heading>
-
+        <div>
+          <BlockLink href={`/admin/events/create`}>Create Event</BlockLink>
+        </div>
         <div className="inline-flex flex-col">
           <Link href="/admin/users">Users</Link>
         </div>

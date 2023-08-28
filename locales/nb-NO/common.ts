@@ -11,6 +11,10 @@ const LOCALES_COMMON_NO: LocalesCommonType = {
   // Common section titles
   events: 'Arrangementer',
   onlinecourses: 'Nettkurs',
+  buttons: {
+    submit: 'Sende',
+    continue: 'Fortsette',
+  },
 };
 
 export default LOCALES_COMMON_NO;

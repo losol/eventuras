@@ -19,6 +19,10 @@ export type LocalesCommonType = {
       logout: string;
     };
   };
+  buttons: {
+    submit: string;
+    continue: string;
+  };
   // Common section titles
   events: string;
   onlinecourses: string;
@@ -28,4 +32,8 @@ export type LocalesEventRegistration = {
   customize: TitleDescription;
   payment: TitleDescription & SubHeading;
   complete: TitleDescription;
+};
+
+export type LocalesAdmin = {
+  createEvent: TitleDescription;
 };
