@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.ConstrainedExecution;
 using NodaTime;
 
 namespace Eventuras.Domain
@@ -117,7 +116,7 @@ namespace Eventuras.Domain
         [Display(Name = "Diplomtekst. Inkluder kursnummer og godkjenninger her!")]
         [DataType(DataType.MultilineText)]
         public string CertificateDescription { get; set; } //Text for the certificate if issued.
-        
+
         [NotMapped]
         public string CertificateEvidenceDescription
         {
@@ -148,6 +147,8 @@ namespace Eventuras.Domain
         public string ProjectCode { get; set; }
 
         public int OrganizationId { get; set; }
+
+        public EventInfoOptions Options { get; set; } = new();
 
         // Consider to remove this
         public bool Archived { get; set; }
