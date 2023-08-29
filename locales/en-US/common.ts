@@ -15,6 +15,13 @@ const LOCALES_COMMON_EN: LocalesCommonType = {
     submit: 'Submit',
     continue: 'Continue',
   },
+  errors: {
+    fatalError: {
+      title: 'Something went very wrong',
+      description:
+        'We tried to perform the action, but something went wrong, please try again later.',
+    },
+  },
 };
 
 export default LOCALES_COMMON_EN;

@@ -69,4 +69,10 @@ async function forwarder(request: NextRequest) {
   return res;
 }
 
-export { forwarder as GET, forwarder as POST };
+export {
+  forwarder as DELETE,
+  forwarder as GET,
+  forwarder as PATCH,
+  forwarder as POST,
+  forwarder as PUT,
+};

@@ -11,6 +11,8 @@ type SubHeading = {
 
 type TitleDescription = Title & Description;
 
+type ErrorFeedback = TitleDescription;
+
 export type LocalesCommonType = {
   // Header
   header: {
@@ -26,6 +28,9 @@ export type LocalesCommonType = {
   // Common section titles
   events: string;
   onlinecourses: string;
+  errors: {
+    fatalError: ErrorFeedback;
+  };
 };
 
 export type LocalesEventRegistration = {
@@ -35,5 +40,11 @@ export type LocalesEventRegistration = {
 };
 
 export type LocalesAdmin = {
-  createEvent: TitleDescription;
+  createEvent: {
+    content: TitleDescription;
+    alreadyExists: ErrorFeedback;
+  };
+  editEvent: {
+    content: TitleDescription;
+  };
 };

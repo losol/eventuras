@@ -5,7 +5,6 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode;
   disabled?: boolean;
   leftIcon?: React.ReactNode;
-  onClick?: () => void;
   primary?: boolean;
   className?: string;
   loading?: boolean;
@@ -14,7 +13,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const Button = (props: ButtonProps) => {
   return (
     <button
-      disabled={props.disabled}
+      disabled={props.disabled || props.loading}
       aria-label={props.ariaLabel}
       onClick={props.onClick}
       className={

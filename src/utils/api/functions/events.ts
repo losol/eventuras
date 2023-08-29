@@ -44,10 +44,12 @@ const createEventRegistration = async (
 };
 const createEvent = (formValues: EventFormDto): Promise<ApiResult<EventDto>> =>
   apiFetch(ApiURLs.events, { method: 'POST', body: JSON.stringify(formValues) });
+const updateEvent = (eventId: string, formValues: EventFormDto): Promise<ApiResult<EventDto>> =>
+  apiFetch(ApiURLs.event(eventId), { method: 'PUT', body: JSON.stringify(formValues) });
 const getEvents = (): Promise<ApiResult<EventDto[]>> => apiFetch(ApiURLs.events);
 const getEvent = (eventId: string): Promise<ApiResult<EventDto>> =>
   apiFetch(ApiURLs.event(eventId));
 const getEventProducts = (eventId: string): Promise<ApiResult<ProductDto[]>> =>
   apiFetch(ApiURLs.eventProducts(eventId));
 
-export { createEvent, createEventRegistration, getEvent, getEventProducts, getEvents };
+export { createEvent, createEventRegistration, getEvent, getEventProducts, getEvents, updateEvent };
