@@ -1,3 +1,6 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.Auth;
@@ -5,9 +8,6 @@ using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Eventuras.Services.Users
 {
@@ -91,7 +91,7 @@ namespace Eventuras.Services.Users
                 var user = _httpContextAccessor.HttpContext.User;
                 if (!user.IsAdmin())
                 {
-                    return Paging<ApplicationUser>.Empty<ApplicationUser>();
+                    return Paging.Empty<ApplicationUser>();
                 }
 
                 if (!user.IsSuperAdmin())
@@ -104,7 +104,7 @@ namespace Eventuras.Services.Users
                 }
             }
 
-            return await Paging<ApplicationUser>.CreateAsync(query, request, cancellationToken);
+            return await Paging.CreateAsync(query, request, cancellationToken);
         }
     }
 }

@@ -65,7 +65,7 @@ namespace Eventuras.Services.Notifications
                     .AddAccessFilterAsync(query, cancellationToken);
             }
 
-            return await Paging<Notification>.CreateAsync(query, request, cancellationToken);
+            return await Paging.CreateAsync(query, request, cancellationToken);
         }
     }
 }

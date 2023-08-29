@@ -87,7 +87,7 @@ namespace Eventuras.Services.Registrations
                     .AddAccessFilterAsync(query, cancellationToken);
             }
 
-            return await Paging<Registration>.CreateAsync(query, request, cancellationToken);
+            return await Paging.CreateAsync(query, request, cancellationToken);
         }
     }
 }
