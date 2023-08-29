@@ -173,11 +173,11 @@ namespace Eventuras.Web.Tests.Controllers.Api.V0
             var lines = info.Lines.ToArray();
             Assert.Equal(3, info.Lines.Count);
 
-            var orderLine = lines[0];
+            var orderLine = lines.Single(l => l.Type == InvoiceLineType.Text);
             Assert.Equal(InvoiceLineType.Text, orderLine.Type);
             Assert.Equal($"Deltakelse for {user.Entity.Name} på {eventInfo.Entity.Title}", orderLine.Description);
 
-            var productVariantLine = lines[1];
+            var productVariantLine = lines.First(l => l.Type == InvoiceLineType.Product && l.ProductCode.Contains('-'));
             Assert.Equal(InvoiceLineType.Product, productVariantLine.Type);
             Assert.Equal($"{product.Entity.Name} ({variant.Entity.Name})", productVariantLine.Description);
             Assert.Equal($"K{product.Entity.ProductId}-{variant.Entity.ProductVariantId}",
@@ -187,7 +187,7 @@ namespace Eventuras.Web.Tests.Controllers.Api.V0
             Assert.Equal(1, productVariantLine.Quantity);
             Assert.Equal(1050, productVariantLine.Total);
 
-            var noVariantLine = lines[2];
+            var noVariantLine = lines.First(l => l.Type == InvoiceLineType.Product && !l.ProductCode.Contains('-'));
             Assert.Equal(InvoiceLineType.Product, noVariantLine.Type);
             Assert.Equal(anotherProduct.Entity.Name, noVariantLine.Description);
             Assert.Equal($"K{anotherProduct.Entity.ProductId}", noVariantLine.ProductCode);
