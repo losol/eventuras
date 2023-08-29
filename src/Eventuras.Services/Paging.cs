@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,12 +9,12 @@ namespace Eventuras.Services
     public class Paging<T>
     {
         /// <summary>
-        /// Data for this page. 
+        /// Data for this page.
         /// </summary>
         public T[] Data { get; }
 
         /// <summary>
-        /// Total of records for this query. 
+        /// Total of records for this query.
         /// </summary>
         public int TotalRecords { get; }
 
@@ -22,23 +23,32 @@ namespace Eventuras.Services
             Data = data;
             TotalRecords = totalRecords;
         }
+    }
 
-        public static async Task<Paging<TP>> CreateAsync<TP>(
-            IQueryable<TP> query,
+    public static class Paging
+    {
+        public static async Task<Paging<T>> CreateAsync<T>(
+            IQueryable<T> query,
             PagingRequest request,
             CancellationToken cancellationToken = default)
         {
             var count = await query.CountAsync(cancellationToken);
-            var data = await query
-                .Skip(request.Offset)
-                .Take(request.Limit)
-                .ToArrayAsync(cancellationToken);
-            return new Paging<TP>(data, count);
+            var data = count == 0 ? Array.Empty<T>() : await query.Skip(request.Offset).Take(request.Limit).ToArrayAsync(cancellationToken);
+
+            return new Paging<T>(data, count);
         }
 
-        public static Paging<TP> Empty<TP>()
+        public static Paging<T> Create<T>(IQueryable<T> query, PagingRequest request)
         {
-            return new Paging<TP>(new TP[0], 0);
+            var count = query.Count();
+            var data = count == 0 ? Array.Empty<T>() : query.Skip(request.Offset).Take(request.Limit).ToArray();
+
+            return new Paging<T>(data, count);
+        }
+
+        public static Paging<T> Empty<T>()
+        {
+            return new Paging<T>(Array.Empty<T>(), 0);
         }
     }
 }

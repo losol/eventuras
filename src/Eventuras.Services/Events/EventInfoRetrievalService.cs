@@ -59,7 +59,7 @@ namespace Eventuras.Services.Events
                 query = await AddOrgFilterIfNeededAsync(query, cancellationToken);
             }
 
-            return await Paging<EventInfo>.CreateAsync(query, request, cancellationToken);
+            return await Paging.CreateAsync(query, request, cancellationToken);
         }
 
         private async Task<IQueryable<EventInfo>> AddOrgFilterIfNeededAsync(

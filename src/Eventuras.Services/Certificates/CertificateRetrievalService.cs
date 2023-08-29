@@ -61,7 +61,7 @@ namespace Eventuras.Services.Certificates
 
             // TODO: add accessibility filter!
 
-            return await Paging<Certificate>.CreateAsync(query, request, cancellationToken);
+            return await Paging.CreateAsync(query, request, cancellationToken);
         }
     }
 }
