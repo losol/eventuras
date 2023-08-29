@@ -9,6 +9,7 @@ using Eventuras.Services.Events;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Http;
+using NodaTime;
 
 namespace Eventuras.Services.Registrations
 {
@@ -23,43 +24,32 @@ namespace Eventuras.Services.Registrations
             IEventInfoRetrievalService eventInfoRetrievalService,
             ICurrentOrganizationAccessorService currentOrganizationAccessorService)
         {
-            _httpContextAccessor = httpContextAccessor ?? throw
-                new ArgumentNullException(nameof(httpContextAccessor));
+            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
 
-            _eventInfoRetrievalService = eventInfoRetrievalService ?? throw
-                new ArgumentNullException(nameof(eventInfoRetrievalService));
+            _eventInfoRetrievalService = eventInfoRetrievalService ?? throw new ArgumentNullException(nameof(eventInfoRetrievalService));
 
-            _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw
-                new ArgumentNullException(nameof(currentOrganizationAccessorService));
+            _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw new ArgumentNullException(nameof(currentOrganizationAccessorService));
         }
 
-        public async Task CheckRegistrationReadAccessAsync(
-            Registration registration,
-            CancellationToken cancellationToken)
+        public async Task CheckRegistrationReadAccessAsync(Registration registration, CancellationToken cancellationToken)
         {
             var user = _httpContextAccessor.HttpContext.User;
             if (!await CheckOwnerOrAdminAccessAsync(user, registration, cancellationToken))
             {
-                throw new NotAccessibleException(
-                    $"User {user.GetUserId()} cannot read registration {registration.RegistrationId}");
+                throw new NotAccessibleException($"User {user.GetUserId()} cannot read registration {registration.RegistrationId}");
             }
         }
 
-        public async Task CheckRegistrationCreateAccessAsync(
-            Registration registration,
-            CancellationToken cancellationToken)
+        public async Task CheckRegistrationCreateAccessAsync(Registration registration, CancellationToken cancellationToken)
         {
             var user = _httpContextAccessor.HttpContext.User;
-            var eventInfo =
-                await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
+            var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
 
             // Add possibility for organization admin to override later
             if (!user.IsSystemAdmin())
             {
-                if (eventInfo.Status != EventInfo.EventInfoStatus.RegistrationsOpen &&
-                    eventInfo.Status != EventInfo.EventInfoStatus.WaitingList)
-                    throw new NotAccessibleException(
-                        $"Registrations are closed for event {eventInfo.Title} with id {eventInfo.EventInfoId}.");
+                if (eventInfo.Status != EventInfo.EventInfoStatus.RegistrationsOpen && eventInfo.Status != EventInfo.EventInfoStatus.WaitingList)
+                    throw new NotAccessibleException($"Registrations are closed for event {eventInfo.Title} with id {eventInfo.EventInfoId}.");
             }
 
             if (!await CheckOwnerOrAdminAccessAsync(user, registration, cancellationToken))
@@ -69,33 +59,38 @@ namespace Eventuras.Services.Registrations
             }
         }
 
-        public async Task CheckRegistrationUpdateAccessAsync(
-            Registration registration,
-            CancellationToken cancellationToken)
+        public async Task CheckRegistrationUpdateAccessAsync(Registration registration, CancellationToken cancellationToken)
         {
-            var user = _httpContextAccessor.HttpContext.User;
-            if (user.GetUserId() == registration.UserId)
+            var user = _httpContextAccessor.HttpContext!.User;
+
+            var isAdmin = await CheckAdminAccessAsync(user, registration, cancellationToken);
+            if (isAdmin) return;
+
+            var isOwner = user.GetUserId() == registration.UserId;
+            if (!isOwner) throw new NotAccessibleException($"User {user.GetUserId()} cannot update registration {registration.RegistrationId}");
+
+            var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
+            var registrationPolicy = eventInfo.Options.RegistrationPolicy;
+
+            if (registrationPolicy.AllowedRegistrationEditHours != null)
             {
-                // user can edit his own reg
-                return;
+                var maxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(registrationPolicy.AllowedRegistrationEditHours.Value));
+                var currDuration = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow) - registration.RegistrationTime;
+
+                if (currDuration > maxDuration) throw new NotAccessibleException("Registration is too old to be updated.");
             }
 
-            if (!await CheckAdminAccessAsync(user, registration, cancellationToken))
+            if (!registrationPolicy.AllowModificationsAfterCancellationDue && eventInfo.LastCancellationDate != null)
             {
-                throw new NotAccessibleException(
-                    $"User {user.GetUserId()} cannot update registration {registration.RegistrationId}");
+                if (DateTimeOffset.UtcNow > eventInfo.LastCancellationDate.Value.ToDateTimeUnspecified())
+                    throw new NotAccessibleException("Registration can not be updated after event's last cancellation date.");
             }
         }
 
-        public async Task<IQueryable<Registration>> AddAccessFilterAsync(
-            IQueryable<Registration> query,
-            CancellationToken cancellationToken)
+        public async Task<IQueryable<Registration>> AddAccessFilterAsync(IQueryable<Registration> query, CancellationToken cancellationToken)
         {
             var user = _httpContextAccessor.HttpContext.User;
-            if (user.IsAnonymous())
-            {
-                throw new NotAccessibleException("Anonymous users are not permitted to list any registrations.");
-            }
+            if (user.IsAnonymous()) { throw new NotAccessibleException("Anonymous users are not permitted to list any registrations."); }
 
             if (user.IsPowerAdmin())
             {
@@ -108,58 +103,35 @@ namespace Eventuras.Services.Registrations
                 return query.Where(r => r.UserId == user.GetUserId());
             }
 
-            var org = await _currentOrganizationAccessorService
-                .RequireCurrentOrganizationAsync(null, cancellationToken);
+            var org = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(null, cancellationToken);
 
-            return query.Where(r => r.EventInfo.OrganizationId == org.OrganizationId &&
-                                    r.EventInfo.Organization.Members.Any(m => m.UserId == user.GetUserId()));
+            return query.Where(r
+                => r.EventInfo.OrganizationId == org.OrganizationId && r.EventInfo.Organization.Members.Any(m => m.UserId == user.GetUserId()));
         }
 
-        private async Task<bool> CheckAdminAccessAsync(
-            ClaimsPrincipal user,
-            Registration registration,
-            CancellationToken cancellationToken)
+        private async Task<bool> CheckAdminAccessAsync(ClaimsPrincipal user, Registration registration, CancellationToken cancellationToken)
         {
-            if (user.IsPowerAdmin())
-            {
-                return true;
-            }
+            if (user.IsPowerAdmin()) { return true; }
 
-            if (!user.IsAdmin())
-            {
-                return false;
-            }
+            if (!user.IsAdmin()) { return false; }
 
-            var org = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(
-                new OrganizationRetrievalOptions
+            var org = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(new OrganizationRetrievalOptions
                 {
                     LoadMembers = true
-                }, cancellationToken);
+                },
+                cancellationToken);
 
-            if (org.Members.All(m => m.UserId != user.GetUserId()))
-            {
-                return false;
-            }
+            if (org.Members.All(m => m.UserId != user.GetUserId())) { return false; }
 
-            var @event =
-                await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
+            var @event = await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
             return @event.OrganizationId == org.OrganizationId;
         }
 
-        private async Task<bool> CheckOwnerOrAdminAccessAsync(
-            ClaimsPrincipal user,
-            Registration registration,
-            CancellationToken cancellationToken)
+        private async Task<bool> CheckOwnerOrAdminAccessAsync(ClaimsPrincipal user, Registration registration, CancellationToken cancellationToken)
         {
-            if (user.IsAnonymous())
-            {
-                return false;
-            }
+            if (user.IsAnonymous()) { return false; }
 
-            if (registration.UserId == user.GetUserId())
-            {
-                return true;
-            }
+            if (registration.UserId == user.GetUserId()) { return true; }
 
             return await CheckAdminAccessAsync(user, registration, cancellationToken);
         }

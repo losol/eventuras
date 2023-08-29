@@ -1,7 +1,7 @@
+using System.Linq;
 using Eventuras.Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Eventuras.Infrastructure
 {
@@ -77,6 +77,15 @@ namespace Eventuras.Infrastructure
             //     .HasIndex(o => o.Code)
             //     .HasFilter($@"""{nameof(EventInfo.Archived)}"" = false")
             //     .IsUnique();
+
+            var eventInfo = builder.Entity<EventInfo>();
+            eventInfo.OwnsOne(e => e.Options,
+                b1 =>
+                {
+                    b1.OwnsOne(opt => opt.RegistrationPolicy);
+                    b1.Navigation(opt => opt.RegistrationPolicy).IsRequired();
+                });
+            eventInfo.Navigation(e => e.Options).IsRequired();
 
             builder.Entity<EventCollection>()
                 .HasMany(c => c.Events)
