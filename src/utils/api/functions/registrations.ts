@@ -7,4 +7,4 @@ import ApiURLs from '../ApiUrls';
 export const getUserRegistrations = (
   userId: string
 ): Promise<ApiResult<RegistrationDtoPageResponseDto>> =>
-  apiFetch(ApiURLs.userRegistrations(userId));
+  apiFetch(ApiURLs.userRegistrations({ userId }));

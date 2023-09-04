@@ -7,7 +7,7 @@ const i18config = {
     '*': ['common'],
     '/': ['index'],
     'rgx:(.*?)events/(.*?)/registration': ['register'],
-    'rgx:/admin/(.*?)': ['admin'],
+    'rgx:/admin(.*?)': ['admin'],
   },
 };
 

@@ -1,6 +1,7 @@
 import { LocalesAdmin } from '../types';
 
 const LOCALES_ADMIN_NO: LocalesAdmin = {
+  title: 'Admin',
   createEvent: {
     content: {
       title: 'Opprett hendelse',

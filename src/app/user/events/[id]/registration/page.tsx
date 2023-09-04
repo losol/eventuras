@@ -6,7 +6,7 @@ import { Loading } from '@/components/feedback';
 import FatalError from '@/components/feedback/FatalError';
 import { Layout } from '@/components/layout';
 import { UserContext } from '@/context';
-import useEventProducts from '@/hooks/useEventProducts';
+import { useEventProducts } from '@/hooks/apiHooks';
 import PaymentFormValues from '@/types/PaymentFormValues';
 import { UserProfile } from '@/types/UserProfile';
 import { ApiError } from '@/utils/api';

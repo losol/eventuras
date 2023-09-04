@@ -5,7 +5,7 @@ import { Heading } from '@/components/content';
 import { Loading } from '@/components/feedback';
 import { Container, Layout } from '@/components/layout';
 import { UserContext } from '@/context/UserContext';
-import useEventRegistrations from '@/hooks/useEventRegistrations';
+import { useEventRegistrations } from '@/hooks/apiHooks';
 
 import UserEventRegistrations from './(components)/UserEventRegistrations';
 import UserProfileCard from './(components)/UserProfileCard';

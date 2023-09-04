@@ -47,4 +47,4 @@ export type LocalesAdmin = {
   editEvent: {
     content: TitleDescription;
   };
-};
+} & Title;

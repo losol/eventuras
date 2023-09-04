@@ -2,7 +2,7 @@
 
 import EventEditor from '@/app/admin/components/EventEditor';
 import { Loading } from '@/components/feedback';
-import useEvent from '@/hooks/useEvent';
+import { useEvent } from '@/hooks/apiHooks';
 
 const EditEvent = ({ params }: { params: any }) => {
   const eventId = parseInt(params.id as string, 10);

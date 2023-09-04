@@ -29,10 +29,11 @@ async function getEvent(id: number) {
 
 export async function generateStaticParams() {
   const events = await getEvents();
-  if (!events || !Array.isArray(events)) {
-    return [];
+  if (events && events.data && events.data.length) {
+    return events.data.map(event => ({ id: event.id?.toString() }));
   }
-  return events.map(event => ({ id: event.id.toString() }));
+
+  return [];
 }
 
 const EventInfoPage: React.FC<EventInfoProps> = async ({ params }) => {
