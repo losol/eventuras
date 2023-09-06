@@ -46,7 +46,7 @@ const EventInfo: React.FC<EventInfoProps> = async ({ params }) => {
   if (params.slug !== eventinfo.slug) {
     //TODO replace with permanentDirect once it has been deployed to stable nextjs
     //@see https://github.com/vercel/next.js/pull/54047
-    redirect(eventinfo.slug!, RedirectType.replace);
+    redirect(`/events/${eventinfo.id!}/${eventinfo.slug!}`, RedirectType.replace);
   }
 
   return (

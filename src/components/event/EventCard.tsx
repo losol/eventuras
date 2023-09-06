@@ -19,7 +19,7 @@ const EventCard: React.FC<EventCardProps> = ({ eventinfo }) => {
     <Card>
       {eventinfo.title && (
         <Card.Heading>
-          <Link href={`/events/${eventinfo.id}`} className="stretched-link">
+          <Link href={`/events/${eventinfo.id}/${eventinfo.slug}`} className="stretched-link">
             {eventinfo.title}
           </Link>
         </Card.Heading>
