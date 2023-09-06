@@ -8,7 +8,7 @@ public class EventInfoOptions
 
     public class EventInfoRegistrationPolicy
     {
-        public int? AllowedRegistrationEditHours { get; set; } = null;
-        public bool AllowModificationsAfterCancellationDue { get; set; } = true;
+        public int? AllowedRegistrationEditHours { get; set; } = 24;
+        public bool AllowModificationsAfterLastCancellationDate { get; set; } = false;
     }
 }

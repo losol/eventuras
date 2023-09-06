@@ -12,7 +12,7 @@ public record EventInfoOptionsDto(EventInfoOptionsDto.EventInfoRegistrationPolic
         var registrationPolicy = new EventInfoOptions.EventInfoRegistrationPolicy
         {
             AllowedRegistrationEditHours = RegistrationPolicy.AllowedRegistrationEditHours,
-            AllowModificationsAfterCancellationDue = RegistrationPolicy.AllowModificationsAfterCancellationDue
+            AllowModificationsAfterLastCancellationDate = RegistrationPolicy.AllowModificationsAfterCancellationDue
         };
 
         return new EventInfoOptions { RegistrationPolicy = registrationPolicy };
@@ -21,7 +21,7 @@ public record EventInfoOptionsDto(EventInfoOptionsDto.EventInfoRegistrationPolic
     public static EventInfoOptionsDto MapFromEntity(EventInfoOptions entity)
     {
         return new EventInfoOptionsDto(new EventInfoRegistrationPolicyDto(entity.RegistrationPolicy.AllowedRegistrationEditHours,
-            entity.RegistrationPolicy.AllowModificationsAfterCancellationDue));
+            entity.RegistrationPolicy.AllowModificationsAfterLastCancellationDate));
     }
 
     public record EventInfoRegistrationPolicyDto(

@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Eventuras.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230829115517_EventInfo_AddOptionsWithPolicies")]
+    [Migration("20230906111207_EventInfo_AddOptionsWithPolicies")]
     partial class EventInfo_AddOptionsWithPolicies
     {
         /// <inheritdoc />
@@ -1324,7 +1324,7 @@ namespace Eventuras.Infrastructure.Migrations
                                     b2.Property<int>("EventInfoOptionsEventInfoId")
                                         .HasColumnType("integer");
 
-                                    b2.Property<bool>("AllowModificationsAfterCancellationDue")
+                                    b2.Property<bool>("AllowModificationsAfterLastCancellationDate")
                                         .HasColumnType("boolean");
 
                                     b2.Property<int?>("AllowedRegistrationEditHours")
