@@ -13,11 +13,15 @@ export type EventRegistrationButtonProps = {
 
 export default function EventRegistrationButton({ eventId }: EventRegistrationButtonProps) {
   const { t } = useTranslation('register');
-
-  const { profile } = useContext(UserContext).userState;
+  const state = useContext(UserContext).userState;
+  const profile = state.profile;
   const { loading, userRegistrations } = useEventRegistrations(profile?.id);
-  if (loading) return <Loading />;
-  const isRegistered = userRegistrations.filter(reg => reg.eventId === eventId).length > 0;
+  let isRegistered = false;
+
+  if (state.auth?.isAuthenticated) {
+    if (loading) return <Loading />;
+    isRegistered = userRegistrations.filter(reg => reg.eventId === eventId).length > 0;
+  }
 
   return (
     <div>
