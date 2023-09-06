@@ -14,6 +14,12 @@ const LOCALES_REGISTER_EN: LocalesEventRegistration = {
     title: 'Welcome!',
     description: 'We really look forward to see you!',
   },
+  buttons: {
+    register: 'Register for this Event',
+  },
+  feedback: {
+    allreadyRegistered: 'You are registered for this event, see you soon!',
+  },
 };
 
 export default LOCALES_REGISTER_EN;

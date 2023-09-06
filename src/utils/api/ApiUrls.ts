@@ -25,7 +25,7 @@ const ApiURLs = {
   products: ({ registrationId }: ByRegistrationId) =>
     `${aUri}/registrations/${registrationId}/products`,
   users: (options: Record<string, any> = {}) => `${aUri}/users${getQueryString(options)}`,
-  userRegistrations: (userId: byUserId) =>
+  userRegistrations: ({ userId }: byUserId) =>
     `${aUri}/registrations?UserId=${userId}&includeEventInfo=true&includeProducts=true`,
 };
 

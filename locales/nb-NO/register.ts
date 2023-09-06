@@ -14,6 +14,12 @@ const LOCALES_REGISTER_NO: LocalesEventRegistration = {
     title: 'Velkommen!',
     description: 'Vi ser virkelig frem til å se deg!',
   },
+  buttons: {
+    register: 'Registrere deg for dette arrangementet',
+  },
+  feedback: {
+    allreadyRegistered: 'Du er registrert for dette arrangementet, vi sees snart!',
+  },
 };
 
 export default LOCALES_REGISTER_NO;

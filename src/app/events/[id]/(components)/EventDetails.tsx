@@ -3,7 +3,8 @@ import parse from 'html-react-parser';
 import useTranslation from 'next-translate/useTranslation';
 
 import { Heading, Image } from '@/components/content';
-import { BlockLink } from '@/components/inputs/Link';
+
+import EventRegistrationButton from './EventRegistrationButton';
 
 type EventProps = {
   eventinfo: EventDto;
@@ -28,9 +29,7 @@ export default function EventDetails({ eventinfo }: EventProps) {
 
       {eventinfo?.description ?? null}
 
-      <div>
-        <BlockLink href={`/user/events/${eventinfo.id}/registration`}>Register for event</BlockLink>
-      </div>
+      <EventRegistrationButton eventId={eventinfo.id!} />
 
       {eventinfo?.moreInformation ? (
         <>

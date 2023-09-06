@@ -37,6 +37,12 @@ export type LocalesEventRegistration = {
   customize: TitleDescription;
   payment: TitleDescription & SubHeading;
   complete: TitleDescription;
+  buttons: {
+    register: string;
+  };
+  feedback: {
+    allreadyRegistered: string;
+  };
 };
 
 export type LocalesAdmin = {
