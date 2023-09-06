@@ -11,7 +11,7 @@ namespace Eventuras.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<bool>(
-                name: "Options_RegistrationPolicy_AllowModificationsAfterCancellation~",
+                name: "Options_RegistrationPolicy_AllowModificationsAfterLastCancella~",
                 table: "EventInfos",
                 type: "boolean",
                 nullable: false,
@@ -26,7 +26,7 @@ namespace Eventuras.Infrastructure.Migrations
             migrationBuilder.Sql(
                 """
                 UPDATE public."EventInfos"
-                SET "Options_RegistrationPolicy_AllowModificationsAfterCancellation~" = true;
+                SET "Options_RegistrationPolicy_AllowedRegistrationEditHours" = 24;
                 """);
         }
 
@@ -34,7 +34,7 @@ namespace Eventuras.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Options_RegistrationPolicy_AllowModificationsAfterCancellation~",
+                name: "Options_RegistrationPolicy_AllowModificationsAfterLastCancella~",
                 table: "EventInfos");
 
             migrationBuilder.DropColumn(

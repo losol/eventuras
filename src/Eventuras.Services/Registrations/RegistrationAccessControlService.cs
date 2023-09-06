@@ -80,7 +80,7 @@ namespace Eventuras.Services.Registrations
                 if (currDuration > maxDuration) throw new NotAccessibleException("Registration is too old to be updated.");
             }
 
-            if (!registrationPolicy.AllowModificationsAfterCancellationDue && eventInfo.LastCancellationDate != null)
+            if (!registrationPolicy.AllowModificationsAfterLastCancellationDate && eventInfo.LastCancellationDate != null)
             {
                 if (DateTimeOffset.UtcNow > eventInfo.LastCancellationDate.Value.ToDateTimeUnspecified())
                     throw new NotAccessibleException("Registration can not be updated after event's last cancellation date.");

@@ -1321,7 +1321,7 @@ namespace Eventuras.Infrastructure.Migrations
                                     b2.Property<int>("EventInfoOptionsEventInfoId")
                                         .HasColumnType("integer");
 
-                                    b2.Property<bool>("AllowModificationsAfterCancellationDue")
+                                    b2.Property<bool>("AllowModificationsAfterLastCancellationDate")
                                         .HasColumnType("boolean");
 
                                     b2.Property<int?>("AllowedRegistrationEditHours")
