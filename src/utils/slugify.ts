@@ -1,13 +1,29 @@
-//taken (mostly) from https://byby.dev/js-slugify-string
-const slugify = (str: string) =>
-  String(str)
-    .replace('ø', 'o') //additionals before normalizing
-    .normalize('NFKD') // split accented characters into their base characters and diacritical marks
-    .replace(/[\u0300-\u036f]/g, '') // remove all the accents, which happen to be all in the \u03xx UNICODE block.
-    .trim() // trim leading or trailing whitespace
-    .toLowerCase() // convert to lowercase
-    .replace(/[^a-z0-9 -]/g, '') // remove non-alphanumeric characters
-    .replace(/\s+/g, '-') // replace spaces with hyphens
-    .replace(/-+/g, '-'); // remove consecutive hyphens
+// inspired by https://stackoverflow.com/a/17694737/4413516
+
+const slugify = (str: string): string => {
+  // Convert the string to lowercase
+  str = str.toLowerCase();
+
+  // Define character conversions using an object
+  const conversions: { [key: string]: string } = {
+    e: 'æ|ä',
+    o: 'ø|ö',
+    a: 'å',
+  };
+
+  // Loop through conversions and replace characters
+  for (const i in conversions) {
+    if (conversions.hasOwnProperty(i)) {
+      const re = new RegExp(conversions[i], 'g');
+      str = str.replace(re, i);
+    }
+  }
+
+  return str
+    .normalize('NFKD') // Normalize Unicode characters
+    .replace(/\p{Diacritic}/gu, '') // Replace accented characters
+    .replace(/[^a-z0-9 -]/g, '') // Replace everything not a-z or a number
+    .replace(/\s+/g, '-'); // Replace spaces with hyphens
+};
 
 export default slugify;
