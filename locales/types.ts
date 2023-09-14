@@ -37,6 +37,33 @@ export type LocalesEventRegistration = {
   customize: TitleDescription;
   payment: TitleDescription & SubHeading;
   complete: TitleDescription;
+
+  form: {
+    customertype: {
+      legend: string;
+      private: string;
+      business: string;
+    };
+    user: {
+      legend: string;
+      name: string;
+      email: string;
+      phoneNumber: string;
+    };
+    address: {
+      legend: string;
+      street: string;
+      zip: string;
+      city: string;
+      country: string;
+    };
+    businessinfo: {
+      legend: string;
+      vatNumber: string;
+      invoiceReference: string;
+    };
+  };
+
   buttons: {
     register: string;
   };

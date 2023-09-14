@@ -14,11 +14,16 @@ export type InputTextProps = {
  * requires ref forwarding because it is used by react hooks
  * @see https://stackoverflow.com/questions/67877887/react-hook-form-v7-function-components-cannot-be-given-refs-attempts-to-access
  */
-const defaultClass = `appearance-none 
-        rounded 
+const defaultClass = ` 
+        appearance-none
         w-full 
         p-4
-        text-gray-700 
+        text-gray-900
+        dark:text-gray-100
+        bg-gray-100
+        dark:bg-gray-800
+        border-2
+        dark:border-gray-700
         leading-tight 
         focus:outline-none 
         focus:shadow-outline`;

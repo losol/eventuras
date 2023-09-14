@@ -10,6 +10,31 @@ const LOCALES_REGISTER_EN: LocalesEventRegistration = {
     description: 'A few more details',
     subHeading: 'Who are paying',
   },
+  form: {
+    customertype: {
+      legend: 'Customer type',
+      private: 'Private',
+      business: 'Business',
+    },
+    user: {
+      legend: 'User details',
+      name: 'Name',
+      email: 'Email',
+      phoneNumber: 'Phone number',
+    },
+    address: {
+      legend: 'Address',
+      street: 'Street',
+      zip: 'Zip code',
+      city: 'City',
+      country: 'Country',
+    },
+    businessinfo: {
+      legend: 'Business info',
+      vatNumber: 'VAT number',
+      invoiceReference: 'Invoice reference',
+    },
+  },
   complete: {
     title: 'Welcome!',
     description: 'We really look forward to see you!',

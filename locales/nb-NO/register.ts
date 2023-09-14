@@ -2,23 +2,48 @@ import { LocalesEventRegistration } from '../types';
 
 const LOCALES_REGISTER_NO: LocalesEventRegistration = {
   customize: {
-    title: 'Tilpass bestillingen din',
-    description: 'Vi har noen fine opplevelser å tilby',
+    title: 'Tilpass din bestilling',
+    description: 'Vi har noen flotte opplevelser å tilby',
   },
   payment: {
     title: 'Betalingsdetaljer',
     description: 'Noen flere detaljer',
-    subHeading: 'Som betaler',
+    subHeading: 'Hvem betaler',
+  },
+  form: {
+    customertype: {
+      legend: 'Kundetype',
+      private: 'Privat',
+      business: 'Bedrift',
+    },
+    user: {
+      legend: 'Brukerdetaljer',
+      name: 'Navn',
+      email: 'E-post',
+      phoneNumber: 'Telefonnummer',
+    },
+    address: {
+      legend: 'Adresse',
+      street: 'Gate',
+      zip: 'Postnummer',
+      city: 'By',
+      country: 'Land',
+    },
+    businessinfo: {
+      legend: 'Bedriftsinformasjon',
+      vatNumber: 'MVA-nummer',
+      invoiceReference: 'Fakturareferanse',
+    },
   },
   complete: {
     title: 'Velkommen!',
     description: 'Vi ser virkelig frem til å se deg!',
   },
   buttons: {
-    register: 'Registrere deg for dette arrangementet',
+    register: 'Registrer deg for dette arrangementet',
   },
   feedback: {
-    allreadyRegistered: 'Du er registrert for dette arrangementet, vi sees snart!',
+    allreadyRegistered: 'Du er allerede registrert for dette arrangementet, vi sees snart!',
   },
 };
 
