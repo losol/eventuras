@@ -1,19 +1,20 @@
 import { AuthOptions } from 'next-auth';
 import Auth0Provider from 'next-auth/providers/auth0';
 
+import Environment, { EnvironmentVariables } from './Environment';
 import Logger from './Logger';
 
 export const authOptions: AuthOptions = {
   providers: [
     Auth0Provider({
       id: 'auth0',
-      clientId: process.env.AUTH0_CLIENT_ID!,
-      clientSecret: process.env.AUTH0_CLIENT_SECRET!,
-      issuer: `https://${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}`,
-      wellKnown: `https://${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/.well-known/openid-configuration`,
+      clientId: Environment.get(EnvironmentVariables.AUTH0_CLIENT_ID),
+      clientSecret: Environment.get(EnvironmentVariables.AUTH0_CLIENT_SECRET),
+      issuer: `https://${Environment.NEXT_PUBLIC_AUTH0_DOMAIN}`,
+      wellKnown: `https://${Environment.NEXT_PUBLIC_AUTH0_DOMAIN}/.well-known/openid-configuration`,
       authorization: {
         params: {
-          audience: process.env.AUTH0_AUDIENCE,
+          audience: Environment.get(EnvironmentVariables.AUTH0_API_AUDIENCE),
           scope: 'openid email profile offline_access',
         },
       },
@@ -22,7 +23,7 @@ export const authOptions: AuthOptions = {
   session: {
     strategy: 'jwt',
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: Environment.get(EnvironmentVariables.NEXTAUTH_SECRET),
   callbacks: {
     async session({ session, token }) {
       return { ...session, id_token: token.id_token };

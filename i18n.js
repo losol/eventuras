@@ -1,3 +1,5 @@
+/* eslint-disable no-process-env */
+
 const defaultLocale = process.env.NEXT_PUBLIC_DEFAULT_LOCALE;
 
 const i18config = {

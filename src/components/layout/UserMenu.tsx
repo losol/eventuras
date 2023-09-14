@@ -2,10 +2,11 @@
 
 import { useRouter } from 'next/navigation';
 import { signIn, signOut } from 'next-auth/react';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 
 import { BlockLink, Button } from '@/components/inputs';
 import { UserContext } from '@/context';
+import Environment from '@/utils/Environment';
 
 const UserMenu = () => {
   const { fetchUserProfile, userState } = useContext(UserContext);
@@ -18,9 +19,9 @@ const UserMenu = () => {
 
   const handleLogout = async () => {
     const idToken = userState.auth?.session.id_token;
-    const returnUrl = encodeURI(process.env.NEXT_PUBLIC_LOGOUT_URL_REDIRECT!);
+    const returnUrl = encodeURI(Environment.NEXT_PUBLIC_LOGOUT_URL_REDIRECT);
     await signOut({ redirect: false });
-    const logOutUrl = `https://${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/oidc/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${returnUrl}`;
+    const logOutUrl = `https://${Environment.NEXT_PUBLIC_AUTH0_DOMAIN}/oidc/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${returnUrl}`;
     router.push(logOutUrl);
   };
 

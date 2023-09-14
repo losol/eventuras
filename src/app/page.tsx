@@ -3,13 +3,12 @@ import { EventDto, EventsService } from '@losol/eventuras';
 import { Heading, Text } from '@/components/content';
 import { EventGrid } from '@/components/event';
 import { Container, Layout } from '@/components/layout';
+import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';
 
 // Get events from eventuras
-const ORGANIZATION_ID: number =
-  process.env.NEXT_PUBLIC_ORGANIZATION_ID !== undefined
-    ? parseInt(process.env.NEXT_PUBLIC_ORGANIZATION_ID)
-    : 1;
+const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10);
+
 export const dynamic = 'force-dynamic';
 
 export default async function Homepage() {

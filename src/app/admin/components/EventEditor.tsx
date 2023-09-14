@@ -13,6 +13,7 @@ import { Layout } from '@/components/layout';
 import ApiError from '@/utils/api/ApiError';
 import ApiResult from '@/utils/api/ApiResult';
 import { createEvent as postEvent, updateEvent } from '@/utils/api/functions/events';
+import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';
 import slugify from '@/utils/slugify';
 
@@ -145,7 +146,7 @@ const EventEditor = ({ event, enableFields = true }: EventEditorProps) => {
         <fieldset disabled={!enableFields || apiState.loading}>
           <input
             type="hidden"
-            value={process.env.NEXT_PUBLIC_ORGANIZATION_ID ?? 1}
+            value={Environment.NEXT_PUBLIC_ORGANIZATION_ID}
             {...register('organizationId')}
           />
           <InputText

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
+import Environment, { EnvironmentVariables } from '@/utils/Environment';
 import Logger from '@/utils/Logger';
 
-const eventurasAPI_URL = process.env.API_BASE_URL;
+const eventurasAPI_URL = Environment.get(EnvironmentVariables.API_BASE_URL);
 /**
  * Forwards requests from /api/venturas to the eventuras backend API, decorating with a bearer token if available
  */
@@ -42,7 +43,7 @@ async function forwarder(request: NextRequest) {
     });
   }
 
-  if (process.env.NODE_ENV === 'development') {
+  if (Environment.get(EnvironmentVariables.NODE_ENV) === 'development') {
     //dev only, avoid token leaks into anything else than dev environment
     Logger.info(
       {

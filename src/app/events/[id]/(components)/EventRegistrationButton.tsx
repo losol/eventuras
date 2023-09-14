@@ -28,9 +28,7 @@ export default function EventRegistrationButton({ eventId }: EventRegistrationBu
       {isRegistered ? (
         <div>{t('feedback.allreadyRegistered')}</div>
       ) : (
-        <BlockLink href={`/user/events/${eventId}}/registration`}>
-          {t('buttons.register')}
-        </BlockLink>
+        <BlockLink href={`/user/events/${eventId}/registration`}>{t('buttons.register')}</BlockLink>
       )}
     </div>
   );

@@ -10,11 +10,12 @@ import { BlockLink } from '@/components/inputs/Link';
 import { Layout } from '@/components/layout';
 import { useEvents } from '@/hooks/apiHooks';
 import { getUsers } from '@/utils/api/functions/users';
+import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';
 
 import AdminEventList from './AdminEventList';
 
-const ORGANIZATION_ID: number = parseInt(process.env.NEXT_PUBLIC_ORGANIZATION_ID as string) ?? 1;
+const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
 export const dynamic = 'force-dynamic';
 const l = { namespace: 'admin' };
 

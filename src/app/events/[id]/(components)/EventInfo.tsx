@@ -3,6 +3,7 @@ import { RedirectType } from 'next/dist/client/components/redirect';
 import { redirect } from 'next/navigation';
 
 import { Container, Layout } from '@/components/layout';
+import Environment, { EnvironmentVariables } from '@/utils/Environment';
 import Logger from '@/utils/Logger';
 
 import EventDetails from '../(components)/EventDetails';
@@ -13,8 +14,8 @@ type EventInfoProps = {
     slug: string;
   };
 };
-OpenAPI.BASE = process.env.API_BASE_URL!;
-OpenAPI.VERSION = process.env.NEXT_PUBLIC_API_VERSION!;
+OpenAPI.BASE = Environment.get(EnvironmentVariables.API_BASE_URL);
+OpenAPI.VERSION = Environment.NEXT_PUBLIC_API_VERSION;
 const l = { namespace: 'events:detail' };
 async function getEvents() {
   return await EventsService.getV3Events({}).catch(e => {

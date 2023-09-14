@@ -22,6 +22,8 @@
  * silly: 6
  */
 import createDebug from 'debug';
+
+import Environment, { EnvironmentVariables } from './Environment';
 interface DebugCache {
   [key: string]: createDebug.Debugger;
 }
@@ -45,7 +47,7 @@ class Logger {
     options: LoggerOptions = { developerOnly: false, namespace: '' },
     ...msg: any | any[]
   ) {
-    if (options.developerOnly && process.env.NODE_ENV !== 'development') {
+    if (options.developerOnly && Environment.get(EnvironmentVariables.NODE_ENV) !== 'development') {
       return;
     }
 
