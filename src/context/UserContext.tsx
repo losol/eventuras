@@ -1,6 +1,7 @@
 'use client';
 
 import { UserDto as UserProfile } from '@losol/eventuras';
+import { Session } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import { createContext, ReactNode, useCallback, useEffect, useState } from 'react';
 
@@ -9,6 +10,7 @@ import { getUserProfile } from '@/utils/api/functions/users';
 // Auth type definition
 interface Auth {
   isAuthenticated: boolean;
+  session: SessionWithIdToken;
 }
 
 // UserState type definition
@@ -18,11 +20,13 @@ interface UserState {
   error: string | null; // Add an error field
 }
 
+type SessionWithIdToken = Session & { id_token: string };
+
 // UserContextProps type definition
 interface UserContextProps {
   userState: UserState;
   updateUserProfile: (updatedProfile: UserProfile) => void;
-  updateAuthStatus: (newAuthStatus: Partial<Auth>) => void;
+  updateAuthStatus: (newAuthStatus: Auth) => void;
   fetchUserProfile: () => Promise<void>;
 }
 
@@ -59,11 +63,12 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     }));
   };
 
-  const updateAuthStatus = (newAuthStatus: Partial<Auth>) => {
+  const updateAuthStatus = (newAuthStatus: Auth) => {
     setUserState(prevState => ({
       ...prevState,
       auth: {
         isAuthenticated: newAuthStatus.isAuthenticated ?? prevState.auth?.isAuthenticated ?? false,
+        session: newAuthStatus.session,
       },
     }));
   };
@@ -71,9 +76,10 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const fetchUserProfile = useCallback(async () => {
     if (session) {
       const result = await getUserProfile();
+      const sessWId: SessionWithIdToken = session as SessionWithIdToken;
       if (result.ok) {
         updateUserProfile(result.value);
-        updateAuthStatus({ isAuthenticated: true });
+        updateAuthStatus({ isAuthenticated: true, session: sessWId });
       } else {
         setUserState(prevState => ({
           ...prevState,

@@ -9,8 +9,8 @@ export const authOptions: AuthOptions = {
       id: 'auth0',
       clientId: process.env.AUTH0_CLIENT_ID!,
       clientSecret: process.env.AUTH0_CLIENT_SECRET!,
-      issuer: `https://${process.env.AUTH0_DOMAIN}`,
-      wellKnown: `https://${process.env.AUTH0_DOMAIN}/.well-known/openid-configuration`,
+      issuer: `https://${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}`,
+      wellKnown: `https://${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/.well-known/openid-configuration`,
       authorization: {
         params: {
           audience: process.env.AUTH0_AUDIENCE,
@@ -24,9 +24,16 @@ export const authOptions: AuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
+    async session({ session, token }) {
+      return { ...session, id_token: token.id_token };
+    },
     async jwt({ token, user, account }: { token: any; user: any; account: any }) {
       if (account) {
-        token = Object.assign({}, token, { access_token: account.access_token });
+        Logger.info({ namespace: 'auth', developerOnly: true }, { token, user, account });
+        token = Object.assign({}, token, {
+          access_token: account.access_token,
+          id_token: account.id_token,
+        });
       }
 
       if (account && user) {

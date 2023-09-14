@@ -7,5 +7,12 @@
 
 import { withAuth } from 'next-auth/middleware';
 export default withAuth;
+/*
+export async function middleware(request: NextRequest) {
+  const token = await getToken({ req: request });
+  console.log("AAA")
+  console.log({middleareToken:token})
+  return NextResponse.next()
 
+}*/
 export const config = { matcher: ['/admin/:path*', '/user/:path*'] };
