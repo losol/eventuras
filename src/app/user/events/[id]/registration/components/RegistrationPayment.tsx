@@ -90,12 +90,6 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
             disabled
             errors={errors}
           />
-          <InputText
-            {...register('phoneNumber', { value: userProfile.phoneNumber })}
-            label={t('form.user.phoneNumber')}
-            defaultValue={userProfile.phoneNumber}
-            errors={errors}
-          />
         </fieldset>
         <fieldset className={fieldsetClassName}>
           <legend className={fieldsetLegendClassName}>{t('form.address.legend')}</legend>

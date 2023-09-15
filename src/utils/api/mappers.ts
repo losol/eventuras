@@ -58,7 +58,6 @@ export const mapToNewRegistration = (
     type,
     createOrder: true,
     paymentMethod: paymentDetails.paymentMethod,
-    notes: 'note taking needs to be implemented',
   };
 
   return newRegistration;
