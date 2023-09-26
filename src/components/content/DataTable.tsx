@@ -12,6 +12,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import React, { useEffect } from 'react';
 
 import { Text } from '@/components/content';
 import { Button } from '@/components/inputs';
@@ -22,17 +23,35 @@ type DataTableProps = {
   handlePageClick?: (page: number) => void;
   totalPages?: number;
   page?: number;
+  clientsidePagination?: boolean;
+  clientsidePaginationPageSize?: number;
 };
 
 const DataTable = (props: DataTableProps) => {
-  const { columns, data, handlePageClick, totalPages, page } = props;
+  const {
+    columns,
+    data,
+    handlePageClick,
+    totalPages,
+    page,
+    clientsidePagination,
+    clientsidePaginationPageSize = 25,
+  } = props;
+
+  const handleClientPageChange = (newPage: number) => {
+    table.setPageIndex(newPage);
+  };
 
   const table = useReactTable({
     columns,
-    data,
+    data: data,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
+
+  useEffect(() => {
+    if (clientsidePagination) table.setPageSize(clientsidePaginationPageSize);
+  }, []);
 
   return (
     <>
@@ -61,48 +80,60 @@ const DataTable = (props: DataTableProps) => {
         </tbody>
       </table>
 
+      {clientsidePagination && table.getPageCount() > 1 ? (
+        <Text classname="flex bg-slate-50 py-2 px-5">
+          <Button
+            aria-label="Previous Page"
+            onClick={() => handleClientPageChange(table.getState().pagination.pageIndex - 1)}
+            disabled={!table.getCanPreviousPage()}
+            leftIcon={<IconChevronsLeft />}
+            className="flex-col"
+          />
+          <Text classname="flex-col">
+            Page <Text as="span">{table.getState().pagination.pageIndex + 1}</Text> of{' '}
+            <Text as="span">{table.getPageCount()}</Text>
+          </Text>
+          <Button
+            aria-label="Next Page"
+            onClick={() => handleClientPageChange(table.getState().pagination.pageIndex + 1)}
+            disabled={!table.getCanNextPage()}
+            leftIcon={<IconChevronsRight />}
+            className="flex-col"
+          />
+        </Text>
+      ) : null}
+
       {
-        // only show page navigation if handlePageClick is provided
-        typeof page === 'number' &&
-        typeof totalPages === 'number' &&
-        handlePageClick &&
-        typeof handlePageClick === 'function' ? (
+        // Server side pagination needs some work...
+        !clientsidePagination && handlePageClick && page && totalPages ? (
           <Text>
+            <Button
+              ariaLabel="First page"
+              onClick={() => handlePageClick(1)}
+              disabled={page === 1}
+              leftIcon={<IconArrowLeft />}
+            />
+            <Button
+              aria-label="Previous page"
+              onClick={() => handlePageClick(page - 1)}
+              disabled={page - 1 <= 0}
+              leftIcon={<IconChevronsLeft />}
+            />
             <Text>
-              <Button
-                ariaLabel="First page"
-                onClick={() => handlePageClick(1)}
-                disabled={page === 1}
-                leftIcon={<IconArrowLeft />}
-              />
-              <Button
-                aria-label="Previous page"
-                onClick={() => handlePageClick(page - 1)}
-                disabled={page - 1 <= 0}
-                leftIcon={<IconChevronsLeft />}
-              />
+              Page <Text as="span">{page}</Text> of <Text as="span">{totalPages}</Text>
             </Text>
-
-            <Text>
-              <Text>
-                Page <Text as="span">{page}</Text> of <Text as="span">{totalPages}</Text>
-              </Text>
-            </Text>
-
-            <Text>
-              <Button
-                aria-label="Next Page"
-                onClick={() => handlePageClick(page + 1)}
-                disabled={page + 1 > totalPages}
-                leftIcon={<IconChevronsRight />}
-              />
-              <Button
-                aria-label="Last page"
-                onClick={() => handlePageClick(totalPages)}
-                disabled={page === totalPages}
-                leftIcon={<IconArrowRight />}
-              />
-            </Text>
+            <Button
+              aria-label="Next Page"
+              onClick={() => handlePageClick(page + 1)}
+              disabled={page + 1 > totalPages}
+              leftIcon={<IconChevronsRight />}
+            />
+            <Button
+              aria-label="Last page"
+              onClick={() => handlePageClick(totalPages)}
+              disabled={page === totalPages}
+              leftIcon={<IconArrowRight />}
+            />
           </Text>
         ) : null
       }

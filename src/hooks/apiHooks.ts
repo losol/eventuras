@@ -40,9 +40,15 @@ export const useEvents = (options: GetEventsOptions = {}) => {
   const [response, setResponse] = useState<EventDtoPageResponseDto | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const optionsRef = useRef(options);
+
+  useEffect(() => {
+    optionsRef.current = options;
+  }, [options]);
+
   useEffect(() => {
     const execute = async () => {
-      const result = await getEvents(options);
+      const result = await getEvents(optionsRef.current);
       setLoading(false);
       if (result.ok) {
         setResponse(result.value);
@@ -51,7 +57,8 @@ export const useEvents = (options: GetEventsOptions = {}) => {
       setResponse(null);
     };
     execute();
-  }, [options]);
+  }, []);
+
   return { loading, response, events: response?.data };
 };
 
