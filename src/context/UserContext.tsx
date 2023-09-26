@@ -87,13 +87,13 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         }));
       }
     }
-  }, [session]);
+  }, [session?.accessToken]);
 
   useEffect(() => {
     if (session) {
       fetchUserProfile();
     }
-  }, [session, fetchUserProfile]);
+  }, [session?.accessToken]);
 
   return (
     <UserContext.Provider

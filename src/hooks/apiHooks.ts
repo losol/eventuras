@@ -32,7 +32,7 @@ export const useEvent = (eventId: number) => {
       setEvent(null);
     };
     execute();
-  }, []);
+  }, [eventId]);
   return { loading, event };
 };
 
@@ -40,15 +40,9 @@ export const useEvents = (options: GetEventsOptions = {}) => {
   const [response, setResponse] = useState<EventDtoPageResponseDto | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const optionsRef = useRef(options);
-
-  useEffect(() => {
-    optionsRef.current = options;
-  }, [options]);
-
   useEffect(() => {
     const execute = async () => {
-      const result = await getEvents(optionsRef.current);
+      const result = await getEvents(options);
       setLoading(false);
       if (result.ok) {
         setResponse(result.value);
@@ -57,7 +51,7 @@ export const useEvents = (options: GetEventsOptions = {}) => {
       setResponse(null);
     };
     execute();
-  }, []);
+  }, [options.organizationId, options.offset, options.page]);
 
   return { loading, response, events: response?.data };
 };
@@ -82,7 +76,7 @@ export const useUsers = (options: GetUsersOptions = {}) => {
       setResponse(null);
     };
     execute();
-  }, [options]);
+  }, [options.query, options.offset, options.page]);
   return { loading, response, users: response?.data };
 };
 
@@ -102,7 +96,7 @@ export const useEventProducts = (eventId: number) => {
       setRegistrationProducts([]);
     };
     execute();
-  }, []);
+  }, [eventId]);
   return { loading, registrationProducts };
 };
 
