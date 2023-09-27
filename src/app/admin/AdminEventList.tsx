@@ -9,7 +9,9 @@ const columnHelper = createColumnHelper<EventDto>();
 const columns = [
   columnHelper.accessor('title', {
     header: 'Title',
-    cell: info => <Link href={`/admin/events/${info.row.original.id}`}> {info.getValue()}</Link>,
+    cell: info => (
+      <Link href={`/admin/events/${info.row.original.id}/edit`}> {info.getValue()}</Link>
+    ),
   }),
   columnHelper.accessor('location', {
     header: 'Location',

@@ -26,7 +26,7 @@ type EventFormValues = {
   dateEnd: any;
 };
 
-const publishEvent = (formValues: EventFormValues, eventToUpdate?: EventDto | null) => {
+const publishEvent = (formValues: EventFormValues, eventToUpdate: EventDto | null) => {
   const values = {
     ...formValues,
     status: EventInfoStatus.REGISTRATIONS_OPEN,
@@ -45,8 +45,7 @@ const publishEvent = (formValues: EventFormValues, eventToUpdate?: EventDto | nu
 };
 
 export type EventEditorProps = {
-  event?: EventDto | null;
-  enableFields?: boolean;
+  eventinfo: EventDto;
 };
 
 type ApiState = {
@@ -54,7 +53,7 @@ type ApiState = {
   loading: boolean;
 };
 
-const EventEditor = ({ event, enableFields = true }: EventEditorProps) => {
+const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
   const { t } = useTranslation('admin');
   const { t: common } = useTranslation('common');
 
@@ -65,24 +64,24 @@ const EventEditor = ({ event, enableFields = true }: EventEditorProps) => {
     formState: { errors },
     handleSubmit,
   } = useForm<EventFormValues>();
-  const translationPrefix = event ? 'editEvent' : 'createEvent';
+
   const router = useRouter();
   const [apiState, setApiState] = useState<ApiState>({ result: null, loading: false });
 
   useEffect(() => {
-    if (event) {
-      setValue('title', event.title ?? '');
-      setValue('slug', event.slug ?? '');
-      setValue('dateStart', event.dateStart ?? '');
-      setValue('dateEnd', event.dateEnd ?? '');
+    if (eventinfo) {
+      setValue('title', eventinfo.title ?? '');
+      setValue('slug', eventinfo.slug ?? '');
+      setValue('dateStart', eventinfo.dateStart ?? '');
+      setValue('dateEnd', eventinfo.dateEnd ?? '');
     }
-  }, [event, setValue]);
+  }, [eventinfo, setValue]);
 
   //## Form Handler - POST to create event
 
   const onSubmitForm: SubmitHandler<EventFormValues> = async (data: EventFormValues) => {
     setApiState({ result: null, loading: true });
-    const result = await publishEvent(data, event);
+    const result = await publishEvent(data, eventinfo);
     setApiState({ result, loading: false });
     if (result.ok) {
       Logger.info({ namespace: 'admin:events' }, `On submit OK`, result.value);
@@ -93,7 +92,7 @@ const EventEditor = ({ event, enableFields = true }: EventEditorProps) => {
     //## Result OK handling
     if (result && result.ok) {
       let nextUrl = '/admin';
-      if (!event) {
+      if (!eventinfo) {
         nextUrl = `/admin/events/${result.value.id}`;
       }
       router.push(nextUrl);
@@ -118,39 +117,22 @@ const EventEditor = ({ event, enableFields = true }: EventEditorProps) => {
     }
   }
 
-  const errorIfExists = () => {
-    if (!apiState.result) return null;
-    if (apiState.result.error.statusCode === 409) {
-      return (
-        <p role="alert" className="text-red-500">
-          {t('createEvent.alreadyExists.title')}
-          {t('createEvent.alreadyExists.description')}
-        </p>
-      );
-    }
-  };
-  const titleRegistration = register('title', {
-    required: 'Event title is required',
-  });
-  const onChangeHook = titleRegistration.onChange;
-  titleRegistration.onChange = (event: { target: any; type?: any }) => {
-    setValue('slug', slugify(event.target.value));
-    return onChangeHook(event);
-  };
   //## Render
   return (
     <Layout>
-      <Heading>{t(`${translationPrefix}.content.title`)}</Heading>
-      <p>{t(`${translationPrefix}.content.description`)}</p>
+      <Heading>{t(`editEvent.content.title`)}</Heading>
+      <p>{t(`editEvent.content.description`)}</p>
       <form onSubmit={handleSubmit(onSubmitForm)} className="shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <fieldset disabled={!enableFields || apiState.loading}>
+        <fieldset disabled={apiState.loading}>
           <input
             type="hidden"
             value={Environment.NEXT_PUBLIC_ORGANIZATION_ID}
             {...register('organizationId')}
           />
           <InputText
-            {...titleRegistration}
+            {...register('title', {
+              required: 'Event title is required',
+            })}
             label="Event Title"
             placeholder="Event Title"
             errors={errors}
@@ -182,7 +164,6 @@ const EventEditor = ({ event, enableFields = true }: EventEditorProps) => {
           {common('buttons.submit')}
         </Button>
       </form>
-      {errorIfExists()}
     </Layout>
   );
 };

@@ -1,6 +1,6 @@
 'use client';
-import EventEditor from '@/app/admin/components/EventEditor';
+import EventCreator from '@/app/admin/events/EventCreator';
 const CreateEvent = () => {
-  return <EventEditor />;
+  return <EventCreator />;
 };
 export default CreateEvent;

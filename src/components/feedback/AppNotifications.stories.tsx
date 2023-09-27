@@ -5,8 +5,7 @@ import AppNotifications, { AppNotificationOptions, AppNotificationType } from '.
 
 const meta: Meta = {
   component: AppNotifications,
-  title: 'components/notifications/AppNotifications',
-  tags: ['autodocs'],
+  // tags: ['autodocs'],
 };
 
 export default meta;
