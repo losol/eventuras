@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
 using Eventuras.Services.Organizations.Settings;
@@ -22,7 +23,7 @@ namespace Eventuras.WebApi.Controllers.Organizations
                     switch (setting.Type)
                     {
                         case OrganizationSettingType.Number:
-                            if (!double.TryParse(dto.Value, out _))
+                            if (!double.TryParse(dto.Value, CultureInfo.InvariantCulture, out _))
                             {
                                 return new ValidationResult(
                                     $"Invalid value for {dto.Name}: {dto.Value} (number expected)");
@@ -47,7 +48,7 @@ namespace Eventuras.WebApi.Controllers.Organizations
                             }
 
                             break;
-                        
+
                         case OrganizationSettingType.Boolean:
                             if (!bool.TryParse(dto.Value, out _))
                             {
