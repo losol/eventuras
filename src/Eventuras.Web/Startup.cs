@@ -134,16 +134,7 @@ namespace Eventuras
                 endpoints.MapControllers();
                 endpoints.MapRazorPages();
 
-                if (Configuration.HealthChecksEnabled())
-                {
-                    endpoints.MapHealthChecks(Constants.HealthCheckUri, new HealthCheckOptions
-                    {
-                        Predicate = _ => true,
-                        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
-                    })
-                        .WithDisplayName(_ => Constants.HealthCheckName);
-                    endpoints.MapHealthChecksUI();
-                }
+
             });
         }
     }
