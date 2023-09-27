@@ -4,6 +4,7 @@
 /* eslint-disable */
 
 import type { EventDto } from './EventDto';
+import type { OrderDto } from './OrderDto';
 import type { ProductOrderDto } from './ProductOrderDto';
 import type { RegistrationStatus } from './RegistrationStatus';
 import type { RegistrationType } from './RegistrationType';
@@ -20,5 +21,6 @@ export type RegistrationDto = {
     user?: UserDto;
     event?: EventDto;
     products?: Array<ProductOrderDto> | null;
+    orders?: Array<OrderDto> | null;
 };
 

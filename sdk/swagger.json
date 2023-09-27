@@ -744,6 +744,20 @@
             }
           },
           {
+            "name": "IncludePastEvents",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "IncludeDraftEvents",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "name": "OrganizationId",
             "in": "query",
             "schema": {
@@ -948,22 +962,22 @@
           "content": {
             "application/json-patch+json": {
               "schema": {
-                "$ref": "#/components/schemas/EventInfoJsonPatchDocument"
+                "$ref": "#/components/schemas/EventFormDtoJsonPatchDocument"
               }
             },
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EventInfoJsonPatchDocument"
+                "$ref": "#/components/schemas/EventFormDtoJsonPatchDocument"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/EventInfoJsonPatchDocument"
+                "$ref": "#/components/schemas/EventFormDtoJsonPatchDocument"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/EventInfoJsonPatchDocument"
+                "$ref": "#/components/schemas/EventFormDtoJsonPatchDocument"
               }
             }
           }
@@ -1586,6 +1600,14 @@
             "in": "query",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "OrganizationId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           },
           {
@@ -2356,7 +2378,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/RegistrationOrderDto"
+                    "$ref": "#/components/schemas/OrderDto"
                   }
                 }
               },
@@ -2364,7 +2386,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/RegistrationOrderDto"
+                    "$ref": "#/components/schemas/OrderDto"
                   }
                 }
               },
@@ -2372,7 +2394,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/RegistrationOrderDto"
+                    "$ref": "#/components/schemas/OrderDto"
                   }
                 }
               }
@@ -2415,6 +2437,53 @@
             "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/NewRegistrationOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v3/registrations/{id}/products": {
+      "post": {
+        "tags": [
+          "RegistrationOrders"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderUpdateRequestDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderUpdateRequestDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderUpdateRequestDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderUpdateRequestDto"
               }
             }
           }
@@ -3352,17 +3421,20 @@
           },
           "endDate": {
             "$ref": "#/components/schemas/LocalDate"
+          },
+          "options": {
+            "$ref": "#/components/schemas/EventInfoOptionsDto"
           }
         },
         "additionalProperties": false
       },
-      "EventInfoJsonPatchDocument": {
+      "EventFormDtoJsonPatchDocument": {
         "type": "object",
         "properties": {
           "operations": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/EventInfoOperation"
+              "$ref": "#/components/schemas/EventFormDtoOperation"
             },
             "nullable": true,
             "readOnly": true
@@ -3373,7 +3445,7 @@
         },
         "additionalProperties": false
       },
-      "EventInfoOperation": {
+      "EventFormDtoOperation": {
         "type": "object",
         "properties": {
           "operationType": {
@@ -3393,6 +3465,29 @@
           },
           "value": {
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EventInfoOptionsDto": {
+        "type": "object",
+        "properties": {
+          "registrationPolicy": {
+            "$ref": "#/components/schemas/EventInfoRegistrationPolicyDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EventInfoRegistrationPolicyDto": {
+        "type": "object",
+        "properties": {
+          "allowedRegistrationEditHours": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "allowModificationsAfterCancellationDue": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -3526,7 +3621,7 @@
           "lines": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/OrderLineUpdateDto"
+              "$ref": "#/components/schemas/OrderLineModel"
             }
           },
           "registrationId": {
@@ -3646,33 +3741,8 @@
             "minItems": 1,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/NewRegistrationOrderItemDto"
+              "$ref": "#/components/schemas/OrderLineModel"
             }
-          }
-        },
-        "additionalProperties": false
-      },
-      "NewRegistrationOrderItemDto": {
-        "type": "object",
-        "properties": {
-          "productId": {
-            "maximum": 2147483647,
-            "minimum": 1,
-            "type": "integer",
-            "format": "int32"
-          },
-          "productVariantId": {
-            "maximum": 2147483647,
-            "minimum": 1,
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "quantity": {
-            "maximum": 2147483647,
-            "minimum": 1,
-            "type": "integer",
-            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -3856,7 +3926,8 @@
             "$ref": "#/components/schemas/OrderStatus"
           },
           "time": {
-            "$ref": "#/components/schemas/Instant"
+            "type": "string",
+            "format": "date-time"
           },
           "userId": {
             "type": "string",
@@ -3902,7 +3973,7 @@
         },
         "additionalProperties": false
       },
-      "OrderLineUpdateDto": {
+      "OrderLineModel": {
         "type": "object",
         "properties": {
           "productId": {
@@ -3973,7 +4044,7 @@
           "lines": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/OrderLineUpdateDto"
+              "$ref": "#/components/schemas/OrderLineModel"
             }
           }
         },
@@ -4208,6 +4279,11 @@
             "type": "integer",
             "format": "int32"
           },
+          "productVariantId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "product": {
             "$ref": "#/components/schemas/ProductDto"
           },
@@ -4331,6 +4407,13 @@
               "$ref": "#/components/schemas/ProductOrderDto"
             },
             "nullable": true
+          },
+          "orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderDto"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -4384,39 +4467,6 @@
           "empty": {
             "type": "boolean",
             "readOnly": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "RegistrationOrderDto": {
-        "type": "object",
-        "properties": {
-          "orderId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RegistrationOrderLineDto"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "RegistrationOrderLineDto": {
-        "type": "object",
-        "properties": {
-          "product": {
-            "$ref": "#/components/schemas/ProductDto"
-          },
-          "productVariant": {
-            "$ref": "#/components/schemas/ProductVariantDto"
-          },
-          "quantity": {
-            "type": "integer",
-            "format": "int32"
           }
         },
         "additionalProperties": false

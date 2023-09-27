@@ -5,7 +5,7 @@
 import type { EventDto } from '../models/EventDto';
 import type { EventDtoPageResponseDto } from '../models/EventDtoPageResponseDto';
 import type { EventFormDto } from '../models/EventFormDto';
-import type { EventInfoJsonPatchDocument } from '../models/EventInfoJsonPatchDocument';
+import type { EventFormDtoJsonPatchDocument } from '../models/EventFormDtoJsonPatchDocument';
 import type { EventInfoType } from '../models/EventInfoType';
 import type { LocalDate } from '../models/LocalDate';
 import type { PeriodMatchingKind } from '../models/PeriodMatchingKind';
@@ -26,6 +26,8 @@ export class EventsService {
         start,
         end,
         period,
+        includePastEvents,
+        includeDraftEvents,
         organizationId,
         page,
         count,
@@ -36,6 +38,8 @@ export class EventsService {
         start?: LocalDate,
         end?: LocalDate,
         period?: PeriodMatchingKind,
+        includePastEvents?: boolean,
+        includeDraftEvents?: boolean,
         organizationId?: number,
         page?: number,
         count?: number,
@@ -50,6 +54,8 @@ export class EventsService {
                 'Start': start,
                 'End': end,
                 'Period': period,
+                'IncludePastEvents': includePastEvents,
+                'IncludeDraftEvents': includeDraftEvents,
                 'OrganizationId': organizationId,
                 'Page': page,
                 'Count': count,
@@ -128,7 +134,7 @@ export class EventsService {
         requestBody,
     }: {
         id: number,
-        requestBody?: EventInfoJsonPatchDocument,
+        requestBody?: EventFormDtoJsonPatchDocument,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'PATCH',

@@ -3,10 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { OrderLineUpdateDto } from './OrderLineUpdateDto';
+import type { OrderLineModel } from './OrderLineModel';
 
 export type NewOrderRequestDto = {
-    lines: Array<OrderLineUpdateDto>;
+    lines: Array<OrderLineModel>;
     registrationId: number;
 };
 

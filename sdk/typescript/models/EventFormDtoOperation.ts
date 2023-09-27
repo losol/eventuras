@@ -5,7 +5,7 @@
 
 import type { OperationType } from './OperationType';
 
-export type EventInfoOperation = {
+export type EventFormDtoOperation = {
     operationType?: OperationType;
     path?: string | null;
     op?: string | null;
