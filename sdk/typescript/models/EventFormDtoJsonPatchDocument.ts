@@ -3,11 +3,11 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { EventInfoOperation } from './EventInfoOperation';
+import type { EventFormDtoOperation } from './EventFormDtoOperation';
 import type { IContractResolver } from './IContractResolver';
 
-export type EventInfoJsonPatchDocument = {
-    readonly operations?: Array<EventInfoOperation> | null;
+export type EventFormDtoJsonPatchDocument = {
+    readonly operations?: Array<EventFormDtoOperation> | null;
     contractResolver?: IContractResolver;
 };
 

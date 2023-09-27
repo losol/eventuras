@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { EventInfoOptionsDto } from './EventInfoOptionsDto';
 import type { EventInfoStatus } from './EventInfoStatus';
 import type { EventInfoType } from './EventInfoType';
 import type { LocalDate } from './LocalDate';
@@ -24,5 +25,6 @@ export type EventFormDto = {
     city?: string | null;
     startDate?: LocalDate;
     endDate?: LocalDate;
+    options?: EventInfoOptionsDto;
 };
 

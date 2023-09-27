@@ -1,6 +1,6 @@
 {
   "name": "@losol/eventuras",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Eventuras Typescript SDK",
   "main": "index.ts",
   "scripts": {

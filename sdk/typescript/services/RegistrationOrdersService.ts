@@ -3,7 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { NewRegistrationOrderDto } from '../models/NewRegistrationOrderDto';
-import type { RegistrationOrderDto } from '../models/RegistrationOrderDto';
+import type { OrderDto } from '../models/OrderDto';
+import type { OrderUpdateRequestDto } from '../models/OrderUpdateRequestDto';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -12,14 +13,14 @@ import { request as __request } from '../core/request';
 export class RegistrationOrdersService {
 
     /**
-     * @returns RegistrationOrderDto Success
+     * @returns OrderDto Success
      * @throws ApiError
      */
     public static getV3RegistrationsOrders({
         id,
     }: {
         id: number,
-    }): CancelablePromise<Array<RegistrationOrderDto>> {
+    }): CancelablePromise<Array<OrderDto>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/registrations/{id}/orders',
@@ -43,6 +44,28 @@ export class RegistrationOrdersService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/registrations/{id}/orders',
+            path: {
+                'id': id,
+            },
+            body: requestBody,
+            mediaType: 'application/json-patch+json',
+        });
+    }
+
+    /**
+     * @returns any Success
+     * @throws ApiError
+     */
+    public static postV3RegistrationsProducts({
+        id,
+        requestBody,
+    }: {
+        id: number,
+        requestBody?: OrderUpdateRequestDto,
+    }): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/v3/registrations/{id}/products',
             path: {
                 'id': id,
             },

@@ -3,9 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { NewRegistrationOrderItemDto } from './NewRegistrationOrderItemDto';
+import type { OrderLineModel } from './OrderLineModel';
 
 export type NewRegistrationOrderDto = {
-    items: Array<NewRegistrationOrderItemDto>;
+    items: Array<OrderLineModel>;
 };
 
