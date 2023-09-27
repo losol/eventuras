@@ -14,7 +14,7 @@ using System.Linq;
 using HealthChecks.UI.Client;
 using Eventuras.Web;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using ServiceCollectionExtensions = Eventuras.Web.Extensions.ServiceCollectionExtensions;
 
@@ -50,7 +50,7 @@ namespace Eventuras
             var defaultCultureInfo = new CultureInfo(Configuration["Site:DefaultLocale"]);
             CultureInfo.DefaultThreadCurrentCulture = defaultCultureInfo;
             CultureInfo.DefaultThreadCurrentUICulture = defaultCultureInfo;
-            
+
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
@@ -134,16 +134,7 @@ namespace Eventuras
                 endpoints.MapControllers();
                 endpoints.MapRazorPages();
 
-                if (Configuration.HealthChecksEnabled())
-                {
-                    endpoints.MapHealthChecks(Constants.HealthCheckUri, new HealthCheckOptions
-                    {
-                        Predicate = _ => true,
-                        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
-                    })
-                        .WithDisplayName(_ => Constants.HealthCheckName);
-                    endpoints.MapHealthChecksUI();
-                }
+
             });
         }
     }
