@@ -1,8 +1,7 @@
+using System.ComponentModel.DataAnnotations;
 using Eventuras.Domain;
 using Eventuras.Services.Events;
 using Eventuras.WebApi.Models;
-using System;
-using System.ComponentModel.DataAnnotations;
 using NodaTime;
 
 namespace Eventuras.WebApi.Controllers.Events
@@ -13,6 +12,8 @@ namespace Eventuras.WebApi.Controllers.Events
         public LocalDate? Start { get; set; }
         public LocalDate? End { get; set; }
         public PeriodMatchingKind Period { get; set; } = PeriodMatchingKind.Match;
+        public bool IncludePastEvents { get; set; }
+        public bool IncludeDraftEvents { get; set; }
 
         [Range(1, int.MaxValue)]
         public int? OrganizationId { get; set; }
@@ -22,17 +23,16 @@ namespace Eventuras.WebApi.Controllers.Events
             var filter = new EventInfoFilter
             {
                 TypeOneOf = Type.HasValue ? new[] { Type.Value } : null,
-                StatusNoneOf = new[]
-                {
-                    EventInfo.EventInfoStatus.Draft
-                },
+                StatusNoneOf = IncludeDraftEvents
+                    ? null
+                    : new[] { EventInfo.EventInfoStatus.Draft },
                 OrganizationId = OrganizationId,
                 AccessibleOnly = false
             };
 
-            if (!Start.HasValue && !End.HasValue)
+            if (!Start.HasValue && !End.HasValue && !IncludePastEvents)
             {
-                return EventInfoFilter.UpcomingEvents(filter);
+                filter.StartDateAfter = SystemClock.Instance.Today();
             }
 
             switch (Period)
