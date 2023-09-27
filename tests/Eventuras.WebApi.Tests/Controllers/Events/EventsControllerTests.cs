@@ -1,10 +1,10 @@
-using Eventuras.Domain;
-using Eventuras.TestAbstractions;
-using Eventuras.WebApi.Controllers.Events;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Eventuras.Domain;
 using Eventuras.Services;
+using Eventuras.TestAbstractions;
+using Eventuras.WebApi.Controllers.Events;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
 using Xunit;
@@ -99,7 +99,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         }
 
         [Fact]
-        public async Task Should_List_Past_Events()
+        public async Task Should_Not_List_Past_Events()
         {
             using var scope = _factory.Services.NewTestScope();
             using var e1 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(-1));
@@ -109,6 +109,57 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             var client = _factory.CreateClient();
 
             var response = await client.GetAsync("/v3/events");
+            response.CheckOk();
+
+            var token = await response.AsTokenAsync();
+            token.CheckPaging(1, 2, (t, e) => t.CheckEvent(e), e2.Entity, e3.Entity);
+        }
+
+        [Fact]
+        public async Task Should_List_Past_Events_With_Query_Parameter()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var e1 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(-1));
+            using var e2 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(1));
+            using var e3 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(2));
+
+            var client = _factory.CreateClient();
+
+            var response = await client.GetAsync("/v3/events?includePastEvents=true");
+            response.CheckOk();
+
+            var token = await response.AsTokenAsync();
+            token.CheckPaging(1, 3, (t, e) => t.CheckEvent(e), e1.Entity, e2.Entity, e3.Entity);
+        }
+
+        [Fact]
+        public async Task Should_Not_List_Draft_Events()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var e1 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(1), status: EventInfo.EventInfoStatus.Draft);
+            using var e2 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(2));
+            using var e3 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(3));
+
+            var client = _factory.CreateClient();
+
+            var response = await client.GetAsync("/v3/events");
+            response.CheckOk();
+
+            var token = await response.AsTokenAsync();
+            token.CheckPaging(1, 2, (t, e) => t.CheckEvent(e), e2.Entity, e3.Entity);
+        }
+
+        [Fact]
+        public async Task Should_List_Draft_Events_With_Query_Parameter()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var e1 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(1), status: EventInfo.EventInfoStatus.Draft);
+            using var e2 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(2));
+            using var e3 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(3));
+
+            var client = _factory.CreateClient();
+
+            var response = await client.GetAsync("/v3/events?includeDraftEvents=true");
             response.CheckOk();
 
             var token = await response.AsTokenAsync();
@@ -705,7 +756,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                 {
                     new
                     {
-                        // invalid start date 
+                        // invalid start date
                         slug = "test",
                         startDate = "asd"
                     }
@@ -714,7 +765,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                 {
                     new
                     {
-                        // invalid end date 
+                        // invalid end date
                         slug = "test",
                         endDate = "asd"
                     }
