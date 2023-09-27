@@ -1,7 +1,11 @@
 {
-  "name": "scribo",
-  "version": "0.1.0",
-  "private": true,
+  "name": "@losol/scribo-markdown",
+  "version": "0.1.4",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "dependencies": {
     "@lexical/markdown": "^0.12.2",
     "@lexical/react": "^0.12.2",
@@ -13,14 +17,25 @@
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
     "lexical": "^0.12.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "typescript": "^4.9.5"
   },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.22.20",
+    "@babel/preset-react": "^7.22.15",
+    "@babel/preset-typescript": "^7.23.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "rm -rf dist && NODE_ENV=production npx babel src --out-dir dist --extensions '.ts,.tsx' --copy-files",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

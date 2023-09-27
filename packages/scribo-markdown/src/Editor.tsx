@@ -6,6 +6,7 @@
  *
  */
 
+import './Editor.css';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
@@ -23,7 +24,6 @@ import {
 import { EditorState, LexicalEditor } from 'lexical';
 
 interface EditorProps {
-  // initialContent?: string;
   onChange?: (
     editorState: EditorState,
     editor: LexicalEditor,
