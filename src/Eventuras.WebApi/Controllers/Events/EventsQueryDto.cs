@@ -22,18 +22,10 @@ namespace Eventuras.WebApi.Controllers.Events
             var filter = new EventInfoFilter
             {
                 TypeOneOf = Type.HasValue ? new[] { Type.Value } : null,
-                StatusNoneOf = new[]
-                {
-                    EventInfo.EventInfoStatus.Draft
-                },
                 OrganizationId = OrganizationId,
                 AccessibleOnly = false
             };
 
-            if (!Start.HasValue && !End.HasValue)
-            {
-                return EventInfoFilter.UpcomingEvents(filter);
-            }
 
             switch (Period)
             {
