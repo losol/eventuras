@@ -99,7 +99,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         }
 
         [Fact]
-        public async Task Should_Not_List_Past_Events()
+        public async Task Should_List_Past_Events()
         {
             using var scope = _factory.Services.NewTestScope();
             using var e1 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(-1));
@@ -112,7 +112,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
             response.CheckOk();
 
             var token = await response.AsTokenAsync();
-            token.CheckPaging(1, 2, (t, e) => t.CheckEvent(e), e2.Entity, e3.Entity);
+            token.CheckPaging(1, 3, (t, e) => t.CheckEvent(e), e1.Entity, e2.Entity, e3.Entity);
         }
 
         [Fact]
