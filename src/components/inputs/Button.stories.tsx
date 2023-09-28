@@ -8,18 +8,33 @@ const meta: Meta<typeof Button> = {
 };
 
 export default meta;
+
 type Story = StoryObj<typeof Button>;
 
-export const Primary: Story = {
+export const Filled: Story = {
   args: {
-    primary: true,
+    variant: 'filled',
   },
-  render: args => <Button {...args}>Button</Button>,
+  render: args => <Button {...args}>Tap Me If You Dare!</Button>,
 };
 
-export const Secondary: Story = {
+export const Outline: Story = {
   args: {
-    ...Primary.args,
-    primary: false,
+    variant: 'outline',
   },
+  render: args => <Button {...args}>Outline This!</Button>,
+};
+
+export const Light: Story = {
+  args: {
+    variant: 'light',
+  },
+  render: args => <Button {...args}>Feather-Light Tap!</Button>,
+};
+
+export const Transparent: Story = {
+  args: {
+    variant: 'transparent',
+  },
+  render: args => <Button {...args}>Shy, But Clickable!</Button>,
 };
