@@ -8,7 +8,11 @@ import { BlockLink, Button } from '@/components/inputs';
 import { UserContext } from '@/context';
 import Environment from '@/utils/Environment';
 
-const UserMenu = () => {
+interface UserMenuProps {
+  lightText?: boolean;
+}
+
+const UserMenu = (props: UserMenuProps) => {
   const { fetchUserProfile, userState } = useContext(UserContext);
   const router = useRouter();
 
@@ -26,14 +30,22 @@ const UserMenu = () => {
   };
 
   return (
-    <div className="flex items-end">
+    <div className="flex items-center">
       {userState.auth?.isAuthenticated && (
-        <BlockLink href="/user" className="mr-4">
-          My Profile
+        <BlockLink href="/user" lightText={props.lightText} className="font-bold mr-2">
+          Profile
         </BlockLink>
       )}
-      {!userState.auth?.isAuthenticated && <Button onClick={handleLogin}>Log in</Button>}
-      {userState.auth?.isAuthenticated && <Button onClick={handleLogout}>Log out</Button>}
+      {!userState.auth?.isAuthenticated && (
+        <Button variant="transparent" onClick={handleLogin} lightText={props.lightText}>
+          Log in
+        </Button>
+      )}
+      {userState.auth?.isAuthenticated && (
+        <Button variant="transparent" onClick={handleLogout} lightText={props.lightText}>
+          Log out
+        </Button>
+      )}
     </div>
   );
 };

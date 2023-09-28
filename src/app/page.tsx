@@ -24,12 +24,18 @@ export default async function Homepage() {
 
   return (
     <Layout>
-      <Heading as="h1">Eventuras</Heading>
-      <Text>Eventuras for life</Text>
-      <Container as="section">
-        <Heading as="h2">Upcoming</Heading>
-        <EventGrid eventinfos={eventinfos} />
-      </Container>
+      <section className="bg-primary-700 dark:bg-slate-900 text-white pt-16 pb-24">
+        <Container>
+          <Heading as="h1">Eventuras</Heading>
+          <Text>Eventuras for life</Text>
+        </Container>
+      </section>
+      <section className="bg-primary-50 dark:bg-slate-950 pt-16 pb-24">
+        <Container as="section">
+          <Heading as="h2">Upcoming events</Heading>
+          <EventGrid eventinfos={eventinfos} />
+        </Container>
+      </section>
     </Layout>
   );
 }

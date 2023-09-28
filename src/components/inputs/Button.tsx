@@ -9,18 +9,19 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   leftIcon?: React.ReactNode;
   className?: string;
   loading?: boolean;
+  lightText?: boolean; // New prop for light text
   variant?: 'filled' | 'outline' | 'light' | 'transparent';
 }
 
 const Button = (props: ButtonProps) => {
-  // default variant is filled
-  const { variant = 'filled' } = props;
+  const { variant = 'filled', lightText = false } = props;
 
+  const textColor = lightText ? 'text-white' : 'text-black';
   let variantClass = '';
 
   switch (variant) {
     case 'transparent':
-      variantClass = 'bg-transparent text-black hover:bg-primary-200 hover:bg-opacity-20';
+      variantClass = `bg-transparent hover:bg-primary-200 hover:bg-opacity-20 ${textColor}`;
       break;
     case 'outline':
       variantClass = 'border border-gray-300 text-gray-700 hover:bg-primary-100';
@@ -38,10 +39,10 @@ const Button = (props: ButtonProps) => {
       disabled={props.disabled || props.loading}
       aria-label={props.ariaLabel}
       onClick={props.onClick}
-      className={`${variantClass} font-bold my-6 py-2 px-4 flex flex-row ${props.className ?? ''}`}
+      className={`${variantClass} font-bold py-2 px-4 flex flex-row ${props.className ?? ''}`}
     >
-      {props.leftIcon && <span className="mr-2">{props.leftIcon}</span>}
-      {props.children}
+      {props.leftIcon && <span className={`mr-2 ${textColor}`}>{props.leftIcon}</span>}
+      <span className={textColor}>{props.children}</span>
       {props.loading && (
         <div>
           <Loading />

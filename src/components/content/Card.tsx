@@ -26,6 +26,7 @@ interface ImageProps extends CardChildProps {
 
 interface CardProps {
   children: ReactNode;
+  className?: string;
 }
 
 const Card = (props: CardProps) => {
@@ -37,11 +38,11 @@ const Card = (props: CardProps) => {
     return null; // Ignore other types of children
   });
 
-  return (
-    <div className="relative max-w-md p-3 bg-white border border-gray-200 rounded-md shadow text-gray-800 dark:text-gray-200 dark:bg-gray-900 dark:border-gray-700">
-      {renderedChildren}
-    </div>
-  );
+  const cardClassName =
+    props.className ??
+    `relative max-w-md p-3 bg-white  text-gray-800 dark:text-gray-200 dark:bg-gray-900`;
+
+  return <div className={cardClassName}>{renderedChildren}</div>;
 };
 
 // Heading component
