@@ -7,7 +7,7 @@ import { Heading } from '@/components/content';
 import { Loading } from '@/components/feedback';
 import { InputAutoComplete } from '@/components/inputs/Input';
 import { BlockLink } from '@/components/inputs/Link';
-import { Layout } from '@/components/layout';
+import { Container, Layout } from '@/components/layout';
 import { useEvents } from '@/hooks/apiHooks';
 import { getUsers } from '@/utils/api/functions/users';
 import Environment from '@/utils/Environment';
@@ -21,25 +21,31 @@ const l = { namespace: 'admin' };
 
 export default function AdminPage() {
   const { t } = useTranslation('admin');
-  const { loading: eventsLoading, events } = useEvents({ organizationId: ORGANIZATION_ID });
+  const { loading: eventsLoading, events } = useEvents({
+    organizationId: ORGANIZATION_ID,
+    includeDraftEvents: true,
+    includePastEvents: true,
+  });
   return (
     <Layout>
-      <Heading as="h1">{t('title')}</Heading>
-      <div>
-        <BlockLink href={`/admin/events/create`}>Create Event</BlockLink>
-      </div>
-      <InputAutoComplete
-        id="find_user"
-        placeholder="Find user"
-        dataProvider={getUsers}
-        minimumAmountOfCharacters={3}
-        labelProperty="name"
-        onItemSelected={(u: UserDto) => {
-          Logger.info(l, u);
-        }}
-      />
-      <Heading as="h2">Events</Heading>
-      {eventsLoading ? <Loading /> : <AdminEventList eventinfo={events ?? []} />}
+      <Container>
+        <Heading as="h1">{t('title')}</Heading>
+        <div>
+          <BlockLink href={`/admin/events/create`}>Create Event</BlockLink>
+        </div>
+        <InputAutoComplete
+          id="find_user"
+          placeholder="Find user"
+          dataProvider={getUsers}
+          minimumAmountOfCharacters={3}
+          labelProperty="name"
+          onItemSelected={(u: UserDto) => {
+            Logger.info(l, u);
+          }}
+        />
+        <Heading as="h2">Events</Heading>
+        {eventsLoading ? <Loading /> : <AdminEventList eventinfo={events ?? []} />}
+      </Container>
     </Layout>
   );
 }
