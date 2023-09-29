@@ -8,7 +8,7 @@ namespace Eventuras.WebApi.Models
         [Range(1, int.MaxValue)]
         public int Page { get; set; } = 1;
 
-        [Range(0, 100)]
+        [Range(0, 250)]
         public int Count { get; set; } = 100;
 
         public int Limit => Count;
