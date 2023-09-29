@@ -1,8 +1,8 @@
 using System;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Asp.Versioning;
+using Eventuras.Domain;
 using Eventuras.Services.Auth;
 using Eventuras.Services.Users;
 using Eventuras.WebApi.Models;
@@ -39,24 +39,16 @@ namespace Eventuras.WebApi.Controllers.Users
             var nameClaim = HttpContext.User.GetName();
             var phoneClaim = HttpContext.User.GetMobilePhone();
 
+            if (string.IsNullOrEmpty(emailClaim)) return BadRequest("No email provided.");
 
-            if (string.IsNullOrEmpty(emailClaim))
-            {
-                return BadRequest("No email provided.");
-            }
-
-            var user = new Domain.ApplicationUser();
-            try
-            {
-                user = await _userRetrievalService.GetUserByEmailAsync(emailClaim, null, cancellationToken);
-            }
+            ApplicationUser user;
+            try { user = await _userRetrievalService.GetUserByEmailAsync(emailClaim, null, cancellationToken); }
             catch (Services.Exceptions.NotFoundException)
             {
-                user = await _userManagementService.CreateNewUserAsync(
-                       nameClaim,
-                       emailClaim,
-                       phoneClaim
-                   );
+                user = await _userManagementService.CreateNewUserAsync(nameClaim,
+                    emailClaim,
+                    phoneClaim,
+                    cancellationToken);
             }
 
             return Ok(new UserDto(user));
