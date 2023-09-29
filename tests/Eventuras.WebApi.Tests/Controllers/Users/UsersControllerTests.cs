@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Eventuras.Domain;
@@ -59,6 +56,32 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
             var json = await response.Content.ReadAsStringAsync();
             var token = await response.AsTokenAsync();
             token.CheckUser(user.Entity);
+        }
+
+        [Fact]
+        public async Task Profile_Endpoint_Should_Create_And_Return_Information_For_Not_Existing_User()
+        {
+            using var scope = _factory.Services.NewTestScope();
+
+            var name = Guid.NewGuid().ToString("N");
+            var user = new ApplicationUser
+            {
+                Name = name,
+                UserName = name,
+                Email = $"{name}@email.com",
+                PhoneNumber = "0123456789",
+            };
+
+            var client = _factory.CreateClient().AuthenticatedAs(user);
+
+            var response = await client.GetAsync("/v3/users/me");
+            response.CheckOk();
+
+            Assert.Contains(scope.Db.Users, u => u.Email == user.Email);
+            var dbUser = scope.Db.Users.First(u => u.Email == user.Email);
+
+            var token = await response.AsTokenAsync();
+            token.CheckUser(dbUser);
         }
 
         [Theory]
@@ -252,7 +275,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
             await CheckListAsync(client, new { query = "Test Person" }, user1, user2, user3, user4, user5);
             await CheckListAsync(client, new { query = "test person" }, user1, user2, user3, user4, user5);
 
-            // 2. search by email (case-insensitive) 
+            // 2. search by email (case-insensitive)
             await CheckListAsync(client, new { query = "email" }, user1, user2, user3, user4, user5);
             await CheckListAsync(client, new { query = "EMAIL" }, user1, user2, user3, user4, user5);
             await CheckListAsync(client, new { query = "testperson" }, user1, user2, user3, user4);

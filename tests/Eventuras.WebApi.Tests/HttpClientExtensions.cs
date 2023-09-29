@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
-using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 
 namespace Eventuras.WebApi.Tests
@@ -41,7 +40,8 @@ namespace Eventuras.WebApi.Tests
                 user.Name,
                 null, // FIXME: we don't have surname in AspNetCore.Identity?
                 user.Email,
-                roles: roles);
+                roles: roles,
+                phoneNumber: user.PhoneNumber);
         }
 
         public static HttpClient WithAcceptHeader(this HttpClient httpClient, string headerValue)
@@ -59,9 +59,10 @@ namespace Eventuras.WebApi.Tests
             string email = TestingConstants.Placeholder,
             string role = null,
             string[] roles = null,
-            string[] scopes = null)
+            string[] scopes = null,
+            string phoneNumber = null)
         {
-            var claims = BuildClaims(id, firstName, lastName, email, role, roles, scopes);
+            var claims = BuildClaims(id, firstName, lastName, email, role, roles, scopes, phoneNumber);
             var token = FakeJwtManager.GenerateJwtToken(claims);
             httpClient.DefaultRequestHeaders.Remove("Authorization");
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
@@ -75,7 +76,8 @@ namespace Eventuras.WebApi.Tests
             string email,
             string role,
             string[] roles,
-            string[] scopes)
+            string[] scopes,
+            string phoneNumber)
         {
             if (TestingConstants.Placeholder.Equals(id))
             {
@@ -126,6 +128,11 @@ namespace Eventuras.WebApi.Tests
             if (roles != null && roles.Any())
             {
                 claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+            }
+
+            if (!string.IsNullOrEmpty(phoneNumber))
+            {
+                claims.Add(new Claim(ClaimTypes.MobilePhone, phoneNumber));
             }
 
             return claims.ToArray();
