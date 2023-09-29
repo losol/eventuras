@@ -25,6 +25,7 @@ export default function AdminPage() {
     organizationId: ORGANIZATION_ID,
     includeDraftEvents: true,
     includePastEvents: true,
+    count: 250,
   });
   return (
     <Layout>
