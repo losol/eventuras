@@ -49,7 +49,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         [InlineData(0, null)]
         [InlineData(null, "test")]
         [InlineData(null, -1)]
-        [InlineData(null, 101)]
+        [InlineData(null, 1500)]
         public async Task Should_Return_BadRequest_For_Invalid_Paging_Params(object page, object count)
         {
             var client = _factory.CreateClient().Authenticated();
