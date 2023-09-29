@@ -30,7 +30,12 @@ interface AdminEventListProps {
 const AdminEventList: React.FC<AdminEventListProps> = ({ eventinfo = [] }) => {
   return (
     <>
-      <DataTable data={eventinfo} columns={columns} clientsidePagination />
+      <DataTable
+        data={eventinfo}
+        columns={columns}
+        clientsidePaginationPageSize={250}
+        clientsidePagination
+      />
     </>
   );
 };
