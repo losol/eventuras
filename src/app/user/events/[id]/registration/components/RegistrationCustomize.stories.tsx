@@ -6,7 +6,7 @@ import Logger from '@/utils/Logger';
 import RegistrationCustomize from './RegistrationCustomize';
 
 const meta: Meta<typeof RegistrationCustomize> = {
-  title: '@/components/EventRegistration/RegistrationCustomize',
+  title: 'Eventregistration/Customize',
   tags: ['autodocs'],
   component: RegistrationCustomize,
   args: {
