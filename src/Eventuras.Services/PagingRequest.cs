@@ -10,7 +10,7 @@ namespace Eventuras.Services
         /// retrieving data from DB. If you need to read all records page-to-page,
         /// consider using <see cref="PageReader{T}"/> class.
         /// </summary>
-        public const int MaxRecordsPerPage = 100;
+        public const int MaxRecordsPerPage = 250;
 
         private int _offset;
         private int _limit = MaxRecordsPerPage;
