@@ -2,6 +2,7 @@ import {
   EventDto,
   EventDtoPageResponseDto,
   ProductDto,
+  RegistrationDtoPageResponseDto,
   UserDtoPageResponseDto,
 } from '@losol/eventuras';
 import { RegistrationDto } from '@losol/eventuras/models/RegistrationDto';
@@ -10,6 +11,8 @@ import { useEffect, useRef, useState } from 'react';
 import {
   getEvent,
   getEventProducts,
+  getEventRegistrations,
+  GetEventRegistrationsOptions,
   getEvents,
   GetEventsOptions,
 } from '@/utils/api/functions/events';
@@ -56,6 +59,25 @@ export const useEvents = (options: GetEventsOptions = {}) => {
   return { loading, response, events: response?.data };
 };
 
+export const useRegistrations = (options: GetEventRegistrationsOptions = {}) => {
+  const [response, setResponse] = useState<RegistrationDtoPageResponseDto | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const execute = async () => {
+      const result = await getEventRegistrations(options);
+      setLoading(false);
+      if (result.ok) {
+        setResponse(result.value);
+        return;
+      }
+      setResponse(null);
+    };
+    execute();
+  }, [options.eventId]);
+
+  return { loading, response, registrations: response?.data };
+};
 export const useUsers = (options: GetUsersOptions = {}) => {
   const [response, setResponse] = useState<UserDtoPageResponseDto | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -100,7 +122,7 @@ export const useEventProducts = (eventId: number) => {
   return { loading, registrationProducts };
 };
 
-export const useEventRegistrations = (userId?: any) => {
+export const useUserEventRegistrations = (userId?: any) => {
   const [userRegistrations, setReg] = useState<RegistrationDto[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 

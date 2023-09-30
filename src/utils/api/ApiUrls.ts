@@ -12,18 +12,21 @@ type byUserId = {
   userId: string;
 };
 
+type KeyValueOptions = Record<string, any>;
+
 const ApiURLs = {
   rootUri: () => `${Environment.NEXT_PUBLIC_API_BASE_URL}/${Environment.NEXT_PUBLIC_API_VERSION}`,
   userprofile: () => `${ApiURLs.rootUri()}/users/me`,
   registrations: () => `${ApiURLs.rootUri()}/registrations`,
-  events: (options: Record<string, any> = {}) =>
+  events: (options: KeyValueOptions = {}) =>
     `${ApiURLs.rootUri()}/events${getQueryString(options)}`,
   event: ({ eventId }: ByEventId) => `${ApiURLs.rootUri()}/events/${eventId}`,
   eventProducts: ({ eventId }: ByEventId) => `${ApiURLs.rootUri()}/events/${eventId}/products`,
+  eventRegistrations: (options: KeyValueOptions = {}) =>
+    `${ApiURLs.rootUri()}/registrations${getQueryString(options)}`,
   products: ({ registrationId }: ByRegistrationId) =>
     `${ApiURLs.rootUri()}/registrations/${registrationId}/products`,
-  users: (options: Record<string, any> = {}) =>
-    `${ApiURLs.rootUri()}/users${getQueryString(options)}`,
+  users: (options: KeyValueOptions = {}) => `${ApiURLs.rootUri()}/users${getQueryString(options)}`,
   userRegistrations: ({ userId }: byUserId) =>
     `${ApiURLs.rootUri()}/registrations?UserId=${userId}&includeEventInfo=true&includeProducts=true`,
   sendEmailNotification: () => `${ApiURLs.rootUri()}/notifications/email`,

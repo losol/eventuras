@@ -24,6 +24,13 @@ const LOCALES_ADMIN_EN: LocalesAdmin = {
     when: 'When',
     actions: 'Actions',
   },
+  participantColumns: {
+    name: 'Name',
+    telephone: 'Telephone',
+    status: 'Status',
+    type: 'Type',
+    actions: 'Actions',
+  },
   eventEmailer: {
     title: 'Email participants',
     form: {

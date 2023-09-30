@@ -5,14 +5,14 @@ import { Heading } from '@/components/content';
 import { Loading } from '@/components/feedback';
 import { Container, Layout } from '@/components/layout';
 import { UserContext } from '@/context/UserContext';
-import { useEventRegistrations } from '@/hooks/apiHooks';
+import { useUserEventRegistrations } from '@/hooks/apiHooks';
 
 import UserEventRegistrations from './(components)/UserEventRegistrations';
 import UserProfileCard from './(components)/UserProfileCard';
 
 const UserProfilePage = () => {
   const { profile } = useContext(UserContext).userState;
-  const { loading, userRegistrations } = useEventRegistrations(profile?.id);
+  const { loading, userRegistrations } = useUserEventRegistrations(profile?.id);
   if (!profile) return null;
   return (
     <Layout>

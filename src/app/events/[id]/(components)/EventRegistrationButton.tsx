@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { Loading } from '@/components/feedback';
 import { BlockLink } from '@/components/inputs/Link';
 import { UserContext } from '@/context/UserContext';
-import { useEventRegistrations } from '@/hooks/apiHooks';
+import { useUserEventRegistrations } from '@/hooks/apiHooks';
 
 export type EventRegistrationButtonProps = {
   eventId: string | number;
@@ -15,7 +15,7 @@ export default function EventRegistrationButton({ eventId }: EventRegistrationBu
   const { t } = useTranslation('register');
   const state = useContext(UserContext).userState;
   const profile = state.profile;
-  const { loading, userRegistrations } = useEventRegistrations(profile?.id);
+  const { loading, userRegistrations } = useUserEventRegistrations(profile?.id);
   let isRegistered = false;
 
   if (state.auth?.isAuthenticated) {

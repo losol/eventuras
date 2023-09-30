@@ -8,7 +8,9 @@ import EventEmailer from '@/components/event/EventEmailer';
 import { Loading } from '@/components/feedback';
 import Button from '@/components/inputs/Button';
 import { Container, Drawer, Layout } from '@/components/layout';
-import { useEvent } from '@/hooks/apiHooks';
+import { useEvent, useRegistrations } from '@/hooks/apiHooks';
+
+import EventParticipantList from '../../components/EventParticipantList';
 
 type EventInfoProps = {
   params: {
@@ -23,6 +25,10 @@ type EventInfoProps = {
  */
 const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
   const eventId = params.id;
+  const { loading: registrationsLoading, registrations } = useRegistrations({
+    eventId,
+    includeUserInfo: true,
+  });
   const { t } = useTranslation('admin');
   const { loading, event } = useEvent(eventId);
   const [emailDrawerOpen, setEmailDrawerOpen] = useState<boolean>(false);
@@ -64,6 +70,11 @@ const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
               </Drawer.Footer>
             </Drawer>
           </>
+        )}
+        {registrationsLoading ? (
+          <Loading />
+        ) : (
+          <EventParticipantList participants={registrations ?? []} />
         )}
       </Container>
     </Layout>

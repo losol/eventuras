@@ -95,6 +95,13 @@ export type LocalesAdmin = {
     when: string;
     actions: string;
   };
+  participantColumns: {
+    name: string;
+    telephone: string;
+    status: string;
+    type: string;
+    actions: string;
+  };
   eventEmailer: {
     title: string;
     form: {
