@@ -2,9 +2,12 @@
 
 import { UserDto as UserProfile } from '@losol/eventuras';
 import { Session } from 'next-auth';
+import { signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
 import { createContext, ReactNode, useCallback, useEffect, useState } from 'react';
 
+import ApiError from '@/utils/api/ApiError';
+import ApiResult from '@/utils/api/ApiResult';
 import { getUserProfile } from '@/utils/api/functions/users';
 
 // Auth type definition
@@ -27,7 +30,7 @@ interface UserContextProps {
   userState: UserState;
   updateUserProfile: (updatedProfile: UserProfile) => void;
   updateAuthStatus: (newAuthStatus: Auth) => void;
-  fetchUserProfile: () => Promise<void>;
+  fetchUserProfile: () => Promise<ApiResult<UserProfile, ApiError> | null>;
 }
 
 // Default state values
@@ -41,7 +44,9 @@ const defaultUserContextValue: UserContextProps = {
   userState: defaultUserState,
   updateUserProfile: () => {},
   updateAuthStatus: () => {},
-  fetchUserProfile: async () => {},
+  fetchUserProfile: async () => {
+    return null;
+  },
 };
 
 // UserContext definition
@@ -73,7 +78,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     }));
   };
 
-  const fetchUserProfile = useCallback(async () => {
+  const updateWithUserProfile = useCallback(async () => {
     if (session) {
       const result = await getUserProfile();
       const sessWId: SessionWithIdToken = session as SessionWithIdToken;
@@ -85,19 +90,31 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
           ...prevState,
           error: result.error.message,
         }));
+
+        if (result.error.statusCode === 403) {
+          //assume the token is for some reason no longer working, call nextauth signOut to force a session clean
+          signOut();
+        }
       }
+      return result;
     }
+    return null;
   }, [session?.accessToken]);
 
   useEffect(() => {
     if (session) {
-      fetchUserProfile();
+      updateWithUserProfile();
     }
   }, [session?.accessToken]);
 
   return (
     <UserContext.Provider
-      value={{ userState, updateUserProfile, updateAuthStatus, fetchUserProfile }}
+      value={{
+        userState,
+        updateUserProfile,
+        updateAuthStatus,
+        fetchUserProfile: updateWithUserProfile,
+      }}
     >
       {children}
     </UserContext.Provider>

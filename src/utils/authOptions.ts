@@ -4,6 +4,8 @@ import Auth0Provider from 'next-auth/providers/auth0';
 import Environment, { EnvironmentVariables } from './Environment';
 import Logger from './Logger';
 
+const loggerNamespace = { developerOnly: true, namespace: 'auth' };
+
 export const authOptions: AuthOptions = {
   providers: [
     Auth0Provider({
@@ -29,27 +31,92 @@ export const authOptions: AuthOptions = {
       return { ...session, id_token: token.id_token };
     },
     async jwt({ token, user, account }: { token: any; user: any; account: any }) {
+      let returnJWT = {
+        ...token,
+      };
+      Logger.info(loggerNamespace, { token, user, account });
       if (account) {
-        Logger.info({ namespace: 'auth', developerOnly: true }, { token, user, account });
-        token = Object.assign({}, token, {
+        returnJWT = {
+          ...returnJWT,
           access_token: account.access_token,
           id_token: account.id_token,
-        });
+          refresh_token: account.refresh_token,
+        };
       }
-
-      if (account && user) {
-        if (!account.refresh_token) {
-          Logger.error({ namespace: 'auth' }, 'No refresh token in account object :(');
-        }
-        return {
-          ...token,
-          refreshToken: account.refresh_token,
-          accessTokenExpires: account.expires_at * 1000,
+      if (user) {
+        returnJWT = {
+          ...returnJWT,
           user,
         };
       }
+      if (returnJWT.refresh_token) {
+        const hasExpired = Date.now() > returnJWT.accessTokenExpires;
+        if (hasExpired) {
+          const refreshReturn = await refreshToken(returnJWT.refresh_token);
+          Logger.info(loggerNamespace, { refreshReturn });
+          if (refreshReturn) {
+            //this will create a union, any variables in refreshReturn will override any in returnJWT
+            returnJWT = {
+              ...returnJWT,
+              ...refreshReturn,
+            };
+          }
+        }
+      } else {
+        Logger.warn(loggerNamespace, 'No refresh token!');
+      }
+
+      Logger.info(loggerNamespace, { returnJWT });
+
       //by default, return token
-      return token;
+      return returnJWT;
     },
   },
+};
+
+type RefreshTokenFetchReturn = {
+  access_token: string;
+  refresh_token: string;
+  id_token: string;
+  scope: string;
+  expires_in: number;
+  token_type: string;
+};
+/**
+ * @see https://auth0.com/docs/secure/tokens/refresh-tokens/use-refresh-tokens
+ * @see https://next-auth.js.org/v3/tutorials/refresh-token-rotation
+ * @param refresh_token
+ * @param access_token
+ * @returns RefreshTokenFetchReturn
+ */
+
+const refreshToken = async (refresh_token: string): Promise<RefreshTokenFetchReturn | null> => {
+  Logger.info(loggerNamespace, 'Token Expired: Attempting to fetch a new token');
+  const params = new URLSearchParams({
+    grant_type: 'refresh_token',
+    client_id: Environment.get(EnvironmentVariables.AUTH0_CLIENT_ID),
+    client_secret: Environment.get(EnvironmentVariables.AUTH0_CLIENT_SECRET),
+    refresh_token: refresh_token,
+  });
+
+  const fetchConfig: RequestInit = {
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded',
+    },
+    method: 'POST',
+    body: params.toString(),
+  };
+  return fetch(`https://${Environment.NEXT_PUBLIC_AUTH0_DOMAIN}/oauth/token`, fetchConfig)
+    .then(r => r.json())
+    .then(rJson => {
+      if (rJson.error) {
+        Logger.error(loggerNamespace, `Error refreshing token: ${rJson.error_description}`);
+        return null;
+      }
+      return rJson;
+    })
+    .catch(err => {
+      Logger.error(loggerNamespace, 'Failed to refresh token', { err });
+      return null;
+    });
 };
