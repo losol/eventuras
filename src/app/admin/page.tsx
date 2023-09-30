@@ -21,6 +21,7 @@ const l = { namespace: 'admin' };
 
 export default function AdminPage() {
   const { t } = useTranslation('admin');
+  const { t: common } = useTranslation('common');
   const { loading: eventsLoading, events } = useEvents({
     organizationId: ORGANIZATION_ID,
     includeDraftEvents: true,
@@ -32,7 +33,7 @@ export default function AdminPage() {
       <Container>
         <Heading as="h1">{t('title')}</Heading>
         <div>
-          <BlockLink href={`/admin/events/create`}>Create Event</BlockLink>
+          <BlockLink href={`/admin/events/create`}>{t('createEvent.content.title')}</BlockLink>
         </div>
         <InputAutoComplete
           id="find_user"
@@ -44,7 +45,7 @@ export default function AdminPage() {
             Logger.info(l, u);
           }}
         />
-        <Heading as="h2">Events</Heading>
+        <Heading as="h2">{common('events')}</Heading>
         {eventsLoading ? <Loading /> : <AdminEventList eventinfo={events ?? []} />}
       </Container>
     </Layout>

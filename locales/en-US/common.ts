@@ -9,11 +9,14 @@ const LOCALES_COMMON_EN: LocalesCommonType = {
     },
   },
   // Common section titles
+  event: 'Event',
   events: 'Events',
   onlinecourses: 'Online courses',
   buttons: {
     submit: 'Submit',
     continue: 'Continue',
+    send: 'Send',
+    cancel: 'Cancel',
   },
   errors: {
     fatalError: {

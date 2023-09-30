@@ -5,7 +5,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { Heading } from '@/components/content';
 import { Button } from '@/components/inputs';
-import { InputText } from '@/components/inputs/Input';
+import { defaultInputStyle, InputText } from '@/components/inputs/Input';
 import PaymentFormValues from '@/types/PaymentFormValues';
 import { UserProfile } from '@/types/UserProfile';
 
@@ -82,6 +82,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
             defaultValue={userProfile.name}
             disabled
             errors={errors}
+            className={defaultInputStyle}
           />
           <InputText
             {...register('email', { value: userProfile.email })}
@@ -89,6 +90,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
             defaultValue={userProfile.email}
             disabled
             errors={errors}
+            className={defaultInputStyle}
           />
         </fieldset>
         <fieldset className={fieldsetClassName}>
@@ -100,6 +102,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
             label={t('form.address.zip')}
             placeholder="Zip Code"
             errors={errors}
+            className={defaultInputStyle}
           />
           <InputText
             {...register('city', {
@@ -108,6 +111,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
             label={t('form.address.city')}
             placeholder="City"
             errors={errors}
+            className={defaultInputStyle}
           />
           <InputText
             {...register('country', {
@@ -117,6 +121,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
             default="Norway"
             placeholder="Country"
             errors={errors}
+            className={defaultInputStyle}
           />
         </fieldset>
 
@@ -130,12 +135,14 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
               label={t('form.businessinfo.vatNumber')}
               placeholder="Vat Number"
               errors={errors}
+              className={defaultInputStyle}
             />
             <InputText
               {...register('invoiceReference')}
               label={t('form.businessinfo.invoiceReference')}
               placeholder="Invoice Reference"
               errors={errors}
+              className={defaultInputStyle}
             />
           </fieldset>
         )}

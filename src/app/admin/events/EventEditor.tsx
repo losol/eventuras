@@ -8,7 +8,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Heading } from '@/components/content';
 import FatalError from '@/components/feedback/FatalError';
 import { Button } from '@/components/inputs';
-import { InputDate, InputText } from '@/components/inputs/Input';
+import { defaultInputStyle, InputDate, InputText } from '@/components/inputs/Input';
 import { Layout } from '@/components/layout';
 import ApiError from '@/utils/api/ApiError';
 import ApiResult from '@/utils/api/ApiResult';
@@ -136,6 +136,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
             label="Event Title"
             placeholder="Event Title"
             errors={errors}
+            className={defaultInputStyle}
           />
           <InputText
             {...register('slug', {
@@ -144,8 +145,9 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
             label="Event Slug"
             placeholder="Event Slug"
             errors={errors}
+            className={defaultInputStyle}
           />
-          {event && (
+          {eventinfo && (
             <>
               <InputDate label="Start date" {...register('dateStart')} />
               <InputDate label="End date" {...register('dateEnd')} />

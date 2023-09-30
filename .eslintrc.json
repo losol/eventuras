@@ -20,6 +20,8 @@
   "plugins": ["@typescript-eslint", "eslint-plugin-simple-import-sort"],
   "rules": {
     "no-console": "error",
+    // There are good reasons not to always include all possible dependencies in a React Hook
+    "react-hooks/exhaustive-deps": "off",
     "no-process-env": "error",
     "simple-import-sort/imports": "warn",
     "simple-import-sort/exports": "warn",

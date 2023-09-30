@@ -26,6 +26,7 @@ const ApiURLs = {
     `${ApiURLs.rootUri()}/users${getQueryString(options)}`,
   userRegistrations: ({ userId }: byUserId) =>
     `${ApiURLs.rootUri()}/registrations?UserId=${userId}&includeEventInfo=true&includeProducts=true`,
+  sendEmailNotification: () => `${ApiURLs.rootUri()}/notifications/email`,
 };
 
 export default ApiURLs;

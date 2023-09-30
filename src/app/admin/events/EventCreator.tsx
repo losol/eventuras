@@ -8,7 +8,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Heading } from '@/components/content';
 import FatalError from '@/components/feedback/FatalError';
 import { Button } from '@/components/inputs';
-import { InputText } from '@/components/inputs/Input';
+import { defaultInputStyle, InputText } from '@/components/inputs/Input';
 import { Layout } from '@/components/layout';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import ApiError from '@/utils/api/ApiError';
@@ -132,6 +132,7 @@ const EventCreator = () => {
             label="Event Title"
             placeholder="Event Title"
             errors={errors}
+            className={defaultInputStyle}
           />
           <InputText
             {...register('slug', {
@@ -140,6 +141,7 @@ const EventCreator = () => {
             label="Event Slug"
             placeholder="Event Slug"
             errors={errors}
+            className={defaultInputStyle}
           />
         </fieldset>
 

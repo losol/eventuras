@@ -13,6 +13,12 @@ type TitleDescription = Title & Description;
 
 type ErrorFeedback = TitleDescription;
 
+type FormField = {
+  label: string;
+  feedbackIncorrect?: string;
+  feedbackNoInput: string;
+};
+
 export type LocalesCommonType = {
   // Header
   header: {
@@ -24,8 +30,11 @@ export type LocalesCommonType = {
   buttons: {
     submit: string;
     continue: string;
+    send: string;
+    cancel: string;
   };
   // Common section titles
+  event: string;
   events: string;
   onlinecourses: string;
   errors: {
@@ -79,5 +88,21 @@ export type LocalesAdmin = {
   };
   editEvent: {
     content: TitleDescription;
+  };
+  eventColumns: {
+    title: string;
+    location: string;
+    when: string;
+    actions: string;
+  };
+  eventEmailer: {
+    title: string;
+    form: {
+      status: FormField;
+      type: FormField;
+      subject: FormField;
+      body: FormField;
+      successFeedback: string;
+    };
   };
 } & Title;

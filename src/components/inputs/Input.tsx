@@ -14,7 +14,7 @@ export type InputTextProps = {
  * requires ref forwarding because it is used by react hooks
  * @see https://stackoverflow.com/questions/67877887/react-hook-form-v7-function-components-cannot-be-given-refs-attempts-to-access
  */
-const defaultClass = ` 
+export const defaultInputStyle = ` 
         appearance-none
         w-full 
         p-4
@@ -25,6 +25,17 @@ const defaultClass = `
         border-2
         dark:border-gray-700
         leading-tight 
+        focus:outline-none 
+        focus:shadow-outline`;
+
+export const lightInputStyle = `
+        appearance-none
+        w-full 
+        p-4
+        bg-white
+        text-black
+        border-2
+        dark:border-gray-400
         focus:outline-none 
         focus:shadow-outline`;
 
@@ -40,8 +51,7 @@ export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((pro
       <input
         id={id}
         ref={ref}
-        className={`${props.className ?? ''} 
-        ${defaultClass}`}
+        className={`${props.className ?? ''}`}
         type={props.type ?? 'text'}
         placeholder={props.placeholder}
         {...oProps}
@@ -69,8 +79,7 @@ export const InputDate = React.forwardRef<HTMLInputElement, InputTextProps>((pro
       <input
         id={id}
         ref={ref}
-        className={`${props.className ?? ''} 
-        ${defaultClass}`}
+        className={`${props.className ?? ''}`}
         type="date"
         placeholder={props.placeholder}
         {...oProps}
@@ -164,6 +173,7 @@ export const InputAutoComplete = (props: InputAutoCompleteProps) => {
         ref={inputRef}
         id={props.id}
         list={`${props.id}_list`}
+        className={defaultInputStyle}
         placeholder={props.placeholder}
         onChange={inputChangeHandler}
       />

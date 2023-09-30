@@ -9,11 +9,14 @@ const LOCALES_COMMON_NO: LocalesCommonType = {
     },
   },
   // Common section titles
+  event: 'Arrangemente',
   events: 'Arrangementer',
   onlinecourses: 'Nettkurs',
   buttons: {
     submit: 'Sende',
     continue: 'Fortsette',
+    send: 'Sende',
+    cancel: 'Avbryt',
   },
   errors: {
     fatalError: {

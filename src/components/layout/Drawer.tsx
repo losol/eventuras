@@ -60,14 +60,6 @@ const Drawer: DrawerComponent = (props: DrawerProps) => {
               Submit
             </Button>
           )}
-          {props.onCancel && (
-            <Button
-              onClick={props.onCancel}
-              className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent"
-            >
-              Cancel
-            </Button>
-          )}
         </div>
       </Drawer.Footer>
     );
@@ -84,8 +76,8 @@ const Drawer: DrawerComponent = (props: DrawerProps) => {
     'fixed',
     'top-0',
     'right-0',
-    'w-4/5',
-    'max-w-sm',
+    'min-w-4/5',
+    'max-w-4/5',
     'h-full',
     'bg-gray-100',
     'overflow-auto',
@@ -99,14 +91,18 @@ const Drawer: DrawerComponent = (props: DrawerProps) => {
   const finalClasses = [...baseClasses, ...conditionalClasses].join(' ');
 
   return (
-    <Portal isOpen={props.isOpen}>
+    <Portal isOpen={props.isOpen} clickOutside={props.onCancel}>
       <div
         id="backdrop"
         className="fixed top-0 left-0 bg-cover z-10 w-screen h-screen backdrop-blur-sm"
       />
-      <section id="test" {...ariaHiddenProps} className={finalClasses}>
+      <section {...ariaHiddenProps} className={finalClasses}>
         {props.onCancel && (
-          <Button onClick={props.onCancel} className="absolute top-0 right-0 m-4">
+          <Button
+            onClick={props.onCancel}
+            className="absolute top-0 right-0 m-4 text-black"
+            variant="secondary"
+          >
             <IconX />
           </Button>
         )}
@@ -120,12 +116,12 @@ const Drawer: DrawerComponent = (props: DrawerProps) => {
 const Header: React.FC<HeaderProps> = props => {
   if (props.as) {
     return (
-      <header className="">
-        <Heading as={props.as}>{props.children}</Heading>
+      <header>
+        <Heading {...props}>{props.children}</Heading>
       </header>
     );
   } else {
-    return <header>{props.children}</header>;
+    return <header {...props}>{props.children}</header>;
   }
 };
 

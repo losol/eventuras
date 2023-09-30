@@ -21,6 +21,8 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   lightText?: boolean;
   variant?: 'primary' | 'secondary' | 'light' | 'transparent';
 }
+export const blueBlockClasses =
+  'bg-sky-400 dark:bg-sky-950 hover:bg-sky-700 text-white font-bold my-6 py-4 px-4 flex flex-row';
 
 const Button: React.FC<ButtonProps> = props => {
   const { variant = 'primary', lightText = false } = props;
