@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 
 import { Heading } from '@/components/content';
 import { Button } from '@/components/inputs';
+import Checkbox from '@/components/inputs/Checkbox';
 import { RegistrationProduct } from '@/types/RegistrationProduct';
 
 type SubmitCallback = (values: Map<string, number>) => void;
@@ -36,41 +37,34 @@ const RegistrationCustomize = ({ products, onSubmit }: RegistrationCustomizeProp
   const { t } = useTranslation('register');
   const { register, handleSubmit } = useForm();
 
-  //TODO once we've settled on UI format, we can componentize all this stuff
-  const checkboxClass =
-    'class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"';
-  const inputClass =
-    'w-16 mb-3 appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline';
   return (
     <>
-      <Heading>{t('customize.title')}</Heading>
-      <p>{t('customize.description')}</p>
-      <form
-        onSubmit={handleSubmit(createFormHandler(products, onSubmit))}
-        className="shadow-md rounded px-8 pt-6 pb-8 mb-4"
-      >
+      <section className="bg-gray-100 dark:bg-gray-800"></section>
+      <Heading className="container">{t('customize.title')}</Heading>
+      <p className="container pb-12">{t('customize.description')}</p>
+      <form onSubmit={handleSubmit(createFormHandler(products, onSubmit))} className="container">
         {products.map((product: RegistrationProduct) => {
           if (product.isBooleanSelection) {
             return (
-              <div key={product.id}>
-                <input
-                  type="checkbox"
-                  className={checkboxClass}
-                  id={product.id}
-                  {...register(product.id)}
-                  disabled={product.mandatory}
-                  defaultChecked={product.mandatory}
-                />
-                <label htmlFor={product.id}>{product.title}</label>
-                <p>{product.description}</p>
-              </div>
+              <Checkbox
+                key={product.id}
+                id={product.id}
+                title={product.title}
+                description={product.description}
+                {...register(product.id)}
+                disabled={product.mandatory}
+                defaultChecked={product.mandatory}
+              >
+                <Checkbox.Label>{product.title}</Checkbox.Label>
+                <Checkbox.Description>{product.description}</Checkbox.Description>
+              </Checkbox>
             );
           }
           return (
             <div key={product.id}>
               <input
                 type="number"
-                className={inputClass}
+                className="w-16 mb-3 appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 defaultValue={product.minimumQuantity}
                 min={product.minimumQuantity}
                 {...register(product.id, {
