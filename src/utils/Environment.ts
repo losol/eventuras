@@ -1,8 +1,14 @@
 /* eslint-disable no-process-env */
 
 /**
- * Unfortunately, the way nextjs bakes in public environment variables, pub env vars need to be accessed explicitly,
- * they cannot be referenced dynamically like server side environment variables(those without NEXT_PUBLIC)
+ * Environment Class to handle and validate environment variables.
+ *
+ * - Checks the existence of all these variables, throwing an error if any are missing.
+ * - Exception: Any variable prefixed with "FEATURE" is considered optional and will not throw an error if missing.
+ * - Default values for variables can be provided in the `defaults` object.
+ *
+ * Note: Due to Next.js limitations, public environment variables (those prefixed with NEXT_PUBLIC)
+ * must be accessed explicitly and cannot be accessed dynamically.
  */
 
 export enum EnvironmentVariables {
@@ -19,6 +25,7 @@ export enum EnvironmentVariables {
   NEXTAUTH_URL = 'NEXTAUTH_URL',
   NEXTAUTH_SECRET = 'NEXTAUTH_SECRET',
   NODE_ENV = 'NODE_ENV',
+  FEATURE_SENTRY_DSN = 'FEATURE_SENTRY_DSN',
 }
 
 //all defaults should be a string as well!
@@ -32,15 +39,19 @@ class Environment {
   static validate() {
     for (const key of Object.keys(EnvironmentVariables)) {
       const isSet = () => process.env.hasOwnProperty(key);
+      const isFeatureFlag = key.startsWith('FEATURE');
+
+      // Set default values if available and not set
       if (defaults.hasOwnProperty(key) && !isSet()) {
         process.env[key] = (defaults as any)[key];
       }
-      if (!isSet()) {
+
+      if (!isSet() && !isFeatureFlag) {
         throw new Error(`${key} is not set, please make sure to define all environment variables`);
       }
 
       const environmentValue = process.env[key];
-      if (environmentValue?.length === 0) {
+      if (environmentValue?.length === 0 && !isFeatureFlag) {
         throw new Error(
           `${key} is set, but contains no value please make sure to define all environment variables`
         );
@@ -75,6 +86,10 @@ class Environment {
 
   static get NEXT_PUBLIC_ORGANIZATION_ID() {
     return process.env.NEXT_PUBLIC_ORGANIZATION_ID ?? defaults.NEXT_PUBLIC_ORGANIZATION_ID;
+  }
+
+  static get FEATURE_SENTRY_DSN() {
+    return process.env.FEATURE_SENTRY_DSN;
   }
 }
 

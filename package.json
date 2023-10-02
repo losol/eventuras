@@ -31,6 +31,7 @@
     "@headlessui/react": "^1.7.17",
     "@losol/eventuras": "^0.3.2",
     "@next/bundle-analyzer": "^13.5.3",
+    "@sentry/nextjs": "^7.73.0",
     "@tabler/icons-react": "^2.35.0",
     "@tanstack/react-table": "^8.10.3",
     "@types/debug": "^4.1.9",
