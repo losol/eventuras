@@ -25,22 +25,22 @@ type EventInfoProps = {
  */
 const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
   const eventId = params.id;
-  const { loading: registrationsLoading, registrations } = useRegistrations({
+  const { registrations } = useRegistrations({
     eventId,
     includeUserInfo: true,
   });
   const { t } = useTranslation('admin');
-  const { loading, event } = useEvent(eventId);
+  const { loading: eventsLoading, event } = useEvent(eventId);
   const [emailDrawerOpen, setEmailDrawerOpen] = useState<boolean>(false);
 
-  if (loading) {
+  if (eventsLoading) {
     return <Loading />;
   }
 
   return (
     <Layout>
       <Container>
-        {loading && <Loading />}
+        {eventsLoading && <Loading />}
         {event && (
           <>
             <Heading as="h1">{event.title ?? ''}</Heading>
@@ -71,10 +71,10 @@ const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
             </Drawer>
           </>
         )}
-        {registrationsLoading ? (
-          <Loading />
+        {event && registrations ? (
+          <EventParticipantList participants={registrations ?? []} event={event!} />
         ) : (
-          <EventParticipantList participants={registrations ?? []} />
+          <Loading />
         )}
       </Container>
     </Layout>

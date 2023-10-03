@@ -91,7 +91,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
           error: result.error.message,
         }));
 
-        if (result.error.statusCode === 403) {
+        if (result.error.statusCode === 401) {
           //assume the token is for some reason no longer working, call nextauth signOut to force a session clean
           signOut();
         }

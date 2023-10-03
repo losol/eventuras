@@ -1,20 +1,21 @@
 'use client';
 
-import { RegistrationDto } from '@losol/eventuras';
-import { IconEditCircle, IconMailForward } from '@tabler/icons-react';
-import Link from 'next/link';
+import { EventDto, RegistrationDto } from '@losol/eventuras';
+import { IconMailForward } from '@tabler/icons-react';
 import useTranslation from 'next-translate/useTranslation';
 import { useState } from 'react';
 
 import { createColumnHelper, DataTable } from '@/components/content';
+import EventEmailer from '@/components/event/EventEmailer';
 //import EventEmailer from '@/components/event/EventEmailer';
 import { Drawer } from '@/components/layout';
 const columnHelper = createColumnHelper<RegistrationDto>();
 interface AdminEventListProps {
   participants: RegistrationDto[];
+  event: EventDto;
 }
 
-const EventParticipantList: React.FC<AdminEventListProps> = ({ participants = [] }) => {
+const EventParticipantList: React.FC<AdminEventListProps> = ({ participants = [], event }) => {
   const { t } = useTranslation('admin');
   const [registrationOpened, setRegistrationOpened] = useState<RegistrationDto | null>(null);
 
@@ -48,7 +49,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({ participants = []
     }),
     columnHelper.accessor('actions', {
       header: t('participantColumns.actions').toString(),
-      cell: info => info.getValue(),
+      cell: info => renderEventItemActions(info.row.original),
     }),
   ];
   const drawerIsOpen = registrationOpened !== null;
@@ -65,7 +66,14 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({ participants = []
           <Drawer.Header as="h3" className="text-black">
             <p>Mailer</p>
           </Drawer.Header>
-          <Drawer.Body></Drawer.Body>
+          <Drawer.Body>
+            <EventEmailer
+              eventTitle={event.title!}
+              eventId={event.id!}
+              recipients={registrationOpened.user ? [registrationOpened.user.email!] : null}
+              onClose={() => setRegistrationOpened(null)}
+            />
+          </Drawer.Body>
           <Drawer.Footer>
             <></>
           </Drawer.Footer>
