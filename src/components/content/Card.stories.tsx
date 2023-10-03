@@ -1,14 +1,15 @@
+import { Meta } from '@storybook/react';
 import React from 'react';
 
 import Card from './Card';
 
-const CStory = {
+const meta: Meta<typeof Card> = {
   title: 'Components/Card',
   tags: ['autodocs'],
   component: Card,
 };
 
-export default CStory;
+export default meta;
 
 export const Default = () => (
   <Card>

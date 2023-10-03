@@ -1,10 +1,5 @@
-/// <reference types="cypress" />
-import { mount } from 'cypress/react18';
+import '@/styles/globals.css';
 
-declare module 'cypress' {
-  interface Chainable {
-    mount: typeof mount;
-  }
-}
+import { mount } from 'cypress/react18';
 
 Cypress.Commands.add('mount', mount);
