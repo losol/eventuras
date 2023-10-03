@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { BlockLink } from '../inputs/Link';
+import Link from '../inputs/Link';
 /**
  *
  * Shows a full screen error with a Return link to return to '/'.
@@ -27,7 +27,7 @@ const FatalError = ({
       <p className="font-bold">{title}</p>
       <p>{description}</p>
       {additional && additional.length > 0 && <p>{additional}</p>}
-      <BlockLink href="/">Return</BlockLink>
+      <Link href="/">Return</Link>
     </div>
   </div>
 );

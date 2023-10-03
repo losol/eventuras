@@ -3,7 +3,7 @@ import useTranslation from 'next-translate/useTranslation';
 import { useContext } from 'react';
 
 import { Loading } from '@/components/feedback';
-import { BlockLink } from '@/components/inputs/Link';
+import Link from '@/components/inputs/Link';
 import { UserContext } from '@/context/UserContext';
 import { useUserEventRegistrations } from '@/hooks/apiHooks';
 
@@ -26,9 +26,11 @@ export default function EventRegistrationButton({ eventId }: EventRegistrationBu
   return (
     <div>
       {isRegistered ? (
-        <div>{t('feedback.allreadyRegistered')}</div>
+        <div className="py-6">{t('feedback.allreadyRegistered')}</div>
       ) : (
-        <BlockLink href={`/user/events/${eventId}/registration`}>{t('buttons.register')}</BlockLink>
+        <Link href={`/user/events/${eventId}/registration`} variant="button-primary" block>
+          {t('buttons.register')}
+        </Link>
       )}
     </div>
   );

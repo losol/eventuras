@@ -4,7 +4,8 @@ import { useRouter } from 'next/navigation';
 import { signIn, signOut } from 'next-auth/react';
 import { useContext } from 'react';
 
-import { BlockLink, Button } from '@/components/inputs';
+import { Button } from '@/components/inputs';
+import Link from '@/components/inputs/Link';
 import { UserContext } from '@/context';
 import Environment from '@/utils/Environment';
 
@@ -32,9 +33,9 @@ const UserMenu = (props: UserMenuProps) => {
   return (
     <div className="flex items-center">
       {userState.auth?.isAuthenticated && (
-        <BlockLink href="/user" lightText={props.lightText} className="font-bold mr-2">
+        <Link href="/user" lightText={props.lightText} className="font-bold mr-2">
           Profile
-        </BlockLink>
+        </Link>
       )}
       {!userState.auth?.isAuthenticated && (
         <Button variant="transparent" onClick={handleLogin} lightText={props.lightText}>

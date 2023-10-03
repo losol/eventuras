@@ -1,23 +1,56 @@
 import NextLink from 'next/link';
 
-interface BlockLinkProps {
+import { buttonStyles } from './Button';
+
+interface LinkProps {
   href: string;
   children?: React.ReactNode;
   className?: string;
   lightText?: boolean;
+  variant?: 'button-primary' | 'button-secondary' | 'button-light' | 'button-transparent';
+  block?: boolean;
 }
 
-const BlockLink = (props: BlockLinkProps) => {
-  const defaultClasses =
-    'bg-primary-400 dark:bg-sky-950 hover:bg-sky-700 font-bold my-6 py-4 px-4 block';
-  const textColor = props.lightText ? 'text-white' : 'text-black';
-  const classes = props.className ? props.className : `${defaultClasses} ${textColor}`;
+const Link: React.FC<LinkProps> = ({
+  href,
+  children,
+  className,
+  lightText,
+  block = false,
+  variant,
+}) => {
+  // Text color
+  const textColor = lightText || variant == 'button-primary' ? 'text-white' : 'text-black';
+
+  // Block classes
+  const blockClasses = block ? 'block' : '';
+
+  // Choose appropriate variant classes
+  let variantClasses = '';
+  if (variant?.startsWith('button-')) {
+    const buttonVariant = variant.replace('button-', '');
+    if (buttonStyles.hasOwnProperty(buttonVariant)) {
+      variantClasses = buttonStyles[buttonVariant as keyof typeof buttonStyles];
+    }
+  }
+
+  // Combine all classes
+  const classes = [
+    buttonStyles.basePadding,
+    buttonStyles.baseMargin,
+    variantClasses,
+    textColor,
+    blockClasses,
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
-    <NextLink href={props.href} className={classes}>
-      {props.children}
+    <NextLink className={classes} href={href}>
+      {children}
     </NextLink>
   );
 };
 
-export { BlockLink };
+export default Link;

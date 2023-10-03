@@ -6,7 +6,7 @@ import useTranslation from 'next-translate/useTranslation';
 import { Heading } from '@/components/content';
 import { Loading } from '@/components/feedback';
 import { InputAutoComplete } from '@/components/inputs/Input';
-import { BlockLink } from '@/components/inputs/Link';
+import Link from '@/components/inputs/Link';
 import { Container, Layout } from '@/components/layout';
 import { useEvents } from '@/hooks/apiHooks';
 import { getUsers } from '@/utils/api/functions/users';
@@ -32,9 +32,11 @@ export default function AdminPage() {
     <Layout>
       <Container>
         <Heading as="h1">{t('title')}</Heading>
-        <div>
-          <BlockLink href={`/admin/events/create`}>{t('createEvent.content.title')}</BlockLink>
-        </div>
+        <section className="py-10">
+          <Link href={`/admin/events/create`} variant="button-primary">
+            {t('createEvent.content.title')}
+          </Link>
+        </section>
         <InputAutoComplete
           id="find_user"
           placeholder="Find user"

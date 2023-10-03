@@ -1,3 +1,3 @@
 export { default as Button } from './Button';
-export { BlockLink as BlockLink } from './Link';
+export { Link as Link } from './Link';
 export { default as Switch } from './Switch';
