@@ -4,13 +4,13 @@
 
 import * as Sentry from '@sentry/nextjs';
 
-import Environment from '@/utils/Environment';
+import Environment, { EnvironmentVariables } from '@/utils/Environment';
 import Logger from '@/utils/Logger';
 
-if (Environment.FEATURE_SENTRY_DSN) {
+if (Environment.get(EnvironmentVariables.FEATURE_SENTRY_DSN)) {
   Logger.info({}, 'Sentry DSN found, initializing Sentry server side.');
   Sentry.init({
-    dsn: Environment.FEATURE_SENTRY_DSN,
+    dsn: Environment.get(EnvironmentVariables.FEATURE_SENTRY_DSN),
 
     // Adjust this value in production, or use tracesSampler for greater control
     tracesSampleRate: 1,

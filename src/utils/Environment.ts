@@ -74,7 +74,7 @@ class Environment {
   }
 
   // Getter for environment variables
-  static get(identifier: keyof typeof EnvironmentVariables): string {
+  static get(identifier: keyof Record<EnvironmentVariables, string>): string {
     if (identifier.includes('NEXT_PUBLIC')) {
       throw new Error(
         `Any NEXT_PUBLIC variables need to be accessed directly! Use Environment.${identifier} instead`
