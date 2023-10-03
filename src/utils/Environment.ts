@@ -16,8 +16,8 @@ const defaults = {
   NEXT_PUBLIC_ORGANIZATION_ID: '1',
 };
 
-// Required Environment Variables
-export enum RequiredEnvironmentVariables {
+// All Environment Variables
+export enum EnvironmentVariables {
   NEXT_PUBLIC_API_BASE_URL = 'NEXT_PUBLIC_API_BASE_URL',
   NEXT_PUBLIC_API_VERSION = 'NEXT_PUBLIC_API_VERSION',
   NEXT_PUBLIC_LOGOUT_URL_REDIRECT = 'NEXT_PUBLIC_LOGOUT_URL_REDIRECT',
@@ -30,25 +30,30 @@ export enum RequiredEnvironmentVariables {
   NEXTAUTH_URL = 'NEXTAUTH_URL',
   NEXTAUTH_SECRET = 'NEXTAUTH_SECRET',
   NODE_ENV = 'NODE_ENV',
+  FEATURE_SENTRY_DSN = 'FEATURE_SENTRY_DSN',
+  SENTRY_AUTH_TOKEN = 'SENTRY_AUTH_TOKEN',
+  SENTRY_ORG = 'SENTRY_ORG',
+  SENTRY_PROJECT = 'SENTRY_PROJECT',
 }
 
 // Optional Environment Variables
-export enum OptionalEnvironmentVariables {
-  FEATURE_SENTRY_DSN = 'FEATURE_SENTRY_DSN',
-  SENTRY_AUTH_TOKEN = 'SENTRY_AUTH_TOKEN',
-}
+export const OptionalEnvironmentVariables = [
+  EnvironmentVariables.FEATURE_SENTRY_DSN,
+  EnvironmentVariables.SENTRY_AUTH_TOKEN,
+  EnvironmentVariables.SENTRY_ORG,
+  EnvironmentVariables.SENTRY_PROJECT,
+];
 
 // Environment Class
 class Environment {
   // Validate Required and Optional Environment Variables
   // Needs to run server-side
   static validate() {
-    for (const key of [
-      ...Object.keys(RequiredEnvironmentVariables),
-      ...Object.keys(OptionalEnvironmentVariables),
-    ]) {
+    for (const key of Object.keys(EnvironmentVariables)) {
       const isSet = () => process.env.hasOwnProperty(key);
-      const isOptional = Object.keys(OptionalEnvironmentVariables).includes(key);
+      const isOptional = OptionalEnvironmentVariables.includes(
+        EnvironmentVariables[key as keyof typeof EnvironmentVariables]
+      );
 
       // Set default values if available and not set
       if (defaults.hasOwnProperty(key) && !isSet()) {
@@ -69,11 +74,7 @@ class Environment {
   }
 
   // Getter for environment variables
-  static get(
-    identifier:
-      | keyof typeof RequiredEnvironmentVariables
-      | keyof typeof OptionalEnvironmentVariables
-  ): string {
+  static get(identifier: keyof typeof EnvironmentVariables): string {
     if (identifier.includes('NEXT_PUBLIC')) {
       throw new Error(
         `Any NEXT_PUBLIC variables need to be accessed directly! Use Environment.${identifier} instead`
