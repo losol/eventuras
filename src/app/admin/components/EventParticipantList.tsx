@@ -5,10 +5,10 @@ import { IconMailForward } from '@tabler/icons-react';
 import useTranslation from 'next-translate/useTranslation';
 import { useState } from 'react';
 
-import { createColumnHelper, DataTable } from '@/components/content';
 import EventEmailer from '@/components/event/EventEmailer';
 //import EventEmailer from '@/components/event/EventEmailer';
-import { Drawer } from '@/components/layout';
+import { Drawer } from '@/components/ui';
+import DataTable, { createColumnHelper } from '@/components/ui/DataTable';
 const columnHelper = createColumnHelper<RegistrationDto>();
 interface AdminEventListProps {
   participants: RegistrationDto[];

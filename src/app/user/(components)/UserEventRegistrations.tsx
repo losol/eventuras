@@ -1,7 +1,7 @@
 import { RegistrationDto } from '@losol/eventuras';
 import React, { ReactElement } from 'react';
 
-import Heading from '@/components/content/Heading';
+import Heading from '@/components/ui/Heading';
 
 import UserEventRegistrationCard from './UserEventRegistrationCard';
 

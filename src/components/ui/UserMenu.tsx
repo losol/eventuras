@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 import { signIn, signOut } from 'next-auth/react';
 import { useContext } from 'react';
 
-import { Button } from '@/components/inputs';
-import Link from '@/components/inputs/Link';
+import Button from '@/components/ui/Button';
+import Link from '@/components/ui/Link';
 import { UserContext } from '@/context';
 import Environment from '@/utils/Environment';
 

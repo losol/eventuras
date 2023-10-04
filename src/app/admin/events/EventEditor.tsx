@@ -5,11 +5,11 @@ import useTranslation from 'next-translate/useTranslation';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import { Heading } from '@/components/content';
-import FatalError from '@/components/feedback/FatalError';
-import { Button } from '@/components/inputs';
-import { defaultInputStyle, InputDate, InputText } from '@/components/inputs/Input';
-import { Layout } from '@/components/layout';
+import { defaultInputStyle, InputDate, InputText } from '@/components/forms/Input';
+import { Layout } from '@/components/ui';
+import Button from '@/components/ui/Button';
+import FatalError from '@/components/ui/FatalError';
+import Heading from '@/components/ui/Heading';
 import ApiError from '@/utils/api/ApiError';
 import ApiResult from '@/utils/api/ApiResult';
 import { createEvent as postEvent, updateEvent } from '@/utils/api/functions/events';

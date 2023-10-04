@@ -1,7 +1,7 @@
 'use client';
 
 import EventEditor from '@/app/admin/events/EventEditor';
-import { Loading } from '@/components/feedback';
+import Loading from '@/components/ui/Loading';
 import { useEvent } from '@/hooks/apiHooks';
 
 type EditEventinfoProps = {

@@ -1,8 +1,9 @@
 import { EventDto, EventsService, OpenAPI } from '@losol/eventuras';
 
-import { Heading, Text } from '@/components/content';
 import { EventGrid } from '@/components/event';
-import { Container, Layout } from '@/components/layout';
+import { Container, Layout } from '@/components/ui';
+import Heading from '@/components/ui/Heading';
+import Text from '@/components/ui/Text';
 import Environment, { EnvironmentVariables } from '@/utils/Environment';
 import Logger from '@/utils/Logger';
 

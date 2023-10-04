@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Link from '../inputs/Link';
+import Link from './Link';
 /**
  *
  * Shows a full screen error with a Return link to return to '/'.

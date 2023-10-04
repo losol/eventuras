@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Loading } from '../feedback';
+import Loading from '@/components/ui/Loading';
 
 export const buttonStyles = {
   basePadding: 'px-4 py-2',

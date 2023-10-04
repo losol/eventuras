@@ -1,7 +1,7 @@
 import { EventDto } from '@losol/eventuras';
 import Link from 'next/link';
 
-import { Card } from '@/components/content'; // Assuming this is the path to your Card.tsx
+import Card from '@/components/ui/Card';
 
 interface EventCardProps {
   eventinfo: EventDto;

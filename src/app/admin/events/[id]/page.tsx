@@ -3,11 +3,11 @@
 import useTranslation from 'next-translate/useTranslation';
 import { useState } from 'react';
 
-import { Heading } from '@/components/content';
 import EventEmailer from '@/components/event/EventEmailer';
-import { Loading } from '@/components/feedback';
-import Button from '@/components/inputs/Button';
-import { Container, Drawer, Layout } from '@/components/layout';
+import { Container, Drawer, Layout } from '@/components/ui';
+import Button from '@/components/ui/Button';
+import Heading from '@/components/ui/Heading';
+import Loading from '@/components/ui/Loading';
 import { useEvent, useRegistrations } from '@/hooks/apiHooks';
 
 import EventParticipantList from '../../components/EventParticipantList';

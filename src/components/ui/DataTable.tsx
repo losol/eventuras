@@ -14,8 +14,8 @@ import {
 } from '@tanstack/react-table';
 import React, { useEffect } from 'react';
 
-import { Text } from '@/components/content';
-import { Button } from '@/components/inputs';
+import Button from '@/components/ui/Button';
+import Text from '@/components/ui/Text';
 
 type DataTableProps = {
   columns: any[];

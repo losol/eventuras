@@ -2,8 +2,8 @@
 import useTranslation from 'next-translate/useTranslation';
 import { useContext } from 'react';
 
-import { Loading } from '@/components/feedback';
-import Link from '@/components/inputs/Link';
+import Link from '@/components/ui/Link';
+import Loading from '@/components/ui/Loading';
 import { UserContext } from '@/context/UserContext';
 import { useUserEventRegistrations } from '@/hooks/apiHooks';
 

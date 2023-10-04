@@ -2,7 +2,7 @@ import { EventsService, OpenAPI } from '@losol/eventuras';
 import { RedirectType } from 'next/dist/client/components/redirect';
 import { redirect } from 'next/navigation';
 
-import { Container, Layout } from '@/components/layout';
+import { Container, Layout } from '@/components/ui';
 import Environment, { EnvironmentVariables } from '@/utils/Environment';
 import Logger from '@/utils/Logger';
 

@@ -1,7 +1,7 @@
 import useTranslation from 'next-translate/useTranslation';
 
-import { Heading } from '@/components/content';
-import { Button } from '@/components/inputs';
+import Button from '@/components/ui/Button';
+import Heading from '@/components/ui/Heading';
 
 export type RegistrationCompleteProps = {
   onSubmit: () => void;

@@ -1,12 +1,9 @@
 import { useRecoilState } from 'recoil';
 
 import { appNotificationState } from '@/atoms/RecoilState';
-import {
-  AppNotificationOptions,
-  AppNotificationType,
-} from '@/components/feedback/AppNotifications';
+import { AppNotificationOptions, AppNotificationType } from '@/components/ui/AppNotifications';
 
-export { AppNotificationType } from '@/components/feedback/AppNotifications';
+export { AppNotificationType } from '@/components/ui/AppNotifications';
 
 export const useAppNotifications = () => {
   const [appNotifications, setAppNotifications] = useRecoilState(appNotificationState);

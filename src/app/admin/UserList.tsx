@@ -1,7 +1,7 @@
 'use client';
 import { EventDto, UserDto } from '@losol/eventuras';
 
-import { createColumnHelper, DataTable } from '@/components/content';
+import DataTable, { createColumnHelper } from '@/components/ui/DataTable';
 const columnHelper = createColumnHelper<EventDto>();
 
 const columns = [

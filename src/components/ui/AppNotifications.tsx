@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Portal } from '@/components/layout';
+import { Portal } from '@/components/ui';
 
 export enum AppNotificationType {
   SUCCESS = 'success',

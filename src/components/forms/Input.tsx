@@ -2,9 +2,8 @@
 import { UserDto } from '@losol/eventuras/models/UserDto';
 import React, { useRef, useState } from 'react';
 
+import Loading from '@/components/ui/Loading';
 import { ApiResult } from '@/utils/api';
-
-import Loading from '../feedback/Loading';
 
 export type InputTextProps = {
   [x: string]: any;

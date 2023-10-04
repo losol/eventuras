@@ -1,9 +1,9 @@
 'use client';
 import { useContext } from 'react';
 
-import { Heading } from '@/components/content';
-import { Loading } from '@/components/feedback';
-import { Container, Layout } from '@/components/layout';
+import { Container, Layout } from '@/components/ui';
+import Heading from '@/components/ui/Heading';
+import Loading from '@/components/ui/Loading';
 import { UserContext } from '@/context/UserContext';
 import { useUserEventRegistrations } from '@/hooks/apiHooks';
 

@@ -3,7 +3,7 @@
 import { UserDto } from '@losol/eventuras';
 import { IconMail, IconPhone, IconUser } from '@tabler/icons-react';
 
-import { Card } from '@/components/content';
+import Card from '@/components/ui/Card';
 
 export type UserProfileCardProps = {
   profile: UserDto;

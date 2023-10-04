@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { Footer, Header } from '@/components/layout';
+import { Footer, Header } from '@/components/ui';
 
 type LayoutProps = {
   children: ReactNode;

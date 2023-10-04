@@ -2,15 +2,15 @@ import { EmailNotificationDto, RegistrationStatus, RegistrationType } from '@los
 import useTranslation from 'next-translate/useTranslation';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
+import Button from '@/components/ui/Button';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { sendEmailNotification } from '@/utils/api/functions/notifications';
 import { mapEnum } from '@/utils/enum';
 
-import Heading from '../content/Heading';
-import { Button } from '../inputs';
-import { InputText, lightInputStyle } from '../inputs/Input';
-import MarkdownEditor from '../inputs/MarkdownEditor';
-import MultiSelectDropdown from '../inputs/MultiSelectDropdown';
+import { InputText, lightInputStyle } from '../forms/Input';
+import MarkdownEditor from '../forms/MarkdownEditor';
+import MultiSelectDropdown from '../forms/MultiSelectDropdown';
+import Heading from '../ui/Heading';
 
 type EventEmailerFormValues = {
   subject: string;

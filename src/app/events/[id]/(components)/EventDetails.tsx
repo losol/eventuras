@@ -2,7 +2,8 @@ import { EventDto } from '@losol/eventuras';
 import parse from 'html-react-parser';
 import useTranslation from 'next-translate/useTranslation';
 
-import { Heading, Image } from '@/components/content';
+import Heading from '@/components/ui/Heading';
+import Image from '@/components/ui/Image';
 
 import EventRegistrationButton from './EventRegistrationButton';
 

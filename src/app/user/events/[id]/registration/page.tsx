@@ -2,9 +2,9 @@
 import { useRouter } from 'next/navigation';
 import { MutableRefObject, useContext, useRef, useState } from 'react';
 
-import { Loading } from '@/components/feedback';
-import FatalError from '@/components/feedback/FatalError';
-import { Layout } from '@/components/layout';
+import { Layout } from '@/components/ui';
+import FatalError from '@/components/ui/FatalError';
+import Loading from '@/components/ui/Loading';
 import { UserContext } from '@/context';
 import { useEventProducts } from '@/hooks/apiHooks';
 import PaymentFormValues from '@/types/PaymentFormValues';
