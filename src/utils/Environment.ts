@@ -23,6 +23,7 @@ export enum EnvironmentVariables {
   NEXT_PUBLIC_LOGOUT_URL_REDIRECT = 'NEXT_PUBLIC_LOGOUT_URL_REDIRECT',
   NEXT_PUBLIC_AUTH0_DOMAIN = 'NEXT_PUBLIC_AUTH0_DOMAIN',
   NEXT_PUBLIC_ORGANIZATION_ID = 'NEXT_PUBLIC_ORGANIZATION_ID',
+  NEXT_PUBLIC_SITE_SETTINGS_URL = 'NEXT_PUBLIC_SITE_SETTINGS_URL',
   API_BASE_URL = 'API_BASE_URL',
   AUTH0_CLIENT_ID = 'AUTH0_CLIENT_ID',
   AUTH0_CLIENT_SECRET = 'AUTH0_CLIENT_SECRET',
@@ -38,6 +39,7 @@ export enum EnvironmentVariables {
 
 // Optional Environment Variables
 export const OptionalEnvironmentVariables = [
+  EnvironmentVariables.NEXT_PUBLIC_SITE_SETTINGS_URL,
   EnvironmentVariables.FEATURE_SENTRY_DSN,
   EnvironmentVariables.SENTRY_AUTH_TOKEN,
   EnvironmentVariables.SENTRY_ORG,
@@ -102,6 +104,9 @@ class Environment {
 
   static get NEXT_PUBLIC_ORGANIZATION_ID() {
     return process.env.NEXT_PUBLIC_ORGANIZATION_ID ?? defaults.NEXT_PUBLIC_ORGANIZATION_ID;
+  }
+  static get NEXT_PUBLIC_SITE_SETTINGS_URL() {
+    return process.env.NEXT_PUBLIC_SITE_SETTINGS_URL!;
   }
 }
 
