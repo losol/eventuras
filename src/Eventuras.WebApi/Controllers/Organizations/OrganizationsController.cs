@@ -99,6 +99,7 @@ namespace Eventuras.WebApi.Controllers.Organizations
         public string Email { get; }
         public string LogoUrl { get; }
         public string LogoBase64 { get; }
+        public string FrontendSettings { get; }
 
         public OrganizationDto(Organization org)
         {
@@ -110,6 +111,7 @@ namespace Eventuras.WebApi.Controllers.Organizations
             Email = org.Email;
             LogoUrl = org.LogoUrl;
             LogoBase64 = org.LogoBase64;
+            FrontendSettings = org.FrontendSettings;
         }
     }
 
@@ -122,6 +124,7 @@ namespace Eventuras.WebApi.Controllers.Organizations
         public string Email { get; set; }
         public string LogoUrl { get; set; }
         public string LogoBase64 { get; set; }
+        public string FrontendSettings { get; set; }
 
         public void CopyTo(Organization organization)
         {
@@ -137,6 +140,7 @@ namespace Eventuras.WebApi.Controllers.Organizations
             organization.Email = Email;
             organization.LogoUrl = LogoUrl;
             organization.LogoBase64 = LogoBase64;
+            organization.FrontendSettings = FrontendSettings;
         }
     }
 }

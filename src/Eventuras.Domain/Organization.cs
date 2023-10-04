@@ -43,6 +43,8 @@ namespace Eventuras.Domain
 
         [DisplayName("Aktiv")] public bool Active { get; set; } = true;
 
+        public string FrontendSettings { get; set; }
+
         public List<OrganizationMember> Members { get; set; }
 
         public List<OrganizationHostname> Hostnames { get; set; }

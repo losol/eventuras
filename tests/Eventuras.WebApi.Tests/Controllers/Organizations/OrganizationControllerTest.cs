@@ -250,7 +250,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
                     phone = "+11111111111",
                     email = "test@email.com",
                     logoUrl = "http://test.org/logo.png",
-                    logoBase64 = "bG9nbwo="
+                    logoBase64 = "bG9nbwo=",
+                    frontendSettings = """{"someSettings":"someValue"}""",
                 });
             var token = await response.CheckOk().AsTokenAsync();
 
@@ -264,6 +265,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
             Assert.Equal("test@email.com", updatedOrg.Email);
             Assert.Equal("http://test.org/logo.png", updatedOrg.LogoUrl);
             Assert.Equal("bG9nbwo=", updatedOrg.LogoBase64);
+            Assert.Equal("""{"someSettings":"someValue"}""", updatedOrg.FrontendSettings);
 
             token.CheckOrganization(updatedOrg);
         }
