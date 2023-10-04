@@ -26,24 +26,27 @@ if (process.env.ANALYZE === 'true') {
   return;
 }
 
-module.exports = nextTranslate(nextConfig);
-
 // Sentry config
-const { withSentryConfig } = require('@sentry/nextjs');
+if (process.env.FEATURE_SENTRY === 'true') {
+  const { withSentryConfig } = require('@sentry/nextjs');
 
-module.exports = withSentryConfig(
-  module.exports,
-  {
-    // https://github.com/getsentry/sentry-webpack-plugin#options
+  const nextConfigWithSentry = {
+    ...nextConfig,
+    sentry: {
+      hideSourceMaps: true,
+    },
+  };
 
-    // Suppresses source map uploading logs during build
-    silent: true,
-  },
-  {
+  const sentryWebpackPluginOptions = {
     // For all available options, see:
+    // https://github.com/getsentry/sentry-webpack-plugin#options.
     // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
-    // Upload a larger set of source maps for prettier stack traces (increases build time)
+    authToken: process.env.SENTRY_AUTH_TOKEN,
+    org: process.env.SENTRY_ORG,
+    project: process.env.SENTRY_PROJECT,
+
+    silent: true,
     widenClientFileUpload: true,
 
     // Transpiles SDK to be compatible with IE11 (increases bundle size)
@@ -57,5 +60,14 @@ module.exports = withSentryConfig(
 
     // Automatically tree-shake Sentry logger statements to reduce bundle size
     disableLogger: true,
-  }
-);
+  };
+
+  module.exports = withSentryConfig(
+    nextTranslate(nextConfigWithSentry),
+    sentryWebpackPluginOptions
+  );
+  return;
+}
+
+// no sentry
+module.exports = nextTranslate(nextConfig);
