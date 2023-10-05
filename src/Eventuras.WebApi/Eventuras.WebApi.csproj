@@ -24,6 +24,7 @@
     <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.6.1" />
     <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.1.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="7.0.11" />
+    <PackageReference Include="Sentry.AspNetCore" Version="3.39.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.11" />
