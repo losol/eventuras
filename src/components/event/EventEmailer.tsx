@@ -63,6 +63,7 @@ export default function EventEmailer({
         message: common('errors.fatalError.title'),
         type: AppNotificationType.ERROR,
       });
+      throw new Error('Failed to send email');
     } else {
       addAppNotification({
         id: Date.now(),

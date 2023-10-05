@@ -34,8 +34,6 @@ export enum EnvironmentVariables {
   FEATURE_SENTRY = 'FEATURE_SENTRY',
   NEXT_PUBLIC_SENTRY_DSN = 'NEXT_PUBLIC_SENTRY_DSN',
   SENTRY_AUTH_TOKEN = 'SENTRY_AUTH_TOKEN',
-  SENTRY_ORG = 'SENTRY_ORG',
-  SENTRY_PROJECT = 'SENTRY_PROJECT',
 }
 
 // Optional Environment Variables
@@ -44,8 +42,6 @@ export const OptionalEnvironmentVariables = [
   EnvironmentVariables.NEXT_PUBLIC_SENTRY_DSN,
   EnvironmentVariables.FEATURE_SENTRY,
   EnvironmentVariables.SENTRY_AUTH_TOKEN,
-  EnvironmentVariables.SENTRY_ORG,
-  EnvironmentVariables.SENTRY_PROJECT,
 ];
 
 // Environment Class

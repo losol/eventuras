@@ -33,6 +33,8 @@ if (process.env.FEATURE_SENTRY === 'true') {
   const nextConfigWithSentry = {
     ...nextConfig,
     sentry: {
+      dsn: process.env.SENTRY_DSN,
+      authToken: process.env.SENTRY_AUTH_TOKEN,
       hideSourceMaps: true,
     },
   };
@@ -43,8 +45,6 @@ if (process.env.FEATURE_SENTRY === 'true') {
     // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
     authToken: process.env.SENTRY_AUTH_TOKEN,
-    org: process.env.SENTRY_ORG,
-    project: process.env.SENTRY_PROJECT,
 
     silent: true,
     widenClientFileUpload: true,
