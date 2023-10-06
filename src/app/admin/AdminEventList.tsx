@@ -9,13 +9,29 @@ import { useState } from 'react';
 import EventEmailer from '@/components/event/EventEmailer';
 import { Drawer } from '@/components/ui';
 import DataTable, { createColumnHelper } from '@/components/ui/DataTable';
+import FatalError from '@/components/ui/FatalError';
+import Loading from '@/components/ui/Loading';
+import Pagination from '@/components/ui/Pagination';
+import { useEvents } from '@/hooks/apiHooks';
 const columnHelper = createColumnHelper<EventDto>();
 interface AdminEventListProps {
-  eventinfo: EventDto[];
+  organizationId: number;
 }
 
-const AdminEventList: React.FC<AdminEventListProps> = ({ eventinfo = [] }) => {
+const AdminEventList: React.FC<AdminEventListProps> = ({ organizationId }) => {
   const { t } = useTranslation('admin');
+  const [page, setPage] = useState(1);
+  const {
+    loading: eventsLoading,
+    events,
+    response,
+  } = useEvents({
+    organizationId,
+    includeDraftEvents: true,
+    includePastEvents: true,
+    page,
+    count: 10,
+  });
   const [eventOpened, setEventOpened] = useState<EventDto | null>(null);
 
   const renderEventItemActions = (info: EventDto) => {
@@ -41,6 +57,7 @@ const AdminEventList: React.FC<AdminEventListProps> = ({ eventinfo = [] }) => {
     columnHelper.accessor('dateStart', {
       header: t('eventColumns.when').toString(),
       cell: info => info.getValue(),
+      enableSorting: true,
     }),
     columnHelper.accessor('action', {
       header: t('eventColumns.actions').toString(),
@@ -48,13 +65,18 @@ const AdminEventList: React.FC<AdminEventListProps> = ({ eventinfo = [] }) => {
     }),
   ];
   const drawerIsOpen = eventOpened !== null;
+
+  if (eventsLoading) return <Loading />;
+  if (!response)
+    return <FatalError title="No response from admin events" description="Response is null" />;
   return (
     <>
-      <DataTable
-        data={eventinfo}
-        columns={columns}
-        clientsidePaginationPageSize={250}
-        clientsidePagination
+      <DataTable data={events ?? []} columns={columns} />
+      <Pagination
+        currentPage={page}
+        totalPages={response.pages ?? 0}
+        onPreviousPageClick={() => setPage(page - 1)}
+        onNextPageClick={() => setPage(page + 1)}
       />
       {eventOpened !== null && (
         <Drawer isOpen={drawerIsOpen} onCancel={() => setEventOpened(null)}>

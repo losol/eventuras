@@ -1,14 +1,14 @@
 interface TextProps {
   children: React.ReactNode;
   as?: 'div' | 'span' | 'p';
-  classname?: string;
+  className?: string;
 }
 
 const Text = (props: TextProps) => {
   const TextComponent = props.as || 'div';
   return (
     <>
-      <TextComponent className={props.classname}>{props.children}</TextComponent>
+      <TextComponent className={props.className}>{props.children}</TextComponent>
     </>
   );
 };

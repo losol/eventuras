@@ -7,8 +7,6 @@ import { InputAutoComplete } from '@/components/forms/Input';
 import { Container, Layout } from '@/components/ui';
 import Heading from '@/components/ui/Heading';
 import Link from '@/components/ui/Link';
-import Loading from '@/components/ui/Loading';
-import { useEvents } from '@/hooks/apiHooks';
 import { getUsers } from '@/utils/api/functions/users';
 import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';
@@ -22,12 +20,7 @@ const l = { namespace: 'admin' };
 export default function AdminPage() {
   const { t } = useTranslation('admin');
   const { t: common } = useTranslation('common');
-  const { loading: eventsLoading, events } = useEvents({
-    organizationId: ORGANIZATION_ID,
-    includeDraftEvents: true,
-    includePastEvents: true,
-    count: 250,
-  });
+
   return (
     <Layout>
       <Container>
@@ -48,7 +41,7 @@ export default function AdminPage() {
           }}
         />
         <Heading as="h2">{common('events')}</Heading>
-        {eventsLoading ? <Loading /> : <AdminEventList eventinfo={events ?? []} />}
+        <AdminEventList organizationId={ORGANIZATION_ID} />
       </Container>
     </Layout>
   );

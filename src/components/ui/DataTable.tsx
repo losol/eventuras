@@ -1,42 +1,24 @@
 'use client';
 
 import {
-  IconArrowLeft,
-  IconArrowRight,
-  IconChevronsLeft,
-  IconChevronsRight,
-} from '@tabler/icons-react';
-import {
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
-import Button from '@/components/ui/Button';
-import Text from '@/components/ui/Text';
+import Pagination from './Pagination';
 
 type DataTableProps = {
   columns: any[];
   data: any[];
-  handlePageClick?: (page: number) => void;
-  totalPages?: number;
-  page?: number;
   clientsidePagination?: boolean;
   clientsidePaginationPageSize?: number;
 };
 
 const DataTable = (props: DataTableProps) => {
-  const {
-    columns,
-    data,
-    handlePageClick,
-    totalPages,
-    page,
-    clientsidePagination,
-    clientsidePaginationPageSize = 25,
-  } = props;
+  const { columns, data, clientsidePagination, clientsidePaginationPageSize = 25 } = props;
 
   const handleClientPageChange = (newPage: number) => {
     table.setPageIndex(newPage);
@@ -83,62 +65,15 @@ const DataTable = (props: DataTableProps) => {
       </table>
 
       {clientsidePagination && table.getPageCount() > 1 ? (
-        <Text classname="flex bg-slate-50 py-2 px-5">
-          <Button
-            aria-label="Previous Page"
-            onClick={() => handleClientPageChange(table.getState().pagination.pageIndex - 1)}
-            disabled={!table.getCanPreviousPage()}
-            leftIcon={<IconChevronsLeft />}
-            className="flex-col"
-          />
-          <Text classname="flex-col">
-            Page <Text as="span">{table.getState().pagination.pageIndex + 1}</Text> of{' '}
-            <Text as="span">{table.getPageCount()}</Text>
-          </Text>
-          <Button
-            aria-label="Next Page"
-            onClick={() => handleClientPageChange(table.getState().pagination.pageIndex + 1)}
-            disabled={!table.getCanNextPage()}
-            leftIcon={<IconChevronsRight />}
-            className="flex-col"
-          />
-        </Text>
+        <Pagination
+          currentPage={table.getState().pagination.pageIndex + 1}
+          totalPages={table.getPageCount()}
+          onPreviousPageClick={() =>
+            handleClientPageChange(table.getState().pagination.pageIndex - 1)
+          }
+          onNextPageClick={() => handleClientPageChange(table.getState().pagination.pageIndex + 1)}
+        />
       ) : null}
-
-      {
-        // Server side pagination needs some work...
-        !clientsidePagination && handlePageClick && page && totalPages ? (
-          <Text>
-            <Button
-              ariaLabel="First page"
-              onClick={() => handlePageClick(1)}
-              disabled={page === 1}
-              leftIcon={<IconArrowLeft />}
-            />
-            <Button
-              aria-label="Previous page"
-              onClick={() => handlePageClick(page - 1)}
-              disabled={page - 1 <= 0}
-              leftIcon={<IconChevronsLeft />}
-            />
-            <Text>
-              Page <Text as="span">{page}</Text> of <Text as="span">{totalPages}</Text>
-            </Text>
-            <Button
-              aria-label="Next Page"
-              onClick={() => handlePageClick(page + 1)}
-              disabled={page + 1 > totalPages}
-              leftIcon={<IconChevronsRight />}
-            />
-            <Button
-              aria-label="Last page"
-              onClick={() => handlePageClick(totalPages)}
-              disabled={page === totalPages}
-              leftIcon={<IconArrowRight />}
-            />
-          </Text>
-        ) : null
-      }
     </>
   );
 };
