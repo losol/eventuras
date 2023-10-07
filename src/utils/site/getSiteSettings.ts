@@ -27,7 +27,9 @@ interface SiteInfo {
 const getSiteSettings = async (): Promise<SiteInfo | null> => {
   if (Environment.NEXT_PUBLIC_SITE_SETTINGS_URL) {
     try {
-      const res = await fetch(Environment.NEXT_PUBLIC_SITE_SETTINGS_URL);
+      const res = await fetch(Environment.NEXT_PUBLIC_SITE_SETTINGS_URL, {
+        next: { revalidate: false },
+      });
       const data = await res.json();
       return data.site;
     } catch (error) {
