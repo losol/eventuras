@@ -12,8 +12,6 @@ import getSiteSettings from '@/utils/site/getSiteSettings';
 // Get events from eventuras
 const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10);
 
-export const dynamic = 'force-dynamic';
-
 export default async function Homepage() {
   const site = await getSiteSettings();
   const { t } = createTranslation('common');

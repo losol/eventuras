@@ -15,9 +15,6 @@ export const metadata: Metadata = {
   description: 'A life with eventuras',
 };
 
-// Forces dynamic site generation
-export const dynamic = 'force-dynamic';
-
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session: Session | null = await getServerSession(authOptions);
   Environment.validate();

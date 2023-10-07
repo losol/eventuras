@@ -14,7 +14,6 @@ import Logger from '@/utils/Logger';
 import AdminEventList from './AdminEventList';
 
 const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
-export const dynamic = 'force-dynamic';
 const l = { namespace: 'admin' };
 
 export default function AdminPage() {
