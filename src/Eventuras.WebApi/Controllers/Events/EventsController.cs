@@ -40,8 +40,14 @@ namespace Eventuras.WebApi.Controllers.Events
         /// <returns>A paginated list of events.</returns>
         [AllowAnonymous]
         [HttpGet]
-        public async Task<PageResponseDto<EventDto>> List([FromQuery] EventsQueryDto query, CancellationToken cancellationToken)
+        public async Task<ActionResult<PageResponseDto<EventDto>>> List([FromQuery] EventsQueryDto query, CancellationToken cancellationToken)
         {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogWarning("Invalid query parameters.");
+                return BadRequest("Invalid query parameters.");
+            }
+
             try
             {
                 // Log the starting point of the request.
@@ -62,7 +68,7 @@ namespace Eventuras.WebApi.Controllers.Events
             {
                 // Log any errors that occur during the process.
                 _logger.LogError($"Failed to retrieve the events list: {ex.Message}");
-                throw;
+                return StatusCode(500, "An error occurred while processing your request.");
             }
         }
 
