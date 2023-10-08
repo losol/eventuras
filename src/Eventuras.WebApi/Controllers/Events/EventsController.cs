@@ -8,6 +8,7 @@ using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Eventuras.WebApi.Controllers.Events
 {
@@ -21,90 +22,213 @@ namespace Eventuras.WebApi.Controllers.Events
         private readonly IEventInfoRetrievalService _eventInfoService;
         private readonly IEventManagementService _eventManagementService;
 
-        public EventsController(IEventInfoRetrievalService eventInfoService, IEventManagementService eventManagementService)
+        private ILogger<EventsController> _logger;
+
+        public EventsController(IEventInfoRetrievalService eventInfoService, IEventManagementService eventManagementService, ILogger<EventsController> logger)
         {
             _eventInfoService = eventInfoService ?? throw new ArgumentNullException(nameof(eventInfoService));
-
             _eventManagementService = eventManagementService ?? throw new ArgumentNullException(nameof(eventManagementService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         // GET: v3/events
         /// <summary>
-        /// Gets a list of events.
+        /// Retrieves a list of events based on the given query.
         /// </summary>
-        /// <param name="query"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        /// <response code="200">Returns a list of events.</response>
-        /// <response code="400">If the query is invalid.</response>
+        /// <param name="query">Filter and pagination options.</param>
+        /// <param name="cancellationToken">Cancellation token for the async operation.</param>
+        /// <returns>A paginated list of events.</returns>
         [AllowAnonymous]
         [HttpGet]
         public async Task<PageResponseDto<EventDto>> List([FromQuery] EventsQueryDto query, CancellationToken cancellationToken)
         {
-            var events = await _eventInfoService.ListEventsAsync(new EventListRequest(query.Offset, query.Limit)
+            try
+            {
+                // Log the starting point of the request.
+                _logger.LogInformation("Starting to retrieve events list.");
+
+                var events = await _eventInfoService.ListEventsAsync(new EventListRequest(query.Offset, query.Limit)
                 {
                     Filter = query.ToEventInfoFilter()
                 },
                 cancellationToken: cancellationToken);
 
-            return PageResponseDto<EventDto>.FromPaging(query, events, e => new EventDto(e));
+                // Log the successful end point of the request.
+                _logger.LogInformation("Successfully retrieved the events list.");
+
+                return PageResponseDto<EventDto>.FromPaging(query, events, e => new EventDto(e));
+            }
+            catch (Exception ex)
+            {
+                // Log any errors that occur during the process.
+                _logger.LogError($"Failed to retrieve the events list: {ex.Message}");
+                throw;
+            }
         }
 
         // GET: v3/events/5
+        /// <summary>
+        /// Retrieves event details by ID.
+        /// </summary>
+        /// <param name="id">The ID of the event.</param>
+        /// <param name="cancellationToken">Cancellation token for the async operation.</param>
+        /// <returns>Event details or NotFound if the event is archived or doesn't exist.</returns>
         [AllowAnonymous]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<EventDto>> Get(int id, CancellationToken cancellationToken)
         {
-            var eventInfo = await _eventInfoService.GetEventInfoByIdAsync(id, cancellationToken: cancellationToken);
-            if (eventInfo == null || eventInfo.Archived) { return NotFound(); }
+            try
+            {
+                var eventInfo = await _eventInfoService.GetEventInfoByIdAsync(id, cancellationToken: cancellationToken);
 
-            return Ok(new EventDto(eventInfo));
+                // Log a warning if the event is not found or archived.
+                if (eventInfo == null)
+                {
+                    _logger.LogWarning($"Event with ID {id} not found.");
+                    return NotFound();
+                }
+
+                return Ok(new EventDto(eventInfo));
+            }
+            catch (Exception ex)
+            {
+                // Log any errors that occur during the process.
+                _logger.LogError($"Failed to retrieve event with ID {id}: {ex.Message}");
+                throw;
+            }
         }
 
         // POST: v3/events
+        /// <summary>
+        /// Creates a new event.
+        /// </summary>
+        /// <param name="dto">Event information.</param>
+        /// <returns>The created event.</returns>
         [HttpPost]
         public async Task<EventDto> Post([FromBody] EventFormDto dto)
         {
-            var eventInfo = new EventInfo();
-            dto.CopyTo(eventInfo);
-            await _eventManagementService.CreateNewEventAsync(eventInfo);
-            return new EventDto(eventInfo);
+            _logger.LogInformation("Received a request to create a new event.");
+            try
+            {
+                var eventInfo = new EventInfo();
+                dto.CopyTo(eventInfo);
+                await _eventManagementService.CreateNewEventAsync(eventInfo);
+
+                _logger.LogInformation($"Successfully created a new event with ID {eventInfo.EventInfoId}.");
+                return new EventDto(eventInfo);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to create a new event: {ex.Message}");
+                throw;
+            }
         }
 
         // PUT: v3/events/5
+        /// <summary>
+        /// Updates an existing event by ID.
+        /// </summary>
+        /// <param name="id">The ID of the event.</param>
+        /// <param name="dto">Updated event information.</param>
+        /// <returns>The updated event or NotFound if the event is archived.</returns>
         [HttpPut("{id:int}")]
         public async Task<ActionResult<EventDto>> Put(int id, [FromBody] EventFormDto dto)
         {
-            var eventInfo = await _eventInfoService.GetEventInfoByIdAsync(id);
-            if (eventInfo.Archived) { return NotFound(); }
+            _logger.LogInformation($"Received a request to update the event with ID {id}.");
+            try
+            {
+                var eventInfo = await _eventInfoService.GetEventInfoByIdAsync(id);
+                if (eventInfo.Archived)
+                {
+                    _logger.LogWarning($"Event with ID {id} is archived and cannot be updated.");
+                    return NotFound();
+                }
 
-            dto.CopyTo(eventInfo);
-            await _eventManagementService.UpdateEventAsync(eventInfo);
-            return Ok(new EventDto(eventInfo));
+                dto.CopyTo(eventInfo);
+                await _eventManagementService.UpdateEventAsync(eventInfo);
+
+                _logger.LogInformation($"Successfully updated the event with ID {id}.");
+                return Ok(new EventDto(eventInfo));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to update the event with ID {id}: {ex.Message}");
+                throw;
+            }
         }
 
-        // PATCH: v3/events/5
+        // PATCH: v3/events/{id}
+        /// <summary>
+        /// Partially updates a specific event by its ID using JSON Patch.
+        /// </summary>
+        /// <param name="id">The ID of the event to update.</param>
+        /// <param name="patchDoc">The JSON Patch document with updates.</param>
+        /// <returns>The updated event.</returns>
         [HttpPatch("{id:int}")]
         public async Task<IActionResult> JsonPatchWithModelState(int id, [FromBody] JsonPatchDocument<EventFormDto> patchDoc)
         {
-            var entity = await _eventInfoService.GetEventInfoByIdAsync(id);
-            var updateModel = EventFormDto.FromEntity(entity);
+            try
+            {
+                // Log the start of the patch operation
+                _logger.LogInformation($"Starting JSON Patch operation for event with ID {id}.");
 
-            patchDoc.ApplyTo(updateModel, ModelState);
+                var entity = await _eventInfoService.GetEventInfoByIdAsync(id);
 
-            if (!ModelState.IsValid) return ValidationProblem();
+                // Log a warning if the event entity is null (not found).
+                if (entity == null)
+                {
+                    _logger.LogWarning($"Event with ID {id} not found for JSON Patch operation.");
+                    return NotFound();
+                }
 
-            updateModel.CopyTo(entity);
-            await _eventManagementService.UpdateEventAsync(entity);
+                var updateModel = EventFormDto.FromEntity(entity);
+                patchDoc.ApplyTo(updateModel, ModelState);
 
-            return Ok(new EventDto(entity));
+                // Log if the model state is invalid.
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogWarning("Invalid model state during JSON Patch operation.");
+                    return ValidationProblem();
+                }
+
+                updateModel.CopyTo(entity);
+                await _eventManagementService.UpdateEventAsync(entity);
+
+                // Log the successful completion of the patch operation.
+                _logger.LogInformation($"Successfully completed JSON Patch operation for event with ID {id}.");
+
+                return Ok(new EventDto(entity));
+            }
+            catch (Exception ex)
+            {
+                // Log any errors that occur.
+                _logger.LogError($"Failed JSON Patch operation for event with ID {id}: {ex.Message}");
+                throw;
+            }
         }
 
+
         // DELETE: v3/events/5
+        /// <summary>
+        /// Deletes an event by ID.
+        /// </summary>
+        /// <param name="id">The ID of the event to delete.</param>
         [HttpDelete("{id:int}")]
         public async Task Delete(int id)
         {
-            await _eventManagementService.DeleteEventAsync(id);
+            _logger.LogInformation($"Received a request to delete the event with ID {id}.");
+
+            try
+            {
+                await _eventManagementService.DeleteEventAsync(id);
+
+                _logger.LogInformation($"Successfully deleted the event with ID {id}.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to delete the event with ID {id}: {ex.Message}");
+                throw;
+            }
         }
     }
 }

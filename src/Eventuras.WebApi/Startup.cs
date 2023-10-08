@@ -89,6 +89,7 @@ namespace Eventuras.WebApi
             services.AddApplicationServices(Configuration);
             services.AddFeatureManagement();
             services.AddMemoryCache();
+            services.Configure<AuthSettings>(Configuration.GetSection("Auth"));
 
             services.AddCors(options =>
             {
