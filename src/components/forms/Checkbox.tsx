@@ -24,10 +24,14 @@ interface SubComponentProps {
 
 export type CheckboxProps = CheckboxComponentProps &
   Record<string, unknown> &
-  InputHTMLAttributes<HTMLInputElement> & {
-    Label: FC<SubComponentProps>;
-    Description: FC<SubComponentProps>;
-  };
+  InputHTMLAttributes<HTMLInputElement>;
+
+type CheckboxWithSubComponents = React.ForwardRefExoticComponent<
+  React.PropsWithoutRef<CheckboxProps> & React.RefAttributes<HTMLInputElement>
+> & {
+  Label: FC<SubComponentProps>;
+  Description: FC<SubComponentProps>;
+};
 
 export const CheckBoxLabel: FC<SubComponentProps> = ({ children, className, htmlFor }) => {
   const labelClassName = className || checkboxStyles.label;
@@ -45,6 +49,7 @@ export const CheckBoxDescription: FC<SubComponentProps> = ({ children, className
 
 const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
   const { className, containerClassName, children, id, disabled, defaultChecked } = props;
+
   const checkboxClassName = className || checkboxStyles.checkbox;
   const containerClass = containerClassName || checkboxStyles.container;
 
@@ -76,8 +81,10 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>((props, ref) 
       {enhancedChildren}
     </div>
   );
-});
+}) as CheckboxWithSubComponents;
 
 Checkbox.displayName = 'Checkbox';
+Checkbox.Label = CheckBoxLabel;
+Checkbox.Description = CheckBoxDescription;
 
 export default Checkbox;
