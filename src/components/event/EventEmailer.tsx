@@ -1,15 +1,15 @@
 import { EmailNotificationDto, RegistrationStatus, RegistrationType } from '@losol/eventuras';
 import useTranslation from 'next-translate/useTranslation';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 import Button from '@/components/ui/Button';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { sendEmailNotification } from '@/utils/api/functions/notifications';
 import { mapEnum } from '@/utils/enum';
 
+import DropdownSelect from '../forms/DropdownSelect';
 import { InputText, lightInputStyle } from '../forms/Input';
 import MarkdownEditor from '../forms/MarkdownEditor';
-import MultiSelectDropdown from '../forms/MultiSelectDropdown';
 import Heading from '../ui/Heading';
 
 type EventEmailerFormValues = {
@@ -83,60 +83,32 @@ export default function EventEmailer({
       </div>
       {!hasRecipients && (
         <>
-          <div className="relative z-10">
-            <label htmlFor="statusSelector">{t('eventEmailer.form.status.label')}</label>
-            <Controller
-              control={control}
-              name="registrationStatus"
-              rules={{ required: t('eventEmailer.form.status.feedbackNoInput') }}
-              render={({ field: { onChange, onBlur, value } }) => {
-                return (
-                  <MultiSelectDropdown
-                    id="statusSelector"
-                    options={mapEnum(RegistrationStatus, (value: any) => ({
-                      id: value,
-                      label: value,
-                    }))}
-                    onChange={onChange}
-                    onBlur={onBlur}
-                    selected={value ?? []}
-                  />
-                );
-              }}
-            />
-            {errors['registrationStatus'] && (
-              <label htmlFor="registrationStatus" role="alert" className="text-red-500">
-                {errors['registrationStatus']?.message}
-              </label>
-            )}
-          </div>
-          <div className="relative z-9">
-            <label htmlFor="typeSelector">{t('eventEmailer.form.type.label')}</label>
-            <Controller
-              control={control}
-              name="registrationTypes"
-              rules={{ required: t('eventEmailer.form.type.feedbackNoInput') }}
-              render={({ field: { onChange, onBlur, value } }) => {
-                return (
-                  <MultiSelectDropdown
-                    id="typeSelector"
-                    options={mapEnum(RegistrationType, (value: any) => ({
-                      id: value,
-                      label: value,
-                    }))}
-                    onChange={onChange}
-                    onBlur={onBlur}
-                    selected={value ?? []}
-                  />
-                );
-              }}
-            />
-            {errors['registrationTypes'] && (
-              <label htmlFor="registrationTypes" role="alert" className="text-red-500">
-                {errors['registrationTypes']?.message}
-              </label>
-            )}
-          </div>
+          <DropdownSelect
+            className="relative z-10"
+            label={t('eventEmailer.form.status.label')}
+            control={control}
+            rules={{ required: t('eventEmailer.form.status.feedbackNoInput') }}
+            name="registrationStatus"
+            errors={errors}
+            options={mapEnum(RegistrationStatus, (value: any) => ({
+              id: value,
+              label: value,
+            }))}
+            multiSelect={true}
+          />
+          <DropdownSelect
+            className="relative z-9"
+            label={t('eventEmailer.form.type.label')}
+            control={control}
+            rules={{ required: t('eventEmailer.form.type.feedbackNoInput') }}
+            name="registrationTypes"
+            errors={errors}
+            options={mapEnum(RegistrationType, (value: any) => ({
+              id: value,
+              label: value,
+            }))}
+            multiSelect={true}
+          />
         </>
       )}
       <div>

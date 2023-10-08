@@ -1,7 +1,7 @@
 import useTranslation from 'next-translate/useTranslation';
 import { useForm } from 'react-hook-form';
 
-import Checkbox from '@/components/forms/Checkbox';
+import Checkbox, { CheckBoxDescription, CheckBoxLabel } from '@/components/forms/Checkbox';
 import Button from '@/components/ui/Button';
 import Heading from '@/components/ui/Heading';
 import { RegistrationProduct } from '@/types/RegistrationProduct';
@@ -55,8 +55,8 @@ const RegistrationCustomize = ({ products, onSubmit }: RegistrationCustomizeProp
                 disabled={product.mandatory}
                 defaultChecked={product.mandatory}
               >
-                <Checkbox.Label>{product.title}</Checkbox.Label>
-                <Checkbox.Description>{product.description}</Checkbox.Description>
+                <CheckBoxLabel>{product.title}</CheckBoxLabel>
+                <CheckBoxDescription>{product.description}</CheckBoxDescription>
               </Checkbox>
             );
           }

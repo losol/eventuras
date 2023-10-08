@@ -24,18 +24,40 @@ interface SubComponentProps {
 
 export type CheckboxProps = CheckboxComponentProps &
   Record<string, unknown> &
-  InputHTMLAttributes<HTMLInputElement>;
+  InputHTMLAttributes<HTMLInputElement> & {
+    Label: FC<SubComponentProps>;
+    Description: FC<SubComponentProps>;
+  };
 
-const Checkbox: FC<CheckboxProps> & {
-  Label: FC<SubComponentProps>;
-  Description: FC<SubComponentProps>;
-} = ({ id, className, defaultChecked, disabled, containerClassName, children, ...props }) => {
+export const CheckBoxLabel: FC<SubComponentProps> = ({ children, className, htmlFor }) => {
+  const labelClassName = className || checkboxStyles.label;
+  return (
+    <label htmlFor={htmlFor} className={labelClassName}>
+      {children}
+    </label>
+  );
+};
+
+export const CheckBoxDescription: FC<SubComponentProps> = ({ children, className }) => {
+  const descriptionClassName = className || checkboxStyles.description;
+  return <p className={descriptionClassName}>{children}</p>;
+};
+
+const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
+  const { className, containerClassName, children, id, disabled, defaultChecked } = props;
   const checkboxClassName = className || checkboxStyles.checkbox;
   const containerClass = containerClassName || checkboxStyles.container;
 
+  const oProps = { ...props };
+  delete oProps.children;
+  delete oProps.type;
+  delete oProps.className;
+  delete oProps.checkboxClassName;
+  delete oProps.containerClass;
+
   // Add the for attribute to the label
   const enhancedChildren = React.Children.map(children, child => {
-    if (React.isValidElement<SubComponentProps>(child) && child.type === Label) {
+    if (React.isValidElement<SubComponentProps>(child) && child.type === CheckBoxLabel) {
       return React.cloneElement(child, { htmlFor: id } as SubComponentProps);
     }
     return child;
@@ -46,31 +68,16 @@ const Checkbox: FC<CheckboxProps> & {
       <input
         type="checkbox"
         className={checkboxClassName}
-        id={id}
+        ref={ref}
         disabled={disabled}
         defaultChecked={defaultChecked}
-        {...props}
+        {...oProps}
       />
       {enhancedChildren}
     </div>
   );
-};
+});
 
-const Label: FC<SubComponentProps> = ({ children, className, htmlFor }) => {
-  const labelClassName = className || checkboxStyles.label;
-  return (
-    <label htmlFor={htmlFor} className={labelClassName}>
-      {children}
-    </label>
-  );
-};
-
-const Description: FC<SubComponentProps> = ({ children, className }) => {
-  const descriptionClassName = className || checkboxStyles.description;
-  return <p className={descriptionClassName}>{children}</p>;
-};
-
-Checkbox.Label = Label;
-Checkbox.Description = Description;
+Checkbox.displayName = 'Checkbox';
 
 export default Checkbox;
