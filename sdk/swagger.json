@@ -64,7 +64,7 @@
             "name": "Count",
             "in": "query",
             "schema": {
-              "maximum": 100,
+              "maximum": 250,
               "minimum": 0,
               "type": "integer",
               "format": "int32"
@@ -713,7 +713,7 @@
         "tags": [
           "Events"
         ],
-        "summary": "Gets a list of events.",
+        "summary": "Retrieves a list of events based on the given query.",
         "parameters": [
           {
             "name": "Type",
@@ -781,7 +781,7 @@
             "name": "Count",
             "in": "query",
             "schema": {
-              "maximum": 100,
+              "maximum": 250,
               "minimum": 0,
               "type": "integer",
               "format": "int32"
@@ -806,7 +806,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Returns a list of events.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -814,9 +814,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "If the query is invalid."
           }
         }
       },
@@ -824,7 +821,9 @@
         "tags": [
           "Events"
         ],
+        "summary": "Creates a new event.",
         "requestBody": {
+          "description": "Event information.",
           "content": {
             "application/json-patch+json": {
               "schema": {
@@ -867,10 +866,12 @@
         "tags": [
           "Events"
         ],
+        "summary": "Retrieves event details by ID.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "The ID of the event.",
             "required": true,
             "schema": {
               "type": "integer",
@@ -895,10 +896,12 @@
         "tags": [
           "Events"
         ],
+        "summary": "Updates an existing event by ID.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "The ID of the event.",
             "required": true,
             "schema": {
               "type": "integer",
@@ -907,6 +910,7 @@
           }
         ],
         "requestBody": {
+          "description": "Updated event information.",
           "content": {
             "application/json-patch+json": {
               "schema": {
@@ -947,10 +951,12 @@
         "tags": [
           "Events"
         ],
+        "summary": "Partially updates a specific event by its ID using JSON Patch.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "The ID of the event to update.",
             "required": true,
             "schema": {
               "type": "integer",
@@ -959,6 +965,7 @@
           }
         ],
         "requestBody": {
+          "description": "The JSON Patch document with updates.",
           "content": {
             "application/json-patch+json": {
               "schema": {
@@ -992,10 +999,12 @@
         "tags": [
           "Events"
         ],
+        "summary": "Deletes an event by ID.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "The ID of the event to delete.",
             "required": true,
             "schema": {
               "type": "integer",
@@ -1074,7 +1083,7 @@
             "name": "Count",
             "in": "query",
             "schema": {
-              "maximum": 100,
+              "maximum": 250,
               "minimum": 0,
               "type": "integer",
               "format": "int32"
@@ -1218,7 +1227,7 @@
             "name": "Count",
             "in": "query",
             "schema": {
-              "maximum": 100,
+              "maximum": 250,
               "minimum": 0,
               "type": "integer",
               "format": "int32"
@@ -1624,7 +1633,7 @@
             "name": "Count",
             "in": "query",
             "schema": {
-              "maximum": 100,
+              "maximum": 250,
               "minimum": 0,
               "type": "integer",
               "format": "int32"
@@ -2560,7 +2569,7 @@
             "name": "Count",
             "in": "query",
             "schema": {
-              "maximum": 100,
+              "maximum": 250,
               "minimum": 0,
               "type": "integer",
               "format": "int32"
@@ -2732,7 +2741,7 @@
             "name": "Count",
             "in": "query",
             "schema": {
-              "maximum": 100,
+              "maximum": 250,
               "minimum": 0,
               "type": "integer",
               "format": "int32"
@@ -2915,6 +2924,7 @@
         "tags": [
           "Users"
         ],
+        "summary": "Gets information about the current user. Creates a new user if no user with the email exists.",
         "responses": {
           "200": {
             "description": "Success"
@@ -3029,7 +3039,7 @@
             "name": "Count",
             "in": "query",
             "schema": {
-              "maximum": 100,
+              "maximum": 250,
               "minimum": 0,
               "type": "integer",
               "format": "int32"
@@ -3383,6 +3393,14 @@
             "type": "integer",
             "format": "int32"
           },
+          "headline": {
+            "type": "string",
+            "nullable": true
+          },
+          "moreInformation": {
+            "type": "string",
+            "nullable": true
+          },
           "category": {
             "type": "string",
             "nullable": true
@@ -3422,11 +3440,65 @@
           "endDate": {
             "$ref": "#/components/schemas/LocalDate"
           },
+          "welcomeLetter": {
+            "type": "string",
+            "nullable": true
+          },
+          "published": {
+            "type": "boolean"
+          },
+          "externalInfoPageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "externalRegistrationsUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "informationRequest": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastRegistrationDate": {
+            "$ref": "#/components/schemas/LocalDate"
+          },
+          "lastCancellationDate": {
+            "$ref": "#/components/schemas/LocalDate"
+          },
+          "maxParticipants": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "certificateTitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "certificateDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "featuredImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "featuredImageCaption": {
+            "type": "string",
+            "nullable": true
+          },
+          "projectCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "organizerUserId": {
+            "type": "string",
+            "nullable": true
+          },
           "options": {
             "$ref": "#/components/schemas/EventInfoOptionsDto"
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "Data Transfer Object (DTO) for Event Information.\r\nUsed for API between the backend and the frontend."
       },
       "EventFormDtoJsonPatchDocument": {
         "type": "object",
