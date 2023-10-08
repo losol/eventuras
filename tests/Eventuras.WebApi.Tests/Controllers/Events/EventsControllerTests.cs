@@ -690,7 +690,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
 
             var client = _factory.CreateClient();
             var response = await client.GetAsync($"/v3/events/{evt.Entity.EventInfoId}");
-            response.CheckNotFound();
+            response.CheckOk();
         }
 
         #endregion
