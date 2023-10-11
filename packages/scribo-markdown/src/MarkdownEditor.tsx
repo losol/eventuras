@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import Editor from './Editor';
 import EditorTheme from './themes/EditorTheme';
 import EditorNodes from './nodes/EditorNodes';
 import {
@@ -8,14 +6,25 @@ import {
   $convertToMarkdownString,
   TRANSFORMERS,
 } from '@lexical/markdown';
+import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
+import ToolbarPlugin from './plugins/ToolbarPlugin';
+import ContentEditable from './ui/ContentEditable';
+import Placeholder from './ui/Placeholder';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { EditorState } from 'lexical';
+import './MarkdownEditor.css';
 
-interface EditorComposerProps {
+export interface MarkdownEditorProps {
   initialMarkdown?: string;
   onChange?: (markdown: string) => void;
 }
 
-export const MarkdownEditor: React.FC<EditorComposerProps> = (props) => {
+export const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
+  // eslint-disable-next-line
+  const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
+
   const internalOnChange = (editorState: EditorState) => {
     editorState.read(() => {
       const markdown = $convertToMarkdownString(TRANSFORMERS);
@@ -37,7 +46,25 @@ export const MarkdownEditor: React.FC<EditorComposerProps> = (props) => {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <Editor onChange={internalOnChange} />
+      <div className='editor-shell'>
+        <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
+        <div className='editor-container rich-text'>
+          <RichTextPlugin
+            contentEditable={
+              <div className='editor-scroller'>
+                <div className='editor'>
+                  <ContentEditable />
+                </div>
+              </div>
+            }
+            placeholder={<Placeholder>Enter some rich text...</Placeholder>}
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+        </div>
+        {props.onChange && <OnChangePlugin onChange={internalOnChange} />}
+      </div>
     </LexicalComposer>
   );
 };
+
+export default MarkdownEditor;
