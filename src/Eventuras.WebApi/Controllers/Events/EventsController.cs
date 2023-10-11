@@ -48,28 +48,20 @@ namespace Eventuras.WebApi.Controllers.Events
                 return BadRequest("Invalid query parameters.");
             }
 
-            try
+            // Log the starting point of the request.
+            _logger.LogInformation("Starting to retrieve events list.");
+
+            var events = await _eventInfoService.ListEventsAsync(new EventListRequest(query.Offset, query.Limit)
             {
-                // Log the starting point of the request.
-                _logger.LogInformation("Starting to retrieve events list.");
+                Filter = query.ToEventInfoFilter()
+            },
+            cancellationToken: cancellationToken);
 
-                var events = await _eventInfoService.ListEventsAsync(new EventListRequest(query.Offset, query.Limit)
-                {
-                    Filter = query.ToEventInfoFilter()
-                },
-                cancellationToken: cancellationToken);
+            // Log the successful end point of the request.
+            _logger.LogInformation("Successfully retrieved the events list.");
 
-                // Log the successful end point of the request.
-                _logger.LogInformation("Successfully retrieved the events list.");
+            return PageResponseDto<EventDto>.FromPaging(query, events, e => new EventDto(e));
 
-                return PageResponseDto<EventDto>.FromPaging(query, events, e => new EventDto(e));
-            }
-            catch (Exception ex)
-            {
-                // Log any errors that occur during the process.
-                _logger.LogError($"Failed to retrieve the events list: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
         }
 
         // GET: v3/events/5
@@ -83,25 +75,18 @@ namespace Eventuras.WebApi.Controllers.Events
         [HttpGet("{id:int}")]
         public async Task<ActionResult<EventDto>> Get(int id, CancellationToken cancellationToken)
         {
-            try
-            {
-                var eventInfo = await _eventInfoService.GetEventInfoByIdAsync(id, cancellationToken: cancellationToken);
 
-                // Log a warning if the event is not found or archived.
-                if (eventInfo == null)
-                {
-                    _logger.LogWarning($"Event with ID {id} not found.");
-                    return NotFound();
-                }
+            var eventInfo = await _eventInfoService.GetEventInfoByIdAsync(id, cancellationToken: cancellationToken);
 
-                return Ok(new EventDto(eventInfo));
-            }
-            catch (Exception ex)
+            // Log a warning if the event is not found or archived.
+            if (eventInfo == null)
             {
-                // Log any errors that occur during the process.
-                _logger.LogError($"Failed to retrieve event with ID {id}: {ex.Message}");
-                throw;
+                _logger.LogWarning($"Event with ID {id} not found.");
+                return NotFound();
             }
+
+            return Ok(new EventDto(eventInfo));
+
         }
 
         // POST: v3/events
@@ -114,20 +99,14 @@ namespace Eventuras.WebApi.Controllers.Events
         public async Task<EventDto> Post([FromBody] EventFormDto dto)
         {
             _logger.LogInformation("Received a request to create a new event.");
-            try
-            {
-                var eventInfo = new EventInfo();
-                dto.CopyTo(eventInfo);
-                await _eventManagementService.CreateNewEventAsync(eventInfo);
 
-                _logger.LogInformation($"Successfully created a new event with ID {eventInfo.EventInfoId}.");
-                return new EventDto(eventInfo);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Failed to create a new event: {ex.Message}");
-                throw;
-            }
+            var eventInfo = new EventInfo();
+            dto.CopyTo(eventInfo);
+            await _eventManagementService.CreateNewEventAsync(eventInfo);
+
+            _logger.LogInformation($"Successfully created a new event with ID {eventInfo.EventInfoId}.");
+            return new EventDto(eventInfo);
+
         }
 
         // PUT: v3/events/5
@@ -141,26 +120,20 @@ namespace Eventuras.WebApi.Controllers.Events
         public async Task<ActionResult<EventDto>> Put(int id, [FromBody] EventFormDto dto)
         {
             _logger.LogInformation($"Received a request to update the event with ID {id}.");
-            try
-            {
-                var eventInfo = await _eventInfoService.GetEventInfoByIdAsync(id);
-                if (eventInfo.Archived)
-                {
-                    _logger.LogWarning($"Event with ID {id} is archived and cannot be updated.");
-                    return NotFound();
-                }
 
-                dto.CopyTo(eventInfo);
-                await _eventManagementService.UpdateEventAsync(eventInfo);
-
-                _logger.LogInformation($"Successfully updated the event with ID {id}.");
-                return Ok(new EventDto(eventInfo));
-            }
-            catch (Exception ex)
+            var eventInfo = await _eventInfoService.GetEventInfoByIdAsync(id);
+            if (eventInfo.Archived)
             {
-                _logger.LogError($"Failed to update the event with ID {id}: {ex.Message}");
-                throw;
+                _logger.LogWarning($"Event with ID {id} is archived and cannot be updated.");
+                return NotFound();
             }
+
+            dto.CopyTo(eventInfo);
+            await _eventManagementService.UpdateEventAsync(eventInfo);
+
+            _logger.LogInformation($"Successfully updated the event with ID {id}.");
+            return Ok(new EventDto(eventInfo));
+
         }
 
         // PATCH: v3/events/{id}
@@ -173,44 +146,36 @@ namespace Eventuras.WebApi.Controllers.Events
         [HttpPatch("{id:int}")]
         public async Task<IActionResult> JsonPatchWithModelState(int id, [FromBody] JsonPatchDocument<EventFormDto> patchDoc)
         {
-            try
+
+            // Log the start of the patch operation
+            _logger.LogInformation($"Starting JSON Patch operation for event with ID {id}.");
+
+            var entity = await _eventInfoService.GetEventInfoByIdAsync(id);
+
+            // Log a warning if the event entity is null (not found).
+            if (entity == null)
             {
-                // Log the start of the patch operation
-                _logger.LogInformation($"Starting JSON Patch operation for event with ID {id}.");
-
-                var entity = await _eventInfoService.GetEventInfoByIdAsync(id);
-
-                // Log a warning if the event entity is null (not found).
-                if (entity == null)
-                {
-                    _logger.LogWarning($"Event with ID {id} not found for JSON Patch operation.");
-                    return NotFound();
-                }
-
-                var updateModel = EventFormDto.FromEntity(entity);
-                patchDoc.ApplyTo(updateModel, ModelState);
-
-                // Log if the model state is invalid.
-                if (!ModelState.IsValid)
-                {
-                    _logger.LogWarning("Invalid model state during JSON Patch operation.");
-                    return ValidationProblem();
-                }
-
-                updateModel.CopyTo(entity);
-                await _eventManagementService.UpdateEventAsync(entity);
-
-                // Log the successful completion of the patch operation.
-                _logger.LogInformation($"Successfully completed JSON Patch operation for event with ID {id}.");
-
-                return Ok(new EventDto(entity));
+                _logger.LogWarning($"Event with ID {id} not found for JSON Patch operation.");
+                return NotFound();
             }
-            catch (Exception ex)
+
+            var updateModel = EventFormDto.FromEntity(entity);
+            patchDoc.ApplyTo(updateModel, ModelState);
+
+            if (!ModelState.IsValid)
             {
-                // Log any errors that occur.
-                _logger.LogError($"Failed JSON Patch operation for event with ID {id}: {ex.Message}");
-                throw;
+                _logger.LogWarning("Invalid model state during JSON Patch operation.");
+                return ValidationProblem();
             }
+
+            updateModel.CopyTo(entity);
+            await _eventManagementService.UpdateEventAsync(entity);
+
+            // Log the successful completion of the patch operation.
+            _logger.LogInformation($"Successfully completed JSON Patch operation for event with ID {id}.");
+
+            return Ok(new EventDto(entity));
+
         }
 
 
@@ -224,17 +189,11 @@ namespace Eventuras.WebApi.Controllers.Events
         {
             _logger.LogInformation($"Received a request to delete the event with ID {id}.");
 
-            try
-            {
-                await _eventManagementService.DeleteEventAsync(id);
 
-                _logger.LogInformation($"Successfully deleted the event with ID {id}.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Failed to delete the event with ID {id}: {ex.Message}");
-                throw;
-            }
+            await _eventManagementService.DeleteEventAsync(id);
+
+            _logger.LogInformation($"Successfully deleted the event with ID {id}.");
         }
+
     }
 }
