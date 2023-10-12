@@ -80,7 +80,7 @@ namespace Eventuras.WebApi
                 });
 
             services.AddRazorPages();
-            services.ConfigureEF(Configuration, _env);
+            services.ConfigureEf();
             services.ConfigureDbInitializationStrategy(Configuration);
             services.ConfigureAuthorizationPolicies(Configuration);
             services.AddEmailServices();
