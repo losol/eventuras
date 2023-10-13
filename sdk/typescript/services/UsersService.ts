@@ -14,6 +14,7 @@ import { request as __request } from '../core/request';
 export class UsersService {
 
     /**
+     * Gets information about the current user. Creates a new user if no user with the email exists.
      * @returns any Success
      * @throws ApiError
      */

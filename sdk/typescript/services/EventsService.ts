@@ -17,8 +17,8 @@ import { request as __request } from '../core/request';
 export class EventsService {
 
     /**
-     * Gets a list of events.
-     * @returns EventDtoPageResponseDto Returns a list of events.
+     * Retrieves a list of events based on the given query.
+     * @returns EventDtoPageResponseDto Success
      * @throws ApiError
      */
     public static getV3Events({
@@ -62,19 +62,20 @@ export class EventsService {
                 'Limit': limit,
                 'Offset': offset,
             },
-            errors: {
-                400: `If the query is invalid.`,
-            },
         });
     }
 
     /**
+     * Creates a new event.
      * @returns EventDto Success
      * @throws ApiError
      */
     public static postV3Events({
         requestBody,
     }: {
+        /**
+         * Event information.
+         */
         requestBody?: EventFormDto,
     }): CancelablePromise<EventDto> {
         return __request(OpenAPI, {
@@ -86,12 +87,16 @@ export class EventsService {
     }
 
     /**
+     * Retrieves event details by ID.
      * @returns EventDto Success
      * @throws ApiError
      */
     public static getV3Events1({
         id,
     }: {
+        /**
+         * The ID of the event.
+         */
         id: number,
     }): CancelablePromise<EventDto> {
         return __request(OpenAPI, {
@@ -104,6 +109,7 @@ export class EventsService {
     }
 
     /**
+     * Updates an existing event by ID.
      * @returns EventDto Success
      * @throws ApiError
      */
@@ -111,7 +117,13 @@ export class EventsService {
         id,
         requestBody,
     }: {
+        /**
+         * The ID of the event.
+         */
         id: number,
+        /**
+         * Updated event information.
+         */
         requestBody?: EventFormDto,
     }): CancelablePromise<EventDto> {
         return __request(OpenAPI, {
@@ -126,6 +138,7 @@ export class EventsService {
     }
 
     /**
+     * Partially updates a specific event by its ID using JSON Patch.
      * @returns any Success
      * @throws ApiError
      */
@@ -133,7 +146,13 @@ export class EventsService {
         id,
         requestBody,
     }: {
+        /**
+         * The ID of the event to update.
+         */
         id: number,
+        /**
+         * The JSON Patch document with updates.
+         */
         requestBody?: EventFormDtoJsonPatchDocument,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
@@ -148,12 +167,16 @@ export class EventsService {
     }
 
     /**
+     * Deletes an event by ID.
      * @returns any Success
      * @throws ApiError
      */
     public static deleteV3Events({
         id,
     }: {
+        /**
+         * The ID of the event to delete.
+         */
         id: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
