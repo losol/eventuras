@@ -45,100 +45,91 @@ namespace Eventuras.WebApi.Controllers.Users
         [HttpGet("me")]
         public async Task<IActionResult> Me(CancellationToken cancellationToken)
         {
-            try
-            {
-                var emailClaim = HttpContext.User.GetEmail();
-                var nameClaim = HttpContext.User.GetName();
-                var phoneClaim = HttpContext.User.GetMobilePhone();
+            var emailClaim = HttpContext.User.GetEmail();
+            var nameClaim = HttpContext.User.GetName();
+            var phoneClaim = HttpContext.User.GetMobilePhone();
 
+            if (_authSettings.EnablePiiLogging)
+            {
+                _logger.LogInformation($"Getting user info for email: {emailClaim}, name: {nameClaim}, phone: {phoneClaim} .");
+            }
+
+            if (string.IsNullOrEmpty(emailClaim))
+            {
+                _logger.LogWarning("No email provided for user to in this request.");
+                return BadRequest("No email provided.");
+            }
+
+            ApplicationUser user;
+
+            try { user = await _userRetrievalService.GetUserByEmailAsync(emailClaim, null, cancellationToken); }
+            catch (Services.Exceptions.NotFoundException)
+            {
                 if (_authSettings.EnablePiiLogging)
                 {
-                    _logger.LogInformation($"Getting user info for email: {emailClaim}, name: {nameClaim}, phone: {phoneClaim} .");
+                    _logger.LogInformation($"No user found with email {emailClaim}. Creating new user.");
                 }
-
-                if (string.IsNullOrEmpty(emailClaim))
-                {
-                    _logger.LogWarning("No email provided for user to in this request.");
-                    return BadRequest("No email provided.");
-                }
-
-                ApplicationUser user;
-
-                try { user = await _userRetrievalService.GetUserByEmailAsync(emailClaim, null, cancellationToken); }
-                catch (Services.Exceptions.NotFoundException)
-                {
-                    if (_authSettings.EnablePiiLogging)
-                    {
-                        _logger.LogInformation($"No user found with email {emailClaim}. Creating new user.");
-                    }
-                    user = await _userManagementService.CreateNewUserAsync(nameClaim,
-                        emailClaim,
-                        phoneClaim,
-                        cancellationToken);
-                }
-
-                return Ok(new UserDto(user));
+                user = await _userManagementService.CreateNewUserAsync(nameClaim,
+                    emailClaim,
+                    phoneClaim,
+                    cancellationToken);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Failed to get user info: {ex}");
-                throw;
-            }
+
+            return Ok(new UserDto(user));
+
         }
 
         // GET: /v3/users/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id, CancellationToken cancellationToken)
         {
-            try
+            var principal = HttpContext.User;
+            if (!principal.IsAdmin() && id != principal.GetUserId())
             {
-                var principal = HttpContext.User;
-                if (!principal.IsAdmin() && id != principal.GetUserId())
-                {
-                    return Forbid();
-                }
+                return Forbid();
+            }
 
-                var user = await _userRetrievalService.GetUserByIdAsync(id, null, cancellationToken);
-                return Ok(new UserDto(user));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Failed to get user by ID: {ex}");
-                throw;
-            }
+            var user = await _userRetrievalService.GetUserByIdAsync(id, null, cancellationToken);
+            return Ok(new UserDto(user));
+
         }
-
         // GET: /v3/users
         [HttpGet]
         [Authorize(Policy = Constants.Auth.AdministratorRole)]
-        public async Task<PageResponseDto<UserDto>> List(
-            [FromQuery] UsersQueryDto request,
-            CancellationToken cancellationToken)
+        public async Task<IActionResult> List(
+       [FromQuery] UsersQueryDto request,
+       CancellationToken cancellationToken)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                var paging = await _userRetrievalService
-                .ListUsers(
-                    new UserListRequest
-                    {
-                        Filter = request.ToUserFilter(),
-                        Limit = request.Limit,
-                        Offset = request.Offset,
-                        OrderBy = request.Order,
-                        Descending = request.Descending
-                    },
-                    UserRetrievalOptions.Default,
-                    cancellationToken);
+                return BadRequest(ModelState.FormatErrors());
+            }
 
-                return PageResponseDto<UserDto>.FromPaging(
-                    request, paging, u => new UserDto(u));
-            }
-            catch (Exception ex)
+            var principal = HttpContext.User;
+            if (!principal.IsAdmin())
             {
-                _logger.LogError($"Failed to list users: {ex}");
-                throw;
+                return Forbid();
             }
+
+            var paging = await _userRetrievalService
+            .ListUsers(
+                new UserListRequest
+                {
+                    Filter = request.ToUserFilter(),
+                    Limit = request.Limit,
+                    Offset = request.Offset,
+                    OrderBy = request.Order,
+                    Descending = request.Descending
+                },
+                UserRetrievalOptions.Default,
+                cancellationToken);
+
+            var pageResponse = PageResponseDto<UserDto>.FromPaging(
+                request, paging, u => new UserDto(u));
+
+            return Ok(pageResponse);
         }
+
 
         // POST /v3/users
         [HttpPost]
@@ -151,18 +142,11 @@ namespace Eventuras.WebApi.Controllers.Users
                 return BadRequest(ModelState.FormatErrors());
             }
 
-            try
-            {
-                var user = await _userManagementService
-                .CreateNewUserAsync(dto.Name, dto.Email, dto.PhoneNumber, cancellationToken);
+            var user = await _userManagementService
+            .CreateNewUserAsync(dto.Name, dto.Email, dto.PhoneNumber, cancellationToken);
 
-                return Ok(new UserDto(user));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Failed to create new user: {ex}");
-                throw;
-            }
+            return Ok(new UserDto(user));
+
         }
 
         // PUT /v3/users/{id}
@@ -179,16 +163,9 @@ namespace Eventuras.WebApi.Controllers.Users
             var user = await _userRetrievalService.GetUserByIdAsync(id, null, cancellationToken);
             dto.CopyTo(user);
 
-            try
-            {
-                await _userManagementService.UpdateUserAsync(user, cancellationToken);
-                return Ok(new UserDto(user));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Failed to update user: {ex}");
-                throw;
-            }
+            await _userManagementService.UpdateUserAsync(user, cancellationToken);
+            return Ok(new UserDto(user));
+
 
         }
     }

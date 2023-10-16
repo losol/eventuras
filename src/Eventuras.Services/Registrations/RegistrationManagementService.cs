@@ -11,6 +11,7 @@ using Eventuras.Services.Exceptions;
 using Eventuras.Services.Orders;
 using Eventuras.Services.Users;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Eventuras.Services.Registrations
 {
@@ -21,12 +22,14 @@ namespace Eventuras.Services.Registrations
         private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
         private readonly IUserRetrievalService _userRetrievalService;
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<RegistrationManagementService> _logger;
 
         public RegistrationManagementService(
             IRegistrationAccessControlService registrationAccessControlService,
             IOrderManagementService orderManagementService,
             IEventInfoRetrievalService eventInfoRetrievalService,
             IUserRetrievalService userRetrievalService,
+            ILogger<RegistrationManagementService> logger,
             ApplicationDbContext context)
         {
             _registrationAccessControlService = registrationAccessControlService;
@@ -34,6 +37,7 @@ namespace Eventuras.Services.Registrations
             _userRetrievalService = userRetrievalService;
             _context = context;
             _orderManagementService = orderManagementService;
+            _logger = logger;
         }
 
         public async Task<Registration> CreateRegistrationAsync(
@@ -49,6 +53,7 @@ namespace Eventuras.Services.Registrations
 
             if (existingRegistration != null)
             {
+                _logger.LogWarning("Found existing registration for user on event.");
                 throw new DuplicateException("Found existing registration for user on event.");
             }
 
