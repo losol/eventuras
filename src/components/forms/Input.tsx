@@ -103,6 +103,7 @@ export type AutoCompleteDataProvider = (options: {
 
 export type InputAutoCompleteProps = {
   id: string;
+  resetAfterSelect?: boolean;
   placeholder?: string;
   dataProvider: AutoCompleteDataProvider;
   minimumAmountOfCharacters: number;
@@ -131,6 +132,9 @@ export const InputAutoComplete = (props: InputAutoCompleteProps) => {
       (inputRef.current as any).value = selectedUser[props.labelProperty];
 
       if (props.onItemSelected) props.onItemSelected(selectedUser);
+      if (props.resetAfterSelect === true) {
+        clearTextHandler();
+      }
     }
   };
 
@@ -191,7 +195,7 @@ export const InputAutoComplete = (props: InputAutoCompleteProps) => {
               clearTextHandler();
             }
           }}
-          className="block bg-black  p-2 absolute right-1 top-1 rounded cursor-pointer bg-opacity-70"
+          className="block bg-black  p-3 absolute right-1 top-1 rounded cursor-pointer bg-opacity-70"
           onClick={clearTextHandler}
         >
           <span className="pointer-events-none">&#x2715;</span>

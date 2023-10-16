@@ -1,10 +1,11 @@
 import useTranslation from 'next-translate/useTranslation';
 import { useForm } from 'react-hook-form';
 
-import Checkbox, { CheckBoxDescription, CheckBoxLabel } from '@/components/forms/Checkbox';
+import ProductSelection from '@/components/forms/ProductSelection';
 import Button from '@/components/ui/Button';
 import Heading from '@/components/ui/Heading';
 import { RegistrationProduct } from '@/types/RegistrationProduct';
+import { mapSelectedProductsToQuantity } from '@/utils/api/mappers';
 
 type SubmitCallback = (values: Map<string, number>) => void;
 
@@ -15,21 +16,7 @@ export type RegistrationCustomizeProps = {
 
 const createFormHandler =
   (products: RegistrationProduct[], onSubmit: SubmitCallback) => (data: any) => {
-    const submissionMap = new Map<string, number>();
-    Object.keys(data).forEach((key: string) => {
-      const relatedProduct = products.find(product => product.id === key);
-      if (!relatedProduct) return;
-      const formValue = data[key];
-      let value = 0;
-      if (relatedProduct.isBooleanSelection) {
-        if (relatedProduct.mandatory || !!formValue) {
-          value = 1;
-        }
-      } else {
-        value = parseInt(formValue, 10);
-      }
-      submissionMap.set(key, value);
-    });
+    const submissionMap = mapSelectedProductsToQuantity(products, data);
     onSubmit(submissionMap);
   };
 
@@ -43,42 +30,7 @@ const RegistrationCustomize = ({ products, onSubmit }: RegistrationCustomizeProp
       <Heading className="container">{t('customize.title')}</Heading>
       <p className="container pb-12">{t('customize.description')}</p>
       <form onSubmit={handleSubmit(createFormHandler(products, onSubmit))} className="container">
-        {products.map((product: RegistrationProduct) => {
-          if (product.isBooleanSelection) {
-            return (
-              <Checkbox
-                key={product.id}
-                id={product.id}
-                title={product.title}
-                description={product.description}
-                {...register(product.id)}
-                disabled={product.mandatory}
-                defaultChecked={product.mandatory}
-              >
-                <CheckBoxLabel>{product.title}</CheckBoxLabel>
-                <CheckBoxDescription>{product.description}</CheckBoxDescription>
-              </Checkbox>
-            );
-          }
-          return (
-            <div key={product.id}>
-              <input
-                type="number"
-                className="w-16 mb-3 appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                defaultValue={product.minimumQuantity}
-                min={product.minimumQuantity}
-                {...register(product.id, {
-                  min: {
-                    value: product.minimumQuantity,
-                    message: `Minimum is ${product.minimumQuantity}`,
-                  },
-                })}
-              />
-              <label htmlFor={product.id}>{product.title}</label>
-              <p>{product.description}</p>
-            </div>
-          );
-        })}
+        <ProductSelection products={products} register={register} />
         <Button type="submit">Continue</Button>
       </form>
     </>

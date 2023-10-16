@@ -8,8 +8,9 @@ import { Container, Drawer, Layout } from '@/components/ui';
 import Button from '@/components/ui/Button';
 import Heading from '@/components/ui/Heading';
 import Loading from '@/components/ui/Loading';
-import { useEvent, useRegistrations } from '@/hooks/apiHooks';
+import { useEvent, useEventProducts, useRegistrations } from '@/hooks/apiHooks';
 
+import AddUserToEvent from '../../components/AddUserToEvent';
 import EventParticipantList from '../../components/EventParticipantList';
 
 type EventInfoProps = {
@@ -32,8 +33,10 @@ const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
   const { t } = useTranslation('admin');
   const { loading: eventsLoading, event } = useEvent(eventId);
   const [emailDrawerOpen, setEmailDrawerOpen] = useState<boolean>(false);
+  const { registrationProducts: eventProducts, loading: loadingEventProducts } =
+    useEventProducts(eventId);
 
-  if (eventsLoading) {
+  if (eventsLoading || loadingEventProducts) {
     return <Loading />;
   }
 
@@ -45,7 +48,7 @@ const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
           <>
             <Heading as="h1">{event.title ?? ''}</Heading>
             <p>{event.description ?? ''}</p>
-
+            <AddUserToEvent event={event} eventProducts={eventProducts} />
             <Button
               variant="primary"
               onClick={() => {

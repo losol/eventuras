@@ -80,7 +80,10 @@ export function Dropdown({
       const o = options as DropdownOption[];
       return (s ?? []).map(id => o.filter(opt => opt.id === id)[0].label).join(', ');
     }
-    return selected as string;
+    if (selected) {
+      return options.filter(o => o.id === selected)[0]?.label;
+    }
+    return selected;
   };
   return (
     <div id={id}>

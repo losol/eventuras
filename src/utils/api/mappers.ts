@@ -62,3 +62,26 @@ export const mapToNewRegistration = (
 
   return newRegistration;
 };
+
+export const mapSelectedProductsToQuantity = (
+  products: RegistrationProduct[],
+  selectedProducts: Array<any>
+): Map<string, number> => {
+  const submissionMap = new Map<string, number>();
+  Object.keys(selectedProducts).forEach((key: any) => {
+    const relatedProduct = products.find(product => product.id === key);
+    if (!relatedProduct) return;
+    const formValue = selectedProducts[key];
+    let value = 0;
+    if (relatedProduct.isBooleanSelection) {
+      if (relatedProduct.mandatory || !!formValue) {
+        value = 1;
+      }
+    } else {
+      value = parseInt(formValue, 10);
+    }
+    submissionMap.set(key, value);
+  });
+
+  return submissionMap;
+};
