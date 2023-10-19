@@ -58,8 +58,13 @@ export const useEvents = (options: GetEventsOptions = {}) => {
 
   return { loading, response, events: response?.data };
 };
-
-export const useRegistrations = (options: GetEventRegistrationsOptions = {}) => {
+/**
+ *
+ * @param options GetEventRegistrationsOptions
+ * @param seed use this to force reload registrations
+ * @returns
+ */
+export const useRegistrations = (options: GetEventRegistrationsOptions = {}, seed = 0) => {
   const [response, setResponse] = useState<RegistrationDtoPageResponseDto | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -74,7 +79,7 @@ export const useRegistrations = (options: GetEventRegistrationsOptions = {}) => 
       setResponse(null);
     };
     execute();
-  }, [options.eventId]);
+  }, [options.eventId, seed]);
 
   return { loading, response, registrations: response?.data };
 };

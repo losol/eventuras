@@ -29,10 +29,17 @@ type AddUserToEventFormValues = {
 type AddUserCardProps = {
   user: UserDto;
   event: EventDto;
+  onUseradded: (user: UserDto) => void;
   products: RegistrationProduct[];
-  onRemove: (u: UserDto) => void;
+  onRemove?: (u: UserDto) => void;
 };
-const AddUserCard: React.FC<AddUserCardProps> = ({ user, event, products, onRemove }) => {
+const AddUserCard: React.FC<AddUserCardProps> = ({
+  user,
+  event,
+  products,
+  onRemove,
+  onUseradded,
+}) => {
   const { addAppNotification } = useAppNotifications();
   const { t: common } = useTranslation('common');
 
@@ -49,7 +56,10 @@ const AddUserCard: React.FC<AddUserCardProps> = ({ user, event, products, onRemo
   }, []);
 
   const onSubmitForm = async (values: AddUserToEventFormValues) => {
-    const productMap = mapSelectedProductsToQuantity(products, values.products);
+    const productMap =
+      products && products?.length
+        ? mapSelectedProductsToQuantity(products, values.products)
+        : new Map();
     const newRegistration: NewRegistrationDto = {
       userId: user.id!,
       eventId: event.id!,
@@ -68,7 +78,7 @@ const AddUserCard: React.FC<AddUserCardProps> = ({ user, event, products, onRemo
         message: 'User succesfully added to the event!',
         type: AppNotificationType.SUCCESS,
       });
-      onRemove(user); //remove the card from the list of users to add
+      onUseradded(user);
     } else {
       if (result.error.statusCode === 409) {
         addAppNotification({
@@ -120,7 +130,9 @@ const AddUserCard: React.FC<AddUserCardProps> = ({ user, event, products, onRemo
       <Button
         variant="light"
         onClick={() => {
-          onRemove(user);
+          if (onRemove) {
+            onRemove(user);
+          }
         }}
       >
         Clear
@@ -131,8 +143,9 @@ const AddUserCard: React.FC<AddUserCardProps> = ({ user, event, products, onRemo
 export type AddUserToEventProps = {
   event: EventDto;
   eventProducts: ProductDto[];
+  onUseradded: (user: UserDto) => void;
 };
-const AddUserToEvent: React.FC<AddUserToEventProps> = ({ event, eventProducts }) => {
+const AddUserToEvent: React.FC<AddUserToEventProps> = ({ event, eventProducts, onUseradded }) => {
   const [usersToAdd, setUsersToAdd] = useState<UserDto[]>([]);
   return (
     <>
@@ -151,12 +164,13 @@ const AddUserToEvent: React.FC<AddUserToEventProps> = ({ event, eventProducts })
       {usersToAdd.map(user => (
         <AddUserCard
           user={user}
+          onUseradded={u => {
+            setUsersToAdd([...usersToAdd].filter(us => u.id !== us.id));
+            onUseradded(u);
+          }}
           event={event}
           products={mapEventProductsToView(eventProducts)}
           key={user.id}
-          onRemove={u => {
-            setUsersToAdd([...usersToAdd].filter(us => u.id !== us.id));
-          }}
         />
       ))}
     </>

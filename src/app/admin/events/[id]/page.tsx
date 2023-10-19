@@ -26,10 +26,14 @@ type EventInfoProps = {
  */
 const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
   const eventId = params.id;
-  const { registrations } = useRegistrations({
-    eventId,
-    includeUserInfo: true,
-  });
+  const [registrationSeed, setRegistrationSeed] = useState(0);
+  const { registrations } = useRegistrations(
+    {
+      eventId,
+      includeUserInfo: true,
+    },
+    registrationSeed
+  );
   const { t } = useTranslation('admin');
   const { loading: eventsLoading, event } = useEvent(eventId);
   const [emailDrawerOpen, setEmailDrawerOpen] = useState<boolean>(false);
@@ -48,7 +52,13 @@ const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
           <>
             <Heading as="h1">{event.title ?? ''}</Heading>
             <p>{event.description ?? ''}</p>
-            <AddUserToEvent event={event} eventProducts={eventProducts} />
+            <AddUserToEvent
+              event={event}
+              eventProducts={eventProducts}
+              onUseradded={() => {
+                setRegistrationSeed(registrationSeed + 1);
+              }}
+            />
             <Button
               variant="primary"
               onClick={() => {

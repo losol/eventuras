@@ -80,7 +80,10 @@ export const mapSelectedProductsToQuantity = (
     } else {
       value = parseInt(formValue, 10);
     }
-    submissionMap.set(key, value);
+    if (value > 0) {
+      //only set when we actually have a quantity to send
+      submissionMap.set(key, value);
+    }
   });
 
   return submissionMap;
