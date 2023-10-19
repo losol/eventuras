@@ -1,6 +1,6 @@
-using System.Linq;
 using Eventuras.Domain;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Eventuras.Services.Registrations
 {

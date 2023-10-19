@@ -1,6 +1,3 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Eventuras.Services.Organizations.Settings;
 using Eventuras.Services.Sms;
 using Losol.Communication.HealthCheck.Abstractions;
@@ -8,6 +5,9 @@ using Losol.Communication.Sms;
 using Losol.Communication.Sms.Twilio;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Eventuras.Services.Twilio
 {

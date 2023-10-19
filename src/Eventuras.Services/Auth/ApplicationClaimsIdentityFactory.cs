@@ -1,14 +1,14 @@
 using Eventuras.Domain;
+using Eventuras.Infrastructure;
 using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Eventuras.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eventuras.Services.Auth
 {

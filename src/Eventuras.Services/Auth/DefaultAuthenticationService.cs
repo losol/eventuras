@@ -1,9 +1,9 @@
-using System;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using System;
+using System.Threading.Tasks;
 
 namespace Eventuras.Services.Auth
 {

@@ -1,12 +1,12 @@
-using System;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Eventuras.Services.Organizations
 {

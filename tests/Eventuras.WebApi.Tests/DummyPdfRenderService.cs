@@ -1,8 +1,8 @@
-using System.IO;
-using System.Threading.Tasks;
 using Eventuras.Services.Pdf;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Eventuras.WebApi.Tests
 {

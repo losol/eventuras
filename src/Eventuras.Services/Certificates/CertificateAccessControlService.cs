@@ -1,9 +1,9 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Registrations;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Eventuras.Services.Certificates
 {

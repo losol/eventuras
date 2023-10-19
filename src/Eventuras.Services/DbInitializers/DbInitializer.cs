@@ -1,12 +1,11 @@
+using Eventuras.Domain;
+using Eventuras.Infrastructure;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 using static Eventuras.Domain.PaymentMethod;
 
 namespace Eventuras.Services.DbInitializers
@@ -37,7 +36,7 @@ namespace Eventuras.Services.DbInitializers
             {
                 await _db.Database.MigrateAsync();
             }
-            
+
             // Add administrator role if it does not exist
             string[] roleNames = { Roles.Admin, Roles.SuperAdmin, Roles.SystemAdmin };
             IdentityResult roleResult;

@@ -1,6 +1,6 @@
+using Eventuras.Domain;
 using System.Collections.Generic;
 using System.Linq;
-using Eventuras.Domain;
 using Xunit;
 
 namespace Eventuras.UnitTests.RegistrationTests

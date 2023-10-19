@@ -1,8 +1,8 @@
+using Eventuras.Services.Views;
+using Losol.Communication.Email;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Eventuras.Services.Views;
-using Losol.Communication.Email;
 
 namespace Eventuras.Services.Email
 {
@@ -86,7 +86,7 @@ namespace Eventuras.Services.Email
             }, attachments);
         }
     }
-    
+
     public class ApplicationEmailModel
     {
         public string Subject { get; set; }

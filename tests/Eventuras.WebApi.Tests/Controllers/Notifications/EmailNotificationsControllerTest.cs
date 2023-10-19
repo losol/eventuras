@@ -1,15 +1,14 @@
-using System;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Net.Http;
-using System.Net.Mail;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
 using Losol.Communication.Email;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Net.Mail;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Notifications
@@ -77,7 +76,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
         public async Task Should_Not_Send_Any_Email_Notification_If_No_Registrants_Found()
         {
             using var scope = _factory.Services.NewTestScope();
-            using var evt = await scope.CreateEventAsync(); 
+            using var evt = await scope.CreateEventAsync();
 
             var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
             var response = await client.PostAsync("/v3/notifications/email", new
@@ -452,7 +451,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     }
                 }
             });
-            
+
             await response.CheckNotificationResponse(scope,
                 u1.Entity, u2.Entity, u3.Entity);
 
@@ -479,7 +478,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                 bodyMarkdown = body,
                 recipients = new[] { address }
             });
-            
+
             await response.CheckNotificationResponse(scope, 1);
 
             CheckEmailSentTo(subject, body, address);
@@ -535,7 +534,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     eventId = evt.Entity.EventInfoId
                 }
             });
-            
+
             await response.CheckNotificationResponse(scope, user.Entity);
 
             CheckEmailSentTo("Test 1", "Test email 1", user.Entity);
@@ -657,7 +656,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     eventId = evt.Entity.EventInfoId
                 }
             });
-            
+
             await response.CheckNotificationResponse(scope, 1, 0, 1);
 
             var notification = await scope.Db.Notifications

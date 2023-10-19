@@ -1,11 +1,11 @@
-using System;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Users

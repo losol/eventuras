@@ -1,8 +1,8 @@
-using System;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 
 namespace Eventuras.TestAbstractions
 {
@@ -40,7 +40,7 @@ namespace Eventuras.TestAbstractions
             {
                 disposable.Dispose();
             }
-            
+
             try
             {
                 _context.Remove(Entity);

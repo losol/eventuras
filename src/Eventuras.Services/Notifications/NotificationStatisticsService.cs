@@ -1,8 +1,8 @@
-using System;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 
 namespace Eventuras.Services.Notifications
 {

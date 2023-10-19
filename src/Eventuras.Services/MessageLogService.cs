@@ -1,11 +1,9 @@
-﻿using System;
+﻿using Eventuras.Domain;
+using Eventuras.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
-using Microsoft.EntityFrameworkCore;
-using static Eventuras.Domain.Order;
 
 namespace Eventuras.Services
 {

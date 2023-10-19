@@ -1,8 +1,3 @@
-using System;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.Auth;
@@ -10,6 +5,11 @@ using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Eventuras.Services.Notifications
 {

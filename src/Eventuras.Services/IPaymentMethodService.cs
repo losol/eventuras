@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Eventuras.Domain;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Eventuras.Domain;
 using static Eventuras.Domain.PaymentMethod;
 
 namespace Eventuras.Services

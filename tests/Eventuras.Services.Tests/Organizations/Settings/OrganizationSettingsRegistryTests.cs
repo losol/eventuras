@@ -1,7 +1,7 @@
+using Eventuras.Services.Organizations.Settings;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Eventuras.Services.Organizations.Settings;
 using Xunit;
 
 namespace Eventuras.Services.Tests.Organizations.Settings

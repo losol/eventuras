@@ -1,9 +1,9 @@
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.TestAbstractions;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Eventuras.WebApi.Tests
 {

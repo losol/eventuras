@@ -1,15 +1,15 @@
 #nullable enable
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Asp.Versioning;
 using Eventuras.Services.Orders;
 using Eventuras.Services.Registrations;
 using Eventuras.WebApi.Controllers.Orders;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Eventuras.WebApi.Controllers.Registrations
 {

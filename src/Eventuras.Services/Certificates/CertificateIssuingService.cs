@@ -1,13 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.Events;
 using Eventuras.Services.Registrations;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using static Eventuras.Domain.Registration;
 
 namespace Eventuras.Services.Certificates
@@ -47,7 +47,7 @@ namespace Eventuras.Services.Certificates
                 await reader.HasMoreAsync(cancellationToken);)
             {
                 certificates.AddRange(from registration in await reader.ReadNextAsync(cancellationToken)
-                    select registration.CreateCertificate());
+                                      select registration.CreateCertificate());
 
                 await _context.SaveChangesAsync(cancellationToken);
             }
@@ -69,7 +69,7 @@ namespace Eventuras.Services.Certificates
                 await reader.HasMoreAsync(cancellationToken);)
             {
                 certificates.AddRange(from registration in await reader.ReadNextAsync(cancellationToken)
-                    select registration.UpdateCertificate());
+                                      select registration.UpdateCertificate());
 
                 await _context.SaveChangesAsync(cancellationToken);
             }

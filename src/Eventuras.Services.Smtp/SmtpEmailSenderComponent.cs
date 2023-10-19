@@ -1,6 +1,3 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Eventuras.Services.Email;
 using Eventuras.Services.Organizations.Settings;
 using Losol.Communication.Email;
@@ -8,6 +5,9 @@ using Losol.Communication.Email.Smtp;
 using Losol.Communication.HealthCheck.Abstractions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Eventuras.Services.Smtp
 {

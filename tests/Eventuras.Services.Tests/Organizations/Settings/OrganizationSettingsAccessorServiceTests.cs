@@ -1,12 +1,12 @@
+using Eventuras.Domain;
+using Eventuras.Services.Organizations;
+using Eventuras.Services.Organizations.Settings;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
-using Eventuras.Domain;
-using Eventuras.Services.Organizations;
-using Eventuras.Services.Organizations.Settings;
-using Moq;
 using Xunit;
 
 namespace Eventuras.Services.Tests.Organizations.Settings

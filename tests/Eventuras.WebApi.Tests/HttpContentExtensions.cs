@@ -1,8 +1,8 @@
+using iTextSharp.text.pdf;
+using iTextSharp.text.pdf.parser;
 using System.Net.Http;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.parser;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests

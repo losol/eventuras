@@ -1,8 +1,8 @@
+using Eventuras.Domain;
+using Eventuras.Infrastructure;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
 
 namespace Eventuras.Services.EventCollections
 {

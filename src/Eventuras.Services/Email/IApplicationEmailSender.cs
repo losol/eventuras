@@ -1,5 +1,5 @@
-using System.Threading.Tasks;
 using Losol.Communication.Email;
+using System.Threading.Tasks;
 
 namespace Eventuras.Services.Email
 {

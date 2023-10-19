@@ -1,8 +1,8 @@
-using System;
-using System.Threading.Tasks;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Organizations

@@ -1,10 +1,10 @@
-using System.Threading;
-using System.Threading.Tasks;
 using Asp.Versioning;
 using Eventuras.Services.Orders;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Eventuras.WebApi.Controllers.Orders
 {
@@ -43,19 +43,19 @@ namespace Eventuras.WebApi.Controllers.Orders
         public async Task<IActionResult> ListAccessibleOrders([FromQuery] OrdersQueryDto query, CancellationToken cancellationToken = default)
         {
             var paging = await _orderRetrievalService.ListOrdersAsync(new OrderListRequest
+            {
+                Limit = query.Limit,
+                Offset = query.Offset,
+                Filter = new OrderListFilter
                 {
-                    Limit = query.Limit,
-                    Offset = query.Offset,
-                    Filter = new OrderListFilter
-                    {
-                        EventId = query.EventId,
-                        UserId = query.UserId,
-                        RegistrationId = query.RegistrationId,
-                        Status = query.Status,
-                        AccessibleOnly = true,
-                        OrganizationId = query.OrganizationId
-                    }
-                },
+                    EventId = query.EventId,
+                    UserId = query.UserId,
+                    RegistrationId = query.RegistrationId,
+                    Status = query.Status,
+                    AccessibleOnly = true,
+                    OrganizationId = query.OrganizationId
+                }
+            },
                 new OrderRetrievalOptions
                 {
                     IncludeUser = query.IncludeUser,

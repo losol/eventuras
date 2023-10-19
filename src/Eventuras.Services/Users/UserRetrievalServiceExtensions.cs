@@ -1,8 +1,7 @@
-using System;
+using Eventuras.Domain;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Eventuras.Domain;
 
 namespace Eventuras.Services.Users
 {

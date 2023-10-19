@@ -1,9 +1,5 @@
 #nullable enable
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.Events;
@@ -12,6 +8,10 @@ using Eventuras.Services.Orders;
 using Eventuras.Services.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Eventuras.Services.Registrations
 {

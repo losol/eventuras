@@ -1,14 +1,14 @@
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Eventuras.Services.Auth;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Eventuras.Services.EventCollections
 {

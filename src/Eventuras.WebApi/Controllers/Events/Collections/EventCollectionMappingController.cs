@@ -1,9 +1,9 @@
-using System;
-using System.Threading.Tasks;
 using Asp.Versioning;
 using Eventuras.Services.EventCollections;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace Eventuras.WebApi.Controllers.Events.Collections
 {

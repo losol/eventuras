@@ -1,5 +1,5 @@
-using System.Threading.Tasks;
 using Eventuras.Domain;
+using System.Threading.Tasks;
 
 namespace Eventuras.Services.Organizations
 {

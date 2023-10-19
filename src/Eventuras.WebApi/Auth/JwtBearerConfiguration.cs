@@ -1,12 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Json;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.Json;
 
 namespace Eventuras.WebApi.Auth
 {

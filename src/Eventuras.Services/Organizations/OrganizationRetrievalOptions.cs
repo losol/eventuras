@@ -5,7 +5,7 @@ namespace Eventuras.Services.Organizations
         public bool LoadMembers { get; set; }
 
         public bool LoadHostnames { get; set; }
-        
+
         public bool LoadSettings { get; set; }
     }
 }

@@ -1,6 +1,6 @@
+using Stripe;
 using System.Linq;
 using System.Threading.Tasks;
-using Stripe;
 
 namespace Eventuras.Services.Stripe
 {

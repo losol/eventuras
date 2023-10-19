@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services;
@@ -24,6 +22,8 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
+using System.Linq;
 
 namespace Eventuras.WebApi.Extensions
 {

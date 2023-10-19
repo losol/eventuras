@@ -1,9 +1,9 @@
+using Eventuras.Services.Organizations.Settings;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
-using Eventuras.Services.Organizations.Settings;
 
 namespace Eventuras.WebApi.Controllers.Organizations
 {
@@ -11,7 +11,7 @@ namespace Eventuras.WebApi.Controllers.Organizations
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            var service = (IOrganizationSettingsRegistry) validationContext
+            var service = (IOrganizationSettingsRegistry)validationContext
                 .GetService(typeof(IOrganizationSettingsRegistry));
 
             var dto = value as OrganizationSettingValueDto;
