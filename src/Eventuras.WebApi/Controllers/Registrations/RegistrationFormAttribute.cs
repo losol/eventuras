@@ -1,7 +1,7 @@
-using System;
-using System.ComponentModel.DataAnnotations;
 using Eventuras.Services.Auth;
 using Microsoft.AspNetCore.Http;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Eventuras.WebApi.Controllers.Registrations
 {

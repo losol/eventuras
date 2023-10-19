@@ -1,8 +1,8 @@
-using System;
-using System.Linq;
 using Eventuras.Domain;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
+using System;
+using System.Linq;
 
 namespace Eventuras.Services.Events
 {
@@ -154,7 +154,7 @@ namespace Eventuras.Services.Events
             {
                 query = query.Include(e => e.Registrations);
             }
-            
+
             if (options.LoadCollections)
             {
                 query = query.Include(e => e.Collections);

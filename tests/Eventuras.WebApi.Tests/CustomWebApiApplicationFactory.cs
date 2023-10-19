@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Eventuras.Infrastructure;
 using Eventuras.Services.DbInitializers;
 using Eventuras.Services.Organizations.Settings;
@@ -19,6 +17,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Eventuras.WebApi.Tests
 {

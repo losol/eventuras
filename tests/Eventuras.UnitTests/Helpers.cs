@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using Eventuras.Domain;
+using System.Collections.Generic;
 
 namespace Eventuras.UnitTests
 {

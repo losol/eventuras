@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
@@ -10,6 +5,11 @@ using Eventuras.WebApi.Controllers.Registrations;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using NodaTime;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Registrations

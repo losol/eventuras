@@ -1,10 +1,10 @@
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Services.Exceptions;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Eventuras.Services.Exceptions;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eventuras.Services.Events
 {

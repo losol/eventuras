@@ -1,5 +1,3 @@
-using System;
-
 namespace Eventuras.WebApi.Models
 {
     public class OnlineCourseDto

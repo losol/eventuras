@@ -1,11 +1,11 @@
+using Eventuras.Domain;
+using Eventuras.Services.Email;
+using Losol.Communication.Email;
 using System;
 using System.IO;
 using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
-using Eventuras.Domain;
-using Eventuras.Services.Email;
-using Losol.Communication.Email;
 
 namespace Eventuras.Services.Certificates
 {

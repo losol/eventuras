@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services;
@@ -11,6 +6,11 @@ using Eventuras.TestAbstractions;
 using Eventuras.WebApi.Controllers.Orders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Registrations
@@ -440,7 +440,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             var response = await client.PostAsync($"/v3/registrations/{wrongId}/products",
                 new OrderUpdateRequestDto
                 {
-                    Lines = new [] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
+                    Lines = new[] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
                 });
 
             response.CheckNotFound();
@@ -454,14 +454,14 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             using var ev = await scope.CreateEventAsync();
-            using var reg = await scope.CreateRegistrationAsync( ev.Entity, user.Entity);
+            using var reg = await scope.CreateRegistrationAsync(ev.Entity, user.Entity);
             using var prod = await scope.CreateProductAsync(ev.Entity);
 
             var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
             var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/products",
                 new OrderUpdateRequestDto
                 {
-                    Lines = new [] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
+                    Lines = new[] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
                 });
 
             response.CheckOk();
@@ -475,7 +475,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             using var ev = await scope.CreateEventAsync();
-            using var reg = await scope.CreateRegistrationAsync( ev.Entity, user.Entity);
+            using var reg = await scope.CreateRegistrationAsync(ev.Entity, user.Entity);
             using var prod = await scope.CreateProductAsync(ev.Entity);
             using var order = await scope.CreateOrderAsync(reg.Entity, status: Order.OrderStatus.Invoiced);
 
@@ -483,7 +483,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/products",
                 new OrderUpdateRequestDto
                 {
-                    Lines = new [] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
+                    Lines = new[] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
                 });
 
             response.CheckOk();
@@ -497,7 +497,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             using var ev = await scope.CreateEventAsync();
-            using var reg = await scope.CreateRegistrationAsync( ev.Entity, user.Entity);
+            using var reg = await scope.CreateRegistrationAsync(ev.Entity, user.Entity);
             using var prod = await scope.CreateProductAsync(ev.Entity);
             using var order = await scope.CreateOrderAsync(reg.Entity);
 
@@ -505,7 +505,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/products",
                 new OrderUpdateRequestDto
                 {
-                    Lines = new [] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
+                    Lines = new[] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
                 });
 
             response.CheckOk();
@@ -520,14 +520,14 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             using var ev = await scope.CreateEventAsync();
-            using var reg = await scope.CreateRegistrationAsync( ev.Entity, user.Entity);
+            using var reg = await scope.CreateRegistrationAsync(ev.Entity, user.Entity);
             using var prod = await scope.CreateProductAsync(ev.Entity);
 
             var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
             var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/products",
                 new OrderUpdateRequestDto
                 {
-                    Lines = new [] { new OrderLineModel(prod.Entity.ProductId, null, -1) }
+                    Lines = new[] { new OrderLineModel(prod.Entity.ProductId, null, -1) }
                 });
 
             response.CheckBadRequest();
@@ -540,7 +540,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
             using var ev = await scope.CreateEventAsync();
-            using var reg = await scope.CreateRegistrationAsync( ev.Entity, user.Entity);
+            using var reg = await scope.CreateRegistrationAsync(ev.Entity, user.Entity);
             using var prod = await scope.CreateProductAsync(ev.Entity);
             using var order = await scope.CreateOrderAsync(reg.Entity, prod.Entity);
 
@@ -548,7 +548,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/products",
                 new OrderUpdateRequestDto
                 {
-                    Lines = new [] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
+                    Lines = new[] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
                 });
 
             response.CheckStatusCode(HttpStatusCode.NoContent);

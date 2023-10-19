@@ -1,12 +1,12 @@
-using System;
-using System.Net.Mime;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
 using Losol.Communication.Email;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using System;
+using System.Net.Mime;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Events.Certificates

@@ -1,7 +1,7 @@
 #nullable enable
 
-using System.ComponentModel.DataAnnotations;
 using Eventuras.WebApi.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Eventuras.WebApi.Controllers.Registrations
 {

@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using Eventuras.WebApi.Constants;
 
 namespace Eventuras.WebApi.Auth
 {

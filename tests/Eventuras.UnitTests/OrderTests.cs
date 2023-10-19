@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Eventuras.Domain;
+using System;
 using System.Collections.Generic;
-using Eventuras.Domain;
 using Xunit;
 using static Eventuras.Domain.Order;
 

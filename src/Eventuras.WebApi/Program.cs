@@ -1,11 +1,11 @@
-using System.IO;
-using System.Threading.Tasks;
 using Eventuras.Services.DbInitializers;
 using Eventuras.WebApi.Config;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Eventuras.WebApi
 {

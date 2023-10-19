@@ -1,10 +1,10 @@
+using Eventuras.Domain;
+using Eventuras.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eventuras.Services.Events
 {
@@ -21,8 +21,8 @@ namespace Eventuras.Services.Events
         {
             _context = context ?? throw
                 new ArgumentNullException(nameof(context));
-            
-            _eventInfoRetrievalService = eventInfoRetrievalService ?? throw 
+
+            _eventInfoRetrievalService = eventInfoRetrievalService ?? throw
                 new ArgumentNullException(nameof(eventInfoRetrievalService));
 
             _accessControlService = accessControlService ?? throw
@@ -92,7 +92,7 @@ namespace Eventuras.Services.Events
 
             await _context.SaveChangesAsync();
         }
-        
+
         public async Task AddProductAsync(Product product)
         {
             if (product == null)
@@ -130,7 +130,7 @@ namespace Eventuras.Services.Events
 
             await _context.UpdateAsync(product);
         }
-        
+
         private async Task CheckEventAccessAsync(int eventId)
         {
             var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventId);

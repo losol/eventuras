@@ -1,12 +1,12 @@
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Services.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Eventuras.Services.Exceptions;
 
 namespace Eventuras.Services.Organizations
 {

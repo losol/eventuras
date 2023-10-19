@@ -6,6 +6,6 @@ namespace Eventuras.Services
         public const string SuperAdmin = "SuperAdmin";
         public const string SystemAdmin = "SystemAdmin";
 
-        public static string[] All => new[] {Admin, SuperAdmin, SystemAdmin};
+        public static string[] All => new[] { Admin, SuperAdmin, SystemAdmin };
     }
 }

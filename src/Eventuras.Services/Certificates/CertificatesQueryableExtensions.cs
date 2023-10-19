@@ -1,7 +1,7 @@
-using System.Linq;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Eventuras.Services.Certificates
 {
@@ -15,21 +15,21 @@ namespace Eventuras.Services.Certificates
             if (filter.EventId.HasValue)
             {
                 query = from cert in query
-                    join reg in context.Registrations
-                        on cert equals reg.Certificate
-                    join evt in context.EventInfos
-                        on reg.EventInfo equals evt
-                    where evt.EventInfoId == filter.EventId
-                    select cert;
+                        join reg in context.Registrations
+                            on cert equals reg.Certificate
+                        join evt in context.EventInfos
+                            on reg.EventInfo equals evt
+                        where evt.EventInfoId == filter.EventId
+                        select cert;
             }
 
             if (filter.RegistrationId.HasValue)
             {
                 query = from cert in query
-                    join reg in context.Registrations
-                        on cert equals reg.Certificate
-                    where reg.RegistrationId == filter.RegistrationId
-                    select cert;
+                        join reg in context.Registrations
+                            on cert equals reg.Certificate
+                        where reg.RegistrationId == filter.RegistrationId
+                        select cert;
             }
 
             if (filter.Statuses?.Any() == true)

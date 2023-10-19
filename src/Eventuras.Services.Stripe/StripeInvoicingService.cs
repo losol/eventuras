@@ -1,11 +1,11 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services.Invoicing;
 using Microsoft.Extensions.Options;
 using NodaTime;
 using Stripe;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Eventuras.Services.Stripe
 {
@@ -35,7 +35,7 @@ namespace Eventuras.Services.Stripe
             {
                 await service.CreateAsync(new StripeInvoiceItemCreateOptions
                 {
-                    Amount = (int) (line.Total ?? 0 * 100m), // inclusive of quantity & tax
+                    Amount = (int)(line.Total ?? 0 * 100m), // inclusive of quantity & tax
                     Currency = line.Currency,
                     CustomerId = customer.Id,
                     Description = line.Description,

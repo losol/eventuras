@@ -1,4 +1,5 @@
 using Eventuras.Domain;
+using Eventuras.Services.Events;
 using Eventuras.Services.Registrations;
 using Microsoft.Extensions.Logging;
 using System;
@@ -6,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Eventuras.Services.Events;
 
 namespace Eventuras.Services.ExternalSync
 {

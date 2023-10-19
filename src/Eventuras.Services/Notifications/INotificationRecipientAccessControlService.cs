@@ -1,7 +1,7 @@
+using Eventuras.Domain;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Eventuras.Domain;
 
 namespace Eventuras.Services.Notifications
 {

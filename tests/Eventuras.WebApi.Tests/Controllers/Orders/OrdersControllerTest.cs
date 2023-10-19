@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
@@ -8,6 +5,9 @@ using Eventuras.WebApi.Controllers.Orders;
 using Eventuras.WebApi.Models;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Orders

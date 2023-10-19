@@ -1,8 +1,3 @@
-using System;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services.Auth;
 using Eventuras.Services.Events;
@@ -10,6 +5,11 @@ using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Http;
 using NodaTime;
+using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Eventuras.Services.Registrations
 {
@@ -116,9 +116,9 @@ namespace Eventuras.Services.Registrations
             if (!user.IsAdmin()) { return false; }
 
             var org = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(new OrganizationRetrievalOptions
-                {
-                    LoadMembers = true
-                },
+            {
+                LoadMembers = true
+            },
                 cancellationToken);
 
             if (org.Members.All(m => m.UserId != user.GetUserId())) { return false; }

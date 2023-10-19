@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Text.Json.Serialization;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using Eventuras.Services;
@@ -19,6 +17,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
+using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Eventuras.WebApi
 {

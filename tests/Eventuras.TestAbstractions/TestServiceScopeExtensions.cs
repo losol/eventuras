@@ -1,10 +1,10 @@
+using Eventuras.Domain;
+using Microsoft.AspNetCore.Identity;
+using NodaTime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Eventuras.Domain;
-using Microsoft.AspNetCore.Identity;
-using NodaTime;
 
 namespace Eventuras.TestAbstractions
 {
@@ -296,7 +296,7 @@ namespace Eventuras.TestAbstractions
             await scope.Db.SaveChangesAsync();
             return new DisposableEntity<Certificate>(cert, scope.Db);
         }
-        
+
         public static async Task<IDisposableEntity<Certificate>> CreateCertificateAsync(
             this TestServiceScope scope)
         {
@@ -606,7 +606,7 @@ namespace Eventuras.TestAbstractions
                 recipients.AddRange(registrations
                     .Select(NotificationRecipient.Sms));
             }
-            
+
             var disposables = new List<IDisposable>();
             if (createdByUser == null)
             {

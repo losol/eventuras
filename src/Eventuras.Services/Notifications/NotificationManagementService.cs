@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.Auth;
@@ -9,6 +5,10 @@ using Eventuras.Services.Events;
 using Eventuras.Services.Organizations;
 using Eventuras.Services.Registrations;
 using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Eventuras.Services.Notifications
 {
@@ -228,7 +228,7 @@ namespace Eventuras.Services.Notifications
             {
                 recipients.AddRange((from registration in await reader
                             .ReadNextAsync()
-                        select NotificationRecipient.Create(registration, notificationType))
+                                     select NotificationRecipient.Create(registration, notificationType))
                     .Where(r => r != null)); // user may have no phone, or email
             }
 

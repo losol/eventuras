@@ -1,7 +1,7 @@
-using System.Threading;
 using Eventuras.Domain;
-using System.Threading.Tasks;
 using Eventuras.Services.Exceptions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Eventuras.Services.Organizations
 {

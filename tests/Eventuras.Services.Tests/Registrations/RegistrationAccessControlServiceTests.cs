@@ -1,8 +1,5 @@
 ﻿#nullable enable
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services.Events;
 using Eventuras.Services.Exceptions;
@@ -11,6 +8,9 @@ using Eventuras.Services.Registrations;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NodaTime;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 using static Eventuras.Services.Tests.HttpContextAccessorUtils;
 

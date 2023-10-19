@@ -1,7 +1,7 @@
-using System.Net.Mime;
-using System.Threading.Tasks;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
+using System.Net.Mime;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Certificates

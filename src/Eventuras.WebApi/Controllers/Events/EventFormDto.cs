@@ -1,8 +1,8 @@
+using Eventuras.Domain;
+using NodaTime;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Eventuras.Domain;
-using NodaTime;
 
 namespace Eventuras.WebApi.Controllers.Events
 {

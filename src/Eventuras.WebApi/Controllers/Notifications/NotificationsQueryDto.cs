@@ -1,7 +1,7 @@
-using System.ComponentModel.DataAnnotations;
 using Eventuras.Domain;
 using Eventuras.Services.Notifications;
 using Eventuras.WebApi.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Eventuras.WebApi.Controllers.Notifications
 {

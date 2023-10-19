@@ -1,7 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Eventuras.WebApi.Auth
 {

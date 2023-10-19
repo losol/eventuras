@@ -1,8 +1,8 @@
+using Losol.Communication.Email;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Losol.Communication.Email;
-using Moq;
 
 namespace Eventuras.TestAbstractions
 {

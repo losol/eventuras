@@ -1,9 +1,9 @@
-﻿using System.Linq;
-using System.Threading;
-using Eventuras.Domain;
+﻿using Eventuras.Domain;
 using Eventuras.Services.Events;
 using Eventuras.Services.Exceptions;
 using Moq;
+using System.Linq;
+using System.Threading;
 
 namespace Eventuras.Services.Tests;
 
