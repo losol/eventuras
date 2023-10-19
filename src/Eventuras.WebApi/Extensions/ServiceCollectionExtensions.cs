@@ -11,9 +11,7 @@ using Eventuras.Services.SendGrid;
 using Eventuras.Services.Sms;
 using Eventuras.Services.Smtp;
 using Eventuras.Services.Stripe;
-using Eventuras.Services.TalentLms;
 using Eventuras.Services.Twilio;
-using Eventuras.Services.Zoom;
 using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Config;
 using Losol.Communication.HealthCheck.Abstractions;
@@ -124,12 +122,6 @@ namespace Eventuras.WebApi.Extensions
         {
             // Register our application services
             services.AddCoreServices();
-
-            // Add TalentLms integration if enabled in settings.
-            services.AddTalentLmsIfEnabled(configuration.GetSection("TalentLms"));
-
-            // Add Zoom external services if enabled in settings.
-            services.AddZoomIfEnabled(configuration.GetSection("Zoom"));
 
             // Add Health Checks
             services.AddApplicationHealthChecks(configuration.GetSection(Constants.HealthChecks.HealthCheckConfigurationKey));
