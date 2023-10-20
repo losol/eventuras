@@ -17,9 +17,14 @@ export class OrganizationMemberRolesService {
     public static getV3OrganizationsMembersRoles({
         organizationId,
         userId,
+        eventurasOrgId,
     }: {
         organizationId: number,
         userId: string,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<Array<string>> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -27,6 +32,9 @@ export class OrganizationMemberRolesService {
             path: {
                 'organizationId': organizationId,
                 'userId': userId,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
         });
     }
@@ -38,10 +46,15 @@ export class OrganizationMemberRolesService {
     public static postV3OrganizationsMembersRoles({
         organizationId,
         userId,
+        eventurasOrgId,
         requestBody,
     }: {
         organizationId: number,
         userId: string,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
         requestBody?: RoleRequestDto,
     }): CancelablePromise<Array<string>> {
         return __request(OpenAPI, {
@@ -50,6 +63,9 @@ export class OrganizationMemberRolesService {
             path: {
                 'organizationId': organizationId,
                 'userId': userId,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
             mediaType: 'application/json-patch+json',
@@ -63,10 +79,15 @@ export class OrganizationMemberRolesService {
     public static deleteV3OrganizationsMembersRoles({
         organizationId,
         userId,
+        eventurasOrgId,
         requestBody,
     }: {
         organizationId: number,
         userId: string,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
         requestBody?: RoleRequestDto,
     }): CancelablePromise<Array<string>> {
         return __request(OpenAPI, {
@@ -75,6 +96,9 @@ export class OrganizationMemberRolesService {
             path: {
                 'organizationId': organizationId,
                 'userId': userId,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
             mediaType: 'application/json-patch+json',

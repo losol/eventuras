@@ -1,6 +1,6 @@
 {
   "name": "@losol/eventuras",
-  "version": "0.3.4",
+  "version": "0.4.2",
   "description": "Eventuras Typescript SDK",
   "main": "index.ts",
   "scripts": {
@@ -9,4 +9,3 @@
   "author": "Ole Kristian Losvik",
   "license": "GPL-3.0-or-later"
 }
-

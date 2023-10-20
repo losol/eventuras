@@ -20,15 +20,23 @@ export class EventProductsService {
     public static getV3EventsProducts({
         eventId,
         visibility,
+        eventurasOrgId,
     }: {
         eventId: number,
         visibility?: ProductVisibility,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<Array<ProductDto>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/events/{eventId}/products',
             path: {
                 'eventId': eventId,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
             query: {
                 'Visibility': visibility,
@@ -42,9 +50,14 @@ export class EventProductsService {
      */
     public static postV3EventsProducts({
         eventId,
+        eventurasOrgId,
         requestBody,
     }: {
         eventId: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
         requestBody?: NewProductDto,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
@@ -52,6 +65,9 @@ export class EventProductsService {
             url: '/v3/events/{eventId}/products',
             path: {
                 'eventId': eventId,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
             mediaType: 'application/json-patch+json',
@@ -65,10 +81,15 @@ export class EventProductsService {
     public static putV3EventsProducts({
         eventId,
         productId,
+        eventurasOrgId,
         requestBody,
     }: {
         eventId: number,
         productId: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
         requestBody?: ProductFormDto,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
@@ -77,6 +98,9 @@ export class EventProductsService {
             path: {
                 'eventId': eventId,
                 'productId': productId,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
             mediaType: 'application/json-patch+json',
@@ -90,9 +114,14 @@ export class EventProductsService {
     public static deleteV3EventsProducts({
         eventId,
         productId,
+        eventurasOrgId,
     }: {
         eventId: number,
         productId: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
@@ -100,6 +129,9 @@ export class EventProductsService {
             path: {
                 'eventId': eventId,
                 'productId': productId,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
         });
     }

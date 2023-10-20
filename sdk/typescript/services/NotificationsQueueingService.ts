@@ -17,13 +17,21 @@ export class NotificationsQueueingService {
      * @throws ApiError
      */
     public static postV3NotificationsEmail({
+        eventurasOrgId,
         requestBody,
     }: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
         requestBody?: EmailNotificationDto,
     }): CancelablePromise<NotificationDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/notifications/email',
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
+            },
             body: requestBody,
             mediaType: 'application/json-patch+json',
         });
@@ -34,13 +42,21 @@ export class NotificationsQueueingService {
      * @throws ApiError
      */
     public static postV3NotificationsSms({
+        eventurasOrgId,
         requestBody,
     }: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
         requestBody?: SmsNotificationDto,
     }): CancelablePromise<NotificationDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/notifications/sms',
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
+            },
             body: requestBody,
             mediaType: 'application/json-patch+json',
         });

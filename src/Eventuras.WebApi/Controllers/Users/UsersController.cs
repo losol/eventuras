@@ -1,10 +1,12 @@
 using Asp.Versioning;
 using Eventuras.Domain;
 using Eventuras.Services.Auth;
+using Eventuras.Services.Exceptions;
 using Eventuras.Services.Users;
 using Eventuras.WebApi.Config;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -42,7 +44,7 @@ namespace Eventuras.WebApi.Controllers.Users
         /// Gets information about the current user. Creates a new user if no user with the email exists.
         /// </summary>
         [HttpGet("me")]
-        public async Task<IActionResult> Me(CancellationToken cancellationToken)
+        public async Task<UserDto> Me(CancellationToken cancellationToken)
         {
             var emailClaim = HttpContext.User.GetEmail();
             var nameClaim = HttpContext.User.GetName();
@@ -56,7 +58,7 @@ namespace Eventuras.WebApi.Controllers.Users
             if (string.IsNullOrEmpty(emailClaim))
             {
                 _logger.LogWarning("No email provided for user to in this request.");
-                return BadRequest("No email provided.");
+                throw new BadHttpRequestException("No email provided for user to in this request.");
             }
 
             ApplicationUser user;
@@ -74,40 +76,42 @@ namespace Eventuras.WebApi.Controllers.Users
                     cancellationToken);
             }
 
-            return Ok(new UserDto(user));
+            return new UserDto(user);
 
         }
 
         // GET: /v3/users/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id, CancellationToken cancellationToken)
+        public async Task<UserDto> Get(string id, CancellationToken cancellationToken)
         {
             var principal = HttpContext.User;
             if (!principal.IsAdmin() && id != principal.GetUserId())
             {
-                return Forbid();
+                throw new NotAccessibleException("You are not authorized to access this resource.");
             }
 
             var user = await _userRetrievalService.GetUserByIdAsync(id, null, cancellationToken);
-            return Ok(new UserDto(user));
+            return new UserDto(user);
 
         }
         // GET: /v3/users
         [HttpGet]
         [Authorize(Policy = Constants.Auth.AdministratorRole)]
-        public async Task<IActionResult> List(
+        public async Task<PageResponseDto<UserDto>> List(
        [FromQuery] UsersQueryDto request,
        CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState.FormatErrors());
+                _logger.LogInformation("ListUsers called with invalid query parameters: {query}", request);
+                throw new BadHttpRequestException("Invalid query parameters.");
             }
 
             var principal = HttpContext.User;
             if (!principal.IsAdmin())
             {
-                return Forbid();
+                _logger.LogWarning("User {userId} tried to access users list.", principal.GetUserId());
+                throw new UnauthorizedAccessException("You are not authorized to access this resource.");
             }
 
             var paging = await _userRetrievalService
@@ -123,49 +127,45 @@ namespace Eventuras.WebApi.Controllers.Users
                 UserRetrievalOptions.Default,
                 cancellationToken);
 
-            var pageResponse = PageResponseDto<UserDto>.FromPaging(
+            return PageResponseDto<UserDto>.FromPaging(
                 request, paging, u => new UserDto(u));
-
-            return Ok(pageResponse);
         }
 
 
         // POST /v3/users
         [HttpPost]
         [Authorize(Policy = Constants.Auth.AdministratorRole)]
-        public async Task<IActionResult> CreateNewUser([FromBody] NewUserDto dto, CancellationToken cancellationToken)
+        public async Task<UserDto> CreateNewUser([FromBody] NewUserDto dto, CancellationToken cancellationToken)
         {
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState.FormatErrors());
+                throw new BadHttpRequestException($"Invalid request body. {ModelState.FormatErrors()}");
             }
 
             var user = await _userManagementService
             .CreateNewUserAsync(dto.Name, dto.Email, dto.PhoneNumber, cancellationToken);
 
-            return Ok(new UserDto(user));
+            return new UserDto(user);
 
         }
 
         // PUT /v3/users/{id}
         [HttpPut("{id}")]
         [Authorize(Policy = Constants.Auth.AdministratorRole)]
-        public async Task<IActionResult> UpdateUser(string id, [FromBody] UserFormDto dto,
+        public async Task<UserDto> UpdateUser(string id, [FromBody] UserFormDto dto,
             CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState.FormatErrors());
+                throw new BadHttpRequestException($"Invalid request body. {ModelState.FormatErrors()}");
             }
 
             var user = await _userRetrievalService.GetUserByIdAsync(id, null, cancellationToken);
             dto.CopyTo(user);
 
             await _userManagementService.UpdateUserAsync(user, cancellationToken);
-            return Ok(new UserDto(user));
-
-
+            return new UserDto(user);
         }
     }
 }

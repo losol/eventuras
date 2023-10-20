@@ -25,6 +25,7 @@ export class NotificationRecipientsService {
         count,
         limit,
         offset,
+        eventurasOrgId,
     }: {
         id: number,
         query?: string,
@@ -36,12 +37,19 @@ export class NotificationRecipientsService {
         count?: number,
         limit?: number,
         offset?: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/notifications/{id}/recipients',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
             query: {
                 'Query': query,

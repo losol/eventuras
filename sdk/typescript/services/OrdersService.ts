@@ -21,16 +21,24 @@ export class OrdersService {
         id,
         includeUser,
         includeRegistration,
+        eventurasOrgId,
     }: {
         id: number,
         includeUser?: boolean,
         includeRegistration?: boolean,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<OrderDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/orders/{id}',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
             query: {
                 'IncludeUser': includeUser,
@@ -45,9 +53,14 @@ export class OrdersService {
      */
     public static putV3Orders({
         id,
+        eventurasOrgId,
         requestBody,
     }: {
         id: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
         requestBody?: OrderUpdateRequestDto,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
@@ -55,6 +68,9 @@ export class OrdersService {
             url: '/v3/orders/{id}',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
             mediaType: 'application/json-patch+json',
@@ -67,14 +83,22 @@ export class OrdersService {
      */
     public static deleteV3Orders({
         id,
+        eventurasOrgId,
     }: {
         id: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/v3/orders/{id}',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
         });
     }
@@ -95,6 +119,7 @@ export class OrdersService {
         count,
         limit,
         offset,
+        eventurasOrgId,
     }: {
         userId?: string,
         eventId?: number,
@@ -107,10 +132,17 @@ export class OrdersService {
         count?: number,
         limit?: number,
         offset?: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/orders',
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
+            },
             query: {
                 'UserId': userId,
                 'EventId': eventId,
@@ -132,13 +164,21 @@ export class OrdersService {
      * @throws ApiError
      */
     public static postV3Orders({
+        eventurasOrgId,
         requestBody,
     }: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
         requestBody?: NewOrderRequestDto,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/orders',
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
+            },
             body: requestBody,
             mediaType: 'application/json-patch+json',
         });
