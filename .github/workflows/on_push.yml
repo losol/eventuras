@@ -1,0 +1,14 @@
+name: On Push
+
+on:
+  push:
+    paths:
+      - "src/**"
+      - "tests/**"
+
+jobs:
+  build:
+    uses: ./.github/workflows/dotnet.yml
+    with:
+      run-id: ${{ github.run_id }}
+      dotnet-version: 7
