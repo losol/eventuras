@@ -3,9 +3,9 @@ using Eventuras.Services.Auth;
 using Eventuras.Services.Registrations;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,7 +46,7 @@ namespace Eventuras.WebApi.Controllers.Registrations
             if (!ModelState.IsValid)
             {
                 _logger.LogWarning("GetRegistrations called with invalid query parameters: {query}", query);
-                throw new BadRequestException("Invalid query parameters.");
+                throw new BadHttpRequestException("Invalid query parameters.");
             }
             _logger.LogInformation("GetRegistrations called with query: {query}", query);
 

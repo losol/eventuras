@@ -103,7 +103,7 @@ namespace Eventuras.WebApi.Controllers.Users
             if (!ModelState.IsValid)
             {
                 _logger.LogInformation("ListUsers called with invalid query parameters: {query}", request);
-                throw new BadRequestException("Invalid query parameters.");
+                throw new BadHttpRequestException("Invalid query parameters.");
             }
 
             var principal = HttpContext.User;
@@ -139,7 +139,7 @@ namespace Eventuras.WebApi.Controllers.Users
 
             if (!ModelState.IsValid)
             {
-                throw new BadRequestException($"Invalid request body. {ModelState.FormatErrors()}");
+                throw new BadHttpRequestException($"Invalid request body. {ModelState.FormatErrors()}");
             }
 
             var user = await _userManagementService
@@ -157,7 +157,7 @@ namespace Eventuras.WebApi.Controllers.Users
         {
             if (!ModelState.IsValid)
             {
-                throw new BadRequestException($"Invalid request body. {ModelState.FormatErrors()}");
+                throw new BadHttpRequestException($"Invalid request body. {ModelState.FormatErrors()}");
             }
 
             var user = await _userRetrievalService.GetUserByIdAsync(id, null, cancellationToken);
