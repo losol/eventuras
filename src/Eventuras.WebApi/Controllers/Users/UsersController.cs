@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using Eventuras.Domain;
 using Eventuras.Services.Auth;
+using Eventuras.Services.Exceptions;
 using Eventuras.Services.Users;
 using Eventuras.WebApi.Config;
 using Eventuras.WebApi.Models;
@@ -86,7 +87,7 @@ namespace Eventuras.WebApi.Controllers.Users
             var principal = HttpContext.User;
             if (!principal.IsAdmin() && id != principal.GetUserId())
             {
-                throw new UnauthorizedAccessException("You are not authorized to access this resource.");
+                throw new NotAccessibleException("You are not authorized to access this resource.");
             }
 
             var user = await _userRetrievalService.GetUserByIdAsync(id, null, cancellationToken);
