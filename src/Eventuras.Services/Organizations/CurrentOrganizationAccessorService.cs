@@ -1,12 +1,15 @@
+
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.Exceptions;
+using Eventuras.Services.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 
 namespace Eventuras.Services.Organizations
 {
@@ -29,18 +32,21 @@ namespace Eventuras.Services.Organizations
             OrganizationRetrievalOptions options,
             CancellationToken cancellationToken)
         {
-            // Retrieve current organization by orgId param first
+            // Check header first
+            if (_httpContextAccessor.HttpContext.Request.Headers.TryGetValue(Api.OrganizationHeader, out var orgIdHeaderValue)
+                && int.TryParse(orgIdHeaderValue, out var headerOrganizationId))
+            {
+                return await GetOrganizationById(headerOrganizationId, options, cancellationToken);
+            }
+
+            // Then check organization by orgId query param
             var orgIdParamValue = _httpContextAccessor.HttpContext.Request.Query[OrgIdParamName];
             if (!string.IsNullOrEmpty(orgIdParamValue) && int.TryParse(orgIdParamValue, out var organizationId))
             {
-                return await _context.Organizations
-                    .AsNoTracking()
-                    .WithOptions(options ?? new OrganizationRetrievalOptions())
-                    .Where(o => o.OrganizationId == organizationId)
-                    .FirstOrDefaultAsync(cancellationToken);
+                return await GetOrganizationById(organizationId, options, cancellationToken);
             }
 
-            // Try hostname approach, if no orgId is present in the query
+            // Try hostname approach, if no orgId is present in header or query
             var host = _httpContextAccessor.HttpContext.Request.Host;
             if (!host.HasValue)
             {
@@ -51,6 +57,18 @@ namespace Eventuras.Services.Organizations
                 .AsNoTracking()
                 .WithOptions(options ?? new OrganizationRetrievalOptions())
                 .Where(o => o.Hostnames.Any(h => h.Active && h.Hostname == host.Value))
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
+        private async Task<Organization> GetOrganizationById(
+            int organizationId,
+            OrganizationRetrievalOptions options,
+            CancellationToken cancellationToken)
+        {
+            return await _context.Organizations
+                .AsNoTracking()
+                .WithOptions(options ?? new OrganizationRetrievalOptions())
+                .Where(o => o.OrganizationId == organizationId)
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
