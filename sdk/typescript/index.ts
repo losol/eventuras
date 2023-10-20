@@ -67,6 +67,7 @@ export { RegistrationType } from './models/RegistrationType';
 export type { RoleRequestDto } from './models/RoleRequestDto';
 export type { SmsNotificationDto } from './models/SmsNotificationDto';
 export type { UserDto } from './models/UserDto';
+export type { UserDtoPageResponseDto } from './models/UserDtoPageResponseDto';
 export type { UserFormDto } from './models/UserFormDto';
 export { UserListOrder } from './models/UserListOrder';
 

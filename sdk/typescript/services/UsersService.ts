@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { NewUserDto } from '../models/NewUserDto';
 import type { UserDto } from '../models/UserDto';
+import type { UserDtoPageResponseDto } from '../models/UserDtoPageResponseDto';
 import type { UserFormDto } from '../models/UserFormDto';
 import type { UserListOrder } from '../models/UserListOrder';
 
@@ -15,7 +16,7 @@ export class UsersService {
 
     /**
      * Gets information about the current user. Creates a new user if no user with the email exists.
-     * @returns any Success
+     * @returns UserDto Success
      * @throws ApiError
      */
     public static getV3UsersMe({
@@ -25,7 +26,7 @@ export class UsersService {
          * Optional organization Id. Will be required in API version 4.
          */
         eventurasOrgId?: number,
-    }): CancelablePromise<any> {
+    }): CancelablePromise<UserDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/users/me',
@@ -62,7 +63,7 @@ export class UsersService {
     }
 
     /**
-     * @returns any Success
+     * @returns UserDto Success
      * @throws ApiError
      */
     public static putV3Users({
@@ -76,7 +77,7 @@ export class UsersService {
          */
         eventurasOrgId?: number,
         requestBody?: UserFormDto,
-    }): CancelablePromise<any> {
+    }): CancelablePromise<UserDto> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/v3/users/{id}',
@@ -92,7 +93,7 @@ export class UsersService {
     }
 
     /**
-     * @returns any Success
+     * @returns UserDtoPageResponseDto Success
      * @throws ApiError
      */
     public static getV3Users1({
@@ -116,7 +117,7 @@ export class UsersService {
          * Optional organization Id. Will be required in API version 4.
          */
         eventurasOrgId?: number,
-    }): CancelablePromise<any> {
+    }): CancelablePromise<UserDtoPageResponseDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/users',
@@ -136,7 +137,7 @@ export class UsersService {
     }
 
     /**
-     * @returns any Success
+     * @returns UserDto Success
      * @throws ApiError
      */
     public static postV3Users({
@@ -148,7 +149,7 @@ export class UsersService {
          */
         eventurasOrgId?: number,
         requestBody?: NewUserDto,
-    }): CancelablePromise<any> {
+    }): CancelablePromise<UserDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/users',
