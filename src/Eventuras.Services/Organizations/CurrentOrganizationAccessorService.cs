@@ -1,4 +1,3 @@
-
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.Exceptions;
