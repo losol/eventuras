@@ -80,16 +80,16 @@ namespace Eventuras.WebApi.Controllers.Users
 
         // GET: /v3/users/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id, CancellationToken cancellationToken)
+        public async Task<UserDto> Get(string id, CancellationToken cancellationToken)
         {
             var principal = HttpContext.User;
             if (!principal.IsAdmin() && id != principal.GetUserId())
             {
-                return Forbid();
+                throw new UnauthorizedAccessException("You are not authorized to access this resource.");
             }
 
             var user = await _userRetrievalService.GetUserByIdAsync(id, null, cancellationToken);
-            return Ok(new UserDto(user));
+            return new UserDto(user);
 
         }
         // GET: /v3/users

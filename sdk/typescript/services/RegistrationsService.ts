@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { NewRegistrationDto } from '../models/NewRegistrationDto';
 import type { RegistrationDto } from '../models/RegistrationDto';
+import type { RegistrationDtoPageResponseDto } from '../models/RegistrationDtoPageResponseDto';
 import type { RegistrationFormDto } from '../models/RegistrationFormDto';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -13,7 +14,7 @@ import { request as __request } from '../core/request';
 export class RegistrationsService {
 
     /**
-     * @returns any Success
+     * @returns RegistrationDtoPageResponseDto Success
      * @throws ApiError
      */
     public static getV3Registrations({
@@ -43,7 +44,7 @@ export class RegistrationsService {
          * Optional organization Id. Will be required in API version 4.
          */
         eventurasOrgId?: number,
-    }): CancelablePromise<any> {
+    }): CancelablePromise<RegistrationDtoPageResponseDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/registrations',

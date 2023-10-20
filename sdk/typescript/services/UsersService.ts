@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { NewUserDto } from '../models/NewUserDto';
+import type { UserDto } from '../models/UserDto';
 import type { UserFormDto } from '../models/UserFormDto';
 import type { UserListOrder } from '../models/UserListOrder';
 
@@ -35,7 +36,7 @@ export class UsersService {
     }
 
     /**
-     * @returns any Success
+     * @returns UserDto Success
      * @throws ApiError
      */
     public static getV3Users({
@@ -47,7 +48,7 @@ export class UsersService {
          * Optional organization Id. Will be required in API version 4.
          */
         eventurasOrgId?: number,
-    }): CancelablePromise<any> {
+    }): CancelablePromise<UserDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/users/{id}',

@@ -5,6 +5,7 @@ using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,16 +39,15 @@ namespace Eventuras.WebApi.Controllers.Registrations
 
 
         [HttpGet]
-        public async Task<IActionResult> GetRegistrations(
+        public async Task<PageResponseDto<RegistrationDto>> GetRegistrations(
       [FromQuery] RegistrationsQueryDto query,
       CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 _logger.LogWarning("GetRegistrations called with invalid query parameters: {query}", query);
-                return BadRequest("Invalid query parameters.");
+                throw new BadRequestException("Invalid query parameters.");
             }
-
             _logger.LogInformation("GetRegistrations called with query: {query}", query);
 
             var paging = await _registrationRetrievalService
@@ -68,8 +68,8 @@ namespace Eventuras.WebApi.Controllers.Registrations
                     RetrievalOptions(query),
                     cancellationToken);
 
-            return Ok(PageResponseDto<RegistrationDto>.FromPaging(
-                query, paging, r => new RegistrationDto(r)));
+            return PageResponseDto<RegistrationDto>.FromPaging(
+                query, paging, r => new RegistrationDto(r));
         }
 
         [HttpGet("{id}")]
