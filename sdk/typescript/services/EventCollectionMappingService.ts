@@ -15,9 +15,14 @@ export class EventCollectionMappingService {
     public static putV3EventsCollections({
         eventId,
         collectionId,
+        eventurasOrgId,
     }: {
         eventId: number,
         collectionId: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'PUT',
@@ -25,6 +30,9 @@ export class EventCollectionMappingService {
             path: {
                 'eventId': eventId,
                 'collectionId': collectionId,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
         });
     }
@@ -36,9 +44,14 @@ export class EventCollectionMappingService {
     public static deleteV3EventsCollections({
         eventId,
         collectionId,
+        eventurasOrgId,
     }: {
         eventId: number,
         collectionId: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
@@ -46,6 +59,9 @@ export class EventCollectionMappingService {
             path: {
                 'eventId': eventId,
                 'collectionId': collectionId,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
         });
     }

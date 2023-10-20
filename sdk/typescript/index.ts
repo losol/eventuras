@@ -60,14 +60,12 @@ export type { ProductVariantDto } from './models/ProductVariantDto';
 export { ProductVisibility } from './models/ProductVisibility';
 export type { RegistrationCustomerInfoDto } from './models/RegistrationCustomerInfoDto';
 export type { RegistrationDto } from './models/RegistrationDto';
-export type { RegistrationDtoPageResponseDto } from './models/RegistrationDtoPageResponseDto';
 export type { RegistrationFormDto } from './models/RegistrationFormDto';
 export { RegistrationStatus } from './models/RegistrationStatus';
 export { RegistrationType } from './models/RegistrationType';
 export type { RoleRequestDto } from './models/RoleRequestDto';
 export type { SmsNotificationDto } from './models/SmsNotificationDto';
 export type { UserDto } from './models/UserDto';
-export type { UserDtoPageResponseDto } from './models/UserDtoPageResponseDto';
 export type { UserFormDto } from './models/UserFormDto';
 export { UserListOrder } from './models/UserListOrder';
 

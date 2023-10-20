@@ -3,7 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { NewUserDto } from '../models/NewUserDto';
-import type { UserDtoPageResponseDto } from '../models/UserDtoPageResponseDto';
 import type { UserFormDto } from '../models/UserFormDto';
 import type { UserListOrder } from '../models/UserListOrder';
 
@@ -18,10 +17,20 @@ export class UsersService {
      * @returns any Success
      * @throws ApiError
      */
-    public static getV3UsersMe(): CancelablePromise<any> {
+    public static getV3UsersMe({
+        eventurasOrgId,
+    }: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/users/me',
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
+            },
         });
     }
 
@@ -31,14 +40,22 @@ export class UsersService {
      */
     public static getV3Users({
         id,
+        eventurasOrgId,
     }: {
         id: string,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/users/{id}',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
         });
     }
@@ -49,9 +66,14 @@ export class UsersService {
      */
     public static putV3Users({
         id,
+        eventurasOrgId,
         requestBody,
     }: {
         id: string,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
         requestBody?: UserFormDto,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
@@ -60,13 +82,16 @@ export class UsersService {
             path: {
                 'id': id,
             },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
+            },
             body: requestBody,
             mediaType: 'application/json-patch+json',
         });
     }
 
     /**
-     * @returns UserDtoPageResponseDto Success
+     * @returns any Success
      * @throws ApiError
      */
     public static getV3Users1({
@@ -77,6 +102,7 @@ export class UsersService {
         count,
         limit,
         offset,
+        eventurasOrgId,
     }: {
         query?: string,
         order?: UserListOrder,
@@ -85,10 +111,17 @@ export class UsersService {
         count?: number,
         limit?: number,
         offset?: number,
-    }): CancelablePromise<UserDtoPageResponseDto> {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
+    }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/users',
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
+            },
             query: {
                 'Query': query,
                 'Order': order,
@@ -106,13 +139,21 @@ export class UsersService {
      * @throws ApiError
      */
     public static postV3Users({
+        eventurasOrgId,
         requestBody,
     }: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
         requestBody?: NewUserDto,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/users',
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
+            },
             body: requestBody,
             mediaType: 'application/json-patch+json',
         });

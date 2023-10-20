@@ -26,6 +26,15 @@
             "schema": {
               "$ref": "#/components/schemas/CertificateFormat"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -85,6 +94,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -104,6 +122,15 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -139,6 +166,15 @@
               "type": "boolean",
               "default": true
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -162,6 +198,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -176,6 +221,17 @@
         "tags": [
           "EventCollection"
         ],
+        "parameters": [
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success"
@@ -185,6 +241,17 @@
       "post": {
         "tags": [
           "EventCollection"
+        ],
+        "parameters": [
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         ],
         "requestBody": {
           "content": {
@@ -231,6 +298,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -248,6 +324,15 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -297,6 +382,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -325,6 +419,15 @@
             "name": "collectionId",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -359,6 +462,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -388,6 +500,15 @@
             "in": "query",
             "schema": {
               "$ref": "#/components/schemas/ProductVisibility"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
@@ -432,6 +553,15 @@
             "name": "eventId",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -492,6 +622,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "requestBody": {
@@ -546,6 +685,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -574,6 +722,15 @@
             "name": "productId",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -630,6 +787,15 @@
             "name": "productId",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -695,6 +861,15 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -802,6 +977,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -822,6 +1006,17 @@
           "Events"
         ],
         "summary": "Creates a new event.",
+        "parameters": [
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "requestBody": {
           "description": "Event information.",
           "content": {
@@ -877,6 +1072,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -903,6 +1107,15 @@
             "in": "path",
             "description": "The ID of the event.",
             "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -962,6 +1175,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "requestBody": {
@@ -1006,6 +1228,15 @@
             "in": "path",
             "description": "The ID of the event to delete.",
             "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -1104,6 +1335,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -1134,6 +1374,15 @@
             "schema": {
               "type": "boolean",
               "default": false
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
@@ -1248,6 +1497,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -1261,6 +1519,17 @@
       "post": {
         "tags": [
           "NotificationsQueueing"
+        ],
+        "parameters": [
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         ],
         "requestBody": {
           "content": {
@@ -1315,6 +1584,17 @@
         "tags": [
           "NotificationsQueueing"
         ],
+        "parameters": [
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json-patch+json": {
@@ -1368,6 +1648,17 @@
         "tags": [
           "OnlineCourse"
         ],
+        "parameters": [
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
@@ -1411,6 +1702,15 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -1469,6 +1769,15 @@
             "schema": {
               "type": "boolean"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -1503,6 +1812,15 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -1548,6 +1866,15 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -1654,6 +1981,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -1665,6 +2001,17 @@
       "post": {
         "tags": [
           "Orders"
+        ],
+        "parameters": [
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         ],
         "requestBody": {
           "content": {
@@ -1718,6 +2065,15 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
@@ -1773,6 +2129,15 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
@@ -1852,6 +2217,15 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
@@ -1934,6 +2308,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -1963,6 +2346,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -1976,6 +2368,17 @@
       "get": {
         "tags": [
           "Organizations"
+        ],
+        "parameters": [
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -2012,6 +2415,17 @@
       "post": {
         "tags": [
           "Organizations"
+        ],
+        "parameters": [
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         ],
         "requestBody": {
           "content": {
@@ -2075,6 +2489,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -2109,6 +2532,15 @@
             "name": "organizationId",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -2175,6 +2607,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -2194,6 +2635,15 @@
             "name": "organizationId",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -2245,6 +2695,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "requestBody": {
@@ -2286,6 +2745,15 @@
             "name": "organizationId",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -2354,6 +2822,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -2373,6 +2850,15 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -2424,6 +2910,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "requestBody": {
@@ -2467,6 +2962,15 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -2590,34 +3094,37 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/RegistrationDtoPageResponseDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RegistrationDtoPageResponseDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RegistrationDtoPageResponseDto"
-                }
-              }
-            }
+            "description": "Success"
           }
         }
       },
       "post": {
         "tags": [
           "Registrations"
+        ],
+        "parameters": [
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         ],
         "requestBody": {
           "content": {
@@ -2762,6 +3269,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -2796,6 +3312,15 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -2862,6 +3387,15 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -2892,6 +3426,15 @@
             "in": "query",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
@@ -2925,6 +3468,17 @@
           "Users"
         ],
         "summary": "Gets information about the current user. Creates a new user if no user with the email exists.",
+        "parameters": [
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success"
@@ -2945,6 +3499,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -2964,6 +3527,15 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
@@ -3060,34 +3632,37 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserDtoPageResponseDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserDtoPageResponseDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserDtoPageResponseDto"
-                }
-              }
-            }
+            "description": "Success"
           }
         }
       },
       "post": {
         "tags": [
           "Users"
+        ],
+        "parameters": [
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
         ],
         "requestBody": {
           "content": {
@@ -4490,36 +5065,6 @@
         },
         "additionalProperties": false
       },
-      "RegistrationDtoPageResponseDto": {
-        "type": "object",
-        "properties": {
-          "page": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "count": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "total": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pages": {
-            "type": "integer",
-            "format": "int32",
-            "readOnly": true
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RegistrationDto"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "RegistrationFormDto": {
         "type": "object",
         "properties": {
@@ -4618,36 +5163,6 @@
           },
           "phoneNumber": {
             "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "UserDtoPageResponseDto": {
-        "type": "object",
-        "properties": {
-          "page": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "count": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "total": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pages": {
-            "type": "integer",
-            "format": "int32",
-            "readOnly": true
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UserDto"
-            },
             "nullable": true
           }
         },

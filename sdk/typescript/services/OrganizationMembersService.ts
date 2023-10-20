@@ -15,9 +15,14 @@ export class OrganizationMembersService {
     public static putV3OrganizationsMembers({
         organizationId,
         userId,
+        eventurasOrgId,
     }: {
         organizationId: number,
         userId: string,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'PUT',
@@ -25,6 +30,9 @@ export class OrganizationMembersService {
             path: {
                 'organizationId': organizationId,
                 'userId': userId,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
         });
     }
@@ -36,9 +44,14 @@ export class OrganizationMembersService {
     public static deleteV3OrganizationsMembers({
         organizationId,
         userId,
+        eventurasOrgId,
     }: {
         organizationId: number,
         userId: string,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
@@ -46,6 +59,9 @@ export class OrganizationMembersService {
             path: {
                 'organizationId': organizationId,
                 'userId': userId,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
         });
     }

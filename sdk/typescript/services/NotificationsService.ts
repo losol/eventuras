@@ -19,15 +19,23 @@ export class NotificationsService {
     public static getV3Notifications({
         id,
         includeStatistics = false,
+        eventurasOrgId,
     }: {
         id: number,
         includeStatistics?: boolean,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/notifications/{id}',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
             query: {
                 'includeStatistics': includeStatistics,
@@ -52,6 +60,7 @@ export class NotificationsService {
         count,
         limit,
         offset,
+        eventurasOrgId,
     }: {
         eventId?: number,
         productId?: number,
@@ -68,10 +77,17 @@ export class NotificationsService {
         count?: number,
         limit?: number,
         offset?: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/notifications',
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
+            },
             query: {
                 'EventId': eventId,
                 'ProductId': productId,

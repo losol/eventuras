@@ -18,14 +18,22 @@ export class RegistrationOrdersService {
      */
     public static getV3RegistrationsOrders({
         id,
+        eventurasOrgId,
     }: {
         id: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<Array<OrderDto>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/registrations/{id}/orders',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
         });
     }
@@ -36,9 +44,14 @@ export class RegistrationOrdersService {
      */
     public static postV3RegistrationsOrders({
         id,
+        eventurasOrgId,
         requestBody,
     }: {
         id: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
         requestBody?: NewRegistrationOrderDto,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
@@ -46,6 +59,9 @@ export class RegistrationOrdersService {
             url: '/v3/registrations/{id}/orders',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
             mediaType: 'application/json-patch+json',
@@ -58,9 +74,14 @@ export class RegistrationOrdersService {
      */
     public static postV3RegistrationsProducts({
         id,
+        eventurasOrgId,
         requestBody,
     }: {
         id: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
         requestBody?: OrderUpdateRequestDto,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
@@ -68,6 +89,9 @@ export class RegistrationOrdersService {
             url: '/v3/registrations/{id}/products',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
             mediaType: 'application/json-patch+json',

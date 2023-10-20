@@ -14,14 +14,22 @@ export class RegistrationCertificateService {
      */
     public static postV3RegistrationsCertificateSend({
         id,
+        eventurasOrgId,
     }: {
         id: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/registrations/{id}/certificate/send',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
         });
     }

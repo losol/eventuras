@@ -18,9 +18,14 @@ export class EventProductVariantsService {
     public static getV3EventsProductsVariants({
         eventId,
         productId,
+        eventurasOrgId,
     }: {
         eventId: number,
         productId: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<Array<ProductVariantDto>> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -28,6 +33,9 @@ export class EventProductVariantsService {
             path: {
                 'eventId': eventId,
                 'productId': productId,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
         });
     }
@@ -39,10 +47,15 @@ export class EventProductVariantsService {
     public static postV3EventsProductsVariants({
         eventId,
         productId,
+        eventurasOrgId,
         requestBody,
     }: {
         eventId: number,
         productId: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
         requestBody?: NewProductVariantDto,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
@@ -51,6 +64,9 @@ export class EventProductVariantsService {
             path: {
                 'eventId': eventId,
                 'productId': productId,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
             mediaType: 'application/json-patch+json',
@@ -65,10 +81,15 @@ export class EventProductVariantsService {
         eventId,
         productId,
         id,
+        eventurasOrgId,
     }: {
         eventId: number,
         productId: number,
         id: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
@@ -77,6 +98,9 @@ export class EventProductVariantsService {
                 'eventId': eventId,
                 'productId': productId,
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
         });
     }

@@ -33,6 +33,7 @@ export class EventsService {
         count,
         limit,
         offset,
+        eventurasOrgId,
     }: {
         type?: EventInfoType,
         start?: LocalDate,
@@ -45,10 +46,17 @@ export class EventsService {
         count?: number,
         limit?: number,
         offset?: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<EventDtoPageResponseDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/events',
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
+            },
             query: {
                 'Type': type,
                 'Start': start,
@@ -71,8 +79,13 @@ export class EventsService {
      * @throws ApiError
      */
     public static postV3Events({
+        eventurasOrgId,
         requestBody,
     }: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
         /**
          * Event information.
          */
@@ -81,6 +94,9 @@ export class EventsService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/events',
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
+            },
             body: requestBody,
             mediaType: 'application/json-patch+json',
         });
@@ -93,17 +109,25 @@ export class EventsService {
      */
     public static getV3Events1({
         id,
+        eventurasOrgId,
     }: {
         /**
          * The ID of the event.
          */
         id: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<EventDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/events/{id}',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
         });
     }
@@ -115,12 +139,17 @@ export class EventsService {
      */
     public static putV3Events({
         id,
+        eventurasOrgId,
         requestBody,
     }: {
         /**
          * The ID of the event.
          */
         id: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
         /**
          * Updated event information.
          */
@@ -131,6 +160,9 @@ export class EventsService {
             url: '/v3/events/{id}',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
             mediaType: 'application/json-patch+json',
@@ -144,12 +176,17 @@ export class EventsService {
      */
     public static patchV3Events({
         id,
+        eventurasOrgId,
         requestBody,
     }: {
         /**
          * The ID of the event to update.
          */
         id: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
         /**
          * The JSON Patch document with updates.
          */
@@ -160,6 +197,9 @@ export class EventsService {
             url: '/v3/events/{id}',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
             mediaType: 'application/json-patch+json',
@@ -173,17 +213,25 @@ export class EventsService {
      */
     public static deleteV3Events({
         id,
+        eventurasOrgId,
     }: {
         /**
          * The ID of the event to delete.
          */
         id: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/v3/events/{id}',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
         });
     }

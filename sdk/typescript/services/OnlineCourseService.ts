@@ -14,10 +14,20 @@ export class OnlineCourseService {
      * @returns OnlineCourseDto Success
      * @throws ApiError
      */
-    public static getV3Onlinecourses(): CancelablePromise<Array<OnlineCourseDto>> {
+    public static getV3Onlinecourses({
+        eventurasOrgId,
+    }: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
+    }): CancelablePromise<Array<OnlineCourseDto>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/onlinecourses',
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
+            },
         });
     }
 
@@ -27,14 +37,22 @@ export class OnlineCourseService {
      */
     public static getV3Onlinecourses1({
         id,
+        eventurasOrgId,
     }: {
         id: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<OnlineCourseDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/onlinecourses/{id}',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
         });
     }
