@@ -22,17 +22,17 @@ export default async function Layout(props: LayoutProps) {
   const { children, fluid } = props;
   const site = await getSiteSettings();
 
-  const bgClass = props.imageNavbar ? 'bg-transparent z-10 absolute' : 'bg-primary-700';
+  const bgClass = props.imageNavbar ? 'bg-transparent z-10 absolute' : 'bg-transparent';
 
   return (
     <>
-      <Navbar title={site?.name ?? 'Eventuras'} bgColor={bgClass} dark>
-        <UserMenu lightText />
+      <Navbar title={site?.name ?? 'Eventuras'} bgColor={bgClass} dark={props.darkImage}>
+        <UserMenu lightText={props.darkImage} />
       </Navbar>
-      <main id="main-content" className={fluid ? '' : 'container'}>
-        {children}
+      <main id="main-content">
+        {fluid ? children : <div className="container">{children}</div>}
       </main>
-      <Footer />
+      <Footer text={site?.description} links={site?.footerLinks} />
     </>
   );
 }

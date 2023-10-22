@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply flex flex-col min-h-screen antialiased bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200;
+    @apply flex flex-col min-h-screen antialiased  text-gray-800 dark:text-gray-200 bg-gradient-to-tr from-stone-100 via-stone-200 to-orange-50 bg-gradient-to-r dark:from-gray-800 dark:via-gray-900 dark:to-gray-800;
   }
   main {
     @apply flex-grow;

@@ -1,21 +1,27 @@
-import Link from 'next/link';
+import { FooterLink } from '@/utils/site/getSiteSettings';
 
-const Footer = () => {
+import Link from './Link';
+
+interface FooterProps {
+  text?: string;
+  bgColor?: string;
+  links?: FooterLink[];
+}
+
+const Footer = (props: FooterProps) => {
+  const backgroundColor = props.bgColor || 'bg-gradient-to-r from-primary-700 to-cyan-950';
   return (
-    <footer className="bg-white shadow pt-4 dark:bg-gray-800">
-      <div className="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
-        <span className="text-sm text-gray-800 sm:text-center dark:text-gray-200">Eventuras</span>
-        <ul className="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
-          <li>
-            <Link href="/#privacy" className="mr-4 hover:underline md:mr-6 ">
-              Privacy Policy
-            </Link>
-          </li>
-          <li>
-            <Link href="/#accesibility" className="mr-4 hover:underline md:mr-6">
-              Accesibility
-            </Link>
-          </li>
+    <footer className={`${backgroundColor} shadow pt-4`}>
+      <div className="container mx-auto p-4 md:flex md:items-center md:justify-between">
+        <span className="text-sm sm:text-center text-gray-200">{props.text ?? 'Eventuras'}</span>
+        <ul className="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-200 dark:text-gray-400 sm:mt-0">
+          {props.links?.map((link, index) => (
+            <li key={index}>
+              <Link href={link.href} className="text-gray-200">
+                {link.text}
+              </Link>
+            </li>
+          ))}
         </ul>
       </div>
     </footer>

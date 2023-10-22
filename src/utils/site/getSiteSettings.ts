@@ -2,18 +2,18 @@ import Environment from '@/utils/Environment';
 
 import Logger from '../Logger';
 
-interface FeaturedImage {
+export interface FeaturedImage {
   src: string;
   alt: string;
   caption: string;
 }
 
-interface FooterLink {
+export interface FooterLink {
   text: string;
   href: string;
 }
 
-interface SiteInfo {
+export interface SiteInfo {
   name: string;
   description: string;
   frontpage: {
