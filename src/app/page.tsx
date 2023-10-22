@@ -30,7 +30,7 @@ export default async function Homepage() {
   }
 
   return (
-    <Layout>
+    <Layout fluid>
       <section className="bg-primary-700 dark:bg-slate-900 text-white pt-16 pb-24">
         <Container>
           <Heading as="h1">{site?.frontpage.title ?? 'Eventuras'}</Heading>
