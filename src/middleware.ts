@@ -20,7 +20,9 @@ export async function middleware(request: NextRequest) {
     if (token?.access_token) {
       requestHeaders.set('Authorization', `Bearer ${token.access_token}`);
     } else {
-      return NextResponse.redirect('/api/auth/signin');
+      const loginUrl = new URL('/api/auth/signin', request.url);
+      loginUrl.searchParams.set('callbackUrl', request.nextUrl.pathname);
+      return NextResponse.redirect(loginUrl);
     }
 
     // Return the original request with the new headers
