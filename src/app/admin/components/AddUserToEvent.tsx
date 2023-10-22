@@ -31,7 +31,7 @@ type AddUserCardProps = {
   event: EventDto;
   onUseradded: (user: UserDto) => void;
   products: RegistrationProduct[];
-  onRemove?: (u: UserDto) => void;
+  onRemove: (u: UserDto) => void;
 };
 const AddUserCard: React.FC<AddUserCardProps> = ({
   user,
@@ -128,11 +128,10 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
         Add
       </Button>
       <Button
+        type="reset"
         variant="light"
         onClick={() => {
-          if (onRemove) {
-            onRemove(user);
-          }
+          onRemove(user);
         }}
       >
         Clear
@@ -167,6 +166,9 @@ const AddUserToEvent: React.FC<AddUserToEventProps> = ({ event, eventProducts, o
           onUseradded={u => {
             setUsersToAdd([...usersToAdd].filter(us => u.id !== us.id));
             onUseradded(u);
+          }}
+          onRemove={u => {
+            setUsersToAdd([...usersToAdd].filter(us => u.id !== us.id));
           }}
           event={event}
           products={mapEventProductsToView(eventProducts)}
