@@ -5,14 +5,30 @@ import Environment, { EnvironmentVariables } from '@/utils/Environment';
 import Logger from '@/utils/Logger';
 
 const eventurasAPI_URL = Environment.get(EnvironmentVariables.API_BASE_URL);
+
+function isValidURL(str: string): boolean {
+  try {
+    new URL(str);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 /**
  * Forwards requests from /api/venturas to the eventuras backend API, decorating with a bearer token if available
  */
+
 async function forwarder(request: NextRequest) {
   const token = await getToken({ req: request });
   const accessToken = token?.access_token ?? '';
 
   if (!eventurasAPI_URL) throw new Error('API_BASE_URL is not defined');
+
+  // validate URL
+  if (!isValidURL(request.url) || !isValidURL(eventurasAPI_URL)) {
+    throw new Error('Invalid URL');
+  }
 
   const forwardUrl = request.url.replace(/^.*?\/api\/eventuras/, eventurasAPI_URL);
   /**
@@ -30,6 +46,7 @@ async function forwarder(request: NextRequest) {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json', //default to json
+      'Eventuras-Org-Id': Environment.get(EnvironmentVariables.NEXT_PUBLIC_ORGANIZATION_ID),
     },
     redirect: 'manual',
   });
