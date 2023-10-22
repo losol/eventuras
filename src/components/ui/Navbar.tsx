@@ -10,9 +10,10 @@ type NavbarProps = {
 const Navbar = (props: NavbarProps) => {
   const { dark: lightText = false, bgColor = 'bg-transparent' } = props;
   const textColor = lightText ? 'text-white' : 'text-black';
+  const fixedClassName = ' z-10';
 
   return (
-    <nav className={`${bgColor} dark:bg-slate-900 ${textColor} py-3`}>
+    <nav className={`${bgColor} ${fixedClassName} dark:bg-slate-900 ${textColor} py-0`}>
       <div className="container flex flex-wrap items-center justify-between mx-auto">
         <Link href="/">
           <span className={`text-2xl tracking-tight whitespace-nowrap ${textColor}`}>

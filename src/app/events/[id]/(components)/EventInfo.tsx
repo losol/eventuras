@@ -2,7 +2,7 @@ import { EventsService, OpenAPI } from '@losol/eventuras';
 import { RedirectType } from 'next/dist/client/components/redirect';
 import { redirect } from 'next/navigation';
 
-import { Container, Layout } from '@/components/ui';
+import { Layout } from '@/components/ui';
 import Environment, { EnvironmentVariables } from '@/utils/Environment';
 import Logger from '@/utils/Logger';
 
@@ -52,9 +52,7 @@ const EventInfo: React.FC<EventInfoProps> = async ({ params }) => {
 
   return (
     <Layout>
-      <Container>
-        <EventDetails eventinfo={eventinfo} />
-      </Container>
+      <EventDetails eventinfo={eventinfo} />
     </Layout>
   );
 };

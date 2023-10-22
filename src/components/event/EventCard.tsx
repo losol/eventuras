@@ -16,9 +16,9 @@ const EventCard: React.FC<EventCardProps> = ({ eventinfo }) => {
   };
 
   return (
-    <Card className="p-3 bg-white dark:bg-slate-900 hover:shadow-lg transform transition duration-300 ease-in-out">
+    <Card className="p-3 bg-white dark:bg-slate-900 hover:bg-primary-100 transform transition duration-300 ease-in-out">
       {eventinfo.title && (
-        <Card.Heading className="group">
+        <Card.Heading spacingClassName="py-3">
           <Link href={`/events/${eventinfo.id}/${eventinfo.slug}`} className="stretched-link">
             {eventinfo.title}
           </Link>
