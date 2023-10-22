@@ -1,7 +1,7 @@
 'use client';
 import { useContext } from 'react';
 
-import { Container, Layout } from '@/components/ui';
+import { Layout } from '@/components/ui';
 import Heading from '@/components/ui/Heading';
 import Loading from '@/components/ui/Loading';
 import { UserContext } from '@/context/UserContext';
@@ -17,13 +17,9 @@ const UserProfilePage = () => {
   return (
     <Layout>
       <Heading>User profile</Heading>
-      <Container>
-        <UserProfileCard profile={profile} />
-        {loading && <Loading />}
-        {userRegistrations.length > 0 && (
-          <UserEventRegistrations registrations={userRegistrations} />
-        )}
-      </Container>
+      <UserProfileCard profile={profile} />
+      {loading && <Loading />}
+      {userRegistrations.length > 0 && <UserEventRegistrations registrations={userRegistrations} />}
     </Layout>
   );
 };

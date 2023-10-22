@@ -16,7 +16,7 @@ export type UserEventRegistrationsProps = {
  */
 const UserEventRegistrations = ({ registrations }: UserEventRegistrationsProps): ReactElement => (
   <div>
-    <Heading>Your Event Registrations</Heading>
+    <Heading>Registrations</Heading>
     {registrations.map(registration => {
       const event = registration.event!;
       const { title, description, dateStart, dateEnd } = event;

@@ -43,9 +43,7 @@ const UserEventRegistrationCard = ({
         </li>
       ))}
     </ul>
-    <Link href={`/user/registrations/${registrationId}`} variant="button-light">
-      View
-    </Link>
+    <Link href={`/user/registrations/${registrationId}`}>View</Link>
   </div>
 );
 
