@@ -1,7 +1,10 @@
 import { ProductOrderDto } from '@losol/eventuras';
 import React, { ReactElement } from 'react';
 
+import Link from '@/components/ui/Link';
+
 export type UserEventRegistrationCardProps = {
+  registrationId: number;
   eventTitle: string;
   eventDescription: string;
   startDate: any;
@@ -14,6 +17,7 @@ export type UserEventRegistrationCardProps = {
  * @return {ReactElement} Renders a single card
  */
 const UserEventRegistrationCard = ({
+  registrationId,
   eventTitle,
   eventDescription,
   startDate,
@@ -39,6 +43,9 @@ const UserEventRegistrationCard = ({
         </li>
       ))}
     </ul>
+    <Link href={`/user/registrations/${registrationId}`} variant="button-light">
+      View
+    </Link>
   </div>
 );
 
