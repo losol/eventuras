@@ -38,9 +38,7 @@ namespace Eventuras.WebApi.Tests
                     {
                         { "AppSettings:UsePowerOffice", "false" },
                         { "AppSettings:UseStripeInvoice", "false" },
-                        { "SuperAdmin:Email", TestingConstants.SuperAdminEmail },
-                        { "SuperAdmin:Password", TestingConstants.SuperAdminPassword },
-                        { "Zoom:Enabled", "true" }
+
                     }))
                 .ConfigureServices(services =>
                 {
@@ -84,22 +82,14 @@ namespace Eventuras.WebApi.Tests
             {
                 services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
                 {
+                    options.ConfigurationManager = null;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         IssuerSigningKey = FakeJwtManager.SecurityKey,
                         ValidIssuer = FakeJwtManager.Issuer,
-                        ValidAudience = FakeJwtManager.Audience
-                    };
-                });
+                        ValidAudience = FakeJwtManager.Audience,
 
-                services.PostConfigure<AuthorizationOptions>(options =>
-                {
-                    foreach (var scope in
-                        TestingConstants.DefaultScopes) // replace default scope policies having original auth0 Issuer
-                    {
-                        options.AddPolicy(scope,
-                            policy => { policy.Requirements.Add(new ScopeRequirement(FakeJwtManager.Issuer, scope)); });
-                    }
+                    };
                 });
             });
         }

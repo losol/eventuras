@@ -99,11 +99,9 @@ namespace Eventuras.WebApi.Tests
                 email = $"test-person+{Guid.NewGuid()}@email.com";
             }
 
-            scopes ??= TestingConstants.DefaultScopes;
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, id),
-                new Claim("scope", string.Join(" ", scopes))
             };
             if (!string.IsNullOrEmpty(firstName))
             {
