@@ -1,14 +1,14 @@
-name: "CodeQL"
+name: 'CodeQL'
 
 on:
   # Friday at 15:00
   schedule:
-    - cron: "0 15 * * 5"
+    - cron: '0 15 * * 5'
 
 jobs:
   analyze:
     name: Analyze
-    runs-on: "ubuntu-latest"
+    runs-on: 'ubuntu-latest'
     timeout-minutes: 120
     permissions:
       actions: read
@@ -19,20 +19,20 @@ jobs:
       fail-fast: false
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    # Initializes the CodeQL tools for scanning.
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
-      with:
-        languages: 'javascript-typescript' 
+      # Initializes the CodeQL tools for scanning.
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: 'javascript-typescript'
 
-    # Autobuild attempts to build any compiled languages 
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v2
+      # Autobuild attempts to build any compiled languages
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
-      with:
-        category: "/language:javascript-typescript"
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: '/language:javascript-typescript'

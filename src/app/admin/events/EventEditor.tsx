@@ -78,7 +78,7 @@ type ApiState = {
 const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
   const { t } = useTranslation('admin');
   const { t: common } = useTranslation('common');
-
+  const formHook = useForm<EventFormValues>();
   const {
     register,
     getValues,
@@ -86,7 +86,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
     setValue,
     formState: { errors },
     handleSubmit,
-  } = useForm<EventFormValues>();
+  } = formHook;
 
   const router = useRouter();
   const [apiState, setApiState] = useState<ApiState>({ result: null, loading: false });
@@ -220,13 +220,12 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
             }))}
           />
           <MarkdownEditor
-            {...register('description', {
-              required: 'Please provide a description of the event',
-            })}
-            label="Description"
+            form={formHook}
+            formName="description"
+            options={{ required: 'Please provide a description of the event' }}
             placeholder="An Event Description here (markdown supported)"
             className={`${lightInputStyle}`}
-            errors={errors}
+            defaultValue={eventinfo.description ?? ''}
           />
           <InputText
             {...register('slug', {
@@ -304,39 +303,46 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
         <fieldset>
           <legend className={fieldsetLegendClassName}>Additional Information</legend>
           <MarkdownEditor
-            {...register('program')}
+            form={formHook}
+            formName="program"
             label="Program"
+            options={{ required: 'Please provide a program of the event' }}
             placeholder="An Event Program here (markdown supported)"
             className={`${lightInputStyle}`}
-            errors={errors}
+            defaultValue={eventinfo.program ?? ''}
           />
           <MarkdownEditor
-            {...register('practicalInformation')}
+            form={formHook}
+            formName="practicalInformation"
             label="Practical Information"
             placeholder="Practical Information here (markdown supported)"
+            options={{ required: 'Please provide a progrm of the event' }}
             className={`${lightInputStyle}`}
-            errors={errors}
+            defaultValue={eventinfo.practicalInformation ?? ''}
           />
           <MarkdownEditor
-            {...register('moreInformation')}
+            form={formHook}
+            formName="moreInformation"
             label="More Information"
             placeholder="More Information here (markdown supported)"
             className={`${lightInputStyle}`}
-            errors={errors}
+            defaultValue={eventinfo.moreInformation ?? ''}
           />
           <MarkdownEditor
-            {...register('welcomeLetter')}
+            form={formHook}
+            formName="welcomeLetter"
             label="Welcome Letter"
             placeholder="Welcome letter here (markdown supported)"
             className={`${lightInputStyle}`}
-            errors={errors}
+            defaultValue={eventinfo.welcomeLetter ?? ''}
           />
           <MarkdownEditor
-            {...register('informationRequest')}
+            form={formHook}
+            formName="informationRequest"
             label="Information Request"
             placeholder="Information Request (markdown supported)"
             className={`${lightInputStyle}`}
-            errors={errors}
+            defaultValue={eventinfo.informationRequest ?? ''}
           />
         </fieldset>
         <fieldset disabled={apiState.loading} className={fieldsetClassName}>

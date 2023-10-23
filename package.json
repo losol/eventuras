@@ -38,6 +38,7 @@
     "debug": "^4.3.4",
     "html-react-parser": "^4.2.8",
     "i18n": "^0.15.1",
+    "markdown-to-jsx": "^7.3.2",
     "next": "^13.5.6",
     "next-auth": "4.24.3",
     "next-translate": "^2.6.1",

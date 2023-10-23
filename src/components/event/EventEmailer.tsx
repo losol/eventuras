@@ -32,12 +32,13 @@ export default function EventEmailer({
   onClose,
   recipients,
 }: EventEmailerProps) {
+  const formHook = useForm<EventEmailerFormValues>();
   const {
     register,
     control,
     formState: { errors },
     handleSubmit,
-  } = useForm<EventEmailerFormValues>();
+  } = formHook;
   const { addAppNotification } = useAppNotifications();
   const { t } = useTranslation('admin');
   const { t: common } = useTranslation('common');
@@ -125,13 +126,11 @@ export default function EventEmailer({
       <div>
         <div id="bodyEditor">
           <MarkdownEditor
-            {...register('body', {
-              required: t('eventEmailer.form.body.feedbackNoInput'),
-            })}
+            form={formHook}
+            formName="body"
             label={t('eventEmailer.form.body.label')}
             placeholder={t('eventEmailer.form.body.label')}
             className={`${lightInputStyle}`}
-            errors={errors}
           />
         </div>
       </div>

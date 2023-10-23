@@ -46,7 +46,7 @@ async function forwarder(request: NextRequest) {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json', //default to json
-      'Eventuras-Org-Id': Environment.NEXT_PUBLIC_ORGANIZATION_ID.toString(),
+      'Eventuras-Org-Id': EnvironmentVariables.NEXT_PUBLIC_ORGANIZATION_ID,
     },
     redirect: 'manual',
   });

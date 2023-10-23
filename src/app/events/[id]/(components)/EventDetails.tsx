@@ -1,5 +1,5 @@
 import { EventDto } from '@losol/eventuras';
-import parse from 'html-react-parser';
+import { compiler } from 'markdown-to-jsx';
 import useTranslation from 'next-translate/useTranslation';
 
 import Heading from '@/components/ui/Heading';
@@ -27,29 +27,33 @@ export default function EventDetails({ eventinfo }: EventProps) {
           caption={eventinfo?.featuredImageCaption ?? ''}
         />
       ) : null}
-
-      {eventinfo?.description ?? null}
+      {eventinfo?.description ? (
+        <>
+          <Heading as="h2">{t('Description')}</Heading>
+          {eventinfo.description ? compiler(eventinfo.description) : null}
+        </>
+      ) : null}
 
       <EventRegistrationButton eventId={eventinfo.id!} />
 
       {eventinfo?.moreInformation ? (
         <>
           <Heading as="h2">{t('More information')}</Heading>
-          {eventinfo.moreInformation ? parse(eventinfo.moreInformation) : null}
+          {eventinfo.moreInformation ? compiler(eventinfo.moreInformation) : null}
         </>
       ) : null}
 
       {eventinfo?.program ? (
         <>
           <Heading as="h2">{t('Program')}</Heading>
-          {eventinfo.program ? parse(eventinfo.program) : null}
+          {eventinfo.program ? compiler(eventinfo.program) : null}
         </>
       ) : null}
 
       {eventinfo?.practicalInformation ? (
         <>
           <Heading as="h2">{t('Practical information')}</Heading>
-          {eventinfo.practicalInformation ? parse(eventinfo.practicalInformation) : null}
+          {eventinfo.practicalInformation ? compiler(eventinfo.practicalInformation) : null}
         </>
       ) : null}
     </>
