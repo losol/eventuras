@@ -598,7 +598,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
 
         [Theory]
         [MemberData(nameof(GetRegInfoWithAdditionalInfoFilled))]
-        public async Task Should_Not_Allow_Regular_User_To_Provide_Extra_Info(Func<string, int, object> f,
+        public async Task Should_Allow_Regular_User_To_Provide_Extra_Info(Func<string, int, object> f,
             Action<Registration> _)
         {
             using var scope = _factory.Services.NewTestScope();
@@ -607,7 +607,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
 
             var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
             var response = await client.PostAsync("/v3/registrations", f(user.Entity.Id, e.Entity.EventInfoId));
-            response.CheckBadRequest();
+            response.CheckOk();
         }
 
         [Fact]
