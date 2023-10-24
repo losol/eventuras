@@ -3,7 +3,11 @@ name: Latest
 on:
   push:
     branches:
-      - fix/dci
+      - main
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "Dockerfile"
 
 env:
   ORGANIZATION_NAME: losolio
