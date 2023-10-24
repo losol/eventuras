@@ -3,12 +3,14 @@ name: .NET build & test
 on:
   workflow_call:
     inputs:
-      run-id:
-        required: true
-        type: string
       dotnet-version:
-        required: true
+        required: false
+        default: "7"
         type: string
+  push:
+    paths:
+      - "src/**"
+      - "tests/**"
 
 jobs:
   build:
