@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
@@ -5,11 +10,6 @@ using Eventuras.WebApi.Controllers.Registrations;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using NodaTime;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Registrations
@@ -85,13 +85,13 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var r3 = await scope.CreateRegistrationAsync(e.Entity, user.Entity,
                 time: SystemClock.Instance.Now().Plus(Duration.FromDays(1)));
 
-            var response = await client.GetAsync("/v3/registrations?page=1&count=2");
+            var response = await client.GetAsync($"/v3/registrations?page=1&count=2&eventId={e.Entity.EventInfoId}");
             var paging = await response.AsTokenAsync();
             paging.CheckPaging(1, 2, 3,
                 (token, r) => token.CheckRegistration(r),
                 r1.Entity, r2.Entity);
 
-            response = await client.GetAsync("/v3/registrations?page=2&count=2");
+            response = await client.GetAsync($"/v3/registrations?page=2&count=2&eventId={e.Entity.EventInfoId}");
             paging = await response.AsTokenAsync();
             paging.CheckPaging(2, 2, 3,
                 (token, r) => token.CheckRegistration(r),
@@ -194,7 +194,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
 
-            var response = await client.GetAsync("/v3/registrations");
+            var response = await client.GetAsync($"/v3/registrations?&eventId={e.Entity.EventInfoId}");
             var paging = await response.AsTokenAsync();
             paging.CheckPaging(1, 3,
                 (token, r) => token.CheckRegistration(r),
@@ -215,7 +215,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
 
-            var response = await client.GetAsync("/v3/registrations");
+            var response = await client.GetAsync($"/v3/registrations?&eventId={evt.Entity.EventInfoId}");
             var paging = await response.AsTokenAsync();
             paging.CheckPaging((token, r) =>
             {
@@ -239,7 +239,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
 
-            var response = await client.GetAsync("/v3/registrations?includeUserInfo=true");
+            var response = await client.GetAsync($"/v3/registrations?includeUserInfo=true&eventId={evt.Entity.EventInfoId}");
             var paging = await response.AsTokenAsync();
             paging.CheckPaging((token, r) =>
             {
