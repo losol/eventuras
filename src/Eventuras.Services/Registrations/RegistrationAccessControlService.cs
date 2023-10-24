@@ -3,6 +3,7 @@ using Eventuras.Services.Auth;
 using Eventuras.Services.Events;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
+using Eventuras.Services.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using NodaTime;
@@ -19,18 +20,21 @@ namespace Eventuras.Services.Registrations
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
         private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
+        private readonly IUserRetrievalService _userRetrievalService;
         private readonly ILogger<RegistrationAccessControlService> _logger;
 
         public RegistrationAccessControlService(
             IHttpContextAccessor httpContextAccessor,
             IEventInfoRetrievalService eventInfoRetrievalService,
             ICurrentOrganizationAccessorService currentOrganizationAccessorService,
+            IUserRetrievalService userRetrievalService,
             ILogger<RegistrationAccessControlService> logger
             )
         {
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             _eventInfoRetrievalService = eventInfoRetrievalService ?? throw new ArgumentNullException(nameof(eventInfoRetrievalService));
             _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw new ArgumentNullException(nameof(currentOrganizationAccessorService));
+            _userRetrievalService = userRetrievalService ?? throw new ArgumentNullException(nameof(userRetrievalService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -163,7 +167,9 @@ namespace Eventuras.Services.Registrations
         {
             if (user.IsAnonymous()) { return false; }
 
-            if (registration.UserId == user.GetUserId()) { return true; }
+            var localUser = await _userRetrievalService.GetUserByEmailAsync(user.GetEmail());
+
+            if (registration.UserId == localUser.Id) { return true; }
 
             return await CheckAdminAccessAsync(user, registration, cancellationToken);
         }
