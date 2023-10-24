@@ -3,7 +3,7 @@ name: Latest
 on:
   push:
     branches:
-      - fix/ci
+      - fix/dci
 
 env:
   ORGANIZATION_NAME: losolio
