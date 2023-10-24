@@ -6,6 +6,7 @@ using Eventuras.Services.Events.Products;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Registrations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,19 +22,22 @@ namespace Eventuras.Services.Orders
         private readonly IRegistrationAccessControlService _registrationAccessControlService;
         private readonly IProductRetrievalService _productRetrievalService;
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<OrderManagementService> _logger;
 
         public OrderManagementService(
             IOrderAccessControlService orderAccessControlService,
             IRegistrationRetrievalService registrationRetrievalService,
             IRegistrationAccessControlService registrationAccessControlService,
             IProductRetrievalService productRetrievalService,
-            ApplicationDbContext context)
+            ApplicationDbContext context,
+            ILogger<OrderManagementService> logger)
         {
             _orderAccessControlService = orderAccessControlService;
             _context = context;
             _registrationRetrievalService = registrationRetrievalService;
             _registrationAccessControlService = registrationAccessControlService;
             _productRetrievalService = productRetrievalService;
+            _logger = logger;
         }
 
         public async Task CancelOrderAsync(Order order, CancellationToken cancellationToken = default)
@@ -95,19 +99,24 @@ namespace Eventuras.Services.Orders
         }
 
         public async Task<Order> CreateOrderForRegistrationAsync(
-            int registrationId,
-            ICollection<OrderLineModel>? orderLines = null,
-            CancellationToken cancellationToken = default)
+     int registrationId,
+     ICollection<OrderLineModel>? orderLines = null,
+     CancellationToken cancellationToken = default)
         {
+            _logger.LogInformation($"Starting order creation for RegistrationId {registrationId}");
+
             var registration = await GetRegistrationForUpdate(registrationId, cancellationToken);
+            _logger.LogInformation($"Retrieved registration for update: RegistrationId {registrationId}");
 
             orderLines ??= Array.Empty<OrderLineModel>();
             List<OrderLine> orderLinesMapped = new();
+
             foreach (var line in orderLines)
             {
                 var orderLine = await CreateOrderLine(registration.EventInfo, line, cancellationToken);
                 orderLinesMapped.Add(orderLine);
             }
+            _logger.LogInformation($"Mapped {orderLinesMapped.Count} order lines for RegistrationId {registrationId}");
 
             var order = new Order
             {
@@ -121,43 +130,66 @@ namespace Eventuras.Services.Orders
                 OrderLines = orderLinesMapped,
             };
             order.AddLog();
+            _logger.LogInformation($"Created new order object for RegistrationId {registrationId}");
 
             await _context.AddAsync(order, cancellationToken);
+            _logger.LogInformation($"Added new order to context for RegistrationId {registrationId}");
+
             await ValidateMinimumQuantityForProducts(registration, cancellationToken);
+            _logger.LogInformation($"Validated minimum quantity for products for RegistrationId {registrationId}");
 
             await _context.SaveChangesAsync(cancellationToken);
+            _logger.LogInformation($"Saved changes to context for RegistrationId {registrationId}");
+
             return order;
         }
 
+
         public async Task<Order?> AutoCreateOrUpdateOrder(
-            int registrationId,
-            IEnumerable<OrderLineModel> expectedOrderLines,
-            CancellationToken cancellationToken = default)
+       int registrationId,
+       IEnumerable<OrderLineModel> expectedOrderLines,
+       CancellationToken cancellationToken = default)
         {
+            _logger.LogInformation($"Auto-creating or updating order for RegistrationId {registrationId}");
+
             var expectedOrderLinesSanitized = SanitizeOrderLines(expectedOrderLines);
+            _logger.LogDebug("Sanitized expected order lines.");
 
             // Get order lines in registration
             var registration = await GetRegistrationForUpdate(registrationId, cancellationToken);
+            _logger.LogInformation($"Retrieved registration for update: RegistrationId {registrationId}");
+
             var registrationOrderLines = registration.Orders
                 .SelectMany(o => o.OrderLines)
                 .Select(OrderLineModel.FromOrderLineDomainModel);
             var registrationOrderLinesSanitized = SanitizeOrderLines(registrationOrderLines);
+            _logger.LogDebug("Sanitized existing registration order lines.");
 
             // Get order lines diff with registration lines, if there are no diff - exit early
             var diff = GetDifferenceInOrderLines(expectedOrderLinesSanitized, registrationOrderLinesSanitized);
-            if (diff.Count == 0) return null;
+            if (diff.Count == 0)
+            {
+                _logger.LogInformation("No difference in order lines found. Exiting early.");
+                return null;
+            }
+            _logger.LogDebug($"Found differences in order lines: {diff.Count} differences");
 
             // Find newest order viable to be updated
             var order = registration.Orders.Where(o => o.CanEdit).MaxBy(o => o.OrderTime);
             if (order != null)
             {
+                _logger.LogInformation("Found existing order viable for updating.");
+
                 var existingOrderLines = order.OrderLines.Select(OrderLineModel.FromOrderLineDomainModel);
                 var combinedDiffAndOrder = SanitizeOrderLines(diff.Concat(existingOrderLines));
                 await UpdateOrderLinesAsync(order, combinedDiffAndOrder.ToArray(), cancellationToken);
+
+                _logger.LogInformation("Updated existing order lines.");
                 return order;
             }
 
             // if no order found for update - create a new order
+            _logger.LogInformation("No existing order viable for update. Creating a new order.");
             order = await CreateOrderForRegistrationAsync(registrationId, diff, cancellationToken);
             return order;
 
