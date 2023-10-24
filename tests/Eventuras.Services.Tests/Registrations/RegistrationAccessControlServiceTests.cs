@@ -6,6 +6,8 @@ using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
 using Eventuras.Services.Registrations;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NodaTime;
 using System;
@@ -31,8 +33,9 @@ public class RegistrationAccessControlServiceTests
 
         var eventInfoRetrievalService = ServiceMocks.MockEventInfoRetrievalService(out var eiMock, ei);
         var organizationAccessorService = Mock.Of<ICurrentOrganizationAccessorService>(MockBehavior.Strict); // should not be called
+        var logger = NullLogger<RegistrationAccessControlService>.Instance;
 
-        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService);
+        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService, logger);
 
         // Act
         await testSubject.CheckRegistrationUpdateAccessAsync(reg, CancellationToken.None);
@@ -57,8 +60,9 @@ public class RegistrationAccessControlServiceTests
 
         var eventInfoRetrievalService = ServiceMocks.MockEventInfoRetrievalService(out var eiMock, ei);
         var organizationAccessorService = Mock.Of<ICurrentOrganizationAccessorService>(MockBehavior.Strict); // should not be called
+        var logger = NullLogger<RegistrationAccessControlService>.Instance;
 
-        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService);
+        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService, logger);
 
         // Act
         await Assert.ThrowsAsync<NotAccessibleException>(
@@ -82,8 +86,9 @@ public class RegistrationAccessControlServiceTests
 
         var eventInfoRetrievalService = ServiceMocks.MockEventInfoRetrievalService(out var eiMock, ei);
         var organizationAccessorService = Mock.Of<ICurrentOrganizationAccessorService>(MockBehavior.Strict); // should not be called
+        var logger = NullLogger<RegistrationAccessControlService>.Instance;
 
-        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService);
+        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService, logger);
 
         // Act
         await testSubject.CheckRegistrationUpdateAccessAsync(reg, CancellationToken.None);
@@ -106,8 +111,10 @@ public class RegistrationAccessControlServiceTests
 
         var eventInfoRetrievalService = ServiceMocks.MockEventInfoRetrievalService(out var eiMock, ei);
         var organizationAccessorService = Mock.Of<ICurrentOrganizationAccessorService>(MockBehavior.Strict); // should not be called
+        var logger = NullLogger<RegistrationAccessControlService>.Instance;
 
-        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService);
+        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService, logger);
+
 
         // Act
         await testSubject.CheckRegistrationUpdateAccessAsync(reg, CancellationToken.None);
@@ -133,8 +140,9 @@ public class RegistrationAccessControlServiceTests
 
         var eventInfoRetrievalService = ServiceMocks.MockEventInfoRetrievalService(out var eiMock, ei);
         var organizationAccessorService = Mock.Of<ICurrentOrganizationAccessorService>(MockBehavior.Strict); // should not be called
+        var logger = NullLogger<RegistrationAccessControlService>.Instance;
 
-        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService);
+        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService, logger);
 
         // Act
         await Assert.ThrowsAsync<NotAccessibleException>(
@@ -160,8 +168,9 @@ public class RegistrationAccessControlServiceTests
 
         var eventInfoRetrievalService = ServiceMocks.MockEventInfoRetrievalService(out var eiMock, ei);
         var organizationAccessorService = Mock.Of<ICurrentOrganizationAccessorService>(MockBehavior.Strict); // should not be called
+        var logger = NullLogger<RegistrationAccessControlService>.Instance;
 
-        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService);
+        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService, logger);
 
         // Act
         await testSubject.CheckRegistrationUpdateAccessAsync(reg, CancellationToken.None);
@@ -187,8 +196,9 @@ public class RegistrationAccessControlServiceTests
 
         var eventInfoRetrievalService = ServiceMocks.MockEventInfoRetrievalService(out var eiMock, ei);
         var organizationAccessorService = Mock.Of<ICurrentOrganizationAccessorService>(MockBehavior.Strict); // should not be called
+        var logger = NullLogger<RegistrationAccessControlService>.Instance;
 
-        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService);
+        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService, logger);
 
         // Act
         await testSubject.CheckRegistrationUpdateAccessAsync(reg, CancellationToken.None);
@@ -214,8 +224,9 @@ public class RegistrationAccessControlServiceTests
 
         var eventInfoRetrievalService = ServiceMocks.MockEventInfoRetrievalService(out var eiMock, ei);
         var organizationAccessorService = Mock.Of<ICurrentOrganizationAccessorService>(MockBehavior.Strict); // should not be called
+        var logger = NullLogger<RegistrationAccessControlService>.Instance;
 
-        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService);
+        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService, logger);
 
         // Act
         await testSubject.CheckRegistrationUpdateAccessAsync(reg, CancellationToken.None);
@@ -241,8 +252,9 @@ public class RegistrationAccessControlServiceTests
 
         var eventInfoRetrievalService = ServiceMocks.MockEventInfoRetrievalService(out var eiMock, ei);
         var organizationAccessorService = Mock.Of<ICurrentOrganizationAccessorService>(MockBehavior.Strict); // should not be called
+        var logger = NullLogger<RegistrationAccessControlService>.Instance;
 
-        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService);
+        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService, logger);
 
         // Act
         await Assert.ThrowsAsync<NotAccessibleException>(
@@ -269,8 +281,9 @@ public class RegistrationAccessControlServiceTests
 
         var eventInfoRetrievalService = ServiceMocks.MockEventInfoRetrievalService(out var eiMock, ei);
         var organizationAccessorService = Mock.Of<ICurrentOrganizationAccessorService>(MockBehavior.Strict); // should not be called
+        var logger = NullLogger<RegistrationAccessControlService>.Instance;
 
-        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService);
+        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService, logger);
 
         // Act
         await testSubject.CheckRegistrationUpdateAccessAsync(reg, CancellationToken.None);
@@ -296,8 +309,9 @@ public class RegistrationAccessControlServiceTests
 
         var eventInfoRetrievalService = ServiceMocks.MockEventInfoRetrievalService(out var eiMock, ei);
         var organizationAccessorService = Mock.Of<ICurrentOrganizationAccessorService>(MockBehavior.Strict); // should not be called
+        var logger = NullLogger<RegistrationAccessControlService>.Instance;
 
-        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService);
+        var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService, logger);
 
         // Act
         await testSubject.CheckRegistrationUpdateAccessAsync(reg, CancellationToken.None);
