@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 namespace Eventuras.Services.Auth
 {
@@ -10,7 +11,9 @@ namespace Eventuras.Services.Auth
     {
         public static string? GetUserId(this ClaimsPrincipal user)
         {
-            return user.FindFirstValue(ClaimTypes.NameIdentifier);
+            // For the local user the AuthenticationType is Identity.Application
+            var applicationIdentity = user.Identities.FirstOrDefault(i => i.AuthenticationType == "Identity.Application");
+            return applicationIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
 
         public static string? GetEmail(this ClaimsPrincipal user)
