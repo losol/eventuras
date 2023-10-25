@@ -10,7 +10,7 @@ import { UserContext } from '@/context';
 import Environment from '@/utils/Environment';
 
 interface UserMenuProps {
-  lightText?: boolean;
+  bgDark?: boolean;
 }
 
 const UserMenu = (props: UserMenuProps) => {
@@ -33,17 +33,17 @@ const UserMenu = (props: UserMenuProps) => {
   return (
     <div className="flex items-center">
       {userState.auth?.isAuthenticated && (
-        <Link href="/user" lightText={props.lightText} className="font-bold mr-2">
+        <Link href="/user" bgDark={props.bgDark} className="font-bold mr-2">
           Profile
         </Link>
       )}
       {!userState.auth?.isAuthenticated && (
-        <Button variant="transparent" onClick={handleLogin} lightText={props.lightText}>
+        <Button variant="transparent" onClick={handleLogin} bgDark={props.bgDark}>
           Log in
         </Button>
       )}
       {userState.auth?.isAuthenticated && (
-        <Button variant="transparent" onClick={handleLogout} lightText={props.lightText}>
+        <Button variant="transparent" onClick={handleLogout} bgDark={props.bgDark}>
           Log out
         </Button>
       )}

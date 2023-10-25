@@ -13,6 +13,18 @@ export interface FooterLink {
   href: string;
 }
 
+export interface SupportContact {
+  name: string;
+  email: string;
+}
+
+export interface Publisher {
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+}
+
 export interface SiteInfo {
   name: string;
   description: string;
@@ -22,13 +34,17 @@ export interface SiteInfo {
     featuredImage: FeaturedImage;
   };
   footerLinks: FooterLink[];
+  publisher: Publisher;
+  contactInformation: {
+    support: SupportContact;
+  };
 }
 
 const getSiteSettings = async (): Promise<SiteInfo | null> => {
   if (Environment.NEXT_PUBLIC_SITE_SETTINGS_URL) {
     try {
       const res = await fetch(Environment.NEXT_PUBLIC_SITE_SETTINGS_URL, {
-        next: { revalidate: false },
+        next: { revalidate: 600 },
       });
       const data = await res.json();
       return data.site;

@@ -31,7 +31,7 @@ export const BlockButton = () => (
   </Button>
 );
 export const LightText = () => (
-  <Button variant="secondary" lightText>
+  <Button variant="secondary" bgDark>
     Light Text, Dark Mood!
   </Button>
 );
@@ -43,7 +43,7 @@ export const Combined = () => (
     <Button variant="primary" block>
       I Take All The Space!
     </Button>
-    <Button variant="secondary" lightText>
+    <Button variant="secondary" bgDark>
       Light Text, Dark Mood!
     </Button>
   </>

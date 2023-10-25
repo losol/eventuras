@@ -18,19 +18,19 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   leftIcon?: React.ReactNode;
   className?: string;
   loading?: boolean;
-  lightText?: boolean;
+  bgDark?: boolean;
   variant?: 'primary' | 'secondary' | 'light' | 'transparent';
   block?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = props => {
-  const { variant = 'primary', lightText = false, block = false } = props;
+  const { variant = 'primary', bgDark = false, block = false } = props;
 
   let textColor;
-  if (variant == 'primary' || lightText) {
+  if (variant == 'primary' || bgDark) {
     textColor = 'text-white';
   } else {
-    textColor = 'text-black';
+    textColor = 'text-black dark:text-white';
   }
 
   const blockClassName = block ? 'block' : '';

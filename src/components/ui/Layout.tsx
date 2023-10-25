@@ -26,13 +26,13 @@ export default async function Layout(props: LayoutProps) {
 
   return (
     <>
-      <Navbar title={site?.name ?? 'Eventuras'} bgColor={bgClass} dark={props.darkImage}>
-        <UserMenu lightText={props.darkImage} />
+      <Navbar title={site?.name ?? 'Eventuras'} bgColor={bgClass} bgDark={props.darkImage}>
+        <UserMenu bgDark={props.darkImage} />
       </Navbar>
       <main id="main-content">
         {fluid ? children : <div className="container">{children}</div>}
       </main>
-      <Footer text={site?.description} links={site?.footerLinks} />
+      <Footer siteTitle={site?.name} links={site?.footerLinks} publisher={site?.publisher} />
     </>
   );
 }

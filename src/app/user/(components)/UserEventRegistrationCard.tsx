@@ -1,6 +1,7 @@
 import { ProductOrderDto } from '@losol/eventuras';
 import React, { ReactElement } from 'react';
 
+import Card from '@/components/ui/Card';
 import Link from '@/components/ui/Link';
 
 export type UserEventRegistrationCardProps = {
@@ -11,11 +12,7 @@ export type UserEventRegistrationCardProps = {
   endDate: any;
   products: ProductOrderDto[];
 };
-/**
- * Single registration card
- * @param  {UserEventRegistrationCardProps}UserEventRegistrationCardProps Contains the event details
- * @return {ReactElement} Renders a single card
- */
+
 const UserEventRegistrationCard = ({
   registrationId,
   eventTitle,
@@ -24,27 +21,29 @@ const UserEventRegistrationCard = ({
   endDate,
   products,
 }: UserEventRegistrationCardProps): ReactElement => (
-  <div className="mb-12 bg-white rounded-lg p-4 flex flex-col justify-between leading-normal">
-    <h3 className="text-gray-900 font-bold text-l mb-2">{eventTitle}</h3>
-    <p className="text-gray-900">{eventDescription}</p>
-    <p className="text-gray-900">
-      {startDate} → {endDate}{' '}
-    </p>
-    {products.length > 0 && <h3 className="text-gray-900">Products</h3>}
-    <ul>
-      {products.map(product => (
-        <li key={product.productId}>
-          <p className="text-gray-900">{product.product?.name}</p>
-          <p className="text-gray-900">{product.product?.description}</p>
-          <p className="text-gray-900">
-            <span>Quantity:</span>
-            {product.quantity}
-          </p>
-        </li>
-      ))}
-    </ul>
-    <Link href={`/user/registrations/${registrationId}`}>View</Link>
-  </div>
+  <Card>
+    <Card.Heading as="h3" spacingClassName="pt-2">
+      {eventTitle}
+    </Card.Heading>
+    <Card.Text>{eventDescription}</Card.Text>
+    <Card.Text>
+      {startDate} → {endDate}
+    </Card.Text>
+    {products.length > 0 && (
+      <Card.Text>
+        <ul>
+          {products.map(product => (
+            <li key={product.productId}>{product.product?.name}</li>
+          ))}
+        </ul>
+      </Card.Text>
+    )}
+    <Card.Text>
+      <Link href={`/user/registrations/${registrationId}`} variant="button-primary" stretch>
+        View
+      </Link>
+    </Card.Text>
+  </Card>
 );
 
 export default UserEventRegistrationCard;

@@ -2,29 +2,56 @@ import { FooterLink } from '@/utils/site/getSiteSettings';
 
 import Link from './Link';
 
+interface Publisher {
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+}
 interface FooterProps {
-  text?: string;
-  bgColor?: string;
+  siteTitle?: string;
   links?: FooterLink[];
+  publisher?: Publisher;
 }
 
 const Footer = (props: FooterProps) => {
-  const backgroundColor = props.bgColor || 'bg-gradient-to-r from-primary-700 to-cyan-950';
   return (
-    <footer className={`${backgroundColor} shadow pt-4`}>
-      <div className="container mx-auto p-4 md:flex md:items-center md:justify-between">
-        <span className="text-sm sm:text-center text-gray-200">{props.text ?? 'Eventuras'}</span>
-        <ul className="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-200 dark:text-gray-400 sm:mt-0">
-          {props.links?.map((link, index) => (
-            <li key={index}>
-              <Link href={link.href} className="text-gray-200">
-                {link.text}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </footer>
+    <>
+      <footer className=" bg-white dark:bg-gray-900">
+        <div className="container py-8">
+          <div className="md:flex md:justify-between">
+            {props.siteTitle && (
+              <div className="mb-6 md:mb-0">
+                <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
+                  {props.siteTitle}
+                </span>
+                {props.publisher && (
+                  <>
+                    <div className="mt-2 font-light">
+                      <p>{props.publisher.name}</p>
+                      <p>{props.publisher.address}</p>
+                      <p>{props.publisher.phone}</p>
+                      <p>{props.publisher.email}</p>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+            {props.links && (
+              <div>
+                <ul className="text-gray-800 dark:text-gray-300 font-medium">
+                  {props.links?.map((link, index) => (
+                    <li key={index} className="mb-4">
+                      <Link href={link.href}>{link.text}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+      </footer>
+    </>
   );
 };
 

@@ -3,12 +3,12 @@ export type HeadingProps = {
   children: React.ReactNode;
   className?: string;
   spacingClassName?: string;
-  dark?: boolean;
+  bgDark?: boolean;
 };
 
 const Heading = (props: HeadingProps) => {
   const HeadingComponent = props.as ?? 'h1';
-  const isDark = props.dark ?? false;
+  const bgDark = props.bgDark ?? false;
 
   // Adjust font size based on heading level
   let defaultTextSize = '';
@@ -52,7 +52,7 @@ const Heading = (props: HeadingProps) => {
   }
 
   const baseClassName = props.className ?? defaultTextSize;
-  const textColor = isDark ? 'text-gray-100' : 'text-gray-800';
+  const textColor = bgDark ? 'text-gray-200' : 'text-gray-800 dark:text-gray-200';
   const spacing = props.spacingClassName ?? defaultSpacing;
   const headingClassName = `${baseClassName} ${spacing} ${textColor}`;
 

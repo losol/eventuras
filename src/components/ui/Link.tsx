@@ -6,21 +6,23 @@ interface LinkProps {
   href: string;
   children?: React.ReactNode;
   className?: string;
-  lightText?: boolean;
   variant?: 'button-primary' | 'button-secondary' | 'button-light' | 'button-transparent';
   block?: boolean;
+  bgDark?: boolean;
+  stretch?: boolean;
 }
 
 const Link: React.FC<LinkProps> = ({
   href,
   children,
   className,
-  lightText,
+  bgDark = false,
   block = false,
   variant,
+  stretch,
 }) => {
   // Text color
-  const textColor = lightText || variant == 'button-primary' ? 'text-white' : 'text-black';
+  const textColor = bgDark ? 'text-gray-200' : 'text-gray-800 dark:text-gray-200';
 
   // Block classes
   const blockClasses = block ? 'block' : '';
@@ -42,9 +44,8 @@ const Link: React.FC<LinkProps> = ({
     textColor,
     blockClasses,
     className,
-  ]
-    .filter(Boolean)
-    .join(' ');
+    stretch ? 'stretched-link' : '',
+  ].join(' ');
 
   return (
     <NextLink className={classes} href={href}>

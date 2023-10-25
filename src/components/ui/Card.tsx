@@ -34,6 +34,7 @@ interface CardProps {
   backgroundImage?: string;
   block?: boolean;
   dark?: boolean;
+  href?: string;
 }
 
 const Card = (props: CardProps) => {
@@ -45,7 +46,7 @@ const Card = (props: CardProps) => {
     return null; // Ignore other types of children
   });
 
-  const baseClassName = props.className ?? `relative p-3 bg-white `;
+  const baseClassName = props.className ?? `relative p-3 bg-white dark:bg-slate-900 m-2 `;
 
   // Conditionally add 'w-full h-full' if block is true
   const blockClass = props.block ? 'w-full h-full' : 'max-w-md';
@@ -77,16 +78,16 @@ const Heading: React.FC<HeadingProps> = ({
   as = 'h4',
   children,
   className,
-  spacingClassName,
+  spacingClassName = 'pt-2 pb-1',
   dark,
 }) => (
-  <HeadingComponent as={as} dark={dark} className={className} spacingClassName={spacingClassName}>
+  <HeadingComponent as={as} bgDark={dark} className={className} spacingClassName={spacingClassName}>
     {children}
   </HeadingComponent>
 );
 
 // Text component
-const Text: React.FC<TextProps> = ({ children, className, spacingClassName }) => (
+const Text: React.FC<TextProps> = ({ children, className, spacingClassName = 'py-1' }) => (
   <TextComponent as="p" className={className} spacingClassName={spacingClassName}>
     {children}
   </TextComponent>

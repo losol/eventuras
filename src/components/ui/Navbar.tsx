@@ -3,13 +3,13 @@ import Link from 'next/link';
 type NavbarProps = {
   title?: string;
   children?: React.ReactNode;
-  dark?: boolean;
+  bgDark?: boolean;
   bgColor?: string;
 };
 
 const Navbar = (props: NavbarProps) => {
-  const { dark: lightText = false, bgColor = 'bg-transparent' } = props;
-  const textColor = lightText ? 'text-white' : 'text-black';
+  const { bgDark = false, bgColor = 'bg-transparent' } = props;
+  const textColor = bgDark ? 'text-white' : 'text-black dark:text-white';
   const fixedClassName = ' z-10';
 
   return (
