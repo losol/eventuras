@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services;
@@ -15,6 +17,7 @@ using Eventuras.WebApi.Config;
 using Losol.Communication.HealthCheck.Abstractions;
 using Losol.Communication.HealthCheck.Email;
 using Losol.Communication.HealthCheck.Sms;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -22,8 +25,6 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Linq;
 
 namespace Eventuras.WebApi.Extensions
 {
@@ -62,6 +63,7 @@ namespace Eventuras.WebApi.Extensions
             this IServiceCollection services,
             IConfiguration config)
         {
+            services.AddScoped<IClaimsTransformation, DbUserClaimTransformation>();
             services.AddAuthorization(options =>
             {
                 var apiScopes = config.GetSection("Auth:Scopes")
