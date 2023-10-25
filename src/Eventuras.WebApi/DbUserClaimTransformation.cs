@@ -13,6 +13,9 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Eventuras.WebApi;
 
+/// <summary>
+/// Transforms incoming claims to include claims from ApplicationUser in Eventuras.
+/// </summary>
 public class DbUserClaimTransformation : IClaimsTransformation
 {
     private readonly IUserRetrievalService _userRetrievalService;
@@ -29,6 +32,7 @@ public class DbUserClaimTransformation : IClaimsTransformation
         _claimsFactory = claimsFactory;
     }
 
+    /// <summary>Adds claims from ApplicationUser to the principal if possible.</summary>
     public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
     {
         var userEmail = principal.GetEmail();
