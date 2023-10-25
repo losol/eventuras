@@ -1,3 +1,6 @@
+#nullable enable
+
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 
@@ -5,24 +8,29 @@ namespace Eventuras.Services.Auth
 {
     public static class ClaimsPrincipalExtensions
     {
-        public static string GetUserId(this ClaimsPrincipal user)
+        public static string? GetUserId(this ClaimsPrincipal user)
         {
             return user.FindFirstValue(ClaimTypes.NameIdentifier);
         }
 
-        public static string GetEmail(this ClaimsPrincipal user)
+        public static string? GetEmail(this ClaimsPrincipal user)
         {
             return user.FindFirstValue(ClaimTypes.Email);
         }
 
-        public static string GetName(this ClaimsPrincipal user)
+        public static string? GetName(this ClaimsPrincipal user)
         {
             return user.FindFirstValue(ClaimTypes.Name);
         }
 
-        public static string GetMobilePhone(this ClaimsPrincipal user)
+        public static string? GetMobilePhone(this ClaimsPrincipal user)
         {
             return user.FindFirstValue(ClaimTypes.MobilePhone);
+        }
+
+        public static IEnumerable<string> GetRoles(this ClaimsPrincipal user)
+        {
+            return user.FindAll(ClaimTypes.Role).Select(c => c.Value);
         }
 
         public static bool IsAdmin(this ClaimsPrincipal user)
