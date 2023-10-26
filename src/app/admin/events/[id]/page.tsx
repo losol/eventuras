@@ -3,6 +3,7 @@
 import useTranslation from 'next-translate/useTranslation';
 import { useState } from 'react';
 
+import EventContent from '@/components/event/EventContent';
 import EventEmailer from '@/components/event/EventEmailer';
 import { Container, Drawer, Layout } from '@/components/ui';
 import Button from '@/components/ui/Button';
@@ -35,6 +36,7 @@ const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
     registrationSeed
   );
   const { t } = useTranslation('admin');
+  const { t: tEvents } = useTranslation('events');
   const { loading: eventsLoading, event } = useEvent(eventId);
   const [emailDrawerOpen, setEmailDrawerOpen] = useState<boolean>(false);
   const { registrationProducts: eventProducts, loading: loadingEventProducts } =
@@ -51,7 +53,11 @@ const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
         {event && (
           <>
             <Heading as="h1">{event.title ?? ''}</Heading>
-            <p>{event.description ?? ''}</p>
+            <EventContent
+              event={event}
+              contentField="description"
+              heading={tEvents('Description')}
+            />
             <AddUserToEvent
               event={event}
               eventProducts={eventProducts}

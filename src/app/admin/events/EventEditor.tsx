@@ -8,7 +8,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import Checkbox, { CheckBoxLabel } from '@/components/forms/Checkbox';
 import DropdownSelect from '@/components/forms/DropdownSelect';
 import { defaultInputStyle, InputDate, InputText, lightInputStyle } from '@/components/forms/Input';
-import MarkdownEditor from '@/components/forms/MarkdownEditor';
+import MarkdownEditView from '@/components/forms/MarkdownEditView';
 import { Layout } from '@/components/ui';
 import Button from '@/components/ui/Button';
 import FatalError from '@/components/ui/FatalError';
@@ -219,7 +219,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
               label: value,
             }))}
           />
-          <MarkdownEditor
+          <MarkdownEditView
             form={formHook}
             formName="description"
             options={{ required: 'Please provide a description of the event' }}
@@ -302,7 +302,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
         </fieldset>
         <fieldset>
           <legend className={fieldsetLegendClassName}>Additional Information</legend>
-          <MarkdownEditor
+          <MarkdownEditView
             form={formHook}
             formName="program"
             label="Program"
@@ -311,7 +311,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
             className={`${lightInputStyle}`}
             defaultValue={eventinfo.program ?? ''}
           />
-          <MarkdownEditor
+          <MarkdownEditView
             form={formHook}
             formName="practicalInformation"
             label="Practical Information"
@@ -320,7 +320,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
             className={`${lightInputStyle}`}
             defaultValue={eventinfo.practicalInformation ?? ''}
           />
-          <MarkdownEditor
+          <MarkdownEditView
             form={formHook}
             formName="moreInformation"
             label="More Information"
@@ -328,7 +328,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
             className={`${lightInputStyle}`}
             defaultValue={eventinfo.moreInformation ?? ''}
           />
-          <MarkdownEditor
+          <MarkdownEditView
             form={formHook}
             formName="welcomeLetter"
             label="Welcome Letter"
@@ -336,7 +336,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
             className={`${lightInputStyle}`}
             defaultValue={eventinfo.welcomeLetter ?? ''}
           />
-          <MarkdownEditor
+          <MarkdownEditView
             form={formHook}
             formName="informationRequest"
             label="Information Request"

@@ -6,11 +6,13 @@
 
 import { compiler } from 'markdown-to-jsx';
 import { useRef, useState } from 'react';
-import { RegisterOptions, UseFormReturn } from 'react-hook-form';
+import { Controller, RegisterOptions, UseFormReturn } from 'react-hook-form';
+
+import MarkdownEditor from '@/lib/scribo-markdown/MarkdownEditor';
 
 import Button from '../ui/Button';
 
-export type MarkdownEditorProps = {
+export type MarkdownEditViewProps = {
   form: UseFormReturn<any>;
   defaultValue?: string;
   options?: RegisterOptions;
@@ -20,21 +22,19 @@ export type MarkdownEditorProps = {
   label?: string;
 };
 
-const MarkdownEditor = ({
+const MarkdownEditView = ({
   form,
-  options,
   className,
   placeholder,
   label,
   formName,
   defaultValue,
-}: MarkdownEditorProps) => {
+}: MarkdownEditViewProps) => {
   const {
-    register,
     formState: { errors },
+    control,
   } = form;
 
-  const reg = register(formName, options);
   const id = formName;
   const [editing, setEditing] = useState<boolean>(false);
   const [inFullMode, setFullMode] = useState<boolean>(false);
@@ -62,16 +62,23 @@ const MarkdownEditor = ({
     <div className={inFullMode ? poppedOutClass : poppedInClass}>
       {label && <label htmlFor={id}>{label}</label>}
       {editing ? (
-        <textarea
-          {...reg}
-          id={id}
-          className={inFullMode ? editorClassNameFull : editorClassName}
-          placeholder={placeholder}
-          onChange={e => {
-            if (reg.onChange) {
-              reg.onChange(e);
-              toCompile.current = e.target.value;
-            }
+        <Controller
+          control={control}
+          name={formName}
+          rules={{}}
+          render={({ field: { onChange, onBlur, value } }) => {
+            return (
+              <MarkdownEditor
+                onChange={markdown => {
+                  onChange(markdown);
+                  toCompile.current = markdown;
+                }}
+                className={inFullMode ? editorClassNameFull : editorClassName}
+                onBlur={onBlur}
+                initialMarkdown={value}
+                placeholder={placeholder}
+              />
+            );
           }}
         />
       ) : (
@@ -100,5 +107,5 @@ const MarkdownEditor = ({
   );
 };
 
-MarkdownEditor.displayName = 'markdowneditor';
-export default MarkdownEditor;
+MarkdownEditView.displayName = 'MarkdownEditView';
+export default MarkdownEditView;

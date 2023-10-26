@@ -9,7 +9,7 @@ import { mapEnum } from '@/utils/enum';
 
 import DropdownSelect from '../forms/DropdownSelect';
 import { InputText, lightInputStyle } from '../forms/Input';
-import MarkdownEditor from '../forms/MarkdownEditor';
+import MarkdownEditView from '../forms/MarkdownEditView';
 import Heading from '../ui/Heading';
 
 type EventEmailerFormValues = {
@@ -125,7 +125,7 @@ export default function EventEmailer({
       </div>
       <div>
         <div id="bodyEditor">
-          <MarkdownEditor
+          <MarkdownEditView
             form={formHook}
             formName="body"
             label={t('eventEmailer.form.body.label')}

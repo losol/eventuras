@@ -6,7 +6,7 @@ import { Layout } from '@/components/ui';
 import Environment, { EnvironmentVariables } from '@/utils/Environment';
 import Logger from '@/utils/Logger';
 
-import EventDetails from '../(components)/EventDetails';
+import EventDetails from './EventDetails';
 
 type EventInfoProps = {
   params: {
