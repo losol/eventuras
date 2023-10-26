@@ -72,8 +72,10 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
         {
             using var scope = _factory.Services.NewTestScope();
             using var evt = await scope.CreateEventAsync();
-
-            var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+            
+            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { Roles.SuperAdmin }); 
+            var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, Roles.SuperAdmin); 
+            
             var response = await client.PostAsync("/v3/notifications/sms", new
             {
                 message = "Test message",
@@ -192,8 +194,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
 
                 try
                 {
-                    var client = _factory.CreateClient()
-                        .AuthenticatedAsSuperAdmin();
+                    using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { Roles.SuperAdmin }); 
+                    var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, Roles.SuperAdmin);
 
                     var response = await client.PostAsync("/v3/notifications/sms", new
                     {
@@ -246,7 +248,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             using var r2 = await scope.CreateRegistrationAsync(e1.Entity, u2.Entity);
             using var r3 = await scope.CreateRegistrationAsync(e2.Entity, u2.Entity);
 
-            var client = _factory.CreateClient().Authenticated(role: role);
+            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { role }); 
+            var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, role);
 
             var response = await client.PostAsync("/v3/notifications/sms", new
             {
@@ -290,7 +293,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
         {
             using var scope = _factory.Services.NewTestScope();
 
-            var client = _factory.CreateClient().Authenticated(role: role);
+            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { role }); 
+            var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, role);
 
             var response = await client.PostAsync("/v3/notifications/sms", new
             {
@@ -318,9 +322,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
         [InlineData(Roles.SystemAdmin)]
         public async Task Sms_Notifications_Should_Use_Status_And_Type_Filter(string role)
         {
-            var client = _factory.CreateClient().Authenticated(role: role);
-
             using var scope = _factory.Services.NewTestScope();
+
+            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { role }); 
+            var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, role);
+            
             using var u1 = await scope.CreateUserAsync();
             using var u2 = await scope.CreateUserAsync();
             using var u3 = await scope.CreateUserAsync();

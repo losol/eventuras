@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Net.Http;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using Eventuras.Domain;
@@ -77,9 +76,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
         public async Task Should_Not_Send_Any_Email_Notification_If_No_Registrants_Found()
         {
             using var scope = _factory.Services.NewTestScope();
-            using var evt = await scope.CreateEventAsync(); 
+            using var evt = await scope.CreateEventAsync();
 
-            var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { Roles.SuperAdmin }); 
+            var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, Roles.SuperAdmin);
+            
             var response = await client.PostAsync("/v3/notifications/email", new
             {
                 subject = "Test",
@@ -199,8 +200,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
 
                 try
                 {
-                    var client = _factory.CreateClient()
-                        .AuthenticatedAsSuperAdmin();
+                    using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { Roles.SuperAdmin }); 
+                    var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, Roles.SuperAdmin);
 
                     var response = await client.PostAsync("/v3/notifications/email", new
                     {
@@ -251,8 +252,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             using var r1 = await scope.CreateRegistrationAsync(e1.Entity, u1.Entity);
             using var r2 = await scope.CreateRegistrationAsync(e1.Entity, u2.Entity);
             using var r3 = await scope.CreateRegistrationAsync(e2.Entity, u2.Entity);
-
-            var client = _factory.CreateClient().Authenticated(role: role);
+            
+            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { role }); 
+            var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, role);
 
             var response = await client.PostAsync("/v3/notifications/email", new
             {
@@ -297,7 +299,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
         {
             using var scope = _factory.Services.NewTestScope();
 
-            var client = _factory.CreateClient().Authenticated(role: role);
+            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { role }); 
+            var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, role);
 
             var response = await client.PostAsync("/v3/notifications/email", new
             {
@@ -326,9 +329,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
         [InlineData(Roles.SystemAdmin)]
         public async Task Email_Notifications_Should_Use_Status_And_Type_Filter(string role)
         {
-            var client = _factory.CreateClient().Authenticated(role: role);
-
             using var scope = _factory.Services.NewTestScope();
+            
+            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { role }); 
+            var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, role);
+
             using var u1 = await scope.CreateUserAsync();
             using var u2 = await scope.CreateUserAsync();
             using var u3 = await scope.CreateUserAsync();
@@ -452,7 +457,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     }
                 }
             });
-            
+
             await response.CheckNotificationResponse(scope,
                 u1.Entity, u2.Entity, u3.Entity);
 
@@ -479,7 +484,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                 bodyMarkdown = body,
                 recipients = new[] { address }
             });
-            
+
             await response.CheckNotificationResponse(scope, 1);
 
             CheckEmailSentTo(subject, body, address);
@@ -535,7 +540,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     eventId = evt.Entity.EventInfoId
                 }
             });
-            
+
             await response.CheckNotificationResponse(scope, user.Entity);
 
             CheckEmailSentTo("Test 1", "Test email 1", user.Entity);
@@ -657,7 +662,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     eventId = evt.Entity.EventInfoId
                 }
             });
-            
+
             await response.CheckNotificationResponse(scope, 1, 0, 1);
 
             var notification = await scope.Db.Notifications

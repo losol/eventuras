@@ -85,13 +85,13 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             using var r3 = await scope.CreateRegistrationAsync(e.Entity, user.Entity,
                 time: SystemClock.Instance.Now().Plus(Duration.FromDays(1)));
 
-            var response = await client.GetAsync("/v3/registrations?page=1&count=2");
+            var response = await client.GetAsync($"/v3/registrations?page=1&count=2&eventId={e.Entity.EventInfoId}");
             var paging = await response.AsTokenAsync();
             paging.CheckPaging(1, 2, 3,
                 (token, r) => token.CheckRegistration(r),
                 r1.Entity, r2.Entity);
 
-            response = await client.GetAsync("/v3/registrations?page=2&count=2");
+            response = await client.GetAsync($"/v3/registrations?page=2&count=2&eventId={e.Entity.EventInfoId}");
             paging = await response.AsTokenAsync();
             paging.CheckPaging(2, 2, 3,
                 (token, r) => token.CheckRegistration(r),
@@ -194,7 +194,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
 
-            var response = await client.GetAsync("/v3/registrations");
+            var response = await client.GetAsync($"/v3/registrations?&eventId={e.Entity.EventInfoId}");
             var paging = await response.AsTokenAsync();
             paging.CheckPaging(1, 3,
                 (token, r) => token.CheckRegistration(r),
@@ -215,7 +215,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
 
-            var response = await client.GetAsync("/v3/registrations");
+            var response = await client.GetAsync($"/v3/registrations?&eventId={evt.Entity.EventInfoId}");
             var paging = await response.AsTokenAsync();
             paging.CheckPaging((token, r) =>
             {
@@ -239,7 +239,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
 
-            var response = await client.GetAsync("/v3/registrations?includeUserInfo=true");
+            var response = await client.GetAsync($"/v3/registrations?includeUserInfo=true&eventId={evt.Entity.EventInfoId}");
             var paging = await response.AsTokenAsync();
             paging.CheckPaging((token, r) =>
             {
@@ -598,7 +598,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
 
         [Theory]
         [MemberData(nameof(GetRegInfoWithAdditionalInfoFilled))]
-        public async Task Should_Not_Allow_Regular_User_To_Provide_Extra_Info(Func<string, int, object> f,
+        public async Task Should_Allow_Regular_User_To_Provide_Extra_Info(Func<string, int, object> f,
             Action<Registration> _)
         {
             using var scope = _factory.Services.NewTestScope();
@@ -607,7 +607,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
 
             var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
             var response = await client.PostAsync("/v3/registrations", f(user.Entity.Id, e.Entity.EventInfoId));
-            response.CheckBadRequest();
+            response.CheckOk();
         }
 
         [Fact]

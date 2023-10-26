@@ -1,7 +1,7 @@
-using System;
-using System.Linq;
 using Eventuras.Domain;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
 
 namespace Eventuras.Services.Orders
 {

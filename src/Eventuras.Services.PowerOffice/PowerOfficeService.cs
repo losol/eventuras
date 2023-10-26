@@ -1,7 +1,3 @@
-using System;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Eventuras.Services.Invoicing;
 using Eventuras.Services.Organizations.Settings;
 using GoApi;
@@ -13,6 +9,10 @@ using GoApi.Party;
 using GoApi.Products;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using static Eventuras.Domain.PaymentMethod;
 
 namespace Eventuras.Services.PowerOffice

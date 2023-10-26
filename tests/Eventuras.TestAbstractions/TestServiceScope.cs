@@ -1,6 +1,6 @@
-using System;
 using Eventuras.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Eventuras.TestAbstractions
 {

@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Text.Json.Serialization;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using Eventuras.Services;
@@ -19,6 +17,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
+using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Eventuras.WebApi
 {
@@ -71,7 +71,7 @@ namespace Eventuras.WebApi
             services.AddControllers(options =>
                 {
                     options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
-                    options.Filters.Add(new HttpResponseExceptionFilter());
+                    options.Filters.Add<HttpResponseExceptionFilter>();
                 })
                 .AddJsonOptions(j =>
                 {
@@ -80,7 +80,7 @@ namespace Eventuras.WebApi
                 });
 
             services.AddRazorPages();
-            services.ConfigureEF(Configuration, _env);
+            services.ConfigureEf();
             services.ConfigureDbInitializationStrategy(Configuration);
             services.ConfigureAuthorizationPolicies(Configuration);
             services.AddEmailServices();
@@ -89,6 +89,7 @@ namespace Eventuras.WebApi
             services.AddApplicationServices(Configuration);
             services.AddFeatureManagement();
             services.AddMemoryCache();
+            services.Configure<AuthSettings>(Configuration.GetSection("Auth"));
 
             services.AddCors(options =>
             {

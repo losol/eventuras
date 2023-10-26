@@ -1,5 +1,5 @@
-using System.Linq;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Linq;
 
 namespace Eventuras.WebApi.Controllers
 {

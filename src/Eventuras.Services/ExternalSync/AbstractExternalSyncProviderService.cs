@@ -1,9 +1,9 @@
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using DbUpdateException = Microsoft.EntityFrameworkCore.DbUpdateException;
 
 namespace Eventuras.Services.ExternalSync

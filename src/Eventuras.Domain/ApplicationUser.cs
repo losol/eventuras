@@ -1,7 +1,7 @@
 #nullable enable
 
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 
 namespace Eventuras.Domain
 {

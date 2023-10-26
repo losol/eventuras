@@ -1,13 +1,13 @@
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Asp.Versioning;
 using Eventuras.Domain;
 using Eventuras.Services.Events;
 using Eventuras.Services.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Eventuras.WebApi.Controllers.Events.Products
 {

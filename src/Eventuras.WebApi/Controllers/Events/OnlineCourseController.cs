@@ -1,10 +1,10 @@
-using System.Linq;
-using System.Threading.Tasks;
 using Asp.Versioning;
 using Eventuras.Services.Events;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Eventuras.WebApi.Controllers.Events
 {

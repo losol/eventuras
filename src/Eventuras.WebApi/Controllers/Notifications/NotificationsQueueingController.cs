@@ -1,8 +1,3 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Asp.Versioning;
 using Eventuras.Domain;
 using Eventuras.Services.Events.Products;
@@ -10,6 +5,12 @@ using Eventuras.Services.Exceptions;
 using Eventuras.Services.Notifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Eventuras.WebApi.Controllers.Notifications
 {
@@ -22,90 +23,104 @@ namespace Eventuras.WebApi.Controllers.Notifications
         private readonly INotificationManagementService _notificationManagementService;
         private readonly INotificationDeliveryService _notificationDeliveryService;
         private readonly IProductRetrievalService _productRetrievalService;
+        private readonly ILogger<NotificationsQueueingController> _logger;
 
         public NotificationsQueueingController(
             INotificationManagementService notificationManagementService,
             INotificationDeliveryService notificationDeliveryService,
-            IProductRetrievalService productRetrievalService)
+            IProductRetrievalService productRetrievalService,
+            ILogger<NotificationsQueueingController> logger)
         {
-            _notificationDeliveryService = notificationDeliveryService ?? throw
-                new ArgumentNullException(nameof(notificationDeliveryService));
-
-            _notificationManagementService = notificationManagementService ?? throw
-                new ArgumentNullException(nameof(notificationManagementService));
-
-            _productRetrievalService = productRetrievalService ?? throw
-                new ArgumentNullException(nameof(productRetrievalService));
+            _notificationDeliveryService = notificationDeliveryService ?? throw new ArgumentNullException(nameof(notificationDeliveryService));
+            _notificationManagementService = notificationManagementService ?? throw new ArgumentNullException(nameof(notificationManagementService));
+            _productRetrievalService = productRetrievalService ?? throw new ArgumentNullException(nameof(productRetrievalService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpPost("email")]
         public async Task<ActionResult<NotificationDto>> SendEmail(
-            EmailNotificationDto dto,
-            CancellationToken cancellationToken)
+      EmailNotificationDto dto,
+      CancellationToken cancellationToken)
         {
-            EmailNotification emailNotification;
-            var eventFilter = await GetEventParticipantFilterAsync(dto, cancellationToken);
-            if (eventFilter != null)
+            try
             {
-                emailNotification = await _notificationManagementService
-                    .CreateEmailNotificationForEventAsync(
-                        dto.Subject,
-                        dto.BodyMarkdown,
-                        eventFilter.EventId.Value,
-                        eventFilter.ProductId,
-                        eventFilter.RegistrationStatuses,
-                        eventFilter.RegistrationTypes);
+                EmailNotification emailNotification;
+                var eventFilter = await GetEventParticipantFilterAsync(dto, cancellationToken);
+                if (eventFilter != null)
+                {
+                    emailNotification = await _notificationManagementService
+                        .CreateEmailNotificationForEventAsync(
+                            dto.Subject,
+                            dto.BodyMarkdown,
+                            eventFilter.EventId.Value,
+                            eventFilter.ProductId,
+                            eventFilter.RegistrationStatuses,
+                            eventFilter.RegistrationTypes);
+                }
+                else
+                {
+                    emailNotification = await _notificationManagementService
+                        .CreateEmailNotificationAsync(
+                            dto.Subject,
+                            dto.BodyMarkdown,
+                            dto.Recipients);
+                }
+
+                // send notification right away, not queueing it or something.
+                // TODO: use queue for messages
+
+                await _notificationDeliveryService
+                    .SendNotificationAsync(emailNotification, cancellationToken);
+
+                return Ok(new NotificationDto(emailNotification));
             }
-            else
+            catch (Exception ex)
             {
-                emailNotification = await _notificationManagementService
-                    .CreateEmailNotificationAsync(
-                        dto.Subject,
-                        dto.BodyMarkdown,
-                        dto.Recipients);
+                _logger.LogError($"Failed to send email notification: {ex}");
+                throw;
             }
-
-            // send notification right away, not queueing it or something.
-            // TODO: use queue for messages
-
-            await _notificationDeliveryService
-                .SendNotificationAsync(emailNotification, cancellationToken);
-
-            return Ok(new NotificationDto(emailNotification));
         }
 
         [HttpPost("sms")]
         public async Task<ActionResult<NotificationDto>> SendSms(
-            SmsNotificationDto dto,
-            CancellationToken cancellationToken)
+             SmsNotificationDto dto,
+             CancellationToken cancellationToken)
         {
-            SmsNotification smsNotification;
-            var eventFilter = await GetEventParticipantFilterAsync(dto, cancellationToken);
-            if (eventFilter != null)
+            try
             {
-                smsNotification = await _notificationManagementService
-                    .CreateSmsNotificationForEventAsync(
-                        dto.Message,
-                        eventFilter.EventId.Value,
-                        eventFilter.ProductId,
-                        eventFilter.RegistrationStatuses,
-                        eventFilter.RegistrationTypes);
+                SmsNotification smsNotification;
+                var eventFilter = await GetEventParticipantFilterAsync(dto, cancellationToken);
+                if (eventFilter != null)
+                {
+                    smsNotification = await _notificationManagementService
+                        .CreateSmsNotificationForEventAsync(
+                            dto.Message,
+                            eventFilter.EventId.Value,
+                            eventFilter.ProductId,
+                            eventFilter.RegistrationStatuses,
+                            eventFilter.RegistrationTypes);
+                }
+                else
+                {
+                    smsNotification = await _notificationManagementService
+                        .CreateSmsNotificationAsync(
+                            dto.Message,
+                            dto.Recipients);
+                }
+
+                // send notification right away, not queueing it or something.
+                // TODO: use queue for messages
+
+                await _notificationDeliveryService
+                    .SendNotificationAsync(smsNotification, cancellationToken);
+
+                return Ok(new NotificationDto(smsNotification));
             }
-            else
+            catch (Exception ex)
             {
-                smsNotification = await _notificationManagementService
-                    .CreateSmsNotificationAsync(
-                        dto.Message,
-                        dto.Recipients);
+                _logger.LogError($"Failed to send SMS notification: {ex}");
+                throw;
             }
-
-            // send notification right away, not queueing it or something.
-            // TODO: use queue for messages
-
-            await _notificationDeliveryService
-                .SendNotificationAsync(smsNotification, cancellationToken);
-
-            return Ok(new NotificationDto(smsNotification));
         }
 
         private async Task<EventParticipantsFilterDto> GetEventParticipantFilterAsync(

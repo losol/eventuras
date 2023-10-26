@@ -1,10 +1,10 @@
+using Losol.Communication.Email;
+using Losol.Communication.HealthCheck.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Losol.Communication.Email;
-using Losol.Communication.HealthCheck.Abstractions;
 
 namespace Eventuras.Services.Email
 {

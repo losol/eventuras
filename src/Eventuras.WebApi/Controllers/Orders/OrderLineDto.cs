@@ -1,8 +1,8 @@
 #nullable enable
 
-using System;
 using Eventuras.Domain;
 using Eventuras.WebApi.Controllers.Events.Products;
+using System;
 
 namespace Eventuras.WebApi.Controllers.Orders
 {

@@ -1,10 +1,10 @@
 #nullable enable
 
-using System;
-using System.Linq;
 using Eventuras.Domain;
 using Eventuras.WebApi.Controllers.Users;
 using Newtonsoft.Json;
+using System;
+using System.Linq;
 
 namespace Eventuras.WebApi.Controllers.Orders
 {

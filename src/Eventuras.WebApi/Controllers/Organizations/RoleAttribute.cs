@@ -1,6 +1,6 @@
+using Eventuras.Services;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Eventuras.Services;
 
 namespace Eventuras.WebApi.Controllers.Organizations
 {

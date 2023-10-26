@@ -36,10 +36,8 @@ namespace Eventuras.WebApi.Tests
             params string[] roles)
         {
             return httpClient.Authenticated(
-                user.Id,
-                user.Name,
-                null, // FIXME: we don't have surname in AspNetCore.Identity?
-                user.Email,
+                firstName: user.Name,
+                email: user.Email,
                 roles: roles,
                 phoneNumber: user.PhoneNumber);
         }
@@ -53,7 +51,6 @@ namespace Eventuras.WebApi.Tests
 
         public static HttpClient Authenticated(
             this HttpClient httpClient,
-            string id = TestingConstants.Placeholder,
             string firstName = TestingConstants.Placeholder,
             string lastName = TestingConstants.Placeholder,
             string email = TestingConstants.Placeholder,
@@ -62,7 +59,7 @@ namespace Eventuras.WebApi.Tests
             string[] scopes = null,
             string phoneNumber = null)
         {
-            var claims = BuildClaims(id, firstName, lastName, email, role, roles, scopes, phoneNumber);
+            var claims = BuildClaims(firstName, lastName, email, role, roles, scopes, phoneNumber);
             var token = FakeJwtManager.GenerateJwtToken(claims);
             httpClient.DefaultRequestHeaders.Remove("Authorization");
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
@@ -70,7 +67,6 @@ namespace Eventuras.WebApi.Tests
         }
 
         private static Claim[] BuildClaims(
-            string id,
             string firstName,
             string lastName,
             string email,
@@ -79,11 +75,6 @@ namespace Eventuras.WebApi.Tests
             string[] scopes,
             string phoneNumber)
         {
-            if (TestingConstants.Placeholder.Equals(id))
-            {
-                id = Guid.NewGuid().ToString();
-            }
-
             if (TestingConstants.Placeholder.Equals(firstName))
             {
                 firstName = "Test";
@@ -99,12 +90,8 @@ namespace Eventuras.WebApi.Tests
                 email = $"test-person+{Guid.NewGuid()}@email.com";
             }
 
-            scopes ??= TestingConstants.DefaultScopes;
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, id),
-                new Claim("scope", string.Join(" ", scopes))
-            };
+            var claims = new List<Claim>();
+            
             if (!string.IsNullOrEmpty(firstName))
             {
                 claims.Add(new Claim(ClaimTypes.Name, firstName));
@@ -119,13 +106,14 @@ namespace Eventuras.WebApi.Tests
             {
                 claims.Add(new Claim(ClaimTypes.Email, email));
             }
-
-            if (roles == null && role != null)
+            
+            roles ??= Array.Empty<string>();
+            if (!string.IsNullOrEmpty(role))
             {
-                roles = new[] { role };
+                roles = roles.Append(role).ToArray();
             }
 
-            if (roles != null && roles.Any())
+            if (roles.Any())
             {
                 claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
             }
@@ -135,6 +123,11 @@ namespace Eventuras.WebApi.Tests
                 claims.Add(new Claim(ClaimTypes.MobilePhone, phoneNumber));
             }
 
+            if (scopes != null && scopes.Any())
+            {
+                claims.AddRange(scopes.Select(s => new Claim("scope", s)));
+            }
+            
             return claims.ToArray();
         }
 

@@ -1,13 +1,13 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 using Asp.Versioning;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Eventuras.WebApi.Controllers.Organizations
 {

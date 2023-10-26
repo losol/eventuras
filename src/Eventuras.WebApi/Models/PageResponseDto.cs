@@ -1,6 +1,6 @@
+using Eventuras.Services;
 using System;
 using System.Linq;
-using Eventuras.Services;
 
 namespace Eventuras.WebApi.Models
 {

@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.Linq;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
@@ -12,20 +11,17 @@ using Eventuras.Services.SendGrid;
 using Eventuras.Services.Sms;
 using Eventuras.Services.Smtp;
 using Eventuras.Services.Stripe;
-using Eventuras.Services.TalentLms;
 using Eventuras.Services.Twilio;
-using Eventuras.Services.Zoom;
 using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Config;
 using Losol.Communication.HealthCheck.Abstractions;
 using Losol.Communication.HealthCheck.Email;
 using Losol.Communication.HealthCheck.Sms;
-using Losol.Communication.Sms.Mock;
-using Losol.Communication.Sms.Twilio;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -34,18 +30,22 @@ namespace Eventuras.WebApi.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-
-        public static void ConfigureEF(
-            this IServiceCollection services,
-            IConfiguration config,
-            IWebHostEnvironment env)
+        public static void ConfigureEf(this IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<ApplicationDbContext>((sp, options) =>
             {
-                options
-                    .UseNpgsql(config.GetConnectionString("DefaultConnection"),
-                        o => o.UseNodaTime())
-                    .EnableSensitiveDataLogging(env.IsDevelopment());
+                var connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection");
+                if (string.IsNullOrWhiteSpace(connectionString)) throw new ArgumentException("Connection string is not set");
+
+                var isDevelopment = sp.GetRequiredService<IHostEnvironment>().IsDevelopment();
+
+                options.UseNpgsql(connectionString, o => o.UseNodaTime())
+                    .EnableSensitiveDataLogging(isDevelopment)
+                    .EnableDetailedErrors(isDevelopment)
+                    .ConfigureWarnings(warns =>
+                    {
+                        if (isDevelopment) warns.Ignore(CoreEventId.SensitiveDataLoggingEnabledWarning);
+                    });
             });
         }
 
@@ -56,13 +56,14 @@ namespace Eventuras.WebApi.Extensions
             {
                 config.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<ApplicationDbContext>()
-              .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders();
         }
 
         public static void ConfigureAuthorizationPolicies(
             this IServiceCollection services,
             IConfiguration config)
         {
+            services.AddScoped<IClaimsTransformation, DbUserClaimTransformation>();
             services.AddAuthorization(options =>
             {
                 var apiScopes = config.GetSection("Auth:Scopes")
@@ -104,15 +105,15 @@ namespace Eventuras.WebApi.Extensions
         }
 
         public static void AddInvoicingServices(
-                this IServiceCollection services,
-                IConfiguration config,
-                FeatureManagement features)
+            this IServiceCollection services,
+            IConfiguration config,
+            FeatureManagement features)
         {
             if (features.UsePowerOffice)
             {
                 services.AddPowerOffice(config.GetSection("PowerOffice"));
             }
-            
+
             if (features.UseStripeInvoice)
             {
                 services.AddStripe(config.GetSection("Stripe"));
@@ -124,22 +125,15 @@ namespace Eventuras.WebApi.Extensions
             // Register our application services
             services.AddCoreServices();
 
-            // Add TalentLms integration if enabled in settings.
-            services.AddTalentLmsIfEnabled(configuration.GetSection("TalentLms"));
-
-            // Add Zoom external services if enabled in settings.
-            services.AddZoomIfEnabled(configuration.GetSection("Zoom"));
-
             // Add Health Checks
             services.AddApplicationHealthChecks(configuration.GetSection(Constants.HealthChecks.HealthCheckConfigurationKey));
-            
+
             // for cert PDF rendering
             services.AddHttpContextAccessor();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddHttpClient();
-            services.AddConvertoServices(configuration.GetSection("Converto")); 
+            services.AddConvertoServices(configuration.GetSection("Converto"));
         }
-
 
         public static void AddApplicationHealthChecks(this IServiceCollection services, IConfigurationSection configuration)
         {
@@ -169,5 +163,3 @@ namespace Eventuras.WebApi.Extensions
         }
     }
 }
-
-

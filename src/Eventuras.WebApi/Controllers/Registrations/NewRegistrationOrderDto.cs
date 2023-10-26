@@ -1,8 +1,8 @@
 ﻿#nullable enable
 
+using Eventuras.Services.Orders;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Eventuras.Services.Orders;
 
 namespace Eventuras.WebApi.Controllers.Registrations;
 

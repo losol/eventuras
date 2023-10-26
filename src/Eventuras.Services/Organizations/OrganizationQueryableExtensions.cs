@@ -1,9 +1,9 @@
-using System;
-using System.Linq;
-using System.Security.Claims;
 using Eventuras.Domain;
 using Eventuras.Services.Auth;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Security.Claims;
 
 namespace Eventuras.Services.Organizations
 {

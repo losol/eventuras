@@ -1,7 +1,7 @@
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using Eventuras.Services.Organizations.Settings;
 using Losol.Communication.Email.SendGrid;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Eventuras.Services.SendGrid
 {

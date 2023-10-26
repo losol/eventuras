@@ -1,5 +1,5 @@
-using System;
 using Eventuras.Domain;
+using System;
 using Xunit;
 
 namespace Eventuras.UnitTests

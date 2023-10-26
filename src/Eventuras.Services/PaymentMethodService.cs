@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Eventuras.Domain;
+using Eventuras.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
 using static Eventuras.Domain.PaymentMethod;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace Eventuras.Services
 {

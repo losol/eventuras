@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Eventuras.Domain;
-using static Eventuras.Domain.EventInfo;
-using static Eventuras.Domain.Registration;
+using System.Linq;
 
 namespace Eventuras.WebApi.Models
 {

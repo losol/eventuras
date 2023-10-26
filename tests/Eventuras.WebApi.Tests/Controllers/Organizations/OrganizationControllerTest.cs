@@ -1,7 +1,7 @@
-using System;
-using System.Threading.Tasks;
 using Eventuras.TestAbstractions;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Organizations
@@ -132,7 +132,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
         public async Task Create_Should_Validate_Input(string name)
         {
             var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
-            var response = await client.PostAsync("/v3/organizations", new {name});
+            var response = await client.PostAsync("/v3/organizations", new { name });
             response.CheckBadRequest();
         }
 
@@ -140,7 +140,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
         public async Task Should_Create_New_Org_With_Min_Data()
         {
             var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
-            var response = await client.PostAsync("/v3/organizations", new {name = "test"});
+            var response = await client.PostAsync("/v3/organizations", new { name = "test" });
             var token = await response.CheckOk().AsTokenAsync();
 
             using var scope = _factory.Services.NewTestScope();
@@ -211,7 +211,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
             using var org = await scope.CreateOrganizationAsync();
 
             var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
-            var response = await client.PutAsync($"/v3/organizations/{org.Entity.OrganizationId}", new {name});
+            var response = await client.PutAsync($"/v3/organizations/{org.Entity.OrganizationId}", new { name });
             response.CheckBadRequest();
         }
 
@@ -223,7 +223,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
 
             var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
             var response = await client.PutAsync($"/v3/organizations/{org.Entity.OrganizationId}",
-                new {name = "updated org name"});
+                new { name = "updated org name" });
             var token = await response.CheckOk().AsTokenAsync();
 
             var updatedOrg = await scope.Db.Organizations

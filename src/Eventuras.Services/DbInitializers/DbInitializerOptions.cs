@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Eventuras.Services.DbInitializers
+﻿namespace Eventuras.Services.DbInitializers
 {
     public class DbInitializerOptions
     {

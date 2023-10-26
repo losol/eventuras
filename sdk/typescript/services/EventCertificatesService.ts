@@ -18,18 +18,26 @@ export class EventCertificatesService {
         count,
         limit,
         offset,
+        eventurasOrgId,
     }: {
         id: number,
         page?: number,
         count?: number,
         limit?: number,
         offset?: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/event/{id}/certificates',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
             query: {
                 'Page': page,
@@ -46,14 +54,22 @@ export class EventCertificatesService {
      */
     public static getV3EventCertificatesPreview({
         id,
+        eventurasOrgId,
     }: {
         id: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/event/{id}/certificates/preview',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
         });
     }
@@ -65,15 +81,23 @@ export class EventCertificatesService {
     public static postV3EventCertificatesIssue({
         id,
         send = true,
+        eventurasOrgId,
     }: {
         id: number,
         send?: boolean,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/event/{id}/certificates/issue',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
             query: {
                 'send': send,
@@ -87,14 +111,22 @@ export class EventCertificatesService {
      */
     public static postV3EventCertificatesUpdate({
         id,
+        eventurasOrgId,
     }: {
         id: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/event/{id}/certificates/update',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
         });
     }

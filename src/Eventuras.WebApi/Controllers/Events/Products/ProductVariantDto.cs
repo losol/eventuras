@@ -1,5 +1,5 @@
-using System;
 using Eventuras.Domain;
+using System;
 
 namespace Eventuras.WebApi.Controllers.Events.Products
 {

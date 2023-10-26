@@ -1,9 +1,9 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Organizations
@@ -106,9 +106,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
             using var user = await scope.CreateUserAsync();
             using var member = await scope.CreateOrganizationMemberAsync(
                 user.Entity, org.Entity,
-                roles: new[] {Roles.Admin, Roles.SuperAdmin});
+                roles: new[] { Roles.Admin, Roles.SuperAdmin });
             using var anotherMember = await scope.CreateOrganizationMemberAsync(user.Entity, anotherOrg.Entity,
-                roles: new[] {Roles.SystemAdmin});
+                roles: new[] { Roles.SystemAdmin });
 
             var response =
                 await client.GetAsync($"/v3/organizations/{org.Entity.OrganizationId}/members/{user.Entity.Id}/roles");

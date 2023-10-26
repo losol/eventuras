@@ -1,13 +1,13 @@
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services.Auth;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
 using Eventuras.Services.Registrations;
 using Microsoft.AspNetCore.Http;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Eventuras.Services.Orders
 {

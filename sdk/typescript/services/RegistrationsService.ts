@@ -28,6 +28,7 @@ export class RegistrationsService {
         count,
         limit,
         offset,
+        eventurasOrgId,
     }: {
         eventId?: number,
         userId?: string,
@@ -39,10 +40,17 @@ export class RegistrationsService {
         count?: number,
         limit?: number,
         offset?: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<RegistrationDtoPageResponseDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/registrations',
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
+            },
             query: {
                 'EventId': eventId,
                 'UserId': userId,
@@ -63,13 +71,21 @@ export class RegistrationsService {
      * @throws ApiError
      */
     public static postV3Registrations({
+        eventurasOrgId,
         requestBody,
     }: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
         requestBody?: NewRegistrationDto,
     }): CancelablePromise<RegistrationDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/registrations',
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
+            },
             body: requestBody,
             mediaType: 'application/json-patch+json',
         });
@@ -91,6 +107,7 @@ export class RegistrationsService {
         count,
         limit,
         offset,
+        eventurasOrgId,
     }: {
         id: number,
         eventId?: number,
@@ -103,12 +120,19 @@ export class RegistrationsService {
         count?: number,
         limit?: number,
         offset?: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<RegistrationDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v3/registrations/{id}',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
             query: {
                 'EventId': eventId,
@@ -131,9 +155,14 @@ export class RegistrationsService {
      */
     public static putV3Registrations({
         id,
+        eventurasOrgId,
         requestBody,
     }: {
         id: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
         requestBody?: RegistrationFormDto,
     }): CancelablePromise<RegistrationDto> {
         return __request(OpenAPI, {
@@ -141,6 +170,9 @@ export class RegistrationsService {
             url: '/v3/registrations/{id}',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
             mediaType: 'application/json-patch+json',
@@ -153,14 +185,22 @@ export class RegistrationsService {
      */
     public static deleteV3Registrations({
         id,
+        eventurasOrgId,
     }: {
         id: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/v3/registrations/{id}',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
         });
     }
@@ -173,15 +213,23 @@ export class RegistrationsService {
     public static postV3RegistrationsMe({
         eventId,
         createOrder,
+        eventurasOrgId,
     }: {
         eventId: number,
         createOrder?: boolean,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
     }): CancelablePromise<RegistrationDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v3/registrations/me/{eventId}',
             path: {
                 'eventId': eventId,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
             },
             query: {
                 'createOrder': createOrder,

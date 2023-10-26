@@ -1,6 +1,6 @@
-using System;
 using Eventuras.Domain;
 using NodaTime;
+using System;
 
 namespace Eventuras.WebApi.Controllers.Certificates
 {

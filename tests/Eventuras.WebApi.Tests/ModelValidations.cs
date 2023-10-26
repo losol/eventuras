@@ -1,14 +1,14 @@
 ﻿#nullable enable
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Eventuras.Domain;
 using Eventuras.WebApi.Controllers.Events;
 using Eventuras.WebApi.Controllers.Events.Products;
 using Eventuras.WebApi.Controllers.Orders;
 using Eventuras.WebApi.Controllers.Registrations;
 using Eventuras.WebApi.Controllers.Users;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests;

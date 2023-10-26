@@ -1,13 +1,13 @@
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Eventuras.Domain;
 using Losol.Communication.Email;
 using Losol.Communication.Sms;
 using Markdig;
 using Microsoft.Extensions.Logging;
 using NodaTime;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Eventuras.Services.Notifications
 {

@@ -1,11 +1,11 @@
-using System;
-using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Eventuras.Services.Pdf;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
+using System;
+using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Eventuras.Services.Converto.Tests

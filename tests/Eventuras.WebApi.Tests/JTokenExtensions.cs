@@ -1,8 +1,8 @@
-using System;
-using System.Linq;
 using Eventuras.Domain;
 using Newtonsoft.Json.Linq;
 using NodaTime;
+using System;
+using System.Linq;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests

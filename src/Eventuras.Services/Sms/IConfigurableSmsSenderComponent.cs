@@ -1,6 +1,6 @@
+using Losol.Communication.Sms;
 using System.Threading;
 using System.Threading.Tasks;
-using Losol.Communication.Sms;
 
 namespace Eventuras.Services.Sms
 {

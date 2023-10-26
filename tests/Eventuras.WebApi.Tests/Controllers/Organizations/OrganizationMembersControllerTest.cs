@@ -62,9 +62,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
         [Fact]
         public async Task Should_Add_New_Member_To_Org()
         {
-            var client = _factory.CreateClient()
-                .AuthenticatedAsSystemAdmin();
             using var scope = _factory.Services.NewTestScope();
+
+            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { Roles.SystemAdmin }); 
+            var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, Roles.SystemAdmin);
+            
             using var user = await scope.CreateUserAsync();
             using var org = await scope.CreateOrganizationAsync();
             var response =
@@ -83,9 +85,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
         [Fact]
         public async Task Should_Return_Ok_When_Adding_Member_To_Org_Second_Time()
         {
-            var client = _factory.CreateClient()
-                .AuthenticatedAsSystemAdmin();
             using var scope = _factory.Services.NewTestScope();
+
+            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { Roles.SystemAdmin }); 
+            var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, Roles.SystemAdmin);
+            
             using var user = await scope.CreateUserAsync();
             using var org = await scope.CreateOrganizationAsync();
             using var m = await scope.CreateOrganizationMemberAsync(user.Entity, org.Entity);
@@ -150,9 +154,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
         [Fact]
         public async Task Should_Remove_Member_From_Org()
         {
-            var client = _factory.CreateClient()
-                .AuthenticatedAsSystemAdmin();
             using var scope = _factory.Services.NewTestScope();
+
+            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { Roles.SystemAdmin }); 
+            var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, Roles.SystemAdmin);
+            
             using var user = await scope.CreateUserAsync();
             var org = await scope.CreateOrganizationAsync();
             await scope.CreateOrganizationMemberAsync(user.Entity, org.Entity);
@@ -172,9 +178,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Organizations
         [Fact]
         public async Task Should_Return_Ok_When_Removing_Member_From_Org_Second_Time()
         {
-            var client = _factory.CreateClient()
-                .AuthenticatedAsSystemAdmin();
             using var scope = _factory.Services.NewTestScope();
+
+            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { Roles.SystemAdmin }); 
+            var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, Roles.SystemAdmin);
+            
             using var user = await scope.CreateUserAsync();
             using var org = await scope.CreateOrganizationAsync();
 
