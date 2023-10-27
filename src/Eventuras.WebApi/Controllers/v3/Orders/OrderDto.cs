@@ -1,12 +1,12 @@
 #nullable enable
 
 using Eventuras.Domain;
-using Eventuras.WebApi.Controllers.Users;
+using Eventuras.WebApi.Controllers.v3.Users;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
 
-namespace Eventuras.WebApi.Controllers.Orders
+namespace Eventuras.WebApi.Controllers.v3.Orders
 {
     public class OrderDto
     {

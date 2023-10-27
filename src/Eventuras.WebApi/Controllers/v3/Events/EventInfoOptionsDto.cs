@@ -3,7 +3,7 @@
 using Eventuras.Domain;
 using System.ComponentModel.DataAnnotations;
 
-namespace Eventuras.WebApi.Controllers.Events;
+namespace Eventuras.WebApi.Controllers.v3.Events;
 
 public record EventInfoOptionsDto(EventInfoOptionsDto.EventInfoRegistrationPolicyDto RegistrationPolicy)
 {

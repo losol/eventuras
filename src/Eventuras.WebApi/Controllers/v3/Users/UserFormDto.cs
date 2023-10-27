@@ -1,7 +1,7 @@
 using Eventuras.Domain;
 using System.ComponentModel.DataAnnotations;
 
-namespace Eventuras.WebApi.Controllers.Users
+namespace Eventuras.WebApi.Controllers.v3.Users
 {
     public class UserFormDto
     {

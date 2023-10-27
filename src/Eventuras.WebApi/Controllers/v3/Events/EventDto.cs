@@ -1,7 +1,7 @@
 using Eventuras.Domain;
 using NodaTime;
 
-namespace Eventuras.WebApi.Controllers.Events
+namespace Eventuras.WebApi.Controllers.v3.Events
 {
     public class EventDto
     {

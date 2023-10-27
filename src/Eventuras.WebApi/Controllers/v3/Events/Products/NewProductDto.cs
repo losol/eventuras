@@ -1,7 +1,7 @@
 using Eventuras.Domain;
 using System.ComponentModel.DataAnnotations;
 
-namespace Eventuras.WebApi.Controllers.Events.Products
+namespace Eventuras.WebApi.Controllers.v3.Events.Products
 {
     public class NewProductDto
     {

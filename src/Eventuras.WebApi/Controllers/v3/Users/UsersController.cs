@@ -14,7 +14,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Eventuras.WebApi.Controllers.Users
+namespace Eventuras.WebApi.Controllers.v3.Users
 {
     [ApiVersion("3")]
     [Route("v{version:apiVersion}/users")]

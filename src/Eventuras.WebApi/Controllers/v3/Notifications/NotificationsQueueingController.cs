@@ -12,7 +12,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Eventuras.WebApi.Controllers.Notifications
+namespace Eventuras.WebApi.Controllers.v3.Notifications
 {
     [ApiController]
     [ApiVersion("3")]

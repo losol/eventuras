@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Eventuras.WebApi.Controllers.Notifications
+namespace Eventuras.WebApi.Controllers.v3.Notifications
 {
     public class SmsRecipientListAttribute : ValidationAttribute
     {

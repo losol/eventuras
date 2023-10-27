@@ -1,6 +1,6 @@
 using Eventuras.Domain;
 
-namespace Eventuras.WebApi.Controllers.Registrations
+namespace Eventuras.WebApi.Controllers.v3.Registrations
 {
     [RegistrationForm]
     public class RegistrationFormDto

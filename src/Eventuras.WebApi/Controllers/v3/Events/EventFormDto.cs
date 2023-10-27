@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Eventuras.WebApi.Controllers.Events
+namespace Eventuras.WebApi.Controllers.v3.Events
 {
     /// <summary>
     /// Data Transfer Object (DTO) for Event Information.

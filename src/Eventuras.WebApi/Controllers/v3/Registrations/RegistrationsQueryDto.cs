@@ -3,7 +3,7 @@
 using Eventuras.WebApi.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace Eventuras.WebApi.Controllers.Registrations
+namespace Eventuras.WebApi.Controllers.v3.Registrations
 {
     public class RegistrationsQueryDto : PageQueryDto
     {

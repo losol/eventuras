@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Eventuras.WebApi.Controllers.Events.Collections
+namespace Eventuras.WebApi.Controllers.v3.Events.Collections
 {
     [ApiVersion("3")]
     [Authorize(Policy = Constants.Auth.AdministratorRole)]

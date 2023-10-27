@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Eventuras.WebApi.Controllers.Events.Products
+namespace Eventuras.WebApi.Controllers.v3.Events.Products
 {
     [ApiVersion("3")]
     [Authorize(Policy = Constants.Auth.AdministratorRole)]

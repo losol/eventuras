@@ -2,7 +2,7 @@ using Eventuras.Domain;
 using NodaTime;
 using System;
 
-namespace Eventuras.WebApi.Controllers.Notifications
+namespace Eventuras.WebApi.Controllers.v3.Notifications
 {
     public class NotificationRecipientDto
     {

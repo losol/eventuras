@@ -1,7 +1,7 @@
 using Eventuras.Services.Notifications;
 using Eventuras.WebApi.Models;
 
-namespace Eventuras.WebApi.Controllers.Notifications
+namespace Eventuras.WebApi.Controllers.v3.Notifications
 {
     public class NotificationRecipientsQueryDto : PageQueryDto
     {

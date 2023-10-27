@@ -2,7 +2,7 @@ using Asp.Versioning;
 using Eventuras.Domain;
 using Eventuras.Services.Certificates;
 using Eventuras.Services.Events;
-using Eventuras.WebApi.Controllers.Certificates;
+using Eventuras.WebApi.Controllers.v3.Certificates;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +12,7 @@ using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Eventuras.WebApi.Controllers.Events.Certificates
+namespace Eventuras.WebApi.Controllers.v3.Events.Certificates
 {
     [ApiController]
     [ApiVersion("3")]

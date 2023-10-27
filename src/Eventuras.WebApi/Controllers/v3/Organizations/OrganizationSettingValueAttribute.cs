@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
 
-namespace Eventuras.WebApi.Controllers.Organizations
+namespace Eventuras.WebApi.Controllers.v3.Organizations
 {
     public class OrganizationSettingValueAttribute : ValidationAttribute
     {

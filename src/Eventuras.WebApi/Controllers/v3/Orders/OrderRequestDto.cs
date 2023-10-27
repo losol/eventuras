@@ -1,4 +1,4 @@
-namespace Eventuras.WebApi.Controllers.Orders
+namespace Eventuras.WebApi.Controllers.v3.Orders
 {
     public class OrderRequestDto
     {
