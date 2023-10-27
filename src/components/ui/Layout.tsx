@@ -30,7 +30,7 @@ export default async function Layout(props: LayoutProps) {
         <UserMenu bgDark={props.darkImage} />
       </Navbar>
       <main id="main-content">
-        {fluid ? children : <div className="container">{children}</div>}
+        {fluid ? children : <div className="container pb-20">{children}</div>}
       </main>
       <Footer siteTitle={site?.name} links={site?.footerLinks} publisher={site?.publisher} />
     </>

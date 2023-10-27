@@ -46,7 +46,7 @@ const Card = (props: CardProps) => {
     return null; // Ignore other types of children
   });
 
-  const baseClassName = props.className ?? `relative p-3 bg-white dark:bg-slate-900 m-2 `;
+  const baseClassName = props.className ?? `relative p-3 bg-white dark:bg-slate-900 `;
 
   // Conditionally add 'w-full h-full' if block is true
   const blockClass = props.block ? 'w-full h-full' : 'max-w-md';
