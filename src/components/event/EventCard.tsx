@@ -2,19 +2,14 @@ import { EventDto } from '@losol/eventuras';
 import Link from 'next/link';
 
 import Card from '@/components/ui/Card';
+import Environment from '@/utils/Environment';
+import formatDate from '@/utils/formatDate';
 
 interface EventCardProps {
   eventinfo: EventDto;
 }
 
 const EventCard: React.FC<EventCardProps> = ({ eventinfo }) => {
-  const formatDateRange = (start: string, end?: string) => {
-    if (!end || start === end) {
-      return start;
-    }
-    return `${start} - ${end}`;
-  };
-
   return (
     <Card className="p-3 bg-white dark:bg-slate-900 hover:bg-primary-100  dark:hover:bg-primary-900 transform transition duration-300 ease-in-out">
       {eventinfo.title && (
@@ -27,7 +22,11 @@ const EventCard: React.FC<EventCardProps> = ({ eventinfo }) => {
       {eventinfo.description && <Card.Text>{eventinfo.description}</Card.Text>}
       {eventinfo.location && <Card.Text>{eventinfo.location}</Card.Text>}
       <Card.Text>
-        {formatDateRange(eventinfo.dateStart as string, eventinfo.dateEnd as string)}
+        {formatDate(
+          eventinfo.dateStart as string,
+          eventinfo.dateEnd as string,
+          Environment.NEXT_PUBLIC_DEFAULT_LOCALE
+        )}
       </Card.Text>
     </Card>
   );

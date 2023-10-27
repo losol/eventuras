@@ -4,6 +4,8 @@ import React, { ReactElement } from 'react';
 
 import Card from '@/components/ui/Card';
 import Link from '@/components/ui/Link';
+import Environment from '@/utils/Environment';
+import formatDate from '@/utils/formatDate';
 
 export type UserEventRegistrationCardProps = {
   registrationId: number;
@@ -17,7 +19,6 @@ export type UserEventRegistrationCardProps = {
 const UserEventRegistrationCard = ({
   registrationId,
   eventTitle,
-  eventDescription,
   startDate,
   endDate,
   products,
@@ -28,9 +29,8 @@ const UserEventRegistrationCard = ({
       <Card.Heading as="h3" spacingClassName="pt-2">
         {eventTitle}
       </Card.Heading>
-      <Card.Text>{eventDescription}</Card.Text>
       <Card.Text>
-        {startDate} → {endDate}
+        {formatDate(startDate, endDate, Environment.NEXT_PUBLIC_DEFAULT_LOCALE)}
       </Card.Text>
       {products.length > 0 && (
         <Card.Text>
