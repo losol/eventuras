@@ -2,7 +2,7 @@ using Eventuras.Services.Users;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Eventuras.WebApi.Controllers.Users
+namespace Eventuras.WebApi.Controllers.v3.Users
 {
     public class UsersQueryDto : PageQueryDto
     {

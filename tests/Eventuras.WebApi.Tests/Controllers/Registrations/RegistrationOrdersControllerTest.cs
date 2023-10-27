@@ -3,7 +3,7 @@ using Eventuras.Infrastructure;
 using Eventuras.Services;
 using Eventuras.Services.Orders;
 using Eventuras.TestAbstractions;
-using Eventuras.WebApi.Controllers.Orders;
+using Eventuras.WebApi.Controllers.v3.Orders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;

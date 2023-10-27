@@ -1,10 +1,10 @@
 #nullable enable
 
 using Eventuras.Domain;
-using Eventuras.WebApi.Controllers.Events.Products;
+using Eventuras.WebApi.Controllers.v3.Events.Products;
 using System;
 
-namespace Eventuras.WebApi.Controllers.Orders
+namespace Eventuras.WebApi.Controllers.v3.Orders
 {
     public class OrderLineDto : IEquatable<OrderLineDto>
     {

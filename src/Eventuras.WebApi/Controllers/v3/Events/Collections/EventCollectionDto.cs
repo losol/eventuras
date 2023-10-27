@@ -2,7 +2,7 @@ using Eventuras.Domain;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
-namespace Eventuras.WebApi.Controllers.Events.Collections
+namespace Eventuras.WebApi.Controllers.v3.Events.Collections
 {
     public class EventCollectionDto
     {

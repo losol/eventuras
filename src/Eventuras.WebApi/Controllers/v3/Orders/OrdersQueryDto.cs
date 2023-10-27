@@ -3,7 +3,7 @@
 using Eventuras.Domain;
 using Eventuras.WebApi.Models;
 
-namespace Eventuras.WebApi.Controllers.Orders
+namespace Eventuras.WebApi.Controllers.v3.Orders
 {
     public class OrdersQueryDto : PageQueryDto
     {

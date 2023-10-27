@@ -8,7 +8,7 @@ using System.IO;
 using System.Net.Mime;
 using System.Threading.Tasks;
 
-namespace Eventuras.WebApi.Controllers.Certificates
+namespace Eventuras.WebApi.Controllers.v3.Certificates
 {
     [Authorize]
     [ApiController]

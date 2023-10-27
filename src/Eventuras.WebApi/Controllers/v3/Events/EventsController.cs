@@ -10,7 +10,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Eventuras.WebApi.Controllers.Events
+namespace Eventuras.WebApi.Controllers.v3.Events
 {
     [ApiVersion("3")]
     [Authorize(Policy = Constants.Auth.AdministratorRole)]

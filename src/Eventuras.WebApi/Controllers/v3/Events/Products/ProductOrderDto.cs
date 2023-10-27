@@ -3,7 +3,7 @@
 using Eventuras.Domain;
 using System;
 
-namespace Eventuras.WebApi.Controllers.Events.Products;
+namespace Eventuras.WebApi.Controllers.v3.Events.Products;
 
 public record ProductOrderDto(
     int ProductId,

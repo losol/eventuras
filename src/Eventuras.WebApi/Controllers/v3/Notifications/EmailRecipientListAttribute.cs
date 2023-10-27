@@ -2,7 +2,7 @@ using Losol.Communication.Email;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Eventuras.WebApi.Controllers.Notifications
+namespace Eventuras.WebApi.Controllers.v3.Notifications
 {
     public class EmailRecipientListAttribute : ValidationAttribute
     {

@@ -1,7 +1,7 @@
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
-using Eventuras.WebApi.Controllers.Events;
+using Eventuras.WebApi.Controllers.v3.Events;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
 using System;

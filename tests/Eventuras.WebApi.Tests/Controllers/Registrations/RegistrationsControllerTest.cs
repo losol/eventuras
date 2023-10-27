@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
-using Eventuras.WebApi.Controllers.Registrations;
+using Eventuras.WebApi.Controllers.v3.Registrations;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using NodaTime;

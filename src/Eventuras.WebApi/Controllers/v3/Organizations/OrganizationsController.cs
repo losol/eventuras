@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Eventuras.WebApi.Controllers.Organizations
+namespace Eventuras.WebApi.Controllers.v3.Organizations
 {
     [ApiVersion("3")]
     [Authorize(Roles = Roles.SystemAdmin)]

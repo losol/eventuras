@@ -7,7 +7,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Eventuras.WebApi.Controllers.Registrations
+namespace Eventuras.WebApi.Controllers.v3.Registrations
 {
     [Authorize]
     [ApiController]

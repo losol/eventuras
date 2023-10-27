@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Eventuras.WebApi.Controllers.Orders
+namespace Eventuras.WebApi.Controllers.v3.Orders
 {
     [ApiVersion("3")]
     [Authorize]

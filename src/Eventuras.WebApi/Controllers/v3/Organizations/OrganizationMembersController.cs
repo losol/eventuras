@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
-namespace Eventuras.WebApi.Controllers.Organizations
+namespace Eventuras.WebApi.Controllers.v3.Organizations
 {
     [ApiVersion("3")]
     [Authorize(Policy = Constants.Auth.AdministratorRole)]
