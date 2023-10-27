@@ -1,17 +1,20 @@
 import { EventDto } from '@losol/eventuras';
 
-import EventCard from './EventCard';
+import EventCard from '@/components/event/EventCard';
+import Grid from '@/components/ui/Grid';
 
 interface EventGridProps {
   eventinfos: EventDto[];
 }
 
-const EventGrid: React.FC<EventGridProps> = ({ eventinfos }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-    {eventinfos.map(eventinfo => (
-      <EventCard key={eventinfo.id} eventinfo={eventinfo} />
-    ))}
-  </div>
-);
+const EventGrid: React.FC<EventGridProps> = ({ eventinfos }) => {
+  return (
+    <Grid>
+      {eventinfos.map(eventinfo => (
+        <EventCard key={eventinfo.id} eventinfo={eventinfo} />
+      ))}
+    </Grid>
+  );
+};
 
 export default EventGrid;

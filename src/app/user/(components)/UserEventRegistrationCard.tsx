@@ -1,4 +1,5 @@
 import { ProductOrderDto } from '@losol/eventuras';
+import createTranslation from 'next-translate/createTranslation';
 import React, { ReactElement } from 'react';
 
 import Card from '@/components/ui/Card';
@@ -20,30 +21,38 @@ const UserEventRegistrationCard = ({
   startDate,
   endDate,
   products,
-}: UserEventRegistrationCardProps): ReactElement => (
-  <Card>
-    <Card.Heading as="h3" spacingClassName="pt-2">
-      {eventTitle}
-    </Card.Heading>
-    <Card.Text>{eventDescription}</Card.Text>
-    <Card.Text>
-      {startDate} → {endDate}
-    </Card.Text>
-    {products.length > 0 && (
+}: UserEventRegistrationCardProps): ReactElement => {
+  const { t } = createTranslation('user');
+  return (
+    <Card>
+      <Card.Heading as="h3" spacingClassName="pt-2">
+        {eventTitle}
+      </Card.Heading>
+      <Card.Text>{eventDescription}</Card.Text>
       <Card.Text>
-        <ul>
-          {products.map(product => (
-            <li key={product.productId}>{product.product?.name}</li>
-          ))}
-        </ul>
+        {startDate} → {endDate}
       </Card.Text>
-    )}
-    <Card.Text>
-      <Link href={`/user/registrations/${registrationId}`} variant="button-primary" stretch>
-        View
-      </Link>
-    </Card.Text>
-  </Card>
-);
+      {products.length > 0 && (
+        <Card.Text>
+          <ul>
+            {products.map(product => (
+              <li key={product.productId}>{product.product?.name}</li>
+            ))}
+          </ul>
+        </Card.Text>
+      )}
+      <Card.Text className="py-5">
+        <Link
+          href={`/user/registrations/${registrationId}`}
+          variant="button-primary"
+          bgDark
+          stretch
+        >
+          {t('View')}
+        </Link>
+      </Card.Text>
+    </Card>
+  );
+};
 
 export default UserEventRegistrationCard;
