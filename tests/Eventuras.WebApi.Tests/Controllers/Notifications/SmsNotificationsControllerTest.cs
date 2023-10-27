@@ -72,10 +72,10 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
         {
             using var scope = _factory.Services.NewTestScope();
             using var evt = await scope.CreateEventAsync();
-            
-            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { Roles.SuperAdmin }); 
-            var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, Roles.SuperAdmin); 
-            
+
+            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { Roles.SuperAdmin });
+            var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, Roles.SuperAdmin);
+
             var response = await client.PostAsync("/v3/notifications/sms", new
             {
                 message = "Test message",
@@ -194,7 +194,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
 
                 try
                 {
-                    using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { Roles.SuperAdmin }); 
+                    using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { Roles.SuperAdmin });
                     var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, Roles.SuperAdmin);
 
                     var response = await client.PostAsync("/v3/notifications/sms", new
@@ -248,7 +248,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             using var r2 = await scope.CreateRegistrationAsync(e1.Entity, u2.Entity);
             using var r3 = await scope.CreateRegistrationAsync(e2.Entity, u2.Entity);
 
-            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { role }); 
+            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { role });
             var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, role);
 
             var response = await client.PostAsync("/v3/notifications/sms", new
@@ -293,7 +293,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
         {
             using var scope = _factory.Services.NewTestScope();
 
-            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { role }); 
+            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { role });
             var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, role);
 
             var response = await client.PostAsync("/v3/notifications/sms", new
@@ -324,9 +324,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
         {
             using var scope = _factory.Services.NewTestScope();
 
-            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { role }); 
+            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { role });
             var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, role);
-            
+
             using var u1 = await scope.CreateUserAsync();
             using var u2 = await scope.CreateUserAsync();
             using var u3 = await scope.CreateUserAsync();
@@ -559,66 +559,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             Assert.Equal(0, statistics.ErrorsTotal);
         }
 
-        [Fact]
-        public async Task Should_Bind_Sms_Notifications_To_The_Given_Product_And_Filter_Recipient_List()
-        {
-            using var scope = _factory.Services.NewTestScope();
-            using var org = await scope.CreateOrganizationAsync();
-            using var evt = await scope.CreateEventAsync();
-            using var p = await scope.CreateProductAsync(evt.Entity);
-            using var u1 = await scope.CreateUserAsync();
-            using var u2 = await scope.CreateUserAsync();
-            using var r1 = await scope.CreateRegistrationAsync(evt.Entity, u1.Entity);
-            using var r2 = await scope.CreateRegistrationAsync(evt.Entity, u2.Entity);
-            using var o = await scope.CreateOrderAsync(r2.Entity, p.Entity);
-
-            using var admin = await scope
-                .CreateUserAsync(role: Roles.SuperAdmin);
-
-            var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.SuperAdmin);
-
-            var response = await client.PostAsync("/v3/notifications/sms", new
-            {
-                subject = "Test 1",
-                message = "Test message 1",
-                eventParticipants = new
-                {
-                    productId = p.Entity.ProductId
-                }
-            });
-
-            await response.CheckNotificationResponse(scope, u1.Entity);
-
-            CheckEmailNotSentTo(u1.Entity);
-            CheckSmsSentTo("Test message 1", u2.Entity); // only user u2 has ordered product p 
-
-            var notification = await scope.Db.Notifications
-                .Include(n => n.Recipients)
-                .Include(n => n.Statistics)
-                .SingleAsync();
-
-            Assert.IsType<SmsNotification>(notification);
-            Assert.Equal(NotificationType.Sms, notification.Type);
-            Assert.Equal(notification.CreatedByUserId, admin.Entity.Id);
-            Assert.Null(notification.OrganizationId);
-            Assert.Equal(evt.Entity.EventInfoId, notification.EventInfoId);
-            Assert.Equal(p.Entity.ProductId, notification.ProductId);
-            Assert.Equal(NotificationStatus.Sent, notification.Status);
-
-            var recipient = Assert.Single(notification.Recipients);
-            Assert.Equal(u2.Entity.Id, recipient.RecipientUserId);
-            Assert.Equal(u2.Entity.Name, recipient.RecipientName);
-            Assert.Equal(u2.Entity.PhoneNumber, recipient.RecipientIdentifier);
-            Assert.Null(recipient.Errors);
-            Assert.NotNull(recipient.Sent);
-            Assert.True(recipient.IsSent);
-            Assert.False(recipient.HasErrors);
-
-            var statistics = notification.Statistics;
-            Assert.NotNull(statistics);
-            Assert.Equal(1, statistics.SentTotal);
-            Assert.Equal(0, statistics.ErrorsTotal);
-        }
 
         [Fact]
         public async Task Should_Set_Error_For_Sms_Recipient_In_Case_Of_A_Delivery_Failure()

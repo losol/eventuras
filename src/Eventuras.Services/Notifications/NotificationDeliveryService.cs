@@ -61,7 +61,8 @@ namespace Eventuras.Services.Notifications
 
             var delivered = 0;
             var status = NotificationStatus.Sent;
-            await Task.WhenAll(notification.Recipients.Select(async recipient =>
+
+            foreach (var recipient in notification.Recipients)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -92,7 +93,7 @@ namespace Eventuras.Services.Notifications
                     await _notificationManagementService
                         .UpdateNotificationRecipientAsync(recipient);
                 }
-            }));
+            };
 
             notification.Status = status;
             await _notificationManagementService.UpdateNotificationAsync(notification);
