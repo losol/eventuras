@@ -42,43 +42,37 @@ namespace Eventuras.WebApi.Controllers.Notifications
       EmailNotificationDto dto,
       CancellationToken cancellationToken)
         {
-            try
+            _logger.LogInformation($"Starting to process email notification. Subject: {dto.Subject}, Number of Recipients: {dto.Recipients?.Length ?? 0}");
+
+            EmailNotification emailNotification;
+            var eventFilter = await GetEventParticipantFilterAsync(dto, cancellationToken);
+            if (eventFilter != null)
             {
-                EmailNotification emailNotification;
-                var eventFilter = await GetEventParticipantFilterAsync(dto, cancellationToken);
-                if (eventFilter != null)
-                {
-                    emailNotification = await _notificationManagementService
-                        .CreateEmailNotificationForEventAsync(
-                            dto.Subject,
-                            dto.BodyMarkdown,
-                            eventFilter.EventId.Value,
-                            eventFilter.ProductId,
-                            eventFilter.RegistrationStatuses,
-                            eventFilter.RegistrationTypes);
-                }
-                else
-                {
-                    emailNotification = await _notificationManagementService
-                        .CreateEmailNotificationAsync(
-                            dto.Subject,
-                            dto.BodyMarkdown,
-                            dto.Recipients);
-                }
-
-                // send notification right away, not queueing it or something.
-                // TODO: use queue for messages
-
-                await _notificationDeliveryService
-                    .SendNotificationAsync(emailNotification, cancellationToken);
-
-                return Ok(new NotificationDto(emailNotification));
+                emailNotification = await _notificationManagementService
+                    .CreateEmailNotificationForEventAsync(
+                        dto.Subject,
+                        dto.BodyMarkdown,
+                        eventFilter.EventId.Value,
+                        eventFilter.ProductId,
+                        eventFilter.RegistrationStatuses,
+                        eventFilter.RegistrationTypes);
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError($"Failed to send email notification: {ex}");
-                throw;
+                emailNotification = await _notificationManagementService
+                    .CreateEmailNotificationAsync(
+                        dto.Subject,
+                        dto.BodyMarkdown,
+                        dto.Recipients);
             }
+
+            // send notification right away, not queueing it or something.
+            // TODO: use queue for messages
+
+            await _notificationDeliveryService
+                .SendNotificationAsync(emailNotification, cancellationToken);
+
+            return Ok(new NotificationDto(emailNotification));
         }
 
         [HttpPost("sms")]
@@ -86,41 +80,35 @@ namespace Eventuras.WebApi.Controllers.Notifications
              SmsNotificationDto dto,
              CancellationToken cancellationToken)
         {
-            try
+            _logger.LogInformation($"Starting to process SMS notification. Message: {dto.Message}, Number of Recipients: {dto.Recipients?.Length ?? 0}");
+
+            SmsNotification smsNotification;
+            var eventFilter = await GetEventParticipantFilterAsync(dto, cancellationToken);
+            if (eventFilter != null)
             {
-                SmsNotification smsNotification;
-                var eventFilter = await GetEventParticipantFilterAsync(dto, cancellationToken);
-                if (eventFilter != null)
-                {
-                    smsNotification = await _notificationManagementService
-                        .CreateSmsNotificationForEventAsync(
-                            dto.Message,
-                            eventFilter.EventId.Value,
-                            eventFilter.ProductId,
-                            eventFilter.RegistrationStatuses,
-                            eventFilter.RegistrationTypes);
-                }
-                else
-                {
-                    smsNotification = await _notificationManagementService
-                        .CreateSmsNotificationAsync(
-                            dto.Message,
-                            dto.Recipients);
-                }
-
-                // send notification right away, not queueing it or something.
-                // TODO: use queue for messages
-
-                await _notificationDeliveryService
-                    .SendNotificationAsync(smsNotification, cancellationToken);
-
-                return Ok(new NotificationDto(smsNotification));
+                smsNotification = await _notificationManagementService
+                    .CreateSmsNotificationForEventAsync(
+                        dto.Message,
+                        eventFilter.EventId.Value,
+                        eventFilter.ProductId,
+                        eventFilter.RegistrationStatuses,
+                        eventFilter.RegistrationTypes);
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError($"Failed to send SMS notification: {ex}");
-                throw;
+                smsNotification = await _notificationManagementService
+                    .CreateSmsNotificationAsync(
+                        dto.Message,
+                        dto.Recipients);
             }
+
+            // send notification right away, not queueing it or something.
+            // TODO: use queue for messages
+
+            await _notificationDeliveryService
+                .SendNotificationAsync(smsNotification, cancellationToken);
+
+            return Ok(new NotificationDto(smsNotification));
         }
 
         private async Task<EventParticipantsFilterDto> GetEventParticipantFilterAsync(
@@ -132,23 +120,26 @@ namespace Eventuras.WebApi.Controllers.Notifications
 
             if (dto.Recipients?.Any() != true && !eventFilterSet)
             {
+                _logger.LogWarning("Either recipient list of event participant filter must be specified");
                 throw new InputException("Either recipient list of event participant filter must be specified");
             }
 
             if (dto.Recipients?.Any() == true && eventFilterSet)
             {
+                _logger.LogWarning("Please provider either of recipient list or event participants.");
                 throw new InputException("Please provider either of recipient list or event participants.");
             }
 
             if (eventFilterSet)
             {
+                _logger.LogInformation("Event filter is set, validating it.");
                 if (eventFilter.ProductId.HasValue)
                 {
+                    _logger.LogInformation($"Product filter is set, validating it. ProductId: {eventFilter.ProductId}");
                     var product =
                         await _productRetrievalService
                             .GetProductByIdAsync(eventFilter.ProductId.Value,
                                 cancellationToken: cancellationToken);
-
                     if (eventFilter.EventId.HasValue)
                     {
                         if (product.EventInfoId != eventFilter.EventId.Value)

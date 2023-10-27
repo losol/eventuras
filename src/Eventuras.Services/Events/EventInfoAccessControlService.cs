@@ -3,6 +3,7 @@ using Eventuras.Services.Auth;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading;
@@ -15,11 +16,13 @@ namespace Eventuras.Services.Events
         private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
         private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILogger<EventInfoAccessControlService> _logger;
 
         public EventInfoAccessControlService(
             IEventInfoRetrievalService eventInfoRetrievalService,
             ICurrentOrganizationAccessorService currentOrganizationAccessorService,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            ILogger<EventInfoAccessControlService> logger)
         {
             _eventInfoRetrievalService = eventInfoRetrievalService ?? throw
                 new ArgumentNullException(nameof(eventInfoRetrievalService));
@@ -29,6 +32,9 @@ namespace Eventuras.Services.Events
 
             _httpContextAccessor = httpContextAccessor ?? throw
                 new ArgumentNullException(nameof(httpContextAccessor));
+
+            _logger = logger ?? throw
+                new ArgumentNullException(nameof(logger));
         }
 
         public Task CheckEventReadAccessAsync(EventInfo eventInfo, CancellationToken token)
@@ -57,6 +63,7 @@ namespace Eventuras.Services.Events
 
             if (!user.IsAdmin())
             {
+                _logger.LogWarning($"User {user.GetUserId()} is not admin and cannot manage event {eventInfo.EventInfoId}");
                 throw new NotAccessibleException(
                     $"Event {eventInfo.EventInfoId} is not accessible for update by user {user.GetUserId()}");
             }
@@ -69,12 +76,14 @@ namespace Eventuras.Services.Events
 
             if (eventInfo.OrganizationId != org.OrganizationId)
             {
+                _logger.LogWarning($"Event {eventInfo.EventInfoId} is not accessible from organization {org.OrganizationId}");
                 throw new NotAccessibleException(
                     $"Event {eventInfo.EventInfoId} is not accessible from organization {org.OrganizationId}");
             }
 
             if (org.Members.All(m => m.UserId != user.GetUserId() || !m.HasRole(Roles.Admin)))
             {
+                _logger.LogWarning($"User {user.GetUserId()} is not admin of organization {org.OrganizationId}");
                 throw new NotAccessibleException(
                     $"Event {eventInfo.EventInfoId} is not accessible for update by user {user.GetUserId()}");
             }
