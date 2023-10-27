@@ -49,7 +49,7 @@ const Card = (props: CardProps) => {
   const baseClassName = props.className ?? `relative p-3 bg-white dark:bg-slate-900 `;
 
   // Conditionally add 'w-full h-full' if block is true
-  const blockClass = props.block ? 'w-full h-full' : 'max-w-md';
+  const blockClass = props.block ? 'w-full h-full' : '';
 
   // Conditionally set text color
   const textColor = props.dark ? 'text-gray-100' : 'text-gray-800 dark:text-gray-200';

@@ -10,17 +10,15 @@ interface GridProps {
   children: React.ReactNode;
 }
 
-const Grid: React.FC<GridProps> = ({
-  cols = { sm: 1, md: 2, lg: 3 },
-  paddingClassName,
-  wrapperClassName,
-  container,
-  children,
-}) => {
-  const { sm, md, lg } = cols;
-  const gridClassNames = `grid grid-cols-${sm} md:grid-cols-${md} lg:grid-cols-${lg} gap-4 ${
-    paddingClassName || ''
-  } ${container ? 'container' : ''}`;
+const Grid: React.FC<GridProps> = ({ paddingClassName, wrapperClassName, container, children }) => {
+  const baseClasses = 'grid gap-4';
+  const colClasses = `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`;
+  const containerClass = container ? 'container' : '';
+  const additionalClasses = paddingClassName || '';
+
+  const gridClassNames = [baseClasses, colClasses, containerClass, additionalClasses]
+    .join(' ')
+    .trim();
 
   return wrapperClassName ? (
     <div className={wrapperClassName}>
