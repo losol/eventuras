@@ -5,6 +5,7 @@ using Eventuras.Services.Events;
 using Eventuras.Services.Organizations;
 using Eventuras.Services.Registrations;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace Eventuras.Services.Notifications
         private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
         private readonly IRegistrationRetrievalService _registrationRetrievalService;
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<NotificationManagementService> _logger;
 
         public NotificationManagementService(
             IEventInfoRetrievalService eventInfoRetrievalService,
@@ -27,7 +29,8 @@ namespace Eventuras.Services.Notifications
             ICurrentOrganizationAccessorService currentOrganizationAccessorService,
             IRegistrationRetrievalService registrationRetrievalService,
             IHttpContextAccessor httpContextAccessor,
-            ApplicationDbContext context)
+            ApplicationDbContext context,
+            ILogger<NotificationManagementService> logger)
         {
             _eventInfoRetrievalService = eventInfoRetrievalService ?? throw
                 new ArgumentNullException(nameof(eventInfoRetrievalService));
@@ -46,6 +49,9 @@ namespace Eventuras.Services.Notifications
 
             _context = context ?? throw
                 new ArgumentNullException(nameof(context));
+
+            _logger = logger ?? throw
+                new ArgumentNullException(nameof(logger));
         }
 
         public async Task<EmailNotification> CreateEmailNotificationAsync(
@@ -53,12 +59,16 @@ namespace Eventuras.Services.Notifications
             string body,
             string[] recipients)
         {
+            _logger.LogInformation($"Starting to create an email notification. Subject: {subject}, Number of recipients: {recipients?.Length ?? 0}");
+
             CheckSubjectAndBody(subject, body);
 
             var currentOrg =
                 await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
 
             var currentUser = _httpContextAccessor.HttpContext.User;
+
+            _logger.LogInformation($"Current organization: {currentOrg?.OrganizationId}. Current user id: {currentUser.GetUserId()}");
 
             return await _context
                 .CreateAsync(new EmailNotification(subject, body)
@@ -79,6 +89,7 @@ namespace Eventuras.Services.Notifications
             Registration.RegistrationStatus[] registrationStatuses,
             Registration.RegistrationType[] registrationTypes)
         {
+            _logger.LogInformation($"Starting to create an email notification for event {eventId}. Subject: {subject}");
             CheckSubjectAndBody(subject, body);
 
             await CheckEventAccessAsync(eventId);
@@ -93,6 +104,8 @@ namespace Eventuras.Services.Notifications
                 await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
 
             var currentUser = _httpContextAccessor.HttpContext.User;
+
+            _logger.LogInformation($"Current organization: {currentOrg?.OrganizationId}. Current user id: {currentUser.GetUserId()}");
 
             return await _context
                 .CreateAsync(new EmailNotification(subject, body)
@@ -132,6 +145,7 @@ namespace Eventuras.Services.Notifications
             Registration.RegistrationStatus[] registrationStatuses = null,
             Registration.RegistrationType[] registrationTypes = null)
         {
+            _logger.LogInformation($"Starting to create an SMS notification for event {eventId}. Message: {message}");
             await CheckEventAccessAsync(eventId);
 
             var recipients = await GetRecipientsAsync(
@@ -187,11 +201,12 @@ namespace Eventuras.Services.Notifications
         {
             var recipients = new List<NotificationRecipient>();
 
-            // Default status if not provided: Verified, attended and finished
+            // Default status if not provided: Verified, attended, not attended and finished
             registrationStatuses ??= new[]
             {
                 Registration.RegistrationStatus.Verified,
                 Registration.RegistrationStatus.Attended,
+                Registration.RegistrationStatus.NotAttended,
                 Registration.RegistrationStatus.Finished
             };
 
