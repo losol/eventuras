@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
+using Microsoft.OpenApi.Models;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 using System.Linq;
@@ -109,9 +110,7 @@ namespace Eventuras.WebApi
             var apiVersioningBuilder = services.AddApiVersioning(o =>
             {
                 o.ApiVersionReader = new UrlSegmentApiVersionReader();
-                o.AssumeDefaultVersionWhenUnspecified = true;
                 o.DefaultApiVersion = new ApiVersion(3, 0);
-                o.ReportApiVersions = true;
             });
 
             apiVersioningBuilder.AddApiExplorer(o =>
@@ -137,6 +136,7 @@ namespace Eventuras.WebApi
 
             services.AddSingleton<IAuthorizationHandler, RequireScopeHandler>();
 
+            // Add Swagger and configure it
             services.AddSwaggerGen();
             services.ConfigureOptions<ConfigureSwaggerOptions>();
 
@@ -176,7 +176,7 @@ namespace Eventuras.WebApi
                     {
                         c.SwaggerEndpoint(
                             $"/swagger/{description.GroupName}/swagger.json",
-                            description.GroupName.ToUpperInvariant()
+                            description.GroupName.ToLowerInvariant()
                         );
                     }
 

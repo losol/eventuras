@@ -11,11 +11,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using static Eventuras.Domain.Registration;
 
-namespace Eventuras.WebApi.Controllers.v3.Notifications
+namespace Eventuras.WebApi.Controllers.v4.Notifications
 {
     [ApiController]
-    [ApiVersion("3")]
+    [ApiVersion("4-beta")]
     [Authorize(Policy = Constants.Auth.AdministratorRole)]
     [Route("v{version:apiVersion}/notifications")]
     public class NotificationsQueueingController : ControllerBase
@@ -39,19 +40,19 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications
 
         [HttpPost("email")]
         public async Task<ActionResult<NotificationDto>> SendEmail(
-      EmailNotificationDto dto,
+      EmailNotificationRequest dto,
       CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Starting to process email notification. Subject: {dto.Subject}, Number of Recipients: {dto.Recipients?.Length ?? 0}");
+            _logger.LogInformation($"Starting to process email notification. Subject: {dto.Content.Subject}, Number of Recipients: {dto.Recipients.EmailAddresses?.To.Length ?? 0}");
 
             EmailNotification emailNotification;
-            var eventFilter = await GetEventParticipantFilterAsync(dto, cancellationToken);
+            var eventFilter = await GetHappeningParticipantFilterAsync(dto, cancellationToken);
             if (eventFilter != null)
             {
                 emailNotification = await _notificationManagementService
                     .CreateEmailNotificationForEventAsync(
-                        dto.Subject,
-                        dto.BodyMarkdown,
+                        dto.Content.Subject,
+                        dto.Content.Body,
                         eventFilter.EventId.Value,
                         eventFilter.RegistrationStatuses,
                         eventFilter.RegistrationTypes);
@@ -60,9 +61,9 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications
             {
                 emailNotification = await _notificationManagementService
                     .CreateEmailNotificationAsync(
-                        dto.Subject,
-                        dto.BodyMarkdown,
-                        dto.Recipients);
+                        dto.Content.Subject,
+                        dto.Content.Body,
+                        dto.Recipients.EmailAddresses.To);
             }
 
             // send notification right away, not queueing it or something.
@@ -76,18 +77,18 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications
 
         [HttpPost("sms")]
         public async Task<ActionResult<NotificationDto>> SendSms(
-             SmsNotificationDto dto,
+             SmsNotificationRequest dto,
              CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Starting to process SMS notification. Message: {dto.Message}, Number of Recipients: {dto.Recipients?.Length ?? 0}");
+            _logger.LogInformation($"Starting to process SMS notification. Message: {dto.Content.Body}, Number of Recipients: {dto.Recipients?.PhoneNumbers.Length ?? 0}");
 
             SmsNotification smsNotification;
-            var eventFilter = await GetEventParticipantFilterAsync(dto, cancellationToken);
+            var eventFilter = await GetHappeningParticipantFilterAsync(dto, cancellationToken);
             if (eventFilter != null)
             {
                 smsNotification = await _notificationManagementService
                     .CreateSmsNotificationForEventAsync(
-                        dto.Message,
+                        dto.Content.Body,
                         eventFilter.EventId.Value,
                         eventFilter.RegistrationStatuses,
                         eventFilter.RegistrationTypes);
@@ -96,8 +97,8 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications
             {
                 smsNotification = await _notificationManagementService
                     .CreateSmsNotificationAsync(
-                        dto.Message,
-                        dto.Recipients);
+                        dto.Content.Body,
+                        dto.Recipients.PhoneNumbers);
             }
 
             // send notification right away, not queueing it or something.
@@ -109,80 +110,105 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications
             return Ok(new NotificationDto(smsNotification));
         }
 
-        private async Task<EventParticipantsFilterDto> GetEventParticipantFilterAsync(
-            INotificationDto dto,
+        private async Task<EventParticipantsFilterDto> GetHappeningParticipantFilterAsync<TRecipients, TContent>(
+            INotificationRequest<TRecipients, TContent> dto,
             CancellationToken cancellationToken = default)
+            where TRecipients : Recipients
+            where TContent : Content
         {
-            var eventFilter = dto.EventParticipants;
-            var eventFilterSet = eventFilter?.IsDefined == true;
+            var happeningFilter = dto.Recipients.Happening?.HappeningId;
 
-            if (dto.Recipients?.Any() != true && !eventFilterSet)
+            if (!AnyRecipientInformationAvailable(dto.Recipients) && !happeningFilter.HasValue)
             {
-                _logger.LogWarning("Either recipient list of event participant filter must be specified");
-                throw new InputException("Either recipient list of event participant filter must be specified");
+                _logger.LogWarning("Either a recipient list or happening filter must be specified.");
+                throw new InputException("Either a recipient list or event participant filter must be specified.");
             }
 
-            if (dto.Recipients?.Any() == true && eventFilterSet)
+            if (happeningFilter.HasValue)
             {
-                _logger.LogWarning("Please provider either of recipient list or event participants.");
-                throw new InputException("Please provider either of recipient list or event participants.");
-            }
-
-            if (eventFilterSet)
-            {
-                _logger.LogInformation("Event filter is set, validating it.");
-                if (eventFilter.ProductId.HasValue)
+                return new EventParticipantsFilterDto
                 {
-                    _logger.LogInformation($"Product filter is set, validating it. ProductId: {eventFilter.ProductId}");
-                    var product =
-                        await _productRetrievalService
-                            .GetProductByIdAsync(eventFilter.ProductId.Value,
-                                cancellationToken: cancellationToken);
-                    if (eventFilter.EventId.HasValue)
-                    {
-                        if (product.EventInfoId != eventFilter.EventId.Value)
-                        {
-                            throw new InputException(
-                                $"Product {product.ProductId} doesn't belong to event {eventFilter.EventId}");
-                        }
-                    }
-                    else
-                    {
-                        eventFilter.EventId = product.EventInfoId;
-                    }
-                }
-
-                return eventFilter;
+                    EventId = dto.Recipients.Happening.HappeningId,
+                    RegistrationStatuses = dto.Recipients.Happening.RegistrationStatuses,
+                    RegistrationTypes = dto.Recipients.Happening.RegistrationTypes
+                };
             }
 
             return null;
         }
+
+        private bool AnyRecipientInformationAvailable(Recipients recipients)
+        {
+            return (recipients as EmailRecipients)?.EmailAddresses?.To?.Any() == true
+                || (recipients as SmsRecipients)?.PhoneNumbers?.Any() == true
+                || recipients?.Happening != null;
+        }
     }
 
-    public interface INotificationDto
+    public interface INotificationRequest<TRecipients, TContent>
     {
-        public string[] Recipients { get; set; }
-
-        public EventParticipantsFilterDto EventParticipants { get; set; }
+        public TRecipients Recipients { get; set; }
+        public TContent Content { get; set; }
     }
 
-    public class EmailNotificationDto : INotificationDto
+    public class EmailNotificationRequest : INotificationRequest<EmailRecipients, EmailContent>
     {
-        [EmailRecipientList] public string[] Recipients { get; set; }
+        public EmailRecipients Recipients { get; set; }
+        public EmailContent Content { get; set; }
+    }
 
-        public EventParticipantsFilterDto EventParticipants { get; set; }
+    public class SmsNotificationRequest : INotificationRequest<SmsRecipients, SmsContent>
+    {
+        public SmsRecipients Recipients { get; set; }
+        public SmsContent Content { get; set; }
+    }
 
+    public abstract class Recipients
+    {
+        public Happening Happening { get; set; }
+    }
+
+    public class EmailRecipients : Recipients
+    {
+        public EmailAddresses EmailAddresses { get; set; }
+    }
+
+    public class SmsRecipients : Recipients
+    {
+        public string[] PhoneNumbers { get; set; }
+    }
+
+    public class EmailAddresses
+    {
+        public string[] To { get; set; }
+        public string[] Cc { get; set; }
+        public string[] Bcc { get; set; }
+    }
+
+
+    public class Happening
+    {
+        public int HappeningId { get; set; }
+        public RegistrationType[] RegistrationTypes { get; set; }
+        public RegistrationStatus[] RegistrationStatuses { get; set; }
+    }
+
+    public class Content
+    {
+        public dynamic Body { get; set; }
+    }
+
+
+    public class EmailContent : Content
+    {
         [Required][MinLength(3)] public string Subject { get; set; }
-
-        [Required][MinLength(10)] public string BodyMarkdown { get; set; }
+        [Required][MinLength(5)] new public string Body { get; set; }
     }
 
-    public class SmsNotificationDto : INotificationDto
+    public class SmsContent : Content
     {
-        [SmsRecipientList] public string[] Recipients { get; set; }
-
-        public EventParticipantsFilterDto EventParticipants { get; set; }
-
-        [Required][MinLength(10)] public string Message { get; set; }
+        [Required][MinLength(10)][MaxLength(320)] public new string Body { get; set; }
     }
+
+
 }

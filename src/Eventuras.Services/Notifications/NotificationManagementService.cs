@@ -85,7 +85,6 @@ namespace Eventuras.Services.Notifications
             string subject,
             string body,
             int eventId,
-            int? productId,
             Registration.RegistrationStatus[] registrationStatuses,
             Registration.RegistrationType[] registrationTypes)
         {
@@ -96,7 +95,7 @@ namespace Eventuras.Services.Notifications
 
             var recipients = await GetRecipientsAsync(
                 NotificationType.Email,
-                eventId, productId,
+                eventId,
                 registrationStatuses,
                 registrationTypes);
 
@@ -113,7 +112,6 @@ namespace Eventuras.Services.Notifications
                     CreatedByUserId = currentUser.GetUserId(),
                     OrganizationId = currentOrg?.OrganizationId,
                     EventInfoId = eventId,
-                    ProductId = productId,
                     Recipients = recipients
                 }, leaveAttached: true);
         }
@@ -141,7 +139,6 @@ namespace Eventuras.Services.Notifications
         public async Task<SmsNotification> CreateSmsNotificationForEventAsync(
             string message,
             int eventId,
-            int? productId = null,
             Registration.RegistrationStatus[] registrationStatuses = null,
             Registration.RegistrationType[] registrationTypes = null)
         {
@@ -150,7 +147,7 @@ namespace Eventuras.Services.Notifications
 
             var recipients = await GetRecipientsAsync(
                 NotificationType.Sms,
-                eventId, productId,
+                eventId,
                 registrationStatuses,
                 registrationTypes);
 
@@ -165,7 +162,6 @@ namespace Eventuras.Services.Notifications
                     CreatedByUserId = currentUser.GetUserId(),
                     OrganizationId = currentOrg?.OrganizationId,
                     EventInfoId = eventId,
-                    ProductId = productId,
                     Recipients = recipients
                 }, leaveAttached: true);
         }
@@ -195,7 +191,6 @@ namespace Eventuras.Services.Notifications
         private async Task<List<NotificationRecipient>> GetRecipientsAsync(
             NotificationType notificationType,
             int eventId,
-            int? productId,
             Registration.RegistrationStatus[] registrationStatuses,
             Registration.RegistrationType[] registrationTypes)
         {
@@ -225,9 +220,6 @@ namespace Eventuras.Services.Notifications
                         Filter = new RegistrationFilter
                         {
                             EventInfoId = eventId,
-                            ProductIds = productId.HasValue
-                                ? new[] { productId.Value }
-                                : Array.Empty<int>(),
                             ActiveUsersOnly = true,
                             HavingStatuses = registrationStatuses,
                             HavingTypes = registrationTypes
