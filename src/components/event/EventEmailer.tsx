@@ -131,6 +131,7 @@ export default function EventEmailer({
             label={t('eventEmailer.form.body.label')}
             placeholder={t('eventEmailer.form.body.label')}
             className={`${lightInputStyle}`}
+            editmodeOnly={true}
           />
         </div>
       </div>

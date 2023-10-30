@@ -19,6 +19,7 @@ export type MarkdownEditViewProps = {
   placeholder?: string;
   className?: string;
   label?: string;
+  editmodeOnly?: boolean;
 };
 
 const MarkdownEditView = ({
@@ -28,6 +29,7 @@ const MarkdownEditView = ({
   label,
   formName,
   defaultValue,
+  editmodeOnly,
 }: MarkdownEditViewProps) => {
   const {
     formState: { errors },
@@ -35,7 +37,7 @@ const MarkdownEditView = ({
   } = form;
 
   const id = formName;
-  const [editing, setEditing] = useState<boolean>(false);
+  const [editing, setEditing] = useState<boolean>(editmodeOnly === true);
   const [inFullMode, setFullMode] = useState<boolean>(false);
   const toCompile = useRef(defaultValue ?? '');
   const onEdit = (e: any) => {
@@ -92,7 +94,7 @@ const MarkdownEditView = ({
         </label>
       )}
       <div className="block w-full">
-        <Button onClick={onEdit}>{editing ? 'View' : 'Edit'}</Button>
+        {editmodeOnly !== true && <Button onClick={onEdit}>{editing ? 'View' : 'Edit'}</Button>}
         <Button
           onClick={e => {
             setFullMode(!inFullMode);
