@@ -44,5 +44,3 @@ build-storybook.log
 
 # Sentry Auth Token
 .sentryclirc
-
-scripts
