@@ -26,6 +26,8 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ## Update npm package
 
+Please run `npm pack` first to double check contents. Instead of a files 'whitelist' section in package.json, for reasons of excluding certain files in dist, this is now become a blacklist in .npmignore.
+
 1. Update version number in package.json
 1. `npm run build`
 1. `npm login --scope @losol --auth-type web`
