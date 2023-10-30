@@ -7,11 +7,15 @@
  * Source: https://github.com/facebook/lexical/blob/main/packages/lexical-playground/src/index.css
  */
 
-@import 'https://fonts.googleapis.com/css?family=Reenie+Beanie';
+@import "https://fonts.googleapis.com/css?family=Reenie+Beanie";
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular',
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    ".SFNSText-Regular",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

@@ -1,11 +1,9 @@
 {
   "name": "@losol/scribo-markdown",
-  "version": "0.2.1",
-  "files": [
-    "dist"
-  ],
-  "main": "dist/index.js",
-  "module": "dist/index.js",
+  "version": "0.3.2",
+  "main": "dist/lib.js",
+  "types": "dist/lib.d.ts",
+  "module": "dist/lib.js",
   "dependencies": {
     "@lexical/markdown": "^0.12.2",
     "@lexical/react": "^0.12.2",
@@ -31,13 +29,33 @@
     "@babel/preset-react": "^7.22.15",
     "@babel/preset-typescript": "^7.23.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "eslint": "^8.52.0",
+    "eslint-config-next": "^13.5.6",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-prettier": "^5.0.1",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "eslint-plugin-sonarjs": "^0.21.0",
+    "eslint-plugin-storybook": "^0.6.15",
+    "lint-staged": "^15.0.2",
+    "prettier": "^3.0.3"
+  },
+  "overrides": {
+    "react-scripts": {
+      "typescript": "^5"
+    }
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "rm -rf dist && NODE_ENV=production npx babel src --out-dir dist --extensions '.ts,.tsx' --copy-files",
+    "start": "PORT=3001 react-scripts start",
+    "build": "rm -rf dist && npx tsc && NODE_ENV=production npx babel src --out-dir dist --extensions '.ts,.tsx' --copy-files",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "fix-all": "npm run lint-fix && npm run prettier-fix",
+    "lint": "next lint",
+    "lint-fix": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
+    "prettier-fix": "prettier . --write"
   },
   "eslintConfig": {
     "extends": [
