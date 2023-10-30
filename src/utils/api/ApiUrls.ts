@@ -12,6 +12,10 @@ type byUserId = {
   userId: string;
 };
 
+type byOrgId = {
+  orgId: number;
+};
+
 type KeyValueOptions = Record<string, any>;
 
 const ApiURLs = {
@@ -29,7 +33,8 @@ const ApiURLs = {
   users: (options: KeyValueOptions = {}) => `${ApiURLs.rootUri()}/users${getQueryString(options)}`,
   userRegistrations: ({ userId }: byUserId) =>
     `${ApiURLs.rootUri()}/registrations?UserId=${userId}&includeEventInfo=true&includeProducts=true`,
-  sendEmailNotification: () => `${ApiURLs.rootUri()}/notifications/email`,
+  sendEmailNotification: ({ orgId }: byOrgId) =>
+    `${ApiURLs.rootUri()}/notifications/email?orgId=${orgId}`,
 };
 
 export default ApiURLs;

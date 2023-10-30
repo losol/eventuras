@@ -70,7 +70,6 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({ participants = []
             <EventEmailer
               eventTitle={event.title!}
               eventId={event.id!}
-              recipients={registrationOpened.user ? [registrationOpened.user.email!] : null}
               onClose={() => setRegistrationOpened(null)}
             />
           </Drawer.Body>

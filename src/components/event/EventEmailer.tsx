@@ -22,16 +22,10 @@ type EventEmailerFormValues = {
 export type EventEmailerProps = {
   eventTitle: string;
   eventId: number;
-  recipients?: string[] | null;
   onClose: () => void;
 };
 
-export default function EventEmailer({
-  eventTitle,
-  eventId,
-  onClose,
-  recipients,
-}: EventEmailerProps) {
+export default function EventEmailer({ eventTitle, eventId, onClose }: EventEmailerProps) {
   const formHook = useForm<EventEmailerFormValues>();
   const {
     register,
@@ -42,7 +36,6 @@ export default function EventEmailer({
   const { addAppNotification } = useAppNotifications();
   const { t } = useTranslation('admin');
   const { t: common } = useTranslation('common');
-  const hasRecipients = recipients && recipients.length;
 
   const onSubmitForm: SubmitHandler<EventEmailerFormValues> = async (
     data: EventEmailerFormValues
@@ -51,11 +44,10 @@ export default function EventEmailer({
       subject: data.subject,
       bodyMarkdown: data.body,
       eventParticipants: {
-        eventId,
+        eventId: eventId,
         registrationStatuses: data.registrationStatus as unknown as RegistrationStatus[],
         registrationTypes: data.registrationTypes as unknown as RegistrationType[],
       },
-      recipients,
     };
     const result = await sendEmailNotification(body);
     if (!result.ok) {
@@ -82,36 +74,32 @@ export default function EventEmailer({
         <Heading as="h4">{common('event')}</Heading>
         <p>{eventTitle}</p>
       </div>
-      {!hasRecipients && (
-        <>
-          <DropdownSelect
-            className="relative z-10"
-            label={t('eventEmailer.form.status.label')}
-            control={control}
-            rules={{ required: t('eventEmailer.form.status.feedbackNoInput') }}
-            name="registrationStatus"
-            errors={errors}
-            options={mapEnum(RegistrationStatus, (value: any) => ({
-              id: value,
-              label: value,
-            }))}
-            multiSelect={true}
-          />
-          <DropdownSelect
-            className="relative z-9"
-            label={t('eventEmailer.form.type.label')}
-            control={control}
-            rules={{ required: t('eventEmailer.form.type.feedbackNoInput') }}
-            name="registrationTypes"
-            errors={errors}
-            options={mapEnum(RegistrationType, (value: any) => ({
-              id: value,
-              label: value,
-            }))}
-            multiSelect={true}
-          />
-        </>
-      )}
+      <DropdownSelect
+        className="relative z-10"
+        label={t('eventEmailer.form.status.label')}
+        control={control}
+        rules={{ required: t('eventEmailer.form.status.feedbackNoInput') }}
+        name="registrationStatus"
+        errors={errors}
+        options={mapEnum(RegistrationStatus, (value: any) => ({
+          id: value,
+          label: value,
+        }))}
+        multiSelect={true}
+      />
+      <DropdownSelect
+        className="relative z-9"
+        label={t('eventEmailer.form.type.label')}
+        control={control}
+        rules={{ required: t('eventEmailer.form.type.feedbackNoInput') }}
+        name="registrationTypes"
+        errors={errors}
+        options={mapEnum(RegistrationType, (value: any) => ({
+          id: value,
+          label: value,
+        }))}
+        multiSelect={true}
+      />
       <div>
         <InputText
           {...register('subject', {
