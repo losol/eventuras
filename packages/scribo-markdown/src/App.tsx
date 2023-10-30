@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import MarkdownEditor from './MarkdownEditor';
+import React, { useState } from "react";
+
+import MarkdownEditor from "./MarkdownEditor";
 
 function App() {
-  const initialMarkdown = 'Hello **markdown**!';
+  const initialMarkdown = "Hello **markdown**!";
   const [markdown, setMarkdown] = useState<string>(initialMarkdown);
 
   const onChange = (markdown: string) => {
@@ -10,7 +11,7 @@ function App() {
   };
 
   return (
-    <div className='App'>
+    <div className="App">
       <h1>Markdown editor</h1>
       <h2>Make some content</h2>
       <MarkdownEditor onChange={onChange} initialMarkdown={markdown} />
