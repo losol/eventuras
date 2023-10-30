@@ -33,7 +33,7 @@
     "@lexical/markdown": "^0.12.2",
     "@lexical/react": "^0.12.2",
     "@losol/eventuras": "^0.4.2",
-    "@losol/scribo-markdown": "^0.2.1",
+    "@losol/scribo-markdown": "^0.3.0",
     "@sentry/nextjs": "^7.76.0",
     "@tabler/icons-react": "^2.40.0",
     "@tanstack/react-table": "^8.10.7",
