@@ -13,7 +13,6 @@ const EventContent = ({ event, contentField, heading }: EventContentProps) => {
   if (!event[contentField]) return null;
   return (
     <>
-      <p>fdsfsd</p>
       {heading && <Heading as="h2">{heading}</Heading>}
       {event[contentField] ? compiler(event[contentField]?.toString() ?? '') : null}
     </>
