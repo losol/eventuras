@@ -48,3 +48,35 @@ Unfortunately tsc ignores tsconfig (see why section of <https://github.com/gusta
 ## Code style
 
 We are open to most standards, as long as there is one. We were inspired by [joshchus setup](https://dev.to/joshchu/how-to-setup-prettier-eslint-husky-and-lint-staged-with-a-nextjs-and-typescript-project-i7b)
+
+
+## Translations
+
+We use next-translate as our translation library, read about it at https://github.com/aralroca/next-translate. Instead of using `useTranslations('common')`, for instance, we have opted to go with `useTranslations()` and then access the label through `t('common:label')`. The reason is better portability with tools such as i18n-ally.
+
+### i18n-ally
+
+This is a plugin for visual code which makes it easier to see the translations inline and to edit them inline - there is also, through the command palette the option to auto-add keys for labels which haven't been translated yet. To effectively use the plugin, after installing add these settings to your user settings:
+
+```json
+    "i18n-ally.displayLanguage": "en-US",
+    "i18n-ally.localesPaths": [
+        "locales"
+    ],
+    "i18n-ally.sourceLanguage": "en-US",
+    "i18n-ally.namespace": true,
+    "i18n-ally.enabledParsers": [
+        "json"
+    ],
+    "i18n-ally.enabledFrameworks": [
+        "next-translate"
+    ],
+    "i18n-ally.pathMatcher": "{locale}/{namespace}.json",
+    "i18n-ally.extract.keyMaxLength": 50,
+    "i18n-ally.dirStructure": "dir",
+    "i18n-ally.sortKeys": true,
+    "i18n-ally.annotationDelimiter": "-",
+    "i18n-ally.languageTagSystem": "bcp47",
+    "i18n-ally.fullReloadOnChanged": true,
+    "i18n-ally.keystyle": "nested"
+```
