@@ -39,7 +39,7 @@ const Footer = (props: FooterProps) => {
             )}
             {props.links && (
               <div>
-                <ul className="text-gray-800 dark:text-gray-300 font-medium">
+                <ul className="text-gray-800 dark:text-gray-300 font-medium list-none">
                   {props.links?.map((link, index) => (
                     <li key={index} className="mb-4">
                       <Link href={link.href}>{link.text}</Link>

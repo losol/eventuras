@@ -6,6 +6,7 @@
     "submit": "Submit",
     "view": "View"
   },
+  "edit": "Edit",
   "errors": {
     "fatalError": {
       "description": "We tried to perform the action, but something went wrong, please try again later.",
@@ -13,6 +14,7 @@
     }
   },
   "event": "Event",
+  "event-not-found": "Event not found",
   "events": "Events",
   "header": {
     "auth": {

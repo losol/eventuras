@@ -16,9 +16,9 @@ export type InputTextProps = {
  * requires ref forwarding because it is used by react hooks
  * @see https://stackoverflow.com/questions/67877887/react-hook-form-v7-function-components-cannot-be-given-refs-attempts-to-access
  */
-export const defaultInputStyle = ` 
+export const defaultInputStyle = `
         appearance-none
-        w-full 
+        w-full
         p-4
         text-gray-900
         dark:text-gray-100
@@ -26,19 +26,19 @@ export const defaultInputStyle = `
         dark:bg-gray-800
         border-2
         dark:border-gray-700
-        leading-tight 
-        focus:outline-none 
+        leading-tight
+        focus:outline-none
         focus:shadow-outline`;
 
 export const lightInputStyle = `
         appearance-none
-        w-full 
+        w-full
         p-4
         bg-white
         text-black
         border-2
         dark:border-gray-400
-        focus:outline-none 
+        focus:outline-none
         focus:shadow-outline`;
 
 export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref) => {
@@ -118,7 +118,7 @@ const comboOption = (person: UserDto) => (
   <Combobox.Option
     key={person.id}
     className={({ active }) =>
-      `relative cursor-default select-none py-2 pl-10 pr-4 ${
+      `relative cursor-default select-none py-2 pl-5 pr-4 ${
         active ? 'bg-blue-600 text-white' : 'text-gray-900'
       }`
     }
@@ -187,7 +187,7 @@ export const InputAutoComplete = (props: InputAutoCompleteProps) => {
     );
   };
   const optionsClassname =
-    'absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm';
+    'list-none absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm';
   return (
     <div className="w-72 relative">
       <Combobox

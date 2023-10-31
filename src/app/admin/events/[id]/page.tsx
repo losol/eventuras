@@ -1,13 +1,13 @@
 'use client';
 
-import useTranslation from 'next-translate/useTranslation';
+import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 
-import EventContent from '@/components/event/EventContent';
 import EventEmailer from '@/components/event/EventEmailer';
 import { Container, Drawer, Layout } from '@/components/ui';
 import Button from '@/components/ui/Button';
 import Heading from '@/components/ui/Heading';
+import Link from '@/components/ui/Link';
 import Loading from '@/components/ui/Loading';
 import { useEvent, useEventProducts, useRegistrations } from '@/hooks/apiHooks';
 
@@ -35,7 +35,7 @@ const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
     },
     registrationSeed
   );
-  const { t } = useTranslation();
+  const { t } = createTranslation();
   const { loading: eventsLoading, event } = useEvent(eventId);
   const [emailDrawerOpen, setEmailDrawerOpen] = useState<boolean>(false);
   const { registrationProducts: eventProducts, loading: loadingEventProducts } =
@@ -52,18 +52,9 @@ const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
         {event && (
           <>
             <Heading as="h1">{event.title ?? ''}</Heading>
-            <EventContent
-              event={event}
-              contentField="description"
-              heading={t('events:Description')}
-            />
-            <AddUserToEvent
-              event={event}
-              eventProducts={eventProducts}
-              onUseradded={() => {
-                setRegistrationSeed(registrationSeed + 1);
-              }}
-            />
+            <Link href={`/admin/events/${event.id}/edit`} variant="button-primary">
+              {t('common:edit')}
+            </Link>
             <Button
               variant="primary"
               onClick={() => {
@@ -72,6 +63,14 @@ const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
             >
               {t('admin:eventEmailer.title')}
             </Button>
+            <AddUserToEvent
+              event={event}
+              eventProducts={eventProducts}
+              onUseradded={() => {
+                setRegistrationSeed(registrationSeed + 1);
+              }}
+            />
+
             <Drawer isOpen={emailDrawerOpen} onCancel={() => setEmailDrawerOpen(false)}>
               <Drawer.Header as="h3" className="text-black">
                 {t('admin:eventEmailer.title')}
@@ -90,7 +89,7 @@ const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
           </>
         )}
         {event && registrations ? (
-          <EventParticipantList participants={registrations ?? []} event={event!} />
+          <EventParticipantList participants={registrations ?? []} event={event} />
         ) : (
           <Loading />
         )}

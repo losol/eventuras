@@ -67,7 +67,7 @@ const EventCreator = () => {
 
     //## Result OK handling
     if (result && result.ok) {
-      const nextUrl = `/admin/events/${result.value.id}`;
+      const nextUrl = `/admin/events/${result.value.id}/edit`;
       addAppNotification({
         id: Date.now(),
         message: t('admin:createEvent.success'),

@@ -94,8 +94,8 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
   const fieldsetLegendClassName = 'text-lg border-b-2 pt-4 pb-2';
 
   const defaults: Map<string, string | boolean> = new Map();
-  defaults.set('type', EventInfoType.CONFERENCE);
-  defaults.set('status', EventInfoStatus.REGISTRATIONS_CLOSED);
+  defaults.set('type', EventInfoType.COURSE);
+  defaults.set('status', EventInfoStatus.DRAFT);
   defaults.set('featured', false);
   defaults.set('onDemand', false);
   defaults.set('published', false);
@@ -129,10 +129,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
 
     //## Result OK handling
     if (result && result.ok) {
-      let nextUrl = '/admin';
-      if (!eventinfo) {
-        nextUrl = `/admin/events/${result.value.id}`;
-      }
+      const nextUrl = `/admin/events/${result.value.id}`;
       router.push(nextUrl);
     }
   };
