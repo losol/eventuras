@@ -2,7 +2,7 @@
 
 
 # vs code
-.vscode
+.vscode/launch.json
 
 # dependencies
 /node_modules
