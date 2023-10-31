@@ -3,6 +3,8 @@ using Eventuras.Domain;
 using Eventuras.Services.Events.Products;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Notifications;
+using Eventuras.Services.Registrations;
+using Eventuras.Services.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -23,17 +25,20 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications
         private readonly INotificationManagementService _notificationManagementService;
         private readonly INotificationDeliveryService _notificationDeliveryService;
         private readonly IProductRetrievalService _productRetrievalService;
+        private readonly IRegistrationRetrievalService _registrationsRetrivalService;
         private readonly ILogger<NotificationsQueueingController> _logger;
 
         public NotificationsQueueingController(
             INotificationManagementService notificationManagementService,
             INotificationDeliveryService notificationDeliveryService,
             IProductRetrievalService productRetrievalService,
+            IRegistrationRetrievalService registrationsRetrivalService,
             ILogger<NotificationsQueueingController> logger)
         {
             _notificationDeliveryService = notificationDeliveryService ?? throw new ArgumentNullException(nameof(notificationDeliveryService));
             _notificationManagementService = notificationManagementService ?? throw new ArgumentNullException(nameof(notificationManagementService));
             _productRetrievalService = productRetrievalService ?? throw new ArgumentNullException(nameof(productRetrievalService));
+            _registrationsRetrivalService = registrationsRetrivalService ?? throw new ArgumentNullException(nameof(registrationsRetrivalService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -55,23 +60,55 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications
                         eventFilter.EventId.Value,
                         eventFilter.RegistrationStatuses,
                         eventFilter.RegistrationTypes);
+                await _notificationDeliveryService
+                     .SendNotificationAsync(emailNotification, cancellationToken);
+                return Ok(new NotificationDto(emailNotification));
             }
-            else
+
+            if (dto.Recipients != null && dto.Recipients.Any())
             {
                 emailNotification = await _notificationManagementService
                     .CreateEmailNotificationAsync(
                         dto.Subject,
                         dto.BodyMarkdown,
                         dto.Recipients);
+                await _notificationDeliveryService
+                   .SendNotificationAsync(emailNotification, cancellationToken);
+
+                return Ok(new NotificationDto(emailNotification));
             }
 
-            // send notification right away, not queueing it or something.
-            // TODO: use queue for messages
+            if (dto.RegistrationId != null)
+            {
+                var registration = await _registrationsRetrivalService
+                    .GetRegistrationByIdAsync(dto.RegistrationId.Value, RegistrationRetrievalOptions.UserAndEvent, cancellationToken: cancellationToken);
 
-            await _notificationDeliveryService
-                .SendNotificationAsync(emailNotification, cancellationToken);
+                emailNotification = await _notificationManagementService
+                .CreateEmailNotificationAsync(
+                        dto.Subject,
+                        dto.BodyMarkdown,
+                        registration);
+                await _notificationDeliveryService
+                    .SendNotificationAsync(emailNotification, cancellationToken);
 
-            return Ok(new NotificationDto(emailNotification));
+                return Ok(new NotificationDto(emailNotification));
+            }
+
+            if (dto.Recipients != null && dto.Recipients.Any())
+            {
+                emailNotification = await _notificationManagementService
+                    .CreateEmailNotificationAsync(
+                        dto.Subject,
+                        dto.BodyMarkdown,
+                        dto.Recipients);
+                await _notificationDeliveryService
+                    .SendNotificationAsync(emailNotification, cancellationToken);
+
+                return Ok(new NotificationDto(emailNotification));
+            }
+
+            // Should never happen
+            throw new InputException("Either recipient list of event participant filter must be specified");
         }
 
         [HttpPost("sms")]
@@ -116,10 +153,10 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications
             var eventFilter = dto.EventParticipants;
             var eventFilterSet = eventFilter?.IsDefined == true;
 
-            if (dto.Recipients?.Any() != true && !eventFilterSet)
+            if (dto.Recipients?.Any() != true && !eventFilterSet && dto.RegistrationId == null)
             {
-                _logger.LogWarning("Either recipient list of event participant filter must be specified");
-                throw new InputException("Either recipient list of event participant filter must be specified");
+                _logger.LogWarning("Either registrationId, recipient list of event participant filter must be specified");
+                throw new InputException("Either registrationId, eventId or recipient list  must be specified");
             }
 
             if (dto.Recipients?.Any() == true && eventFilterSet)
@@ -164,6 +201,8 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications
         public string[] Recipients { get; set; }
 
         public EventParticipantsFilterDto EventParticipants { get; set; }
+
+        public int? RegistrationId { get; set; }
     }
 
     public class EmailNotificationDto : INotificationDto
@@ -173,6 +212,7 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications
         public EventParticipantsFilterDto EventParticipants { get; set; }
 
         [Required][MinLength(3)] public string Subject { get; set; }
+        public int? RegistrationId { get; set; }
 
         [Required][MinLength(10)] public string BodyMarkdown { get; set; }
     }
@@ -182,6 +222,8 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications
         [SmsRecipientList] public string[] Recipients { get; set; }
 
         public EventParticipantsFilterDto EventParticipants { get; set; }
+
+        public int? RegistrationId { get; set; }
 
         [Required][MinLength(10)] public string Message { get; set; }
     }

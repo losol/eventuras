@@ -2,6 +2,7 @@ using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.Auth;
 using Eventuras.Services.Events;
+using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
 using Eventuras.Services.Registrations;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Eventuras.Services.Notifications
@@ -80,6 +82,44 @@ namespace Eventuras.Services.Notifications
                         .ToList()
                 }, leaveAttached: true);
         }
+
+        public async Task<EmailNotification> CreateEmailNotificationAsync(
+    string subject,
+    string body,
+    Registration registration)
+        {
+            _logger.LogInformation($"Starting to create an email notification based on registration. Registration: {registration.RegistrationId} Subject: {subject}");
+
+            CheckSubjectAndBody(subject, body);
+
+            var currentOrg = await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
+            var currentUser = _httpContextAccessor.HttpContext.User;
+
+            _logger.LogInformation($"Current organization: {currentOrg?.OrganizationId}. Current user id: {currentUser.GetUserId()}");
+
+            var recipient = NotificationRecipient.Create(registration, NotificationType.Email);
+
+            if (recipient != null)
+            {
+                // Manually attach existing entities to context
+                _context.Attach(recipient);
+                _context.Attach(currentOrg);
+                _context.Attach(registration);
+
+                return await _context.CreateAsync(new EmailNotification(subject, body)
+                {
+                    CreatedByUserId = currentUser.GetUserId(),
+                    OrganizationId = currentOrg?.OrganizationId,
+                    Recipients = new List<NotificationRecipient> { recipient }
+                }, leaveAttached: true, cancellationToken: default);
+            }
+            else
+            {
+                _logger.LogError("Could not create NotificationRecipient. Skipping email creation.");
+                throw new NotFoundException("Could not find recipient. Skipping email creation.");
+            }
+        }
+
 
         public async Task<EmailNotification> CreateEmailNotificationForEventAsync(
             string subject,

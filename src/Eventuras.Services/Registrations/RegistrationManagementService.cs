@@ -4,6 +4,7 @@ using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.Events;
 using Eventuras.Services.Exceptions;
+using Eventuras.Services.Notifications;
 using Eventuras.Services.Orders;
 using Eventuras.Services.Users;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ namespace Eventuras.Services.Registrations
         private readonly IRegistrationAccessControlService _registrationAccessControlService;
         private readonly IOrderManagementService _orderManagementService;
         private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
+        private readonly INotificationManagementService _notificationsManagementService;
         private readonly IUserRetrievalService _userRetrievalService;
         private readonly ApplicationDbContext _context;
         private readonly ILogger<RegistrationManagementService> _logger;
@@ -28,12 +30,14 @@ namespace Eventuras.Services.Registrations
             IRegistrationAccessControlService registrationAccessControlService,
             IOrderManagementService orderManagementService,
             IEventInfoRetrievalService eventInfoRetrievalService,
+            INotificationManagementService notificationsManagementService,
             IUserRetrievalService userRetrievalService,
             ILogger<RegistrationManagementService> logger,
             ApplicationDbContext context)
         {
             _registrationAccessControlService = registrationAccessControlService;
             _eventInfoRetrievalService = eventInfoRetrievalService;
+            _notificationsManagementService = notificationsManagementService;
             _userRetrievalService = userRetrievalService;
             _context = context;
             _orderManagementService = orderManagementService;
@@ -118,6 +122,19 @@ namespace Eventuras.Services.Registrations
                 await _context.SaveChangesAsync(cancellationToken);
             }
 
+            if (options.SendWelcomeLetter && registration.Status != Registration.RegistrationStatus.WaitingList)
+            {
+                _logger.LogInformation("Sending welcome letter for registration: RegistrationId {RegistrationId}, EventInfoId {EventInfoId}", registration.RegistrationId, registration.EventInfoId);
+                if (eventInfo.WelcomeLetter != null)
+                {
+                    await SendWelcomeLetterAsync(registration, cancellationToken);
+                }
+                else
+                {
+                    _logger.LogInformation("No welcome letter found for EventInfoId {EventInfoId}", eventInfo.EventInfoId);
+                }
+            }
+
             _logger.LogInformation("Successfully created registration for EventId: {EventId}, UserId: {UserId}", eventId, userId);
             return registration;
         }
@@ -135,6 +152,38 @@ namespace Eventuras.Services.Registrations
             await _registrationAccessControlService.CheckRegistrationUpdateAccessAsync(registration, cancellationToken);
 
             await _context.UpdateAsync(registration, cancellationToken);
+        }
+
+        public async Task SendWelcomeLetterAsync(Registration registration, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation($"Starting to send a welcome letter for RegistrationId {registration.RegistrationId}, EventInfoId {registration.EventInfoId}");
+            if (registration == null)
+            {
+                _logger.LogError("Did not find registration for welcome letter");
+                throw new ArgumentNullException(nameof(registration));
+            }
+
+            if (registration.User == null)
+            {
+                registration.User = await _userRetrievalService.GetUserByIdAsync(registration.UserId, null, cancellationToken);
+            }
+
+            if (registration.EventInfo == null)
+            {
+                registration.EventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, null, cancellationToken);
+            }
+
+            // Compose the subject and body for the welcome email
+            var subject = registration.EventInfo.Title;
+            var body = registration.EventInfo.WelcomeLetter;
+
+            // Determine the recipient
+            var recipient = NotificationRecipient.Create(registration, NotificationType.Email);
+
+            // Create email notification
+            await _notificationsManagementService.CreateEmailNotificationAsync(subject, body, registration);
+
+            _logger.LogInformation($"Successfully sent a welcome letter for RegistrationId {registration.RegistrationId}, EventInfoId {registration.EventInfoId}");
         }
     }
 }
