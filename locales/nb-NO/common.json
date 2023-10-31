@@ -3,7 +3,8 @@
     "cancel": "Avbryt",
     "continue": "Fortsette",
     "send": "Sende",
-    "submit": "Sende"
+    "submit": "Sende",
+    "view": "View"
   },
   "errors": {
     "fatalError": {

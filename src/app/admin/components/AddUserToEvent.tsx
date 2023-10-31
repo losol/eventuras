@@ -41,7 +41,7 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
   onUseradded,
 }) => {
   const { addAppNotification } = useAppNotifications();
-  const { t: common } = useTranslation('common');
+  const { t } = useTranslation();
 
   const {
     control,
@@ -90,7 +90,7 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
       }
       addAppNotification({
         id: Date.now(),
-        message: common('errors.fatalError.title'),
+        message: t('common:errors.fatalError.title'),
         type: AppNotificationType.ERROR,
       });
       throw new Error('Failed to add user to event');

@@ -17,11 +17,11 @@ export type UserEventRegistrationsProps = {
  * @return {ReactElement}  Returns a list of event registrations
  */
 const UserEventRegistrations = ({ registrations }: UserEventRegistrationsProps): ReactElement => {
-  const { t } = createTranslation('user');
+  const { t } = createTranslation();
 
   return (
     <div>
-      <Heading>{t('Registrations')}</Heading>
+      <Heading>{t('common:labels.registration')}</Heading>
       <Grid>
         {registrations.map(registration => {
           const event = registration.event!;

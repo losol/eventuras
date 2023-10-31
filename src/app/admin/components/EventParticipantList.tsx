@@ -16,7 +16,7 @@ interface AdminEventListProps {
 }
 
 const EventParticipantList: React.FC<AdminEventListProps> = ({ participants = [], event }) => {
-  const { t } = useTranslation('admin');
+  const { t } = useTranslation();
   const [registrationOpened, setRegistrationOpened] = useState<RegistrationDto | null>(null);
 
   const renderEventItemActions = (info: RegistrationDto) => {
@@ -32,23 +32,23 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({ participants = []
 
   const columns = [
     columnHelper.accessor('name', {
-      header: t('participantColumns.name').toString(),
+      header: t('admin:participantColumns.name').toString(),
       cell: info => info.row.original.user?.name,
     }),
     columnHelper.accessor('telephone', {
-      header: t('participantColumns.telephone').toString(),
+      header: t('admin:participantColumns.telephone').toString(),
       cell: info => info.row.original.user?.phoneNumber,
     }),
     columnHelper.accessor('status', {
-      header: t('participantColumns.status').toString(),
+      header: t('admin:participantColumns.status').toString(),
       cell: info => info.getValue(),
     }),
     columnHelper.accessor('type', {
-      header: t('participantColumns.type').toString(),
+      header: t('admin:participantColumns.type').toString(),
       cell: info => info.getValue(),
     }),
     columnHelper.accessor('actions', {
-      header: t('participantColumns.actions').toString(),
+      header: t('admin:participantColumns.actions').toString(),
       cell: info => renderEventItemActions(info.row.original),
     }),
   ];

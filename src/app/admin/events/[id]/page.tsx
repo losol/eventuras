@@ -35,8 +35,7 @@ const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
     },
     registrationSeed
   );
-  const { t } = useTranslation('admin');
-  const { t: tEvents } = useTranslation('events');
+  const { t } = useTranslation();
   const { loading: eventsLoading, event } = useEvent(eventId);
   const [emailDrawerOpen, setEmailDrawerOpen] = useState<boolean>(false);
   const { registrationProducts: eventProducts, loading: loadingEventProducts } =
@@ -56,7 +55,7 @@ const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
             <EventContent
               event={event}
               contentField="description"
-              heading={tEvents('Description')}
+              heading={t('events:Description')}
             />
             <AddUserToEvent
               event={event}
@@ -71,11 +70,11 @@ const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
                 setEmailDrawerOpen(true);
               }}
             >
-              {t('eventEmailer.title')}
+              {t('admin:eventEmailer.title')}
             </Button>
             <Drawer isOpen={emailDrawerOpen} onCancel={() => setEmailDrawerOpen(false)}>
               <Drawer.Header as="h3" className="text-black">
-                {t('eventEmailer.title')}
+                {t('admin:eventEmailer.title')}
               </Drawer.Header>
               <Drawer.Body>
                 <EventEmailer

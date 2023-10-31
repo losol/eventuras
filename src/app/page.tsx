@@ -14,7 +14,7 @@ const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID
 
 export default async function Homepage() {
   const site = await getSiteSettings();
-  const { t } = createTranslation('common');
+  const { t } = createTranslation();
   let eventinfos: EventDto[] = [];
   try {
     //for some reason OpenAPI.BASE gets set to empty when returning to this page..
@@ -43,7 +43,7 @@ export default async function Homepage() {
       </section>
       <section className="bg-primary-50 dark:bg-slate-950 pt-16 pb-24">
         <Container as="section">
-          <Heading as="h2">{t('events')}</Heading>
+          <Heading as="h2">{t('common:events')}</Heading>
           <EventGrid eventinfos={eventinfos} />
         </Container>
       </section>

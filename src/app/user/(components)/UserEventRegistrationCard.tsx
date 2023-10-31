@@ -23,7 +23,7 @@ const UserEventRegistrationCard = ({
   endDate,
   products,
 }: UserEventRegistrationCardProps): ReactElement => {
-  const { t } = createTranslation('user');
+  const { t } = createTranslation();
   return (
     <Card>
       <Card.Heading as="h3" spacingClassName="pt-2">
@@ -48,7 +48,7 @@ const UserEventRegistrationCard = ({
           bgDark
           stretch
         >
-          {t('View')}
+          {t('common:buttons.view')}
         </Link>
       </Card.Text>
     </Card>

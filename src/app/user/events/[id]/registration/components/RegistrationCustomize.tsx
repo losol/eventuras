@@ -27,11 +27,11 @@ const RegistrationCustomize = ({ products, onSubmit }: RegistrationCustomizeProp
   return (
     <>
       <section className="bg-gray-100 dark:bg-gray-800"></section>
-      <Heading className="container">{t('register.customize.title')}</Heading>
-      <p className="container pb-12">{t('register.customize.description')}</p>
+      <Heading className="container">{t('register:customize.title')}</Heading>
+      <p className="container pb-12">{t('register:customize.description')}</p>
       <form onSubmit={handleSubmit(createFormHandler(products, onSubmit))} className="container">
         <ProductSelection products={products} register={register} />
-        <Button type="submit">{t('common.buttons.continue')}</Button>
+        <Button type="submit">{t('common:buttons.continue')}</Button>
       </form>
     </>
   );

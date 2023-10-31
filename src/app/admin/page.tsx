@@ -11,19 +11,18 @@ import AdminEventList from './AdminEventList';
 
 const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
 export default function AdminPage() {
-  const { t } = useTranslation('admin');
-  const { t: common } = useTranslation('common');
+  const { t } = useTranslation();
 
   return (
     <Layout>
       <Container>
-        <Heading as="h1">{t('title')}</Heading>
+        <Heading as="h1">{t('admin:title')}</Heading>
         <section className="py-10">
           <Link href={`/admin/events/create`} variant="button-primary">
-            {t('createEvent.content.title')}
+            {t('admin:createEvent.content.title')}
           </Link>
         </section>
-        <Heading as="h2">{common('events')}</Heading>
+        <Heading as="h2">{t('common:events')}</Heading>
         <AdminEventList organizationId={ORGANIZATION_ID} />
       </Container>
     </Layout>

@@ -12,7 +12,7 @@ export type EventRegistrationButtonProps = {
 };
 
 export default function EventRegistrationButton({ eventId }: EventRegistrationButtonProps) {
-  const { t } = useTranslation('register');
+  const { t } = useTranslation();
   const state = useContext(UserContext).userState;
   const profile = state.profile;
   const { loading, userRegistrations } = useUserEventRegistrations(profile?.id);
@@ -26,10 +26,10 @@ export default function EventRegistrationButton({ eventId }: EventRegistrationBu
   return (
     <div>
       {isRegistered ? (
-        <div className="py-6">{t('feedback.allreadyRegistered')}</div>
+        <div className="py-6">{t('register:feedback.allreadyRegistered')}</div>
       ) : (
         <Link href={`/user/events/${eventId}/registration`} variant="button-primary" block>
-          {t('buttons.register')}
+          {t('register:buttons.register')}
         </Link>
       )}
     </div>

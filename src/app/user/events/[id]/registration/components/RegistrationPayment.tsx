@@ -48,11 +48,13 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
   return (
     <>
       <Container>
-        <Heading>{t('payment.title')}</Heading>
-        <p>{t('payment.description')}</p>
+        <Heading>{t('register:payment.title')}</Heading>
+        <p>{t('register:payment.description')}</p>
         <form onSubmit={handleSubmit(onSubmitForm)} className={formClassName}>
           <fieldset className={fieldsetClassName}>
-            <legend className={fieldsetLegendClassName}>{t('form.customertype.legend')}</legend>
+            <legend className={fieldsetLegendClassName}>
+              {t('register:form.customertype.legend')}
+            </legend>
             <ul className="flex flex-col">
               <li>
                 <input
@@ -62,7 +64,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
                   defaultChecked={true}
                   {...register('paymentMethod')}
                 />
-                <label htmlFor="emailinvoice">{t('form.customertype.private')}</label>
+                <label htmlFor="emailinvoice">{t('register:form.customertype.private')}</label>
               </li>
               <li>
                 <input
@@ -71,16 +73,16 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
                   value={PaymentProvider.POWER_OFFICE_EHFINVOICE}
                   {...register('paymentMethod')}
                 />
-                <label htmlFor="ehfInvoice">{t('form.customertype.business')}</label>
+                <label htmlFor="ehfInvoice">{t('register:form.customertype.business')}</label>
               </li>
             </ul>
           </fieldset>
 
           <fieldset className={fieldsetClassName}>
-            <legend className={fieldsetLegendClassName}>{t('form.user.legend')}</legend>
+            <legend className={fieldsetLegendClassName}>{t('register:form.user.legend')}</legend>
             <InputText
               {...register('username', { value: userProfile.name })}
-              label={t('form.user.name')}
+              label={t('register:form.user.name')}
               defaultValue={userProfile.name}
               disabled
               errors={errors}
@@ -88,7 +90,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
             />
             <InputText
               {...register('email', { value: userProfile.email })}
-              label={t('form.user.email')}
+              label={t('register:form.user.email')}
               defaultValue={userProfile.email}
               disabled
               errors={errors}
@@ -96,12 +98,12 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
             />
           </fieldset>
           <fieldset className={fieldsetClassName}>
-            <legend className={fieldsetLegendClassName}>{t('form.address.legend')}</legend>
+            <legend className={fieldsetLegendClassName}>{t('register:form.address.legend')}</legend>
             <InputText
               {...register('zip', {
                 required: 'Zip code is Required',
               })}
-              label={t('form.address.zip')}
+              label={t('register:form.address.zip')}
               placeholder="Zip Code"
               errors={errors}
               className={defaultInputStyle}
@@ -110,7 +112,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
               {...register('city', {
                 required: 'City is required',
               })}
-              label={t('form.address.city')}
+              label={t('register:form.address.city')}
               placeholder="City"
               errors={errors}
               className={defaultInputStyle}
@@ -119,7 +121,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
               {...register('country', {
                 required: 'Country is required',
               })}
-              label={t('form.address.country')}
+              label={t('register:form.address.country')}
               default="Norway"
               placeholder="Country"
               errors={errors}
@@ -129,19 +131,21 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
 
           {showBusinessFieldset && (
             <fieldset className={fieldsetClassName}>
-              <legend className={fieldsetLegendClassName}>{t('form.businessinfo.legend')}</legend>
+              <legend className={fieldsetLegendClassName}>
+                {t('register:form.businessinfo.legend')}
+              </legend>
               <InputText
                 {...register('vatNumber', {
                   required: 'Vat Number is required for business customers',
                 })}
-                label={t('form.businessinfo.vatNumber')}
+                label={t('register:form.businessinfo.vatNumber')}
                 placeholder="Vat Number"
                 errors={errors}
                 className={defaultInputStyle}
               />
               <InputText
                 {...register('invoiceReference')}
-                label={t('form.businessinfo.invoiceReference')}
+                label={t('register:form.businessinfo.invoiceReference')}
                 placeholder="Invoice Reference"
                 errors={errors}
                 className={defaultInputStyle}
@@ -149,7 +153,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
             </fieldset>
           )}
 
-          <Button type="submit">{t('Continue')}</Button>
+          <Button type="submit">{t('common:buttons.continue')}</Button>
         </form>
       </Container>
     </>

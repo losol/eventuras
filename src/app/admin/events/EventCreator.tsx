@@ -40,8 +40,7 @@ type ApiState = {
 
 const EventCreator = () => {
   const { addAppNotification } = useAppNotifications();
-  const { t } = useTranslation('admin');
-  const { t: common } = useTranslation('common');
+  const { t } = useTranslation();
 
   const {
     register,
@@ -71,7 +70,7 @@ const EventCreator = () => {
       const nextUrl = `/admin/events/${result.value.id}`;
       addAppNotification({
         id: Date.now(),
-        message: t('createEvent.success'),
+        message: t('admin:createEvent.success'),
         type: AppNotificationType.SUCCESS,
       });
       router.push(nextUrl);
@@ -88,8 +87,8 @@ const EventCreator = () => {
     if (!ok && statusCode !== 409) {
       return (
         <FatalError
-          title={common('errors.fatalError.title')}
-          description={common('errors.fatalError.description')}
+          title={t('common:errors.fatalError.title')}
+          description={t('common:errors.fatalError.description')}
           additional={`${statusCode}: ${statusText}`}
         />
       );
@@ -101,8 +100,8 @@ const EventCreator = () => {
     if (apiState.result.error.statusCode === 409) {
       return (
         <p role="alert" className="text-red-500">
-          {t('createEvent.alreadyExists.title')}
-          {t('createEvent.alreadyExists.description')}
+          {t('admin:createEvent.alreadyExists.title')}
+          {t('admin:createEvent.alreadyExists.description')}
         </p>
       );
     }
@@ -118,7 +117,7 @@ const EventCreator = () => {
   //## Render
   return (
     <Layout>
-      <Heading>{t('Create Event')}</Heading>
+      <Heading>{t('admin:createEvent.content.title')}</Heading>
       <p>{t('Add a fantastic event!')}</p>
       <form onSubmit={handleSubmit(onSubmitForm)} className="px-8 pt-6 pb-8 mb-4">
         <fieldset>
@@ -153,7 +152,7 @@ const EventCreator = () => {
             setValue('slug', slugify(getValues('slug')));
           }}
         >
-          {common('buttons.submit')}
+          {t('common:buttons.submit')}
         </Button>
       </form>
       {errorIfExists()}

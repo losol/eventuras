@@ -12,7 +12,7 @@ type EventProps = {
 };
 
 export default function EventDetails({ eventinfo }: EventProps) {
-  const { t } = useTranslation('events');
+  const { t } = useTranslation();
 
   return (
     <>
@@ -27,18 +27,22 @@ export default function EventDetails({ eventinfo }: EventProps) {
           caption={eventinfo?.featuredImageCaption ?? ''}
         />
       ) : null}
-      <EventContent event={eventinfo} contentField="description" heading={t('Description')} />
+      <EventContent
+        event={eventinfo}
+        contentField="description"
+        heading={t('events:content.labels.description')}
+      />
       <EventRegistrationButton eventId={eventinfo.id!} />
       <EventContent
         event={eventinfo}
         contentField="moreInformation"
-        heading={t('More information')}
+        heading={t('events:content.labels.moreinformation')}
       />
       <EventContent event={eventinfo} contentField="program" heading={t('Program')} />
       <EventContent
         event={eventinfo}
         contentField="practicalInformation"
-        heading={t('Practical information')}
+        heading={t('events:content.labels.practicalinformation')}
       />
     </>
   );

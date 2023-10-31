@@ -7,11 +7,11 @@ export type RegistrationCompleteProps = {
   onSubmit: () => void;
 };
 const RegistrationComplete = ({ onSubmit }: RegistrationCompleteProps) => {
-  const { t } = useTranslation('register');
+  const { t } = useTranslation();
   return (
     <>
-      <Heading>{t('complete.title')}</Heading>
-      <p>{t('complete.description')}</p>
+      <Heading>{t('register:complete.title')}</Heading>
+      <p>{t('register:complete.description')}</p>
       <Button onClick={() => onSubmit()}>Continue</Button>
     </>
   );

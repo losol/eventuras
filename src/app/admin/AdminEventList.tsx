@@ -19,7 +19,7 @@ interface AdminEventListProps {
 }
 
 const AdminEventList: React.FC<AdminEventListProps> = ({ organizationId }) => {
-  const { t } = useTranslation('admin');
+  const { t } = useTranslation();
   const [page, setPage] = useState(1);
   const {
     loading: eventsLoading,
@@ -47,20 +47,20 @@ const AdminEventList: React.FC<AdminEventListProps> = ({ organizationId }) => {
 
   const columns = [
     columnHelper.accessor('title', {
-      header: t('eventColumns.title').toString(),
+      header: t('admin:eventColumns.title').toString(),
       cell: info => <Link href={`/admin/events/${info.row.original.id}`}> {info.getValue()}</Link>,
     }),
     columnHelper.accessor('location', {
-      header: t('eventColumns.location').toString(),
+      header: t('admin:eventColumns.location').toString(),
       cell: info => info.getValue(),
     }),
     columnHelper.accessor('dateStart', {
-      header: t('eventColumns.when').toString(),
+      header: t('admin:eventColumns.when').toString(),
       cell: info => info.getValue(),
       enableSorting: true,
     }),
     columnHelper.accessor('action', {
-      header: t('eventColumns.actions').toString(),
+      header: t('admin:eventColumns.actions').toString(),
       cell: info => renderEventItemActions(info.row.original),
     }),
   ];
@@ -81,7 +81,7 @@ const AdminEventList: React.FC<AdminEventListProps> = ({ organizationId }) => {
       {eventOpened !== null && (
         <Drawer isOpen={drawerIsOpen} onCancel={() => setEventOpened(null)}>
           <Drawer.Header as="h3" className="text-black">
-            {t('eventEmailer.title')}
+            {t('admin:eventEmailer.title')}
           </Drawer.Header>
           <Drawer.Body>
             <EventEmailer

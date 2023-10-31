@@ -3,7 +3,8 @@
     "cancel": "Cancel",
     "continue": "Continue",
     "send": "Send",
-    "submit": "Submit"
+    "submit": "Submit",
+    "view": "View"
   },
   "errors": {
     "fatalError": {

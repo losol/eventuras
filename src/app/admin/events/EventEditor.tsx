@@ -76,8 +76,7 @@ type ApiState = {
 };
 
 const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
-  const { t } = useTranslation('admin');
-  const { t: common } = useTranslation('common');
+  const { t } = useTranslation();
   const formHook = useForm<EventFormValues>();
   const {
     register,
@@ -148,8 +147,8 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
     if (!ok && statusCode !== 409) {
       return (
         <FatalError
-          title={common('errors.fatalError.title')}
-          description={common('errors.fatalError.description')}
+          title={t('common:errors.fatalError.title')}
+          description={t('common:errors.fatalError.description')}
           additional={`${statusCode}: ${statusText}`}
         />
       );
@@ -159,8 +158,8 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
   //## Render
   return (
     <Layout>
-      <Heading>{t(`editEvent.content.title`)}</Heading>
-      <p>{t(`editEvent.content.description`)}</p>
+      <Heading>{t(`admin:editEvent.content.title`)}</Heading>
+      <p>{t(`admin:editEvent.content.description`)}</p>
       <form onSubmit={handleSubmit(onSubmitForm)} className="shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <fieldset disabled={apiState.loading} className={fieldsetClassName}>
           <legend className={fieldsetLegendClassName}>Overview</legend>
@@ -373,7 +372,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
             setValue('slug', slugify(getValues('slug')));
           }}
         >
-          {common('buttons.submit')}
+          {t('common:buttons.submit')}
         </Button>
       </form>
     </Layout>
