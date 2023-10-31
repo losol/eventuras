@@ -17,6 +17,9 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public int? ProductId { get; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public int? RegistrationId { get; }
+
         public string Message { get; }
 
         public Instant Created { get; }
