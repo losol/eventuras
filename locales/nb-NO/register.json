@@ -1,0 +1,46 @@
+{
+  "buttons": {
+    "register": "Registrer deg for dette arrangementet"
+  },
+  "complete": {
+    "description": "Vi ser virkelig frem til å se deg!",
+    "title": "Velkommen!"
+  },
+  "customize": {
+    "description": "Vi har noen fine opplevelser å by på",
+    "title": "Tilpass din bestilling"
+  },
+  "feedback": {
+    "allreadyRegistered": "Du er allerede registrert for dette arrangementet, vi sees snart!"
+  },
+  "form": {
+    "address": {
+      "city": "By",
+      "country": "Land",
+      "legend": "Adresse",
+      "street": "Gate",
+      "zip": "Postnummer"
+    },
+    "businessinfo": {
+      "invoiceReference": "Fakturareferanse",
+      "legend": "Bedriftsinformasjon",
+      "vatNumber": "MVA-nummer"
+    },
+    "customertype": {
+      "business": "Bedrift",
+      "legend": "Kundetype",
+      "private": "Privat"
+    },
+    "user": {
+      "email": "E-post",
+      "legend": "Brukerdetaljer",
+      "name": "Navn",
+      "phoneNumber": "Telefonnummer"
+    }
+  },
+  "payment": {
+    "description": "Noen flere detaljer",
+    "subHeading": "Hvem betaler",
+    "title": "Betalingsdetaljer"
+  }
+}

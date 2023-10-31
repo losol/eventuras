@@ -21,17 +21,17 @@ const createFormHandler =
   };
 
 const RegistrationCustomize = ({ products, onSubmit }: RegistrationCustomizeProps) => {
-  const { t } = useTranslation('register');
+  const { t } = useTranslation();
   const { register, handleSubmit } = useForm();
 
   return (
     <>
       <section className="bg-gray-100 dark:bg-gray-800"></section>
-      <Heading className="container">{t('customize.title')}</Heading>
-      <p className="container pb-12">{t('customize.description')}</p>
+      <Heading className="container">{t('register.customize.title')}</Heading>
+      <p className="container pb-12">{t('register.customize.description')}</p>
       <form onSubmit={handleSubmit(createFormHandler(products, onSubmit))} className="container">
         <ProductSelection products={products} register={register} />
-        <Button type="submit">Continue</Button>
+        <Button type="submit">{t('common.buttons.continue')}</Button>
       </form>
     </>
   );

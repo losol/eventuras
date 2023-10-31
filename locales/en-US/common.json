@@ -1,0 +1,23 @@
+{
+  "buttons": {
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "send": "Send",
+    "submit": "Submit"
+  },
+  "errors": {
+    "fatalError": {
+      "description": "We tried to perform the action, but something went wrong, please try again later.",
+      "title": "Something went very wrong"
+    }
+  },
+  "event": "Event",
+  "events": "Events",
+  "header": {
+    "auth": {
+      "login": "Login",
+      "logout": "Logout"
+    }
+  },
+  "onlinecourses": "Online courses"
+}

@@ -13,8 +13,8 @@ an issue, as we can just nuke all events before continuing. For production it be
 import { EventDto, EventFormDto } from '@losol/eventuras';
 import { NodeHtmlMarkdown } from 'node-html-markdown';
 
-import { apiFetch } from '@/utils/api';
-import Logger from '@/utils/Logger';
+import { apiFetch } from '../src/utils/api';
+import Logger from '../src/utils/Logger';
 
 /* all markdown fields of event which should be converted */
 const MarkdownFields = {
@@ -60,7 +60,7 @@ const postOrPutUpdate = async (updatedEvent: EventFormDto, eventId?: string) => 
     method,
     body: JSON.stringify(updatedEvent),
   }).then(async r => {
-    let res = null;
+    let res: any = null;
     try {
       res = await r.json();
     } catch {}
