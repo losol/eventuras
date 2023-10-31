@@ -1,18 +1,16 @@
-'use client';
-
-import useTranslation from 'next-translate/useTranslation';
+import createTranslation from 'next-translate/createTranslation';
 
 import { Container, Layout } from '@/components/ui';
 import Heading from '@/components/ui/Heading';
 import Link from '@/components/ui/Link';
+import withAuthorization from '@/utils/auth/withAuthorization';
 import Environment from '@/utils/Environment';
 
 import AdminEventList from './AdminEventList';
 
 const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
-export default function AdminPage() {
-  const { t } = useTranslation();
-
+const AdminPage = () => {
+  const { t } = createTranslation();
   return (
     <Layout>
       <Container>
@@ -27,4 +25,6 @@ export default function AdminPage() {
       </Container>
     </Layout>
   );
-}
+};
+
+export default withAuthorization(AdminPage, 'Admin');
