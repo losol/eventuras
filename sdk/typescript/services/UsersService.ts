@@ -9,17 +9,18 @@ import type { UserFormDto } from '../models/UserFormDto';
 import type { UserListOrder } from '../models/UserListOrder';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
 export class UsersService {
+
+    constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
      * Gets information about the current user. Creates a new user if no user with the email exists.
      * @returns UserDto Success
      * @throws ApiError
      */
-    public static getV3UsersMe({
+    public getV3UsersMe({
         eventurasOrgId,
     }: {
         /**
@@ -27,7 +28,7 @@ export class UsersService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<UserDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/users/me',
             headers: {
@@ -40,7 +41,7 @@ export class UsersService {
      * @returns UserDto Success
      * @throws ApiError
      */
-    public static getV3Users({
+    public getV3Users({
         id,
         eventurasOrgId,
     }: {
@@ -50,7 +51,7 @@ export class UsersService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<UserDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/users/{id}',
             path: {
@@ -66,7 +67,7 @@ export class UsersService {
      * @returns UserDto Success
      * @throws ApiError
      */
-    public static putV3Users({
+    public putV3Users({
         id,
         eventurasOrgId,
         requestBody,
@@ -78,7 +79,7 @@ export class UsersService {
         eventurasOrgId?: number,
         requestBody?: UserFormDto,
     }): CancelablePromise<UserDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'PUT',
             url: '/v3/users/{id}',
             path: {
@@ -96,7 +97,7 @@ export class UsersService {
      * @returns UserDtoPageResponseDto Success
      * @throws ApiError
      */
-    public static getV3Users1({
+    public getV3Users1({
         query,
         order,
         descending,
@@ -118,7 +119,7 @@ export class UsersService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<UserDtoPageResponseDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/users',
             headers: {
@@ -140,7 +141,7 @@ export class UsersService {
      * @returns UserDto Success
      * @throws ApiError
      */
-    public static postV3Users({
+    public postV3Users({
         eventurasOrgId,
         requestBody,
     }: {
@@ -150,7 +151,7 @@ export class UsersService {
         eventurasOrgId?: number,
         requestBody?: NewUserDto,
     }): CancelablePromise<UserDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'POST',
             url: '/v3/users',
             headers: {

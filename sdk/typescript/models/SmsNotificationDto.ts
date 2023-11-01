@@ -8,6 +8,7 @@ import type { EventParticipantsFilterDto } from './EventParticipantsFilterDto';
 export type SmsNotificationDto = {
     recipients?: Array<string> | null;
     eventParticipants?: EventParticipantsFilterDto;
+    registrationId?: number | null;
     message: string;
 };
 

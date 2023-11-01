@@ -16,5 +16,6 @@ export type NewRegistrationDto = {
     userId: string;
     eventId: number;
     createOrder?: boolean;
+    sendWelcomeLetter?: boolean;
 };
 

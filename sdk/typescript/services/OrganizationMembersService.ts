@@ -3,16 +3,17 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
 export class OrganizationMembersService {
+
+    constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
      * @returns any Success
      * @throws ApiError
      */
-    public static putV3OrganizationsMembers({
+    public putV3OrganizationsMembers({
         organizationId,
         userId,
         eventurasOrgId,
@@ -24,7 +25,7 @@ export class OrganizationMembersService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'PUT',
             url: '/v3/organizations/{organizationId}/members/{userId}',
             path: {
@@ -41,7 +42,7 @@ export class OrganizationMembersService {
      * @returns any Success
      * @throws ApiError
      */
-    public static deleteV3OrganizationsMembers({
+    public deleteV3OrganizationsMembers({
         organizationId,
         userId,
         eventurasOrgId,
@@ -53,7 +54,7 @@ export class OrganizationMembersService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'DELETE',
             url: '/v3/organizations/{organizationId}/members/{userId}',
             path: {

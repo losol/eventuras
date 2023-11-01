@@ -5,16 +5,17 @@
 import type { CertificateFormat } from '../models/CertificateFormat';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
 export class CertificatesService {
+
+    constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
      * @returns any Success
      * @throws ApiError
      */
-    public static getV3Certificates({
+    public getV3Certificates({
         id,
         format,
         eventurasOrgId,
@@ -26,7 +27,7 @@ export class CertificatesService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/certificates/{id}',
             path: {

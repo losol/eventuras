@@ -5,16 +5,17 @@
 import type { OnlineCourseDto } from '../models/OnlineCourseDto';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
 export class OnlineCourseService {
+
+    constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
      * @returns OnlineCourseDto Success
      * @throws ApiError
      */
-    public static getV3Onlinecourses({
+    public getV3Onlinecourses({
         eventurasOrgId,
     }: {
         /**
@@ -22,7 +23,7 @@ export class OnlineCourseService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<Array<OnlineCourseDto>> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/onlinecourses',
             headers: {
@@ -35,7 +36,7 @@ export class OnlineCourseService {
      * @returns OnlineCourseDto Success
      * @throws ApiError
      */
-    public static getV3Onlinecourses1({
+    public getV3Onlinecourses1({
         id,
         eventurasOrgId,
     }: {
@@ -45,7 +46,7 @@ export class OnlineCourseService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<OnlineCourseDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/onlinecourses/{id}',
             path: {

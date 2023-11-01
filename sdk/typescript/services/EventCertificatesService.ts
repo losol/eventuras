@@ -3,16 +3,17 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
 export class EventCertificatesService {
+
+    constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
      * @returns any Success
      * @throws ApiError
      */
-    public static getV3EventCertificates({
+    public getV3EventCertificates({
         id,
         page,
         count,
@@ -30,7 +31,7 @@ export class EventCertificatesService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/event/{id}/certificates',
             path: {
@@ -52,7 +53,7 @@ export class EventCertificatesService {
      * @returns any Success
      * @throws ApiError
      */
-    public static getV3EventCertificatesPreview({
+    public getV3EventCertificatesPreview({
         id,
         eventurasOrgId,
     }: {
@@ -62,7 +63,7 @@ export class EventCertificatesService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/event/{id}/certificates/preview',
             path: {
@@ -78,7 +79,7 @@ export class EventCertificatesService {
      * @returns any Success
      * @throws ApiError
      */
-    public static postV3EventCertificatesIssue({
+    public postV3EventCertificatesIssue({
         id,
         send = true,
         eventurasOrgId,
@@ -90,7 +91,7 @@ export class EventCertificatesService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'POST',
             url: '/v3/event/{id}/certificates/issue',
             path: {
@@ -109,7 +110,7 @@ export class EventCertificatesService {
      * @returns any Success
      * @throws ApiError
      */
-    public static postV3EventCertificatesUpdate({
+    public postV3EventCertificatesUpdate({
         id,
         eventurasOrgId,
     }: {
@@ -119,7 +120,7 @@ export class EventCertificatesService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'POST',
             url: '/v3/event/{id}/certificates/update',
             path: {

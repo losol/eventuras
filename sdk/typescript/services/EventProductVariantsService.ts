@@ -6,16 +6,17 @@ import type { NewProductVariantDto } from '../models/NewProductVariantDto';
 import type { ProductVariantDto } from '../models/ProductVariantDto';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
 export class EventProductVariantsService {
+
+    constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
      * @returns ProductVariantDto Success
      * @throws ApiError
      */
-    public static getV3EventsProductsVariants({
+    public getV3EventsProductsVariants({
         eventId,
         productId,
         eventurasOrgId,
@@ -27,7 +28,7 @@ export class EventProductVariantsService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<Array<ProductVariantDto>> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/events/{eventId}/products/{productId}/variants',
             path: {
@@ -44,7 +45,7 @@ export class EventProductVariantsService {
      * @returns any Success
      * @throws ApiError
      */
-    public static postV3EventsProductsVariants({
+    public postV3EventsProductsVariants({
         eventId,
         productId,
         eventurasOrgId,
@@ -58,7 +59,7 @@ export class EventProductVariantsService {
         eventurasOrgId?: number,
         requestBody?: NewProductVariantDto,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'POST',
             url: '/v3/events/{eventId}/products/{productId}/variants',
             path: {
@@ -77,7 +78,7 @@ export class EventProductVariantsService {
      * @returns any Success
      * @throws ApiError
      */
-    public static deleteV3EventsProductsVariants({
+    public deleteV3EventsProductsVariants({
         eventId,
         productId,
         id,
@@ -91,7 +92,7 @@ export class EventProductVariantsService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'DELETE',
             url: '/v3/events/{eventId}/products/{productId}/variants/{id}',
             path: {

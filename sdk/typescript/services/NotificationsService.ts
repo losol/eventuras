@@ -7,16 +7,17 @@ import type { NotificationStatus } from '../models/NotificationStatus';
 import type { NotificationType } from '../models/NotificationType';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
 export class NotificationsService {
+
+    constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
      * @returns any Success
      * @throws ApiError
      */
-    public static getV3Notifications({
+    public getV3Notifications({
         id,
         includeStatistics = false,
         eventurasOrgId,
@@ -28,7 +29,7 @@ export class NotificationsService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/notifications/{id}',
             path: {
@@ -47,7 +48,7 @@ export class NotificationsService {
      * @returns any Success
      * @throws ApiError
      */
-    public static getV3Notifications1({
+    public getV3Notifications1({
         eventId,
         productId,
         status,
@@ -82,7 +83,7 @@ export class NotificationsService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/notifications',
             headers: {

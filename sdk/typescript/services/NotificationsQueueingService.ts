@@ -7,16 +7,17 @@ import type { NotificationDto } from '../models/NotificationDto';
 import type { SmsNotificationDto } from '../models/SmsNotificationDto';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
 export class NotificationsQueueingService {
+
+    constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
      * @returns NotificationDto Success
      * @throws ApiError
      */
-    public static postV3NotificationsEmail({
+    public postV3NotificationsEmail({
         eventurasOrgId,
         requestBody,
     }: {
@@ -26,7 +27,7 @@ export class NotificationsQueueingService {
         eventurasOrgId?: number,
         requestBody?: EmailNotificationDto,
     }): CancelablePromise<NotificationDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'POST',
             url: '/v3/notifications/email',
             headers: {
@@ -41,7 +42,7 @@ export class NotificationsQueueingService {
      * @returns NotificationDto Success
      * @throws ApiError
      */
-    public static postV3NotificationsSms({
+    public postV3NotificationsSms({
         eventurasOrgId,
         requestBody,
     }: {
@@ -51,7 +52,7 @@ export class NotificationsQueueingService {
         eventurasOrgId?: number,
         requestBody?: SmsNotificationDto,
     }): CancelablePromise<NotificationDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'POST',
             url: '/v3/notifications/sms',
             headers: {

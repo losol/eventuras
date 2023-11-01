@@ -7,16 +7,17 @@ import type { OrderDto } from '../models/OrderDto';
 import type { OrderUpdateRequestDto } from '../models/OrderUpdateRequestDto';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
 export class RegistrationOrdersService {
+
+    constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
      * @returns OrderDto Success
      * @throws ApiError
      */
-    public static getV3RegistrationsOrders({
+    public getV3RegistrationsOrders({
         id,
         eventurasOrgId,
     }: {
@@ -26,7 +27,7 @@ export class RegistrationOrdersService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<Array<OrderDto>> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/registrations/{id}/orders',
             path: {
@@ -42,7 +43,7 @@ export class RegistrationOrdersService {
      * @returns any Success
      * @throws ApiError
      */
-    public static postV3RegistrationsOrders({
+    public postV3RegistrationsOrders({
         id,
         eventurasOrgId,
         requestBody,
@@ -54,7 +55,7 @@ export class RegistrationOrdersService {
         eventurasOrgId?: number,
         requestBody?: NewRegistrationOrderDto,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'POST',
             url: '/v3/registrations/{id}/orders',
             path: {
@@ -72,7 +73,7 @@ export class RegistrationOrdersService {
      * @returns any Success
      * @throws ApiError
      */
-    public static postV3RegistrationsProducts({
+    public postV3RegistrationsProducts({
         id,
         eventurasOrgId,
         requestBody,
@@ -84,7 +85,7 @@ export class RegistrationOrdersService {
         eventurasOrgId?: number,
         requestBody?: OrderUpdateRequestDto,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'POST',
             url: '/v3/registrations/{id}/products',
             path: {

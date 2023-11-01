@@ -9,6 +9,7 @@ export type EmailNotificationDto = {
     recipients?: Array<string> | null;
     eventParticipants?: EventParticipantsFilterDto;
     subject: string;
+    registrationId?: number | null;
     bodyMarkdown: string;
 };
 

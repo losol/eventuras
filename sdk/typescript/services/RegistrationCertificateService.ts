@@ -3,16 +3,17 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
 export class RegistrationCertificateService {
+
+    constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
      * @returns any Success
      * @throws ApiError
      */
-    public static postV3RegistrationsCertificateSend({
+    public postV3RegistrationsCertificateSend({
         id,
         eventurasOrgId,
     }: {
@@ -22,7 +23,7 @@ export class RegistrationCertificateService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'POST',
             url: '/v3/registrations/{id}/certificate/send',
             path: {

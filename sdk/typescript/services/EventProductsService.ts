@@ -8,16 +8,17 @@ import type { ProductFormDto } from '../models/ProductFormDto';
 import type { ProductVisibility } from '../models/ProductVisibility';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
 export class EventProductsService {
+
+    constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
      * @returns ProductDto Success
      * @throws ApiError
      */
-    public static getV3EventsProducts({
+    public getV3EventsProducts({
         eventId,
         visibility,
         eventurasOrgId,
@@ -29,7 +30,7 @@ export class EventProductsService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<Array<ProductDto>> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/events/{eventId}/products',
             path: {
@@ -48,7 +49,7 @@ export class EventProductsService {
      * @returns any Success
      * @throws ApiError
      */
-    public static postV3EventsProducts({
+    public postV3EventsProducts({
         eventId,
         eventurasOrgId,
         requestBody,
@@ -60,7 +61,7 @@ export class EventProductsService {
         eventurasOrgId?: number,
         requestBody?: NewProductDto,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'POST',
             url: '/v3/events/{eventId}/products',
             path: {
@@ -78,7 +79,7 @@ export class EventProductsService {
      * @returns any Success
      * @throws ApiError
      */
-    public static putV3EventsProducts({
+    public putV3EventsProducts({
         eventId,
         productId,
         eventurasOrgId,
@@ -92,7 +93,7 @@ export class EventProductsService {
         eventurasOrgId?: number,
         requestBody?: ProductFormDto,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'PUT',
             url: '/v3/events/{eventId}/products/{productId}',
             path: {
@@ -111,7 +112,7 @@ export class EventProductsService {
      * @returns any Success
      * @throws ApiError
      */
-    public static deleteV3EventsProducts({
+    public deleteV3EventsProducts({
         eventId,
         productId,
         eventurasOrgId,
@@ -123,7 +124,7 @@ export class EventProductsService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'DELETE',
             url: '/v3/events/{eventId}/products/{productId}',
             path: {

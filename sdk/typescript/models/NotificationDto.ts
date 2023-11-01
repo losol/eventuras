@@ -13,6 +13,7 @@ export type NotificationDto = {
     readonly organizationId?: number | null;
     readonly eventId?: number | null;
     readonly productId?: number | null;
+    readonly registrationId?: number | null;
     readonly message?: string | null;
     created?: Instant;
     statusUpdated?: Instant;

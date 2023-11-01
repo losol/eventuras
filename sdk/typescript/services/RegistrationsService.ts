@@ -8,16 +8,17 @@ import type { RegistrationDtoPageResponseDto } from '../models/RegistrationDtoPa
 import type { RegistrationFormDto } from '../models/RegistrationFormDto';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
 export class RegistrationsService {
+
+    constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
      * @returns RegistrationDtoPageResponseDto Success
      * @throws ApiError
      */
-    public static getV3Registrations({
+    public getV3Registrations({
         eventId,
         userId,
         includeEventInfo,
@@ -45,7 +46,7 @@ export class RegistrationsService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<RegistrationDtoPageResponseDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/registrations',
             headers: {
@@ -70,7 +71,7 @@ export class RegistrationsService {
      * @returns RegistrationDto Success
      * @throws ApiError
      */
-    public static postV3Registrations({
+    public postV3Registrations({
         eventurasOrgId,
         requestBody,
     }: {
@@ -80,7 +81,7 @@ export class RegistrationsService {
         eventurasOrgId?: number,
         requestBody?: NewRegistrationDto,
     }): CancelablePromise<RegistrationDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'POST',
             url: '/v3/registrations',
             headers: {
@@ -95,7 +96,7 @@ export class RegistrationsService {
      * @returns RegistrationDto Success
      * @throws ApiError
      */
-    public static getV3Registrations1({
+    public getV3Registrations1({
         id,
         eventId,
         userId,
@@ -125,7 +126,7 @@ export class RegistrationsService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<RegistrationDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/registrations/{id}',
             path: {
@@ -153,7 +154,7 @@ export class RegistrationsService {
      * @returns RegistrationDto Success
      * @throws ApiError
      */
-    public static putV3Registrations({
+    public putV3Registrations({
         id,
         eventurasOrgId,
         requestBody,
@@ -165,7 +166,7 @@ export class RegistrationsService {
         eventurasOrgId?: number,
         requestBody?: RegistrationFormDto,
     }): CancelablePromise<RegistrationDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'PUT',
             url: '/v3/registrations/{id}',
             path: {
@@ -183,7 +184,7 @@ export class RegistrationsService {
      * @returns any Success
      * @throws ApiError
      */
-    public static deleteV3Registrations({
+    public deleteV3Registrations({
         id,
         eventurasOrgId,
     }: {
@@ -193,7 +194,7 @@ export class RegistrationsService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'DELETE',
             url: '/v3/registrations/{id}',
             path: {
@@ -210,7 +211,7 @@ export class RegistrationsService {
      * @returns RegistrationDto Success
      * @throws ApiError
      */
-    public static postV3RegistrationsMe({
+    public postV3RegistrationsMe({
         eventId,
         createOrder,
         eventurasOrgId,
@@ -222,7 +223,7 @@ export class RegistrationsService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<RegistrationDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'POST',
             url: '/v3/registrations/me/{eventId}',
             path: {

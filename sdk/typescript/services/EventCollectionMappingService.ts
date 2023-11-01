@@ -3,16 +3,17 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
 export class EventCollectionMappingService {
+
+    constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
      * @returns any Success
      * @throws ApiError
      */
-    public static putV3EventsCollections({
+    public putV3EventsCollections({
         eventId,
         collectionId,
         eventurasOrgId,
@@ -24,7 +25,7 @@ export class EventCollectionMappingService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'PUT',
             url: '/v3/events/{eventId}/collections/{collectionId}',
             path: {
@@ -41,7 +42,7 @@ export class EventCollectionMappingService {
      * @returns any Success
      * @throws ApiError
      */
-    public static deleteV3EventsCollections({
+    public deleteV3EventsCollections({
         eventId,
         collectionId,
         eventurasOrgId,
@@ -53,7 +54,7 @@ export class EventCollectionMappingService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'DELETE',
             url: '/v3/events/{eventId}/collections/{collectionId}',
             path: {

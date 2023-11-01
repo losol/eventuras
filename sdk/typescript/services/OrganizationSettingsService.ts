@@ -6,16 +6,17 @@ import type { OrganizationSettingDto } from '../models/OrganizationSettingDto';
 import type { OrganizationSettingValueDto } from '../models/OrganizationSettingValueDto';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
 export class OrganizationSettingsService {
+
+    constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
      * @returns OrganizationSettingDto Success
      * @throws ApiError
      */
-    public static getV3OrganizationsSettings({
+    public getV3OrganizationsSettings({
         organizationId,
         eventurasOrgId,
     }: {
@@ -25,7 +26,7 @@ export class OrganizationSettingsService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<Array<OrganizationSettingDto>> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/organizations/{organizationId}/settings',
             path: {
@@ -41,7 +42,7 @@ export class OrganizationSettingsService {
      * @returns any Success
      * @throws ApiError
      */
-    public static putV3OrganizationsSettings({
+    public putV3OrganizationsSettings({
         organizationId,
         eventurasOrgId,
         requestBody,
@@ -53,7 +54,7 @@ export class OrganizationSettingsService {
         eventurasOrgId?: number,
         requestBody?: OrganizationSettingValueDto,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'PUT',
             url: '/v3/organizations/{organizationId}/settings',
             path: {
@@ -71,7 +72,7 @@ export class OrganizationSettingsService {
      * @returns any Success
      * @throws ApiError
      */
-    public static postV3OrganizationsSettings({
+    public postV3OrganizationsSettings({
         organizationId,
         requestBody,
         eventurasOrgId,
@@ -83,7 +84,7 @@ export class OrganizationSettingsService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'POST',
             url: '/v3/organizations/{organizationId}/settings',
             path: {

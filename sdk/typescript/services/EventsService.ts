@@ -11,17 +11,18 @@ import type { LocalDate } from '../models/LocalDate';
 import type { PeriodMatchingKind } from '../models/PeriodMatchingKind';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
 export class EventsService {
+
+    constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
      * Retrieves a list of events based on the given query.
      * @returns EventDtoPageResponseDto Success
      * @throws ApiError
      */
-    public static getV3Events({
+    public getV3Events({
         type,
         start,
         end,
@@ -51,7 +52,7 @@ export class EventsService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<EventDtoPageResponseDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/events',
             headers: {
@@ -78,7 +79,7 @@ export class EventsService {
      * @returns EventDto Success
      * @throws ApiError
      */
-    public static postV3Events({
+    public postV3Events({
         eventurasOrgId,
         requestBody,
     }: {
@@ -91,7 +92,7 @@ export class EventsService {
          */
         requestBody?: EventFormDto,
     }): CancelablePromise<EventDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'POST',
             url: '/v3/events',
             headers: {
@@ -107,7 +108,7 @@ export class EventsService {
      * @returns EventDto Success
      * @throws ApiError
      */
-    public static getV3Events1({
+    public getV3Events1({
         id,
         eventurasOrgId,
     }: {
@@ -120,7 +121,7 @@ export class EventsService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<EventDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/events/{id}',
             path: {
@@ -137,7 +138,7 @@ export class EventsService {
      * @returns EventDto Success
      * @throws ApiError
      */
-    public static putV3Events({
+    public putV3Events({
         id,
         eventurasOrgId,
         requestBody,
@@ -155,7 +156,7 @@ export class EventsService {
          */
         requestBody?: EventFormDto,
     }): CancelablePromise<EventDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'PUT',
             url: '/v3/events/{id}',
             path: {
@@ -174,7 +175,7 @@ export class EventsService {
      * @returns any Success
      * @throws ApiError
      */
-    public static patchV3Events({
+    public patchV3Events({
         id,
         eventurasOrgId,
         requestBody,
@@ -192,7 +193,7 @@ export class EventsService {
          */
         requestBody?: EventFormDtoJsonPatchDocument,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'PATCH',
             url: '/v3/events/{id}',
             path: {
@@ -211,7 +212,7 @@ export class EventsService {
      * @returns any Success
      * @throws ApiError
      */
-    public static deleteV3Events({
+    public deleteV3Events({
         id,
         eventurasOrgId,
     }: {
@@ -224,7 +225,7 @@ export class EventsService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'DELETE',
             url: '/v3/events/{id}',
             path: {

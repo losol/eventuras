@@ -8,16 +8,17 @@ import type { OrderStatus } from '../models/OrderStatus';
 import type { OrderUpdateRequestDto } from '../models/OrderUpdateRequestDto';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
 export class OrdersService {
+
+    constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
      * @returns OrderDto Success
      * @throws ApiError
      */
-    public static getV3Orders({
+    public getV3Orders({
         id,
         includeUser,
         includeRegistration,
@@ -31,7 +32,7 @@ export class OrdersService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<OrderDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/orders/{id}',
             path: {
@@ -51,7 +52,7 @@ export class OrdersService {
      * @returns any Success
      * @throws ApiError
      */
-    public static putV3Orders({
+    public putV3Orders({
         id,
         eventurasOrgId,
         requestBody,
@@ -63,7 +64,7 @@ export class OrdersService {
         eventurasOrgId?: number,
         requestBody?: OrderUpdateRequestDto,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'PUT',
             url: '/v3/orders/{id}',
             path: {
@@ -81,7 +82,7 @@ export class OrdersService {
      * @returns any Success
      * @throws ApiError
      */
-    public static deleteV3Orders({
+    public deleteV3Orders({
         id,
         eventurasOrgId,
     }: {
@@ -91,7 +92,7 @@ export class OrdersService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'DELETE',
             url: '/v3/orders/{id}',
             path: {
@@ -107,7 +108,7 @@ export class OrdersService {
      * @returns any Success
      * @throws ApiError
      */
-    public static getV3Orders1({
+    public getV3Orders1({
         userId,
         eventId,
         registrationId,
@@ -137,7 +138,7 @@ export class OrdersService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/orders',
             headers: {
@@ -163,7 +164,7 @@ export class OrdersService {
      * @returns any Success
      * @throws ApiError
      */
-    public static postV3Orders({
+    public postV3Orders({
         eventurasOrgId,
         requestBody,
     }: {
@@ -173,7 +174,7 @@ export class OrdersService {
         eventurasOrgId?: number,
         requestBody?: NewOrderRequestDto,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'POST',
             url: '/v3/orders',
             headers: {

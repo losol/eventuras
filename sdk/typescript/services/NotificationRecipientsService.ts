@@ -5,16 +5,17 @@
 import type { NotificationRecipientListOrder } from '../models/NotificationRecipientListOrder';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
 export class NotificationRecipientsService {
+
+    constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
      * @returns any Success
      * @throws ApiError
      */
-    public static getV3NotificationsRecipients({
+    public getV3NotificationsRecipients({
         id,
         query,
         sentOnly,
@@ -42,7 +43,7 @@ export class NotificationRecipientsService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/notifications/{id}/recipients',
             path: {

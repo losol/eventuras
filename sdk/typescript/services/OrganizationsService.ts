@@ -6,16 +6,17 @@ import type { OrganizationDto } from '../models/OrganizationDto';
 import type { OrganizationFormDto } from '../models/OrganizationFormDto';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
 export class OrganizationsService {
+
+    constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
      * @returns OrganizationDto Success
      * @throws ApiError
      */
-    public static getV3Organizations({
+    public getV3Organizations({
         eventurasOrgId,
     }: {
         /**
@@ -23,7 +24,7 @@ export class OrganizationsService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<Array<OrganizationDto>> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/organizations',
             headers: {
@@ -36,7 +37,7 @@ export class OrganizationsService {
      * @returns OrganizationDto Success
      * @throws ApiError
      */
-    public static postV3Organizations({
+    public postV3Organizations({
         eventurasOrgId,
         requestBody,
     }: {
@@ -46,7 +47,7 @@ export class OrganizationsService {
         eventurasOrgId?: number,
         requestBody?: OrganizationFormDto,
     }): CancelablePromise<OrganizationDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'POST',
             url: '/v3/organizations',
             headers: {
@@ -61,7 +62,7 @@ export class OrganizationsService {
      * @returns OrganizationDto Success
      * @throws ApiError
      */
-    public static getV3Organizations1({
+    public getV3Organizations1({
         organizationId,
         eventurasOrgId,
     }: {
@@ -71,7 +72,7 @@ export class OrganizationsService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<OrganizationDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'GET',
             url: '/v3/organizations/{organizationId}',
             path: {
@@ -87,7 +88,7 @@ export class OrganizationsService {
      * @returns OrganizationDto Success
      * @throws ApiError
      */
-    public static putV3Organizations({
+    public putV3Organizations({
         organizationId,
         eventurasOrgId,
         requestBody,
@@ -99,7 +100,7 @@ export class OrganizationsService {
         eventurasOrgId?: number,
         requestBody?: OrganizationFormDto,
     }): CancelablePromise<OrganizationDto> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'PUT',
             url: '/v3/organizations/{organizationId}',
             path: {
@@ -117,7 +118,7 @@ export class OrganizationsService {
      * @returns any Success
      * @throws ApiError
      */
-    public static deleteV3Organizations({
+    public deleteV3Organizations({
         organizationId,
         eventurasOrgId,
     }: {
@@ -127,7 +128,7 @@ export class OrganizationsService {
          */
         eventurasOrgId?: number,
     }): CancelablePromise<any> {
-        return __request(OpenAPI, {
+        return this.httpRequest.request({
             method: 'DELETE',
             url: '/v3/organizations/{organizationId}',
             path: {
