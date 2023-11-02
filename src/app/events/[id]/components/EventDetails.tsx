@@ -1,9 +1,9 @@
 import { EventDto } from '@losol/eventuras';
-import useTranslation from 'next-translate/useTranslation';
+import createTranslation from 'next-translate/createTranslation';
 
-import EventContent from '@/components/event/EventContent';
 import Heading from '@/components/ui/Heading';
 import Image from '@/components/ui/Image';
+import MarkdownContent from '@/components/ui/MarkdownContent';
 
 import EventRegistrationButton from './EventRegistrationButton';
 
@@ -12,7 +12,9 @@ type EventProps = {
 };
 
 export default function EventDetails({ eventinfo }: EventProps) {
-  const { t } = useTranslation();
+  const { t } = createTranslation();
+
+  if (!eventinfo) return <div>{t('events:event-not-found')}</div>;
 
   return (
     <>
@@ -27,22 +29,14 @@ export default function EventDetails({ eventinfo }: EventProps) {
           caption={eventinfo?.featuredImageCaption ?? ''}
         />
       ) : null}
-      <EventContent
-        event={eventinfo}
-        contentField="description"
-        heading={t('common:description')}
-      />
       <EventRegistrationButton eventId={eventinfo.id!} />
-      <EventContent
-        event={eventinfo}
-        contentField="moreInformation"
-        heading={t('common:content.labels.moreinformation')}
-      />
-      <EventContent event={eventinfo} contentField="program" heading={t('Program')} />
-      <EventContent
-        event={eventinfo}
-        contentField="practicalInformation"
-        heading={t('events:content.labels.practicalinformation')}
+
+      <MarkdownContent markdown={eventinfo.description} heading={t('events:description')} />
+      <MarkdownContent markdown={eventinfo.moreInformation} heading={t('events:moreinformation')} />
+      <MarkdownContent markdown={eventinfo.program} heading={t('events:program')} />
+      <MarkdownContent
+        markdown={eventinfo.practicalInformation}
+        heading={t('events:practicalinformation')}
       />
     </>
   );
