@@ -1,10 +1,10 @@
-import { RegistrationsService } from '@losol/eventuras';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
 import Order from '@/components/order/Order';
 import { Layout } from '@/components/ui';
 import Heading from '@/components/ui/Heading';
+import createSDK from '@/utils/createSDK';
 import { setupOpenAPI } from '@/utils/setupOpenApi';
 
 type UserRegistrationPageProps = {
@@ -14,11 +14,12 @@ type UserRegistrationPageProps = {
 };
 
 const UserProfilePage: React.FC<UserRegistrationPageProps> = async ({ params }) => {
+  const eventuras = createSDK();
   const { t } = createTranslation('common');
 
   setupOpenAPI(headers().get('Authorization'));
 
-  const registration = await RegistrationsService.getV3Registrations1({
+  const registration = await eventuras.registrations.getV3Registrations1({
     id: params.id,
     includeEventInfo: true,
     includeUserInfo: true,

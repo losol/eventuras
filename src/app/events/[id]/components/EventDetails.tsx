@@ -30,13 +30,13 @@ export default function EventDetails({ eventinfo }: EventProps) {
       <EventContent
         event={eventinfo}
         contentField="description"
-        heading={t('events:content.labels.description')}
+        heading={t('common:description')}
       />
       <EventRegistrationButton eventId={eventinfo.id!} />
       <EventContent
         event={eventinfo}
         contentField="moreInformation"
-        heading={t('events:content.labels.moreinformation')}
+        heading={t('common:content.labels.moreinformation')}
       />
       <EventContent event={eventinfo} contentField="program" heading={t('Program')} />
       <EventContent

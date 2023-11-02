@@ -1,13 +1,12 @@
-import { UsersService } from '@losol/eventuras';
-import { UserDto } from '@losol/eventuras/models/UserDto';
-import { UserDtoPageResponseDto } from '@losol/eventuras/models/UserDtoPageResponseDto';
+import { Eventuras, UserDto, UserDtoPageResponseDto } from '@losol/eventuras';
 
 import ApiError from '../ApiError';
 import apiFetch from '../apiFetch';
 import ApiResult from '../ApiResult';
 import ApiURLs from '../ApiUrls';
 
-export type GetUsersOptions = Parameters<typeof UsersService.getV3Users1>[0];
+const eventuras = new Eventuras();
+export type GetUsersOptions = Parameters<typeof eventuras.users.getV3Users1>[0];
 
 export const getUserProfile = (): Promise<ApiResult<UserDto, ApiError>> =>
   apiFetch(ApiURLs.userprofile());

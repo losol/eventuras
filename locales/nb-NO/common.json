@@ -6,6 +6,7 @@
     "submit": "Send",
     "view": "Vis"
   },
+  "description": "Beskrivelse",
   "edit": "Rediger",
   "errors": {
     "fatalError": {

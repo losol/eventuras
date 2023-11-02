@@ -1,7 +1,9 @@
-import { NewRegistrationDto } from '@losol/eventuras/models/NewRegistrationDto';
-import { ProductDto } from '@losol/eventuras/models/ProductDto';
-import { RegistrationCustomerInfoDto } from '@losol/eventuras/models/RegistrationCustomerInfoDto';
-import { RegistrationType } from '@losol/eventuras/models/RegistrationType';
+import {
+  NewRegistrationDto,
+  ProductDto,
+  RegistrationCustomerInfoDto,
+  RegistrationType,
+} from '@losol/eventuras';
 
 import PaymentFormValues from '@/types/PaymentFormValues';
 import { RegistrationProduct } from '@/types/RegistrationProduct';

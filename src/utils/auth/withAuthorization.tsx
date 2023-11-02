@@ -1,39 +1,29 @@
-import { OrganizationMemberRolesService, UsersService } from '@losol/eventuras';
 import { NextPage } from 'next';
 import { headers } from 'next/headers';
 
 import { Unauthorized } from '@/components/ui/Unauthorized';
+import createSDK from '@/utils/createSDK';
 import Environment from '@/utils/Environment';
-import { setupOpenAPI } from '@/utils/setupOpenApi';
 
 const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
 
 const withAuthorization = (WrappedComponent: NextPage, role: string): NextPage => {
   const WithAuthorizationWrapper: NextPage = async props => {
-    setupOpenAPI(headers().get('Authorization'));
+    const eventuras = createSDK({ authHeader: headers().get('Authorization') });
 
-    let user;
-    try {
-      user = await UsersService.getV3UsersMe({});
-    } catch (error) {
-      return <Unauthorized />;
-    }
-
+    // Check if user is logged in
+    const user = await eventuras.users.getV3UsersMe({}).catch(() => null);
     if (!user) {
       return <Unauthorized />;
     }
 
-    let roles;
-    try {
-      roles = await OrganizationMemberRolesService.getV3OrganizationsMembersRoles({
-        organizationId: ORGANIZATION_ID,
-        userId: user.id!,
-        eventurasOrgId: ORGANIZATION_ID,
-      });
-    } catch (error) {
-      return <Unauthorized />;
-    }
+    const roles = await eventuras.organizationMemberRoles.getV3OrganizationsMembersRoles({
+      organizationId: ORGANIZATION_ID,
+      userId: user.id!,
+      eventurasOrgId: ORGANIZATION_ID,
+    });
 
+    // Check if user has the required role
     if (!roles.includes(role)) {
       return <Unauthorized />;
     }

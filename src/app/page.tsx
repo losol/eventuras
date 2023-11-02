@@ -1,11 +1,11 @@
-import { EventDto, EventsService, OpenAPI } from '@losol/eventuras';
+import { EventDto, Eventuras } from '@losol/eventuras';
 import createTranslation from 'next-translate/createTranslation';
 
 import { EventGrid } from '@/components/event';
 import { Container, Layout } from '@/components/ui';
 import Card from '@/components/ui/Card';
 import Heading from '@/components/ui/Heading';
-import Environment, { EnvironmentVariables } from '@/utils/Environment';
+import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
@@ -16,12 +16,11 @@ export default async function Homepage() {
   const site = await getSiteSettings();
   const { t } = createTranslation();
   let eventinfos: EventDto[] = [];
+  const eventuras = new Eventuras({
+    BASE: Environment.API_BASE_URL,
+  });
   try {
-    //for some reason OpenAPI.BASE gets set to empty when returning to this page..
-    // TODO let's rewrite these to use utils/api and be able to set the api without the forwarder
-    OpenAPI.BASE = Environment.get(EnvironmentVariables.API_BASE_URL);
-    OpenAPI.VERSION = Environment.NEXT_PUBLIC_API_VERSION;
-    const response = await EventsService.getV3Events({
+    const response = await eventuras.events.getV3Events({
       organizationId: ORGANIZATION_ID,
     });
     eventinfos = response.data ?? [];

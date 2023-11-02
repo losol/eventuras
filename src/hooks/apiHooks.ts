@@ -2,10 +2,10 @@ import {
   EventDto,
   EventDtoPageResponseDto,
   ProductDto,
+  RegistrationDto,
   RegistrationDtoPageResponseDto,
   UserDtoPageResponseDto,
 } from '@losol/eventuras';
-import { RegistrationDto } from '@losol/eventuras/models/RegistrationDto';
 import { useEffect, useRef, useState } from 'react';
 
 import {

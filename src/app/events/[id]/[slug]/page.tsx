@@ -1,6 +1,45 @@
-/**
- * Equal to ../page - simply incorporates EventInfo, which fetches the event, and redirects to its correct slug
- * if required.
- */
-import EventInfo from '../components/EventInfo';
-export default EventInfo;
+import { RedirectType } from 'next/dist/client/components/redirect';
+import { redirect } from 'next/navigation';
+
+import { Layout } from '@/components/ui';
+import createSDK from '@/utils/createSDK';
+
+import EventDetails from '../components/EventDetails';
+
+type EventInfoProps = {
+  params: {
+    id: number;
+    slug: string;
+  };
+};
+
+export async function generateStaticParams() {
+  const eventuras = createSDK();
+  const events = await eventuras.events.getV3Events({});
+  if (events && events.data && events.data.length) {
+    return events.data.map(event => ({ id: event.id?.toString() }));
+  }
+
+  return [];
+}
+
+const Page: React.FC<EventInfoProps> = async ({ params }) => {
+  const eventuras = createSDK();
+
+  const eventinfo = await eventuras.events.getV3Events1({ id: params.id });
+  if (!eventinfo) return <div>Event not found</div>;
+
+  if (params.slug !== eventinfo.slug) {
+    //TODO replace with permanentDirect once it has been deployed to stable nextjs
+    //@see https://github.com/vercel/next.js/pull/54047
+    redirect(`/events/${eventinfo.id!}/${eventinfo.slug!}`, RedirectType.replace);
+  }
+
+  return (
+    <Layout>
+      <EventDetails eventinfo={eventinfo} />
+    </Layout>
+  );
+};
+
+export default Page;

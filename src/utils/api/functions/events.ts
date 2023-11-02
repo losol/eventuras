@@ -1,10 +1,13 @@
-import { EventsService, NewProductDto, RegistrationsService } from '@losol/eventuras';
-import { EventDto } from '@losol/eventuras/models/EventDto';
-import { EventDtoPageResponseDto } from '@losol/eventuras/models/EventDtoPageResponseDto';
-import { EventFormDto } from '@losol/eventuras/models/EventFormDto';
-import { NewRegistrationDto } from '@losol/eventuras/models/NewRegistrationDto';
-import { ProductDto } from '@losol/eventuras/models/ProductDto';
-import { RegistrationDto } from '@losol/eventuras/models/RegistrationDto';
+import {
+  EventDto,
+  EventDtoPageResponseDto,
+  EventFormDto,
+  Eventuras,
+  NewProductDto,
+  NewRegistrationDto,
+  ProductDto,
+  RegistrationDto,
+} from '@losol/eventuras';
 
 import Logger from '@/utils/Logger';
 
@@ -12,9 +15,10 @@ import apiFetch from '../apiFetch';
 import ApiResult from '../ApiResult';
 import ApiURLs from '../ApiUrls';
 
-export type GetEventsOptions = Parameters<typeof EventsService.getV3Events>[0];
+const eventuras = new Eventuras();
+export type GetEventsOptions = Parameters<typeof eventuras.events.getV3Events>[0];
 export type GetEventRegistrationsOptions = Parameters<
-  typeof RegistrationsService.getV3Registrations
+  typeof eventuras.registrations.getV3Registrations
 >[0];
 
 export const createEventRegistration = async (

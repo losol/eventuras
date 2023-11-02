@@ -6,6 +6,7 @@
     "submit": "Submit",
     "view": "View"
   },
+  "description": "Description",
   "edit": "Edit",
   "errors": {
     "fatalError": {

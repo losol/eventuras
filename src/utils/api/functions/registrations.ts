@@ -1,4 +1,4 @@
-import { RegistrationDtoPageResponseDto } from '@losol/eventuras/models/RegistrationDtoPageResponseDto';
+import { RegistrationDtoPageResponseDto } from '@losol/eventuras';
 
 import apiFetch from '../apiFetch';
 import ApiResult from '../ApiResult';

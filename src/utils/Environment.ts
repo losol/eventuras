@@ -84,7 +84,11 @@ class Environment {
     return process.env[identifier]!;
   }
 
-  // Explicit getters for NEXT_PUBLIC variables
+  // Explicit getters for API_BASE_URL andNEXT_PUBLIC variables
+  static get API_BASE_URL() {
+    return process.env.API_BASE_URL!;
+  }
+
   static get NEXT_PUBLIC_API_BASE_URL() {
     return process.env.NEXT_PUBLIC_API_BASE_URL!;
   }
