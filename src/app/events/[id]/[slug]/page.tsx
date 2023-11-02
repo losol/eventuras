@@ -1,5 +1,5 @@
 import { RedirectType } from 'next/dist/client/components/redirect';
-import { redirect } from 'next/navigation';
+import { permanentRedirect } from 'next/navigation';
 
 import { Layout } from '@/components/ui';
 import createSDK from '@/utils/createSDK';
@@ -30,9 +30,7 @@ const Page: React.FC<EventInfoProps> = async ({ params }) => {
   if (!eventinfo) return <div>Event not found</div>;
 
   if (params.slug !== eventinfo.slug) {
-    //TODO replace with permanentDirect once it has been deployed to stable nextjs
-    //@see https://github.com/vercel/next.js/pull/54047
-    redirect(`/events/${eventinfo.id!}/${eventinfo.slug!}`, RedirectType.replace);
+    permanentRedirect(`/events/${eventinfo.id!}/${eventinfo.slug!}`, RedirectType.replace);
   }
 
   return (
