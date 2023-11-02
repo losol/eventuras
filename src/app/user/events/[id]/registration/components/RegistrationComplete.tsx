@@ -10,9 +10,9 @@ const RegistrationComplete = ({ onSubmit }: RegistrationCompleteProps) => {
   const { t } = createTranslation();
   return (
     <>
-      <Heading>{t('registration:complete.title')}</Heading>
-      <p>{t('registration:complete.description')}</p>
-      <Button onClick={() => onSubmit()}>Continue</Button>
+      <Heading>{t('user:registration.complete.title')}</Heading>
+      <p>{t('user:registration.complete.description')}</p>
+      <Button onClick={() => onSubmit()}>{t('common:buttons.continue')}</Button>
     </>
   );
 };

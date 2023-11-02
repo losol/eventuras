@@ -14,7 +14,7 @@ type EventProps = {
 export default function EventDetails({ eventinfo }: EventProps) {
   const { t } = createTranslation();
 
-  if (!eventinfo) return <div>{t('events:event-not-found')}</div>;
+  if (!eventinfo) return <div>{t('common:events.event-not-found')}</div>;
 
   return (
     <>
@@ -31,12 +31,15 @@ export default function EventDetails({ eventinfo }: EventProps) {
       ) : null}
       <EventRegistrationButton eventId={eventinfo.id!} />
 
-      <MarkdownContent markdown={eventinfo.description} heading={t('events:description')} />
-      <MarkdownContent markdown={eventinfo.moreInformation} heading={t('events:moreinformation')} />
-      <MarkdownContent markdown={eventinfo.program} heading={t('events:program')} />
+      <MarkdownContent markdown={eventinfo.description} heading={t('common:events.description')} />
+      <MarkdownContent
+        markdown={eventinfo.moreInformation}
+        heading={t('common:events.moreinformation')}
+      />
+      <MarkdownContent markdown={eventinfo.program} heading={t('common:events.program')} />
       <MarkdownContent
         markdown={eventinfo.practicalInformation}
-        heading={t('events:practicalinformation')}
+        heading={t('common:events.practicalinformation')}
       />
     </>
   );

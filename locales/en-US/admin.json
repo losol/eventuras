@@ -6,7 +6,7 @@
       "description": "Here you can create your event, be sure to enter both title and slug"
     },
     "alreadyExists": {
-      "title": "Event already Exists.",
+      "title": "Event already exists.",
       "description": "An Event with that slug already exists, the slug needs to be unique."
     }
   },

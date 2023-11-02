@@ -3,25 +3,32 @@
     "cancel": "Cancel",
     "continue": "Continue",
     "send": "Send",
+    "save": "Save",
     "submit": "Submit",
-    "view": "View"
+    "view": "View",
+    "edit": "Edit",
+    "register": "Register",
+    "register-cta": "Register for this event",
+    "registered-already": "You are already registered for this event"
   },
   "description": "Description",
-  "edit": "Edit",
   "errors": {
     "fatalError": {
       "description": "We tried to perform the action, but something went wrong, please try again later.",
       "title": "Something went very wrong"
     }
   },
-  "event": "Event",
-  "event-not-found": "Event not found",
-  "events": "Events",
-  "header": {
-    "auth": {
-      "login": "Login",
-      "logout": "Logout"
-    }
+  "events": {
+    "event": "Event",
+    "events": "Events",
+    "description": "Description",
+    "program": "Program",
+    "practicalinformation": "Practical information",
+    "event-not-found": "Event not found"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout"
   },
   "onlinecourses": "Online courses"
 }

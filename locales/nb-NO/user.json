@@ -1,19 +1,24 @@
 {
   "buttons": {
-    "register": "Meld deg på dette arrangementet"
+    "register": "Registrer deg for dette arrangementet"
   },
   "complete": {
     "description": "Vi ser virkelig frem til å se deg!",
     "title": "Velkommen!"
   },
   "customize": {
-    "description": "Vi har noen fine opplevelser å by på",
+    "description": "Vi har noen fine opplevelser å tilby",
     "title": "Tilpass din bestilling"
   },
   "feedback": {
-    "allreadyRegistered": "Du er allerede registrert for dette arrangementet, vi sees snart!"
+    "allreadyRegistered": "Du er registrert for dette arrangementet, vi ses snart!"
   },
-  "form": {
+  "payment": {
+    "description": "Noen flere detaljer",
+    "subHeading": "Hvem betaler",
+    "title": "Betalingsdetaljer"
+  },
+  "registration": {
     "address": {
       "city": "By",
       "country": "Land",
@@ -23,24 +28,25 @@
     },
     "businessinfo": {
       "invoiceReference": "Fakturareferanse",
-      "legend": "Bedriftsinformasjon",
+      "legend": "Firmaopplysninger",
       "vatNumber": "MVA-nummer"
+    },
+    "complete": {
+      "description": "Vi gleder oss til å se deg!",
+      "title": "Registering fullført"
     },
     "customertype": {
       "business": "Bedrift",
       "legend": "Kundetype",
       "private": "Privat"
     },
+    "description": "Vi trenger litt mer informasjon om deg",
+    "title": "Registrer deg",
     "user": {
       "email": "E-post",
       "legend": "Brukerdetaljer",
       "name": "Navn",
       "phoneNumber": "Telefonnummer"
     }
-  },
-  "payment": {
-    "description": "Noen flere detaljer",
-    "subHeading": "Hvem betaler",
-    "title": "Betalingsdetaljer"
   }
 }

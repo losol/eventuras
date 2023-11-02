@@ -22,7 +22,8 @@ const Link: React.FC<LinkProps> = ({
   stretch,
 }) => {
   // Text color
-  const textColor = bgDark ? 'text-gray-200' : 'text-gray-800 dark:text-gray-200';
+  const textColor =
+    bgDark || variant == 'button-primary' ? 'text-gray-200' : 'text-gray-800 dark:text-gray-200';
 
   // Block classes
   const blockClasses = block ? 'block' : '';

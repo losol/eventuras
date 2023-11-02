@@ -7,8 +7,7 @@ const i18config = {
   defaultLocale: defaultLocale ? defaultLocale : 'en-US',
   pages: {
     '*': ['common'],
-    '/': ['index'],
-    'rgx:(.*?)events(.*?)': ['register'],
+    'rgx:/user(.*?)': ['user'],
     'rgx:/admin(.*?)': ['admin'],
   },
 };

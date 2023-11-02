@@ -1,0 +1,52 @@
+{
+  "buttons": {
+    "register": "Register for this Event"
+  },
+  "complete": {
+    "description": "We really look forward to see you!",
+    "title": "Welcome!"
+  },
+  "customize": {
+    "description": "We have some nice experiences to offer",
+    "title": "Customize your order"
+  },
+  "feedback": {
+    "allreadyRegistered": "You are registered for this event, see you soon!"
+  },
+  "payment": {
+    "description": "A few more details",
+    "subHeading": "Who are paying",
+    "title": "Payment details"
+  },
+  "registration": {
+    "address": {
+      "city": "City",
+      "country": "Country",
+      "legend": "Address",
+      "street": "Street",
+      "zip": "Zip code"
+    },
+    "businessinfo": {
+      "invoiceReference": "Invoice reference",
+      "legend": "Business info",
+      "vatNumber": "VAT number"
+    },
+    "complete": {
+      "description": "We are really looking forward to see you!",
+      "title": "Registration completed"
+    },
+    "customertype": {
+      "business": "Business",
+      "legend": "Customer type",
+      "private": "Private"
+    },
+    "description": "A few more details",
+    "title": "Registration",
+    "user": {
+      "email": "Email",
+      "legend": "User details",
+      "name": "Name",
+      "phoneNumber": "Phone number"
+    }
+  }
+}

@@ -3,25 +3,32 @@
     "cancel": "Avbryt",
     "continue": "Fortsett",
     "send": "Send",
-    "submit": "Send",
-    "view": "Vis"
+    "save": "Lagre",
+    "submit": "Send inn",
+    "view": "Vis",
+    "edit": "Rediger",
+    "register": "Registrer",
+    "register-cta": "Registrer deg for dette arrangementet",
+    "registered-already": "Du er allerede registrert for dette arrangementet"
   },
   "description": "Beskrivelse",
-  "edit": "Rediger",
   "errors": {
     "fatalError": {
-      "description": "Vi prøvde å utføre handlingen, men noe gikk galt, prøv igjen senere.",
+      "description": "Vi prøvde å utføre handlingen, men noe gikk galt. Vennligst prøv igjen senere.",
       "title": "Noe gikk veldig galt"
     }
   },
-  "event": "Hva skjer?",
-  "event-not-found": "Fant ikke arrangement",
-  "events": "Arrangementer",
-  "header": {
-    "auth": {
-      "login": "Logg på",
-      "logout": "Logg av"
-    }
+  "events": {
+    "event": "Arrangement",
+    "events": "Arrangementer",
+    "description": "Beskrivelse",
+    "program": "Program",
+    "practicalinformation": "Praktisk informasjon",
+    "event-not-found": "Arrangementet ble ikke funnet"
+  },
+  "auth": {
+    "login": "Logg inn",
+    "logout": "Logg ut"
   },
   "onlinecourses": "Nettkurs"
 }
