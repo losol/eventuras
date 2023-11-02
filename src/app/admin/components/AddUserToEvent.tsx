@@ -5,7 +5,7 @@ import {
   RegistrationType,
   UserDto,
 } from '@losol/eventuras';
-import useTranslation from 'next-translate/useTranslation';
+import createTranslation from 'next-translate/createTranslation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -41,7 +41,7 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
   onUseradded,
 }) => {
   const { addAppNotification } = useAppNotifications();
-  const { t } = useTranslation();
+  const { t } = createTranslation();
 
   const {
     control,

@@ -1,5 +1,5 @@
 import { PaymentProvider } from '@losol/eventuras';
-import useTranslation from 'next-translate/useTranslation';
+import createTranslation from 'next-translate/createTranslation';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
@@ -16,7 +16,6 @@ export type RegistrationPaymentProps = {
 };
 
 const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps) => {
-  const { t } = useTranslation('register');
   const {
     register,
     formState: { errors },
@@ -40,6 +39,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
   const onSubmitForm: SubmitHandler<PaymentFormValues> = (data: PaymentFormValues) => {
     onSubmit(data);
   };
+  const { t } = createTranslation();
 
   const formClassName = 'px-8 pt-6 pb-8 mb-4';
   const fieldsetClassName = 'text-lg pt-3 pb-6';

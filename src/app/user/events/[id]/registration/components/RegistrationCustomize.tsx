@@ -1,4 +1,4 @@
-import useTranslation from 'next-translate/useTranslation';
+import createTranslation from 'next-translate/createTranslation';
 import { useForm } from 'react-hook-form';
 
 import ProductSelection from '@/components/forms/ProductSelection';
@@ -21,7 +21,7 @@ const createFormHandler =
   };
 
 const RegistrationCustomize = ({ products, onSubmit }: RegistrationCustomizeProps) => {
-  const { t } = useTranslation();
+  const { t } = createTranslation();
   const { register, handleSubmit } = useForm();
 
   return (

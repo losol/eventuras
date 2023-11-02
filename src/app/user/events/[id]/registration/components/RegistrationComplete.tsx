@@ -1,4 +1,4 @@
-import useTranslation from 'next-translate/useTranslation';
+import createTranslation from 'next-translate/createTranslation';
 
 import Button from '@/components/ui/Button';
 import Heading from '@/components/ui/Heading';
@@ -7,7 +7,7 @@ export type RegistrationCompleteProps = {
   onSubmit: () => void;
 };
 const RegistrationComplete = ({ onSubmit }: RegistrationCompleteProps) => {
-  const { t } = useTranslation();
+  const { t } = createTranslation();
   return (
     <>
       <Heading>{t('registration:complete.title')}</Heading>

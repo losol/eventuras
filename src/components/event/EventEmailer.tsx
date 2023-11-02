@@ -1,5 +1,5 @@
 import { EmailNotificationDto, RegistrationStatus, RegistrationType } from '@losol/eventuras';
-import useTranslation from 'next-translate/useTranslation';
+import createTranslation from 'next-translate/createTranslation';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import Button from '@/components/ui/Button';
@@ -34,8 +34,8 @@ export default function EventEmailer({ eventTitle, eventId, onClose }: EventEmai
     handleSubmit,
   } = formHook;
   const { addAppNotification } = useAppNotifications();
-  const { t } = useTranslation('admin');
-  const { t: common } = useTranslation('common');
+  const { t } = createTranslation('admin');
+  const { t: common } = createTranslation('common');
 
   const onSubmitForm: SubmitHandler<EventEmailerFormValues> = async (
     data: EventEmailerFormValues

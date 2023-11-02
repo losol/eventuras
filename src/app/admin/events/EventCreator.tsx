@@ -1,7 +1,7 @@
 'use client';
 import { EventDto, EventInfoStatus } from '@losol/eventuras';
 import { useRouter } from 'next/navigation';
-import useTranslation from 'next-translate/useTranslation';
+import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
@@ -40,7 +40,7 @@ type ApiState = {
 
 const EventCreator = () => {
   const { addAppNotification } = useAppNotifications();
-  const { t } = useTranslation();
+  const { t } = createTranslation();
 
   const {
     register,

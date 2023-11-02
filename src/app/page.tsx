@@ -1,12 +1,11 @@
-import { EventDto, Eventuras } from '@losol/eventuras';
 import createTranslation from 'next-translate/createTranslation';
 
 import { EventGrid } from '@/components/event';
 import { Container, Layout } from '@/components/ui';
 import Card from '@/components/ui/Card';
 import Heading from '@/components/ui/Heading';
+import createSDK from '@/utils/createSDK';
 import Environment from '@/utils/Environment';
-import Logger from '@/utils/Logger';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 // Get events from eventuras
@@ -15,17 +14,14 @@ const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID
 export default async function Homepage() {
   const site = await getSiteSettings();
   const { t } = createTranslation();
-  let eventinfos: EventDto[] = [];
-  const eventuras = new Eventuras({
-    BASE: Environment.API_BASE_URL,
+
+  const eventuras = createSDK();
+  const eventinfos = await eventuras.events.getV3Events({
+    organizationId: ORGANIZATION_ID,
   });
-  try {
-    const response = await eventuras.events.getV3Events({
-      organizationId: ORGANIZATION_ID,
-    });
-    eventinfos = response.data ?? [];
-  } catch (error) {
-    Logger.error({ namespace: 'homepage' }, 'Error fetching events:', error);
+
+  if (!eventinfos || !eventinfos.data || !eventinfos.data.length) {
+    return <div>No events</div>;
   }
 
   return (
@@ -43,7 +39,7 @@ export default async function Homepage() {
       <section className="bg-primary-50 dark:bg-slate-950 pt-16 pb-24">
         <Container as="section">
           <Heading as="h2">{t('common:events')}</Heading>
-          <EventGrid eventinfos={eventinfos} />
+          <EventGrid eventinfos={eventinfos.data} />
         </Container>
       </section>
     </Layout>

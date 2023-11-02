@@ -3,7 +3,7 @@
 import { EventDto } from '@losol/eventuras';
 import { IconEditCircle, IconMailForward } from '@tabler/icons-react';
 import Link from 'next/link';
-import useTranslation from 'next-translate/useTranslation';
+import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 
 import EventEmailer from '@/components/event/EventEmailer';
@@ -19,7 +19,7 @@ interface AdminEventListProps {
 }
 
 const AdminEventList: React.FC<AdminEventListProps> = ({ organizationId }) => {
-  const { t } = useTranslation();
+  const { t } = createTranslation();
   const [page, setPage] = useState(1);
   const {
     loading: eventsLoading,

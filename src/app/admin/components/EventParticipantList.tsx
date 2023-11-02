@@ -2,7 +2,7 @@
 
 import { EventDto, RegistrationDto } from '@losol/eventuras';
 import { IconMailForward } from '@tabler/icons-react';
-import useTranslation from 'next-translate/useTranslation';
+import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 
 import EventEmailer from '@/components/event/EventEmailer';
@@ -16,7 +16,7 @@ interface AdminEventListProps {
 }
 
 const EventParticipantList: React.FC<AdminEventListProps> = ({ participants = [], event }) => {
-  const { t } = useTranslation();
+  const { t } = createTranslation();
   const [registrationOpened, setRegistrationOpened] = useState<RegistrationDto | null>(null);
 
   const renderEventItemActions = (info: RegistrationDto) => {

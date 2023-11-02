@@ -1,5 +1,5 @@
 'use client';
-import useTranslation from 'next-translate/useTranslation';
+import createTranslation from 'next-translate/createTranslation';
 import { useContext } from 'react';
 
 import Link from '@/components/ui/Link';
@@ -12,7 +12,7 @@ export type EventRegistrationButtonProps = {
 };
 
 export default function EventRegistrationButton({ eventId }: EventRegistrationButtonProps) {
-  const { t } = useTranslation();
+  const { t } = createTranslation();
   const state = useContext(UserContext).userState;
   const profile = state.profile;
   const { loading, userRegistrations } = useUserEventRegistrations(profile?.id);
