@@ -25,7 +25,7 @@ const throwUserNotFoundError = () => {
     'event/register: User profile is not supposed to be null when registring for an event'
   );
 };
-const l = { namespace: 'events:registration' };
+const loggerNamespace = { namespace: 'events:registration' };
 const UserEventRegistration = ({ params }: { params: any }) => {
   const { userState } = useContext(UserContext);
   const userProfile: UserProfile = userState.profile as UserProfile;
@@ -37,14 +37,14 @@ const UserEventRegistration = ({ params }: { params: any }) => {
   const eventId = parseInt(params.id as string, 10);
   const { registrationProducts, loading: loadingRegistrationProducts } = useEventProducts(eventId);
   const onCustomize = (selected: Map<string, number>) => {
-    Logger.info(l, { selected });
+    Logger.info(loggerNamespace, { selected });
     selectedProducts.current = selected;
     setCurrentStep('Payment');
   };
 
   const onPayment = async (formValues: PaymentFormValues) => {
     setLoadingEventRegistration(true);
-    Logger.info(l, formValues);
+    Logger.info(loggerNamespace, formValues);
     if (!userProfile) {
       throwUserNotFoundError();
       return;
@@ -55,7 +55,7 @@ const UserEventRegistration = ({ params }: { params: any }) => {
       selectedProducts.current
     );
     setLoadingEventRegistration(false);
-    Logger.info(l, { result });
+    Logger.info(loggerNamespace, { result });
     if (!result.ok) {
       //TODO unhappy flow
 
@@ -67,7 +67,7 @@ const UserEventRegistration = ({ params }: { params: any }) => {
   };
 
   const onCompleteFlow = () => {
-    Logger.info(l, 'done');
+    Logger.info(loggerNamespace, 'done');
     router.push('/');
   };
 
