@@ -1,15 +1,19 @@
 {
+  "auth": {
+    "login": "Login",
+    "logout": "Logout"
+  },
   "buttons": {
     "cancel": "Cancel",
     "continue": "Continue",
-    "send": "Send",
-    "save": "Save",
-    "submit": "Submit",
-    "view": "View",
     "edit": "Edit",
     "register": "Register",
     "register-cta": "Register for this event",
-    "registered-already": "You are already registered for this event"
+    "registered-already": "You are already registered for this event",
+    "save": "Save",
+    "send": "Send",
+    "submit": "Submit",
+    "view": "View"
   },
   "description": "Description",
   "errors": {
@@ -19,16 +23,15 @@
     }
   },
   "events": {
-    "event": "Event",
-    "events": "Events",
     "description": "Description",
-    "program": "Program",
+    "event": "Event",
+    "event-not-found": "Event not found",
+    "events": "Events",
     "practicalinformation": "Practical information",
-    "event-not-found": "Event not found"
+    "program": "Program"
   },
-  "auth": {
-    "login": "Login",
-    "logout": "Logout"
-  },
-  "onlinecourses": "Online courses"
+  "onlinecourses": "Online courses",
+  "user": {
+    "name": "Name"
+  }
 }

@@ -1,6 +1,6 @@
 {
   "buttons": {
-    "register": "Registrer deg for dette arrangementet"
+    "register": "Meld deg på"
   },
   "complete": {
     "description": "Vi ser virkelig frem til å se deg!",
@@ -11,7 +11,7 @@
     "title": "Tilpass din bestilling"
   },
   "feedback": {
-    "allreadyRegistered": "Du er registrert for dette arrangementet, vi ses snart!"
+    "alreadyRegistered": "Du er allerede registrert for denne hendelsen, vi sees snart!"
   },
   "payment": {
     "description": "Noen flere detaljer",
@@ -20,28 +20,38 @@
   },
   "registration": {
     "address": {
-      "city": "By",
+      "city": "Poststed",
       "country": "Land",
       "legend": "Adresse",
-      "street": "Gate",
+      "street": "Vei",
       "zip": "Postnummer"
     },
     "businessinfo": {
       "invoiceReference": "Fakturareferanse",
-      "legend": "Firmaopplysninger",
-      "vatNumber": "MVA-nummer"
+      "legend": "Bedriftsinformasjon",
+      "vatNumber": "Organisasjonsnummer"
     },
     "complete": {
-      "description": "Vi gleder oss til å se deg!",
-      "title": "Registering fullført"
+      "description": "Vi ser virkelig frem til å se deg!",
+      "title": "Registrering fullført"
     },
     "customertype": {
-      "business": "Bedrift",
+      "business": "Forretnings",
       "legend": "Kundetype",
       "private": "Privat"
     },
-    "description": "Vi trenger litt mer informasjon om deg",
-    "title": "Registrer deg",
+    "description": "Noen flere detaljer...",
+    "event-title": "Arrangement",
+    "id": "ID",
+    "not-found": "Registrering ikke funnet",
+    "orders": "Ordre",
+    "products": "Produkter",
+    "product-description": "Beskrivelse",
+    "product-name": "Navn",
+    "quantity": "Antall",
+    "status": "Status",
+    "title": "Registrering",
+    "type": "Type",
     "user": {
       "email": "E-post",
       "legend": "Brukerdetaljer",

@@ -5,7 +5,6 @@ import Order from '@/components/order/Order';
 import { Layout } from '@/components/ui';
 import Heading from '@/components/ui/Heading';
 import createSDK from '@/utils/createSDK';
-import { setupOpenAPI } from '@/utils/setupOpenApi';
 
 type UserRegistrationPageProps = {
   params: {
@@ -13,11 +12,9 @@ type UserRegistrationPageProps = {
   };
 };
 
-const UserProfilePage: React.FC<UserRegistrationPageProps> = async ({ params }) => {
-  const eventuras = createSDK();
-  const { t } = createTranslation('common');
-
-  setupOpenAPI(headers().get('Authorization'));
+const UserRegistrationPage: React.FC<UserRegistrationPageProps> = async ({ params }) => {
+  const eventuras = createSDK({ authHeader: headers().get('Authorization') });
+  const { t } = createTranslation();
 
   const registration = await eventuras.registrations.getV3Registrations1({
     id: params.id,
@@ -27,28 +24,29 @@ const UserProfilePage: React.FC<UserRegistrationPageProps> = async ({ params }) 
     includeOrders: true,
   });
 
-  if (registration === null) return <p>Registration not found</p>;
+  if (registration === null) return <p>{t('user:registration.not-found')}</p>;
 
   if (registration)
     return (
       <Layout>
-        <Heading>{t('Registration')}</Heading>
-        <p>Registration id: {registration.registrationId}</p>
-        <p>Event title: {registration.event?.title}</p>
-        <p>User: {registration.user?.name}</p>
-        <p>Status: {registration.status}</p>
-        <p>Type: {registration.type}</p>
+        <Heading>{t('user:registration.title')}</Heading>
+        <p>{`${t('user:registration.id')}: ${registration.registrationId}`}</p>
+        <p>{`${t('user:registration.event-title')}: ${registration.event?.title}`}</p>
+        <p>{`${t('common:user.name')}: ${registration.user?.name}`}</p>
+        <p>{`${t('user:registration.status')}: ${registration.status}`}</p>
+        <p>{`${t('user:registration.type')}: ${registration.type}`}</p>
 
         {registration?.products && registration?.products?.length > 0 && (
           <section id="products">
-            <Heading as="h2">Products</Heading>
+            <Heading as="h2">{t('user:registration.products')}</Heading>
             <ul>
-              {registration!.products?.map((product, index) => (
+              {registration.products.map((product, index) => (
                 <li key={index}>
-                  <p>{product.product?.name}</p>
-                  <p>{product.product?.description}</p>
+                  <p>{`${t('user:registration.product-name')}: ${product.product?.name}`}</p>
+                  <p>{`${t('user:registration.product-description')}: ${product.product
+                    ?.description}`}</p>
                   <p>
-                    <span>Quantity:</span>
+                    <span>{t('user:registration.quantity')}:</span>
                     {product.quantity}
                   </p>
                 </li>
@@ -58,12 +56,14 @@ const UserProfilePage: React.FC<UserRegistrationPageProps> = async ({ params }) 
         )}
         {registration?.orders && registration?.orders?.length > 0 && (
           <section id="orders" className="py-8">
-            <Heading as="h2">Orders:</Heading>
-            {registration!.orders?.map((order, index) => <Order key={index} order={order} />)}
+            <Heading as="h2">{t('user:registration.orders')}</Heading>
+            {registration.orders.map((order, index) => (
+              <Order key={index} order={order} />
+            ))}
           </section>
         )}
       </Layout>
     );
 };
 
-export default UserProfilePage;
+export default UserRegistrationPage;

@@ -1,15 +1,19 @@
 {
+  "auth": {
+    "login": "Logg inn",
+    "logout": "Logg ut"
+  },
   "buttons": {
     "cancel": "Avbryt",
     "continue": "Fortsett",
-    "send": "Send",
-    "save": "Lagre",
-    "submit": "Send inn",
-    "view": "Vis",
     "edit": "Rediger",
     "register": "Registrer",
     "register-cta": "Registrer deg for dette arrangementet",
-    "registered-already": "Du er allerede registrert for dette arrangementet"
+    "registered-already": "Du er allerede registrert for dette arrangementet",
+    "save": "Lagre",
+    "send": "Send",
+    "submit": "Send inn",
+    "view": "Vis"
   },
   "description": "Beskrivelse",
   "errors": {
@@ -19,16 +23,15 @@
     }
   },
   "events": {
-    "event": "Arrangement",
-    "events": "Arrangementer",
     "description": "Beskrivelse",
-    "program": "Program",
+    "event": "Arrangement",
+    "event-not-found": "Arrangementet ble ikke funnet",
+    "events": "Arrangementer",
     "practicalinformation": "Praktisk informasjon",
-    "event-not-found": "Arrangementet ble ikke funnet"
+    "program": "Program"
   },
-  "auth": {
-    "login": "Logg inn",
-    "logout": "Logg ut"
-  },
-  "onlinecourses": "Nettkurs"
+  "onlinecourses": "Nettkurs",
+  "user": {
+    "name": "Navn"
+  }
 }

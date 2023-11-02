@@ -11,11 +11,11 @@
     "title": "Customize your order"
   },
   "feedback": {
-    "allreadyRegistered": "You are registered for this event, see you soon!"
+    "alreadyRegistered": "You are already registered for this event, see you soon!"
   },
   "payment": {
     "description": "A few more details",
-    "subHeading": "Who are paying",
+    "subHeading": "Who is paying",
     "title": "Payment details"
   },
   "registration": {
@@ -32,7 +32,7 @@
       "vatNumber": "VAT number"
     },
     "complete": {
-      "description": "We are really looking forward to see you!",
+      "description": "We are really looking forward to seeing you!",
       "title": "Registration completed"
     },
     "customertype": {
@@ -40,8 +40,18 @@
       "legend": "Customer type",
       "private": "Private"
     },
-    "description": "A few more details",
+    "description": "A few more details about the event.",
+    "event-title": "Event Title",
+    "id": "Registration ID",
+    "not-found": "Registration not found",
+    "orders": "Orders",
+    "products": "Products",
+    "product-description": "Product Description",
+    "product-name": "Product Name",
+    "quantity": "Quantity",
+    "status": "Status",
     "title": "Registration",
+    "type": "Type",
     "user": {
       "email": "Email",
       "legend": "User details",
