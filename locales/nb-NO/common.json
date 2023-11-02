@@ -9,7 +9,6 @@
     "edit": "Rediger",
     "register": "Registrer",
     "register-cta": "Registrer deg for dette arrangementet",
-    "registered-already": "Du er allerede registrert for dette arrangementet",
     "save": "Lagre",
     "send": "Send",
     "submit": "Send inn",
@@ -21,6 +20,9 @@
       "description": "Vi prøvde å utføre handlingen, men noe gikk galt. Vennligst prøv igjen senere.",
       "title": "Noe gikk veldig galt"
     }
+  },
+  "registration": {
+    "alreadyRegistered": "Du er allerede registrert for dette arrangementet"
   },
   "events": {
     "description": "Beskrivelse",

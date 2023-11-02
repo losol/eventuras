@@ -22,6 +22,9 @@
       "title": "Something went very wrong"
     }
   },
+  "registration": {
+    "alreadyRegistered": "You are already registered for this event"
+  },
   "events": {
     "description": "Description",
     "event": "Event",
