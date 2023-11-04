@@ -8,7 +8,7 @@
     "continue": "Fortsett",
     "edit": "Rediger",
     "register": "Registrer",
-    "register-cta": "Registrer deg for dette arrangementet",
+    "register-cta": "Meld meg på!",
     "save": "Lagre",
     "send": "Send",
     "submit": "Send inn",
@@ -21,18 +21,19 @@
       "title": "Noe gikk veldig galt"
     }
   },
-  "registration": {
-    "alreadyRegistered": "Du er allerede registrert for dette arrangementet"
-  },
   "events": {
     "description": "Beskrivelse",
     "event": "Arrangement",
     "event-not-found": "Arrangementet ble ikke funnet",
     "events": "Arrangementer",
+    "moreinformation": "Mer informasjon",
     "practicalinformation": "Praktisk informasjon",
     "program": "Program"
   },
   "onlinecourses": "Nettkurs",
+  "registration": {
+    "alreadyRegistered": "Du er allerede registrert for dette arrangementet"
+  },
   "user": {
     "name": "Navn"
   }

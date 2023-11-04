@@ -22,18 +22,19 @@
       "title": "Something went very wrong"
     }
   },
-  "registration": {
-    "alreadyRegistered": "You are already registered for this event"
-  },
   "events": {
     "description": "Description",
     "event": "Event",
     "event-not-found": "Event not found",
     "events": "Events",
+    "moreinformation": "More information",
     "practicalinformation": "Practical information",
     "program": "Program"
   },
   "onlinecourses": "Online courses",
+  "registration": {
+    "alreadyRegistered": "You are already registered for this event"
+  },
   "user": {
     "name": "Name"
   }

@@ -6,7 +6,12 @@ interface LinkProps {
   href: string;
   children?: React.ReactNode;
   className?: string;
-  variant?: 'button-primary' | 'button-secondary' | 'button-light' | 'button-transparent';
+  variant?:
+    | 'button-primary'
+    | 'button-secondary'
+    | 'button-light'
+    | 'button-outline'
+    | 'button-transparent';
   block?: boolean;
   bgDark?: boolean;
   stretch?: boolean;

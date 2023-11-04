@@ -29,12 +29,13 @@ interface ImageProps extends CardChildProps {
 }
 
 interface CardProps {
-  children: ReactNode;
+  children?: ReactNode;
   className?: string;
   backgroundImage?: string;
   block?: boolean;
   dark?: boolean;
   href?: string;
+  container?: boolean;
 }
 
 const Card = (props: CardProps) => {
@@ -66,9 +67,15 @@ const Card = (props: CardProps) => {
       }
     : {};
 
+  const cardContent = props.container ? (
+    <div className="container">{renderedChildren}</div>
+  ) : (
+    renderedChildren
+  );
+
   return (
     <div className={cardClassName} style={cardStyle}>
-      {renderedChildren}
+      {cardContent}
     </div>
   );
 };

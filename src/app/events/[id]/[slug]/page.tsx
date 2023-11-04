@@ -1,10 +1,13 @@
 import { RedirectType } from 'next/dist/client/components/redirect';
 import { permanentRedirect } from 'next/navigation';
 
-import { Layout } from '@/components/ui';
+import { Container, Layout } from '@/components/ui';
+import Card from '@/components/ui/Card';
+import Heading from '@/components/ui/Heading';
 import createSDK from '@/utils/createSDK';
 
 import EventDetails from '../components/EventDetails';
+import EventRegistrationButton from '../components/EventRegistrationButton';
 
 type EventInfoProps = {
   params: {
@@ -34,7 +37,23 @@ const Page: React.FC<EventInfoProps> = async ({ params }) => {
   }
 
   return (
-    <Layout>
+    <Layout fluid>
+      {eventinfo?.featuredImageUrl && (
+        <Card
+          className="mx-auto min-h-[33vh]"
+          {...(eventinfo?.featuredImageUrl && { backgroundImage: eventinfo.featuredImageUrl })}
+        ></Card>
+      )}
+      <section className="py-16">
+        <Container>
+          <Heading as="h1" className="pt-12">
+            {eventinfo?.title ?? 'Mysterious Event'}
+          </Heading>
+          {eventinfo?.description}
+          <EventRegistrationButton eventId={eventinfo.id!} />
+        </Container>
+      </section>
+
       <EventDetails eventinfo={eventinfo} />
     </Layout>
   );

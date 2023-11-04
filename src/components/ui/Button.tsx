@@ -4,11 +4,13 @@ import Loading from '@/components/ui/Loading';
 
 export const buttonStyles = {
   basePadding: 'px-4 py-2',
-  baseMargin: 'm-2',
+  baseMargin: '',
   primary: 'font-bold bg-primary-600 dark:bg-primary-950 hover:bg-primary-700',
-  secondary: 'border border-secondary-300 text-gray-700 hover:bg-secondary-100',
+  secondary: 'border border-secondary-300 text-gray-700 hover:bg-secondary-100/10',
   light: 'bg-primary-100 text-gray-800 hover:bg-primary-200',
   transparent: 'bg-transparent hover:bg-primary-200 hover:bg-opacity-20',
+  outline:
+    'border border-gray-700 rounded text-primary-900 hover:border-primary-500 hover:text-primary-700 hover:bg-primary-100/10 dark:hover:bg-primary-900 transition duration-500',
 };
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -19,7 +21,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   loading?: boolean;
   bgDark?: boolean;
-  variant?: 'primary' | 'secondary' | 'light' | 'transparent';
+  variant?: 'primary' | 'secondary' | 'outline' | 'light' | 'transparent';
   block?: boolean;
 }
 
@@ -46,20 +48,22 @@ const Button: React.FC<ButtonProps> = props => {
     ].join(' ');
 
   return (
-    <button
-      disabled={props.disabled || props.loading}
-      aria-label={props.ariaLabel}
-      onClick={props.onClick}
-      className={buttonClassName}
-    >
-      {props.leftIcon && <span className={`mr-2 ${textColor}`}>{props.leftIcon}</span>}
-      <span className={textColor}>{props.children}</span>
-      {props.loading && (
-        <div>
-          <Loading />
-        </div>
-      )}
-    </button>
+    <div className="dark">
+      <button
+        disabled={props.disabled || props.loading}
+        aria-label={props.ariaLabel}
+        onClick={props.onClick}
+        className={buttonClassName}
+      >
+        {props.leftIcon && <span className={`mr-2 ${textColor}`}>{props.leftIcon}</span>}
+        <span className={textColor}>{props.children}</span>
+        {props.loading && (
+          <div>
+            <Loading />
+          </div>
+        )}
+      </button>
+    </div>
   );
 };
 
