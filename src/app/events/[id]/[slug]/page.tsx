@@ -1,5 +1,4 @@
-import { RedirectType } from 'next/dist/client/components/redirect';
-import { permanentRedirect } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 import { Container, Layout } from '@/components/ui';
 import Card from '@/components/ui/Card';
@@ -15,6 +14,8 @@ type EventInfoProps = {
     slug: string;
   };
 };
+
+export const dynamic = 'force-static';
 
 export async function generateStaticParams() {
   const eventuras = createSDK();
@@ -33,7 +34,7 @@ const Page: React.FC<EventInfoProps> = async ({ params }) => {
   if (!eventinfo) return <div>Event not found</div>;
 
   if (params.slug !== eventinfo.slug) {
-    permanentRedirect(`/events/${eventinfo.id!}/${eventinfo.slug!}`, RedirectType.replace);
+    redirect(`/events/${eventinfo.id!}/${eventinfo.slug!}`);
   }
 
   return (
