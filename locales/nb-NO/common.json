@@ -28,7 +28,8 @@
     "events": "Arrangementer",
     "moreinformation": "Mer informasjon",
     "practicalinformation": "Praktisk informasjon",
-    "program": "Program"
+    "program": "Program",
+    "sectiontitle": "Hva som skjer!"
   },
   "onlinecourses": "Nettkurs",
   "registration": {

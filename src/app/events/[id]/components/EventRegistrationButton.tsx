@@ -26,11 +26,13 @@ export default function EventRegistrationButton({ eventId }: EventRegistrationBu
   return (
     <>
       {isRegistered ? (
-        <div className="py-6">{t('common:registration.alreadyRegistered')}</div>
+        <div className="py-6 my-4">{t('common:registration.alreadyRegistered')}</div>
       ) : (
-        <Link href={`/user/events/${eventId}/registration`} variant="button-secondary" block>
-          {t('common:buttons.register-cta')}
-        </Link>
+        <div className="my-4">
+          <Link href={`/user/events/${eventId}/registration`} variant="button-primary" block>
+            {t('common:buttons.register-cta')}
+          </Link>
+        </div>
       )}
     </>
   );

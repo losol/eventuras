@@ -2,6 +2,8 @@ import { Eventuras } from '@losol/eventuras';
 
 import Environment from './Environment';
 
+type Headers = Record<string, string>;
+
 interface SDKOptions {
   baseUrl?: string;
   authToken?: string;
@@ -10,6 +12,8 @@ interface SDKOptions {
 
 function createSDK({ baseUrl, authToken, authHeader }: SDKOptions = {}): Eventuras {
   const apiBaseUrl: string = baseUrl || Environment.API_BASE_URL;
+  const orgId: string = Environment.NEXT_PUBLIC_ORGANIZATION_ID;
+  const apiVersion = Environment.NEXT_PUBLIC_API_VERSION;
   let token: string | undefined | null;
 
   if (authHeader) {
@@ -18,7 +22,21 @@ function createSDK({ baseUrl, authToken, authHeader }: SDKOptions = {}): Eventur
     token = authToken;
   }
 
-  const config: { BASE: string; TOKEN?: string } = { BASE: apiBaseUrl };
+  const headers: Headers = {
+    'Eventuras-Org-Id': orgId,
+  };
+
+  const config: {
+    BASE: string;
+    TOKEN?: string;
+    HEADERS?: Headers | undefined;
+    VERSION: string;
+  } = {
+    BASE: apiBaseUrl,
+    TOKEN: token ?? undefined,
+    HEADERS: headers,
+    VERSION: apiVersion,
+  };
   if (token) {
     config.TOKEN = token;
   }

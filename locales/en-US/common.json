@@ -29,7 +29,8 @@
     "events": "Events",
     "moreinformation": "More information",
     "practicalinformation": "Practical information",
-    "program": "Program"
+    "program": "Program",
+    "sectiontitle": "Happenings"
   },
   "onlinecourses": "Online courses",
   "registration": {

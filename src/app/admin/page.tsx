@@ -20,7 +20,7 @@ const AdminPage = () => {
             {t('admin:createEvent.content.title')}
           </Link>
         </section>
-        <Heading as="h2">{t('common:events')}</Heading>
+        <Heading as="h2">{t('common:events.sectiontitle')}</Heading>
         <AdminEventList organizationId={ORGANIZATION_ID} />
       </Container>
     </Layout>
