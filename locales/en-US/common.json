@@ -16,6 +16,7 @@
     "view": "View"
   },
   "description": "Description",
+  "edit": "Edit",
   "errors": {
     "fatalError": {
       "description": "We tried to perform the action, but something went wrong, please try again later.",
@@ -27,10 +28,13 @@
     "event": "Event",
     "event-not-found": "Event not found",
     "events": "Events",
-    "moreinformation": "More information",
+    "moreinformation": "Information",
     "practicalinformation": "Practical information",
     "program": "Program",
     "sectiontitle": "Happenings"
+  },
+  "labels": {
+    "edit": "Edit"
   },
   "onlinecourses": "Online courses",
   "registration": {

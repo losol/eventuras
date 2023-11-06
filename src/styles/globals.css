@@ -38,6 +38,10 @@
   blockquote {
     @apply text-xl italic font-semibold text-gray-900;
   }
+
+  .eventdetails p {
+    padding-top: 1rem;
+  }
 }
 
 @layer utilities {

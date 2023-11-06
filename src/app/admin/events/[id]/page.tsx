@@ -53,7 +53,7 @@ const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
           <>
             <Heading as="h1">{event.title ?? ''}</Heading>
             <Link href={`/admin/events/${event.id}/edit`} variant="button-primary">
-              {t('common:edit')}
+              {t('common:labels.edit')}
             </Link>
             <Button
               variant="primary"

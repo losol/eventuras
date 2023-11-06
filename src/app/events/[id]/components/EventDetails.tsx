@@ -14,36 +14,31 @@ type EventProps = {
   bgClassNames?: string;
 };
 
-export default function EventDetails({ eventinfo }: EventProps) {
+const EventDetails: React.FC<EventProps> = ({ eventinfo }) => {
   const { t } = createTranslation();
 
   if (!eventinfo) return <div>{t('common:events.event-not-found')}</div>;
 
   const tabs = [
     {
-      name: 'Description',
-      content: eventinfo.description,
-      heading: t('common:events.description'),
-    },
-    {
-      name: 'More Information',
+      name: t('common:events.moreinformation'),
       content: eventinfo.moreInformation,
-      heading: t('common:events.moreinformation'),
     },
     {
-      name: 'Program',
+      name: t('common:events.program'),
       content: eventinfo.program,
-      heading: t('common:events.program'),
     },
     {
-      name: 'Practical Information',
+      name: t('common:events.practicalinformation'),
       content: eventinfo.practicalInformation,
-      heading: t('common:events.practicalinformation'),
     },
   ].filter(tab => tab.content);
 
   return (
-    <section id="eventdetails" className="bg-primary-100/30 dark:bg-primary-900 py-10 min-h-[60vh]">
+    <section
+      id="eventdetails"
+      className="eventdetails bg-primary-100/30 dark:bg-primary-900 py-10 min-h-[60vh]"
+    >
       <Container>
         <Tabs>
           {tabs.map((tab, index) => (
@@ -55,4 +50,6 @@ export default function EventDetails({ eventinfo }: EventProps) {
       </Container>
     </section>
   );
-}
+};
+
+export default EventDetails;

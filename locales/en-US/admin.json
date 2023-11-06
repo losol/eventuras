@@ -1,36 +1,27 @@
 {
-  "title": "Admin",
   "createEvent": {
-    "content": {
-      "title": "Create Event",
-      "description": "Here you can create your event, be sure to enter both title and slug"
-    },
     "alreadyExists": {
-      "title": "Event already exists.",
-      "description": "An Event with that slug already exists, the slug needs to be unique."
+      "description": "An Event with that slug already exists, the slug needs to be unique.",
+      "title": "Event already exists."
+    },
+    "content": {
+      "description": "Here you can create your event, be sure to enter both title and slug",
+      "title": "Create event"
     }
   },
   "editEvent": {
     "content": {
-      "title": "Edit Event",
-      "description": "Edit event below"
+      "description": "Edit event below",
+      "title": "Edit"
     }
   },
   "eventColumns": {
-    "title": "Title",
+    "actions": "Actions",
     "location": "Location",
-    "when": "When",
-    "actions": "Actions"
-  },
-  "participantColumns": {
-    "name": "Name",
-    "telephone": "Telephone",
-    "status": "Status",
-    "type": "Type",
-    "actions": "Actions"
+    "title": "Title",
+    "when": "When"
   },
   "eventEmailer": {
-    "title": "Email participants",
     "form": {
       "body": {
         "feedbackIncorrect": "Needs at least 10 characters",
@@ -45,11 +36,25 @@
         "feedbackNoInput": "Please provide a subject",
         "label": "Subject"
       },
+      "successFeedback": "Emails succesfully sent!",
       "type": {
         "feedbackNoInput": "Please select at least one Type",
         "label": "Type"
-      },
-      "successFeedback": "Emails succesfully sent!"
+      }
+    },
+    "title": "Email participants"
+  },
+  "events": {
+    "labes": {
+      "create": "Add event"
     }
-  }
+  },
+  "participantColumns": {
+    "actions": "Actions",
+    "name": "Name",
+    "status": "Status",
+    "telephone": "Telephone",
+    "type": "Type"
+  },
+  "title": "Admin"
 }

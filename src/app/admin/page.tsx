@@ -17,7 +17,7 @@ const AdminPage = () => {
         <Heading as="h1">{t('admin:title')}</Heading>
         <section className="py-10">
           <Link href={`/admin/events/create`} variant="button-primary">
-            {t('admin:createEvent.content.title')}
+            {t('admin:events.labes.create')}
           </Link>
         </section>
         <Heading as="h2">{t('common:events.sectiontitle')}</Heading>

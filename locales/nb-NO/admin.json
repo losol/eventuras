@@ -1,5 +1,4 @@
 {
-  "title": "Admin",
   "createEvent": {
     "alreadyExists": {
       "description": "En hendelse med den sneglen eksisterer allerede, sneglen må være unik.",
@@ -7,13 +6,13 @@
     },
     "content": {
       "description": "Her kan du lage ditt arrangement, husk å skrive inn både tittel og slug",
-      "title": "Opprett hendelse"
+      "title": "Nytt arrangement"
     }
   },
   "editEvent": {
     "content": {
-      "description": "Rediger hendelsen nedenfor",
-      "title": "Redigere Hendelsen"
+      "description": "Informasjon om arrangementet",
+      "title": "Rediger"
     }
   },
   "eventColumns": {
@@ -45,11 +44,17 @@
     },
     "title": "E-post til deltakere"
   },
+  "events": {
+    "labes": {
+      "create": "Nytt arrangement"
+    }
+  },
   "participantColumns": {
     "actions": "Actions",
     "name": "Name",
     "status": "Status",
     "telephone": "Telephone",
     "type": "Type"
-  }
+  },
+  "title": "Admin"
 }
