@@ -2,7 +2,7 @@ import React from 'react';
 
 interface TextProps {
   children?: React.ReactNode;
-  text: string | null | undefined;
+  text?: string | null | undefined;
   as?: 'div' | 'span' | 'p';
   className?: string;
   spacingClassName?: string;
