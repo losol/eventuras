@@ -1,24 +1,24 @@
+'use client';
+
+import { ProductDto } from '@losol/eventuras';
 import createTranslation from 'next-translate/createTranslation';
 import { useForm } from 'react-hook-form';
 
 import ProductSelection from '@/components/forms/ProductSelection';
 import Button from '@/components/ui/Button';
-import Heading from '@/components/ui/Heading';
-import { RegistrationProduct } from '@/types/RegistrationProduct';
 import { mapSelectedProductsToQuantity } from '@/utils/api/mappers';
 
 type SubmitCallback = (values: Map<string, number>) => void;
 
 export type RegistrationCustomizeProps = {
-  products: RegistrationProduct[];
+  products: ProductDto[];
   onSubmit: SubmitCallback;
 };
 
-const createFormHandler =
-  (products: RegistrationProduct[], onSubmit: SubmitCallback) => (data: any) => {
-    const submissionMap = mapSelectedProductsToQuantity(products, data);
-    onSubmit(submissionMap);
-  };
+const createFormHandler = (products: ProductDto[], onSubmit: SubmitCallback) => (data: any) => {
+  const submissionMap = mapSelectedProductsToQuantity(products, data);
+  onSubmit(submissionMap);
+};
 
 const RegistrationCustomize = ({ products, onSubmit }: RegistrationCustomizeProps) => {
   const { t } = createTranslation();
@@ -26,10 +26,7 @@ const RegistrationCustomize = ({ products, onSubmit }: RegistrationCustomizeProp
 
   return (
     <>
-      <section className="bg-gray-100 dark:bg-gray-800"></section>
-      <Heading className="container">{t('registration:customize.title')}</Heading>
-      <p className="container pb-12">{t('registration:customize.description')}</p>
-      <form onSubmit={handleSubmit(createFormHandler(products, onSubmit))} className="container">
+      <form onSubmit={handleSubmit(createFormHandler(products, onSubmit))} className="py-10">
         <ProductSelection products={products} register={register} />
         <Button type="submit">{t('common:buttons.continue')}</Button>
       </form>

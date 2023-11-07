@@ -27,7 +27,7 @@ const FatalError = ({
       <p className="font-bold">{title}</p>
       <p>{description}</p>
       {additional && additional.length > 0 && <p>{additional}</p>}
-      <Link href="/">Return</Link>
+      <Link href="/">Front page</Link>
     </div>
   </div>
 );

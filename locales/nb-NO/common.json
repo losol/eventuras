@@ -7,6 +7,7 @@
     "cancel": "Avbryt",
     "continue": "Fortsett",
     "edit": "Rediger",
+    "homepage": "Til forsiden",
     "register": "Registrer",
     "register-cta": "Meld meg på!",
     "save": "Lagre",
@@ -16,6 +17,14 @@
   },
   "description": "Beskrivelse",
   "edit": "Endre",
+  "errormessages": {
+    "event-not-found": "Fant ikke arrangementet",
+    "user-not-found": "Fant ikke brukeren din"
+  },
+  "errorpage": {
+    "description": "Vet ikke mer...",
+    "title": "Feilr."
+  },
   "errors": {
     "fatalError": {
       "description": "Vi prøvde å utføre handlingen, men noe gikk galt. Vennligst prøv igjen senere.",

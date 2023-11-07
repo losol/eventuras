@@ -10,6 +10,15 @@
     "description": "We have some nice experiences to offer",
     "title": "Customize your order"
   },
+  "events": {
+    "registration": {
+      "customizationfor": "Customize your registration for",
+      "description": {
+        "pretitle": "Customize your registration for"
+      },
+      "title": "Register for event"
+    }
+  },
   "feedback": {
     "alreadyRegistered": "You are already registered for this event, see you soon!"
   },
@@ -45,9 +54,9 @@
     "id": "Registration ID",
     "not-found": "Registration not found",
     "orders": "Orders",
-    "products": "Products",
     "product-description": "Product Description",
     "product-name": "Product Name",
+    "products": "Products",
     "quantity": "Quantity",
     "status": "Status",
     "title": "Registration",

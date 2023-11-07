@@ -7,6 +7,7 @@
     "cancel": "Cancel",
     "continue": "Continue",
     "edit": "Edit",
+    "homepage": "To frontpage",
     "register": "Register",
     "register-cta": "Register for this event",
     "registered-already": "You are already registered for this event",
@@ -17,6 +18,14 @@
   },
   "description": "Description",
   "edit": "Edit",
+  "errormessages": {
+    "event-not-found": "Event not found",
+    "user-not-found": "User not found"
+  },
+  "errorpage": {
+    "description": "Do not now anything more.",
+    "title": "Errrrrror."
+  },
   "errors": {
     "fatalError": {
       "description": "We tried to perform the action, but something went wrong, please try again later.",

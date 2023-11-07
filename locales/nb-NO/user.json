@@ -10,6 +10,13 @@
     "description": "Vi har noen fine opplevelser å tilby",
     "title": "Tilpass din bestilling"
   },
+  "events": {
+    "registration": {
+      "customizationfor": "Tilpass påmeldingen til",
+      "description": "Noen flere opplysninger...",
+      "title": "Meld deg på"
+    }
+  },
   "feedback": {
     "alreadyRegistered": "Du er allerede registrert for denne hendelsen, vi sees snart!"
   },
@@ -45,9 +52,9 @@
     "id": "ID",
     "not-found": "Registrering ikke funnet",
     "orders": "Ordre",
-    "products": "Produkter",
     "product-description": "Beskrivelse",
     "product-name": "Navn",
+    "products": "Produkter",
     "quantity": "Antall",
     "status": "Status",
     "title": "Registrering",
