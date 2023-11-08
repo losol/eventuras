@@ -57,8 +57,18 @@
     "type": "Type"
   },
   "products": {
+    "buttons": {
+      "add-product": "New product",
+      "edit-product": "Edit product"
+    },
     "labels": {
       "addnewproduct": "Add new product"
+    },
+    "modal": {
+      "title": {
+        "add-product": "Add product",
+        "edit": "Add a new product"
+      }
     }
   },
   "title": "Admin"

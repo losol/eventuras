@@ -57,8 +57,18 @@
     "type": "Type"
   },
   "products": {
+    "buttons": {
+      "add-product": "Nytt produkt",
+      "edit-product": "Endre"
+    },
     "labels": {
       "addnewproduct": "Nytt produkt"
+    },
+    "modal": {
+      "title": {
+        "add-product": "Legg til produkt",
+        "edit": "Legg til et nytt produkt"
+      }
     }
   },
   "title": "Admin"

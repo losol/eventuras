@@ -9,7 +9,7 @@ import createSDK from '@/utils/createSDK';
 import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';
 
-import AddProductModal from './AddProductModal';
+import ProductModal from './ProductModal';
 import { ProductTable } from './ProductTable';
 
 interface EventProductsEditorProps {
@@ -21,8 +21,9 @@ const EventProductsEditor: React.FC<EventProductsEditorProps> = ({
   eventInfo,
   products: initialProducts,
 }) => {
-  const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
-  const [products, setProducts] = useState<ProductDto[]>(initialProducts); // Use state to manage products
+  const [productModalOpen, setProductModalOpen] = useState(false);
+  const [products, setProducts] = useState<ProductDto[]>(initialProducts);
+  const [currentProduct, setCurrentProduct] = useState<ProductDto | undefined>();
   const { t } = createTranslation();
   const eventuras = createSDK({ baseUrl: Environment.NEXT_PUBLIC_API_BASE_URL });
 
@@ -34,35 +35,55 @@ const EventProductsEditor: React.FC<EventProductsEditorProps> = ({
     setProducts(updatedProducts);
   }, [eventuras.eventProducts, eventInfo.id]);
 
-  const handleAddProduct = async (newProduct: NewProductDto) => {
-    Logger.info({ namespace: 'addproduct' }, 'Adding new product');
-    await eventuras.eventProducts.postV3EventsProducts({
-      eventId: eventInfo.id!,
-      eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID),
-      requestBody: newProduct,
-    });
+  const handleAddOrEditProduct = async (product: NewProductDto | ProductDto) => {
+    if ('productId' in product) {
+      Logger.info({ namespace: 'products' }, 'Editing product');
+      const result = await eventuras.eventProducts.putV3EventsProducts({
+        eventId: eventInfo.id!,
+        productId: product.productId!,
+        eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID),
+        requestBody: product,
+      });
+      Logger.info({ namespace: 'products' }, 'Result:', result);
+    } else {
+      Logger.info({ namespace: 'products' }, 'Adding new product');
+      const result = await eventuras.eventProducts.postV3EventsProducts({
+        eventId: eventInfo.id!,
+        eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID),
+        requestBody: product! as NewProductDto,
+      });
+      Logger.info({ namespace: 'products' }, 'Result:', result);
+    }
 
-    // Refresh the list of products after adding a new one
+    // Refresh the list of products after adding or editing
     await fetchProducts();
 
     // Close the modal
-    setIsAddProductModalOpen(false);
+    setProductModalOpen(false);
   };
 
-  const openAddProductModal = () => setIsAddProductModalOpen(true);
-  const closeAddProductModal = () => setIsAddProductModalOpen(false);
+  const openProductModal = (product?: ProductDto) => {
+    setCurrentProduct(product || undefined);
+    setProductModalOpen(true);
+  };
+
+  const closeProductModal = () => {
+    setCurrentProduct(undefined);
+    setProductModalOpen(false);
+  };
 
   return (
     <div>
-      <Button onClick={openAddProductModal}>{t('admin:products.labels.addnewproduct')}</Button>
+      <Button onClick={() => openProductModal()}>{t('admin:products.labels.addnewproduct')}</Button>
 
-      <AddProductModal
-        isOpen={isAddProductModalOpen}
-        onClose={closeAddProductModal}
-        onSubmit={handleAddProduct}
+      <ProductModal
+        isOpen={productModalOpen}
+        onClose={closeProductModal}
+        onSubmit={handleAddOrEditProduct}
+        product={currentProduct}
       />
 
-      <ProductTable products={products} />
+      <ProductTable products={products} onEdit={openProductModal} />
     </div>
   );
 };

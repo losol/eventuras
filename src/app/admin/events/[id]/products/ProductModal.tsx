@@ -1,36 +1,62 @@
 'use client';
 
 import { Dialog } from '@headlessui/react';
-import type { NewProductDto } from '@losol/eventuras';
-import { useState } from 'react';
+import type { ProductDto } from '@losol/eventuras';
+import createTranslation from 'next-translate/createTranslation';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import Logger from '@/utils/Logger';
 
 import ConfirmDiscardModal from './ConfirmDiscardModal';
 
-interface AddProductModalProps {
+interface ProductModalProps {
   isOpen: boolean;
-  onSubmit: (values: NewProductDto) => void;
+  onSubmit: (values: ProductDto) => void;
   onClose: () => void;
+  product?: ProductDto;
 }
 
-const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onSubmit, onClose }) => {
+const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onSubmit, onClose, product }) => {
   const [confirmDiscardChanges, setConfirmDiscardChanges] = useState(false);
   const {
     register,
     handleSubmit,
+    reset,
     formState: { isDirty },
-  } = useForm<NewProductDto>();
+  } = useForm<ProductDto>({ defaultValues: product || {} });
+  const { t } = createTranslation();
+
+  useEffect(() => {
+    // When the product prop changes, reset the form with new values
+    if (product) {
+      reset(product);
+    }
+  }, [product, reset]);
+
+  const isEditMode = Boolean(product);
+  const buttonText = isEditMode
+    ? t('admin:products.buttons.edit-product')
+    : t('admin:products.buttons.add-product');
+  const titleText = isEditMode
+    ? t('admin:products.modal.title.edit')
+    : t('admin:products.modal.title.add-product');
 
   const inputClassName =
     'w-full p-2 border border-gray-300 rounded-md dark:bg-slate-700 dark:text-gray-100';
 
   const handleFormSubmit = handleSubmit(data => {
-    Logger.info({ namespace: 'addproduct' }, 'Handle this product:', data);
+    Logger.info(
+      { namespace: isEditMode ? 'editproduct' : 'addproduct' },
+      'Handle this product:',
+      data
+    );
 
-    // Submit...
-    onSubmit(data);
+    if (isEditMode && product) {
+      onSubmit({ ...data, productId: product.productId });
+    } else {
+      onSubmit(data);
+    }
 
     // And close the modal
     onClose();
@@ -58,7 +84,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onSubmit, onC
               as="h3"
               className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-200"
             >
-              Add New Product
+              {titleText}
             </Dialog.Title>
 
             <form onSubmit={handleFormSubmit} className="mt-2 space-y-6">
@@ -106,14 +132,14 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onSubmit, onC
                   type="submit"
                   className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md hover:bg-blue-700"
                 >
-                  Add Product
+                  {buttonText}
                 </button>
                 <button
                   type="button"
                   onClick={handleCloseClick}
                   className="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
                 >
-                  Cancel
+                  {t('common:buttons.cancel')}
                 </button>
               </div>
             </form>
@@ -132,4 +158,4 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onSubmit, onC
   );
 };
 
-export default AddProductModal;
+export default ProductModal;
