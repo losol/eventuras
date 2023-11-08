@@ -1,4 +1,5 @@
 'use client';
+import createTranslation from 'next-translate/createTranslation';
 import { useContext } from 'react';
 
 import { Layout } from '@/components/ui';
@@ -13,10 +14,12 @@ import UserProfileCard from './(components)/UserProfileCard';
 const UserProfilePage = () => {
   const { profile } = useContext(UserContext).userState;
   const { loading, userRegistrations } = useUserEventRegistrations(profile?.id);
+  const { t } = createTranslation();
+
   if (!profile) return null;
   return (
     <Layout>
-      <Heading>User profile</Heading>
+      <Heading>{t('user:page.heading')}</Heading>
       <UserProfileCard profile={profile} />
       {loading && <Loading />}
       {userRegistrations.length > 0 && <UserEventRegistrations registrations={userRegistrations} />}

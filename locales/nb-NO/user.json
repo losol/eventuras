@@ -20,6 +20,9 @@
   "feedback": {
     "alreadyRegistered": "Du er allerede registrert for denne hendelsen, vi sees snart!"
   },
+  "page": {
+    "heading": "Dine opplysninger"
+  },
   "payment": {
     "description": "Noen flere detaljer",
     "subHeading": "Hvem betaler",
@@ -52,6 +55,11 @@
     "id": "ID",
     "not-found": "Registrering ikke funnet",
     "orders": "Ordre",
+    "page": {
+      "texts": {
+        "user-already-registered": "Du er allerede registrert for dette arrangementet!"
+      }
+    },
     "product-description": "Beskrivelse",
     "product-name": "Navn",
     "products": "Produkter",
@@ -64,6 +72,13 @@
       "legend": "Brukerdetaljer",
       "name": "Navn",
       "phoneNumber": "Telefonnummer"
+    }
+  },
+  "registrations": {
+    "page": {
+      "already-registered": {
+        "title": "Velkommen"
+      }
     }
   }
 }

@@ -13,6 +13,7 @@
     "save": "Lagre",
     "send": "Send",
     "submit": "Send inn",
+    "userprofile": "Gå til brukerprofilen din",
     "view": "Vis"
   },
   "description": "Beskrivelse",
@@ -42,7 +43,8 @@
     "sectiontitle": "Hva som skjer!"
   },
   "labels": {
-    "edit": "Endre"
+    "edit": "Endre",
+    "registrations": "Registreringer"
   },
   "onlinecourses": "Nettkurs",
   "registration": {

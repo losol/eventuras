@@ -21,7 +21,7 @@ const UserEventRegistrations = ({ registrations }: UserEventRegistrationsProps):
 
   return (
     <div>
-      <Heading>{t('common:labels.registration')}</Heading>
+      <Heading>{t('common:labels.registrations')}</Heading>
       <Grid>
         {registrations.map(registration => {
           const event = registration.event!;

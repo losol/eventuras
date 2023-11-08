@@ -1,8 +1,11 @@
-import { EventDto, ProductDto, UserDto } from '@losol/eventuras';
+import { EventDto, ProductDto, RegistrationDtoPageResponseDto, UserDto } from '@losol/eventuras';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
 import { Layout } from '@/components/ui';
+import Heading from '@/components/ui/Heading';
+import Link from '@/components/ui/Link';
+import Text from '@/components/ui/Text';
 import createSDK from '@/utils/createSDK';
 import Logger from '@/utils/Logger';
 
@@ -28,6 +31,27 @@ const UserEventRegistrationPage: React.FC<UserEventRegistrationPageProps> = asyn
   });
   if (!event) {
     return <div>{t('common:errormessages.event-not-found')}</div>;
+  }
+
+  const userEventRegistrations: RegistrationDtoPageResponseDto =
+    await eventuras.registrations.getV3Registrations({
+      userId: user.id!,
+      eventId: params.id,
+    });
+
+  if (userEventRegistrations && userEventRegistrations.total! > 0) {
+    return (
+      <Layout>
+        <Heading>{t('user:registrations.page.already-registered.title')}</Heading>
+        <Text spacingClassName="py-8">
+          {t('user:registration.page.texts.user-already-registered')}
+        </Text>
+
+        <Link href="/user" variant="button-primary">
+          {t('common:buttons.userprofile')}
+        </Link>
+      </Layout>
+    );
   }
 
   const products: ProductDto[] = await eventuras.eventProducts.getV3EventsProducts({
