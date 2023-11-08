@@ -25,7 +25,7 @@ export enum EnvironmentVariables {
   NEXT_PUBLIC_AUTH0_DOMAIN = 'NEXT_PUBLIC_AUTH0_DOMAIN',
   NEXT_PUBLIC_ORGANIZATION_ID = 'NEXT_PUBLIC_ORGANIZATION_ID',
   NEXT_PUBLIC_SITE_SETTINGS_URL = 'NEXT_PUBLIC_SITE_SETTINGS_URL',
-  API_BASE_URL = 'API_BASE_URL',
+  NEXT_PUBLIC_BACKEND_URL = 'NEXT_PUBLIC_BACKEND_URL',
   AUTH0_CLIENT_ID = 'AUTH0_CLIENT_ID',
   AUTH0_CLIENT_SECRET = 'AUTH0_CLIENT_SECRET',
   AUTH0_API_AUDIENCE = 'AUTH0_API_AUDIENCE',
@@ -84,9 +84,9 @@ class Environment {
     return process.env[identifier]!;
   }
 
-  // Explicit getters for API_BASE_URL andNEXT_PUBLIC variables
-  static get API_BASE_URL() {
-    return process.env.API_BASE_URL!;
+  // Explicit getters for NEXT_PUBLIC_BACKEND_URL andNEXT_PUBLIC variables
+  static get NEXT_PUBLIC_BACKEND_URL() {
+    return process.env.NEXT_PUBLIC_BACKEND_URL!;
   }
 
   static get NEXT_PUBLIC_API_BASE_URL() {

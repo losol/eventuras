@@ -11,7 +11,7 @@ interface SDKOptions {
 }
 
 function createSDK({ baseUrl, authToken, authHeader }: SDKOptions = {}): Eventuras {
-  const apiBaseUrl: string = baseUrl || Environment.API_BASE_URL;
+  const apiBaseUrl: string = baseUrl || Environment.NEXT_PUBLIC_BACKEND_URL;
   const orgId: string = Environment.NEXT_PUBLIC_ORGANIZATION_ID;
   const apiVersion = Environment.NEXT_PUBLIC_API_VERSION;
   let token: string | undefined | null;

@@ -17,7 +17,7 @@ export default async function Homepage() {
   const site = await getSiteSettings();
   const { t } = createTranslation();
 
-  const eventuras = createSDK({ baseUrl: Environment.API_BASE_URL });
+  const eventuras = createSDK({ baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL });
 
   let eventinfos: EventDtoPageResponseDto = { data: [] };
 

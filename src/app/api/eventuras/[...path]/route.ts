@@ -4,7 +4,7 @@ import { getToken } from 'next-auth/jwt';
 import Environment, { EnvironmentVariables } from '@/utils/Environment';
 import Logger from '@/utils/Logger';
 
-const eventurasAPI_URL = Environment.get(EnvironmentVariables.API_BASE_URL);
+const eventurasAPI_URL = Environment.NEXT_PUBLIC_BACKEND_URL;
 
 function isValidURL(str: string): boolean {
   try {
@@ -23,7 +23,7 @@ async function forwarder(request: NextRequest) {
   const token = await getToken({ req: request });
   const accessToken = token?.access_token ?? '';
 
-  if (!eventurasAPI_URL) throw new Error('API_BASE_URL is not defined');
+  if (!eventurasAPI_URL) throw new Error('NEXT_PUBLIC_BACKEND_URL is not defined');
 
   // validate URL
   if (!isValidURL(request.url) || !isValidURL(eventurasAPI_URL)) {

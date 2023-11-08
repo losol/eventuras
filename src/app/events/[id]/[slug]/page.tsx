@@ -26,10 +26,10 @@ export async function generateStaticParams() {
 
   Logger.info(
     { namespace: 'events:staticparams' },
-    `Api Base url: ${Environment.API_BASE_URL}, orgId: ${orgId})`
+    `Api Base url: ${Environment.NEXT_PUBLIC_BACKEND_URL}, orgId: ${orgId})`
   );
 
-  const eventuras = createSDK({ baseUrl: Environment.API_BASE_URL });
+  const eventuras = createSDK({ baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL });
   const eventInfos = await eventuras.events.getV3Events({
     organizationId: orgId,
   });

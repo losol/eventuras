@@ -7,7 +7,7 @@ There's access to the eventuras API through the forwarder, or directly.
 
 Any fetch that goes through `.../api/eventuras/v3` goes through `app/api/eventuras` (as defined in `NEXT_PUBLIC_API_BASE_URL`)which contains a forwarder redirecting to the external(actual) API, but injects the bearer token first, which is not accesible through the frontend directly.
 
-For unsecured calls, the SDK (such as EventsService) can be called directly, this will required OpenApi.BASE to be set to the actual API(as defined in an evironment variable `API_BASE_URL`)
+For unsecured calls, the SDK (such as EventsService) can be called directly, this will required OpenApi.BASE to be set to the actual API(as defined in an evironment variable `NEXT_PUBLIC_BACKEND_URL`)
 
 ## Static API calls
 
