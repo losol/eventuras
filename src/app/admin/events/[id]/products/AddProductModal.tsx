@@ -23,8 +23,11 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onSubmit, onC
     formState: { isDirty },
   } = useForm<NewProductDto>();
 
+  const inputClassName =
+    'w-full p-2 border border-gray-300 rounded-md dark:bg-slate-700 dark:text-gray-100';
+
   const handleFormSubmit = handleSubmit(data => {
-    Logger.info({ namespace: 'addproduct' }, data);
+    Logger.info({ namespace: 'addproduct' }, 'Handle this product:', data);
 
     // Submit...
     onSubmit(data);
@@ -50,18 +53,55 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onSubmit, onC
         className="fixed inset-0 z-10 overflow-y-auto"
       >
         <div className="flex items-center justify-center min-h-screen">
-          <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-            <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
+          <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-slate-700 text-color-gray-100 shadow-xl rounded-2xl">
+            <Dialog.Title
+              as="h3"
+              className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-200"
+            >
               Add New Product
             </Dialog.Title>
-            <form onSubmit={handleFormSubmit} className="mt-2">
-              <input
-                {...register('name')}
-                placeholder="Product Name"
-                className="w-full p-2 border border-gray-300 rounded-md"
-              />
-              {/* TODO: add some more fields */}
-              <div className="mt-4">
+
+            <form onSubmit={handleFormSubmit} className="mt-2 space-y-6">
+              <div>
+                <input
+                  {...register('name', { required: true })}
+                  placeholder="Product Name"
+                  className={inputClassName}
+                />
+              </div>
+              <div>
+                <textarea
+                  {...register('description')}
+                  placeholder="Product Description"
+                  className={inputClassName}
+                  rows={3}
+                />
+              </div>
+              <div>
+                <input
+                  {...register('more')}
+                  placeholder="Additional Information"
+                  className={inputClassName}
+                />
+              </div>
+              <div>
+                <input
+                  type="number"
+                  {...register('price', { valueAsNumber: true })}
+                  placeholder="Price"
+                  className={inputClassName}
+                />
+              </div>
+              <div>
+                <input
+                  type="number"
+                  {...register('vatPercent', { valueAsNumber: true })}
+                  placeholder="VAT Percent"
+                  className={inputClassName}
+                  defaultValue={0}
+                />
+              </div>
+              <div className="flex justify-end space-x-3">
                 <button
                   type="submit"
                   className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md hover:bg-blue-700"
@@ -71,7 +111,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onSubmit, onC
                 <button
                   type="button"
                   onClick={handleCloseClick}
-                  className="inline-flex justify-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                  className="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
                 >
                   Cancel
                 </button>

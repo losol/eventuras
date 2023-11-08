@@ -1,26 +1,52 @@
 'use client';
 
-import type { EventDto, ProductDto } from '@losol/eventuras';
+import type { EventDto, NewProductDto, ProductDto } from '@losol/eventuras';
 import createTranslation from 'next-translate/createTranslation';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import Button from '@/components/ui/Button';
+import createSDK from '@/utils/createSDK';
+import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';
 
 import AddProductModal from './AddProductModal';
+import { ProductTable } from './ProductTable';
 
 interface EventProductsEditorProps {
   eventInfo: EventDto;
   products: ProductDto[];
 }
 
-const EventProductsEditor: React.FC<EventProductsEditorProps> = ({ eventInfo, products }) => {
+const EventProductsEditor: React.FC<EventProductsEditorProps> = ({
+  eventInfo,
+  products: initialProducts,
+}) => {
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
+  const [products, setProducts] = useState<ProductDto[]>(initialProducts); // Use state to manage products
   const { t } = createTranslation();
+  const eventuras = createSDK({ baseUrl: Environment.NEXT_PUBLIC_API_BASE_URL });
 
-  const handleAddProduct = (newProduct: ProductDto) => {
-    Logger.info({ namespace: 'addproduct' }, eventInfo, newProduct);
-    Logger.info({ namespace: 'addproduct' }, '^should do something more...');
+  // Fetch products
+  const fetchProducts = useCallback(async () => {
+    const updatedProducts = await eventuras.eventProducts.getV3EventsProducts({
+      eventId: eventInfo.id!,
+    });
+    setProducts(updatedProducts);
+  }, [eventuras.eventProducts, eventInfo.id]);
+
+  const handleAddProduct = async (newProduct: NewProductDto) => {
+    Logger.info({ namespace: 'addproduct' }, 'Adding new product');
+    await eventuras.eventProducts.postV3EventsProducts({
+      eventId: eventInfo.id!,
+      eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID),
+      requestBody: newProduct,
+    });
+
+    // Refresh the list of products after adding a new one
+    await fetchProducts();
+
+    // Close the modal
+    setIsAddProductModalOpen(false);
   };
 
   const openAddProductModal = () => setIsAddProductModalOpen(true);
@@ -36,13 +62,7 @@ const EventProductsEditor: React.FC<EventProductsEditorProps> = ({ eventInfo, pr
         onSubmit={handleAddProduct}
       />
 
-      {/* Render the list of products */}
-      {products.map((product, index) => (
-        <div key={index}>
-          {/* TODO some more product details */}
-          {product.name}
-        </div>
-      ))}
+      <ProductTable products={products} />
     </div>
   );
 };
