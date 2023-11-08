@@ -7,6 +7,7 @@ import Text from '@/components/ui/Text';
 import createSDK from '@/utils/createSDK';
 import Environment from '@/utils/Environment';
 import formatDate from '@/utils/formatDate';
+import Logger from '@/utils/Logger';
 
 import EventDetails from '../components/EventDetails';
 import EventRegistrationButton from '../components/EventRegistrationButton';
@@ -21,10 +22,27 @@ type EventInfoProps = {
 export const dynamic = 'force-static';
 
 export async function generateStaticParams() {
-  const eventuras = createSDK();
-  const events = await eventuras.events.getV3Events({});
-  if (events && events.data && events.data.length) {
-    return events.data.map(event => ({ id: event.id?.toString() }));
+  const orgId = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
+
+  Logger.info(
+    { namespace: 'events:staticparams' },
+    `Api Base url: ${Environment.API_BASE_URL}, orgId: ${orgId})`
+  );
+
+  const eventuras = createSDK({ baseUrl: Environment.API_BASE_URL });
+  const eventInfos = await eventuras.events.getV3Events({
+    organizationId: orgId,
+  });
+
+  if (!eventInfos) return [];
+
+  if (eventInfos.data) {
+    const staticParams = eventInfos.data.map(eventInfo => ({
+      id: eventInfo.id?.toString(),
+      slug: eventInfo.slug,
+    }));
+    Logger.info({ namespace: 'events:staticparams' }, 'Static params:', staticParams);
+    return staticParams;
   }
 
   return [];
