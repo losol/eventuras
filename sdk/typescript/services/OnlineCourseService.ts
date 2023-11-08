@@ -3,14 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { OnlineCourseDto } from '../models/OnlineCourseDto';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class OnlineCourseService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * @returns OnlineCourseDto Success
      * @throws ApiError
@@ -31,7 +27,6 @@ export class OnlineCourseService {
             },
         });
     }
-
     /**
      * @returns OnlineCourseDto Success
      * @throws ApiError
@@ -57,5 +52,4 @@ export class OnlineCourseService {
             },
         });
     }
-
 }

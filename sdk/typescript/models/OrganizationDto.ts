@@ -2,7 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 export type OrganizationDto = {
     readonly organizationId?: number;
     readonly name?: string | null;

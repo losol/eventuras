@@ -2,9 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { OrganizationSettingType } from './OrganizationSettingType';
-
 export type OrganizationSettingDto = {
     readonly name?: string | null;
     readonly section?: string | null;

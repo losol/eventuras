@@ -5,14 +5,10 @@
 import type { NewRegistrationOrderDto } from '../models/NewRegistrationOrderDto';
 import type { OrderDto } from '../models/OrderDto';
 import type { OrderUpdateRequestDto } from '../models/OrderUpdateRequestDto';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class RegistrationOrdersService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * @returns OrderDto Success
      * @throws ApiError
@@ -38,7 +34,6 @@ export class RegistrationOrdersService {
             },
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -68,7 +63,6 @@ export class RegistrationOrdersService {
             mediaType: 'application/json-patch+json',
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -98,5 +92,4 @@ export class RegistrationOrdersService {
             mediaType: 'application/json-patch+json',
         });
     }
-
 }

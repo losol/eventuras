@@ -2,9 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { OperationType } from './OperationType';
-
 export type EventFormDtoOperation = {
     operationType?: OperationType;
     path?: string | null;

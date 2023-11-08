@@ -2,7 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 export type ProductVariantDto = {
     productVariantId?: number;
     name?: string | null;

@@ -2,9 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { EventParticipantsFilterDto } from './EventParticipantsFilterDto';
-
 export type EmailNotificationDto = {
     recipients?: Array<string> | null;
     eventParticipants?: EventParticipantsFilterDto;

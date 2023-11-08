@@ -6,14 +6,10 @@ import type { NewProductDto } from '../models/NewProductDto';
 import type { ProductDto } from '../models/ProductDto';
 import type { ProductFormDto } from '../models/ProductFormDto';
 import type { ProductVisibility } from '../models/ProductVisibility';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class EventProductsService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * @returns ProductDto Success
      * @throws ApiError
@@ -44,7 +40,6 @@ export class EventProductsService {
             },
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -74,7 +69,6 @@ export class EventProductsService {
             mediaType: 'application/json-patch+json',
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -107,7 +101,6 @@ export class EventProductsService {
             mediaType: 'application/json-patch+json',
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -136,5 +129,4 @@ export class EventProductsService {
             },
         });
     }
-
 }

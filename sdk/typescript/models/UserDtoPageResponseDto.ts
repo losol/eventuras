@@ -2,9 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { UserDto } from './UserDto';
-
 export type UserDtoPageResponseDto = {
     page?: number;
     count?: number;

@@ -2,12 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { EventInfoOptionsDto } from './EventInfoOptionsDto';
 import type { EventInfoStatus } from './EventInfoStatus';
 import type { EventInfoType } from './EventInfoType';
 import type { LocalDate } from './LocalDate';
-
 /**
  * Data Transfer Object (DTO) for Event Information.
  * Used for API between the backend and the frontend.

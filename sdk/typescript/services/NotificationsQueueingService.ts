@@ -5,14 +5,10 @@
 import type { EmailNotificationDto } from '../models/EmailNotificationDto';
 import type { NotificationDto } from '../models/NotificationDto';
 import type { SmsNotificationDto } from '../models/SmsNotificationDto';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class NotificationsQueueingService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * @returns NotificationDto Success
      * @throws ApiError
@@ -37,7 +33,6 @@ export class NotificationsQueueingService {
             mediaType: 'application/json-patch+json',
         });
     }
-
     /**
      * @returns NotificationDto Success
      * @throws ApiError
@@ -62,5 +57,4 @@ export class NotificationsQueueingService {
             mediaType: 'application/json-patch+json',
         });
     }
-
 }

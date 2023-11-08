@@ -2,11 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { PaymentProvider } from './PaymentProvider';
 import type { RegistrationCustomerInfoDto } from './RegistrationCustomerInfoDto';
 import type { RegistrationType } from './RegistrationType';
-
 export type NewRegistrationDto = {
     customer?: RegistrationCustomerInfoDto;
     notes?: string | null;

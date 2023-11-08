@@ -4,11 +4,8 @@
 /* eslint-disable */
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class EventCertificatesService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -48,7 +45,6 @@ export class EventCertificatesService {
             },
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -74,7 +70,6 @@ export class EventCertificatesService {
             },
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -105,7 +100,6 @@ export class EventCertificatesService {
             },
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -131,5 +125,4 @@ export class EventCertificatesService {
             },
         });
     }
-
 }

@@ -5,14 +5,10 @@
 import type { NotificationListOrder } from '../models/NotificationListOrder';
 import type { NotificationStatus } from '../models/NotificationStatus';
 import type { NotificationType } from '../models/NotificationType';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class NotificationsService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -43,7 +39,6 @@ export class NotificationsService {
             },
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -105,5 +100,4 @@ export class NotificationsService {
             },
         });
     }
-
 }

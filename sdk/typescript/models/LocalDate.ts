@@ -2,11 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { CalendarSystem } from './CalendarSystem';
 import type { Era } from './Era';
 import type { IsoDayOfWeek } from './IsoDayOfWeek';
-
 export type LocalDate = {
     calendar?: CalendarSystem;
     year?: number;

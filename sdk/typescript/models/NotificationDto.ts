@@ -2,12 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { Instant } from './Instant';
 import type { NotificationStatisticsDto } from './NotificationStatisticsDto';
 import type { NotificationStatus } from './NotificationStatus';
 import type { NotificationType } from './NotificationType';
-
 export type NotificationDto = {
     readonly notificationId?: number;
     readonly organizationId?: number | null;

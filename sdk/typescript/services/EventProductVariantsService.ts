@@ -4,14 +4,10 @@
 /* eslint-disable */
 import type { NewProductVariantDto } from '../models/NewProductVariantDto';
 import type { ProductVariantDto } from '../models/ProductVariantDto';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class EventProductVariantsService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * @returns ProductVariantDto Success
      * @throws ApiError
@@ -40,7 +36,6 @@ export class EventProductVariantsService {
             },
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -73,7 +68,6 @@ export class EventProductVariantsService {
             mediaType: 'application/json-patch+json',
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -105,5 +99,4 @@ export class EventProductVariantsService {
             },
         });
     }
-
 }

@@ -3,14 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { NotificationRecipientListOrder } from '../models/NotificationRecipientListOrder';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class NotificationRecipientsService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -65,5 +61,4 @@ export class NotificationRecipientsService {
             },
         });
     }
-
 }

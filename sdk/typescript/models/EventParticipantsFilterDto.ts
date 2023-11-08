@@ -2,10 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { RegistrationStatus } from './RegistrationStatus';
 import type { RegistrationType } from './RegistrationType';
-
 export type EventParticipantsFilterDto = {
     eventId?: number | null;
     productId?: number | null;

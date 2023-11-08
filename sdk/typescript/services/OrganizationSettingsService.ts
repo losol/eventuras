@@ -4,14 +4,10 @@
 /* eslint-disable */
 import type { OrganizationSettingDto } from '../models/OrganizationSettingDto';
 import type { OrganizationSettingValueDto } from '../models/OrganizationSettingValueDto';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class OrganizationSettingsService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * @returns OrganizationSettingDto Success
      * @throws ApiError
@@ -37,7 +33,6 @@ export class OrganizationSettingsService {
             },
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -67,7 +62,6 @@ export class OrganizationSettingsService {
             mediaType: 'application/json-patch+json',
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -97,5 +91,4 @@ export class OrganizationSettingsService {
             mediaType: 'application/json-patch+json',
         });
     }
-
 }

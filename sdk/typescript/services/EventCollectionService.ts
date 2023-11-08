@@ -3,14 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { EventCollectionDto } from '../models/EventCollectionDto';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class EventCollectionService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -31,7 +27,6 @@ export class EventCollectionService {
             },
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -56,7 +51,6 @@ export class EventCollectionService {
             mediaType: 'application/json-patch+json',
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -82,7 +76,6 @@ export class EventCollectionService {
             },
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -112,7 +105,6 @@ export class EventCollectionService {
             mediaType: 'application/json-patch+json',
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -138,5 +130,4 @@ export class EventCollectionService {
             },
         });
     }
-
 }

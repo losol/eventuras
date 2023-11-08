@@ -9,14 +9,10 @@ import type { EventFormDtoJsonPatchDocument } from '../models/EventFormDtoJsonPa
 import type { EventInfoType } from '../models/EventInfoType';
 import type { LocalDate } from '../models/LocalDate';
 import type { PeriodMatchingKind } from '../models/PeriodMatchingKind';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class EventsService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * Retrieves a list of events based on the given query.
      * @returns EventDtoPageResponseDto Success
@@ -73,7 +69,6 @@ export class EventsService {
             },
         });
     }
-
     /**
      * Creates a new event.
      * @returns EventDto Success
@@ -102,7 +97,6 @@ export class EventsService {
             mediaType: 'application/json-patch+json',
         });
     }
-
     /**
      * Retrieves event details by ID.
      * @returns EventDto Success
@@ -132,7 +126,6 @@ export class EventsService {
             },
         });
     }
-
     /**
      * Updates an existing event by ID.
      * @returns EventDto Success
@@ -169,7 +162,6 @@ export class EventsService {
             mediaType: 'application/json-patch+json',
         });
     }
-
     /**
      * Partially updates a specific event by its ID using JSON Patch.
      * @returns any Success
@@ -206,7 +198,6 @@ export class EventsService {
             mediaType: 'application/json-patch+json',
         });
     }
-
     /**
      * Deletes an event by ID.
      * @returns any Success
@@ -236,5 +227,4 @@ export class EventsService {
             },
         });
     }
-
 }

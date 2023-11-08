@@ -3,14 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { RoleRequestDto } from '../models/RoleRequestDto';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class OrganizationMemberRolesService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * @returns string Success
      * @throws ApiError
@@ -39,7 +35,6 @@ export class OrganizationMemberRolesService {
             },
         });
     }
-
     /**
      * @returns string Success
      * @throws ApiError
@@ -72,7 +67,6 @@ export class OrganizationMemberRolesService {
             mediaType: 'application/json-patch+json',
         });
     }
-
     /**
      * @returns string Success
      * @throws ApiError
@@ -105,5 +99,4 @@ export class OrganizationMemberRolesService {
             mediaType: 'application/json-patch+json',
         });
     }
-
 }

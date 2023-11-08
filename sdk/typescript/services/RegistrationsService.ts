@@ -6,14 +6,10 @@ import type { NewRegistrationDto } from '../models/NewRegistrationDto';
 import type { RegistrationDto } from '../models/RegistrationDto';
 import type { RegistrationDtoPageResponseDto } from '../models/RegistrationDtoPageResponseDto';
 import type { RegistrationFormDto } from '../models/RegistrationFormDto';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class RegistrationsService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * @returns RegistrationDtoPageResponseDto Success
      * @throws ApiError
@@ -66,7 +62,6 @@ export class RegistrationsService {
             },
         });
     }
-
     /**
      * @returns RegistrationDto Success
      * @throws ApiError
@@ -91,7 +86,6 @@ export class RegistrationsService {
             mediaType: 'application/json-patch+json',
         });
     }
-
     /**
      * @returns RegistrationDto Success
      * @throws ApiError
@@ -149,7 +143,6 @@ export class RegistrationsService {
             },
         });
     }
-
     /**
      * @returns RegistrationDto Success
      * @throws ApiError
@@ -179,7 +172,6 @@ export class RegistrationsService {
             mediaType: 'application/json-patch+json',
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -205,7 +197,6 @@ export class RegistrationsService {
             },
         });
     }
-
     /**
      * Alias for POST /v3/registrations
      * @returns RegistrationDto Success
@@ -237,5 +228,4 @@ export class RegistrationsService {
             },
         });
     }
-
 }

@@ -4,14 +4,10 @@
 /* eslint-disable */
 import type { OrganizationDto } from '../models/OrganizationDto';
 import type { OrganizationFormDto } from '../models/OrganizationFormDto';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class OrganizationsService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * @returns OrganizationDto Success
      * @throws ApiError
@@ -32,7 +28,6 @@ export class OrganizationsService {
             },
         });
     }
-
     /**
      * @returns OrganizationDto Success
      * @throws ApiError
@@ -57,7 +52,6 @@ export class OrganizationsService {
             mediaType: 'application/json-patch+json',
         });
     }
-
     /**
      * @returns OrganizationDto Success
      * @throws ApiError
@@ -83,7 +77,6 @@ export class OrganizationsService {
             },
         });
     }
-
     /**
      * @returns OrganizationDto Success
      * @throws ApiError
@@ -113,7 +106,6 @@ export class OrganizationsService {
             mediaType: 'application/json-patch+json',
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -139,5 +131,4 @@ export class OrganizationsService {
             },
         });
     }
-
 }

@@ -2,7 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 export enum PaymentProvider {
     EMAIL_INVOICE = 'EmailInvoice',
     POWER_OFFICE_EMAIL_INVOICE = 'PowerOfficeEmailInvoice',

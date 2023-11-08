@@ -2,9 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { ProductVisibility } from './ProductVisibility';
-
 export type ProductFormDto = {
     published?: boolean | null;
     visibility?: ProductVisibility;

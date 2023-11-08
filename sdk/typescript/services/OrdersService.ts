@@ -6,14 +6,10 @@ import type { NewOrderRequestDto } from '../models/NewOrderRequestDto';
 import type { OrderDto } from '../models/OrderDto';
 import type { OrderStatus } from '../models/OrderStatus';
 import type { OrderUpdateRequestDto } from '../models/OrderUpdateRequestDto';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class OrdersService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * @returns OrderDto Success
      * @throws ApiError
@@ -47,7 +43,6 @@ export class OrdersService {
             },
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -77,7 +72,6 @@ export class OrdersService {
             mediaType: 'application/json-patch+json',
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -103,7 +97,6 @@ export class OrdersService {
             },
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -159,7 +152,6 @@ export class OrdersService {
             },
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -184,5 +176,4 @@ export class OrdersService {
             mediaType: 'application/json-patch+json',
         });
     }
-
 }

@@ -3,14 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { CertificateFormat } from '../models/CertificateFormat';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class CertificatesService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -41,5 +37,4 @@ export class CertificatesService {
             },
         });
     }
-
 }

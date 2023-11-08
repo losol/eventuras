@@ -5,7 +5,6 @@
 import type { BaseHttpRequest } from './core/BaseHttpRequest';
 import type { OpenAPIConfig } from './core/OpenAPI';
 import { FetchHttpRequest } from './core/FetchHttpRequest';
-
 import { CertificatesService } from './services/CertificatesService';
 import { EventCertificatesService } from './services/EventCertificatesService';
 import { EventCollectionService } from './services/EventCollectionService';
@@ -26,11 +25,8 @@ import { RegistrationCertificateService } from './services/RegistrationCertifica
 import { RegistrationOrdersService } from './services/RegistrationOrdersService';
 import { RegistrationsService } from './services/RegistrationsService';
 import { UsersService } from './services/UsersService';
-
 type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
-
 export class Eventuras {
-
     public readonly certificates: CertificatesService;
     public readonly eventCertificates: EventCertificatesService;
     public readonly eventCollection: EventCollectionService;
@@ -51,9 +47,7 @@ export class Eventuras {
     public readonly registrationOrders: RegistrationOrdersService;
     public readonly registrations: RegistrationsService;
     public readonly users: UsersService;
-
     public readonly request: BaseHttpRequest;
-
     constructor(config?: Partial<OpenAPIConfig>, HttpRequest: HttpRequestConstructor = FetchHttpRequest) {
         this.request = new HttpRequest({
             BASE: config?.BASE ?? '',
@@ -66,7 +60,6 @@ export class Eventuras {
             HEADERS: config?.HEADERS,
             ENCODE_PATH: config?.ENCODE_PATH,
         });
-
         this.certificates = new CertificatesService(this.request);
         this.eventCertificates = new EventCertificatesService(this.request);
         this.eventCollection = new EventCollectionService(this.request);

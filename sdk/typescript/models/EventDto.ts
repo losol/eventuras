@@ -2,11 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { EventInfoStatus } from './EventInfoStatus';
 import type { EventInfoType } from './EventInfoType';
 import type { LocalDate } from './LocalDate';
-
 export type EventDto = {
     id?: number;
     type?: EventInfoType;

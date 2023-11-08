@@ -7,14 +7,10 @@ import type { UserDto } from '../models/UserDto';
 import type { UserDtoPageResponseDto } from '../models/UserDtoPageResponseDto';
 import type { UserFormDto } from '../models/UserFormDto';
 import type { UserListOrder } from '../models/UserListOrder';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class UsersService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * Gets information about the current user. Creates a new user if no user with the email exists.
      * @returns UserDto Success
@@ -36,7 +32,6 @@ export class UsersService {
             },
         });
     }
-
     /**
      * @returns UserDto Success
      * @throws ApiError
@@ -62,7 +57,6 @@ export class UsersService {
             },
         });
     }
-
     /**
      * @returns UserDto Success
      * @throws ApiError
@@ -92,7 +86,6 @@ export class UsersService {
             mediaType: 'application/json-patch+json',
         });
     }
-
     /**
      * @returns UserDtoPageResponseDto Success
      * @throws ApiError
@@ -136,7 +129,6 @@ export class UsersService {
             },
         });
     }
-
     /**
      * @returns UserDto Success
      * @throws ApiError
@@ -161,5 +153,4 @@ export class UsersService {
             mediaType: 'application/json-patch+json',
         });
     }
-
 }

@@ -4,11 +4,8 @@
 /* eslint-disable */
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-
 export class OrganizationMembersService {
-
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -37,7 +34,6 @@ export class OrganizationMembersService {
             },
         });
     }
-
     /**
      * @returns any Success
      * @throws ApiError
@@ -66,5 +62,4 @@ export class OrganizationMembersService {
             },
         });
     }
-
 }
