@@ -56,5 +56,10 @@
     "telephone": "Telephone",
     "type": "Type"
   },
+  "products": {
+    "labels": {
+      "addnewproduct": "Add new product"
+    }
+  },
   "title": "Admin"
 }
