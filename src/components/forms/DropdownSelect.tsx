@@ -3,26 +3,21 @@ import { IconCheck, IconSelector } from '@tabler/icons-react';
 import { Fragment } from 'react';
 import { Controller } from 'react-hook-form';
 
+import { TEST_ID_ATTRIBUTE } from '@/utils/constants';
+
 export type DropdownSelectProps = {
   multiSelect: boolean;
   className: string;
   label: string;
   name: string;
-  control: any; //grab from react-hook-form
-  errors: any; //grab from react-hook-form
-  rules: any; //grab from react-hook-form
+  control: any;
+  errors: any;
+  rules: any;
   options: any;
+  [TEST_ID_ATTRIBUTE]?: string;
 };
-export default function DropdownSelect({
-  control,
-  options,
-  rules,
-  label,
-  className,
-  multiSelect,
-  name,
-  errors,
-}: DropdownSelectProps) {
+export default function DropdownSelect(props: DropdownSelectProps) {
+  const { control, options, rules, label, className, multiSelect, name, errors } = props;
   return (
     <div className={className}>
       <label htmlFor="statusSelector">{label}</label>
@@ -39,6 +34,7 @@ export default function DropdownSelect({
               onChange={onChange}
               onBlur={onBlur}
               selected={value ?? []}
+              data-test-id={props[TEST_ID_ATTRIBUTE]}
             />
           );
         }}
@@ -64,16 +60,18 @@ export type DropdownProps = {
   onChange: (selected: string[] | string) => void;
   onBlur: (event: any) => void;
   selected: string[] | string; //array of ids for multiSelect
+  [TEST_ID_ATTRIBUTE]?: string;
 };
 
-export function Dropdown({
-  id,
-  options,
-  onChange,
-  multiSelect,
-  onBlur,
-  selected = multiSelect ? [] : options[0].id,
-}: DropdownProps) {
+export function Dropdown(props: DropdownProps) {
+  const {
+    id,
+    options,
+    onChange,
+    multiSelect,
+    onBlur,
+    selected = multiSelect ? [] : options[0].id,
+  } = props;
   const renderSelection = () => {
     if (multiSelect) {
       const s = selected as string[];
@@ -90,6 +88,7 @@ export function Dropdown({
       <Listbox value={selected} onChange={onChange} multiple={multiSelect}>
         <div className="relative mt-1 text-black">
           <Listbox.Button
+            data-test-id={props[TEST_ID_ATTRIBUTE]}
             onBlur={onBlur}
             className="relative border-2 bg-gray-100 w-full cursor-default bg-white py-4 pl-3 pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm"
           >
@@ -107,6 +106,7 @@ export function Dropdown({
             <Listbox.Options className="list-none absolute mt-1 max-h-60 w-full overflow-auto bg-white py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
               {options.map(option => (
                 <Listbox.Option
+                  data-test-id={option.id}
                   key={option.id}
                   className={({ active }) =>
                     `relative cursor-default select-none py-2 pl-5 pr-4 ${

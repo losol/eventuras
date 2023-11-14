@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Loading from '@/components/ui/Loading';
+import { TEST_ID_ATTRIBUTE } from '@/utils/constants';
 
 export const buttonStyles = {
   basePadding: 'px-4 py-2',
@@ -23,6 +24,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   bgDark?: boolean;
   variant?: 'primary' | 'secondary' | 'outline' | 'light' | 'transparent';
   block?: boolean;
+  [TEST_ID_ATTRIBUTE]?: string;
 }
 
 const Button: React.FC<ButtonProps> = props => {
@@ -54,6 +56,7 @@ const Button: React.FC<ButtonProps> = props => {
         aria-label={props.ariaLabel}
         onClick={props.onClick}
         className={buttonClassName}
+        data-test-id={props[TEST_ID_ATTRIBUTE]}
       >
         {props.leftIcon && <span className={`mr-2 ${textColor}`}>{props.leftIcon}</span>}
         <span className={textColor}>{props.children}</span>

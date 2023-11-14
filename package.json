@@ -14,7 +14,9 @@
     "start": "next start",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "create-random-event": "NODE_ENV=development npx ts-node ./scripts/api/createEvents.ts --ignore=false"
+    "create-random-event": "NODE_ENV=development npx ts-node ./scripts/api/createEvents.ts --ignore=false",
+    "test:playwright": "playwright test",
+    "test:playwright:ui": "playwright test --ui"
   },
   "lint-staged": {
     "**/*.(ts|tsx|js)": [
@@ -39,6 +41,7 @@
     "@tanstack/react-table": "^8.10.7",
     "@types/debug": "^4.1.11",
     "debug": "^4.3.4",
+    "dotenv": "^16.3.1",
     "html-react-parser": "^5.0.6",
     "i18n": "^0.15.1",
     "lexical": "^0.12.2",
@@ -56,6 +59,7 @@
     "@next/bundle-analyzer": "^14.0.1",
     "@next/eslint-plugin-next": "^14.0.1",
     "@ngneat/falso": "^7.1.1",
+    "@playwright/test": "^1.39.0",
     "@storybook/addon-a11y": "^7.5.3",
     "@storybook/addon-console": "^2.0.0",
     "@storybook/addon-docs": "^7.5.3",

@@ -57,6 +57,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
                 type="radio"
                 id="emailinvoice"
                 value={PaymentProvider.POWER_OFFICE_EMAIL_INVOICE}
+                data-test-id="registration-emailinvoice-input"
                 defaultChecked={true}
                 {...register('paymentMethod')}
               />
@@ -66,6 +67,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
               <input
                 type="radio"
                 id="ehfInvoice"
+                data-test-id="registration-ehfinvoice-input"
                 value={PaymentProvider.POWER_OFFICE_EHFINVOICE}
                 {...register('paymentMethod')}
               />
@@ -102,6 +104,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
               required: 'Zip code is Required',
             })}
             label={t('user:registration.address.zip')}
+            data-test-id="registration-zipcode-input"
             placeholder="Zip Code"
             errors={errors}
             className={defaultInputStyle}
@@ -111,6 +114,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
               required: 'City is required',
             })}
             label={t('user:registration.address.city')}
+            data-test-id="registration-city-input"
             placeholder="City"
             errors={errors}
             className={defaultInputStyle}
@@ -120,6 +124,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
               required: 'Country is required',
             })}
             label={t('user:registration.address.country')}
+            data-test-id="registration-country-input"
             default="Norway"
             placeholder="Country"
             errors={errors}
@@ -137,6 +142,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
                 required: 'Vat Number is required for business customers',
               })}
               label={t('user:registration.businessinfo.vatNumber')}
+              data-test-id="registration-vat-input"
               placeholder="Vat Number"
               errors={errors}
               className={defaultInputStyle}
@@ -151,7 +157,9 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
           </fieldset>
         )}
 
-        <Button type="submit">{t('common:buttons.continue')}</Button>
+        <Button data-test-id="registration-payment-submit-button" type="submit">
+          {t('common:buttons.continue')}
+        </Button>
       </form>
     </>
   );

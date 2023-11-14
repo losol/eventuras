@@ -1,5 +1,7 @@
 import NextLink from 'next/link';
 
+import { TEST_ID_ATTRIBUTE } from '@/utils/constants';
+
 import { buttonStyles } from './Button';
 
 interface LinkProps {
@@ -15,18 +17,12 @@ interface LinkProps {
   block?: boolean;
   bgDark?: boolean;
   stretch?: boolean;
+  [TEST_ID_ATTRIBUTE]?: string;
 }
 
-const Link: React.FC<LinkProps> = ({
-  href,
-  children,
-  className,
-  bgDark = false,
-  block = false,
-  variant,
-  stretch,
-}) => {
+const Link: React.FC<LinkProps> = props => {
   // Text color
+  const { href, children, className, bgDark = false, block = false, variant, stretch } = props;
   const textColor =
     bgDark || variant == 'button-primary' ? 'text-gray-200' : 'text-gray-800 dark:text-gray-200';
 
@@ -54,7 +50,7 @@ const Link: React.FC<LinkProps> = ({
   ].join(' ');
 
   return (
-    <NextLink className={classes} href={href}>
+    <NextLink className={classes} href={href} data-test-id={props[TEST_ID_ATTRIBUTE]}>
       {children}
     </NextLink>
   );

@@ -157,7 +157,12 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
     <Layout>
       <Heading>{t(`admin:editEvent.content.title`)}</Heading>
       <p>{t(`admin:editEvent.content.description`)}</p>
-      <form onSubmit={handleSubmit(onSubmitForm)} className="shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <form
+        onSubmit={handleSubmit(onSubmitForm)}
+        className="shadow-md rounded px-8 pt-6 pb-8 mb-4"
+        data-test-id="event-edit-form"
+        data-event-id={eventinfo.id}
+      >
         <fieldset disabled={apiState.loading} className={fieldsetClassName}>
           <legend className={fieldsetLegendClassName}>Overview</legend>
           <input
@@ -203,6 +208,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
             }))}
           />
           <DropdownSelect
+            data-test-id="event-status-select"
             multiSelect={false}
             className="relative z-10 mb-4"
             label="Status"
@@ -355,7 +361,11 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
               </Checkbox>
             </div>
             <div className="mr-4">
-              <Checkbox id="event-published" {...register('published')}>
+              <Checkbox
+                id="event-published"
+                {...register('published')}
+                data-test-id="event-published-checkbox"
+              >
                 <CheckBoxLabel>Published</CheckBoxLabel>
               </Checkbox>
             </div>

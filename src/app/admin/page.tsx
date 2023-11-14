@@ -16,7 +16,11 @@ const AdminPage = () => {
       <Container>
         <Heading as="h1">{t('admin:title')}</Heading>
         <section className="py-10">
-          <Link href={`/admin/events/create`} variant="button-primary">
+          <Link
+            href={`/admin/events/create`}
+            variant="button-primary"
+            data-test-id="add-event-button"
+          >
             {t('admin:events.labes.create')}
           </Link>
         </section>

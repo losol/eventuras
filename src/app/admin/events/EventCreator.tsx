@@ -130,6 +130,7 @@ const EventCreator = () => {
             {...titleRegistration}
             label="Event Title"
             placeholder="Event Title"
+            data-test-id="event-title-input"
             errors={errors}
             className={defaultInputStyle}
           />
@@ -147,6 +148,7 @@ const EventCreator = () => {
         <Button
           loading={apiState.loading}
           type="submit"
+          data-test-id="create-event-submit-button"
           onClick={() => {
             //slugify slug before submitting
             setValue('slug', slugify(getValues('slug')));

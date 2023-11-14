@@ -43,7 +43,7 @@ const UserEventRegistrationPage: React.FC<UserEventRegistrationPageProps> = asyn
     return (
       <Layout>
         <Heading>{t('user:registrations.page.already-registered.title')}</Heading>
-        <Text spacingClassName="py-8">
+        <Text spacingClassName="py-8" data-test-id="already-registered-text">
           {t('user:registration.page.texts.user-already-registered')}
         </Text>
 

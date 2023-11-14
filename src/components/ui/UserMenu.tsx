@@ -38,12 +38,22 @@ const UserMenu = (props: UserMenuProps) => {
         </Link>
       )}
       {!userState.auth?.isAuthenticated && (
-        <Button variant="transparent" onClick={handleLogin} bgDark={props.bgDark}>
+        <Button
+          variant="transparent"
+          onClick={handleLogin}
+          bgDark={props.bgDark}
+          data-test-id="login-button"
+        >
           Log in
         </Button>
       )}
       {userState.auth?.isAuthenticated && (
-        <Button variant="transparent" onClick={handleLogout} bgDark={props.bgDark}>
+        <Button
+          variant="transparent"
+          onClick={handleLogout}
+          bgDark={props.bgDark}
+          data-test-id="logout-button"
+        >
           Log out
         </Button>
       )}

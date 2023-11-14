@@ -28,7 +28,9 @@ const RegistrationCustomize = ({ products, onSubmit }: RegistrationCustomizeProp
     <>
       <form onSubmit={handleSubmit(createFormHandler(products, onSubmit))} className="py-10">
         <ProductSelection products={products} register={register} />
-        <Button type="submit">{t('common:buttons.continue')}</Button>
+        <Button type="submit" data-test-id="registration-customize-submit-button">
+          {t('common:buttons.continue')}
+        </Button>
       </form>
     </>
   );

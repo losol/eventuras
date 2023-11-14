@@ -1,5 +1,7 @@
 import React, { FC, InputHTMLAttributes, ReactNode } from 'react';
 
+import { TEST_ID_ATTRIBUTE } from '@/utils/constants';
+
 export const checkboxStyles = {
   container: 'my-2',
   checkbox:
@@ -76,6 +78,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>((props, ref) 
         ref={ref}
         disabled={disabled}
         defaultChecked={defaultChecked}
+        data-test-id={props[TEST_ID_ATTRIBUTE]}
         {...oProps}
       />
       {enhancedChildren}

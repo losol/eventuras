@@ -29,6 +29,9 @@ const AppNotifications: React.FC<AppNotificationsProps> = ({
           {appNotifications.map(appNotification => (
             <div
               key={appNotification.id}
+              data-test-id={
+                appNotification.type === 'success' ? 'notification-success' : 'notification-error'
+              }
               className={`m-2 p-4 rounded shadow-lg 
                             ${
                               appNotification.type === 'success'
