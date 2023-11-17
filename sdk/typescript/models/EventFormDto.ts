@@ -13,7 +13,7 @@ import type { LocalDate } from './LocalDate';
 export type EventFormDto = {
     title: string;
     slug: string;
-    id?: number;
+    id?: number | null;
     type?: EventInfoType;
     status?: EventInfoStatus;
     organizationId?: number;

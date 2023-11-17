@@ -19,7 +19,7 @@ namespace Eventuras.WebApi.Controllers.v3.Events
         [Required]
         public string Slug { get; set; }
 
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         public EventInfo.EventInfoType Type { get; set; } = EventInfo.EventInfoType.Course;
         public EventInfo.EventInfoStatus Status { get; set; } = EventInfo.EventInfoStatus.Draft;

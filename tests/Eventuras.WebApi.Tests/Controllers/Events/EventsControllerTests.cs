@@ -748,8 +748,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                     {
                         // end date before start date
                         slug = "test",
-                        startDate = "2030-02-01",
-                        endDate = "2030-01-01"
+                        dateStart = "2030-02-01",
+                        dateEnd = "2030-01-01"
                     }
                 },
                 new object[]
@@ -758,7 +758,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                     {
                         // invalid start date
                         slug = "test",
-                        startDate = "asd"
+                        dateStart = "asd"
                     }
                 },
                 new object[]
@@ -767,7 +767,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                     {
                         // invalid end date
                         slug = "test",
-                        endDate = "asd"
+                        dateEnd = "asd"
                     }
                 },
             };
@@ -851,8 +851,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                 featured = true,
                 program = "Test event program",
                 practicalInformation = "Test information",
-                startDate = "2030-01-01",
-                endDate = "2030-01-02"
+                dateStart = "2030-01-01",
+                dateEnd = "2030-01-02"
             });
             response.CheckOk();
 
@@ -990,8 +990,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                 featured = true,
                 program = "Test event program",
                 practicalInformation = "Test information",
-                startDate = "2030-01-01",
-                endDate = "2030-01-02"
+                dateStart = "2030-01-01",
+                dateEnd = "2030-01-02"
             });
             response.CheckOk();
 
