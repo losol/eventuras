@@ -60,7 +60,7 @@ export const createEvent = (
 ): Promise<ApiResult<EventDto>> =>
   apiFetch(ApiURLs.events(), { method: 'POST', body: JSON.stringify(formValues), ...init });
 export const createProduct = (
-  eventId: string,
+  eventId: number,
   product: NewProductDto,
   init?: RequestInit | undefined
 ): Promise<ApiResult<EventDto>> =>
@@ -70,16 +70,16 @@ export const createProduct = (
     ...init,
   });
 export const updateEvent = (
-  eventId: string,
+  eventId: number,
   formValues: EventFormDto
 ): Promise<ApiResult<EventDto>> =>
   apiFetch(ApiURLs.event({ eventId }), { method: 'PUT', body: JSON.stringify(formValues) });
 export const getEvents = (
   options: GetEventsOptions = {}
 ): Promise<ApiResult<EventDtoPageResponseDto>> => apiFetch(ApiURLs.events(options));
-export const getEvent = (eventId: string): Promise<ApiResult<EventDto>> =>
+export const getEvent = (eventId: number): Promise<ApiResult<EventDto>> =>
   apiFetch(ApiURLs.event({ eventId }));
-export const getEventProducts = (eventId: string): Promise<ApiResult<ProductDto[]>> =>
+export const getEventProducts = (eventId: number): Promise<ApiResult<ProductDto[]>> =>
   apiFetch(ApiURLs.eventProducts({ eventId }));
 export const getEventRegistrations = async (options: GetEventRegistrationsOptions) =>
   apiFetch(ApiURLs.eventRegistrations(options));

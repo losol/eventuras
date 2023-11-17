@@ -26,7 +26,7 @@ export const useEvent = (eventId: number) => {
 
   useEffect(() => {
     const execute = async () => {
-      const result = await getEvent(eventRef.current.toString());
+      const result = await getEvent(eventRef.current);
       setLoading(false);
       if (result.ok) {
         setEvent(result.value);
@@ -114,7 +114,7 @@ export const useEventProducts = (eventId: number) => {
 
   useEffect(() => {
     const execute = async () => {
-      const result = await getEventProducts(eventRef.current.toString());
+      const result = await getEventProducts(eventRef.current);
       setLoading(false);
       if (result.ok) {
         setRegistrationProducts(result.value);

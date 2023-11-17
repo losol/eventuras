@@ -72,7 +72,7 @@ async function forwarder(request: NextRequest) {
         body: JSON.stringify(jBody),
         method: request.method,
         status: fResponse.status,
-        data,
+        data: JSON.stringify(data),
         accessToken,
       }
     );

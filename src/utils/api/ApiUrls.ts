@@ -1,7 +1,7 @@
 import Environment from '../Environment';
 import { getQueryString } from './utils';
 type ByEventId = {
-  eventId: string;
+  eventId: number;
 };
 
 type ByRegistrationId = {

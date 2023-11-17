@@ -11,16 +11,16 @@ export type UserEventRegistrationCardProps = {
   registrationId: number;
   eventTitle: string;
   eventDescription: string;
-  startDate: any;
-  endDate: any;
+  dateStart: any;
+  dateEnd: any;
   products: ProductOrderDto[];
 };
 
 const UserEventRegistrationCard = ({
   registrationId,
   eventTitle,
-  startDate,
-  endDate,
+  dateStart,
+  dateEnd,
   products,
 }: UserEventRegistrationCardProps): ReactElement => {
   const { t } = createTranslation();
@@ -30,7 +30,7 @@ const UserEventRegistrationCard = ({
         {eventTitle}
       </Card.Heading>
       <Card.Text>
-        {formatDate(startDate, endDate, Environment.NEXT_PUBLIC_DEFAULT_LOCALE)}
+        {formatDate(dateStart, dateEnd, Environment.NEXT_PUBLIC_DEFAULT_LOCALE)}
       </Card.Text>
       {products.length > 0 && (
         <Card.Text>

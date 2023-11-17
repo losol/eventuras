@@ -1,5 +1,6 @@
+'use client';
 /**
- * This is a placeholder editor which may be replaced by something like lexical in the near future
+ * This is a markdown editor
  * @returns <textarea />
 
  */
