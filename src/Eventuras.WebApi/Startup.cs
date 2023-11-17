@@ -4,6 +4,7 @@ using Eventuras.Services;
 using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Config;
 using Eventuras.WebApi.Extensions;
+using Eventuras.WebApi.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -72,6 +73,7 @@ namespace Eventuras.WebApi
             services.AddControllers(options =>
                 {
                     options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+                    options.Filters.Add<ValidationFilter>();
                     options.Filters.Add<HttpResponseExceptionFilter>();
                 })
                 .AddJsonOptions(j =>
