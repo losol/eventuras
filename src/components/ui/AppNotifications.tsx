@@ -19,29 +19,35 @@ interface AppNotificationsProps {
   appNotifications?: AppNotificationOptions[];
 }
 
-const AppNotifications: React.FC<AppNotificationsProps> = ({
-  appNotifications = [], // defaults to empty array
-}) => {
+const getNotificationClassName = (type: AppNotificationType) => {
+  let colorClass = '';
+  switch (type) {
+    case AppNotificationType.SUCCESS:
+      colorClass = 'bg-green-500 text-white';
+      break;
+    case AppNotificationType.ERROR:
+      colorClass = 'bg-red-500 text-white';
+      break;
+    default:
+      colorClass = 'bg-blue-500 text-white';
+  }
+  return `m-2 p-4 rounded shadow-lg ${colorClass}`;
+};
+
+const AppNotifications: React.FC<AppNotificationsProps> = ({ appNotifications = [] }) => {
   return (
     <div>
       <Portal isOpen={appNotifications.length > 0}>
         <div className="fixed bottom-0 right-0 z-50 p-4">
-          {appNotifications.map(appNotification => (
+          {appNotifications.map(({ id, message, type = AppNotificationType.INFO }) => (
             <div
-              key={appNotification.id}
+              key={id}
               data-test-id={
-                appNotification.type === 'success' ? 'notification-success' : 'notification-error'
+                type === AppNotificationType.SUCCESS ? 'notification-success' : 'notification-error'
               }
-              className={`m-2 p-4 rounded shadow-lg 
-                            ${
-                              appNotification.type === 'success'
-                                ? 'bg-green-500 text-white'
-                                : appNotification.type === 'error'
-                                ? 'bg-red-500 text-white'
-                                : 'bg-blue-500 text-white'
-                            }`}
+              className={getNotificationClassName(type)}
             >
-              {appNotification.message}
+              {message}
             </div>
           ))}
         </div>
