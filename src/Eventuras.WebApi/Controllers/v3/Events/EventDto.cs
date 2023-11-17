@@ -1,3 +1,5 @@
+using System.Runtime.ConstrainedExecution;
+using DocumentFormat.OpenXml.Office.CoverPageProps;
 using Eventuras.Domain;
 using NodaTime;
 
@@ -21,6 +23,7 @@ namespace Eventuras.WebApi.Controllers.v3.Events
         public LocalDate? DateStart { get; set; }
         public LocalDate? DateEnd { get; set; }
         public LocalDate? LastRegistrationDate { get; set; }
+        public LocalDate? LastCancellationDate { get; set; }
         public string FeaturedImageUrl { get; set; }
         public string FeaturedImageCaption { get; set; }
         public string Headline { get; set; }
@@ -28,7 +31,10 @@ namespace Eventuras.WebApi.Controllers.v3.Events
         public string MoreInformation { get; set; }
         public string WelcomeLetter { get; set; }
         public string InformationRequest { get; set; }
-
+        public string CertificateTitle { get; set; }
+        public string CertificateDescription { get; set; }
+        public string ProjectCode { get; set; }
+        public string OrganizerUserId { get; set; }
         public EventDto()
         {
         }
@@ -49,6 +55,7 @@ namespace Eventuras.WebApi.Controllers.v3.Events
             DateStart = e.DateStart;
             DateEnd = e.DateEnd;
             LastRegistrationDate = e.LastRegistrationDate;
+            LastCancellationDate = e.LastCancellationDate;
             Location = e.Location;
             City = e.City;
             FeaturedImageUrl = e.FeaturedImageUrl;
@@ -58,8 +65,10 @@ namespace Eventuras.WebApi.Controllers.v3.Events
             MoreInformation = e.MoreInformation;
             WelcomeLetter = e.WelcomeLetter;
             InformationRequest = e.InformationRequest;
-
-
+            CertificateTitle = e.CertificateTitle;
+            CertificateDescription = e.CertificateDescription;
+            ProjectCode = e.ProjectCode;
+            OrganizerUserId = e.OrganizerUserId;
         }
     }
 }

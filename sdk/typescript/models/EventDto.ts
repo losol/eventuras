@@ -22,6 +22,7 @@ export type EventDto = {
     dateStart?: LocalDate;
     dateEnd?: LocalDate;
     lastRegistrationDate?: LocalDate;
+    lastCancellationDate?: LocalDate;
     featuredImageUrl?: string | null;
     featuredImageCaption?: string | null;
     headline?: string | null;
@@ -29,5 +30,9 @@ export type EventDto = {
     moreInformation?: string | null;
     welcomeLetter?: string | null;
     informationRequest?: string | null;
+    certificateTitle?: string | null;
+    certificateDescription?: string | null;
+    projectCode?: string | null;
+    organizerUserId?: string | null;
 };
 
