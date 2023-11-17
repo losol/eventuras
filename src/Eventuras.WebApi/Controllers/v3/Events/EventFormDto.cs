@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml.Presentation;
 using Eventuras.Domain;
 using NodaTime;
 using System;
@@ -18,6 +19,8 @@ namespace Eventuras.WebApi.Controllers.v3.Events
         [Required]
         public string Slug { get; set; }
 
+        public int Id { get; set; }
+
         public EventInfo.EventInfoType Type { get; set; } = EventInfo.EventInfoType.Course;
         public EventInfo.EventInfoStatus Status { get; set; } = EventInfo.EventInfoStatus.Draft;
         public int OrganizationId { get; set; }
@@ -32,8 +35,8 @@ namespace Eventuras.WebApi.Controllers.v3.Events
         public string PracticalInformation { get; set; }
         public string Location { get; set; }
         public string City { get; set; }
-        public LocalDate? StartDate { get; set; }
-        public LocalDate? EndDate { get; set; }
+        public LocalDate? DateStart { get; set; }
+        public LocalDate? DateEnd { get; set; }
 
         public string WelcomeLetter { get; set; }
         public bool Published { get; set; }
@@ -42,7 +45,7 @@ namespace Eventuras.WebApi.Controllers.v3.Events
         public string InformationRequest { get; set; }
         public LocalDate? LastRegistrationDate { get; set; }
         public LocalDate? LastCancellationDate { get; set; }
-        public int MaxParticipants { get; set; }
+        public int? MaxParticipants { get; set; }
         public string CertificateTitle { get; set; }
         public string CertificateDescription { get; set; }
         public string FeaturedImageUrl { get; set; }
@@ -73,8 +76,8 @@ namespace Eventuras.WebApi.Controllers.v3.Events
             eventInfo.PracticalInformation = PracticalInformation;
             eventInfo.Location = Location;
             eventInfo.City = City;
-            eventInfo.DateStart = StartDate;
-            eventInfo.DateEnd = EndDate;
+            eventInfo.DateStart = DateStart;
+            eventInfo.DateEnd = DateEnd;
             eventInfo.Headline = Headline;
             eventInfo.MoreInformation = MoreInformation;
             eventInfo.WelcomeLetter = WelcomeLetter;
@@ -84,7 +87,7 @@ namespace Eventuras.WebApi.Controllers.v3.Events
             eventInfo.InformationRequest = InformationRequest;
             eventInfo.LastRegistrationDate = LastRegistrationDate;
             eventInfo.LastCancellationDate = LastCancellationDate;
-            eventInfo.MaxParticipants = MaxParticipants;
+            eventInfo.MaxParticipants = MaxParticipants ?? 0;
             eventInfo.CertificateTitle = CertificateTitle;
             eventInfo.CertificateDescription = CertificateDescription;
             eventInfo.FeaturedImageUrl = FeaturedImageUrl;
@@ -118,8 +121,8 @@ namespace Eventuras.WebApi.Controllers.v3.Events
                 PracticalInformation = entity.PracticalInformation,
                 Location = entity.Location,
                 City = entity.City,
-                StartDate = entity.DateStart,
-                EndDate = entity.DateEnd,
+                DateStart = entity.DateStart,
+                DateEnd = entity.DateEnd,
                 MoreInformation = entity.MoreInformation,
                 WelcomeLetter = entity.WelcomeLetter,
                 Published = entity.Published,
@@ -146,12 +149,12 @@ namespace Eventuras.WebApi.Controllers.v3.Events
         /// <returns>A list of ValidationResults if validation fails, otherwise an empty list.</returns>
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (StartDate.HasValue && EndDate.HasValue && StartDate.Value > EndDate.Value)
+            if (DateStart.HasValue && DateEnd.HasValue && DateStart.Value > DateEnd.Value)
             {
                 yield return new ValidationResult("start date must precede end date", new List<string>
                         {
-                            nameof(StartDate),
-                    nameof(EndDate)
+                            nameof(DateStart),
+                    nameof(DateEnd)
                 });
             }
         }

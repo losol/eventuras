@@ -13,6 +13,7 @@ import type { LocalDate } from './LocalDate';
 export type EventFormDto = {
     title: string;
     slug: string;
+    id?: number;
     type?: EventInfoType;
     status?: EventInfoStatus;
     organizationId?: number;
@@ -27,8 +28,8 @@ export type EventFormDto = {
     practicalInformation?: string | null;
     location?: string | null;
     city?: string | null;
-    startDate?: LocalDate;
-    endDate?: LocalDate;
+    dateStart?: LocalDate;
+    dateEnd?: LocalDate;
     welcomeLetter?: string | null;
     published?: boolean;
     externalInfoPageUrl?: string | null;
@@ -36,7 +37,7 @@ export type EventFormDto = {
     informationRequest?: string | null;
     lastRegistrationDate?: LocalDate;
     lastCancellationDate?: LocalDate;
-    maxParticipants?: number;
+    maxParticipants?: number | null;
     certificateTitle?: string | null;
     certificateDescription?: string | null;
     featuredImageUrl?: string | null;

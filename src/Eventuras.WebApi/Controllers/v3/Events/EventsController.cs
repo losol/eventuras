@@ -121,6 +121,12 @@ namespace Eventuras.WebApi.Controllers.v3.Events
         {
             _logger.LogInformation($"Received a request to update the event with ID {id}.");
 
+            if (id != dto.Id)
+            {
+                _logger.LogWarning($"Event ID {id} does not match the ID in the request body.");
+                return BadRequest();
+            }
+
             var eventInfo = await _eventInfoService.GetEventInfoByIdAsync(id);
             if (eventInfo.Archived)
             {
