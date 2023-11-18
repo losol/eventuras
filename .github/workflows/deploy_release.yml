@@ -14,7 +14,7 @@ jobs:
       - id: set-matrix
         run: |
           JSON_STRING='${{ secrets.VERCEL_PROJECTS_JSON }}'
-          MATRIX_JSON=$(echo "$JSON_STRING" | jq -c '{include: [], projects: .}')
+          MATRIX_JSON=$(echo "$JSON_STRING" | jq -c '{projects: .}')
           echo "::set-output name=matrix::$MATRIX_JSON"
         # Example of JSON string that should be stored in VERCEL_PROJECTS_JSON secret:
         # [{"name": "Project One", "orgId": "org_123", "projectId": "proj_123"}, {"name": "Project Two", "orgId": "org_456", "projectId": "proj_456"}]
@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix: ${{fromJson(needs.prepare-matrix.outputs.matrix.projects)}}
+      matrix: ${{fromJson(needs.prepare-matrix.outputs.matrix)}}
     steps:
       - uses: actions/checkout@v4
       - name: Install Vercel CLI
