@@ -21,6 +21,7 @@ namespace Eventuras.Services.Registrations
         private readonly IRegistrationAccessControlService _registrationAccessControlService;
         private readonly IOrderManagementService _orderManagementService;
         private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
+        private readonly INotificationDeliveryService _notificationDeliveryService;
         private readonly INotificationManagementService _notificationsManagementService;
         private readonly IUserRetrievalService _userRetrievalService;
         private readonly ApplicationDbContext _context;
@@ -30,6 +31,7 @@ namespace Eventuras.Services.Registrations
             IRegistrationAccessControlService registrationAccessControlService,
             IOrderManagementService orderManagementService,
             IEventInfoRetrievalService eventInfoRetrievalService,
+            INotificationDeliveryService notificationDeliveryService,
             INotificationManagementService notificationsManagementService,
             IUserRetrievalService userRetrievalService,
             ILogger<RegistrationManagementService> logger,
@@ -37,6 +39,7 @@ namespace Eventuras.Services.Registrations
         {
             _registrationAccessControlService = registrationAccessControlService;
             _eventInfoRetrievalService = eventInfoRetrievalService;
+            _notificationDeliveryService = notificationDeliveryService;
             _notificationsManagementService = notificationsManagementService;
             _userRetrievalService = userRetrievalService;
             _context = context;
@@ -177,11 +180,9 @@ namespace Eventuras.Services.Registrations
             var subject = registration.EventInfo.Title;
             var body = registration.EventInfo.WelcomeLetter;
 
-            // Determine the recipient
-            var recipient = NotificationRecipient.Create(registration, NotificationType.Email);
-
             // Create email notification
-            await _notificationsManagementService.CreateEmailNotificationAsync(subject, body, registration);
+            var email = await _notificationsManagementService.CreateEmailNotificationAsync(subject, body, registration);
+            await _notificationDeliveryService.SendNotificationAsync(email, cancellationToken);
 
             _logger.LogInformation($"Successfully sent a welcome letter for RegistrationId {registration.RegistrationId}, EventInfoId {registration.EventInfoId}");
         }
