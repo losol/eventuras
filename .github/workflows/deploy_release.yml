@@ -1,24 +1,52 @@
 name: Deploy release to production
-env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
 on:
   push:
     tags:
       - v*
+
 jobs:
+  prepare-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: |
+          JSON_STRING='${{ secrets.VERCEL_PROJECTS_JSON }}'
+          MATRIX_JSON=$(echo "$JSON_STRING" | jq -c '{include: [], projects: .}')
+          echo "::set-output name=matrix::$MATRIX_JSON"
+        # Example of JSON string that should be stored in VERCEL_PROJECTS_JSON secret:
+        # [{"name": "Project One", "orgId": "org_123", "projectId": "proj_123"}, {"name": "Project Two", "orgId": "org_456", "projectId": "proj_456"}]
+
   Deploy-Production:
+    needs: prepare-matrix
     environment: production
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJson(needs.prepare-matrix.outputs.matrix.projects)}}
     steps:
       - uses: actions/checkout@v4
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ matrix.orgId }}
+          VERCEL_PROJECT_ID: ${{ matrix.projectId }}
       - name: Build Project Artifacts
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ matrix.orgId }}
+          VERCEL_PROJECT_ID: ${{ matrix.projectId }}
       - name: Deploy Project Artifacts to Vercel
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ matrix.orgId }}
+          VERCEL_PROJECT_ID: ${{ matrix.projectId }}
       - name: Promote to production
         run: vercel promote --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ matrix.orgId }}
+          VERCEL_PROJECT_ID: ${{ matrix.projectId }}
