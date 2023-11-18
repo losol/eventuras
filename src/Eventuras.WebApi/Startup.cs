@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using Eventuras.Services;
+using Eventuras.Services.Constants;
 using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Config;
 using Eventuras.WebApi.Extensions;
@@ -79,6 +80,7 @@ namespace Eventuras.WebApi
                 .AddJsonOptions(j =>
                 {
                     j.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+                    j.JsonSerializerOptions.Converters.Add(new LocalDateConverter());
                     j.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
@@ -104,6 +106,7 @@ namespace Eventuras.WebApi
                                 .Where(x => !string.IsNullOrWhiteSpace(x))
                                 .ToArray())
                             .AllowAnyHeader()
+                            .WithExposedHeaders(Api.OrganizationHeader)
                             .AllowCredentials()
                             .AllowAnyMethod());
             });
