@@ -15,7 +15,7 @@ jobs:
         run: |
           JSON_STRING='${{ secrets.VERCEL_PROJECTS_JSON }}'
           MATRIX_JSON=$(echo "$JSON_STRING" | jq -c '{projects: .}')
-          echo "MATRIX=$MATRIX_JSON" >> $GITHUB_ENV
+          echo "MATRIX=$MATRIX_JSON" >> $GITHUB_OUTPUT
         # Example of JSON string that should be stored in VERCEL_PROJECTS_JSON secret:
         # [{"name": "Project One", "orgId": "org_123", "projectId": "proj_123"}, {"name": "Project Two", "orgId": "org_456", "projectId": "proj_456"}]
 
