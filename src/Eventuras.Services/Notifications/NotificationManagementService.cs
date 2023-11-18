@@ -109,6 +109,7 @@ namespace Eventuras.Services.Notifications
                 return await _context.CreateAsync(new EmailNotification(subject, body)
                 {
                     CreatedByUserId = currentUser.GetUserId(),
+                    EventInfoId = registration.EventInfoId,
                     OrganizationId = currentOrg?.OrganizationId,
                     Recipients = new List<NotificationRecipient> { recipient }
                 }, leaveAttached: true, cancellationToken: default);
