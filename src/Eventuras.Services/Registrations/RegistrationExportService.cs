@@ -77,7 +77,7 @@ namespace Eventuras.Services.Registrations
             });
 
             workbookPart.Workbook.Save();
-            spreadsheetDocument.Close();
+            spreadsheetDocument.Dispose();
         }
 
         private static void WriteHeader(SheetData sheetData)

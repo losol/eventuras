@@ -4,7 +4,7 @@
 
 Backend:
 
--   .Net 7.0 SDK
+-   .Net 8.0 SDK
 -   PostgreSQL
 
 Frontend:
