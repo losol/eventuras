@@ -190,6 +190,7 @@ namespace Eventuras.WebApi
 
             app.UseRouting();
 
+            app.UseDefaultFiles();
             app.UseStaticFiles();
 
             app.UseCors();
