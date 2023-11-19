@@ -290,11 +290,6 @@ namespace Eventuras.Services.Notifications
                 throw new ArgumentNullException(nameof(notification));
             }
 
-            if (notification.EventInfoId.HasValue)
-            {
-                await CheckEventAccessAsync(notification.EventInfoId.Value);
-            }
-
             await _context.UpdateAsync(notification);
         }
 
