@@ -8,6 +8,7 @@ using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -24,17 +25,20 @@ namespace Eventuras.WebApi.Controllers.v3.Users
     {
         private readonly IUserRetrievalService _userRetrievalService;
         private readonly IUserManagementService _userManagementService;
+        private readonly IMemoryCache _cache;
         private readonly ILogger<UsersController> _logger;
         private readonly AuthSettings _authSettings;
 
         public UsersController(
             IUserRetrievalService userRetrievalService,
             IUserManagementService userManagementService,
+            IMemoryCache cache,
             ILogger<UsersController> logger,
             IOptions<AuthSettings> authSettingsOptions)
         {
             _userRetrievalService = userRetrievalService ?? throw new ArgumentNullException(nameof(userRetrievalService));
             _userManagementService = userManagementService ?? throw new ArgumentNullException(nameof(userManagementService));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _authSettings = authSettingsOptions.Value;
         }
@@ -79,6 +83,9 @@ namespace Eventuras.WebApi.Controllers.v3.Users
                     emailClaim,
                     phoneClaim,
                     cancellationToken);
+
+                // Invalidate user cache for this email to ensure new identity is added
+                _cache.Remove(DbUserClaimTransformation.GetMemoryCacheKey(emailClaim));
 
             }
 

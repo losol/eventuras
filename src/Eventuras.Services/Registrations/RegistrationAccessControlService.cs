@@ -48,7 +48,7 @@ namespace Eventuras.Services.Registrations
             var requestingUser = _httpContextAccessor.HttpContext.User;
             var requestingUserId = requestingUser.GetUserId();
 
-            _logger.LogInformation($"Checking create access. Requesting user with id {requestingUserId} for registration: UserId {registration.UserId}, EventInfoId {registration.EventInfoId}");
+            _logger.LogInformation($"Checking create access. Requesting user with id '{requestingUserId}' for registration: UserId {registration.UserId}, EventInfoId {registration.EventInfoId}");
 
             var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
 

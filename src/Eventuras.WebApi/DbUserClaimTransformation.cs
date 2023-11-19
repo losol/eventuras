@@ -65,5 +65,5 @@ public class DbUserClaimTransformation : IClaimsTransformation
         return result;
     }
 
-    private static object GetMemoryCacheKey(string userEmail) => new { Purpose = "ClaimTransformation", Email = userEmail };
+    public static object GetMemoryCacheKey(string userEmail) => new { Purpose = "ClaimTransformation", Email = userEmail };
 }
