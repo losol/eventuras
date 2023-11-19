@@ -70,10 +70,16 @@ namespace Eventuras.WebApi.Controllers.v3.Users
                 {
                     _logger.LogInformation($"No user found with email {emailClaim}. Creating new user.");
                 }
+                else
+                {
+                    _logger.LogInformation($"No user found with email. Creating new user.");
+                }
+
                 user = await _userManagementService.CreateNewUserAsync(nameClaim,
                     emailClaim,
                     phoneClaim,
                     cancellationToken);
+
             }
 
             return new UserDto(user);

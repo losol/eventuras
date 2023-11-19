@@ -95,12 +95,9 @@ namespace Eventuras.WebApi.Controllers.v3.Registrations
           [FromBody] NewRegistrationDto dto,
           CancellationToken cancellationToken)
         {
-            _logger.LogInformation("CreateNewRegistration called with EventId: {eventId}, UserId: {userId}, CreateOrder: {createOrder}", dto.EventId, dto.UserId, dto.CreateOrder);
+            var requestingUserId = User.GetUserId();
+            _logger.LogInformation($"CreateNewRegistration called by user Id {requestingUserId} with EventId: {dto.EventId}, UserId: {dto.UserId}, CreateOrder: {dto.CreateOrder}, SendWelcomeLetter: {dto.SendWelcomeLetter}, Empty: {dto.Empty}");
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
             var registration = await _registrationManagementService.CreateRegistrationAsync(dto.EventId, dto.UserId, new RegistrationOptions
             {
