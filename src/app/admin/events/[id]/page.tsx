@@ -9,7 +9,8 @@ import Button from '@/components/ui/Button';
 import Heading from '@/components/ui/Heading';
 import Link from '@/components/ui/Link';
 import Loading from '@/components/ui/Loading';
-import { useEvent, useEventProducts, useRegistrations } from '@/hooks/apiHooks';
+import useCreateHook from '@/hooks/createHook';
+import { createSDK } from '@/utils/api/EventurasApi';
 
 import AddUserToEvent from '../../components/AddUserToEvent';
 import EventParticipantList from '../../components/EventParticipantList';
@@ -28,18 +29,23 @@ type EventInfoProps = {
 const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
   const eventId = params.id;
   const [registrationSeed, setRegistrationSeed] = useState(0);
-  const { registrations } = useRegistrations(
-    {
-      eventId,
-      includeUserInfo: true,
-    },
-    registrationSeed
-  );
+
   const { t } = createTranslation();
-  const { loading: eventsLoading, event } = useEvent(eventId);
+  const sdk = createSDK();
+  const { loading: eventsLoading, result: event } = useCreateHook(
+    () => sdk.events.getV3Events1({ id: eventId }),
+    [eventId]
+  );
+  const { loading: loadingEventProducts, result: eventProducts } = useCreateHook(
+    () => sdk.eventProducts.getV3EventsProducts({ eventId }),
+    [eventId]
+  );
+  const { result: registrations } = useCreateHook(
+    () => sdk.registrations.getV3Registrations({ eventId, includeUserInfo: true }),
+    [registrationSeed]
+  );
+
   const [emailDrawerOpen, setEmailDrawerOpen] = useState<boolean>(false);
-  const { registrationProducts: eventProducts, loading: loadingEventProducts } =
-    useEventProducts(eventId);
 
   if (eventsLoading || loadingEventProducts) {
     return <Loading />;
@@ -65,7 +71,7 @@ const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
             </Button>
             <AddUserToEvent
               event={event}
-              eventProducts={eventProducts}
+              eventProducts={eventProducts ?? []}
               onUseradded={() => {
                 setRegistrationSeed(registrationSeed + 1);
               }}
@@ -89,7 +95,7 @@ const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
           </>
         )}
         {event && registrations ? (
-          <EventParticipantList participants={registrations ?? []} event={event} />
+          <EventParticipantList participants={registrations.data ?? []} event={event} />
         ) : (
           <Loading />
         )}

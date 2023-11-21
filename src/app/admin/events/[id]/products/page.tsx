@@ -3,7 +3,7 @@ import createTranslation from 'next-translate/createTranslation';
 
 import { Layout } from '@/components/ui';
 import Heading from '@/components/ui/Heading';
-import createSDK from '@/utils/createSDK';
+import { createSDK } from '@/utils/api/EventurasApi';
 
 import EventProductsEditor from './EventProductsEditor';
 

@@ -1,14 +1,13 @@
 'use client';
 
-import { UserDto as UserProfile } from '@losol/eventuras';
+import { ApiError, UserDto as UserProfile } from '@losol/eventuras';
 import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
 import { createContext, ReactNode, useCallback, useEffect, useState } from 'react';
 
-import ApiError from '@/utils/api/ApiError';
-import ApiResult from '@/utils/api/ApiResult';
-import { getUserProfile } from '@/utils/api/functions/users';
+import { ApiResult, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import Environment from '@/utils/Environment';
 
 // Auth type definition
 interface Auth {
@@ -60,7 +59,7 @@ interface UserProviderProps {
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [userState, setUserState] = useState<UserState>(defaultUserState);
   const { data: session } = useSession();
-
+  const sessionExists = session !== null;
   const updateUserProfile = (updatedProfile: UserProfile) => {
     setUserState(prevState => ({
       ...prevState,
@@ -80,18 +79,22 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   const updateWithUserProfile = useCallback(async () => {
     if (session) {
-      const result = await getUserProfile();
+      const result = await apiWrapper(() =>
+        createSDK({ inferUrl: { enabled: true, requiresToken: true } }).users.getV3UsersMe({
+          eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
+        })
+      );
       const sessWId: SessionWithIdToken = session as SessionWithIdToken;
       if (result.ok) {
-        updateUserProfile(result.value);
+        updateUserProfile(result.value!);
         updateAuthStatus({ isAuthenticated: true, session: sessWId });
       } else {
         setUserState(prevState => ({
           ...prevState,
-          error: result.error.message,
+          error: result.error!.message,
         }));
 
-        if (result.error.statusCode === 401) {
+        if (result.error!.status === 401) {
           //assume the token is for some reason no longer working, call nextauth signOut to force a session clean
           signOut();
         }
@@ -99,13 +102,12 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       return result;
     }
     return null;
-  }, [session?.accessToken]);
-
+  }, [sessionExists]);
   useEffect(() => {
     if (session) {
       updateWithUserProfile();
     }
-  }, [session?.accessToken]);
+  }, [sessionExists]);
 
   return (
     <UserContext.Provider

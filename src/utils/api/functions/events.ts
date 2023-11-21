@@ -1,19 +1,14 @@
 import {
-  EventDto,
-  EventDtoPageResponseDto,
-  EventFormDto,
+  ApiError,
   Eventuras,
-  NewProductDto,
   NewRegistrationDto,
-  ProductDto,
+  OrderLineModel,
   RegistrationDto,
 } from '@losol/eventuras';
 
+import { ApiResult, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';
-
-import apiFetch from '../apiFetch';
-import ApiResult from '../ApiResult';
-import ApiURLs from '../ApiUrls';
 
 const eventuras = new Eventuras();
 export type GetEventsOptions = Parameters<typeof eventuras.events.getV3Events>[0];
@@ -24,62 +19,38 @@ export type GetEventRegistrationsOptions = Parameters<
 export const createEventRegistration = async (
   newRegistration: NewRegistrationDto,
   selectedProducts?: Map<string, number>
-) => {
+): Promise<ApiResult<RegistrationDto, ApiError>> => {
+  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const products = selectedProducts
-    ? Array.from(selectedProducts, ([productId, quantity]) => ({
-        productId,
+    ? (Array.from(selectedProducts, ([productId, quantity]) => ({
+        productId: parseInt(productId, 10),
         quantity,
-      }))
+      })) as OrderLineModel[])
     : [];
 
-  const registration = apiFetch(ApiURLs.registrations(), {
-    method: 'POST',
-    body: JSON.stringify(newRegistration),
-  });
+  const registration = apiWrapper(() =>
+    sdk.registrations.postV3Registrations({
+      eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
+      requestBody: newRegistration,
+    })
+  );
   Logger.info({ namespace: 'events:createEventRegistration' }, 'products selected', products);
 
   if (!products.length) return registration;
 
-  return registration.then(async (apiResult: ApiResult<RegistrationDto>) => {
+  return registration.then(async apiResult => {
     if (!apiResult.ok) {
       return apiResult;
     }
-    const result: RegistrationDto = apiResult.value;
+    const result: RegistrationDto = apiResult.value!;
     const registrationId = result.registrationId!.toString();
-    return await apiFetch(ApiURLs.products({ registrationId }), {
-      method: 'POST',
-      body: JSON.stringify({
-        lines: products,
-      }),
-    });
+
+    return apiWrapper(() =>
+      sdk.registrationOrders.postV3RegistrationsProducts({
+        id: parseInt(registrationId, 10),
+        eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
+        requestBody: { lines: products },
+      })
+    );
   });
 };
-export const createEvent = (
-  formValues: EventFormDto,
-  init?: RequestInit | undefined
-): Promise<ApiResult<EventDto>> =>
-  apiFetch(ApiURLs.events(), { method: 'POST', body: JSON.stringify(formValues), ...init });
-export const createProduct = (
-  eventId: number,
-  product: NewProductDto,
-  init?: RequestInit | undefined
-): Promise<ApiResult<EventDto>> =>
-  apiFetch(ApiURLs.eventProducts({ eventId }), {
-    method: 'POST',
-    body: JSON.stringify(product),
-    ...init,
-  });
-export const updateEvent = (
-  eventId: number,
-  formValues: EventFormDto
-): Promise<ApiResult<EventDto>> =>
-  apiFetch(ApiURLs.event({ eventId }), { method: 'PUT', body: JSON.stringify(formValues) });
-export const getEvents = (
-  options: GetEventsOptions = {}
-): Promise<ApiResult<EventDtoPageResponseDto>> => apiFetch(ApiURLs.events(options));
-export const getEvent = (eventId: number): Promise<ApiResult<EventDto>> =>
-  apiFetch(ApiURLs.event({ eventId }));
-export const getEventProducts = (eventId: number): Promise<ApiResult<ProductDto[]>> =>
-  apiFetch(ApiURLs.eventProducts({ eventId }));
-export const getEventRegistrations = async (options: GetEventRegistrationsOptions) =>
-  apiFetch(ApiURLs.eventRegistrations(options));

@@ -12,7 +12,8 @@ import DataTable, { createColumnHelper } from '@/components/ui/DataTable';
 import FatalError from '@/components/ui/FatalError';
 import Loading from '@/components/ui/Loading';
 import Pagination from '@/components/ui/Pagination';
-import { useEvents } from '@/hooks/apiHooks';
+import useCreateHook from '@/hooks/createHook';
+import { createSDK } from '@/utils/api/EventurasApi';
 const columnHelper = createColumnHelper<EventDto>();
 interface AdminEventListProps {
   organizationId: number;
@@ -21,17 +22,19 @@ interface AdminEventListProps {
 const AdminEventList: React.FC<AdminEventListProps> = ({ organizationId }) => {
   const { t } = createTranslation();
   const [page, setPage] = useState(1);
-  const {
-    loading: eventsLoading,
-    events,
-    response,
-  } = useEvents({
-    organizationId,
-    includeDraftEvents: true,
-    includePastEvents: true,
-    page,
-    count: 10,
-  });
+  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+  const { loading, result } = useCreateHook(
+    () =>
+      sdk.events.getV3Events({
+        organizationId,
+        includeDraftEvents: true,
+        includePastEvents: true,
+        page,
+        count: 10,
+      }),
+    []
+  );
+
   const [eventOpened, setEventOpened] = useState<EventDto | null>(null);
 
   const renderEventItemActions = (info: EventDto) => {
@@ -66,15 +69,15 @@ const AdminEventList: React.FC<AdminEventListProps> = ({ organizationId }) => {
   ];
   const drawerIsOpen = eventOpened !== null;
 
-  if (eventsLoading) return <Loading />;
-  if (!response)
+  if (loading) return <Loading />;
+  if (!result)
     return <FatalError title="No response from admin events" description="Response is null" />;
   return (
     <>
-      <DataTable data={events ?? []} columns={columns} />
+      <DataTable data={result.data ?? []} columns={columns} />
       <Pagination
         currentPage={page}
-        totalPages={response.pages ?? 0}
+        totalPages={result.pages ?? 0}
         onPreviousPageClick={() => setPage(page - 1)}
         onNextPageClick={() => setPage(page + 1)}
       />

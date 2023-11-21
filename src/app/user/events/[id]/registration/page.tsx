@@ -6,7 +6,7 @@ import { Layout } from '@/components/ui';
 import Heading from '@/components/ui/Heading';
 import Link from '@/components/ui/Link';
 import Text from '@/components/ui/Text';
-import createSDK from '@/utils/createSDK';
+import { createSDK } from '@/utils/api/EventurasApi';
 import Logger from '@/utils/Logger';
 
 import EventRegistrationProcess from './EventRegistrationProcess';

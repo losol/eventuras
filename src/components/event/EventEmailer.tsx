@@ -4,8 +4,9 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 
 import Button from '@/components/ui/Button';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
-import { sendEmailNotification } from '@/utils/api/functions/notifications';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { mapEnum } from '@/utils/enum';
+import Environment from '@/utils/Environment';
 
 import DropdownSelect from '../forms/DropdownSelect';
 import { InputText, lightInputStyle } from '../forms/Input';
@@ -49,7 +50,13 @@ export default function EventEmailer({ eventTitle, eventId, onClose }: EventEmai
         registrationTypes: data.registrationTypes as unknown as RegistrationType[],
       },
     };
-    const result = await sendEmailNotification(body);
+    const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+    const result = await apiWrapper(() =>
+      sdk.notificationsQueueing.postV3NotificationsEmail({
+        eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
+        requestBody: body,
+      })
+    );
     if (!result.ok) {
       addAppNotification({
         id: Date.now(),

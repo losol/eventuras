@@ -1,5 +1,12 @@
 'use client';
-import { EventDto, EventFormDto, EventInfoStatus, EventInfoType } from '@losol/eventuras';
+import {
+  ApiError,
+  EventDto,
+  EventFormDto,
+  EventInfoStatus,
+  EventInfoType,
+  Eventuras,
+} from '@losol/eventuras';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import { useEffect, useState } from 'react';
@@ -11,15 +18,14 @@ import { defaultInputStyle, InputDate, InputText, lightInputStyle } from '@/comp
 import MarkdownEditView from '@/components/forms/MarkdownEditView';
 import Button from '@/components/ui/Button';
 import FatalError from '@/components/ui/FatalError';
-import ApiError from '@/utils/api/ApiError';
-import ApiResult from '@/utils/api/ApiResult';
-import { createEvent as postEvent, updateEvent } from '@/utils/api/functions/events';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { mapEnum } from '@/utils/enum';
 import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';
 import slugify from '@/utils/slugify';
 
-const publishEvent = (formValues: EventFormDto, eventToUpdate: EventDto | null) => {
+const publishEvent = (formValues: EventFormDto, eventToUpdate: EventDto | null, sdk: Eventuras) => {
+  const org = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10);
   const values = {
     ...formValues,
     status: EventInfoStatus.REGISTRATIONS_OPEN,
@@ -29,10 +35,16 @@ const publishEvent = (formValues: EventFormDto, eventToUpdate: EventDto | null) 
       ...eventToUpdate,
       ...formValues,
     };
-    return updateEvent(eventToUpdate.id!, updatedValues);
-  }
 
-  return postEvent(values);
+    return apiWrapper(() =>
+      sdk.events.putV3Events({
+        eventurasOrgId: org,
+        id: eventToUpdate.id!,
+        requestBody: updatedValues,
+      })
+    );
+  }
+  return apiWrapper(() => sdk.events.postV3Events({ eventurasOrgId: org, requestBody: values }));
 };
 
 export type EventEditorProps = {
@@ -40,7 +52,8 @@ export type EventEditorProps = {
 };
 
 type ApiState = {
-  result: ApiResult<EventDto, ApiError> | null;
+  event: EventDto | null;
+  error: ApiError | null;
   loading: boolean;
 };
 
@@ -55,9 +68,10 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
     formState: { errors },
     handleSubmit,
   } = formHook;
+  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
 
   const router = useRouter();
-  const [apiState, setApiState] = useState<ApiState>({ result: null, loading: false });
+  const [apiState, setApiState] = useState<ApiState>({ event: null, error: null, loading: false });
 
   const fieldsetClassName = 'text-lg pt-3 pb-6';
   const fieldsetLegendClassName = 'text-lg border-b-2 pt-4 pb-2';
@@ -87,35 +101,33 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
   //## Form Handler - POST to create event
 
   const onSubmitForm: SubmitHandler<EventFormDto> = async (data: EventFormDto) => {
-    setApiState({ result: null, loading: true });
-    const result = await publishEvent(data, eventinfo);
-    setApiState({ result, loading: false });
+    setApiState({ ...apiState, loading: true });
+    const result = await publishEvent(data, eventinfo, sdk);
     if (result.ok) {
       Logger.info({ namespace: 'admin:events' }, `On submit OK`, result.value);
+      setApiState({ ...apiState, loading: false, event: result.value });
     } else {
       Logger.info({ namespace: 'admin:events' }, `On submit Error`, result.error);
+      setApiState({ ...apiState, loading: false, error: result.error });
     }
 
     //## Result OK handling
     if (result && result.ok) {
-      const nextUrl = `/admin/events/${result.value.id}`;
+      const nextUrl = `/admin/events/${result.value!.id}`;
       router.push(nextUrl);
     }
   };
 
   //## Result Error handling
-  if (apiState.result) {
-    const {
-      ok,
-      error: { statusCode, statusText },
-    } = apiState.result;
-
-    if (!ok && statusCode !== 409) {
+  if (apiState.error) {
+    const status = apiState.error.status;
+    const statusText = apiState.error.statusText;
+    if (status !== 409) {
       return (
         <FatalError
           title={t('common:errors.fatalError.title')}
           description={t('common:errors.fatalError.description')}
-          additional={`${statusCode}: ${statusText}`}
+          additional={`${status}: ${statusText}`}
         />
       );
     }

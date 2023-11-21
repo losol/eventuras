@@ -1,13 +1,11 @@
-import { EventDtoPageResponseDto } from '@losol/eventuras';
 import createTranslation from 'next-translate/createTranslation';
 
 import { EventGrid } from '@/components/event';
 import { Container, Layout } from '@/components/ui';
 import Card from '@/components/ui/Card';
 import Heading from '@/components/ui/Heading';
-import createSDK from '@/utils/createSDK';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
-import Logger from '@/utils/Logger';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 // Get events from eventuras
@@ -16,18 +14,12 @@ const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID
 export default async function Homepage() {
   const site = await getSiteSettings();
   const { t } = createTranslation();
-
-  const eventuras = createSDK({ baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL });
-
-  let eventinfos: EventDtoPageResponseDto = { data: [] };
-
-  try {
-    eventinfos = await eventuras.events.getV3Events({
+  //We expect results to be there, the API could only throw 500s here which we do not want to catch anyway
+  const result = await apiWrapper(() =>
+    createSDK({ inferUrl: true }).events.getV3Events({
       organizationId: ORGANIZATION_ID,
-    });
-  } catch (error) {
-    Logger.error({ namespace: 'homepage' }, error);
-  }
+    })
+  );
 
   return (
     <Layout fluid imageNavbar darkImage>
@@ -41,11 +33,11 @@ export default async function Homepage() {
           </Card.Text>
         </Card>
       </section>
-      {eventinfos && eventinfos.data && eventinfos.data.length && (
+      {result.value!.data!.length && (
         <section className="bg-primary-50 dark:bg-slate-950 pt-16 pb-24">
           <Container as="section">
             <Heading as="h2">{t('common:events.sectiontitle')}</Heading>
-            <EventGrid eventinfos={eventinfos.data} />
+            <EventGrid eventinfos={result.value!.data!} />
           </Container>
         </section>
       )}

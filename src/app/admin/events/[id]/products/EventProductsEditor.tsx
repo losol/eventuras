@@ -5,7 +5,7 @@ import createTranslation from 'next-translate/createTranslation';
 import React, { useCallback, useState } from 'react';
 
 import Button from '@/components/ui/Button';
-import createSDK from '@/utils/createSDK';
+import { createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';
 

@@ -1,11 +1,10 @@
 'use client';
 
-import { EventDto, UserDto } from '@losol/eventuras';
+import { ApiError, EventDto, UserDto } from '@losol/eventuras';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 
 import PaymentFormValues from '@/types/PaymentFormValues';
-import { ApiError } from '@/utils/api';
 import { createEventRegistration } from '@/utils/api/functions/events';
 import { mapToNewRegistration } from '@/utils/api/mappers';
 import Logger from '@/utils/Logger';
@@ -37,7 +36,7 @@ export const useRegistrationProcess = (eventInfo: EventDto, userProfile: UserDto
     setLoadingEventRegistration(false);
     if (!result.ok) {
       Logger.error(loggerNamespace, 'Registration error', result.error);
-      setRegistrationError(result.error);
+      setRegistrationError(result.error!);
       setCurrentStepInternal('Error');
       return;
     }

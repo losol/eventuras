@@ -4,7 +4,7 @@ import { UserDto } from '@losol/eventuras';
 import { IconArrowDown } from '@tabler/icons-react';
 import React, { Fragment, useCallback, useRef, useState } from 'react';
 
-import { ApiResult } from '@/utils/api';
+import { ApiResult } from '@/utils/api/EventurasApi';
 
 import Loading from '../ui/Loading';
 
@@ -164,7 +164,7 @@ export const InputAutoComplete = (props: InputAutoCompleteProps) => {
           const userResponse = await props.dataProvider({ query: searchString });
           if (userResponse.ok) {
             setLoading(false);
-            localCache.current.set(searchString, userResponse.value);
+            localCache.current.set(searchString, userResponse.value!);
             setResponse(userResponse.value);
           }
         }, 500) as unknown as number;

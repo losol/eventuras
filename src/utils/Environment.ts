@@ -1,5 +1,7 @@
 /* eslint-disable no-process-env */
 
+import { PHASE_PRODUCTION_BUILD } from 'next/dist/shared/lib/constants';
+
 /**
  * Environment Class to handle and validate environment variables.
  *
@@ -82,6 +84,10 @@ class Environment {
       );
     }
     return process.env[identifier]!;
+  }
+
+  static get NEXT_IN_PHASE_PRODUCTION_BUILD() {
+    return process.env.NEXT_PHASE === PHASE_PRODUCTION_BUILD;
   }
 
   // Explicit getters for NEXT_PUBLIC_BACKEND_URL andNEXT_PUBLIC variables

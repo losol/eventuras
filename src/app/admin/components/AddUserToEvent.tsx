@@ -16,8 +16,8 @@ import Button from '@/components/ui/Button';
 import Heading from '@/components/ui/Heading';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { RegistrationProduct } from '@/types/RegistrationProduct';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { createEventRegistration } from '@/utils/api/functions/events';
-import { getUsers } from '@/utils/api/functions/users';
 import { mapEventProductsToView, mapSelectedProductsToQuantity } from '@/utils/api/mappers';
 import { mapEnum } from '@/utils/enum';
 
@@ -80,7 +80,7 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
       });
       onUseradded(user);
     } else {
-      if (result.error.statusCode === 409) {
+      if (result.error!.status === 409) {
         addAppNotification({
           id: Date.now(),
           message: 'That user is already registered to the event',
@@ -146,13 +146,19 @@ export type AddUserToEventProps = {
 };
 const AddUserToEvent: React.FC<AddUserToEventProps> = ({ event, eventProducts, onUseradded }) => {
   const [usersToAdd, setUsersToAdd] = useState<UserDto[]>([]);
+  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+  type GetUsersOptions = Parameters<typeof sdk.users.getV3Users1>[0];
+
+  const dataProvider = (options: GetUsersOptions) =>
+    apiWrapper(() => sdk.users.getV3Users1(options));
+
   return (
     <>
       <Heading as="h2">Add users to event </Heading>
       <InputAutoComplete
         id="find_user"
         placeholder="Find user"
-        dataProvider={getUsers}
+        dataProvider={dataProvider}
         minimumAmountOfCharacters={3}
         labelProperty="name"
         resetAfterSelect={true}

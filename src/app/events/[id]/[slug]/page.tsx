@@ -4,7 +4,7 @@ import { Container, Layout } from '@/components/ui';
 import Card from '@/components/ui/Card';
 import Heading from '@/components/ui/Heading';
 import Text from '@/components/ui/Text';
-import createSDK from '@/utils/createSDK';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import formatDate from '@/utils/formatDate';
 import Logger from '@/utils/Logger';
@@ -29,7 +29,7 @@ export async function generateStaticParams() {
     `Api Base url: ${Environment.NEXT_PUBLIC_BACKEND_URL}, orgId: ${orgId})`
   );
 
-  const eventuras = createSDK({ baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL });
+  const eventuras = createSDK({ inferUrl: true });
   const eventInfos = await eventuras.events.getV3Events({
     organizationId: orgId,
   });
@@ -49,11 +49,12 @@ export async function generateStaticParams() {
 }
 
 const Page: React.FC<EventInfoProps> = async ({ params }) => {
-  const eventuras = createSDK();
+  const result = await apiWrapper(() =>
+    createSDK({ inferUrl: true }).events.getV3Events1({ id: params.id })
+  );
+  if (!result.ok || !result.value) return <div>Event not found</div>;
 
-  const eventinfo = await eventuras.events.getV3Events1({ id: params.id });
-  if (!eventinfo) return <div>Event not found</div>;
-
+  const eventinfo = result.value;
   if (params.slug !== eventinfo.slug) {
     redirect(`/events/${eventinfo.id!}/${eventinfo.slug!}`);
   }
