@@ -23,7 +23,7 @@
     <PackageReference Include="Microsoft.FeatureManagement" Version="3.0.0" />
     <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="3.0.0" />
     <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.1.2" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="7.0.11" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="8.0.0" />
     <PackageReference Include="Sentry" Version="3.41.0" />
     <PackageReference Include="Sentry.AspNetCore" Version="3.41.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
