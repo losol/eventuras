@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <RootNamespace>Eventuras.Domain</RootNamespace>
     <AssemblyName>Eventuras.Domain</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="NodaTime" Version="3.1.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
   </ItemGroup>
 </Project>
