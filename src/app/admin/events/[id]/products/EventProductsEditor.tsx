@@ -74,7 +74,9 @@ const EventProductsEditor: React.FC<EventProductsEditorProps> = ({
 
   return (
     <div>
-      <Button onClick={() => openProductModal()}>{t('admin:products.labels.addnewproduct')}</Button>
+      <Button data-test-id="add-product-button" onClick={() => openProductModal()}>
+        {t('admin:products.labels.addnewproduct')}
+      </Button>
 
       <ProductModal
         isOpen={productModalOpen}

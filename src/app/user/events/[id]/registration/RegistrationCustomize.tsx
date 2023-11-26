@@ -15,6 +15,10 @@ export type RegistrationCustomizeProps = {
   onSubmit: SubmitCallback;
 };
 
+export type SelectedProducts = {
+  products: ProductDto[];
+};
+
 const createFormHandler = (products: ProductDto[], onSubmit: SubmitCallback) => (data: any) => {
   const submissionMap = mapSelectedProductsToQuantity(products, data);
   onSubmit(submissionMap);

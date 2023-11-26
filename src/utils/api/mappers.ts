@@ -67,13 +67,18 @@ export const mapToNewRegistration = (
 
 export const mapSelectedProductsToQuantity = (
   products: ProductDto[],
-  selectedProducts: Array<any>
+  selectedProducts: any
 ): Map<string, number> => {
   const submissionMap = new Map<string, number>();
-  Object.keys(selectedProducts).forEach((key: any) => {
-    const relatedProduct = products.find(product => product.productId === key);
+
+  let selProds = selectedProducts;
+  if (selectedProducts.products) {
+    selProds = selectedProducts.products;
+  }
+  Object.keys(selProds).forEach((key: any) => {
+    const relatedProduct = products.find(product => product.productId?.toString() === key);
     if (!relatedProduct) return;
-    const formValue = selectedProducts[key];
+    const formValue = selProds[key];
     let value = 0;
     if (!relatedProduct.enableQuantity) {
       if (relatedProduct.isMandatory || !!formValue) {

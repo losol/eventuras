@@ -25,12 +25,13 @@ const UserEventRegistrations = ({ registrations }: UserEventRegistrationsProps):
       <Grid>
         {registrations.map(registration => {
           const event = registration.event!;
-          const { title, description, dateStart, dateEnd } = event;
+          const { id, title, description, dateStart, dateEnd } = event;
           return (
             <UserEventRegistrationCard
               key={registration.registrationId}
               registrationId={registration.registrationId!}
               eventTitle={title ?? ''}
+              eventId={id?.toString() ?? ''}
               eventDescription={description ?? ''}
               dateStart={dateStart ?? ''}
               dateEnd={dateEnd ?? ''}

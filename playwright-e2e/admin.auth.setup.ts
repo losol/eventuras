@@ -7,7 +7,7 @@ import Logger from '@/utils/Logger';
 
 dotenv.config();
 
-const authFile = 'playwright-auth/user.json';
+const authFile = 'playwright-auth/admin.json';
 const getLoginButton = (page: Page) => page.locator('[data-test-id="login-button"]');
 
 setup.use({

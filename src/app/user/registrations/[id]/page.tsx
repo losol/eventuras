@@ -30,18 +30,19 @@ const UserRegistrationPage: React.FC<UserRegistrationPageProps> = async ({ param
     return (
       <Layout>
         <Heading>{t('user:registration.title')}</Heading>
-        <p>{`${t('user:registration.id')}: ${registration.registrationId}`}</p>
+        <p data-test-id="registration-id-container">{`${t('user:registration.id')}: ${
+          registration.registrationId
+        }`}</p>
         <p>{`${t('user:registration.event-title')}: ${registration.event?.title}`}</p>
         <p>{`${t('common:user.name')}: ${registration.user?.name}`}</p>
         <p>{`${t('user:registration.status')}: ${registration.status}`}</p>
         <p>{`${t('user:registration.type')}: ${registration.type}`}</p>
-
         {registration?.products && registration?.products?.length > 0 && (
           <section id="products">
             <Heading as="h2">{t('user:registration.products')}</Heading>
             <ul>
               {registration.products.map((product, index) => (
-                <li key={index}>
+                <li key={index} data-test-id={`product-container`}>
                   <p>{`${t('user:registration.product-name')}: ${product.product?.name}`}</p>
                   <p>{`${t('user:registration.product-description')}: ${product.product
                     ?.description}`}</p>

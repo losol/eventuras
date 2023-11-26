@@ -93,6 +93,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onSubmit, onClose, 
                   {...register('name', { required: true })}
                   placeholder="Product Name"
                   className={inputClassName}
+                  data-test-id="product-name-input"
                 />
               </div>
               <div>
@@ -101,6 +102,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onSubmit, onClose, 
                   placeholder="Product Description"
                   className={inputClassName}
                   rows={3}
+                  data-test-id="product-description-input"
                 />
               </div>
               <div>
@@ -108,6 +110,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onSubmit, onClose, 
                   {...register('more')}
                   placeholder="Additional Information"
                   className={inputClassName}
+                  data-test-id="product-additional-input"
                 />
               </div>
               <div>
@@ -116,6 +119,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onSubmit, onClose, 
                   {...register('price', { valueAsNumber: true })}
                   placeholder="Price"
                   className={inputClassName}
+                  data-test-id="product-price-input"
                 />
               </div>
               <div>
@@ -125,6 +129,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onSubmit, onClose, 
                   placeholder="VAT Percent"
                   className={inputClassName}
                   defaultValue={0}
+                  data-test-id="product-vat-input"
                 />
               </div>
               <div className="flex justify-end space-x-3">

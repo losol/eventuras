@@ -8,6 +8,7 @@ import Environment from '@/utils/Environment';
 import formatDate from '@/utils/formatDate';
 
 export type UserEventRegistrationCardProps = {
+  eventId: string;
   registrationId: number;
   eventTitle: string;
   eventDescription: string;
@@ -17,6 +18,7 @@ export type UserEventRegistrationCardProps = {
 };
 
 const UserEventRegistrationCard = ({
+  eventId,
   registrationId,
   eventTitle,
   dateStart,
@@ -47,6 +49,7 @@ const UserEventRegistrationCard = ({
           variant="button-primary"
           bgDark
           stretch
+          data-test-id={eventId}
         >
           {t('common:buttons.view')}
         </Link>

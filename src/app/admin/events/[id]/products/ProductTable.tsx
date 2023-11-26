@@ -52,6 +52,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit }) 
             onClick={() => onEdit(info.row.original)}
             className="text-white bg-blue-500 hover:bg-blue-700 rounded p-1"
             aria-label="Edit"
+            data-test-id="edit-product-button"
           >
             <IconPencil />
           </button>

@@ -45,17 +45,27 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     // Setup project
-    { name: 'setup', testMatch: /.{0,100}\.setup\.ts/ },
-
+    { name: 'setup-admin', testMatch: 'admin.auth.setup.ts' },
+    { name: 'setup-user', testMatch: 'user.auth.setup.ts' },
     {
-      name: 'e2e tests chromium',
-      testMatch: /.{0,100}\.spec\.ts/,
+      name: 'e2e admin tests chromium',
+      testMatch: /admin-.{0,100}\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        // Use prepared auth state.
+        storageState: 'playwright-auth/admin.json',
+      },
+      dependencies: ['setup-admin'],
+    },
+    {
+      name: 'e2e user tests chromium',
+      testMatch: /user-.{0,100}\.spec\.ts/,
       use: {
         ...devices['Desktop Chrome'],
         // Use prepared auth state.
         storageState: 'playwright-auth/user.json',
       },
-      dependencies: ['setup'],
+      dependencies: ['setup-user'],
     },
   ],
 });

@@ -13,6 +13,7 @@ const ProductSelection = ({ products, register }: ProductSelectionProps) => {
           return (
             <Checkbox
               key={product.productId}
+              data-test-id="product-selection-checkbox"
               id={product.productId}
               title={product.name}
               description={product.description}

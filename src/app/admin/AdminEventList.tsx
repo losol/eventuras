@@ -32,7 +32,7 @@ const AdminEventList: React.FC<AdminEventListProps> = ({ organizationId }) => {
         page,
         count: 10,
       }),
-    []
+    [page]
   );
 
   const [eventOpened, setEventOpened] = useState<EventDto | null>(null);
