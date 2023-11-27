@@ -33,7 +33,7 @@ export default async function Homepage() {
           </Card.Text>
         </Card>
       </section>
-      {result.value!.data!.length && (
+      {result.value && result.value!.data!.length && (
         <section className="bg-primary-50 dark:bg-slate-950 pt-16 pb-24">
           <Container as="section">
             <Heading as="h2">{t('common:events.sectiontitle')}</Heading>

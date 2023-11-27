@@ -6,12 +6,17 @@ import { getServerSession } from 'next-auth/next';
 
 import { authOptions } from '@/utils/authOptions';
 import Environment from '@/utils/Environment';
+import getSiteSettings from '@/utils/site/getSiteSettings';
 
 import Providers from './Providers';
 
+const siteSettings = await getSiteSettings();
 export const metadata: Metadata = {
-  title: 'Eventuras',
-  description: 'A life with eventuras',
+  title: {
+    template: `%s | ${siteSettings?.name ?? 'Eventuras'}`,
+    default: siteSettings?.name ?? 'Eventuras',
+  },
+  description: siteSettings?.description ?? 'A life with eventuras',
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -19,7 +24,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   Environment.validate();
 
   return (
-    <html lang="en">
+    <html lang={Environment.NEXT_PUBLIC_DEFAULT_LOCALE}>
       <body>
         <Providers session={session}> {children}</Providers>
       </body>
