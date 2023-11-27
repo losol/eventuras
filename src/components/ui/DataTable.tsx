@@ -13,12 +13,12 @@ import Pagination from './Pagination';
 type DataTableProps = {
   columns: any[];
   data: any[];
+  pageSize?: number;
   clientsidePagination?: boolean;
-  clientsidePaginationPageSize?: number;
 };
 
 const DataTable = (props: DataTableProps) => {
-  const { columns, data, clientsidePagination, clientsidePaginationPageSize = 25 } = props;
+  const { columns, data, clientsidePagination, pageSize = 25 } = props;
 
   const handleClientPageChange = (newPage: number) => {
     table.setPageIndex(newPage);
@@ -29,10 +29,15 @@ const DataTable = (props: DataTableProps) => {
     data: data,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: pageSize,
+      },
+    },
   });
 
   useEffect(() => {
-    if (clientsidePagination) table.setPageSize(clientsidePaginationPageSize);
+    if (clientsidePagination) table.setPageSize(pageSize);
   }, []);
 
   return (

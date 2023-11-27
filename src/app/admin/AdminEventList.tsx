@@ -23,6 +23,7 @@ const AdminEventList: React.FC<AdminEventListProps> = ({ organizationId }) => {
   const { t } = createTranslation();
   const [page, setPage] = useState(1);
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+  const pageSize = 25;
   const { loading, result } = useCreateHook(
     () =>
       sdk.events.getV3Events({
@@ -30,7 +31,7 @@ const AdminEventList: React.FC<AdminEventListProps> = ({ organizationId }) => {
         includeDraftEvents: true,
         includePastEvents: true,
         page,
-        count: 10,
+        count: pageSize,
       }),
     [page]
   );

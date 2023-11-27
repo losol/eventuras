@@ -55,12 +55,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({ participants = []
   const drawerIsOpen = registrationOpened !== null;
   return (
     <>
-      <DataTable
-        data={participants}
-        columns={columns}
-        clientsidePaginationPageSize={250}
-        clientsidePagination
-      />
+      <DataTable data={participants} columns={columns} pageSize={250} clientsidePagination />
       {registrationOpened !== null && (
         <Drawer isOpen={drawerIsOpen} onCancel={() => setRegistrationOpened(null)}>
           <Drawer.Header as="h3" className="text-black">
