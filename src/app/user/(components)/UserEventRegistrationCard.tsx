@@ -19,7 +19,6 @@ export type UserEventRegistrationCardProps = {
 
 const UserEventRegistrationCard = ({
   eventId,
-  registrationId,
   eventTitle,
   dateStart,
   dateEnd,
@@ -45,13 +44,13 @@ const UserEventRegistrationCard = ({
       )}
       <Card.Text className="py-5">
         <Link
-          href={`/user/registrations/${registrationId}`}
+          href={`/user/events/${eventId}`}
           variant="button-primary"
           bgDark
           stretch
           data-test-id={eventId}
         >
-          {t('common:buttons.view')}
+          {t('common:buttons.user-event-page')}
         </Link>
       </Card.Text>
     </Card>

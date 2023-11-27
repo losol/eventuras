@@ -11,17 +11,26 @@
     "title": "Customize your order"
   },
   "events": {
+    "buttons": {
+      "changeregistration": "Edit products",
+      "viewRegistration": "Registration"
+    },
+    "eventNotFound": "Event was not found",
+    "notRegistered": "You are not registered for this event",
     "registration": {
       "customizationfor": "Customize your registration for",
       "description": {
         "pretitle": "Customize your registration for"
       },
-      "title": "Register for event"
-    }
+      "title": "Customize your registration",
+      "titleLabel": "Welcome to"
+    },
+    "welcomeLetter": "Welcome letter"
   },
   "feedback": {
     "alreadyRegistered": "You are already registered for this event, see you soon!"
   },
+  "loginRequired": "Log in to see this page",
   "page": {
     "heading": "User profile"
   },

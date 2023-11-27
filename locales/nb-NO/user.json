@@ -11,15 +11,24 @@
     "title": "Tilpass din bestilling"
   },
   "events": {
+    "buttons": {
+      "changeregistration": "Tilpass produkter",
+      "viewRegistration": "Vis registrering"
+    },
+    "eventNotFound": "Vi fant ikke noe arrangement her",
+    "notRegistered": "Du er ikke påmeldt arrangementet",
     "registration": {
       "customizationfor": "Tilpass påmeldingen til",
       "description": "Noen flere opplysninger...",
-      "title": "Meld deg på"
-    }
+      "title": "Tilpass påmeldingen",
+      "titleLabel": "Velkommen til"
+    },
+    "welcomeLetter": "Velkomstbrev"
   },
   "feedback": {
     "alreadyRegistered": "Du er allerede registrert for denne hendelsen, vi sees snart!"
   },
+  "loginRequired": "Logg på for å se siden",
   "page": {
     "heading": "Dine opplysninger"
   },

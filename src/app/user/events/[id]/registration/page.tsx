@@ -47,8 +47,8 @@ const UserEventRegistrationPage: React.FC<UserEventRegistrationPageProps> = asyn
           {t('user:registration.page.texts.user-already-registered')}
         </Text>
 
-        <Link href="/user" variant="button-primary">
-          {t('common:buttons.userprofile')}
+        <Link href={`/user/events/${params.id}`} variant="button-primary">
+          {t('common:buttons.user-event-page')}
         </Link>
       </Layout>
     );
