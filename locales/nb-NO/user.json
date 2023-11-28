@@ -30,7 +30,11 @@
   },
   "loginRequired": "Logg på for å se siden",
   "page": {
-    "heading": "Dine opplysninger"
+    "errors": {
+      "profileNotFound": "Fant ikke brukeren din"
+    },
+    "heading": "Dine opplysninger",
+    "unauthorized": "Du har ikke tilgang"
   },
   "payment": {
     "description": "Noen flere detaljer",

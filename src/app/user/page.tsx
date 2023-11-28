@@ -1,42 +1,36 @@
-'use client';
+import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
-import { useContext } from 'react';
 
 import { Layout } from '@/components/ui';
 import Heading from '@/components/ui/Heading';
-import Loading from '@/components/ui/Loading';
-import { UserContext } from '@/context/UserContext';
-import useCreateHook from '@/hooks/createHook';
-import { createSDK } from '@/utils/api/EventurasApi';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
 import UserEventRegistrations from './(components)/UserEventRegistrations';
 import UserProfileCard from './(components)/UserProfileCard';
 
-const UserProfilePage = () => {
-  const { profile } = useContext(UserContext).userState;
-  const profileId: string | undefined = profile ? profile.id! : undefined;
-  const { loading, result } = useCreateHook(
-    () =>
-      createSDK({
-        inferUrl: { enabled: true, requiresToken: true },
-      }).registrations.getV3Registrations({
-        userId: profileId,
-        includeEventInfo: true,
-        includeProducts: true,
-      }),
-    [profileId]
-  );
-
-  if (!profile) return null;
+const UserProfilePage = async () => {
+  const eventuras = createSDK({ authHeader: headers().get('Authorization') });
   const { t } = createTranslation();
+
+  const profile = await apiWrapper(() => eventuras.users.getV3UsersMe({}));
+  if (!profile || !profile.value) return <Layout>{t('user:page.profileNotFound')}</Layout>;
+
+  const registrations = await apiWrapper(() =>
+    eventuras.registrations.getV3Registrations({
+      userId: profile.value!.id!,
+      includeEventInfo: true,
+      includeProducts: true,
+    })
+  );
+  if (!registrations || !registrations.value || !registrations.value.count)
+    return <Layout>{t('user:page.registrationsNotFound')}</Layout>;
 
   return (
     <Layout>
       <Heading>{t('user:page.heading')}</Heading>
-      <UserProfileCard profile={profile} />
-      {loading && <Loading />}
-      {result && result.data && result.data.length > 0 && (
-        <UserEventRegistrations registrations={result.data} />
+      <UserProfileCard profile={profile.value!} />
+      {registrations.value.count > 0 && (
+        <UserEventRegistrations registrations={registrations.value.data!} />
       )}
     </Layout>
   );

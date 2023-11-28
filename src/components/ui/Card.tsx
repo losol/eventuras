@@ -18,6 +18,7 @@ interface HeadingProps extends CardChildProps {
 }
 
 interface TextProps extends CardChildProps {
+  as?: 'p' | 'div';
   children: ReactNode;
 }
 
@@ -94,8 +95,8 @@ const Heading: React.FC<HeadingProps> = ({
 );
 
 // Text component
-const Text: React.FC<TextProps> = ({ children, className, spacingClassName = 'py-1' }) => (
-  <TextComponent as="p" className={className} spacingClassName={spacingClassName}>
+const Text: React.FC<TextProps> = ({ as, children, className, spacingClassName = 'py-1' }) => (
+  <TextComponent as={as} className={className} spacingClassName={spacingClassName}>
     {children}
   </TextComponent>
 );

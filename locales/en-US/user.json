@@ -32,7 +32,12 @@
   },
   "loginRequired": "Log in to see this page",
   "page": {
-    "heading": "User profile"
+    "errors": {
+      "profileNotFound": "Profile not found"
+    },
+    "heading": "User profile",
+    "profileNotFound": "Profile not found",
+    "unauthorized": "No access"
   },
   "payment": {
     "description": "A few more details",

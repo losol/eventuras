@@ -34,7 +34,7 @@ const UserEventRegistrationCard = ({
         {formatDate(dateStart, dateEnd, Environment.NEXT_PUBLIC_DEFAULT_LOCALE)}
       </Card.Text>
       {products.length > 0 && (
-        <Card.Text>
+        <Card.Text as="div">
           <ul>
             {products.map(product => (
               <li key={product.productId}>{product.product?.name}</li>
