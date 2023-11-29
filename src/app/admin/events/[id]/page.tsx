@@ -41,7 +41,12 @@ const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
     [eventId]
   );
   const { result: registrations } = useCreateHook(
-    () => sdk.registrations.getV3Registrations({ eventId, includeUserInfo: true }),
+    () =>
+      sdk.registrations.getV3Registrations({
+        eventId,
+        includeUserInfo: true,
+        includeProducts: true,
+      }),
     [registrationSeed]
   );
 

@@ -52,6 +52,7 @@
   "participantColumns": {
     "actions": "Actions",
     "name": "Name",
+    "products": "Produkter",
     "status": "Status",
     "telephone": "Telephone",
     "type": "Type"

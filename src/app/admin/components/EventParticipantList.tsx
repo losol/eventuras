@@ -6,7 +6,6 @@ import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 
 import EventEmailer from '@/components/event/EventEmailer';
-//import EventEmailer from '@/components/event/EventEmailer';
 import { Drawer } from '@/components/ui';
 import DataTable, { createColumnHelper } from '@/components/ui/DataTable';
 const columnHelper = createColumnHelper<RegistrationDto>();
@@ -30,6 +29,21 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({ participants = []
     );
   };
 
+  function renderProducts(registration: RegistrationDto) {
+    if (!registration.products || registration.products.length === 0) {
+      return '';
+    }
+
+    return registration.products
+      .map(product => {
+        const displayQuantity = product.product!.enableQuantity && product.quantity! > 1;
+        return displayQuantity
+          ? `${product.quantity} x ${product.product!.name}`
+          : product.product!.name;
+      })
+      .join(', ');
+  }
+
   const columns = [
     columnHelper.accessor('name', {
       header: t('admin:participantColumns.name').toString(),
@@ -42,6 +56,10 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({ participants = []
     columnHelper.accessor('status', {
       header: t('admin:participantColumns.status').toString(),
       cell: info => info.getValue(),
+    }),
+    columnHelper.accessor('products', {
+      header: t('admin:participantColumns.products').toString(),
+      cell: info => renderProducts(info.row.original),
     }),
     columnHelper.accessor('type', {
       header: t('admin:participantColumns.type').toString(),
