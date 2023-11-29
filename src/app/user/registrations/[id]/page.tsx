@@ -46,11 +46,11 @@ const UserRegistrationPage: React.FC<UserRegistrationPageProps> = async ({ param
         <p>{`${t('user:registration.status')}: ${registration.value.status}`}</p>
         <p>{`${t('user:registration.type')}: ${registration.value.type}`}</p>
         {registration?.value!.products && registration?.value.products?.length > 0 && (
-          <section id="products">
+          <section id="products" data-test-id="product-container">
             <Heading as="h2">{t('user:registration.products')}</Heading>
             <ul>
               {registration.value.products.map((product, index) => (
-                <li key={index} data-test-id={`product-container`}>
+                <li key={index}>
                   <p>{`${t('user:registration.product-name')}: ${product.product?.name}`}</p>
                   <p>{`${t('user:registration.product-description')}: ${product.product
                     ?.description}`}</p>

@@ -76,10 +76,15 @@ export const validateRegistration = async (page: Page, eventId: string) => {
   Logger.info(ns, 'Registered for event, validating..');
   await page.goto(`/user`);
   await page.waitForLoadState('load');
-  const clickToRegistation = await page.locator(`[data-test-id="${eventId}"]`);
-  const registrationPageUrl = await clickToRegistation.getAttribute('href');
-  await clickToRegistation.click();
-  await page.waitForURL(registrationPageUrl!);
+  const clickToUserEventPage = await page.locator(`[data-test-id="${eventId}"]`);
+  const userEventUrl = await clickToUserEventPage.getAttribute('href');
+  await clickToUserEventPage.click();
+  await page.waitForURL(userEventUrl!);
+  await page.waitForLoadState('load');
+  const clickToUserRegistrationPage = await page.locator(`[data-test-id="registration-page-link"]`);
+  const userRegistrationUrl = await clickToUserRegistrationPage.getAttribute('href');
+  await clickToUserRegistrationPage.click();
+  await page.waitForURL(userRegistrationUrl!);
   await page.waitForLoadState('load');
   await expect(page.locator('[data-test-id="registration-id-container"]')).toBeVisible();
   Logger.info(

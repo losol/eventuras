@@ -57,6 +57,7 @@ const UserEventPage: React.FC<UserEventPageProps> = async ({ params }) => {
           <Link
             href={`/user/registrations/${registration.registrationId}`}
             variant="button-primary"
+            data-test-id="registration-page-link"
           >
             {t('user:events.buttons.viewRegistration')}
           </Link>
