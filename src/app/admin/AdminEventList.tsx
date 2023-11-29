@@ -1,13 +1,11 @@
 'use client';
 
 import { EventDto } from '@losol/eventuras';
-import { IconEditCircle, IconMailForward } from '@tabler/icons-react';
+import { IconEditCircle } from '@tabler/icons-react';
 import Link from 'next/link';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 
-import EventEmailer from '@/components/event/EventEmailer';
-import { Drawer } from '@/components/ui';
 import DataTable, { createColumnHelper } from '@/components/ui/DataTable';
 import FatalError from '@/components/ui/FatalError';
 import Loading from '@/components/ui/Loading';
@@ -36,12 +34,9 @@ const AdminEventList: React.FC<AdminEventListProps> = ({ organizationId }) => {
     [page]
   );
 
-  const [eventOpened, setEventOpened] = useState<EventDto | null>(null);
-
   const renderEventItemActions = (info: EventDto) => {
     return (
       <div className="flex flex-row">
-        <IconMailForward className="cursor-pointer m-1" onClick={() => setEventOpened(info)} />
         <Link className="m-1" href={`/admin/events/${info.id}/edit`}>
           <IconEditCircle />
         </Link>
@@ -68,7 +63,6 @@ const AdminEventList: React.FC<AdminEventListProps> = ({ organizationId }) => {
       cell: info => renderEventItemActions(info.row.original),
     }),
   ];
-  const drawerIsOpen = eventOpened !== null;
 
   if (loading) return <Loading />;
   if (!result)
@@ -82,23 +76,6 @@ const AdminEventList: React.FC<AdminEventListProps> = ({ organizationId }) => {
         onPreviousPageClick={() => setPage(page - 1)}
         onNextPageClick={() => setPage(page + 1)}
       />
-      {eventOpened !== null && (
-        <Drawer isOpen={drawerIsOpen} onCancel={() => setEventOpened(null)}>
-          <Drawer.Header as="h3" className="text-black">
-            {t('admin:eventEmailer.title')}
-          </Drawer.Header>
-          <Drawer.Body>
-            <EventEmailer
-              eventTitle={eventOpened.title!}
-              eventId={eventOpened.id!}
-              onClose={() => setEventOpened(null)}
-            />
-          </Drawer.Body>
-          <Drawer.Footer>
-            <></>
-          </Drawer.Footer>
-        </Drawer>
-      )}
     </>
   );
 };
