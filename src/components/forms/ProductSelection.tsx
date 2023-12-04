@@ -1,11 +1,12 @@
-import { ProductDto } from '@losol/eventuras';
+import { ProductDto, ProductOrderDto } from '@losol/eventuras';
 
 import Checkbox, { CheckBoxDescription, CheckBoxLabel } from './Checkbox';
 export type ProductSelectionProps = {
   products: ProductDto[];
+  selectedProducts: ProductOrderDto[];
   register: any;
 };
-const ProductSelection = ({ products, register }: ProductSelectionProps) => {
+const ProductSelection = ({ products, register, selectedProducts }: ProductSelectionProps) => {
   return (
     <>
       {products.map((product: ProductDto) => {
@@ -19,7 +20,12 @@ const ProductSelection = ({ products, register }: ProductSelectionProps) => {
               description={product.description}
               {...register(`products.${product.productId}`)}
               disabled={product.isMandatory}
-              defaultChecked={product.isMandatory}
+              defaultChecked={
+                product.isMandatory ||
+                selectedProducts.filter(selProd => {
+                  return selProd.productId === product.productId;
+                }).length > 0
+              }
             >
               <CheckBoxLabel>{product.name}</CheckBoxLabel>
               <CheckBoxDescription>{product.description}</CheckBoxDescription>

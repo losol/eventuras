@@ -17,7 +17,7 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint", "eslint-plugin-simple-import-sort"],
+  "plugins": ["@typescript-eslint", "eslint-plugin-simple-import-sort", "prettier"],
   "rules": {
     "no-console": "error",
     // There are good reasons not to always include all possible dependencies in a React Hook

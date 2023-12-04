@@ -16,17 +16,23 @@ export type GetEventRegistrationsOptions = Parameters<
   typeof eventuras.registrations.getV3Registrations
 >[0];
 
-export const createEventRegistration = async (
-  newRegistration: NewRegistrationDto,
+export const productMapToOrderLineModel = (
   selectedProducts?: Map<string, number>
-): Promise<ApiResult<RegistrationDto, ApiError>> => {
-  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
-  const products = selectedProducts
+): OrderLineModel[] => {
+  return selectedProducts
     ? (Array.from(selectedProducts, ([productId, quantity]) => ({
         productId: parseInt(productId, 10),
         quantity,
       })) as OrderLineModel[])
     : [];
+};
+
+export const createEventRegistration = async (
+  newRegistration: NewRegistrationDto,
+  selectedProducts?: Map<string, number>
+): Promise<ApiResult<RegistrationDto, ApiError>> => {
+  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+  const products = productMapToOrderLineModel(selectedProducts);
 
   const registration = apiWrapper(() =>
     sdk.registrations.postV3Registrations({
@@ -45,12 +51,21 @@ export const createEventRegistration = async (
     const result: RegistrationDto = apiResult.value!;
     const registrationId = result.registrationId!.toString();
 
-    return apiWrapper(() =>
-      sdk.registrationOrders.postV3RegistrationsProducts({
-        id: parseInt(registrationId, 10),
-        eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
-        requestBody: { lines: products },
-      })
-    );
+    return addProductsToRegistration(registrationId, products);
   });
+};
+
+export const addProductsToRegistration = (
+  registrationId: string | number,
+  products: OrderLineModel[]
+) => {
+  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+
+  return apiWrapper(() =>
+    sdk.registrationOrders.postV3RegistrationsProducts({
+      id: parseInt(registrationId.toString(), 10),
+      eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
+      requestBody: { lines: products },
+    })
+  );
 };

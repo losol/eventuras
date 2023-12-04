@@ -34,7 +34,7 @@
     "@headlessui/react": "^1.7.17",
     "@lexical/markdown": "^0.12.2",
     "@lexical/react": "^0.12.2",
-    "@losol/eventuras": "0.5.4",
+    "@losol/eventuras": "^0.5.5-alpha.1",
     "@losol/scribo-markdown": "^0.3.2",
     "@sentry/nextjs": "^7.83.0",
     "@tabler/icons-react": "^2.42.0",

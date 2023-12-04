@@ -121,7 +121,7 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
       {products.length > 0 && (
         <>
           <Heading as="h4">Choose Products</Heading>
-          <ProductSelection products={products} register={register} />
+          <ProductSelection products={products} register={register} selectedProducts={[]} />
         </>
       )}
       <Button variant="light" type="submit">

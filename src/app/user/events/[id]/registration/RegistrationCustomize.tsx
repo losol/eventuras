@@ -1,6 +1,6 @@
 'use client';
 
-import { ProductDto } from '@losol/eventuras';
+import { ProductDto, RegistrationDto } from '@losol/eventuras';
 import createTranslation from 'next-translate/createTranslation';
 import { useForm } from 'react-hook-form';
 
@@ -12,6 +12,7 @@ type SubmitCallback = (values: Map<string, number>) => void;
 
 export type RegistrationCustomizeProps = {
   products: ProductDto[];
+  currentRegistration?: RegistrationDto | null;
   onSubmit: SubmitCallback;
 };
 
@@ -24,14 +25,22 @@ const createFormHandler = (products: ProductDto[], onSubmit: SubmitCallback) => 
   onSubmit(submissionMap);
 };
 
-const RegistrationCustomize = ({ products, onSubmit }: RegistrationCustomizeProps) => {
+const RegistrationCustomize = ({
+  products,
+  onSubmit,
+  currentRegistration,
+}: RegistrationCustomizeProps) => {
   const { t } = createTranslation();
   const { register, handleSubmit } = useForm();
 
   return (
     <>
       <form onSubmit={handleSubmit(createFormHandler(products, onSubmit))} className="py-10">
-        <ProductSelection products={products} register={register} />
+        <ProductSelection
+          products={products}
+          register={register}
+          selectedProducts={currentRegistration?.products ?? []}
+        />
         <Button type="submit" data-test-id="registration-customize-submit-button">
           {t('common:buttons.continue')}
         </Button>
