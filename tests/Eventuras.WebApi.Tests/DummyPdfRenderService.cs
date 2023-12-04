@@ -1,8 +1,10 @@
 using Eventuras.Services.Pdf;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
 using System.IO;
 using System.Threading.Tasks;
+using iText.Kernel.Geom;
+using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
 
 namespace Eventuras.WebApi.Tests
 {
@@ -10,15 +12,19 @@ namespace Eventuras.WebApi.Tests
     {
         public Task<Stream> RenderHtmlAsync(string html, PdfRenderOptions pdfRenderOptions)
         {
-            using var stream = new MemoryStream();
-            var document = new Document(PageSize.A4);
-            var writer = PdfWriter.GetInstance(document, stream);
-            document.Open();
+            using var buffer = new MemoryStream();
+            using var writer = new PdfWriter(buffer);
+            using var pdfDoc = new PdfDocument(writer);
+            using var document = new Document(pdfDoc, PageSize.A4);
+
             document.Add(new Paragraph(html));
             document.Close();
-            writer.Close();
-            Stream result = new MemoryStream(stream.GetBuffer());
-            return Task.FromResult(result);
+
+            var result = new MemoryStream();
+            result.Write(buffer.GetBuffer());
+            result.Seek(0, SeekOrigin.Begin);
+            
+            return Task.FromResult<Stream>(result);
         }
     }
 }
