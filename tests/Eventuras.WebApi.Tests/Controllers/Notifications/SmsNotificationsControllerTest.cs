@@ -10,12 +10,12 @@ using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Notifications
 {
-    public class SmsNotificationsControllerTest : IClassFixture<CustomWebApiApplicationFactory<Startup>>,
+    public class SmsNotificationsControllerTest : IClassFixture<CustomWebApiApplicationFactory<Program>>,
         IDisposable
     {
-        private readonly CustomWebApiApplicationFactory<Startup> _factory;
+        private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-        public SmsNotificationsControllerTest(CustomWebApiApplicationFactory<Startup> factory)
+        public SmsNotificationsControllerTest(CustomWebApiApplicationFactory<Program> factory)
         {
             _factory = factory;
             Cleanup();

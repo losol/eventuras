@@ -11,11 +11,11 @@ using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Events.Certificates
 {
-    public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplicationFactory<Startup>>, IDisposable
+    public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplicationFactory<Program>>, IDisposable
     {
-        private readonly CustomWebApiApplicationFactory<Startup> _factory;
+        private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-        public EventCertificatesControllerTest(CustomWebApiApplicationFactory<Startup> factory)
+        public EventCertificatesControllerTest(CustomWebApiApplicationFactory<Program> factory)
         {
             _factory = factory;
             Cleanup();
