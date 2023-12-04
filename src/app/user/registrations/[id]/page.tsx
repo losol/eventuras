@@ -1,7 +1,9 @@
 import { ProductDto } from '@losol/eventuras';
+import { ProductDto } from '@losol/eventuras';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
+import EditEventRegistrationsDialog from '@/components/eventuras/EditEventRegistrationDialog';
 import EditEventRegistrationsDialog from '@/components/eventuras/EditEventRegistrationDialog';
 import Order from '@/components/order/Order';
 import { Layout } from '@/components/ui';
@@ -46,7 +48,7 @@ const UserRegistrationPage: React.FC<UserRegistrationPageProps> = async ({ param
   return (
     <Layout>
       <Heading>{t('user:registration.title')}</Heading>
-      <p data-test-id="registration-id-container">{`${t('user:registration.id')}: 
+      <p data-test-id="registration-id-container">{`${t('user:registration.id')}:
         ${registration.registrationId}`}</p>
       <p>{`${t('user:registration.event-title')}: ${registration.event?.title}`}</p>
       <p>{`${t('common:user.name')}: ${registration.user?.name}`}</p>
