@@ -9,11 +9,11 @@ using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Notifications
 {
-    public class NotificationRecipientsControllerTest : IClassFixture<CustomWebApiApplicationFactory<Startup>>
+    public class NotificationRecipientsControllerTest : IClassFixture<CustomWebApiApplicationFactory<Program>>
     {
-        private readonly CustomWebApiApplicationFactory<Startup> _factory;
+        private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-        public NotificationRecipientsControllerTest(CustomWebApiApplicationFactory<Startup> factory)
+        public NotificationRecipientsControllerTest(CustomWebApiApplicationFactory<Program> factory)
         {
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }

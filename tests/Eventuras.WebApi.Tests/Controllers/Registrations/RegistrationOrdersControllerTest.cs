@@ -15,11 +15,11 @@ using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Registrations
 {
-    public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory<Startup>>
+    public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory<Program>>
     {
-        private readonly CustomWebApiApplicationFactory<Startup> _factory;
+        private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-        public RegistrationOrdersControllerTest(CustomWebApiApplicationFactory<Startup> factory)
+        public RegistrationOrdersControllerTest(CustomWebApiApplicationFactory<Program> factory)
         {
             _factory = factory;
         }

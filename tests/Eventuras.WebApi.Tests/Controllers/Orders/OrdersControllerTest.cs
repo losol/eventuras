@@ -12,11 +12,11 @@ using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Orders
 {
-    public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory<Startup>>, IDisposable
+    public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory<Program>>, IDisposable
     {
-        private readonly CustomWebApiApplicationFactory<Startup> _factory;
+        private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-        public OrdersControllerTest(CustomWebApiApplicationFactory<Startup> factory)
+        public OrdersControllerTest(CustomWebApiApplicationFactory<Program> factory)
         {
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
 

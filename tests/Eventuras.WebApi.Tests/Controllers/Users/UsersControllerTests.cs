@@ -5,16 +5,16 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
+using System.Threading.Tasks; 
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Users
 {
-    public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory<Startup>>, IDisposable
+    public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory<Program>>, IDisposable
     {
-        private readonly CustomWebApiApplicationFactory<Startup> _factory;
+        private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-        public UsersControllerTests(CustomWebApiApplicationFactory<Startup> factory)
+        public UsersControllerTests(CustomWebApiApplicationFactory<Program> factory)
         {
             _factory = factory;
             Cleanup();

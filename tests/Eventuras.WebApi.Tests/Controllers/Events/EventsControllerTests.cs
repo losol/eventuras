@@ -11,11 +11,11 @@ using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Events
 {
-    public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactory<Startup>>, IDisposable
+    public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactory<Program>>, IDisposable
     {
-        private readonly CustomWebApiApplicationFactory<Startup> _factory;
+        private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-        public EventsControllerTests(CustomWebApiApplicationFactory<Startup> factory)
+        public EventsControllerTests(CustomWebApiApplicationFactory<Program> factory)
         {
             _factory = factory;
         }
