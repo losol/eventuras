@@ -99,7 +99,7 @@ namespace Eventuras.Services.Events
                     service.ListEventsAsync(new EventListRequest(offset, limit)
                     {
                         Filter = EventInfoFilter.OnDemandEvents(filter),
-                        Order = EventRetrievalOrder.Title
+                        Ordering = new[] { "title:asc" }
                     }, options, token), cancellationToken))
                 .ToList();
         }

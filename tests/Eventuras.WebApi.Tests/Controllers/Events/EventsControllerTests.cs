@@ -99,6 +99,24 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
         }
 
         [Fact]
+        public async Task Should_Use_Sorting()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var e1 = await scope.CreateEventAsync("Name 1", "Description 1", dateStart: SystemClock.Instance.Today().PlusDays(1));
+            using var e2 = await scope.CreateEventAsync("Name 1", "Description 2", dateStart: SystemClock.Instance.Today().PlusDays(2));
+            using var e3 = await scope.CreateEventAsync("Name 2", "Description 1", dateStart: SystemClock.Instance.Today().PlusDays(3));
+
+            var client = _factory.CreateClient();
+
+            // sort by title asc, then description desc
+            var response = await client.GetAsync("/v3/events?ordering=title:asc&ordering=description:desc");
+            response.CheckOk();
+
+            var token = await response.AsTokenAsync();
+            token.CheckPaging(1, 3, (t, e) => t.CheckEvent(e), e2.Entity, e1.Entity, e3.Entity);
+        }
+
+        [Fact]
         public async Task Should_Not_List_Past_Events()
         {
             using var scope = _factory.Services.NewTestScope();
