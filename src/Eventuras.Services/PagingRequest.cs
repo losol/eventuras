@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 
 namespace Eventuras.Services
@@ -12,49 +14,33 @@ namespace Eventuras.Services
         /// </summary>
         public const int MaxRecordsPerPage = 250;
 
-        private int _offset;
-        private int _limit = MaxRecordsPerPage;
+        private readonly int _offset;
+        private readonly int _limit = MaxRecordsPerPage;
 
-        public PagingRequest()
-        {
-        }
+        public PagingRequest() { }
 
         public PagingRequest(int offset, int limit)
         {
-            if (offset < 0)
-            {
-                throw new ArgumentException("negative offset", nameof(offset));
-            }
+            if (offset < 0) { throw new ArgumentException("negative offset", nameof(offset)); }
 
-            if (limit < 0)
-            {
-                throw new ArgumentException("negative limit", nameof(offset));
-            }
+            if (limit < 0) { throw new ArgumentException("negative limit", nameof(offset)); }
 
             Offset = offset;
             Limit = limit;
         }
 
-        public PagingRequest(PagingRequest request)
-        {
-            if (request == null)
-            {
-                return;
-            }
-            Offset = request.Offset;
-            Limit = request.Limit;
-        }
-
         public int Offset
         {
-            get => _offset;
-            set => _offset = Math.Max(0, value);
+            get => _offset; 
+            init => _offset = Math.Max(0, value);
         }
 
         public int Limit
         {
-            get => _limit;
-            set => _limit = Math.Min(MaxRecordsPerPage, value);
+            get => _limit; 
+            init => _limit = Math.Min(MaxRecordsPerPage, value);
         }
+
+        public string[] Ordering { get; init; } = Array.Empty<string>();
     }
 }

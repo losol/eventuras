@@ -52,7 +52,7 @@ namespace Eventuras.Services.Events
                 .AsNoTracking()
                 .UseOptions(options ?? new EventInfoRetrievalOptions())
                 .UseFilter(request.Filter)
-                .UseOrder(request.Order);
+                .UseOrder(request.Ordering);
 
             if (request.Filter.AccessibleOnly)
             {
@@ -66,7 +66,7 @@ namespace Eventuras.Services.Events
             IQueryable<EventInfo> query,
             CancellationToken cancellationToken)
         {
-            var principal = _httpContextAccessor.HttpContext.User;
+            var principal = _httpContextAccessor.HttpContext!.User;
             if (principal.IsAnonymous())
             {
                 var organization = await _currentOrganizationAccessorService
