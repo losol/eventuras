@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NodaTime;
 using System;
 using System.Linq;
+using Eventuras.Infrastructure;
 
 namespace Eventuras.Services.Events
 {
@@ -163,20 +164,9 @@ namespace Eventuras.Services.Events
             return query;
         }
 
-        public static IQueryable<EventInfo> UseOrder(this IQueryable<EventInfo> query, EventRetrievalOrder order)
+        public static IQueryable<EventInfo> UseOrder(this IQueryable<EventInfo> query, string[] columnsAndDirections)
         {
-            switch (order)
-            {
-                case EventRetrievalOrder.Title:
-                    query = query.OrderBy(e => e.Title);
-                    break;
-
-                default:
-                    query = query.OrderBy(e => e.DateStart);
-                    break;
-            }
-
-            return query;
+            return query.OrderByColumns(ei => ei.DateStart, false, columnsAndDirections);
         }
 
         public static IQueryable<EventInfo> HavingOrganization(this IQueryable<EventInfo> query,

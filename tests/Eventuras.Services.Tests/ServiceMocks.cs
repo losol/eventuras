@@ -26,7 +26,7 @@ public static class ServiceMocks
             {
                 var query = eventInfos.AsQueryable();
                 query = query.UseFilter(request.Filter);
-                query = query.UseOrder(request.Order);
+                query = query.UseOrder(request.Ordering);
                 return Paging.Create(query, request);
             })
             .Verifiable();

@@ -53,7 +53,8 @@ namespace Eventuras.WebApi.Controllers.v3.Events
 
             var events = await _eventInfoService.ListEventsAsync(new EventListRequest(query.Offset, query.Limit)
             {
-                Filter = query.ToEventInfoFilter()
+                Filter = query.ToEventInfoFilter(),
+                Ordering = query.Ordering,
             },
             cancellationToken: cancellationToken);
 
@@ -61,7 +62,6 @@ namespace Eventuras.WebApi.Controllers.v3.Events
             _logger.LogInformation("Successfully retrieved the events list.");
 
             return PageResponseDto<EventDto>.FromPaging(query, events, e => new EventDto(e));
-
         }
 
         // GET: v3/events/5
