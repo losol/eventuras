@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj" />
@@ -8,7 +8,7 @@
   <ItemGroup>
     <PackageReference Include="Losol.Communication.Email.SendGrid" Version="0.7.0" />
     <PackageReference Include="PowerOfficeGoSdk" Version="2.50.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
   </ItemGroup>
 </Project>

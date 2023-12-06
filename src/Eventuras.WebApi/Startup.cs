@@ -1,9 +1,11 @@
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using Eventuras.Services;
+using Eventuras.Services.Constants;
 using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Config;
 using Eventuras.WebApi.Extensions;
+using Eventuras.WebApi.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -15,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
+using Microsoft.OpenApi.Models;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 using System.Linq;
@@ -71,11 +74,13 @@ namespace Eventuras.WebApi
             services.AddControllers(options =>
                 {
                     options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+                    options.Filters.Add<ValidationFilter>();
                     options.Filters.Add<HttpResponseExceptionFilter>();
                 })
                 .AddJsonOptions(j =>
                 {
                     j.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+                    j.JsonSerializerOptions.Converters.Add(new LocalDateConverter());
                     j.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
@@ -101,6 +106,7 @@ namespace Eventuras.WebApi
                                 .Where(x => !string.IsNullOrWhiteSpace(x))
                                 .ToArray())
                             .AllowAnyHeader()
+                            .WithExposedHeaders(Api.OrganizationHeader)
                             .AllowCredentials()
                             .AllowAnyMethod());
             });
@@ -109,9 +115,7 @@ namespace Eventuras.WebApi
             var apiVersioningBuilder = services.AddApiVersioning(o =>
             {
                 o.ApiVersionReader = new UrlSegmentApiVersionReader();
-                o.AssumeDefaultVersionWhenUnspecified = true;
                 o.DefaultApiVersion = new ApiVersion(3, 0);
-                o.ReportApiVersions = true;
             });
 
             apiVersioningBuilder.AddApiExplorer(o =>
@@ -137,6 +141,7 @@ namespace Eventuras.WebApi
 
             services.AddSingleton<IAuthorizationHandler, RequireScopeHandler>();
 
+            // Add Swagger and configure it
             services.AddSwaggerGen();
             services.ConfigureOptions<ConfigureSwaggerOptions>();
 
@@ -176,7 +181,7 @@ namespace Eventuras.WebApi
                     {
                         c.SwaggerEndpoint(
                             $"/swagger/{description.GroupName}/swagger.json",
-                            description.GroupName.ToUpperInvariant()
+                            description.GroupName.ToLowerInvariant()
                         );
                     }
 
@@ -185,6 +190,7 @@ namespace Eventuras.WebApi
 
             app.UseRouting();
 
+            app.UseDefaultFiles();
             app.UseStaticFiles();
 
             app.UseCors();

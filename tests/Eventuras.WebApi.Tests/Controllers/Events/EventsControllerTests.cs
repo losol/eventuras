@@ -1,7 +1,7 @@
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
-using Eventuras.WebApi.Controllers.Events;
+using Eventuras.WebApi.Controllers.v3.Events;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
 using System;
@@ -96,6 +96,24 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
 
             token = await response.AsTokenAsync();
             token.CheckPaging(2, 3, (t, e) => t.CheckEvent(e), e3.Entity);
+        }
+
+        [Fact]
+        public async Task Should_Use_Sorting()
+        {
+            using var scope = _factory.Services.NewTestScope();
+            using var e1 = await scope.CreateEventAsync("Name 1", "Description 1", dateStart: SystemClock.Instance.Today().PlusDays(1));
+            using var e2 = await scope.CreateEventAsync("Name 1", "Description 2", dateStart: SystemClock.Instance.Today().PlusDays(2));
+            using var e3 = await scope.CreateEventAsync("Name 2", "Description 1", dateStart: SystemClock.Instance.Today().PlusDays(3));
+
+            var client = _factory.CreateClient();
+
+            // sort by title asc, then description desc
+            var response = await client.GetAsync("/v3/events?ordering=title:asc&ordering=description:desc");
+            response.CheckOk();
+
+            var token = await response.AsTokenAsync();
+            token.CheckPaging(1, 3, (t, e) => t.CheckEvent(e), e2.Entity, e1.Entity, e3.Entity);
         }
 
         [Fact]
@@ -748,8 +766,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                     {
                         // end date before start date
                         slug = "test",
-                        startDate = "2030-02-01",
-                        endDate = "2030-01-01"
+                        dateStart = "2030-02-01",
+                        dateEnd = "2030-01-01"
                     }
                 },
                 new object[]
@@ -758,7 +776,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                     {
                         // invalid start date
                         slug = "test",
-                        startDate = "asd"
+                        dateStart = "asd"
                     }
                 },
                 new object[]
@@ -767,7 +785,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                     {
                         // invalid end date
                         slug = "test",
-                        endDate = "asd"
+                        dateEnd = "asd"
                     }
                 },
             };
@@ -851,8 +869,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                 featured = true,
                 program = "Test event program",
                 practicalInformation = "Test information",
-                startDate = "2030-01-01",
-                endDate = "2030-01-02"
+                dateStart = "2030-01-01",
+                dateEnd = "2030-01-02"
             });
             response.CheckOk();
 
@@ -990,8 +1008,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Events
                 featured = true,
                 program = "Test event program",
                 practicalInformation = "Test information",
-                startDate = "2030-01-01",
-                endDate = "2030-01-02"
+                dateStart = "2030-01-01",
+                dateEnd = "2030-01-02"
             });
             response.CheckOk();
 

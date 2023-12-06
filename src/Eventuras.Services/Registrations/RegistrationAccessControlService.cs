@@ -45,25 +45,35 @@ namespace Eventuras.Services.Registrations
 
         public async Task CheckRegistrationCreateAccessAsync(Registration registration, CancellationToken cancellationToken)
         {
-            var user = _httpContextAccessor.HttpContext.User;
+            var requestingUser = _httpContextAccessor.HttpContext.User;
+            var requestingUserId = requestingUser.GetUserId();
+
+            _logger.LogInformation($"Checking create access. Requesting user with id '{requestingUserId}' for registration: UserId {registration.UserId}, EventInfoId {registration.EventInfoId}");
+
             var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
 
+            if (requestingUser.IsAnonymous())
+            {
+                _logger.LogWarning($"Anonymous user cannot create registration for event {eventInfo.Title} with id {eventInfo.EventInfoId}. Access denied.");
+                throw new NotAccessibleException($"Anonymous user cannot create registration for events.");
+            }
+
             // Add possibility for organization admin to override registration policy
-            if (!user.IsAdmin())
+            if (!requestingUser.IsAdmin())
             {
                 if (eventInfo.Status != EventInfo.EventInfoStatus.RegistrationsOpen && eventInfo.Status != EventInfo.EventInfoStatus.WaitingList)
                 {
-                    _logger.LogWarning($"Registrations are closed for event {eventInfo.Title} with id {eventInfo.EventInfoId}. Access denied for User {user.GetUserId()}.");
+                    _logger.LogWarning($"Registrations are closed for event {eventInfo.Title} with id {eventInfo.EventInfoId}. Access denied for User {requestingUser.GetUserId()}.");
                     throw new NotAccessibleException($"Registrations are closed for event {eventInfo.Title} with id {eventInfo.EventInfoId}.");
                 }
             }
 
-            if (!await CheckOwnerOrAdminAccessAsync(user, registration, cancellationToken))
+            if (!await CheckOwnerOrAdminAccessAsync(requestingUser, registration, cancellationToken))
             {
-                _logger.LogWarning($"User {user.GetUserId()} cannot create registration for event {registration.EventInfoId} and user {registration.UserId}. Access denied.");
+                _logger.LogWarning($"User {requestingUser.GetUserId()} cannot create registration for event {registration.EventInfoId} and user {registration.UserId}. Access denied.");
 
                 throw new NotAccessibleException(
-                    $"User {user.GetUserId()} cannot create registration for event {registration.EventInfoId} and user {registration.UserId}");
+                    $"User {requestingUser.GetUserId()} cannot create registration for event {registration.EventInfoId} and user {registration.UserId}");
             }
             _logger.LogInformation($"Create access granted for UserId {registration.UserId}, EventInfoId {registration.EventInfoId}");
 

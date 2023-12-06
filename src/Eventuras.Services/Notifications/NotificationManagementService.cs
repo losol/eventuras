@@ -2,12 +2,15 @@ using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.Auth;
 using Eventuras.Services.Events;
+using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
 using Eventuras.Services.Registrations;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Eventuras.Services.Notifications
@@ -20,6 +23,7 @@ namespace Eventuras.Services.Notifications
         private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
         private readonly IRegistrationRetrievalService _registrationRetrievalService;
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<NotificationManagementService> _logger;
 
         public NotificationManagementService(
             IEventInfoRetrievalService eventInfoRetrievalService,
@@ -27,7 +31,8 @@ namespace Eventuras.Services.Notifications
             ICurrentOrganizationAccessorService currentOrganizationAccessorService,
             IRegistrationRetrievalService registrationRetrievalService,
             IHttpContextAccessor httpContextAccessor,
-            ApplicationDbContext context)
+            ApplicationDbContext context,
+            ILogger<NotificationManagementService> logger)
         {
             _eventInfoRetrievalService = eventInfoRetrievalService ?? throw
                 new ArgumentNullException(nameof(eventInfoRetrievalService));
@@ -46,6 +51,9 @@ namespace Eventuras.Services.Notifications
 
             _context = context ?? throw
                 new ArgumentNullException(nameof(context));
+
+            _logger = logger ?? throw
+                new ArgumentNullException(nameof(logger));
         }
 
         public async Task<EmailNotification> CreateEmailNotificationAsync(
@@ -53,12 +61,16 @@ namespace Eventuras.Services.Notifications
             string body,
             string[] recipients)
         {
+            _logger.LogInformation($"Starting to create an email notification. Subject: {subject}, Number of recipients: {recipients?.Length ?? 0}");
+
             CheckSubjectAndBody(subject, body);
 
             var currentOrg =
                 await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
 
             var currentUser = _httpContextAccessor.HttpContext.User;
+
+            _logger.LogInformation($"Current organization: {currentOrg?.OrganizationId}. Current user id: {currentUser.GetUserId()}");
 
             return await _context
                 .CreateAsync(new EmailNotification(subject, body)
@@ -71,21 +83,60 @@ namespace Eventuras.Services.Notifications
                 }, leaveAttached: true);
         }
 
+        public async Task<EmailNotification> CreateEmailNotificationAsync(
+    string subject,
+    string body,
+    Registration registration)
+        {
+            _logger.LogInformation($"Starting to create an email notification based on registration. Registration: {registration.RegistrationId} Subject: {subject}");
+
+            CheckSubjectAndBody(subject, body);
+
+            var currentOrg = await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
+            var currentUser = _httpContextAccessor.HttpContext.User;
+
+            _logger.LogInformation($"Current organization: {currentOrg?.OrganizationId}. Current user id: {currentUser.GetUserId()}");
+
+            var recipient = NotificationRecipient.Create(registration, NotificationType.Email);
+
+            if (recipient != null)
+            {
+                // Manually attach existing entities to context
+                _context.Attach(recipient);
+                _context.Attach(currentOrg);
+                _context.Attach(registration);
+
+                return await _context.CreateAsync(new EmailNotification(subject, body)
+                {
+                    CreatedByUserId = currentUser.GetUserId(),
+                    EventInfoId = registration.EventInfoId,
+                    OrganizationId = currentOrg?.OrganizationId,
+                    Recipients = new List<NotificationRecipient> { recipient }
+                }, leaveAttached: true, cancellationToken: default);
+            }
+            else
+            {
+                _logger.LogError("Could not create NotificationRecipient. Skipping email creation.");
+                throw new NotFoundException("Could not find recipient. Skipping email creation.");
+            }
+        }
+
+
         public async Task<EmailNotification> CreateEmailNotificationForEventAsync(
             string subject,
             string body,
             int eventId,
-            int? productId,
             Registration.RegistrationStatus[] registrationStatuses,
             Registration.RegistrationType[] registrationTypes)
         {
+            _logger.LogInformation($"Starting to create an email notification for event {eventId}. Subject: {subject}");
             CheckSubjectAndBody(subject, body);
 
             await CheckEventAccessAsync(eventId);
 
             var recipients = await GetRecipientsAsync(
                 NotificationType.Email,
-                eventId, productId,
+                eventId,
                 registrationStatuses,
                 registrationTypes);
 
@@ -94,13 +145,14 @@ namespace Eventuras.Services.Notifications
 
             var currentUser = _httpContextAccessor.HttpContext.User;
 
+            _logger.LogInformation($"Current organization: {currentOrg?.OrganizationId}. Current user id: {currentUser.GetUserId()}");
+
             return await _context
                 .CreateAsync(new EmailNotification(subject, body)
                 {
                     CreatedByUserId = currentUser.GetUserId(),
                     OrganizationId = currentOrg?.OrganizationId,
                     EventInfoId = eventId,
-                    ProductId = productId,
                     Recipients = recipients
                 }, leaveAttached: true);
         }
@@ -128,15 +180,15 @@ namespace Eventuras.Services.Notifications
         public async Task<SmsNotification> CreateSmsNotificationForEventAsync(
             string message,
             int eventId,
-            int? productId = null,
             Registration.RegistrationStatus[] registrationStatuses = null,
             Registration.RegistrationType[] registrationTypes = null)
         {
+            _logger.LogInformation($"Starting to create an SMS notification for event {eventId}. Message: {message}");
             await CheckEventAccessAsync(eventId);
 
             var recipients = await GetRecipientsAsync(
                 NotificationType.Sms,
-                eventId, productId,
+                eventId,
                 registrationStatuses,
                 registrationTypes);
 
@@ -151,7 +203,6 @@ namespace Eventuras.Services.Notifications
                     CreatedByUserId = currentUser.GetUserId(),
                     OrganizationId = currentOrg?.OrganizationId,
                     EventInfoId = eventId,
-                    ProductId = productId,
                     Recipients = recipients
                 }, leaveAttached: true);
         }
@@ -181,17 +232,17 @@ namespace Eventuras.Services.Notifications
         private async Task<List<NotificationRecipient>> GetRecipientsAsync(
             NotificationType notificationType,
             int eventId,
-            int? productId,
             Registration.RegistrationStatus[] registrationStatuses,
             Registration.RegistrationType[] registrationTypes)
         {
             var recipients = new List<NotificationRecipient>();
 
-            // Default status if not provided: Verified, attended and finished
+            // Default status if not provided: Verified, attended, not attended and finished
             registrationStatuses ??= new[]
             {
                 Registration.RegistrationStatus.Verified,
                 Registration.RegistrationStatus.Attended,
+                Registration.RegistrationStatus.NotAttended,
                 Registration.RegistrationStatus.Finished
             };
 
@@ -210,9 +261,6 @@ namespace Eventuras.Services.Notifications
                         Filter = new RegistrationFilter
                         {
                             EventInfoId = eventId,
-                            ProductIds = productId.HasValue
-                                ? new[] { productId.Value }
-                                : Array.Empty<int>(),
                             ActiveUsersOnly = true,
                             HavingStatuses = registrationStatuses,
                             HavingTypes = registrationTypes
@@ -240,11 +288,6 @@ namespace Eventuras.Services.Notifications
             if (notification == null)
             {
                 throw new ArgumentNullException(nameof(notification));
-            }
-
-            if (notification.EventInfoId.HasValue)
-            {
-                await CheckEventAccessAsync(notification.EventInfoId.Value);
             }
 
             await _context.UpdateAsync(notification);

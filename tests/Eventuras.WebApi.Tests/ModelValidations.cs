@@ -1,11 +1,11 @@
 ﻿#nullable enable
 
 using Eventuras.Domain;
-using Eventuras.WebApi.Controllers.Events;
-using Eventuras.WebApi.Controllers.Events.Products;
-using Eventuras.WebApi.Controllers.Orders;
-using Eventuras.WebApi.Controllers.Registrations;
-using Eventuras.WebApi.Controllers.Users;
+using Eventuras.WebApi.Controllers.v3.Events;
+using Eventuras.WebApi.Controllers.v3.Events.Products;
+using Eventuras.WebApi.Controllers.v3.Orders;
+using Eventuras.WebApi.Controllers.v3.Registrations;
+using Eventuras.WebApi.Controllers.v3.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;

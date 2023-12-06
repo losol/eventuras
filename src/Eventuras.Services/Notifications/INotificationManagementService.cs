@@ -14,9 +14,13 @@ namespace Eventuras.Services.Notifications
             string subject,
             string body,
             int eventId,
-            int? productId = null,
             Registration.RegistrationStatus[] registrationStatuses = null,
             Registration.RegistrationType[] registrationTypes = null);
+
+        Task<EmailNotification> CreateEmailNotificationAsync(
+        string subject,
+        string body,
+        Registration registration);
 
         Task<SmsNotification> CreateSmsNotificationAsync(
             string message,
@@ -25,7 +29,6 @@ namespace Eventuras.Services.Notifications
         Task<SmsNotification> CreateSmsNotificationForEventAsync(
             string message,
             int eventId,
-            int? productId = null,
             Registration.RegistrationStatus[] registrationStatuses = null,
             Registration.RegistrationType[] registrationTypes = null);
 
