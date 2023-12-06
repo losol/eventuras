@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services;
@@ -6,11 +11,6 @@ using Eventuras.TestAbstractions;
 using Eventuras.WebApi.Controllers.v3.Orders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Registrations
@@ -81,8 +81,10 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         [Fact]
         public async Task Should_Return_NotFound_For_Non_Existing_Registration()
         {
+            var randomId = Random.Shared.Next(1000000, int.MaxValue);
+            
             var client = _factory.CreateClient().Authenticated();
-            var response = await client.PostAsync("/v3/registrations/1/orders", new
+            var response = await client.PostAsync($"/v3/registrations/{randomId}/orders", new
             {
                 items = new[]
                 {
@@ -334,8 +336,10 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         [Fact]
         public async Task Should_Return_NotFound_When_Listing_Orders_For_Non_Existing_Registration()
         {
+            var randomId = Random.Shared.Next(1000000, int.MaxValue);
+            
             var client = _factory.CreateClient().Authenticated();
-            var response = await client.GetAsync("/v3/registrations/1/orders");
+            var response = await client.GetAsync($"/v3/registrations/{randomId}/orders");
             response.CheckNotFound();
         }
 

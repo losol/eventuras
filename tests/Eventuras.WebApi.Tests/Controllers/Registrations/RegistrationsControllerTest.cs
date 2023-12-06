@@ -724,8 +724,10 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         [Fact]
         public async Task Should_Return_Not_Found_When_Updating_Unknown_Reg()
         {
+            var randomId = Random.Shared.Next(1000000, int.MaxValue);
+            
             var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
-            var response = await client.PutAsync("/v3/registrations/1", new
+            var response = await client.PutAsync($"/v3/registrations/{randomId}", new
             {
                 type = 1
             });
@@ -851,8 +853,10 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         [Fact]
         public async Task Should_Return_Not_Found_When_Cancelling_Unknown_Reg()
         {
+            var randomId = Random.Shared.Next(1000000, int.MaxValue);
+            
             var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
-            var response = await client.DeleteAsync("/v3/registrations/1");
+            var response = await client.DeleteAsync($"/v3/registrations/{randomId}");
             response.CheckNotFound();
         }
 
