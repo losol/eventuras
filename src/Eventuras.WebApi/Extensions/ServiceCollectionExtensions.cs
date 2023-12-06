@@ -37,7 +37,8 @@ namespace Eventuras.WebApi.Extensions
                 var connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection");
                 if (string.IsNullOrWhiteSpace(connectionString)) throw new ArgumentException("Connection string is not set");
 
-                var isDevelopment = sp.GetRequiredService<IHostEnvironment>().IsDevelopment();
+                var env = sp.GetRequiredService<IHostEnvironment>();
+                var isDevelopment = env.IsDevelopment() || env.IsEnvironment("IntegrationTests");
 
                 options.UseNpgsql(connectionString, o => o.UseNodaTime())
                     .EnableSensitiveDataLogging(isDevelopment)
