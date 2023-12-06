@@ -107,7 +107,7 @@ builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 var app = builder.Build();
 
 // Configure middleware pipeline
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("IntegrationTests"))
 {
     var apiVersions = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 
