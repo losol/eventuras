@@ -80,7 +80,7 @@ const UserRegistrationPage: React.FC<UserRegistrationPageProps> = async ({ param
           ))}
         </section>
       )}
-      {availableProducts && availableProducts.length && (
+      {availableProducts && availableProducts.length > 0 && (
         <EditEventRegistrationsDialog
           availableProducts={availableProducts}
           currentRegistration={registration}
