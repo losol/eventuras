@@ -1,7 +1,6 @@
 import { ApiError, ApiError as SDKError, CancelablePromise, Eventuras } from '@losol/eventuras';
 
 import Environment from '../Environment';
-import Logger from '../Logger';
 type Headers = Record<string, string>;
 
 type UrlInfer = {
@@ -72,16 +71,7 @@ export const createSDK = ({ baseUrl, authHeader, inferUrl }: SDKOptions = {}): E
       apiBaseUrl = Environment.NEXT_PUBLIC_API_BASE_URL;
     }
   }
-  Logger.info(
-    { namespace: 'api' },
-    {
-      apiBaseUrl,
-      baseUrl,
-      authHeader,
-      inferUrl,
-      building: Environment.NEXT_IN_PHASE_PRODUCTION_BUILD,
-    }
-  );
+
   const headers: Headers = {
     'Eventuras-Org-Id': orgId,
   };

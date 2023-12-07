@@ -39,7 +39,7 @@ const Button: React.FC<ButtonProps> = props => {
 
   const blockClassName = block ? 'block' : '';
 
-  const buttonClassName =
+  let buttonClassName =
     props.className ||
     [
       buttonStyles.basePadding,
@@ -48,6 +48,10 @@ const Button: React.FC<ButtonProps> = props => {
       blockClassName,
       textColor,
     ].join(' ');
+
+  if (props.disabled) {
+    buttonClassName = `${buttonClassName} pointer-events-none opacity-50`;
+  }
 
   return (
     <div className="dark">

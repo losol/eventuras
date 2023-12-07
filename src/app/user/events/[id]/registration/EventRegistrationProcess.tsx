@@ -23,8 +23,9 @@ const EventRegistrationProcess: React.FC<UserEventRegistrationProps> = ({
   user,
   products,
 }) => {
+  const customizeProducts = products.length > 0;
   const { currentStep, registrationError, onCustomize, onPayment, onCompleteFlow } =
-    useRegistrationProcess(eventInfo, user);
+    useRegistrationProcess(eventInfo, user, customizeProducts);
   const { t } = createTranslation();
 
   const renderStep = () => {

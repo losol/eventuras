@@ -31,8 +31,8 @@ const RegistrationCustomize = ({
   currentRegistration,
 }: RegistrationCustomizeProps) => {
   const { t } = createTranslation();
-  const { register, handleSubmit } = useForm();
-
+  const { register, handleSubmit, formState } = useForm();
+  const formIsChanged = !!Object.keys(formState.dirtyFields).length;
   return (
     <>
       <form onSubmit={handleSubmit(createFormHandler(products, onSubmit))} className="py-10">
@@ -41,7 +41,11 @@ const RegistrationCustomize = ({
           register={register}
           selectedProducts={currentRegistration?.products ?? []}
         />
-        <Button type="submit" data-test-id="registration-customize-submit-button">
+        <Button
+          type="submit"
+          data-test-id="registration-customize-submit-button"
+          disabled={!formIsChanged}
+        >
           {t('common:buttons.continue')}
         </Button>
       </form>

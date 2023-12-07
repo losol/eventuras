@@ -16,21 +16,29 @@ import Button from '../ui/Button';
 import Dialog from '../ui/Dialog';
 
 export type EditEventOrdersDialogProps = {
-  availbleProducts: ProductDto[];
+  availableProducts: ProductDto[];
   currentRegistration: RegistrationDto;
+  title?: string;
+  description?: string;
+  startOpened?: boolean;
+  withButton?: boolean;
+  onClose?: (registrationChanged: boolean) => void;
 };
 
 const EditEventRegistrationsDialog = (props: EditEventOrdersDialogProps) => {
-  const [editorOpen, setEditorOpen] = useState<boolean>(false);
+  const [editorOpen, setEditorOpen] = useState<boolean>(props.startOpened ?? false);
   const { addAppNotification } = useAppNotifications();
 
   const onSubmit = async (selected: Map<string, number>) => {
     Logger.info({ namespace: 'editregistration' }, selected);
-
     const updateProductResult = await addProductsToRegistration(
       props.currentRegistration.registrationId!,
       productMapToOrderLineModel(selected)
-    );
+    ).catch(e => {
+      //TODO server kicks a 500 when trying to sending unchanged form, lets ignore for now
+      Logger.error({ namespace: 'editregistration' }, e);
+      return { ok: false };
+    });
     if (updateProductResult.ok) {
       addAppNotification({
         id: Date.now(),
@@ -46,32 +54,39 @@ const EditEventRegistrationsDialog = (props: EditEventOrdersDialogProps) => {
     }
 
     setEditorOpen(false);
+    if (props.onClose) props.onClose(updateProductResult.ok);
   };
   return (
     <>
-      <Button
-        onClick={() => {
-          setEditorOpen(true);
-        }}
-      >
-        Edit Orders
-      </Button>
+      {!props.withButton && (
+        <Button
+          onClick={() => {
+            setEditorOpen(true);
+          }}
+        >
+          {props.title ?? 'Edit Orders'}
+        </Button>
+      )}
       <Dialog
         title="Edit Orders"
         isOpen={editorOpen}
         onClose={() => {
           setEditorOpen(false);
+          if (props.onClose) {
+            props.onClose(false);
+          }
         }}
       >
         <div className="mt-2">
           <p className="text-sm text-gray-500">
-            Go ahead and edit your orders below. Please note that mandatory products of an event
-            cannot be changed directly, please contact an administrator instead.
+            {props.description ??
+              `Go ahead and edit your orders below. Please note that mandatory products of an event
+            cannot be changed directly, please contact an administrator instead.`}
           </p>
         </div>
         <div>
           <RegistrationCustomize
-            products={props.availbleProducts}
+            products={props.availableProducts}
             currentRegistration={props.currentRegistration}
             onSubmit={onSubmit}
           />

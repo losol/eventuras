@@ -9,12 +9,15 @@ const useCreateHook = <T>(
   skipIfTrue?: () => boolean | undefined
 ) => {
   const [result, setResult] = useState<T | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const execute = async () => {
+      setLoading(true);
+      setResult(null);
       const result = await apiWrapper(fetchFunction);
       setLoading(false);
+
       if (result.ok) {
         setResult(result.value);
         return;

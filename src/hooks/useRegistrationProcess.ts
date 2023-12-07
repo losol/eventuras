@@ -11,10 +11,15 @@ import Logger from '@/utils/Logger';
 
 type PageStep = 'Customize' | 'Payment' | 'Complete' | 'Error' | 'Loading';
 
-export const useRegistrationProcess = (eventInfo: EventDto, userProfile: UserDto) => {
+export const useRegistrationProcess = (
+  eventInfo: EventDto,
+  userProfile: UserDto,
+  customizeProducts: boolean
+) => {
+  const firstStep = customizeProducts ? 'Customize' : 'Payment';
   const selectedProducts = useRef(new Map<string, number>());
   const router = useRouter();
-  const [currentStep, setCurrentStepInternal] = useState<PageStep>('Customize');
+  const [currentStep, setCurrentStepInternal] = useState<PageStep>(firstStep);
   const [loadingEventRegistration, setLoadingEventRegistration] = useState(false);
   const [registrationError, setRegistrationError] = useState<ApiError | undefined>();
   const loggerNamespace = { namespace: 'useRegistrationProcess' };

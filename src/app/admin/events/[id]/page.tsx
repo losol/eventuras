@@ -51,7 +51,6 @@ const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
   );
 
   const [emailDrawerOpen, setEmailDrawerOpen] = useState<boolean>(false);
-
   if (eventsLoading || loadingEventProducts) {
     return <Loading />;
   }

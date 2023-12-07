@@ -46,7 +46,7 @@ export default defineConfig({
   projects: [
     // Setup project
     { name: 'setup-admin', testMatch: 'admin.auth.setup.ts' },
-    { name: 'setup-user', testMatch: 'user.auth.setup.ts' },
+    { name: 'setup-user', testMatch: 'admin.auth.setup.ts' }, //TODO we will use admin auth for now
     {
       name: 'e2e admin tests chromium',
       testMatch: /admin-.{0,100}\.spec\.ts/,

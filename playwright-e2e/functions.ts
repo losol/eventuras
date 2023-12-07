@@ -59,7 +59,9 @@ export const registerForEvent = async (page: Page, eventId: string) => {
   Logger.info(ns, 'Registration page reached');
   await page.locator('[data-test-id="product-selection-checkbox"]').click();
   Logger.info(ns, 'Product checkbox clicked');
-  await page.locator('[data-test-id="registration-customize-submit-button"]').click();
+  const submitButton = await page.locator('[data-test-id="registration-customize-submit-button"]');
+  expect(submitButton.isEnabled());
+  await submitButton.click();
   Logger.info(ns, 'Registration customize submit button clicked');
   await page.locator('[data-test-id="registration-zipcode-input"]').click();
   await page.locator('[data-test-id="registration-zipcode-input"]').fill('12345BC');
