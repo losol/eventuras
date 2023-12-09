@@ -1,9 +1,7 @@
 import { ProductDto } from '@losol/eventuras';
-import { ProductDto } from '@losol/eventuras';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
-import EditEventRegistrationsDialog from '@/components/eventuras/EditEventRegistrationDialog';
 import EditEventRegistrationsDialog from '@/components/eventuras/EditEventRegistrationDialog';
 import Order from '@/components/order/Order';
 import { Layout } from '@/components/ui';

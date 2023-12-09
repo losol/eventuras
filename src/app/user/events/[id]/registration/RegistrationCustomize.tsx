@@ -1,7 +1,6 @@
 'use client';
 
 import { ProductDto, RegistrationDto } from '@losol/eventuras';
-import { ProductDto, RegistrationDto } from '@losol/eventuras';
 import createTranslation from 'next-translate/createTranslation';
 import { useForm } from 'react-hook-form';
 
@@ -42,7 +41,11 @@ const RegistrationCustomize = ({
           register={register}
           selectedProducts={currentRegistration?.products ?? []}
         />
-        <Button type="submit" data-test-id="registration-customize-submit-button">
+        <Button
+          type="submit"
+          data-test-id="registration-customize-submit-button"
+          disabled={formIsChanged}
+        >
           {t('common:buttons.continue')}
         </Button>
       </form>
