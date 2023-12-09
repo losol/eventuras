@@ -11,7 +11,7 @@ export const buttonStyles = {
   light: 'bg-primary-100 text-gray-800 hover:bg-primary-200',
   transparent: 'bg-transparent hover:bg-primary-200 hover:bg-opacity-20',
   outline:
-    'border border-gray-700 rounded text-primary-900 hover:border-primary-500 hover:text-primary-700 hover:bg-primary-100/10 dark:hover:bg-primary-900 transition duration-500',
+    'border border-gray-700 dark:border-slate-500 rounded text-primary-900 hover:border-slate-200 hover:text-slate-200 hover:bg-primary-100/10 dark:hover:bg-primary-900 transition duration-250',
 };
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

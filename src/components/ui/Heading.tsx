@@ -11,25 +11,19 @@ const Heading = (props: HeadingProps) => {
   const bgDark = props.bgDark ?? false;
 
   // Adjust font size based on heading level
-  let defaultTextSize = '';
+  let textSize = 'text-base';
   switch (HeadingComponent) {
     case 'h1':
-      defaultTextSize = ' text-6xl pt-16 pb-6';
+      textSize = 'text-6xl';
       break;
     case 'h2':
-      defaultTextSize = ' text-3xl pt-16 pb-3';
+      textSize = 'text-3xl';
       break;
     case 'h3':
-      defaultTextSize = ' text-2xl pt-12 pb-6';
+      textSize = 'text-2xl';
       break;
     case 'h4':
-      defaultTextSize = ' text-xl pt-3 pb-1';
-      break;
-    case 'h5':
-      defaultTextSize = ' text-base pt-2 pb-1';
-      break;
-    case 'h6':
-      defaultTextSize = ' text-base pt-1 pb-1';
+      textSize = 'text-xl';
       break;
     default:
       break;
@@ -39,7 +33,7 @@ const Heading = (props: HeadingProps) => {
   let defaultSpacing = 'pt-6 pb-3';
   switch (HeadingComponent) {
     case 'h1':
-      defaultSpacing = ' pt-16 pb-6';
+      defaultSpacing = 'pt-16 pb-6';
       break;
     case 'h2':
       defaultSpacing = 'pt-12 pb-3';
@@ -51,7 +45,7 @@ const Heading = (props: HeadingProps) => {
       break;
   }
 
-  const baseClassName = props.className ?? defaultTextSize;
+  const baseClassName = props.className ?? textSize;
   const textColor = bgDark ? 'text-gray-200' : 'text-gray-800 dark:text-gray-200';
   const spacing = props.spacingClassName ?? defaultSpacing;
   const headingClassName = `${baseClassName} ${spacing} ${textColor}`;

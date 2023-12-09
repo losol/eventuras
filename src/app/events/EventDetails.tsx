@@ -5,9 +5,9 @@ import { EventDto } from '@losol/eventuras';
 import createTranslation from 'next-translate/createTranslation';
 import React from 'react';
 
-import { Container } from '@/components/ui';
+import Heading from '@/components/ui/Heading';
+import Link from '@/components/ui/Link';
 import MarkdownContent from '@/components/ui/MarkdownContent';
-import Tabs from '@/components/ui/Tabs';
 
 type EventProps = {
   eventinfo: EventDto;
@@ -19,35 +19,47 @@ const EventDetails: React.FC<EventProps> = ({ eventinfo }) => {
 
   if (!eventinfo) return <div>{t('common:events.event-not-found')}</div>;
 
-  const tabs = [
+  const sections = [
     {
-      name: t('common:events.moreinformation'),
+      id: 'more-information',
+      title: t('common:events.moreinformation'),
       content: eventinfo.moreInformation,
     },
     {
-      name: t('common:events.program'),
+      id: 'program',
+      title: t('common:events.program'),
       content: eventinfo.program,
     },
     {
-      name: t('common:events.practicalinformation'),
+      id: 'practical-information',
+      title: t('common:events.practicalinformation'),
       content: eventinfo.practicalInformation,
     },
-  ].filter(tab => tab.content);
+  ].filter(section => section.content);
 
   return (
     <section
       id="eventdetails"
-      className="eventdetails bg-primary-100/30 dark:bg-primary-900 py-10 min-h-[60vh]"
+      className="eventdetails bg-primary-100/30 dark:bg-primary-900 py-10 min-h-screen"
     >
-      <Container>
-        <Tabs>
-          {tabs.map((tab, index) => (
-            <Tabs.Item key={index} title={tab.name}>
-              <MarkdownContent markdown={tab.content} />
-            </Tabs.Item>
+      <div className="flex flex-col md:flex-row container mx-auto">
+        <div className="mb-8 md:mb-0 md:sticky md:top-20 md:flex md:flex-col md:mr-8 md:w-1/4 mt-10">
+          {sections.map((section, index) => (
+            <Link key={index} href={`#${section.id}`} variant="button-transparent">
+              {section.title}
+            </Link>
           ))}
-        </Tabs>
-      </Container>
+        </div>
+
+        <div className="flex-grow md:w-3/4">
+          {sections.map((section, index) => (
+            <section key={index} id={section.id} className="mb-8">
+              <Heading as="h2">{section.title}</Heading>
+              <MarkdownContent markdown={section.content} />
+            </section>
+          ))}
+        </div>
+      </div>
     </section>
   );
 };
