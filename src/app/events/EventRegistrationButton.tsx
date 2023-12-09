@@ -1,4 +1,3 @@
-'use client';
 import createTranslation from 'next-translate/createTranslation';
 
 import Link from '@/components/ui/Link';
@@ -11,15 +10,13 @@ export default function EventRegistrationButton({ eventId }: EventRegistrationBu
   const { t } = createTranslation();
 
   return (
-    <div className="my-4">
-      <Link
-        href={`/user/events/${eventId}/registration`}
-        variant="button-primary"
-        block
-        data-test-id="event-registration-button"
-      >
-        {t('common:buttons.register-cta')}
-      </Link>
-    </div>
+    <Link
+      href={`/user/events/${eventId}/registration`}
+      variant="button-primary"
+      block
+      data-test-id="event-registration-button"
+    >
+      {t('common:buttons.register-cta')}
+    </Link>
   );
 }

@@ -16,7 +16,8 @@
     "build-storybook": "storybook build",
     "create-random-event": "NODE_ENV=development npx ts-node ./scripts/api/createEvents.ts --ignore=false",
     "test:playwright": "playwright test",
-    "test:playwright:ui": "playwright test --ui"
+    "test:playwright:ui": "playwright test --ui",
+    "chromatic": "npx chromatic --project-token chpt_39f4ebd3d21130e"
   },
   "lint-staged": {
     "**/*.(ts|tsx|js)": [
@@ -103,5 +104,7 @@
   "engines": {
     "npm": ">=9.0.0 <10.0.0",
     "node": ">=18.0.0 <19.0.0"
-  }
+  },
+  "readme": "ERROR: No README data found!",
+  "_id": "eventuras@0.1.0"
 }

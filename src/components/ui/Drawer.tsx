@@ -5,6 +5,8 @@ import { Portal } from '@/components/ui';
 import Button from '@/components/ui/Button';
 import Heading from '@/components/ui/Heading';
 
+import ButtonGroup from './ButtonGroup';
+
 export interface DrawerProps {
   isOpen: boolean;
   onSave?: () => void;
@@ -51,16 +53,18 @@ const Drawer: DrawerComponent = (props: DrawerProps) => {
   if (!hasFooterChild && (props.onSave || props.onCancel)) {
     filteredChildren.push(
       <Drawer.Footer key="default-footer">
-        <div className="flex justify-between">
+        <ButtonGroup>
           {props.onSave && (
-            <Button
-              onClick={props.onSave}
-              className="bg-transparent mr-5 px-10 py-2 w-100 flex-grow hover:bg-green-500 text-green-700 font-semibold hover:text-white border border-green-500 hover:border-transparent"
-            >
+            <Button onClick={props.onSave} variant="primary">
               Submit
             </Button>
           )}
-        </div>
+          {props.onCancel && (
+            <Button onClick={props.onCancel} variant="secondary">
+              Cancel
+            </Button>
+          )}
+        </ButtonGroup>
       </Drawer.Footer>
     );
   }
@@ -80,6 +84,7 @@ const Drawer: DrawerComponent = (props: DrawerProps) => {
     'max-w-4/5',
     'h-full',
     'bg-gray-100',
+    'dark:bg-gray-700',
     'overflow-auto',
     'z-30',
   ];
@@ -97,10 +102,11 @@ const Drawer: DrawerComponent = (props: DrawerProps) => {
         className="fixed top-0 left-0 bg-cover z-10 w-screen h-screen backdrop-blur-sm"
       />
       <section {...ariaHiddenProps} className={finalClasses}>
+        {/* Cancel icon top right */}
         {props.onCancel && (
           <Button
             onClick={props.onCancel}
-            className="absolute top-0 right-0 m-4 text-black"
+            className="absolute top-0 right-0 m-4"
             variant="secondary"
           >
             <IconX />
@@ -134,10 +140,10 @@ const Body: React.FC<BodyProps> = props => (
 
 // Footer component
 const Footer: React.FC<FooterProps> = props => (
-  <footer className={`py-4 border-gray-300 ${props.className || ''}`}>{props.children}</footer>
+  <footer className={`pt-8 ${props.className}`}>{props.children}</footer>
 );
 
-// Define valid child types after the components are defined
+// Define valid child types
 Drawer.Header = Header;
 Drawer.Body = Body;
 Drawer.Footer = Footer;

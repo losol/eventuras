@@ -40,8 +40,7 @@ const Link: React.FC<LinkProps> = props => {
 
   // Combine all classes
   const classes = [
-    buttonStyles.basePadding,
-    buttonStyles.baseMargin,
+    buttonStyles.defaultPadding,
     variantClasses,
     textColor,
     blockClasses,

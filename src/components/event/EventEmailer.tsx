@@ -11,6 +11,7 @@ import Environment from '@/utils/Environment';
 import DropdownSelect from '../forms/DropdownSelect';
 import { InputText, lightInputStyle } from '../forms/Input';
 import MarkdownEditView from '../forms/MarkdownEditView';
+import ButtonGroup from '../ui/ButtonGroup';
 import Heading from '../ui/Heading';
 
 type EventEmailerFormValues = {
@@ -131,8 +132,8 @@ export default function EventEmailer({ eventTitle, eventId, onClose }: EventEmai
         </div>
       </div>
 
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-4">
-        <Button className={`flex-auto justify-center m-1`} type="submit" variant="secondary">
+      <ButtonGroup margin="my-4">
+        <Button type="submit" variant="primary">
           {common('buttons.send')}
         </Button>
         <Button
@@ -141,11 +142,10 @@ export default function EventEmailer({ eventTitle, eventId, onClose }: EventEmai
             e.preventDefault();
           }}
           variant="secondary"
-          className={`flex-auto justify-center m-1m`}
         >
           {common('buttons.cancel')}
         </Button>
-      </div>
+      </ButtonGroup>
     </form>
   );
 }
