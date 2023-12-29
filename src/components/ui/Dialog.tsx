@@ -2,11 +2,14 @@
 import { Dialog as HeadlessDialog, Transition } from '@headlessui/react';
 import { Fragment, ReactNode } from 'react';
 
+import { TEST_ID_ATTRIBUTE } from '@/utils/constants';
+
 export type DialogProps = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
   children: ReactNode;
+  [TEST_ID_ATTRIBUTE]?: string;
 };
 
 export default function Dialog(props: DialogProps) {
@@ -26,7 +29,7 @@ export default function Dialog(props: DialogProps) {
             <div className="fixed inset-0 bg-black/25" />
           </Transition.Child>
 
-          <div className="fixed inset-0 overflow-y-auto">
+          <div className="fixed inset-0 overflow-y-auto" data-test-id={props[TEST_ID_ATTRIBUTE]}>
             <div className="flex min-h-full items-center justify-center p-4 text-center">
               <Transition.Child
                 as={Fragment}

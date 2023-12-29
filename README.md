@@ -84,4 +84,4 @@ This is a plugin for visual code which makes it easier to see the translations i
 
 We have configured initial playwright tests which can be run interactively(you need a browser available on your machine) or on the command line(@see package.json for scripts, command line runs headless browsers, requires external dependency installs @see playwright docs). Make sure to fill out env variables(check the template and ask around for username/password). These will silently error out as they are not included in the Environment wrapper, as the app can run perfectly fine without a test user set up.
 
-Any future playwright end-to-end tests should go into the playwright-e2e folder.
+Any future playwright end-to-end tests should go into the playwright-e2e folder. [Further reading here](playwright-e2e-/README.md).

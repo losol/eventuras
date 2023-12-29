@@ -63,6 +63,7 @@ const EditEventRegistrationsDialog = (props: EditEventOrdersDialogProps) => {
           onClick={() => {
             setEditorOpen(true);
           }}
+          data-test-id="edit-orders-button"
         >
           {props.title ?? 'Edit Orders'}
         </Button>
@@ -70,6 +71,7 @@ const EditEventRegistrationsDialog = (props: EditEventOrdersDialogProps) => {
       <Dialog
         title="Edit Orders"
         isOpen={editorOpen}
+        data-test-id="edit-orders-dialog"
         onClose={() => {
           setEditorOpen(false);
           if (props.onClose) {

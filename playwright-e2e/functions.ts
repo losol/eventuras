@@ -1,7 +1,51 @@
-import { expect, Page } from '@playwright/test';
+const ns = { namespace: 'e2e' };
+import { chromium, expect, Page, test as setup } from '@playwright/test';
 
 import Logger from '@/utils/Logger';
-const ns = { namespace: 'e2e' };
+
+import { fetchLoginCode } from './utils';
+
+export const authenticate = async (userName: string, authFile: string) => {
+  setup.use({
+    locale: 'en-GB',
+    timezoneId: 'Europe/Berlin',
+  });
+  setup('authenticate', async () => {
+    const browser = await chromium.launch();
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.goto('/');
+    await page.waitForLoadState('load');
+    await page.locator('[data-test-id="login-button"]').click();
+    await page.locator('[id="username"]').fill(userName);
+    await page.getByRole('button', { name: 'Continue', exact: true }).click();
+
+    const loginCode = await fetchLoginCode(userName);
+    await page.locator('[id="code"]').fill(loginCode!);
+    await page.getByRole('button', { name: 'Continue', exact: true }).click();
+
+    await page.waitForURL('/');
+
+    await page.goto('/user');
+    await page.waitForLoadState('networkidle');
+    await expect(page.getByText(userName).first()).toBeVisible();
+    await context.storageState({ path: authFile });
+    Logger.info({ namespace: 'testing.auth' }, 'Auth Complete');
+  });
+};
+
+export const checkIfLoggedIn = async (page: Page) => {
+  await page.goto('/user');
+  await page.waitForLoadState('networkidle');
+  await expect(page.locator('[data-test-id="profile-link"]')).toBeVisible();
+};
+
+export const checkIfUnAuthorized = async (page: Page, url: string) => {
+  await page.goto(url);
+  const location = `/api/auth/signin?callbackUrl=${encodeURIComponent(url)}`;
+  await page.waitForURL(location);
+  return expect(page).toHaveURL(location);
+};
 
 export const checkIfAccessToAdmin = async (page: Page) => {
   Logger.info({ namespace: 'testing' }, 'admin access check');
@@ -11,7 +55,6 @@ export const checkIfAccessToAdmin = async (page: Page) => {
 };
 
 export const createEvent = async (page: Page, eventName: string) => {
-  // page is authenticated
   Logger.info(ns, 'create simple event', eventName);
   await page.goto('/admin');
   await page.waitForLoadState('load');
@@ -49,14 +92,24 @@ export const addProductToEvent = async (page: Page, eventId: string) => {
   await expect(page.locator('[data-test-id="edit-product-button"]')).toBeVisible();
 };
 
-export const registerForEvent = async (page: Page, eventId: string) => {
-  Logger.info(ns, 'register for event', eventId);
+export const visitAndClickEventRegistrationButton = async (page: Page, eventId: string) => {
   await page.goto(`/events/${eventId}`);
   await page.waitForLoadState('load');
   await page.locator('[data-test-id="event-registration-button"]').click();
   Logger.info(ns, 'Reg button clicked, waiting for registration page');
+};
+
+export const registerForEvent = async (
+  page: Page,
+  eventId: string,
+  startFromHome: boolean = true
+) => {
+  if (startFromHome) {
+    await visitAndClickEventRegistrationButton(page, eventId);
+  }
   await page.waitForURL(`/user/events/${eventId}/registration`);
   Logger.info(ns, 'Registration page reached');
+  Logger.info(ns, 'register for event', eventId);
   await page.locator('[data-test-id="product-selection-checkbox"]').click();
   Logger.info(ns, 'Product checkbox clicked');
   const submitButton = await page.locator('[data-test-id="registration-customize-submit-button"]');
@@ -74,8 +127,7 @@ export const registerForEvent = async (page: Page, eventId: string) => {
   await expect(page.locator('[data-test-id="registration-complete-confirmation"]')).toBeVisible();
 };
 
-export const validateRegistration = async (page: Page, eventId: string) => {
-  Logger.info(ns, 'Registered for event, validating..');
+export const visitRegistrationPageForEvent = async (page: Page, eventId: string) => {
   await page.goto(`/user`);
   await page.waitForLoadState('load');
   const clickToUserEventPage = await page.locator(`[data-test-id="${eventId}"]`);
@@ -88,10 +140,27 @@ export const validateRegistration = async (page: Page, eventId: string) => {
   await clickToUserRegistrationPage.click();
   await page.waitForURL(userRegistrationUrl!);
   await page.waitForLoadState('load');
+};
+
+export const validateRegistration = async (page: Page, eventId: string) => {
+  Logger.info(ns, 'Registered for event, validating..');
+  await visitRegistrationPageForEvent(page, eventId);
   await expect(page.locator('[data-test-id="registration-id-container"]')).toBeVisible();
   Logger.info(
     ns,
     'Registration succesful, now making sure products were also registered correctly'
   );
   await expect(page.locator('[data-test-id="product-container"]')).toBeVisible();
+};
+
+export const editRegistrationOrders = async (page: Page, eventId: string) => {
+  await visitRegistrationPageForEvent(page, eventId);
+  await page.locator('[data-test-id="edit-orders-button"]').click();
+  expect(page.locator('[data-test-id="edit-orders-dialog"]')).toBeVisible();
+  await page.locator('[data-test-id="product-selection-checkbox"]').first().click();
+  await Promise.all([
+    page.waitForResponse(resp => resp.url().includes('/products') && resp.status() === 200),
+    page.locator('[data-test-id="registration-customize-submit-button"]').click(),
+    expect(page.locator('[data-test-id="notification-success"]')).toBeVisible(),
+  ]);
 };

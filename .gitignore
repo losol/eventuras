@@ -49,3 +49,4 @@ build-storybook.log
 /blob-report/
 /playwright/.cache/
 /playwright-auth
+/playwright-e2e/createdEvent.json

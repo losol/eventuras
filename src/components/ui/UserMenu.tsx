@@ -33,7 +33,12 @@ const UserMenu = (props: UserMenuProps) => {
   return (
     <div className="flex items-center">
       {userState.auth?.isAuthenticated && (
-        <Link href="/user" bgDark={props.bgDark} className="font-bold mr-2">
+        <Link
+          href="/user"
+          bgDark={props.bgDark}
+          className="font-bold mr-2"
+          data-test-id="profile-link"
+        >
           Profile
         </Link>
       )}

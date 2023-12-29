@@ -12,7 +12,10 @@ dotenv.config();
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-const timeOut = 1000 * 60 * 5; //max 5 minutes for all
+const timeOut = 1000 * 60 * 10; //max 10 minutes for all
+const devicesToTest = devices['Desktop Chrome'];
+const SETUP_ADMIN = 'setup-admin';
+const SETUP_USER = 'setup-user';
 export default defineConfig({
   timeout: timeOut,
   globalTimeout: timeOut,
@@ -45,27 +48,27 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     // Setup project
-    { name: 'setup-admin', testMatch: 'admin.auth.setup.ts' },
-    { name: 'setup-user', testMatch: 'admin.auth.setup.ts' }, //TODO we will use admin auth for now
+    { name: SETUP_ADMIN, testMatch: 'admin.auth.setup.ts' },
+    { name: SETUP_USER, testMatch: 'user.auth.setup.ts' },
     {
-      name: 'e2e admin tests chromium',
+      name: 'e2e admin tests',
       testMatch: /admin-.{0,100}\.spec\.ts/,
       use: {
-        ...devices['Desktop Chrome'],
-        // Use prepared auth state.
-        storageState: 'playwright-auth/admin.json',
+        ...devicesToTest,
       },
-      dependencies: ['setup-admin'],
+      dependencies: [SETUP_ADMIN],
     },
     {
       name: 'e2e user tests chromium',
       testMatch: /user-.{0,100}\.spec\.ts/,
       use: {
-        ...devices['Desktop Chrome'],
-        // Use prepared auth state.
-        storageState: 'playwright-auth/user.json',
+        ...devicesToTest,
       },
-      dependencies: ['setup-user'],
+      dependencies: [SETUP_USER],
+    },
+    {
+      name: 'skip-login',
+      testMatch: '/*.spec.ts',
     },
   ],
 });
