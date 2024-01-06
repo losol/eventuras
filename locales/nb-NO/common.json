@@ -47,7 +47,11 @@
   },
   "labels": {
     "edit": "Endre",
+    "login": "Logg inn",
+    "logout": "Logg av",
+    "menu": "Meny",
     "products": "Produkter",
+    "profile": "Mine kurs",
     "registrations": "Registreringer"
   },
   "onlinecourses": "Nettkurs",

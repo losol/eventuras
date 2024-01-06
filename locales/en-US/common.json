@@ -49,7 +49,11 @@
   "labels": {
     "edit": "Edit",
     "products": "Products",
-    "registrations": "Registrations"
+    "registrations": "Registrations",
+    "login": "Log in",
+    "logout": "Log out",
+    "menu": "Menu",
+    "profile": "Account"
   },
   "onlinecourses": "Online courses",
   "registration": {

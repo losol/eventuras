@@ -22,7 +22,9 @@ export default async function Layout(props: LayoutProps) {
   const { children, fluid } = props;
   const site = await getSiteSettings();
 
-  const bgClass = props.imageNavbar ? 'bg-transparent z-10 absolute' : 'bg-transparent';
+  const bgClass = props.imageNavbar
+    ? 'bg-transparent z-10 absolute w-full py-1'
+    : 'bg-transparent w-full py-1';
 
   return (
     <>

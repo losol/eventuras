@@ -41,6 +41,11 @@
     "subHeading": "Hvem betaler",
     "title": "Betalingsdetaljer"
   },
+  "profile": {
+    "page": {
+      "heading": "Informasjon om deg"
+    }
+  },
   "registration": {
     "address": {
       "city": "Poststed",

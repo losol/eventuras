@@ -44,6 +44,11 @@
     "subHeading": "Who is paying",
     "title": "Payment details"
   },
+  "profile": {
+    "page": {
+      "heading": "Your account details"
+    }
+  },
   "registration": {
     "address": {
       "city": "City",

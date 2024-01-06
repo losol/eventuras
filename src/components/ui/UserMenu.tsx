@@ -2,10 +2,11 @@
 
 import { useRouter } from 'next/navigation';
 import { signIn, signOut } from 'next-auth/react';
+import createTranslation from 'next-translate/createTranslation';
 import { useContext } from 'react';
 
 import Button from '@/components/ui/Button';
-import Link from '@/components/ui/Link';
+import Menu from '@/components/ui/Menu';
 import { UserContext } from '@/context';
 import Environment from '@/utils/Environment';
 
@@ -14,6 +15,7 @@ interface UserMenuProps {
 }
 
 const UserMenu = (props: UserMenuProps) => {
+  const { t } = createTranslation();
   const { fetchUserProfile, userState } = useContext(UserContext);
   const router = useRouter();
 
@@ -30,39 +32,22 @@ const UserMenu = (props: UserMenuProps) => {
     router.push(logOutUrl);
   };
 
+  if (userState.auth?.isAuthenticated) {
+    return (
+      <Menu>
+        <Menu.Trigger>{userState.profile?.name}</Menu.Trigger>
+        <Menu.Items>
+          <Menu.Link href="/user">{t('common:labels.profile')}</Menu.Link>
+          <Menu.Button onClick={handleLogout}>{t('common:labels.logout')}</Menu.Button>
+        </Menu.Items>
+      </Menu>
+    );
+  }
+
   return (
-    <div className="flex items-center">
-      {userState.auth?.isAuthenticated && (
-        <Link
-          href="/user"
-          bgDark={props.bgDark}
-          className="font-bold mr-2"
-          data-test-id="profile-link"
-        >
-          Profile
-        </Link>
-      )}
-      {!userState.auth?.isAuthenticated && (
-        <Button
-          variant="transparent"
-          onClick={handleLogin}
-          bgDark={props.bgDark}
-          data-test-id="login-button"
-        >
-          Log in
-        </Button>
-      )}
-      {userState.auth?.isAuthenticated && (
-        <Button
-          variant="transparent"
-          onClick={handleLogout}
-          bgDark={props.bgDark}
-          data-test-id="logout-button"
-        >
-          Log out
-        </Button>
-      )}
-    </div>
+    <Button onClick={handleLogin} variant="primary" bgDark={props.bgDark}>
+      {t('common:labels.login')}
+    </Button>
   );
 };
 

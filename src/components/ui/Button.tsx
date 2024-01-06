@@ -28,7 +28,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   [TEST_ID_ATTRIBUTE]?: string;
 }
 
-const Button: React.FC<ButtonProps & BoxProps> = props => {
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps & BoxProps>((props, ref) => {
   const { variant = 'primary', bgDark = false, block = false, ...boxProps } = props;
 
   let textColor;
@@ -50,6 +50,7 @@ const Button: React.FC<ButtonProps & BoxProps> = props => {
 
   return (
     <button
+      ref={ref}
       disabled={props.disabled || props.loading}
       aria-label={props.ariaLabel}
       onClick={props.onClick}
@@ -65,6 +66,7 @@ const Button: React.FC<ButtonProps & BoxProps> = props => {
       )}
     </button>
   );
-};
+});
+Button.displayName = 'Button';
 
 export default Button;
