@@ -5,7 +5,7 @@ import createTranslation from 'next-translate/createTranslation';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import { defaultInputStyle, InputText } from '@/components/forms/Input';
+import { LegacyInputText } from '@/components/forms/Input';
 import Button from '@/components/ui/Button';
 import PaymentFormValues from '@/types/PaymentFormValues';
 
@@ -78,28 +78,26 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
 
         <fieldset className={fieldsetClassName}>
           <legend className={fieldsetLegendClassName}>{t('user:registration.user.legend')}</legend>
-          <InputText
+          <LegacyInputText
             {...register('username', { value: userProfile.name! })}
             label={t('user:registration.user.name')}
             defaultValue={userProfile.name}
             disabled
             errors={errors}
-            className={defaultInputStyle}
           />
-          <InputText
+          <LegacyInputText
             {...register('email', { value: userProfile.email! })}
             label={t('user:registration.user.email')}
             defaultValue={userProfile.email}
             disabled
             errors={errors}
-            className={defaultInputStyle}
           />
         </fieldset>
         <fieldset className={fieldsetClassName}>
           <legend className={fieldsetLegendClassName}>
             {t('user:registration.address.legend')}
           </legend>
-          <InputText
+          <LegacyInputText
             {...register('zip', {
               required: 'Zip code is Required',
             })}
@@ -107,9 +105,8 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
             data-test-id="registration-zipcode-input"
             placeholder="Zip Code"
             errors={errors}
-            className={defaultInputStyle}
           />
-          <InputText
+          <LegacyInputText
             {...register('city', {
               required: 'City is required',
             })}
@@ -117,9 +114,8 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
             data-test-id="registration-city-input"
             placeholder="City"
             errors={errors}
-            className={defaultInputStyle}
           />
-          <InputText
+          <LegacyInputText
             {...register('country', {
               required: 'Country is required',
             })}
@@ -128,7 +124,6 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
             default="Norway"
             placeholder="Country"
             errors={errors}
-            className={defaultInputStyle}
           />
         </fieldset>
 
@@ -137,7 +132,7 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
             <legend className={fieldsetLegendClassName}>
               {t('user:registration.businessinfo.legend')}
             </legend>
-            <InputText
+            <LegacyInputText
               {...register('vatNumber', {
                 required: 'Vat Number is required for business customers',
               })}
@@ -145,14 +140,12 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
               data-test-id="registration-vat-input"
               placeholder="Vat Number"
               errors={errors}
-              className={defaultInputStyle}
             />
-            <InputText
+            <LegacyInputText
               {...register('invoiceReference')}
               label={t('user:registration.businessinfo.invoiceReference')}
               placeholder="Invoice Reference"
               errors={errors}
-              className={defaultInputStyle}
             />
           </fieldset>
         )}

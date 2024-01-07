@@ -9,7 +9,7 @@ import { mapEnum } from '@/utils/enum';
 import Environment from '@/utils/Environment';
 
 import DropdownSelect from '../forms/DropdownSelect';
-import { InputText, lightInputStyle } from '../forms/Input';
+import { LegacyInputText } from '../forms/Input';
 import MarkdownEditView from '../forms/MarkdownEditView';
 import ButtonGroup from '../ui/ButtonGroup';
 import Heading from '../ui/Heading';
@@ -109,14 +109,13 @@ export default function EventEmailer({ eventTitle, eventId, onClose }: EventEmai
         multiSelect={true}
       />
       <div>
-        <InputText
+        <LegacyInputText
           {...register('subject', {
             required: t('eventEmailer.form.subject.feedbackNoInput'),
           })}
           label={t('eventEmailer.form.subject.label')}
           placeholder={t('eventEmailer.form.subject.label')}
           errors={errors}
-          className={`${lightInputStyle}`}
         />
       </div>
       <div>
@@ -126,7 +125,6 @@ export default function EventEmailer({ eventTitle, eventId, onClose }: EventEmai
             formName="body"
             label={t('eventEmailer.form.body.label')}
             placeholder={t('eventEmailer.form.body.label')}
-            className={`${lightInputStyle}`}
             editmodeOnly={true}
           />
         </div>

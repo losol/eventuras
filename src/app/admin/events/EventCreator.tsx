@@ -5,7 +5,7 @@ import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import { defaultInputStyle, InputText } from '@/components/forms/Input';
+import { LegacyInputText } from '@/components/forms/Input';
 import { Layout } from '@/components/ui';
 import Button from '@/components/ui/Button';
 import FatalError from '@/components/ui/FatalError';
@@ -124,22 +124,20 @@ const EventCreator = () => {
             value={Environment.NEXT_PUBLIC_ORGANIZATION_ID}
             {...register('organizationId')}
           />
-          <InputText
+          <LegacyInputText
             {...titleRegistration}
             label="Event Title"
             placeholder="Event Title"
             data-test-id="event-title-input"
             errors={errors}
-            className={defaultInputStyle}
           />
-          <InputText
+          <LegacyInputText
             {...register('slug', {
               required: 'Slug is required',
             })}
             label="Event Slug"
             placeholder="Event Slug"
             errors={errors}
-            className={defaultInputStyle}
           />
         </fieldset>
 

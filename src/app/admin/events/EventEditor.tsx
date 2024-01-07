@@ -14,7 +14,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 
 import Checkbox, { CheckBoxLabel } from '@/components/forms/Checkbox';
 import DropdownSelect from '@/components/forms/DropdownSelect';
-import { defaultInputStyle, InputDate, InputText, lightInputStyle } from '@/components/forms/Input';
+import { InputDate, LegacyInputText } from '@/components/forms/Input';
 import MarkdownEditView from '@/components/forms/MarkdownEditView';
 import Button from '@/components/ui/Button';
 import FatalError from '@/components/ui/FatalError';
@@ -149,28 +149,25 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
           {...register('organizationId')}
         />
 
-        <InputText
+        <LegacyInputText
           {...register('title', {
             required: 'Event title is required',
           })}
           label="Title"
           placeholder="Event Title"
           errors={errors}
-          className={`${defaultInputStyle}  mb-4`}
         />
-        <InputText
+        <LegacyInputText
           {...register('headline')}
           label="Headline"
           placeholder="Event Headline"
           errors={errors}
-          className={`${defaultInputStyle}  mb-4`}
         />
-        <InputText
+        <LegacyInputText
           {...register('category')}
           label="Category"
           placeholder="Event Category"
           errors={errors}
-          className={`${defaultInputStyle}  mb-4`}
         />
         <DropdownSelect
           multiSelect={false}
@@ -204,17 +201,15 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
           formName="description"
           options={{ required: 'Please provide a description of the event' }}
           placeholder="An Event Description here (markdown supported)"
-          className={`${lightInputStyle}`}
           defaultValue={eventinfo.description ?? ''}
         />
-        <InputText
+        <LegacyInputText
           {...register('slug', {
             required: 'Slug is required',
           })}
           label="Slug"
           placeholder="Event Slug"
           errors={errors}
-          className={`${defaultInputStyle}  mb-4`}
         />
         {eventinfo && (
           <div className="mb-4">
@@ -241,25 +236,18 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
       </fieldset>
       <fieldset disabled={apiState.loading} className={fieldsetClassName}>
         <legend className={fieldsetLegendClassName}>Location</legend>
-        <InputText
-          {...register('city')}
-          label="City"
-          placeholder="City"
-          errors={errors}
-          className={`${defaultInputStyle}  mb-4`}
-        />
-        <InputText
+        <LegacyInputText {...register('city')} label="City" placeholder="City" errors={errors} />
+        <LegacyInputText
           {...register('location')}
           label="Location"
           placeholder="Location"
           errors={errors}
-          className={`${defaultInputStyle}  mb-4`}
         />
       </fieldset>
       <fieldset></fieldset>
       <fieldset disabled={apiState.loading} className={fieldsetClassName}>
         <legend className={fieldsetLegendClassName}>Image</legend>
-        <InputText
+        <LegacyInputText
           {...register('featuredImageUrl', {
             pattern: {
               value:
@@ -270,14 +258,12 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
           label="Image Url"
           placeholder="Image Url"
           errors={errors}
-          className={`${defaultInputStyle}  mb-4`}
         />
-        <InputText
+        <LegacyInputText
           {...register('featuredImageCaption')}
           label="Image Caption"
           placeholder="Image Caption"
           errors={errors}
-          className={`${defaultInputStyle}  mb-4`}
         />
       </fieldset>
       <fieldset>
@@ -288,7 +274,6 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
           label="Program"
           options={{ required: 'Please provide a program of the event' }}
           placeholder="An Event Program here (markdown supported)"
-          className={`${lightInputStyle}`}
           defaultValue={eventinfo.program ?? ''}
         />
         <MarkdownEditView
@@ -297,7 +282,6 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
           label="Practical Information"
           placeholder="Practical Information here (markdown supported)"
           options={{ required: 'Please provide a progrm of the event' }}
-          className={`${lightInputStyle}`}
           defaultValue={eventinfo.practicalInformation ?? ''}
         />
         <MarkdownEditView
@@ -305,7 +289,6 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
           formName="moreInformation"
           label="More Information"
           placeholder="More Information here (markdown supported)"
-          className={`${lightInputStyle}`}
           defaultValue={eventinfo.moreInformation ?? ''}
         />
         <MarkdownEditView
@@ -313,7 +296,6 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
           formName="welcomeLetter"
           label="Welcome Letter"
           placeholder="Welcome letter here (markdown supported)"
-          className={`${lightInputStyle}`}
           defaultValue={eventinfo.welcomeLetter ?? ''}
         />
         <MarkdownEditView
@@ -321,7 +303,6 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
           formName="informationRequest"
           label="Information Request"
           placeholder="Information Request (markdown supported)"
-          className={`${lightInputStyle}`}
           defaultValue={eventinfo.informationRequest ?? ''}
         />
       </fieldset>
@@ -354,21 +335,19 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
         <legend className={fieldsetLegendClassName}>Additional Fields</legend>
 
         {/* External Info Page URL */}
-        <InputText
+        <LegacyInputText
           {...register('externalInfoPageUrl')}
           label="External Info Page URL"
           placeholder="External Info Page URL"
           errors={errors}
-          className={`${defaultInputStyle}  mb-4`}
         />
 
         {/* External Registrations URL */}
-        <InputText
+        <LegacyInputText
           {...register('externalRegistrationsUrl')}
           label="External Registrations URL"
           placeholder="External Registrations URL"
           errors={errors}
-          className={`${defaultInputStyle}  mb-4`}
         />
         {/* Last Cancellation Date */}
         <InputDate
@@ -378,32 +357,29 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
         />
 
         {/* Max Participants */}
-        <InputText
+        <LegacyInputText
           {...register('maxParticipants')}
           label="Max Participants"
           type="number"
           placeholder="Max Participants"
           defaultValue={0}
           errors={errors}
-          className={`${defaultInputStyle}  mb-4`}
         />
 
         {/* Certificate Title */}
-        <InputText
+        <LegacyInputText
           {...register('certificateTitle')}
           label="Certificate Title"
           placeholder="Certificate Title"
           errors={errors}
-          className={`${defaultInputStyle}  mb-4`}
         />
 
         {/* Certificate Description */}
-        <InputText
+        <LegacyInputText
           {...register('certificateDescription')}
           label="Certificate Description"
           placeholder="Certificate Description"
           errors={errors}
-          className={`${defaultInputStyle}  mb-4`}
         />
       </fieldset>
       <Button

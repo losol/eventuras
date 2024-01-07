@@ -16,32 +16,8 @@ export type InputTextProps = {
  * requires ref forwarding because it is used by react hooks
  * @see https://stackoverflow.com/questions/67877887/react-hook-form-v7-function-components-cannot-be-given-refs-attempts-to-access
  */
-export const defaultInputStyle = `
-        appearance-none
-        w-full
-        p-4
-        text-gray-900
-        dark:text-gray-100
-        bg-gray-100
-        dark:bg-gray-800
-        border-2
-        dark:border-gray-700
-        leading-tight
-        focus:outline-none
-        focus:shadow-outline`;
 
-export const lightInputStyle = `
-        appearance-none
-        w-full
-        p-4
-        bg-white
-        text-black
-        border-2
-        dark:border-gray-400
-        focus:outline-none
-        focus:shadow-outline`;
-
-export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref) => {
+export const LegacyInputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref) => {
   const oProps = { ...props };
   delete oProps.children;
   delete oProps.type;
@@ -67,7 +43,7 @@ export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((pro
   );
 });
 
-InputText.displayName = 'InputText';
+LegacyInputText.displayName = 'InputText';
 
 export const InputDate = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref) => {
   const oProps = { ...props };
