@@ -6,6 +6,6 @@ namespace Eventuras.Services.DbInitializers
     {
         Task SeedAsync(
             bool createSuperAdmin = true,
-            bool runMigrations = true);
+            bool runMigrations = false);
     }
 }
