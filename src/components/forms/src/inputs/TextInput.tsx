@@ -17,6 +17,7 @@ export const TextInput: React.FC<InputProps> = props => {
     description,
     className,
     validation,
+    disabled,
     ...rest
   } = props;
   const inputId = id ?? name;
@@ -30,7 +31,9 @@ export const TextInput: React.FC<InputProps> = props => {
   if (hasError) {
     inputClassName = `${inputClassName} ${formStyles.inputErrorGlow}`;
   }
-
+  if (disabled) {
+    inputClassName = `${inputClassName} cursor-not-allowed`;
+  }
   return (
     <div className="my-3">
       {label && (
