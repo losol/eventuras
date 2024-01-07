@@ -8,7 +8,7 @@ import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import UserEventRegistrations from './(components)/UserEventRegistrations';
 import UserProfileCard from './(components)/UserProfileCard';
 
-const UserProfilePage = async () => {
+const UserPage = async () => {
   const eventuras = createSDK({ authHeader: headers().get('Authorization') });
   const { t } = createTranslation();
 
@@ -22,18 +22,16 @@ const UserProfilePage = async () => {
       includeProducts: true,
     })
   );
-  if (!registrations || !registrations.value || !registrations.value.count)
-    return <Layout>{t('user:page.registrationsNotFound')}</Layout>;
 
   return (
     <Layout>
       <Heading>{t('user:page.heading')}</Heading>
       <UserProfileCard profile={profile.value!} />
-      {registrations.value.count > 0 && (
+      {registrations.value && registrations.value.count! > 0 && (
         <UserEventRegistrations registrations={registrations.value.data!} />
       )}
     </Layout>
   );
 };
 
-export default UserProfilePage;
+export default UserPage;

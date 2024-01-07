@@ -37,7 +37,8 @@ const UserMenu = (props: UserMenuProps) => {
       <Menu>
         <Menu.Trigger>{userState.profile?.name}</Menu.Trigger>
         <Menu.Items>
-          <Menu.Link href="/user">{t('common:labels.profile')}</Menu.Link>
+          <Menu.Link href="/user">{t('common:labels.user')}</Menu.Link>
+          <Menu.Link href="/user/account">{t('common:labels.account')}</Menu.Link>
           <Menu.Button onClick={handleLogout}>{t('common:labels.logout')}</Menu.Button>
         </Menu.Items>
       </Menu>

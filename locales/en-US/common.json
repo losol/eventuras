@@ -47,13 +47,16 @@
     "sectiontitle": "Happenings"
   },
   "labels": {
+    "account": "User account",
     "edit": "Edit",
-    "products": "Products",
-    "registrations": "Registrations",
+    "fullName": "Name",
     "login": "Log in",
     "logout": "Log out",
     "menu": "Menu",
-    "profile": "Account"
+    "products": "Products",
+    "profile": "Account",
+    "registrations": "Registrations",
+    "user": "User page"
   },
   "onlinecourses": "Online courses",
   "registration": {

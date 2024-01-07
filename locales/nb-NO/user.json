@@ -1,4 +1,28 @@
 {
+  "account": {
+    "email": {
+      "description": "Det er viktig at vi har riktig e-postadresse.",
+      "existingDescription": "Vi fikk denne fra innloggingen din. Kan ikke endres. ",
+      "label": "E-post",
+      "placeholder": "gerhard@leprosyresearch.org",
+      "requiredText": "Vi trenger e-posten din"
+    },
+    "name": {
+      "description": "Navnet ditt. Vises på kursbevis og kvitteringer.",
+      "label": "Navn",
+      "placeholder": "Gerhard Armauer Hansen",
+      "requiredText": "Vi trenger navnet ditt!"
+    },
+    "phoneNumber": {
+      "description": "Vi bruker telefonnummeret til innlogging og viktig informasjon.",
+      "label": "Mobiltelefon",
+      "placeholder": "+4712345678",
+      "requiredText": "Vi trenger et mobilnummer"
+    },
+    "update": {
+      "label": "Oppdater bruker"
+    }
+  },
   "buttons": {
     "register": "Meld deg på"
   },

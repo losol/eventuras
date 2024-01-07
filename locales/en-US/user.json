@@ -1,4 +1,28 @@
 {
+  "account": {
+    "email": {
+      "description": "E-mail. Make sure it is correct.",
+      "existingDescription": "We did save this from your login. Cannot be changed.",
+      "label": "E-mail",
+      "placeholder": "gerhard@leprosyresearch.org",
+      "requiredText": "We need your email!"
+    },
+    "name": {
+      "description": "Your name. Will be on your receipts and certficates, so make sure it is correct.",
+      "label": "Name",
+      "placeholder": "Gerhard Armauer Hansen",
+      "requiredText": "We need your name!"
+    },
+    "phoneNumber": {
+      "description": "We need this to send login codes and important information",
+      "label": "Phone number",
+      "placeholder": "+4712345678",
+      "requiredText": "We need a phone number"
+    },
+    "update": {
+      "label": "Update account details"
+    }
+  },
   "buttons": {
     "register": "Register for this Event"
   },
