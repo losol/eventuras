@@ -9,11 +9,13 @@ cd src/Eventuras.Infrastructure
 ## Adding a migration
 
 ```bash
-dotnet ef migrations add MigrationDescription -s ../Eventuras.Web/Eventuras.Web.csproj
+dotnet ef migrations add MigrationDescription -s ../Eventuras.WebApi/Eventuras.WebApi.csproj
+dotnet ef migrations script --idempotent -s ../Eventuras.WebApi/Eventuras.WebApi.csproj --output ./scripts/DateAndTime-Description.sql
+
 ```
 
 ## Applying a Migration
 
 ```bash
-dotnet ef database update -s ../Eventuras.Web/Eventuras.Web.csproj
+dotnet ef database update -s ../Eventuras.WebApi/Eventuras.WebApi.csproj
 ```
