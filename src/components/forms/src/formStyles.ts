@@ -24,6 +24,8 @@ export const formStyles = {
         focus:outline-none
         focus:shadow-outline`,
 
+  inputDescription: 'text-gray-700 dark:text-gray-300 text-sm mb-2',
+
   inputErrorGlow: 'border border-red-500 shadow-outline-red',
 };
 

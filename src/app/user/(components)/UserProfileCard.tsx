@@ -1,48 +1,47 @@
 'use client';
 
 import { UserDto } from '@losol/eventuras';
-import { IconMail, IconPhone, IconUser } from '@tabler/icons-react';
+import createTranslation from 'next-translate/createTranslation';
 
 import Card from '@/components/ui/Card';
+import { Definition, DescriptionList, Item, Term } from '@/components/ui/DescriptionList';
+import Link from '@/components/ui/Link';
 
 export type UserProfileCardProps = {
   profile: UserDto;
 };
 
 const UserProfileCard = ({ profile }: UserProfileCardProps) => {
+  const { t } = createTranslation();
   return (
     <Card>
-      <dl className="py-5">
+      <DescriptionList>
         {profile.name && (
-          <>
-            <dt className="pt-5">
-              <IconUser size={24} />
-              <span className="sr-only">User Name:</span>
-            </dt>
-            <dd>{profile.name}</dd>
-          </>
+          <Item>
+            <Term>{t('common:labels.name')}</Term>
+            <Definition>{profile.name}</Definition>
+          </Item>
         )}
 
         {profile.email && (
-          <>
-            <dt className="pt-5">
-              <IconMail size={24} />
-              <span className="sr-only">Email:</span>
-            </dt>
-            <dd>{profile.email}</dd>
-          </>
+          <Item>
+            <Term>{t('common:labels.email')}</Term>
+            <Definition>{profile.email}</Definition>
+          </Item>
         )}
 
         {profile.phoneNumber && (
-          <>
-            <dt className="pt-5">
-              <IconPhone size={24} />
-              <span className="sr-only">Phone Number:</span>
-            </dt>
-            <dd>{profile.phoneNumber}</dd>
-          </>
+          <Item>
+            <Term>{t('common:labels.phoneNumber')}</Term>
+            <Definition>{profile.phoneNumber}</Definition>
+          </Item>
         )}
-      </dl>
+      </DescriptionList>
+      <Card.Text className="my-2">
+        <Link href="/user/account" variant="button-outline" margin="my-3">
+          {t('common:labels.editProfile')}
+        </Link>
+      </Card.Text>
     </Card>
   );
 };

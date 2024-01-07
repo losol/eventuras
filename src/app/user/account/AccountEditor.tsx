@@ -6,6 +6,7 @@ import React, { FC } from 'react';
 
 import Form from '@/components/forms/Form';
 import { TextInput } from '@/components/forms/src/inputs/TextInput';
+import Button from '@/components/ui/Button';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Logger from '@/utils/Logger';
 
@@ -74,12 +75,7 @@ const AccountEditor: FC<AccountEditorProps> = ({ user }) => {
       />
 
       {/* Submit Button */}
-      <button
-        type="submit"
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-      >
-        {t('user:account.update.label')}
-      </button>
+      <Button type="submit">{t('user:account.update.label')}</Button>
     </Form>
   );
 };

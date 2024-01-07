@@ -35,13 +35,13 @@ export const TextInput: React.FC<InputProps> = props => {
     inputClassName = `${inputClassName} cursor-not-allowed`;
   }
   return (
-    <div className="my-3">
+    <div className="my-6">
       {label && (
         <label htmlFor={inputId} className="block font-bold mb-2">
           {label}
         </label>
       )}
-      {description && <p className="text-gray-700 text-sm mb-2">{description}</p>}
+      {description && <p className={formStyles.inputDescription}>{description}</p>}
 
       <input
         id={inputId}
