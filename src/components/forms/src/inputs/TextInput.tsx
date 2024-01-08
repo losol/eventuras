@@ -6,6 +6,7 @@ import { useFormContext } from 'react-hook-form';
 import { InputProps } from '@/components/forms/src/inputs/InputProps';
 
 import formStyles from '../formStyles';
+import Label from './Label';
 
 export const TextInput: React.FC<InputProps> = props => {
   const {
@@ -36,11 +37,7 @@ export const TextInput: React.FC<InputProps> = props => {
   }
   return (
     <div className="my-6">
-      {label && (
-        <label htmlFor={inputId} className="block font-bold mb-2">
-          {label}
-        </label>
-      )}
+      {label && <Label htmlFor={inputId}>{label}</Label>}
       {description && <p className={formStyles.inputDescription}>{description}</p>}
 
       <input
