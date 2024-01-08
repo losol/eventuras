@@ -15,6 +15,7 @@ using Eventuras.WebApi.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
@@ -32,9 +33,8 @@ var builder = WebApplication.CreateBuilder(args);
 var features = GetFeatureManagement(builder.Configuration);
 var appSettings = GetAppSettings(builder.Configuration);
 
-// Configure logging
-var shouldUseSentry = features.UseSentry;
-if (shouldUseSentry) builder.Logging.AddSentry();
+// Configure Sentry
+if (features.UseSentry) { builder.WebHost.UseSentry(); }
 
 // Configure dependency injection container
 builder.Services.AddControllers(options =>
