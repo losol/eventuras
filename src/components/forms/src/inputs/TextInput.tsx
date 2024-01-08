@@ -49,6 +49,7 @@ export const TextInput: React.FC<InputProps> = props => {
         placeholder={placeholder}
         className={inputClassName}
         aria-invalid={hasError}
+        disabled={disabled}
         {...register(name, validation)}
         {...rest}
       />
