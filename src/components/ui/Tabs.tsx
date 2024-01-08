@@ -24,11 +24,12 @@ type TabsProps = {
 };
 
 const Tabs: React.FC<TabsProps> & { Item: React.FC<TabItemProps> } = ({ children }) => {
-  const TabListClassName = 'flex space-x-10 p-3';
+  const TabListClassName =
+    'flex space-x-5 p-3 list-none overflow-x-auto border-b-4 border-primary-800';
   const TabClassName = 'font-bold dark:text-primary-400';
   const TabPanelContainerClassname = 'p-3';
   const TabPanelClassname = '';
-  const selectedTabClassName = 'text-primary-700 dark:text-primary-400';
+  const selectedTabClassName = 'text-primary-500 dark:text-primary-400';
   const notSelectedTabClassName = '';
 
   const isTabItemElement = (
