@@ -35,6 +35,9 @@ namespace Eventuras.WebApi.Controllers.v3.Events
         public string CertificateDescription { get; set; }
         public string ProjectCode { get; set; }
         public string OrganizerUserId { get; set; }
+        public int? MaxParticipants { get; set; }
+        public string ExternalInfoPageUrl { get; set; }
+
         public EventDto()
         {
         }
@@ -69,6 +72,8 @@ namespace Eventuras.WebApi.Controllers.v3.Events
             CertificateDescription = e.CertificateDescription;
             ProjectCode = e.ProjectCode;
             OrganizerUserId = e.OrganizerUserId;
+            MaxParticipants = e.MaxParticipants;
+            ExternalInfoPageUrl = e.ExternalInfoPageUrl;
         }
     }
 }
