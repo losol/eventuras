@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 
@@ -8,19 +6,8 @@ import { InputProps } from '@/components/forms/src/inputs/InputProps';
 import formStyles from '../formStyles';
 import Label from './Label';
 
-export const TextInput = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  const {
-    id,
-    name,
-    type = 'text',
-    placeholder,
-    label,
-    description,
-    className,
-    validation,
-    disabled,
-    ...rest
-  } = props;
+export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
+  const { id, name, placeholder, label, description, className, validation, disabled } = props;
   const inputId = id ?? name;
   const {
     register,
@@ -43,12 +30,12 @@ export const TextInput = React.forwardRef<HTMLInputElement, InputProps>((props, 
 
       <input
         id={inputId}
-        type={type}
+        type="number"
         placeholder={placeholder}
         className={inputClassName}
         aria-invalid={hasError}
         disabled={disabled}
-        {...register(name, validation)}
+        {...register(name, { valueAsNumber: true })}
         ref={e => {
           // Assign the ref from forwardRef
           if (typeof ref === 'function') {
@@ -60,9 +47,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, InputProps>((props, 
           // Also call the register function
           register(name, validation).ref(e);
         }}
-        {...rest}
       />
-      {/* check this a11y guide : https://www.react-hook-form.com/advanced-usage/#AccessibilityA11y */}
       {errors && errors[name] && (
         <label htmlFor={inputId} role="alert" className="text-red-500">
           {errors[name]?.message?.toString()}
@@ -72,5 +57,5 @@ export const TextInput = React.forwardRef<HTMLInputElement, InputProps>((props, 
   );
 });
 
-TextInput.displayName = 'TextInput';
-export default TextInput;
+NumberInput.displayName = 'NumberInput';
+export default NumberInput;

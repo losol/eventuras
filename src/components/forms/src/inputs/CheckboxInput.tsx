@@ -50,7 +50,7 @@ export const CheckBoxDescription: FC<SubComponentProps> = ({ children, className
   return <p className={descriptionClassName}>{children}</p>;
 };
 
-const CheckboxInput = React.forwardRef<HTMLInputElement, CheckboxProps>(props => {
+const CheckboxInput = React.forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
   const { children, id, disabled, defaultChecked } = props;
 
   const { register } = useFormContext();
@@ -72,6 +72,17 @@ const CheckboxInput = React.forwardRef<HTMLInputElement, CheckboxProps>(props =>
         defaultChecked={defaultChecked}
         data-test-id={props[TEST_ID_ATTRIBUTE]}
         {...register(props.name, props.validation)}
+        ref={e => {
+          // Assign the ref from forwardRef
+          if (typeof ref === 'function') {
+            ref(e);
+          } else if (ref) {
+            ref.current = e;
+          }
+
+          // Also call the register function
+          register(props.name, props.validation).ref(e);
+        }}
       />
       {enhancedChildren}
     </div>

@@ -9,7 +9,7 @@ const styles = {
   input: 'text-black dark:text-white bg-slate-100 dark:bg-slate-700 p-2 m-2',
 };
 
-export const DateInput = React.forwardRef<HTMLInputElement, InputProps>(props => {
+export const DateInput = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const { register } = useFormContext();
   const id = props.id ?? props.name;
 
@@ -22,6 +22,17 @@ export const DateInput = React.forwardRef<HTMLInputElement, InputProps>(props =>
         type="date"
         placeholder={props.placeholder}
         {...register(props.name, props.validation)}
+        ref={e => {
+          // Assign the ref from forwardRef
+          if (typeof ref === 'function') {
+            ref(e);
+          } else if (ref) {
+            ref.current = e;
+          }
+
+          // Also call the register function
+          register(props.name, props.validation).ref(e);
+        }}
       />
       {props.errors && (
         <label htmlFor={id} role="alert" className="text-red-500">

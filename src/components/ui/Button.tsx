@@ -55,6 +55,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps & BoxProps>((prop
       aria-label={props.ariaLabel}
       onClick={props.onClick}
       className={buttonClassName}
+      type={props.type || 'button'}
       data-test-id={props[TEST_ID_ATTRIBUTE]}
     >
       {props.leftIcon && <span className={`mr-2 ${textColor}`}>{props.leftIcon}</span>}
