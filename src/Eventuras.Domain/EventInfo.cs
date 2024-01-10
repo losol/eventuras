@@ -72,12 +72,15 @@ namespace Eventuras.Domain
         [Display(Name = "Publisert?")]
         public bool Published { get; set; } = false;
 
+        [Obsolete]
         [Display(Name = "Påmeldinger på kursinord.no?")]
         public bool ManageRegistrations { get; set; } = false;
+
 
         [Display(Name = "Url til ekstern informasjonsside om arrangementet")]
         public string ExternalInfoPageUrl { get; set; }
 
+        [Obsolete]
         [Display(Name = "Lenke for ekstern påmelding")]
         public string ExternalRegistrationsUrl { get; set; }
 
