@@ -2,6 +2,7 @@ using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,28 +13,35 @@ namespace Eventuras.Services.Events
     {
         private readonly ApplicationDbContext _context;
         private readonly IProductsService _productsService;
+        private readonly ILogger<EventManagementService> _logger;
 
         public EventManagementService(
             ApplicationDbContext context,
-            IProductsService productsService)
+            IProductsService productsService,
+            ILogger<EventManagementService> logger)
         {
             _context = context ?? throw
                 new ArgumentNullException(nameof(context));
 
             _productsService = productsService ?? throw
                 new ArgumentNullException(nameof(productsService));
+
+            _logger = logger ?? throw
+            new ArgumentNullException(nameof(logger));
         }
 
         public async Task CreateNewEventAsync(EventInfo info)
         {
             if (info == null)
             {
+                _logger.LogError("EventInfo is null");
                 throw new ArgumentNullException(nameof(info));
             }
 
             if (await _context.EventInfos
                 .AnyAsync(e => e.Slug == info.Slug))
             {
+                _logger.LogError("Duplicate slug, cannot create event");
                 throw new DuplicateException($"Event with code {info.Slug} already exists");
             }
 
@@ -43,6 +51,7 @@ namespace Eventuras.Services.Events
             }
             catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
             {
+                _logger.LogError("Duplicate slug, cannot create event");
                 _context.EventInfos.Remove(info);
                 throw new DuplicateException($"Event with code {info.Slug} already exists");
             }
@@ -52,6 +61,7 @@ namespace Eventuras.Services.Events
         {
             if (info == null)
             {
+                _logger.LogWarning("EventInfo is null");
                 throw new ArgumentNullException(nameof(info));
             }
 
@@ -93,6 +103,7 @@ namespace Eventuras.Services.Events
 
             try
             {
+                _logger.LogInformation($"Updating event with ID {info.EventInfoId}");
                 await _context.UpdateAsync(info);
             }
             catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
@@ -107,6 +118,7 @@ namespace Eventuras.Services.Events
             var eventInfo = await _context.EventInfos.FindAsync(id);
             if (eventInfo != null)
             {
+                _logger.LogInformation($"Archiving event with ID {id}");
                 eventInfo.Archived = true;
                 await _context.UpdateAsync(eventInfo);
             }
