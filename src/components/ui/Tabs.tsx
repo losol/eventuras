@@ -1,5 +1,5 @@
-import { Tab } from '@headlessui/react';
 import React from 'react';
+import { Tab, TabList, TabPanel, Tabs as AriaTabs } from 'react-aria-components';
 
 /**
  * Props for individual tab items.
@@ -23,50 +23,45 @@ type TabsProps = {
   children: React.ReactElement<TabItemProps>[] | React.ReactElement<TabItemProps>;
 };
 
-const Tabs: React.FC<TabsProps> & { Item: React.FC<TabItemProps> } = ({ children }) => {
-  const TabListClassName =
-    'flex space-x-5 p-3 list-none overflow-x-auto border-b-4 border-primary-800';
-  const TabClassName = 'font-bold dark:text-primary-400';
-  const TabPanelContainerClassname = 'p-3';
-  const TabPanelClassname = '';
-  const selectedTabClassName = 'text-primary-500 dark:text-primary-400';
-  const notSelectedTabClassName = '';
+interface TabsComponent extends React.FC<TabsProps> {
+  Item: React.FC<TabItemProps>;
+}
 
-  const isTabItemElement = (
-    element: React.ReactNode
-  ): element is React.ReactElement<TabItemProps> => {
-    return React.isValidElement(element) && 'title' in element.props;
-  };
+const styles = {
+  tabList: 'flex space-x-5 list-none overflow-x-auto border-b border-primary-500',
+  tab: {
+    base: 'font-bold py-2 px-1 cursor-pointer focus:outline-none',
+    selected: 'text-primary-500 dark:text-primary-400 border-b-4 border-primary-800',
+    notSelected: 'text-gray-500 dark:text-gray-400',
+  },
+  panel: '',
+};
 
+const Tabs: TabsComponent = ({ children }) => {
   return (
-    <Tab.Group>
-      <Tab.List className={TabListClassName} as="ul">
-        {React.Children.map(children, (child, index) =>
-          isTabItemElement(child) ? (
-            <Tab as="li" key={index}>
-              {({ selected }) => (
-                <button
-                  className={`${TabClassName} ${
-                    selected ? selectedTabClassName : notSelectedTabClassName
-                  }`}
-                >
-                  {child.props.title}
-                </button>
-              )}
+    <div>
+      <AriaTabs>
+        <TabList className={styles.tabList}>
+          {React.Children.map(children, (child, index) => (
+            <Tab
+              id={index.toString()}
+              className={({ isSelected }) =>
+                `${styles.tab.base} ${isSelected ? styles.tab.selected : styles.tab.notSelected}`
+              }
+            >
+              {child.props.title}
             </Tab>
-          ) : null
-        )}
-      </Tab.List>
-      <Tab.Panels className={TabPanelContainerClassname}>
-        {React.Children.map(children, (child, index) =>
-          isTabItemElement(child) ? (
-            <Tab.Panel key={index} className={TabPanelClassname}>
-              {child.props.children}
-            </Tab.Panel>
-          ) : null
-        )}
-      </Tab.Panels>
-    </Tab.Group>
+          ))}
+        </TabList>
+
+        {/* Tab panels */}
+        {React.Children.map(children, (child, index) => (
+          <TabPanel id={index.toString()} className={styles.panel}>
+            {child.props.children}
+          </TabPanel>
+        ))}
+      </AriaTabs>
+    </div>
   );
 };
 
