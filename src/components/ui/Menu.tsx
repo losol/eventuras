@@ -5,6 +5,7 @@ import {
 import React, { FC, ReactNode } from 'react';
 
 import Link from '@/components/ui/Link';
+import { TEST_ID_ATTRIBUTE } from '@/utils/constants';
 
 const styles = {
   menuWrapper: 'top-16 w-56 text-right',
@@ -34,11 +35,12 @@ const ChevronIcon: FC = () => (
 
 interface MenuTriggerProps extends HeadlessMenuButtonProps<'button'> {
   children: ReactNode;
+  [TEST_ID_ATTRIBUTE]?: string;
 }
 
-const MenuTrigger: FC<MenuTriggerProps> = ({ children }) => (
-  <HeadlessMenu.Button className={styles.menuTrigger}>
-    {children}
+const MenuTrigger: FC<MenuTriggerProps> = props => (
+  <HeadlessMenu.Button className={styles.menuTrigger} data-test-id={props[TEST_ID_ATTRIBUTE]}>
+    {props.children}
     <ChevronIcon />
   </HeadlessMenu.Button>
 );
@@ -67,11 +69,12 @@ const MenuItem: FC<MenuItemProps> = ({ children, onClick }) => (
 interface MenuLinkProps {
   href: string;
   children: ReactNode;
+  [TEST_ID_ATTRIBUTE]?: string;
 }
-const MenuLink: FC<MenuLinkProps> = ({ href, children }) => (
+const MenuLink: FC<MenuLinkProps> = props => (
   <HeadlessMenu.Item as="li">
-    <Link href={href} className={styles.menuItem}>
-      {children}
+    <Link href={props.href} className={styles.menuItem} data-test-id={props[TEST_ID_ATTRIBUTE]}>
+      {props.children}
     </Link>
   </HeadlessMenu.Item>
 );
@@ -79,12 +82,17 @@ const MenuLink: FC<MenuLinkProps> = ({ href, children }) => (
 interface MenuButtonProps {
   children: ReactNode;
   onClick: () => void;
+  [TEST_ID_ATTRIBUTE]?: string;
 }
 
-const MenuButton: FC<MenuButtonProps> = ({ children, onClick }) => (
+const MenuButton: FC<MenuButtonProps> = props => (
   <HeadlessMenu.Item as="li">
-    <button onClick={onClick} className={styles.menuItem}>
-      {children}
+    <button
+      onClick={props.onClick}
+      className={styles.menuItem}
+      data-test-id={props[TEST_ID_ATTRIBUTE]}
+    >
+      {props.children}
     </button>
   </HeadlessMenu.Item>
 );

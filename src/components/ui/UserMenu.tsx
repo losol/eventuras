@@ -35,18 +35,27 @@ const UserMenu = (props: UserMenuProps) => {
   if (userState.auth?.isAuthenticated) {
     return (
       <Menu>
-        <Menu.Trigger>{userState.profile?.name}</Menu.Trigger>
+        <Menu.Trigger data-test-id="logged-in-menu-button">{userState.profile?.name}</Menu.Trigger>
         <Menu.Items>
-          <Menu.Link href="/user">{t('common:labels.user')}</Menu.Link>
+          <Menu.Link data-test-id="profile-link" href="/user">
+            {t('common:labels.user')}
+          </Menu.Link>
           <Menu.Link href="/user/account">{t('common:labels.account')}</Menu.Link>
-          <Menu.Button onClick={handleLogout}>{t('common:labels.logout')}</Menu.Button>
+          <Menu.Button onClick={handleLogout} data-test-id="logout-button">
+            {t('common:labels.logout')}
+          </Menu.Button>
         </Menu.Items>
       </Menu>
     );
   }
 
   return (
-    <Button onClick={handleLogin} variant="primary" bgDark={props.bgDark}>
+    <Button
+      onClick={handleLogin}
+      variant="primary"
+      bgDark={props.bgDark}
+      data-test-id="login-button"
+    >
       {t('common:labels.login')}
     </Button>
   );

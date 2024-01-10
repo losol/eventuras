@@ -37,7 +37,7 @@ export const authenticate = async (userName: string, authFile: string) => {
 export const checkIfLoggedIn = async (page: Page) => {
   await page.goto('/user');
   await page.waitForLoadState('networkidle');
-  await expect(page.locator('[data-test-id="profile-link"]')).toBeVisible();
+  await expect(page.locator('[data-test-id="logged-in-menu-button"]')).toBeVisible();
 };
 
 export const checkIfUnAuthorized = async (page: Page, url: string) => {
