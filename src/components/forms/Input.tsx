@@ -7,6 +7,7 @@ import React, { Fragment, useCallback, useRef, useState } from 'react';
 import { ApiResult } from '@/utils/api/EventurasApi';
 
 import Loading from '../ui/Loading';
+import formStyles from './src/formStyles';
 
 export type InputTextProps = {
   [x: string]: any;
@@ -29,7 +30,7 @@ export const LegacyInputText = React.forwardRef<HTMLInputElement, InputTextProps
       <input
         id={id}
         ref={ref}
-        className={`${props.className ?? ''}`}
+        className={`${props.className ?? formStyles.defaultInputStyle}`}
         type={props.type ?? 'text'}
         placeholder={props.placeholder}
         {...oProps}
