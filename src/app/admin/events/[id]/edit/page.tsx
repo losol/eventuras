@@ -6,6 +6,7 @@ import { Layout } from '@/components/ui';
 import Heading from '@/components/ui/Heading';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
+import Logger from '@/utils/Logger';
 
 type EditEventinfoProps = {
   params: {
@@ -27,6 +28,13 @@ const EditEventinfo: React.FC<EditEventinfoProps> = async ({ params }) => {
       id: eventId,
     })
   );
+
+  if (!eventinfo.ok) {
+    Logger.error(
+      { namespace: 'EditEventinfo' },
+      `Failed to fetch eventinfo ${eventId}, error: ${eventinfo.error}`
+    );
+  }
 
   if (!eventinfo.ok) {
     return <div>{t('common:event-not-found')}</div>;

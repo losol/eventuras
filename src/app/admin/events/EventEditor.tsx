@@ -1,5 +1,6 @@
 'use client';
 import { ApiError, EventDto, EventFormDto, EventInfoStatus, EventInfoType } from '@losol/eventuras';
+import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -10,10 +11,12 @@ import CheckboxInput, { CheckBoxLabel } from '@/components/forms/src/inputs/Chec
 import { DateInput } from '@/components/forms/src/inputs/DateInput';
 import HiddenInput from '@/components/forms/src/inputs/HiddenInput';
 import MarkdownInput from '@/components/forms/src/inputs/MarkdownInput';
+import NumberInput from '@/components/forms/src/inputs/NumberInput';
 import Select from '@/components/forms/src/inputs/Select';
 import TextInput from '@/components/forms/src/inputs/TextInput';
 import Button from '@/components/ui/Button';
 import Tabs from '@/components/ui/Tabs';
+import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { mapEnum } from '@/utils/enum';
 import Environment from '@/utils/Environment';
@@ -34,10 +37,20 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
   const [apiState, setApiState] = useState<ApiState>({ error: null, loading: false });
   const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const { register } = useForm<EventFormDto>();
+  const { addAppNotification } = useAppNotifications();
+  const router = useRouter();
 
   // Form submit handler
   const onSubmitForm: SubmitHandler<EventFormDto> = async (data: EventFormDto) => {
+    setApiState({ error: null, loading: true });
+    Logger.info({ namespace: 'EventEditor' }, 'Updating event...');
     Logger.info({ namespace: 'EventEditor' }, data);
+
+    // set slug
+    const newSlug = slugify(
+      [data.title, data.city, data.dateStart?.year, data.id].filter(Boolean).join('-')
+    );
+    data.slug = newSlug;
 
     // Remember to set loading state
     setApiState({ error: null, loading: true });
@@ -49,14 +62,24 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
       })
     );
 
+    if (result.ok) {
+      addAppNotification({
+        id: Date.now(),
+        message: 'Event information was updated!',
+        type: AppNotificationType.SUCCESS,
+      });
+    } else {
+      addAppNotification({
+        id: Date.now(),
+        message: `Something bad happended: ${result.error}!`,
+        type: AppNotificationType.ERROR,
+      });
+    }
     Logger.info({ namespace: 'eventeditor' }, result);
 
-    const newSlug = slugify(data.slug);
-    Logger.info({ namespace: 'eventeditor' }, `Slugified to ${newSlug}`);
-
-    // set slug
-    // something like slugify(getValues('slug')));
     setApiState({ error: null, loading: false });
+
+    router.push(`/admin/events/${eventinfo.id}`);
   };
 
   return (
@@ -109,12 +132,10 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
                 label: value,
               }))}
             />
-            <TextInput
-              {...register('maxParticipants')}
+            <NumberInput
+              name="maxParticipants"
               label="Max Participants"
-              type="number"
               placeholder="Max Participants"
-              defaultValue={0}
             />
           </Fieldset>
           <Fieldset label="Image" disabled={apiState.loading}>
@@ -198,7 +219,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
         </Tabs.Item>
         <Tabs.Item title="Advanced">
           <Fieldset label="Additional Fields" disabled={apiState.loading}>
-            <TextInput name="slug" label="Slug" placeholder="Event Slug" />
+            <TextInput name="slug" label="Slug" placeholder="Event Slug" disabled />
             <TextInput
               name="externalInfoPageUrl"
               label="External Info Page URL"
