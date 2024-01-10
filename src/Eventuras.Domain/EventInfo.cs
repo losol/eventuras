@@ -35,88 +35,66 @@ namespace Eventuras.Domain
         public EventInfoStatus Status { get; set; } = EventInfoStatus.Draft;
         public EventInfoType Type { get; set; } = EventInfoType.Course;
 
-        [Display(Name = "Tittel på kurset")]
         public string Title { get; set; }
         public string Headline { get; set; }
 
         [Required]
-        [Display(Name = "Kode for kurset")]
         public string Slug { get; set; }
 
         public string Category { get; set; }
 
-        [StringLength(300, ErrorMessage = "Beskrivelsen kan bare være 300 tegn.")]
-        [Display(Name = "Kort beskrivelse av kurset")]
+        [StringLength(300)]
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
-        [Display(Name = "Fremhevet på forsiden?")]
         public bool Featured { get; set; } = false;
 
-        [Display(Name = "Mer informasjon")]
         [DataType(DataType.MultilineText)]
         public string MoreInformation { get; set; }
 
-        [Display(Name = "Program")]
         [DataType(DataType.MultilineText)]
         public string Program { get; set; }
 
-        [Display(Name = "Praktisk informasjon")]
         [DataType(DataType.MultilineText)]
         public string PracticalInformation { get; set; }
 
-        [Display(Name = "Velkomstbrev")]
         [DataType(DataType.MultilineText)]
         public string WelcomeLetter { get; set; }
 
-        [Display(Name = "Publisert?")]
         public bool Published { get; set; } = false;
 
         [Obsolete]
-        [Display(Name = "Påmeldinger på kursinord.no?")]
         public bool ManageRegistrations { get; set; } = false;
 
 
-        [Display(Name = "Url til ekstern informasjonsside om arrangementet")]
         public string ExternalInfoPageUrl { get; set; }
 
         [Obsolete]
-        [Display(Name = "Lenke for ekstern påmelding")]
         public string ExternalRegistrationsUrl { get; set; }
 
-        [Display(Name = "Spør deltaker om ekstra informasjon ved påmelding?")]
         [DataType(DataType.MultilineText)]
         public string InformationRequest { get; set; }
 
-        [Display(Name = "Hvilket hotell?")]
         public string Location { get; set; }
 
-        [Display(Name = "Hvilket sted/by?")]
         public string City { get; set; }
 
-        [Display(Name = "Dato start")]
         [DataType(DataType.Date)]
         public LocalDate? DateStart { get; set; }
 
-        [Display(Name = "Dato slutt")]
         [DataType(DataType.Date)]
         public LocalDate? DateEnd { get; set; }
 
-        [Display(Name = "Påmeldingsfrist", Description = "Frist for påmelding til arrangementet", GroupName = "Frister")]
         [DataType(DataType.Date)]
         public LocalDate? LastRegistrationDate { get; set; }
 
-        [Display(Name = "Avmeldingsfrist", Description = "Frist for å melde seg av arrangementet", GroupName = "Frister")]
         [DataType(DataType.Date)]
         public LocalDate? LastCancellationDate { get; set; }
 
-        [Display(Name = "Antall deltakere", Description = "Maksimalt antall deltakere")]
-        public int MaxParticipants { get; set; } = 0; //maks antall deltakere
+        public int MaxParticipants { get; set; } = 0;
 
-        [Display(Name = "Diplomtittel - typisk type kurs, f eks Grunnkurs A Allmennmedisin")]
-        public string CertificateTitle { get; set; } //Text for the certificate if issued.
+        public string CertificateTitle { get; set; }
 
-        [Display(Name = "Diplomtekst. Inkluder kursnummer og godkjenninger her!")]
         [DataType(DataType.MultilineText)]
         public string CertificateDescription { get; set; } //Text for the certificate if issued.
 
@@ -140,13 +118,10 @@ namespace Eventuras.Domain
             }
         }
 
-        [Display(Name = "Url til bilde for arrangementet")]
         public string FeaturedImageUrl { get; set; }
 
-        [Display(Name = "Bildetekst for arrangementet (Husk fotokreditering)")]
         public string FeaturedImageCaption { get; set; }
 
-        [Display(Name = "Prosjekt-kode for regnskap")]
         public string ProjectCode { get; set; }
 
         public int OrganizationId { get; set; }
