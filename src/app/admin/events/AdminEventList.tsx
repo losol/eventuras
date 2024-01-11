@@ -1,13 +1,12 @@
 'use client';
 
 import { EventDto } from '@losol/eventuras';
-import { IconEditCircle } from '@tabler/icons-react';
-import Link from 'next/link';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 
 import DataTable, { createColumnHelper } from '@/components/ui/DataTable';
 import FatalError from '@/components/ui/FatalError';
+import Link from '@/components/ui/Link';
 import Loading from '@/components/ui/Loading';
 import Pagination from '@/components/ui/Pagination';
 import useCreateHook from '@/hooks/createHook';
@@ -15,19 +14,23 @@ import { createSDK } from '@/utils/api/EventurasApi';
 const columnHelper = createColumnHelper<EventDto>();
 interface AdminEventListProps {
   organizationId: number;
+  includePastEvents?: boolean;
 }
 
-const AdminEventList: React.FC<AdminEventListProps> = ({ organizationId }) => {
+const AdminEventList: React.FC<AdminEventListProps> = ({
+  organizationId,
+  includePastEvents = false,
+}) => {
   const { t } = createTranslation();
   const [page, setPage] = useState(1);
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
-  const pageSize = 25;
+  const pageSize = 50;
   const { loading, result } = useCreateHook(
     () =>
       sdk.events.getV3Events({
         organizationId,
         includeDraftEvents: true,
-        includePastEvents: true,
+        includePastEvents: includePastEvents,
         page,
         count: pageSize,
       }),
@@ -37,8 +40,8 @@ const AdminEventList: React.FC<AdminEventListProps> = ({ organizationId }) => {
   const renderEventItemActions = (info: EventDto) => {
     return (
       <div className="flex flex-row">
-        <Link className="m-1" href={`/admin/events/${info.id}/edit`}>
-          <IconEditCircle />
+        <Link variant="button-outline" href={`/admin/events/${info.id}`}>
+          {t('common:labels.view')}
         </Link>
       </div>
     );

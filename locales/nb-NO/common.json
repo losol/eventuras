@@ -47,6 +47,8 @@
   },
   "labels": {
     "account": "Mine opplysninger",
+    "all": "Alle",
+    "allEvents": "Vis alle arrangement",
     "edit": "Endre",
     "editProfile": "Endre opplysninger",
     "email": "E-post",
@@ -59,7 +61,8 @@
     "products": "Produkter",
     "profile": "Mine kurs",
     "registrations": "Registreringer",
-    "user": "Mine kurs"
+    "user": "Mine kurs",
+    "view": "Vis"
   },
   "onlinecourses": "Nettkurs",
   "registration": {

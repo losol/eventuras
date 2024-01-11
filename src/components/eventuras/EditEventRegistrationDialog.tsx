@@ -16,7 +16,7 @@ import Button from '../ui/Button';
 import Dialog from '../ui/Dialog';
 
 export type EditEventOrdersDialogProps = {
-  availableProducts: ProductDto[];
+  eventProducts: ProductDto[];
   currentRegistration: RegistrationDto;
   title?: string;
   description?: string;
@@ -80,7 +80,7 @@ const EditEventRegistrationsDialog = (props: EditEventOrdersDialogProps) => {
         }}
       >
         <div className="mt-2">
-          <p className="text-sm text-gray-500">
+          <p>
             {props.description ??
               `Go ahead and edit your orders below. Please note that mandatory products of an event
             cannot be changed directly, please contact an administrator instead.`}
@@ -88,7 +88,7 @@ const EditEventRegistrationsDialog = (props: EditEventOrdersDialogProps) => {
         </div>
         <div>
           <RegistrationCustomize
-            products={props.availableProducts}
+            products={props.eventProducts}
             currentRegistration={props.currentRegistration}
             onSubmit={onSubmit}
           />

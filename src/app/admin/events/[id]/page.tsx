@@ -1,115 +1,81 @@
-'use client';
-
+import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
-import { useState } from 'react';
 
-import EventEmailer from '@/components/event/EventEmailer';
-import { Container, Drawer, Layout } from '@/components/ui';
-import Button from '@/components/ui/Button';
-import ButtonGroup from '@/components/ui/ButtonGroup';
+import { Container, Layout } from '@/components/ui';
 import Heading from '@/components/ui/Heading';
-import Link from '@/components/ui/Link';
-import Loading from '@/components/ui/Loading';
-import useCreateHook from '@/hooks/createHook';
-import { createSDK } from '@/utils/api/EventurasApi';
+import Section from '@/components/ui/Section';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import Environment from '@/utils/Environment';
+import Logger from '@/utils/Logger';
 
-import AddUserToEvent from '../../components/AddUserToEvent';
-import EventParticipantList from '../../components/EventParticipantList';
+import EventAdminActionsMenu from '../EventAdminActionsMenu';
+import EventParticipantList from '../EventParticipantList';
 
 type EventInfoProps = {
   params: {
     id: number;
   };
 };
-/**
- * Initial set up of admin event detail page. WIP.
- * TODO there are a few commonalities with user event detail page and AdminEventList - when this page stops diverging it would be worthwhile
- * to extract common blocks of functionality in different components
- * @returns
- */
-const EventDetailPage: React.FC<EventInfoProps> = ({ params }) => {
+const EventDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
   const eventId = params.id;
-  const [registrationSeed, setRegistrationSeed] = useState(0);
 
   const { t } = createTranslation();
-  const sdk = createSDK();
-  const { loading: eventsLoading, result: event } = useCreateHook(
-    () => sdk.events.getV3Events1({ id: eventId }),
-    [eventId]
-  );
-  const { loading: loadingEventProducts, result: eventProducts } = useCreateHook(
-    () => sdk.eventProducts.getV3EventsProducts({ eventId }),
-    [eventId]
-  );
-  const { result: registrations } = useCreateHook(
-    () =>
-      sdk.registrations.getV3Registrations({
-        eventId,
-        includeUserInfo: true,
-        includeProducts: true,
-      }),
-    [registrationSeed]
+
+  const eventuras = createSDK({
+    baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
+    authHeader: headers().get('Authorization'),
+  });
+
+  const eventinfo = await apiWrapper(() =>
+    eventuras.events.getV3Events1({
+      id: eventId,
+    })
   );
 
-  const [emailDrawerOpen, setEmailDrawerOpen] = useState<boolean>(false);
-  if (eventsLoading || loadingEventProducts) {
-    return <Loading />;
+  const registrations = await apiWrapper(() =>
+    eventuras.registrations.getV3Registrations({
+      eventId: eventId,
+      includeUserInfo: true,
+      includeProducts: true,
+    })
+  );
+
+  const eventProducts = await apiWrapper(() =>
+    eventuras.eventProducts.getV3EventsProducts({
+      eventId: eventId,
+    })
+  );
+
+  if (!eventinfo.ok) {
+    Logger.error(
+      { namespace: 'EditEventinfo' },
+      `Failed to fetch eventinfo ${eventId}, error: ${eventinfo.error}`
+    );
+  }
+
+  if (!eventinfo.ok) {
+    return <div>{t('common:event-not-found')}</div>;
   }
 
   return (
-    <Layout>
-      <Container>
-        {eventsLoading && <Loading />}
-        {event && (
-          <>
-            <Heading as="h1">{event.title ?? ''}</Heading>
-            <ButtonGroup>
-              <Link href={`/admin/events/${event.id}/edit`} variant="button-outline">
-                {t('common:labels.edit')}
-              </Link>
-              <Link href={`/admin/events/${event.id}/products`} variant="button-outline">
-                {t('common:labels.products')}
-              </Link>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setEmailDrawerOpen(true);
-                }}
-              >
-                {t('admin:eventEmailer.title')}
-              </Button>
-            </ButtonGroup>
-            <AddUserToEvent
-              event={event}
-              eventProducts={eventProducts ?? []}
-              onUseradded={() => {
-                setRegistrationSeed(registrationSeed + 1);
-              }}
+    <Layout fluid>
+      <Section className="bg-white pb-8">
+        <Container>
+          <Heading as="h1">{eventinfo.value?.title ?? ''}</Heading>
+          <EventAdminActionsMenu eventinfo={eventinfo.value!} />
+        </Container>
+      </Section>
+      <Section className="pt-8">
+        <Container>
+          {registrations && (
+            <EventParticipantList
+              participants={registrations.value?.data ?? []}
+              event={eventinfo.value!}
+              eventProducts={eventProducts.value ?? []}
             />
-
-            <Drawer isOpen={emailDrawerOpen} onCancel={() => setEmailDrawerOpen(false)}>
-              <Drawer.Header as="h3" className="text-black">
-                {t('admin:eventEmailer.title')}
-              </Drawer.Header>
-              <Drawer.Body>
-                <EventEmailer
-                  eventTitle={event.title!}
-                  eventId={event.id!}
-                  onClose={() => setEmailDrawerOpen(false)}
-                />
-              </Drawer.Body>
-              <Drawer.Footer>
-                <></>
-              </Drawer.Footer>
-            </Drawer>
-          </>
-        )}
-        {event && registrations ? (
-          <EventParticipantList participants={registrations.data ?? []} event={event} />
-        ) : (
-          <Loading />
-        )}
-      </Container>
+          )}
+        </Container>
+      </Section>
     </Layout>
   );
 };

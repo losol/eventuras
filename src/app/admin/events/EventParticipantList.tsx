@@ -1,6 +1,6 @@
 'use client';
 
-import { EventDto, RegistrationDto } from '@losol/eventuras';
+import { EventDto, ProductDto, RegistrationDto } from '@losol/eventuras';
 import { IconEditCircle, IconMailForward } from '@tabler/icons-react';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
@@ -19,9 +19,14 @@ const columnHelper = createColumnHelper<RegistrationDto>();
 interface AdminEventListProps {
   participants: RegistrationDto[];
   event: EventDto;
+  eventProducts?: ProductDto[];
 }
 
-const EventParticipantList: React.FC<AdminEventListProps> = ({ participants = [], event }) => {
+const EventParticipantList: React.FC<AdminEventListProps> = ({
+  participants = [],
+  event,
+  eventProducts = [],
+}) => {
   const { t } = createTranslation();
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
 
@@ -29,14 +34,6 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({ participants = []
   const [currentSelectedParticipant, setCurrentSelectedParticipant] =
     useState<RegistrationDto | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
-
-  const { result: availableProducts } = useCreateHook(
-    () => {
-      return sdk.eventProducts.getV3EventsProducts({ eventId: event.id! });
-    },
-    [event.id],
-    (): boolean => event === null || availableProducts !== null
-  );
 
   const { result: currentRegistration, loading: loadingRegistration } = useCreateHook(
     () => {
@@ -61,7 +58,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({ participants = []
               <IconMailForward color="black" onClick={() => setRegistrationOpen(info)} />
             </Button>
           </div>
-          {availableProducts?.length !== 0 && (
+          {eventProducts?.length !== 0 && (
             <Button
               variant="light"
               onClick={() => {
@@ -147,9 +144,9 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({ participants = []
         </Drawer>
       )}
 
-      {currentRegistration && availableProducts && editorOpen && (
+      {currentRegistration && eventProducts && editorOpen && (
         <EditEventRegistrationsDialog
-          availableProducts={availableProducts}
+          eventProducts={eventProducts}
           currentRegistration={currentRegistration}
           startOpened={true}
           withButton={false}

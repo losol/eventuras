@@ -6,7 +6,7 @@ import Link from '@/components/ui/Link';
 import withAuthorization from '@/utils/auth/withAuthorization';
 import Environment from '@/utils/Environment';
 
-import AdminEventList from './events/AdminEventList';
+import AdminEventList from './AdminEventList';
 
 const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
 const AdminPage = () => {
@@ -24,10 +24,8 @@ const AdminPage = () => {
             {t('admin:events.labes.create')}
           </Link>
         </section>
-
         <Heading as="h2">{t('common:events.sectiontitle')}</Heading>
-        <Link href={`/admin/events`}>{t('common:labels.allEvents')}</Link>
-        <AdminEventList organizationId={ORGANIZATION_ID} />
+        <AdminEventList organizationId={ORGANIZATION_ID} includePastEvents />
       </Container>
     </Layout>
   );

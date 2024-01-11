@@ -48,6 +48,8 @@
   },
   "labels": {
     "account": "User account",
+    "all": "All",
+    "allEvents": "All events",
     "edit": "Edit",
     "editProfile": "Edit user profile",
     "email": "E mail",
@@ -60,7 +62,8 @@
     "products": "Products",
     "profile": "Account",
     "registrations": "Registrations",
-    "user": "User page"
+    "user": "User page",
+    "view": "View"
   },
   "onlinecourses": "Online courses",
   "registration": {
