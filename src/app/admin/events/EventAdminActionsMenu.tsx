@@ -42,13 +42,7 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
           {t('admin:eventEmailer.title')}
         </Button>
       </ButtonGroup>
-      <AddUserToEvent
-        eventinfo={eventinfo}
-        eventProducts={eventProducts ?? []}
-        onUseradded={() => {
-          alert('User added');
-        }}
-      />
+      <AddUserToEvent eventinfo={eventinfo} eventProducts={eventProducts ?? []} />
 
       <Drawer isOpen={emailDrawerOpen} onCancel={() => setEmailDrawerOpen(false)}>
         <Drawer.Header as="h3" className="text-black">

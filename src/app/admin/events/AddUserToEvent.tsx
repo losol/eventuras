@@ -5,6 +5,7 @@ import {
   RegistrationType,
   UserDto,
 } from '@losol/eventuras';
+import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -37,8 +38,11 @@ type AddUserCardProps = {
 };
 
 export const AddUserButton: React.FC = () => {
-  <Button>Add user</Button>;
-  return <> </>;
+  return (
+    <>
+      <Button>Add user</Button>;{' '}
+    </>
+  );
 };
 
 const AddUserCard: React.FC<AddUserCardProps> = ({
@@ -206,23 +210,22 @@ const AddUserToEventDrawer: React.FC<AddUserToEventDrawerProps> = ({
 export type AddUserToEventProps = {
   eventinfo: EventDto;
   eventProducts: ProductDto[];
-  onUseradded: (user: UserDto) => void;
   isOpen?: boolean;
 };
 
 const AddUserToEvent: React.FC<AddUserToEventProps> = props => {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
   return (
     <>
       <Button onClick={() => setIsOpen(true)}>Add user</Button>
       <AddUserToEventDrawer
         eventinfo={props.eventinfo}
         eventProducts={props.eventProducts}
-        onUseradded={() => {
-          props.onUseradded;
+        onUseradded={() => router.refresh()}
+        onCancel={() => {
           setIsOpen(false);
         }}
-        onCancel={() => setIsOpen(false)}
         isOpen={isOpen}
       />
     </>
