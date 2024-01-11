@@ -58,7 +58,10 @@ const DataTable = (props: DataTableProps) => {
         </thead>
         <tbody>
           {table.getRowModel().rows.map(row => (
-            <tr key={row.id} className="even:bg-gray-50 odd:bg-white text-black">
+            <tr
+              key={row.id}
+              className="even:bg-gray-50 odd:bg-white dark:even:bg-slate-950 dark:odd:bg-slate-900 text-black dark:text-white"
+            >
               {row.getVisibleCells().map(cell => (
                 <td key={cell.id} className="p-2">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
