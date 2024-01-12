@@ -56,9 +56,12 @@ export { OrganizationSettingType } from './models/OrganizationSettingType';
 export type { OrganizationSettingValueDto } from './models/OrganizationSettingValueDto';
 export { PaymentProvider } from './models/PaymentProvider';
 export { PeriodMatchingKind } from './models/PeriodMatchingKind';
+export type { ProductDeliverySummaryDto } from './models/ProductDeliverySummaryDto';
 export type { ProductDto } from './models/ProductDto';
 export type { ProductFormDto } from './models/ProductFormDto';
 export type { ProductOrderDto } from './models/ProductOrderDto';
+export type { ProductOrdersSummaryDto } from './models/ProductOrdersSummaryDto';
+export type { ProductSummaryDto } from './models/ProductSummaryDto';
 export type { ProductVariantDto } from './models/ProductVariantDto';
 export { ProductVisibility } from './models/ProductVisibility';
 export type { RegistrationCustomerInfoDto } from './models/RegistrationCustomerInfoDto';
@@ -73,6 +76,7 @@ export type { UserDto } from './models/UserDto';
 export type { UserDtoPageResponseDto } from './models/UserDtoPageResponseDto';
 export type { UserFormDto } from './models/UserFormDto';
 export { UserListOrder } from './models/UserListOrder';
+export type { UserSummaryDto } from './models/UserSummaryDto';
 
 export { CertificatesService } from './services/CertificatesService';
 export { EventCertificatesService } from './services/EventCertificatesService';
@@ -90,6 +94,7 @@ export { OrganizationMemberRolesService } from './services/OrganizationMemberRol
 export { OrganizationMembersService } from './services/OrganizationMembersService';
 export { OrganizationsService } from './services/OrganizationsService';
 export { OrganizationSettingsService } from './services/OrganizationSettingsService';
+export { ProductsService } from './services/ProductsService';
 export { RegistrationCertificateService } from './services/RegistrationCertificateService';
 export { RegistrationOrdersService } from './services/RegistrationOrdersService';
 export { RegistrationsService } from './services/RegistrationsService';

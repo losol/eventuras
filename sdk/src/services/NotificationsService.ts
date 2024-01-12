@@ -56,6 +56,7 @@ export class NotificationsService {
         count,
         limit,
         offset,
+        ordering,
         eventurasOrgId,
     }: {
         eventId?: number,
@@ -73,6 +74,7 @@ export class NotificationsService {
         count?: number,
         limit?: number,
         offset?: number,
+        ordering?: Array<string>,
         /**
          * Optional organization Id. Will be required in API version 4.
          */
@@ -97,6 +99,7 @@ export class NotificationsService {
                 'Count': count,
                 'Limit': limit,
                 'Offset': offset,
+                'Ordering': ordering,
             },
         });
     }

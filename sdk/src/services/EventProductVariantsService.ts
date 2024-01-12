@@ -65,7 +65,7 @@ export class EventProductVariantsService {
                 'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
-            mediaType: 'application/json-patch+json',
+            mediaType: 'application/json',
         });
     }
     /**

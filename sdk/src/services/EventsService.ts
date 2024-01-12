@@ -30,6 +30,7 @@ export class EventsService {
         count,
         limit,
         offset,
+        ordering,
         eventurasOrgId,
     }: {
         type?: EventInfoType,
@@ -43,6 +44,7 @@ export class EventsService {
         count?: number,
         limit?: number,
         offset?: number,
+        ordering?: Array<string>,
         /**
          * Optional organization Id. Will be required in API version 4.
          */
@@ -66,6 +68,7 @@ export class EventsService {
                 'Count': count,
                 'Limit': limit,
                 'Offset': offset,
+                'Ordering': ordering,
             },
         });
     }
@@ -94,7 +97,7 @@ export class EventsService {
                 'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
-            mediaType: 'application/json-patch+json',
+            mediaType: 'application/json',
         });
     }
     /**
@@ -159,7 +162,7 @@ export class EventsService {
                 'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
-            mediaType: 'application/json-patch+json',
+            mediaType: 'application/json',
         });
     }
     /**
@@ -195,7 +198,7 @@ export class EventsService {
                 'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
-            mediaType: 'application/json-patch+json',
+            mediaType: 'application/json',
         });
     }
     /**

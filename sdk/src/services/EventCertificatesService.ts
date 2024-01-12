@@ -16,6 +16,7 @@ export class EventCertificatesService {
         count,
         limit,
         offset,
+        ordering,
         eventurasOrgId,
     }: {
         id: number,
@@ -23,6 +24,7 @@ export class EventCertificatesService {
         count?: number,
         limit?: number,
         offset?: number,
+        ordering?: Array<string>,
         /**
          * Optional organization Id. Will be required in API version 4.
          */
@@ -42,6 +44,7 @@ export class EventCertificatesService {
                 'Count': count,
                 'Limit': limit,
                 'Offset': offset,
+                'Ordering': ordering,
             },
         });
     }

@@ -83,7 +83,7 @@ export class UsersService {
                 'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
-            mediaType: 'application/json-patch+json',
+            mediaType: 'application/json',
         });
     }
     /**
@@ -98,6 +98,7 @@ export class UsersService {
         count,
         limit,
         offset,
+        ordering,
         eventurasOrgId,
     }: {
         query?: string,
@@ -107,6 +108,7 @@ export class UsersService {
         count?: number,
         limit?: number,
         offset?: number,
+        ordering?: Array<string>,
         /**
          * Optional organization Id. Will be required in API version 4.
          */
@@ -126,6 +128,7 @@ export class UsersService {
                 'Count': count,
                 'Limit': limit,
                 'Offset': offset,
+                'Ordering': ordering,
             },
         });
     }
@@ -150,7 +153,7 @@ export class UsersService {
                 'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
-            mediaType: 'application/json-patch+json',
+            mediaType: 'application/json',
         });
     }
 }
