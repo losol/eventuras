@@ -1,6 +1,8 @@
 using Eventuras.Domain;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using static Eventuras.Services.Orders.OrderRetrievalService;
 
 namespace Eventuras.Services.Orders
 {
@@ -14,5 +16,11 @@ namespace Eventuras.Services.Orders
             OrderListRequest request,
             OrderRetrievalOptions options = default,
             CancellationToken cancellationToken = default);
+
+
+        Task<List<ProductOrdersSummaryDto>> GetProductOrdersSummaryAsync(
+            int productId,
+            CancellationToken cancellationToken = default);
+
     }
 }
