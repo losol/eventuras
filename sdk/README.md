@@ -3,7 +3,7 @@
 1. Run the Eventuras API locally
 1. Update version number in package.json: `npm version minor` or `npm version patch`
 1. Generate the client `npm run generate`
-1. Webpack it `npx webpack`
+1. Build it `npm run build`
 1. `npm login --scope @losol --auth-type web`
 1. `npm publish --access public`
 
