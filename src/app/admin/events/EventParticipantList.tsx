@@ -8,6 +8,7 @@ import { useState } from 'react';
 import EventEmailer from '@/components/event/EventEmailer';
 import EditEventRegistrationsDialog from '@/components/eventuras/EditEventRegistrationDialog';
 import { Drawer } from '@/components/ui';
+import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import DataTable, { createColumnHelper } from '@/components/ui/DataTable';
 import Loading from '@/components/ui/Loading';
@@ -105,17 +106,26 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
       header: t('admin:participantColumns.telephone').toString(),
       cell: info => info.row.original.user?.phoneNumber,
     }),
-    columnHelper.accessor('status', {
-      header: t('admin:participantColumns.status').toString(),
-      cell: info => info.getValue(),
+    columnHelper.accessor('email', {
+      header: t('admin:participantColumns.email').toString(),
+      cell: info => info.row.original.user?.email,
     }),
     columnHelper.accessor('products', {
       header: t('admin:participantColumns.products').toString(),
       cell: info => renderProducts(info.row.original),
     }),
     columnHelper.accessor('type', {
-      header: t('admin:participantColumns.type').toString(),
-      cell: info => info.getValue(),
+      header: t('admin:participantColumns.status').toString(),
+      cell: info => {
+        const registration = info.row.original;
+        return (
+          <>
+            <Badge>{registration.type}</Badge>
+            &nbsp;
+            <Badge>{registration.status}</Badge>
+          </>
+        );
+      },
     }),
     columnHelper.accessor('actions', {
       header: t('admin:participantColumns.actions').toString(),
