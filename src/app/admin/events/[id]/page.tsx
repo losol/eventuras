@@ -2,7 +2,9 @@ import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
 import { Container, Layout } from '@/components/ui';
+import Badge from '@/components/ui/Badge';
 import Heading from '@/components/ui/Heading';
+import Link from '@/components/ui/Link';
 import Section from '@/components/ui/Section';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
@@ -59,13 +61,25 @@ const EventDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
 
   return (
     <Layout fluid>
-      <Section className="bg-white pb-8">
+      <Section className="bg-white dark:bg-black   pb-8">
         <Container>
           <Heading as="h1">{eventinfo.value?.title ?? ''}</Heading>
           <EventAdminActionsMenu eventinfo={eventinfo.value!} />
+          <div className="flex flex-row flex-wrap">
+            {eventProducts.value?.map(product => (
+              <>
+                <Link
+                  href={`/admin/events/${eventId}/products/${product.productId}`}
+                  key={product.productId}
+                >
+                  {product.name} <Badge>Id: {product.productId}</Badge>
+                </Link>
+              </>
+            ))}
+          </div>
         </Container>
       </Section>
-      <Section className="pt-8">
+      <Section className="py-12">
         <Container>
           {registrations && (
             <EventParticipantList

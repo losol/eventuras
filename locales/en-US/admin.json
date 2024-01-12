@@ -51,6 +51,7 @@
   },
   "participantColumns": {
     "actions": "Actions",
+    "email": "E mail",
     "name": "Name",
     "products": "Products",
     "status": "Status",
@@ -63,7 +64,10 @@
       "edit-product": "Edit product"
     },
     "labels": {
-      "addnewproduct": "Add new product"
+      "addnewproduct": "Add new product",
+      "editProducts": "Edit products",
+      "noOrders": "No orders",
+      "productsFor": "Products for"
     },
     "modal": {
       "title": {

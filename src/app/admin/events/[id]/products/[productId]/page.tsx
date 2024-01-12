@@ -2,33 +2,38 @@ import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
 import { Container, Layout } from '@/components/ui';
-import Badge from '@/components/ui/Badge';
 import Heading from '@/components/ui/Heading';
 import Link from '@/components/ui/Link';
 import Section from '@/components/ui/Section';
-import { createSDK } from '@/utils/api/EventurasApi';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import Environment from '@/utils/Environment';
 
 type EventProductsPage = {
   params: {
     id: string;
+    productId: string;
   };
 };
 
 const EventProducts: React.FC<EventProductsPage> = async ({ params }) => {
-  const eventId = parseInt(params.id, 10);
+  const eventId = parseInt(params.id);
+  const productId = parseInt(params.productId);
   const { t } = createTranslation();
 
   const eventuras = createSDK({ authHeader: headers().get('Authorization') });
-
-  const eventInfo = await eventuras.events.getV3Events1({ id: eventId });
-  const products = await eventuras.eventProducts.getV3EventsProducts({ eventId });
+  const productSummary = await apiWrapper(() =>
+    eventuras.products.getV3ProductsSummary({
+      productId: productId,
+      eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID),
+    })
+  );
 
   return (
     <Layout fluid>
       <Section className="bg-white dark:bg-black py-10">
         <Container>
           <Heading as="h1" spacingClassName="pt-6 mb-3">
-            {t('admin:products.labels.productsFor')} {eventInfo.title}
+            {productSummary.value?.product?.name}
           </Heading>
           <Link
             href={`/admin/events/${eventId}/products/edit`}
@@ -42,16 +47,18 @@ const EventProducts: React.FC<EventProductsPage> = async ({ params }) => {
       <Section className="py-10">
         <Container>
           <div className="flex flex-col">
-            {products.map(product => (
-              <>
-                <Link
-                  href={`/admin/events/${eventId}/products/${product.productId}`}
-                  key={product.productId}
-                >
-                  {product.name} <Badge>Id: {product.productId}</Badge>
-                </Link>
-              </>
-            ))}
+            {productSummary.value?.orderSummary &&
+            productSummary.value?.orderSummary?.length > 0 ? (
+              <ul>
+                {productSummary.value?.orderSummary?.map(entry => (
+                  <li key={entry.registrationId}>
+                    {entry.user?.name} - {entry.user?.phoneNumber} - {entry.user?.email}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div>{t('admin:products.labels.noOrders')}</div>
+            )}
           </div>
         </Container>
       </Section>

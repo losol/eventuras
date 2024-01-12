@@ -51,10 +51,11 @@
   },
   "participantColumns": {
     "actions": "Actions",
-    "name": "Name",
+    "email": "E-post",
+    "name": "Navn",
     "products": "Produkter",
     "status": "Status",
-    "telephone": "Telephone",
+    "telephone": "Mobil",
     "type": "Type"
   },
   "products": {
@@ -63,7 +64,10 @@
       "edit-product": "Endre"
     },
     "labels": {
-      "addnewproduct": "Nytt produkt"
+      "addnewproduct": "Nytt produkt",
+      "editProducts": "Endre produkter",
+      "noOrders": "Ingen påmeldte",
+      "productsFor": "Produkter til"
     },
     "modal": {
       "title": {

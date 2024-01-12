@@ -59,8 +59,7 @@ const UserRegistrationPage: React.FC<UserRegistrationPageProps> = async ({ param
             {registration.products.map((product, index) => (
               <li key={index}>
                 <p>{`${t('user:registration.product-name')}: ${product.product?.name}`}</p>
-                <p>{`${t('user:registration.product-description')}: ${product.product
-                  ?.description}`}</p>
+                <p>{`${t('common:labels.description')}: ${product.product?.description}`}</p>
                 <p>
                   <span>{t('user:registration.quantity')}:</span>
                   {product.quantity}
