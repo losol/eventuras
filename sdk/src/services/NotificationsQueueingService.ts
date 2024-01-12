@@ -30,7 +30,7 @@ export class NotificationsQueueingService {
                 'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
-            mediaType: 'application/json-patch+json',
+            mediaType: 'application/json',
         });
     }
     /**
@@ -54,7 +54,7 @@ export class NotificationsQueueingService {
                 'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
-            mediaType: 'application/json-patch+json',
+            mediaType: 'application/json',
         });
     }
 }

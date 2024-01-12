@@ -34,5 +34,7 @@ export type EventDto = {
     certificateDescription?: string | null;
     projectCode?: string | null;
     organizerUserId?: string | null;
+    maxParticipants?: number | null;
+    externalInfoPageUrl?: string | null;
 };
 

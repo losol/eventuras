@@ -25,6 +25,7 @@ export class RegistrationsService {
         count,
         limit,
         offset,
+        ordering,
         eventurasOrgId,
     }: {
         eventId?: number,
@@ -37,6 +38,7 @@ export class RegistrationsService {
         count?: number,
         limit?: number,
         offset?: number,
+        ordering?: Array<string>,
         /**
          * Optional organization Id. Will be required in API version 4.
          */
@@ -59,6 +61,7 @@ export class RegistrationsService {
                 'Count': count,
                 'Limit': limit,
                 'Offset': offset,
+                'Ordering': ordering,
             },
         });
     }
@@ -83,7 +86,7 @@ export class RegistrationsService {
                 'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
-            mediaType: 'application/json-patch+json',
+            mediaType: 'application/json',
         });
     }
     /**
@@ -102,6 +105,7 @@ export class RegistrationsService {
         count,
         limit,
         offset,
+        ordering,
         eventurasOrgId,
     }: {
         id: number,
@@ -115,6 +119,7 @@ export class RegistrationsService {
         count?: number,
         limit?: number,
         offset?: number,
+        ordering?: Array<string>,
         /**
          * Optional organization Id. Will be required in API version 4.
          */
@@ -140,6 +145,7 @@ export class RegistrationsService {
                 'Count': count,
                 'Limit': limit,
                 'Offset': offset,
+                'Ordering': ordering,
             },
         });
     }
@@ -169,7 +175,7 @@ export class RegistrationsService {
                 'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
-            mediaType: 'application/json-patch+json',
+            mediaType: 'application/json',
         });
     }
     /**

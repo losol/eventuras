@@ -21,6 +21,7 @@ import { OrganizationMemberRolesService } from './services/OrganizationMemberRol
 import { OrganizationMembersService } from './services/OrganizationMembersService';
 import { OrganizationsService } from './services/OrganizationsService';
 import { OrganizationSettingsService } from './services/OrganizationSettingsService';
+import { ProductsService } from './services/ProductsService';
 import { RegistrationCertificateService } from './services/RegistrationCertificateService';
 import { RegistrationOrdersService } from './services/RegistrationOrdersService';
 import { RegistrationsService } from './services/RegistrationsService';
@@ -43,6 +44,7 @@ export class Eventuras {
     public readonly organizationMembers: OrganizationMembersService;
     public readonly organizations: OrganizationsService;
     public readonly organizationSettings: OrganizationSettingsService;
+    public readonly products: ProductsService;
     public readonly registrationCertificate: RegistrationCertificateService;
     public readonly registrationOrders: RegistrationOrdersService;
     public readonly registrations: RegistrationsService;
@@ -76,6 +78,7 @@ export class Eventuras {
         this.organizationMembers = new OrganizationMembersService(this.request);
         this.organizations = new OrganizationsService(this.request);
         this.organizationSettings = new OrganizationSettingsService(this.request);
+        this.products = new ProductsService(this.request);
         this.registrationCertificate = new RegistrationCertificateService(this.request);
         this.registrationOrders = new RegistrationOrdersService(this.request);
         this.registrations = new RegistrationsService(this.request);

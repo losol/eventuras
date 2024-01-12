@@ -1,10 +1,10 @@
 {
   "name": "@losol/eventuras",
-  "version": "0.6.0",
+  "version": "0.6.2",
   "description": "Eventuras Typescript SDK",
   "main": "dist/index.js",
   "scripts": {
-    "generate": "npx @losol/openapi-typescript-codegen --input http://localhost:5666/swagger/v3/swagger.json --output ./typescript --useOptions --name Eventuras"
+    "generate": "npx openapi-typescript-codegen --input http://localhost:8080/swagger/v3/swagger.json --output ./src --useOptions --name Eventuras"
   },
   "author": "Ole Kristian Losvik",
   "license": "GPL-3.0-or-later",

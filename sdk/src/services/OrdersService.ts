@@ -69,7 +69,7 @@ export class OrdersService {
                 'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
-            mediaType: 'application/json-patch+json',
+            mediaType: 'application/json',
         });
     }
     /**
@@ -113,6 +113,7 @@ export class OrdersService {
         count,
         limit,
         offset,
+        ordering,
         eventurasOrgId,
     }: {
         userId?: string,
@@ -126,6 +127,7 @@ export class OrdersService {
         count?: number,
         limit?: number,
         offset?: number,
+        ordering?: Array<string>,
         /**
          * Optional organization Id. Will be required in API version 4.
          */
@@ -149,6 +151,7 @@ export class OrdersService {
                 'Count': count,
                 'Limit': limit,
                 'Offset': offset,
+                'Ordering': ordering,
             },
         });
     }
@@ -173,7 +176,7 @@ export class OrdersService {
                 'Eventuras-Org-Id': eventurasOrgId,
             },
             body: requestBody,
-            mediaType: 'application/json-patch+json',
+            mediaType: 'application/json',
         });
     }
 }
