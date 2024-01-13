@@ -20,6 +20,7 @@ export enum States {
   CUSTOMIZE_PRODUCTS = 'customizeProducts',
   CONFIGURE_PAYMENT = 'configurePayment',
   SUBMITTING = 'submitting',
+  ACCOUNT_INFO = 'accountInfo',
   COMPLETED = 'completed',
   ERROR = 'error',
 }
@@ -27,6 +28,7 @@ export enum States {
 export enum Events {
   ON_SUBMIT_PRODUCT_SELECTION = 'onSubmitProductSelection',
   ON_SUBMIT_PAYMENT_DETAILS = 'onSubmitPaymentDetails',
+  ON_USER_UPDATED = 'onUserUpdated',
 }
 
 const EventRegistrationMachine = createMachine({
@@ -86,11 +88,21 @@ const EventRegistrationMachine = createMachine({
         }),
         input: ({ context }) => ({ ...context }),
         onDone: {
-          target: States.COMPLETED,
+          target: States.ACCOUNT_INFO,
         },
         onError: {
           target: States.ERROR,
         },
+      },
+    },
+    [States.ACCOUNT_INFO]: {
+      on: {
+        [Events.ON_USER_UPDATED]: {
+          target: States.COMPLETED,
+        },
+      },
+      onDone: {
+        target: States.COMPLETED,
       },
     },
     [States.COMPLETED]: {
