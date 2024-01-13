@@ -5,6 +5,7 @@
   },
   "buttons": {
     "cancel": "Cancel",
+    "check_account_details": "Check your Account Details",
     "continue": "Continue",
     "edit": "Edit",
     "homepage": "To frontpage",

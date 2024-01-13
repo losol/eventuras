@@ -15,7 +15,7 @@ const RegistrationComplete = ({ onSubmit }: RegistrationCompleteProps) => {
         {t('user:registration.complete.description')}
       </p>
       <Button onClick={() => onSubmit()} data-test-id="registration-complete-submit-button">
-        {t('common:buttons.homepage')}
+        {t('common:buttons.check_account_details')}
       </Button>
     </>
   );

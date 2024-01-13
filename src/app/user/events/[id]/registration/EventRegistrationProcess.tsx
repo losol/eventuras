@@ -1,12 +1,14 @@
 'use client';
 
 import { EventDto, ProductDto, UserDto } from '@losol/eventuras';
+import { useActor } from '@xstate/react';
+import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import React from 'react';
 
 import FatalError from '@/components/ui/FatalError';
-import Loading from '@/components/ui/Loading';
-import { useRegistrationProcess } from '@/hooks/useRegistrationProcess';
+import EventRegistrationMachine, { Events } from '@/statemachines/EventRegistrationMachine';
+import PaymentFormValues from '@/types/PaymentFormValues';
 
 import RegistrationComplete from './RegistrationComplete';
 import RegistrationCustomize from './RegistrationCustomize';
@@ -23,32 +25,59 @@ const EventRegistrationProcess: React.FC<UserEventRegistrationProps> = ({
   user,
   products,
 }) => {
-  const customizeProducts = products.length > 0;
-  const { currentStep, registrationError, onCustomize, onPayment, onCompleteFlow } =
-    useRegistrationProcess(eventInfo, user, customizeProducts);
+  const [xState, send] = useActor(EventRegistrationMachine, {
+    input: {
+      eventInfo,
+      user,
+      availableProducts: products,
+      selectedProducts: new Map<string, number>(),
+      paymentFormValues: null,
+    },
+  });
   const { t } = createTranslation();
+  const router = useRouter();
 
-  const renderStep = () => {
-    switch (currentStep) {
-      case 'Customize':
-        return <RegistrationCustomize products={products} onSubmit={onCustomize} />;
-      case 'Payment':
-        return <RegistrationPayment userProfile={user} onSubmit={onPayment} />;
-      case 'Complete':
-        return <RegistrationComplete onSubmit={onCompleteFlow} />;
-      case 'Error':
-        return (
-          <FatalError
-            title={t('common:errorpage.title')}
-            description={registrationError?.message || t('common:errorpage.description')}
-          />
-        );
-      default:
-        return <Loading />;
-    }
-  };
-
-  return renderStep();
+  switch (true) {
+    case xState.matches('customizeProducts'):
+      return (
+        <RegistrationCustomize
+          products={products}
+          onSubmit={(selected: Map<string, number>) => {
+            send({
+              type: Events.ON_SUBMIT_PRODUCT_SELECTION,
+              selectedProducts: selected,
+            });
+          }}
+        />
+      );
+    case xState.matches('configurePayment'):
+      return (
+        <RegistrationPayment
+          userProfile={user}
+          onSubmit={(formValues: PaymentFormValues) => {
+            send({
+              type: Events.ON_SUBMIT_PAYMENT_DETAILS,
+              formValues,
+            });
+          }}
+        />
+      );
+    case xState.matches('completed'):
+      return (
+        <RegistrationComplete
+          onSubmit={() => {
+            router.push('user/account');
+          }}
+        />
+      );
+    case xState.matches('error'):
+      return (
+        <FatalError
+          title={t('common:errorpage.title')}
+          description={t('common:errorpage.description')}
+        />
+      );
+  }
 };
 
 export default EventRegistrationProcess;
