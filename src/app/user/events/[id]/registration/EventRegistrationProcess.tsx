@@ -7,7 +7,8 @@ import createTranslation from 'next-translate/createTranslation';
 import React from 'react';
 
 import FatalError from '@/components/ui/FatalError';
-import EventRegistrationMachine, { Events } from '@/statemachines/EventRegistrationMachine';
+import Loading from '@/components/ui/Loading';
+import EventRegistrationMachine, { Events, States } from '@/statemachines/EventRegistrationMachine';
 import PaymentFormValues from '@/types/PaymentFormValues';
 
 import RegistrationComplete from './RegistrationComplete';
@@ -38,7 +39,7 @@ const EventRegistrationProcess: React.FC<UserEventRegistrationProps> = ({
   const router = useRouter();
 
   switch (true) {
-    case xState.matches('customizeProducts'):
+    case xState.matches(States.CUSTOMIZE_PRODUCTS):
       return (
         <RegistrationCustomize
           products={products}
@@ -50,7 +51,7 @@ const EventRegistrationProcess: React.FC<UserEventRegistrationProps> = ({
           }}
         />
       );
-    case xState.matches('configurePayment'):
+    case xState.matches(States.CONFIGURE_PAYMENT):
       return (
         <RegistrationPayment
           userProfile={user}
@@ -62,11 +63,13 @@ const EventRegistrationProcess: React.FC<UserEventRegistrationProps> = ({
           }}
         />
       );
-    case xState.matches('completed'):
+    case xState.matches(States.SUBMITTING):
+      return <Loading />;
+    case xState.matches(States.COMPLETED):
       return (
         <RegistrationComplete
           onSubmit={() => {
-            router.push('user/account');
+            router.push('/user/account');
           }}
         />
       );

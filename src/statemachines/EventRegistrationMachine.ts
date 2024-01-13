@@ -16,10 +16,10 @@ export type EventRegistrationMachineContext = {
 };
 
 export enum States {
-  PENDING = 'pending',
+  PRE_INIT = 'preInit',
   CUSTOMIZE_PRODUCTS = 'customizeProducts',
   CONFIGURE_PAYMENT = 'configurePayment',
-  SUBMIT = 'submit',
+  SUBMITTING = 'submitting',
   COMPLETED = 'completed',
   ERROR = 'error',
 }
@@ -31,7 +31,7 @@ export enum Events {
 
 const EventRegistrationMachine = createMachine({
   id: 'eventRegistration',
-  initial: States.PENDING,
+  initial: States.PRE_INIT,
   context: init => {
     const input = init.input as EventRegistrationMachineContext;
     return {
@@ -39,7 +39,7 @@ const EventRegistrationMachine = createMachine({
     };
   },
   states: {
-    [States.PENDING]: {
+    [States.PRE_INIT]: {
       description: 'wait for initial context then decide whether to skip product selection page',
       always: [
         {
@@ -65,14 +65,14 @@ const EventRegistrationMachine = createMachine({
     [States.CONFIGURE_PAYMENT]: {
       on: {
         [Events.ON_SUBMIT_PAYMENT_DETAILS]: {
-          target: States.SUBMIT,
+          target: States.SUBMITTING,
           actions: assign({
             paymentFormValues: ({ event }) => event.formValues,
           }),
         },
       },
     },
-    [States.SUBMIT]: {
+    [States.SUBMITTING]: {
       invoke: {
         id: 'submitEventRegistration',
         src: fromPromise(async ({ input }) => {

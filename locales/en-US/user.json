@@ -42,11 +42,11 @@
     "eventNotFound": "Event was not found",
     "notRegistered": "You are not registered for this event",
     "registration": {
-      "customizationfor": "Customize your registration for",
+      "customizationfor": "This is the registration page for",
       "description": {
-        "pretitle": "Customize your registration for"
+        "pretitle": "This is the registration page for"
       },
-      "title": "Customize your registration",
+      "title": "Event Registration Page",
       "titleLabel": "Welcome to"
     },
     "welcomeLetter": "Welcome letter"
