@@ -12,6 +12,7 @@ import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class UsersService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
+     * @deprecated
      * Gets information about the current user. Creates a new user if no user with the email exists.
      * @returns UserDto Success
      * @throws ApiError

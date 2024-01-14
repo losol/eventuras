@@ -98,4 +98,5 @@ export { ProductsService } from './services/ProductsService';
 export { RegistrationCertificateService } from './services/RegistrationCertificateService';
 export { RegistrationOrdersService } from './services/RegistrationOrdersService';
 export { RegistrationsService } from './services/RegistrationsService';
+export { UserProfileService } from './services/UserProfileService';
 export { UsersService } from './services/UsersService';

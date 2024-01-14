@@ -25,6 +25,7 @@ import { ProductsService } from './services/ProductsService';
 import { RegistrationCertificateService } from './services/RegistrationCertificateService';
 import { RegistrationOrdersService } from './services/RegistrationOrdersService';
 import { RegistrationsService } from './services/RegistrationsService';
+import { UserProfileService } from './services/UserProfileService';
 import { UsersService } from './services/UsersService';
 type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
 export class Eventuras {
@@ -48,6 +49,7 @@ export class Eventuras {
     public readonly registrationCertificate: RegistrationCertificateService;
     public readonly registrationOrders: RegistrationOrdersService;
     public readonly registrations: RegistrationsService;
+    public readonly userProfile: UserProfileService;
     public readonly users: UsersService;
     public readonly request: BaseHttpRequest;
     constructor(config?: Partial<OpenAPIConfig>, HttpRequest: HttpRequestConstructor = FetchHttpRequest) {
@@ -82,6 +84,7 @@ export class Eventuras {
         this.registrationCertificate = new RegistrationCertificateService(this.request);
         this.registrationOrders = new RegistrationOrdersService(this.request);
         this.registrations = new RegistrationsService(this.request);
+        this.userProfile = new UserProfileService(this.request);
         this.users = new UsersService(this.request);
     }
 }
