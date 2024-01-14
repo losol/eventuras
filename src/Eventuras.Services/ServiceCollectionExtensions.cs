@@ -18,6 +18,7 @@ namespace Eventuras.Services
     {
         public static IServiceCollection AddCoreServices(this IServiceCollection services)
         {
+            services.AddScoped<IUserAccessControlService, UserAccessControlService>();
             services.AddScoped<IPaymentMethodService, PaymentMethodService>();
             services.AddScoped<IRegistrationService, RegistrationService>();
             services.AddScoped<IProductsService, ProductsService>();
