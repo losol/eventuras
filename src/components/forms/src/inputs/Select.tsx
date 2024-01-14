@@ -9,6 +9,7 @@ export type SelectProps = {
   name: string;
   id?: string;
   options: { value: string; label: string }[];
+  dataTestId?: string;
 };
 
 const styles = {
@@ -23,7 +24,7 @@ const styles = {
   },
 };
 
-const Select: React.FC<SelectProps> = ({ label, name, options }) => {
+const Select: React.FC<SelectProps> = ({ label, name, options, dataTestId }) => {
   const { control } = useFormContext();
 
   return (
@@ -34,7 +35,11 @@ const Select: React.FC<SelectProps> = ({ label, name, options }) => {
         <div className={styles.wrapper}>
           {label && <Label htmlFor={name}>{label}</Label>}
           <Listbox value={value} onChange={onChange}>
-            <Listbox.Button className={styles.button}>
+            <Listbox.Button
+              className={styles.button}
+              id={`${name}-button`}
+              data-test-id={`${dataTestId}-button`}
+            >
               {options.find(option => option.value === value)?.label ?? 'Select an option'}
             </Listbox.Button>
             <Listbox.Options className={styles.options}>

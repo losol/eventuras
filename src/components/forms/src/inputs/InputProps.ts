@@ -23,5 +23,6 @@ export interface InputProps {
   className?: string;
   validation?: RegisterOptions;
   errors?: { [key: string]: { message: string } };
+  dataTestId?: string;
   [x: string]: any;
 }

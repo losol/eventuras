@@ -76,6 +76,7 @@ const EventRegistrationProcess: React.FC<UserEventRegistrationProps> = ({
               user: updatedUser,
             });
           }}
+          dataTestId="registration-account-step"
         />
       );
     case xState.matches(States.COMPLETED):

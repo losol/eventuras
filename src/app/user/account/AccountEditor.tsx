@@ -14,9 +14,10 @@ import Logger from '@/utils/Logger';
 interface AccountEditorProps {
   user?: UserDto;
   onUserUpdated?: (updatedUser: UserDto) => void;
+  dataTestId?: string;
 }
 
-const AccountEditor: FC<AccountEditorProps> = ({ user, onUserUpdated }) => {
+const AccountEditor: FC<AccountEditorProps> = ({ user, onUserUpdated, dataTestId }) => {
   const { t } = createTranslation('common');
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const log_namespace = 'user.account';
@@ -42,7 +43,7 @@ const AccountEditor: FC<AccountEditorProps> = ({ user, onUserUpdated }) => {
     // Update existing user
     Logger.info({ namespace: log_namespace }, 'Updating user');
     const updatedUser = await apiWrapper(() =>
-      sdk.users.putV3Users({ id: user.id!, requestBody: form as UserFormDto })
+      sdk.userProfile.putV3Userprofile({ id: user.id!, requestBody: form as UserFormDto })
     );
 
     if (updatedUser.error) {
@@ -74,7 +75,7 @@ const AccountEditor: FC<AccountEditorProps> = ({ user, onUserUpdated }) => {
   };
 
   return (
-    <Form onSubmit={onSubmit} defaultValues={user}>
+    <Form onSubmit={onSubmit} defaultValues={user} dataTestId={dataTestId}>
       {/* Name Field */}
       <TextInput
         name="name"
@@ -109,6 +110,7 @@ const AccountEditor: FC<AccountEditorProps> = ({ user, onUserUpdated }) => {
         type="tel"
         placeholder={t('user:account.phoneNumber.placeholder')}
         validation={{ required: t('user:account.phoneNumber.requiredText') }}
+        dataTestId="accounteditor-form-phonenumber"
       />
 
       {/* Submit Button */}

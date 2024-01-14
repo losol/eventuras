@@ -7,7 +7,8 @@ import formStyles from '../formStyles';
 import Label from './Label';
 
 export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  const { id, name, placeholder, label, description, className, validation, disabled } = props;
+  const { id, name, placeholder, label, description, className, validation, disabled, dataTestId } =
+    props;
   const inputId = id ?? name;
   const {
     register,
@@ -35,6 +36,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props
         className={inputClassName}
         aria-invalid={hasError}
         disabled={disabled}
+        data-test-id={dataTestId}
         {...register(name, { valueAsNumber: true })}
         ref={e => {
           // Assign the ref from forwardRef

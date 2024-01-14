@@ -51,7 +51,7 @@ We are open to most standards, as long as there is one. We were inspired by [jos
 
 ## Translations
 
-We use next-translate as our translation library, read about it at https://github.com/aralroca/next-translate. Instead of using `useTranslations('common')`, for instance, we have opted to go with `useTranslations()` and then access the label through `t('common:label')`. The reason is better portability with tools such as i18n-ally.
+We use next-translate as our translation library, read about it at <https://github.com/aralroca/next-translate>. Instead of using `createTranslations('common')`, for instance, we have opted to go with `createuseTranslations()` and then access the label through `t('common:label')`. The reason is better portability with tools such as i18n-ally.
 
 ### i18n-ally
 
@@ -80,8 +80,16 @@ This is a plugin for visual code which makes it easier to see the translations i
     "i18n-ally.keystyle": "nested"
 ```
 
-# End-to-end testing with Playwright
+## Testing
+
+### Cloudflare tunnels
+
+An easy way to test the solution on a mobile device is to use cloudflare tunnels. This will allow you to access the app on your mobile device through a tunnel to your local machine. To do this, install cloudflared (`brew install cloudflared`) from <https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/installation> and then run `cloudflared tunnel --url http://localhost:3000`.
+
+### End-to-end testing with Playwright
 
 We have configured initial playwright tests which can be run interactively(you need a browser available on your machine) or on the command line(@see package.json for scripts, command line runs headless browsers, requires external dependency installs @see playwright docs). Make sure to fill out env variables(check the template and ask around for username/password). These will silently error out as they are not included in the Environment wrapper, as the app can run perfectly fine without a test user set up.
+
+Run `npx playwright install` to install the correct version of playwright for your machine. This will install the correct version of chromium. Make sure eventuras is running - `npx next dev`, and then run `npm run test:playwright:ui` to run the tests.
 
 Any future playwright end-to-end tests should go into the playwright-e2e folder. [Further reading here](playwright-e2e-/README.md).

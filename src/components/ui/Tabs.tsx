@@ -17,6 +17,7 @@ import { Tab, TabList, TabPanel, Tabs as AriaTabs } from 'react-aria-components'
 type TabItemProps = {
   title: string;
   children: React.ReactNode;
+  dataTestId?: string;
 };
 
 type TabsProps = {
@@ -42,9 +43,9 @@ const Tabs: TabsComponent = ({ children }) => {
     <div>
       <AriaTabs>
         <TabList className={styles.tabList}>
-          {React.Children.map(children, (child, index) => (
+          {React.Children.map(children, child => (
             <Tab
-              id={index.toString()}
+              id={child.props.title}
               className={({ isSelected }) =>
                 `${styles.tab.base} ${isSelected ? styles.tab.selected : styles.tab.notSelected}`
               }
@@ -55,8 +56,8 @@ const Tabs: TabsComponent = ({ children }) => {
         </TabList>
 
         {/* Tab panels */}
-        {React.Children.map(children, (child, index) => (
-          <TabPanel id={index.toString()} className={styles.panel}>
+        {React.Children.map(children, child => (
+          <TabPanel id={child.props.title} className={styles.panel}>
             {child.props.children}
           </TabPanel>
         ))}

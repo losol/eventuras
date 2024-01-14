@@ -131,6 +131,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
                 value: value,
                 label: value,
               }))}
+              dataTestId="event-status-select"
             />
             <NumberInput
               name="maxParticipants"
@@ -219,6 +220,13 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
         </Tabs.Item>
         <Tabs.Item title="Advanced">
           <Fieldset label="Additional Fields" disabled={apiState.loading}>
+            <NumberInput
+              name="id"
+              label="Id"
+              placeholder="Event Id"
+              disabled
+              dataTestId="eventeditor-form-eventid"
+            />
             <TextInput name="slug" label="Slug" placeholder="Event Slug" disabled />
             <TextInput
               name="externalInfoPageUrl"

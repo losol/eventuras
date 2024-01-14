@@ -19,6 +19,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, InputProps>((props, 
     className,
     validation,
     disabled,
+    dataTestId,
     ...rest
   } = props;
   const inputId = id ?? name;
@@ -48,6 +49,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, InputProps>((props, 
         className={inputClassName}
         aria-invalid={hasError}
         disabled={disabled}
+        data-test-id={dataTestId}
         {...register(name, validation)}
         ref={e => {
           // Assign the ref from forwardRef

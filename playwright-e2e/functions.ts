@@ -65,18 +65,23 @@ export const createEvent = async (page: Page, eventName: string) => {
   await expect(page.locator('[data-test-id="notification-success"]')).toBeVisible();
   await page.waitForURL('**/edit');
 
-  const editForm = page.locator('[data-test-id="event-edit-form"]');
-  const eventId = await editForm.getAttribute('data-event-id');
-  Logger.info(ns, `Event created ${eventId}`);
-  await page.locator('[data-test-id="event-status-select"]').click();
-  await page.locator('[data-test-id="RegistrationsOpen"]').click();
+  await page.locator('[data-test-id="event-status-select-button"]').click();
+
+  await page.getByRole('option', { name: 'RegistrationsOpen' }).click();
   await page.locator('[data-test-id="event-published-checkbox"]').click();
-  await page.getByRole('button', { name: 'Submit' }).click();
-  return eventId!;
+
+  const advancedTab = page.getByRole('tab', { name: 'Advanced' });
+  advancedTab.click();
+
+  const eventId = await page.locator('[data-test-id="eventeditor-form-eventid"]').inputValue();
+  Logger.info(ns, `Event id from test: ${eventId}`);
+
+  await page.locator('[type=submit]').click();
+  return eventId;
 };
 
 export const addProductToEvent = async (page: Page, eventId: string) => {
-  await page.goto(`admin/events/${eventId}/products`);
+  await page.goto(`admin/events/${eventId}/products/edit`);
   await page.locator('[data-test-id="add-product-button"]').click();
   await page.locator('[data-test-id="product-name-input"]').fill(`testname product for ${eventId}`);
   await page
@@ -123,18 +128,15 @@ export const registerForEvent = async (
   await page.locator('[data-test-id="registration-country-input"]').click();
   await page.locator('[data-test-id="registration-country-input"]').fill('The Netherlands');
   await page.locator('[data-test-id="registration-payment-submit-button"]').click();
+  await expect(page.locator('[data-test-id="registration-account-step"]')).toBeVisible();
+  await page.locator('[data-test-id="accounteditor-form-phonenumber"]').fill('+4712345678');
+  await page.locator('[data-test-id="account-update-button"]').click();
+
   await page.locator('[data-test-id="registration-complete-submit-button"]').click();
-  await expect(page.locator('[data-test-id="registration-complete-confirmation"]')).toBeVisible();
 };
 
 export const visitRegistrationPageForEvent = async (page: Page, eventId: string) => {
-  await page.goto(`/user`);
-  await page.waitForLoadState('load');
-  const clickToUserEventPage = await page.locator(`[data-test-id="${eventId}"]`);
-  const userEventUrl = await clickToUserEventPage.getAttribute('href');
-  await clickToUserEventPage.click();
-  await page.waitForURL(userEventUrl!);
-  await page.waitForLoadState('load');
+  await page.goto(`/user/events/${eventId}`);
   const clickToUserRegistrationPage = await page.locator(`[data-test-id="registration-page-link"]`);
   const userRegistrationUrl = await clickToUserRegistrationPage.getAttribute('href');
   await clickToUserRegistrationPage.click();
