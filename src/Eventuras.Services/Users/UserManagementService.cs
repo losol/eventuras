@@ -15,15 +15,18 @@ namespace Eventuras.Services.Users
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserAccessControlService _userAccessControlService;
         private readonly ILogger<UserManagementService> _logger;
 
         public UserManagementService(
             ApplicationDbContext context,
             ILogger<UserManagementService> logger,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IUserAccessControlService userAccessControlService)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _userAccessControlService = userAccessControlService ?? throw new ArgumentNullException(nameof(userAccessControlService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -99,6 +102,9 @@ namespace Eventuras.Services.Users
             {
                 throw new ArgumentNullException(nameof(user));
             }
+
+            // Allow users to update their own information, and admins to update any user
+            await _userAccessControlService.CheckOwnerOrAdminAccessAsync(user, cancellationToken);
 
             var normalizedEmail = _userManager.NormalizeEmail(user.Email);
             if (await _context.Users.AnyAsync(u => !u.Archived && u.NormalizedEmail == normalizedEmail && u.Id != user.Id,
