@@ -114,14 +114,7 @@ namespace Eventuras.Services.Users
                 throw new DuplicateException($"User with email {user.Email} already exists.");
             }
 
-            try
-            {
-                await _context.UpdateAsync(user);
-            }
-            catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
-            {
-                throw new DuplicateException($"User with email {user.Email} already exists.");
-            }
+            await _context.UpdateAsync(user);
         }
     }
 }

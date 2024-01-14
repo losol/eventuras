@@ -11,7 +11,7 @@ namespace Eventuras.TestAbstractions
     {
         public string TextToReturn { get; set; }
 
-        public string ReturnContentType { get; set; } = "applicaiton/json";
+        public string ReturnContentType { get; set; } = "application/json";
 
         public HttpStatusCode StatusToReturn { get; set; } = HttpStatusCode.OK;
 
