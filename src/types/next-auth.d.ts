@@ -9,6 +9,7 @@ declare module 'next-auth' {
       id: string;
     };
     accessToken?: string;
+    roles: string[];
     expires: string;
   }
 }

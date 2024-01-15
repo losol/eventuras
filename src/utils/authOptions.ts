@@ -1,11 +1,14 @@
+import { jwtDecode } from 'jwt-decode';
 import { AuthOptions } from 'next-auth';
 import Auth0Provider from 'next-auth/providers/auth0';
 
 import Environment, { EnvironmentVariables } from './Environment';
 import Logger from './Logger';
-
 const loggerNamespace = { developerOnly: true, namespace: 'auth' };
-
+const roleKey = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
+type JWTWithRole = {
+  [roleKey]: string[];
+};
 export const authOptions: AuthOptions = {
   providers: [
     Auth0Provider({
@@ -28,7 +31,7 @@ export const authOptions: AuthOptions = {
   secret: Environment.get(EnvironmentVariables.NEXTAUTH_SECRET),
   callbacks: {
     async session({ session, token }) {
-      return { ...session, id_token: token.id_token };
+      return { ...session, id_token: token.id_token, roles: token.roles };
     },
     async jwt({ token, user, account }: { token: any; user: any; account: any }) {
       let returnJWT = {
@@ -62,11 +65,19 @@ export const authOptions: AuthOptions = {
             };
           }
         }
+        if (returnJWT.access_token) {
+          //for unknown reason the decode function from nextauth throws errors, for now lets use jwtDecode
+          const decoded = jwtDecode(returnJWT.access_token) as JWTWithRole;
+          returnJWT = {
+            ...returnJWT,
+            roles: decoded[roleKey],
+          };
+        }
       } else {
         Logger.warn(loggerNamespace, 'No refresh token!');
       }
 
-      Logger.info(loggerNamespace, { returnJWT });
+      Logger.info(loggerNamespace, { returnJWT, roles: returnJWT.roles });
 
       //by default, return token
       return returnJWT;

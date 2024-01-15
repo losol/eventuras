@@ -20,6 +20,7 @@ interface UserState {
   profile: UserProfile | null;
   auth: Auth | null;
   error: string | null; // Add an error field
+  roles: string[];
 }
 
 type SessionWithIdToken = Session & { id_token: string };
@@ -37,6 +38,7 @@ const defaultUserState: UserState = {
   profile: null,
   auth: null,
   error: null,
+  roles: [],
 };
 
 const defaultUserContextValue: UserContextProps = {
@@ -64,6 +66,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     setUserState(prevState => ({
       ...prevState,
       profile: updatedProfile,
+      roles: session?.roles || [],
     }));
   };
 
