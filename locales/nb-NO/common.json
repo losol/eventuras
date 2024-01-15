@@ -27,6 +27,7 @@
     "user-not-found": "Fant ikke brukeren din"
   },
   "errorpage": {
+    "contactUs": "Vi beklager feilen, og håper du kan sende oss en e-post, så skal vi ordne opp!",
     "description": "Vet ikke mer...",
     "title": "Feilr."
   },
@@ -50,6 +51,7 @@
     "account": "Mine opplysninger",
     "all": "Alle",
     "allEvents": "Vis alle arrangement",
+    "contactUs": "Kontakt oss",
     "description": "Beskrivelse",
     "edit": "Endre",
     "editProfile": "Endre opplysninger",

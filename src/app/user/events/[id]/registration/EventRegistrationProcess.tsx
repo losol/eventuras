@@ -11,6 +11,7 @@ import FatalError from '@/components/ui/FatalError';
 import Loading from '@/components/ui/Loading';
 import EventRegistrationMachine, { Events, States } from '@/statemachines/EventRegistrationMachine';
 import PaymentFormValues from '@/types/PaymentFormValues';
+import { SiteInfo } from '@/utils/site/getSiteSettings';
 
 import RegistrationComplete from './RegistrationComplete';
 import RegistrationCustomize from './RegistrationCustomize';
@@ -20,12 +21,14 @@ interface UserEventRegistrationProps {
   eventInfo: EventDto;
   user: UserDto;
   products: ProductDto[];
+  siteInfo?: SiteInfo | null;
 }
 
 const EventRegistrationProcess: React.FC<UserEventRegistrationProps> = ({
   eventInfo,
   user,
   products,
+  siteInfo,
 }) => {
   const [xState, send] = useActor(EventRegistrationMachine, {
     input: {
@@ -92,6 +95,7 @@ const EventRegistrationProcess: React.FC<UserEventRegistrationProps> = ({
         <FatalError
           title={t('common:errorpage.title')}
           description={t('common:errorpage.description')}
+          siteInfo={siteInfo}
         />
       );
   }

@@ -28,6 +28,7 @@
     "user-not-found": "User not found"
   },
   "errorpage": {
+    "contactUs": "Please contact us!",
     "description": "Do not now anything more.",
     "title": "Errrrrror."
   },
@@ -51,6 +52,7 @@
     "account": "User account",
     "all": "All",
     "allEvents": "All events",
+    "contactUs": "Contact us",
     "description": "Description",
     "edit": "Edit",
     "editProfile": "Edit user profile",

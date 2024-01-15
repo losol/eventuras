@@ -8,6 +8,7 @@ import Link from '@/components/ui/Link';
 import Text from '@/components/ui/Text';
 import { createSDK } from '@/utils/api/EventurasApi';
 import Logger from '@/utils/Logger';
+import getSiteSettings from '@/utils/site/getSiteSettings';
 
 import EventRegistrationProcess from './EventRegistrationProcess';
 
@@ -19,6 +20,7 @@ type UserEventRegistrationPageProps = {
 
 const UserEventRegistrationPage: React.FC<UserEventRegistrationPageProps> = async ({ params }) => {
   const eventuras = createSDK({ authHeader: headers().get('Authorization') });
+  const siteInfo = await getSiteSettings();
   const { t } = createTranslation();
 
   const user: UserDto = await eventuras.users.getV3UsersMe({});
@@ -66,7 +68,12 @@ const UserEventRegistrationPage: React.FC<UserEventRegistrationPageProps> = asyn
       <p>
         {t('user:events.registration.customizationfor')} {event.title}!
       </p>
-      <EventRegistrationProcess user={user} eventInfo={event} products={products} />
+      <EventRegistrationProcess
+        user={user}
+        eventInfo={event}
+        products={products}
+        siteInfo={siteInfo}
+      />
     </Layout>
   );
 };
