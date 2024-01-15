@@ -41,11 +41,11 @@ class Logger {
   private static pinoLogger = pino();
   private static getDebug(namespace: string): createDebug.Debugger {
     const ns = `eventuras:${namespace}`;
-    const exists = ns in this.debugCache;
+    const exists = ns in Logger.debugCache;
     if (!exists) {
-      this.debugCache[ns] = createDebug(ns);
+      Logger.debugCache[ns] = createDebug(ns);
     }
-    return this.debugCache[ns];
+    return Logger.debugCache[ns];
   }
 
   private static wrapLogger(pinoFunction: (obj: any, msg?: string | undefined) => void) {
@@ -64,11 +64,11 @@ class Logger {
     };
   }
 
-  static error = this.wrapLogger(Logger.pinoLogger.error).bind(this);
-  static warn = this.wrapLogger(Logger.pinoLogger.warn).bind(this);
-  static info = this.wrapLogger(Logger.pinoLogger.info).bind(this);
-  static debug = this.wrapLogger(Logger.pinoLogger.debug).bind(this);
-  static fatal = this.wrapLogger(Logger.pinoLogger.fatal).bind(this);
+  static error = Logger.wrapLogger(Logger.pinoLogger.error).bind(Logger);
+  static warn = Logger.wrapLogger(Logger.pinoLogger.warn).bind(Logger);
+  static info = Logger.wrapLogger(Logger.pinoLogger.info).bind(Logger);
+  static debug = Logger.wrapLogger(Logger.pinoLogger.debug).bind(Logger);
+  static fatal = Logger.wrapLogger(Logger.pinoLogger.fatal).bind(Logger);
 }
 
 export default Logger;
