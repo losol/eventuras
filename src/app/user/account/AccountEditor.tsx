@@ -15,9 +15,10 @@ interface AccountEditorProps {
   user?: UserDto;
   onUserUpdated?: (updatedUser: UserDto) => void;
   dataTestId?: string;
+  adminMode?: boolean;
 }
 
-const AccountEditor: FC<AccountEditorProps> = ({ user, onUserUpdated, dataTestId }) => {
+const AccountEditor: FC<AccountEditorProps> = ({ adminMode, user, onUserUpdated, dataTestId }) => {
   const { t } = createTranslation('common');
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const log_namespace = 'user.account';
@@ -36,6 +37,13 @@ const AccountEditor: FC<AccountEditorProps> = ({ user, onUserUpdated, dataTestId
       });
       Logger.error({ namespace: log_namespace }, 'Failed to create new user', user.error);
     }
+
+    addAppNotification({
+      id: Date.now(),
+      type: AppNotificationType.SUCCESS,
+      message: t('common:labels.createUserSuccess') + ': ' + user.value?.name,
+    });
+
     return user;
   };
 
@@ -109,13 +117,13 @@ const AccountEditor: FC<AccountEditorProps> = ({ user, onUserUpdated, dataTestId
         description={t('user:account.phoneNumber.description')}
         type="tel"
         placeholder={t('user:account.phoneNumber.placeholder')}
-        validation={{ required: t('user:account.phoneNumber.requiredText') }}
+        validation={adminMode ? {} : { required: t('user:account.phoneNumber.requiredText') }}
         dataTestId="accounteditor-form-phonenumber"
       />
 
       {/* Submit Button */}
       <Button type="submit" data-test-id="account-update-button">
-        {t('user:account.update.label')}
+        {editMode ? t('user:account.update.label') : t('user:account.create.label')}
       </Button>
     </Form>
   );

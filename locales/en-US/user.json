@@ -1,5 +1,8 @@
 {
   "account": {
+    "create": {
+      "label": "Create user"
+    },
     "email": {
       "description": "E-mail. Make sure it is correct.",
       "existingDescription": "We did save this from your login. Cannot be changed.",

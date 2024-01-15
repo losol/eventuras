@@ -1,5 +1,8 @@
 {
   "account": {
+    "create": {
+      "label": "Lag bruker"
+    },
     "email": {
       "description": "Det er viktig at vi har riktig e-postadresse.",
       "existingDescription": "Vi fikk denne fra innloggingen din. Kan ikke endres. ",

@@ -49,6 +49,9 @@
       "create": "Add event"
     }
   },
+  "labels": {
+    "users": "Users"
+  },
   "participantColumns": {
     "actions": "Actions",
     "email": "E mail",
@@ -76,5 +79,14 @@
       }
     }
   },
-  "title": "Admin"
+  "title": "Admin",
+  "users": {
+    "labels": {
+      "addUser": "Add user",
+      "createUser": "Create user"
+    },
+    "page": {
+      "title": "Users"
+    }
+  }
 }

@@ -49,6 +49,9 @@
       "create": "Nytt arrangement"
     }
   },
+  "labels": {
+    "users": "Brukere"
+  },
   "participantColumns": {
     "actions": "Actions",
     "email": "E-post",
@@ -76,5 +79,14 @@
       }
     }
   },
-  "title": "Admin"
+  "title": "Admin",
+  "users": {
+    "labels": {
+      "addUser": "Ny bruker",
+      "createUser": "Ny bruker"
+    },
+    "page": {
+      "title": "Brukere"
+    }
+  }
 }

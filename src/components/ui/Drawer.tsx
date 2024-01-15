@@ -4,9 +4,6 @@ import React, { HTMLAttributes, ReactNode } from 'react';
 import { Portal } from '@/components/ui';
 import Button from '@/components/ui/Button';
 import Heading from '@/components/ui/Heading';
-
-import ButtonGroup from './ButtonGroup';
-
 export interface DrawerProps {
   isOpen: boolean;
   onSave?: () => void;
@@ -35,65 +32,27 @@ interface DrawerComponent extends React.FC<DrawerProps> {
 
 const Drawer: DrawerComponent = (props: DrawerProps) => {
   const validChildren = React.Children.toArray(props.children);
-  let hasFooterChild = false;
 
   const filteredChildren = validChildren
     .map(child => {
       if (React.isValidElement<HeaderProps | BodyProps | FooterProps>(child)) {
-        if (child.type === Drawer.Footer) {
-          hasFooterChild = true;
-        }
         return child;
       }
       return null; // Ignore other types of children
     })
     .filter(Boolean);
 
-  // Append default Footer if none provided
-  if (!hasFooterChild && (props.onSave || props.onCancel)) {
-    filteredChildren.push(
-      <Drawer.Footer key="default-footer">
-        <ButtonGroup>
-          {props.onSave && (
-            <Button onClick={props.onSave} variant="primary">
-              Submit
-            </Button>
-          )}
-          {props.onCancel && (
-            <Button onClick={props.onCancel} variant="secondary">
-              Cancel
-            </Button>
-          )}
-        </ButtonGroup>
-      </Drawer.Footer>
-    );
-  }
-
   const ariaHiddenProps: HTMLAttributes<HTMLDivElement> = props.isOpen
     ? {}
     : { 'aria-hidden': 'true' };
 
-  const baseClasses = [
-    'flex',
-    'flex-col',
-    'p-6',
-    'fixed',
-    'top-0',
-    'right-0',
-    'min-w-4/5',
-    'max-w-4/5',
-    'h-full',
-    'bg-gray-100',
-    'dark:bg-gray-700',
-    'overflow-auto',
-    'z-30',
-  ];
-
-  const conditionalClasses = props.isOpen
-    ? ['transition-opacity', 'opacity-100', 'duration-2']
-    : ['transition-all', 'delay-500', 'opacity-0'];
-
-  const finalClasses = [...baseClasses, ...conditionalClasses].join(' ');
+  const styles = {
+    drawer: {
+      base: 'flex flex-col p-6 fixed top-0 right-0 w-11/12 md:w-7/12 h-full bg-gray-100 dark:bg-slate-950 overflow-auto z-30',
+      open: 'transition-opacity opacity-100 duration-2',
+      closed: 'transition-all delay-500 opacity-0',
+    },
+  };
 
   return (
     <Portal isOpen={props.isOpen} clickOutside={props.onCancel}>
@@ -101,7 +60,11 @@ const Drawer: DrawerComponent = (props: DrawerProps) => {
         id="backdrop"
         className="fixed top-0 left-0 bg-cover z-10 w-screen h-screen backdrop-blur-sm"
       />
-      <section {...ariaHiddenProps} className={finalClasses}>
+      <section
+        {...ariaHiddenProps}
+        className={`${styles.drawer.base} ${props.isOpen ? styles.drawer.open : styles.drawer.closed}`}
+      >
+        {' '}
         {/* Cancel icon top right */}
         {props.onCancel && (
           <Button

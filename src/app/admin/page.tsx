@@ -23,6 +23,9 @@ const AdminPage = () => {
           >
             {t('admin:events.labes.create')}
           </Link>
+          <Link href={`/admin/users/`} variant="button-primary">
+            {t('admin:labels.users')}
+          </Link>
         </section>
 
         <Heading as="h2">{t('common:events.sectiontitle')}</Heading>
