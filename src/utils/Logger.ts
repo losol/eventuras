@@ -59,16 +59,20 @@ class Logger {
       ) {
         return;
       }
-      Logger.getDebug(options.namespace ?? '')(msg);
-      pinoFunction.bind(Logger.pinoLogger)(options.namespace, msg);
+      //use pino outside of dev environment, and debug inside of it to avoid double logging locally
+      if (Environment.get(EnvironmentVariables.NODE_ENV) !== 'development') {
+        pinoFunction({ namespace: options.namespace, msg: msg });
+      } else {
+        Logger.getDebug(options.namespace ?? '')(msg);
+      }
     };
   }
 
-  static error = Logger.wrapLogger(Logger.pinoLogger.error).bind(Logger);
-  static warn = Logger.wrapLogger(Logger.pinoLogger.warn).bind(Logger);
-  static info = Logger.wrapLogger(Logger.pinoLogger.info).bind(Logger);
-  static debug = Logger.wrapLogger(Logger.pinoLogger.debug).bind(Logger);
-  static fatal = Logger.wrapLogger(Logger.pinoLogger.fatal).bind(Logger);
+  static error = Logger.wrapLogger(Logger.pinoLogger.error.bind(Logger.pinoLogger)).bind(Logger);
+  static warn = Logger.wrapLogger(Logger.pinoLogger.warn.bind(Logger.pinoLogger)).bind(Logger);
+  static info = Logger.wrapLogger(Logger.pinoLogger.info.bind(Logger.pinoLogger)).bind(Logger);
+  static debug = Logger.wrapLogger(Logger.pinoLogger.debug.bind(Logger.pinoLogger)).bind(Logger);
+  static fatal = Logger.wrapLogger(Logger.pinoLogger.fatal.bind(Logger.pinoLogger)).bind(Logger);
 }
 
 export default Logger;
