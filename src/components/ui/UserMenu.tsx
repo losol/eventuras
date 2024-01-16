@@ -41,6 +41,9 @@ const UserMenu = (props: UserMenuProps) => {
             {t('common:labels.user')}
           </Menu.Link>
           <Menu.Link href="/user/account">{t('common:labels.account')}</Menu.Link>
+          {userState.roles?.includes('Admin') && (
+            <Menu.Link href="/admin">{t('common:labels.admin')}</Menu.Link>
+          )}
           <Menu.Button onClick={handleLogout} data-test-id="logout-button">
             {t('common:labels.logout')}
           </Menu.Button>

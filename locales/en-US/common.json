@@ -50,6 +50,7 @@
   },
   "labels": {
     "account": "User account",
+    "admin": "Admin",
     "all": "All",
     "allEvents": "All events",
     "contactUs": "Contact us",
