@@ -32,7 +32,8 @@ namespace Eventuras.WebApi.Controllers.v3.Orders
                 new OrderRetrievalOptions
                 {
                     IncludeUser = request.IncludeUser,
-                    IncludeRegistration = request.IncludeRegistration
+                    IncludeRegistration = request.IncludeRegistration,
+                    IncludeOrderLines = true
                 },
                 cancellationToken);
 
