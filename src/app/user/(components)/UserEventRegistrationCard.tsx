@@ -5,7 +5,7 @@ import React, { ReactElement } from 'react';
 import Card from '@/components/ui/Card';
 import Link from '@/components/ui/Link';
 import Environment from '@/utils/Environment';
-import formatDate from '@/utils/formatDate';
+import { formatDateSpan } from '@/utils/formatDate';
 
 export type UserEventRegistrationCardProps = {
   eventId: string;
@@ -31,7 +31,7 @@ const UserEventRegistrationCard = ({
         {eventTitle}
       </Card.Heading>
       <Card.Text>
-        {formatDate(dateStart, dateEnd, Environment.NEXT_PUBLIC_DEFAULT_LOCALE)}
+        {formatDateSpan(dateStart, dateEnd, { locale: Environment.NEXT_PUBLIC_DEFAULT_LOCALE })}
       </Card.Text>
       {products.length > 0 && (
         <Card.Text as="div">

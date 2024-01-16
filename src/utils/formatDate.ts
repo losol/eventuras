@@ -1,20 +1,16 @@
-/**
- * Formats dates into a string! If one date is provided, it will return a
- * formatted date string. If two dates are provided,
- * it will return a formatted date range string.
- *
- * @param {string | Date} startDate - The first date to format.
- * @param {string | Date | null} [endDate=null] - The end date to format if it is a period. Optional and defaults to null.
- * @param {string} [locale='en-US'] - The locale for formatting dates. Optional and defaults to 'en-US'.
- * @param {boolean} [showTime=false] - Whether to include the time in the formatted string. Optional and defaults to true.
- * @returns {string} A formatted date or date range string.
- */
+interface FormatDateOptions {
+  locale?: string;
+  showTime?: boolean;
+}
+
 const formatDate = (
-  startDate: string | Date,
-  endDate: string | Date | null = null,
-  locale: string = 'en-US',
-  showTime: boolean = false
+  date: string | Date,
+  { locale = 'en-US', showTime = false }: FormatDateOptions = {}
 ): string => {
+  if (!date) {
+    return '';
+  }
+
   const dateOptions: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: 'numeric',
@@ -26,33 +22,34 @@ const formatDate = (
     minute: '2-digit',
   };
 
+  const parsedDate = new Date(date);
+  let formattedDate = parsedDate.toLocaleDateString(locale, dateOptions);
+
+  if (showTime) {
+    formattedDate += ' ' + parsedDate.toLocaleTimeString(locale, timeOptions);
+  }
+
+  return formattedDate;
+};
+
+const formatDateSpan = (
+  startDate: string | Date,
+  endDate: string | Date | null = null,
+  options: FormatDateOptions = {}
+): string => {
   if (!startDate) {
     return '';
   }
 
-  const parsedStartDate = new Date(startDate);
-  let formattedStartDate = parsedStartDate.toLocaleDateString(locale, dateOptions);
+  const formattedStartDate = formatDate(startDate, options);
 
-  if (showTime) {
-    formattedStartDate += ' ' + parsedStartDate.toLocaleTimeString(locale, timeOptions);
-  }
-
-  if (!endDate) {
+  if (!endDate || startDate === endDate) {
     return formattedStartDate;
   }
 
-  const parsedEndDate = new Date(endDate);
-  let formattedEndDate = parsedEndDate.toLocaleDateString(locale, dateOptions);
-
-  if (showTime) {
-    formattedEndDate += ' ' + parsedEndDate.toLocaleTimeString(locale, timeOptions);
-  }
-
-  if (startDate === endDate) {
-    return formattedStartDate;
-  }
+  const formattedEndDate = formatDate(endDate, options);
 
   return `${formattedStartDate} - ${formattedEndDate}`;
 };
 
-export default formatDate;
+export { formatDate, formatDateSpan };

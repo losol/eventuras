@@ -52,6 +52,14 @@
   "labels": {
     "users": "Brukere"
   },
+  "orders": {
+    "labels": {
+      "notFound": "Fant ingen ordre."
+    },
+    "page": {
+      "title": "Ordre"
+    }
+  },
   "participantColumns": {
     "actions": "Actions",
     "email": "E-post",

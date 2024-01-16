@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import Card from '@/components/ui/Card';
 import Environment from '@/utils/Environment';
-import formatDate from '@/utils/formatDate';
+import { formatDateSpan } from '@/utils/formatDate';
 
 interface EventCardProps {
   eventinfo: EventDto;
@@ -22,11 +22,9 @@ const EventCard: React.FC<EventCardProps> = ({ eventinfo }) => {
       {eventinfo.description && <Card.Text>{eventinfo.description}</Card.Text>}
       {eventinfo.location && <Card.Text>{eventinfo.location}</Card.Text>}
       <Card.Text>
-        {formatDate(
-          eventinfo.dateStart as string,
-          eventinfo.dateEnd as string,
-          Environment.NEXT_PUBLIC_DEFAULT_LOCALE
-        )}
+        {formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, {
+          locale: Environment.NEXT_PUBLIC_DEFAULT_LOCALE,
+        })}
       </Card.Text>
     </Card>
   );

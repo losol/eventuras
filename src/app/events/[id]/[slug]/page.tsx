@@ -8,7 +8,7 @@ import Heading from '@/components/ui/Heading';
 import Text from '@/components/ui/Text';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
-import formatDate from '@/utils/formatDate';
+import { formatDateSpan } from '@/utils/formatDate';
 import Logger from '@/utils/Logger';
 
 type EventInfoProps = {
@@ -83,11 +83,9 @@ const Page: React.FC<EventInfoProps> = async ({ params }) => {
 
           <Text text={eventinfo.description} className="py-3" />
           <Text
-            text={formatDate(
-              eventinfo.dateStart as string,
-              eventinfo.dateEnd as string,
-              Environment.NEXT_PUBLIC_DEFAULT_LOCALE
-            )}
+            text={formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, {
+              locale: Environment.NEXT_PUBLIC_DEFAULT_LOCALE,
+            })}
             className="py-3"
           />
 

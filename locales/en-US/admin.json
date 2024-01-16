@@ -52,6 +52,14 @@
   "labels": {
     "users": "Users"
   },
+  "orders": {
+    "labels": {
+      "notFound": "Order not found"
+    },
+    "page": {
+      "title": "Orders"
+    }
+  },
   "participantColumns": {
     "actions": "Actions",
     "email": "E mail",

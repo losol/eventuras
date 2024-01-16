@@ -2,8 +2,8 @@ import { ProductDto } from '@losol/eventuras';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
+import Order from '@/app/admin/orders/Order';
 import EditEventRegistrationsDialog from '@/components/eventuras/EditEventRegistrationDialog';
-import Order from '@/components/order/Order';
 import { Layout } from '@/components/ui';
 import Heading from '@/components/ui/Heading';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';

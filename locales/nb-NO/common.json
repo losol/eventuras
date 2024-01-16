@@ -72,6 +72,34 @@
     "view": "Vis"
   },
   "onlinecourses": "Nettkurs",
+  "order": {
+    "labels": {
+      "date": "Dato",
+      "id": "Id",
+      "items": "Ordrelinjer",
+      "orderId": "Ordre id",
+      "product": "Produkt",
+      "quantity": "Antall",
+      "status": "Status",
+      "variant": "Variant"
+    },
+    "status": {
+      "labels": {
+        "cancelled": "Avbestilt",
+        "draft": "Kladd",
+        "invoiced": "Fakturert",
+        "refunded": "Tilbakebetalt",
+        "unknown": "Ukjent",
+        "verified": "Godkjent"
+      }
+    }
+  },
+  "orders": {
+    "labels": {
+      "id": "Id",
+      "time": "Når"
+    }
+  },
   "registration": {
     "alreadyRegistered": "Du er allerede registrert for dette arrangementet"
   },

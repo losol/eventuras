@@ -15,16 +15,17 @@ const columnHelper = createColumnHelper<EventDto>();
 interface AdminEventListProps {
   organizationId: number;
   includePastEvents?: boolean;
+  pageSize?: number;
 }
 
 const AdminEventList: React.FC<AdminEventListProps> = ({
   organizationId,
   includePastEvents = false,
+  pageSize = 25,
 }) => {
   const { t } = createTranslation();
   const [page, setPage] = useState(1);
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
-  const pageSize = 50;
   const { loading, result } = useCreateHook(
     () =>
       sdk.events.getV3Events({
@@ -72,7 +73,7 @@ const AdminEventList: React.FC<AdminEventListProps> = ({
     return <FatalError title="No response from admin events" description="Response is null" />;
   return (
     <>
-      <DataTable data={result.data ?? []} columns={columns} />
+      <DataTable data={result.data ?? []} columns={columns} pageSize={pageSize} />
       <Pagination
         currentPage={page}
         totalPages={result.pages ?? 0}

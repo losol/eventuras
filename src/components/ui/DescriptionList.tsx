@@ -1,11 +1,10 @@
 import React from 'react';
 
-// Define styles
 const styles = {
   descriptionList: 'divide-y divide-gray-100 dark:divide-gray-800',
-  item: 'px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0',
-  term: 'text-sm font-medium leading-6 break-words',
-  definition: 'mt-1 text-sm leading-6  sm:col-span-2 sm:mt-0 break-words',
+  item: 'px-2 py-2 grid grid-cols-2 md:grid-cols-4',
+  term: 'text-sm font-medium leading-6 break-words md:col-span-1',
+  definition: 'mt-1 text-sm leading-6 break-words md:col-span-3',
 };
 
 // DescriptionList component

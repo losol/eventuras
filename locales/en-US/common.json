@@ -73,6 +73,34 @@
     "view": "View"
   },
   "onlinecourses": "Online courses",
+  "order": {
+    "labels": {
+      "date": "Date",
+      "id": "Id",
+      "items": "Items",
+      "orderId": "Order id",
+      "product": "Product",
+      "quantity": "Quantity",
+      "status": "Status",
+      "variant": "Variant"
+    },
+    "status": {
+      "labels": {
+        "cancelled": "Cancelled",
+        "draft": "Draft",
+        "invoiced": "Invoiced",
+        "refunded": "Refunded",
+        "unknown": "Unknown",
+        "verified": "Verified"
+      }
+    }
+  },
+  "orders": {
+    "labels": {
+      "id": "Id",
+      "time": "Time"
+    }
+  },
   "registration": {
     "alreadyRegistered": "You are already registered for this event"
   },
