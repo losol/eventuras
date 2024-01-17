@@ -4,9 +4,11 @@ import {
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
+  TableState,
   useReactTable,
 } from '@tanstack/react-table';
 import { useEffect } from 'react';
+import React from 'react';
 
 import Pagination from './Pagination';
 
@@ -15,10 +17,11 @@ type DataTableProps = {
   data: any[];
   pageSize?: number;
   clientsidePagination?: boolean;
+  state?: Partial<TableState>;
 };
 
 const DataTable = (props: DataTableProps) => {
-  const { columns, data, clientsidePagination, pageSize = 25 } = props;
+  const { columns, data, clientsidePagination, pageSize = 25, state } = props;
 
   const handleClientPageChange = (newPage: number) => {
     table.setPageIndex(newPage);
@@ -34,6 +37,7 @@ const DataTable = (props: DataTableProps) => {
         pageSize: pageSize,
       },
     },
+    state: state,
   });
 
   useEffect(() => {
@@ -87,4 +91,5 @@ const DataTable = (props: DataTableProps) => {
 };
 
 export default DataTable;
+export type { ColumnSort, TableState } from '@tanstack/react-table';
 export { createColumnHelper } from '@tanstack/react-table';

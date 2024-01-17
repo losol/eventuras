@@ -8,6 +8,8 @@ import Section from '@/components/ui/Section';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 
+import DeliverySummary from '../DeliverySummary';
+
 type EventProductsPage = {
   params: {
     id: string;
@@ -47,18 +49,7 @@ const EventProducts: React.FC<EventProductsPage> = async ({ params }) => {
       <Section className="py-10">
         <Container>
           <div className="flex flex-col">
-            {productSummary.value?.orderSummary &&
-            productSummary.value?.orderSummary?.length > 0 ? (
-              <ul>
-                {productSummary.value?.orderSummary?.map(entry => (
-                  <li key={entry.registrationId}>
-                    {entry.user?.name} - {entry.user?.phoneNumber} - {entry.user?.email}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div>{t('admin:products.labels.noOrders')}</div>
-            )}
+            <DeliverySummary deliverySummary={productSummary.value?.orderSummary ?? []} />
           </div>
         </Container>
       </Section>

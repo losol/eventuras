@@ -43,14 +43,12 @@ const EventProducts: React.FC<EventProductsPage> = async ({ params }) => {
         <Container>
           <div className="flex flex-col">
             {products.map(product => (
-              <>
-                <Link
-                  href={`/admin/events/${eventId}/products/${product.productId}`}
-                  key={product.productId}
-                >
-                  {product.name} <Badge>Id: {product.productId}</Badge>
-                </Link>
-              </>
+              <Link
+                href={`/admin/events/${eventId}/products/${product.productId}`}
+                key={product.productId}
+              >
+                {product.name} <Badge>Id: {product.productId}</Badge>
+              </Link>
             ))}
           </div>
         </Container>
