@@ -94,6 +94,7 @@ namespace Eventuras.Services.Orders
                 .Select(group => new ProductOrdersSummaryDto
                 {
                     RegistrationId = group.Key.RegistrationId,
+                    RegistrationStatus = group.Key.Status,
                     User = new UserSummaryDto
                     {
                         UserId = group.Key.User.Id,
