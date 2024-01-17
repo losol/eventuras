@@ -15,6 +15,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Eventuras.WebApi.Controllers.v3.Userprofile
 {
@@ -102,6 +103,12 @@ namespace Eventuras.WebApi.Controllers.v3.Userprofile
             if (!ModelState.IsValid)
             {
                 throw new BadHttpRequestException($"Invalid request body. {ModelState.FormatErrors()}");
+            }
+
+            var requestingUser = HttpContext.User.GetUserId();
+            if (requestingUser != id)
+            {
+                throw new NotAccessibleException($"User {requestingUser} cannot update user {id}.");
             }
 
             var user = await _userRetrievalService.GetUserByIdAsync(id, null, cancellationToken);
