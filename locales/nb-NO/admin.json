@@ -50,6 +50,8 @@
     }
   },
   "labels": {
+    "orders": "Ordre",
+    "registrations": "Registeringer",
     "users": "Brukere"
   },
   "orders": {
@@ -85,6 +87,26 @@
         "add-product": "Legg til produkt",
         "edit": "Legg til et nytt produkt"
       }
+    }
+  },
+  "registrations": {
+    "detailsPage": {
+      "title": "Registrering"
+    },
+    "labels": {
+      "eventTitle": "Arrangement",
+      "id": "Id",
+      "notFound": "Fant ingen registrering",
+      "notes": "Notater",
+      "notesEmpty": "Ingen notater",
+      "orders": "Ordre",
+      "products": "Produkter",
+      "status": "Status",
+      "type": "Deltakertype",
+      "userName": "Navn"
+    },
+    "page": {
+      "title": "Registreringer"
     }
   },
   "title": "Admin",

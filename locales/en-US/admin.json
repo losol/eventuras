@@ -50,6 +50,8 @@
     }
   },
   "labels": {
+    "orders": "Orders",
+    "registrations": "Registrations",
     "users": "Users"
   },
   "orders": {
@@ -85,6 +87,26 @@
         "add-product": "Add product",
         "edit": "Add a new product"
       }
+    }
+  },
+  "registrations": {
+    "detailsPage": {
+      "title": "Registration"
+    },
+    "labels": {
+      "eventTitle": "Event title",
+      "id": "Id",
+      "notFound": "Registration not found",
+      "notes": "Notes",
+      "notesEmpty": "No notes.",
+      "orders": "Orders",
+      "products": "Products",
+      "status": "Status",
+      "type": "Type",
+      "userName": "Name"
+    },
+    "page": {
+      "title": "Registrations"
     }
   },
   "title": "Admin",

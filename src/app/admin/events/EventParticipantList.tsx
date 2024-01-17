@@ -1,7 +1,7 @@
 'use client';
 
 import { EventDto, ProductDto, RegistrationDto } from '@losol/eventuras';
-import { IconEditCircle, IconMailForward, IconUser } from '@tabler/icons-react';
+import { IconNotes, IconShoppingCart, IconUser } from '@tabler/icons-react';
 import Link from 'next/link';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
@@ -64,7 +64,9 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
           </div>
           <div className="mr-2">
             <Button variant="light">
-              <IconMailForward color="black" onClick={() => setRegistrationOpen(info)} />
+              <Link href={`/admin/registrations/${info.registrationId}`}>
+                <IconNotes color="black" />
+              </Link>
             </Button>
           </div>
           {eventProducts?.length !== 0 && (
@@ -81,7 +83,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
               currentSelectedParticipant.userId === info.userId ? (
                 <Loading />
               ) : (
-                <IconEditCircle color="black" />
+                <IconShoppingCart color="black" />
               )}
             </Button>
           )}
