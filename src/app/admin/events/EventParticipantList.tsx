@@ -1,7 +1,8 @@
 'use client';
 
 import { EventDto, ProductDto, RegistrationDto } from '@losol/eventuras';
-import { IconEditCircle, IconMailForward } from '@tabler/icons-react';
+import { IconEditCircle, IconMailForward, IconUser } from '@tabler/icons-react';
+import Link from 'next/link';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 
@@ -54,6 +55,13 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
     return (
       <div className="flex flex-col items-end">
         <div className="flex flex-row">
+          <div className="mr-2">
+            <Button variant="light">
+              <Link href={`/admin/users/${info.userId}`}>
+                <IconUser color="black" />
+              </Link>
+            </Button>
+          </div>
           <div className="mr-2">
             <Button variant="light">
               <IconMailForward color="black" onClick={() => setRegistrationOpen(info)} />

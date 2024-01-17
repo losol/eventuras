@@ -89,9 +89,13 @@
   },
   "title": "Admin",
   "users": {
+    "detailspage": {
+      "title": "Brukerinformasjon"
+    },
     "labels": {
       "addUser": "Ny bruker",
-      "createUser": "Ny bruker"
+      "createUser": "Ny bruker",
+      "userNotFound": "Fant ikke brukeren"
     },
     "page": {
       "title": "Brukere"

@@ -11,14 +11,14 @@ import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifica
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Logger from '@/utils/Logger';
 
-interface AccountEditorProps {
+interface UserEditorProps {
   user?: UserDto;
   onUserUpdated?: (updatedUser: UserDto) => void;
   dataTestId?: string;
   adminMode?: boolean;
 }
 
-const AccountEditor: FC<AccountEditorProps> = ({ adminMode, user, onUserUpdated, dataTestId }) => {
+const UserEditor: FC<UserEditorProps> = ({ adminMode, user, onUserUpdated, dataTestId }) => {
   const { t } = createTranslation('common');
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const log_namespace = 'user.account';
@@ -129,4 +129,4 @@ const AccountEditor: FC<AccountEditorProps> = ({ adminMode, user, onUserUpdated,
   );
 };
 
-export default AccountEditor;
+export default UserEditor;

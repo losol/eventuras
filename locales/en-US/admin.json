@@ -89,9 +89,13 @@
   },
   "title": "Admin",
   "users": {
+    "detailspage": {
+      "title": "User info"
+    },
     "labels": {
       "addUser": "Add user",
-      "createUser": "Create user"
+      "createUser": "Create user",
+      "userNotFound": "User not found"
     },
     "page": {
       "title": "Users"

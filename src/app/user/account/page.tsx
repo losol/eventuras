@@ -5,7 +5,7 @@ import { Layout } from '@/components/ui';
 import Heading from '@/components/ui/Heading';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
-import AccountEditor from './AccountEditor';
+import UserEditor from '../../admin/users/UserEditor';
 
 const UserAccountPage = async () => {
   const eventuras = createSDK({ authHeader: headers().get('Authorization') });
@@ -17,7 +17,7 @@ const UserAccountPage = async () => {
   return (
     <Layout>
       <Heading>{t('user:profile.page.heading')}</Heading>
-      <AccountEditor user={user.value} />
+      <UserEditor user={user.value} />
     </Layout>
   );
 };

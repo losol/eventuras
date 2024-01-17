@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import React from 'react';
 
-import AccountEditor from '@/app/user/account/AccountEditor';
+import UserEditor from '@/app/admin/users/UserEditor';
 import FatalError from '@/components/ui/FatalError';
 import Loading from '@/components/ui/Loading';
 import EventRegistrationMachine, { Events, States } from '@/statemachines/EventRegistrationMachine';
@@ -71,7 +71,7 @@ const EventRegistrationProcess: React.FC<UserEventRegistrationProps> = ({
       return <Loading />;
     case xState.matches(States.ACCOUNT_INFO):
       return (
-        <AccountEditor
+        <UserEditor
           user={xState.context.user}
           onUserUpdated={updatedUser => {
             send({

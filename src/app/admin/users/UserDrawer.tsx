@@ -3,7 +3,7 @@
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 
-import AccountEditor from '@/app/user/account/AccountEditor';
+import UserEditor from '@/app/admin/users/UserEditor';
 import Button from '@/components/ui/Button';
 import Drawer from '@/components/ui/Drawer';
 
@@ -18,7 +18,7 @@ const UserDrawer: React.FC = () => {
     <>
       <Button onClick={showDrawer}>{t('admin:users.labels.createUser')}</Button>
       <Drawer isOpen={visible} onCancel={onClose}>
-        <AccountEditor adminMode />
+        <UserEditor adminMode />
       </Drawer>
     </>
   );
