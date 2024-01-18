@@ -17,6 +17,8 @@ import useCreateHook from '@/hooks/createHook';
 import { createSDK } from '@/utils/api/EventurasApi';
 import Logger from '@/utils/Logger';
 
+import LiveActionsMenu from './LiveActionsMenu';
+
 const columnHelper = createColumnHelper<RegistrationDto>();
 interface AdminEventListProps {
   participants: RegistrationDto[];
@@ -50,6 +52,10 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
     [currentSelectedParticipant?.registrationId],
     () => currentSelectedParticipant === null
   );
+
+  const renderLiveActions = (registration: RegistrationDto) => {
+    return <LiveActionsMenu registration={registration} />;
+  };
 
   const renderEventItemActions = (info: RegistrationDto) => {
     return (
@@ -136,6 +142,10 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
           </>
         );
       },
+    }),
+    columnHelper.accessor('live', {
+      header: t('admin:participantColumns.live'),
+      cell: info => renderLiveActions(info.row.original),
     }),
     columnHelper.accessor('actions', {
       header: t('admin:participantColumns.actions').toString(),

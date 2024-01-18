@@ -74,6 +74,7 @@
   "participantColumns": {
     "actions": "Actions",
     "email": "E-post",
+    "live": "Innsjekk",
     "name": "Navn",
     "products": "Produkter",
     "status": "Status",

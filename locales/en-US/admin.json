@@ -74,6 +74,7 @@
   "participantColumns": {
     "actions": "Actions",
     "email": "E mail",
+    "live": "Live",
     "name": "Name",
     "products": "Products",
     "status": "Status",
