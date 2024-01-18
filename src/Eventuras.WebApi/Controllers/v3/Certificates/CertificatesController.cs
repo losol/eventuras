@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using Eventuras.Services.Certificates;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System;
@@ -31,13 +32,14 @@ namespace Eventuras.WebApi.Controllers.v3.Certificates
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(CertificateDto), StatusCodes.Status200OK, Type = typeof(CertificateDto))] // For JSON format
         public async Task<IActionResult> Get(int id, [FromQuery] CertificateFormat? format = null)
         {
             var cert = await _certificateRetrievalService
                 .GetCertificateByIdAsync(id, CertificateRetrievalOptions.ForRendering);
 
             format ??= GetCertificateFormatFromMediaType(Request.Headers[HeaderNames.Accept])
-                       ?? CertificateFormat.Json;
+                           ?? CertificateFormat.Json;
 
             switch (format)
             {
