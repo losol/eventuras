@@ -62,6 +62,8 @@
     "error": "Error",
     "eventPage": "Event information page",
     "fullName": "Name",
+    "guid": "Guid",
+    "id": "Id",
     "login": "Log in",
     "logout": "Log out",
     "menu": "Menu",

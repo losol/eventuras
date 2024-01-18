@@ -61,6 +61,8 @@
     "error": "Feil",
     "eventPage": "Kursinformasjon",
     "fullName": "Navn",
+    "guid": "Guid",
+    "id": "Id",
     "login": "Logg inn",
     "logout": "Logg av",
     "menu": "Meny",

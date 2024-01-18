@@ -1,4 +1,13 @@
 {
+  "certificates": {
+    "labels": {
+      "notFound": "Certificate not found"
+    },
+    "page": {
+      "description": "Nothing to see here.",
+      "title": "Certificates"
+    }
+  },
   "createEvent": {
     "alreadyExists": {
       "description": "An Event with that slug already exists, the slug needs to be unique.",

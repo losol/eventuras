@@ -1,4 +1,13 @@
 {
+  "certificates": {
+    "labels": {
+      "notFound": "Fant ikke noe deltakerbevis"
+    },
+    "page": {
+      "description": "Ingenting her.",
+      "title": "Deltakerbevis"
+    }
+  },
   "createEvent": {
     "alreadyExists": {
       "description": "En hendelse med den sneglen eksisterer allerede, sneglen må være unik.",
