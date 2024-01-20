@@ -117,8 +117,11 @@ namespace Eventuras.Services.Registrations
                 }
             }
 
+            var nonCancelledRegistrationsCount = eventInfo.Registrations
+                .Count(reg => reg.Status != Registration.RegistrationStatus.Cancelled);
+
             if (eventInfo.MaxParticipants > 0
-             && eventInfo.Registrations.Count + 1 >= eventInfo.MaxParticipants)
+                && nonCancelledRegistrationsCount + 1 >= eventInfo.MaxParticipants)
             {
                 _logger.LogInformation("Event {EventId} has reached max participants, changing status to WaitingList", eventId);
                 eventInfo.Status = EventInfo.EventInfoStatus.WaitingList;
