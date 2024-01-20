@@ -37,17 +37,21 @@ export class ApiResult<T = void, E = ApiError> {
   }
 }
 
-export const apiWrapper = <T>(fetchFunction: () => CancelablePromise<T>) =>
-  fetchFunction()
+function handleApiResponse<T>(promise: Promise<T>): Promise<ApiResult<T, ApiError>> {
+  return promise
     .then(body => new ApiResult<T, ApiError>(true, body, null))
     .catch((err: SDKError) => {
-      //500 errors will be thrown and should be caught top level and dealt with(or default nextjs 500 result)
       if (err.status >= 500) {
         throw err;
       }
-      //any other errors should be dealt with by the callee
       return new ApiResult<T, ApiError>(false, null, err);
     });
+}
+
+export const apiWrapper = <T>(fetchFunction: () => CancelablePromise<T>) =>
+  handleApiResponse(fetchFunction());
+
+export const fetcher = <T>(fetchFunction: () => Promise<T>) => handleApiResponse(fetchFunction());
 
 export const createSDK = ({ baseUrl, authHeader, inferUrl }: SDKOptions = {}): Eventuras => {
   const orgId: string = Environment.NEXT_PUBLIC_ORGANIZATION_ID;

@@ -27,17 +27,28 @@ interface AdminEventListProps {
 }
 
 const EventParticipantList: React.FC<AdminEventListProps> = ({
-  participants = [],
+  participants: initialParticipants = [],
   event,
   eventProducts = [],
 }) => {
   const { t } = createTranslation();
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
 
+  const [participants, setParticipants] = useState<RegistrationDto[]>(initialParticipants);
   const [registrationOpen, setRegistrationOpen] = useState<RegistrationDto | null>(null);
   const [currentSelectedParticipant, setCurrentSelectedParticipant] =
     useState<RegistrationDto | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
+
+  const updateParticipantList = (updatedRegistration: RegistrationDto) => {
+    setParticipants(prevParticipants =>
+      prevParticipants.map(participant =>
+        participant.registrationId === updatedRegistration.registrationId
+          ? updatedRegistration
+          : participant
+      )
+    );
+  };
 
   const { result: currentRegistration, loading: loadingRegistration } = useCreateHook(
     () => {
@@ -54,7 +65,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
   );
 
   const renderLiveActions = (registration: RegistrationDto) => {
-    return <LiveActionsMenu registration={registration} />;
+    return <LiveActionsMenu registration={registration} onStatusUpdate={updateParticipantList} />;
   };
 
   const renderEventItemActions = (info: RegistrationDto) => {

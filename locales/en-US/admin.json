@@ -104,16 +104,28 @@
       "title": "Registration"
     },
     "labels": {
+      "artist": "Artist",
+      "attended": "Attended",
+      "cancelled": "Cancelled",
+      "draft": "Draft",
       "eventTitle": "Event title",
+      "finished": "Finished",
       "id": "Id",
+      "lecturer": "Lecturer",
+      "notAttended": "No show",
       "notFound": "Registration not found",
       "notes": "Notes",
       "notesEmpty": "No notes.",
       "orders": "Orders",
+      "participant": "Participant",
       "products": "Products",
+      "staff": "Staff",
       "status": "Status",
+      "student": "Student",
       "type": "Type",
-      "userName": "Name"
+      "userName": "Name",
+      "verified": "Verified",
+      "waitingList": "Waiting list"
     },
     "page": {
       "title": "Registrations"

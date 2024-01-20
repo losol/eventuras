@@ -45,7 +45,8 @@ async function forwarder(request: NextRequest) {
     body: request.method === 'GET' ? null : JSON.stringify(jBody),
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json', //default to json
+      'Content-Type':
+        request.method === 'PATCH' ? 'application/json-patch+json' : 'application/json',
       'Eventuras-Org-Id': Environment.NEXT_PUBLIC_ORGANIZATION_ID,
     },
     redirect: 'manual',

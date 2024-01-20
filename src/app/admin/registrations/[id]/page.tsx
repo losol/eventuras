@@ -15,7 +15,7 @@ type EventInfoProps = {
     id: number;
   };
 };
-const OrderDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
+const RegistrationDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
   const { t } = createTranslation();
 
   const eventuras = createSDK({
@@ -32,31 +32,33 @@ const OrderDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
     })
   );
 
+  Logger.debug(
+    { namespace: 'admin:registrations' },
+    `Registration detail page: with data ${JSON.stringify(registration.value)}`
+  );
+
   if (!registration.ok) {
     Logger.error(
       { namespace: 'admin:registrations' },
       `Failed to fetch order id ${params.id}, error: ${registration.error}`
     );
-  }
-
-  if (!registration.ok) {
     return <div>{t('admin:registrations.labels.notFound')}</div>;
   }
 
   return (
     <Layout fluid>
-      <Section className="bg-white dark:bg-black   pb-8">
+      <Section className="bg-white dark:bg-black pb-8">
         <Container>
           <Heading as="h1">{t('admin:registrations.detailsPage.title')}</Heading>
         </Container>
       </Section>
       <Section className="py-12">
         <Container>
-          <Registration registration={registration.value!} />
+          <Registration registration={registration.value!} adminMode />
         </Container>
       </Section>
     </Layout>
   );
 };
 
-export default OrderDetailPage;
+export default RegistrationDetailPage;
