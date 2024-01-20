@@ -2,13 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { CertificateDto } from '../models/CertificateDto';
 import type { CertificateFormat } from '../models/CertificateFormat';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class CertificatesService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
-     * @returns any Success
+     * @returns CertificateDto Success
      * @throws ApiError
      */
     public getV3Certificates({
@@ -22,7 +23,7 @@ export class CertificatesService {
          * Optional organization Id. Will be required in API version 4.
          */
         eventurasOrgId?: number,
-    }): CancelablePromise<any> {
+    }): CancelablePromise<CertificateDto> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/v3/certificates/{id}',

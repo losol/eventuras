@@ -5,7 +5,7 @@
 import type { NewRegistrationDto } from '../models/NewRegistrationDto';
 import type { RegistrationDto } from '../models/RegistrationDto';
 import type { RegistrationDtoPageResponseDto } from '../models/RegistrationDtoPageResponseDto';
-import type { RegistrationFormDto } from '../models/RegistrationFormDto';
+import type { RegistrationUpdateDto } from '../models/RegistrationUpdateDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class RegistrationsService {
@@ -163,7 +163,7 @@ export class RegistrationsService {
          * Optional organization Id. Will be required in API version 4.
          */
         eventurasOrgId?: number,
-        requestBody?: RegistrationFormDto,
+        requestBody?: RegistrationUpdateDto,
     }): CancelablePromise<RegistrationDto> {
         return this.httpRequest.request({
             method: 'PUT',
@@ -176,6 +176,34 @@ export class RegistrationsService {
             },
             body: requestBody,
             mediaType: 'application/json',
+        });
+    }
+    /**
+     * @returns any Success
+     * @throws ApiError
+     */
+    public patchV3Registrations({
+        id,
+        eventurasOrgId,
+        requestBody,
+    }: {
+        id: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
+        requestBody?: any,
+    }): CancelablePromise<any> {
+        return this.httpRequest.request({
+            method: 'PATCH',
+            url: '/v3/registrations/{id}',
+            path: {
+                'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
+            },
+            body: requestBody,
         });
     }
     /**
