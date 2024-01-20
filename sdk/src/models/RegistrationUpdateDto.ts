@@ -4,12 +4,13 @@
 /* eslint-disable */
 import type { PaymentProvider } from './PaymentProvider';
 import type { RegistrationCustomerInfoDto } from './RegistrationCustomerInfoDto';
+import type { RegistrationStatus } from './RegistrationStatus';
 import type { RegistrationType } from './RegistrationType';
-export type RegistrationFormDto = {
-    customer?: RegistrationCustomerInfoDto;
-    notes?: string | null;
+export type RegistrationUpdateDto = {
+    status?: RegistrationStatus;
     type?: RegistrationType;
+    notes?: string | null;
+    customer?: RegistrationCustomerInfoDto;
     paymentMethod?: PaymentProvider;
-    readonly empty?: boolean;
 };
 
