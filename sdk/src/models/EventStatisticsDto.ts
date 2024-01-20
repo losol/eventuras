@@ -2,7 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { ByStatus } from './ByStatus';
+import type { ByType } from './ByType';
 export type EventStatisticsDto = {
-    byStatus?: Record<string, number | null> | null;
+    byStatus?: ByStatus;
+    byType?: ByType;
 };
 

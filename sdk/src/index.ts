@@ -10,6 +10,8 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { ByStatus } from './models/ByStatus';
+export type { ByType } from './models/ByType';
 export type { CalendarSystem } from './models/CalendarSystem';
 export type { CertificateDto } from './models/CertificateDto';
 export { CertificateFormat } from './models/CertificateFormat';

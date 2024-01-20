@@ -1,5 +1,6 @@
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Servcies.Registrations;
 using Eventuras.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -92,13 +93,33 @@ namespace Eventuras.Services.Registrations
             return await Paging.CreateAsync(query, request, cancellationToken);
         }
 
-        public async Task<Dictionary<Registration.RegistrationStatus, int>> GetRegistrationStatisticsAsync(int eventId, CancellationToken cancellationToken)
+        public async Task<RegistrationStatistics> GetRegistrationStatisticsAsync(int eventId, CancellationToken cancellationToken)
         {
-            return await _context.Registrations
-                .Where(r => r.EventInfoId == eventId)
-                .GroupBy(r => r.Status)
-                .Select(group => new { Status = group.Key, Count = group.Count() })
-                .ToDictionaryAsync(g => g.Status, g => g.Count, cancellationToken);
+            var statusCounts = Enum.GetValues(typeof(Registration.RegistrationStatus))
+                                   .Cast<Registration.RegistrationStatus>()
+                                   .ToDictionary(status => status, status => 0);
+
+            var typeCounts = Enum.GetValues(typeof(Registration.RegistrationType))
+                                 .Cast<Registration.RegistrationType>()
+                                 .ToDictionary(type => type, type => 0);
+
+            var registrations = await _context.Registrations
+                                              .Where(r => r.EventInfoId == eventId)
+                                              .ToListAsync(cancellationToken);
+
+            foreach (var registration in registrations)
+            {
+                statusCounts[registration.Status]++;
+                typeCounts[registration.Type]++;
+            }
+
+            return new RegistrationStatistics
+            {
+                StatusCounts = statusCounts,
+                TypeCounts = typeCounts
+            };
         }
+
+
     }
 }
