@@ -52,6 +52,7 @@
     "admin": "Admin",
     "all": "Alle",
     "allEvents": "Vis alle arrangement",
+    "cancelled": "Avbestilt",
     "contactUs": "Kontakt oss",
     "createUserSuccess": "Ny bruker lagt til",
     "description": "Beskrivelse",
@@ -67,13 +68,15 @@
     "logout": "Logg av",
     "menu": "Meny",
     "name": "Navn",
+    "participants": "Deltagere",
     "phoneNumber": "Mobiltelefon",
     "products": "Produkter",
     "profile": "Mine kurs",
     "registrations": "Registreringer",
     "save": "Lagre",
     "user": "Mine kurs",
-    "view": "Vis"
+    "view": "Vis",
+    "waitingList": "Venteliste"
   },
   "onlinecourses": "Nettkurs",
   "order": {

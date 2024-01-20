@@ -53,6 +53,7 @@
     "admin": "Admin",
     "all": "All",
     "allEvents": "All events",
+    "cancelled": "Cancelled",
     "contactUs": "Contact us",
     "createUserSuccess": "New user added:",
     "description": "Description",
@@ -68,13 +69,15 @@
     "logout": "Log out",
     "menu": "Menu",
     "name": "Name",
+    "participants": "Participants",
     "phoneNumber": "Phone number",
     "products": "Products",
     "profile": "Account",
     "registrations": "Registrations",
     "save": "Save",
     "user": "User page",
-    "view": "View"
+    "view": "View",
+    "waitingList": "Waiting list"
   },
   "onlinecourses": "Online courses",
   "order": {

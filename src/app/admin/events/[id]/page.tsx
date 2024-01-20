@@ -12,6 +12,7 @@ import Logger from '@/utils/Logger';
 
 import EventAdminActionsMenu from '../EventAdminActionsMenu';
 import EventParticipantList from '../EventParticipantList';
+import EventStatistics from '../EventStatistics';
 
 type EventInfoProps = {
   params: {
@@ -48,6 +49,12 @@ const EventDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
     })
   );
 
+  const statistics = await apiWrapper(() =>
+    eventuras.eventStatistics.getV3EventsStatistics({
+      eventId: eventId,
+    })
+  );
+
   if (!eventinfo.ok) {
     Logger.error(
       { namespace: 'EditEventinfo' },
@@ -77,6 +84,11 @@ const EventDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
               </>
             ))}
           </div>
+        </Container>
+      </Section>
+      <Section className="py-12">
+        <Container>
+          <EventStatistics statistics={statistics.value!} />
         </Container>
       </Section>
       <Section className="py-12">

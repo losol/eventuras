@@ -1,4 +1,7 @@
+'use client';
+
 import { RegistrationDto, RegistrationStatus } from '@losol/eventuras';
+import { IconCircleX } from '@tabler/icons-react';
 
 import Button from '@/components/ui/Button';
 
@@ -30,6 +33,8 @@ const LiveActionsMenu = ({ registration, onStatusUpdate }: LiveActionsMenuProps)
         return (
           <Button onClick={() => handleStatusUpdate(RegistrationStatus.ATTENDED)}>Checkin</Button>
         );
+      case 'Cancelled':
+        return <IconCircleX />;
       default:
         return (
           <Button onClick={() => handleStatusUpdate(RegistrationStatus.FINISHED)}>Finish</Button>
