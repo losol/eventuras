@@ -39,7 +39,7 @@ if (features.UseSentry) { builder.WebHost.UseSentry(); }
 // Configure dependency injection container
 builder.Services.AddControllers(options =>
     {
-        options.InputFormatters.Add(GetJsonPatchInputFormatter());
+        options.InputFormatters.Insert(0, InputFormatter.GetJsonPatchInputFormatter());
         options.Filters.Add<ValidationFilter>();
         options.Filters.Add<HttpResponseExceptionFilter>();
     })
@@ -49,6 +49,7 @@ builder.Services.AddControllers(options =>
         j.JsonSerializerOptions.Converters.Add(new LocalDateConverter());
         j.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+
 
 builder.Services.AddRazorPages();
 builder.Services.ConfigureEf();
@@ -156,17 +157,6 @@ static AppSettings GetAppSettings(IConfiguration configuration)
     return settings;
 }
 
-static IInputFormatter GetJsonPatchInputFormatter()
-{
-    return new ServiceCollection().AddLogging()
-        .AddMvc()
-        .AddNewtonsoftJson()
-        .Services.BuildServiceProvider()
-        .GetRequiredService<IOptions<MvcOptions>>()
-        .Value.InputFormatters.OfType<NewtonsoftJsonPatchInputFormatter>()
-        .First();
-}
-
 static async Task PreStartupRoutine(IHost host)
 {
     await using var scope = host.Services.CreateAsyncScope();
@@ -180,3 +170,22 @@ static async Task PreStartupRoutine(IHost host)
 }
 
 public partial class Program { }
+
+public static class InputFormatter
+{
+    public static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
+    {
+        var builder = new ServiceCollection()
+            .AddLogging()
+            .AddMvc()
+            .AddNewtonsoftJson()
+            .Services.BuildServiceProvider();
+
+        return builder
+            .GetRequiredService<IOptions<MvcOptions>>()
+            .Value
+            .InputFormatters
+            .OfType<NewtonsoftJsonPatchInputFormatter>()
+            .First();
+    }
+}
