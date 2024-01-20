@@ -3,6 +3,8 @@ using Eventuras.Infrastructure;
 using Eventuras.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -88,6 +90,15 @@ namespace Eventuras.Services.Registrations
             }
 
             return await Paging.CreateAsync(query, request, cancellationToken);
+        }
+
+        public async Task<Dictionary<Registration.RegistrationStatus, int>> GetRegistrationStatisticsAsync(int eventId, CancellationToken cancellationToken)
+        {
+            return await _context.Registrations
+                .Where(r => r.EventInfoId == eventId)
+                .GroupBy(r => r.Status)
+                .Select(group => new { Status = group.Key, Count = group.Count() })
+                .ToDictionaryAsync(g => g.Status, g => g.Count, cancellationToken);
         }
     }
 }

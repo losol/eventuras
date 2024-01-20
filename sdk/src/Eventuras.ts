@@ -12,6 +12,7 @@ import { EventCollectionMappingService } from './services/EventCollectionMapping
 import { EventProductsService } from './services/EventProductsService';
 import { EventProductVariantsService } from './services/EventProductVariantsService';
 import { EventsService } from './services/EventsService';
+import { EventStatisticsService } from './services/EventStatisticsService';
 import { NotificationRecipientsService } from './services/NotificationRecipientsService';
 import { NotificationsService } from './services/NotificationsService';
 import { NotificationsQueueingService } from './services/NotificationsQueueingService';
@@ -36,6 +37,7 @@ export class Eventuras {
     public readonly eventProducts: EventProductsService;
     public readonly eventProductVariants: EventProductVariantsService;
     public readonly events: EventsService;
+    public readonly eventStatistics: EventStatisticsService;
     public readonly notificationRecipients: NotificationRecipientsService;
     public readonly notifications: NotificationsService;
     public readonly notificationsQueueing: NotificationsQueueingService;
@@ -54,7 +56,7 @@ export class Eventuras {
     public readonly request: BaseHttpRequest;
     constructor(config?: Partial<OpenAPIConfig>, HttpRequest: HttpRequestConstructor = FetchHttpRequest) {
         this.request = new HttpRequest({
-            BASE: config?.BASE ?? '',
+            BASE: config?.BASE ?? 'http://localhost:8080',
             VERSION: config?.VERSION ?? '3',
             WITH_CREDENTIALS: config?.WITH_CREDENTIALS ?? false,
             CREDENTIALS: config?.CREDENTIALS ?? 'include',
@@ -71,6 +73,7 @@ export class Eventuras {
         this.eventProducts = new EventProductsService(this.request);
         this.eventProductVariants = new EventProductVariantsService(this.request);
         this.events = new EventsService(this.request);
+        this.eventStatistics = new EventStatisticsService(this.request);
         this.notificationRecipients = new NotificationRecipientsService(this.request);
         this.notifications = new NotificationsService(this.request);
         this.notificationsQueueing = new NotificationsQueueingService(this.request);

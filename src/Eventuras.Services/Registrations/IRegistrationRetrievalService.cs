@@ -1,4 +1,5 @@
 using Eventuras.Domain;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,5 +22,9 @@ namespace Eventuras.Services.Registrations
             RegistrationListRequest request,
             RegistrationRetrievalOptions options = default,
             CancellationToken cancellationToken = default);
+
+        Task<Dictionary<Registration.RegistrationStatus, int>> GetRegistrationStatisticsAsync(
+            int eventId,
+            CancellationToken cancellationToken);
     }
 }

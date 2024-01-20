@@ -26,6 +26,7 @@ export type { EventInfoRegistrationPolicyDto } from './models/EventInfoRegistrat
 export { EventInfoStatus } from './models/EventInfoStatus';
 export { EventInfoType } from './models/EventInfoType';
 export type { EventParticipantsFilterDto } from './models/EventParticipantsFilterDto';
+export type { EventStatisticsDto } from './models/EventStatisticsDto';
 export type { IContractResolver } from './models/IContractResolver';
 export type { Instant } from './models/Instant';
 export { IsoDayOfWeek } from './models/IsoDayOfWeek';
@@ -88,6 +89,7 @@ export { EventCollectionMappingService } from './services/EventCollectionMapping
 export { EventProductsService } from './services/EventProductsService';
 export { EventProductVariantsService } from './services/EventProductVariantsService';
 export { EventsService } from './services/EventsService';
+export { EventStatisticsService } from './services/EventStatisticsService';
 export { NotificationRecipientsService } from './services/NotificationRecipientsService';
 export { NotificationsService } from './services/NotificationsService';
 export { NotificationsQueueingService } from './services/NotificationsQueueingService';
