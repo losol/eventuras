@@ -1,8 +1,11 @@
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Servcies.Registrations;
 using Eventuras.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -89,5 +92,34 @@ namespace Eventuras.Services.Registrations
 
             return await Paging.CreateAsync(query, request, cancellationToken);
         }
+
+        public async Task<RegistrationStatistics> GetRegistrationStatisticsAsync(int eventId, CancellationToken cancellationToken)
+        {
+            var statusCounts = Enum.GetValues(typeof(Registration.RegistrationStatus))
+                                   .Cast<Registration.RegistrationStatus>()
+                                   .ToDictionary(status => status, status => 0);
+
+            var typeCounts = Enum.GetValues(typeof(Registration.RegistrationType))
+                                 .Cast<Registration.RegistrationType>()
+                                 .ToDictionary(type => type, type => 0);
+
+            var registrations = await _context.Registrations
+                                              .Where(r => r.EventInfoId == eventId)
+                                              .ToListAsync(cancellationToken);
+
+            foreach (var registration in registrations)
+            {
+                statusCounts[registration.Status]++;
+                typeCounts[registration.Type]++;
+            }
+
+            return new RegistrationStatistics
+            {
+                StatusCounts = statusCounts,
+                TypeCounts = typeCounts
+            };
+        }
+
+
     }
 }
