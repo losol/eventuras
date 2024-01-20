@@ -1,12 +1,15 @@
 using Asp.Versioning;
+using Eventuras.Domain;
 using Eventuras.Services.Auth;
 using Eventuras.Services.Registrations;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -142,7 +145,7 @@ namespace Eventuras.WebApi.Controllers.v3.Registrations
 
         [HttpPut("{id}")]
         public async Task<ActionResult<RegistrationDto>> UpdateRegistration(int id,
-            [FromBody] RegistrationFormDto dto,
+            [FromBody] RegistrationUpdateDto dto,
             CancellationToken cancellationToken)
         {
             _logger.LogInformation("UpdateRegistration called with ID: {id}", id);
@@ -164,6 +167,41 @@ namespace Eventuras.WebApi.Controllers.v3.Registrations
             await _registrationManagementService.UpdateRegistrationAsync(registration, cancellationToken);
 
             return new RegistrationDto(registration);
+        }
+
+
+        [HttpPatch("{id}")]
+        [Consumes("application/json-patch+json")]
+        public async Task<IActionResult> UpdateRegistration(int id, [FromBody] JsonPatchDocument<RegistrationDto> patchDoc, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("UpdateRegistration called with ID: {id}, and patchDoc: {patchDoc}", id, patchDoc);
+
+            var registration = await _registrationRetrievalService.GetRegistrationByIdAsync(id, RetrievalOptions(null), cancellationToken);
+            if (registration == null)
+            {
+                return NotFound("Registration not found.");
+            }
+
+            if (patchDoc.Operations.Any(o => o.path.Equals("/id", StringComparison.OrdinalIgnoreCase)))
+            {
+                return BadRequest("No id patching.");
+            }
+
+
+            var registrationDto = new RegistrationDto(registration);
+
+            patchDoc.ApplyTo(registrationDto, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            registrationDto.CopyTo(registration);
+
+            await _registrationManagementService.UpdateRegistrationAsync(registration, cancellationToken);
+
+            return Ok(registrationDto);
         }
 
 
@@ -199,6 +237,10 @@ namespace Eventuras.WebApi.Controllers.v3.Registrations
 
         private static RegistrationRetrievalOptions RetrievalOptions(RegistrationsQueryDto query)
         {
+            if (query == null)
+            {
+                return new RegistrationRetrievalOptions();
+            }
             return new()
             {
                 LoadUser = query.IncludeUserInfo,

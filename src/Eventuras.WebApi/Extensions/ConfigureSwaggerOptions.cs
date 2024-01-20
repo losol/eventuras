@@ -28,6 +28,7 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
               });
         }
 
+
         // Add JWT Authentication
         options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
@@ -53,11 +54,43 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
             }
         });
 
+        // Removes json patch, as the typescript generator does not support it
+        options.OperationFilter<RemoveJsonPatchContentTypeFilter>();
+
+        // Add header parameters
         options.OperationFilter<ApiHeaderParameters>();
 
         options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
 
         var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
         options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+    }
+
+
+}
+
+public class RemoveJsonPatchContentTypeFilter : IOperationFilter
+{
+    public void Apply(OpenApiOperation operation, OperationFilterContext context)
+    {
+        var contentTypesToRemove = new[] { "application/json-patch+json" };
+
+        // Remove the content type from request body
+        if (operation.RequestBody != null)
+        {
+            foreach (var contentType in contentTypesToRemove)
+            {
+                operation.RequestBody.Content.Remove(contentType);
+            }
+        }
+
+        // Remove the content type from responses
+        foreach (var response in operation.Responses)
+        {
+            foreach (var contentType in contentTypesToRemove)
+            {
+                response.Value.Content.Remove(contentType);
+            }
+        }
     }
 }

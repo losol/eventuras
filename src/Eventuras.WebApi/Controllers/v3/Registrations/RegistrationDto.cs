@@ -56,5 +56,14 @@ namespace Eventuras.WebApi.Controllers.v3.Registrations
                 Event = new EventDto(registration.EventInfo);
             }
         }
+
+        public void CopyTo(Registration registration)
+        {
+            if (registration == null) { throw new ArgumentNullException(nameof(registration)); }
+
+            registration.Status = Status;
+            registration.Type = Type;
+            registration.Notes = Notes;
+        }
     }
 }
