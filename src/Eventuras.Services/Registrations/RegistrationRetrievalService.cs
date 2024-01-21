@@ -95,31 +95,60 @@ namespace Eventuras.Services.Registrations
 
         public async Task<RegistrationStatistics> GetRegistrationStatisticsAsync(int eventId, CancellationToken cancellationToken)
         {
-            var statusCounts = Enum.GetValues(typeof(Registration.RegistrationStatus))
-                                   .Cast<Registration.RegistrationStatus>()
-                                   .ToDictionary(status => status, status => 0);
+            // Initialize counters for each registration status and type
+            var statusCounts = new Dictionary<Registration.RegistrationStatus, int>();
+            var typeCounts = new Dictionary<Registration.RegistrationType, int>();
 
-            var typeCounts = Enum.GetValues(typeof(Registration.RegistrationType))
-                                 .Cast<Registration.RegistrationType>()
-                                 .ToDictionary(type => type, type => 0);
+            // Enumerate through all possible values of RegistrationStatus and RegistrationType
+            // and initialize their counts to 0
+            foreach (var status in Enum.GetValues(typeof(Registration.RegistrationStatus)).Cast<Registration.RegistrationStatus>())
+            {
+                statusCounts[status] = 0;
+            }
 
+            foreach (var type in Enum.GetValues(typeof(Registration.RegistrationType)).Cast<Registration.RegistrationType>())
+            {
+                typeCounts[type] = 0;
+            }
+
+            // Query registrations for the specified event
             var registrations = await _context.Registrations
                                               .Where(r => r.EventInfoId == eventId)
                                               .ToListAsync(cancellationToken);
 
+            // Count the registrations for each status and type
             foreach (var registration in registrations)
             {
                 statusCounts[registration.Status]++;
                 typeCounts[registration.Type]++;
             }
 
+            // Create ByStatus and ByType objects
+            var byStatus = new ByStatus
+            {
+                Draft = statusCounts[Registration.RegistrationStatus.Draft],
+                Cancelled = statusCounts[Registration.RegistrationStatus.Cancelled],
+                Verified = statusCounts[Registration.RegistrationStatus.Verified],
+                NotAttended = statusCounts[Registration.RegistrationStatus.NotAttended],
+                Attended = statusCounts[Registration.RegistrationStatus.Attended],
+                Finished = statusCounts[Registration.RegistrationStatus.Finished],
+                WaitingList = statusCounts[Registration.RegistrationStatus.WaitingList]
+            };
+
+            var byType = new ByType
+            {
+                Participant = typeCounts[Registration.RegistrationType.Participant],
+                Student = typeCounts[Registration.RegistrationType.Student],
+                Staff = typeCounts[Registration.RegistrationType.Staff],
+                Lecturer = typeCounts[Registration.RegistrationType.Lecturer],
+                Artist = typeCounts[Registration.RegistrationType.Artist]
+            };
+
             return new RegistrationStatistics
             {
-                StatusCounts = statusCounts,
-                TypeCounts = typeCounts
+                ByStatus = byStatus,
+                ByType = byType
             };
         }
-
-
     }
 }
