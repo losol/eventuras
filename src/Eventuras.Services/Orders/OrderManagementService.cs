@@ -51,6 +51,23 @@ namespace Eventuras.Services.Orders
             await _context.UpdateAsync(order, cancellationToken);
         }
 
+        public async Task<Order> UpdateOrderAsync(
+            Order order,
+            CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(order);
+
+            if (!order.CanEdit)
+                throw new InvalidOperationServiceException($"Order {order.OrderId} cannot be updated being in {order.Status} status");
+
+            await _orderAccessControlService.CheckOrderUpdateAccessAsync(order, cancellationToken);
+
+            _context.Update(order);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return order;
+        }
+
         public async Task UpdateOrderLinesAsync(
             Order order,
             ICollection<OrderLineModel> updatedOrderLines,
