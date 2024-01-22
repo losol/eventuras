@@ -5,13 +5,13 @@ import { useActor } from '@xstate/react';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 
+import UserEditor from '@/app/admin/users/UserEditor';
 import FatalError from '@/components/ui/FatalError';
 import Loading from '@/components/ui/Loading';
 import EventFlowMachine, { Events, States } from '@/statemachines/EventFlowMachine';
 import { PaymentFormValues, ProductSelected } from '@/types';
 import { SiteInfo } from '@/utils/site/getSiteSettings';
 
-import AccountEditor from '../../account/AccountEditor';
 import RegistrationCancellation from './eventflow/RegistrationCancellation';
 import RegistrationComplete from './eventflow/RegistrationComplete';
 import RegistrationConfirmation from './eventflow/RegistrationConfirmation';
@@ -62,7 +62,7 @@ const EventFlow: React.FC<EventFlowProps> = ({ eventInfo, user, availableProduct
       );
     case xState.matches(States.VALIDATE_ACCOUNT_DETAILS):
       return (
-        <AccountEditor
+        <UserEditor
           user={user}
           onUserUpdated={(updatedUser: UserDto) => {
             send({
