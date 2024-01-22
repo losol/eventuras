@@ -2,7 +2,7 @@
 
 import { UserDto, UserFormDto } from '@losol/eventuras';
 import createTranslation from 'next-translate/createTranslation';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 
 import Form from '@/components/forms/Form';
 import { TextInput } from '@/components/forms/src/inputs/TextInput';
@@ -21,6 +21,7 @@ interface UserEditorProps {
 const UserEditor: FC<UserEditorProps> = ({ adminMode, user, onUserUpdated, dataTestId }) => {
   const { t } = createTranslation('common');
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+  const [isUpdating, setIsUpdating] = useState(false);
   const log_namespace = 'user.account';
   const { addAppNotification } = useAppNotifications();
 
@@ -50,6 +51,11 @@ const UserEditor: FC<UserEditorProps> = ({ adminMode, user, onUserUpdated, dataT
   const updateUser = async (user: UserDto, form: UserDto, adminMode: boolean) => {
     // Update existing user
     Logger.info({ namespace: log_namespace }, 'Updating user');
+    setIsUpdating(true);
+    const updatedUser = await apiWrapper(() =>
+      sdk.userProfile.putV3Userprofile({ id: user.id!, requestBody: form as UserFormDto })
+    );
+    setIsUpdating(false);
 
     // if adminMode, update user with users endpoint, otherwise use userProfile endpoint
     const updatedUser = adminMode
@@ -128,7 +134,7 @@ const UserEditor: FC<UserEditorProps> = ({ adminMode, user, onUserUpdated, dataT
       />
 
       {/* Submit Button */}
-      <Button type="submit" data-test-id="account-update-button">
+      <Button type="submit" data-test-id="account-update-button" loading={isUpdating}>
         {editMode ? t('user:account.update.label') : t('user:account.create.label')}
       </Button>
     </Form>

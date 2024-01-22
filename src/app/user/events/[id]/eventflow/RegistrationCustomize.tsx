@@ -1,19 +1,21 @@
 'use client';
 
-import { ProductDto, RegistrationDto } from '@losol/eventuras';
+import { ProductDto } from '@losol/eventuras';
 import createTranslation from 'next-translate/createTranslation';
 import { useForm } from 'react-hook-form';
 
 import ProductSelection from '@/components/forms/ProductSelection';
 import Button from '@/components/ui/Button';
+import { ProductSelected } from '@/types';
 import { mapSelectedProductsToQuantity } from '@/utils/api/mappers';
 
 type SubmitCallback = (values: Map<string, number>) => void;
 
 export type RegistrationCustomizeProps = {
   products: ProductDto[];
-  currentRegistration?: RegistrationDto | null;
+  selectedProducts?: ProductSelected[];
   onSubmit: SubmitCallback;
+  onBack?: () => void;
 };
 
 export type SelectedProducts = {
@@ -28,7 +30,8 @@ const createFormHandler = (products: ProductDto[], onSubmit: SubmitCallback) => 
 const RegistrationCustomize = ({
   products,
   onSubmit,
-  currentRegistration,
+  onBack,
+  selectedProducts,
 }: RegistrationCustomizeProps) => {
   const { t } = createTranslation();
   const { register, handleSubmit } = useForm();
@@ -38,8 +41,10 @@ const RegistrationCustomize = ({
         <ProductSelection
           products={products}
           register={register}
-          selectedProducts={currentRegistration?.products ?? []}
+          selectedProducts={selectedProducts ?? []}
         />
+        {onBack && <Button onClick={onBack}>{t('common:buttons.back')}</Button>}
+
         <Button type="submit" data-test-id="registration-customize-submit-button">
           {t('common:buttons.continue')}
         </Button>

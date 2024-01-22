@@ -7,19 +7,27 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { LegacyInputText } from '@/components/forms/Input';
 import Button from '@/components/ui/Button';
-import PaymentFormValues from '@/types/PaymentFormValues';
+import { PaymentFormValues } from '@/types';
 
 export type RegistrationPaymentProps = {
   onSubmit: (values: PaymentFormValues) => void;
+  onBack?: () => void;
   userProfile: UserDto;
+  initialValues?: PaymentFormValues;
 };
 
-const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps) => {
+const RegistrationPayment = ({
+  userProfile,
+  onSubmit,
+  onBack,
+  initialValues,
+}: RegistrationPaymentProps) => {
   const {
     register,
     formState: { errors },
     handleSubmit,
     watch,
+    setValue,
   } = useForm<PaymentFormValues>();
 
   const [showBusinessFieldset, setShowBusinessFieldset] = useState(false);
@@ -34,6 +42,16 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
       setShowBusinessFieldset(false);
     }
   }, [selectedPaymentMethod]);
+
+  useEffect(() => {
+    // reuse initial values if given
+    if (initialValues) {
+      const formKeys = Object.keys(initialValues) as Array<keyof PaymentFormValues>;
+      formKeys.forEach(key => {
+        setValue(key, initialValues[key]);
+      });
+    }
+  }, [initialValues]);
 
   const onSubmitForm: SubmitHandler<PaymentFormValues> = (data: PaymentFormValues) => {
     onSubmit(data);
@@ -89,6 +107,13 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
             {...register('email', { value: userProfile.email! })}
             label={t('user:registration.user.email')}
             defaultValue={userProfile.email}
+            disabled
+            errors={errors}
+          />
+          <LegacyInputText
+            {...register('phoneNumber', { value: userProfile.phoneNumber! })}
+            label={t('user:registration.user.phoneNumber')}
+            defaultValue={userProfile.phoneNumber}
             disabled
             errors={errors}
           />
@@ -149,7 +174,11 @@ const RegistrationPayment = ({ userProfile, onSubmit }: RegistrationPaymentProps
             />
           </fieldset>
         )}
-
+        {onBack && (
+          <Button type="reset" onClick={onBack}>
+            {t('common:buttons.back')}
+          </Button>
+        )}
         <Button data-test-id="registration-payment-submit-button" type="submit">
           {t('common:buttons.continue')}
         </Button>

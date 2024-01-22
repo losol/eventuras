@@ -11,13 +11,15 @@ const UserAccountPage = async () => {
   const eventuras = createSDK({ authHeader: headers().get('Authorization') });
   const { t } = createTranslation();
 
-  const user = await apiWrapper(() => eventuras.users.getV3UsersMe({}));
-  if (!user || !user.value) return <Layout>{t('user:page.profileNotFound')}</Layout>;
+  const result = await apiWrapper(() => eventuras.users.getV3UsersMe({}));
+  if (!result.ok || !result.value) {
+    return <Layout>{t('user:page.profileNotFound')}</Layout>;
+  }
 
   return (
     <Layout>
       <Heading>{t('user:profile.page.heading')}</Heading>
-      <UserEditor user={user.value} />
+      <UserEditor user={result.value} />
     </Layout>
   );
 };

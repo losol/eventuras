@@ -4,7 +4,7 @@ import { ProductDto } from '@losol/eventuras/dist/models/ProductDto';
 import { RegistrationDto } from '@losol/eventuras/dist/models/RegistrationDto';
 import { useState } from 'react';
 
-import RegistrationCustomize from '@/app/user/events/[id]/registration/RegistrationCustomize';
+import RegistrationCustomize from '@/app/user/events/[id]/eventflow/RegistrationCustomize';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import {
   addProductsToRegistration,

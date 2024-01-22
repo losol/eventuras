@@ -2,6 +2,8 @@ import {
   NewRegistrationDto,
   ProductDto,
   RegistrationCustomerInfoDto,
+  RegistrationDto,
+  RegistrationFormDto,
   RegistrationType,
 } from '@losol/eventuras';
 
@@ -38,12 +40,10 @@ export const mapEventProductsToView = (eventProducts: ProductDto[]): Registratio
     });
 };
 
-export const mapToNewRegistration = (
-  userId: string,
-  eventId: number,
+const customerFromPaymentForm = (
   paymentDetails: PaymentFormValues
-) => {
-  const customer: RegistrationCustomerInfoDto = {
+): RegistrationCustomerInfoDto => {
+  return {
     vatNumber: paymentDetails.vatNumber,
     name: paymentDetails.username,
     email: paymentDetails.email,
@@ -52,6 +52,14 @@ export const mapToNewRegistration = (
     country: paymentDetails.country,
     invoiceReference: paymentDetails.invoiceReference,
   };
+};
+
+export const mapToNewRegistration = (
+  userId: string,
+  eventId: number,
+  paymentDetails: PaymentFormValues
+) => {
+  const customer = customerFromPaymentForm(paymentDetails);
   const type: RegistrationType = RegistrationType.PARTICIPANT;
   const newRegistration: NewRegistrationDto = {
     userId,
@@ -63,6 +71,18 @@ export const mapToNewRegistration = (
   };
 
   return newRegistration;
+};
+
+export const mapToUpdatedRegistration = (
+  registration: RegistrationDto,
+  paymentDetails: PaymentFormValues
+) => {
+  const updatedRegistration: RegistrationFormDto = {
+    customer: customerFromPaymentForm(paymentDetails),
+    type: registration.type,
+    paymentMethod: paymentDetails.paymentMethod,
+  };
+  return updatedRegistration;
 };
 
 export const mapSelectedProductsToQuantity = (

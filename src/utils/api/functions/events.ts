@@ -3,7 +3,9 @@ import {
   Eventuras,
   NewRegistrationDto,
   OrderLineModel,
+  ProductDto,
   RegistrationDto,
+  RegistrationFormDto,
 } from '@losol/eventuras';
 
 import { ApiResult, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
@@ -42,6 +44,46 @@ export const createEventRegistration = async (
   );
   Logger.info({ namespace: 'events:createEventRegistration' }, 'products selected', products);
 
+  if (!products.length) return registration;
+
+  return registration.then(async apiResult => {
+    if (!apiResult.ok) {
+      return apiResult;
+    }
+    const result: RegistrationDto = apiResult.value!;
+    const registrationId = result.registrationId!.toString();
+
+    return addProductsToRegistration(registrationId, products);
+  });
+};
+
+export const updateEventRegistration = async (
+  id: number,
+  updatedRegistration: RegistrationFormDto,
+  availableProducts: ProductDto[],
+  selectedProducts?: Map<string, number>
+): Promise<ApiResult<RegistrationDto, ApiError>> => {
+  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+  /*
+    we may have not selected any products, which would result in an empty map.
+    However, because we are updating an existing event we may actually need to send a 'quantity:0' for
+    these products, so we need to fill the map with available products, and if the map does not contain it,
+    set it to 0
+  */
+  availableProducts.forEach((product: ProductDto) => {
+    const stringyProductId = product.productId!.toString();
+    if (!selectedProducts?.has(stringyProductId)) {
+      selectedProducts?.set(stringyProductId, 0);
+    }
+  });
+  const products = productMapToOrderLineModel(selectedProducts);
+  const registration = apiWrapper(() =>
+    sdk.registrations.putV3Registrations({
+      id,
+      eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
+      requestBody: updatedRegistration,
+    })
+  );
   if (!products.length) return registration;
 
   return registration.then(async apiResult => {

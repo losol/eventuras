@@ -1,9 +1,12 @@
-import { ProductDto, ProductOrderDto } from '@losol/eventuras';
+import { ProductDto } from '@losol/eventuras';
+
+import { ProductSelected } from '@/types';
 
 import Checkbox, { CheckBoxDescription, CheckBoxLabel } from './Checkbox';
+
 export type ProductSelectionProps = {
   products: ProductDto[];
-  selectedProducts: ProductOrderDto[];
+  selectedProducts: ProductSelected[];
   register: any;
 };
 const ProductSelection = ({ products, register, selectedProducts }: ProductSelectionProps) => {

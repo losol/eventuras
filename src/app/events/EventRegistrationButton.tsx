@@ -11,7 +11,7 @@ export default function EventRegistrationButton({ eventId }: EventRegistrationBu
 
   return (
     <Link
-      href={`/user/events/${eventId}/registration`}
+      href={`/user/events/${eventId}`}
       variant="button-primary"
       block
       data-test-id="event-registration-button"
