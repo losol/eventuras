@@ -17,7 +17,7 @@ import { Drawer } from '@/components/ui';
 import Button from '@/components/ui/Button';
 import Heading from '@/components/ui/Heading';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
-import { RegistrationProduct } from '@/types/RegistrationProduct';
+import { RegistrationProduct } from '@/types';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { createEventRegistration } from '@/utils/api/functions/events';
 import { mapEventProductsToView, mapSelectedProductsToQuantity } from '@/utils/api/mappers';

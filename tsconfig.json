@@ -17,13 +17,13 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@/*": ["./src/*", "public/*"]
+      "@/*": ["./src/*", "public/*"],
     },
     "plugins": [
       {
-        "name": "next"
-      }
-    ]
+        "name": "next",
+      },
+    ],
   },
   "ts-node": {
     // these options are overrides used only by ts-node
@@ -33,9 +33,9 @@
       "module": "commonjs",
       "esModuleInterop": true,
       "target": "ESNext",
-      "lib": ["dom", "dom.iterable", "ESNext"]
-    }
+      "lib": ["dom", "dom.iterable", "ESNext"],
+    },
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "middleware.ts", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "scripts"]
+  "exclude": ["node_modules", "scripts"],
 }

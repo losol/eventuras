@@ -5,7 +5,7 @@ import {
   OrderLineModel,
   ProductDto,
   RegistrationDto,
-  RegistrationFormDto,
+  RegistrationUpdateDto,
 } from '@losol/eventuras';
 
 import { ApiResult, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
@@ -59,7 +59,7 @@ export const createEventRegistration = async (
 
 export const updateEventRegistration = async (
   id: number,
-  updatedRegistration: RegistrationFormDto,
+  updatedRegistration: RegistrationUpdateDto,
   availableProducts: ProductDto[],
   selectedProducts?: Map<string, number>
 ): Promise<ApiResult<RegistrationDto, ApiError>> => {

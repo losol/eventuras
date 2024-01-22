@@ -3,12 +3,11 @@ import {
   ProductDto,
   RegistrationCustomerInfoDto,
   RegistrationDto,
-  RegistrationFormDto,
   RegistrationType,
+  RegistrationUpdateDto,
 } from '@losol/eventuras';
 
-import PaymentFormValues from '@/types/PaymentFormValues';
-import { RegistrationProduct } from '@/types/RegistrationProduct';
+import { PaymentFormValues, RegistrationProduct } from '@/types';
 
 /**
  * Contains mappers which map Dto's from the API to whatever the view consumes.
@@ -77,7 +76,7 @@ export const mapToUpdatedRegistration = (
   registration: RegistrationDto,
   paymentDetails: PaymentFormValues
 ) => {
-  const updatedRegistration: RegistrationFormDto = {
+  const updatedRegistration: RegistrationUpdateDto = {
     customer: customerFromPaymentForm(paymentDetails),
     type: registration.type,
     paymentMethod: paymentDetails.paymentMethod,
