@@ -104,6 +104,18 @@ export const visitAndClickEventRegistrationButton = async (page: Page, eventId: 
   Logger.info(ns, 'Reg button clicked, waiting for registration page');
 };
 
+export const fillOutPaymentDetails = async (page: Page) => {
+  await page.locator('[data-test-id="registration-zipcode-input"]').click();
+  await page.locator('[data-test-id="registration-zipcode-input"]').fill('12345BC');
+  await page.locator('[data-test-id="registration-city-input"]').click();
+  await page.locator('[data-test-id="registration-city-input"]').fill('Amsterdam');
+  await page.locator('[data-test-id="registration-country-input"]').click();
+  await page.locator('[data-test-id="registration-country-input"]').fill('The Netherlands');
+  Logger.info(ns, 'Payment submit button clicked');
+
+  return page.locator('[data-test-id="registration-payment-submit-button"]').click();
+};
+
 export const registerForEvent = async (
   page: Page,
   eventId: string,
@@ -112,57 +124,50 @@ export const registerForEvent = async (
   if (startFromHome) {
     await visitAndClickEventRegistrationButton(page, eventId);
   }
-  await page.waitForURL(`/user/events/${eventId}/registration`);
+  await page.waitForURL(`/user/events/${eventId}`);
   Logger.info(ns, 'Registration page reached');
-  Logger.info(ns, 'register for event', eventId);
+  Logger.info(ns, 'Confirm current account details');
+  await page.locator('[data-test-id="accounteditor-form-phonenumber"]').fill('+4712345678');
+  await Promise.all([
+    page.waitForResponse(resp => resp.url().includes('userprofile') && resp.status() === 200),
+    page.locator('[data-test-id="account-update-button"]').click(),
+  ]);
+  Logger.info(ns, 'Customize product', eventId);
   await page.locator('[data-test-id="product-selection-checkbox"]').click();
   Logger.info(ns, 'Product checkbox clicked');
   const submitButton = await page.locator('[data-test-id="registration-customize-submit-button"]');
   expect(submitButton.isEnabled());
   await submitButton.click();
   Logger.info(ns, 'Registration customize submit button clicked');
-  await page.locator('[data-test-id="registration-zipcode-input"]').click();
-  await page.locator('[data-test-id="registration-zipcode-input"]').fill('12345BC');
-  await page.locator('[data-test-id="registration-city-input"]').click();
-  await page.locator('[data-test-id="registration-city-input"]').fill('Amsterdam');
-  await page.locator('[data-test-id="registration-country-input"]').click();
-  await page.locator('[data-test-id="registration-country-input"]').fill('The Netherlands');
-  await page.locator('[data-test-id="registration-payment-submit-button"]').click();
-  await expect(page.locator('[data-test-id="registration-account-step"]')).toBeVisible();
-  await page.locator('[data-test-id="accounteditor-form-phonenumber"]').fill('+4712345678');
-  await page.locator('[data-test-id="account-update-button"]').click();
-
-  await page.locator('[data-test-id="registration-complete-submit-button"]').click();
+  await fillOutPaymentDetails(page);
+  await Promise.all([
+    page.waitForResponse(resp => resp.url().includes('registrations') && resp.status() === 200),
+    page.waitForResponse(resp => resp.url().includes('products') && resp.status() === 200),
+    page.locator('[data-test-id="registration-confirmation-button"]').click(),
+  ]);
 };
 
 export const visitRegistrationPageForEvent = async (page: Page, eventId: string) => {
   await page.goto(`/user/events/${eventId}`);
-  const clickToUserRegistrationPage = await page.locator(`[data-test-id="registration-page-link"]`);
-  const userRegistrationUrl = await clickToUserRegistrationPage.getAttribute('href');
-  await clickToUserRegistrationPage.click();
-  await page.waitForURL(userRegistrationUrl!);
   await page.waitForLoadState('load');
 };
 
 export const validateRegistration = async (page: Page, eventId: string) => {
   Logger.info(ns, 'Registered for event, validating..');
   await visitRegistrationPageForEvent(page, eventId);
-  await expect(page.locator('[data-test-id="registration-id-container"]')).toBeVisible();
-  Logger.info(
-    ns,
-    'Registration succesful, now making sure products were also registered correctly'
-  );
-  await expect(page.locator('[data-test-id="product-container"]')).toBeVisible();
+  await expect(page.locator('[data-test-id="edit-registration-button"]')).toBeVisible();
 };
 
 export const editRegistrationOrders = async (page: Page, eventId: string) => {
   await visitRegistrationPageForEvent(page, eventId);
-  await page.locator('[data-test-id="edit-orders-button"]').click();
-  expect(page.locator('[data-test-id="edit-orders-dialog"]')).toBeVisible();
+  await page.locator('[data-test-id="edit-registration-button"]').click();
   await page.locator('[data-test-id="product-selection-checkbox"]').first().click();
+  await page.locator('[data-test-id="registration-customize-submit-button"]').click();
+  await fillOutPaymentDetails(page);
+
   await Promise.all([
-    page.waitForResponse(resp => resp.url().includes('/products') && resp.status() === 200),
-    page.locator('[data-test-id="registration-customize-submit-button"]').click(),
-    expect(page.locator('[data-test-id="notification-success"]')).toBeVisible(),
+    page.waitForResponse(resp => resp.url().includes('registrations') && resp.status() === 200),
+    page.waitForResponse(resp => resp.url().includes('products') && resp.status() === 200),
+    page.locator('[data-test-id="registration-confirmation-button"]').click(),
   ]);
 };

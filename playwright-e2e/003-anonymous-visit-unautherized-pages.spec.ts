@@ -11,7 +11,7 @@ const unAuthorizedUris = [
   '/admin',
   '/admin/events/create',
   '/user',
-  `/user/events/${createdEvent.eventId}/register`,
+  `/user/events/${createdEvent.eventId}`,
 ];
 test.describe('should not be authorized on the following pages', () => {
   test('unauthorized pages are unaccessible', async ({ page }) => {

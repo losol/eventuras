@@ -41,7 +41,7 @@ const RegistrationConfirmation: React.FC<RegistrationConfirmationProps> = ({
       </ul>
       <Heading as="h2">Payment Information</Heading>
       <ul>
-        <li>{`${t('user:registration.customertype.legend')}:${paymentDetails.paymentMethod === PaymentProvider.EMAIL_INVOICE ? t('user:registration.customertype.private') : t('user:registration.customertype.business')}`}</li>
+        <li>{`${t('user:registration.customertype.legend')}:${paymentDetails.paymentMethod === PaymentProvider.POWER_OFFICE_EMAIL_INVOICE ? t('user:registration.customertype.private') : t('user:registration.customertype.business')}`}</li>
         <li>{`${t('user:registration.user.name')}:${paymentDetails.username}`}</li>
         <li>{`${t('user:registration.user.email')}:${paymentDetails.email}`}</li>
         <li>{`${t('user:registration.user.phoneNumber')}:${paymentDetails.phoneNumber}`}</li>
@@ -58,7 +58,11 @@ const RegistrationConfirmation: React.FC<RegistrationConfirmationProps> = ({
 
       <div>
         {onBack && <Button onClick={onBack}>{t('common:buttons.back')}</Button>}
-        {onSubmit && <Button onClick={onSubmit}>{t('common:buttons.submit')}</Button>}
+        {onSubmit && (
+          <Button onClick={onSubmit} data-test-id="registration-confirmation-button">
+            {t('common:buttons.submit')}
+          </Button>
+        )}
       </div>
     </div>
   );

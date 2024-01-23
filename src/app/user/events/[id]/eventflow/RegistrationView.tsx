@@ -22,7 +22,11 @@ const RegistrationView: React.FC<RegistrationViewProps> = ({ eventInfo, onEdit, 
       </p>
       <div className="dark:bg-gray-700 bg-white my-10 p-3">
         <Link href={`/events/${eventInfo.id}`}>View Event Page</Link>
-        {onEdit && <Button onClick={onEdit}>{t('common:buttons.edit')}</Button>}
+        {onEdit && (
+          <Button onClick={onEdit} data-test-id="edit-registration-button">
+            {t('common:buttons.edit')}
+          </Button>
+        )}
         {onCancel && <Button onClick={onCancel}>{t('common:buttons.cancel')}</Button>}
       </div>
       {eventInfo?.welcomeLetter && (
