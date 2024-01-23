@@ -89,9 +89,7 @@ const EditEventRegistrationsDialog = (props: EditEventOrdersDialogProps) => {
         <div>
           <RegistrationCustomize
             products={props.eventProducts}
-            selectedProducts={
-              [] /*props.currentRegistration.products TODO: this needs some more thought*/
-            }
+            selectedProducts={props.currentRegistration.products!}
             onSubmit={onSubmit}
           />
         </div>
