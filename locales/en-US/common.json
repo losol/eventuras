@@ -40,6 +40,13 @@
   },
   "events": {
     "description": "Description",
+    "detailspage": {
+      "notfound": {
+        "back": "Show me the front page",
+        "description": "We do not know where to look.",
+        "title": "Sorry, not found."
+      }
+    },
     "event": "Event",
     "event-not-found": "Event not found",
     "events": "Events",

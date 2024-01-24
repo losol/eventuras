@@ -44,7 +44,6 @@ const EventCreator = () => {
 
   const {
     register,
-    getValues,
     setValue,
     formState: { errors },
     handleSubmit,
@@ -131,14 +130,6 @@ const EventCreator = () => {
             data-test-id="event-title-input"
             errors={errors}
           />
-          <LegacyInputText
-            {...register('slug', {
-              required: 'Slug is required',
-            })}
-            label="Event Slug"
-            placeholder="Event Slug"
-            errors={errors}
-          />
         </fieldset>
 
         <Button
@@ -146,8 +137,8 @@ const EventCreator = () => {
           type="submit"
           data-test-id="create-event-submit-button"
           onClick={() => {
-            //slugify slug before submitting
-            setValue('slug', slugify(getValues('slug')));
+            // set guid as slug
+            setValue('slug', crypto.randomUUID());
           }}
         >
           {t('common:buttons.submit')}

@@ -1,10 +1,13 @@
+import { EventInfoStatus } from '@losol/eventuras';
 import { redirect } from 'next/navigation';
+import createTranslation from 'next-translate/createTranslation';
 
 import EventDetails from '@/app/events/EventDetails';
 import EventRegistrationButton from '@/app/events/EventRegistrationButton';
 import { Container, Layout } from '@/components/ui';
 import Card from '@/components/ui/Card';
 import Heading from '@/components/ui/Heading';
+import Link from '@/components/ui/Link';
 import Text from '@/components/ui/Text';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
@@ -18,7 +21,9 @@ type EventInfoProps = {
   };
 };
 
-export const dynamic = 'force-static';
+export const revalidate = 300;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const dynamicParams = true;
 
 export async function generateStaticParams() {
   const orgId = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
@@ -48,12 +53,29 @@ export async function generateStaticParams() {
 }
 
 const Page: React.FC<EventInfoProps> = async ({ params }) => {
+  const { t } = createTranslation();
   const result = await apiWrapper(() =>
     createSDK({ inferUrl: true }).events.getV3Events1({ id: params.id })
   );
-  if (!result.ok || !result.value) return <div>Event not found</div>;
 
-  const eventinfo = result.value;
+  let notFound = !result.ok || !result.value;
+  // Also show the not found page, if EventInfoStatus is Draft
+  if (result.value?.status === EventInfoStatus.DRAFT) {
+    notFound = true;
+  }
+
+  if (notFound)
+    return (
+      <Layout>
+        <Heading>{t('common:events.detailspage.notfound.title')}</Heading>
+        <Text className="py-6">{t('common:events.detailspage.notfound.description')}</Text>
+        <Link href="/" variant="button-primary">
+          {t('common:events.detailspage.notfound.back')}
+        </Link>
+      </Layout>
+    );
+
+  const eventinfo = result.value!;
   if (params.slug !== eventinfo.slug) {
     redirect(`/events/${eventinfo.id!}/${eventinfo.slug!}`);
   }

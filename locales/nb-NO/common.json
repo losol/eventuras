@@ -39,6 +39,13 @@
   },
   "events": {
     "description": "Beskrivelse",
+    "detailspage": {
+      "notfound": {
+        "back": "Til forsiden",
+        "description": "Vi finner ikke dette arrangementet",
+        "title": "Beklager, kunne ikke finne siden"
+      }
+    },
     "event": "Arrangement",
     "event-not-found": "Arrangementet ble ikke funnet",
     "events": "Arrangementer",

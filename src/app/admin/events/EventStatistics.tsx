@@ -9,7 +9,7 @@ type EventStatisticsProps = {
 
 const EventStatistics: React.FC<EventStatisticsProps> = ({ statistics }) => {
   const { t } = createTranslation();
-  const { byStatus } = statistics;
+  const byStatus = statistics ? statistics.byStatus : null;
 
   const counts = {
     participants:

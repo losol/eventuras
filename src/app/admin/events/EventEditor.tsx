@@ -94,16 +94,6 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
                   <CheckBoxLabel>Featured</CheckBoxLabel>
                 </CheckboxInput>
               </div>
-              <div className="mr-4">
-                <CheckboxInput name="onDemand">
-                  <CheckBoxLabel>On Demand</CheckBoxLabel>
-                </CheckboxInput>
-              </div>
-              <div className="mr-4">
-                <CheckboxInput name="published" data-test-id="event-published-checkbox">
-                  <CheckBoxLabel>Published</CheckBoxLabel>
-                </CheckboxInput>
-              </div>
             </div>
           </Fieldset>
           <Fieldset label="Headings" disabled={apiState.loading}>
@@ -175,6 +165,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
           <Fieldset label="Additional information">
             <MarkdownInput
               name="description"
+              label="Description (max 300 characters)"
               placeholder="An Event Description here (markdown supported)"
             />
             <MarkdownInput
