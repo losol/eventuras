@@ -49,7 +49,7 @@ const AdminUserDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
       </Section>
       <Section className="py-12">
         <Container>
-          <UserEditor user={user.value!} />
+          <UserEditor user={user.value!} adminMode />
         </Container>
       </Section>
     </Layout>
