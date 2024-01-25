@@ -211,7 +211,7 @@ const EventFlowMachine = createMachine({
         }),
         input: ({ context }) => ({ ...context }),
         onDone: {
-          target: States.COMPLETED,
+          target: States.SHOW_REGISTRATION_VIEW,
         },
         onError: {
           target: States.ERROR,
