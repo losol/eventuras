@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { Tab, TabList, TabPanel, Tabs as AriaTabs } from 'react-aria-components';
 
 /**
@@ -13,15 +13,14 @@ import { Tab, TabList, TabPanel, Tabs as AriaTabs } from 'react-aria-components'
  * @typedef {Object} TabsProps
  * @property {(React.ReactElement<TabItemProps>[]|React.ReactElement<TabItemProps>)} children - Accepts a single tab item or an array of tab items.
  */
-
 type TabItemProps = {
   title: string;
-  children: React.ReactNode;
+  children: React.ReactNode | null;
   dataTestId?: string;
 };
 
 type TabsProps = {
-  children: React.ReactElement<TabItemProps>[] | React.ReactElement<TabItemProps>;
+  children: React.ReactNode;
 };
 
 interface TabsComponent extends React.FC<TabsProps> {
@@ -39,12 +38,18 @@ const styles = {
 };
 
 const Tabs: TabsComponent = ({ children }) => {
+  // Filter out non-valid elements (like null or undefined)
+  const validChildren = React.Children.toArray(children).filter(child =>
+    React.isValidElement(child)
+  ) as ReactElement<TabItemProps>[];
+
   return (
     <div>
       <AriaTabs>
         <TabList className={styles.tabList}>
-          {React.Children.map(children, child => (
+          {validChildren.map(child => (
             <Tab
+              key={child.props.title}
               id={child.props.title}
               className={({ isSelected }) =>
                 `${styles.tab.base} ${isSelected ? styles.tab.selected : styles.tab.notSelected}`
@@ -56,8 +61,8 @@ const Tabs: TabsComponent = ({ children }) => {
         </TabList>
 
         {/* Tab panels */}
-        {React.Children.map(children, child => (
-          <TabPanel id={child.props.title} className={styles.panel}>
+        {validChildren.map(child => (
+          <TabPanel key={child.props.title} id={child.props.title} className={styles.panel}>
             {child.props.children}
           </TabPanel>
         ))}

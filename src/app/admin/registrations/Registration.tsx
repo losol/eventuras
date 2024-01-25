@@ -23,7 +23,7 @@ import Logger from '@/utils/Logger';
 import Order from '../orders/Order';
 
 interface RegistrationProps {
-  registration: RegistrationDto;
+  registration?: RegistrationDto;
   adminMode?: boolean;
 }
 

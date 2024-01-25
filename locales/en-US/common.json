@@ -4,9 +4,9 @@
     "logout": "Logout"
   },
   "buttons": {
-    "cancel": "Cancel",
-    "check_account_details": "Check your Account Details",
     "back": "Back",
+    "cancel": "Cancel registration",
+    "check_account_details": "Check your Account Details",
     "continue": "Continue",
     "edit": "Edit",
     "homepage": "To frontpage",
@@ -79,13 +79,17 @@
     "name": "Name",
     "participants": "Participants",
     "phoneNumber": "Phone number",
+    "practicalInfo": "Practical info",
     "products": "Products",
     "profile": "Account",
+    "program": "Program",
+    "registration": "Registration",
     "registrations": "Registrations",
     "save": "Save",
     "user": "User page",
     "view": "View",
-    "waitingList": "Waiting list"
+    "waitingList": "Waiting list",
+    "welcome": "Welcome"
   },
   "onlinecourses": "Online courses",
   "order": {

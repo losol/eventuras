@@ -42,6 +42,9 @@
       "changeregistration": "Tilpass produkter",
       "viewRegistration": "Vis registrering"
     },
+    "cancellationpage": {
+      "description": "Send en epost før avbestillingsfristen hvis du ikke vil delta!"
+    },
     "eventNotFound": "Vi fant ikke noe arrangement her",
     "notRegistered": "Du er ikke påmeldt arrangementet",
     "registration": {
@@ -50,7 +53,7 @@
       "title": "Tilpass påmeldingen",
       "titleLabel": "Velkommen til"
     },
-    "welcomeLetter": "Velkomstbrev"
+    "welcomeLetter": "Informasjon til deltakere"
   },
   "feedback": {
     "alreadyRegistered": "Du er allerede registrert for denne hendelsen, vi sees snart!"
@@ -91,13 +94,16 @@
       "title": "Registrering fullført"
     },
     "customertype": {
-      "business": "Forretnings",
+      "business": "Firma",
       "legend": "Kundetype",
       "private": "Privat"
     },
     "description": "Noen flere detaljer...",
     "event-title": "Arrangement",
     "id": "ID",
+    "labels": {
+      "paymentDetails": "Betalingsdetaljer"
+    },
     "not-found": "Registrering ikke funnet",
     "orders": "Ordre",
     "page": {
@@ -110,6 +116,11 @@
     "products": "Produkter",
     "quantity": "Antall",
     "status": "Status",
+    "steps": {
+      "confirmation": {
+        "description": "Se over bestillingen før du sender den inn!"
+      }
+    },
     "title": "Registrering",
     "type": "Type",
     "user": {

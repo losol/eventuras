@@ -42,6 +42,9 @@
       "changeregistration": "Edit products",
       "viewRegistration": "Registration"
     },
+    "cancellationpage": {
+      "description": "Send an email to the event organizer if you want to cancel your registration. "
+    },
     "eventNotFound": "Event was not found",
     "notRegistered": "You are not registered for this event",
     "registration": {
@@ -101,6 +104,9 @@
     "description": "A few more details about the event.",
     "event-title": "Event Title",
     "id": "Registration ID",
+    "labels": {
+      "paymentDetails": "Payment details"
+    },
     "not-found": "Registration not found",
     "orders": "Orders",
     "page": {
@@ -113,6 +119,11 @@
     "products": "Products",
     "quantity": "Quantity",
     "status": "Status",
+    "steps": {
+      "confirmation": {
+        "description": "You are about to confirm the registration, please double check details below before         submitting."
+      }
+    },
     "title": "Registration",
     "type": "Type",
     "user": {

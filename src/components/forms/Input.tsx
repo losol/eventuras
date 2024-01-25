@@ -26,7 +26,7 @@ export const LegacyInputText = React.forwardRef<HTMLInputElement, InputTextProps
   const id = props.id ?? props.name;
   return (
     <div className="mb-3">
-      {props.label && <label htmlFor={id}>{props.label}</label>}
+      {props.label && !props.hidden && <label htmlFor={id}>{props.label}</label>}
       <input
         id={id}
         ref={ref}

@@ -1,6 +1,6 @@
 'use client';
 
-import { EventDto, ProductDto, UserDto } from '@losol/eventuras';
+import { EventDto, ProductDto, RegistrationDto, UserDto } from '@losol/eventuras';
 import { useActor } from '@xstate/react';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
@@ -24,6 +24,7 @@ export interface EventFlowProps {
   user: UserDto;
   availableProducts: ProductDto[];
   siteInfo: SiteInfo;
+  registration?: RegistrationDto;
 }
 
 const EventFlow: React.FC<EventFlowProps> = ({ eventInfo, user, availableProducts, siteInfo }) => {
@@ -55,6 +56,7 @@ const EventFlow: React.FC<EventFlowProps> = ({ eventInfo, user, availableProduct
     case xState.matches(States.SHOW_CANCELLATION_VIEW):
       return (
         <RegistrationCancellation
+          siteInfo={siteInfo}
           onBack={() => {
             send({ type: Events.ON_STEP_BACK });
           }}
@@ -77,6 +79,7 @@ const EventFlow: React.FC<EventFlowProps> = ({ eventInfo, user, availableProduct
       return (
         <RegistrationView
           eventInfo={eventInfo}
+          registration={xState.context.registrations[0]}
           onEdit={() => {
             send({ type: Events.ON_EDIT_REGISTRATION_REQUESTED });
           }}

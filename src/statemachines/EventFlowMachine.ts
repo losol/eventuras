@@ -69,6 +69,9 @@ const EventFlowMachine = createMachine({
             userId: user.id!,
             eventId: eventInfo.id,
             includeProducts: true,
+            includeEventInfo: true,
+            includeOrders: true,
+            includeUserInfo: true,
           });
         }),
         input: ({ context }) => ({ user: context.user, eventInfo: context.eventInfo }),

@@ -95,13 +95,16 @@ const RegistrationPayment = ({
         </fieldset>
 
         <fieldset className={fieldsetClassName}>
-          <legend className={fieldsetLegendClassName}>{t('user:registration.user.legend')}</legend>
+          <legend className={fieldsetLegendClassName} hidden>
+            {t('user:registration.user.legend')}
+          </legend>
           <LegacyInputText
             {...register('username', { value: userProfile.name! })}
             label={t('user:registration.user.name')}
             defaultValue={userProfile.name}
             disabled
             errors={errors}
+            hidden
           />
           <LegacyInputText
             {...register('email', { value: userProfile.email! })}
@@ -109,6 +112,7 @@ const RegistrationPayment = ({
             defaultValue={userProfile.email}
             disabled
             errors={errors}
+            hidden
           />
           <LegacyInputText
             {...register('phoneNumber', { value: userProfile.phoneNumber! })}
@@ -116,6 +120,7 @@ const RegistrationPayment = ({
             defaultValue={userProfile.phoneNumber}
             disabled
             errors={errors}
+            hidden
           />
         </fieldset>
         <fieldset className={fieldsetClassName}>

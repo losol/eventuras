@@ -1,42 +1,65 @@
+import { RegistrationDto } from '@losol/eventuras';
 import { EventDto } from '@losol/eventuras/dist/models/EventDto';
 import createTranslation from 'next-translate/createTranslation';
 
+import Registration from '@/app/admin/registrations/Registration';
 import Button from '@/components/ui/Button';
 import Heading from '@/components/ui/Heading';
-import Link from '@/components/ui/Link';
 import MarkdownContent from '@/components/ui/MarkdownContent';
+import Tabs from '@/components/ui/Tabs';
 
 export interface RegistrationViewProps {
   eventInfo: EventDto;
+  registration?: RegistrationDto;
   onEdit?: () => void;
   onCancel?: () => void;
 }
-const RegistrationView: React.FC<RegistrationViewProps> = ({ eventInfo, onEdit, onCancel }) => {
+const RegistrationView: React.FC<RegistrationViewProps> = ({
+  eventInfo,
+  registration,
+  onCancel,
+}) => {
   const { t } = createTranslation();
 
   return (
     <div>
-      <p>
-        You have already registered for this event, you can edit your current registration or go to
-        the events detail page.
-      </p>
-      <div className="dark:bg-gray-700 bg-white my-10 p-3">
-        <Link href={`/events/${eventInfo.id}`}>View Event Page</Link>
-        {onEdit && (
-          <Button onClick={onEdit} data-test-id="edit-registration-button">
-            {t('common:buttons.edit')}
-          </Button>
-        )}
-        {onCancel && <Button onClick={onCancel}>{t('common:buttons.cancel')}</Button>}
-      </div>
-      {eventInfo?.welcomeLetter && (
-        <div className="welcome-letter dark:bg-gray-700 bg-white my-10 p-3">
-          <Heading as="h2" spacingClassName="mb-5 mt-0 pt-0">
-            {t('user:events.welcomeLetter')}
-          </Heading>
-          <MarkdownContent markdown={eventInfo?.welcomeLetter} />
-        </div>
-      )}
+      <Tabs>
+        {/* Welcome letter */}
+        {eventInfo?.welcomeLetter ? (
+          <Tabs.Item title={t('common:labels.welcome')}>
+            <div className="welcome-letter dark:bg-gray-700 bg-white my-10 p-3">
+              <Heading as="h2">{t('user:events.welcomeLetter')}</Heading>
+              <MarkdownContent markdown={eventInfo?.welcomeLetter} />
+            </div>
+          </Tabs.Item>
+        ) : null}
+
+        {/* Program */}
+        {eventInfo?.program ? (
+          <Tabs.Item title={t('common:labels.program')}>
+            <div className="welcome-letter dark:bg-gray-700 bg-white my-10 p-3">
+              <Heading as="h2" spacingClassName="mb-5 mt-0 pt-0">
+                {t('common:labels.program')}
+              </Heading>
+              <MarkdownContent markdown={eventInfo?.program} />
+            </div>
+          </Tabs.Item>
+        ) : null}
+
+        {/* Registration */}
+        <Tabs.Item title={t('common:labels.registration')}>
+          <Registration registration={registration} />
+          {onCancel && <Button onClick={onCancel}>{t('common:buttons.cancel')}</Button>}
+        </Tabs.Item>
+
+        {/* Practical info */}
+        {eventInfo?.practicalInformation ? (
+          <Tabs.Item title={t('common:labels.practicalInfo')}>
+            <Heading as="h2">{t('common:labels.practicalInfo')}</Heading>
+            <MarkdownContent markdown={eventInfo?.practicalInformation} />
+          </Tabs.Item>
+        ) : null}
+      </Tabs>
     </div>
   );
 };
