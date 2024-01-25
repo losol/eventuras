@@ -47,12 +47,18 @@ const UserEditor: FC<UserEditorProps> = ({ adminMode, user, onUserUpdated, dataT
     return user;
   };
 
-  const updateUser = async (user: UserDto, form: UserDto) => {
+  const updateUser = async (user: UserDto, form: UserDto, adminMode: boolean) => {
     // Update existing user
     Logger.info({ namespace: log_namespace }, 'Updating user');
-    const updatedUser = await apiWrapper(() =>
-      sdk.userProfile.putV3Userprofile({ id: user.id!, requestBody: form as UserFormDto })
-    );
+
+    // if adminMode, update user with users endpoint, otherwise use userProfile endpoint
+    const updatedUser = adminMode
+      ? await apiWrapper(() =>
+          sdk.users.putV3Users({ id: user.id!, requestBody: form as UserFormDto })
+        )
+      : await apiWrapper(() =>
+          sdk.userProfile.putV3Userprofile({ id: user.id!, requestBody: form as UserFormDto })
+        );
 
     if (updatedUser.error) {
       addAppNotification({
@@ -73,7 +79,7 @@ const UserEditor: FC<UserEditorProps> = ({ adminMode, user, onUserUpdated, dataT
   const onSubmit = async (form: UserDto) => {
     let result;
     if (editMode) {
-      result = await updateUser(user, form);
+      result = await updateUser(user, form, adminMode || false);
     } else {
       result = await createUser(form);
     }
