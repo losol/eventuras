@@ -4,7 +4,7 @@ import { EventDto, ProductDto, RegistrationDto } from '@losol/eventuras';
 import { IconNotes, IconShoppingCart, IconUser } from '@tabler/icons-react';
 import Link from 'next/link';
 import createTranslation from 'next-translate/createTranslation';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import EventEmailer from '@/components/event/EventEmailer';
 import EditEventRegistrationsDialog from '@/components/eventuras/EditEventRegistrationDialog';
@@ -124,18 +124,20 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
       .join(', ');
   }
 
+  /**
+   * To allow tanstack to filter or sort or do any sort of computation it needs a properly formed *accessor key* which is
+   * a string or a function which will tell tanstack where to get its data from.
+   */
   const columns = [
-    columnHelper.accessor('name', {
+    columnHelper.accessor('user.name', {
       header: t('admin:participantColumns.name').toString(),
-      cell: info => info.row.original.user?.name,
     }),
-    columnHelper.accessor('telephone', {
+
+    columnHelper.accessor('user.phoneNumber', {
       header: t('admin:participantColumns.telephone').toString(),
-      cell: info => info.row.original.user?.phoneNumber,
     }),
-    columnHelper.accessor('email', {
+    columnHelper.accessor('user.email', {
       header: t('admin:participantColumns.email').toString(),
-      cell: info => info.row.original.user?.email,
     }),
     columnHelper.accessor('products', {
       header: t('admin:participantColumns.products').toString(),
@@ -163,10 +165,17 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
       cell: info => renderEventItemActions(info.row.original),
     }),
   ];
+
   const drawerIsOpen = registrationOpen !== null;
   return (
     <>
-      <DataTable data={participants} columns={columns} pageSize={250} clientsidePagination />
+      <DataTable
+        data={participants}
+        columns={columns}
+        clientsidePagination={true}
+        pageSize={250}
+        enableGlobalSearch={true}
+      />
       {registrationOpen !== null && (
         <Drawer isOpen={drawerIsOpen} onCancel={() => setRegistrationOpen(null)}>
           <Drawer.Header as="h3" className="text-black">

@@ -38,6 +38,7 @@
     "@losol/scribo-markdown": "^0.3.2",
     "@sentry/nextjs": "^7.94.1",
     "@tabler/icons-react": "^2.46.0",
+    "@tanstack/match-sorter-utils": "^8.11.7",
     "@tanstack/react-table": "^8.11.6",
     "@types/debug": "^4.1.12",
     "@xstate/react": "^4.0.2",
