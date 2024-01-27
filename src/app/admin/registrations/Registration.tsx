@@ -119,17 +119,23 @@ export const statusPatchRequest = async (registrationId: number, status: Registr
 };
 
 const Registration = ({ registration, adminMode = false }: RegistrationProps) => {
+  const router = useRouter();
   const { t } = createTranslation();
+
+  if (!registration) {
+    return <p>{t('admin:registrations.labels.noRegistration')}</p>;
+  }
   const statusLabel = getStatusLabels(t).find(label => label.value === registration.status)?.label;
   const typeLabel = getTypeLabels(t).find(label => label.value === registration.type)?.label;
-  const router = useRouter();
 
   return (
     <>
       <DescriptionList>
         <Item>
           <Term>{t('admin:registrations.labels.id')}</Term>
-          <Definition>{registration.registrationId}</Definition>
+          <Definition dataTestId="registration-registrationId">
+            {registration.registrationId}
+          </Definition>
         </Item>
         <Item>
           <Term>{t('admin:registrations.labels.userName')}</Term>

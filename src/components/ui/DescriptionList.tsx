@@ -37,10 +37,15 @@ const Term: React.FC<TermProps> = ({ children }) => {
 // Definition component
 interface DefinitionProps {
   children: React.ReactNode;
+  dataTestId?: string;
 }
 
-const Definition: React.FC<DefinitionProps> = ({ children }) => {
-  return <dd className={styles.definition}>{children}</dd>;
+const Definition: React.FC<DefinitionProps> = ({ children, dataTestId }) => {
+  return (
+    <dd className={styles.definition} data-test-id={dataTestId}>
+      {children}
+    </dd>
+  );
 };
 
 export { Definition, DescriptionList, Item, Term };

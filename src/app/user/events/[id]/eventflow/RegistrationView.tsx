@@ -47,7 +47,10 @@ const RegistrationView: React.FC<RegistrationViewProps> = ({
         ) : null}
 
         {/* Registration */}
-        <Tabs.Item title={t('common:labels.registration')}>
+        <Tabs.Item
+          title={t('common:labels.registration')}
+          dataTestId="registrationview-registration-tab"
+        >
           <Registration registration={registration} />
           {onCancel && <Button onClick={onCancel}>{t('common:buttons.cancel')}</Button>}
         </Tabs.Item>
