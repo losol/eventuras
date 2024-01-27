@@ -107,8 +107,6 @@ namespace Eventuras.Services.Orders
                                        .Where(ol => ol.ProductId == productId)
                                        .Sum(ol => ol.Quantity)
                 })
-                // Filter orders with >0 quantity
-                .Where(dto => dto.SumQuantity > 0)
                 .ToList();
 
             return groupedOrders;
