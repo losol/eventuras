@@ -213,11 +213,13 @@ export const InputAutoComplete = (props: InputAutoCompleteProps) => {
 export const DebouncedInput = ({
   value: initialValue,
   onChange,
+  className,
   debounce = 500,
   ...props
 }: {
   value: string | number;
   onChange: (value: string | number) => void;
+  className?: string;
   debounce?: number;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) => {
   const [value, setValue] = React.useState(initialValue);
@@ -234,5 +236,12 @@ export const DebouncedInput = ({
     return () => clearTimeout(timeout);
   }, [value]);
 
-  return <input {...props} value={value} onChange={e => setValue(e.target.value)} />;
+  return (
+    <input
+      {...props}
+      className={className ?? formStyles.defaultInputStyle}
+      value={value}
+      onChange={e => setValue(e.target.value)}
+    />
+  );
 };

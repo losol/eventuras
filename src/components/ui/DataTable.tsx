@@ -85,7 +85,6 @@ const DataTable = (props: DataTableProps) => {
         <DebouncedInput
           value={globalFilter ?? ''}
           onChange={value => setGlobalFilter(String(value))}
-          className="p-2 font-lg shadow border border-block"
           placeholder="Search all columns..."
         />
       )}
