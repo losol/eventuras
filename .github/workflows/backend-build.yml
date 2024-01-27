@@ -1,4 +1,4 @@
-name: .NET build & test
+name: Backend - build & test
 
 on:
   workflow_call:
@@ -9,13 +9,16 @@ on:
         type: string
   push:
     paths:
-      - "src/**"
-      - "tests/**"
+      - "projects/backend/src/**"
+      - "projects/backend/tests/**"
 
 jobs:
   build:
     name: Build project
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./projects/backend/
     steps:
       - uses: actions/checkout@v4
       - name: Setup dotnet
