@@ -1,0 +1,30 @@
+{
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2021": true
+  },
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:jsx-a11y/recommended",
+    "plugin:prettier/recommended",
+    "plugin:react-hooks/recommended",
+    "prettier"
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint", "eslint-plugin-simple-import-sort"],
+  "rules": {
+    "no-console": "error",
+    // There are good reasons not to always include all possible dependencies in a React Hook
+    "react-hooks/exhaustive-deps": "off",
+    "simple-import-sort/imports": "warn",
+    "simple-import-sort/exports": "warn",
+    // Consider disabling this rule later
+    "@typescript-eslint/no-explicit-any": "off",
+    "jsx-a11y/no-static-element-interactions": "off"
+  }
+}
