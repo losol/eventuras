@@ -1,0 +1,148 @@
+{
+  "certificates": {
+    "labels": {
+      "notFound": "Certificate not found"
+    },
+    "page": {
+      "description": "Nothing to see here.",
+      "title": "Certificates"
+    }
+  },
+  "createEvent": {
+    "alreadyExists": {
+      "description": "An Event with that slug already exists, the slug needs to be unique.",
+      "title": "Event already exists."
+    },
+    "content": {
+      "description": "Here you can create your event, be sure to enter both title and slug",
+      "title": "Create event"
+    }
+  },
+  "editEvent": {
+    "content": {
+      "description": "Edit event below",
+      "title": "Edit"
+    }
+  },
+  "eventColumns": {
+    "actions": "Actions",
+    "location": "Location",
+    "title": "Title",
+    "when": "When"
+  },
+  "eventEmailer": {
+    "form": {
+      "body": {
+        "feedbackIncorrect": "Needs at least 10 characters",
+        "feedbackNoInput": "Can't send an email without body!",
+        "label": "Body"
+      },
+      "status": {
+        "feedbackNoInput": "Please Select at least one Status type",
+        "label": "Status"
+      },
+      "subject": {
+        "feedbackNoInput": "Please provide a subject",
+        "label": "Subject"
+      },
+      "successFeedback": "Emails succesfully sent!",
+      "type": {
+        "feedbackNoInput": "Please select at least one Type",
+        "label": "Type"
+      }
+    },
+    "title": "Email participants"
+  },
+  "events": {
+    "labes": {
+      "create": "Add event"
+    }
+  },
+  "labels": {
+    "orders": "Orders",
+    "registrations": "Registrations",
+    "users": "Users"
+  },
+  "orders": {
+    "labels": {
+      "notFound": "Order not found"
+    },
+    "page": {
+      "title": "Orders"
+    }
+  },
+  "participantColumns": {
+    "actions": "Actions",
+    "email": "E mail",
+    "live": "Live",
+    "name": "Name",
+    "products": "Products",
+    "status": "Status",
+    "telephone": "Telephone",
+    "type": "Type"
+  },
+  "products": {
+    "buttons": {
+      "add-product": "New product",
+      "edit-product": "Edit product"
+    },
+    "labels": {
+      "addnewproduct": "Add new product",
+      "editProducts": "Edit products",
+      "noOrders": "No orders",
+      "productsFor": "Products for"
+    },
+    "modal": {
+      "title": {
+        "add-product": "Add product",
+        "edit": "Add a new product"
+      }
+    }
+  },
+  "registrations": {
+    "detailsPage": {
+      "title": "Registration"
+    },
+    "labels": {
+      "artist": "Artist",
+      "attended": "Attended",
+      "cancelled": "Cancelled",
+      "draft": "Draft",
+      "eventTitle": "Event title",
+      "finished": "Finished",
+      "id": "Id",
+      "lecturer": "Lecturer",
+      "notAttended": "No show",
+      "notFound": "Registration not found",
+      "notes": "Notes",
+      "notesEmpty": "No notes.",
+      "orders": "Orders",
+      "participant": "Participant",
+      "products": "Products",
+      "staff": "Staff",
+      "status": "Status",
+      "student": "Student",
+      "type": "Type",
+      "userName": "Name",
+      "verified": "Verified",
+      "waitingList": "Waiting list"
+    },
+    "page": {
+      "title": "Registrations"
+    }
+  },
+  "title": "Admin",
+  "users": {
+    "detailspage": {
+      "title": "User info"
+    },
+    "labels": {
+      "addUser": "Add user",
+      "createUser": "Create user",
+      "userNotFound": "User not found"
+    },
+    "page": {
+      "title": "Users"
+    }
+  }
+}

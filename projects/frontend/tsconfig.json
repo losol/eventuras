@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "lib": ["dom", "dom.iterable", "ES2022"],
+    "allowJs": true,
+    "baseUrl": "./",
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "typeRoots": ["./node_modules/@types", "./types"],
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "paths": {
+      "@/*": ["./src/*", "public/*"],
+    },
+    "plugins": [
+      {
+        "name": "next",
+      },
+    ],
+  },
+  "ts-node": {
+    // these options are overrides used only by ts-node
+    // same as the --compilerOptions flag and the TS_NODE_COMPILER_OPTIONS environment variable
+    "require": ["tsconfig-paths/register"],
+    "compilerOptions": {
+      "module": "commonjs",
+      "esModuleInterop": true,
+      "target": "ESNext",
+      "lib": ["dom", "dom.iterable", "ESNext"],
+    },
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "middleware.ts", ".next/types/**/*.ts"],
+  "exclude": ["node_modules", "scripts"],
+}

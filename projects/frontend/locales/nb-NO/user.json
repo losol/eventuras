@@ -1,0 +1,140 @@
+{
+  "account": {
+    "create": {
+      "label": "Lag bruker"
+    },
+    "email": {
+      "description": "Det er viktig at vi har riktig e-postadresse.",
+      "existingDescription": "Vi fikk denne fra innloggingen din. Kan ikke endres. ",
+      "label": "E-post",
+      "placeholder": "gerhard@leprosyresearch.org",
+      "requiredText": "Vi trenger e-posten din"
+    },
+    "name": {
+      "description": "Navnet ditt. Vises på kursbevis og kvitteringer.",
+      "label": "Navn",
+      "placeholder": "Gerhard Armauer Hansen",
+      "requiredText": "Vi trenger navnet ditt!"
+    },
+    "phoneNumber": {
+      "description": "Vi bruker telefonnummeret til innlogging og viktig informasjon.",
+      "label": "Mobiltelefon",
+      "placeholder": "+4712345678",
+      "requiredText": "Vi trenger et mobilnummer"
+    },
+    "update": {
+      "label": "Oppdater bruker"
+    }
+  },
+  "buttons": {
+    "register": "Meld deg på"
+  },
+  "complete": {
+    "description": "Vi ser virkelig frem til å se deg!",
+    "title": "Velkommen!"
+  },
+  "customize": {
+    "description": "Vi har noen fine opplevelser å tilby",
+    "title": "Tilpass din bestilling"
+  },
+  "events": {
+    "buttons": {
+      "changeregistration": "Tilpass produkter",
+      "viewRegistration": "Vis registrering"
+    },
+    "cancellationpage": {
+      "description": "Send en epost før avbestillingsfristen hvis du ikke vil delta!"
+    },
+    "eventNotFound": "Vi fant ikke noe arrangement her",
+    "notRegistered": "Du er ikke påmeldt arrangementet",
+    "registration": {
+      "customizationfor": "Tilpass påmeldingen til",
+      "description": "Noen flere opplysninger...",
+      "title": "Tilpass påmeldingen",
+      "titleLabel": "Velkommen til"
+    },
+    "welcomeLetter": "Informasjon til deltakere"
+  },
+  "feedback": {
+    "alreadyRegistered": "Du er allerede registrert for denne hendelsen, vi sees snart!"
+  },
+  "loginRequired": "Logg på for å se siden",
+  "page": {
+    "errors": {
+      "profileNotFound": "Fant ikke brukeren din"
+    },
+    "heading": "Dine opplysninger",
+    "unauthorized": "Du har ikke tilgang"
+  },
+  "payment": {
+    "description": "Noen flere detaljer",
+    "subHeading": "Hvem betaler",
+    "title": "Betalingsdetaljer"
+  },
+  "profile": {
+    "page": {
+      "heading": "Informasjon om deg"
+    }
+  },
+  "registration": {
+    "address": {
+      "city": "Poststed",
+      "country": "Land",
+      "legend": "Adresse",
+      "street": "Vei",
+      "zip": "Postnummer"
+    },
+    "businessinfo": {
+      "invoiceReference": "Fakturareferanse",
+      "legend": "Bedriftsinformasjon",
+      "vatNumber": "Organisasjonsnummer"
+    },
+    "complete": {
+      "description": "Vi ser virkelig frem til å se deg!",
+      "title": "Registrering fullført"
+    },
+    "customertype": {
+      "business": "Firma",
+      "legend": "Kundetype",
+      "private": "Privat"
+    },
+    "description": "Noen flere detaljer...",
+    "event-title": "Arrangement",
+    "id": "ID",
+    "labels": {
+      "paymentDetails": "Betalingsdetaljer"
+    },
+    "not-found": "Registrering ikke funnet",
+    "orders": "Ordre",
+    "page": {
+      "texts": {
+        "user-already-registered": "Du er allerede registrert for dette arrangementet!"
+      }
+    },
+    "product-description": "Beskrivelse",
+    "product-name": "Navn",
+    "products": "Produkter",
+    "quantity": "Antall",
+    "status": "Status",
+    "steps": {
+      "confirmation": {
+        "description": "Se over bestillingen før du sender den inn!"
+      }
+    },
+    "title": "Registrering",
+    "type": "Type",
+    "user": {
+      "email": "E-post",
+      "legend": "Brukerdetaljer",
+      "name": "Navn",
+      "phoneNumber": "Telefonnummer"
+    }
+  },
+  "registrations": {
+    "page": {
+      "already-registered": {
+        "title": "Velkommen"
+      }
+    }
+  }
+}

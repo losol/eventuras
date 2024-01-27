@@ -1,0 +1,131 @@
+{
+  "auth": {
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "buttons": {
+    "back": "Back",
+    "cancel": "Cancel registration",
+    "check_account_details": "Check your Account Details",
+    "continue": "Continue",
+    "edit": "Edit",
+    "homepage": "To frontpage",
+    "register": "Register",
+    "register-cta": "Register for this event",
+    "registered-already": "You are already registered for this event",
+    "save": "Save",
+    "send": "Send",
+    "submit": "Submit",
+    "user-event-page": "Participant info",
+    "user-registration-page": "Registration",
+    "userEventPage": "Participants page",
+    "userprofile": "User profile",
+    "view": "View"
+  },
+  "description": "Description",
+  "edit": "Edit",
+  "errormessages": {
+    "event-not-found": "Event not found",
+    "user-not-found": "User not found"
+  },
+  "errorpage": {
+    "contactUs": "Please contact us!",
+    "description": "Do not now anything more.",
+    "title": "Errrrrror."
+  },
+  "errors": {
+    "fatalError": {
+      "description": "We tried to perform the action, but something went wrong, please try again later.",
+      "title": "Something went very wrong"
+    }
+  },
+  "events": {
+    "description": "Description",
+    "detailspage": {
+      "notfound": {
+        "back": "Show me the front page",
+        "description": "We do not know where to look.",
+        "title": "Sorry, not found."
+      }
+    },
+    "event": "Event",
+    "event-not-found": "Event not found",
+    "events": "Events",
+    "moreinformation": "Information",
+    "practicalinformation": "Practical information",
+    "program": "Program",
+    "sectiontitle": "Happenings"
+  },
+  "labels": {
+    "account": "User account",
+    "admin": "Admin",
+    "all": "All",
+    "allEvents": "All events",
+    "cancelled": "Cancelled",
+    "confirmRegistration": "Confirm registration",
+    "contactUs": "Contact us",
+    "createUserSuccess": "New user added:",
+    "description": "Description",
+    "edit": "Edit",
+    "editProfile": "Edit user profile",
+    "email": "E mail",
+    "error": "Error",
+    "eventPage": "Event information page",
+    "fullName": "Name",
+    "guid": "Guid",
+    "id": "Id",
+    "login": "Log in",
+    "logout": "Log out",
+    "menu": "Menu",
+    "name": "Name",
+    "next": "Next",
+    "participants": "Participants",
+    "phoneNumber": "Phone number",
+    "practicalInfo": "Practical info",
+    "products": "Products",
+    "profile": "Account",
+    "program": "Program",
+    "registration": "Registration",
+    "registrations": "Registrations",
+    "save": "Save",
+    "user": "User page",
+    "view": "View",
+    "waitingList": "Waiting list",
+    "welcome": "Welcome"
+  },
+  "onlinecourses": "Online courses",
+  "order": {
+    "labels": {
+      "date": "Date",
+      "id": "Id",
+      "items": "Items",
+      "orderId": "Order id",
+      "product": "Product",
+      "quantity": "Quantity",
+      "status": "Status",
+      "variant": "Variant"
+    },
+    "status": {
+      "labels": {
+        "cancelled": "Cancelled",
+        "draft": "Draft",
+        "invoiced": "Invoiced",
+        "refunded": "Refunded",
+        "unknown": "Unknown",
+        "verified": "Verified"
+      }
+    }
+  },
+  "orders": {
+    "labels": {
+      "id": "Id",
+      "time": "Time"
+    }
+  },
+  "registration": {
+    "alreadyRegistered": "You are already registered for this event"
+  },
+  "user": {
+    "name": "Name"
+  }
+}

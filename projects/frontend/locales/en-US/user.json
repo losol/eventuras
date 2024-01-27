@@ -1,0 +1,143 @@
+{
+  "account": {
+    "create": {
+      "label": "Create user"
+    },
+    "email": {
+      "description": "E-mail. Make sure it is correct.",
+      "existingDescription": "We did save this from your login. Cannot be changed.",
+      "label": "E-mail",
+      "placeholder": "gerhard@leprosyresearch.org",
+      "requiredText": "We need your email!"
+    },
+    "name": {
+      "description": "Your name. Will be on your receipts and certficates, so make sure it is correct.",
+      "label": "Name",
+      "placeholder": "Gerhard Armauer Hansen",
+      "requiredText": "We need your name!"
+    },
+    "phoneNumber": {
+      "description": "We need this to send login codes and important information",
+      "label": "Phone number",
+      "placeholder": "+4712345678",
+      "requiredText": "We need a phone number"
+    },
+    "update": {
+      "label": "Update account details"
+    }
+  },
+  "buttons": {
+    "register": "Register for this Event"
+  },
+  "complete": {
+    "description": "We really look forward to see you!",
+    "title": "Welcome!"
+  },
+  "customize": {
+    "description": "We have some nice experiences to offer",
+    "title": "Customize your order"
+  },
+  "events": {
+    "buttons": {
+      "changeregistration": "Edit products",
+      "viewRegistration": "Registration"
+    },
+    "cancellationpage": {
+      "description": "Send an email to the event organizer if you want to cancel your registration. "
+    },
+    "eventNotFound": "Event was not found",
+    "notRegistered": "You are not registered for this event",
+    "registration": {
+      "customizationfor": "This is the registration page for",
+      "description": {
+        "pretitle": "This is the registration page for"
+      },
+      "title": "Event Registration Page",
+      "titleLabel": "Welcome to"
+    },
+    "welcomeLetter": "Welcome letter"
+  },
+  "feedback": {
+    "alreadyRegistered": "You are already registered for this event, see you soon!"
+  },
+  "loginRequired": "Log in to see this page",
+  "page": {
+    "errors": {
+      "profileNotFound": "Profile not found"
+    },
+    "heading": "User profile",
+    "profileNotFound": "Profile not found",
+    "unauthorized": "No access"
+  },
+  "payment": {
+    "description": "A few more details",
+    "subHeading": "Who is paying",
+    "title": "Payment details"
+  },
+  "profile": {
+    "page": {
+      "heading": "Your account details"
+    }
+  },
+  "registration": {
+    "address": {
+      "city": "City",
+      "country": "Country",
+      "legend": "Address",
+      "street": "Street",
+      "zip": "Zip code"
+    },
+    "businessinfo": {
+      "invoiceReference": "Invoice reference",
+      "legend": "Business info",
+      "vatNumber": "VAT number"
+    },
+    "complete": {
+      "description": "We are really looking forward to seeing you!",
+      "title": "Registration completed"
+    },
+    "customertype": {
+      "business": "Business",
+      "legend": "Customer type",
+      "private": "Private"
+    },
+    "description": "A few more details about the event.",
+    "event-title": "Event Title",
+    "id": "Registration ID",
+    "labels": {
+      "paymentDetails": "Payment details"
+    },
+    "not-found": "Registration not found",
+    "orders": "Orders",
+    "page": {
+      "texts": {
+        "user-already-registered": "You are allready registered for this event!"
+      }
+    },
+    "product-description": "Product Description",
+    "product-name": "Product Name",
+    "products": "Products",
+    "quantity": "Quantity",
+    "status": "Status",
+    "steps": {
+      "confirmation": {
+        "description": "You are about to confirm the registration, please double check details below before         submitting."
+      }
+    },
+    "title": "Registration",
+    "type": "Type",
+    "user": {
+      "email": "Email",
+      "legend": "User details",
+      "name": "Name",
+      "phoneNumber": "Phone number"
+    }
+  },
+  "registrations": {
+    "page": {
+      "already-registered": {
+        "title": "Welcome!"
+      }
+    }
+  }
+}

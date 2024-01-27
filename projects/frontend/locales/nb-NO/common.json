@@ -1,0 +1,130 @@
+{
+  "auth": {
+    "login": "Logg inn",
+    "logout": "Logg ut"
+  },
+  "buttons": {
+    "back": "Tilbake",
+    "cancel": "Avbestill",
+    "check_account_details": "Check your Account Details",
+    "continue": "Fortsett",
+    "edit": "Rediger",
+    "homepage": "Til forsiden",
+    "register": "Registrer",
+    "register-cta": "Meld meg på!",
+    "save": "Lagre",
+    "send": "Send",
+    "submit": "Lagre",
+    "user-event-page": "Deltakerinfo",
+    "user-registration-page": "Registering",
+    "userEventPage": "Deltakerinformasjon",
+    "userprofile": "Gå til brukerprofilen din",
+    "view": "Vis"
+  },
+  "description": "Beskrivelse",
+  "edit": "Endre",
+  "errormessages": {
+    "event-not-found": "Fant ikke arrangementet",
+    "user-not-found": "Fant ikke brukeren din"
+  },
+  "errorpage": {
+    "contactUs": "Vi beklager feilen, og håper du kan sende oss en e-post, så skal vi ordne opp!",
+    "description": "Vet ikke mer...",
+    "title": "Feilr."
+  },
+  "errors": {
+    "fatalError": {
+      "description": "Vi prøvde å utføre handlingen, men noe gikk galt. Vennligst prøv igjen senere.",
+      "title": "Noe gikk veldig galt"
+    }
+  },
+  "events": {
+    "description": "Beskrivelse",
+    "detailspage": {
+      "notfound": {
+        "back": "Til forsiden",
+        "description": "Vi finner ikke dette arrangementet",
+        "title": "Beklager, kunne ikke finne siden"
+      }
+    },
+    "event": "Arrangement",
+    "event-not-found": "Arrangementet ble ikke funnet",
+    "events": "Arrangementer",
+    "moreinformation": "Informasjon",
+    "practicalinformation": "Praktisk",
+    "program": "Program",
+    "sectiontitle": "Hva som skjer!"
+  },
+  "labels": {
+    "account": "Mine opplysninger",
+    "admin": "Admin",
+    "all": "Alle",
+    "allEvents": "Vis alle arrangement",
+    "cancelled": "Avbestilt",
+    "confirmRegistration": "Bekreft påmelding",
+    "contactUs": "Kontakt oss",
+    "createUserSuccess": "Ny bruker lagt til",
+    "description": "Beskrivelse",
+    "edit": "Endre",
+    "editProfile": "Endre opplysninger",
+    "email": "E-post",
+    "error": "Feil",
+    "eventPage": "Kursinformasjon",
+    "fullName": "Navn",
+    "guid": "Guid",
+    "id": "Id",
+    "login": "Logg inn",
+    "logout": "Logg av",
+    "menu": "Meny",
+    "name": "Navn",
+    "next": "Neste",
+    "participants": "Deltagere",
+    "phoneNumber": "Mobiltelefon",
+    "practicalInfo": "Praktisk info",
+    "products": "Produkter",
+    "profile": "Mine kurs",
+    "program": "Program",
+    "registration": "Registrering",
+    "registrations": "Registreringer",
+    "save": "Lagre",
+    "user": "Mine kurs",
+    "view": "Vis",
+    "waitingList": "Venteliste",
+    "welcome": "Velkommen"
+  },
+  "onlinecourses": "Nettkurs",
+  "order": {
+    "labels": {
+      "date": "Dato",
+      "id": "Id",
+      "items": "Ordrelinjer",
+      "orderId": "Ordre id",
+      "product": "Produkt",
+      "quantity": "Antall",
+      "status": "Status",
+      "variant": "Variant"
+    },
+    "status": {
+      "labels": {
+        "cancelled": "Avbestilt",
+        "draft": "Kladd",
+        "invoiced": "Fakturert",
+        "refunded": "Tilbakebetalt",
+        "unknown": "Ukjent",
+        "verified": "Godkjent"
+      }
+    }
+  },
+  "orders": {
+    "labels": {
+      "id": "Id",
+      "time": "Når"
+    }
+  },
+  "registration": {
+    "alreadyRegistered": "Du er allerede registrert for dette arrangementet"
+  },
+  "user": {
+    "name": "Navn"
+  }
+}

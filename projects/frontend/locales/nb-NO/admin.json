@@ -1,0 +1,148 @@
+{
+  "certificates": {
+    "labels": {
+      "notFound": "Fant ikke noe deltakerbevis"
+    },
+    "page": {
+      "description": "Ingenting her.",
+      "title": "Deltakerbevis"
+    }
+  },
+  "createEvent": {
+    "alreadyExists": {
+      "description": "En hendelse med den sneglen eksisterer allerede, sneglen må være unik.",
+      "title": "Hendelsen eksisterer allerede."
+    },
+    "content": {
+      "description": "Her kan du lage ditt arrangement, husk å skrive inn både tittel og slug",
+      "title": "Nytt arrangement"
+    }
+  },
+  "editEvent": {
+    "content": {
+      "description": "Informasjon om arrangementet",
+      "title": "Rediger"
+    }
+  },
+  "eventColumns": {
+    "actions": "Handlinger",
+    "location": "Sted",
+    "title": "Tittel",
+    "when": "Når"
+  },
+  "eventEmailer": {
+    "form": {
+      "body": {
+        "feedbackIncorrect": "Needs at least 10 characters",
+        "feedbackNoInput": "Can't send an email without body!",
+        "label": "Body"
+      },
+      "status": {
+        "feedbackNoInput": "Please Select at least one Status type",
+        "label": "Status"
+      },
+      "subject": {
+        "feedbackNoInput": "Please provide a subject",
+        "label": "Subject"
+      },
+      "successFeedback": "Emails succesfully sent!",
+      "type": {
+        "feedbackNoInput": "Please select at least one Type",
+        "label": "Type"
+      }
+    },
+    "title": "E-post til deltakere"
+  },
+  "events": {
+    "labes": {
+      "create": "Nytt arrangement"
+    }
+  },
+  "labels": {
+    "orders": "Ordre",
+    "registrations": "Registeringer",
+    "users": "Brukere"
+  },
+  "orders": {
+    "labels": {
+      "notFound": "Fant ingen ordre."
+    },
+    "page": {
+      "title": "Ordre"
+    }
+  },
+  "participantColumns": {
+    "actions": "Actions",
+    "email": "E-post",
+    "live": "Innsjekk",
+    "name": "Navn",
+    "products": "Produkter",
+    "status": "Status",
+    "telephone": "Mobil",
+    "type": "Type"
+  },
+  "products": {
+    "buttons": {
+      "add-product": "Nytt produkt",
+      "edit-product": "Endre"
+    },
+    "labels": {
+      "addnewproduct": "Nytt produkt",
+      "editProducts": "Endre produkter",
+      "noOrders": "Ingen påmeldte",
+      "productsFor": "Produkter til"
+    },
+    "modal": {
+      "title": {
+        "add-product": "Legg til produkt",
+        "edit": "Legg til et nytt produkt"
+      }
+    }
+  },
+  "registrations": {
+    "detailsPage": {
+      "title": "Registrering"
+    },
+    "labels": {
+      "artist": "Artist",
+      "attended": "Møtt",
+      "cancelled": "Avbestilt",
+      "draft": "Kladd",
+      "eventTitle": "Arrangement",
+      "finished": "Ferdig",
+      "id": "Id",
+      "lecturer": "Foreleser",
+      "notAttended": "Ikke møtt",
+      "notFound": "Fant ingen registrering",
+      "notes": "Notater",
+      "notesEmpty": "Ingen notater",
+      "orders": "Ordre",
+      "participant": "Deltaker",
+      "products": "Produkter",
+      "staff": "Stab",
+      "status": "Status",
+      "student": "Student",
+      "type": "Deltakertype",
+      "userName": "Navn",
+      "verified": "Godkjent",
+      "waitingList": "Venteliste"
+    },
+    "page": {
+      "title": "Registreringer"
+    }
+  },
+  "title": "Admin",
+  "users": {
+    "detailspage": {
+      "title": "Brukerinformasjon"
+    },
+    "labels": {
+      "addUser": "Ny bruker",
+      "createUser": "Ny bruker",
+      "userNotFound": "Fant ikke brukeren"
+    },
+    "page": {
+      "title": "Brukere"
+    }
+  }
+}
