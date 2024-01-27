@@ -56,10 +56,18 @@ const RegistrationConfirmation: React.FC<RegistrationConfirmationProps> = ({
       </ul>
 
       <div>
-        {onBack && <Button onClick={onBack}>{t('common:buttons.back')}</Button>}
+        {onBack && (
+          <Button onClick={onBack} variant="outline">
+            {t('common:buttons.back')}
+          </Button>
+        )}
         {onSubmit && (
-          <Button onClick={onSubmit} data-test-id="registration-confirmation-button">
-            {t('common:buttons.submit')}
+          <Button
+            variant="primary"
+            onClick={onSubmit}
+            data-test-id="registration-confirmation-button"
+          >
+            {t('common:labels.confirmRegistration')}
           </Button>
         )}
       </div>

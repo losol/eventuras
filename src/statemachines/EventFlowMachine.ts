@@ -211,15 +211,12 @@ const EventFlowMachine = createMachine({
         }),
         input: ({ context }) => ({ ...context }),
         onDone: {
-          target: States.SHOW_REGISTRATION_VIEW,
+          target: States.CHECK_REGISTRATION_STATUS,
         },
         onError: {
           target: States.ERROR,
         },
       },
-    },
-    [States.COMPLETED]: {
-      type: 'final',
     },
     [States.ERROR]: {
       type: 'final',

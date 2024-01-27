@@ -180,11 +180,11 @@ const RegistrationPayment = ({
           </fieldset>
         )}
         {onBack && (
-          <Button type="reset" onClick={onBack}>
+          <Button type="button" onClick={onBack} variant="outline">
             {t('common:buttons.back')}
           </Button>
         )}
-        <Button data-test-id="registration-payment-submit-button" type="submit">
+        <Button data-test-id="registration-payment-submit-button" type="submit" variant="primary">
           {t('common:buttons.continue')}
         </Button>
       </form>

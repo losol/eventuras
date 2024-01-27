@@ -2,7 +2,6 @@
 
 import { EventDto, ProductDto, RegistrationDto, UserDto } from '@losol/eventuras';
 import { useActor } from '@xstate/react';
-import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 
 import UserEditor from '@/app/admin/users/UserEditor';
@@ -13,7 +12,6 @@ import { PaymentFormValues, ProductSelected } from '@/types';
 import { SiteInfo } from '@/utils/site/getSiteSettings';
 
 import RegistrationCancellation from './eventflow/RegistrationCancellation';
-import RegistrationComplete from './eventflow/RegistrationComplete';
 import RegistrationConfirmation from './eventflow/RegistrationConfirmation';
 import RegistrationCustomize from './eventflow/RegistrationCustomize';
 import RegistrationPayment from './eventflow/RegistrationPayment';
@@ -29,7 +27,6 @@ export interface EventFlowProps {
 
 const EventFlow: React.FC<EventFlowProps> = ({ eventInfo, user, availableProducts, siteInfo }) => {
   const { t } = createTranslation();
-  const router = useRouter();
 
   const [xState, send] = useActor(EventFlowMachine, {
     input: {
@@ -72,6 +69,7 @@ const EventFlow: React.FC<EventFlowProps> = ({ eventInfo, user, availableProduct
               user: updatedUser,
             });
           }}
+          submitButtonLabel={t('common:labels.next')}
           dataTestId="registration-account-step"
         />
       );
@@ -139,14 +137,7 @@ const EventFlow: React.FC<EventFlowProps> = ({ eventInfo, user, availableProduct
       );
     case xState.matches(States.SUBMITTING):
       return <Loading />;
-    case xState.matches(States.COMPLETED):
-      return (
-        <RegistrationComplete
-          onSubmit={() => {
-            router.push(`/user`);
-          }}
-        />
-      );
+
     case xState.matches('error'):
       return (
         <FatalError

@@ -16,9 +16,16 @@ interface UserEditorProps {
   onUserUpdated?: (updatedUser: UserDto) => void;
   dataTestId?: string;
   adminMode?: boolean;
+  submitButtonLabel?: string;
 }
 
-const UserEditor: FC<UserEditorProps> = ({ adminMode, user, onUserUpdated, dataTestId }) => {
+const UserEditor: FC<UserEditorProps> = ({
+  adminMode,
+  user,
+  onUserUpdated,
+  submitButtonLabel,
+  dataTestId,
+}) => {
   const { t } = createTranslation('common');
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const [isUpdating, setIsUpdating] = useState(false);
@@ -52,11 +59,6 @@ const UserEditor: FC<UserEditorProps> = ({ adminMode, user, onUserUpdated, dataT
     // Update existing user
     Logger.info({ namespace: log_namespace }, 'Updating user');
     setIsUpdating(true);
-    const updatedUser = await apiWrapper(() =>
-      sdk.userProfile.putV3Userprofile({ id: user.id!, requestBody: form as UserFormDto })
-    );
-    setIsUpdating(false);
-
     // if adminMode, update user with users endpoint, otherwise use userProfile endpoint
     const updatedUser = adminMode
       ? await apiWrapper(() =>
@@ -65,6 +67,7 @@ const UserEditor: FC<UserEditorProps> = ({ adminMode, user, onUserUpdated, dataT
       : await apiWrapper(() =>
           sdk.userProfile.putV3Userprofile({ id: user.id!, requestBody: form as UserFormDto })
         );
+    setIsUpdating(false);
 
     if (updatedUser.error) {
       addAppNotification({
@@ -92,6 +95,13 @@ const UserEditor: FC<UserEditorProps> = ({ adminMode, user, onUserUpdated, dataT
     if (onUserUpdated && result?.value) {
       onUserUpdated(result.value);
     }
+  };
+
+  const getButtonLabel = () => {
+    if (submitButtonLabel) {
+      return submitButtonLabel;
+    }
+    return editMode ? t('user:account.update.label') : t('user:account.create.label');
   };
 
   return (
@@ -135,7 +145,7 @@ const UserEditor: FC<UserEditorProps> = ({ adminMode, user, onUserUpdated, dataT
 
       {/* Submit Button */}
       <Button type="submit" data-test-id="account-update-button" loading={isUpdating}>
-        {editMode ? t('user:account.update.label') : t('user:account.create.label')}
+        {getButtonLabel()}
       </Button>
     </Form>
   );

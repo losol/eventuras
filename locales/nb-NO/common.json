@@ -4,7 +4,7 @@
     "logout": "Logg ut"
   },
   "buttons": {
-    "back": "Back",
+    "back": "Tilbake",
     "cancel": "Avbestill",
     "check_account_details": "Check your Account Details",
     "continue": "Fortsett",
@@ -61,6 +61,7 @@
     "all": "Alle",
     "allEvents": "Vis alle arrangement",
     "cancelled": "Avbestilt",
+    "confirmRegistration": "Bekreft påmelding",
     "contactUs": "Kontakt oss",
     "createUserSuccess": "Ny bruker lagt til",
     "description": "Beskrivelse",
@@ -76,6 +77,7 @@
     "logout": "Logg av",
     "menu": "Meny",
     "name": "Navn",
+    "next": "Neste",
     "participants": "Deltagere",
     "phoneNumber": "Mobiltelefon",
     "practicalInfo": "Praktisk info",
