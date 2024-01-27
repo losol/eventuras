@@ -1,4 +1,4 @@
-name: Deploy to dev site
+name: Frontend - Deploy to staging site
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
@@ -10,6 +10,9 @@ on:
 jobs:
   Deploy-Dev:
     environment: dev
+    defaults:
+      run:
+        working-directory: projects/frontend
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

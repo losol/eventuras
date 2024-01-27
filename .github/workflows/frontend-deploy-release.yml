@@ -1,4 +1,4 @@
-name: Deploy release to production
+name: Frontend - Deploy release to production
 on:
   push:
     tags:
@@ -7,6 +7,9 @@ on:
 jobs:
   Deploy-Lk:
     environment: lk
+    defaults:
+      run:
+        working-directory: projects/frontend
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
@@ -25,6 +28,9 @@ jobs:
         run: vercel promote --token=${{ secrets.VERCEL_TOKEN }}
   Deploy-Nlf:
     environment: nlf
+    defaults:
+      run:
+        working-directory: projects/frontend
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
