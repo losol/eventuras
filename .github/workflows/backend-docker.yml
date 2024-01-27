@@ -5,13 +5,16 @@ on:
     branches:
       - main
     paths:
-      - "src/**"
-      - "tests/**"
+      - "projects/backend/src/**"
+      - "projects/backend/tests/**"
 
 jobs:
   test:
     name: Tests
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/backend
 
     steps:
       - uses: actions/checkout@v4
