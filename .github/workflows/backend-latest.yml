@@ -5,9 +5,9 @@ on:
     branches:
       - main
     paths:
-      - 'projects/backend/src/**'
-      - 'projects/backend/tests/**'
-      - 'projects/backend/Dockerfile'
+      - 'apps/api/src/**'
+      - 'apps/api/tests/**'
+      - 'apps/api/Dockerfile'
 
 env:
   ORGANIZATION_NAME: losolio

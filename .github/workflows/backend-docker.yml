@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - "projects/backend/src/**"
-      - "projects/backend/tests/**"
+      - 'apps/api/src/**'
+      - 'apps/api/tests/**'
 
 jobs:
   test:
@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: projects/backend
+        working-directory: apps/api
 
     steps:
       - uses: actions/checkout@v4
