@@ -9,8 +9,8 @@ on:
         type: string
   push:
     paths:
-      - 'projects/backend/src/**'
-      - 'projects/backend/tests/**'
+      - 'apps/api/src/**'
+      - 'apps/api/tests/**'
 
 jobs:
   build:
