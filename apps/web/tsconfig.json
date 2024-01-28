@@ -1,47 +1,42 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-        "target": "es2022",
+   "compilerOptions": {
+    "target": "es2022",
     "lib": ["dom", "dom.iterable", "ES2022"],
     "allowJs": true,
     "baseUrl": "./",
     "skipLibCheck": true,
     "strict": true,
-    "jsx": "preserve",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "typeRoots": ["./node_modules/@types", "./types"],
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "jsx": "preserve",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-     "paths": {
+    "paths": {
       "@/*": ["./src/*", "public/*"],
     },
-    "types": [
-      "jest",
-      "node"
-    ]
+    "plugins": [
+      {
+        "name": "next",
+      },
+    ],
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.js",
-    "**/*.jsx",
-    "../../apps/web/.next/types/**/*.ts",
-    "../../dist/apps/web/.next/types/**/*.ts",
-    "next-env.d.ts",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "jest.config.ts",
-    "src/**/*.spec.ts",
-    "src/**/*.test.ts"
-  ]
+  "ts-node": {
+    // these options are overrides used only by ts-node
+    // same as the --compilerOptions flag and the TS_NODE_COMPILER_OPTIONS environment variable
+    "require": ["tsconfig-paths/register"],
+    "compilerOptions": {
+      "module": "commonjs",
+      "esModuleInterop": true,
+      "target": "ESNext",
+      "lib": ["dom", "dom.iterable", "ESNext"],
+    },
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "middleware.ts", ".next/types/**/*.ts"],
+  "exclude": ["node_modules", "scripts"],
 }

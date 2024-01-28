@@ -15,6 +15,7 @@ const baseNextConfig = {
   i18n: {
     localeDetection: false,
   },
+
 };
 
 // Nx configuration

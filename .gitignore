@@ -4,6 +4,7 @@
 
 # Nx
 .nx
+dist/
 
 ### ASPNETCore ###
 ## Ignore Visual Studio temporary files, build results, and
