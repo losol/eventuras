@@ -1,5 +1,7 @@
 "use client";
 /**
+ * Based on the work licensed under the MIT license below:
+ * 
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
@@ -39,14 +41,18 @@ import {
 import {
   $createParagraphNode,
   $getNodeByKey,
+  $getRoot,
   $getSelection,
+  $isElementNode,
   $isRangeSelection,
   $isRootOrShadowRoot,
+  $isTextNode,
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
   COMMAND_PRIORITY_NORMAL,
-  DEPRECATED_$isGridSelection,
+  ElementFormatType,
+  FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
   KEY_MODIFIER_COMMAND,
   LexicalEditor,
@@ -54,7 +60,7 @@ import {
   REDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
   UNDO_COMMAND,
-} from "lexical";
+} from 'lexical';
 import { Dispatch, useCallback, useEffect, useState } from "react";
 import * as React from "react";
 
@@ -102,6 +108,7 @@ function dropDownActiveClass(active: boolean) {
 function BlockFormatDropDown({
   editor,
   blockType,
+  rootType,
   disabled = false,
 }: {
   blockType: keyof typeof blockTypeToBlockName;
@@ -109,31 +116,25 @@ function BlockFormatDropDown({
   editor: LexicalEditor;
   disabled?: boolean;
 }): JSX.Element {
-  const formatParagraph = () => {
+    const formatParagraph = () => {
+  editor.update(() => {
+    const selection = $getSelection();
+    if ($isRangeSelection(selection)) {
+      $setBlocksType(selection, () => $createParagraphNode());
+    }
+  });
+};
+
+const formatHeading = (headingSize: HeadingTagType) => {
+  if (blockType !== headingSize) {
     editor.update(() => {
       const selection = $getSelection();
-      if (
-        $isRangeSelection(selection) ||
-        DEPRECATED_$isGridSelection(selection)
-      ) {
-        $setBlocksType(selection, () => $createParagraphNode());
+      if ($isRangeSelection(selection)) {
+        $setBlocksType(selection, () => $createHeadingNode(headingSize));
       }
     });
-  };
-
-  const formatHeading = (headingSize: HeadingTagType) => {
-    if (blockType !== headingSize) {
-      editor.update(() => {
-        const selection = $getSelection();
-        if (
-          $isRangeSelection(selection) ||
-          DEPRECATED_$isGridSelection(selection)
-        ) {
-          $setBlocksType(selection, () => $createHeadingNode(headingSize));
-        }
-      });
-    }
-  };
+  }
+};
 
   const formatBulletList = () => {
     if (blockType !== "bullet") {
@@ -151,19 +152,16 @@ function BlockFormatDropDown({
     }
   };
 
-  const formatQuote = () => {
-    if (blockType !== "quote") {
-      editor.update(() => {
-        const selection = $getSelection();
-        if (
-          $isRangeSelection(selection) ||
-          DEPRECATED_$isGridSelection(selection)
-        ) {
-          $setBlocksType(selection, () => $createQuoteNode());
-        }
-      });
-    }
-  };
+const formatQuote = () => {
+  if (blockType !== 'quote') {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        $setBlocksType(selection, () => $createQuoteNode());
+      }
+    });
+  }
+};
 
   return (
     <DropDown
