@@ -1,7 +1,19 @@
 {
+  "name": "eventuras",
+  "version": "0.0.1",
+  "license": "MIT",
+  "scripts": {},
+  "private": true,
+  "dependencies": {},
   "devDependencies": {
+    "@nx/js": "17.2.8",
+    "nx": "17.2.8",
     "@commitlint/cli": "^17.6.7",
     "@commitlint/config-conventional": "^17.6.7",
+    "@nx/next": "^17.2.8",
     "openapi-typescript-codegen": "^0.25.0"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }
