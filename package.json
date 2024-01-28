@@ -49,6 +49,7 @@
     "typescript": "~5.2.2"
   },
   "workspaces": [
-    "apps/web"
+    "apps/web",
+    "apps/api"
   ]
 }
