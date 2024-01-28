@@ -15,7 +15,7 @@ env:
 
 jobs:
   build:
-    uses: ./.github/workflows/backend-build.yml
+    uses: ./.github/workflows/api-build.yml
 
   docker:
     name: Build and push Docker image
