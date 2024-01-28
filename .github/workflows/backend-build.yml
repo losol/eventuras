@@ -5,12 +5,12 @@ on:
     inputs:
       dotnet-version:
         required: false
-        default: "7"
+        default: '7'
         type: string
   push:
     paths:
-      - "projects/backend/src/**"
-      - "projects/backend/tests/**"
+      - 'projects/backend/src/**'
+      - 'projects/backend/tests/**'
 
 jobs:
   build:
@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./projects/backend/
+        working-directory: ./apps/api/
     steps:
       - uses: actions/checkout@v4
       - name: Setup dotnet
@@ -36,10 +36,10 @@ jobs:
     strategy:
       matrix:
         test_set:
-          - name: "Unit Tests"
-            path: "./tests/Eventuras.UnitTests/Eventuras.UnitTests.csproj"
-          - name: "Web API Integration Tests"
-            path: "./tests/Eventuras.WebApi.Tests/Eventuras.WebApi.Tests.csproj"
+          - name: 'Unit Tests'
+            path: './tests/Eventuras.UnitTests/Eventuras.UnitTests.csproj'
+          - name: 'Web API Integration Tests'
+            path: './tests/Eventuras.WebApi.Tests/Eventuras.WebApi.Tests.csproj'
     name: ${{ matrix.test_set.name }}
     steps:
       - uses: actions/checkout@v4
