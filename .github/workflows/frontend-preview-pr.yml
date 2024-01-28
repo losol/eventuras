@@ -8,8 +8,8 @@ on:
     branches:
       - main
 jobs:
-  Deploy-Dev:
-    environment: dev
+  Deploy-Preview:
+    environment: web-dev
     defaults:
       run:
         working-directory: apps/web
