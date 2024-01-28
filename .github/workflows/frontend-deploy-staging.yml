@@ -11,7 +11,7 @@ jobs:
     environment: staging
     defaults:
       run:
-        working-directory: projects/frontend
+        working-directory: apps/web
     runs-on: ubuntu-latest
     steps:
       # We are using a separate site for staging, so this is set as production on Vercel
