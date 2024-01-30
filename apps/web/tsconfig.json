@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends":"../../tsconfig.base.json",
    "compilerOptions": {
     "target": "es2022",
     "lib": ["dom", "dom.iterable", "ES2022"],
@@ -19,6 +19,7 @@
     "incremental": true,
     "paths": {
       "@/*": ["./src/*", "public/*"],
+      "@losol/scribo-markdown":["../../libs/scribo/src/lib.tsx"]
     },
     "plugins": [
       {
