@@ -1,6 +1,7 @@
 
 # Created by https://www.gitignore.io/api/node,linux,macos,windows,aspnetcore,visualstudio,visualstudiocode
 
+.env
 
 # Nx
 .nx

@@ -1,5 +1,5 @@
 {
-  "name": "@losol/scribo-markdown",
+  "name": "@eventuras/scribo",
   "version": "0.3.2",
   "main": "./index.js",
   "types": "./index.d.ts",

@@ -20,9 +20,9 @@ jobs:
         run: npm install --global vercel@latest
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+      - name: nx – Build Project Artifacts
+        run: nx run web:build --production
       - name: Deploy Project Artifacts to Vercel
         run: |
-          url="$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})"
+          url="$(vercel deploy --prebuilt --cwd dist/apps/web/.next --token=${{ secrets.VERCEL_TOKEN }})"
           vercel alias --scope=${{ secrets.VERCEL_ORG_SLUG }} --token=${{ secrets.VERCEL_TOKEN }} set "$url" $URL

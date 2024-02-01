@@ -1,43 +1,41 @@
 {
-  "extends":"../../tsconfig.base.json",
-   "compilerOptions": {
-    "target": "es2022",
-    "lib": ["dom", "dom.iterable", "ES2022"],
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "preserve",
     "allowJs": true,
-    "baseUrl": "./",
-    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "typeRoots": ["./node_modules/@types", "./types"],
-    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
     "incremental": true,
-    "paths": {
-      "@/*": ["./src/*", "public/*"],
-      "@losol/scribo-markdown":["../../libs/scribo/src/lib.tsx"]
-    },
     "plugins": [
       {
-        "name": "next",
-      },
+        "name": "next"
+      }
     ],
+    "types": [
+      "jest",
+      "node"
+    ]
   },
-  "ts-node": {
-    // these options are overrides used only by ts-node
-    // same as the --compilerOptions flag and the TS_NODE_COMPILER_OPTIONS environment variable
-    "require": ["tsconfig-paths/register"],
-    "compilerOptions": {
-      "module": "commonjs",
-      "esModuleInterop": true,
-      "target": "ESNext",
-      "lib": ["dom", "dom.iterable", "ESNext"],
-    },
-  },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "middleware.ts", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "scripts"],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
+    "middleware.ts",
+    "../../apps/web/.next/types/**/*.ts",
+    "../../dist/apps/web/.next/types/**/*.ts",
+    "next-env.d.ts",
+    ".next/types/**/*.ts"
+, "../../i18n.js"  ],
+  "exclude": [
+    "node_modules",
+    "jest.config.ts",
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts"
+  ]
 }
