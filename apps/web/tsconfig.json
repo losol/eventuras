@@ -1,5 +1,4 @@
 {
-  "extends": "../../tsconfig.base.json",
    "compilerOptions": {
     "target": "es2022",
     "lib": ["dom", "dom.iterable", "ES2022"],
@@ -19,6 +18,7 @@
     "incremental": true,
     "paths": {
       "@/*": ["./src/*", "public/*"],
+
     },
     "plugins": [
       {

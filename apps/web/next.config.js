@@ -1,10 +1,9 @@
 /* eslint-disable no-process-env */
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { composePlugins, withNx } = require('@nx/next');
 const nextTranslate = require('next-translate-plugin');
 
-// Base Next.js configuration
-const baseNextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@losol/eventuras'],
 
@@ -13,29 +12,19 @@ const baseNextConfig = {
   },
 
   i18n: {
+    // Disable automatic locale detection and redirect
     localeDetection: false,
   },
-
 };
 
-// Nx configuration
-const nxConfig = {
-  nx: {
-    svgr: false,
-  },
-};
-
-// Plugins array
-const plugins = [withNx(nxConfig), nextTranslate];
-
-// Conditional plugin for bundle analyzer
 if (process.env.ANALYZE === 'true') {
   const withBundleAnalyzer = require('@next/bundle-analyzer')({
     enabled: process.env.ANALYZE === 'true',
     openAnalyzer: false,
   });
-  plugins.push(withBundleAnalyzer);
+  module.exports = withBundleAnalyzer(nextTranslate(nextConfig));
+  return;
 }
 
-// Compose the plugins with the base configuration
-module.exports = composePlugins(...plugins)(baseNextConfig);
+// no sentry
+module.exports = nextTranslate(nextConfig);
