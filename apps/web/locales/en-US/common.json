@@ -13,6 +13,7 @@
     "register": "Register",
     "register-cta": "Register for this event",
     "registered-already": "You are already registered for this event",
+    "registration-not-open":"Right now it is not possible to register for this event",
     "save": "Save",
     "send": "Send",
     "submit": "Submit",

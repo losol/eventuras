@@ -121,7 +121,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
                 value: value,
                 label: value,
               }))}
-              dataTestId="event-status-select"
+              dataTestId="event-status-select-button"
             />
             <NumberInput
               name="maxParticipants"

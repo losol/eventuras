@@ -112,7 +112,7 @@ const Page: React.FC<EventInfoProps> = async ({ params }) => {
           />
 
           {eventinfo?.city}
-          <EventRegistrationButton eventId={eventinfo.id!} />
+          <EventRegistrationButton event={eventinfo!} />
         </Container>
       </section>
 

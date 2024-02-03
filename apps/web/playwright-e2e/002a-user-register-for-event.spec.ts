@@ -1,15 +1,15 @@
 /* eslint no-process-env: 0 */
 
 import { test } from '@playwright/test';
-
+import fs from 'fs'
 import Logger from '@/utils/Logger';
 
-import createdEvent from './createdEvent.json';
-import { checkIfLoggedIn, registerForEvent, validateRegistration } from './functions';
+import { checkIfLoggedIn, readCreatedEvent, registerForEvent, validateRegistration } from './functions';
 test.describe.configure({ mode: 'serial' });
 test.use({ storageState: 'playwright-auth/user.json' });
 
 test.describe('register for event', () => {
+  let createdEvent = readCreatedEvent()
   test.beforeAll(() => {
     if (!createdEvent.eventId) {
       Logger.error(

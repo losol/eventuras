@@ -1,10 +1,27 @@
 const ns = { namespace: 'e2e' };
 import { chromium, expect, Page, test as setup } from '@playwright/test';
-
+import fs from 'fs'
 import Logger from '@/utils/Logger';
 
 import { fetchLoginCode } from './utils';
+type CreatedEvent = {
+  eventId: string
+}
+export const readCreatedEvent = (): CreatedEvent => {
+  let createdEvent: CreatedEvent = { eventId: "-1" }
+  try {
 
+    createdEvent = JSON.parse(fs.readFileSync('./playwright-e2e/createdEvent.json', 'utf8'))
+  } catch (e: any) {
+
+  }
+  return createdEvent
+}
+
+export const writeCreatedEvent = (eventId: string) => {
+  const eventToStore = JSON.stringify({ eventId });
+  fs.writeFileSync('./playwright-e2e/createdEvent.json', eventToStore);
+}
 export const authenticate = async (userName: string, authFile: string) => {
   setup.use({
     locale: 'en-GB',
@@ -19,15 +36,18 @@ export const authenticate = async (userName: string, authFile: string) => {
     await page.locator('[data-test-id="login-button"]').click();
     await page.locator('[id="username"]').fill(userName);
     await page.getByRole('button', { name: 'Continue', exact: true }).click();
-
+    Logger.info(ns, 'authenticate: attempting to fetch login code');
     const loginCode = await fetchLoginCode(userName);
     await page.locator('[id="code"]').fill(loginCode!);
     await page.getByRole('button', { name: 'Continue', exact: true }).click();
+    Logger.info(ns, 'authenticate: filled and clicked continue, waiting for root url');
 
     await page.waitForURL('/');
 
     await page.goto('/user');
     await page.waitForLoadState('networkidle');
+    Logger.info(ns, 'authenticate: expect username to be visible upon login and visiting /user');
+
     await expect(page.getByText(userName).first()).toBeVisible();
     await context.storageState({ path: authFile });
     Logger.info({ namespace: 'testing.auth' }, 'Auth Complete');
@@ -48,7 +68,7 @@ export const checkIfUnAuthorized = async (page: Page, url: string) => {
 };
 
 export const checkIfAccessToAdmin = async (page: Page) => {
-  Logger.info({ namespace: 'testing' }, 'admin access check');
+  Logger.info(ns, 'admin access check');
   await page.goto('/admin');
   await page.waitForLoadState('load');
   await expect(page.locator('[data-test-id="add-event-button"]')).toBeVisible();
@@ -68,10 +88,8 @@ export const createEvent = async (page: Page, eventName: string) => {
   await page.locator('[data-test-id="event-status-select-button"]').click();
 
   await page.getByRole('option', { name: 'RegistrationsOpen' }).click();
-  await page.locator('[data-test-id="event-published-checkbox"]').click();
 
-  const advancedTab = page.getByRole('tab', { name: 'Advanced' });
-  advancedTab.click();
+  await page.getByRole('tab', { name: 'Advanced' }).click()
 
   const eventId = await page.locator('[data-test-id="eventeditor-form-eventid"]').inputValue();
   Logger.info(ns, `Event id from test: ${eventId}`);
