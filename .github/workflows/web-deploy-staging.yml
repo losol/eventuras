@@ -8,7 +8,7 @@ on:
       - main
 jobs:
   Deploy-Staging:
-    environment: staging
+    environment: web-staging
     defaults:
       run:
         working-directory: apps/web
