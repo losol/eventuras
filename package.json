@@ -7,8 +7,8 @@
     "@commitlint/cli": "^18.6.0",
     "@commitlint/config-conventional": "^18.6.0"
   },
-  "workspaces": [
-    "./apps/web/",
-    "./libs/scribo"
-  ]
+  "engines": {
+    "npm": ">=9.0.0 <11.0.0",
+    "node": ">=18.0.0 <21.0.0"
+  }
 }
