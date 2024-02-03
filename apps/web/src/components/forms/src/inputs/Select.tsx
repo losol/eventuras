@@ -40,8 +40,8 @@ const Select: React.FC<SelectProps> = ({ label, name, options, dataTestId }) => 
           <Listbox value={value} onChange={onChange}>
             <Listbox.Button
               className={styles.button.base}
-              id={`${name}-button`}
-              data-test-id={`${dataTestId}-button`}
+              id={`${name}`}
+              data-test-id={`${dataTestId}`}
             >
               {options.find(option => option.value === value)?.label ?? 'Select an option'}
 
