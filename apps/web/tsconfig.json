@@ -17,9 +17,7 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@/*": ["./src/*", "public/*"],
-      "@losol/scribo-markdown":["../../libs/scribo/src/lib.tsx"]
-
+      "@/*": ["./src/*", "public/*"]
     },
     "plugins": [
       {
