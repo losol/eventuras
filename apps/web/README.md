@@ -51,7 +51,7 @@ We are open to most standards, as long as there is one. We were inspired by [jos
 
 ## Translations
 
-We use next-translate as our translation library, read about it at <https://github.com/aralroca/next-translate>. Instead of using `createTranslations('common')`, for instance, we have opted to go with `createuseTranslations()` and then access the label through `t('common:label')`. The reason is better portability with tools such as i18n-ally.
+We use next-translate as our translation library, read about it at <https://github.com/aralroca/next-translate>. Instead of using `createTranslations('common')`, for instance, we have opted to go with `createTranslations()` and then access the label through `t('common:label')`. The reason is better portability with tools such as i18n-ally.
 
 ### i18n-ally
 
@@ -60,7 +60,7 @@ This is a plugin for visual code which makes it easier to see the translations i
 ```json
     "i18n-ally.displayLanguage": "en-US",
     "i18n-ally.localesPaths": [
-        "locales"
+        "apps/web/locales"
     ],
     "i18n-ally.sourceLanguage": "en-US",
     "i18n-ally.namespace": true,

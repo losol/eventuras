@@ -52,6 +52,19 @@
     "event": "Event",
     "event-not-found": "Event not found",
     "events": "Events",
+    "labels": {
+      "status": {
+        "archived": "Archived",
+        "cancelled": "Cancelled",
+        "draft": "Draft",
+        "finished": "Finished",
+        "planned": "Planned",
+        "registrationsClosed": "Registrations now closed",
+        "registrationsOpen": "Register now",
+        "unknown": "Unknown",
+        "waitingList": "Waitinglist"
+      }
+    },
     "moreinformation": "Information",
     "practicalinformation": "Practical information",
     "program": "Program",
