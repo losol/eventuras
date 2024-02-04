@@ -64,6 +64,7 @@
       "profileNotFound": "Fant ikke brukeren din"
     },
     "heading": "Dine opplysninger",
+    "profileNotFound": "Fant ingen bruker",
     "unauthorized": "Du har ikke tilgang"
   },
   "payment": {

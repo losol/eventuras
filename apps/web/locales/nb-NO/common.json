@@ -12,6 +12,7 @@
     "homepage": "Til forsiden",
     "register": "Registrer",
     "register-cta": "Meld meg på!",
+    "registered-already": "Du er allerede registrert",
     "registration-not-open": "Right now it is not possible to register for this event",
     "save": "Lagre",
     "send": "Send",
@@ -51,6 +52,19 @@
     "event": "Arrangement",
     "event-not-found": "Arrangementet ble ikke funnet",
     "events": "Arrangementer",
+    "labels": {
+      "status": {
+        "archived": "Arkivert",
+        "cancelled": "Avlyst",
+        "draft": "Kladd",
+        "finished": "Ferdig",
+        "planned": "Planlagt",
+        "registrationsClosed": "Stengt for påmelding",
+        "registrationsOpen": "Registrer deg nå",
+        "unknown": "Ukjent",
+        "waitingList": "Venteliste"
+      }
+    },
     "moreinformation": "Informasjon",
     "practicalinformation": "Praktisk",
     "program": "Program",
