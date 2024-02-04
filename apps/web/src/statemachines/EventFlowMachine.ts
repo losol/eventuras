@@ -1,4 +1,11 @@
-import { ApiError, EventDto, ProductDto, RegistrationDto, UserDto } from '@losol/eventuras';
+import {
+  ApiError,
+  EventDto,
+  EventInfoStatus,
+  ProductDto,
+  RegistrationDto,
+  UserDto,
+} from '@losol/eventuras';
 import { assign, createMachine, fromPromise } from 'xstate';
 
 import { PaymentFormValues } from '@/types';
@@ -89,18 +96,33 @@ const EventFlowMachine = createMachine({
       },
     },
     [States.REGISTER_OR_EDIT]: {
-      description: 'Decide wether to edit or create a registration',
+      description:
+        'Decide whether to edit or create a registration based on context and event status',
       always: [
         {
+          // User has an existing registration, show the registration view
           guard: ({ context }) => context.inEditMode,
           target: States.SHOW_REGISTRATION_VIEW,
         },
         {
-          guard: ({ context }) => !context.inEditMode,
+          // No existing registration, but event registration status allows creating new
+          guard: ({ context }) =>
+            !context.inEditMode &&
+            (context.eventInfo.status === EventInfoStatus.REGISTRATIONS_OPEN ||
+              context.eventInfo.status === EventInfoStatus.WAITING_LIST),
           target: States.VALIDATE_ACCOUNT_DETAILS,
+        },
+        {
+          // Needs an better error message
+          guard: ({ context }) =>
+            !context.inEditMode &&
+            context.eventInfo.status !== EventInfoStatus.REGISTRATIONS_OPEN &&
+            context.eventInfo.status !== EventInfoStatus.WAITING_LIST,
+          target: States.ERROR,
         },
       ],
     },
+
     [States.VALIDATE_ACCOUNT_DETAILS]: {
       on: {
         [Events.ON_SUBMIT_ACCOUNT_DETAILS]: {
