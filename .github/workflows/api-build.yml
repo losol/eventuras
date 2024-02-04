@@ -9,8 +9,8 @@ on:
         type: string
   push:
     paths:
-      - "apps/api/src/**"
-      - "apps/api/tests/**"
+      - "./apps/api/src/**"
+      - "./apps/api/tests/**"
 
 jobs:
   build:
@@ -33,6 +33,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: build
+    defaults:
+      run:
+        working-directory: ./apps/api/
     strategy:
       matrix:
         test_set:
