@@ -34,7 +34,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./apps/api/
           push: true
           tags: ${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}:${{ github.event.release.tag_name }}
 
