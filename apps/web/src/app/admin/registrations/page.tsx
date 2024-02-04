@@ -14,7 +14,7 @@ const AdminRegistrationsPage = async () => {
     <Layout fluid>
       <Section className="py-8">
         <Container>
-          <Heading as="h1">{t('admin:registrations.page.title')}</Heading>
+          <Heading as="h1">{t('common:registrations.page.title')}</Heading>
         </Container>
       </Section>
       <Section>

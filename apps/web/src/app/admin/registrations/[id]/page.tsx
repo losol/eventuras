@@ -33,23 +33,23 @@ const RegistrationDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
   );
 
   Logger.debug(
-    { namespace: 'admin:registrations' },
+    { namespace: 'common:registrations' },
     `Registration detail page: with data ${JSON.stringify(registration.value)}`
   );
 
   if (!registration.ok) {
     Logger.error(
-      { namespace: 'admin:registrations' },
+      { namespace: 'common:registrations' },
       `Failed to fetch order id ${params.id}, error: ${registration.error}`
     );
-    return <div>{t('admin:registrations.labels.notFound')}</div>;
+    return <div>{t('common:registrations.labels.notFound')}</div>;
   }
 
   return (
     <Layout fluid>
       <Section className="bg-white dark:bg-black pb-8">
         <Container>
-          <Heading as="h1">{t('admin:registrations.detailsPage.title')}</Heading>
+          <Heading as="h1">{t('common:registrations.detailsPage.title')}</Heading>
         </Container>
       </Section>
       <Section className="py-12">
