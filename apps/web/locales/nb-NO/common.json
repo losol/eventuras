@@ -12,7 +12,7 @@
     "homepage": "Til forsiden",
     "register": "Registrer",
     "register-cta": "Meld meg på!",
-    "registration-not-open":"Right now it is not possible to register for this event",
+    "registration-not-open": "Right now it is not possible to register for this event",
     "save": "Lagre",
     "send": "Send",
     "submit": "Lagre",
@@ -122,8 +122,37 @@
       "time": "Når"
     }
   },
-  "registration": {
-    "alreadyRegistered": "Du er allerede registrert for dette arrangementet"
+  "registrations": {
+    "detailsPage": {
+      "title": "Registrering"
+    },
+    "labels": {
+      "artist": "Artist",
+      "attended": "Møtt",
+      "cancelled": "Avbestilt",
+      "draft": "Kladd",
+      "eventTitle": "Arrangement",
+      "finished": "Ferdig",
+      "id": "Id",
+      "lecturer": "Foreleser",
+      "notAttended": "Ikke møtt",
+      "notFound": "Fant ingen registrering",
+      "notes": "Notater",
+      "notesEmpty": "Ingen notater",
+      "orders": "Ordre",
+      "participant": "Deltaker",
+      "products": "Produkter",
+      "staff": "Stab",
+      "status": "Status",
+      "student": "Student",
+      "type": "Deltakertype",
+      "userName": "Navn",
+      "verified": "Godkjent",
+      "waitingList": "Venteliste"
+    },
+    "page": {
+      "title": "Registreringer"
+    }
   },
   "user": {
     "name": "Navn"

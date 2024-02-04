@@ -13,7 +13,7 @@
     "register": "Register",
     "register-cta": "Register for this event",
     "registered-already": "You are already registered for this event",
-    "registration-not-open":"Right now it is not possible to register for this event",
+    "registration-not-open": "Right now it is not possible to register for this event",
     "save": "Save",
     "send": "Send",
     "submit": "Submit",
@@ -123,8 +123,37 @@
       "time": "Time"
     }
   },
-  "registration": {
-    "alreadyRegistered": "You are already registered for this event"
+  "registrations": {
+    "detailsPage": {
+      "title": "Registration"
+    },
+    "labels": {
+      "artist": "Artist",
+      "attended": "Attended",
+      "cancelled": "Cancelled",
+      "draft": "Draft",
+      "eventTitle": "Event title",
+      "finished": "Finished",
+      "id": "Id",
+      "lecturer": "Lecturer",
+      "notAttended": "No show",
+      "notFound": "Registration not found",
+      "notes": "Notes",
+      "notesEmpty": "No notes.",
+      "orders": "Orders",
+      "participant": "Participant",
+      "products": "Products",
+      "staff": "Staff",
+      "status": "Status",
+      "student": "Student",
+      "type": "Type",
+      "userName": "Name",
+      "verified": "Verified",
+      "waitingList": "Waiting list"
+    },
+    "page": {
+      "title": "Registrations"
+    }
   },
   "user": {
     "name": "Name"
