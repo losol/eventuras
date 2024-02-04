@@ -1,12 +1,14 @@
 using Eventuras.Services.Pdf;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 
-
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Eventuras.Services.Converto.Tests")]
 namespace Eventuras.Services.Converto
 {
+
     internal class ConvertoPdfRenderService : IPdfRenderService
     {
         private readonly IConvertoClient _client;
