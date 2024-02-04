@@ -40,9 +40,13 @@ namespace Eventuras.WebApi.Tests
                     services.AddTransient<IPdfRenderService, DummyPdfRenderService>();
                     services.AddSingleton<IOrganizationSettingsRegistryComponent, OrgSettingsTestRegistryComponent>();
 
-                    // Add ApplicationDbContext using an in-memory database for testing.
+                    // Remove previously configured DbContextOptions
                     services.RemoveAll(typeof(DbContextOptions<ApplicationDbContext>));
-                    services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("eventuras-web-api-tests"));
+
+                    // Add ApplicationDbContext using a unique in-memory database for each test.
+                    var databaseName = $"eventuras-test-db-{Guid.NewGuid()}";
+                    services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseInMemoryDatabase(databaseName));
                 });
 
             builder.ConfigureTestServices(services =>
