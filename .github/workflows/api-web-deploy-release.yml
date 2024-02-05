@@ -1,0 +1,15 @@
+name: Build and deploy API and Web
+
+env:
+  AZURE_WEBAPP_NAME: your-app-name  # set this to the name of your Azure Web App
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  api:
+    uses: ./.github/workflows/api-deploy-release.yml
+  web:
+    uses: ./.github/workflows/web-deploy-release.yml
