@@ -6,7 +6,6 @@ import { checkIfUnAuthorized, readCreatedEvent } from './functions';
 
 test.describe.configure({ mode: 'serial' });
 
-
 test.describe('should not be authorized on the following pages', () => {
   const unAuthorizedUris = [
     '/admin',
