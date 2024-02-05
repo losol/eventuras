@@ -1,32 +1,53 @@
+'use client';
 import { EventStatisticsDto } from '@losol/eventuras';
 import createTranslation from 'next-translate/createTranslation';
 
 import NumberCard from '@/components/ui/NumberCard';
+import { ParticipationTypes, ParticipationTypesKey } from '@/types';
 
 type EventStatisticsProps = {
   statistics: EventStatisticsDto;
+  highlightedSelection: string;
+  onSelectionChanged: (selection: string) => void;
 };
 
-const EventStatistics: React.FC<EventStatisticsProps> = ({ statistics }) => {
+const EventStatistics: React.FC<EventStatisticsProps> = ({
+  statistics,
+  onSelectionChanged,
+  highlightedSelection,
+}) => {
   const { t } = createTranslation();
   const byStatus = statistics ? statistics.byStatus : null;
-
   const counts = {
-    participants:
+    [ParticipationTypes.participants]:
       (byStatus?.draft ?? 0) +
       (byStatus?.verified ?? 0) +
       (byStatus?.attended ?? 0) +
       (byStatus?.finished ?? 0) +
       (byStatus?.notAttended ?? 0),
-    waitingList: byStatus?.waitingList ?? 0,
-    cancelled: byStatus?.cancelled ?? 0,
+    [ParticipationTypes.waitingList]: byStatus?.waitingList ?? 0,
+    [ParticipationTypes.cancelled]: byStatus?.cancelled ?? 0,
+  };
+
+  const toggleSelection = (currentSelection: ParticipationTypes) => {
+    onSelectionChanged(currentSelection);
   };
 
   return (
     <div className="grid gap-1 grid-cols-3  md:grid-cols-4 break-words">
-      <NumberCard number={counts.participants} label={t('common:labels.participants')} />
-      <NumberCard number={counts.waitingList} label={t('common:labels.waitingList')} />
-      <NumberCard number={counts.cancelled} label={t('common:labels.cancelled')} />
+      {Object.keys(ParticipationTypes).map((key: string) => {
+        const k = key as ParticipationTypesKey;
+        const className = highlightedSelection === key ? 'font-bold border' : '';
+        return (
+          <button
+            key={key}
+            onClick={() => toggleSelection(ParticipationTypes[k])}
+            className={className}
+          >
+            <NumberCard number={counts[k]} label={t(`common:labels.${key}`)} />
+          </button>
+        );
+      })}
     </div>
   );
 };

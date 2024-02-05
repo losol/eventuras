@@ -2,6 +2,8 @@
 
 import { RankingInfo, rankItem } from '@tanstack/match-sorter-utils';
 import {
+  ColumnFilter,
+  ColumnFiltersState,
   FilterFn,
   flexRender,
   getCoreRowModel,
@@ -23,6 +25,7 @@ type DataTableProps = {
   clientsidePagination?: boolean;
   state?: Partial<TableState>;
   enableGlobalSearch?: boolean;
+  columnFilters?: ColumnFilter[];
 };
 
 declare module '@tanstack/table-core' {
@@ -48,10 +51,17 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 
 const DataTable = (props: DataTableProps) => {
   const { columns, data, clientsidePagination, pageSize = 25, state } = props;
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = React.useState('');
   const handleClientPageChange = (newPage: number) => {
     table.setPageIndex(newPage);
   };
+
+  useEffect(() => {
+    if (props.columnFilters) {
+      setColumnFilters(props.columnFilters);
+    }
+  }, [props.columnFilters]);
 
   const table = useReactTable({
     columns,
@@ -59,6 +69,7 @@ const DataTable = (props: DataTableProps) => {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onGlobalFilterChange: setGlobalFilter,
+    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     filterFns: {
       fuzzy: fuzzyFilter,
@@ -72,6 +83,7 @@ const DataTable = (props: DataTableProps) => {
     state: {
       ...state,
       globalFilter,
+      columnFilters,
     },
   });
 

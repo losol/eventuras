@@ -37,4 +37,11 @@ export type UserProfile = {
   phoneNumber?: string;
 };
 
+export enum ParticipationTypes {
+  participants = 'participants',
+  waitingList = 'waitingList',
+  cancelled = 'cancelled',
+}
+export type ParticipationTypesKey = keyof typeof ParticipationTypes;
+
 export type ProductSelected = Pick<ProductOrderDto, 'productId' | 'quantity'>;
