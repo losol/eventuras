@@ -1,67 +1,54 @@
 {
-  "name": "@losol/scribo-markdown",
-  "version": "0.3.2",
-  "main": "./index.js",
-  "types": "./index.d.ts",
+  "name": "@eventuras/scribo",
+  "version": "0.4.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
   "exports": {
     ".": {
-      "import": "./index.mjs",
-      "require": "./index.js"
+      "import": "./dist/scribo.js",
+      "require": "./dist/scribo.umd.cjs",
+      "types": "./dist/main.d.ts"
     }
   },
+  "main": "./dist/scribo.umd.cjs",
+  "module": "./dist/scribo.js",
+  "types": "./dist/main.d.ts",
+  "files": [
+    "dist"
+  ],
   "dependencies": {
-    "@lexical/markdown": "^0.12.2",
-    "@lexical/react": "^0.12.2",
-    "@testing-library/jest-dom": "^6.1.3",
-    "@testing-library/react": "^14.0.0",
-    "@testing-library/user-event": "^14.5.1",
-    "@types/jest": "^29.5.5",
-    "@types/node": "^20.8.3",
-    "@types/react": "^18.2.25",
-    "@types/react-dom": "^18.2.11",
-    "lexical": "^0.12.2",
-    "react-scripts": "5.0.1",
-    "typescript": "^5.2.2"
+    "@lexical/markdown": "^0.13.1",
+    "@lexical/react": "^0.13.1",
+    "lexical": "^0.13.1"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": ">=18.2.0",
+    "react-dom": ">=18.2.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.23.0",
-    "@babel/core": "^7.23.0",
-    "@babel/preset-env": "^7.22.20",
-    "@babel/preset-react": "^7.22.15",
-    "@babel/preset-typescript": "^7.23.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "eslint": "^8.52.0",
-    "eslint-config-next": "^13.5.6",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-jsx-a11y": "^6.7.1",
-    "eslint-plugin-prettier": "^5.0.1",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-simple-import-sort": "^10.0.0",
-    "eslint-plugin-sonarjs": "^0.21.0",
-    "eslint-plugin-storybook": "^0.6.15",
-    "lint-staged": "^15.0.2",
-    "prettier": "^3.0.3"
-  },
-  "overrides": {
-    "react-scripts": {
-      "typescript": "^5"
-    }
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.16",
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.18",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-typescript-paths": "^1.5.0",
+    "tslib": "^2.6.2",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.12",
+    "vite-plugin-dts": "^3.7.2"
   }
 }
