@@ -18,6 +18,7 @@
     "node": ">=18.0.0 <21.0.0"
   },
   "scripts": {
-    "vercel-build": "next build"
+    "build": "turbo run build",
+    "test": "turbo run test"
   }
 }
