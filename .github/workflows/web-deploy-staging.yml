@@ -11,13 +11,24 @@ on:
 jobs:
   Deploy-Staging:
     environment: web-staging
-    defaults:
-      run:
-        working-directory: apps/web
     runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_REMOTE_ONLY: true
+      DO_NOT_TRACK: 1
     steps:
-      # We are using a separate site for staging, so this is set as production on Vercel
-      - uses: actions/checkout@v4
+      - name: Check out repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: "npm"
+      - name: Npm CI
+        run: npm ci
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
       - name: Pull Vercel Environment Information
