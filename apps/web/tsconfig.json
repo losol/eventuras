@@ -1,44 +1,41 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Default",
   "compilerOptions": {
-    "strict":true,
+    "target": "es2022",
+    "lib": ["dom", "dom.iterable", "ES2022"],
+    "allowJs": true,
+    "baseUrl": "./",
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "typeRoots": ["./node_modules/@types", "./types"],
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "paths": {
+      "@/*": ["./src/*", "public/*"],
+    },
     "plugins": [
       {
-        "name": "next"
-      }
+        "name": "next",
+      },
     ],
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "allowJs": true,
-    "jsx": "preserve",
-    "noEmit": true,
-    "declaration": true,
-    "declarationMap": true,
-    "esModuleInterop": true,
-    "incremental": false,
-    "isolatedModules": true,
-    "lib": [
-      "es2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    },
-    "moduleDetection": "force",
-    "noUncheckedIndexedAccess": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "target": "ES2022"
   },
-  "include": [
-    "node_modules/@eventuras/dist/**/*.ts",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "ts-node": {
+    // these options are overrides used only by ts-node
+    // same as the --compilerOptions flag and the TS_NODE_COMPILER_OPTIONS environment variable
+    "require": ["tsconfig-paths/register"],
+    "compilerOptions": {
+      "module": "commonjs",
+      "esModuleInterop": true,
+      "target": "ESNext",
+      "lib": ["dom", "dom.iterable", "ESNext"],
+    },
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "middleware.ts", ".next/types/**/*.ts"],
+  "exclude": ["node_modules", "scripts"],
 }

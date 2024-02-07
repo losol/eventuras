@@ -1,5 +1,3 @@
-"use client"
-
 /**
  * Based on the work licensed under the MIT license below:
  * 

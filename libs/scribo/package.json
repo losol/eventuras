@@ -1,26 +1,7 @@
 {
   "name": "@eventuras/scribo",
   "version": "0.4.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
-  },
-  "exports": {
-    ".": {
-      "import": "./dist/scribo.js",
-      "require": "./dist/scribo.umd.cjs",
-      "types": "./dist/main.d.ts"
-    }
-  },
-  "main": "./dist/scribo.umd.cjs",
-  "module": "./dist/scribo.js",
-  "types": "./dist/main.d.ts",
-  "files": [
-    "dist"
-  ],
+  "main": "src/index.tsx",
   "dependencies": {
     "@lexical/markdown": "^0.13.1",
     "@lexical/react": "^0.13.1",
@@ -31,24 +12,20 @@
     "react-dom": ">=18.2.0"
   },
   "devDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "@rollup/plugin-typescript": "^11.1.6",
-    "@types/jest": "^29.5.12",
-    "@types/node": "^20.11.16",
-    "@types/react": "^18.2.55",
-    "@types/react-dom": "^18.2.18",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
-    "@vitejs/plugin-react": "^4.2.1",
-    "eslint": "^8.56.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.5",
-    "rollup-plugin-postcss": "^4.0.2",
-    "rollup-plugin-typescript-paths": "^1.5.0",
-    "tslib": "^2.6.2",
-    "typescript": "^5.3.3",
-    "vite": "^5.0.12",
-    "vite-plugin-dts": "^3.7.2"
+    "@eventuras/eslint-config": "*",
+    "@eventuras/typescript-config": "*",
+    "typescript": "^5.3.3"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
