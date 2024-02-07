@@ -16,5 +16,8 @@
   "engines": {
     "npm": ">=9.0.0 <11.0.0",
     "node": ">=18.0.0 <21.0.0"
+  },
+  "scripts": {
+    "vercel-build": "next build"
   }
 }
