@@ -1,4 +1,3 @@
-"use client";
 /**
  * Based on the work licensed under the MIT license below:
  * 
@@ -32,7 +31,6 @@ import {
   HeadingTagType,
 } from "@lexical/rich-text";
 import { $setBlocksType } from "@lexical/selection";
-import { $isTableNode } from "@lexical/table";
 import {
   $findMatchingParent,
   $getNearestNodeOfType,
@@ -41,18 +39,13 @@ import {
 import {
   $createParagraphNode,
   $getNodeByKey,
-  $getRoot,
   $getSelection,
-  $isElementNode,
   $isRangeSelection,
   $isRootOrShadowRoot,
-  $isTextNode,
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
   COMMAND_PRIORITY_NORMAL,
-  ElementFormatType,
-  FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
   KEY_MODIFIER_COMMAND,
   LexicalEditor,
@@ -62,7 +55,6 @@ import {
   UNDO_COMMAND,
 } from 'lexical';
 import { Dispatch, useCallback, useEffect, useState } from "react";
-import * as React from "react";
 
 import DropDown, { DropDownItem } from "../ui/DropDown";
 import { IS_APPLE } from "../utils/environment";
@@ -81,10 +73,6 @@ const blockTypeToBlockName = {
   quote: "Quote",
 };
 
-const rootTypeToRootName = {
-  root: "Root",
-  table: "Table",
-};
 
 function getCodeLanguageOptions(): [string, string][] {
   const options: [string, string][] = [];
@@ -108,11 +96,9 @@ function dropDownActiveClass(active: boolean) {
 function BlockFormatDropDown({
   editor,
   blockType,
-  rootType,
   disabled = false,
 }: {
   blockType: keyof typeof blockTypeToBlockName;
-  rootType: keyof typeof rootTypeToRootName;
   editor: LexicalEditor;
   disabled?: boolean;
 }): JSX.Element {
@@ -237,8 +223,6 @@ export default function ToolbarPlugin({
   const [activeEditor, setActiveEditor] = useState(editor);
   const [blockType, setBlockType] =
     useState<keyof typeof blockTypeToBlockName>("paragraph");
-  const [rootType, setRootType] =
-    useState<keyof typeof rootTypeToRootName>("root");
   const [selectedElementKey, setSelectedElementKey] = useState<NodeKey | null>(
     null,
   );
@@ -282,13 +266,6 @@ export default function ToolbarPlugin({
         setIsLink(true);
       } else {
         setIsLink(false);
-      }
-
-      const tableNode = $findMatchingParent(node, $isTableNode);
-      if ($isTableNode(tableNode)) {
-        setRootType("table");
-      } else {
-        setRootType("root");
       }
 
       if (elementDOM !== null) {
@@ -441,7 +418,6 @@ export default function ToolbarPlugin({
           <BlockFormatDropDown
             disabled={!isEditable}
             blockType={blockType}
-            rootType={rootType}
             editor={editor}
           />
           <Divider />

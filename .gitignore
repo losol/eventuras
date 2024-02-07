@@ -2,9 +2,11 @@
 # Created by https://www.gitignore.io/api/node,linux,macos,windows,aspnetcore,visualstudio,visualstudiocode
 
 
-# Nx
-.nx
-dist/
+# Turbo
+.turbo
+build/**
+dist/**
+.next/**
 
 ### ASPNETCore ###
 ## Ignore Visual Studio temporary files, build results, and
@@ -565,3 +567,4 @@ Docs/Specification/Database-model.mwb.bak
 emails/
 
 *.tokenstore
+.vercel

@@ -1,13 +1,16 @@
 import React, { useState } from "react";
+import ReactDOM from "react-dom/client";
 
 import MarkdownEditor from "./MarkdownEditor";
+
+import "./App.css";
 
 function App() {
   const initialMarkdown = "Hello **markdown**!";
   const [markdown, setMarkdown] = useState<string>(initialMarkdown);
 
-  const onChange = (markdown: string) => {
-    setMarkdown(markdown);
+  const onChange = (newMarkdown: string) => {
+    setMarkdown(newMarkdown);
   };
 
   return (
@@ -21,4 +24,11 @@ function App() {
   );
 }
 
-export default App;
+if (process.env.NODE_ENV !== "production") {
+  const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+  );
+}

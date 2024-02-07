@@ -45,7 +45,7 @@ const EventFlow: React.FC<EventFlowProps> = ({ eventInfo, user, availableProduct
       }));
     }
     if (inEditMode) {
-      return xState.context.registrations[0].products ?? [];
+      return xState.context?.registrations[0]?.products ?? [];
     }
     return [];
   };
