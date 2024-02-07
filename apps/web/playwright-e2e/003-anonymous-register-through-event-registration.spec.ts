@@ -20,7 +20,7 @@ const userName = `${tagAndNs.nameSpace}.newuser-${Math.floor(
   Date.now() / 1000 / 10
 )}@inbox.testmail.app`;
 test.describe('should be able to register as an anonymous user when hitting the event registration page', () => {
-  const createdEvent = readCreatedEvent()
+  const createdEvent = readCreatedEvent();
   test('registration button should be visible for anonymous users', async ({ page }) => {
     await visitAndClickEventRegistrationButton(page, createdEvent.eventId);
     ///api/auth/signin?callbackUrl=%2Fuser%2Fevents%2F6%2Fregistration

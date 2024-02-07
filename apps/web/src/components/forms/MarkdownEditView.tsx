@@ -5,7 +5,7 @@
 
  */
 
-import MarkdownEditor from '@losol/scribo-markdown';
+import MarkdownEditor from '@eventuras/scribo';
 import { compiler } from 'markdown-to-jsx';
 import { useRef, useState } from 'react';
 import { Controller, RegisterOptions, UseFormReturn } from 'react-hook-form';

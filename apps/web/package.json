@@ -1,5 +1,5 @@
 {
-  "name": "@eventuras/web",
+  "name": "web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -34,7 +34,7 @@
     "@emotion/server": "^11.11.0",
     "@headlessui/react": "^1.7.18",
     "@losol/eventuras": "^0.6.9",
-    "@losol/scribo-markdown": "^0.3.2",
+    "@eventuras/scribo": "*",
     "@sentry/nextjs": "^7.98.0",
     "@tabler/icons-react": "^2.46.0",
     "@tanstack/match-sorter-utils": "^8.11.7",

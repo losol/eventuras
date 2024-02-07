@@ -1,6 +1,3 @@
-"use client";
-import "./MarkdownEditor.css";
-
 import {
   $convertFromMarkdownString,
   $convertToMarkdownString,
@@ -19,6 +16,8 @@ import EditorTheme from "./themes/EditorTheme";
 import ContentEditable from "./ui/ContentEditable";
 import Placeholder from "./ui/Placeholder";
 
+import "./MarkdownEditor.css";
+
 export interface MarkdownEditorProps {
   initialMarkdown?: string;
   className?: string;
@@ -27,7 +26,7 @@ export interface MarkdownEditorProps {
   placeholder?: string;
 }
 
-export const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
+const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
   // eslint-disable-next-line
   const [_isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
 
@@ -51,11 +50,11 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
   };
 
   return (
-    <div className={props.className}>
-      <LexicalComposer initialConfig={initialConfig}>
-        <div className="editor-shell" onBlur={props.onBlur}>
-          <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
-          <div className="editor-container rich-text">
+      <div className={props.className}>
+          <LexicalComposer initialConfig={initialConfig}>
+              <div className="editor-shell" onBlur={props.onBlur}>
+                  <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
+                  <div className="editor-container rich-text">
             <RichTextPlugin
               contentEditable={
                 <div className="editor-scroller">

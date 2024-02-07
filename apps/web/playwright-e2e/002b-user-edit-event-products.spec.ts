@@ -13,7 +13,6 @@ test.skip('edit event products', () => {
     await checkIfLoggedIn(page);
   });
 
-
   test('edit event products', async ({ page }) => {
     await editRegistrationOrders(page, readCreatedEvent().eventId);
   });

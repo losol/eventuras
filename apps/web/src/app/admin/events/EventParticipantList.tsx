@@ -1,10 +1,11 @@
 'use client';
 
-import { EventDto, ProductDto, RegistrationDto } from '@losol/eventuras';
+import { EventDto, ProductDto, RegistrationDto, RegistrationStatus } from '@losol/eventuras';
 import { IconNotes, IconShoppingCart, IconUser } from '@tabler/icons-react';
+import { ColumnFilter } from '@tanstack/react-table';
 import Link from 'next/link';
 import createTranslation from 'next-translate/createTranslation';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import EventEmailer from '@/components/event/EventEmailer';
 import EditEventRegistrationsDialog from '@/components/eventuras/EditEventRegistrationDialog';
@@ -14,6 +15,7 @@ import Button from '@/components/ui/Button';
 import DataTable, { createColumnHelper } from '@/components/ui/DataTable';
 import Loading from '@/components/ui/Loading';
 import useCreateHook from '@/hooks/createHook';
+import { ParticipationTypes, ParticipationTypesKey } from '@/types';
 import { createSDK } from '@/utils/api/EventurasApi';
 import Logger from '@/utils/Logger';
 
@@ -24,12 +26,41 @@ interface AdminEventListProps {
   participants: RegistrationDto[];
   event: EventDto;
   eventProducts?: ProductDto[];
+  filteredStatus?: string;
 }
+
+function renderProducts(registration: RegistrationDto) {
+  if (!registration.products || registration.products.length === 0) {
+    return '';
+  }
+
+  return registration.products
+    .map(product => {
+      const displayQuantity = product.product!.enableQuantity && product.quantity! > 1;
+      return displayQuantity
+        ? `${product.quantity} x ${product.product!.name}`
+        : product.product!.name;
+    })
+    .join(', ');
+}
+
+const participationMap = {
+  [ParticipationTypes.participants]: [
+    RegistrationStatus.DRAFT,
+    RegistrationStatus.ATTENDED,
+    RegistrationStatus.FINISHED,
+    RegistrationStatus.NOT_ATTENDED,
+    RegistrationStatus.VERIFIED,
+  ],
+  [ParticipationTypes.waitingList]: [RegistrationStatus.WAITING_LIST],
+  [ParticipationTypes.cancelled]: [RegistrationStatus.CANCELLED],
+};
 
 const EventParticipantList: React.FC<AdminEventListProps> = ({
   participants: initialParticipants = [],
   event,
   eventProducts = [],
+  filteredStatus,
 }) => {
   const { t } = createTranslation();
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
@@ -109,21 +140,6 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
     );
   };
 
-  function renderProducts(registration: RegistrationDto) {
-    if (!registration.products || registration.products.length === 0) {
-      return '';
-    }
-
-    return registration.products
-      .map(product => {
-        const displayQuantity = product.product!.enableQuantity && product.quantity! > 1;
-        return displayQuantity
-          ? `${product.quantity} x ${product.product!.name}`
-          : product.product!.name;
-      })
-      .join(', ');
-  }
-
   /**
    * To allow tanstack to filter or sort or do any sort of computation it needs a properly formed *accessor key* which is
    * a string or a function which will tell tanstack where to get its data from.
@@ -143,8 +159,23 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
       header: t('admin:participantColumns.products').toString(),
       cell: info => renderProducts(info.row.original),
     }),
-    columnHelper.accessor('type', {
+    columnHelper.accessor('status', {
+      id: 'status',
       header: t('admin:participantColumns.status').toString(),
+      filterFn: (row, _columnId, value) => {
+        /*
+          This filters out participants based on status. The filter assumes values of 'participant,waitinglist,cancelled'
+          Status types are mapped accordingly, as the actual RegistrationStatus could be verified,draft[...],waitinglist,cancelled,
+          This filter maps the given value to the actual registrationstatus and returns true if the status mapping returns a hit.
+        */
+        const status = row.original.status!;
+        const key = Object.keys(participationMap).filter(key => {
+          const k = key as ParticipationTypesKey;
+          const values: string[] = participationMap[k];
+          return values.indexOf(status) > -1;
+        })[0];
+        return key.toLowerCase() === value.toLowerCase();
+      },
       cell: info => {
         const registration = info.row.original;
         return (
@@ -165,8 +196,17 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
       cell: info => renderEventItemActions(info.row.original),
     }),
   ];
-
   const drawerIsOpen = registrationOpen !== null;
+  const columnFilter: ColumnFilter[] = useMemo(() => {
+    if (!filteredStatus) return [];
+    return [
+      {
+        id: 'status',
+        value: filteredStatus,
+      },
+    ];
+  }, [filteredStatus]);
+
   return (
     <>
       <DataTable
@@ -175,6 +215,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
         clientsidePagination={true}
         pageSize={250}
         enableGlobalSearch={true}
+        columnFilters={columnFilter}
       />
       {registrationOpen !== null && (
         <Drawer isOpen={drawerIsOpen} onCancel={() => setRegistrationOpen(null)}>

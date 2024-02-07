@@ -11,8 +11,7 @@ import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';
 
 import EventAdminActionsMenu from '../EventAdminActionsMenu';
-import EventParticipantList from '../EventParticipantList';
-import EventStatistics from '../EventStatistics';
+import ParticipantsSection from './ParticipantsSection';
 
 type EventInfoProps = {
   params: {
@@ -86,22 +85,12 @@ const EventDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
           </div>
         </Container>
       </Section>
-      <Section className="py-12">
-        <Container>
-          <EventStatistics statistics={statistics.value!} />
-        </Container>
-      </Section>
-      <Section className="py-12">
-        <Container>
-          {registrations && (
-            <EventParticipantList
-              participants={registrations.value?.data ?? []}
-              event={eventinfo.value!}
-              eventProducts={eventProducts.value ?? []}
-            />
-          )}
-        </Container>
-      </Section>
+      <ParticipantsSection
+        eventInfo={eventinfo.value!}
+        participants={registrations.value!.data!}
+        statistics={statistics.value!}
+        eventProducts={eventProducts.value!}
+      />
     </Layout>
   );
 };
