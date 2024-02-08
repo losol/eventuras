@@ -90,7 +90,7 @@ namespace Eventuras.WebApi.Controllers.v3.Events.Products
 
         // PUT v3/events/1/products/1001
         [HttpPut("{productId}")]
-        public async Task<IActionResult> Update(int eventId, int productId, [FromBody] ProductDto dto)
+        public async Task<IActionResult> Update(int eventId, int productId, [FromBody] ProductFormDto dto)
         {
             _logger.LogInformation("Updating product {productId} for event {eventId}", productId, eventId);
             if (!ModelState.IsValid)
@@ -100,10 +100,15 @@ namespace Eventuras.WebApi.Controllers.v3.Events.Products
             }
 
             var product = await GetProductAsync(eventId, productId);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
             dto.CopyTo(product);
 
-            await _eventProductsManagementService
-                .UpdateProductAsync(product);
+            await _eventProductsManagementService.UpdateProductAsync(product);
 
             return Ok(new ProductDto(product));
         }

@@ -8,7 +8,7 @@ namespace Eventuras.WebApi.Controllers.v3.Events.Products
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
-        public decimal VatPercent { get; set; }
+        public int VatPercent { get; set; }
 
         public bool? Published { get; set; }
 
@@ -21,10 +21,10 @@ namespace Eventuras.WebApi.Controllers.v3.Events.Products
                 throw new ArgumentNullException(nameof(product));
             }
 
-            Name = product.Name;
-            Description = product.Description;
-            Price = product.Price;
-            VatPercent = product.VatPercent;
+            product.Name = Name;
+            product.Description = Description;
+            product.Price = Price;
+            product.VatPercent = VatPercent;
 
             if (Published.HasValue)
             {
