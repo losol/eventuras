@@ -83,7 +83,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
   };
 
   return (
-    <Form onSubmit={onSubmitForm} data-test-id="event-edit-form">
+    <Form defaultValues={eventinfo} onSubmit={onSubmitForm} data-test-id="event-edit-form">
       <HiddenInput name="organizationId" value={Environment.NEXT_PUBLIC_ORGANIZATION_ID} />
       <Tabs>
         <Tabs.Item title="Overview">
