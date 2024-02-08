@@ -5,6 +5,7 @@ using Eventuras.Services.Events.Products;
 using Eventuras.Services.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading;
@@ -22,12 +23,14 @@ namespace Eventuras.WebApi.Controllers.v3.Events.Products
         private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
         private readonly IEventProductsManagementService _eventProductsManagementService;
         private readonly IEventInfoAccessControlService _eventInfoAccessControlService;
+        private readonly ILogger<EventProductsController> _logger;
 
         public EventProductsController(
             IProductRetrievalService productRetrievalService,
             IEventInfoRetrievalService eventInfoRetrievalService,
             IEventProductsManagementService eventProductsManagementService,
-            IEventInfoAccessControlService eventInfoAccessControlService)
+            IEventInfoAccessControlService eventInfoAccessControlService,
+            ILogger<EventProductsController> logger)
         {
             _productRetrievalService = productRetrievalService ?? throw
                 new ArgumentNullException(nameof(productRetrievalService));
@@ -40,6 +43,8 @@ namespace Eventuras.WebApi.Controllers.v3.Events.Products
 
             _eventInfoAccessControlService = eventInfoAccessControlService ?? throw
                 new ArgumentNullException(nameof(eventInfoAccessControlService));
+
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         // GET v3/events/1/products
@@ -85,15 +90,17 @@ namespace Eventuras.WebApi.Controllers.v3.Events.Products
 
         // PUT v3/events/1/products/1001
         [HttpPut("{productId}")]
-        public async Task<IActionResult> Update(int eventId, int productId, [FromBody] ProductFormDto dto)
+        public async Task<IActionResult> Update(int eventId, int productId, [FromBody] ProductDto dto)
         {
+            _logger.LogInformation("Updating product {productId} for event {eventId}", productId, eventId);
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Invalid model state: {errors}", ModelState.FormatErrors());
                 return BadRequest(ModelState.FormatErrors());
             }
 
             var product = await GetProductAsync(eventId, productId);
-            dto.ToProduct(product);
+            dto.CopyTo(product);
 
             await _eventProductsManagementService
                 .UpdateProductAsync(product);
