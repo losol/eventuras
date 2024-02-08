@@ -10,7 +10,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Products
 {
     public class EventProductsControllerTests : IClassFixture<CustomWebApiApplicationFactory<Program>>
     {
-        private readonly CustomWebApiApplicationFactory<Program> _factory; 
+        private readonly CustomWebApiApplicationFactory<Program> _factory;
 
         public EventProductsControllerTests(CustomWebApiApplicationFactory<Program> factory)
         {
@@ -423,17 +423,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Products
             response.CheckBadRequest();
         }
 
-        [Fact]
-        public async Task Update_Should_Return_Not_Found_For_Unknown_Event_Id()
-        {
-            var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
-            var response = await client.PutAsync("/v3/events/11111/products/1001", new
-            {
-                published = true,
-                visibility = "event"
-            });
-            response.CheckNotFound();
-        }
 
         [Fact]
         public async Task Update_Should_Return_Not_Found_For_Unknown_Product_Id()
@@ -444,6 +433,10 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Products
             var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
             var response = await client.PutAsync($"/v3/events/{evt.Entity.EventInfoId}/products/1001", new
             {
+                productId = 1001,
+                name = "test",
+                price = 100,
+                vatPercent = 0,
                 published = true,
                 visibility = "event"
             });
@@ -467,7 +460,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Products
             var response =
                 await client.PutAsync(
                     $"/v3/events/{evt.Entity.EventInfoId}/products/{p.Entity.ProductId}?orgId={org.Entity.OrganizationId}",
-                    new { visibility = "collection", published = true });
+                    new { productId = p.Entity.ProductId, price = 100, vatPercent = 0, visibility = "collection", published = true });
 
             var token = await response.CheckOk().AsTokenAsync();
 

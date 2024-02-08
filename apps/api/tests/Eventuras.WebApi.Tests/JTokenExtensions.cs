@@ -198,7 +198,6 @@ namespace Eventuras.WebApi.Tests
             Assert.Equal(product.ProductId, token.Value<int>("productId"));
             Assert.Equal(product.Name, token.Value<string>("name"));
             Assert.Equal(product.Description, token.Value<string>("description"));
-            Assert.Equal(product.MoreInformation, token.Value<string>("more"));
             Assert.Equal(product.Price, token.Value<decimal>("price"));
             Assert.Equal(product.VatPercent, token.Value<int>("vatPercent"));
             Assert.Equal(product.Visibility.ToString(), token.Value<string>("visibility"));

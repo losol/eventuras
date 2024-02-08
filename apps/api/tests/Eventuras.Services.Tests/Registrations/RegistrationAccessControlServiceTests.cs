@@ -218,7 +218,7 @@ public class RegistrationAccessControlServiceTests
         HttpContextAccessor.HttpContext = new DefaultHttpContext { User = user };
 
         var policy = new EventInfoOptions.EventInfoRegistrationPolicy { AllowModificationsAfterLastCancellationDate = false };
-        var cancellationDue = LocalDate.FromDateTime(DateTime.UtcNow.AddDays(1));
+        var cancellationDue = LocalDate.FromDateTime(DateTime.UtcNow.AddDays(5));
         var ei = new EventInfo { Options = new EventInfoOptions { RegistrationPolicy = policy }, LastCancellationDate = cancellationDue };
         var reg = new Registration { UserId = userId, EventInfoId = ei.EventInfoId, EventInfo = ei };
 
