@@ -47,7 +47,7 @@ const EventCreator = () => {
     setValue,
     formState: { errors },
     handleSubmit,
-  } = useForm<CreateEventFormValues>({ mode: 'onChange' });
+  } = useForm<CreateEventFormValues>();
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const router = useRouter();
   const [apiState, setApiState] = useState<ApiState>({ event: null, error: null, loading: false });
