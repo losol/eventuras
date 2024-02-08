@@ -83,7 +83,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
   };
 
   return (
-    <Form defaultValues={eventinfo} onSubmit={onSubmitForm} data-test-id="event-edit-form">
+    <Form onSubmit={onSubmitForm} data-test-id="event-edit-form">
       <HiddenInput name="organizationId" value={Environment.NEXT_PUBLIC_ORGANIZATION_ID} />
       <Tabs>
         <Tabs.Item title="Overview">
@@ -167,6 +167,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
               name="description"
               label="Description (max 300 characters)"
               placeholder="An Event Description here (markdown supported)"
+              maxLength={300}
             />
             <MarkdownInput
               name="program"

@@ -3,6 +3,9 @@ import {
   $convertToMarkdownString,
   TRANSFORMERS,
 } from "@lexical/markdown";
+import {
+  $getRoot,
+} from 'lexical';
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
@@ -18,10 +21,13 @@ import Placeholder from "./ui/Placeholder";
 
 import "./MarkdownEditor.css";
 
+export type onChangeMisc = {
+  plainText: string
+}
 export interface MarkdownEditorProps {
   initialMarkdown?: string;
   className?: string;
-  onChange?: (markdown: string) => void;
+  onChange?: (markdown: string, misc: onChangeMisc) => void;
   onBlur?: () => void;
   placeholder?: string;
 }
@@ -33,7 +39,8 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
   const internalOnChange = (editorState: EditorState) => {
     editorState.read(() => {
       const markdown = $convertToMarkdownString(TRANSFORMERS);
-      props.onChange && props.onChange(markdown);
+      const plainText = $getRoot().getTextContent()
+      props.onChange && props.onChange(markdown, { plainText });
     });
   };
 
@@ -50,11 +57,11 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
   };
 
   return (
-      <div className={props.className}>
-          <LexicalComposer initialConfig={initialConfig}>
-              <div className="editor-shell" onBlur={props.onBlur}>
-                  <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
-                  <div className="editor-container rich-text">
+    <div className={props.className}>
+      <LexicalComposer initialConfig={initialConfig}>
+        <div className="editor-shell" onBlur={props.onBlur}>
+          <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
+          <div className="editor-container rich-text">
             <RichTextPlugin
               contentEditable={
                 <div className="editor-scroller">
