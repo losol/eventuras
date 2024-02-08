@@ -13,6 +13,11 @@ interface SDKOptions {
   inferUrl?: UrlInfer | boolean | null;
 }
 
+export type ApiState = {
+  error: ApiError | null;
+  loading: boolean;
+};
+
 export class ApiResult<T = void, E = ApiError> {
   private _isSuccess: boolean;
   private okResult: T | null;

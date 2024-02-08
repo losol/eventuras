@@ -1,7 +1,9 @@
 import type { ProductDto } from '@losol/eventuras';
 import { IconPencil } from '@tabler/icons-react';
 
+import Badge from '@/components/ui/Badge';
 import DataTable, { createColumnHelper } from '@/components/ui/DataTable';
+import Link from '@/components/ui/Link';
 
 const columnHelper = createColumnHelper<ProductDto>();
 
@@ -14,7 +16,12 @@ export const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit }) 
   const columns = [
     columnHelper.accessor('name', {
       header: 'Name',
-      cell: info => info.getValue() ?? 'N/A',
+      cell: info =>
+        (
+          <Link href={`./products/${info.row.original.productId}`}>
+            {info.getValue()} <Badge>{`${info.row.original.productId}`}</Badge>
+          </Link>
+        ) ?? 'N/A',
     }),
     columnHelper.accessor('description', {
       header: 'Description',
