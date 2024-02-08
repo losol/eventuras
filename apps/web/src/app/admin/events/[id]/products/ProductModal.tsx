@@ -1,11 +1,18 @@
 'use client';
 
 import { Dialog } from '@headlessui/react';
-import type { ProductDto } from '@losol/eventuras';
+import type { NewProductDto, ProductDto } from '@losol/eventuras';
 import createTranslation from 'next-translate/createTranslation';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
+import Form from '@/components/forms/Form';
+import NumberInput from '@/components/forms/src/inputs/NumberInput';
+import TextAreaInput from '@/components/forms/src/inputs/TextAreaInput';
+import TextInput from '@/components/forms/src/inputs/TextInput';
+import Button from '@/components/ui/Button';
+import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
+import { ApiState, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Logger from '@/utils/Logger';
 
 import ConfirmDiscardModal from './ConfirmDiscardModal';
@@ -15,23 +22,26 @@ interface ProductModalProps {
   onSubmit: (values: ProductDto) => void;
   onClose: () => void;
   product?: ProductDto;
+  eventId: number;
 }
 
-const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onSubmit, onClose, product }) => {
+const ProductModal: React.FC<ProductModalProps> = ({
+  isOpen,
+  onSubmit,
+  onClose,
+  product,
+  eventId,
+}) => {
+  const [apiState, setApiState] = useState<ApiState>({ error: null, loading: false });
+  const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+  const { addAppNotification } = useAppNotifications();
+
   const [confirmDiscardChanges, setConfirmDiscardChanges] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { isDirty },
-  } = useForm<ProductDto>({ defaultValues: product || {} });
+  const { reset } = useForm<ProductDto>({ defaultValues: product || {} });
   const { t } = createTranslation();
 
   useEffect(() => {
-    // When the product prop changes, reset the form with new values
-    if (product) {
-      reset(product);
-    }
+    reset(product || {});
   }, [product, reset]);
 
   const isEditMode = Boolean(product);
@@ -42,42 +52,58 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onSubmit, onClose, 
     ? t('admin:products.modal.title.edit')
     : t('admin:products.modal.title.add-product');
 
-  const inputClassName =
-    'w-full p-2 border border-gray-300 rounded-md dark:bg-slate-700 dark:text-gray-100';
+  // Product modal submit handler
+  const submitProduct: SubmitHandler<ProductDto> = async (data: ProductDto) => {
+    setApiState({ error: null, loading: true });
+    const editMode = data.productId ? true : false;
 
-  const handleFormSubmit = handleSubmit(data => {
-    Logger.info(
-      { namespace: isEditMode ? 'editproduct' : 'addproduct' },
-      'Handle this product:',
-      data
-    );
+    // Remember to set loading state
+    setApiState({ error: null, loading: true });
 
     if (isEditMode && product) {
-      onSubmit({ ...data, productId: product.productId });
+      Logger.info({ namespace: 'ProductEditor' }, 'Editing product:', data);
     } else {
-      onSubmit(data);
+      Logger.info({ namespace: 'ProductEditor' }, 'Adding product:', data);
     }
 
-    // And close the modal
+    const result = editMode
+      ? await apiWrapper(() =>
+          eventuras.eventProducts.putV3EventsProducts({
+            eventId: eventId,
+            productId: product!.productId!,
+            requestBody: data,
+          })
+        )
+      : await apiWrapper(() =>
+          eventuras.eventProducts.postV3EventsProducts({
+            eventId: eventId,
+            requestBody: data as NewProductDto,
+          })
+        );
+
+    if (result.ok) {
+      onSubmit(result.value);
+      addAppNotification({
+        id: Date.now(),
+        message: 'Product was updated!',
+        type: AppNotificationType.SUCCESS,
+      });
+    } else {
+      addAppNotification({
+        id: Date.now(),
+        message: `Something bad happended: ${result.error}!`,
+        type: AppNotificationType.ERROR,
+      });
+    }
+
+    // Close the modal
+    setApiState({ error: null, loading: false });
     onClose();
-  });
-
-  const handleCloseClick = () => {
-    if (isDirty) {
-      setConfirmDiscardChanges(true);
-    } else {
-      // Just close if nothing was changed
-      onClose();
-    }
   };
 
   return (
     <>
-      <Dialog
-        open={isOpen}
-        onClose={handleCloseClick}
-        className="fixed inset-0 z-10 overflow-y-auto"
-      >
+      <Dialog open={isOpen} onClose={onClose} className="fixed inset-0 z-10 overflow-y-auto">
         <div className="flex items-center justify-center min-h-screen">
           <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-slate-700 text-color-gray-100 shadow-xl rounded-2xl">
             <Dialog.Title
@@ -87,67 +113,48 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onSubmit, onClose, 
               {titleText}
             </Dialog.Title>
 
-            <form onSubmit={handleFormSubmit} className="mt-2 space-y-6">
-              <div>
-                <input
-                  {...register('name', { required: true })}
-                  placeholder="Product Name"
-                  className={inputClassName}
-                  data-test-id="product-name-input"
-                />
-              </div>
-              <div>
-                <textarea
-                  {...register('description')}
-                  placeholder="Product Description"
-                  className={inputClassName}
-                  rows={3}
-                  data-test-id="product-description-input"
-                />
-              </div>
-              <div>
-                <input
-                  {...register('more')}
-                  placeholder="Additional Information"
-                  className={inputClassName}
-                  data-test-id="product-additional-input"
-                />
-              </div>
-              <div>
-                <input
-                  type="number"
-                  {...register('price', { valueAsNumber: true })}
-                  placeholder="Price"
-                  className={inputClassName}
-                  data-test-id="product-price-input"
-                />
-              </div>
-              <div>
-                <input
-                  type="number"
-                  {...register('vatPercent', { valueAsNumber: true })}
-                  placeholder="VAT Percent"
-                  className={inputClassName}
-                  defaultValue={0}
-                  data-test-id="product-vat-input"
-                />
-              </div>
-              <div className="flex justify-end space-x-3">
-                <button
-                  type="submit"
-                  className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md hover:bg-blue-700"
-                >
-                  {buttonText}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleCloseClick}
-                  className="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-                >
-                  {t('common:buttons.cancel')}
-                </button>
-              </div>
-            </form>
+            <Form onSubmit={submitProduct} className="mt-2 space-y-6" defaultValues={product}>
+              <TextInput
+                name="name"
+                label="Name"
+                placeholder="Product Name"
+                data-test-id="product-name-input"
+                required
+              />
+              <TextAreaInput
+                name="description"
+                label="Description"
+                placeholder="Product Description"
+                data-test-id="product-description-input"
+              />
+              <TextAreaInput
+                name="more"
+                label="More info"
+                placeholder="Product information"
+                data-test-id="product-additional-input"
+              />
+              <NumberInput
+                name="price"
+                label="Price"
+                placeholder="Price"
+                data-test-id="product-price-input"
+                required
+              />
+              <NumberInput
+                name="vatPercent"
+                label="VAT Percent"
+                placeholder="VAT Percent"
+                data-test-id="product-vat-input"
+                defaultValue={0}
+                required
+              />
+              <Button type="submit" disabled={apiState.loading}>
+                {buttonText}
+              </Button>
+              <Button type="reset" variant="secondary" onClick={onClose}>
+                {t('common:buttons.cancel')}
+              </Button>
+            </Form>
           </Dialog.Panel>
         </div>
       </Dialog>
