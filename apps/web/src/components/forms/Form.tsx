@@ -13,7 +13,7 @@ interface FormProps extends UseFormProps {
 const defaultFormClassName = 'px-8 pt-6 pb-8 mb-4';
 
 const Form: FC<FormProps> = ({ defaultValues, children, onSubmit, className, dataTestId }) => {
-  const methods = useForm({ defaultValues: defaultValues });
+  const methods = useForm({ defaultValues });
 
   return (
     <FormProvider {...methods}>
