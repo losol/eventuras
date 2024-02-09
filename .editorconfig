@@ -6,11 +6,18 @@ root = true
 # All Files
 [*]
 charset = utf-8
-end_of_line = crlf
+end_of_line = lf
 indent_style = space
-indent_size = 4
-insert_final_newline = false
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.md]
+max_line_length = 0
 trim_trailing_whitespace = false
+
+[*.{js,jsx,ts,tsx}]
+quote_type = single
 
 # Microsoft .NET properties
 csharp_new_line_before_members_in_object_initializers = false
