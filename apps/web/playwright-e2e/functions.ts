@@ -97,16 +97,12 @@ export const createEvent = async (page: Page, eventName: string) => {
 };
 
 export const addProductToEvent = async (page: Page, eventId: string) => {
-  await page.goto(`admin/events/${eventId}/products/edit`);
+  await page.goto(`admin/events/${eventId}/products`);
   await page.locator('[data-test-id="add-product-button"]').click();
   await page.locator('[data-test-id="product-name-input"]').fill(`testname product for ${eventId}`);
   await page
     .locator('[data-test-id="product-description-input"]')
     .fill(`test description - this is a description for product for ${eventId}`);
-
-  await page
-    .locator('[data-test-id="product-additional-input"]')
-    .fill(`additional information for ${eventId}`);
   await page.locator('[data-test-id="product-price-input"]').fill('10');
   await page.locator('[data-test-id="product-vat-input"]').fill('10');
   await page.locator('[type="submit"]').click();

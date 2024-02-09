@@ -118,33 +118,27 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 name="name"
                 label="Name"
                 placeholder="Product Name"
-                data-test-id="product-name-input"
+                dataTestId="product-name-input"
                 required
               />
               <TextAreaInput
                 name="description"
                 label="Description"
                 placeholder="Product Description"
-                data-test-id="product-description-input"
-              />
-              <TextAreaInput
-                name="more"
-                label="More info"
-                placeholder="Product information"
-                data-test-id="product-additional-input"
+                dataTestId="product-description-input"
               />
               <NumberInput
                 name="price"
                 label="Price"
                 placeholder="Price"
-                data-test-id="product-price-input"
+                dataTestId="product-price-input"
                 required
               />
               <NumberInput
                 name="vatPercent"
                 label="VAT Percent"
                 placeholder="VAT Percent"
-                data-test-id="product-vat-input"
+                dataTestId="product-vat-input"
                 defaultValue={0}
                 required
               />
