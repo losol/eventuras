@@ -7,8 +7,8 @@ import { ParticipationTypes, ParticipationTypesKey } from '@/types';
 
 type EventStatisticsProps = {
   statistics: EventStatisticsDto;
-  highlightedSelection: string;
-  onSelectionChanged: (selection: string) => void;
+  highlightedSelection?: string | null;
+  onSelectionChanged?: (selection: string) => void;
 };
 
 const EventStatistics: React.FC<EventStatisticsProps> = ({
@@ -30,7 +30,7 @@ const EventStatistics: React.FC<EventStatisticsProps> = ({
   };
 
   const toggleSelection = (currentSelection: ParticipationTypes) => {
-    onSelectionChanged(currentSelection);
+    onSelectionChanged && onSelectionChanged(currentSelection);
   };
 
   return (
@@ -40,6 +40,7 @@ const EventStatistics: React.FC<EventStatisticsProps> = ({
         const className = highlightedSelection === key ? 'font-bold border' : '';
         return (
           <button
+            title={t(`common:labels.${key}`)}
             key={key}
             onClick={() => toggleSelection(ParticipationTypes[k])}
             className={className}

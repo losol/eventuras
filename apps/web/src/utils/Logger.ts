@@ -45,7 +45,7 @@ class Logger {
     if (!exists) {
       Logger.debugCache[ns] = createDebug(ns);
     }
-    return Logger.debugCache[ns];
+    return Logger.debugCache[ns]!;
   }
 
   private static wrapLogger(pinoFunction: (obj: any, msg?: string | undefined) => void) {

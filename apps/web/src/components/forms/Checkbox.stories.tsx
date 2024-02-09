@@ -3,10 +3,13 @@ import React from 'react';
 
 import Checkbox, { CheckboxProps } from './Checkbox';
 
-export default {
+const meta: Meta<typeof Checkbox> = {
   title: 'Inputs/Checkbox',
   component: Checkbox,
-} as Meta;
+  tags: ['autodocs'],
+};
+
+export default meta;
 
 export const Default: React.FC<CheckboxProps> = () => (
   <Checkbox id="default" defaultChecked={false} disabled={false}>

@@ -221,10 +221,10 @@ const EventFlowMachine = createMachine({
             return createEventRegistration(newRegistrationData, selectedProducts);
           } else {
             const registration = registrations[0];
-            const updatedRegistration = mapToUpdatedRegistration(registration, paymentFormValues);
+            const updatedRegistration = mapToUpdatedRegistration(registration!, paymentFormValues);
 
             return updateEventRegistration(
-              registration.registrationId!,
+              registration!.registrationId!,
               updatedRegistration,
               input.availableProducts,
               selectedProducts

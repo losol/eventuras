@@ -12,18 +12,19 @@ function getRandomImageUrl(): { url: string; width: number; height: number } {
   return { url, width, height };
 }
 
-export default {
+const meta: Meta<typeof Image> = {
   component: Image,
   tags: ['autodocs'],
   argTypes: {
     src: { control: 'text', description: 'Image URL' },
     alt: { control: 'text', description: 'Alternative text for the image' },
     caption: { control: 'text', description: 'Caption for the image' },
-    className: { control: 'text', description: 'CSS classes for custom styling' },
+    imgClassName: { control: 'text', description: 'CSS classes for custom styling' },
     width: { control: 'number', description: 'Image width' },
     height: { control: 'number', description: 'Image height' },
   },
-} as Meta;
+};
+export default meta;
 
 export const DefaultImage = (args: ImageProps) => <Image {...args} />;
 const randomDefaultImage = getRandomImageUrl();

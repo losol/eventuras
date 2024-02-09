@@ -14,7 +14,7 @@ const slugify = (str: string): string => {
   // Loop through conversions and replace characters
   for (const i in conversions) {
     if (conversions.hasOwnProperty(i)) {
-      const re = new RegExp(conversions[i], 'g');
+      const re = new RegExp(conversions[i]!, 'g');
       str = str.replace(re, i);
     }
   }
