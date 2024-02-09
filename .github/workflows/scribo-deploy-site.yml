@@ -1,12 +1,13 @@
 on:
   push:
     paths:
-      - "libs/scribo"
+      - "./libs/scribo/**"
 
 jobs:
   publish:
     name: Publish to Cloudflare Pages
     runs-on: ubuntu-latest
+    environment: scribo
     permissions:
       contents: read
       deployments: write
