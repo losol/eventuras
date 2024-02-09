@@ -174,7 +174,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
           const values: string[] = participationMap[k];
           return values.indexOf(status) > -1;
         })[0];
-        return key.toLowerCase() === value.toLowerCase();
+        return key?.toLowerCase() === value.toLowerCase();
       },
       cell: info => {
         const registration = info.row.original;

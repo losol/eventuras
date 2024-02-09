@@ -22,6 +22,9 @@ const RegistrationConfirmation: React.FC<RegistrationConfirmationProps> = ({
   paymentDetails,
 }) => {
   const { t } = createTranslation();
+
+
+
   return (
     <div>
       <p>{t('user:registration.steps.confirmation.description')}</p>
@@ -32,7 +35,7 @@ const RegistrationConfirmation: React.FC<RegistrationConfirmationProps> = ({
           <ul>
             {products.map((p: ProductDto) => {
               const mappedProducts = selectedProducts.filter(s => s.productId === p.productId);
-              const amountOrdered = mappedProducts.length ? mappedProducts[0].quantity : 0;
+              const amountOrdered = mappedProducts.length ? mappedProducts[0]!.quantity : 0;
               return <li key={p.productId}>{`${p.name} x ${amountOrdered}`}</li>;
             })}
           </ul>

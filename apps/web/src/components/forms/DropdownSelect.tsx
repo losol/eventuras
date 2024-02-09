@@ -1,6 +1,6 @@
 import { Listbox, Transition } from '@headlessui/react';
 import { IconCheck, IconSelector } from '@tabler/icons-react';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { TEST_ID_ATTRIBUTE } from '@/utils/constants';
@@ -70,18 +70,20 @@ export function Dropdown(props: DropdownProps) {
     onChange,
     multiSelect,
     onBlur,
-    selected = multiSelect ? [] : options[0].id,
   } = props;
+
+  const selectedDefaultValue = multiSelect ? [] : (options.length > 0 ? options[0]!.id : '');
+
+  const [selected, setSelected] = useState<string | string[]>(props.selected || selectedDefaultValue);
+
   const renderSelection = () => {
     if (multiSelect) {
       const s = selected as string[];
       const o = options as DropdownOption[];
-      return (s ?? []).map(id => o.filter(opt => opt.id === id)[0].label).join(', ');
+      return s.map(id => o.find(opt => opt.id === id)?.label || '').join(', ');
+    } else {
+      return options.find(o => o.id === selected)?.label || '';
     }
-    if (selected) {
-      return options.filter(o => o.id === selected)[0]?.label;
-    }
-    return selected;
   };
   return (
     <div id={id}>

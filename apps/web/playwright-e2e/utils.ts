@@ -7,6 +7,7 @@ import Logger from '@/utils/Logger';
 dotenv.config();
 
 export const getTagAndNamespaceFromEmail = (email: string) => {
+  // @ts-ignore
   const splitEmail: string[] = email.split('@')[0].split('.');
   return { nameSpace: splitEmail[0], tag: splitEmail[1] };
 };
