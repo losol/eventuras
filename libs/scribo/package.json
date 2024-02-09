@@ -1,29 +1,34 @@
 {
   "name": "@eventuras/scribo",
   "version": "0.4.0",
-  "main": "src/index.tsx",
+  "main": "src/main.tsx",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "build:site": "BUILD_SITE=true vite build",
+    "dev": "vite"
+  },
   "dependencies": {
     "@lexical/markdown": "^0.13.1",
     "@lexical/react": "^0.13.1",
     "lexical": "^0.13.1"
   },
   "peerDependencies": {
-    "react": ">=18.2.0",
-    "react-dom": ">=18.2.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "typescript": "^5.3.3"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "typescript": "^5.2.2",
+    "vite": "^5.1.0"
   }
 }

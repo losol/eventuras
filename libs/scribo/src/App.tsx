@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import ReactDOM from "react-dom/client";
+import { useState } from "react";
 
 import MarkdownEditor from "./MarkdownEditor";
 
@@ -15,20 +14,19 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Markdown editor</h1>
-      <h2>Make some content</h2>
-      <MarkdownEditor onChange={onChange} initialMarkdown={markdown} />
-      <h2>Markdown output</h2>
-      <pre>{markdown}</pre>
+      <h1>Scribo Markdown editor</h1>
+      <div className="editor-container">
+        <div className="markdown-editor">
+          <h2>Write some content</h2>
+          <MarkdownEditor onChange={onChange} initialMarkdown={markdown} />
+        </div>
+        <div className="markdown-output">
+          <h2>See the markdown output</h2>
+          <pre>{markdown}</pre>
+        </div>
+      </div>
     </div>
   );
 }
 
-if (process.env.NODE_ENV !== "production") {
-  const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
-  root.render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>,
-  );
-}
+export default App;

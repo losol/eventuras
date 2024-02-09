@@ -1,51 +1,34 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * Source: https://github.com/facebook/lexical/blob/main/packages/lexical-playground/src/index.css
- */
-
-@import "https://fonts.googleapis.com/css?family=Reenie+Beanie";
-
 body {
   margin: 0;
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    ".SFNSText-Regular",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   background: #eee;
-  padding: 0 20px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-header {
-  max-width: 580px;
-  margin: auto;
-  position: relative;
+h1 {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.editor-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
 }
 
-header a {
-  max-width: 220px;
-  margin: 20px 0 0 0;
-  display: block;
+.markdown-output {
+  white-space: pre-wrap;
 }
 
-header img {
-  display: block;
-  height: 100%;
-  width: 100%;
-}
+@media (min-width: 768px) {
+  .editor-container {
+    flex-direction: row;
+  }
 
-header h1 {
-  text-align: left;
-  color: #333;
-  display: inline-block;
-  margin: 20px 0 0 0;
+  .markdown-editor,
+  .markdown-output {
+    flex: 1;
+    margin: 10px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
 }
