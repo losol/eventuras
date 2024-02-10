@@ -9,7 +9,7 @@
     "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*",
     "turbo": "^1.12.3",
-    "prettier": "^3.1.1"
+    "prettier": "^3.2.5"
   },
   "workspaces": [
     "apps/web",
