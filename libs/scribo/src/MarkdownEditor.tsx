@@ -20,6 +20,9 @@ import ContentEditable from "./ui/ContentEditable";
 import Placeholder from "./ui/Placeholder";
 
 import "./MarkdownEditor.css";
+import LinkPlugin from "./plugins/LinkPlugin";
+import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
+import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 
 export type onChangeMisc = {
   plainText: string
@@ -33,8 +36,16 @@ export interface MarkdownEditorProps {
 }
 
 const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
-  // eslint-disable-next-line
-  const [_isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
+  const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
+
+  const [floatingAnchorElem, setFloatingAnchorElem] =
+    useState<HTMLDivElement | undefined>(undefined);
+
+  const onRef = (_floatingAnchorElem: HTMLDivElement) => {
+    if (_floatingAnchorElem !== null) {
+      setFloatingAnchorElem(_floatingAnchorElem);
+    }
+  };
 
   const internalOnChange = (editorState: EditorState) => {
     editorState.read(() => {
@@ -62,10 +73,17 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
         <div className="editor-shell" onBlur={props.onBlur}>
           <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
           <div className="editor-container rich-text">
+            <AutoLinkPlugin />
+            <LinkPlugin />
+            <FloatingLinkEditorPlugin
+                  anchorElem={floatingAnchorElem}
+                  isLinkEditMode={isLinkEditMode}
+                  setIsLinkEditMode={setIsLinkEditMode}
+                />
             <RichTextPlugin
               contentEditable={
                 <div className="editor-scroller">
-                  <div className="editor">
+                  <div className="editor" ref={onRef}>
                     <ContentEditable />
                   </div>
                 </div>

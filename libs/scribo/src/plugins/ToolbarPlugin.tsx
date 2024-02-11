@@ -1,6 +1,6 @@
 /**
  * Based on the work licensed under the MIT license below:
- * 
+ *
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
@@ -23,7 +23,7 @@ import {
   ListNode,
   REMOVE_LIST_COMMAND,
 } from "@lexical/list";
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import {
   $createHeadingNode,
   $createQuoteNode,
@@ -56,10 +56,10 @@ import {
 } from 'lexical';
 import { Dispatch, useCallback, useEffect, useState } from "react";
 
-import DropDown, { DropDownItem } from "../ui/DropDown";
-import { IS_APPLE } from "../utils/environment";
-import { getSelectedNode } from "../utils/getSelectedNode";
-import { sanitizeUrl } from "../utils/url";
+import DropDown, { DropDownItem } from "../ui/DropDown.tsx";
+import { IS_APPLE } from "../utils/environment.ts";
+import { getSelectedNode } from "../utils/getSelectedNode.ts";
+import { sanitizeUrl } from "../utils/url.ts";
 
 const blockTypeToBlockName = {
   bullet: "Bulleted List",
