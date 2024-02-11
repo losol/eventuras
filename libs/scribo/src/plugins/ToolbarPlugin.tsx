@@ -229,7 +229,6 @@ export default function ToolbarPlugin({
   const [isLink, setIsLink] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
-  const [isUnderline, setIsUnderline] = useState(false);
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
   const [codeLanguage, setCodeLanguage] = useState<string>("");
@@ -257,7 +256,6 @@ export default function ToolbarPlugin({
       // Update text format
       setIsBold(selection.hasFormat("bold"));
       setIsItalic(selection.hasFormat("italic"));
-      setIsUnderline(selection.hasFormat("underline"));
 
       // Update links
       const node = getSelectedNode(selection);
@@ -473,20 +471,6 @@ export default function ToolbarPlugin({
             }`}
           >
             <i className="format italic" />
-          </button>
-          <button
-            disabled={!isEditable}
-            onClick={() => {
-              activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline");
-            }}
-            className={"toolbar-item spaced " + (isUnderline ? "active" : "")}
-            title={IS_APPLE ? "Underline (⌘U)" : "Underline (Ctrl+U)"}
-            type="button"
-            aria-label={`Format text to underlined. Shortcut: ${
-              IS_APPLE ? "⌘U" : "Ctrl+U"
-            }`}
-          >
-            <i className="format underline" />
           </button>
           <button
             disabled={!isEditable}
