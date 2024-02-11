@@ -56,10 +56,10 @@ import {
 } from 'lexical';
 import { Dispatch, useCallback, useEffect, useState } from "react";
 
-import DropDown, { DropDownItem } from "../ui/DropDown.tsx";
-import { IS_APPLE } from "../utils/environment.ts";
-import { getSelectedNode } from "../utils/getSelectedNode.ts";
-import { sanitizeUrl } from "../utils/url.ts";
+import DropDown, { DropDownItem } from "../ui/DropDown";
+import { IS_APPLE } from "../utils/environment";
+import { getSelectedNode } from "../utils/getSelectedNode";
+import { sanitizeUrl } from "../utils/url";
 
 const blockTypeToBlockName = {
   bullet: "Bulleted List",
