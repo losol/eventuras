@@ -3,6 +3,10 @@
   "display": "React Library",
   "extends": "./base.json",
   "compilerOptions": {
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "allowImportingTsExtensions": true,
+    "downlevelIteration": true,
+    "noEmit": true,
+    "outDir": "dist"
   }
 }
