@@ -18,11 +18,12 @@ import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import EditorTheme from "./themes/EditorTheme";
 import ContentEditable from "./ui/ContentEditable";
 import Placeholder from "./ui/Placeholder";
-
+import {HistoryPlugin} from '@lexical/react/LexicalHistoryPlugin';
 import "./MarkdownEditor.css";
 import LinkPlugin from "./plugins/LinkPlugin";
 import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
 import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
+import {useSharedHistoryContext} from './context/SharedHistoryContext';
 
 export type onChangeMisc = {
   plainText: string
@@ -36,6 +37,7 @@ export interface MarkdownEditorProps {
 }
 
 const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
+  const {historyState} = useSharedHistoryContext();
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
 
   const [floatingAnchorElem, setFloatingAnchorElem] =
@@ -73,6 +75,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
         <div className="editor-shell" onBlur={props.onBlur}>
           <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
           <div className="editor-container rich-text">
+            <HistoryPlugin externalHistoryState={historyState} />
             <AutoLinkPlugin />
             <LinkPlugin />
             <FloatingLinkEditorPlugin
