@@ -1,8 +1,0 @@
-type: integer
-title: Event type enum.
-description: |
-  Course = 0,
-  Conference = 1,
-  OnlineCourse = 2,
-  Social = 3,
-  Other = 9
