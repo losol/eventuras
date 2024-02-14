@@ -8,10 +8,11 @@ export type ProductDto = {
     productId?: number;
     name?: string | null;
     description?: string | null;
-    more?: string | null;
     price?: number;
     vatPercent?: number;
     visibility?: ProductVisibility;
+    inventory?: number | null;
+    published?: boolean | null;
     variants?: Array<ProductVariantDto> | null;
     minimumQuantity?: number;
     readonly isMandatory?: boolean;

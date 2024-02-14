@@ -1,20 +1,5 @@
 {
-  "compilerOptions": {
-    "sourceRoot": "./src",
-    "sourceMap": true,
-    "outDir": "./dist/",
-    "strict": true,
-    "declaration": true,
-    "noImplicitAny": true,
-    "module": "es6",
-    "target": "ES2016",
-    "allowJs": true,
-    "moduleResolution": "node",
-  },
-  "include": [
-    "./src/**/*"
-  ],
-    "ts-node": {
-    "swc": true
-  }
+  "extends": "@eventuras/typescript-config/library.json",
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

@@ -1,6 +1,7 @@
 # Eventuras typescript SDK
 
 1. Run the Eventuras API locally
+1. Update the swagger definition in `npm run update:swagger`
 1. Update version number in package.json: `npm version minor` or `npm version patch`
 1. Generate the client `npm run generate`
 1. Build it `npm run build`
