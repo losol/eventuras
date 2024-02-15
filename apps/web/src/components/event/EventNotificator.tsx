@@ -1,6 +1,6 @@
-import { EmailNotificationDto, RegistrationStatus, RegistrationType } from '@eventuras/sdk';
+import { EmailNotificationDto, RegistrationStatus, RegistrationType, SmsNotificationDto } from '@eventuras/sdk';
 import createTranslation from 'next-translate/createTranslation';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm, UseFormRegister } from 'react-hook-form';
 
 import Button from '@/components/ui/Button';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
@@ -13,6 +13,8 @@ import { LegacyInputText } from '../forms/Input';
 import MarkdownEditView from '../forms/MarkdownEditView';
 import ButtonGroup from '../ui/ButtonGroup';
 import Heading from '../ui/Heading';
+import TextAreaInput from '../forms/src/inputs/TextAreaInput';
+import Form from '../forms/Form';
 
 type EventEmailerFormValues = {
   subject: string;
@@ -21,14 +23,47 @@ type EventEmailerFormValues = {
   registrationTypes?: Array<string>;
 };
 
-export type EventEmailerProps = {
+type EventSMSFormValues = Omit<EventEmailerFormValues, "subject">
+
+export enum EventNotificatorType {
+  EMAIL = 'email',
+  SMS = 'sms'
+}
+
+export type EventNotificatorProps = {
   eventTitle: string;
   eventId: number;
+  notificatorType: EventNotificatorType
   onClose: () => void;
 };
 
-export default function EventEmailer({ eventTitle, eventId, onClose }: EventEmailerProps) {
-  const formHook = useForm<EventEmailerFormValues>();
+const getBodyDto = (eventId: number, data: EventEmailerFormValues | EventSMSFormValues): EmailNotificationDto | SmsNotificationDto => {
+  if ("subject" in data) {
+    return {
+      subject: data.subject,
+      bodyMarkdown: data.body,
+      eventParticipants: {
+        eventId: eventId,
+        registrationStatuses: data.registrationStatus as unknown as RegistrationStatus[],
+        registrationTypes: data.registrationTypes as unknown as RegistrationType[],
+      },
+    } as EmailNotificationDto
+  }
+
+  return {
+    message: data.body,
+    eventParticipants: {
+      eventId: eventId,
+      registrationStatuses: data.registrationStatus as unknown as RegistrationStatus[],
+      registrationTypes: data.registrationTypes as unknown as RegistrationType[],
+    },
+  } as SmsNotificationDto
+
+}
+
+export default function EventNotificator({ eventTitle, eventId, onClose, notificatorType }: EventNotificatorProps) {
+
+  const formHook = notificatorType === EventNotificatorType.EMAIL ? useForm<EventEmailerFormValues>() : useForm<EventSMSFormValues>()
   const {
     register,
     control,
@@ -39,32 +74,34 @@ export default function EventEmailer({ eventTitle, eventId, onClose }: EventEmai
   const { t } = createTranslation('admin');
   const { t: common } = createTranslation('common');
 
-  const onSubmitForm: SubmitHandler<EventEmailerFormValues> = async (
-    data: EventEmailerFormValues
+  const emailRegister = register as UseFormRegister<EventEmailerFormValues>
+  const smsRegister = register as UseFormRegister<EventSMSFormValues>
+
+  const onSubmitForm: SubmitHandler<EventEmailerFormValues | EventSMSFormValues> = async (
+    data: EventEmailerFormValues | EventSMSFormValues
   ) => {
-    const body: EmailNotificationDto = {
-      subject: data.subject,
-      bodyMarkdown: data.body,
-      eventParticipants: {
-        eventId: eventId,
-        registrationStatuses: data.registrationStatus as unknown as RegistrationStatus[],
-        registrationTypes: data.registrationTypes as unknown as RegistrationType[],
-      },
-    };
+
+    const body = getBodyDto(eventId, data)
+
     const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
-    const result = await apiWrapper(() =>
+    const result = notificatorType === EventNotificatorType.EMAIL ? await apiWrapper(() =>
       sdk.notificationsQueueing.postV3NotificationsEmail({
         eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
-        requestBody: body,
+        requestBody: body as EmailNotificationDto,
       })
-    );
+    ) : await apiWrapper(() =>
+      sdk.notificationsQueueing.postV3NotificationsSms({
+        eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
+        requestBody: body as SmsNotificationDto,
+      })
+    )
     if (!result.ok) {
       addAppNotification({
         id: Date.now(),
         message: common('errors.fatalError.title'),
         type: AppNotificationType.ERROR,
       });
-      throw new Error('Failed to send email');
+      throw new Error('Failed to send');
     } else {
       addAppNotification({
         id: Date.now(),
@@ -77,7 +114,7 @@ export default function EventEmailer({ eventTitle, eventId, onClose }: EventEmai
   };
 
   return (
-    <form className="text-black w-72" onSubmit={handleSubmit(onSubmitForm)}>
+    <Form onSubmit={handleSubmit(onSubmitForm)} className="text-black w-72">
       <div>
         <Heading as="h4">{common('event')}</Heading>
         <p>{eventTitle}</p>
@@ -108,18 +145,23 @@ export default function EventEmailer({ eventTitle, eventId, onClose }: EventEmai
         }))}
         multiSelect={true}
       />
+
+      {
+        (notificatorType === EventNotificatorType.EMAIL) &&
+        <div>
+          <LegacyInputText
+            {...emailRegister('subject', {
+              required: t('eventEmailer.form.subject.feedbackNoInput'),
+            })}
+            label={t('eventEmailer.form.subject.label')}
+            placeholder={t('eventEmailer.form.subject.label')}
+            errors={errors}
+          />
+        </div>
+
+      }
       <div>
-        <LegacyInputText
-          {...register('subject', {
-            required: t('eventEmailer.form.subject.feedbackNoInput'),
-          })}
-          label={t('eventEmailer.form.subject.label')}
-          placeholder={t('eventEmailer.form.subject.label')}
-          errors={errors}
-        />
-      </div>
-      <div>
-        <div id="bodyEditor">
+        {notificatorType === EventNotificatorType.EMAIL && <div id="bodyEditor">
           <MarkdownEditView
             form={formHook}
             formName="body"
@@ -127,7 +169,15 @@ export default function EventEmailer({ eventTitle, eventId, onClose }: EventEmai
             placeholder={t('eventEmailer.form.body.label')}
             editmodeOnly={true}
           />
-        </div>
+        </div>}
+        {notificatorType === EventNotificatorType.SMS &&
+          <TextAreaInput
+            {...smsRegister('body')}
+            name="body"
+            label={t('eventEmailer.form.body.label')}
+            placeholder={t('eventEmailer.form.body.label')}
+          />
+        }
       </div>
 
       <ButtonGroup margin="my-4">
@@ -144,6 +194,6 @@ export default function EventEmailer({ eventTitle, eventId, onClose }: EventEmai
           {common('buttons.cancel')}
         </Button>
       </ButtonGroup>
-    </form>
+    </Form>
   );
 }

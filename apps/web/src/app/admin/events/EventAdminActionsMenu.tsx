@@ -4,7 +4,7 @@ import { EventDto, ProductDto } from '@eventuras/sdk';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 
-import EventEmailer from '@/components/event/EventEmailer';
+import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
 import { Drawer } from '@/components/ui';
 import Button from '@/components/ui/Button';
 import ButtonGroup from '@/components/ui/ButtonGroup';
@@ -22,6 +22,7 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
   eventProducts = [],
 }) => {
   const [emailDrawerOpen, setEmailDrawerOpen] = useState<boolean>(false);
+  const [SMSDrawerOpen, setSMSDrawerOpen] = useState<boolean>(false);
   const { t } = createTranslation();
 
   return (
@@ -41,6 +42,14 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
         >
           {t('admin:eventEmailer.title')}
         </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            setSMSDrawerOpen(true);
+          }}
+        >
+          SMS
+        </Button>
       </ButtonGroup>
       <AddUserToEvent eventinfo={eventinfo} eventProducts={eventProducts ?? []} />
 
@@ -49,10 +58,27 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
           {t('admin:eventEmailer.title')}
         </Drawer.Header>
         <Drawer.Body>
-          <EventEmailer
+          <EventNotificator
             eventTitle={eventinfo.title!}
             eventId={eventinfo.id!}
             onClose={() => setEmailDrawerOpen(false)}
+            notificatorType={EventNotificatorType.EMAIL}
+          />
+        </Drawer.Body>
+        <Drawer.Footer>
+          <></>
+        </Drawer.Footer>
+      </Drawer>
+      <Drawer isOpen={SMSDrawerOpen} onCancel={() => setSMSDrawerOpen(false)}>
+        <Drawer.Header as="h3" className="text-black">
+          SMS
+        </Drawer.Header>
+        <Drawer.Body>
+          <EventNotificator
+            eventTitle={eventinfo.title!}
+            eventId={eventinfo.id!}
+            onClose={() => setSMSDrawerOpen(false)}
+            notificatorType={EventNotificatorType.SMS}
           />
         </Drawer.Body>
         <Drawer.Footer>
