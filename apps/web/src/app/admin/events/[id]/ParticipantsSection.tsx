@@ -1,6 +1,6 @@
 'use client';
 import { EventDto, ProductDto, RegistrationDto } from '@eventuras/sdk';
-import { EventStatisticsDto } from '@eventuras/sdk/dist/models/EventStatisticsDto';
+import { EventStatisticsDto } from '@eventuras/sdk';
 import { useMemo, useState } from 'react';
 
 import { Container } from '@/components/ui';

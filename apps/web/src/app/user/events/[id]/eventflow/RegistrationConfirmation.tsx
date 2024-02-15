@@ -1,5 +1,5 @@
 import { PaymentProvider, ProductDto } from '@eventuras/sdk';
-import { EventDto } from '@eventuras/sdk/dist/models/EventDto';
+import { EventDto } from '@eventuras/sdk';
 import createTranslation from 'next-translate/createTranslation';
 
 import Button from '@/components/ui/Button';
