@@ -2,7 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { NewUserDto } from '../models/NewUserDto';
 import type { UserDto } from '../models/UserDto';
 import type { UserDtoPageResponseDto } from '../models/UserDtoPageResponseDto';
 import type { UserFormDto } from '../models/UserFormDto';
@@ -145,7 +144,7 @@ export class UsersService {
          * Optional organization Id. Will be required in API version 4.
          */
         eventurasOrgId?: number,
-        requestBody?: NewUserDto,
+        requestBody?: UserFormDto,
     }): CancelablePromise<UserDto> {
         return this.httpRequest.request({
             method: 'POST',
