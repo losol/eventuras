@@ -1,4 +1,4 @@
-import { ProductDto } from '@losol/eventuras';
+import { ProductDto } from '@eventuras/sdk';
 
 import { ProductSelected } from '@/types';
 

@@ -3974,17 +3974,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewUserDto"
+                "$ref": "#/components/schemas/UserFormDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewUserDto"
+                "$ref": "#/components/schemas/UserFormDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/NewUserDto"
+                "$ref": "#/components/schemas/UserFormDto"
               }
             }
           }
@@ -4891,30 +4891,6 @@
             "items": {
               "$ref": "#/components/schemas/OrderLineModel"
             }
-          }
-        },
-        "additionalProperties": false
-      },
-      "NewUserDto": {
-        "required": [
-          "email",
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "email": {
-            "minLength": 1,
-            "type": "string",
-            "format": "email"
-          },
-          "phoneNumber": {
-            "type": "string",
-            "format": "tel",
-            "nullable": true
           }
         },
         "additionalProperties": false

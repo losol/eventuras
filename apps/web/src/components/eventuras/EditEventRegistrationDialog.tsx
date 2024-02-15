@@ -1,7 +1,7 @@
 'use client';
 
-import { ProductDto } from '@losol/eventuras/dist/models/ProductDto';
-import { RegistrationDto } from '@losol/eventuras/dist/models/RegistrationDto';
+import { ProductDto } from '@eventuras/sdk/dist/models/ProductDto';
+import { RegistrationDto } from '@eventuras/sdk/dist/models/RegistrationDto';
 import { useState } from 'react';
 
 import RegistrationCustomize from '@/app/user/events/[id]/eventflow/RegistrationCustomize';

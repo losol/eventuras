@@ -1,4 +1,4 @@
-import { ProductOrderDto } from '@losol/eventuras';
+import { ProductOrderDto } from '@eventuras/sdk';
 import createTranslation from 'next-translate/createTranslation';
 import React, { ReactElement } from 'react';
 

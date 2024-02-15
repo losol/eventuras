@@ -1,6 +1,6 @@
 'use client';
 
-import { PaymentProvider, UserDto } from '@losol/eventuras';
+import { PaymentProvider, UserDto } from '@eventuras/sdk';
 import createTranslation from 'next-translate/createTranslation';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';

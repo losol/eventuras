@@ -1,4 +1,4 @@
-import { EventDto, EventInfoStatus } from '@losol/eventuras';
+import { EventDto, EventInfoStatus } from '@eventuras/sdk';
 import createTranslation from 'next-translate/createTranslation';
 
 import Badge from '@/components/ui/Badge';

@@ -1,4 +1,4 @@
-import { CancelablePromise } from '@losol/eventuras';
+import { CancelablePromise } from '@eventuras/sdk';
 import { DependencyList, useEffect, useState } from 'react';
 
 import { apiWrapper } from '@/utils/api/EventurasApi';

@@ -5,7 +5,7 @@ import {
   RegistrationDto,
   RegistrationType,
   RegistrationUpdateDto,
-} from '@losol/eventuras';
+} from '@eventuras/sdk';
 
 import { PaymentFormValues, RegistrationProduct } from '@/types';
 

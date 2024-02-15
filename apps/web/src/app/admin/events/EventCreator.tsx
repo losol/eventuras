@@ -1,5 +1,5 @@
 'use client';
-import { ApiError, EventDto, EventInfoStatus, Eventuras } from '@losol/eventuras';
+import { ApiError, EventDto, EventInfoStatus, Eventuras } from '@eventuras/sdk';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';

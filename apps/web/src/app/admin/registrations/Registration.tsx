@@ -5,7 +5,7 @@ import {
   RegistrationDto,
   RegistrationStatus,
   RegistrationType,
-} from '@losol/eventuras';
+} from '@eventuras/sdk';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 

@@ -6,7 +6,7 @@ import {
   ProductDto,
   RegistrationDto,
   RegistrationUpdateDto,
-} from '@losol/eventuras';
+} from '@eventuras/sdk';
 
 import { ApiResult, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';

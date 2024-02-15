@@ -1,6 +1,6 @@
 'use client';
 
-import { ApiError, UserDto as UserProfile } from '@losol/eventuras';
+import { ApiError, UserDto as UserProfile } from '@eventuras/sdk';
 import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';

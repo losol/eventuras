@@ -1,5 +1,5 @@
 'use client';
-import { EventStatisticsDto } from '@losol/eventuras';
+import { EventStatisticsDto } from '@eventuras/sdk';
 import createTranslation from 'next-translate/createTranslation';
 
 import NumberCard from '@/components/ui/NumberCard';

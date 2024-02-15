@@ -1,4 +1,4 @@
-import type { ProductDto } from '@losol/eventuras';
+import type { ProductDto } from '@eventuras/sdk';
 import { IconPencil } from '@tabler/icons-react';
 
 import Badge from '@/components/ui/Badge';
