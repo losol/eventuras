@@ -4,11 +4,11 @@
   "license": "GPL-2.0+",
   "private": true,
   "devDependencies": {
-    "@commitlint/cli": "^18.6.0",
-    "@commitlint/config-conventional": "^18.6.0",
+    "@commitlint/cli": "^18.6.1",
+    "@commitlint/config-conventional": "^18.6.2",
     "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*",
-    "turbo": "^1.12.3",
+    "turbo": "^1.12.4",
     "prettier": "^3.2.5"
   },
   "workspaces": [
