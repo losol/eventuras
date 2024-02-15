@@ -4,6 +4,8 @@ const nextTranslate = require('next-translate-plugin');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ['@eventuras/sdk', '@eventuras/scribo'],
+
   reactStrictMode: true,
 
   images: {
