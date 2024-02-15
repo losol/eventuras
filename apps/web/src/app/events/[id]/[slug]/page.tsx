@@ -1,4 +1,4 @@
-import { EventInfoStatus } from '@losol/eventuras';
+import { EventInfoStatus } from '@eventuras/sdk';
 import { redirect } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 

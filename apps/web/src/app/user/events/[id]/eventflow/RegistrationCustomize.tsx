@@ -1,6 +1,6 @@
 'use client';
 
-import { ProductDto } from '@losol/eventuras';
+import { ProductDto } from '@eventuras/sdk';
 import createTranslation from 'next-translate/createTranslation';
 import { useForm } from 'react-hook-form';
 

@@ -38,7 +38,6 @@ export type { NewProductDto } from './models/NewProductDto';
 export type { NewProductVariantDto } from './models/NewProductVariantDto';
 export type { NewRegistrationDto } from './models/NewRegistrationDto';
 export type { NewRegistrationOrderDto } from './models/NewRegistrationOrderDto';
-export type { NewUserDto } from './models/NewUserDto';
 export type { NotificationDto } from './models/NotificationDto';
 export { NotificationListOrder } from './models/NotificationListOrder';
 export { NotificationRecipientListOrder } from './models/NotificationRecipientListOrder';

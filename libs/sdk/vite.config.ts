@@ -1,11 +1,9 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
-
-// Check build mode
-const buildSite = process.env.BUILD_SITE === 'true';
+import dts from 'vite-plugin-dts'
 
 export default defineConfig({
-  plugins: [],
+  plugins: [dts()],
   build: {
         lib: {
           entry: resolve(__dirname, 'src/index.ts'),

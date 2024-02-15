@@ -1,6 +1,6 @@
 'use client';
 
-import { RegistrationDto } from '@losol/eventuras';
+import { RegistrationDto } from '@eventuras/sdk';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 

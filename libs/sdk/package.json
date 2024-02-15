@@ -3,10 +3,10 @@
   "version": "0.7.0",
   "description": "Eventuras Typescript SDK",
   "type": "module",
-  "main": "dist/index",
+  "main": "dist/eventuras",
   "types": "dist/index",
   "scripts": {
-    "build": "vite build",
+    "build": "npm run update:swagger && npm run generate && tsc && vite build",
     "generate": "npx openapi-typescript-codegen --input swagger.json --output ./src --useOptions --name Eventuras",
     "update:swagger": "node --loader ts-node/esm downloadSwagger.ts"
   },
@@ -16,6 +16,7 @@
     "@eventuras/typescript-config": "*",
     "node-fetch": "^3.3.2",
     "typescript": "^5.3.3",
-    "vite": "^5.1.1"
+    "vite": "^5.1.1",
+    "vite-plugin-dts": "^3.7.2"
   }
 }

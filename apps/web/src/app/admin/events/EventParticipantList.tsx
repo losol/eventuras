@@ -1,6 +1,6 @@
 'use client';
 
-import { EventDto, ProductDto, RegistrationDto, RegistrationStatus } from '@losol/eventuras';
+import { EventDto, ProductDto, RegistrationDto, RegistrationStatus } from '@eventuras/sdk';
 import { IconNotes, IconShoppingCart, IconUser } from '@tabler/icons-react';
 import { ColumnFilter } from '@tanstack/react-table';
 import Link from 'next/link';

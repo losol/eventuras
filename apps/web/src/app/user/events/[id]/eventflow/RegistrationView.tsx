@@ -1,5 +1,5 @@
-import { RegistrationDto } from '@losol/eventuras';
-import { EventDto } from '@losol/eventuras/dist/models/EventDto';
+import { RegistrationDto } from '@eventuras/sdk';
+import { EventDto } from '@eventuras/sdk/dist/models/EventDto';
 import createTranslation from 'next-translate/createTranslation';
 
 import Registration from '@/app/admin/registrations/Registration';

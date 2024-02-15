@@ -1,4 +1,4 @@
-import { EventDto } from '@losol/eventuras';
+import { EventDto } from '@eventuras/sdk';
 import Link from 'next/link';
 
 import Card from '@/components/ui/Card';

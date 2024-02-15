@@ -1,6 +1,6 @@
 'use client';
+import { UserDto } from '@eventuras/sdk';
 import { Combobox, Transition } from '@headlessui/react';
-import { UserDto } from '@losol/eventuras';
 import { IconArrowDown } from '@tabler/icons-react';
 import React, { Fragment, useCallback, useRef, useState } from 'react';
 

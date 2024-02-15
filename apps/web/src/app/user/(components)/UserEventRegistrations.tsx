@@ -1,4 +1,4 @@
-import { RegistrationDto } from '@losol/eventuras';
+import { RegistrationDto } from '@eventuras/sdk';
 import createTranslation from 'next-translate/createTranslation';
 import React, { ReactElement } from 'react';
 

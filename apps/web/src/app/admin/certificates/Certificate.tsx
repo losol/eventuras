@@ -1,4 +1,4 @@
-import { LocalDate } from '@losol/eventuras';
+import { LocalDate } from '@eventuras/sdk';
 import createTranslation from 'next-translate/createTranslation';
 
 import Card from '@/components/ui/Card';

@@ -1,4 +1,4 @@
-import { PaymentProvider, ProductOrderDto } from '@losol/eventuras';
+import { PaymentProvider, ProductOrderDto } from '@eventuras/sdk';
 
 export type LocalesType = {
   component: {

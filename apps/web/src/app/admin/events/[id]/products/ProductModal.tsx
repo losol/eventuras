@@ -1,7 +1,7 @@
 'use client';
 
+import type { NewProductDto, ProductDto } from '@eventuras/sdk';
 import { Dialog } from '@headlessui/react';
-import type { NewProductDto, ProductDto } from '@losol/eventuras';
 import createTranslation from 'next-translate/createTranslation';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';

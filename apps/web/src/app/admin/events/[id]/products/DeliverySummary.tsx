@@ -1,6 +1,6 @@
 'use client';
 
-import { ProductOrdersSummaryDto } from '@losol/eventuras';
+import { ProductOrdersSummaryDto } from '@eventuras/sdk';
 import React from 'react';
 
 import Badge from '@/components/ui/Badge';

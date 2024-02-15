@@ -1,4 +1,4 @@
-import { OrderDto } from '@losol/eventuras';
+import { OrderDto } from '@eventuras/sdk';
 import createTranslation from 'next-translate/createTranslation';
 
 import Badge from '@/components/ui/Badge';

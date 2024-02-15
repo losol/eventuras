@@ -4,7 +4,7 @@ import {
   ProductDto,
   RegistrationType,
   UserDto,
-} from '@losol/eventuras';
+} from '@eventuras/sdk';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import { useEffect, useState } from 'react';

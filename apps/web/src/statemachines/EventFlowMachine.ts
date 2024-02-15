@@ -5,7 +5,7 @@ import {
   ProductDto,
   RegistrationDto,
   UserDto,
-} from '@losol/eventuras';
+} from '@eventuras/sdk';
 import { assign, createMachine, fromPromise } from 'xstate';
 
 import { PaymentFormValues } from '@/types';

@@ -1,6 +1,6 @@
 'use client';
 
-import { UserDto } from '@losol/eventuras';
+import { UserDto } from '@eventuras/sdk';
 import createTranslation from 'next-translate/createTranslation';
 
 import Card from '@/components/ui/Card';

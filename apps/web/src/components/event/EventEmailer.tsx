@@ -1,4 +1,4 @@
-import { EmailNotificationDto, RegistrationStatus, RegistrationType } from '@losol/eventuras';
+import { EmailNotificationDto, RegistrationStatus, RegistrationType } from '@eventuras/sdk';
 import createTranslation from 'next-translate/createTranslation';
 import { SubmitHandler, useForm } from 'react-hook-form';
 

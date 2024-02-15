@@ -1,6 +1,6 @@
 'use client';
-import { EventDto, ProductDto, RegistrationDto } from '@losol/eventuras';
-import { EventStatisticsDto } from '@losol/eventuras/dist/models/EventStatisticsDto';
+import { EventDto, ProductDto, RegistrationDto } from '@eventuras/sdk';
+import { EventStatisticsDto } from '@eventuras/sdk/dist/models/EventStatisticsDto';
 import { useMemo, useState } from 'react';
 
 import { Container } from '@/components/ui';

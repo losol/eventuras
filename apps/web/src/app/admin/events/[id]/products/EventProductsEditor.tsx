@@ -1,6 +1,6 @@
 'use client';
 
-import type { EventDto, ProductDto } from '@losol/eventuras';
+import type { EventDto, ProductDto } from '@eventuras/sdk';
 import createTranslation from 'next-translate/createTranslation';
 import React, { useState } from 'react';
 

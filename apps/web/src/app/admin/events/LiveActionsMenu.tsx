@@ -1,6 +1,6 @@
 'use client';
 
-import { RegistrationDto, RegistrationStatus } from '@losol/eventuras';
+import { RegistrationDto, RegistrationStatus } from '@eventuras/sdk';
 import { IconCircleX } from '@tabler/icons-react';
 
 import Button from '@/components/ui/Button';
