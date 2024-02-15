@@ -149,7 +149,7 @@ namespace Eventuras.WebApi.Controllers.v3.Users
         // POST /v3/users
         [HttpPost]
         [Authorize(Policy = Constants.Auth.AdministratorRole)]
-        public async Task<UserDto> CreateNewUser([FromBody] NewUserDto dto, CancellationToken cancellationToken)
+        public async Task<UserDto> CreateNewUser([FromBody] UserFormDto dto, CancellationToken cancellationToken)
         {
 
             if (!ModelState.IsValid)
