@@ -7,7 +7,7 @@ import Link from 'next/link';
 import createTranslation from 'next-translate/createTranslation';
 import React, { useMemo, useState } from 'react';
 
-import EventEmailer from '@/components/event/EventEmailer';
+import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
 import EditEventRegistrationsDialog from '@/components/eventuras/EditEventRegistrationDialog';
 import { Drawer } from '@/components/ui';
 import Badge from '@/components/ui/Badge';
@@ -126,9 +126,9 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
               }}
             >
               {!currentRegistration &&
-              loadingRegistration &&
-              currentSelectedParticipant !== null &&
-              currentSelectedParticipant.userId === info.userId ? (
+                loadingRegistration &&
+                currentSelectedParticipant !== null &&
+                currentSelectedParticipant.userId === info.userId ? (
                 <Loading />
               ) : (
                 <IconShoppingCart color="black" />
@@ -223,10 +223,11 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
             <p>Mailer</p>
           </Drawer.Header>
           <Drawer.Body>
-            <EventEmailer
+            <EventNotificator
               eventTitle={event.title!}
               eventId={event.id!}
               onClose={() => setRegistrationOpen(null)}
+              notificatorType={EventNotificatorType.EMAIL}
             />
           </Drawer.Body>
           <Drawer.Footer>

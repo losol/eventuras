@@ -31,7 +31,10 @@ export default function DropdownSelect(props: DropdownSelectProps) {
               multiSelect={multiSelect}
               id={name}
               options={options}
-              onChange={onChange}
+              onChange={(e) => {
+                console.log(e)
+                onChange(e)
+              }}
               onBlur={onBlur}
               selected={value ?? []}
               data-test-id={props[TEST_ID_ATTRIBUTE]}
@@ -87,7 +90,10 @@ export function Dropdown(props: DropdownProps) {
   };
   return (
     <div id={id}>
-      <Listbox value={selected} onChange={onChange} multiple={multiSelect}>
+      <Listbox value={selected} onChange={(e) => {
+        setSelected(e)
+        onChange(e)
+      }} multiple={multiSelect}>
         <div className="relative mt-1 text-black">
           <Listbox.Button
             data-test-id={props[TEST_ID_ATTRIBUTE]}
@@ -111,8 +117,7 @@ export function Dropdown(props: DropdownProps) {
                   data-test-id={option.id}
                   key={option.id}
                   className={({ active }) =>
-                    `relative cursor-default select-none py-2 pl-5 pr-4 ${
-                      active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'
+                    `relative cursor-default select-none py-2 pl-5 pr-4 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'
                     }`
                   }
                   value={option.id}
@@ -120,7 +125,7 @@ export function Dropdown(props: DropdownProps) {
                   {({ selected }) => (
                     <>
                       <span
-                        className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
+                        className={`block truncate ${selected ? 'font-medium pl-5' : 'font-normal'}`}
                       >
                         {option.label}
                       </span>
