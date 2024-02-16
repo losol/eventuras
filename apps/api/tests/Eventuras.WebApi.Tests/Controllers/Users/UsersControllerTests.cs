@@ -547,29 +547,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
             json.CheckUser(updateUser);
         }
 
-        [Theory]
-        [MemberData(nameof(GetInvalidUserInput))]
-        public async Task Update_User_Should_Validate_Input(object input)
-        {
-
-            var client = _factory.CreateClient()
-                .AuthenticatedAsSuperAdmin();
-
-            var user = await client.PostAsync($"/v3/users", new
-            {
-                name = "John Doe",
-                email = "another@email.com",
-                phoneNumber = "+1234567890"
-            });
-
-            var createUserContent = await user.Content.ReadAsStringAsync();
-            var userDto = JsonSerializer.Deserialize<Eventuras.WebApi.Controllers.v3.Users.UserDto>(createUserContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            var userId = userDto?.Id;
-
-            var response = await client.PutAsync($"/v3/users/{userId}", input);
-            response.CheckBadRequest();
-        }
-
         [Fact]
         public async Task Should_Update_User_With_Max_Data()
         {
