@@ -95,11 +95,10 @@
     "modal": {
       "title": {
         "add-product": "Legg til produkt",
-        "edit": "Legg til et nytt produkt"
+        "edit": "Rediger produkt"
       }
     }
   },
-
   "title": "Admin",
   "users": {
     "detailspage": {

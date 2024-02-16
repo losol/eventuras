@@ -9,18 +9,13 @@ namespace Eventuras.Domain
 
         [Required] public string Name { get; set; }
 
-        [StringLength(300, ErrorMessage = "Beskrivelsen kan bare være 300 tegn.")]
-        [Display(Name = "Kort beskrivelse av kurset")]
-        [DataType(DataType.MultilineText)]
+        [StringLength(300)]
         public string Description { get; set; }
 
-        [Display(Name = "Mer informasjon")]
-        [DataType(DataType.MultilineText)]
         public string MoreInformation { get; set; }
 
         public bool EnableQuantity { get; set; } = false;
 
-        [Display(Name = "Må deltaker bestille et antall av produktet?")]
         public int MinimumQuantity { get; set; } = 0;
 
         public decimal Price { get; set; }
@@ -32,7 +27,7 @@ namespace Eventuras.Domain
         public bool Archived { get; set; }
 
         /// <summary>
-        /// By default, product is only visible in the context of single event.   
+        /// By default, product is only visible in the context of single event.
         /// </summary>
         public ProductVisibility Visibility { get; set; } = ProductVisibility.Event;
 

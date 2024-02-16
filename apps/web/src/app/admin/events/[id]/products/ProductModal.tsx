@@ -11,6 +11,7 @@ import NumberInput from '@/components/forms/src/inputs/NumberInput';
 import TextAreaInput from '@/components/forms/src/inputs/TextAreaInput';
 import TextInput from '@/components/forms/src/inputs/TextInput';
 import Button from '@/components/ui/Button';
+import Heading from '@/components/ui/Heading';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { ApiState, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Logger from '@/utils/Logger';
@@ -46,8 +47,8 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
   const isEditMode = Boolean(product);
   const buttonText = isEditMode
-    ? t('admin:products.buttons.edit-product')
-    : t('admin:products.buttons.add-product');
+    ? t('common:labels.edit')
+    : t('common:labels.save');
   const titleText = isEditMode
     ? t('admin:products.modal.title.edit')
     : t('admin:products.modal.title.add-product');
@@ -55,7 +56,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
   // Product modal submit handler
   const submitProduct: SubmitHandler<ProductDto> = async (data: ProductDto) => {
     setApiState({ error: null, loading: true });
-    const editMode = data.productId ? true : false;
+    const editMode = data.productId;
 
     // Remember to set loading state
     setApiState({ error: null, loading: true });
@@ -104,43 +105,53 @@ const ProductModal: React.FC<ProductModalProps> = ({
   return (
     <>
       <Dialog open={isOpen} onClose={onClose} className="fixed inset-0 z-10 overflow-y-auto">
+        {/* The backdrop first */}
+        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+
+        {/* Then the dialogue... */}
         <div className="flex items-center justify-center min-h-screen">
           <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-slate-700 text-color-gray-100 shadow-xl rounded-2xl">
             <Dialog.Title
-              as="h3"
-              className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-200"
             >
-              {titleText}
+              <Heading as="h2" spacingClassName='py-0 my-0'>
+                {titleText}
+                </Heading>
             </Dialog.Title>
 
             <Form onSubmit={submitProduct} className="mt-2 space-y-6" defaultValues={product}>
               <TextInput
                 name="name"
-                label="Name"
-                placeholder="Product Name"
+                label={t('common:products.labels.name')}
+                placeholder={t('common:products.labels.name')}
                 dataTestId="product-name-input"
                 required
               />
               <TextAreaInput
                 name="description"
-                label="Description"
-                placeholder="Product Description"
+                label={t('common:products.labels.description')}
+                placeholder={t('common:products.labels.description')}
                 dataTestId="product-description-input"
               />
               <NumberInput
                 name="price"
-                label="Price"
-                placeholder="Price"
+                label={t('common:products.labels.price')}
+                placeholder="1234"
                 dataTestId="product-price-input"
                 required
               />
               <NumberInput
                 name="vatPercent"
-                label="VAT Percent"
-                placeholder="VAT Percent"
+                label={t('common:products.labels.vatPercent')}
+                placeholder="0"
                 dataTestId="product-vat-input"
                 defaultValue={0}
                 required
+              />
+              <NumberInput
+                name="minimumQuantity"
+                label={t('common:products.labels.minimumQuantity')}
+                placeholder="0"
+                dataTestId="product-vat-input"
               />
               <Button type="submit" disabled={apiState.loading}>
                 {buttonText}

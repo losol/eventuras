@@ -136,6 +136,17 @@
       "time": "Time"
     }
   },
+  "products": {
+    "labels": {
+      "description": "Description",
+      "minimum": "Min",
+      "minimumQuantity": "Min quantity",
+      "name": "Name",
+      "price": "Price",
+      "vatPercent": "Vat",
+      "visibility": "Visibility"
+    }
+  },
   "registrations": {
     "detailsPage": {
       "title": "Registration"
