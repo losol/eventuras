@@ -9,7 +9,7 @@ namespace Eventuras.WebApi.Controllers.v3.Users
         [FromQuery]
         public string Query { get; set; }
 
-        public UserListOrder Order { get; set; } = UserListOrder.Name;
+        public UserListOrder Order { get; set; } = UserListOrder.GivenName;
 
         public bool Descending { get; set; }
 

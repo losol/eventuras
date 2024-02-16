@@ -4,7 +4,7 @@ namespace Eventuras.Services.Users
     {
         public UserFilter Filter { get; set; } = new UserFilter();
 
-        public UserListOrder OrderBy { get; set; } = UserListOrder.Name;
+        public UserListOrder OrderBy { get; set; } = UserListOrder.GivenName;
 
         public bool Descending { get; set; }
     }

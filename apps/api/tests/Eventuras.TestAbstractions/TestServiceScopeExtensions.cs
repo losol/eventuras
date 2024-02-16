@@ -12,7 +12,8 @@ namespace Eventuras.TestAbstractions
     {
         public static async Task<IDisposableEntity<ApplicationUser>> CreateUserAsync(
             this TestServiceScope scope,
-            string name = TestingConstants.Placeholder,
+            string givenName = TestingConstants.Placeholder,
+            string familyName = TestingConstants.Placeholder,
             string email = TestingConstants.Placeholder,
             string password = TestingConstants.Placeholder,
             string phone = TestingConstants.Placeholder,
@@ -25,12 +26,17 @@ namespace Eventuras.TestAbstractions
 
             if (email == TestingConstants.Placeholder)
             {
-                email = $"{Guid.NewGuid()}@email.com";
+                email = $"{givenName}@email.com";
             }
 
-            if (name == TestingConstants.Placeholder)
+            if (givenName == TestingConstants.Placeholder)
             {
-                name = email;
+                givenName = "Test";
+            }
+
+            if (familyName == TestingConstants.Placeholder)
+            {
+                familyName = "User";
             }
 
             if (password == TestingConstants.Placeholder)
@@ -50,7 +56,8 @@ namespace Eventuras.TestAbstractions
 
             var user = new ApplicationUser
             {
-                Name = name,
+                GivenName = givenName,
+                FamilyName = familyName,
                 UserName = email,
                 Email = email,
                 EmailConfirmed = true,

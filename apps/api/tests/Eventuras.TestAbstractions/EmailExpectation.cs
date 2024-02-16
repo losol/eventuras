@@ -8,11 +8,11 @@ namespace Eventuras.TestAbstractions
 {
     public class EmailExpectation
     {
-        private const string Placeholder = "___Placeholder___";
+        private const string Placeholder = "Placeholder";
 
         private readonly Mock<IEmailSender> _mock;
 
-        private string _email = Placeholder;
+        private string _email = "test@test.com";
         private string _subject = Placeholder;
         private string _message = Placeholder;
         private readonly List<string> _subjectContains = new();
