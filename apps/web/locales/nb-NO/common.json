@@ -1,4 +1,13 @@
 {
+  "account": {
+    "contactInfo": {
+      "legend": "Kontaktinfo"
+    },
+    "name": {
+      "legend": "Navn",
+      "validationText": "Her er vi usikker på om noe ble galt?"
+    }
+  },
   "auth": {
     "login": "Logg inn",
     "logout": "Logg ut"
@@ -85,12 +94,15 @@
     "email": "E-post",
     "error": "Feil",
     "eventPage": "Kursinformasjon",
+    "familyName": "Etternavn",
     "fullName": "Navn",
+    "givenName": "Fornavn",
     "guid": "Guid",
     "id": "Id",
     "login": "Logg inn",
     "logout": "Logg av",
     "menu": "Meny",
+    "middleName": "Mellomnavn",
     "name": "Navn",
     "next": "Neste",
     "participants": "Deltagere",
@@ -180,6 +192,11 @@
     }
   },
   "user": {
+    "account": {
+      "name": {
+        "legend": "Navn"
+      }
+    },
     "name": "Navn"
   }
 }
