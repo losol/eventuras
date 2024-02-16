@@ -136,6 +136,17 @@
       "time": "Når"
     }
   },
+  "products": {
+    "labels": {
+      "description": "Kort beskrivelse (300 tegn)",
+      "minimum": "Minsteantall",
+      "minimumQuantity": "Minste antall",
+      "name": "Navn",
+      "price": "Pris",
+      "vatPercent": "Mva",
+      "visibility": "Type"
+    }
+  },
   "registrations": {
     "detailsPage": {
       "title": "Registrering"
