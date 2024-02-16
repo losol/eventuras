@@ -12,8 +12,7 @@ namespace Eventuras.Domain
 {
     public class ApplicationUser : IdentityUser
     {
-        // Personal information fields, Name is the full name and will be a calculated field later
-        public string? Name { get; set; }
+        public string Name => $"{GivenName} {(string.IsNullOrEmpty(MiddleName) ? "" : MiddleName + " ")}{FamilyName}".Trim();
         public string? GivenName { get; set; }
         public string? MiddleName { get; set; }
         public string? FamilyName { get; set; }

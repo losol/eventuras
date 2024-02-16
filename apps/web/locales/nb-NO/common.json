@@ -3,9 +3,20 @@
     "contactInfo": {
       "legend": "Kontaktinfo"
     },
+    "moreInfo": {
+      "legend": "Flere opplysninger"
+    },
     "name": {
       "legend": "Navn",
       "validationText": "Her er vi usikker på om noe ble galt?"
+    },
+    "professionalIdentityNumber": {
+      "description": "Brukes for kursbevis",
+      "label": "HPR-nummer"
+    },
+    "supplementaryInformation": {
+      "description": "Ting som er bra å vite for arrangøren",
+      "label": "Andre opplysninger til arrangør"
     }
   },
   "auth": {

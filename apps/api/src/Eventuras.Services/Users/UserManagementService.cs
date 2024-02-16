@@ -31,18 +31,11 @@ namespace Eventuras.Services.Users
         }
 
         public async Task<ApplicationUser> CreateNewUserAsync(
-            string name,
             string email,
             string phoneNumber = null,
             CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("CreateNewUserAsync started.");
-
-            if (string.IsNullOrEmpty(name))
-            {
-                _logger.LogWarning("CreateNewUserAsync called with empty name.");
-                throw new ArgumentException("User should have a name.", nameof(name));
-            }
 
             if (string.IsNullOrEmpty(email))
             {
@@ -71,7 +64,6 @@ namespace Eventuras.Services.Users
             var user = new ApplicationUser()
             {
                 UserName = email,
-                Name = name,
                 Email = email,
                 PhoneNumber = phoneNumber
             };

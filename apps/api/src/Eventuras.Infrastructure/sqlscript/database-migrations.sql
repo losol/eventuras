@@ -1568,3 +1568,33 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240216204506_SplitName') THEN
+
+                    UPDATE public."AspNetUsers"
+                    SET "GivenName" = "Name"
+                    WHERE "Name" IS NOT NULL;
+                
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240216204506_SplitName') THEN
+    ALTER TABLE "AspNetUsers" DROP COLUMN "Name";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240216204506_SplitName') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20240216204506_SplitName', '8.0.2');
+    END IF;
+END $EF$;
+COMMIT;
+
