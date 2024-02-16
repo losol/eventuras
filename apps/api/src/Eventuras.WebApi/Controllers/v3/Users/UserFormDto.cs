@@ -7,8 +7,6 @@ namespace Eventuras.WebApi.Controllers.v3.Users
 {
     public class UserFormDto
     {
-        public string Name { get; set; }
-
         [Required]
         [EmailAddress]
         public string Email { get; set; }
@@ -50,11 +48,8 @@ namespace Eventuras.WebApi.Controllers.v3.Users
 
         public void CopyTo(ApplicationUser user)
         {
-            user.Name = Name;
             user.Email = Email;
             user.PhoneNumber = PhoneNumber;
-
-            // Copying the additional fields
             user.GivenName = GivenName;
             user.MiddleName = MiddleName;
             user.FamilyName = FamilyName;

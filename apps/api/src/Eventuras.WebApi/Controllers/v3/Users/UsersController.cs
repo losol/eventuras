@@ -80,7 +80,7 @@ namespace Eventuras.WebApi.Controllers.v3.Users
                     _logger.LogInformation($"No user found with email. Creating new user.");
                 }
 
-                user = await _userManagementService.CreateNewUserAsync(nameClaim,
+                user = await _userManagementService.CreateNewUserAsync(
                     emailClaim,
                     phoneClaim,
                     cancellationToken);
@@ -157,8 +157,13 @@ namespace Eventuras.WebApi.Controllers.v3.Users
                 throw new BadHttpRequestException($"Invalid request body. {ModelState.FormatErrors()}");
             }
 
+            _logger.LogInformation("Creating new user with email {email}.", dto.Email);
             var user = await _userManagementService
-            .CreateNewUserAsync(dto.Name, dto.Email, dto.PhoneNumber, cancellationToken);
+            .CreateNewUserAsync(dto.Email, dto.PhoneNumber, cancellationToken);
+
+            _logger.LogInformation("Update user with additional information.");
+            dto.CopyTo(user);
+            await _userManagementService.UpdateUserAsync(user, cancellationToken);
 
             return new UserDto(user);
 

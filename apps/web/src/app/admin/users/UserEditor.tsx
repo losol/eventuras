@@ -18,7 +18,6 @@ interface UserEditorProps {
   dataTestId?: string;
   adminMode?: boolean;
   submitButtonLabel?: string;
-  completeProfile?: boolean;
 }
 
 const regex = {
@@ -29,7 +28,6 @@ const regex = {
 
 const UserEditor: FC<UserEditorProps> = ({
   adminMode,
-  completeProfile = false,
   user,
   onUserUpdated,
   submitButtonLabel,
@@ -40,6 +38,8 @@ const UserEditor: FC<UserEditorProps> = ({
   const [isUpdating, setIsUpdating] = useState(false);
   const log_namespace = 'user.account';
   const { addAppNotification } = useAppNotifications();
+
+  Logger.info({ namespace: log_namespace }, 'UserEditor rendering, user:', user);
 
   const createUser = async (form: UserDto) => {
     const user = await apiWrapper(() =>
@@ -197,11 +197,20 @@ const UserEditor: FC<UserEditorProps> = ({
         dataTestId="accounteditor-form-phonenumber"
         />
         </Fieldset>
-
-      {completeProfile && (
-        <>
-        </>
-       )}
+        <Fieldset label={t("common:account.moreInfo.legend")}>
+          <TextInput
+            name="professionalIdentityNumber"
+            label={t('common:account.professionalIdentityNumber.label')}
+            description={t('common:account.professionalIdentityNumber.description')}
+            dataTestId="accounteditor-form-professionalIdentityNumber"
+          />
+          <TextInput
+            name="supplementaryInformation"
+            label={t('common:account.supplementaryInformation.label')}
+            description={t('common:account.supplementaryInformation.description')}
+            dataTestId="accounteditor-form-supplementaryInformation"
+          />
+        </Fieldset>
 
       {/* Submit Button */}
       <Button type="submit" data-test-id="account-update-button" loading={isUpdating}>

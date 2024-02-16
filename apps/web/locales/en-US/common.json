@@ -3,9 +3,20 @@
     "contactInfo": {
       "legend": "Contact info"
     },
+    "moreInfo": {
+      "legend": "More information"
+    },
     "name": {
       "legend": "Name",
       "validationText": "Sorry! Could you check this?"
+    },
+    "professionalIdentityNumber": {
+      "description": "Used for certificates",
+      "label": "Professional identity number"
+    },
+    "supplementaryInformation": {
+      "description": "Good to know about you",
+      "label": "Other information to the arranger"
     }
   },
   "auth": {
@@ -195,6 +206,10 @@
     "account": {
       "name": {
         "legend": "Name"
+      },
+      "professionalIdentityNumber": {
+        "description": "Used for diplomas.",
+        "label": "Professional identity number"
       }
     },
     "name": "Name"

@@ -13,7 +13,6 @@ namespace Eventuras.Services.Users
         /// <exception cref="Exceptions.NotAccessibleException">Not permitted to create users.</exception>
         /// <exception cref="Exceptions.DuplicateException">Active user with the given email is already created.</exception>
         Task<ApplicationUser> CreateNewUserAsync(
-            string name,
             string email,
             string phoneNumber = null,
             CancellationToken cancellationToken = default);
