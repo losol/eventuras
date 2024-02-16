@@ -18,6 +18,7 @@
     },
     "phoneNumber": {
       "description": "We need this to send login codes and important information",
+      "invalidFormatText": "Check your phone number. Did you include your contry code? ",
       "label": "Phone number",
       "placeholder": "+4712345678",
       "requiredText": "We need a phone number"

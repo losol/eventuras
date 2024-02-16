@@ -18,6 +18,7 @@
     },
     "phoneNumber": {
       "description": "Vi bruker telefonnummeret til innlogging og viktig informasjon.",
+      "invalidFormatText": "Sjekk telefonnummeret. Husket du +47 foran?",
       "label": "Mobiltelefon",
       "placeholder": "+4712345678",
       "requiredText": "Vi trenger et mobilnummer"

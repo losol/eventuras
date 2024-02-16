@@ -1,4 +1,13 @@
 {
+  "account": {
+    "contactInfo": {
+      "legend": "Contact info"
+    },
+    "name": {
+      "legend": "Name",
+      "validationText": "Sorry! Could you check this?"
+    }
+  },
   "auth": {
     "login": "Login",
     "logout": "Logout"
@@ -85,12 +94,15 @@
     "email": "E mail",
     "error": "Error",
     "eventPage": "Event information page",
+    "familyName": "Family name",
     "fullName": "Name",
+    "givenName": "Given name",
     "guid": "Guid",
     "id": "Id",
     "login": "Log in",
     "logout": "Log out",
     "menu": "Menu",
+    "middleName": "Middle name",
     "name": "Name",
     "next": "Next",
     "participants": "Participants",
@@ -180,6 +192,11 @@
     }
   },
   "user": {
+    "account": {
+      "name": {
+        "legend": "Name"
+      }
+    },
     "name": "Name"
   }
 }

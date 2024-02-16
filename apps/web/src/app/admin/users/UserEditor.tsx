@@ -5,6 +5,7 @@ import createTranslation from 'next-translate/createTranslation';
 import React, { FC, useState } from 'react';
 
 import Form from '@/components/forms/Form';
+import Fieldset from '@/components/forms/src/Fieldset';
 import { TextInput } from '@/components/forms/src/inputs/TextInput';
 import Button from '@/components/ui/Button';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
@@ -17,10 +18,18 @@ interface UserEditorProps {
   dataTestId?: string;
   adminMode?: boolean;
   submitButtonLabel?: string;
+  completeProfile?: boolean;
 }
+
+const regex = {
+  internationalPhoneNumber: /^\+[1-9]{1}[0-9]{1,14}$/,
+  letters: /^[\p{L}]+$/u,
+  lettersAndSpaces: /^[\p{L} ]+$/u,
+};
 
 const UserEditor: FC<UserEditorProps> = ({
   adminMode,
+  completeProfile = false,
   user,
   onUserUpdated,
   submitButtonLabel,
@@ -106,17 +115,53 @@ const UserEditor: FC<UserEditorProps> = ({
 
   return (
     <Form onSubmit={onSubmit} defaultValues={user} dataTestId={dataTestId}>
-      {/* Name Field */}
+      {/* Given Name Field */}
+      <Fieldset label={t('common:account.name.legend')}>
+
       <TextInput
-        name="name"
-        label={t('user:account.name.label')}
+        name="givenName"
+        label={t('common:labels.givenName')}
         description={t('user:account.name.description')}
-        placeholder={t('user:account.name.placeholder')}
+        placeholder="Gerhard"
+        // Only allow letters, including accentuated characters
         validation={{
           required: t('user:account.name.requiredText'),
-        }}
+          pattern: {
+            value: regex.lettersAndSpaces,
+            message: t('common:account.name.validationText'),
+            },
+          }}
       />
 
+      <TextInput
+        name="middleName"
+        label={t('common:labels.middleName')}
+        description={t('user:account.name.description')}
+        placeholder="Armauer"
+        // Only allow letters, including accentuated characters
+        validation={{
+            pattern: {
+              value: regex.lettersAndSpaces,
+              message: t('common:account.name.validationText'),
+            },
+          }}
+      />
+      {/* Family Name Field */}
+      <TextInput
+        name="familyName"
+        label={t('common:labels.familyName')}
+        description={t('user:account.name.description')}
+        placeholder="Hansen"
+        validation={{
+            required: t('user:account.name.requiredText'),
+            pattern: {
+              value: regex.lettersAndSpaces,
+              message: t('common:account.name.validationText'),
+            },
+          }}
+        />
+      </Fieldset>
+      <Fieldset label={t('common:account.contactInfo.legend')}>
       {/* Email Field */}
       <TextInput
         name="email"
@@ -139,9 +184,21 @@ const UserEditor: FC<UserEditorProps> = ({
         description={t('user:account.phoneNumber.description')}
         type="tel"
         placeholder={t('user:account.phoneNumber.placeholder')}
-        validation={adminMode ? {} : { required: t('user:account.phoneNumber.requiredText') }}
+        validation={{
+          required: adminMode ? false : t('user:account.phoneNumber.requiredText'),
+          pattern: {
+            value: regex.internationalPhoneNumber,
+            message: t('user:account.phoneNumber.invalidFormatText'),
+          }
+        }}
         dataTestId="accounteditor-form-phonenumber"
-      />
+        />
+        </Fieldset>
+
+      {completeProfile && (
+        <>
+        </>
+       )}
 
       {/* Submit Button */}
       <Button type="submit" data-test-id="account-update-button" loading={isUpdating}>
