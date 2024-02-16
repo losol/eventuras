@@ -151,7 +151,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 name="minimumQuantity"
                 label={t('common:products.labels.minimumQuantity')}
                 placeholder="0"
-                dataTestId="product-vat-input"
+                dataTestId="product-minimum-quantity-input"
               />
               <Button type="submit" disabled={apiState.loading}>
                 {buttonText}

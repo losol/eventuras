@@ -130,7 +130,8 @@ const UserEditor: FC<UserEditorProps> = ({
             value: regex.lettersAndSpaces,
             message: t('common:account.name.validationText'),
             },
-          }}
+        }}
+        dataTestId="accounteditor-form-givenname"
       />
 
       <TextInput
@@ -144,7 +145,8 @@ const UserEditor: FC<UserEditorProps> = ({
               value: regex.lettersAndSpaces,
               message: t('common:account.name.validationText'),
             },
-          }}
+        }}
+        dataTestId="accounteditor-form-middlename"
       />
       {/* Family Name Field */}
       <TextInput
@@ -158,7 +160,8 @@ const UserEditor: FC<UserEditorProps> = ({
               value: regex.lettersAndSpaces,
               message: t('common:account.name.validationText'),
             },
-          }}
+        }}
+        dataTestId="accounteditor-form-familyname"
         />
       </Fieldset>
       <Fieldset label={t('common:account.contactInfo.legend')}>
