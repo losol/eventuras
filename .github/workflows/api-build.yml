@@ -7,7 +7,9 @@ on:
         required: false
         default: "8"
         type: string
-  push:
+  pull_request:
+    branches:
+      - main
     paths:
       - "./apps/api/src/**"
       - "./apps/api/tests/**"
