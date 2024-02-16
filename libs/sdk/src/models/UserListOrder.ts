@@ -3,7 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export enum UserListOrder {
-    NAME = 'Name',
+    GIVEN_NAME = 'GivenName',
+    FAMILY_NAME = 'FamilyName',
     EMAIL = 'Email',
     PHONE = 'Phone',
 }

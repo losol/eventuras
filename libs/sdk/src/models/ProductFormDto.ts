@@ -8,6 +8,9 @@ export type ProductFormDto = {
     description?: string | null;
     price?: number;
     vatPercent?: number;
+    enableQuantity?: boolean;
+    minimumQuantity?: number;
+    inventory?: number | null;
     published?: boolean | null;
     visibility?: ProductVisibility;
 };
