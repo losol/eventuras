@@ -139,6 +139,8 @@ export const registerForEvent = async (
   await page.waitForURL(`/user/events/${eventId}`);
   Logger.info(ns, 'Registration page reached');
   Logger.info(ns, 'Confirm current account details');
+  await page.locator('[data-test-id="accounteditor-form-givenname"]').fill('Test');
+  await page.locator('[data-test-id="accounteditor-form-familyname"]').fill('Test');
   await page.locator('[data-test-id="accounteditor-form-phonenumber"]').fill('+4712345678');
   await Promise.all([
     page.waitForResponse(resp => resp.url().includes('userprofile') && resp.status() === 200),
