@@ -4,7 +4,6 @@
 /* eslint-disable */
 import type { LocalDate } from './LocalDate';
 export type UserFormDto = {
-    name?: string | null;
     email: string;
     phoneNumber?: string | null;
     givenName?: string | null;

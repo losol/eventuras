@@ -5429,6 +5429,18 @@
             "type": "integer",
             "format": "int32"
           },
+          "enableQuantity": {
+            "type": "boolean"
+          },
+          "minimumQuantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "inventory": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "published": {
             "type": "boolean",
             "nullable": true
@@ -5952,10 +5964,6 @@
         ],
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
           "email": {
             "minLength": 1,
             "type": "string",
@@ -6046,7 +6054,8 @@
       },
       "UserListOrder": {
         "enum": [
-          "Name",
+          "GivenName",
+          "FamilyName",
           "Email",
           "Phone"
         ],
