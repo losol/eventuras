@@ -53,12 +53,11 @@ namespace Eventuras.WebApi.Controllers.v3.Userprofile
         public async Task<UserDto> Me(CancellationToken cancellationToken)
         {
             var emailClaim = HttpContext.User.GetEmail();
-            var nameClaim = HttpContext.User.GetName();
             var phoneClaim = HttpContext.User.GetMobilePhone();
 
             if (_authSettings.EnablePiiLogging)
             {
-                _logger.LogInformation($"Getting user info for email: {emailClaim}, name: {nameClaim}, phone: {phoneClaim} .");
+                _logger.LogInformation($"Getting user info for email: {emailClaim}, phone: {phoneClaim} .");
             }
 
             if (string.IsNullOrEmpty(emailClaim))

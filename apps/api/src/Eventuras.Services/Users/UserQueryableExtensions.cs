@@ -60,10 +60,16 @@ namespace Eventuras.Services.Users
         {
             switch (order)
             {
-                case UserListOrder.Name:
+                case UserListOrder.GivenName:
                     query = descending
-                        ? query.OrderByDescending(a => a.Name)
-                        : query.OrderBy(a => a.Name);
+                        ? query.OrderByDescending(a => a.GivenName)
+                        : query.OrderBy(a => a.GivenName);
+                    break;
+
+                case UserListOrder.FamilyName:
+                    query = descending
+                        ? query.OrderByDescending(a => a.FamilyName)
+                        : query.OrderBy(a => a.FamilyName);
                     break;
 
                 case UserListOrder.Email:

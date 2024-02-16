@@ -83,7 +83,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const updateWithUserProfile = useCallback(async () => {
     if (session) {
       const result = await apiWrapper(() =>
-        createSDK({ inferUrl: { enabled: true, requiresToken: true } }).users.getV3UsersMe({
+        createSDK({ inferUrl: { enabled: true, requiresToken: true } }).userProfile.getV3Userprofile({
           eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
         })
       );
