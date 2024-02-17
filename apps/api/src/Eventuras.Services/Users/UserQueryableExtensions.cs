@@ -17,7 +17,8 @@ namespace Eventuras.Services.Users
             if (!string.IsNullOrWhiteSpace(filter.Query))
             {
                 var q = filter.Query.Trim().ToLower();
-                query = query.Where(u => u.Name.ToLower().Contains(q) ||
+                query = query.Where(u => u.GivenName.ToLower().Contains(q) ||
+                    u.FamilyName.ToLower().Contains(q) ||
                     u.Email.ToLower().Contains(q) ||
                     u.PhoneNumber.ToLower().Contains(q));
             }

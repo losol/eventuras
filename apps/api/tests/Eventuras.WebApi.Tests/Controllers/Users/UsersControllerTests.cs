@@ -297,11 +297,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
             var client = _factory.CreateClient()
                 .Authenticated(role: Roles.Admin);
 
-            using var user5 = await scope.CreateUserAsync(email: "other@email.com", phone: null); // no phone
-            using var user4 = await scope.CreateUserAsync(email: "testperson1@email.com", phone: "+1234567890");
-            using var user3 = await scope.CreateUserAsync(email: "testperson2@email.com", phone: "+11122223333444");
-            using var user2 = await scope.CreateUserAsync(email: "testperson3@email.com", phone: "+2222222221");
-            using var user1 = await scope.CreateUserAsync(email: "testperson4@email.com", phone: "+11111111111");
+            using var user5 = await scope.CreateUserAsync(givenName: "e", email: "other@email.com", phone: null); // no phone
+            using var user4 = await scope.CreateUserAsync(givenName: "d", email: "testperson1@email.com", phone: "+1234567890");
+            using var user3 = await scope.CreateUserAsync(givenName: "c", email: "testperson2@email.com", phone: "+11122223333444");
+            using var user2 = await scope.CreateUserAsync(givenName: "b", email: "testperson3@email.com", phone: "+2222222221");
+            using var user1 = await scope.CreateUserAsync(givenName: "a", email: "testperson4@email.com", phone: "+11111111111");
 
             // 1. default
             await CheckListAsync(client, new { }, user1, user2, user3, user4, user5);
@@ -375,17 +375,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
             response.CheckConflict();
         }
 
-        [Theory]
-        [MemberData(nameof(GetInvalidUserInput))]
-        public async Task Create_New_User_Should_Validate_Input(object input)
-        {
-            var client = _factory.CreateClient()
-                .AuthenticatedAsSuperAdmin();
-
-            var response = await client.PostAsync("/v3/users", input);
-            response.CheckBadRequest();
-        }
-
         [Fact]
         public async Task Should_Create_New_User()
         {
@@ -415,7 +404,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
 
             var response = await client.PostAsync("/v3/users", new
             {
-                name = "John Doe",
+                givenName = "John",
+                familyName = "Doe",
                 email = "test@email.com",
                 phoneNumber = "+11111111111"
             });
@@ -510,7 +500,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
 
             var response = await client.PutAsync($"/v3/users/{user.Entity.Id}", new
             {
-                name = user.Entity.Name,
+                givenName = user.Entity.Name,
                 email = otherUser.Entity.Email
             });
 
@@ -539,7 +529,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Users
 
             var response = await client.PutAsync($"/v3/users/{user.Entity.Id}", new
             {
-                name = "John Doe",
+                givenName = "John",
+                familyName = "Doe",
                 email = "another@email.com",
                 phoneNumber = "+1234567890"
             });

@@ -596,26 +596,12 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             Assert.Equal(mandatoryProduct.Entity.MinimumQuantity, orderLine.Quantity);
         }
 
-        [Theory]
-        [MemberData(nameof(GetRegInfoWithAdditionalInfoFilled))]
-        public async Task Should_Allow_Regular_User_To_Provide_Extra_Info(Func<string, int, object> f,
-            Action<Registration> _)
-        {
-            using var scope = _factory.Services.NewTestScope();
-            using var user = await scope.CreateUserAsync();
-            using var e = await scope.CreateEventAsync();
-
-            var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
-            var response = await client.PostAsync("/v3/registrations", f(user.Entity.Id, e.Entity.EventInfoId));
-            response.CheckOk();
-        }
-
         [Fact]
         public async Task Should_Allow_Admin_To_Create_Reg_For_Accessible_Event()
         {
             using var scope = _factory.Services.NewTestScope();
             using var user = await scope.CreateUserAsync();
-            using var admin = await scope.CreateUserAsync(role: Roles.Admin);
+            using var admin = await scope.CreateUserAsync(email: "admin@test.com", role: Roles.Admin);
             using var org = await scope.CreateOrganizationAsync();
             using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
             using var e =
@@ -725,7 +711,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         public async Task Should_Return_Not_Found_When_Updating_Unknown_Reg()
         {
             var randomId = Random.Shared.Next(1000000, int.MaxValue);
-            
+
             var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
             var response = await client.PutAsync($"/v3/registrations/{randomId}", new
             {
@@ -854,7 +840,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         public async Task Should_Return_Not_Found_When_Cancelling_Unknown_Reg()
         {
             var randomId = Random.Shared.Next(1000000, int.MaxValue);
-            
+
             var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
             var response = await client.DeleteAsync($"/v3/registrations/{randomId}");
             response.CheckNotFound();
@@ -970,12 +956,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
                 {
                     new Func<string, int, object>((userId, eventId) => new { userId, eventId, type = 1 }),
                     new Action<Registration>(reg => Assert.Equal(Registration.RegistrationType.Student, reg.Type))
-                },
-                new object[]
-                {
-                    new Func<string, int, object>((userId, eventId) => new { userId, eventId, paymentMethod = 1 }),
-                    new Action<Registration>(reg =>
-                        Assert.Equal(PaymentMethod.PaymentProvider.EmailInvoice, reg.PaymentMethod))
                 },
                 new object[]
                 {

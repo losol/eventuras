@@ -48,6 +48,7 @@ namespace Eventuras.WebApi.Tests
                     var databaseName = $"eventuras-test-db-{Guid.NewGuid()}";
                     services.AddDbContext<ApplicationDbContext>(options =>
                         options.UseInMemoryDatabase(databaseName));
+
                 });
 
             builder.ConfigureTestServices(services =>

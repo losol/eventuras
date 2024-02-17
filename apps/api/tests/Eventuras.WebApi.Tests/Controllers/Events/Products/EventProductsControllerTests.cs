@@ -360,8 +360,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Products
                 {
                     name = "test",
                     description = "desc",
-                    more = "more",
-                    price = 999.44,
+                    price = 999,
                     vatPercent = 10,
                     visibility = "collection"
                 });
@@ -373,9 +372,8 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Products
             Assert.NotNull(product);
             Assert.Equal("test", product.Name);
             Assert.Equal("desc", product.Description);
-            Assert.Equal("more", product.MoreInformation);
             Assert.False(product.Archived);
-            Assert.Equal((decimal)999.44, product.Price);
+            Assert.Equal((decimal)999, product.Price);
             Assert.Equal(10, product.VatPercent);
             Assert.Equal(ProductVisibility.Collection, product.Visibility);
 

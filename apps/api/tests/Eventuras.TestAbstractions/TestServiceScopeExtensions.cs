@@ -26,7 +26,7 @@ namespace Eventuras.TestAbstractions
 
             if (email == TestingConstants.Placeholder)
             {
-                email = $"{givenName}@email.com";
+                email = $"{Guid.NewGuid()}@email.com";
             }
 
             if (givenName == TestingConstants.Placeholder)
