@@ -32,14 +32,18 @@ jobs:
 
       - name: Build EF Bundle
         run: |
-          dotnet ef migrations bundle -s src/Eventuras.WebApi/Eventuras.WebApi.csproj -o ./dist/eventuras/eventurasdb --self-contained -r linux-x64 --force
+          dotnet ef migrations bundle -s src/Eventuras.WebApi/Eventuras.WebApi.csproj -o ./dist/eventurasdb/eventurasdb --self-contained -r linux-x64 --force
         working-directory: ./apps/api
+
+      - name: Set release name with version
+        id: set_release_name
+        run: echo "RELEASE_NAME=eventurasdb tool ${{ github.event.inputs.tagName }}" >> $GITHUB_ENV
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.event.inputs.tagName }}
-          name: "eventurasdb"
+          name: ${{ env.RELEASE_NAME }}
           body: "Linux tool to handle database migrations for Eventuras API."
           files: ./apps/api/dist/eventurasdb/eventurasdb
           draft: ${{ github.event.inputs.draft }}
