@@ -1,0 +1,48 @@
+name: Release eventurasdb tool
+
+on:
+  workflow_dispatch:
+    inputs:
+      tagName:
+        description: "Tag Name (e.g., v1.0.1)"
+        required: true
+      draft:
+        description: "Create as a draft release? (true/false)"
+        required: false
+        default: "false"
+      prerelease:
+        description: "Mark as prerelease? (true/false)"
+        required: false
+        default: "false"
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0"
+
+      - name: Install EF Core CLI
+        run: dotnet tool install --global dotnet-ef
+
+      - name: Build EF Bundle
+        run: |
+          dotnet ef migrations bundle -s src/Eventuras.WebApi/Eventuras.WebApi.csproj -o ./dist/eventuras/eventurasdb --self-contained -r linux-x64 --force
+        working-directory: ./apps/api
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.inputs.tagName }}
+          name: "eventurasdb"
+          body: "Linux tool to handle database migrations for Eventuras API."
+          files: ./apps/api/dist/eventurasdb/eventurasdb
+          draft: ${{ github.event.inputs.draft }}
+          prerelease: ${{ github.event.inputs.prerelease }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
