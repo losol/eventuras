@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "pre:build": "copyfiles -u 1 ../../docs/* ./pages"
   },
   "author": "Ole Kristian Losvik",
   "license": "GPL-2.0-or-later",
