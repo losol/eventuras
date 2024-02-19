@@ -9,12 +9,12 @@ import { mapEnum } from '@/utils/enum';
 import Environment from '@/utils/Environment';
 
 import DropdownSelect from '../forms/DropdownSelect';
+import Form from '../forms/Form';
 import { LegacyInputText } from '../forms/Input';
 import MarkdownEditView from '../forms/MarkdownEditView';
+import TextAreaInput from '../forms/src/inputs/TextAreaInput';
 import ButtonGroup from '../ui/ButtonGroup';
 import Heading from '../ui/Heading';
-import TextAreaInput from '../forms/src/inputs/TextAreaInput';
-import Form from '../forms/Form';
 
 type EventEmailerFormValues = {
   subject: string;
