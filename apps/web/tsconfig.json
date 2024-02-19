@@ -3,6 +3,8 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*", "./public/*"],
+      "@eventuras/scribo":["../../libs/scribo"],
+      "@eventuras/sdk":["../../libs/sdk"]
     },
     "plugins": [
       {
