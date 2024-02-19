@@ -1,4 +1,4 @@
-name: Release eventurasdb tool
+name: Add eventurasdb tool to latest release
 
 on:
   workflow_dispatch:
@@ -42,11 +42,10 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.event.inputs.tagName }}
-          name: ${{ env.RELEASE_NAME }}
-          body: "Linux tool to handle database migrations for Eventuras API."
+          body: "Also updates the eventurasdb linux tool to handle database migrations for Eventuras API."
           files: ./apps/api/dist/eventurasdb/eventurasdb
           draft: ${{ github.event.inputs.draft }}
           prerelease: ${{ github.event.inputs.prerelease }}
+          append_body: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
