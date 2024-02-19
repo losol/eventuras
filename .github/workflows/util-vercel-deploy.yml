@@ -1,0 +1,102 @@
+name: Vercel deployment
+
+# This reusable workflow deploys projects to Vercel. It requires the following inputs:
+# - vercel_token: A token for authenticating API requests to Vercel.
+# - environment: The deployment environment ('production', 'preview', or 'staging').
+# - promote_to_production: Boolean to indicate whether to promote the deployment to production.
+# - custom_url: Optional custom URL to alias the Vercel deployment.
+# It's designed to be called from other workflows within the repository.
+#
+# Example usage:
+# Deploy-Docs:
+#   runs-on: ubuntu-latest
+#   environment: docsite
+#   steps:
+#     - uses: ./.github/workflows/util-vercel-deploy.yml
+#       with:
+#         vercel_token: ${{ secrets.VERCEL_TOKEN }}
+#         environment: "production"
+#         promote: true
+
+on:
+  workflow_call:
+    inputs:
+      vercel_token:
+        required: true
+        type: string
+      environment:
+        description: "Deployment environment (allowed values: production, preview, staging)"
+        required: true
+        type: string
+      promote:
+        description: 'Toggle to promote the deployment to production. Set to "true" to enable.'
+        required: false
+        type: boolean
+        default: false
+      custom_url:
+        description: "Optional custom URL for aliasing the deployment. Leave empty if not needed."
+        required: false
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Npm CI
+        run: npm ci
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=${{ inputs.environment }} --token=${{ inputs.vercel_token }}
+
+      - name: Build Project Artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --token=${{ inputs.vercel_token }}
+        env:
+          VERCEL_TOKEN: ${{ inputs.vercel_token }}
+
+      - name: Deploy Project Artifacts to Vercel and Optionally Set Custom URL Alias
+        run: |
+          url=$(vercel deploy --prebuilt --token=${{ inputs.vercel_token }})
+          echo "Deployed to URL: $url"
+          if [[ "${{ inputs.custom_url }}" ]]; then
+            vercel alias --token=${{ inputs.vercel_token }} set "$url" ${{ inputs.custom_url }}
+            echo "Alias set to: ${{ inputs.custom_url }}"
+          fi
+        env:
+          VERCEL_TOKEN: ${{ inputs.vercel_token }}
+
+      - name: Set Custom URL
+        if: ${{ inputs.custom_url }}
+        run: vercel alias --token=${{ inputs.vercel_token }} set "$url" ${{ inputs.custom_url }}
+        env:
+          VERCEL_TOKEN: ${{ inputs.vercel_token }}
+
+      - name: Promote
+        if: ${{ inputs.promote }}
+        run: vercel promote --token=${{ inputs.vercel_token }}
+        env:
+          VERCEL_TOKEN: ${{ inputs.vercel_token }}
