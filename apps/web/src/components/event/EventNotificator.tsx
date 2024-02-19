@@ -15,6 +15,7 @@ import MarkdownEditView from '../forms/MarkdownEditView';
 import TextAreaInput from '../forms/src/inputs/TextAreaInput';
 import ButtonGroup from '../ui/ButtonGroup';
 import Heading from '../ui/Heading';
+import Checkbox, { CheckBoxLabel } from '../forms/Checkbox';
 
 type EventEmailerFormValues = {
   subject: string;
@@ -38,14 +39,21 @@ export type EventNotificatorProps = {
 };
 
 const getBodyDto = (eventId: number, data: EventEmailerFormValues | EventSMSFormValues): EmailNotificationDto | SmsNotificationDto => {
+  //type juggling... Converts { Status:true, Status2:true, Status3:false} to [Status,Status2]
+  const rs = data.registrationStatus as Object
+  const registrationStatuses = (Object.keys(rs)).filter((key: string) => rs[key as keyof Object] as any)
+  //same as above but for registration types instead of status
+  const tps = data.registrationTypes as Object
+  const registrationTypes = (Object.keys(tps)).filter((key: string) => tps[key as keyof Object] as any)
+
   if ("subject" in data) {
     return {
       subject: data.subject,
       bodyMarkdown: data.body,
       eventParticipants: {
         eventId: eventId,
-        registrationStatuses: data.registrationStatus as unknown as RegistrationStatus[],
-        registrationTypes: data.registrationTypes as unknown as RegistrationType[],
+        registrationStatuses,
+        registrationTypes,
       },
     } as EmailNotificationDto
   }
@@ -54,8 +62,8 @@ const getBodyDto = (eventId: number, data: EventEmailerFormValues | EventSMSForm
     message: data.body,
     eventParticipants: {
       eventId: eventId,
-      registrationStatuses: data.registrationStatus as unknown as RegistrationStatus[],
-      registrationTypes: data.registrationTypes as unknown as RegistrationType[],
+      registrationStatuses,
+      registrationTypes
     },
   } as SmsNotificationDto
 
@@ -82,7 +90,6 @@ export default function EventNotificator({ eventTitle, eventId, onClose, notific
   ) => {
 
     const body = getBodyDto(eventId, data)
-
     const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
     const result = notificatorType === EventNotificatorType.EMAIL ? await apiWrapper(() =>
       sdk.notificationsQueueing.postV3NotificationsEmail({
@@ -119,33 +126,35 @@ export default function EventNotificator({ eventTitle, eventId, onClose, notific
         <Heading as="h4">{common('event')}</Heading>
         <p>{eventTitle}</p>
       </div>
-      <DropdownSelect
-        className="relative z-10"
-        label={t('eventEmailer.form.status.label')}
-        control={control}
-        rules={{ required: t('eventEmailer.form.status.feedbackNoInput') }}
-        name="registrationStatus"
-        errors={errors}
-        options={mapEnum(RegistrationStatus, (value: any) => ({
-          id: value,
-          label: value,
-        }))}
-        multiSelect={true}
-      />
-      <DropdownSelect
-        className="relative z-9"
-        label={t('eventEmailer.form.type.label')}
-        control={control}
-        rules={{ required: t('eventEmailer.form.type.feedbackNoInput') }}
-        name="registrationTypes"
-        errors={errors}
-        options={mapEnum(RegistrationType, (value: any) => ({
-          id: value,
-          label: value,
-        }))}
-        multiSelect={true}
-      />
+      <p>{t('eventEmailer.form.status.label')}</p>
+      {
+        mapEnum(RegistrationStatus, (status: any) => {
+          return <Checkbox
+            className="relative z-10"
+            key={status}
+            id={status}
+            title={status}
+            {...emailRegister(`registrationStatus.${status}`)}
+          >
+            <CheckBoxLabel>{status}</CheckBoxLabel>
+          </Checkbox>
+        })
+      }
+      <p>{t('eventEmailer.form.type.label')}</p>
 
+      {
+        mapEnum(RegistrationType, (type: any) => {
+          return <Checkbox
+            className="relative z-10"
+            key={type}
+            id={type}
+            title={type}
+            {...emailRegister(`registrationTypes.${type}`)}
+          >
+            <CheckBoxLabel>{type}</CheckBoxLabel>
+          </Checkbox>
+        })
+      }
       {
         (notificatorType === EventNotificatorType.EMAIL) &&
         <div>
