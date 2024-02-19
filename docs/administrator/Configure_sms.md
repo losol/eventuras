@@ -22,3 +22,10 @@ Eventuras uses Twilio to send SMS. To update settings you do `PUT {{Api base url
   "value": "1234"
 }
 ```
+
+```json
+{
+  "name": "OrganizationTwilioSettings.AuthToken",
+  "value": "1234"
+}
+```
