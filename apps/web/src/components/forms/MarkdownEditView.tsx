@@ -1,8 +1,6 @@
 'use client';
 /**
- * This is a markdown editor
- * @returns <textarea />
-
+TODO merge this with MarkdownInput
  */
 
 import MarkdownEditor from '@eventuras/scribo';
@@ -21,6 +19,8 @@ export type MarkdownEditViewProps = {
   className?: string;
   label?: string;
   editmodeOnly?: boolean;
+  minLength?: number;
+
 };
 
 const MarkdownEditView = ({
@@ -31,6 +31,7 @@ const MarkdownEditView = ({
   formName,
   defaultValue,
   editmodeOnly,
+  minLength
 }: MarkdownEditViewProps) => {
   const {
     formState: { errors },
@@ -45,6 +46,8 @@ const MarkdownEditView = ({
     setEditing(!editing);
     e.preventDefault();
   };
+  const plain = useRef('');
+
 
   const poppedInClass = 'mb-3 bg-white text-black';
   const poppedOutClass = `${poppedInClass} modal fixed w-full h-full top-0 left-0 flex items-center justify-center flex-col z-50`;
@@ -67,19 +70,32 @@ const MarkdownEditView = ({
         <Controller
           control={control}
           name={formName}
-          rules={{}}
+          rules={{
+            validate: (): boolean => {
+              if (minLength === undefined) return true;
+              return plain.current.length >= minLength;
+            },
+          }}
           render={({ field: { onChange, onBlur, value } }) => {
             return (
-              <MarkdownEditor
-                onChange={markdown => {
-                  onChange(markdown);
-                  toCompile.current = markdown;
-                }}
-                className={inFullMode ? editorClassNameFull : editorClassName}
-                onBlur={onBlur}
-                initialMarkdown={value}
-                placeholder={placeholder}
-              />
+              <>
+                <MarkdownEditor
+                  onChange={(markdown, { plainText }) => {
+                    onChange(markdown);
+                    toCompile.current = markdown;
+                    plain.current = plainText;
+                  }}
+                  className={inFullMode ? editorClassNameFull : editorClassName}
+                  onBlur={onBlur}
+                  initialMarkdown={value}
+                  placeholder={placeholder}
+                />
+                {errors[formName] && (
+                  <span role="alert" className="text-red-500 bg-black">
+                    {`Please provide a minimum of ${minLength} characters `}
+                  </span>
+                )}
+              </>
             );
           }}
         />

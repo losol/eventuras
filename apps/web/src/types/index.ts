@@ -38,7 +38,7 @@ export type UserProfile = {
 };
 
 export enum ParticipationTypes {
-  participants = 'participants',
+  active = 'active',
   waitingList = 'waitingList',
   cancelled = 'cancelled',
 }

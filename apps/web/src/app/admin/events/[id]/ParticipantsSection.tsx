@@ -18,7 +18,7 @@ export type ParticipantsSectionProps = {
 };
 
 const initialSelectedStatistics = {
-  [ParticipationTypes.participants]: false,
+  [ParticipationTypes.active]: false,
   [ParticipationTypes.waitingList]: false,
   [ParticipationTypes.cancelled]: false,
 };

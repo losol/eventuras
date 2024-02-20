@@ -40,7 +40,7 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
             setEmailDrawerOpen(true);
           }}
         >
-          {t('admin:eventEmailer.title')}
+          {t('admin:eventNotifier.title')}
         </Button>
         <Button
           variant="outline"
@@ -55,7 +55,7 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
 
       <Drawer isOpen={emailDrawerOpen} onCancel={() => setEmailDrawerOpen(false)}>
         <Drawer.Header as="h3" className="text-black">
-          {t('admin:eventEmailer.title')}
+          {t('admin:eventNotifier.title')}
         </Drawer.Header>
         <Drawer.Body>
           <EventNotificator
