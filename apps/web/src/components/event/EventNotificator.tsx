@@ -1,7 +1,7 @@
 import { EmailNotificationDto, RegistrationStatus, RegistrationType, SmsNotificationDto } from '@eventuras/sdk';
 import createTranslation from 'next-translate/createTranslation';
 import { useRef } from 'react';
-import { SubmitHandler, useForm, UseFormRegister } from 'react-hook-form';
+import { SubmitHandler, useForm, UseFormRegister, UseFormReturn } from 'react-hook-form';
 
 import Button from '@/components/ui/Button';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
@@ -121,7 +121,8 @@ const createFormHandler = (eventId: number, notificatorType: EventNotificatorTyp
 
 export default function EventNotificator({ eventTitle, eventId, onClose, notificatorType }: EventNotificatorProps) {
 
-  const formHook = notificatorType === EventNotificatorType.EMAIL ? useForm<EventEmailerFormValues>() : useForm<EventSMSFormValues>()
+  let formHook: UseFormReturn<EventSMSFormValues, any, EventSMSFormValues> | UseFormReturn<EventEmailerFormValues, any, EventEmailerFormValues> = useForm()
+
   const {
     register,
     formState: { errors },
@@ -131,8 +132,8 @@ export default function EventNotificator({ eventTitle, eventId, onClose, notific
   const { t } = createTranslation('admin');
   const { t: common } = createTranslation('common');
 
-  const emailRegister = register as UseFormRegister<EventEmailerFormValues>
-  const smsRegister = register as UseFormRegister<EventSMSFormValues>
+  const emailRegister = register as unknown as UseFormRegister<EventEmailerFormValues>
+  const smsRegister = register as unknown as UseFormRegister<EventSMSFormValues>
   const defaultSelectedStatus = [ParticipationTypes.active]
   const defaultSelectedType = [RegistrationType.PARTICIPANT]
   const onSubmitForm = useRef(createFormHandler(eventId, notificatorType, addAppNotification, onClose)).current

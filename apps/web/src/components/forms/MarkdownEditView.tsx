@@ -1,6 +1,6 @@
 'use client';
 /**
-TODO merge this with MarkdownInput
+Need to merge this with MarkdownInput
  */
 
 import MarkdownEditor from '@eventuras/scribo';
