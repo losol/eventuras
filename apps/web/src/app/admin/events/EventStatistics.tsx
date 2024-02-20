@@ -19,7 +19,7 @@ const EventStatistics: React.FC<EventStatisticsProps> = ({
   const { t } = createTranslation();
   const byStatus = statistics ? statistics.byStatus : null;
   const counts = {
-    [ParticipationTypes.participants]:
+    [ParticipationTypes.active]:
       (byStatus?.draft ?? 0) +
       (byStatus?.verified ?? 0) +
       (byStatus?.attended ?? 0) +

@@ -92,6 +92,7 @@
   },
   "labels": {
     "account": "Mine opplysninger",
+    "active": "Active",
     "admin": "Admin",
     "all": "Alle",
     "allEvents": "Vis alle arrangement",

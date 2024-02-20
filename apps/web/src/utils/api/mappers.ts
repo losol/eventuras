@@ -3,11 +3,12 @@ import {
   ProductDto,
   RegistrationCustomerInfoDto,
   RegistrationDto,
+  RegistrationStatus,
   RegistrationType,
   RegistrationUpdateDto,
 } from '@eventuras/sdk';
 
-import { PaymentFormValues, RegistrationProduct } from '@/types';
+import { ParticipationTypes, PaymentFormValues, RegistrationProduct } from '@/types';
 
 /**
  * Contains mappers which map Dto's from the API to whatever the view consumes.
@@ -113,4 +114,16 @@ export const mapSelectedProductsToQuantity = (
   });
 
   return submissionMap;
+};
+
+export const participationMap = {
+  [ParticipationTypes.active]: [
+    RegistrationStatus.DRAFT,
+    RegistrationStatus.ATTENDED,
+    RegistrationStatus.FINISHED,
+    RegistrationStatus.NOT_ATTENDED,
+    RegistrationStatus.VERIFIED,
+  ],
+  [ParticipationTypes.waitingList]: [RegistrationStatus.WAITING_LIST],
+  [ParticipationTypes.cancelled]: [RegistrationStatus.CANCELLED],
 };

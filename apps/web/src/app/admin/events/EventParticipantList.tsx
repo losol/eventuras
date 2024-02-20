@@ -17,6 +17,7 @@ import Loading from '@/components/ui/Loading';
 import useCreateHook from '@/hooks/createHook';
 import { ParticipationTypes, ParticipationTypesKey } from '@/types';
 import { createSDK } from '@/utils/api/EventurasApi';
+import { participationMap } from '@/utils/api/mappers';
 import Logger from '@/utils/Logger';
 
 import LiveActionsMenu from './LiveActionsMenu';
@@ -43,18 +44,6 @@ function renderProducts(registration: RegistrationDto) {
     })
     .join(', ');
 }
-
-const participationMap = {
-  [ParticipationTypes.participants]: [
-    RegistrationStatus.DRAFT,
-    RegistrationStatus.ATTENDED,
-    RegistrationStatus.FINISHED,
-    RegistrationStatus.NOT_ATTENDED,
-    RegistrationStatus.VERIFIED,
-  ],
-  [ParticipationTypes.waitingList]: [RegistrationStatus.WAITING_LIST],
-  [ParticipationTypes.cancelled]: [RegistrationStatus.CANCELLED],
-};
 
 const EventParticipantList: React.FC<AdminEventListProps> = ({
   participants: initialParticipants = [],

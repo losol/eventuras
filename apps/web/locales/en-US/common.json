@@ -92,6 +92,7 @@
   },
   "labels": {
     "account": "User account",
+    "active": "Active",
     "admin": "Admin",
     "all": "All",
     "allEvents": "All events",
