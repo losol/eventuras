@@ -22,6 +22,7 @@
   "scripts": {
     "build": "turbo run build",
     "test": "turbo run test",
+    "lint": "turbo run lint",
     "clean:node": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules"
   },
   "dependencies": {
