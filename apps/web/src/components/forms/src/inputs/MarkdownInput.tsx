@@ -1,10 +1,4 @@
 'use client';
-/**
- * This is a markdown editor
- * @returns <textarea />
-
- */
-
 import MarkdownEditor from '@eventuras/scribo';
 import { useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';

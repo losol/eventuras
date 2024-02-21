@@ -1,21 +1,25 @@
 import { EmailNotificationDto, RegistrationStatus, RegistrationType, SmsNotificationDto } from '@eventuras/sdk';
 import createTranslation from 'next-translate/createTranslation';
-import { SubmitHandler, useForm, UseFormRegister } from 'react-hook-form';
+import { useRef } from 'react';
+import { SubmitHandler, useForm, UseFormRegister, UseFormReturn } from 'react-hook-form';
 
 import Button from '@/components/ui/Button';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
+import { ParticipationTypes } from '@/types';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import { participationMap } from '@/utils/api/mappers';
 import { mapEnum } from '@/utils/enum';
 import Environment from '@/utils/Environment';
 
+import Checkbox, { CheckBoxLabel } from '../forms/Checkbox';
 import DropdownSelect from '../forms/DropdownSelect';
 import Form from '../forms/Form';
 import { LegacyInputText } from '../forms/Input';
 import MarkdownEditView from '../forms/MarkdownEditView';
 import TextAreaInput from '../forms/src/inputs/TextAreaInput';
+import { AppNotificationOptions } from '../ui/AppNotifications';
 import ButtonGroup from '../ui/ButtonGroup';
 import Heading from '../ui/Heading';
-import Checkbox, { CheckBoxLabel } from '../forms/Checkbox';
 
 type EventEmailerFormValues = {
   subject: string;
@@ -40,9 +44,15 @@ export type EventNotificatorProps = {
 
 const getBodyDto = (eventId: number, data: EventEmailerFormValues | EventSMSFormValues): EmailNotificationDto | SmsNotificationDto => {
   //type juggling... Converts { Status:true, Status2:true, Status3:false} to [Status,Status2]
-  const rs = data.registrationStatus as Object
-  const registrationStatuses = (Object.keys(rs)).filter((key: string) => rs[key as keyof Object] as any)
-  //same as above but for registration types instead of status
+  const statuses = data.registrationStatus as Object
+  const regStatusList = (Object.keys(statuses)).filter((key: string) => statuses[key as keyof Object] as any)
+
+  const registrationStatuses = regStatusList.reduce((accumulator: string[], currentValue: string) => {
+    const key = currentValue as keyof typeof participationMap
+    accumulator = accumulator.concat(participationMap[key])
+    return accumulator
+  }, [])
+  //type juggling... Converts { Status:true, Status2:true, Status3:false} to [Status,Status2]
   const tps = data.registrationTypes as Object
   const registrationTypes = (Object.keys(tps)).filter((key: string) => tps[key as keyof Object] as any)
 
@@ -69,26 +79,12 @@ const getBodyDto = (eventId: number, data: EventEmailerFormValues | EventSMSForm
 
 }
 
-export default function EventNotificator({ eventTitle, eventId, onClose, notificatorType }: EventNotificatorProps) {
-
-  const formHook = notificatorType === EventNotificatorType.EMAIL ? useForm<EventEmailerFormValues>() : useForm<EventSMSFormValues>()
-  const {
-    register,
-    control,
-    formState: { errors },
-    handleSubmit,
-  } = formHook;
-  const { addAppNotification } = useAppNotifications();
-  const { t } = createTranslation('admin');
-  const { t: common } = createTranslation('common');
-
-  const emailRegister = register as UseFormRegister<EventEmailerFormValues>
-  const smsRegister = register as UseFormRegister<EventSMSFormValues>
-
+const createFormHandler = (eventId: number, notificatorType: EventNotificatorType, addAppNotification: (options: AppNotificationOptions) => void, onClose: () => void) => {
   const onSubmitForm: SubmitHandler<EventEmailerFormValues | EventSMSFormValues> = async (
     data: EventEmailerFormValues | EventSMSFormValues
   ) => {
-
+    const { t } = createTranslation('admin');
+    const { t: common } = createTranslation('common');
     const body = getBodyDto(eventId, data)
     const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
     const result = notificatorType === EventNotificatorType.EMAIL ? await apiWrapper(() =>
@@ -105,42 +101,67 @@ export default function EventNotificator({ eventTitle, eventId, onClose, notific
     if (!result.ok) {
       addAppNotification({
         id: Date.now(),
-        message: common('errors.fatalError.title'),
+        message: `${common('errors.fatalError.title')}: ${result.error?.body.errors.BodyMarkdown[0]}`,
         type: AppNotificationType.ERROR,
       });
       throw new Error('Failed to send');
     } else {
       addAppNotification({
         id: Date.now(),
-        message: t('eventEmailer.form.successFeedback'),
+        message: notificatorType === EventNotificatorType.EMAIL ? t('eventNotifier.form.successFeedbackEmail') : t('eventNotifier.form.successFeedbackSMS'),
         type: AppNotificationType.SUCCESS,
       });
       //we are done, lets request a close
       onClose();
     }
   };
+  return onSubmitForm
+}
+
+
+export default function EventNotificator({ eventTitle, eventId, onClose, notificatorType }: EventNotificatorProps) {
+
+  let formHook: UseFormReturn<EventSMSFormValues, any, EventSMSFormValues> | UseFormReturn<EventEmailerFormValues, any, EventEmailerFormValues> = useForm()
+
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = formHook;
+  const { addAppNotification } = useAppNotifications();
+  const { t } = createTranslation('admin');
+  const { t: common } = createTranslation('common');
+
+  const emailRegister = register as unknown as UseFormRegister<EventEmailerFormValues>
+  const smsRegister = register as unknown as UseFormRegister<EventSMSFormValues>
+  const defaultSelectedStatus = [ParticipationTypes.active]
+  const defaultSelectedType = [RegistrationType.PARTICIPANT]
+  const onSubmitForm = useRef(createFormHandler(eventId, notificatorType, addAppNotification, onClose)).current
+
+
 
   return (
     <Form onSubmit={handleSubmit(onSubmitForm)} className="text-black w-72">
       <div>
-        <Heading as="h4">{common('event')}</Heading>
+        <Heading as="h4">{common('events.event')}</Heading>
         <p>{eventTitle}</p>
       </div>
-      <p>{t('eventEmailer.form.status.label')}</p>
+      <p>{t('eventNotifier.form.status.label')}</p>
       {
-        mapEnum(RegistrationStatus, (status: any) => {
+        Object.keys(participationMap).map((status: any) => {
           return <Checkbox
             className="relative z-10"
             key={status}
             id={status}
             title={status}
+            defaultChecked={defaultSelectedStatus.indexOf(status) > -1}
             {...emailRegister(`registrationStatus.${status}`)}
           >
-            <CheckBoxLabel>{status}</CheckBoxLabel>
+            <CheckBoxLabel>{t(`eventNotifier.form.status.${status}`)}</CheckBoxLabel>
           </Checkbox>
         })
       }
-      <p>{t('eventEmailer.form.type.label')}</p>
+      <p>{t('eventNotifier.form.type.label')}</p>
 
       {
         mapEnum(RegistrationType, (type: any) => {
@@ -149,6 +170,7 @@ export default function EventNotificator({ eventTitle, eventId, onClose, notific
             key={type}
             id={type}
             title={type}
+            defaultChecked={defaultSelectedType.indexOf(type) > -1}
             {...emailRegister(`registrationTypes.${type}`)}
           >
             <CheckBoxLabel>{type}</CheckBoxLabel>
@@ -160,10 +182,10 @@ export default function EventNotificator({ eventTitle, eventId, onClose, notific
         <div>
           <LegacyInputText
             {...emailRegister('subject', {
-              required: t('eventEmailer.form.subject.feedbackNoInput'),
+              required: t('eventNotifier.form.subject.feedbackNoInput'),
             })}
-            label={t('eventEmailer.form.subject.label')}
-            placeholder={t('eventEmailer.form.subject.label')}
+            label={t('eventNotifier.form.subject.label')}
+            placeholder={t('eventNotifier.form.subject.label')}
             errors={errors}
           />
         </div>
@@ -174,8 +196,9 @@ export default function EventNotificator({ eventTitle, eventId, onClose, notific
           <MarkdownEditView
             form={formHook}
             formName="body"
-            label={t('eventEmailer.form.body.label')}
-            placeholder={t('eventEmailer.form.body.label')}
+            minLength={10}
+            label={t('eventNotifier.form.body.label')}
+            placeholder={t('eventNotifier.form.body.label')}
             editmodeOnly={true}
           />
         </div>}
@@ -183,8 +206,8 @@ export default function EventNotificator({ eventTitle, eventId, onClose, notific
           <TextAreaInput
             {...smsRegister('body')}
             name="body"
-            label={t('eventEmailer.form.body.label')}
-            placeholder={t('eventEmailer.form.body.label')}
+            label={t('eventNotifier.form.body.label')}
+            placeholder={t('eventNotifier.form.body.label')}
           />
         }
       </div>

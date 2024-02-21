@@ -30,22 +30,26 @@
     "title": "Tittel",
     "when": "Når"
   },
-  "eventEmailer": {
+  "eventNotifier": {
     "form": {
       "body": {
         "feedbackIncorrect": "Needs at least 10 characters",
-        "feedbackNoInput": "Can't send an email without body!",
+        "feedbackNoInput": "Can't send a message without body!",
         "label": "Body"
       },
       "status": {
         "feedbackNoInput": "Please Select at least one Status type",
-        "label": "Status"
+        "label": "Status",
+        "active":"Active",
+        "waitingList":"Waiting List",
+        "cancelled":"Cancelled"
       },
       "subject": {
         "feedbackNoInput": "Please provide a subject",
         "label": "Subject"
       },
-      "successFeedback": "Emails succesfully sent!",
+      "successFeedbackEmail": "Emails succesfully sent!",
+      "successFeedbackSMS": "SMS succesfully sent!",
       "type": {
         "feedbackNoInput": "Please select at least one Type",
         "label": "Type"
