@@ -1,9 +1,7 @@
-import Checkbox, { CheckBoxLabel } from '@eventuras/forms/Checkbox';
-import Form from '@eventuras/forms/Form';
 import { LegacyInputText } from '@eventuras/forms/Input';
 import MarkdownEditView from '@eventuras/forms/MarkdownEditView';
-import TextAreaInput from '@eventuras/forms/src/inputs/TextAreaInput';
 import { EmailNotificationDto, RegistrationType, SmsNotificationDto } from '@eventuras/sdk';
+import { CheckboxInput, CheckboxLabel, Form, TextAreaInput } from '@eventuras/smartform';
 import { AppNotificationOptions } from '@eventuras/ui/AppNotifications';
 import Button from '@eventuras/ui/Button';
 import ButtonGroup from '@eventuras/ui/ButtonGroup';
@@ -147,7 +145,7 @@ export default function EventNotificator({ eventTitle, eventId, onClose, notific
       <p>{t('eventNotifier.form.status.label')}</p>
       {
         Object.keys(participationMap).map((status: any) => {
-          return <Checkbox
+          return <CheckboxInput
             className="relative z-10"
             key={status}
             id={status}
@@ -155,15 +153,15 @@ export default function EventNotificator({ eventTitle, eventId, onClose, notific
             defaultChecked={defaultSelectedStatus.indexOf(status) > -1}
             {...emailRegister(`registrationStatus.${status}`)}
           >
-            <CheckBoxLabel>{t(`eventNotifier.form.status.${status}`)}</CheckBoxLabel>
-          </Checkbox>
+            <CheckboxLabel>{t(`eventNotifier.form.status.${status}`)}</CheckboxLabel>
+          </CheckboxInput>
         })
       }
       <p>{t('eventNotifier.form.type.label')}</p>
 
       {
         mapEnum(RegistrationType, (type: any) => {
-          return <Checkbox
+          return <CheckboxInput
             className="relative z-10"
             key={type}
             id={type}
@@ -171,8 +169,8 @@ export default function EventNotificator({ eventTitle, eventId, onClose, notific
             defaultChecked={defaultSelectedType.indexOf(type) > -1}
             {...emailRegister(`registrationTypes.${type}`)}
           >
-            <CheckBoxLabel>{type}</CheckBoxLabel>
-          </Checkbox>
+            <CheckboxLabel>{type}</CheckboxLabel>
+          </CheckboxInput>
         })
       }
       {

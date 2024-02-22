@@ -1,5 +1,12 @@
 {
   "extends": "@eventuras/typescript-config/react-library.json",
+    "compilerOptions": {
+    "paths": {
+      "@/utils/*":["../../apps/web/src/utils/*"],
+      "@eventuras/ui":["../../libs/ui/src"],
+      "@eventuras/ui/*":["../../libs/ui/src/*"],
+    },
+  },
   "include": ["src", "../smartform/src/Form.tsx"],
   "exclude": ["node_modules", "dist"]
 }

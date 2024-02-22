@@ -1,10 +1,7 @@
 'use client';
 
-import Form from '@eventuras/forms/Form';
-import NumberInput from '@eventuras/forms/src/inputs/NumberInput';
-import TextAreaInput from '@eventuras/forms/src/inputs/TextAreaInput';
-import TextInput from '@eventuras/forms/src/inputs/TextInput';
 import type { NewProductDto, ProductDto } from '@eventuras/sdk';
+import { Form, NumberInput,TextAreaInput,TextInput} from '@eventuras/smartform';
 import Button from '@eventuras/ui/Button';
 import Heading from '@eventuras/ui/Heading';
 import { Dialog } from '@headlessui/react';

@@ -1,14 +1,8 @@
 'use client';
-import Form from '@eventuras/forms/Form';
+
 import Fieldset from '@eventuras/forms/src/Fieldset';
-import CheckboxInput, { CheckBoxLabel } from '@eventuras/forms/src/inputs/CheckboxInput';
-import { DateInput } from '@eventuras/forms/src/inputs/DateInput';
-import HiddenInput from '@eventuras/forms/src/inputs/HiddenInput';
-import MarkdownInput from '@eventuras/forms/src/inputs/MarkdownInput';
-import NumberInput from '@eventuras/forms/src/inputs/NumberInput';
-import Select from '@eventuras/forms/src/inputs/Select';
-import TextInput from '@eventuras/forms/src/inputs/TextInput';
 import { ApiError, EventDto, EventFormDto, EventInfoStatus, EventInfoType } from '@eventuras/sdk';
+import { CheckboxInput, CheckboxLabel, DateInput, Form, HiddenInput, MarkdownInput,NumberInput, Select, TextInput} from '@eventuras/smartform';
 import Button from '@eventuras/ui/Button';
 import Tabs from '@eventuras/ui/Tabs';
 import { useRouter } from 'next/navigation';
@@ -91,7 +85,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
             <div className="flex flex-row">
               <div className="mr-4">
                 <CheckboxInput name="featured">
-                  <CheckBoxLabel>Featured</CheckBoxLabel>
+                  <CheckboxLabel>Featured</CheckboxLabel>
                 </CheckboxInput>
               </div>
             </div>

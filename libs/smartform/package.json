@@ -1,6 +1,11 @@
 {
   "name": "@eventuras/smartform",
+  "main": "src/index.ts",
   "version": "0.1.0",
+  "dependencies": {
+    "@eventuras/ui": "*",
+    "@eventuras/forms": "*"
+  },
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

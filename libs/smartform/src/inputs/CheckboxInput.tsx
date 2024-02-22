@@ -36,7 +36,7 @@ type CheckboxWithSubComponents = React.ForwardRefExoticComponent<
   Description: FC<SubComponentProps>;
 };
 
-export const CheckBoxLabel: FC<SubComponentProps> = ({ children, className, htmlFor }) => {
+export const CheckboxLabel: FC<SubComponentProps> = ({ children, className, htmlFor }) => {
   const labelClassName = className || styles.label;
   return (
     <label htmlFor={htmlFor} className={labelClassName}>
@@ -45,7 +45,7 @@ export const CheckBoxLabel: FC<SubComponentProps> = ({ children, className, html
   );
 };
 
-export const CheckBoxDescription: FC<SubComponentProps> = ({ children, className }) => {
+export const CheckboxDescription: FC<SubComponentProps> = ({ children, className }) => {
   const descriptionClassName = className || styles.description;
   return <p className={descriptionClassName}>{children}</p>;
 };
@@ -57,7 +57,7 @@ const CheckboxInput = React.forwardRef<HTMLInputElement, CheckboxProps>((props, 
 
   // Add the for attribute to the label
   const enhancedChildren = React.Children.map(children, child => {
-    if (React.isValidElement<SubComponentProps>(child) && child.type === CheckBoxLabel) {
+    if (React.isValidElement<SubComponentProps>(child) && child.type === CheckboxLabel) {
       return React.cloneElement(child, { htmlFor: id } as SubComponentProps);
     }
     return child;
@@ -90,7 +90,7 @@ const CheckboxInput = React.forwardRef<HTMLInputElement, CheckboxProps>((props, 
 }) as CheckboxWithSubComponents;
 
 CheckboxInput.displayName = 'Checkbox';
-CheckboxInput.Label = CheckBoxLabel;
-CheckboxInput.Description = CheckBoxDescription;
+CheckboxInput.Label = CheckboxLabel;
+CheckboxInput.Description = CheckboxDescription;
 
 export default CheckboxInput;
