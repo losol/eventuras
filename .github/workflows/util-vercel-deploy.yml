@@ -78,17 +78,6 @@ jobs:
         env:
           VERCEL_TOKEN: ${{ inputs.vercel_token }}
 
-      - name: Deploy Project Artifacts to Vercel and Optionally Set Custom URL Alias
-        run: |
-          url=$(vercel deploy --prebuilt --token=${{ inputs.vercel_token }})
-          echo "Deployed to URL: $url"
-          if [[ "${{ inputs.custom_url }}" ]]; then
-            vercel alias --token=${{ inputs.vercel_token }} set "$url" ${{ inputs.custom_url }}
-            echo "Alias set to: ${{ inputs.custom_url }}"
-          fi
-        env:
-          VERCEL_TOKEN: ${{ inputs.vercel_token }}
-
       - name: Set Custom URL
         if: ${{ inputs.custom_url }}
         run: vercel alias --token=${{ inputs.vercel_token }} set "$url" ${{ inputs.custom_url }}

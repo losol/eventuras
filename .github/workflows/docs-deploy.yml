@@ -1,7 +1,8 @@
 name: "Docsite: deploy"
+
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
 on:
   push:
     branches:
@@ -16,7 +17,11 @@ jobs:
     runs-on: ubuntu-latest
     environment: docsite
     steps:
-      - uses: ./.github/workflows/util-vercel-deploy.yml
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to Vercel
+        uses: ./.github/workflows/util-vercel-deploy.yml
         with:
           vercel_token: ${{ secrets.VERCEL_TOKEN }}
           environment: "production"
