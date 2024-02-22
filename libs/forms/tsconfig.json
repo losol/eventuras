@@ -1,5 +1,5 @@
 {
   "extends": "@eventuras/typescript-config/react-library.json",
-  "include": ["src"],
+  "include": ["src", "../smartform/src/Form.tsx"],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,14 +1,26 @@
+'use client';
+
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { InputProps } from '@eventuras/forms/src/inputs/InputProps';
 
-import formStyles from '../formStyles';
-import Label from './Label';
+import formStyles from '../../../forms/src/formStyles';
+import Label from '../../../forms/src/Label';
 
-export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  const { id, name, placeholder, label, description, className, defaultValue, validation, disabled, dataTestId } =
-    props;
+export const TextAreaInput = React.forwardRef<HTMLTextAreaElement, InputProps>((props, ref) => {
+  const {
+    id,
+    name,
+    placeholder,
+    label,
+    description,
+    className,
+    validation,
+    disabled,
+    dataTestId,
+    ...rest
+  } = props;
   const inputId = id ?? name;
   const {
     register,
@@ -29,16 +41,15 @@ export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props
       {label && <Label htmlFor={inputId}>{label}</Label>}
       {description && <p className={formStyles.inputDescription}>{description}</p>}
 
-      <input
+      <textarea
         id={inputId}
-        type="number"
+        type="text"
         placeholder={placeholder}
         className={inputClassName}
         aria-invalid={hasError}
         disabled={disabled}
         data-test-id={dataTestId}
-        defaultValue={defaultValue}
-        {...register(name, { valueAsNumber: true})}
+        {...register(name, validation)}
         ref={e => {
           // Assign the ref from forwardRef
           if (typeof ref === 'function') {
@@ -50,7 +61,9 @@ export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props
           // Also call the register function
           register(name, validation).ref(e);
         }}
+        {...rest}
       />
+      {/* check this a11y guide : https://www.react-hook-form.com/advanced-usage/#AccessibilityA11y */}
       {errors && errors[name] && (
         <label htmlFor={inputId} role="alert" className="text-red-500">
           {errors[name]?.message?.toString()}
@@ -60,5 +73,5 @@ export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props
   );
 });
 
-NumberInput.displayName = 'NumberInput';
-export default NumberInput;
+TextAreaInput.displayName = 'TextAreaInput';
+export default TextAreaInput;
