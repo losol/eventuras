@@ -33,6 +33,7 @@
     "@headlessui/react": "^1.7.18",
     "@eventuras/sdk": "*",
     "@eventuras/scribo": "*",
+    "@eventuras/ui": "*",
     "@sentry/nextjs": "^7.101.1",
     "@tabler/icons-react": "^2.47.0",
     "@tanstack/match-sorter-utils": "^8.11.8",
