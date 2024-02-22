@@ -7,7 +7,7 @@ import React, { Fragment, useCallback, useRef, useState } from 'react';
 import { ApiResult } from '@/utils/api/EventurasApi';
 
 import Loading from '@eventuras/ui/Loading';
-import formStyles from './src/formStyles';
+import formStyles from './formStyles';
 
 export type InputTextProps = {
   [x: string]: any;

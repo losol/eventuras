@@ -1,9 +1,8 @@
 'use client';
 
-import Form from '@eventuras/forms/Form';
-import Fieldset from '@eventuras/forms/src/Fieldset';
-import { TextInput } from '@eventuras/forms/src/inputs/TextInput';
+import Fieldset from '@eventuras/forms/Fieldset';
 import { UserDto, UserFormDto } from '@eventuras/sdk';
+import { Form, TextInput } from '@eventuras/smartform';
 import Button from '@eventuras/ui/Button';
 import createTranslation from 'next-translate/createTranslation';
 import React, { FC, useState } from 'react';

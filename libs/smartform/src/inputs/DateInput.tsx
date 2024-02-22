@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { InputProps } from '@eventuras/forms/src/inputs/InputProps';
+import { InputProps } from '@eventuras/forms/InputProps';
 
 import Label from '../../../forms/src/Label';
 
@@ -9,7 +9,7 @@ const styles = {
   input: 'text-black dark:text-white bg-slate-100 dark:bg-slate-700 p-2 m-2',
 };
 
-export const DateInput = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
+const DateInput = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const { register } = useFormContext();
   const id = props.id ?? props.name;
 
@@ -43,3 +43,5 @@ export const DateInput = React.forwardRef<HTMLInputElement, InputProps>((props, 
   );
 });
 DateInput.displayName = 'DateInput';
+
+export default DateInput;

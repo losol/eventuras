@@ -1,6 +1,4 @@
 'use client';
-import Form from '@eventuras/forms/Form';
-import Select from '@eventuras/forms/src/inputs/Select';
 import {
   PaymentProvider,
   RegistrationCustomerInfoDto,
@@ -8,6 +6,7 @@ import {
   RegistrationStatus,
   RegistrationType,
 } from '@eventuras/sdk';
+import { Form,Select }from '@eventuras/smartform';
 import Badge from '@eventuras/ui/Badge';
 import Button from '@eventuras/ui/Button';
 import { Definition, DescriptionList, Item, Term } from '@eventuras/ui/DescriptionList';
