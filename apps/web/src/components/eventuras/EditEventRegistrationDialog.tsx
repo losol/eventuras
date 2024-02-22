@@ -12,8 +12,8 @@ import {
 } from '@/utils/api/functions/events';
 import Logger from '@/utils/Logger';
 
-import Button from '../ui/Button';
-import Dialog from '../ui/Dialog';
+import Button from '../../../../../libs/ui/src/Button';
+import Dialog from '../../../../../libs/ui/src/Dialog';
 
 export type EditEventOrdersDialogProps = {
   eventProducts: ProductDto[];
