@@ -1,4 +1,5 @@
 'use client';
+import { LegacyInputText } from '@eventuras/forms/Input';
 import { ApiError, EventDto, EventInfoStatus, Eventuras } from '@eventuras/sdk';
 import { Layout } from '@eventuras/ui';
 import Button from '@eventuras/ui/Button';
@@ -9,7 +10,6 @@ import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import { LegacyInputText } from '@/components/forms/Input';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';

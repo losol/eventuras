@@ -1,8 +1,8 @@
 'use client';
 
+import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { ProductOrdersSummaryDto } from '@eventuras/sdk';
 import Badge from '@eventuras/ui/Badge';
-import DataTable, { createColumnHelper } from '@eventuras/ui/DataTable';
 import React from 'react';
 
 interface DeliverySummaryProps {

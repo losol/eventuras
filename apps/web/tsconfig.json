@@ -3,6 +3,8 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*", "./public/*"],
+      "@eventuras/datatable":["../../libs/datatable/src/*"],
+      "@eventuras/forms*":["../../libs/forms/src*"],
       "@eventuras/scribo":["../../libs/scribo"],
       "@eventuras/sdk":["../../libs/sdk"],
       "@eventuras/ui":["../../libs/ui/src"],

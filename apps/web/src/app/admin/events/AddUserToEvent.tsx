@@ -1,3 +1,6 @@
+import DropdownSelect from '@eventuras/forms/DropdownSelect';
+import { InputAutoComplete } from '@eventuras/forms/Input';
+import ProductSelection from '@eventuras/forms/ProductSelection';
 import {
   EventDto,
   NewRegistrationDto,
@@ -13,9 +16,6 @@ import createTranslation from 'next-translate/createTranslation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import DropdownSelect from '@/components/forms/DropdownSelect';
-import { InputAutoComplete } from '@/components/forms/Input';
-import ProductSelection from '@/components/forms/ProductSelection';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { RegistrationProduct } from '@/types';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';

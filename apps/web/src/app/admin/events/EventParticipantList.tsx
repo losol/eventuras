@@ -1,10 +1,10 @@
 'use client';
 
+import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { EventDto, ProductDto, RegistrationDto, RegistrationStatus } from '@eventuras/sdk';
 import { Drawer } from '@eventuras/ui';
 import Badge from '@eventuras/ui/Badge';
 import Button from '@eventuras/ui/Button';
-import DataTable, { createColumnHelper } from '@eventuras/ui/DataTable';
 import Loading from '@eventuras/ui/Loading';
 import { IconNotes, IconShoppingCart, IconUser } from '@tabler/icons-react';
 import { ColumnFilter } from '@tanstack/react-table';
