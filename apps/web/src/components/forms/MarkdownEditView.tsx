@@ -8,7 +8,7 @@ import { compiler } from 'markdown-to-jsx';
 import { useRef, useState } from 'react';
 import { Controller, RegisterOptions, UseFormReturn } from 'react-hook-form';
 
-import Button from '../ui/Button';
+import Button from '../../../../../libs/ui/src/Button';
 
 export type MarkdownEditViewProps = {
   form: UseFormReturn<any>;

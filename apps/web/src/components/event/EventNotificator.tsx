@@ -11,15 +11,15 @@ import { participationMap } from '@/utils/api/mappers';
 import { mapEnum } from '@/utils/enum';
 import Environment from '@/utils/Environment';
 
+import { AppNotificationOptions } from '../../../../../libs/ui/src/AppNotifications';
+import ButtonGroup from '../../../../../libs/ui/src/ButtonGroup';
+import Heading from '../../../../../libs/ui/src/Heading';
 import Checkbox, { CheckBoxLabel } from '../forms/Checkbox';
 import DropdownSelect from '../forms/DropdownSelect';
 import Form from '../forms/Form';
 import { LegacyInputText } from '../forms/Input';
 import MarkdownEditView from '../forms/MarkdownEditView';
 import TextAreaInput from '../forms/src/inputs/TextAreaInput';
-import { AppNotificationOptions } from '../ui/AppNotifications';
-import ButtonGroup from '../ui/ButtonGroup';
-import Heading from '../ui/Heading';
 
 type EventEmailerFormValues = {
   subject: string;

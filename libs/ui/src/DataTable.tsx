@@ -15,7 +15,7 @@ import {
 import { useEffect } from 'react';
 import React from 'react';
 
-import { DebouncedInput } from '../forms/Input';
+import { DebouncedInput } from '../../../apps/web/src/components/forms/Input';
 import Pagination from './Pagination';
 
 type DataTableProps = {
