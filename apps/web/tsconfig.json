@@ -6,6 +6,7 @@
       "@eventuras/datatable":["../../libs/datatable/src/*"],
       "@eventuras/forms*":["../../libs/forms/src*"],
       "@eventuras/scribo":["../../libs/scribo"],
+      "@eventuras/smartform":["../../libs/smartform/src/*"],
       "@eventuras/sdk":["../../libs/sdk"],
       "@eventuras/ui":["../../libs/ui/src"],
       "@eventuras/ui/*":["../../libs/ui/src/*"],

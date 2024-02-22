@@ -5,13 +5,14 @@ import { useFormContext } from 'react-hook-form';
 
 import { InputProps } from '@eventuras/forms/src/inputs/InputProps';
 
-import formStyles from '../formStyles';
-import Label from './Label';
+import formStyles from '../../../forms/src/formStyles';
+import Label from '../../../forms/src/Label';
 
-export const TextAreaInput = React.forwardRef<HTMLTextAreaElement, InputProps>((props, ref) => {
+export const TextInput = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const {
     id,
     name,
+    type = 'text',
     placeholder,
     label,
     description,
@@ -41,9 +42,9 @@ export const TextAreaInput = React.forwardRef<HTMLTextAreaElement, InputProps>((
       {label && <Label htmlFor={inputId}>{label}</Label>}
       {description && <p className={formStyles.inputDescription}>{description}</p>}
 
-      <textarea
+      <input
         id={inputId}
-        type="text"
+        type={type}
         placeholder={placeholder}
         className={inputClassName}
         aria-invalid={hasError}
@@ -73,5 +74,5 @@ export const TextAreaInput = React.forwardRef<HTMLTextAreaElement, InputProps>((
   );
 });
 
-TextAreaInput.displayName = 'TextAreaInput';
-export default TextAreaInput;
+TextInput.displayName = 'TextInput';
+export default TextInput;

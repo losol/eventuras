@@ -1,0 +1,5 @@
+{
+  "extends": "@eventuras/typescript-config/react-library.json",
+  "include": ["src", "../forms/src/Fieldset.tsx", "../forms/src/formStyles.ts", "../forms/src/Label.tsx"],
+  "exclude": ["node_modules", "dist"]
+}

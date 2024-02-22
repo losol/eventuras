@@ -3,7 +3,7 @@ import { IconChevronDown } from '@tabler/icons-react';
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
-import Label from './Label';
+import Label from '../../../forms/src/Label';
 
 export type SelectProps = {
   label?: string;
