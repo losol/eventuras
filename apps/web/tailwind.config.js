@@ -5,6 +5,7 @@ module.exports = {
   darkMode: 'media',
   content: [
     './src/**/*.{js,ts,jsx,tsx,mdx}',
+    '../../libs/datatable/src/**/*.{js,ts,jsx,tsx,mdx}',
     '../../libs/ui/src/**/*.{js,ts,jsx,tsx,mdx}',
     '../../libs/forms/src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
