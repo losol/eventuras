@@ -1,11 +1,11 @@
 'use client';
 
 import { ProductDto } from '@eventuras/sdk';
+import Button from '@eventuras/ui/Button';
 import createTranslation from 'next-translate/createTranslation';
 import { useForm } from 'react-hook-form';
 
 import ProductSelection from '@/components/forms/ProductSelection';
-import Button from '@/components/ui/Button';
 import { ProductSelected } from '@/types';
 import { mapSelectedProductsToQuantity } from '@/utils/api/mappers';
 

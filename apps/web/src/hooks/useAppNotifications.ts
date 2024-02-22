@@ -1,9 +1,9 @@
+import { AppNotificationOptions, AppNotificationType } from '@eventuras/ui/AppNotifications';
 import { useRecoilState } from 'recoil';
 
 import { appNotificationState } from '@/atoms/RecoilState';
-import { AppNotificationOptions, AppNotificationType } from '@/components/ui/AppNotifications';
 
-export { AppNotificationType } from '@/components/ui/AppNotifications';
+export { AppNotificationType } from '@eventuras/ui/AppNotifications';
 
 export const useAppNotifications = () => {
   const [appNotifications, setAppNotifications] = useRecoilState(appNotificationState);

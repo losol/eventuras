@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Loading from '@/components/ui/Loading';
+import Loading from '@eventuras/ui/Loading';
 import { TEST_ID_ATTRIBUTE } from '@/utils/constants';
 
 import { BoxProps, spacingClassName } from './Box';

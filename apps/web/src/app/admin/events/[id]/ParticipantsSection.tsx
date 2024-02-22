@@ -1,10 +1,10 @@
 'use client';
 import { EventDto, ProductDto, RegistrationDto } from '@eventuras/sdk';
 import { EventStatisticsDto } from '@eventuras/sdk';
+import { Container } from '@eventuras/ui';
+import Section from '@eventuras/ui/Section';
 import { useMemo, useState } from 'react';
 
-import { Container } from '@/components/ui';
-import Section from '@/components/ui/Section';
 import { ParticipationTypes, ParticipationTypesKey } from '@/types';
 
 import EventParticipantList from '../EventParticipantList';

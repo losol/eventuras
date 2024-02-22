@@ -1,9 +1,9 @@
 import { EmailNotificationDto, RegistrationStatus, RegistrationType, SmsNotificationDto } from '@eventuras/sdk';
+import Button from '@eventuras/ui/Button';
 import createTranslation from 'next-translate/createTranslation';
 import { useRef } from 'react';
 import { SubmitHandler, useForm, UseFormRegister, UseFormReturn } from 'react-hook-form';
 
-import Button from '@/components/ui/Button';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { ParticipationTypes } from '@/types';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';

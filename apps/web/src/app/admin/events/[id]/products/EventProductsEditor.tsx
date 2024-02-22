@@ -1,10 +1,10 @@
 'use client';
 
 import type { EventDto, ProductDto } from '@eventuras/sdk';
+import Button from '@eventuras/ui/Button';
 import createTranslation from 'next-translate/createTranslation';
 import React, { useState } from 'react';
 
-import Button from '@/components/ui/Button';
 import { createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 

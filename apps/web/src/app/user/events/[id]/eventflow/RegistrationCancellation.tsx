@@ -1,8 +1,8 @@
 'use client';
 
+import Button from '@eventuras/ui/Button';
 import createTranslation from 'next-translate/createTranslation';
 
-import Button from '@/components/ui/Button';
 import { SiteInfo } from '@/utils/site/getSiteSettings';
 
 export type RegistrationCancellationProps = {

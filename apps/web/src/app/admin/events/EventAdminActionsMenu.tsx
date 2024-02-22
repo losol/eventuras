@@ -1,14 +1,14 @@
 'use client';
 
 import { EventDto, ProductDto } from '@eventuras/sdk';
+import { Drawer } from '@eventuras/ui';
+import Button from '@eventuras/ui/Button';
+import ButtonGroup from '@eventuras/ui/ButtonGroup';
+import Link from '@eventuras/ui/Link';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
-import { Drawer } from '@/components/ui';
-import Button from '@/components/ui/Button';
-import ButtonGroup from '@/components/ui/ButtonGroup';
-import Link from '@/components/ui/Link';
 
 import AddUserToEvent from './AddUserToEvent';
 

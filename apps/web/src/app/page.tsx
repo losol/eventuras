@@ -1,9 +1,9 @@
+import { Container, Layout } from '@eventuras/ui';
+import Card from '@eventuras/ui/Card';
+import Heading from '@eventuras/ui/Heading';
 import createTranslation from 'next-translate/createTranslation';
 
 import { EventGrid } from '@/components/event';
-import { Container, Layout } from '@/components/ui';
-import Card from '@/components/ui/Card';
-import Heading from '@/components/ui/Heading';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import getSiteSettings from '@/utils/site/getSiteSettings';

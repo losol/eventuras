@@ -1,10 +1,9 @@
 'use client';
 
 import { ProductOrdersSummaryDto } from '@eventuras/sdk';
+import Badge from '@eventuras/ui/Badge';
+import DataTable, { createColumnHelper } from '@eventuras/ui/DataTable';
 import React from 'react';
-
-import Badge from '@/components/ui/Badge';
-import DataTable, { createColumnHelper } from '@/components/ui/DataTable';
 
 interface DeliverySummaryProps {
   deliverySummary: ProductOrdersSummaryDto[];

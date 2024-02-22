@@ -1,8 +1,7 @@
 import { EventDto, EventInfoStatus } from '@eventuras/sdk';
+import Badge from '@eventuras/ui/Badge';
+import Link from '@eventuras/ui/Link';
 import createTranslation from 'next-translate/createTranslation';
-
-import Badge from '@/components/ui/Badge';
-import Link from '@/components/ui/Link';
 
 export type EventRegistrationButtonProps = {
   event: EventDto;

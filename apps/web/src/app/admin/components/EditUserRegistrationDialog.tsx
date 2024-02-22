@@ -1,4 +1,4 @@
-import Dialog from '@/components/ui/Dialog';
+import Dialog from '@eventuras/ui/Dialog';
 
 export type EditUserRegistrationDialogProps = {
   editorOpen: boolean;

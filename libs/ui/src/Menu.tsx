@@ -4,7 +4,7 @@ import {
 } from '@headlessui/react';
 import React, { FC, ReactNode } from 'react';
 
-import Link from '@/components/ui/Link';
+import Link from '@eventuras/ui/Link';
 import { TEST_ID_ATTRIBUTE } from '@/utils/constants';
 
 const styles = {

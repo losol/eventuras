@@ -1,11 +1,11 @@
 'use client';
 
+import Button from '@eventuras/ui/Button';
+import Drawer from '@eventuras/ui/Drawer';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 
 import UserEditor from '@/app/admin/users/UserEditor';
-import Button from '@/components/ui/Button';
-import Drawer from '@/components/ui/Drawer';
 
 const UserDrawer: React.FC = () => {
   const { t } = createTranslation();

@@ -5,8 +5,8 @@ import { signIn, signOut } from 'next-auth/react';
 import createTranslation from 'next-translate/createTranslation';
 import { useContext } from 'react';
 
-import Button from '@/components/ui/Button';
-import Menu from '@/components/ui/Menu';
+import Button from '@eventuras/ui/Button';
+import Menu from '@eventuras/ui/Menu';
 import { UserContext } from '@/context';
 import Environment from '@/utils/Environment';
 

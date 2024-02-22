@@ -6,16 +6,16 @@ import {
   RegistrationStatus,
   RegistrationType,
 } from '@eventuras/sdk';
+import Badge from '@eventuras/ui/Badge';
+import Button from '@eventuras/ui/Button';
+import { Definition, DescriptionList, Item, Term } from '@eventuras/ui/DescriptionList';
+import Heading from '@eventuras/ui/Heading';
+import Section from '@eventuras/ui/Section';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 
 import Form from '@/components/forms/Form';
 import Select from '@/components/forms/src/inputs/Select';
-import Badge from '@/components/ui/Badge';
-import Button from '@/components/ui/Button';
-import { Definition, DescriptionList, Item, Term } from '@/components/ui/DescriptionList';
-import Heading from '@/components/ui/Heading';
-import Section from '@/components/ui/Section';
 import { apiWrapper, createSDK, fetcher } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';

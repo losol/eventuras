@@ -1,7 +1,7 @@
 import { EventDto } from '@eventuras/sdk';
+import Card from '@eventuras/ui/Card';
 import Link from 'next/link';
 
-import Card from '@/components/ui/Card';
 import Environment from '@/utils/Environment';
 import { formatDateSpan } from '@/utils/formatDate';
 

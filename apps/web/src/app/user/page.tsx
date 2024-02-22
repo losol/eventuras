@@ -1,8 +1,8 @@
+import { Layout } from '@eventuras/ui';
+import Heading from '@eventuras/ui/Heading';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
-import { Layout } from '@/components/ui';
-import Heading from '@/components/ui/Heading';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
 import UserEventRegistrations from './(components)/UserEventRegistrations';

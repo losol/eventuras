@@ -1,14 +1,14 @@
 'use client';
 
 import { OrderDto } from '@eventuras/sdk';
+import DataTable, { createColumnHelper } from '@eventuras/ui/DataTable';
+import FatalError from '@eventuras/ui/FatalError';
+import Link from '@eventuras/ui/Link';
+import Loading from '@eventuras/ui/Loading';
+import Pagination from '@eventuras/ui/Pagination';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 
-import DataTable, { createColumnHelper } from '@/components/ui/DataTable';
-import FatalError from '@/components/ui/FatalError';
-import Link from '@/components/ui/Link';
-import Loading from '@/components/ui/Loading';
-import Pagination from '@/components/ui/Pagination';
 import useCreateHook from '@/hooks/createHook';
 import { createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';

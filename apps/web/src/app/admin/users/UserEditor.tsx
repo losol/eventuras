@@ -1,13 +1,13 @@
 'use client';
 
 import { UserDto, UserFormDto } from '@eventuras/sdk';
+import Button from '@eventuras/ui/Button';
 import createTranslation from 'next-translate/createTranslation';
 import React, { FC, useState } from 'react';
 
 import Form from '@/components/forms/Form';
 import Fieldset from '@/components/forms/src/Fieldset';
 import { TextInput } from '@/components/forms/src/inputs/TextInput';
-import Button from '@/components/ui/Button';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Logger from '@/utils/Logger';

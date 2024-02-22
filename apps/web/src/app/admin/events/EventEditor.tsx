@@ -1,5 +1,7 @@
 'use client';
 import { ApiError, EventDto, EventFormDto, EventInfoStatus, EventInfoType } from '@eventuras/sdk';
+import Button from '@eventuras/ui/Button';
+import Tabs from '@eventuras/ui/Tabs';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
@@ -14,8 +16,6 @@ import MarkdownInput from '@/components/forms/src/inputs/MarkdownInput';
 import NumberInput from '@/components/forms/src/inputs/NumberInput';
 import Select from '@/components/forms/src/inputs/Select';
 import TextInput from '@/components/forms/src/inputs/TextInput';
-import Button from '@/components/ui/Button';
-import Tabs from '@/components/ui/Tabs';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { mapEnum } from '@/utils/enum';

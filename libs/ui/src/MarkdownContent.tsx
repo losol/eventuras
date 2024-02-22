@@ -1,6 +1,6 @@
 import { compiler } from 'markdown-to-jsx';
 
-import Heading from '@/components/ui/Heading';
+import Heading from '@eventuras/ui/Heading';
 
 export type MarkdownContentProps = {
   markdown?: string | null | undefined;

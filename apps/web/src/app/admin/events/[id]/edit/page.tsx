@@ -1,9 +1,9 @@
+import { Layout } from '@eventuras/ui';
+import Heading from '@eventuras/ui/Heading';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
 import EventEditor from '@/app/admin/events/EventEditor';
-import { Layout } from '@/components/ui';
-import Heading from '@/components/ui/Heading';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';

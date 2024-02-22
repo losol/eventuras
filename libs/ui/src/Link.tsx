@@ -1,8 +1,8 @@
 import NextLink from 'next/link';
 import React from 'react';
 
-import { BoxProps, spacingClassName } from '@/components/ui/Box';
-import { buttonStyles } from '@/components/ui/Button';
+import { BoxProps, spacingClassName } from '@eventuras/ui/Box';
+import { buttonStyles } from '@eventuras/ui/Button';
 import { TEST_ID_ATTRIBUTE } from '@/utils/constants';
 
 interface LinkProps {

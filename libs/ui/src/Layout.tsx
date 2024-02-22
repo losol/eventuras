@@ -5,7 +5,7 @@
  */
 import { ReactNode } from 'react';
 
-import { Footer } from '@/components/ui';
+import { Footer } from '@eventuras/ui';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 import Navbar from './Navbar';
