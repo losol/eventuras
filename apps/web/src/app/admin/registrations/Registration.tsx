@@ -1,4 +1,6 @@
 'use client';
+import Form from '@eventuras/forms/Form';
+import Select from '@eventuras/forms/src/inputs/Select';
 import {
   PaymentProvider,
   RegistrationCustomerInfoDto,
@@ -14,8 +16,6 @@ import Section from '@eventuras/ui/Section';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 
-import Form from '@/components/forms/Form';
-import Select from '@/components/forms/src/inputs/Select';
 import { apiWrapper, createSDK, fetcher } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';

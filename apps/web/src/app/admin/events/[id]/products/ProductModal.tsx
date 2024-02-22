@@ -1,5 +1,9 @@
 'use client';
 
+import Form from '@eventuras/forms/Form';
+import NumberInput from '@eventuras/forms/src/inputs/NumberInput';
+import TextAreaInput from '@eventuras/forms/src/inputs/TextAreaInput';
+import TextInput from '@eventuras/forms/src/inputs/TextInput';
 import type { NewProductDto, ProductDto } from '@eventuras/sdk';
 import Button from '@eventuras/ui/Button';
 import Heading from '@eventuras/ui/Heading';
@@ -8,10 +12,6 @@ import createTranslation from 'next-translate/createTranslation';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import Form from '@/components/forms/Form';
-import NumberInput from '@/components/forms/src/inputs/NumberInput';
-import TextAreaInput from '@/components/forms/src/inputs/TextAreaInput';
-import TextInput from '@/components/forms/src/inputs/TextInput';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { ApiState, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Logger from '@/utils/Logger';

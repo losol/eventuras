@@ -1,0 +1,17 @@
+{
+  "name": "@eventuras/datatable",
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@eventuras/ui": "*",
+    "@eventuras/forms": "*"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@eventuras/eslint-config": "*",
+    "@eventuras/typescript-config": "*"
+  }
+}

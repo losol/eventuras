@@ -1,5 +1,13 @@
-import { EmailNotificationDto, RegistrationStatus, RegistrationType, SmsNotificationDto } from '@eventuras/sdk';
+import Checkbox, { CheckBoxLabel } from '@eventuras/forms/Checkbox';
+import Form from '@eventuras/forms/Form';
+import { LegacyInputText } from '@eventuras/forms/Input';
+import MarkdownEditView from '@eventuras/forms/MarkdownEditView';
+import TextAreaInput from '@eventuras/forms/src/inputs/TextAreaInput';
+import { EmailNotificationDto, RegistrationType, SmsNotificationDto } from '@eventuras/sdk';
+import { AppNotificationOptions } from '@eventuras/ui/AppNotifications';
 import Button from '@eventuras/ui/Button';
+import ButtonGroup from '@eventuras/ui/ButtonGroup';
+import Heading from '@eventuras/ui/Heading';
 import createTranslation from 'next-translate/createTranslation';
 import { useRef } from 'react';
 import { SubmitHandler, useForm, UseFormRegister, UseFormReturn } from 'react-hook-form';
@@ -10,16 +18,6 @@ import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { participationMap } from '@/utils/api/mappers';
 import { mapEnum } from '@/utils/enum';
 import Environment from '@/utils/Environment';
-
-import { AppNotificationOptions } from '../../../../../libs/ui/src/AppNotifications';
-import ButtonGroup from '../../../../../libs/ui/src/ButtonGroup';
-import Heading from '../../../../../libs/ui/src/Heading';
-import Checkbox, { CheckBoxLabel } from '../forms/Checkbox';
-import DropdownSelect from '../forms/DropdownSelect';
-import Form from '../forms/Form';
-import { LegacyInputText } from '../forms/Input';
-import MarkdownEditView from '../forms/MarkdownEditView';
-import TextAreaInput from '../forms/src/inputs/TextAreaInput';
 
 type EventEmailerFormValues = {
   subject: string;

@@ -1,7 +1,7 @@
 'use client';
 
+import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { RegistrationDto } from '@eventuras/sdk';
-import DataTable, { createColumnHelper } from '@eventuras/ui/DataTable';
 import FatalError from '@eventuras/ui/FatalError';
 import Link from '@eventuras/ui/Link';
 import Loading from '@eventuras/ui/Loading';

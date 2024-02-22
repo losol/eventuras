@@ -1,6 +1,6 @@
+import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import type { ProductDto } from '@eventuras/sdk';
 import Badge from '@eventuras/ui/Badge';
-import DataTable, { createColumnHelper } from '@eventuras/ui/DataTable';
 import Link from '@eventuras/ui/Link';
 import { IconEye, IconPencil } from '@tabler/icons-react';
 import createTranslation from 'next-translate/createTranslation';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { InputProps } from '@/components/forms/src/inputs/InputProps';
+import { InputProps } from '@eventuras/forms/src/inputs/InputProps';
 
 import formStyles from '../formStyles';
 import Label from './Label';

@@ -3,7 +3,11 @@ import colors from 'tailwindcss/colors';
 
 module.exports = {
   darkMode: 'media',
-  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}', '../../libs/ui/src/**/*.{js,ts,jsx,tsx,mdx}'],
+  content: [
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
+    '../../libs/ui/src/**/*.{js,ts,jsx,tsx,mdx}',
+    '../../libs/forms/src/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
   theme: {
     extend: {
       colors: {

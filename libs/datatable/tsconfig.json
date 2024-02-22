@@ -1,0 +1,19 @@
+{
+  "extends": "@eventuras/typescript-config/react-library.json",
+    "compilerOptions": {
+    "paths": {
+      "@eventuras/datatable/*":["../../libs/datatable/src/*"],
+      "@eventuras/forms/*":["../../libs/forms/src/*"],
+      "@eventuras/ui":["../../libs/ui/src"],
+      "@eventuras/ui/*":["../../libs/ui/src/*"],
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}

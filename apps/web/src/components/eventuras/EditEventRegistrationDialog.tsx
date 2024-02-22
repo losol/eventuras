@@ -2,6 +2,8 @@
 
 import { ProductDto } from '@eventuras/sdk';
 import { RegistrationDto } from '@eventuras/sdk';
+import Button from '@eventuras/ui/Button';
+import Dialog from '@eventuras/ui/Dialog';
 import { useState } from 'react';
 
 import RegistrationCustomize from '@/app/user/events/[id]/eventflow/RegistrationCustomize';
@@ -11,9 +13,6 @@ import {
   productMapToOrderLineModel,
 } from '@/utils/api/functions/events';
 import Logger from '@/utils/Logger';
-
-import Button from '../../../../../libs/ui/src/Button';
-import Dialog from '../../../../../libs/ui/src/Dialog';
 
 export type EditEventOrdersDialogProps = {
   eventProducts: ProductDto[];
