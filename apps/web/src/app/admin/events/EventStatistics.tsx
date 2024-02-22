@@ -1,8 +1,8 @@
 'use client';
 import { EventStatisticsDto } from '@eventuras/sdk';
+import NumberCard from '@eventuras/ui/NumberCard';
 import createTranslation from 'next-translate/createTranslation';
 
-import NumberCard from '@/components/ui/NumberCard';
 import { ParticipationTypes, ParticipationTypesKey } from '@/types';
 
 type EventStatisticsProps = {

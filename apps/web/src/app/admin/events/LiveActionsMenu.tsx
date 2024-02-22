@@ -1,9 +1,8 @@
 'use client';
 
 import { RegistrationDto, RegistrationStatus } from '@eventuras/sdk';
+import Button from '@eventuras/ui/Button';
 import { IconCircleX } from '@tabler/icons-react';
-
-import Button from '@/components/ui/Button';
 
 import { statusPatchRequest } from '../registrations/Registration';
 

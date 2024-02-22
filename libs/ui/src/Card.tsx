@@ -1,7 +1,7 @@
 import { default as NextImage } from 'next/image';
 import React, { ReactNode } from 'react';
 
-import { default as TextComponent } from '@/components/ui/Text';
+import { default as TextComponent } from '@eventuras/ui/Text';
 
 import { default as HeadingComponent } from './Heading';
 

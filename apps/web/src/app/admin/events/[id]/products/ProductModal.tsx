@@ -1,6 +1,8 @@
 'use client';
 
 import type { NewProductDto, ProductDto } from '@eventuras/sdk';
+import Button from '@eventuras/ui/Button';
+import Heading from '@eventuras/ui/Heading';
 import { Dialog } from '@headlessui/react';
 import createTranslation from 'next-translate/createTranslation';
 import { useEffect, useState } from 'react';
@@ -10,8 +12,6 @@ import Form from '@/components/forms/Form';
 import NumberInput from '@/components/forms/src/inputs/NumberInput';
 import TextAreaInput from '@/components/forms/src/inputs/TextAreaInput';
 import TextInput from '@/components/forms/src/inputs/TextInput';
-import Button from '@/components/ui/Button';
-import Heading from '@/components/ui/Heading';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { ApiState, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Logger from '@/utils/Logger';

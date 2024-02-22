@@ -1,8 +1,8 @@
+import { Container, Layout } from '@eventuras/ui';
+import Heading from '@eventuras/ui/Heading';
+import Section from '@eventuras/ui/Section';
 import createTranslation from 'next-translate/createTranslation';
 
-import { Container, Layout } from '@/components/ui';
-import Heading from '@/components/ui/Heading';
-import Section from '@/components/ui/Section';
 import withAuthorization from '@/utils/auth/withAuthorization';
 
 import AdminOrdersList from './AdminOrdersList';

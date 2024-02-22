@@ -1,9 +1,8 @@
 import { RegistrationDto } from '@eventuras/sdk';
+import Grid from '@eventuras/ui/Grid';
+import Heading from '@eventuras/ui/Heading';
 import createTranslation from 'next-translate/createTranslation';
 import React, { ReactElement } from 'react';
-
-import Grid from '@/components/ui/Grid';
-import Heading from '@/components/ui/Heading';
 
 import UserEventRegistrationCard from './UserEventRegistrationCard';
 

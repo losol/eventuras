@@ -1,7 +1,7 @@
+import { Container, Layout } from '@eventuras/ui';
+import Heading from '@eventuras/ui/Heading';
 import createTranslation from 'next-translate/createTranslation';
 
-import { Container, Layout } from '@/components/ui';
-import Heading from '@/components/ui/Heading';
 import withAuthorization from '@/utils/auth/withAuthorization';
 
 import UsersActionMenu from './UsersActionMenu';

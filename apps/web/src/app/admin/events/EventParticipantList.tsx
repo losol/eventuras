@@ -1,6 +1,11 @@
 'use client';
 
 import { EventDto, ProductDto, RegistrationDto, RegistrationStatus } from '@eventuras/sdk';
+import { Drawer } from '@eventuras/ui';
+import Badge from '@eventuras/ui/Badge';
+import Button from '@eventuras/ui/Button';
+import DataTable, { createColumnHelper } from '@eventuras/ui/DataTable';
+import Loading from '@eventuras/ui/Loading';
 import { IconNotes, IconShoppingCart, IconUser } from '@tabler/icons-react';
 import { ColumnFilter } from '@tanstack/react-table';
 import Link from 'next/link';
@@ -9,11 +14,6 @@ import React, { useMemo, useState } from 'react';
 
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
 import EditEventRegistrationsDialog from '@/components/eventuras/EditEventRegistrationDialog';
-import { Drawer } from '@/components/ui';
-import Badge from '@/components/ui/Badge';
-import Button from '@/components/ui/Button';
-import DataTable, { createColumnHelper } from '@/components/ui/DataTable';
-import Loading from '@/components/ui/Loading';
 import useCreateHook from '@/hooks/createHook';
 import { ParticipationTypes, ParticipationTypesKey } from '@/types';
 import { createSDK } from '@/utils/api/EventurasApi';

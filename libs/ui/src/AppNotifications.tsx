@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Portal } from '@/components/ui';
+import { Portal } from '@eventuras/ui';
 
 export enum AppNotificationType {
   SUCCESS = 'success',

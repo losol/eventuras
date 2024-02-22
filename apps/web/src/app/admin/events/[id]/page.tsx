@@ -1,11 +1,11 @@
+import { Container, Layout } from '@eventuras/ui';
+import Badge from '@eventuras/ui/Badge';
+import Heading from '@eventuras/ui/Heading';
+import Link from '@eventuras/ui/Link';
+import Section from '@eventuras/ui/Section';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
-import { Container, Layout } from '@/components/ui';
-import Badge from '@/components/ui/Badge';
-import Heading from '@/components/ui/Heading';
-import Link from '@/components/ui/Link';
-import Section from '@/components/ui/Section';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';

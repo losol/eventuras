@@ -1,10 +1,9 @@
 import type { ProductDto } from '@eventuras/sdk';
+import Badge from '@eventuras/ui/Badge';
+import DataTable, { createColumnHelper } from '@eventuras/ui/DataTable';
+import Link from '@eventuras/ui/Link';
 import { IconEye, IconPencil } from '@tabler/icons-react';
 import createTranslation from 'next-translate/createTranslation';
-
-import Badge from '@/components/ui/Badge';
-import DataTable, { createColumnHelper } from '@/components/ui/DataTable';
-import Link from '@/components/ui/Link';
 
 const columnHelper = createColumnHelper<ProductDto>();
 

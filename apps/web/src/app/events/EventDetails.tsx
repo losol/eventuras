@@ -2,12 +2,11 @@
 'use client';
 
 import { EventDto } from '@eventuras/sdk';
+import Heading from '@eventuras/ui/Heading';
+import Link from '@eventuras/ui/Link';
+import MarkdownContent from '@eventuras/ui/MarkdownContent';
 import createTranslation from 'next-translate/createTranslation';
 import React from 'react';
-
-import Heading from '@/components/ui/Heading';
-import Link from '@/components/ui/Link';
-import MarkdownContent from '@/components/ui/MarkdownContent';
 
 type EventProps = {
   eventinfo: EventDto;

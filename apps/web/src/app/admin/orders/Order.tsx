@@ -1,10 +1,10 @@
 import { OrderDto } from '@eventuras/sdk';
+import Badge from '@eventuras/ui/Badge';
+import Card from '@eventuras/ui/Card';
+import { Definition, DescriptionList, Item, Term } from '@eventuras/ui/DescriptionList';
+import Heading from '@eventuras/ui/Heading';
 import createTranslation from 'next-translate/createTranslation';
 
-import Badge from '@/components/ui/Badge';
-import Card from '@/components/ui/Card';
-import { Definition, DescriptionList, Item, Term } from '@/components/ui/DescriptionList';
-import Heading from '@/components/ui/Heading';
 import { formatDateSpan } from '@/utils/formatDate';
 
 type OrderProps = {

@@ -5,6 +5,9 @@ import {
   RegistrationType,
   UserDto,
 } from '@eventuras/sdk';
+import { Drawer } from '@eventuras/ui';
+import Button from '@eventuras/ui/Button';
+import Heading from '@eventuras/ui/Heading';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import { useEffect, useState } from 'react';
@@ -13,9 +16,6 @@ import { useForm } from 'react-hook-form';
 import DropdownSelect from '@/components/forms/DropdownSelect';
 import { InputAutoComplete } from '@/components/forms/Input';
 import ProductSelection from '@/components/forms/ProductSelection';
-import { Drawer } from '@/components/ui';
-import Button from '@/components/ui/Button';
-import Heading from '@/components/ui/Heading';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { RegistrationProduct } from '@/types';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';

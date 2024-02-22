@@ -1,7 +1,7 @@
 import { EventDto } from '@eventuras/sdk';
+import Grid from '@eventuras/ui/Grid';
 
 import EventCard from '@/components/event/EventCard';
-import Grid from '@/components/ui/Grid';
 
 interface EventGridProps {
   eventinfos: EventDto[];

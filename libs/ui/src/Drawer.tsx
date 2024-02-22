@@ -1,9 +1,9 @@
 import { IconX } from '@tabler/icons-react';
 import React, { HTMLAttributes, ReactNode } from 'react';
 
-import { Portal } from '@/components/ui';
-import Button from '@/components/ui/Button';
-import Heading from '@/components/ui/Heading';
+import { Portal } from '@eventuras/ui';
+import Button from '@eventuras/ui/Button';
+import Heading from '@eventuras/ui/Heading';
 export interface DrawerProps {
   isOpen: boolean;
   onSave?: () => void;

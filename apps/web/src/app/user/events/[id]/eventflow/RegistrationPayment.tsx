@@ -1,12 +1,12 @@
 'use client';
 
 import { PaymentProvider, UserDto } from '@eventuras/sdk';
+import Button from '@eventuras/ui/Button';
 import createTranslation from 'next-translate/createTranslation';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { LegacyInputText } from '@/components/forms/Input';
-import Button from '@/components/ui/Button';
 import { PaymentFormValues } from '@/types';
 
 export type RegistrationPaymentProps = {
