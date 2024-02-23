@@ -1,20 +1,16 @@
 name: Vercel deployment
 
-# This reusable workflow deploys projects to Vercel. It requires the following inputs:
-# - vercel_token: A token for authenticating API requests to Vercel.
-# - environment: The deployment environment ('production', 'preview', or 'staging').
-# - promote_to_production: Boolean to indicate whether to promote the deployment to production.
-# - custom_url: Optional custom URL to alias the Vercel deployment.
-# It's designed to be called from other workflows within the repository.
-#
 # Example usage:
-# Deploy-Docs:
-#   runs-on: ubuntu-latest
-#   environment: docsite
-#   steps:
-#     - uses: ./.github/workflows/util-vercel-deploy.yml
-#       with:
-#         environment: "docsite"
+# jobs:
+#   docs-deploy:
+#     name: Deploy Docsite
+#     uses: ./.github/workflows/util-vercel-deploy.yml
+#     with:
+#       environment: docsite
+#     secrets:
+#       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+#       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+#       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 #
 # The environment needs to provide `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` secrets.
 

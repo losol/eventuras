@@ -15,6 +15,7 @@ jobs:
     uses: ./.github/workflows/util-vercel-deploy.yml
     with:
       environment: docsite
+      promote: true
     secrets:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
