@@ -82,24 +82,18 @@ jobs:
         run: npm install --global vercel@latest
 
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=${{ inputs.vercel_environment }} --token=${{ inputs.vercel_token }}
+        run: vercel pull --yes --environment=${{ inputs.vercel_environment }} --token=${{ secrets.vercel_token }}
 
       - name: Build Project Artifacts
-        run: vercel build --token=${{ inputs.vercel_token }}
+        run: vercel build --token=${{ secrets.vercel_token }}
 
       - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --token=${{ inputs.vercel_token }}
-        env:
-          VERCEL_TOKEN: ${{ inputs.vercel_token }}
+        run: vercel deploy --prebuilt --token=${{ secrets.vercel_token }}
 
       - name: Set Custom URL
         if: ${{ inputs.custom_url }}
-        run: vercel alias --token=${{ inputs.vercel_token }} set "$url" ${{ inputs.custom_url }}
-        env:
-          VERCEL_TOKEN: ${{ inputs.vercel_token }}
+        run: vercel alias --token=${{ secrets.vercel_token }} set "$url" ${{ inputs.custom_url }}
 
       - name: Promote
         if: ${{ inputs.promote }}
-        run: vercel promote --token=${{ inputs.vercel_token }}
-        env:
-          VERCEL_TOKEN: ${{ inputs.vercel_token }}
+        run: vercel promote --token=${{ secrets.vercel_token }}
