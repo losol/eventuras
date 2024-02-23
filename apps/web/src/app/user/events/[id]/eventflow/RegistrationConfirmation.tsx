@@ -1,5 +1,4 @@
-import { PaymentProvider, ProductDto } from '@eventuras/sdk';
-import { EventDto } from '@eventuras/sdk';
+import { EventDto, PaymentProvider, ProductDto } from '@eventuras/sdk';
 import Button from '@eventuras/ui/Button';
 import Heading from '@eventuras/ui/Heading';
 import createTranslation from 'next-translate/createTranslation';
@@ -22,8 +21,6 @@ const RegistrationConfirmation: React.FC<RegistrationConfirmationProps> = ({
   paymentDetails,
 }) => {
   const { t } = createTranslation();
-
-
 
   return (
     <div>

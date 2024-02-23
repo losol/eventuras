@@ -3,20 +3,19 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*", "./public/*"],
-      "@eventuras/datatable":["../../libs/datatable/src/*"],
-      "@eventuras/forms*":["../../libs/forms/src*"],
-      "@eventuras/scribo":["../../libs/scribo"],
-      "@eventuras/smartform":["../../libs/smartform"],
-      "@eventuras/sdk":["../../libs/sdk"],
-      "@eventuras/ui":["../../libs/ui/src"],
-      "@eventuras/ui/*":["../../libs/ui/src/*"],
+      "@eventuras/datatable": ["../../libs/datatable/src/*"],
+      "@eventuras/forms*": ["../../libs/forms/src*"],
+      "@eventuras/scribo": ["../../libs/scribo"],
+      "@eventuras/smartform": ["../../libs/smartform"],
+      "@eventuras/sdk": ["../../libs/sdk"],
+      "@eventuras/ui": ["../../libs/ui/src"],
+      "@eventuras/ui/*": ["../../libs/ui/src/*"]
     },
     "plugins": [
       {
         "name": "next"
       }
-    ],
-
+    ]
   },
   "include": [
     "i18n.js",

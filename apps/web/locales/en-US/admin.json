@@ -40,9 +40,9 @@
       "status": {
         "feedbackNoInput": "Please Select at least one Status type",
         "label": "Status",
-        "active":"Active",
-        "waitingList":"Waiting List",
-        "cancelled":"Cancelled"
+        "active": "Active",
+        "waitingList": "Waiting List",
+        "cancelled": "Cancelled"
       },
       "subject": {
         "feedbackNoInput": "Please provide a subject",

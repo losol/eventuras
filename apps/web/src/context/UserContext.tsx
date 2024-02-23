@@ -2,8 +2,7 @@
 
 import { ApiError, UserDto as UserProfile } from '@eventuras/sdk';
 import { Session } from 'next-auth';
-import { signOut } from 'next-auth/react';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { createContext, ReactNode, useCallback, useEffect, useState } from 'react';
 
 import { ApiResult, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
@@ -83,7 +82,9 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const updateWithUserProfile = useCallback(async () => {
     if (session) {
       const result = await apiWrapper(() =>
-        createSDK({ inferUrl: { enabled: true, requiresToken: true } }).userProfile.getV3Userprofile({
+        createSDK({
+          inferUrl: { enabled: true, requiresToken: true },
+        }).userProfile.getV3Userprofile({
           eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
         })
       );

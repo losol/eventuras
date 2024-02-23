@@ -1,7 +1,6 @@
 'use client';
 
-import { ProductDto } from '@eventuras/sdk';
-import { RegistrationDto } from '@eventuras/sdk';
+import { ProductDto, RegistrationDto } from '@eventuras/sdk';
 import Button from '@eventuras/ui/Button';
 import Dialog from '@eventuras/ui/Dialog';
 import { useState } from 'react';

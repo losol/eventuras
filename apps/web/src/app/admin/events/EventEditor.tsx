@@ -2,7 +2,17 @@
 
 import Fieldset from '@eventuras/forms/Fieldset';
 import { ApiError, EventDto, EventFormDto, EventInfoStatus, EventInfoType } from '@eventuras/sdk';
-import { CheckboxInput, CheckboxLabel, DateInput, Form, HiddenInput, MarkdownInput, NumberInput, Select, TextInput } from '@eventuras/smartform';
+import {
+  CheckboxInput,
+  CheckboxLabel,
+  DateInput,
+  Form,
+  HiddenInput,
+  MarkdownInput,
+  NumberInput,
+  Select,
+  TextInput,
+} from '@eventuras/smartform';
 import Button from '@eventuras/ui/Button';
 import Tabs from '@eventuras/ui/Tabs';
 import { useRouter } from 'next/navigation';

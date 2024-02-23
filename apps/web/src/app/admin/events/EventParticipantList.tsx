@@ -1,7 +1,7 @@
 'use client';
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import { EventDto, ProductDto, RegistrationDto, RegistrationStatus } from '@eventuras/sdk';
+import { EventDto, ProductDto, RegistrationDto } from '@eventuras/sdk';
 import { Drawer } from '@eventuras/ui';
 import Badge from '@eventuras/ui/Badge';
 import Button from '@eventuras/ui/Button';
@@ -15,7 +15,7 @@ import React, { useMemo, useState } from 'react';
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
 import EditEventRegistrationsDialog from '@/components/eventuras/EditEventRegistrationDialog';
 import useCreateHook from '@/hooks/createHook';
-import { ParticipationTypes, ParticipationTypesKey } from '@/types';
+import { ParticipationTypesKey } from '@/types';
 import { createSDK } from '@/utils/api/EventurasApi';
 import { participationMap } from '@/utils/api/mappers';
 import Logger from '@/utils/Logger';
@@ -115,9 +115,9 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
               }}
             >
               {!currentRegistration &&
-                loadingRegistration &&
-                currentSelectedParticipant !== null &&
-                currentSelectedParticipant.userId === info.userId ? (
+              loadingRegistration &&
+              currentSelectedParticipant !== null &&
+              currentSelectedParticipant.userId === info.userId ? (
                 <Loading />
               ) : (
                 <IconShoppingCart color="black" />

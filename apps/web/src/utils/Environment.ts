@@ -53,7 +53,7 @@ class Environment {
   // Needs to run server-side
   static validate() {
     for (const key of Object.keys(EnvironmentVariables)) {
-      const isSet = () => Object.prototype.hasOwnProperty.call(process.env, key)
+      const isSet = () => Object.prototype.hasOwnProperty.call(process.env, key);
       const isOptional = OptionalEnvironmentVariables.includes(
         EnvironmentVariables[key as keyof typeof EnvironmentVariables]
       );
