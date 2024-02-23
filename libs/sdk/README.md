@@ -1,3 +1,10 @@
+# Customize swagger json
+To customize the url (it defaults to localhost) create a .env file with the following:
+
+SWAGGER_URL=https://api.eventuras.losol.io/swagger/v3/swagger.json
+
+For instance.
+
 # Eventuras typescript SDK
 
 1. Run the Eventuras API locally
