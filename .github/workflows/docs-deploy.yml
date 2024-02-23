@@ -14,3 +14,4 @@ jobs:
     uses: ./.github/workflows/util-vercel-deploy.yml
     with:
       environment: "docsite"
+    secrets: inherit
