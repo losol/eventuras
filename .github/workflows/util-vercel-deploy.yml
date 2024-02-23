@@ -84,7 +84,9 @@ jobs:
         run: vercel build --token=${{ secrets.vercel_token }}
 
       - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --token=${{ secrets.vercel_token }}
+        run: |
+          DEPLOY_URL=$(vercel deploy --prebuilt --token=${{ secrets.vercel_token }} | grep "https://" | xargs)
+          echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
 
       - name: Set Custom URL
         if: ${{ inputs.custom_url }}
@@ -92,4 +94,4 @@ jobs:
 
       - name: Promote
         if: ${{ inputs.promote }}
-        run: vercel promote --token=${{ secrets.vercel_token }}
+        run: vercel promote --token=${{ secrets.vercel_token }} $DEPLOY_URL
