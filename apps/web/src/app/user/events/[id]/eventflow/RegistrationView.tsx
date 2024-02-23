@@ -1,5 +1,4 @@
-import { RegistrationDto } from '@eventuras/sdk';
-import { EventDto } from '@eventuras/sdk';
+import { EventDto, RegistrationDto } from '@eventuras/sdk';
 import Button from '@eventuras/ui/Button';
 import Heading from '@eventuras/ui/Heading';
 import MarkdownContent from '@eventuras/ui/MarkdownContent';

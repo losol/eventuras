@@ -12,7 +12,9 @@ export const readCreatedEvent = (): CreatedEvent => {
   let createdEvent: CreatedEvent = { eventId: '-1' };
   try {
     createdEvent = JSON.parse(fs.readFileSync('./playwright-e2e/createdEvent.json', 'utf8'));
-  } catch (e: any) {}
+  } catch (e: any) {
+    Logger.error(ns, 'readCreatedEvent: cant ready createdEvent.json');
+  }
   return createdEvent;
 };
 

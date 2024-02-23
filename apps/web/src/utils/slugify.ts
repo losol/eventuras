@@ -13,7 +13,7 @@ const slugify = (str: string): string => {
 
   // Loop through conversions and replace characters
   for (const i in conversions) {
-    if (conversions.hasOwnProperty(i)) {
+    if (Object.prototype.hasOwnProperty.call(conversions, i)) {
       const re = new RegExp(conversions[i]!, 'g');
       str = str.replace(re, i);
     }

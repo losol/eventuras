@@ -53,13 +53,13 @@ class Environment {
   // Needs to run server-side
   static validate() {
     for (const key of Object.keys(EnvironmentVariables)) {
-      const isSet = () => process.env.hasOwnProperty(key);
+      const isSet = () => Object.prototype.hasOwnProperty.call(process.env, key);
       const isOptional = OptionalEnvironmentVariables.includes(
         EnvironmentVariables[key as keyof typeof EnvironmentVariables]
       );
 
       // Set default values if available and not set
-      if (defaults.hasOwnProperty(key) && !isSet()) {
+      if (Object.prototype.hasOwnProperty.call(defaults, key) && !isSet()) {
         process.env[key] = (defaults as any)[key];
       }
 

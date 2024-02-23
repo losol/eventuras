@@ -1,7 +1,7 @@
 'use client';
 
 import type { NewProductDto, ProductDto } from '@eventuras/sdk';
-import { Form, NumberInput,TextAreaInput,TextInput} from '@eventuras/smartform';
+import { Form, NumberInput, TextAreaInput, TextInput } from '@eventuras/smartform';
 import Button from '@eventuras/ui/Button';
 import Heading from '@eventuras/ui/Heading';
 import { Dialog } from '@headlessui/react';
@@ -43,9 +43,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
   }, [product, reset]);
 
   const isEditMode = Boolean(product);
-  const buttonText = isEditMode
-    ? t('common:labels.edit')
-    : t('common:labels.save');
+  const buttonText = isEditMode ? t('common:labels.edit') : t('common:labels.save');
   const titleText = isEditMode
     ? t('admin:products.modal.title.edit')
     : t('admin:products.modal.title.add-product');
@@ -108,11 +106,10 @@ const ProductModal: React.FC<ProductModalProps> = ({
         {/* Then the dialogue... */}
         <div className="flex items-center justify-center min-h-screen">
           <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-slate-700 text-color-gray-100 shadow-xl rounded-2xl">
-            <Dialog.Title
-            >
-              <Heading as="h2" spacingClassName='py-0 my-0'>
+            <Dialog.Title>
+              <Heading as="h2" spacingClassName="py-0 my-0">
                 {titleText}
-                </Heading>
+              </Heading>
             </Dialog.Title>
 
             <Form onSubmit={submitProduct} className="mt-2 space-y-6" defaultValues={product}>

@@ -1,8 +1,18 @@
 'use client';
 
-import Fieldset from '@eventuras/forms/src/Fieldset';
+import Fieldset from '@eventuras/forms/Fieldset';
 import { ApiError, EventDto, EventFormDto, EventInfoStatus, EventInfoType } from '@eventuras/sdk';
-import { CheckboxInput, CheckboxLabel, DateInput, Form, HiddenInput, MarkdownInput,NumberInput, Select, TextInput} from '@eventuras/smartform';
+import {
+  CheckboxInput,
+  CheckboxLabel,
+  DateInput,
+  Form,
+  HiddenInput,
+  MarkdownInput,
+  NumberInput,
+  Select,
+  TextInput,
+} from '@eventuras/smartform';
 import Button from '@eventuras/ui/Button';
 import Tabs from '@eventuras/ui/Tabs';
 import { useRouter } from 'next/navigation';
@@ -131,7 +141,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
               validation={{
                 pattern: {
                   value:
-                    /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/i,
+                    /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_.~#?&//=]*)/i,
                   message: 'Invalid url',
                 },
               }}

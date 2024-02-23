@@ -2,11 +2,12 @@ import fetch from 'node-fetch';
 import { promises as fs } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import 'dotenv/config'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const SWAGGER_URL = 'http://localhost:8080/swagger/v3/swagger.json';
+const SWAGGER_URL = process.env.SWAGGER_URL || 'http://localhost:8080/swagger/v3/swagger.json';
 const OUTPUT_PATH = join(__dirname, 'swagger.json');
 
 const downloadFile = async (url: string, outputPath: string): Promise<void> => {
