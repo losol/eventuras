@@ -14,45 +14,39 @@ name: Vercel deployment
 #   steps:
 #     - uses: ./.github/workflows/util-vercel-deploy.yml
 #       with:
-#         org_id: ${{ secrets.VERCEL_ORG_ID }}
-#         project_id: ${{ secrets.VERCEL_PROJECT_ID }}
-#         vercel_token: ${{ secrets.VERCEL_TOKEN }}
-#         environment: "production"
-#         promote: true
+#         environment: "docsite"
+#
+# The environment needs to provide `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` secrets.
 
 on:
   workflow_call:
     inputs:
-      org_id:
-        required: true
-        type: string
-      project_id:
-        required: true
-        type: string
-      vercel_token:
-        required: true
-        type: string
       environment:
-        description: "Deployment environment (allowed values: production, preview, staging)"
+        description: "Github environment"
+        required: true
+        type: string
+      vercel_environment:
+        description: "Vercel environment (production|preview|staging)"
         required: false
         type: string
         default: "production"
       promote:
-        description: 'Toggle to promote the deployment to production. Set to "true" to enable.'
+        description: "Toggle to promote the deployment to production."
         required: false
         type: boolean
         default: false
       custom_url:
-        description: "Optional custom URL for aliasing the deployment. Leave empty if not needed."
+        description: "Optional custom URL for aliasing the deployment."
         required: false
         type: string
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.vercel_environment }}
     env:
-      VERCEL_ORG_ID: ${{ inputs.org_id }}
-      VERCEL_PROJECT_ID: ${{ inputs.project_id }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
@@ -80,7 +74,7 @@ jobs:
         run: npm install --global vercel@latest
 
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=${{ inputs.environment }} --token=${{ inputs.vercel_token }}
+        run: vercel pull --yes --environment=${{ inputs.vercel_environment }} --token=${{ inputs.vercel_token }}
 
       - name: Build Project Artifacts
         run: vercel build --token=${{ inputs.vercel_token }}
