@@ -39,6 +39,13 @@ on:
         description: "Optional custom URL for aliasing the deployment."
         required: false
         type: string
+    secrets:
+      VERCEL_TOKEN:
+        required: true
+      VERCEL_ORG_ID:
+        required: true
+      VERCEL_PROJECT_ID:
+        required: true
 
 jobs:
   deploy:
