@@ -14,6 +14,8 @@ name: Vercel deployment
 #   steps:
 #     - uses: ./.github/workflows/util-vercel-deploy.yml
 #       with:
+#         org_id: ${{ secrets.VERCEL_ORG_ID }}
+#         project_id: ${{ secrets.VERCEL_PROJECT_ID }}
 #         vercel_token: ${{ secrets.VERCEL_TOKEN }}
 #         environment: "production"
 #         promote: true
@@ -21,13 +23,20 @@ name: Vercel deployment
 on:
   workflow_call:
     inputs:
+      org_id:
+        required: true
+        type: string
+      project_id:
+        required: true
+        type: string
       vercel_token:
         required: true
         type: string
       environment:
         description: "Deployment environment (allowed values: production, preview, staging)"
-        required: true
+        required: false
         type: string
+        default: "production"
       promote:
         description: 'Toggle to promote the deployment to production. Set to "true" to enable.'
         required: false
@@ -41,6 +50,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      VERCEL_ORG_ID: ${{ inputs.org_id }}
+      VERCEL_PROJECT_ID: ${{ inputs.project_id }}
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
@@ -71,7 +83,7 @@ jobs:
         run: vercel pull --yes --environment=${{ inputs.environment }} --token=${{ inputs.vercel_token }}
 
       - name: Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --token=${{ inputs.vercel_token }}
 
       - name: Deploy Project Artifacts to Vercel
         run: vercel deploy --prebuilt --token=${{ inputs.vercel_token }}

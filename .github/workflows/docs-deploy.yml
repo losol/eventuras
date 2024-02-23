@@ -23,6 +23,8 @@ jobs:
       - name: Deploy to Vercel
         uses: ./.github/workflows/util-vercel-deploy.yml
         with:
+          org_id: ${{ secrets.VERCEL_ORG_ID }}
+          project_id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel_token: ${{ secrets.VERCEL_TOKEN }}
           environment: "production"
           promote: true
