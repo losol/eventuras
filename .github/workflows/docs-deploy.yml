@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "apps/web/**"
+      - "apps/docsite/**"
       - "docs/**"
   workflow_dispatch:
 
