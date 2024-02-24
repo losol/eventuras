@@ -85,10 +85,22 @@ jobs:
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=${{ inputs.vercel_environment }} --token=${{ secrets.vercel_token }}
 
-      - name: Build Project Artifacts
-        run: vercel build --prod --token=${{ secrets.vercel_token }}
+      - name: Build Project Artifacts (Dev)
+        if: ${{ inputs.vercel_environment != 'production' }}
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Deploy Project Artifacts to Vercel
+      - name: Build Project Artifacts (Production)
+        if: ${{ inputs.vercel_environment == 'production' }}
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Project Artifacts to Vercel (Dev)
+        if: ${{ inputs.vercel_environment != 'production' }}
+        run: |
+          DEPLOY_URL=$(vercel deploy --prebuilt --token=${{ secrets.vercel_token }} | grep "https://" | xargs)
+          echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
+
+      - name: Deploy Project Artifacts to Vercel (Prod)
+        if: ${{ inputs.vercel_environment == 'production' }}
         run: |
           DEPLOY_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.vercel_token }} | grep "https://" | xargs)
           echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
