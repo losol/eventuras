@@ -99,7 +99,7 @@ jobs:
           DEPLOY_URL=$(vercel deploy --prebuilt --token=${{ secrets.vercel_token }} | grep "https://" | xargs)
           echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
 
-      - name: Deploy Project Artifacts to Vercel (Prod)
+      - name: Deploy Project Artifacts to Vercel (Production)
         if: ${{ inputs.vercel_environment == 'production' }}
         run: |
           DEPLOY_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.vercel_token }} | grep "https://" | xargs)
