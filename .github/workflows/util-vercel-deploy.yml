@@ -1,46 +1,61 @@
 name: Vercel deployment
 
-# This reusable workflow deploys projects to Vercel. It requires the following inputs:
-# - vercel_token: A token for authenticating API requests to Vercel.
-# - environment: The deployment environment ('production', 'preview', or 'staging').
-# - promote_to_production: Boolean to indicate whether to promote the deployment to production.
-# - custom_url: Optional custom URL to alias the Vercel deployment.
-# It's designed to be called from other workflows within the repository.
-#
 # Example usage:
-# Deploy-Docs:
-#   runs-on: ubuntu-latest
-#   environment: docsite
-#   steps:
-#     - uses: ./.github/workflows/util-vercel-deploy.yml
-#       with:
-#         vercel_token: ${{ secrets.VERCEL_TOKEN }}
-#         environment: "production"
-#         promote: true
+# jobs:
+#   docs-deploy:
+#     name: Deploy Docsite
+#     uses: ./.github/workflows/util-vercel-deploy.yml
+#     with:
+#       environment: docsite
+#     secrets:
+#       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+#       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+#       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+#
+# The environment needs to provide `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` secrets.
 
 on:
   workflow_call:
     inputs:
-      vercel_token:
-        required: true
-        type: string
       environment:
-        description: "Deployment environment (allowed values: production, preview, staging)"
+        description: "Github environment"
         required: true
         type: string
+      vercel_environment:
+        description: "Vercel environment (production|preview|staging)"
+        required: false
+        type: string
+        default: "production"
       promote:
-        description: 'Toggle to promote the deployment to production. Set to "true" to enable.'
+        description: "Toggle to promote the deployment to production."
         required: false
         type: boolean
         default: false
       custom_url:
-        description: "Optional custom URL for aliasing the deployment. Leave empty if not needed."
+        description: "Optional custom URL for aliasing the deployment."
         required: false
         type: string
+    secrets:
+      VERCEL_TOKEN:
+        required: true
+      VERCEL_ORG_ID:
+        required: true
+      VERCEL_PROJECT_ID:
+        required: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_REMOTE_ONLY: true
+      DO_NOT_TRACK: 1
+      NEXT_TELEMETRY_DISABLED: 1
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
@@ -48,7 +63,7 @@ jobs:
           fetch-depth: 2
 
       - name: Cache Node.js modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -68,24 +83,32 @@ jobs:
         run: npm install --global vercel@latest
 
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=${{ inputs.environment }} --token=${{ inputs.vercel_token }}
+        run: vercel pull --yes --environment=${{ inputs.vercel_environment }} --token=${{ secrets.vercel_token }}
 
-      - name: Build Project Artifacts
+      - name: Build Project Artifacts (Dev)
+        if: ${{ inputs.vercel_environment != 'production' }}
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --token=${{ inputs.vercel_token }}
-        env:
-          VERCEL_TOKEN: ${{ inputs.vercel_token }}
+      - name: Build Project Artifacts (Production)
+        if: ${{ inputs.vercel_environment == 'production' }}
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Project Artifacts to Vercel (Dev)
+        if: ${{ inputs.vercel_environment != 'production' }}
+        run: |
+          DEPLOY_URL=$(vercel deploy --prebuilt --token=${{ secrets.vercel_token }} | grep "https://" | xargs)
+          echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
+
+      - name: Deploy Project Artifacts to Vercel (Production)
+        if: ${{ inputs.vercel_environment == 'production' }}
+        run: |
+          DEPLOY_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.vercel_token }} | grep "https://" | xargs)
+          echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
 
       - name: Set Custom URL
         if: ${{ inputs.custom_url }}
-        run: vercel alias --token=${{ inputs.vercel_token }} set "$url" ${{ inputs.custom_url }}
-        env:
-          VERCEL_TOKEN: ${{ inputs.vercel_token }}
+        run: vercel alias --token=${{ secrets.vercel_token }} set "$url" ${{ inputs.custom_url }}
 
       - name: Promote
         if: ${{ inputs.promote }}
-        run: vercel promote --token=${{ inputs.vercel_token }}
-        env:
-          VERCEL_TOKEN: ${{ inputs.vercel_token }}
+        run: vercel promote --token=${{ secrets.vercel_token }} --scope=${{ secrets.VERCEL_ORG_ID }} --yes $DEPLOY_URL
