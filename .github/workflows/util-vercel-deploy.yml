@@ -55,6 +55,7 @@ jobs:
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
       TURBO_REMOTE_ONLY: true
       DO_NOT_TRACK: 1
+      NEXT_TELEMETRY_DISABLED: 1
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
@@ -98,4 +99,4 @@ jobs:
 
       - name: Promote
         if: ${{ inputs.promote }}
-        run: vercel promote --token=${{ secrets.vercel_token }} --scope=${{ secrets.VERCEL_ORG_ID }} $DEPLOY_URL
+        run: vercel promote --token=${{ secrets.vercel_token }} --scope=${{ secrets.VERCEL_ORG_ID }} --yes $DEPLOY_URL
