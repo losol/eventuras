@@ -42,6 +42,10 @@ on:
         required: true
       VERCEL_PROJECT_ID:
         required: true
+      TURBO_TOKEN:
+        required: false
+      TURBO_TEAM:
+        required: false
 
 jobs:
   deploy:
