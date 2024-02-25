@@ -1,4 +1,4 @@
-# Eventuras front end
+# Eventuras/web - Next.JS frontend
 
 This is the front end for Eventuras event management system.
 
@@ -10,10 +10,13 @@ If developing locally copy .env-local to .env and fill in the blanks (ask or loo
 
 For production environment these variables should as environment variables.
 
-To start dev serv
+## Development
+
+To start development server
 
 ```bash
-npx next dev
+npm install
+turbo dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
