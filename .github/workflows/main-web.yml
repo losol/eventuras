@@ -7,11 +7,6 @@ on:
     paths:
       - "apps/web/**"
       - "libs/**"
-  pull_request:
-    branches:
-      - main
-    paths:
-      - "apps/web/**"
   workflow_call:
 
 jobs:
@@ -23,7 +18,9 @@ jobs:
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
   deploy-preview:
-    if: github.event_name == 'pull_request'
+    if: >
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.base.ref == 'main'
     uses: ./.github/workflows/util-vercel-deploy.yml
     with:
       environment: web-dev
