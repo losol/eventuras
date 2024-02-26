@@ -70,16 +70,23 @@ jobs:
       - name: Build web project
         run: npx turbo run build
 
-  deploy-preview:
-    name: Deploy Preview
-    if: >
-      github.event_name == 'pull_request' &&
-      github.event.pull_request.base.ref == 'main'
+  deploy:
+    name: Deploy
     needs: [build, lint]
+    strategy:
+      matrix:
+        include:
+          - environment: web-dev
+            condition: github.event_name == 'pull_request' && !github.event.pull_request.draft
+            url: dev.eventuras.losol.io
+          - environment: web-staging
+            condition: github.event_name == 'push' && github.ref == 'refs/heads/main'
+            url: eventuras.losol.io
+
     uses: ./.github/workflows/util-vercel-deploy.yml
     with:
-      environment: web-dev
-      url: dev.eventuras.losol.io
+      environment: ${{ matrix.environment }}
+      url: ${{ matrix.url }}
     secrets:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
