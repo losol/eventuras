@@ -70,23 +70,32 @@ jobs:
       - name: Build web project
         run: npx turbo run build
 
-  deploy:
-    name: Deploy
+  deploy-preview:
+    name: Deploy Preview
+    if: >
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.base.ref == 'main' &&
+      !github.event.pull_request.draft
     needs: [build, lint]
-    strategy:
-      matrix:
-        include:
-          - environment: web-dev
-            condition: github.event_name == 'pull_request' && !github.event.pull_request.draft
-            url: dev.eventuras.losol.io
-          - environment: web-staging
-            condition: github.event_name == 'push' && github.ref == 'refs/heads/main'
-            url: eventuras.losol.io
-
     uses: ./.github/workflows/util-vercel-deploy.yml
     with:
-      environment: ${{ matrix.environment }}
-      url: ${{ matrix.url }}
+      environment: web-dev
+      url: dev.eventuras.losol.io
+    secrets:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+  deploy-staging:
+    name: Deploy Staging
+    if: >
+      github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [build, lint]
+    uses: ./.github/workflows/util-vercel-deploy.yml
+    with:
+      environment: web-staging
     secrets:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
