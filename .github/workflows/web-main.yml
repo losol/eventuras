@@ -21,11 +21,19 @@ env:
 
 on:
   push:
+    branches:
+      - main
+    paths-ignore: "docs/**"
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize]
     paths-ignore: "docs/**"
   workflow_call:
 
 jobs:
   lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo
@@ -44,7 +52,7 @@ jobs:
         run: npx turbo run lint
 
   build:
-    name: Build web project
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo
