@@ -14,5 +14,14 @@ namespace Eventuras.Services.Invoicing
         /// <param name="info">Optional explicitly specified invoice info.</param>
         /// <exception cref="InvoicingException">Failed to create invoice.</exception>
         Task<Invoice> CreateInvoiceAsync(Order[] orders, InvoiceInfo info = null);
+
+        /// <summary>
+        /// Gets invoice by its id.
+        /// </summary>
+        /// <param name="invoiceId">Invoice id.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <exception cref="InvoicingException">Failed to get invoice.</exception>
+        /// <returns>Invoice with the given id.</returns>
+        Task<Invoice> GetInvoiceByIdAsync(int invoiceId, System.Threading.CancellationToken cancellationToken = default);
     }
 }

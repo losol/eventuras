@@ -47,6 +47,34 @@ export class OrdersService {
      * @returns any Success
      * @throws ApiError
      */
+    public patchV3Orders({
+        id,
+        eventurasOrgId,
+        requestBody,
+    }: {
+        id: number,
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        eventurasOrgId?: number,
+        requestBody?: any,
+    }): CancelablePromise<any> {
+        return this.httpRequest.request({
+            method: 'PATCH',
+            url: '/v3/orders/{id}',
+            path: {
+                'id': id,
+            },
+            headers: {
+                'Eventuras-Org-Id': eventurasOrgId,
+            },
+            body: requestBody,
+        });
+    }
+    /**
+     * @returns any Success
+     * @throws ApiError
+     */
     public putV3Orders({
         id,
         eventurasOrgId,
