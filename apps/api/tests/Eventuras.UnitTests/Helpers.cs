@@ -63,8 +63,8 @@ namespace Eventuras.UnitTests
             };
             registration.Orders.ForEach(o =>
                 {
-                    o.MarkAsVerified();
-                    o.MarkAsInvoiced();
+                    o.SetStatus(Order.OrderStatus.Verified);
+                    o.SetStatus(Order.OrderStatus.Invoiced);
                 }
             );
             return registration;

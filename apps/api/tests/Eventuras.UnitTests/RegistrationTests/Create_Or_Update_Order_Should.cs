@@ -23,8 +23,8 @@ namespace Eventuras.UnitTests.RegistrationTests
             };
             foreach (var o in registration.Orders)
             {
-                o.MarkAsVerified();
-                o.MarkAsInvoiced();
+                o.SetStatus(Order.OrderStatus.Verified);
+                o.SetStatus(Order.OrderStatus.Invoiced);
             }
             var dto = new List<OrderDTO>
             {
@@ -79,7 +79,7 @@ namespace Eventuras.UnitTests.RegistrationTests
                     }
                 }
             };
-            registration.Orders.First().MarkAsCancelled();
+            registration.Orders.First().SetStatus(Order.OrderStatus.Cancelled);
             var dto = new List<OrderDTO>
             {
                 Helpers.GetOrderDto(productId: 1, price: 100)
@@ -107,8 +107,8 @@ namespace Eventuras.UnitTests.RegistrationTests
                     }
                 }
             };
-            registration.Orders.First().MarkAsVerified();
-            registration.Orders.First().MarkAsInvoiced();
+            registration.Orders.First().SetStatus(Order.OrderStatus.Verified);
+            registration.Orders.First().SetStatus(Order.OrderStatus.Invoiced);
 
             var dto = new List<OrderDTO>
             {
@@ -138,8 +138,8 @@ namespace Eventuras.UnitTests.RegistrationTests
                     }
                 }
             };
-            registration.Orders.First().MarkAsVerified();
-            registration.Orders.First().MarkAsInvoiced();
+            registration.Orders.First().SetStatus(Order.OrderStatus.Verified);
+            registration.Orders.First().SetStatus(Order.OrderStatus.Invoiced);
 
             var dto = new List<OrderDTO>
             {

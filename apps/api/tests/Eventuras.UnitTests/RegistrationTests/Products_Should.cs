@@ -96,8 +96,8 @@ namespace Eventuras.UnitTests.RegistrationTests
             };
             registration.Orders.ForEach(o =>
             {
-                o.MarkAsVerified();
-                o.MarkAsInvoiced();
+                o.SetStatus(Order.OrderStatus.Verified);
+                o.SetStatus(Order.OrderStatus.Invoiced);
             });
 
             var expectedProducts = new List<OrderDTO>
@@ -145,8 +145,8 @@ namespace Eventuras.UnitTests.RegistrationTests
             };
             registration.Orders.ForEach(o =>
             {
-                o.MarkAsVerified();
-                o.MarkAsInvoiced();
+                o.SetStatus(Order.OrderStatus.Verified);
+                o.SetStatus(Order.OrderStatus.Invoiced);
             });
 
             var expectedProducts = new List<OrderDTO>

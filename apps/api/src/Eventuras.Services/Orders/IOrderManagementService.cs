@@ -10,6 +10,13 @@ namespace Eventuras.Services.Orders;
 public interface IOrderManagementService
 {
     /// <summary>
+    /// Updates order details.
+    /// </summary>
+    /// <param name="order">Order to update.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    Task<Order> UpdateOrderAsync(Order order, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Marks order as canceled (soft delete).
     /// </summary>
     /// <param name="order">Order to cancel.</param>

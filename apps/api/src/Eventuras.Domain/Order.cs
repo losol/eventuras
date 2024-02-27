@@ -121,36 +121,18 @@ namespace Eventuras.Domain
             Log += logText + "\n";
         }
 
+        public void SetStatus(OrderStatus newStatus)
+        {
+            Status = newStatus;
+            this.AddLog();
+        }
+
         public bool CanEdit =>
             Status == OrderStatus.Draft || Status == OrderStatus.Verified;
 
-        // TODO: Write tests for this
         public decimal TotalAmount =>
             OrderLines.Sum(l => l.LineTotal);
 
-        public void MarkAsVerified()
-        {
-            Status = OrderStatus.Verified;
-            this.AddLog();
-        }
-
-        public void MarkAsCancelled()
-        {
-            Status = OrderStatus.Cancelled;
-            this.AddLog();
-        }
-
-        public void MarkAsInvoiced()
-        {
-            Status = OrderStatus.Invoiced;
-            this.AddLog();
-        }
-
-        public void MarkAsRefunded()
-        {
-            Status = OrderStatus.Refunded;
-            this.AddLog();
-        }
 
         public Order CreateRefundOrder()
         {
@@ -166,7 +148,6 @@ namespace Eventuras.Domain
                 CustomerVatNumber = CustomerVatNumber,
                 RegistrationId = RegistrationId,
                 UserId = UserId,
-                // TODO: Add other fields like payment method, etc.
                 OrderLines = new List<OrderLine>()
             };
             foreach (var line in OrderLines)

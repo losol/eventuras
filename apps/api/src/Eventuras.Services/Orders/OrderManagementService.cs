@@ -40,13 +40,33 @@ namespace Eventuras.Services.Orders
             _logger = logger;
         }
 
+        public async Task<Order> UpdateOrderAsync(
+            Order order,
+            CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(order);
+
+            if (!order.CanEdit)
+            {
+                _logger.LogError($"Order {order.OrderId} cannot be updated being in {order.Status} status");
+                throw new InvalidOperationServiceException($"Order {order.OrderId} cannot be updated being in {order.Status} status");
+            }
+
+            await _orderAccessControlService.CheckOrderUpdateAccessAsync(order, cancellationToken);
+
+            _context.Update(order);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return order;
+        }
+
         public async Task CancelOrderAsync(Order order, CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(order);
 
             await _orderAccessControlService.CheckOrderUpdateAccessAsync(order, cancellationToken);
 
-            order.MarkAsCancelled();
+            order.SetStatus(Order.OrderStatus.Cancelled);
 
             await _context.UpdateAsync(order, cancellationToken);
         }
