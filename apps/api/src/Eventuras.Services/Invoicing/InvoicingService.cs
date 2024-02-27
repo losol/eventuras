@@ -69,7 +69,7 @@ namespace Eventuras.Services.Invoicing
             foreach (var order in orders)
             {
                 order.Invoice = invoice;
-                order.MarkAsInvoiced();
+                order.SetStatus(Order.OrderStatus.Invoiced);
                 _db.Orders.Update(order);
             }
 

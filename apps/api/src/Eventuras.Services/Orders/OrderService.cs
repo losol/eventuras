@@ -194,7 +194,7 @@ namespace Eventuras.Services.Orders
         public async Task<bool> MarkAsVerifiedAsync(int orderId)
         {
             var order = await CheckOrderAccessibilityAsync(orderId);
-            order.MarkAsVerified();
+            order.SetStatus(OrderStatus.Verified);
             _db.Orders.Update(order);
             return await _db.SaveChangesAsync() > 0;
         }
@@ -202,7 +202,7 @@ namespace Eventuras.Services.Orders
         public async Task<bool> MarkAsCancelledAsync(int orderId)
         {
             var order = await CheckOrderAccessibilityAsync(orderId);
-            order.MarkAsCancelled();
+            order.SetStatus(OrderStatus.Cancelled);
             _db.Orders.Update(order);
             return await _db.SaveChangesAsync() > 0;
         }

@@ -5,6 +5,7 @@ using Eventuras.WebApi.Controllers.v3.Users;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using static Eventuras.Domain.PaymentMethod;
 
 namespace Eventuras.WebApi.Controllers.v3.Orders
 {
@@ -19,6 +20,8 @@ namespace Eventuras.WebApi.Controllers.v3.Orders
         public string UserId { get; set; }
 
         public int RegistrationId { get; set; }
+        public PaymentProvider? PaymentMethod { get; set; }
+        public string Comments { get; set; }
 
         public OrderLineDto[]? Items { get; set; }
 
@@ -56,6 +59,21 @@ namespace Eventuras.WebApi.Controllers.v3.Orders
             Items = order.OrderLines?
                 .Select(l => new OrderLineDto(l))
                 .ToArray();
+        }
+
+        public void CopyTo(Order order)
+        {
+            if (order == null)
+                throw new ArgumentNullException(nameof(order));
+
+            // Update properties of the Order entity from the DTO
+            order.Status = this.Status;
+            order.Comments = this.Comments;
+
+            if (this.PaymentMethod.HasValue)
+            {
+                order.PaymentMethod = this.PaymentMethod.Value;
+            }
         }
     }
 }
