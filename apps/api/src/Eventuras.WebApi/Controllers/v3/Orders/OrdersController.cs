@@ -101,7 +101,7 @@ namespace Eventuras.WebApi.Controllers.v3.Orders
             }
 
             // Only supports replace for now.
-            if (patchDoc.Operations.Any(op => op.OperationType != Microsoft.AspNetCore.JsonPatch.Operations.OperationType.Replace))
+            if (patchDoc.Operations.Exists(op => op.OperationType != Microsoft.AspNetCore.JsonPatch.Operations.OperationType.Replace))
             {
                 return BadRequest("Only replace operations are supported at this time.");
             }

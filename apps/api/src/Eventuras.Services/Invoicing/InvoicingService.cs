@@ -1,5 +1,7 @@
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Services.Orders;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -11,15 +13,18 @@ namespace Eventuras.Services.Invoicing
     internal class InvoicingService : IInvoicingService
     {
         private readonly IInvoicingProvider[] _components;
+        private readonly IOrderAccessControlService _orderAccessControlService;
         private readonly ILogger<InvoicingService> _logger;
         private readonly ApplicationDbContext _db;
 
         public InvoicingService(
             IEnumerable<IInvoicingProvider> components,
+            IOrderAccessControlService orderAccessControlService,
             ILogger<InvoicingService> logger,
             ApplicationDbContext db)
         {
             _components = components?.ToArray() ?? throw new ArgumentNullException(nameof(components));
+            _orderAccessControlService = orderAccessControlService ?? throw new ArgumentNullException(nameof(orderAccessControlService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _db = db ?? throw new ArgumentNullException(nameof(db));
         }
@@ -27,6 +32,11 @@ namespace Eventuras.Services.Invoicing
         public async Task<Invoice> CreateInvoiceAsync(Order[] orders, InvoiceInfo info)
         {
             orders.Check();
+
+            foreach (var order in orders)
+            {
+                await _orderAccessControlService.CheckOrderUpdateAccessAsync(order);
+            }
 
             info ??= InvoiceInfo.CreateFromOrderList(orders);
 
@@ -75,6 +85,25 @@ namespace Eventuras.Services.Invoicing
 
             _db.Invoices.Add(invoice);
             await _db.SaveChangesAsync();
+            return invoice;
+        }
+
+        public async Task<Invoice> GetInvoiceByIdAsync(int invoiceId, System.Threading.CancellationToken cancellationToken = default)
+        {
+            var invoice = await _db.Invoices
+                .Include(i => i.Orders)
+                .FirstOrDefaultAsync(i => i.InvoiceId == invoiceId);
+
+            if (invoice == null)
+            {
+                throw new InvoicingException($"Invoice with id {invoiceId} not found.");
+            }
+
+            foreach (var order in invoice.Orders)
+            {
+                await _orderAccessControlService.CheckOrderReadAccessAsync(order);
+            }
+
             return invoice;
         }
     }

@@ -13,6 +13,7 @@ import { EventProductsService } from './services/EventProductsService';
 import { EventProductVariantsService } from './services/EventProductVariantsService';
 import { EventsService } from './services/EventsService';
 import { EventStatisticsService } from './services/EventStatisticsService';
+import { InvoicesService } from './services/InvoicesService';
 import { NotificationRecipientsService } from './services/NotificationRecipientsService';
 import { NotificationsService } from './services/NotificationsService';
 import { NotificationsQueueingService } from './services/NotificationsQueueingService';
@@ -38,6 +39,7 @@ export class Eventuras {
     public readonly eventProductVariants: EventProductVariantsService;
     public readonly events: EventsService;
     public readonly eventStatistics: EventStatisticsService;
+    public readonly invoices: InvoicesService;
     public readonly notificationRecipients: NotificationRecipientsService;
     public readonly notifications: NotificationsService;
     public readonly notificationsQueueing: NotificationsQueueingService;
@@ -74,6 +76,7 @@ export class Eventuras {
         this.eventProductVariants = new EventProductVariantsService(this.request);
         this.events = new EventsService(this.request);
         this.eventStatistics = new EventStatisticsService(this.request);
+        this.invoices = new InvoicesService(this.request);
         this.notificationRecipients = new NotificationRecipientsService(this.request);
         this.notifications = new NotificationsService(this.request);
         this.notificationsQueueing = new NotificationsQueueingService(this.request);
