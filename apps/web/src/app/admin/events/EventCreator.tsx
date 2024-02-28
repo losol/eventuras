@@ -1,5 +1,5 @@
 'use client';
-import { LegacyInputText } from '@eventuras/forms/Input';
+import { InputText } from '@eventuras/forms/Input';
 import { ApiError, EventDto, EventInfoStatus, Eventuras } from '@eventuras/sdk';
 import { Layout } from '@eventuras/ui';
 import Button from '@eventuras/ui/Button';
@@ -123,7 +123,7 @@ const EventCreator = () => {
             value={Environment.NEXT_PUBLIC_ORGANIZATION_ID}
             {...register('organizationId')}
           />
-          <LegacyInputText
+          <InputText
             {...titleRegistration}
             label="Event Title"
             placeholder="Event Title"

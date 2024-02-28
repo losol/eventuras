@@ -18,7 +18,7 @@ export type InputTextProps = {
  * @see https://stackoverflow.com/questions/67877887/react-hook-form-v7-function-components-cannot-be-given-refs-attempts-to-access
  */
 
-export const LegacyInputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref) => {
+export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref) => {
   const oProps = { ...props };
   delete oProps.children;
   delete oProps.type;
@@ -44,7 +44,7 @@ export const LegacyInputText = React.forwardRef<HTMLInputElement, InputTextProps
   );
 });
 
-LegacyInputText.displayName = 'InputText';
+InputText.displayName = 'InputText';
 
 export const InputDate = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref) => {
   const oProps = { ...props };

@@ -1,6 +1,6 @@
 'use client';
 
-import { LegacyInputText } from '@eventuras/forms/Input';
+import { InputText } from '@eventuras/forms/Input';
 import { PaymentProvider, UserDto } from '@eventuras/sdk';
 import Button from '@eventuras/ui/Button';
 import createTranslation from 'next-translate/createTranslation';
@@ -98,7 +98,7 @@ const RegistrationPayment = ({
           <legend className={fieldsetLegendClassName} hidden>
             {t('user:registration.user.legend')}
           </legend>
-          <LegacyInputText
+          <InputText
             {...register('username', { value: userProfile.name! })}
             label={t('user:registration.user.name')}
             defaultValue={userProfile.name}
@@ -106,7 +106,7 @@ const RegistrationPayment = ({
             errors={errors}
             hidden
           />
-          <LegacyInputText
+          <InputText
             {...register('email', { value: userProfile.email! })}
             label={t('user:registration.user.email')}
             defaultValue={userProfile.email}
@@ -114,7 +114,7 @@ const RegistrationPayment = ({
             errors={errors}
             hidden
           />
-          <LegacyInputText
+          <InputText
             {...register('phoneNumber', { value: userProfile.phoneNumber! })}
             label={t('user:registration.user.phoneNumber')}
             defaultValue={userProfile.phoneNumber}
@@ -127,7 +127,7 @@ const RegistrationPayment = ({
           <legend className={fieldsetLegendClassName}>
             {t('user:registration.address.legend')}
           </legend>
-          <LegacyInputText
+          <InputText
             {...register('zip', {
               required: 'Zip code is Required',
             })}
@@ -136,7 +136,7 @@ const RegistrationPayment = ({
             placeholder="Zip Code"
             errors={errors}
           />
-          <LegacyInputText
+          <InputText
             {...register('city', {
               required: 'City is required',
             })}
@@ -145,7 +145,7 @@ const RegistrationPayment = ({
             placeholder="City"
             errors={errors}
           />
-          <LegacyInputText
+          <InputText
             {...register('country', {
               required: 'Country is required',
             })}
@@ -162,7 +162,7 @@ const RegistrationPayment = ({
             <legend className={fieldsetLegendClassName}>
               {t('user:registration.businessinfo.legend')}
             </legend>
-            <LegacyInputText
+            <InputText
               {...register('vatNumber', {
                 required: 'Vat Number is required for business customers',
               })}
@@ -171,7 +171,7 @@ const RegistrationPayment = ({
               placeholder="Vat Number"
               errors={errors}
             />
-            <LegacyInputText
+            <InputText
               {...register('invoiceReference')}
               label={t('user:registration.businessinfo.invoiceReference')}
               placeholder="Invoice Reference"
