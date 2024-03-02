@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form';
 
 import { InputProps } from '@eventuras/forms/InputProps';
 
-import formStyles from '../../../forms/src/formStyles';
+import formStyles from '../../../forms/src/styles/formStyles';
 import Label from '../../../forms/src/Label';
 
 export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
