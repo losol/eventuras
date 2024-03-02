@@ -1,4 +1,4 @@
-import { InputText } from '@eventuras/forms/Input';
+import { TextInput } from '@eventuras/forms';
 import MarkdownEditView from '@eventuras/forms/MarkdownEditView';
 import { EmailNotificationDto, RegistrationType, SmsNotificationDto } from '@eventuras/sdk';
 import { CheckboxInput, CheckboxLabel, Form, TextAreaInput } from '@eventuras/smartform';
@@ -200,7 +200,7 @@ export default function EventNotificator({
       })}
       {notificatorType === EventNotificatorType.EMAIL && (
         <div>
-          <InputText
+          <TextInput
             {...emailRegister('subject', {
               required: t('eventNotifier.form.subject.feedbackNoInput'),
             })}

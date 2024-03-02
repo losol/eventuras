@@ -28,5 +28,3 @@ export const formStyles = {
 
   inputErrorGlow: 'border border-red-500 shadow-outline-red',
 };
-
-export default formStyles;

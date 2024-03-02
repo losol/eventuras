@@ -7,71 +7,11 @@ import React, { Fragment, useCallback, useRef, useState } from 'react';
 import { ApiResult } from '@/utils/api/EventurasApi';
 
 import Loading from '@eventuras/ui/Loading';
-import formStyles from './styles/formStyles';
+import { formStyles } from './styles/formStyles';
 
 export type InputTextProps = {
   [x: string]: any;
 };
-/**
- * Basic text input field
- * requires ref forwarding because it is used by react hooks
- * @see https://stackoverflow.com/questions/67877887/react-hook-form-v7-function-components-cannot-be-given-refs-attempts-to-access
- */
-
-export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref) => {
-  const oProps = { ...props };
-  delete oProps.children;
-  delete oProps.type;
-  delete oProps.className;
-  const id = props.id ?? props.name;
-  return (
-    <div className="mb-3">
-      {props.label && !props.hidden && <label htmlFor={id}>{props.label}</label>}
-      <input
-        id={id}
-        ref={ref}
-        className={`${props.className ?? formStyles.defaultInputStyle}`}
-        type={props.type ?? 'text'}
-        placeholder={props.placeholder}
-        {...oProps}
-      />
-      {props.errors && (
-        <label htmlFor={id} role="alert" className="text-red-500">
-          {props.errors[props.name]?.message}
-        </label>
-      )}
-    </div>
-  );
-});
-
-InputText.displayName = 'InputText';
-
-export const InputDate = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref) => {
-  const oProps = { ...props };
-  delete oProps.children;
-  delete oProps.type;
-  delete oProps.className;
-  const id = props.id ?? props.name;
-  return (
-    <div className="mb-3">
-      {props.label && <label htmlFor={id}>{props.label}</label>}
-      <input
-        id={id}
-        ref={ref}
-        className={`${props.className ?? ''}`}
-        type="date"
-        placeholder={props.placeholder}
-        {...oProps}
-      />
-      {props.errors && (
-        <label htmlFor={id} role="alert" className="text-red-500">
-          {props.errors[props.name]?.message}
-        </label>
-      )}
-    </div>
-  );
-});
-InputDate.displayName = 'InputDate';
 
 export type DataProviderResponse = {
   data?: Array<any> | null;

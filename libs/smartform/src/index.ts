@@ -1,6 +1,6 @@
 export { default as Form } from './Form';
 export { default as CheckboxInput, CheckboxLabel } from './inputs/CheckboxInput';
-export { default as DateInput } from './inputs/DateInput';
+export { DateInput } from './inputs/DateInput';
 export { default as HiddenInput } from './inputs/HiddenInput';
 export { default as MarkdownInput } from './inputs/MarkdownInput';
 export { default as NumberInput } from './inputs/NumberInput';
