@@ -1,6 +1,6 @@
 'use client';
 
-import Fieldset from '@eventuras/forms/Fieldset';
+import { Fieldset } from '@eventuras/forms';
 import { ApiError, EventDto, EventFormDto, EventInfoStatus, EventInfoType } from '@eventuras/sdk';
 import {
   CheckboxInput,

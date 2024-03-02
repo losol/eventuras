@@ -1,6 +1,6 @@
 'use client';
 
-import Fieldset from '@eventuras/forms/Fieldset';
+import { Fieldset } from '@eventuras/forms';
 import { UserDto, UserFormDto } from '@eventuras/sdk';
 import { Form, TextInput } from '@eventuras/smartform';
 import Button from '@eventuras/ui/Button';

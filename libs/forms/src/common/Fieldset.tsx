@@ -13,7 +13,7 @@ export const styles = {
   legendClassName: 'text-lg border-b-2 pt-4 pb-2',
 };
 
-const Fieldset: React.FC<FieldsetProps> = props => (
+export const Fieldset: React.FC<FieldsetProps> = props => (
   <fieldset disabled={props.disabled} className={props.className ?? styles.fieldsetClassName}>
     {props.label && (
       <legend className={props.legendClassName ?? styles.legendClassName}>{props.label}</legend>
@@ -21,5 +21,3 @@ const Fieldset: React.FC<FieldsetProps> = props => (
     {props.children}
   </fieldset>
 );
-
-export default Fieldset;
