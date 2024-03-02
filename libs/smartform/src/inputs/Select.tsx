@@ -3,7 +3,7 @@ import { IconChevronDown } from '@tabler/icons-react';
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
-import Label from '../../../forms/src/Label';
+import { InputLabel } from '@eventuras/forms';
 
 export type SelectProps = {
   label?: string;
@@ -36,7 +36,7 @@ const Select: React.FC<SelectProps> = ({ label, name, options, dataTestId }) => 
       name={name}
       render={({ field: { onChange, value } }) => (
         <div className={styles.wrapper}>
-          {label && <Label htmlFor={name}>{label}</Label>}
+          {label && <InputLabel htmlFor={name}>{label}</InputLabel>}
           <Listbox value={value} onChange={onChange}>
             <Listbox.Button
               className={styles.button.base}

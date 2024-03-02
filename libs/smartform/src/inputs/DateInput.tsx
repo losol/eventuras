@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form';
 
 import { InputProps } from '@eventuras/forms/InputProps';
 
-import Label from '../../../forms/src/Label';
+import { InputLabel } from '@eventuras/forms';
 
 const styles = {
   input: 'text-black dark:text-white bg-slate-100 dark:bg-slate-700 p-2 m-2',
@@ -15,7 +15,7 @@ const DateInput = React.forwardRef<HTMLInputElement, InputProps>((props, ref) =>
 
   return (
     <div className="mb-3">
-      <Label htmlFor={id}>{props.label}</Label>
+      <InputLabel htmlFor={id}>{props.label}</InputLabel>
       <input
         id={id}
         className={styles.input}
