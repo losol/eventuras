@@ -1,5 +1,3 @@
-import { RegisterOptions } from 'react-hook-form';
-
 /**
  * Generic interface for properties of input components.
  *
@@ -21,7 +19,6 @@ export interface InputProps {
   label?: string;
   description?: string;
   className?: string;
-  validation?: RegisterOptions;
   errors?: { [key: string]: { message: string } };
   dataTestId?: string;
   [x: string]: any;

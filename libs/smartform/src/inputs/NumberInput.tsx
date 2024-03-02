@@ -4,7 +4,7 @@ import { useFormContext } from 'react-hook-form';
 import { InputProps } from '@eventuras/forms/InputProps';
 
 import formStyles from '../../../forms/src/styles/formStyles';
-import Label from '../../../forms/src/Label';
+import { InputLabel } from '@eventuras/forms';
 
 export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const { id, name, placeholder, label, description, className, defaultValue, validation, disabled, dataTestId } =
@@ -26,7 +26,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props
 
   return (
     <div className="my-6">
-      {label && <Label htmlFor={inputId}>{label}</Label>}
+      {label && <InputLabel htmlFor={inputId}>{label}</InputLabel>}
       {description && <p className={formStyles.inputDescription}>{description}</p>}
 
       <input
