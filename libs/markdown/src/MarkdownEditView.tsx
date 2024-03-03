@@ -19,7 +19,6 @@ export type MarkdownEditViewProps = {
   label?: string;
   editmodeOnly?: boolean;
   minLength?: number;
-
 };
 
 const MarkdownEditView = ({
@@ -30,7 +29,7 @@ const MarkdownEditView = ({
   formName,
   defaultValue,
   editmodeOnly,
-  minLength
+  minLength,
 }: MarkdownEditViewProps) => {
   const {
     formState: { errors },
@@ -46,7 +45,6 @@ const MarkdownEditView = ({
     e.preventDefault();
   };
   const plain = useRef('');
-
 
   const poppedInClass = 'mb-3 bg-white text-black';
   const poppedOutClass = `${poppedInClass} modal fixed w-full h-full top-0 left-0 flex items-center justify-center flex-col z-50`;

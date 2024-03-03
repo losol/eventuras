@@ -1,4 +1,5 @@
 import { TextInput } from '@eventuras/forms';
+import { MarkdownEditView } from '@eventuras/markdown';
 import { EmailNotificationDto, RegistrationType, SmsNotificationDto } from '@eventuras/sdk';
 import { CheckboxInput, CheckboxLabel, Form, TextAreaInput } from '@eventuras/smartform';
 import { AppNotificationOptions } from '@eventuras/ui/AppNotifications';
@@ -9,7 +10,6 @@ import createTranslation from 'next-translate/createTranslation';
 import { useRef } from 'react';
 import { SubmitHandler, useForm, UseFormRegister, UseFormReturn } from 'react-hook-form';
 
-import MarkdownEditView from '@/components/eventuras/MarkdownEditView';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { ParticipationTypes } from '@/types';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';

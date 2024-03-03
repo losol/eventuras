@@ -5,6 +5,7 @@
       "@/*": ["./src/*", "./public/*"],
       "@eventuras/datatable": ["../../libs/datatable/src/*"],
       "@eventuras/forms*": ["../../libs/forms/src*"],
+      "@eventuras/markdown": ["../../libs/markdown/src/*"],
       "@eventuras/scribo": ["../../libs/scribo"],
       "@eventuras/smartform": ["../../libs/smartform"],
       "@eventuras/sdk": ["../../libs/sdk"],
@@ -26,6 +27,6 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "../../libs/markdown/src/MarkdownEditView.tsx"  ],
   "exclude": ["node_modules"]
 }

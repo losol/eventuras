@@ -1,0 +1,19 @@
+{
+  "name": "@eventuras/markdown",
+  "version": "0.1.0",
+  "main": "src/index.tsx",
+  "dependencies": {
+    "@eventuras/forms": "*",
+    "@eventuras/scribo": "*",
+    "@eventuras/smartform": "*",
+    "@eventuras/ui": "*"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@eventuras/eslint-config": "*",
+    "@eventuras/typescript-config": "*"
+  }
+}

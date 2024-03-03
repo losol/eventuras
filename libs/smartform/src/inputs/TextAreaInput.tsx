@@ -3,10 +3,7 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { InputProps } from '@eventuras/forms/InputProps';
-
-import { formStyles } from '@eventuras/forms';
-import { InputLabel } from '@eventuras/forms';
+import { formStyles, InputLabel, InputProps } from '@eventuras/forms';
 
 export const TextAreaInput = React.forwardRef<HTMLTextAreaElement, InputProps>((props, ref) => {
   const {

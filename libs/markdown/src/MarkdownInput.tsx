@@ -60,5 +60,5 @@ const MarkdownInput = (props: MarkdownInputProps) => {
   );
 };
 
-MarkdownInput.displayName = 'MarkdownEditView';
+MarkdownInput.displayName = 'MarkdownInput';
 export default MarkdownInput;
