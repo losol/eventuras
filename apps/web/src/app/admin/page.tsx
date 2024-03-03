@@ -32,6 +32,9 @@ const AdminPage = () => {
           <Link href={`/admin/registrations/`} variant="button-primary">
             {t('admin:labels.registrations')}
           </Link>
+          <Link href={`/admin/collections/`} variant="button-primary">
+            {t('admin:labels.collections')}
+          </Link>
         </section>
 
         <Heading as="h2">{t('common:events.sectiontitle')}</Heading>
