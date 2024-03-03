@@ -22,17 +22,17 @@
     "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*",
     "@testing-library/react": "^14.2.1",
-    "@types/react": "^18.2.55",
+    "@types/react": "^18.2.61",
     "@types/react-dom": "^18.2.19",
-    "@typescript-eslint/eslint-plugin": "^7.0.1",
-    "@typescript-eslint/parser": "^7.0.1",
+    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/parser": "^7.1.0",
     "@vitejs/plugin-react-swc": "^3.6.0",
-    "eslint": "^8.56.0",
+    "eslint": "^8.57.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^5.3.3",
-    "vite": "^5.1.3",
-    "vitest": "^1.2.2"
+    "vite": "^5.1.4",
+    "vitest": "^1.3.1"
   },
   "overrides": {
     "vite": {
