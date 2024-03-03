@@ -38,11 +38,11 @@
         "label": "Body"
       },
       "status": {
+        "active": "Active",
+        "cancelled": "Cancelled",
         "feedbackNoInput": "Please Select at least one Status type",
         "label": "Status",
-        "active": "Active",
-        "waitingList": "Waiting List",
-        "cancelled": "Cancelled"
+        "waitingList": "Waiting List"
       },
       "subject": {
         "feedbackNoInput": "Please provide a subject",
@@ -63,6 +63,7 @@
     }
   },
   "labels": {
+    "collections": "Samlinger",
     "orders": "Ordre",
     "registrations": "Registeringer",
     "users": "Brukere"

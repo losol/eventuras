@@ -10,12 +10,14 @@ import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';
 
+import CollectionEditor from '../CollectionEditor';
+
 type EventCollectionProps = {
   params: {
     id: number;
   };
 };
-const EventDetailPage: React.FC<EventCollectionProps> = async ({ params }) => {
+const CollectionDetailPage: React.FC<EventCollectionProps> = async ({ params }) => {
   const eventId = params.id;
 
   const { t } = createTranslation();
@@ -33,7 +35,7 @@ const EventDetailPage: React.FC<EventCollectionProps> = async ({ params }) => {
 
   if (!collection.ok) {
     Logger.error(
-      { namespace: 'EditEventinfo' },
+      { namespace: 'collections' },
       `Failed to fetch collection ${eventId}, error: ${collection.error}`
     );
   }
@@ -49,8 +51,13 @@ const EventDetailPage: React.FC<EventCollectionProps> = async ({ params }) => {
           <Heading as="h1">{collection.value?.name ?? ''}</Heading>
         </Container>
       </Section>
+      <Section className="bg-white dark:bg-black   pb-8">
+        <Container>
+          <CollectionEditor eventCollection={collection.value!} />
+        </Container>
+      </Section>
     </Layout>
   );
 };
 
-export default EventDetailPage;
+export default CollectionDetailPage;
