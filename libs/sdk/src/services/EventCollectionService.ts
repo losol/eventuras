@@ -2,28 +2,47 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { EventCollectionCreateDto } from '../models/EventCollectionCreateDto';
 import type { EventCollectionDto } from '../models/EventCollectionDto';
+import type { EventCollectionDtoPageResponseDto } from '../models/EventCollectionDtoPageResponseDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class EventCollectionService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
-     * @returns any Success
+     * @returns EventCollectionDtoPageResponseDto Success
      * @throws ApiError
      */
-    public getV3EventsCollections({
+    public getV3Eventcollections({
+        page,
+        count,
+        limit,
+        offset,
+        ordering,
         eventurasOrgId,
     }: {
+        page?: number,
+        count?: number,
+        limit?: number,
+        offset?: number,
+        ordering?: Array<string>,
         /**
          * Optional organization Id. Will be required in API version 4.
          */
         eventurasOrgId?: number,
-    }): CancelablePromise<any> {
+    }): CancelablePromise<EventCollectionDtoPageResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/v3/events/collections',
+            url: '/v3/eventcollections',
             headers: {
                 'Eventuras-Org-Id': eventurasOrgId,
+            },
+            query: {
+                'Page': page,
+                'Count': count,
+                'Limit': limit,
+                'Offset': offset,
+                'Ordering': ordering,
             },
         });
     }
@@ -31,7 +50,7 @@ export class EventCollectionService {
      * @returns any Success
      * @throws ApiError
      */
-    public postV3EventsCollections({
+    public postV3Eventcollections({
         eventurasOrgId,
         requestBody,
     }: {
@@ -39,11 +58,11 @@ export class EventCollectionService {
          * Optional organization Id. Will be required in API version 4.
          */
         eventurasOrgId?: number,
-        requestBody?: EventCollectionDto,
+        requestBody?: EventCollectionCreateDto,
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/v3/events/collections',
+            url: '/v3/eventcollections',
             headers: {
                 'Eventuras-Org-Id': eventurasOrgId,
             },
@@ -55,7 +74,7 @@ export class EventCollectionService {
      * @returns any Success
      * @throws ApiError
      */
-    public getV3EventsCollections1({
+    public getV3Eventcollections1({
         id,
         eventurasOrgId,
     }: {
@@ -67,7 +86,7 @@ export class EventCollectionService {
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/v3/events/collections/{id}',
+            url: '/v3/eventcollections/{id}',
             path: {
                 'id': id,
             },
@@ -80,7 +99,7 @@ export class EventCollectionService {
      * @returns any Success
      * @throws ApiError
      */
-    public putV3EventsCollections({
+    public putV3Eventcollections({
         id,
         eventurasOrgId,
         requestBody,
@@ -94,7 +113,7 @@ export class EventCollectionService {
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'PUT',
-            url: '/v3/events/collections/{id}',
+            url: '/v3/eventcollections/{id}',
             path: {
                 'id': id,
             },
@@ -109,7 +128,7 @@ export class EventCollectionService {
      * @returns any Success
      * @throws ApiError
      */
-    public deleteV3EventsCollections({
+    public deleteV3Eventcollections({
         id,
         eventurasOrgId,
     }: {
@@ -121,7 +140,7 @@ export class EventCollectionService {
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'DELETE',
-            url: '/v3/events/collections/{id}',
+            url: '/v3/eventcollections/{id}',
             path: {
                 'id': id,
             },
