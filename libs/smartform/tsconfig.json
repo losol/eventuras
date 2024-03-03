@@ -7,6 +7,6 @@
       "@eventuras/ui/*":["../ui/src/*"],
     },
   },
-  "include": ["src", "../forms/src/Fieldset.tsx", "../forms/src/formStyles.ts", "../forms/src/Label.tsx", "../forms/src/InputProps.ts"],
+  "include": ["src", "../forms/src/Fieldset.tsx", "../forms/src/formStyles.ts", "../forms/src/Label.tsx", "../forms/src/inputs/InputProps.ts"],
   "exclude": ["node_modules", "dist"]
 }

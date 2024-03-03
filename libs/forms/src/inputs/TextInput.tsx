@@ -4,7 +4,7 @@
  * @see https://stackoverflow.com/questions/67877887/react-hook-form-v7-function-components-cannot-be-given-refs-attempts-to-access
  */
 import React from "react";
-import { InputProps } from "../InputProps";
+import { InputProps } from "./InputProps";
 import { formStyles } from "../styles/formStyles";
 import { InputLabel } from "../common/InputLabel";
 import ErrorLabel from "../common/ErrorLabel";
