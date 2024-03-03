@@ -62,7 +62,7 @@ const AdminEventList: React.FC<AdminEventListProps> = ({
       cell: info => info.getValue(),
       enableSorting: true,
     }),
-    columnHelper.accessor('action', {
+    columnHelper.accessor('id', {
       header: t('admin:eventColumns.actions').toString(),
       cell: info => renderEventItemActions(info.row.original),
     }),
