@@ -1,13 +1,12 @@
 'use client';
+import { formStyles } from '@eventuras/forms/src/styles/formStyles';
 import { UserDto } from '@eventuras/sdk';
+import Loading from '@eventuras/ui/Loading';
 import { Combobox, Transition } from '@headlessui/react';
 import { IconArrowDown } from '@tabler/icons-react';
 import React, { Fragment, useCallback, useRef, useState } from 'react';
 
 import { ApiResult } from '@/utils/api/EventurasApi';
-
-import Loading from '@eventuras/ui/Loading';
-import { formStyles } from './styles/formStyles';
 
 export type InputTextProps = {
   [x: string]: any;
@@ -60,7 +59,7 @@ const comboOption = (person: UserDto) => (
   </Combobox.Option>
 );
 
-export const InputAutoComplete = (props: InputAutoCompleteProps) => {
+export const UserLookup = (props: InputAutoCompleteProps) => {
   const [selected, setSelected] = useState<UserDto | null>(null);
   const intervalId = useRef(-1);
   const [response, setResponse] = useState<DataProviderResponse | null>(null);
@@ -147,41 +146,5 @@ export const InputAutoComplete = (props: InputAutoCompleteProps) => {
         )}
       </Combobox>
     </div>
-  );
-};
-
-export const DebouncedInput = ({
-  value: initialValue,
-  onChange,
-  className,
-  debounce = 500,
-  ...props
-}: {
-  value: string | number;
-  onChange: (value: string | number) => void;
-  className?: string;
-  debounce?: number;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) => {
-  const [value, setValue] = React.useState(initialValue);
-
-  React.useEffect(() => {
-    setValue(initialValue);
-  }, [initialValue]);
-
-  React.useEffect(() => {
-    const timeout = setTimeout(() => {
-      onChange(value);
-    }, debounce);
-
-    return () => clearTimeout(timeout);
-  }, [value]);
-
-  return (
-    <input
-      {...props}
-      className={className ?? formStyles.defaultInputStyle}
-      value={value}
-      onChange={e => setValue(e.target.value)}
-    />
   );
 };

@@ -27,6 +27,6 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "../../libs/markdown/src/MarkdownEditView.tsx"  ],
+  ],
   "exclude": ["node_modules"]
 }
