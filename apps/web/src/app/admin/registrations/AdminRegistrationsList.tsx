@@ -61,7 +61,7 @@ const AdminRegistrationsList: React.FC = () => {
       header: t('common:orders.labels.time').toString(),
       cell: info => info.getValue(),
     }),
-    columnHelper.accessor('action', {
+    columnHelper.accessor('status', {
       header: t('admin:eventColumns.actions').toString(),
       cell: info => renderRegistrationActions(info.row.original),
     }),

@@ -62,7 +62,7 @@ const AdminOrdersList: React.FC = () => {
       header: t('common:orders.labels.time').toString(),
       cell: info => formatDateSpan(info.row.original.time!.toString(), null, { showTime: true }),
     }),
-    columnHelper.accessor('action', {
+    columnHelper.accessor('status', {
       header: t('admin:eventColumns.actions').toString(),
       cell: info => renderOrderActions(info.row.original),
     }),

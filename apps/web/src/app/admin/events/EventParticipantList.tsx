@@ -176,11 +176,11 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
         );
       },
     }),
-    columnHelper.accessor('live', {
+    columnHelper.accessor('status', {
       header: t('admin:participantColumns.live'),
       cell: info => renderLiveActions(info.row.original),
     }),
-    columnHelper.accessor('actions', {
+    columnHelper.accessor('status', {
       header: t('admin:participantColumns.actions').toString(),
       cell: info => renderEventItemActions(info.row.original),
     }),
