@@ -1,7 +1,6 @@
-import { TextInput } from '@eventuras/forms';
-import { MarkdownEditView } from '@eventuras/markdown';
+import { MarkdownInput } from '@eventuras/markdown';
 import { EmailNotificationDto, RegistrationType, SmsNotificationDto } from '@eventuras/sdk';
-import { CheckboxInput, CheckboxLabel, Form, TextAreaInput } from '@eventuras/smartform';
+import { CheckboxInput, CheckboxLabel, Form, TextAreaInput, TextInput } from '@eventuras/smartform';
 import { AppNotificationOptions } from '@eventuras/ui/AppNotifications';
 import Button from '@eventuras/ui/Button';
 import ButtonGroup from '@eventuras/ui/ButtonGroup';
@@ -161,8 +160,10 @@ export default function EventNotificator({
     createFormHandler(eventId, notificatorType, addAppNotification, onClose)
   ).current;
 
+  const formValues = formHook.getValues();
+
   return (
-    <Form onSubmit={handleSubmit(onSubmitForm)} className="text-black w-72">
+    <Form onSubmit={onSubmitForm} className="text-black w-72">
       <div>
         <Heading as="h4">{common('events.event')}</Heading>
         <p>{eventTitle}</p>
@@ -201,31 +202,24 @@ export default function EventNotificator({
       {notificatorType === EventNotificatorType.EMAIL && (
         <div>
           <TextInput
-            {...emailRegister('subject', {
-              required: t('eventNotifier.form.subject.feedbackNoInput'),
-            })}
+            name="subject"
             label={t('eventNotifier.form.subject.label')}
             placeholder={t('eventNotifier.form.subject.label')}
-            errors={errors}
           />
         </div>
       )}
       <div>
         {notificatorType === EventNotificatorType.EMAIL && (
           <div id="bodyEditor">
-            <MarkdownEditView
-              form={formHook}
-              formName="body"
-              minLength={10}
+            <MarkdownInput
+              name="body"
               label={t('eventNotifier.form.body.label')}
               placeholder={t('eventNotifier.form.body.label')}
-              editmodeOnly={true}
             />
           </div>
         )}
         {notificatorType === EventNotificatorType.SMS && (
           <TextAreaInput
-            {...smsRegister('body')}
             name="body"
             label={t('eventNotifier.form.body.label')}
             placeholder={t('eventNotifier.form.body.label')}

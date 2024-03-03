@@ -20,9 +20,10 @@ const MarkdownInput = (props: MarkdownInputProps) => {
   const { control } = useFormContext();
   const toCompile = useRef('');
   const plain = useRef('');
+  const id = props.id ?? props.name;
   return (
     <div className={styles.wrapper}>
-      {props.label && <label htmlFor={props.id}>{props.label}</label>}
+      {props.label && <label htmlFor={id}>{props.label}</label>}
       <Controller
         control={control}
         name={props.name}

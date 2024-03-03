@@ -4,7 +4,7 @@ Need to merge this with MarkdownInput
  */
 
 import MarkdownEditor from '@eventuras/scribo';
-import Button from '@eventuras/ui/Button';
+import { Button } from '@eventuras/ui';
 import { compiler } from 'markdown-to-jsx';
 import { useRef, useState } from 'react';
 import { Controller, RegisterOptions, UseFormReturn } from 'react-hook-form';
