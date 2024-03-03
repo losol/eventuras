@@ -43,6 +43,11 @@
     "userprofile": "Gå til brukerprofilen din",
     "view": "Vis"
   },
+  "collections": {
+    "page": {
+      "title": "Samlinger"
+    }
+  },
   "description": "Beskrivelse",
   "edit": "Endre",
   "errormessages": {
