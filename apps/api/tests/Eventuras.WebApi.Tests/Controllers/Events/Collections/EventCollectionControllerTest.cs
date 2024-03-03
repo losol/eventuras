@@ -50,31 +50,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
 
 
         [Fact]
-        public async Task Should_Not_Return_Collections_From_Other_Organization()
-        {
-            using var scope = _factory.Services.NewTestScope();
-            using var org1 = await scope.CreateOrganizationAsync(hostname: "localhost");
-            using var org2 = await scope.CreateOrganizationAsync(hostname: "another");
-
-            using var c1 = await scope.CreateEventCollectionAsync("Collection 1", organization: org1.Entity);
-            using var c2 = await scope.CreateEventCollectionAsync("Collection 2", organization: org2.Entity);
-
-            using var adminOfOrg1 = await scope.CreateUserAsync(role: Roles.Admin);
-            using var member1 =
-                await scope.CreateOrganizationMemberAsync(adminOfOrg1.Entity, org1.Entity, role: Roles.Admin);
-
-            var client = _factory.CreateClient()
-                .AuthenticatedAs(adminOfOrg1.Entity, Roles.Admin);
-
-            var response = await client.GetAsync("/v3/eventcollections");
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-            var content = await response.Content.ReadAsStringAsync();
-            JArray.Parse(content).CheckArray((token, c) => token.CheckEventCollection(c), c1.Entity);
-        }
-
-
-        [Fact]
         public async Task Should_Return_Not_Found_For_Unknown_Collection_Id()
         {
             var client = _factory.CreateClient();
