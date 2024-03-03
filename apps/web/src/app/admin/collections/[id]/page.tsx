@@ -1,7 +1,5 @@
 import { Container, Layout } from '@eventuras/ui';
-import Badge from '@eventuras/ui/Badge';
 import Heading from '@eventuras/ui/Heading';
-import Link from '@eventuras/ui/Link';
 import Section from '@eventuras/ui/Section';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
