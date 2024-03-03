@@ -1,4 +1,4 @@
-import DropdownSelect from '@eventuras/forms/DropdownSelect';
+import { DropdownSelect } from '@eventuras/forms';
 import { InputAutoComplete } from '@eventuras/forms/Input';
 import {
   EventDto,
