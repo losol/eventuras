@@ -24,23 +24,23 @@ namespace Eventuras.Services.EventCollections
                 new ArgumentNullException(nameof(eventCollectionAccessControlService));
         }
 
-        public async Task<EventCollection[]> ListCollectionsAsync(
+        public async Task<Paging<EventCollection>> ListCollectionsAsync(
             EventCollectionListRequest request,
             EventCollectionRetrievalOptions options,
             CancellationToken cancellationToken)
         {
-            request ??= new EventCollectionListRequest();
+            request ??= new EventCollectionListRequest(0, 100);
             options ??= new EventCollectionRetrievalOptions();
 
             var query = _context.EventCollections
-                .UseOptions(options ?? new EventCollectionRetrievalOptions())
+                .UseOptions(options)
                 .UseFilter(request.Filter ?? new EventCollectionFilter())
                 .UseOrder(request.Order, request.Descending);
 
             query = await _eventCollectionAccessControlService
                 .AddAccessFilterAsync(query, cancellationToken);
 
-            return await query.ToArrayAsync(cancellationToken);
+            return await Paging.CreateAsync(query, request, cancellationToken);
         }
 
         public async Task<EventCollection> GetCollectionByIdAsync(int id,

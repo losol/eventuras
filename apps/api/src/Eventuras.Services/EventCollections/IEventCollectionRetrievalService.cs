@@ -6,7 +6,7 @@ namespace Eventuras.Services.EventCollections
 {
     public interface IEventCollectionRetrievalService
     {
-        Task<EventCollection[]> ListCollectionsAsync(
+        Task<Paging<EventCollection>> ListCollectionsAsync(
             EventCollectionListRequest request = null,
             EventCollectionRetrievalOptions options = null,
             CancellationToken cancellationToken = default);

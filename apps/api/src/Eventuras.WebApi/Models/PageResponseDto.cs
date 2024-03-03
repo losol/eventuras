@@ -14,13 +14,13 @@ namespace Eventuras.WebApi.Models
 
         public int Pages => Count > 0 ? (int)Math.Ceiling(Total / (double)Count) : 0;
 
-        public T[] Data { get; set; }
+        public T[] Data { get; set; } = Array.Empty<T>();
 
         public PageResponseDto()
         {
         }
 
-        public PageResponseDto(PageQueryDto query)
+        public PageResponseDto(PageQueryDto query) : this()
         {
             Page = query.Page;
             Count = query.Count;

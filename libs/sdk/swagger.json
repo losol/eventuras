@@ -249,12 +249,58 @@
         }
       }
     },
-    "/v3/events/collections": {
+    "/v3/eventcollections": {
       "get": {
         "tags": [
           "EventCollection"
         ],
         "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Count",
+            "in": "query",
+            "schema": {
+              "maximum": 250,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Ordering",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
           {
             "name": "Eventuras-Org-Id",
             "in": "header",
@@ -267,7 +313,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventCollectionDtoPageResponseDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventCollectionDtoPageResponseDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventCollectionDtoPageResponseDto"
+                }
+              }
+            }
           }
         }
       },
@@ -290,17 +353,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EventCollectionDto"
+                "$ref": "#/components/schemas/EventCollectionCreateDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/EventCollectionDto"
+                "$ref": "#/components/schemas/EventCollectionCreateDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/EventCollectionDto"
+                "$ref": "#/components/schemas/EventCollectionCreateDto"
               }
             }
           }
@@ -312,7 +375,7 @@
         }
       }
     },
-    "/v3/events/collections/{id}": {
+    "/v3/eventcollections/{id}": {
       "get": {
         "tags": [
           "EventCollection"
@@ -4372,6 +4435,45 @@
         },
         "additionalProperties": false
       },
+      "EventCollectionCreateDto": {
+        "required": [
+          "name",
+          "organizationId"
+        ],
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "slug": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "featuredImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "featuredImageCaption": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "EventCollectionDto": {
         "required": [
           "name",
@@ -4411,6 +4513,36 @@
           },
           "featuredImageCaption": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EventCollectionDtoPageResponseDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pages": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventCollectionDto"
+            },
             "nullable": true
           }
         },

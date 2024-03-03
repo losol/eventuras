@@ -7,7 +7,7 @@ namespace Eventuras.Services.Events
     public interface IEventInfoRetrievalService
     {
         /// <summary>
-        /// Gets event info by its ID. Performs current org check. If not a <see cref="Roles.SuperAdmin"/> then can only access
+        /// Gets event info by its ID. Performs current org check. If not a <see cref="Roles.SystemAdmin"/> then can only access
         /// events of the current org. If no current org, then only events without org can be accessed.
         /// </summary>
         /// <exception cref="Exceptions.NotFoundException">No event found.</exception>

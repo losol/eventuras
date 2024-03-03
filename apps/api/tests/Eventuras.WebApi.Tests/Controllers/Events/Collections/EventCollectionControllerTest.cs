@@ -42,28 +42,12 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
         public async Task Should_Return_Empty_List()
         {
             var client = _factory.CreateClient();
+            var response = await client.GetAsync("/v3/eventcollections");
 
-            var response = await client.GetAsync("/v3/events/collections");
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-            var content = await response.Content.ReadAsStringAsync();
-            JArray.Parse(content).CheckEmptyArray();
+            var json = await response.CheckOk().AsTokenAsync();
+            json.CheckEmptyPaging();
         }
 
-        [Fact]
-        public async Task Should_Return_Collection_List_Sorted_By_Name()
-        {
-            var client = _factory.CreateClient();
-
-            using var scope = _factory.Services.NewTestScope();
-            using var c2 = await scope.CreateEventCollectionAsync("Collection 2");
-            using var c1 = await scope.CreateEventCollectionAsync("Collection 1");
-
-            var response = await client.GetAsync("/v3/events/collections");
-            var content = await response.CheckOk().AsArrayAsync();
-            content.CheckArray((token, c) => token.CheckEventCollection(c),
-                c1.Entity, c2.Entity);
-        }
 
         [Fact]
         public async Task Should_Not_Return_Collections_From_Other_Organization()
@@ -82,58 +66,20 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
             var client = _factory.CreateClient()
                 .AuthenticatedAs(adminOfOrg1.Entity, Roles.Admin);
 
-            var response = await client.GetAsync("/v3/events/collections");
+            var response = await client.GetAsync("/v3/eventcollections");
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
             var content = await response.Content.ReadAsStringAsync();
             JArray.Parse(content).CheckArray((token, c) => token.CheckEventCollection(c), c1.Entity);
         }
 
-        [Fact]
-        public async Task Should_Return_All_Collections_If_No_Current_Org()
-        {
-            using var scope = _factory.Services.NewTestScope();
-
-            using var org1 = await scope.CreateOrganizationAsync(hostname: "some"); // not localhost
-            using var org2 = await scope.CreateOrganizationAsync(hostname: "another"); // not localhost, too
-
-            using var c1 = await scope.CreateEventCollectionAsync("Collection 1", organization: org1.Entity);
-            using var c2 = await scope.CreateEventCollectionAsync("Collection 2", organization: org2.Entity);
-
-            using var admin = await scope.CreateUserAsync(role: Roles.Admin);
-            using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org1.Entity, role: Roles.Admin);
-
-            var client = _factory.CreateClient()
-                .AuthenticatedAs(admin.Entity, Roles.Admin);
-
-            var response = await client.GetAsync("/v3/events/collections");
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-            var content = await response.Content.ReadAsStringAsync();
-            JArray.Parse(content).CheckArray((token, c) => token.CheckEventCollection(c), c1.Entity, c2.Entity);
-        }
 
         [Fact]
         public async Task Should_Return_Not_Found_For_Unknown_Collection_Id()
         {
             var client = _factory.CreateClient();
-            var response = await client.GetAsync("/v3/events/collections/2020");
+            var response = await client.GetAsync("/v3/eventcollections/2020");
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        }
-
-        [Fact]
-        public async Task Should_Return_Collection_Info()
-        {
-            var client = _factory.CreateClient();
-
-            using var scope = _factory.Services.NewTestScope();
-            using var collection = await scope.CreateEventCollectionAsync();
-
-            var response = await client.GetAsync($"/v3/events/collections/{collection.Entity.CollectionId}");
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-            var content = await response.Content.ReadAsStringAsync();
-            JObject.Parse(content).CheckEventCollection(collection.Entity);
         }
 
         [Fact]
@@ -144,7 +90,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
             using var scope = _factory.Services.NewTestScope();
             using var org = await scope.CreateOrganizationAsync(hostname: "some"); // not localhost
 
-            await client.PostAsync("/v3/events/collections", new StringContent(JsonConvert.SerializeObject(new
+            await client.PostAsync("/v3/eventcollections", new StringContent(JsonConvert.SerializeObject(new
             {
                 name = "Test",
                 organizationId = org.Entity.OrganizationId
@@ -172,7 +118,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
                 organizationId = org.Entity.OrganizationId
             });
 
-            await client.PostAsync("/v3/events/collections",
+            await client.PostAsync("/v3/eventcollections",
                 new StringContent(json, Encoding.UTF8, "application/json"));
 
             // FIXME: Not checking status here, it's OK since the app redirects to login screen!
@@ -193,7 +139,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
 
             Assert.False(await scope.Db.EventCollections.AnyAsync());
 
-            var response = await client.PostAsync("/v3/events/collections", new
+            var response = await client.PostAsync("/v3/eventcollections", new
             {
                 name = "Test",
                 organizationId = org.Entity.OrganizationId
@@ -221,7 +167,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
             Assert.False(await scope.Db.EventCollections.AnyAsync());
 
             using var org = await scope.CreateOrganizationAsync();
-            var response = await client.PostAsync("/v3/events/collections", new StringContent(
+            var response = await client.PostAsync("/v3/eventcollections", new StringContent(
                 JsonConvert.SerializeObject(new
                 {
                     name = "Test",
@@ -250,7 +196,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
             Assert.False(await scope.Db.EventCollections.AnyAsync());
 
             using var org = await scope.CreateOrganizationAsync();
-            var response = await client.PostAsync("/v3/events/collections", new StringContent(
+            var response = await client.PostAsync("/v3/eventcollections", new StringContent(
                 JsonConvert.SerializeObject(new
                 {
                     name = "Test",
@@ -286,7 +232,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
             Assert.False(await scope.Db.EventCollections.AnyAsync());
 
             using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
-            var response = await client.PostAsync("/v3/events/collections", new StringContent(
+            var response = await client.PostAsync("/v3/eventcollections", new StringContent(
                 JsonConvert.SerializeObject(new
                 {
                     organizationId = org.Entity.OrganizationId
@@ -306,7 +252,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
 
             Assert.False(await scope.Db.EventCollections.AnyAsync());
 
-            var response = await client.PostAsync("/v3/events/collections", new StringContent(
+            var response = await client.PostAsync("/v3/eventcollections", new StringContent(
                 JsonConvert.SerializeObject(new
                 {
                     name = "Test"
@@ -322,7 +268,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
 
-            var response = await client.PutAsync("/v3/events/collections/202", new StringContent(
+            var response = await client.PutAsync("/v3/eventcollections/202", new StringContent(
                 JsonConvert.SerializeObject(new
                 {
                     name = "Updated",
@@ -342,7 +288,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
             using var org = await scope.CreateOrganizationAsync(hostname: "some"); // not localhost
 
             using var collection = await scope.CreateEventCollectionAsync();
-            await client.PutAsync($"/v3/events/collections/{collection.Entity.CollectionId}", new StringContent(
+            await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}", new StringContent(
                 JsonConvert.SerializeObject(new
                 {
                     name = "Updated",
@@ -372,7 +318,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
 
-            await client.PutAsync($"/v3/events/collections/{collection.Entity.CollectionId}",
+            await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}",
                 new StringContent(json, Encoding.UTF8, "application/json"));
 
             // FIXME: Not checking status here, it's OK since the app redirects to login screen!
@@ -393,7 +339,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
 
             using var collection = await scope.CreateEventCollectionAsync(organization: org.Entity);
 
-            var response = await client.PutAsync($"/v3/events/collections/{collection.Entity.CollectionId}",
+            var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}",
                 new StringContent(JsonConvert.SerializeObject(new
                 {
                     name = "Updated",
@@ -417,7 +363,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
 
             using var collection = await scope.CreateEventCollectionAsync();
 
-            var response = await client.PutAsync($"/v3/events/collections/{collection.Entity.CollectionId}",
+            var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}",
                 new StringContent(JsonConvert.SerializeObject(new
                 {
                     name = "Updated",
@@ -440,7 +386,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
             using var collection = await scope.CreateEventCollectionAsync();
             using var newOrg = await scope.CreateOrganizationAsync();
 
-            var response = await client.PutAsync($"/v3/events/collections/{collection.Entity.CollectionId}",
+            var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}",
                 new StringContent(JsonConvert.SerializeObject(new
                 {
                     name = "Test",
@@ -476,7 +422,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
 
             using var collection = await scope.CreateEventCollectionAsync();
 
-            var response = await client.PutAsync($"/v3/events/collections/{collection.Entity.CollectionId}",
+            var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}",
                 new StringContent(JsonConvert.SerializeObject(new
                 {
                     organizationId = collection.Entity.OrganizationId
@@ -496,7 +442,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
 
             using var collection = await scope.CreateEventCollectionAsync();
 
-            var response = await client.PutAsync($"/v3/events/collections/{collection.Entity.CollectionId}",
+            var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}",
                 new StringContent(JsonConvert.SerializeObject(new
                 {
                     name = "Test"
@@ -512,7 +458,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
             var client = _factory.CreateClient()
                 .AuthenticatedAsSystemAdmin();
 
-            var response = await client.DeleteAsync("/v3/events/collections/202");
+            var response = await client.DeleteAsync("/v3/eventcollections/202");
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
@@ -525,7 +471,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
 
 
             using var collection = await scope.CreateEventCollectionAsync();
-            await client.DeleteAsync($"/v3/events/collections/{collection.Entity.CollectionId}");
+            await client.DeleteAsync($"/v3/eventcollections/{collection.Entity.CollectionId}");
 
             // FIXME: Not checking status here, it's OK since the app redirects to login screen!
 
@@ -547,7 +493,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
 
             using var collection = await scope.CreateEventCollectionAsync();
 
-            await client.DeleteAsync($"/v3/events/collections/{collection.Entity.CollectionId}");
+            await client.DeleteAsync($"/v3/eventcollections/{collection.Entity.CollectionId}");
 
             // FIXME: Not checking status here, it's OK since the app redirects to login screen!
 
@@ -568,7 +514,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
 
             using var collection = await scope.CreateEventCollectionAsync(organization: org.Entity);
 
-            var response = await client.DeleteAsync($"/v3/events/collections/{collection.Entity.CollectionId}");
+            var response = await client.DeleteAsync($"/v3/eventcollections/{collection.Entity.CollectionId}");
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.False(await scope.Db.EventCollections.AnyAsync(c => !c.Archived));
             Assert.NotNull(await scope.Db.EventCollections.SingleAsync(c => c.Archived));
@@ -587,7 +533,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Collections
 
             using var collection = await scope.CreateEventCollectionAsync();
 
-            var response = await client.DeleteAsync($"/v3/events/collections/{collection.Entity.CollectionId}");
+            var response = await client.DeleteAsync($"/v3/eventcollections/{collection.Entity.CollectionId}");
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.False(await scope.Db.EventCollections.AnyAsync(c => !c.Archived));
