@@ -7,6 +7,6 @@
       "@eventuras/ui/*":["../../libs/ui/src/*"],
     },
   },
-  "include": ["src"],
+  "include": ["src", "../../apps/web/src/components/eventuras/UserLookup.tsx"],
   "exclude": ["node_modules", "dist"]
 }

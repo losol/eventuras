@@ -1,5 +1,4 @@
 import { DropdownSelect } from '@eventuras/forms';
-import { InputAutoComplete } from '@eventuras/forms/Input';
 import {
   EventDto,
   NewRegistrationDto,
@@ -16,6 +15,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import ProductSelection from '@/components/eventuras/ProductSelection';
+import { UserLookup } from '@/components/eventuras/UserLookup';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { RegistrationProduct } from '@/types';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
@@ -176,7 +176,7 @@ const AddUserToEventDrawer: React.FC<AddUserToEventDrawerProps> = ({
     <>
       <Drawer isOpen={isOpen!} onCancel={onCancel}>
         <Heading as="h2">Add users to event </Heading>
-        <InputAutoComplete
+        <UserLookup
           id="find_user"
           placeholder="Find user"
           dataProvider={dataProvider}
