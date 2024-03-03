@@ -2,7 +2,7 @@ import { ProductDto } from '@eventuras/sdk';
 
 import { ProductSelected } from '@/types';
 
-import Checkbox, { CheckBoxDescription, CheckBoxLabel } from './Checkbox';
+import Checkbox, { CheckBoxDescription, CheckBoxLabel } from './inputs/Checkbox';
 
 export type ProductSelectionProps = {
   products: ProductDto[];

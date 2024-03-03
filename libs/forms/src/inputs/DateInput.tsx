@@ -1,5 +1,5 @@
 import React from 'react';
-import { InputProps } from '../InputProps';
+import { InputProps } from './InputProps';
 import { InputLabel } from '../common/InputLabel';
 
 
