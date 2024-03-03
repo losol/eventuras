@@ -53,6 +53,11 @@ namespace Eventuras.Services.EventCollections
                 .UseOptions(options)
                 .FirstOrDefaultAsync(c => c.CollectionId == id, cancellationToken);
 
+            if (collection == null)
+            {
+                throw new NotFoundException($"Collection {id} not found.");
+            }
+
             if (options.ForUpdate)
             {
                 await _eventCollectionAccessControlService
