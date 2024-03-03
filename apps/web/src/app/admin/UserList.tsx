@@ -1,7 +1,7 @@
 'use client';
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { EventDto, UserDto } from '@eventuras/sdk';
-const columnHelper = createColumnHelper<EventDto>();
+const columnHelper = createColumnHelper<UserDto>();
 
 const columns = [
   columnHelper.accessor('name', {
