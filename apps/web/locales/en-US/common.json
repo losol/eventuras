@@ -43,6 +43,11 @@
     "userprofile": "User profile",
     "view": "View"
   },
+  "collections": {
+    "page": {
+      "title": "Event collections"
+    }
+  },
   "description": "Description",
   "edit": "Edit",
   "errormessages": {
