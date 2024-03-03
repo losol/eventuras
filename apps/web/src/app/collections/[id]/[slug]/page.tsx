@@ -105,7 +105,7 @@ const CollectionPage: React.FC<EventInfoProps> = async ({ params }) => {
             </Heading>
             {eventinfos.value.data.map(eventinfo => (
               <Card key={eventinfo.id} className="mb-4">
-                <Card.Heading as="h2">{eventinfo.name}</Card.Heading>
+                <Card.Heading as="h2">{eventinfo.title}</Card.Heading>
                 <Card.Text className="pb-4">{eventinfo.description}</Card.Text>
                 <Link href={`/events/${eventinfo.id}/${eventinfo.slug}`} variant="button-primary">
                   {t('common:labels.view')}
