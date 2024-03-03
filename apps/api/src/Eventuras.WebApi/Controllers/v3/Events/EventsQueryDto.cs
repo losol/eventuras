@@ -1,3 +1,5 @@
+#nullable enable
+
 using Eventuras.Domain;
 using Eventuras.Services.Events;
 using Eventuras.WebApi.Models;
@@ -18,6 +20,9 @@ namespace Eventuras.WebApi.Controllers.v3.Events
         [Range(1, int.MaxValue)]
         public int? OrganizationId { get; set; }
 
+        [Range(1, int.MaxValue)]
+        public int? CollectionId { get; set; }
+
         public EventInfoFilter ToEventInfoFilter()
         {
             var filter = new EventInfoFilter
@@ -27,6 +32,7 @@ namespace Eventuras.WebApi.Controllers.v3.Events
                     ? null
                     : new[] { EventInfo.EventInfoStatus.Draft },
                 OrganizationId = OrganizationId,
+                CollectionIds = CollectionId.HasValue ? new[] { CollectionId.Value } : null,
                 AccessibleOnly = false
             };
 
