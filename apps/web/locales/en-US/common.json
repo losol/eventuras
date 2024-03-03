@@ -44,6 +44,9 @@
     "view": "View"
   },
   "collections": {
+    "detailspage": {
+      "eventstitle": "What´s happening?"
+    },
     "page": {
       "title": "Event collections"
     }

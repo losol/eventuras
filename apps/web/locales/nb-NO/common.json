@@ -44,6 +44,9 @@
     "view": "Vis"
   },
   "collections": {
+    "detailspage": {
+      "eventstitle": "Arrangementer"
+    },
     "page": {
       "title": "Samlinger"
     }
