@@ -54,7 +54,7 @@ namespace Eventuras.WebApi.Controllers.v3.Events.Collections
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<IActionResult> Get(int id, CancellationToken cancellationToken)
+        public async Task<ActionResult<EventCollectionDto>> Get(int id, CancellationToken cancellationToken)
         {
             var c = await _eventCollectionRetrievalService
                 .GetCollectionByIdAsync(id, cancellationToken: cancellationToken);
@@ -63,7 +63,7 @@ namespace Eventuras.WebApi.Controllers.v3.Events.Collections
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] EventCollectionCreateDto dto)
+        public async Task<ActionResult<EventCollectionDto>> Create([FromBody] EventCollectionCreateDto dto)
         {
             if (!ModelState.IsValid)
             {
@@ -77,7 +77,7 @@ namespace Eventuras.WebApi.Controllers.v3.Events.Collections
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] EventCollectionDto dto)
+        public async Task<ActionResult<EventCollectionDto>> Update(int id, [FromBody] EventCollectionDto dto)
         {
             var collection = await _eventCollectionRetrievalService
                 .GetCollectionByIdAsync(id, new EventCollectionRetrievalOptions

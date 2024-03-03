@@ -47,7 +47,7 @@ export class EventCollectionService {
         });
     }
     /**
-     * @returns any Success
+     * @returns EventCollectionDto Success
      * @throws ApiError
      */
     public postV3Eventcollections({
@@ -59,7 +59,7 @@ export class EventCollectionService {
          */
         eventurasOrgId?: number,
         requestBody?: EventCollectionCreateDto,
-    }): CancelablePromise<any> {
+    }): CancelablePromise<EventCollectionDto> {
         return this.httpRequest.request({
             method: 'POST',
             url: '/v3/eventcollections',
@@ -71,7 +71,7 @@ export class EventCollectionService {
         });
     }
     /**
-     * @returns any Success
+     * @returns EventCollectionDto Success
      * @throws ApiError
      */
     public getV3Eventcollections1({
@@ -83,7 +83,7 @@ export class EventCollectionService {
          * Optional organization Id. Will be required in API version 4.
          */
         eventurasOrgId?: number,
-    }): CancelablePromise<any> {
+    }): CancelablePromise<EventCollectionDto> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/v3/eventcollections/{id}',
@@ -96,7 +96,7 @@ export class EventCollectionService {
         });
     }
     /**
-     * @returns any Success
+     * @returns EventCollectionDto Success
      * @throws ApiError
      */
     public putV3Eventcollections({
@@ -110,7 +110,7 @@ export class EventCollectionService {
          */
         eventurasOrgId?: number,
         requestBody?: EventCollectionDto,
-    }): CancelablePromise<any> {
+    }): CancelablePromise<EventCollectionDto> {
         return this.httpRequest.request({
             method: 'PUT',
             url: '/v3/eventcollections/{id}',
