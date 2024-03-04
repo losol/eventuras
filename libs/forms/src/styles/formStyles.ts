@@ -12,7 +12,6 @@ export const formStyles = {
         leading-tight
         focus:outline-none
         focus:shadow-outline`,
-
   lightInputStyle: `
         appearance-none
         w-full
@@ -23,8 +22,7 @@ export const formStyles = {
         dark:border-gray-400
         focus:outline-none
         focus:shadow-outline`,
-
   inputDescription: 'text-gray-700 dark:text-gray-300 text-sm mb-2',
-
   inputErrorGlow: 'border border-red-500 shadow-outline-red',
+  inputWrapper: 'mb-3',
 };

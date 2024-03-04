@@ -6,5 +6,5 @@ export { default as MarkdownInput } from '../../markdown/src/MarkdownInput';
 export { default as NumberInput } from './inputs/NumberInput';
 export { default as Select } from './inputs/Select';
 export { default as TextAreaInput } from './inputs/TextAreaInput';
-export { default as TextInput } from './inputs/TextInput';
+export { TextInput } from './inputs/TextInput';
 

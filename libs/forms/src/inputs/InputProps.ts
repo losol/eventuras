@@ -1,20 +1,52 @@
 /**
- * Generic interface for properties of input components.
+ * Defines the types of input elements supported, based on standard HTML input types.
+ * This type restriction helps in ensuring that only valid HTML input types can be used.
  *
- * @param id - Optional. The unique identifier for the input element.
- * @param name - Required. The name of the input element, used for form submission and linking with labels.
- * @param type - Optional. Specifies the type of input (e.g., 'text', 'email', 'password'). Defaults to 'text'.
- * @param placeholder - Optional. Provides a hint to the user about what to enter in the input.
- * @param label - Optional. The text label associated with the input element.
- * @param description - Optional. A description of the input element.
- * @param className - Optional. Additional CSS classes to apply to the input element for styling.
- * @param errors - Optional. An object containing error messages, with keys corresponding to input names.
- * @param [x: string]: any - Optional. Allows for any other properties not explicitly defined in the interface.
+ * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#input_types For more information on HTML input types.
+ */
+export type ValidInputTypes =
+  | 'button'
+  | 'checkbox'
+  | 'color'
+  | 'date'
+  | 'datetime-local'
+  | 'email'
+  | 'file'
+  | 'hidden'
+  | 'image'
+  | 'month'
+  | 'number'
+  | 'password'
+  | 'radio'
+  | 'range'
+  | 'reset'
+  | 'search'
+  | 'submit'
+  | 'tel'
+  | 'text'
+  | 'time'
+  | 'url'
+  | 'week';
+
+/**
+ * Generic interface for input component properties. This interface standardizes the expected properties
+ * for input components across the application, ensuring consistency and facilitating ease of use.
+ *
+ * @property {string} [id] - Optional. Unique identifier for the input element.
+ * @property {string} name - Required. Name of the input element, used for form submission and linking with labels.
+ * @property {ValidInputTypes} [type='text'] - Optional. Specifies the type of input. Defaults to 'text'.
+ * @property {string} [placeholder] - Optional. Hint to the user about what to enter in the input.
+ * @property {string} [label] - Optional. Text label associated with the input element.
+ * @property {string} [description] - Optional. Description of the input element, providing additional context.
+ * @property {string} [className] - Optional. Additional CSS classes for styling the input element.
+ * @property {{ [key: string]: { message: string } }} [errors] - Optional. Object containing error messages, keyed by input names.
+ * @property {string} [dataTestId] - Optional. Attribute for identifying elements in tests.
+ * @property {[x: string]: any} - Optional. Allows for any other properties not explicitly defined, ensuring flexibility.
  */
 export interface InputProps {
   id?: string;
   name: string;
-  type?: string;
+  type?: ValidInputTypes;
   placeholder?: string;
   label?: string;
   description?: string;

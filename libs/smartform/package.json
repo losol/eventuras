@@ -4,7 +4,8 @@
   "version": "0.1.0",
   "dependencies": {
     "@eventuras/ui": "*",
-    "@eventuras/forms": "*"
+    "@eventuras/forms": "*",
+    "react-hook-form": "^7.51.0"
   },
   "peerDependencies": {
     "react": "^18.2.0",
