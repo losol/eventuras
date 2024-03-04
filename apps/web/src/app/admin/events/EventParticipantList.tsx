@@ -9,11 +9,12 @@ import Loading from '@eventuras/ui/Loading';
 import { IconNotes, IconShoppingCart, IconUser } from '@tabler/icons-react';
 import { ColumnFilter } from '@tanstack/react-table';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import React, { useMemo, useState } from 'react';
 
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
-import EditEventRegistrationsDialog from '@/components/eventuras/EditEventRegistrationDialog';
+import EditRegistrationProductsDialog from '@/components/eventuras/EditRegistrationProductsDialog';
 import useCreateHook from '@/hooks/createHook';
 import { ParticipationTypesKey } from '@/types';
 import { createSDK } from '@/utils/api/EventurasApi';
@@ -28,6 +29,7 @@ interface AdminEventListProps {
   event: EventDto;
   eventProducts?: ProductDto[];
   filteredStatus?: string;
+  onUpdated?: () => void;
 }
 
 function renderProducts(registration: RegistrationDto) {
@@ -226,7 +228,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
       )}
 
       {currentRegistration && eventProducts && editorOpen && (
-        <EditEventRegistrationsDialog
+        <EditRegistrationProductsDialog
           eventProducts={eventProducts}
           currentRegistration={currentRegistration}
           startOpened={true}

@@ -202,6 +202,8 @@ namespace Eventuras.Services.Orders
 
                 var existingOrderLines = order.OrderLines.Select(OrderLineModel.FromOrderLineDomainModel);
                 var combinedDiffAndOrder = SanitizeOrderLines(diff.Concat(existingOrderLines));
+
+                _logger.LogInformation($"Sanitized combined diff and order lines. {combinedDiffAndOrder.ToArray()}");
                 await UpdateOrderLinesAsync(order, combinedDiffAndOrder.ToArray(), cancellationToken);
 
                 _logger.LogInformation("Updated existing order lines.");

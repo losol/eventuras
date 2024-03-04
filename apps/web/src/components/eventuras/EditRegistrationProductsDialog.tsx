@@ -3,6 +3,7 @@
 import { ProductDto, RegistrationDto } from '@eventuras/sdk';
 import Button from '@eventuras/ui/Button';
 import Dialog from '@eventuras/ui/Dialog';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import RegistrationCustomize from '@/app/user/events/[id]/eventflow/RegistrationCustomize';
@@ -13,7 +14,7 @@ import {
 } from '@/utils/api/functions/events';
 import Logger from '@/utils/Logger';
 
-export type EditEventOrdersDialogProps = {
+export type EditRegistrationProductsDialogProps = {
   eventProducts: ProductDto[];
   currentRegistration: RegistrationDto;
   title?: string;
@@ -23,9 +24,10 @@ export type EditEventOrdersDialogProps = {
   onClose?: (registrationChanged: boolean) => void;
 };
 
-const EditEventRegistrationsDialog = (props: EditEventOrdersDialogProps) => {
+const EditRegistrationProductsDialog = (props: EditRegistrationProductsDialogProps) => {
   const [editorOpen, setEditorOpen] = useState<boolean>(props.startOpened ?? false);
   const { addAppNotification } = useAppNotifications();
+  const router = useRouter();
 
   const onSubmit = async (selected: Map<string, number>) => {
     Logger.info({ namespace: 'editregistration' }, selected);
@@ -33,7 +35,6 @@ const EditEventRegistrationsDialog = (props: EditEventOrdersDialogProps) => {
       props.currentRegistration.registrationId!,
       productMapToOrderLineModel(selected)
     ).catch(e => {
-      //TODO server kicks a 500 when trying to sending unchanged form, lets ignore for now
       Logger.error({ namespace: 'editregistration' }, e);
       return { ok: false };
     });
@@ -43,12 +44,14 @@ const EditEventRegistrationsDialog = (props: EditEventOrdersDialogProps) => {
         message: 'Registration edited succesfully!',
         type: AppNotificationType.SUCCESS,
       });
+      router.refresh();
     } else {
       addAppNotification({
         id: Date.now(),
         message: 'Something went wrong, please try again later',
         type: AppNotificationType.ERROR,
       });
+      router.refresh();
     }
 
     setEditorOpen(false);
@@ -96,4 +99,4 @@ const EditEventRegistrationsDialog = (props: EditEventOrdersDialogProps) => {
   );
 };
 
-export default EditEventRegistrationsDialog;
+export default EditRegistrationProductsDialog;

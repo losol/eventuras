@@ -2,6 +2,7 @@
 import { EventDto, EventStatisticsDto, ProductDto, RegistrationDto } from '@eventuras/sdk';
 import { Container } from '@eventuras/ui';
 import Section from '@eventuras/ui/Section';
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 import { ParticipationTypes, ParticipationTypesKey } from '@/types';
@@ -25,6 +26,7 @@ const initialSelectedStatistics = {
 export type StatisticsSelection = typeof initialSelectedStatistics;
 
 const ParticipantsSection: React.FC<ParticipantsSectionProps> = props => {
+  const router = useRouter();
   const [selectedStatistic, setSelectedStatistic] =
     useState<StatisticsSelection>(initialSelectedStatistics);
   const highlightedSelection = useMemo(

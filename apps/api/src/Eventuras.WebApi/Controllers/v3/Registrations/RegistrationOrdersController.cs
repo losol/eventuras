@@ -68,13 +68,15 @@ namespace Eventuras.WebApi.Controllers.v3.Registrations
             [FromBody] OrderUpdateRequestDto dto,
             CancellationToken cancellationToken = default)
         {
+            // Check if registration exists, will throw NotFoundException if not
             _ = await _registrationRetrievalService.GetRegistrationByIdAsync(id,
                 new RegistrationRetrievalOptions(),
-                cancellationToken); // check if registration exists, will throw NotFoundException if not
+                cancellationToken);
 
-            var order = await _orderManagementService.AutoCreateOrUpdateOrder(id, dto.Lines, cancellationToken);
+            // Create or update orders to get expected products
+            _ = await _orderManagementService.AutoCreateOrUpdateOrder(id, dto.Lines, cancellationToken);
 
-            return order != null ? Ok(new OrderDto(order)) : NoContent();
+            return Ok();
         }
     }
 }
