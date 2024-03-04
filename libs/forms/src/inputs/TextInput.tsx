@@ -1,32 +1,46 @@
-/**
- * Basic text input field
- * requires ref forwarding because it is used by react hooks
- * @see https://stackoverflow.com/questions/67877887/react-hook-form-v7-function-components-cannot-be-given-refs-attempts-to-access
- */
 import React from "react";
 import { InputProps } from "./InputProps";
 import { formStyles } from "../styles/formStyles";
 import { InputLabel } from "../common/InputLabel";
-import ErrorLabel from "../common/ErrorLabel";
+import { InputError } from "../common/InputError";
+import { InputDescription } from "../common/InputDescription";
 
-export const TextInput = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  const oProps = { ...props };
-  delete oProps.children;
-  delete oProps.type;
-  delete oProps.className;
-  const id = props.id ?? props.name;
+export const TextInput = React.forwardRef<HTMLInputElement, InputProps>(({
+  name,
+  type = 'text',
+  placeholder,
+  label,
+  description,
+  className,
+  errors,
+  disabled,
+  dataTestId,
+  ...rest
+}, ref) => {
+
+  const hasError = errors && errors[name] ? true : false;
+
+  let inputClassName = `${className ?? formStyles.defaultInputStyle} ${hasError ? formStyles.inputErrorGlow : ''} ${disabled ? 'cursor-not-allowed' : ''}`;
+
+  const id = rest.id ?? name;
+
   return (
-    <div className="mb-3">
-      <InputLabel htmlFor={id}>{props.label}</InputLabel>
+    <div className={formStyles.inputWrapper}>
+      {label && <InputLabel htmlFor={id}>{label}</InputLabel>}
+      {description && <InputDescription>{description}</InputDescription>}
       <input
         id={id}
         ref={ref}
-        className={`${props.className ?? formStyles.defaultInputStyle}`}
-        type={props.type ?? 'text'}
-        placeholder={props.placeholder}
-        {...oProps}
+        className={inputClassName}
+        type={type}
+        placeholder={placeholder}
+        disabled={disabled}
+        aria-invalid={hasError || undefined}
+        data-test-id={dataTestId}
+        name={name}
+        {...rest}
       />
-      <ErrorLabel errors={props.errors} name={props.name} />
+      {hasError && <InputError errors={errors} name={name} />}
     </div>
   );
 });

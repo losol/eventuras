@@ -6,7 +6,7 @@ type ErrorProps = {
   className?: string;
 };
 
-const ErrorLabel: React.FC<ErrorProps> = ({ errors, name, className = 'text-red-500' }) => {
+const InputError: React.FC<ErrorProps> = ({ errors, name, className = 'text-red-500' }) => {
   const errorMessage = errors?.[name]?.message;
 
   if (!errorMessage) return null;
@@ -18,4 +18,4 @@ const ErrorLabel: React.FC<ErrorProps> = ({ errors, name, className = 'text-red-
   );
 };
 
-export default ErrorLabel;
+export { InputError };
