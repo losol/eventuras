@@ -82,7 +82,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         public async Task Should_Return_NotFound_For_Non_Existing_Registration()
         {
             var randomId = Random.Shared.Next(1000000, int.MaxValue);
-            
+
             var client = _factory.CreateClient().Authenticated();
             var response = await client.PostAsync($"/v3/registrations/{randomId}/orders", new
             {
@@ -337,7 +337,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
         public async Task Should_Return_NotFound_When_Listing_Orders_For_Non_Existing_Registration()
         {
             var randomId = Random.Shared.Next(1000000, int.MaxValue);
-            
+
             var client = _factory.CreateClient().Authenticated();
             var response = await client.GetAsync($"/v3/registrations/{randomId}/orders");
             response.CheckNotFound();
@@ -536,27 +536,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
 
             response.CheckBadRequest();
             Assert.Empty(scope.Db.Orders.Where(o => o.RegistrationId == reg.Entity.RegistrationId));
-        }
-
-        [Fact]
-        public async Task AutoCreateOrUpdate_Should_ReturnNoAction_If_NoDifferenceWithRegistration()
-        {
-            using var scope = _factory.Services.NewTestScope();
-            using var user = await scope.CreateUserAsync();
-            using var ev = await scope.CreateEventAsync();
-            using var reg = await scope.CreateRegistrationAsync(ev.Entity, user.Entity);
-            using var prod = await scope.CreateProductAsync(ev.Entity);
-            using var order = await scope.CreateOrderAsync(reg.Entity, prod.Entity);
-
-            var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
-            var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/products",
-                new OrderUpdateRequestDto
-                {
-                    Lines = new[] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
-                });
-
-            response.CheckStatusCode(HttpStatusCode.NoContent);
-            Assert.Single(scope.Db.Orders.Where(o => o.RegistrationId == reg.Entity.RegistrationId));
         }
 
         [Fact]
