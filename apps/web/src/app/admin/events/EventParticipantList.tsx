@@ -136,6 +136,10 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
    * a string or a function which will tell tanstack where to get its data from.
    */
   const columns = [
+    columnHelper.accessor('registrationId', {
+      header: t('common:labels.id').toString(),
+      cell: info => <Badge>{info.row.original.registrationId}</Badge>,
+    }),
     columnHelper.accessor('user.name', {
       header: t('admin:participantColumns.name').toString(),
     }),
@@ -151,7 +155,6 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
       cell: info => renderProducts(info.row.original),
     }),
     columnHelper.accessor('status', {
-      id: 'status',
       header: t('admin:participantColumns.status').toString(),
       filterFn: (row, _columnId, value) => {
         /*
@@ -178,11 +181,13 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
         );
       },
     }),
-    columnHelper.accessor('status', {
+    columnHelper.display({
+      id: 'live',
       header: t('admin:participantColumns.live'),
       cell: info => renderLiveActions(info.row.original),
     }),
-    columnHelper.accessor('status', {
+    columnHelper.display({
+      id: 'actions',
       header: t('admin:participantColumns.actions').toString(),
       cell: info => renderEventItemActions(info.row.original),
     }),
