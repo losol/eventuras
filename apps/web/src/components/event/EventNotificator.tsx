@@ -15,6 +15,7 @@ import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { participationMap } from '@/utils/api/mappers';
 import { mapEnum } from '@/utils/enum';
 import Environment from '@/utils/Environment';
+import Logger from '@/utils/Logger';
 
 type EventEmailerFormValues = {
   subject: string;
@@ -96,6 +97,10 @@ const createFormHandler = (
     const { t: common } = createTranslation('common');
     const body = getBodyDto(eventId, data);
     const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+    Logger.info(
+      { namespace: 'EventNotificator' },
+      `Sending ${notificatorType} notification. RequestBody: ${JSON.stringify(body)}`
+    );
     const result =
       notificatorType === EventNotificatorType.EMAIL
         ? await apiWrapper(() =>
@@ -111,6 +116,10 @@ const createFormHandler = (
             })
           );
     if (!result.ok) {
+      Logger.error(
+        { namespace: 'EventNotificator' },
+        `Failed to send ${notificatorType} notification. Error: ${result.error}`
+      );
       addAppNotification({
         id: Date.now(),
         message: `${common('errors.fatalError.title')}: ${result.error?.body.errors.BodyMarkdown[0]}`,
@@ -118,6 +127,10 @@ const createFormHandler = (
       });
       throw new Error('Failed to send');
     } else {
+      Logger.info(
+        { namespace: 'EventNotificator' },
+        `Successfully sent ${notificatorType} notification.`
+      );
       addAppNotification({
         id: Date.now(),
         message:

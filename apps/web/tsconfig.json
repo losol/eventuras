@@ -1,5 +1,5 @@
 {
-  "extends": "@eventuras/typescript-config/nextjs.json",
+  "extends": "@eventuras/typescript-config/nextjs",
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*", "./public/*"],
