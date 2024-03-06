@@ -1,4 +1,5 @@
 import { OrderDto } from '@eventuras/sdk';
+import { Section } from '@eventuras/ui';
 import Badge from '@eventuras/ui/Badge';
 import Card from '@eventuras/ui/Card';
 import { Definition, DescriptionList, Item, Term } from '@eventuras/ui/DescriptionList';
@@ -7,11 +8,14 @@ import createTranslation from 'next-translate/createTranslation';
 
 import { formatDateSpan } from '@/utils/formatDate';
 
+import { OrderActionsMenu } from './OrderActionsMenu';
+
 type OrderProps = {
   order: OrderDto;
+  admin?: boolean;
 };
 
-const Order: React.FC<OrderProps> = ({ order }) => {
+const Order: React.FC<OrderProps> = ({ admin, order }) => {
   const { t } = createTranslation();
 
   const statusDescriptions = {
@@ -67,6 +71,11 @@ const Order: React.FC<OrderProps> = ({ order }) => {
           </tbody>
         </table>
       </div>
+      {admin && (
+        <Section className="mt-12">
+          <OrderActionsMenu order={order} />
+        </Section>
+      )}
     </Card>
   );
 };

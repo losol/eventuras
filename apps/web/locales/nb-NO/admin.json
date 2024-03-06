@@ -64,6 +64,7 @@
   },
   "labels": {
     "collections": "Samlinger",
+    "invoice": "Fakturer",
     "orders": "Ordre",
     "registrations": "Registeringer",
     "users": "Brukere"
