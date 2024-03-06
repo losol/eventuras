@@ -5447,6 +5447,10 @@
             "type": "string",
             "nullable": true
           },
+          "log": {
+            "type": "string",
+            "nullable": true
+          },
           "items": {
             "type": "array",
             "items": {
@@ -5455,7 +5459,7 @@
             "nullable": true
           },
           "registration": {
-            "$ref": "#/components/schemas/OrderRegistrationDto"
+            "$ref": "#/components/schemas/RegistrationDto"
           },
           "user": {
             "$ref": "#/components/schemas/UserDto"
@@ -5539,39 +5543,6 @@
           "quantity": {
             "type": "integer",
             "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      },
-      "OrderRegistrationDto": {
-        "type": "object",
-        "properties": {
-          "registrationId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "eventId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "userId": {
-            "type": "string",
-            "nullable": true
-          },
-          "status": {
-            "$ref": "#/components/schemas/RegistrationStatus"
-          },
-          "type": {
-            "$ref": "#/components/schemas/RegistrationType"
-          },
-          "certificateId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "notes": {
-            "type": "string",
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -6070,6 +6041,10 @@
             "nullable": true
           },
           "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "log": {
             "type": "string",
             "nullable": true
           },

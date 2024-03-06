@@ -1,5 +1,6 @@
 #nullable enable
 
+using DocumentFormat.OpenXml.Drawing.Charts;
 using Eventuras.Domain;
 using Eventuras.WebApi.Controllers.v3.Events;
 using Eventuras.WebApi.Controllers.v3.Events.Products;
@@ -20,6 +21,7 @@ namespace Eventuras.WebApi.Controllers.v3.Registrations
         public Registration.RegistrationType Type { get; init; }
         public int? CertificateId { get; init; }
         public string? Notes { get; init; }
+        public string? Log { get; set; }
         public UserDto? User { get; init; }
         public EventDto? Event { get; init; }
         public IEnumerable<ProductOrderDto>? Products { get; init; }
@@ -31,7 +33,7 @@ namespace Eventuras.WebApi.Controllers.v3.Registrations
             UserId = null!;
         }
 
-        public RegistrationDto(Registration registration)
+        public RegistrationDto(Registration registration, bool includeOrders = true)
         {
             RegistrationId = registration.RegistrationId;
             EventId = registration.EventInfoId;
@@ -39,8 +41,9 @@ namespace Eventuras.WebApi.Controllers.v3.Registrations
             Status = registration.Status;
             Type = registration.Type;
             Notes = registration.Notes;
+            Log = registration.Log;
 
-            if (registration.Orders != null)
+            if (includeOrders && registration.Orders != null)
             {
                 Products = registration.Products.Select(ProductOrderDto.FromRegistrationOrderDto);
                 Orders = registration.Orders.Select(o => new OrderDto(o));

@@ -55,7 +55,6 @@ export type { OrderDtoJsonPatchDocument } from './models/OrderDtoJsonPatchDocume
 export type { OrderDtoOperation } from './models/OrderDtoOperation';
 export type { OrderLineDto } from './models/OrderLineDto';
 export type { OrderLineModel } from './models/OrderLineModel';
-export type { OrderRegistrationDto } from './models/OrderRegistrationDto';
 export { OrderStatus } from './models/OrderStatus';
 export type { OrderUpdateRequestDto } from './models/OrderUpdateRequestDto';
 export type { OrganizationDto } from './models/OrganizationDto';
