@@ -26,6 +26,8 @@ const OrderDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
   const order = await apiWrapper(() =>
     eventuras.orders.getV3Orders({
       id: params.id,
+      includeRegistration: true,
+      includeUser: true,
     })
   );
 
@@ -49,7 +51,7 @@ const OrderDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
       </Section>
       <Section className="py-12">
         <Container>
-          <Order order={order.value!} />
+          <Order order={order.value!} admin />
         </Container>
       </Section>
     </Layout>

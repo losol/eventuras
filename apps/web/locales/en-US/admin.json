@@ -64,6 +64,7 @@
   },
   "labels": {
     "collections": "Collections",
+    "invoice": "Invoice",
     "orders": "Orders",
     "registrations": "Registrations",
     "users": "Users"
