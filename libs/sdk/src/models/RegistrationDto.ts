@@ -16,6 +16,7 @@ export type RegistrationDto = {
     type?: RegistrationType;
     certificateId?: number | null;
     notes?: string | null;
+    log?: string | null;
     user?: UserDto;
     event?: EventDto;
     products?: Array<ProductOrderDto> | null;

@@ -1,6 +1,7 @@
 #nullable enable
 
 using Eventuras.Domain;
+using Eventuras.WebApi.Controllers.v3.Registrations;
 using Eventuras.WebApi.Controllers.v3.Users;
 using Newtonsoft.Json;
 using System;
@@ -22,11 +23,12 @@ namespace Eventuras.WebApi.Controllers.v3.Orders
         public int RegistrationId { get; set; }
         public PaymentProvider? PaymentMethod { get; set; }
         public string Comments { get; set; }
+        public string Log { get; set; }
 
         public OrderLineDto[]? Items { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public OrderRegistrationDto? Registration { get; set; }
+        public RegistrationDto? Registration { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public UserDto? User { get; set; }
@@ -45,10 +47,13 @@ namespace Eventuras.WebApi.Controllers.v3.Orders
             Time = order.OrderTime.ToDateTimeOffset();
             UserId = order.UserId;
             RegistrationId = order.RegistrationId;
+            PaymentMethod = order.PaymentMethod;
+            Comments = order.Comments;
+            Log = order.Log;
 
             if (order.Registration != null)
             {
-                Registration = new OrderRegistrationDto(order.Registration);
+                Registration = new RegistrationDto(order.Registration, includeOrders: false);
             }
 
             if (order.User != null)

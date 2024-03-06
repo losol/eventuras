@@ -3,9 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { OrderLineDto } from './OrderLineDto';
-import type { OrderRegistrationDto } from './OrderRegistrationDto';
 import type { OrderStatus } from './OrderStatus';
 import type { PaymentProvider } from './PaymentProvider';
+import type { RegistrationDto } from './RegistrationDto';
 import type { UserDto } from './UserDto';
 export type OrderDto = {
     orderId?: number;
@@ -15,8 +15,9 @@ export type OrderDto = {
     registrationId?: number;
     paymentMethod?: PaymentProvider;
     comments?: string | null;
+    log?: string | null;
     items?: Array<OrderLineDto> | null;
-    registration?: OrderRegistrationDto;
+    registration?: RegistrationDto;
     user?: UserDto;
 };
 
