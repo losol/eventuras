@@ -22,7 +22,8 @@ interface UserEditorProps {
 const regex = {
   internationalPhoneNumber: /^\+[1-9]{1}[0-9]{1,14}$/,
   letters: /^[\p{L}]+$/u,
-  lettersAndSpaces: /^[\p{L} ]+$/u,
+  lettersAndSpace: /^[\p{L} ]+$/u,
+  lettersSpaceAndHyphen: /^[\p{L} \-]+$/u,
 };
 
 const UserEditor: FC<UserEditorProps> = ({
@@ -125,7 +126,7 @@ const UserEditor: FC<UserEditorProps> = ({
           validation={{
             required: t('user:account.name.requiredText'),
             pattern: {
-              value: regex.lettersAndSpaces,
+              value: regex.lettersSpaceAndHyphen,
               message: t('common:account.name.validationText'),
             },
           }}
@@ -140,7 +141,7 @@ const UserEditor: FC<UserEditorProps> = ({
           // Only allow letters, including accentuated characters
           validation={{
             pattern: {
-              value: regex.lettersAndSpaces,
+              value: regex.lettersSpaceAndHyphen,
               message: t('common:account.name.validationText'),
             },
           }}
@@ -155,7 +156,7 @@ const UserEditor: FC<UserEditorProps> = ({
           validation={{
             required: t('user:account.name.requiredText'),
             pattern: {
-              value: regex.lettersAndSpaces,
+              value: regex.lettersSpaceAndHyphen,
               message: t('common:account.name.validationText'),
             },
           }}
