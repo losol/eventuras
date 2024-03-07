@@ -41,5 +41,17 @@ namespace Eventuras.Services.Users
         /// Match users by name, phone or email containing the specified string.
         /// </summary>
         public string Query { get; set; }
+
+        /// <summary>
+        /// Organization to filter users by.
+        /// </summary>
+        public int? OrganizationId { get; set; }
+
+        public OrganizationMembershipFilter OrganizationMembership { get; set; } = new OrganizationMembershipFilter();
+
+        public class OrganizationMembershipFilter
+        {
+            public int OrganizationId { get; set; }
+        }
     }
 }

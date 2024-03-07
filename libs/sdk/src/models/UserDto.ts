@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { LocalDate } from './LocalDate';
+import type { OrganizationMemberDto } from './OrganizationMemberDto';
 export type UserDto = {
     id?: string | null;
     name?: string | null;
@@ -27,6 +28,7 @@ export type UserDto = {
     professionalIdentityNumber?: string | null;
     professionalIdentityNumberVerified?: boolean;
     supplementaryInformation?: string | null;
+    organizationMembership?: Array<OrganizationMemberDto> | null;
     archived?: boolean;
 };
 
