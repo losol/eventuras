@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Eventuras.Services.Organizations
@@ -27,6 +28,25 @@ namespace Eventuras.Services.Organizations
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw new ArgumentNullException(nameof(currentOrganizationAccessorService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        // Get all members of an organization
+        public async Task<OrganizationMember[]> GetOrganizationMembersAsync(
+            Organization organization = null,
+            OrganizationMemberRetrievalOptions options = null)
+        {
+            if (organization == null)
+            {
+                return Array.Empty<OrganizationMember>();
+            }
+
+            await CheckOrganizationAdminAccessAsync(organization);
+
+            return await _context.OrganizationMembers
+                .AsNoTracking()
+                .UseOptions(options ?? new OrganizationMemberRetrievalOptions())
+                .Where(m => m.OrganizationId == organization.OrganizationId)
+                .ToArrayAsync();
         }
 
         public async Task<OrganizationMember> FindOrganizationMemberAsync(

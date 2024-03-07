@@ -138,7 +138,7 @@ namespace Eventuras.WebApi.Controllers.v3.Users
                     OrderBy = request.Order,
                     Descending = request.Descending
                 },
-                UserRetrievalOptions.Default,
+                new UserRetrievalOptions() { IncludeOrgMembership = request.IncludeOrgMembership },
                 cancellationToken);
 
             return PageResponseDto<UserDto>.FromPaging(

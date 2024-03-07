@@ -92,6 +92,8 @@ export class UsersService {
      */
     public getV3Users1({
         query,
+        organizationId,
+        includeOrgMembership,
         order,
         descending,
         page,
@@ -102,6 +104,8 @@ export class UsersService {
         eventurasOrgId,
     }: {
         query?: string,
+        organizationId?: number,
+        includeOrgMembership?: boolean,
         order?: UserListOrder,
         descending?: boolean,
         page?: number,
@@ -122,6 +126,8 @@ export class UsersService {
             },
             query: {
                 'Query': query,
+                'OrganizationId': organizationId,
+                'IncludeOrgMembership': includeOrgMembership,
                 'Order': order,
                 'Descending': descending,
                 'Page': page,

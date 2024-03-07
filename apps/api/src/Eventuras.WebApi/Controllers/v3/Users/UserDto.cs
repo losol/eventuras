@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
 using Eventuras.Domain;
+using Eventuras.WebApi.Controllers.v3.Organizations;
 using NodaTime;
 
 namespace Eventuras.WebApi.Controllers.v3.Users
@@ -40,6 +43,7 @@ namespace Eventuras.WebApi.Controllers.v3.Users
 
         // Additional user information
         public string SupplementaryInformation { get; set; }
+        public List<OrganizationMemberDto> OrganizationMembership { get; set; }
         public bool Archived { get; set; }
 
         public UserDto() { }
@@ -72,6 +76,12 @@ namespace Eventuras.WebApi.Controllers.v3.Users
             ProfessionalIdentityNumberVerified = user.ProfessionalIdentityNumberVerified;
             SupplementaryInformation = user.SupplementaryInformation;
             Archived = user.Archived;
+
+            if (user.OrganizationMembership != null)
+            {
+                OrganizationMembership = user.OrganizationMembership.Select(om => new OrganizationMemberDto(om)).ToList();
+            }
+
         }
     }
 }

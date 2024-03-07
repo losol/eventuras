@@ -6,6 +6,7 @@ using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -86,6 +87,10 @@ namespace Eventuras.Services.Users
                 .AddFilter(request.Filter)
                 .AddOrder(request.OrderBy, request.Descending);
 
+            if (request.Filter.OrganizationId.HasValue)
+            {
+                query = query.Where(u => u.OrganizationMembership.Any(om => om.OrganizationId == request.Filter.OrganizationId.Value));
+            }
             if (request.Filter.AccessibleOnly)
             {
                 var user = _httpContextAccessor.HttpContext.User;

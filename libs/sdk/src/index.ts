@@ -59,6 +59,8 @@ export { OrderStatus } from './models/OrderStatus';
 export type { OrderUpdateRequestDto } from './models/OrderUpdateRequestDto';
 export type { OrganizationDto } from './models/OrganizationDto';
 export type { OrganizationFormDto } from './models/OrganizationFormDto';
+export type { OrganizationMemberDto } from './models/OrganizationMemberDto';
+export type { OrganizationMemberRoleDto } from './models/OrganizationMemberRoleDto';
 export type { OrganizationSettingDto } from './models/OrganizationSettingDto';
 export { OrganizationSettingType } from './models/OrganizationSettingType';
 export type { OrganizationSettingValueDto } from './models/OrganizationSettingValueDto';

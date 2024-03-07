@@ -8,6 +8,8 @@ namespace Eventuras.WebApi.Controllers.v3.Users
     {
         [FromQuery]
         public string Query { get; set; }
+        public int? OrganizationId { get; set; }
+        public bool IncludeOrgMembership { get; set; } = false;
 
         public UserListOrder Order { get; set; } = UserListOrder.GivenName;
 
@@ -18,6 +20,7 @@ namespace Eventuras.WebApi.Controllers.v3.Users
             return new UserFilter
             {
                 Query = Query,
+                OrganizationId = OrganizationId,
             };
         }
     }

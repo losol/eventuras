@@ -4128,6 +4128,21 @@
             }
           },
           {
+            "name": "OrganizationId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "IncludeOrgMembership",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "name": "Order",
             "in": "query",
             "schema": {
@@ -5655,6 +5670,45 @@
         },
         "additionalProperties": false
       },
+      "OrganizationMemberDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "organizationId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrganizationMemberRoleDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrganizationMemberRoleDto": {
+        "type": "object",
+        "properties": {
+          "organizationMemberId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "role": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "OrganizationSettingDto": {
         "type": "object",
         "properties": {
@@ -6316,6 +6370,13 @@
           },
           "supplementaryInformation": {
             "type": "string",
+            "nullable": true
+          },
+          "organizationMembership": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrganizationMemberDto"
+            },
             "nullable": true
           },
           "archived": {
