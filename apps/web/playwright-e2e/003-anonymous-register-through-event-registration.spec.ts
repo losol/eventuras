@@ -42,6 +42,8 @@ test.describe('should be able to register as an anonymous user when hitting the 
     await page.locator('[id="code"]').fill(registrationCode!);
     await page.getByRole('button', { name: 'Continue', exact: true }).click();
     await page.waitForLoadState();
+    await page.getByRole('button', { name: 'Accept', exact: true }).click();
+    await page.waitForLoadState();
     await registerForEvent(page, createdEvent.eventId, false);
     await validateRegistration(page, createdEvent.eventId);
   });

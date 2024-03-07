@@ -64,7 +64,7 @@
     "@next/bundle-analyzer": "^14.1.1",
     "@next/eslint-plugin-next": "^14.1.1",
     "@ngneat/falso": "^7.2.0",
-    "@playwright/test": "^1.42.1",
+    "@playwright/test": "1.41.1",
     "@storybook/addon-a11y": "^7.6.17",
     "@storybook/addon-console": "^3.0.0",
     "@storybook/addon-docs": "^7.6.17",
