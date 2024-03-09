@@ -42,7 +42,7 @@ namespace Eventuras.Services.Organizations.Settings
         public async Task<T> ReadOrganizationSettingsAsync<T>(int? organizationId = null)
         {
             var org = organizationId.HasValue
-               ? await _organizationRetrievalService.GetOrganizationByIdAsync(organizationId.Value)
+               ? await _organizationRetrievalService.GetOrganizationByIdAsync(organizationId.Value, accessControlDone: true)
                : await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync();
 
             var settings = await _organizationSettingsCache

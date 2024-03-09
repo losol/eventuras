@@ -61,7 +61,8 @@ namespace Eventuras.Services.Organizations
         public async Task<Organization> GetOrganizationByIdAsync(
             int id,
             OrganizationRetrievalOptions options,
-            CancellationToken cancellationToken)
+            bool accessControlDone = false,
+            CancellationToken cancellationToken = default)
         {
             options ??= new OrganizationRetrievalOptions();
 
@@ -78,8 +79,11 @@ namespace Eventuras.Services.Organizations
                 throw new NotFoundException($"Organization {id} not found");
             }
 
-            await _organizationAccessControlService
-                .CheckOrganizationReadAccessAsync(id);
+            if (!accessControlDone)
+            {
+                await _organizationAccessControlService
+                    .CheckOrganizationReadAccessAsync(id);
+            }
 
             return org;
         }
