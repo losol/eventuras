@@ -50,9 +50,9 @@ namespace Eventuras.Services.Email
             }
         }
 
-        public async Task SendEmailAsync(EmailModel emailModel, int? organizationId = null)
+        public async Task SendEmailAsync(EmailModel emailModel, EmailOptions options = null)
         {
-            var sender = await GetEmailSenderAsync(organizationId);
+            var sender = await GetEmailSenderAsync(options?.OrganizationId);
             if (sender != null)
             {
                 await sender.SendEmailAsync(emailModel);

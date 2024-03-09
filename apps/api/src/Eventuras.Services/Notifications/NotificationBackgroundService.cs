@@ -60,7 +60,10 @@ public class NotificationBackgroundService
                     Subject = email.Subject,
                     HtmlBody = message
                 }
-                );
+                , new EmailOptions
+                {
+                    OrganizationId = email.OrganizationId
+                });
 
             }
             else if (notification.Type == NotificationType.Sms)

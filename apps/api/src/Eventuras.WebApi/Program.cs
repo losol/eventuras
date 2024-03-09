@@ -18,6 +18,7 @@ using Eventuras.WebApi.Handlers;
 using Hangfire;
 using Hangfire.AspNetCore;
 using Hangfire.Dashboard;
+using Hangfire.InMemory;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -100,7 +101,10 @@ builder.Services.AddHangfire(configuration => configuration
        .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
         .UseSimpleAssemblyNameTypeSerializer()
         .UseRecommendedSerializerSettings()
-        .UseInMemoryStorage()
+        .UseInMemoryStorage(new InMemoryStorageOptions
+        {
+            MaxExpirationTime = TimeSpan.FromHours(24)
+        })
         );
 
 

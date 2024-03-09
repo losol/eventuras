@@ -22,6 +22,7 @@ namespace Eventuras.Services.Organizations
         /// <exception cref="Exceptions.NotFoundException">Organization with the given id not found.</exception>
         Task<Organization> GetOrganizationByIdAsync(int id,
             OrganizationRetrievalOptions options = default,
+            bool accessControlDone = false,
             CancellationToken cancellationToken = default);
     }
 }
