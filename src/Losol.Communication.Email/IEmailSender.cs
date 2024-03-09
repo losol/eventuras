@@ -28,10 +28,6 @@ namespace Losol.Communication.Email
 
         /// <exception cref="ValidationException">When given <code>emailModel</code> is not valid.</exception>
         /// <exception cref="EmailSenderException">Failed to send email</exception>
-        Task SendEmailAsync(EmailModel emailModel);
-
-        /// <exception cref="ValidationException">When given <code>emailModel</code> is not valid.</exception>
-        /// <exception cref="EmailSenderException">Failed to send email</exception>
-        Task SendEmailAsync(EmailModel emailModel, EmailOptions options);
+        Task SendEmailAsync(EmailModel emailModel, EmailOptions options = null);
     }
 }

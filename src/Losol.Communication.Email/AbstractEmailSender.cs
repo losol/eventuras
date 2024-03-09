@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Losol.Communication.HealthCheck.Abstractions;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Losol.Communication.Email
 {
@@ -46,7 +47,7 @@ namespace Losol.Communication.Email
             });
         }
 
-        public async Task SendEmailAsync(EmailModel emailModel)
+        public async Task SendEmailAsync(EmailModel emailModel, EmailOptions options = null)
         {
             try
             {
