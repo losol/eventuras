@@ -38,7 +38,7 @@ namespace Eventuras.WebApi.Controllers.v4.Notifications
                     .GetNotificationByIdAsync(id, new NotificationRetrievalOptions
                     {
                         LoadStatistics = includeStatistics
-                    }, cancellationToken);
+                    }, cancellationToken: cancellationToken);
 
                 return Ok(new NotificationDto(notification));
             }

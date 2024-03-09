@@ -27,6 +27,7 @@ namespace Eventuras.Services.Notifications
 
         public async Task<Notification> GetNotificationByIdAsync(int id,
             NotificationRetrievalOptions options = default,
+            bool accessControlDone = false,
             CancellationToken cancellationToken = default)
         {
             var notification = await _context.Notifications
@@ -35,15 +36,19 @@ namespace Eventuras.Services.Notifications
                                    .FirstOrDefaultAsync(cancellationToken) ??
                                throw new NotFoundException($"Notification {id} not found");
 
-            if (options?.ForUpdate == true)
+
+            if (!accessControlDone)
             {
-                await _notificationAccessControlService
-                    .CheckNotificationUpdateAccessAsync(notification, cancellationToken);
-            }
-            else
-            {
-                await _notificationAccessControlService
-                    .CheckNotificationReadAccessAsync(notification, cancellationToken);
+                if (options?.ForUpdate == true)
+                {
+                    await _notificationAccessControlService
+                        .CheckNotificationUpdateAccessAsync(notification, cancellationToken);
+                }
+                else
+                {
+                    await _notificationAccessControlService
+                        .CheckNotificationReadAccessAsync(notification, cancellationToken);
+                }
             }
 
             return notification;

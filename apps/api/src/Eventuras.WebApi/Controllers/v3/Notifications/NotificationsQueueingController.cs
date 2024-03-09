@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -48,6 +49,7 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications
       CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Starting to process email notification. Subject: {dto.Subject}, Number of Recipients: {dto.Recipients?.Length ?? 0}");
+            _logger.LogInformation(JsonSerializer.Serialize(dto));
 
             EmailNotification emailNotification;
             var eventFilter = await GetEventParticipantFilterAsync(dto, cancellationToken);

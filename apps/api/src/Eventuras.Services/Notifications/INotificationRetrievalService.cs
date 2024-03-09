@@ -10,6 +10,7 @@ namespace Eventuras.Services.Notifications
         /// <exception cref="Exceptions.NotAccessibleException">Cannot access notification by id</exception>
         Task<Notification> GetNotificationByIdAsync(int id,
             NotificationRetrievalOptions options = default,
+            bool accessControlDone = false,
             CancellationToken cancellationToken = default);
 
         /// <exception cref="Eventuras.Services.Exceptions.NotAccessibleException">Cannot list notification</exception>

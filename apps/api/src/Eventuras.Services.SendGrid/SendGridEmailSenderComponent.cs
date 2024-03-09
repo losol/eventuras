@@ -26,10 +26,10 @@ namespace Eventuras.Services.SendGrid
                 new ArgumentNullException(nameof(healthCheckStorage));
         }
 
-        public async Task<IEmailSender> CreateEmailSenderAsync(CancellationToken cancellationToken = default)
+        public async Task<IEmailSender> CreateEmailSenderAsync(int? organizationId = null, CancellationToken cancellationToken = default)
         {
             var settings = await _organizationSettingsAccessorService
-                .ReadOrganizationSettingsAsync<OrganizationSendGridSettings>();
+                .ReadOrganizationSettingsAsync<OrganizationSendGridSettings>(organizationId);
 
             if (!settings.Enabled)
             {
