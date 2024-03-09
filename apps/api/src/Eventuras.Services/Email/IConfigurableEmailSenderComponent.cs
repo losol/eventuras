@@ -11,6 +11,6 @@ namespace Eventuras.Services.Email
         /// If all settings are disabled, returns <c>null</c>.
         /// </summary>
         /// <returns>New <see cref="IEmailSender"/> or <c>null</c>.</returns>
-        Task<IEmailSender> CreateEmailSenderAsync(CancellationToken cancellationToken = default);
+        Task<IEmailSender> CreateEmailSenderAsync(int? organizationId = null, CancellationToken cancellationToken = default);
     }
 }

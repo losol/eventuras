@@ -4,14 +4,21 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using Dapper;
 using Eventuras.Services;
 using Eventuras.Services.Constants;
 using Eventuras.Services.DbInitializers;
+using Eventuras.Services.Notifications;
 using Eventuras.WebApi;
 using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Config;
 using Eventuras.WebApi.Extensions;
 using Eventuras.WebApi.Filters;
+using Eventuras.WebApi.Handlers;
+using Hangfire;
+using Hangfire.AspNetCore;
+using Hangfire.Dashboard;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -21,7 +28,6 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using NodaTime;
@@ -87,7 +93,20 @@ apiVersioningBuilder.AddApiExplorer(o =>
     o.SubstituteApiVersionInUrl = true;
 });
 
+
 builder.Services.ConfigureIdentity();
+
+builder.Services.AddHangfire(configuration => configuration
+       .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+        .UseSimpleAssemblyNameTypeSerializer()
+        .UseRecommendedSerializerSettings()
+        .UseInMemoryStorage()
+        );
+
+
+builder.Services.AddHangfireServer();
+
+builder.Services.AddScoped<NotificationBackgroundService>();
 
 builder.Services.AddAuthentication(options =>
     {
@@ -132,6 +151,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseHangfireDashboard("/jobs", new DashboardOptions
+{
+    IsReadOnlyFunc = (DashboardContext context) => true
+});
 
 // Seed database, run OnStartup builder.Services, etc.
 await PreStartupRoutine(app);
@@ -189,3 +213,6 @@ public static class InputFormatter
             .First();
     }
 }
+
+
+

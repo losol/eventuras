@@ -16,7 +16,7 @@ namespace Eventuras.Services.Email
     /// sender, SendGrid and so on. Each of then can be disabled
     /// in settings, like, in org settings. This sender performs
     /// lookup on each send, so it can be used for per-org
-    /// configuration check. 
+    /// configuration check.
     /// </summary>
     internal class ConfigurableEmailSender : IEmailSender
     {
@@ -30,7 +30,7 @@ namespace Eventuras.Services.Email
 
         public async Task<HealthCheckStatus> CheckHealthAsync(CancellationToken cancellationToken)
         {
-            var sender = await GetEmailSenderAsync(cancellationToken);
+            var sender = await GetEmailSenderAsync(cancellationToken: cancellationToken);
             if (sender != null)
             {
                 return await sender.CheckHealthAsync(cancellationToken);
@@ -39,8 +39,9 @@ namespace Eventuras.Services.Email
             return new HealthCheckStatus(HealthStatus.Unhealthy);
         }
 
+        [Obsolete("Use SendEmailAsync(EmailModel emailModel, int? organizationId = null)")]
         public async Task SendEmailAsync(string address, string subject, string message, Attachment attachment = null,
-            EmailMessageType messageType = EmailMessageType.Html)
+                    EmailMessageType messageType = EmailMessageType.Html)
         {
             var sender = await GetEmailSenderAsync();
             if (sender != null)
@@ -49,20 +50,20 @@ namespace Eventuras.Services.Email
             }
         }
 
-        public async Task SendEmailAsync(EmailModel emailModel)
+        public async Task SendEmailAsync(EmailModel emailModel, int? organizationId = null)
         {
-            var sender = await GetEmailSenderAsync();
+            var sender = await GetEmailSenderAsync(organizationId);
             if (sender != null)
             {
                 await sender.SendEmailAsync(emailModel);
             }
         }
 
-        private async Task<IEmailSender> GetEmailSenderAsync(CancellationToken cancellationToken = default)
+        private async Task<IEmailSender> GetEmailSenderAsync(int? organizationId = null, CancellationToken cancellationToken = default)
         {
             foreach (var component in _components)
             {
-                var sender = await component.CreateEmailSenderAsync(cancellationToken);
+                var sender = await component.CreateEmailSenderAsync(organizationId, cancellationToken);
                 if (sender != null)
                 {
                     return sender;

@@ -32,10 +32,10 @@ namespace Eventuras.Services.Smtp
                 new ArgumentNullException(nameof(loggerFactory));
         }
 
-        public async Task<IEmailSender> CreateEmailSenderAsync(CancellationToken cancellationToken = default)
+        public async Task<IEmailSender> CreateEmailSenderAsync(int? organizationId = null, CancellationToken cancellationToken = default)
         {
             var settings = await _organizationSettingsAccessorService
-                .ReadOrganizationSettingsAsync<OrganizationSmtpSettings>();
+                .ReadOrganizationSettingsAsync<OrganizationSmtpSettings>(organizationId);
 
             if (!settings.Enabled)
             {

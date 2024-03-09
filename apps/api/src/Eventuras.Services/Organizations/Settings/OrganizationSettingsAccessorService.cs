@@ -10,16 +10,21 @@ namespace Eventuras.Services.Organizations.Settings
     {
         private readonly IOrganizationSettingsCache _organizationSettingsCache;
         private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
+        private readonly IOrganizationRetrievalService _organizationRetrievalService;
 
         public OrganizationSettingsAccessorService(
             ICurrentOrganizationAccessorService currentOrganizationAccessorService,
-            IOrganizationSettingsCache organizationSettingsCache)
+            IOrganizationSettingsCache organizationSettingsCache,
+        IOrganizationRetrievalService organizationRetrievalService)
         {
             _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw
                 new ArgumentNullException(nameof(currentOrganizationAccessorService));
 
             _organizationSettingsCache = organizationSettingsCache ?? throw
-                new ArgumentNullException(nameof(organizationSettingsCache));
+                    new ArgumentNullException(nameof(organizationSettingsCache));
+
+            _organizationRetrievalService = organizationRetrievalService ?? throw
+                    new ArgumentNullException(nameof(organizationRetrievalService));
         }
 
         public async Task<string> GetOrganizationSettingByNameAsync(string name)
@@ -34,10 +39,11 @@ namespace Eventuras.Services.Organizations.Settings
             return settings.FirstOrDefault(s => s.Name == name)?.Value;
         }
 
-        public async Task<T> ReadOrganizationSettingsAsync<T>()
+        public async Task<T> ReadOrganizationSettingsAsync<T>(int? organizationId = null)
         {
-            var org = await _currentOrganizationAccessorService
-                .RequireCurrentOrganizationAsync();
+            var org = organizationId.HasValue
+               ? await _organizationRetrievalService.GetOrganizationByIdAsync(organizationId.Value)
+               : await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync();
 
             var settings = await _organizationSettingsCache
                 .GetAllSettingsForOrganizationAsync(org.OrganizationId);

@@ -1,6 +1,8 @@
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,6 +22,27 @@ namespace Eventuras.Services.Notifications
 
             _notificationRecipientAccessControlService = notificationRecipientAccessControlService ?? throw
                 new ArgumentNullException(nameof(notificationRecipientAccessControlService));
+        }
+
+        public async Task<NotificationRecipient> GetNotificationRecipientByIdentifierAsync(
+            string recipientIdentifier,
+            bool accessControlDone = false,
+            CancellationToken cancellationToken = default)
+        {
+            if (!accessControlDone)
+            {
+                throw new NotImplementedException("Access control must be done before calling this method");
+            }
+
+            if (string.IsNullOrWhiteSpace(recipientIdentifier))
+            {
+                throw new ArgumentException("Recipient identifier must not be null or empty", nameof(recipientIdentifier));
+            }
+
+            var query = _context.NotificationRecipients
+                .Where(r => r.RecipientIdentifier == recipientIdentifier);
+
+            return await query.FirstOrDefaultAsync();
         }
 
         public async Task<Paging<NotificationRecipient>> ListNotificationRecipientsAsync(
