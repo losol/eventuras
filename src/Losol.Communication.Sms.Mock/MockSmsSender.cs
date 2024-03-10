@@ -14,7 +14,7 @@ namespace Losol.Communication.Sms.Mock
             _logger = logger;
         }
 
-        public Task SendSmsAsync(string to, string body)
+        public Task SendSmsAsync(string to, string body, int orgId)
         {
             _logger.LogInformation("Sending SMS with text \"{body}\" to {to}", body, to);
             return Task.CompletedTask;

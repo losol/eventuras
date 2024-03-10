@@ -30,7 +30,7 @@ namespace Losol.Communication.Sms.Twilio
             TwilioClient.Init(_options.Value.Sid, _options.Value.AuthToken);
         }
 
-        public async Task SendSmsAsync(string to, string body)
+        public async Task SendSmsAsync(string to, string body, int orgId)
         {
             if (string.IsNullOrWhiteSpace(to))
             {

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Version>0.7.1</Version>
+    <Version>0.7.2</Version>
     <Authors>Andrew Anisimov, Ole Kristian Losvik</Authors>
     <Company>Losol AS</Company>
     <IsPackable>true</IsPackable>
