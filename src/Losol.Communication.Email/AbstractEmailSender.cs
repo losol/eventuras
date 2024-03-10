@@ -72,7 +72,7 @@ namespace Losol.Communication.Email
         /// <exception cref="EmailSenderException">Failed to send email</exception>
         protected abstract Task SendEmailInternalAsync(EmailModel emailModel);
 
-        public virtual Task<HealthCheckStatus> CheckHealthAsync(CancellationToken cancellationToken = default)
+        public virtual Task<HealthCheckStatus> CheckHealthAsync(int orgId, CancellationToken cancellationToken = default)
         {
             return Task.FromResult(new HealthCheckStatus(HealthStatus.Healthy)); // Stub
         }

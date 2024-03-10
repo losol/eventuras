@@ -102,7 +102,7 @@ namespace Losol.Communication.Email.Smtp
             }
         }
 
-        public override async Task<HealthCheckStatus> CheckHealthAsync(CancellationToken cancellationToken = default)
+        public override async Task<HealthCheckStatus> CheckHealthAsync(int orgId, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Performing health check");
 

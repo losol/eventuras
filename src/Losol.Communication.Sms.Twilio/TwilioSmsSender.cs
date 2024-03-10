@@ -67,7 +67,7 @@ namespace Losol.Communication.Sms.Twilio
             }
         }
 
-        public async Task<HealthCheckStatus> CheckHealthAsync(CancellationToken cancellationToken = default)
+        public async Task<HealthCheckStatus> CheckHealthAsync(int orgId, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Making Twilio service health check");
 

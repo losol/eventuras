@@ -20,7 +20,7 @@ namespace Losol.Communication.Sms.Mock
             return Task.CompletedTask;
         }
 
-        public Task<HealthCheckStatus> CheckHealthAsync(CancellationToken cancellationToken = default)
+        public Task<HealthCheckStatus> CheckHealthAsync(int orgId, CancellationToken cancellationToken = default)
         {
             return Task.FromResult(new HealthCheckStatus(HealthStatus.Healthy));
         }
