@@ -69,32 +69,32 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
 
 
 
-        private void CheckSmsSentTo(string message, params ApplicationUser[] users)
+        private void CheckSmsSentTo(string message, int orgId, params ApplicationUser[] users)
         {
             foreach (var u in users) // should send to both users
             {
                 _factory.SmsSenderMock.Verify(s => s
-                        .SendSmsAsync(u.PhoneNumber, message),
+                        .SendSmsAsync(u.PhoneNumber, message, orgId),
                     Times.Once, $"Should've sent message {message} to {u.PhoneNumber}");
             }
         }
 
-        private void CheckSmsSentTo(string message, params string[] recipients)
+        private void CheckSmsSentTo(string message, int orgId, params string[] recipients)
         {
             foreach (var r in recipients) // should send to both users
             {
                 _factory.SmsSenderMock.Verify(s => s
-                        .SendSmsAsync(r, message),
+                        .SendSmsAsync(r, message, orgId),
                     Times.Once, $"Should've sent message {message} to {r}");
             }
         }
 
-        private void CheckEmailNotSentTo(params ApplicationUser[] users)
+        private void CheckEmailNotSentTo(int orgId, params ApplicationUser[] users)
         {
             foreach (var u in users) // should send to both users
             {
                 _factory.SmsSenderMock.Verify(s => s
-                        .SendSmsAsync(u.PhoneNumber, It.IsAny<string>()),
+                        .SendSmsAsync(u.PhoneNumber, It.IsAny<string>(), orgId),
                     Times.Never, $"Shouldn't have sent any message to {u.PhoneNumber}");
             }
         }

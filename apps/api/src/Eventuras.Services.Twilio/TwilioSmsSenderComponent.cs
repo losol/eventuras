@@ -32,10 +32,10 @@ namespace Eventuras.Services.Twilio
                 new ArgumentNullException(nameof(loggerFactory));
         }
 
-        public async Task<ISmsSender> CreateSmsSenderAsync(CancellationToken cancellationToken = default)
+        public async Task<ISmsSender> CreateSmsSenderAsync(int orgId, CancellationToken cancellationToken = default)
         {
             var settings = await _organizationSettingsAccessorService
-                .ReadOrganizationSettingsAsync<OrganizationTwilioSettings>();
+                .ReadOrganizationSettingsAsync<OrganizationTwilioSettings>(orgId);
 
             if (!settings.Enabled)
             {
