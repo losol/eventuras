@@ -50,6 +50,9 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
         >
           SMS
         </Button>
+        <Link href={`/admin/notifications?eventId=${eventinfo.id}`} variant="button-outline">
+          {t('common:labels.messagelog')}
+        </Link>
       </ButtonGroup>
       <AddUserToEvent eventinfo={eventinfo} eventProducts={eventProducts ?? []} />
 

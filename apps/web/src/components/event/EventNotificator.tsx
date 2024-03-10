@@ -129,7 +129,7 @@ const createFormHandler = (
     } else {
       Logger.info(
         { namespace: 'EventNotificator' },
-        `Successfully sent ${notificatorType} notification.`
+        `Successfully sent ${notificatorType} notification. `
       );
       addAppNotification({
         id: Date.now(),
@@ -138,6 +138,7 @@ const createFormHandler = (
             ? t('eventNotifier.form.successFeedbackEmail')
             : t('eventNotifier.form.successFeedbackSMS'),
         type: AppNotificationType.SUCCESS,
+        expiresAfter: 0,
       });
       //we are done, lets request a close
       onClose();
