@@ -12,16 +12,16 @@
     <PackageReference Include="Hangfire.Core" Version="1.8.11" />
     <PackageReference Include="Hangfire.InMemory" Version="0.8.0" />
     <PackageReference Include="Hangfire.PostgreSql" Version="1.20.8" />
-    <PackageReference Include="Losol.Communication.Email" Version="0.7.1" />
-    <PackageReference Include="Losol.Communication.Email.Smtp" Version="0.7.1" />
-    <PackageReference Include="Losol.Communication.Email.SendGrid" Version="0.7.1" />
-    <PackageReference Include="Losol.Communication.Email.File" Version="0.7.1" />
-    <PackageReference Include="Losol.Communication.Email.Mock" Version="0.7.1" />
-    <PackageReference Include="Losol.Communication.HealthCheck.Email" Version="0.7.1" />
-    <PackageReference Include="Losol.Communication.HealthCheck.Sms" Version="0.7.1" />
-    <PackageReference Include="Losol.Communication.Sms" Version="0.7.1" />
-    <PackageReference Include="Losol.Communication.Sms.Twilio" Version="0.7.1" />
-    <PackageReference Include="Losol.Communication.Sms.Mock" Version="0.7.1" />
+    <PackageReference Include="Losol.Communication.Email" Version="0.7.3" />
+    <PackageReference Include="Losol.Communication.Email.Smtp" Version="0.7.3" />
+    <PackageReference Include="Losol.Communication.Email.SendGrid" Version="0.7.3" />
+    <PackageReference Include="Losol.Communication.Email.File" Version="0.7.3" />
+    <PackageReference Include="Losol.Communication.Email.Mock" Version="0.7.3" />
+    <PackageReference Include="Losol.Communication.HealthCheck.Email" Version="0.7.3" />
+    <PackageReference Include="Losol.Communication.HealthCheck.Sms" Version="0.7.3" />
+    <PackageReference Include="Losol.Communication.Sms" Version="0.7.3" />
+    <PackageReference Include="Losol.Communication.Sms.Twilio" Version="0.7.3" />
+    <PackageReference Include="Losol.Communication.Sms.Mock" Version="0.7.3" />
     <PackageReference Include="Asp.Versioning.Mvc" Version="8.0.0" />
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.0.0" />
     <PackageReference Include="Microsoft.FeatureManagement" Version="3.2.0" />

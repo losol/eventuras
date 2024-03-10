@@ -6,6 +6,6 @@
     <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Losol.Communication.Sms.Twilio" Version="0.7.1" />
+    <PackageReference Include="Losol.Communication.Sms.Twilio" Version="0.7.3" />
   </ItemGroup>
 </Project>

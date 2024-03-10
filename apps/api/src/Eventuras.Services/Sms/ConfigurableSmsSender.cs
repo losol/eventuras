@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Eventuras.Services.Sms
 {
     /// <summary>
-    /// Same as <see cref="Eventuras.Services.Email.ConfigurableEmailSender"/> but for SMS. 
+    /// Same as <see cref="Eventuras.Services.Email.ConfigurableEmailSender"/> but for SMS.
     /// </summary>
     internal class ConfigurableSmsSender : ISmsSender
     {
@@ -30,7 +30,7 @@ namespace Eventuras.Services.Sms
 
         public async Task<HealthCheckStatus> CheckHealthAsync(CancellationToken cancellationToken)
         {
-            var sender = await GetSmsSenderAsync(cancellationToken);
+            var sender = await GetSmsSenderAsync(1, cancellationToken);
             if (sender != null)
             {
                 return await sender.CheckHealthAsync(cancellationToken);
@@ -39,20 +39,20 @@ namespace Eventuras.Services.Sms
             return new HealthCheckStatus(HealthStatus.Unhealthy);
         }
 
-        public async Task SendSmsAsync(string to, string body)
+        public async Task SendSmsAsync(string to, string body, int orgId)
         {
-            var sender = await GetSmsSenderAsync();
+            var sender = await GetSmsSenderAsync(orgId);
             if (sender != null)
             {
-                await sender.SendSmsAsync(to, body);
+                await sender.SendSmsAsync(to, body, orgId);
             }
         }
 
-        private async Task<ISmsSender> GetSmsSenderAsync(CancellationToken cancellationToken = default)
+        private async Task<ISmsSender> GetSmsSenderAsync(int orgId, CancellationToken cancellationToken = default)
         {
             foreach (var component in _components)
             {
-                var sender = await component.CreateSmsSenderAsync(cancellationToken);
+                var sender = await component.CreateSmsSenderAsync(orgId, cancellationToken);
                 if (sender != null)
                 {
                     return sender;

@@ -11,6 +11,6 @@ namespace Eventuras.Services.Sms
         /// If all settings are disabled, returns <c>null</c>.
         /// </summary>
         /// <returns>New <see cref="ISmsSender"/> or <c>null</c>.</returns>
-        Task<ISmsSender> CreateSmsSenderAsync(CancellationToken cancellationToken = default);
+        Task<ISmsSender> CreateSmsSenderAsync(int orgId, CancellationToken cancellationToken = default);
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
+using Eventuras.Services.Exceptions;
 using Losol.Communication.Email;
 using Losol.Communication.Sms;
 using Markdig;
@@ -39,6 +40,8 @@ public class NotificationBackgroundService : INotificationBackgroundService
         var notification = await _notificationRetrievalService.GetNotificationByIdAsync(notificationId, accessControlDone: accessControlDone);
         var recipient = await _notificationRecipientRetrievalService.GetNotificationRecipientByIdentifierAsync(recipientIdentifier, accessControlDone: true);
 
+        if (notification.OrganizationId == null) throw new NotFoundException(nameof(notification.OrganizationId));
+
         if (recipient == null) return;
 
         var message = notification.Type == NotificationType.Email
@@ -68,7 +71,7 @@ public class NotificationBackgroundService : INotificationBackgroundService
             }
             else if (notification.Type == NotificationType.Sms)
             {
-                await _smsSender.SendSmsAsync(recipient.RecipientIdentifier, message);
+                await _smsSender.SendSmsAsync(recipient.RecipientIdentifier, message, notification.OrganizationId.Value);
             }
 
         }
