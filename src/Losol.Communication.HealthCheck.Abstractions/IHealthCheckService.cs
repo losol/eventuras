@@ -5,6 +5,6 @@ namespace Losol.Communication.HealthCheck.Abstractions
 {
     public interface IHealthCheckService
     {
-        Task<HealthCheckStatus> CheckHealthAsync(int orgId, CancellationToken cancellationToken = default);
+        Task<HealthCheckStatus> CheckHealthAsync(CancellationToken cancellationToken = default);
     }
 }
