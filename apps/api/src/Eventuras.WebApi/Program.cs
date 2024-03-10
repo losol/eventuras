@@ -108,7 +108,11 @@ builder.Services.AddHangfire(configuration => configuration
         );
 
 
-builder.Services.AddHangfireServer();
+builder.Services.AddHangfireServer(options =>
+{
+    options.WorkerCount = 1;
+    options.Queues = new[] { "notifications_queue" };
+});
 
 builder.Services.AddScoped<NotificationBackgroundService>();
 
