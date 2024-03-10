@@ -6,8 +6,8 @@ namespace Eventuras.Services.Notifications
 {
     public interface INotificationRecipientRetrievalService
     {
-        Task<NotificationRecipient> GetNotificationRecipientByIdentifierAsync(
-            string recipientIdentifier,
+        Task<NotificationRecipient> GetNotificationRecipientByIdAsync(
+            int recipientId,
             bool accessControlDone = false,
             CancellationToken cancellationToken = default);
 

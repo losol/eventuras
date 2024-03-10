@@ -24,8 +24,8 @@ namespace Eventuras.Services.Notifications
                 new ArgumentNullException(nameof(notificationRecipientAccessControlService));
         }
 
-        public async Task<NotificationRecipient> GetNotificationRecipientByIdentifierAsync(
-            string recipientIdentifier,
+        public async Task<NotificationRecipient> GetNotificationRecipientByIdAsync(
+            int recipientId,
             bool accessControlDone = false,
             CancellationToken cancellationToken = default)
         {
@@ -34,13 +34,8 @@ namespace Eventuras.Services.Notifications
                 throw new NotImplementedException("Access control must be done before calling this method");
             }
 
-            if (string.IsNullOrWhiteSpace(recipientIdentifier))
-            {
-                throw new ArgumentException("Recipient identifier must not be null or empty", nameof(recipientIdentifier));
-            }
-
             var query = _context.NotificationRecipients
-                .Where(r => r.RecipientIdentifier == recipientIdentifier);
+                .Where(r => r.RecipientId == recipientId);
 
             return await query.FirstOrDefaultAsync();
         }
