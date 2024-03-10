@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
+using Eventuras.Services.Constants;
 using Eventuras.TestAbstractions;
 using Newtonsoft.Json;
 
@@ -91,7 +92,7 @@ namespace Eventuras.WebApi.Tests
             }
 
             var claims = new List<Claim>();
-            
+
             if (!string.IsNullOrEmpty(firstName))
             {
                 claims.Add(new Claim(ClaimTypes.Name, firstName));
@@ -106,7 +107,7 @@ namespace Eventuras.WebApi.Tests
             {
                 claims.Add(new Claim(ClaimTypes.Email, email));
             }
-            
+
             roles ??= Array.Empty<string>();
             if (!string.IsNullOrEmpty(role))
             {
@@ -127,18 +128,35 @@ namespace Eventuras.WebApi.Tests
             {
                 claims.AddRange(scopes.Select(s => new Claim("scope", s)));
             }
-            
+
             return claims.ToArray();
         }
 
         public static async Task<HttpResponseMessage> PostAsync(
             this HttpClient httpClient,
             string requestUri,
-            object data)
+            object data,
+            int? organizationId = null,
+            Dictionary<string, string> headers = null)
         {
-            return await httpClient.PostAsync(requestUri,
-                new StringContent(JsonConvert.SerializeObject(data),
-                    Encoding.UTF8, "application/json"));
+            var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+
+            // Eventuras org id header
+            if (organizationId.HasValue)
+            {
+                content.Headers.Add(Eventuras.Services.Constants.Api.OrganizationHeader, organizationId.ToString());
+            }
+
+            // Additional headers provided
+            if (headers != null)
+            {
+                foreach (var header in headers)
+                {
+                    content.Headers.Add(header.Key, header.Value);
+                }
+            }
+
+            return await httpClient.PostAsync(requestUri, content);
         }
 
         public static async Task<HttpResponseMessage> PostAsync(

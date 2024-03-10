@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Eventuras.Infrastructure;
+using Eventuras.Services.Notifications;
 using Eventuras.Services.Organizations.Settings;
 using Eventuras.Services.Pdf;
 using Eventuras.WebApi.Tests.Controllers.Organizations;
@@ -21,6 +22,8 @@ namespace Eventuras.WebApi.Tests
 {
     public class CustomWebApiApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
     {
+        public readonly Mock<INotificationBackgroundService> NotificationBackgroundServiceMock = new Mock<INotificationBackgroundService>();
+
         public readonly Mock<IEmailSender> EmailSenderMock = new();
         public readonly Mock<ISmsSender> SmsSenderMock = new();
 
@@ -35,9 +38,12 @@ namespace Eventuras.WebApi.Tests
                 }))
                 .ConfigureServices(services =>
                 {
+                    services.RemoveAll<INotificationBackgroundService>();
+
                     // Override already added email sender with the true mock
                     services.AddSingleton(EmailSenderMock.Object);
                     services.AddSingleton(SmsSenderMock.Object);
+                    services.AddSingleton(NotificationBackgroundServiceMock.Object);
                     services.AddTransient<IPdfRenderService, DummyPdfRenderService>();
                     services.AddSingleton<IOrganizationSettingsRegistryComponent, OrgSettingsTestRegistryComponent>();
 

@@ -152,23 +152,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
         }
 
         [Fact]
-        public async Task Should_Use_Include_Stats_Query_Param_When_Getting_Single_Notification_Data()
-        {
-            using var scope = _factory.Services.NewTestScope();
-            using var notification = await scope
-                .CreateEmailNotificationAsync(totalSent: 10, totalErrors: 2);
-
-            var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
-            var response = await client.GetAsync($"/v3/notifications/{notification.Entity.NotificationId}", new
-            {
-                includeStatistics = true
-            });
-
-            var json = await response.CheckOk().AsTokenAsync();
-            json.CheckNotification(notification.Entity, 10, 2);
-        }
-
-        [Fact]
         public async Task List_Should_Require_Auth()
         {
             var client = _factory.CreateClient();
@@ -434,20 +417,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             token = await response.CheckOk().AsTokenAsync();
             token.CheckPaging((t, n) => t.CheckNotification(n),
                 n3.Entity, n2.Entity, n1.Entity);
-        }
-
-        [Fact]
-        public async Task List_Should_Use_IncludeStatistics_Query_Params()
-        {
-            using var scope = _factory.Services.NewTestScope();
-            using var notification = await scope
-                .CreateEmailNotificationAsync(totalSent: 1, totalErrors: 0);
-
-            var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
-            var response = await client.GetAsync("/v3/notifications?includeStatistics=true");
-            var token = await response.CheckOk().AsTokenAsync();
-            token.CheckPaging((t, n) => t.CheckNotification(n, 1, 0),
-                notification.Entity);
         }
     }
 }

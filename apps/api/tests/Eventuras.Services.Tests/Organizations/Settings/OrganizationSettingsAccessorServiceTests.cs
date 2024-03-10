@@ -14,6 +14,8 @@ namespace Eventuras.Services.Tests.Organizations.Settings
     public class OrganizationSettingsAccessorServiceTests
     {
         private readonly Mock<ICurrentOrganizationAccessorService> _currentOrganizationAccessorServiceMock = new();
+        private readonly Mock<IOrganizationRetrievalService> _organizationRetrievalServiceMock = new Mock<IOrganizationRetrievalService>();
+
         private readonly Mock<IOrganizationSettingsCache> _organizationSettingsCacheMock = new();
         private readonly List<OrganizationSetting> _settings = new();
 
@@ -37,7 +39,8 @@ namespace Eventuras.Services.Tests.Organizations.Settings
 
             _service = new OrganizationSettingsAccessorService(
                 _currentOrganizationAccessorServiceMock.Object,
-                _organizationSettingsCacheMock.Object);
+                _organizationSettingsCacheMock.Object,
+                _organizationRetrievalServiceMock.Object);
         }
 
         [Fact]
