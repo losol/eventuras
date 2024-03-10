@@ -57,7 +57,7 @@ namespace Eventuras.Services.Notifications
                     return;
                 }
 
-                Hangfire.BackgroundJob.Enqueue<NotificationBackgroundService>(x => x.SendNotificationAsync(notification.NotificationId, recipient.RecipientIdentifier, true));
+                Hangfire.BackgroundJob.Enqueue<NotificationBackgroundService>("notifications_queue", x => x.SendNotificationToRecipientAsync(recipient.RecipientId, true));
             }
         }
     }

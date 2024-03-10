@@ -3,10 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services.Exceptions;
+using Hangfire;
 using Losol.Communication.Email;
 using Losol.Communication.Sms;
 using Markdig;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 
 namespace Eventuras.Services.Notifications;
 
@@ -32,13 +34,16 @@ public class NotificationBackgroundService : INotificationBackgroundService
         _smsSender = smsSender;
         _notificationManagementService = notificationManagementService;
         _notificationRetrievalService = notificationRetrievalService;
+
         _notificationRecipientRetrievalService = notificationRecipientRetrievalService;
         _logger = logger;
     }
-    public async Task SendNotificationAsync(int notificationId, string recipientIdentifier, bool accessControlDone = false)
+
+    [AutomaticRetry(Attempts = 0)]
+    public async Task SendNotificationToRecipientAsync(int recipientId, bool accessControlDone = false)
     {
-        var notification = await _notificationRetrievalService.GetNotificationByIdAsync(notificationId, accessControlDone: accessControlDone);
-        var recipient = await _notificationRecipientRetrievalService.GetNotificationRecipientByIdentifierAsync(recipientIdentifier, accessControlDone: true);
+        var recipient = await _notificationRecipientRetrievalService.GetNotificationRecipientByIdAsync(recipientId, accessControlDone: true);
+        var notification = await _notificationRetrievalService.GetNotificationByIdAsync(recipient.NotificationId, accessControlDone: accessControlDone);
 
         if (notification.OrganizationId == null) throw new NotFoundException(nameof(notification.OrganizationId));
 
@@ -68,10 +73,14 @@ public class NotificationBackgroundService : INotificationBackgroundService
                     OrganizationId = email.OrganizationId
                 });
 
+                recipient.Sent = SystemClock.Instance.GetCurrentInstant();
+                await _notificationManagementService.UpdateNotificationRecipientAsync(recipient);
             }
             else if (notification.Type == NotificationType.Sms)
             {
                 await _smsSender.SendSmsAsync(recipient.RecipientIdentifier, message, notification.OrganizationId.Value);
+                recipient.Sent = SystemClock.Instance.GetCurrentInstant();
+                await _notificationManagementService.UpdateNotificationRecipientAsync(recipient);
             }
 
         }
