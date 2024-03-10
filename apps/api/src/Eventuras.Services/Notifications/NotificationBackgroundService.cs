@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 namespace Eventuras.Services.Notifications;
 
 
-public class NotificationBackgroundService
+public class NotificationBackgroundService : INotificationBackgroundService
 {
     private readonly IEmailSender _emailSender;
     private readonly ISmsSender _smsSender;

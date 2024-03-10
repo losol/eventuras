@@ -59,31 +59,32 @@ namespace Eventuras.Services.Notifications
         public async Task<EmailNotification> CreateEmailNotificationAsync(
             string subject,
             string body,
-            string[] recipients)
+            int orgId,
+            string[] recipients
+            )
         {
             _logger.LogInformation($"Starting to create an email notification. Subject: {subject}, Number of recipients: {recipients?.Length ?? 0}");
 
             CheckSubjectAndBody(subject, body);
 
-            var currentOrg =
-                await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
+            var org = await _context.Organizations.FindAsync(orgId);
 
             var currentUser = _httpContextAccessor.HttpContext.User;
 
-            _logger.LogInformation($"Current organization: {currentOrg?.OrganizationId}. Current user id: {currentUser.GetUserId()}");
+            _logger.LogInformation($"Current organization: {org.OrganizationId}. Current user id: {currentUser.GetUserId()}");
 
             return await _context
                 .CreateAsync(new EmailNotification(subject, body)
                 {
                     CreatedByUserId = currentUser.GetUserId(),
-                    OrganizationId = currentOrg?.OrganizationId,
+                    OrganizationId = org.OrganizationId,
                     Recipients = recipients
                         .Select(NotificationRecipient.Email)
                         .ToList()
                 }, leaveAttached: true);
         }
 
-        public async Task<EmailNotification> CreateEmailNotificationAsync(
+        public async Task<EmailNotification> CreateEmailNotificationForRegistrationAsync(
     string subject,
     string body,
     Registration registration)

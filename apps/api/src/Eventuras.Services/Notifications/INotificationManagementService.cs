@@ -8,6 +8,7 @@ namespace Eventuras.Services.Notifications
         Task<EmailNotification> CreateEmailNotificationAsync(
             string subject,
             string body,
+            int orgId,
             params string[] recipients);
 
         Task<EmailNotification> CreateEmailNotificationForEventAsync(
@@ -17,7 +18,7 @@ namespace Eventuras.Services.Notifications
             Registration.RegistrationStatus[] registrationStatuses = null,
             Registration.RegistrationType[] registrationTypes = null);
 
-        Task<EmailNotification> CreateEmailNotificationAsync(
+        Task<EmailNotification> CreateEmailNotificationForRegistrationAsync(
         string subject,
         string body,
         Registration registration);

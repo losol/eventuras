@@ -184,7 +184,7 @@ namespace Eventuras.Services.Registrations
             var body = registration.EventInfo.WelcomeLetter;
 
             // Create email notification
-            var email = await _notificationsManagementService.CreateEmailNotificationAsync(subject, body, registration);
+            var email = await _notificationsManagementService.CreateEmailNotificationForRegistrationAsync(subject, body, registration);
             await _notificationDeliveryService.SendNotificationAsync(email, cancellationToken);
 
             _logger.LogInformation($"Successfully sent a welcome letter for RegistrationId {registration.RegistrationId}, EventInfoId {registration.EventInfoId}");
