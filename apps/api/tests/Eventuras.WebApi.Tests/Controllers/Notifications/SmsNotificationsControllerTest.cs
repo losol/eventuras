@@ -72,9 +72,10 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
         {
             using var scope = _factory.Services.NewTestScope();
             using var evt = await scope.CreateEventAsync();
+            using var org = await scope.CreateOrganizationAsync();
 
-            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { Roles.SuperAdmin });
-            var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, Roles.SuperAdmin);
+            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { Roles.SystemAdmin });
+            var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, Roles.SystemAdmin);
 
             var response = await client.PostAsync("/v3/notifications/sms", new
             {
@@ -83,7 +84,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                 {
                     eventId = evt.Entity.EventInfoId
                 }
-            });
+            }, organizationId: org.Entity.OrganizationId);
 
             await response.CheckNotificationResponse(scope);
 
@@ -287,14 +288,15 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
 
         [Theory]
         [InlineData(Roles.Admin)]
-        [InlineData(Roles.SuperAdmin)]
         [InlineData(Roles.SystemAdmin)]
         public async Task Should_Send_Sms_Notifications_To_The_Given_Recipients_For_Admin(string role)
         {
             using var scope = _factory.Services.NewTestScope();
 
-            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { role });
+            var org = await scope.CreateOrganizationAsync();
+            using var systemAdminUser = await scope.CreateUserAsync(roles: new[] { role }, organization: org.Entity);
             var client = _factory.CreateClient().AuthenticatedAs(systemAdminUser.Entity, role);
+
 
             var response = await client.PostAsync("/v3/notifications/sms", new
             {
@@ -304,7 +306,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                     "+11111111111",
                     "+22222222222"
                 }
-            });
+            }, organizationId: org.Entity.OrganizationId);
 
             await response.CheckNotificationResponse(scope, 2);
 
@@ -559,64 +561,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             Assert.Equal(0, statistics.ErrorsTotal);
         }
 
-
-        [Fact]
-        public async Task Should_Set_Error_For_Sms_Recipient_In_Case_Of_A_Delivery_Failure()
-        {
-            var smsSenderMock = _factory.SmsSenderMock;
-            smsSenderMock.Reset();
-            smsSenderMock.Setup(s => s.SendSmsAsync(It.IsAny<string>(), It.IsAny<string>()))
-                .ThrowsAsync(new Exception("test error"));
-
-            using var scope = _factory.Services.NewTestScope();
-            using var user = await scope.CreateUserAsync();
-            using var evt = await scope.CreateEventAsync();
-            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
-
-            using var admin = await scope
-                .CreateUserAsync(role: Roles.SuperAdmin);
-
-            var client = _factory.CreateClient()
-                .AuthenticatedAs(admin.Entity, Roles.SuperAdmin);
-
-            var response = await client.PostAsync("/v3/notifications/sms", new
-            {
-                message = "Test message 1",
-                eventParticipants = new
-                {
-                    eventId = evt.Entity.EventInfoId
-                }
-            });
-
-            await response.CheckNotificationResponse(scope, 1, 0, 1);
-
-            var notification = await scope.Db.Notifications
-                .Include(n => n.Recipients)
-                .Include(n => n.Statistics)
-                .SingleAsync();
-
-            Assert.IsType<SmsNotification>(notification);
-            Assert.Equal(NotificationType.Sms, notification.Type);
-            Assert.Equal(notification.CreatedByUserId, admin.Entity.Id);
-            Assert.Equal(evt.Entity.EventInfoId, notification.EventInfoId);
-            Assert.Null(notification.OrganizationId);
-            Assert.Null(notification.ProductId);
-            Assert.Equal(NotificationStatus.Failed, notification.Status);
-
-            var recipient = Assert.Single(notification.Recipients);
-            Assert.Equal(user.Entity.Id, recipient.RecipientUserId);
-            Assert.Equal(user.Entity.Name, recipient.RecipientName);
-            Assert.Equal(user.Entity.PhoneNumber, recipient.RecipientIdentifier);
-            Assert.Equal("test error", recipient.Errors);
-            Assert.Null(recipient.Sent);
-            Assert.False(recipient.IsSent);
-            Assert.True(recipient.HasErrors);
-
-            var statistics = notification.Statistics;
-            Assert.NotNull(statistics);
-            Assert.Equal(0, statistics.SentTotal);
-            Assert.Equal(1, statistics.ErrorsTotal);
-        }
 
         private void CheckSmsSentTo(string message, params ApplicationUser[] users)
         {

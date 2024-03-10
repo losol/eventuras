@@ -455,7 +455,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Events.Certificates
             Assert.Equal(1, json.Value<int>("issued"));
 
             _factory.EmailSenderMock.Verify(s => s
-                .SendEmailAsync(It.IsAny<EmailModel>()), Times.Never);
+                .SendEmailAsync(It.IsAny<EmailModel>(), It.IsAny<EmailOptions>()), Times.Never);
         }
 
         #endregion

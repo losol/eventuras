@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using Eventuras.Domain;
+using Eventuras.Services.Constants;
 using Eventuras.Services.Events.Products;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Notifications;
@@ -51,6 +52,17 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications
             _logger.LogInformation($"Starting to process email notification. Subject: {dto.Subject}, Number of Recipients: {dto.Recipients?.Length ?? 0}");
             _logger.LogInformation(JsonSerializer.Serialize(dto));
 
+            int? orgId = Request.Headers.TryGetValue(Api.OrganizationHeader, out var headerOrgId)
+                         && int.TryParse(headerOrgId, out var parsedOrgId)
+                         ? parsedOrgId
+                         : (int?)null;
+
+            if (orgId == null)
+            {
+                _logger.LogWarning("Organization ID is not set, cannot send email notification.");
+                throw new InputException("Organization ID is not set, cannot send email notification.");
+            }
+
             EmailNotification emailNotification;
             var eventFilter = await GetEventParticipantFilterAsync(dto, cancellationToken);
             if (eventFilter != null)
@@ -73,7 +85,9 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications
                     .CreateEmailNotificationAsync(
                         dto.Subject,
                         dto.BodyMarkdown,
-                        dto.Recipients);
+                        orgId.Value,
+                        dto.Recipients
+                        );
                 await _notificationDeliveryService
                    .SendNotificationAsync(emailNotification, cancellationToken);
 
@@ -86,7 +100,7 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications
                     .GetRegistrationByIdAsync(dto.RegistrationId.Value, RegistrationRetrievalOptions.UserAndEvent, cancellationToken: cancellationToken);
 
                 emailNotification = await _notificationManagementService
-                .CreateEmailNotificationAsync(
+                .CreateEmailNotificationForRegistrationAsync(
                         dto.Subject,
                         dto.BodyMarkdown,
                         registration);
@@ -102,6 +116,7 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications
                     .CreateEmailNotificationAsync(
                         dto.Subject,
                         dto.BodyMarkdown,
+                        orgId.Value,
                         dto.Recipients);
                 await _notificationDeliveryService
                     .SendNotificationAsync(emailNotification, cancellationToken);
@@ -109,8 +124,7 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications
                 return Ok(new NotificationDto(emailNotification));
             }
 
-            // Should never happen
-            throw new InputException("Either recipient list of event participant filter must be specified");
+            return NoContent();
         }
 
         [HttpPost("sms")]
@@ -139,13 +153,11 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications
                         dto.Recipients);
             }
 
-            // send notification right away, not queueing it or something.
-            // TODO: use queue for messages
 
             await _notificationDeliveryService
                 .SendNotificationAsync(smsNotification, cancellationToken);
 
-            return Ok(new NotificationDto(smsNotification));
+            return Ok();
         }
 
         private async Task<EventParticipantsFilterDto> GetEventParticipantFilterAsync(

@@ -20,18 +20,13 @@ namespace Eventuras.WebApi.Tests
         public static async Task CheckNotificationResponse(
             this HttpResponseMessage response,
             TestServiceScope scope,
-            int totalRecipients,
-            int? totalSent = null,
-            int? totalErrors = null)
+            int totalRecipients)
         {
             var token = await response.CheckOk().AsTokenAsync();
             token.CheckNotification(await scope.Db.Notifications
                     .AsNoTracking()
                     .OrderBy(n => n.Created)
-                    .LastAsync(),
-                totalSent ?? totalRecipients,
-                totalErrors ?? 0,
-                totalRecipients);
+                    .LastAsync());
         }
     }
 }

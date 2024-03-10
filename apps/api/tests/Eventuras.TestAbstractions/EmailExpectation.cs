@@ -64,7 +64,7 @@ namespace Eventuras.TestAbstractions
 
         public EmailExpectation Setup()
         {
-            _mock.Setup(s => s.SendEmailAsync(It.IsAny<EmailModel>()));
+            _mock.Setup(s => s.SendEmailAsync(It.IsAny<EmailModel>(), new EmailOptions() { }));
             return this;
         }
 
@@ -115,9 +115,12 @@ namespace Eventuras.TestAbstractions
                 return true;
             };
 
+
             _mock.Verify(s => s
-                    .SendEmailAsync(It.Is<EmailModel>(m => compareFunc(m))),
-                times.Value);
+                .SendEmailAsync(
+                    It.Is<EmailModel>(m => compareFunc(m)),
+                    It.IsAny<EmailOptions>()),
+                    times.Value);
         }
     }
 }

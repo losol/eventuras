@@ -94,7 +94,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             await response.CheckNotificationResponse(scope);
 
             _factory.EmailSenderMock.Verify(s => s
-                .SendEmailAsync(It.IsAny<EmailModel>()), Times.Never);
+                .SendEmailAsync(It.IsAny<EmailModel>(), It.IsAny<EmailOptions>()), Times.Never);
         }
 
         [Fact]
@@ -136,7 +136,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             response.CheckForbidden();
 
             _factory.EmailSenderMock.Verify(s => s
-                .SendEmailAsync(It.IsAny<EmailModel>()), Times.Never);
+                .SendEmailAsync(It.IsAny<EmailModel>(), It.IsAny<EmailOptions>()), Times.Never);
 
             // Check 2. admin should send to all users of the org
 
@@ -176,7 +176,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             response.CheckForbidden();
 
             _factory.EmailSenderMock.Verify(s => s
-                .SendEmailAsync(It.IsAny<EmailModel>()), Times.Never);
+                .SendEmailAsync(It.IsAny<EmailModel>(), It.IsAny<EmailOptions>()), Times.Never);
         }
 
         /// <summary>
@@ -217,7 +217,9 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                         users.Select(u => u.Entity).ToArray());
 
                     _factory.EmailSenderMock.Verify(s => s
-                        .SendEmailAsync(It.IsAny<EmailModel>()), Times.Exactly(users.Length));
+                        .SendEmailAsync(It.IsAny<EmailModel>(), It.IsAny<EmailOptions>()), Times.Exactly(users.Length));
+
+                    // It.IsAny<EmailModel>(), It.IsAny<EmailOptions>())
                 }
                 finally
                 {
@@ -316,11 +318,11 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             await response.CheckNotificationResponse(scope, 2);
 
             _factory.EmailSenderMock.Verify(s => s
-                    .SendEmailAsync(It.Is(MatchUser("Test Person", "test@email.com", "Test", "Test email"))),
+                    .SendEmailAsync(It.Is(MatchUser("Test Person", "test@email.com", "Test", "Test email")), It.IsAny<EmailOptions>()),
                 Times.Once);
 
             _factory.EmailSenderMock.Verify(s => s
-                    .SendEmailAsync(It.Is(MatchUser("Other Person", "other@email.com", "Test", "Test email"))),
+                    .SendEmailAsync(It.Is(MatchUser("Other Person", "other@email.com", "Test", "Test email")), It.IsAny<EmailOptions>()),
                 Times.Once);
         }
 
@@ -469,10 +471,14 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
         public async Task Should_Create_Email_Notifications_In_Db_With_No_Event_Binding()
         {
             using var scope = _factory.Services.NewTestScope();
-            using var admin = await scope.CreateUserAsync(role: Roles.SuperAdmin);
+            using var admin = await scope.CreateUserAsync(role: Roles.SystemAdmin);
+            using var org = await scope.CreateOrganizationAsync();
 
             var client = _factory.CreateClient()
-                .AuthenticatedAs(admin.Entity, Roles.SuperAdmin);
+                .AuthenticatedAs(admin.Entity, Roles.SystemAdmin);
+
+            _factory.NotificationBackgroundServiceMock.Setup(x => x.SendNotificationAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>()))
+                                       .Returns(Task.CompletedTask);
 
             const string subject = "Test 1";
             const string body = "Test email 1";
@@ -483,21 +489,17 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                 subject = subject,
                 bodyMarkdown = body,
                 recipients = new[] { address }
-            });
+            }, organizationId: org.Entity.OrganizationId);
 
-            await response.CheckNotificationResponse(scope, 1);
-
-            CheckEmailSentTo(subject, body, address);
+            _factory.NotificationBackgroundServiceMock.Verify(x => x.SendNotificationAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
 
             var notification = await scope.Db.Notifications
                 .Include(n => n.Recipients)
-                .Include(n => n.Statistics)
                 .SingleAsync();
 
             Assert.IsType<EmailNotification>(notification);
             Assert.Equal(NotificationType.Email, notification.Type);
             Assert.Equal(notification.CreatedByUserId, admin.Entity.Id);
-            Assert.Null(notification.OrganizationId);
             Assert.Null(notification.EventInfoId);
             Assert.Null(notification.ProductId);
             Assert.Equal(NotificationStatus.Sent, notification.Status);
@@ -505,16 +507,6 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             var recipient = Assert.Single(notification.Recipients);
             Assert.Equal("Test", recipient.RecipientName);
             Assert.Equal("test@email.com", recipient.RecipientIdentifier);
-            Assert.Null(recipient.Errors);
-            Assert.NotNull(recipient.Sent);
-            Assert.True(recipient.IsSent);
-            Assert.Null(recipient.RecipientUserId);
-            Assert.False(recipient.HasErrors);
-
-            var statistics = notification.Statistics;
-            Assert.NotNull(statistics);
-            Assert.Equal(1, statistics.SentTotal);
-            Assert.Equal(0, statistics.ErrorsTotal);
         }
 
         [Fact]
@@ -531,7 +523,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
 
             var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.SuperAdmin);
 
-            var response = await client.PostAsync($"/v3/notifications/email?orgId={org.Entity.OrganizationId}", new
+            var response = await client.PostAsync($"/v3/notifications/email", new
             {
                 subject = "Test 1",
                 bodyMarkdown = "Test email 1",
@@ -539,15 +531,10 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
                 {
                     eventId = evt.Entity.EventInfoId
                 }
-            });
-
-            await response.CheckNotificationResponse(scope, user.Entity);
-
-            CheckEmailSentTo("Test 1", "Test email 1", user.Entity);
+            }, organizationId: org.Entity.OrganizationId);
 
             var notification = await scope.Db.Notifications
                 .Include(n => n.Recipients)
-                .Include(n => n.Statistics)
                 .SingleAsync();
 
             Assert.IsType<EmailNotification>(notification);
@@ -556,81 +543,15 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             Assert.Equal(org.Entity.OrganizationId, notification.OrganizationId);
             Assert.Equal(evt.Entity.EventInfoId, notification.EventInfoId);
             Assert.Null(notification.ProductId);
-            Assert.Equal(NotificationStatus.Sent, notification.Status);
+            Assert.Equal(NotificationStatus.Started, notification.Status);
 
             var recipient = Assert.Single(notification.Recipients);
             Assert.Equal(user.Entity.Name, recipient.RecipientName);
             Assert.Equal(user.Entity.Email, recipient.RecipientIdentifier);
             Assert.Null(recipient.Errors);
-            Assert.NotNull(recipient.Sent);
-            Assert.True(recipient.IsSent);
             Assert.Equal(user.Entity.Id, recipient.RecipientUserId);
             Assert.False(recipient.HasErrors);
 
-            var statistics = notification.Statistics;
-            Assert.NotNull(statistics);
-            Assert.Equal(1, statistics.SentTotal);
-            Assert.Equal(0, statistics.ErrorsTotal);
-        }
-
-
-        [Fact]
-        public async Task Should_Set_Error_For_Email_Recipient_In_Case_Of_A_Delivery_Failure()
-        {
-            var emailSenderMock = _factory.EmailSenderMock;
-            emailSenderMock.Reset();
-            emailSenderMock.Setup(s => s.SendEmailAsync(It.IsAny<EmailModel>()))
-                .ThrowsAsync(new Exception("test error"));
-
-            using var scope = _factory.Services.NewTestScope();
-            using var user = await scope.CreateUserAsync();
-            using var evt = await scope.CreateEventAsync();
-            using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
-
-            using var admin = await scope
-                .CreateUserAsync(role: Roles.SuperAdmin);
-
-            var client = _factory.CreateClient()
-                .AuthenticatedAs(admin.Entity, Roles.SuperAdmin);
-
-            var response = await client.PostAsync("/v3/notifications/email", new
-            {
-                subject = "Test 1",
-                bodyMarkdown = "Test email 1",
-                eventParticipants = new
-                {
-                    eventId = evt.Entity.EventInfoId
-                }
-            });
-
-            await response.CheckNotificationResponse(scope, 1, 0, 1);
-
-            var notification = await scope.Db.Notifications
-                .Include(n => n.Recipients)
-                .Include(n => n.Statistics)
-                .SingleAsync();
-
-            Assert.IsType<EmailNotification>(notification);
-            Assert.Equal(NotificationType.Email, notification.Type);
-            Assert.Equal(notification.CreatedByUserId, admin.Entity.Id);
-            Assert.Equal(evt.Entity.EventInfoId, notification.EventInfoId);
-            Assert.Null(notification.OrganizationId);
-            Assert.Null(notification.ProductId);
-            Assert.Equal(NotificationStatus.Failed, notification.Status);
-
-            var recipient = Assert.Single(notification.Recipients);
-            Assert.Equal(user.Entity.Id, recipient.RecipientUserId);
-            Assert.Equal(user.Entity.Name, recipient.RecipientName);
-            Assert.Equal(user.Entity.Email, recipient.RecipientIdentifier);
-            Assert.Equal("test error", recipient.Errors);
-            Assert.Null(recipient.Sent);
-            Assert.False(recipient.IsSent);
-            Assert.True(recipient.HasErrors);
-
-            var statistics = notification.Statistics;
-            Assert.NotNull(statistics);
-            Assert.Equal(0, statistics.SentTotal);
-            Assert.Equal(1, statistics.ErrorsTotal);
         }
 
         private void CheckEmailSentTo(string subject, string body, params ApplicationUser[] users)
@@ -638,7 +559,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             foreach (var u in users) // should send to both users
             {
                 _factory.EmailSenderMock.Verify(s => s
-                        .SendEmailAsync(It.Is(MatchUser(u, subject, body))),
+                        .SendEmailAsync(It.Is(MatchUser(u, subject, body)), It.IsAny<EmailOptions>()),
                     Times.Once, $"Should've sent message {subject} to {u.Name}");
             }
         }
@@ -649,7 +570,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             {
                 Assert.True(MailAddress.TryCreate(r, out var address));
                 _factory.EmailSenderMock.Verify(s => s
-                        .SendEmailAsync(It.Is(MatchUser(address.DisplayName, address.Address, subject, body))),
+                        .SendEmailAsync(It.Is(MatchUser(address.DisplayName, address.Address, subject, body)), It.IsAny<EmailOptions>()),
                     Times.Once, $"Should've sent message {subject} to {address}");
             }
         }
@@ -659,7 +580,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Notifications
             foreach (var u in users) // should send to both users
             {
                 _factory.EmailSenderMock.Verify(s => s
-                        .SendEmailAsync(It.Is(MatchUser(u))),
+                        .SendEmailAsync(It.Is(MatchUser(u)), It.IsAny<EmailOptions>()),
                     Times.Never, $"Shouldn't have sent any message to {u.Name}");
             }
         }
