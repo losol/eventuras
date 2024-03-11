@@ -88,6 +88,7 @@ jobs:
     uses: ./.github/workflows/util-vercel-deploy.yml
     with:
       environment: web-dev
+      vercel_environment: preview
       url: dev.eventuras.losol.io
     secrets:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
