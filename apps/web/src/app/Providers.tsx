@@ -9,7 +9,7 @@ import NotificationsProvider from '@/app/NotificationsProvider';
 import AuthenticationFlowMachine, {
   AutheticationStateContext,
   Events,
-} from '@/statemachines/AutheticationFlowMachine';
+} from '@/statemachines/AuthenticationFlowMachine';
 
 type ProvidersProps = {
   session: Session | null;
