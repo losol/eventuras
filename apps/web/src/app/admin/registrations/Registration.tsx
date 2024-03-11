@@ -198,7 +198,7 @@ const Registration = ({ registration, adminMode = false }: RegistrationProps) =>
           <Heading as="h2">{t('common:registrations.labels.orders')}</Heading>
           <ul>
             {registration.orders.map(order => (
-              <Order order={order} key={order.orderId} />
+              <Order order={order} key={order.orderId} admin={adminMode} />
             ))}
           </ul>
         </Section>
