@@ -23,7 +23,7 @@ const regex = {
   internationalPhoneNumber: /^\+[1-9]{1}[0-9]{1,14}$/,
   letters: /^[\p{L}]+$/u,
   lettersAndSpace: /^[\p{L} ]+$/u,
-  lettersSpaceAndHyphen: /^[\p{L} \-]+$/u,
+  lettersSpaceAndHyphen: /^[\p{L} -]+$/u,
 };
 
 const UserEditor: FC<UserEditorProps> = ({

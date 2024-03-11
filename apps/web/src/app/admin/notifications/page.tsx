@@ -1,5 +1,5 @@
 import { NotificationDto } from '@eventuras/sdk';
-import { Container, Layout, Text } from '@eventuras/ui';
+import { Container, Text } from '@eventuras/ui';
 import Card from '@eventuras/ui/Card';
 import Heading from '@eventuras/ui/Heading';
 import Link from '@eventuras/ui/Link';
@@ -46,7 +46,7 @@ const NotificationsPage: React.FC<NotificationPageProps> = async props => {
   }
 
   return (
-    <Layout fluid>
+    <>
       <Section className="bg-white dark:bg-black   pb-8">
         <Container>
           <Heading as="h1">Notifications</Heading>
@@ -72,7 +72,7 @@ const NotificationsPage: React.FC<NotificationPageProps> = async props => {
             })}
         </Container>
       </Section>
-    </Layout>
+    </>
   );
 };
 
