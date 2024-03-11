@@ -1,8 +1,8 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { TextInput as CoreTextInput, InputProps } from '@eventuras/forms';
+import { Input as CoreTextInput, InputProps } from '@eventuras/forms';
 
-export const TextInput = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
+export const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const { name, validation, ...restProps } = props;
   const { register, formState: { errors } } = useFormContext();
 
@@ -33,4 +33,4 @@ export const TextInput = React.forwardRef<HTMLInputElement, InputProps>((props, 
   return <CoreTextInput {...inputProps} />;
 });
 
-TextInput.displayName = 'TextInput';
+Input.displayName = 'Input';

@@ -74,12 +74,11 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
           Verify
         </Button>
       )}
-      {order.status === OrderStatus.VERIFIED ||
-        (order.status === OrderStatus.INVOICED && (
-          <Button variant="primary" onClick={() => setInvoiceDrawerOpen(!invoiceDrawerOpen)}>
-            {t('admin:labels.invoice')}
-          </Button>
-        ))}
+      {order.status !== OrderStatus.DRAFT && (
+        <Button variant="primary" onClick={() => setInvoiceDrawerOpen(!invoiceDrawerOpen)}>
+          {t('admin:labels.invoice')}
+        </Button>
+      )}
 
       <Drawer
         isOpen={invoiceDrawerOpen}

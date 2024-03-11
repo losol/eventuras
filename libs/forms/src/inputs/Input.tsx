@@ -5,7 +5,7 @@ import { InputLabel } from "../common/InputLabel";
 import { InputError } from "../common/InputError";
 import { InputDescription } from "../common/InputDescription";
 
-export const TextInput = React.forwardRef<HTMLInputElement, InputProps>(({
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
   name,
   type = 'text',
   placeholder,
@@ -45,4 +45,4 @@ export const TextInput = React.forwardRef<HTMLInputElement, InputProps>(({
   );
 });
 
-TextInput.displayName = 'TextInput';
+Input.displayName = 'TextInput';
