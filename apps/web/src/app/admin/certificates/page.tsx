@@ -3,8 +3,8 @@ import Heading from '@eventuras/ui/Heading';
 import Section from '@eventuras/ui/Section';
 import createTranslation from 'next-translate/createTranslation';
 
-import withAuthorization from '@/utils/auth/withAuthorization';
 import FixedContainer from '@/components/eventuras/navigation/FixedContainer';
+import withAuthorization from '@/utils/auth/withAuthorization';
 
 const CertificatesPage = async () => {
   const { t } = createTranslation();

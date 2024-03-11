@@ -75,7 +75,11 @@ interface MenuLinkProps {
 const MenuLink: FC<MenuLinkProps> = props => (
   <HeadlessMenu.Item as="li">
     {({ close }) => (
-      <div onClick={() => {
+      <div onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === "ENTER" && props.closeOnClick) {
+          close()
+        }
+      }} onClick={() => {
         if (props.closeOnClick) {
           close()
         }

@@ -1,4 +1,4 @@
-import { Container, Layout, Text } from '@eventuras/ui';
+import { Container } from '@eventuras/ui';
 import Heading from '@eventuras/ui/Heading';
 import Section from '@eventuras/ui/Section';
 import { headers } from 'next/headers';
@@ -46,7 +46,7 @@ const OrganizationDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
   }
 
   return (
-    <Layout fluid>
+    <>
       <Section className="bg-white dark:bg-black   pb-8">
         <Container>
           <Heading as="h1">Notification</Heading>
@@ -59,7 +59,7 @@ const OrganizationDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
           <pre>{JSON.stringify(notificationRecipients.value!, null, 4)}</pre>
         </Container>
       </Section>
-    </Layout>
+    </>
   );
 };
 
