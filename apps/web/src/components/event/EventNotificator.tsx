@@ -1,6 +1,6 @@
 import { MarkdownInput } from '@eventuras/markdown';
 import { EmailNotificationDto, RegistrationType, SmsNotificationDto } from '@eventuras/sdk';
-import { CheckboxInput, CheckboxLabel, Form, TextAreaInput, TextInput } from '@eventuras/smartform';
+import { CheckboxInput, CheckboxLabel, Form, Input, TextAreaInput } from '@eventuras/smartform';
 import { AppNotificationOptions } from '@eventuras/ui/AppNotifications';
 import Button from '@eventuras/ui/Button';
 import ButtonGroup from '@eventuras/ui/ButtonGroup';
@@ -215,7 +215,7 @@ export default function EventNotificator({
       })}
       {notificatorType === EventNotificatorType.EMAIL && (
         <div>
-          <TextInput
+          <Input
             name="subject"
             label={t('eventNotifier.form.subject.label')}
             placeholder={t('eventNotifier.form.subject.label')}

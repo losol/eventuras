@@ -1,7 +1,7 @@
 'use client';
 
 import { EventCollectionDto, EventDto } from '@eventuras/sdk';
-import { CheckboxInput, CheckboxLabel, Form, TextInput } from '@eventuras/smartform';
+import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
 import Button from '@eventuras/ui/Button';
 import Section from '@eventuras/ui/Section';
 import { IconTrash } from '@tabler/icons-react';
@@ -131,13 +131,13 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
           onSubmit={onSubmitForm}
           data-test-id="event-collection-edit-form"
         >
-          <TextInput name="name" label="Name" placeholder="Collection Name" required />
-          <TextInput name="description" label="Description" placeholder="Collection Description" />
+          <Input name="name" label="Name" placeholder="Collection Name" required />
+          <Input name="description" label="Description" placeholder="Collection Description" />
           <CheckboxInput name="featured">
             <CheckboxLabel>Featured</CheckboxLabel>
           </CheckboxInput>
-          <TextInput name="featuredImageUrl" label="Featured Image URL" placeholder="Image URL" />
-          <TextInput
+          <Input name="featuredImageUrl" label="Featured Image URL" placeholder="Image URL" />
+          <Input
             name="featuredImageCaption"
             label="Featured Image Caption"
             placeholder="Image Caption"

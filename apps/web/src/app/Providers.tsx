@@ -17,7 +17,7 @@ type ProvidersProps = {
 };
 
 export default function Providers({ children, session }: ProvidersProps) {
-  const auth = useMemo(() => createActor(AuthenticationFlowMachine), [])
+  const auth = useMemo(() => createActor(AuthenticationFlowMachine), []);
   auth.start();
 
   const sessionExists = session !== null && session !== undefined;

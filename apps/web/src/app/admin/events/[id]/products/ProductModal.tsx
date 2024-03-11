@@ -1,7 +1,7 @@
 'use client';
 
 import type { NewProductDto, ProductDto } from '@eventuras/sdk';
-import { Form, NumberInput, TextAreaInput, TextInput } from '@eventuras/smartform';
+import { Form, Input, NumberInput, TextAreaInput } from '@eventuras/smartform';
 import Button from '@eventuras/ui/Button';
 import Heading from '@eventuras/ui/Heading';
 import { Dialog } from '@headlessui/react';
@@ -113,7 +113,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
             </Dialog.Title>
 
             <Form onSubmit={submitProduct} className="mt-2 space-y-6" defaultValues={product}>
-              <TextInput
+              <Input
                 name="name"
                 label={t('common:products.labels.name')}
                 placeholder={t('common:products.labels.name')}

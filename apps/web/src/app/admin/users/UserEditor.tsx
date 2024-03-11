@@ -2,7 +2,7 @@
 
 import { Fieldset } from '@eventuras/forms';
 import { UserDto, UserFormDto } from '@eventuras/sdk';
-import { Form, TextInput } from '@eventuras/smartform';
+import { Form, Input } from '@eventuras/smartform';
 import Button from '@eventuras/ui/Button';
 import createTranslation from 'next-translate/createTranslation';
 import { FC, useState } from 'react';
@@ -117,7 +117,7 @@ const UserEditor: FC<UserEditorProps> = ({
     <Form onSubmit={onSubmit} defaultValues={user} dataTestId={dataTestId}>
       {/* Given Name Field */}
       <Fieldset label={t('common:account.name.legend')}>
-        <TextInput
+        <Input
           name="givenName"
           label={t('common:labels.givenName')}
           description={t('user:account.name.description')}
@@ -133,7 +133,7 @@ const UserEditor: FC<UserEditorProps> = ({
           dataTestId="accounteditor-form-givenname"
         />
 
-        <TextInput
+        <Input
           name="middleName"
           label={t('common:labels.middleName')}
           description={t('user:account.name.description')}
@@ -148,7 +148,7 @@ const UserEditor: FC<UserEditorProps> = ({
           dataTestId="accounteditor-form-middlename"
         />
         {/* Family Name Field */}
-        <TextInput
+        <Input
           name="familyName"
           label={t('common:labels.familyName')}
           description={t('user:account.name.description')}
@@ -165,7 +165,7 @@ const UserEditor: FC<UserEditorProps> = ({
       </Fieldset>
       <Fieldset label={t('common:account.contactInfo.legend')}>
         {/* Email Field */}
-        <TextInput
+        <Input
           name="email"
           label={t('user:account.email.label')}
           description={
@@ -180,7 +180,7 @@ const UserEditor: FC<UserEditorProps> = ({
         />
 
         {/* Phone Field */}
-        <TextInput
+        <Input
           name="phoneNumber"
           label={t('user:account.phoneNumber.label')}
           description={t('user:account.phoneNumber.description')}
@@ -197,13 +197,13 @@ const UserEditor: FC<UserEditorProps> = ({
         />
       </Fieldset>
       <Fieldset label={t('common:account.moreInfo.legend')}>
-        <TextInput
+        <Input
           name="professionalIdentityNumber"
           label={t('common:account.professionalIdentityNumber.label')}
           description={t('common:account.professionalIdentityNumber.description')}
           dataTestId="accounteditor-form-professionalIdentityNumber"
         />
-        <TextInput
+        <Input
           name="supplementaryInformation"
           label={t('common:account.supplementaryInformation.label')}
           description={t('common:account.supplementaryInformation.description')}

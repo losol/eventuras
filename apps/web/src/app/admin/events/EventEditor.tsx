@@ -5,13 +5,12 @@ import { ApiError, EventDto, EventFormDto, EventInfoStatus, EventInfoType } from
 import {
   CheckboxInput,
   CheckboxLabel,
-  DateInput,
   Form,
   HiddenInput,
+  Input,
   MarkdownInput,
   NumberInput,
   Select,
-  TextInput,
 } from '@eventuras/smartform';
 import Button from '@eventuras/ui/Button';
 import Tabs from '@eventuras/ui/Tabs';
@@ -107,9 +106,9 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
               value={Environment.NEXT_PUBLIC_ORGANIZATION_ID}
             />
 
-            <TextInput name="title" required label="Title" placeholder="Event Title" />
-            <TextInput name="headline" label="Headline" placeholder="Event Headline" />
-            <TextInput name="category" label="Category" placeholder="Event Category" />
+            <Input name="title" required label="Title" placeholder="Event Title" />
+            <Input name="headline" label="Headline" placeholder="Event Headline" />
+            <Input name="category" label="Category" placeholder="Event Category" />
             <Select
               name="type"
               label="Type"
@@ -134,7 +133,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
             />
           </Fieldset>
           <Fieldset label="Image" disabled={apiState.loading}>
-            <TextInput
+            <Input
               name="featuredImageUrl"
               label="Image Url"
               placeholder="Image Url"
@@ -146,23 +145,19 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
                 },
               }}
             />
-            <TextInput
-              name="featuredImageCaption"
-              label="Image Caption"
-              placeholder="Image Caption"
-            />
+            <Input name="featuredImageCaption" label="Image Caption" placeholder="Image Caption" />
           </Fieldset>
         </Tabs.Item>
         <Tabs.Item title="Dates and location">
           <Fieldset label="Date and time">
-            <DateInput label="Start date:" name="dateStart" />
-            <DateInput label="End date:" name="dateEnd" />
-            <DateInput label="Last Registration Date" name="lastRegistrationDate" />
-            <DateInput label="Last Cancellation Date" name="lastCancellationDate" />
+            <Input label="Start date:" name="dateStart" type="date" />
+            <Input label="End date:" name="dateEnd" type="date" />
+            <Input label="Last Registration Date" name="lastRegistrationDate" type="date" />
+            <Input label="Last Cancellation Date" name="lastCancellationDate" type="date" />
           </Fieldset>
           <Fieldset label="Location" disabled={apiState.loading}>
-            <TextInput name="city" label="City" placeholder="City" />
-            <TextInput name="location" label="Location" placeholder="Location" />
+            <Input name="city" label="City" placeholder="City" />
+            <Input name="location" label="Location" placeholder="Location" />
           </Fieldset>
         </Tabs.Item>
         <Tabs.Item title="Descriptions">
@@ -202,12 +197,12 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
         </Tabs.Item>
         <Tabs.Item title="Certificate">
           <Fieldset label="Certificate info">
-            <TextInput
+            <Input
               name="certificateTitle"
               label="Certificate Title"
               placeholder="Certificate Title"
             />
-            <TextInput
+            <Input
               {...register('certificateDescription')}
               label="Certificate Description"
               placeholder="Certificate Description"
@@ -223,13 +218,13 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
               disabled
               dataTestId="eventeditor-form-eventid"
             />
-            <TextInput name="slug" label="Slug" placeholder="Event Slug" disabled />
-            <TextInput
+            <Input name="slug" label="Slug" placeholder="Event Slug" disabled />
+            <Input
               name="externalInfoPageUrl"
               label="External Info Page URL"
               placeholder="External Info Page URL"
             />
-            <TextInput
+            <Input
               name="externalRegistrationsUrl"
               label="External Registrations URL"
               placeholder="External Registrations URL"
