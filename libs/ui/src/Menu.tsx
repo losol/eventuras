@@ -67,15 +67,25 @@ const MenuItem: FC<MenuItemProps> = ({ children, onClick }) => (
 );
 
 interface MenuLinkProps {
+  closeOnClick?: boolean;
   href: string;
   children: ReactNode;
   [TEST_ID_ATTRIBUTE]?: string;
 }
 const MenuLink: FC<MenuLinkProps> = props => (
   <HeadlessMenu.Item as="li">
-    <Link href={props.href} className={styles.menuItem} data-test-id={props[TEST_ID_ATTRIBUTE]}>
-      {props.children}
-    </Link>
+    {({ close }) => (
+      <div onClick={() => {
+        if (props.closeOnClick) {
+          close()
+        }
+      }}>
+        <Link href={props.href} className={styles.menuItem} data-test-id={props[TEST_ID_ATTRIBUTE]}>
+          {props.children}
+        </Link>
+      </div>
+    )}
+
   </HeadlessMenu.Item>
 );
 

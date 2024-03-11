@@ -1,4 +1,4 @@
-import { Container, Layout } from '@eventuras/ui';
+import { Container } from '@eventuras/ui';
 import Heading from '@eventuras/ui/Heading';
 import Section from '@eventuras/ui/Section';
 import { headers } from 'next/headers';
@@ -41,7 +41,7 @@ const CertificateDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
   }
 
   return (
-    <Layout fluid>
+    <>
       <Section className="bg-white dark:bg-black   pb-8">
         <Container>
           <Heading as="h1">Order</Heading>
@@ -52,7 +52,7 @@ const CertificateDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
           <Certificate certificate={certificate.value!} />
         </Container>
       </Section>
-    </Layout>
+    </>
   );
 };
 

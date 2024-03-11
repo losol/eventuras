@@ -1,7 +1,8 @@
-import { Container, Layout } from '@eventuras/ui';
+import { Container } from '@eventuras/ui';
 import Heading from '@eventuras/ui/Heading';
 import createTranslation from 'next-translate/createTranslation';
 
+import FixedContainer from '@/components/eventuras/navigation/FixedContainer';
 import withAuthorization from '@/utils/auth/withAuthorization';
 
 import UsersActionMenu from './UsersActionMenu';
@@ -10,12 +11,12 @@ const AdminUserPage = async () => {
   const { t } = createTranslation();
 
   return (
-    <Layout>
+    <FixedContainer>
       <Container>
         <Heading as="h1">{t('admin:users.page.title')}</Heading>
         <UsersActionMenu />
       </Container>
-    </Layout>
+    </FixedContainer>
   );
 };
 

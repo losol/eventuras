@@ -1,4 +1,4 @@
-import { Container, Layout } from '@eventuras/ui';
+import { Container } from '@eventuras/ui';
 import Badge from '@eventuras/ui/Badge';
 import Heading from '@eventuras/ui/Heading';
 import Link from '@eventuras/ui/Link';
@@ -66,7 +66,7 @@ const EventDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
   }
 
   return (
-    <Layout fluid>
+    <>
       <Section className="bg-white dark:bg-black   pb-8">
         <Container>
           <Heading as="h1">{eventinfo.value?.title ?? ''}</Heading>
@@ -91,7 +91,7 @@ const EventDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
         statistics={statistics.value!}
         eventProducts={eventProducts.value!}
       />
-    </Layout>
+    </>
   );
 };
 

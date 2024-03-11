@@ -1,4 +1,4 @@
-import { Container, Layout } from '@eventuras/ui';
+import { Container } from '@eventuras/ui';
 import Heading from '@eventuras/ui/Heading';
 import Section from '@eventuras/ui/Section';
 import { headers } from 'next/headers';
@@ -41,7 +41,7 @@ const AdminUserDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
   }
 
   return (
-    <Layout fluid>
+    <>
       <Section className="bg-white dark:bg-black pb-8">
         <Container>
           <Heading as="h1">{t('admin:users.detailspage.title')}</Heading>
@@ -52,7 +52,7 @@ const AdminUserDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
           <UserEditor user={user.value!} adminMode />
         </Container>
       </Section>
-    </Layout>
+    </>
   );
 };
 

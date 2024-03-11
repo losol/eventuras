@@ -10,11 +10,11 @@ interface LinkProps {
   children?: React.ReactNode;
   className?: string;
   variant?:
-    | 'button-primary'
-    | 'button-secondary'
-    | 'button-light'
-    | 'button-outline'
-    | 'button-transparent';
+  | 'button-primary'
+  | 'button-secondary'
+  | 'button-light'
+  | 'button-outline'
+  | 'button-transparent';
   block?: boolean;
   bgDark?: boolean;
   stretch?: boolean;

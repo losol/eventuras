@@ -1,4 +1,4 @@
-import { Container, Layout } from '@eventuras/ui';
+import { Container } from '@eventuras/ui';
 import Heading from '@eventuras/ui/Heading';
 import Section from '@eventuras/ui/Section';
 import createTranslation from 'next-translate/createTranslation';
@@ -11,7 +11,7 @@ const AdminOrdersPage = async () => {
   const { t } = createTranslation();
 
   return (
-    <Layout>
+    <>
       <Container>
         <Heading as="h1">{t('common:collections.page.title')}</Heading>
       </Container>
@@ -20,7 +20,7 @@ const AdminOrdersPage = async () => {
           <CollectionsList />
         </Container>
       </Section>
-    </Layout>
+    </>
   );
 };
 

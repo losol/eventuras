@@ -1,4 +1,4 @@
-import { Container, Layout } from '@eventuras/ui';
+import { Container } from '@eventuras/ui';
 import Heading from '@eventuras/ui/Heading';
 import Section from '@eventuras/ui/Section';
 import { headers } from 'next/headers';
@@ -43,7 +43,7 @@ const OrderDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
   }
 
   return (
-    <Layout fluid>
+    <>
       <Section className="bg-white dark:bg-black   pb-8">
         <Container>
           <Heading as="h1">Order</Heading>
@@ -54,7 +54,7 @@ const OrderDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
           <Order order={order.value!} admin />
         </Container>
       </Section>
-    </Layout>
+    </>
   );
 };
 

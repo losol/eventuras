@@ -1,3 +1,5 @@
+import { FooterLink } from '@eventuras/ui/Footer';
+
 import Environment from '@/utils/Environment';
 
 import Logger from '../Logger';
@@ -6,11 +8,6 @@ export interface FeaturedImage {
   src: string;
   alt: string;
   caption: string;
-}
-
-export interface FooterLink {
-  text: string;
-  href: string;
 }
 
 export interface SupportContact {

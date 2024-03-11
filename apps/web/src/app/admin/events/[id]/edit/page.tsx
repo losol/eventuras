@@ -1,9 +1,9 @@
-import { Layout } from '@eventuras/ui';
 import Heading from '@eventuras/ui/Heading';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
 import EventEditor from '@/app/admin/events/EventEditor';
+import FixedContainer from '@/components/eventuras/navigation/FixedContainer';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';
@@ -41,10 +41,10 @@ const EditEventinfo: React.FC<EditEventinfoProps> = async ({ params }) => {
   }
 
   return (
-    <Layout>
+    <FixedContainer>
       <Heading>{t(`admin:editEvent.content.title`)}</Heading>
       <EventEditor eventinfo={eventinfo.value!} />
-    </Layout>
+    </FixedContainer>
   );
 };
 
