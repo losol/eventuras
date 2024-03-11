@@ -82,8 +82,14 @@ namespace Eventuras.Services.Registrations
             {
                 EventInfoId = eventId,
                 UserId = userId,
-                ParticipantName = user.Name // TODO: remove this property?
+                ParticipantName = user.Name
             };
+
+            // Check if the registration should be verified, and only set it if it's a draft
+            if (options?.Verified == true && registration.Status == Registration.RegistrationStatus.Draft)
+            {
+                registration.Status = Registration.RegistrationStatus.Verified;
+            }
 
             _logger.LogInformation($"Checking create access for registration: UserId {registration.UserId}, EventInfoId {registration.EventInfoId}");
             await _registrationAccessControlService.CheckRegistrationCreateAccessAsync(registration, cancellationToken);

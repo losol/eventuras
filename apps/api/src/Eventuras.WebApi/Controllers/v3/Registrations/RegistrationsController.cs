@@ -105,6 +105,7 @@ namespace Eventuras.WebApi.Controllers.v3.Registrations
             var registration = await _registrationManagementService.CreateRegistrationAsync(dto.EventId, dto.UserId, new RegistrationOptions
             {
                 CreateOrder = dto.CreateOrder,
+                Verified = true,
                 SendWelcomeLetter = dto.SendWelcomeLetter
             }, cancellationToken);
 
