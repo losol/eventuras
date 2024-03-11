@@ -6,12 +6,13 @@ import createTranslation from 'next-translate/createTranslation';
 import withAuthorization from '@/utils/auth/withAuthorization';
 
 import CollectionsList from './CollectionsList';
+import FixedContainer from '@/components/eventuras/navigation/FixedContainer';
 
 const AdminOrdersPage = async () => {
   const { t } = createTranslation();
 
   return (
-    <>
+    <FixedContainer>
       <Container>
         <Heading as="h1">{t('common:collections.page.title')}</Heading>
       </Container>
@@ -20,7 +21,7 @@ const AdminOrdersPage = async () => {
           <CollectionsList />
         </Container>
       </Section>
-    </>
+    </FixedContainer>
   );
 };
 
