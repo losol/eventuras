@@ -6,6 +6,7 @@ using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -21,14 +22,17 @@ namespace Eventuras.WebApi.Controllers.v3.Invoices
     {
         private readonly IInvoicingService _invoicingService;
         private readonly IOrderRetrievalService _orderRetrievalService;
+        private readonly ILogger<InvoicesController> _logger;
 
 
         public InvoicesController(
             IInvoicingService invoicingService,
-            IOrderRetrievalService orderRetrievalService)
+            IOrderRetrievalService orderRetrievalService,
+            ILogger<InvoicesController> logger)
         {
             _invoicingService = invoicingService;
             _orderRetrievalService = orderRetrievalService;
+            _logger = logger;
         }
 
         [HttpGet("{id:int}")]
@@ -40,20 +44,30 @@ namespace Eventuras.WebApi.Controllers.v3.Invoices
         }
 
         [HttpPost]
-        public async Task<InvoiceDto> CreateInvoice([FromBody] InvoiceRequestDto request, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<InvoiceDto>> CreateInvoice([FromBody] InvoiceRequestDto request, CancellationToken cancellationToken = default)
         {
             var orders = new List<Order>();
 
             foreach (var orderId in request.OrderIds)
             {
-                var order = await _orderRetrievalService.GetOrderByIdAsync(orderId);
+                var order = await _orderRetrievalService.GetOrderByIdAsync(orderId, new OrderRetrievalOptions()
+                {
+                    IncludeRegistration = true,
+                    IncludeUser = true,
+                    IncludeOrderLines = true,
+                    IncludeEvent = true
+                }, cancellationToken);
                 if (order != null)
                 {
                     orders.Add(order);
                 }
             }
+            _logger.LogInformation($"Creating invoice for orders {orders}");
 
-            var invoice = await _invoicingService.CreateInvoiceAsync(orders.ToArray());
+            var invoiceInfo = InvoiceInfo.CreateFromOrderList(orders);
+            _logger.LogInformation($"Invoice info {invoiceInfo}");
+
+            var invoice = await _invoicingService.CreateInvoiceAsync(orders.ToArray(), invoiceInfo);
 
             return new InvoiceDto(invoice);
         }
