@@ -21,6 +21,7 @@ namespace Eventuras.Services.Notifications
         private readonly IEventInfoAccessControlService _eventInfoAccessControlService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
+        private readonly IOrganizationRetrievalService _organizationRetrievalService;
         private readonly IRegistrationRetrievalService _registrationRetrievalService;
         private readonly ApplicationDbContext _context;
         private readonly ILogger<NotificationManagementService> _logger;
@@ -29,6 +30,7 @@ namespace Eventuras.Services.Notifications
             IEventInfoRetrievalService eventInfoRetrievalService,
             IEventInfoAccessControlService eventInfoAccessControlService,
             ICurrentOrganizationAccessorService currentOrganizationAccessorService,
+            IOrganizationRetrievalService organizationRetrievalService,
             IRegistrationRetrievalService registrationRetrievalService,
             IHttpContextAccessor httpContextAccessor,
             ApplicationDbContext context,
@@ -42,6 +44,9 @@ namespace Eventuras.Services.Notifications
 
             _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw
                 new ArgumentNullException(nameof(currentOrganizationAccessorService));
+
+            _organizationRetrievalService = organizationRetrievalService ?? throw
+                new ArgumentNullException(nameof(organizationRetrievalService));
 
             _registrationRetrievalService = registrationRetrievalService ?? throw
                 new ArgumentNullException(nameof(registrationRetrievalService));
@@ -67,7 +72,7 @@ namespace Eventuras.Services.Notifications
 
             CheckSubjectAndBody(subject, body);
 
-            var org = await _context.Organizations.FindAsync(orgId);
+            var org = await _organizationRetrievalService.GetOrganizationByIdAsync(orgId);
 
             var currentUser = _httpContextAccessor.HttpContext.User;
 
@@ -93,10 +98,11 @@ namespace Eventuras.Services.Notifications
 
             CheckSubjectAndBody(subject, body);
 
-            var currentOrg = await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
+            var eventinfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId);
+            var organization = await _organizationRetrievalService.GetOrganizationByIdAsync(eventinfo.OrganizationId);
             var currentUser = _httpContextAccessor.HttpContext.User;
 
-            _logger.LogInformation($"Current organization: {currentOrg?.OrganizationId}. Current user id: {currentUser.GetUserId()}");
+            _logger.LogInformation($"Current organization: {organization?.OrganizationId}. Current user id: {currentUser.GetUserId()}");
 
             var recipient = NotificationRecipient.Create(registration, NotificationType.Email);
 
@@ -104,14 +110,14 @@ namespace Eventuras.Services.Notifications
             {
                 // Manually attach existing entities to context
                 _context.Attach(recipient);
-                _context.Attach(currentOrg);
+                _context.Attach(organization);
                 _context.Attach(registration);
 
                 return await _context.CreateAsync(new EmailNotification(subject, body)
                 {
                     CreatedByUserId = currentUser.GetUserId(),
                     EventInfoId = registration.EventInfoId,
-                    OrganizationId = currentOrg?.OrganizationId,
+                    OrganizationId = organization?.OrganizationId,
                     Recipients = new List<NotificationRecipient> { recipient }
                 }, leaveAttached: true, cancellationToken: default);
             }
