@@ -1,4 +1,4 @@
-import { Container, Layout } from '@eventuras/ui';
+import { Container } from '@eventuras/ui';
 import Card from '@eventuras/ui/Card';
 import Heading from '@eventuras/ui/Heading';
 import createTranslation from 'next-translate/createTranslation';
@@ -22,7 +22,7 @@ export default async function Homepage() {
   );
 
   return (
-    <Layout fluid imageNavbar darkImage>
+    <>
       <section>
         <Card backgroundImage="/assets/images/mountains.jpg" dark block>
           <Card.Heading as="h1" spacingClassName="container pt-32">
@@ -41,6 +41,6 @@ export default async function Homepage() {
           </Container>
         </section>
       )}
-    </Layout>
+    </>
   );
 }

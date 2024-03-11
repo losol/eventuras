@@ -1,7 +1,6 @@
 'use client';
 import { TextInput } from '@eventuras/forms';
 import { ApiError, EventDto, EventInfoStatus, Eventuras } from '@eventuras/sdk';
-import { Layout } from '@eventuras/ui';
 import Button from '@eventuras/ui/Button';
 import FatalError from '@eventuras/ui/FatalError';
 import Heading from '@eventuras/ui/Heading';
@@ -10,6 +9,7 @@ import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import FixedContainer from '@/components/eventuras/navigation/FixedContainer';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
@@ -113,7 +113,7 @@ const EventCreator = () => {
   };
   //## Render
   return (
-    <Layout>
+    <FixedContainer>
       <Heading>{t('admin:createEvent.content.title')}</Heading>
       <p>{t('Add a fantastic event!')}</p>
       <form onSubmit={handleSubmit(onSubmitForm)} className="px-8 pt-6 pb-8 mb-4">
@@ -145,7 +145,7 @@ const EventCreator = () => {
         </Button>
       </form>
       {errorIfExists()}
-    </Layout>
+    </FixedContainer>
   );
 };
 export default EventCreator;

@@ -1,4 +1,4 @@
-import { Container, Layout } from '@eventuras/ui';
+import { Container } from '@eventuras/ui';
 import Card from '@eventuras/ui/Card';
 import Heading from '@eventuras/ui/Heading';
 import Link from '@eventuras/ui/Link';
@@ -60,13 +60,13 @@ const CollectionPage: React.FC<EventInfoProps> = async ({ params }) => {
 
   if (notFound)
     return (
-      <Layout>
+      <>
         <Heading>{t('common:events.detailspage.notfound.title')}</Heading>
         <Text className="py-6">{t('common:events.detailspage.notfound.description')}</Text>
         <Link href="/" variant="button-primary">
           {t('common:events.detailspage.notfound.back')}
         </Link>
-      </Layout>
+      </>
     );
 
   const collection = result.value!;
@@ -82,7 +82,7 @@ const CollectionPage: React.FC<EventInfoProps> = async ({ params }) => {
   );
 
   return (
-    <Layout fluid>
+    <>
       {collection?.featuredImageUrl && (
         <Card
           className="mx-auto min-h-[33vh]"
@@ -119,7 +119,7 @@ const CollectionPage: React.FC<EventInfoProps> = async ({ params }) => {
           </Container>
         )}
       </Section>
-    </Layout>
+    </>
   );
 };
 

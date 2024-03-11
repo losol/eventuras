@@ -1,9 +1,9 @@
-import { Layout } from '@eventuras/ui';
 import Heading from '@eventuras/ui/Heading';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 import React from 'react';
 
+import FixedContainer from '@/components/eventuras/navigation/FixedContainer';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
@@ -41,7 +41,7 @@ const UserEventPage: React.FC<UserEventPageProps> = async ({ params }) => {
   );
 
   return (
-    <Layout>
+    <FixedContainer>
       {eventInfo.value.title && (
         <>
           <p className="pt-16">{t('user:events.registration.titleLabel')}</p>
@@ -56,7 +56,7 @@ const UserEventPage: React.FC<UserEventPageProps> = async ({ params }) => {
         availableProducts={availableProducts.value ?? []}
         siteInfo={siteInfo!}
       />
-    </Layout>
+    </FixedContainer>
   );
 };
 

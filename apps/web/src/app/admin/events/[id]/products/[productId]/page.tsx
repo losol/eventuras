@@ -1,4 +1,4 @@
-import { Container, Layout } from '@eventuras/ui';
+import { Container } from '@eventuras/ui';
 import Heading from '@eventuras/ui/Heading';
 import Link from '@eventuras/ui/Link';
 import Section from '@eventuras/ui/Section';
@@ -31,7 +31,7 @@ const EventProducts: React.FC<EventProductsPage> = async ({ params }) => {
   );
 
   return (
-    <Layout fluid>
+    <>
       <Section className="bg-white dark:bg-black py-10">
         <Container>
           <Heading as="h1" spacingClassName="pt-6 mb-3">
@@ -53,7 +53,7 @@ const EventProducts: React.FC<EventProductsPage> = async ({ params }) => {
           </div>
         </Container>
       </Section>
-    </Layout>
+    </>
   );
 };
 

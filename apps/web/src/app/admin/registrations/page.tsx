@@ -1,4 +1,4 @@
-import { Container, Layout } from '@eventuras/ui';
+import { Container } from '@eventuras/ui';
 import Heading from '@eventuras/ui/Heading';
 import Section from '@eventuras/ui/Section';
 import createTranslation from 'next-translate/createTranslation';
@@ -11,7 +11,7 @@ const AdminRegistrationsPage = async () => {
   const { t } = createTranslation();
 
   return (
-    <Layout fluid>
+    <>
       <Section className="py-8">
         <Container>
           <Heading as="h1">{t('common:registrations.page.title')}</Heading>
@@ -22,7 +22,7 @@ const AdminRegistrationsPage = async () => {
           <AdminRegistrationsList />
         </Container>
       </Section>
-    </Layout>
+    </>
   );
 };
 
