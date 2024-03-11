@@ -1,7 +1,7 @@
 'use client';
 import { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo } from 'react';
 import { RecoilRoot } from 'recoil';
 import { createActor } from 'xstate';
 
@@ -15,10 +15,9 @@ type ProvidersProps = {
   session: Session | null;
   children: React.ReactNode;
 };
-//        <UserProvider>{children}</UserProvider>
 
 export default function Providers({ children, session }: ProvidersProps) {
-  const auth = useRef(createActor(AuthenticationFlowMachine)).current;
+  const auth = useMemo(() => createActor(AuthenticationFlowMachine), [])
   auth.start();
 
   const sessionExists = session !== null && session !== undefined;
