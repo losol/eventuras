@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { signIn, signOut } from 'next-auth/react';
 
-import { useAuthSelector } from '@/statemachines/AutheticationFlowMachine';
+import { useAuthSelector } from '@/statemachines/AuthenticationFlowMachine';
 import Environment from '@/utils/Environment';
 
 import UserMenuContent, { LoggedOutLanguagePack, LogginInLanguagePack } from './UserMenuContent';
