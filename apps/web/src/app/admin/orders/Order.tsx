@@ -1,4 +1,4 @@
-import { OrderDto } from '@eventuras/sdk';
+import { OrderDto, OrderStatus } from '@eventuras/sdk';
 import { Section } from '@eventuras/ui';
 import Badge from '@eventuras/ui/Badge';
 import Card from '@eventuras/ui/Card';
