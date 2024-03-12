@@ -520,7 +520,7 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations
             var token = await response.AsTokenAsync();
             token.CheckRegistration(reg);
             Assert.NotEmpty(reg.Orders);
-            Assert.Equal(Registration.RegistrationStatus.Draft, reg.Status);
+            Assert.Equal(Registration.RegistrationStatus.Verified, reg.Status);
 
             var updatedEvent = await scope.Db.EventInfos
                 .AsNoTracking()
