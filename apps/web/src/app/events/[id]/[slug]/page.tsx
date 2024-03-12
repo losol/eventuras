@@ -9,6 +9,7 @@ import createTranslation from 'next-translate/createTranslation';
 
 import EventDetails from '@/app/events/EventDetails';
 import EventRegistrationButton from '@/app/events/EventRegistrationButton';
+import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import { formatDateSpan } from '@/utils/formatDate';
@@ -80,8 +81,10 @@ const Page: React.FC<EventInfoProps> = async ({ params }) => {
     redirect(`/events/${eventinfo.id!}/${eventinfo.slug!}`);
   }
 
+  const hasFeaturedImage = eventinfo.featuredImageUrl ? true : false;
+
   return (
-    <>
+    <Wrapper imageNavbar={hasFeaturedImage} bgDark={hasFeaturedImage}>
       {eventinfo?.featuredImageUrl && (
         <Card
           className="mx-auto min-h-[33vh]"
@@ -117,7 +120,7 @@ const Page: React.FC<EventInfoProps> = async ({ params }) => {
       </section>
 
       <EventDetails eventinfo={eventinfo} />
-    </>
+    </Wrapper>
   );
 };
 

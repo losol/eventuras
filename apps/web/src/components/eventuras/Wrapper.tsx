@@ -5,7 +5,7 @@ import { ReactNode } from 'react';
 
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
-import { UserMenu } from './UserMenu';
+import { UserMenu } from './navigation/UserMenu';
 
 /**
  * Layout component wrapping main content with Header and Footer.
@@ -16,22 +16,30 @@ import { UserMenu } from './UserMenu';
  *
  */
 
-type LayoutWrapperProps = {
+type WrapperProps = {
   children: ReactNode;
   imageNavbar?: boolean;
-  darkImage?: boolean;
+  bgDark?: boolean;
+  fluid?: boolean;
 };
 
-const LayoutWrapper = async (props: LayoutWrapperProps) => {
+const styles = {
+  mainClassName: 'container mx-auto pb-20',
+  fluidMainClassName: 'm-0 pb-20',
+};
+
+const Wrapper = async (props: WrapperProps) => {
   const { t } = createTranslation();
   const site = await getSiteSettings();
   const bgClass = props.imageNavbar
     ? 'bg-transparent z-10 absolute w-full py-1'
     : 'bg-transparent w-full py-1';
 
+  const mainClassName = props.fluid ? styles.fluidMainClassName : styles.mainClassName;
+
   return (
     <>
-      <Navbar title={site?.name ?? 'Eventuras'} bgColor={bgClass} bgDark={props.darkImage}>
+      <Navbar title={site?.name ?? 'Eventuras'} bgColor={bgClass} bgDark={props.bgDark}>
         <UserMenu
           loggedInContent={{
             accountLabel: t('common:labels.account'),
@@ -44,10 +52,12 @@ const LayoutWrapper = async (props: LayoutWrapperProps) => {
           }}
         />
       </Navbar>
-      <main id="main-content">{props.children}</main>
+      <main id="main-content" className={mainClassName}>
+        {props.children}
+      </main>
       <Footer siteTitle={site?.name} links={site?.footerLinks} publisher={site?.publisher} />
     </>
   );
 };
 
-export default LayoutWrapper;
+export default Wrapper;

@@ -3,14 +3,14 @@ import Heading from '@eventuras/ui/Heading';
 import Section from '@eventuras/ui/Section';
 import createTranslation from 'next-translate/createTranslation';
 
-import FixedContainer from '@/components/eventuras/navigation/FixedContainer';
+import Wrapper from '@/components/eventuras/Wrapper';
 import withAuthorization from '@/utils/auth/withAuthorization';
 
 const CertificatesPage = async () => {
   const { t } = createTranslation();
 
   return (
-    <FixedContainer>
+    <Wrapper>
       <Container>
         <Heading as="h1">{t('admin:certificates.page.title')}</Heading>
       </Container>
@@ -19,7 +19,7 @@ const CertificatesPage = async () => {
           <p>{t('admin:certificates.page.description')}</p>
         </Container>
       </Section>
-    </FixedContainer>
+    </Wrapper>
   );
 };
 

@@ -6,14 +6,14 @@ import createTranslation from 'next-translate/createTranslation';
 import withAuthorization from '@/utils/auth/withAuthorization';
 import Environment from '@/utils/Environment';
 
-import LayoutWrapper from '../../components/eventuras/navigation/LayoutWrapper';
+import Wrapper from '../../components/eventuras/Wrapper';
 import AdminEventList from './events/AdminEventList';
 
 const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
 const AdminPage = () => {
   const { t } = createTranslation();
   return (
-    <LayoutWrapper>
+    <Wrapper>
       <Container>
         <Heading as="h1">{t('admin:title')}</Heading>
         <section className="py-10">
@@ -42,7 +42,7 @@ const AdminPage = () => {
         <Link href={`/admin/events`}>{t('common:labels.allEvents')}</Link>
         <AdminEventList organizationId={ORGANIZATION_ID} />
       </Container>
-    </LayoutWrapper>
+    </Wrapper>
   );
 };
 
