@@ -6,6 +6,7 @@ import Section from '@eventuras/ui/Section';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
+import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';
@@ -66,7 +67,7 @@ const EventDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
   }
 
   return (
-    <>
+    <Wrapper fluid>
       <Section className="bg-white dark:bg-black   pb-8">
         <Container>
           <Heading as="h1">{eventinfo.value?.title ?? ''}</Heading>
@@ -91,7 +92,7 @@ const EventDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
         statistics={statistics.value!}
         eventProducts={eventProducts.value!}
       />
-    </>
+    </Wrapper>
   );
 };
 

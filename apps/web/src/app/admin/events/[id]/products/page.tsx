@@ -4,6 +4,7 @@ import Section from '@eventuras/ui/Section';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
+import Wrapper from '@/components/eventuras/Wrapper';
 import { createSDK } from '@/utils/api/EventurasApi';
 
 import EventProductsEditor from './EventProductsEditor';
@@ -24,7 +25,7 @@ const EventProducts: React.FC<EventProductsPage> = async ({ params }) => {
   const products = await eventuras.eventProducts.getV3EventsProducts({ eventId });
 
   return (
-    <>
+    <Wrapper fluid>
       <Section className="bg-white dark:bg-black py-10">
         <Container>
           <Heading as="h1" spacingClassName="pt-6 mb-3">
@@ -37,7 +38,7 @@ const EventProducts: React.FC<EventProductsPage> = async ({ params }) => {
           <EventProductsEditor eventInfo={eventInfo} products={products} />
         </Container>
       </Section>
-    </>
+    </Wrapper>
   );
 };
 
