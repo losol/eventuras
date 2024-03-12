@@ -84,7 +84,7 @@ const Page: React.FC<EventInfoProps> = async ({ params }) => {
   const hasFeaturedImage = eventinfo.featuredImageUrl ? true : false;
 
   return (
-    <Wrapper imageNavbar={hasFeaturedImage} bgDark={hasFeaturedImage}>
+    <Wrapper imageNavbar={hasFeaturedImage} bgDark={hasFeaturedImage} fluid>
       {eventinfo?.featuredImageUrl && (
         <Card
           className="mx-auto min-h-[33vh]"
