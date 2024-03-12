@@ -8,7 +8,7 @@ import { authOptions } from '@/utils/authOptions';
 import Environment from '@/utils/Environment';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
-import LayoutWrapper from '../components/eventuras/navigation/LayoutWrapper';
+import Wrapper from '../components/eventuras/Wrapper';
 import Providers from './Providers';
 
 const siteSettings = await getSiteSettings();
@@ -27,11 +27,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang={Environment.NEXT_PUBLIC_DEFAULT_LOCALE}>
       <body>
-        <Providers session={session}>
-          <LayoutWrapper imageNavbar darkImage>
-            {children}
-          </LayoutWrapper>
-        </Providers>
+        <Providers session={session}>{children}</Providers>
       </body>
     </html>
   );

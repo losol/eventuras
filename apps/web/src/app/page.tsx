@@ -4,6 +4,7 @@ import Heading from '@eventuras/ui/Heading';
 import createTranslation from 'next-translate/createTranslation';
 
 import { EventGrid } from '@/components/event';
+import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import getSiteSettings from '@/utils/site/getSiteSettings';
@@ -22,7 +23,7 @@ export default async function Homepage() {
   );
 
   return (
-    <>
+    <Wrapper imageNavbar bgDark fluid>
       <section>
         <Card backgroundImage="/assets/images/mountains.jpg" dark block>
           <Card.Heading as="h1" spacingClassName="container pt-32">
@@ -41,6 +42,6 @@ export default async function Homepage() {
           </Container>
         </section>
       )}
-    </>
+    </Wrapper>
   );
 }

@@ -2,7 +2,7 @@ import Heading from '@eventuras/ui/Heading';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
-import FixedContainer from '@/components/eventuras/navigation/FixedContainer';
+import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
 import UserEditor from '../../admin/users/UserEditor';
@@ -13,14 +13,14 @@ const UserAccountPage = async () => {
 
   const result = await apiWrapper(() => eventuras.users.getV3UsersMe({}));
   if (!result.ok || !result.value) {
-    return <FixedContainer>{t('user:page.profileNotFound')}</FixedContainer>;
+    return <Wrapper>{t('user:page.profileNotFound')}</Wrapper>;
   }
 
   return (
-    <FixedContainer>
+    <Wrapper>
       <Heading>{t('user:profile.page.heading')}</Heading>
       <UserEditor user={result.value} />
-    </FixedContainer>
+    </Wrapper>
   );
 };
 

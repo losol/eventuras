@@ -2,7 +2,7 @@ import Heading from '@eventuras/ui/Heading';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
-import FixedContainer from '@/components/eventuras/navigation/FixedContainer';
+import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
 import UserEventRegistrations from '../../components/user/UserEventRegistrations';
@@ -24,13 +24,13 @@ const UserPage = async () => {
   );
 
   return (
-    <FixedContainer>
+    <Wrapper>
       <Heading>{t('user:page.heading')}</Heading>
       <UserProfileCard profile={profile.value!} />
       {registrations.value && registrations.value.count! > 0 && (
         <UserEventRegistrations registrations={registrations.value.data!} />
       )}
-    </FixedContainer>
+    </Wrapper>
   );
 };
 
