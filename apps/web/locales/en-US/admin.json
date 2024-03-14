@@ -8,6 +8,11 @@
       "title": "Certificates"
     }
   },
+  "collection": {
+    "labels": {
+      "create": "Create collection"
+    }
+  },
   "createEvent": {
     "alreadyExists": {
       "description": "An Event with that slug already exists, the slug needs to be unique.",

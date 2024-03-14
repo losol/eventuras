@@ -1,5 +1,6 @@
 'use client';
 
+import { MarkdownInput } from '@eventuras/markdowninput';
 import { EventCollectionDto, EventDto } from '@eventuras/sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
 import Button from '@eventuras/ui/Button';
@@ -132,7 +133,12 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
           data-test-id="event-collection-edit-form"
         >
           <Input name="name" label="Name" placeholder="Collection Name" required />
-          <Input name="description" label="Description" placeholder="Collection Description" />
+          <MarkdownInput
+            name="description"
+            label="Description"
+            placeholder="Collection Description"
+          />
+          <Input name="slug" label="Slug" placeholder="Collection Slug" disabled />
           <CheckboxInput name="featured">
             <CheckboxLabel>Featured</CheckboxLabel>
           </CheckboxInput>

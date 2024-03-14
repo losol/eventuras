@@ -53,7 +53,7 @@ const CollectionsList: React.FC = () => {
       header: t('common:labels.name').toString(),
       cell: info => info.getValue(),
     }),
-    columnHelper.accessor('id', {
+    columnHelper.display({
       header: t('admin:eventColumns.actions').toString(),
       cell: info => renderCollectionActions(info.row.original),
     }),
