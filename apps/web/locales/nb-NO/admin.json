@@ -8,6 +8,11 @@
       "title": "Deltakerbevis"
     }
   },
+  "collection": {
+    "labels": {
+      "create": "Lag samling"
+    }
+  },
   "createEvent": {
     "alreadyExists": {
       "description": "En hendelse med den sneglen eksisterer allerede, sneglen må være unik.",

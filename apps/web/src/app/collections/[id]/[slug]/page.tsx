@@ -1,3 +1,4 @@
+import { MarkdownContent } from '@eventuras/markdown';
 import { Container } from '@eventuras/ui';
 import Card from '@eventuras/ui/Card';
 import Heading from '@eventuras/ui/Heading';
@@ -7,6 +8,8 @@ import Text from '@eventuras/ui/Text';
 import { redirect } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 
+import EventCard from '@/components/event/EventCard';
+import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';
@@ -82,7 +85,7 @@ const CollectionPage: React.FC<EventInfoProps> = async ({ params }) => {
   );
 
   return (
-    <>
+    <Wrapper>
       {collection?.featuredImageUrl && (
         <Card
           className="mx-auto min-h-[33vh]"
@@ -94,7 +97,7 @@ const CollectionPage: React.FC<EventInfoProps> = async ({ params }) => {
           <Heading as="h1" spacingClassName="pt-6 pb-3">
             {collection?.name ?? 'Mysterious Collection'}
           </Heading>
-          <Text text={collection.description} className="py-3" />
+          <MarkdownContent markdown={collection.description} />
         </Container>
       </Section>
       <Section>
@@ -104,22 +107,16 @@ const CollectionPage: React.FC<EventInfoProps> = async ({ params }) => {
               {t('common:collections.detailspage.eventstitle')}
             </Heading>
             {eventinfos.value.data.map(eventinfo => (
-              <Card key={eventinfo.id} className="mb-4">
-                <Card.Heading as="h2">{eventinfo.title}</Card.Heading>
-                <Card.Text className="pb-4">{eventinfo.description}</Card.Text>
-                <Link href={`/events/${eventinfo.id}/${eventinfo.slug}`} variant="button-primary">
-                  {t('common:labels.view')}
-                </Link>
-              </Card>
+              <EventCard key={eventinfo.id} eventinfo={eventinfo} />
             ))}
           </Container>
         ) : (
           <Container>
-            <Text className="py-6">{t('common:events.detailspage.noevents')}</Text>
+            <Text className="py-6">{t('common:labels.noevents')}</Text>
           </Container>
         )}
       </Section>
-    </>
+    </Wrapper>
   );
 };
 

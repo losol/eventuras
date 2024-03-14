@@ -6,6 +6,7 @@ import createTranslation from 'next-translate/createTranslation';
 import Wrapper from '@/components/eventuras/Wrapper';
 import withAuthorization from '@/utils/auth/withAuthorization';
 
+import CollectionCreator from './CollectionCreator';
 import CollectionsList from './CollectionsList';
 
 const AdminOrdersPage = async () => {
@@ -15,6 +16,7 @@ const AdminOrdersPage = async () => {
     <Wrapper>
       <Container>
         <Heading as="h1">{t('common:collections.page.title')}</Heading>
+        <CollectionCreator />
       </Container>
       <Section>
         <Container>

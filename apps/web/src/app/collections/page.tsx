@@ -1,3 +1,4 @@
+import { MarkdownContent } from '@eventuras/markdown';
 import Card from '@eventuras/ui/Card';
 import Heading from '@eventuras/ui/Heading';
 import Link from '@eventuras/ui/Link';
@@ -43,9 +44,11 @@ const CollectionIndexPage: React.FC = async () => {
         {collections &&
           collections.data &&
           collections.data.map(collection => (
-            <Card key={collection.id} className="mb-4">
+            <Card key={collection.id} className="my-4">
               <Card.Heading as="h2">{collection.name}</Card.Heading>
-              <Card.Text className="pb-4">{collection.description}</Card.Text>
+              <Card.Text className="pb-4">
+                <MarkdownContent markdown={collection.description} />
+              </Card.Text>
               <Link
                 href={`/collections/${collection.id}/${collection.slug}`}
                 variant="button-primary"
