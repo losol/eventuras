@@ -1,4 +1,4 @@
-import { MarkdownInput } from '@eventuras/markdown';
+import { MarkdownInput } from '@eventuras/markdowninput';
 import { EmailNotificationDto, RegistrationType, SmsNotificationDto } from '@eventuras/sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input, TextAreaInput } from '@eventuras/smartform';
 import { AppNotificationOptions } from '@eventuras/ui/AppNotifications';
