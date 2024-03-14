@@ -1,13 +1,12 @@
 {
-  "name": "@eventuras/markdown",
+  "name": "@eventuras/markdowninput",
   "version": "0.1.0",
   "main": "src/index.tsx",
   "dependencies": {
     "@eventuras/forms": "*",
     "@eventuras/scribo": "*",
     "@eventuras/smartform": "*",
-    "@eventuras/ui": "*",
-    "markdown-to-jsx": "^7.4.3"
+    "@eventuras/ui": "*"
   },
   "peerDependencies": {
     "react": "^18.2.0",

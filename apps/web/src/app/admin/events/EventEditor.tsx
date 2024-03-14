@@ -1,6 +1,7 @@
 'use client';
 
 import { Fieldset } from '@eventuras/forms';
+import { MarkdownInput } from '@eventuras/markdowninput';
 import { ApiError, EventDto, EventFormDto, EventInfoStatus, EventInfoType } from '@eventuras/sdk';
 import {
   CheckboxInput,
@@ -8,7 +9,6 @@ import {
   Form,
   HiddenInput,
   Input,
-  MarkdownInput,
   NumberInput,
   Select,
 } from '@eventuras/smartform';

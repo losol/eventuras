@@ -48,7 +48,6 @@
     "html-react-parser": "^5.1.8",
     "i18n": "^0.15.1",
     "jwt-decode": "^4.0.0",
-    "markdown-to-jsx": "^7.4.1",
     "next": "^14.1.1",
     "next-auth": "4.24.6",
     "next-translate": "^2.6.2",

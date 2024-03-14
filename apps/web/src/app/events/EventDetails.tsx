@@ -1,10 +1,10 @@
 // EventDetails.tsx
 'use client';
 
+import { MarkdownContent } from '@eventuras/markdown';
 import { EventDto } from '@eventuras/sdk';
 import Heading from '@eventuras/ui/Heading';
 import Link from '@eventuras/ui/Link';
-import MarkdownContent from '@eventuras/ui/MarkdownContent';
 import createTranslation from 'next-translate/createTranslation';
 import React from 'react';
 
