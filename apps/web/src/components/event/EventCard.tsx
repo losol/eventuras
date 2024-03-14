@@ -1,3 +1,4 @@
+import { MarkdownContent } from '@eventuras/markdown';
 import { EventDto } from '@eventuras/sdk';
 import Card from '@eventuras/ui/Card';
 import Link from 'next/link';
@@ -19,7 +20,11 @@ const EventCard: React.FC<EventCardProps> = ({ eventinfo }) => {
           </Link>
         </Card.Heading>
       )}
-      {eventinfo.description && <Card.Text>{eventinfo.description}</Card.Text>}
+      {eventinfo.description && (
+        <Card.Text>
+          <MarkdownContent markdown={eventinfo.description} />
+        </Card.Text>
+      )}
       {eventinfo.location && <Card.Text>{eventinfo.location}</Card.Text>}
       <Card.Text>
         {formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, {
