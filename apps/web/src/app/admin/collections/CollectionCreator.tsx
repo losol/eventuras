@@ -22,8 +22,6 @@ const CollectionCreator: React.FC = () => {
   const router = useRouter();
 
   const createCollection = async (data: EventCollectionCreateDto) => {
-    console.log(data);
-
     const slug = slugify(data.name);
     data.slug = slug;
 
