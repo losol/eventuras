@@ -2,26 +2,25 @@ using Eventuras.Services.Users;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Eventuras.WebApi.Controllers.v3.Users
+namespace Eventuras.WebApi.Controllers.v3.Users;
+
+public class UsersQueryDto : PageQueryDto
 {
-    public class UsersQueryDto : PageQueryDto
+    [FromQuery]
+    public string Query { get; set; }
+    public int? OrganizationId { get; set; }
+    public bool IncludeOrgMembership { get; set; } = false;
+
+    public UserListOrder Order { get; set; } = UserListOrder.GivenName;
+
+    public bool Descending { get; set; }
+
+    public UserFilter ToUserFilter()
     {
-        [FromQuery]
-        public string Query { get; set; }
-        public int? OrganizationId { get; set; }
-        public bool IncludeOrgMembership { get; set; } = false;
-
-        public UserListOrder Order { get; set; } = UserListOrder.GivenName;
-
-        public bool Descending { get; set; }
-
-        public UserFilter ToUserFilter()
+        return new UserFilter
         {
-            return new UserFilter
-            {
-                Query = Query,
-                OrganizationId = OrganizationId,
-            };
-        }
+            Query = Query,
+            OrganizationId = OrganizationId,
+        };
     }
 }

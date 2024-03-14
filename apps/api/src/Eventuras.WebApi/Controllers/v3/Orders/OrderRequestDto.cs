@@ -1,9 +1,8 @@
-namespace Eventuras.WebApi.Controllers.v3.Orders
-{
-    public class OrderRequestDto
-    {
-        public bool IncludeUser { get; set; }
+namespace Eventuras.WebApi.Controllers.v3.Orders;
 
-        public bool IncludeRegistration { get; set; }
-    }
+public class OrderRequestDto
+{
+    public bool IncludeUser { get; set; }
+
+    public bool IncludeRegistration { get; set; }
 }
