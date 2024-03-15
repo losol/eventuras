@@ -37,7 +37,7 @@ jobs:
       - name: Install dotnet-format
         run: dotnet tool install -g dotnet-format
       - name: Format code
-        run: --verify-no-changes
+        run: dotnet format --verify-no-changes
 
   build:
     name: Build project
