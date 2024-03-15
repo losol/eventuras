@@ -1,45 +1,44 @@
-using Eventuras.Domain;
 using System;
+using Eventuras.Domain;
 using Xunit;
 
-namespace Eventuras.UnitTests
+namespace Eventuras.UnitTests;
+
+public class OrderLineTests
 {
-    public class OrderLineTests
+    public class CreateRefundOrderLine_Should
     {
-        public class CreateRefundOrderLine_Should
+        [Fact]
+        public void ReturnAnOrderLine() // Give this a better name!
         {
-            [Fact]
-            public void ReturnAnOrderLine() // Give this a better name!
+            OrderLine line = new OrderLine
             {
-                OrderLine line = new OrderLine
-                {
-                    ProductId = 1,
-                    ProductVariantId = 1,
-                    OrderId = 1,
-                    Price = 100,
-                    Quantity = 1
-                };
-                var refund = line.CreateRefundOrderLine();
+                ProductId = 1,
+                ProductVariantId = 1,
+                OrderId = 1,
+                Price = 100,
+                Quantity = 1
+            };
+            var refund = line.CreateRefundOrderLine();
 
-                Assert.Equal(line.Price, refund.Price);
-                Assert.Equal(-line.Quantity, refund.Quantity);
-                Assert.Equal(-line.LineTotal, refund.LineTotal);
-            }
+            Assert.Equal(line.Price, refund.Price);
+            Assert.Equal(-line.Quantity, refund.Quantity);
+            Assert.Equal(-line.LineTotal, refund.LineTotal);
+        }
 
-            [Fact]
-            public void ThrowExceptionIfRefundOrderLine()
+        [Fact]
+        public void ThrowExceptionIfRefundOrderLine()
+        {
+            var line = new OrderLine
             {
-                var line = new OrderLine
-                {
-                    ProductId = 1,
-                    ProductVariantId = 1,
-                    OrderId = 1,
-                    Price = 100,
-                    Quantity = 1
-                };
-                var refundLine = line.CreateRefundOrderLine();
-                Assert.Throws<InvalidOperationException>(() => refundLine.CreateRefundOrderLine());
-            }
+                ProductId = 1,
+                ProductVariantId = 1,
+                OrderId = 1,
+                Price = 100,
+                Quantity = 1
+            };
+            var refundLine = line.CreateRefundOrderLine();
+            Assert.Throws<InvalidOperationException>(() => refundLine.CreateRefundOrderLine());
         }
     }
 }

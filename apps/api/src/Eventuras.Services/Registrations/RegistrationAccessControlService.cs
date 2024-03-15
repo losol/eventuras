@@ -1,3 +1,8 @@
+using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services.Auth;
 using Eventuras.Services.Events;
@@ -6,11 +11,6 @@ using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using NodaTime;
-using System;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Eventuras.Services.Registrations;
 
@@ -43,7 +43,8 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
 
     public async Task CheckRegistrationCreateAccessAsync(Registration registration, CancellationToken cancellationToken = default)
     {
-        if (_httpContextAccessor.HttpContext == null) throw new InvalidOperationException("HttpContext is not available.");
+        if (_httpContextAccessor.HttpContext == null)
+            throw new InvalidOperationException("HttpContext is not available.");
 
         var contextUser = _httpContextAccessor.HttpContext.User;
         var requestingUserId = contextUser.GetUserId();
@@ -169,9 +170,11 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
     public async Task<IQueryable<Registration>> AddAccessFilterAsync(IQueryable<Registration> query, CancellationToken cancellationToken = default)
     {
         var user = _httpContextAccessor.HttpContext.User;
-        if (user.IsAnonymous()) throw new NotAccessibleException("Anonymous users are not permitted to list any registrations.");
+        if (user.IsAnonymous())
+            throw new NotAccessibleException("Anonymous users are not permitted to list any registrations.");
 
-        if (user.IsPowerAdmin()) return query; // super admins can ready any reg
+        if (user.IsPowerAdmin())
+            return query; // super admins can ready any reg
 
         if (!user.IsAdmin())
             // non-admins can only read their own registrations
@@ -185,17 +188,20 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
 
     private async Task<bool> CheckAdminAccessAsync(ClaimsPrincipal user, Registration registration, CancellationToken cancellationToken = default)
     {
-        if (user.IsPowerAdmin()) return true;
+        if (user.IsPowerAdmin())
+            return true;
 
-        if (!user.IsAdmin()) return false;
+        if (!user.IsAdmin())
+            return false;
 
         var org = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(new OrganizationRetrievalOptions
-            {
-                LoadMembers = true,
-            },
+        {
+            LoadMembers = true,
+        },
             cancellationToken);
 
-        if (org.Members.TrueForAll(m => m.UserId != user.GetUserId())) return false;
+        if (org.Members.TrueForAll(m => m.UserId != user.GetUserId()))
+            return false;
 
         var @event = await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
         return @event.OrganizationId == org.OrganizationId;
@@ -206,9 +212,11 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
         Registration registration,
         CancellationToken cancellationToken = default)
     {
-        if (user.IsAnonymous()) return false;
+        if (user.IsAnonymous())
+            return false;
 
-        if (registration.UserId == user.GetUserId()) return true;
+        if (registration.UserId == user.GetUserId())
+            return true;
 
         return await CheckAdminAccessAsync(user, registration, cancellationToken);
     }

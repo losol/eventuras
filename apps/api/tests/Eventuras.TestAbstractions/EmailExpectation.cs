@@ -1,126 +1,125 @@
-using Losol.Communication.Email;
-using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Losol.Communication.Email;
+using Moq;
 
-namespace Eventuras.TestAbstractions
+namespace Eventuras.TestAbstractions;
+
+public class EmailExpectation
 {
-    public class EmailExpectation
+    private const string Placeholder = "Placeholder";
+
+    private readonly Mock<IEmailSender> _mock;
+
+    private string _email = "test@test.com";
+    private string _subject = Placeholder;
+    private string _message = Placeholder;
+    private readonly List<string> _subjectContains = new();
+    private readonly List<string> _htmlContained = new();
+    private bool _shouldNotHaveAttachment;
+    private bool _shouldHaveAttachment;
+
+    public EmailExpectation(Mock<IEmailSender> mock)
     {
-        private const string Placeholder = "Placeholder";
+        _mock = mock;
+    }
 
-        private readonly Mock<IEmailSender> _mock;
+    public EmailExpectation SentTo(string email)
+    {
+        _email = email;
+        return this;
+    }
 
-        private string _email = "test@test.com";
-        private string _subject = Placeholder;
-        private string _message = Placeholder;
-        private readonly List<string> _subjectContains = new();
-        private readonly List<string> _htmlContained = new();
-        private bool _shouldNotHaveAttachment;
-        private bool _shouldHaveAttachment;
+    public EmailExpectation WithSubject(string subject)
+    {
+        _subject = subject;
+        return this;
+    }
 
-        public EmailExpectation(Mock<IEmailSender> mock)
+    public EmailExpectation WithMessage(string message)
+    {
+        _message = message;
+        return this;
+    }
+
+    public EmailExpectation HavingAttachment(bool hasAttachment = true)
+    {
+        _shouldHaveAttachment = hasAttachment;
+        _shouldNotHaveAttachment = !hasAttachment;
+        return this;
+    }
+
+    public EmailExpectation SubjectContains(string text)
+    {
+        _subjectContains.Add(text);
+        return this;
+    }
+
+    public EmailExpectation ContainingHtml(string html)
+    {
+        _htmlContained.Add(html);
+        return this;
+    }
+
+    public EmailExpectation Setup()
+    {
+        _mock.Setup(s => s.SendEmailAsync(It.IsAny<EmailModel>(), new EmailOptions() { }));
+        return this;
+    }
+
+    public void VerifyEmailSent(Times? times = null)
+    {
+        if (times == null)
         {
-            _mock = mock;
+            times = Times.Once();
         }
 
-        public EmailExpectation SentTo(string email)
+        Func<EmailModel, bool> compareFunc = m =>
         {
-            _email = email;
-            return this;
-        }
-
-        public EmailExpectation WithSubject(string subject)
-        {
-            _subject = subject;
-            return this;
-        }
-
-        public EmailExpectation WithMessage(string message)
-        {
-            _message = message;
-            return this;
-        }
-
-        public EmailExpectation HavingAttachment(bool hasAttachment = true)
-        {
-            _shouldHaveAttachment = hasAttachment;
-            _shouldNotHaveAttachment = !hasAttachment;
-            return this;
-        }
-
-        public EmailExpectation SubjectContains(string text)
-        {
-            _subjectContains.Add(text);
-            return this;
-        }
-
-        public EmailExpectation ContainingHtml(string html)
-        {
-            _htmlContained.Add(html);
-            return this;
-        }
-
-        public EmailExpectation Setup()
-        {
-            _mock.Setup(s => s.SendEmailAsync(It.IsAny<EmailModel>(), new EmailOptions() { }));
-            return this;
-        }
-
-        public void VerifyEmailSent(Times? times = null)
-        {
-            if (times == null)
+            if (!Placeholder.Equals(_email) && m.Recipients.All(r => r.Email != _email))
             {
-                times = Times.Once();
+                return false;
             }
 
-            Func<EmailModel, bool> compareFunc = m =>
+            if (!Placeholder.Equals(_subject) && m.Subject != _subject)
             {
-                if (!Placeholder.Equals(_email) && m.Recipients.All(r => r.Email != _email))
-                {
-                    return false;
-                }
+                return false;
+            }
 
-                if (!Placeholder.Equals(_subject) && m.Subject != _subject)
-                {
-                    return false;
-                }
+            if (!Placeholder.Equals(_message) && (m.TextBody ?? m.HtmlBody).Equals(_message))
+            {
+                return false;
+            }
 
-                if (!Placeholder.Equals(_message) && (m.TextBody ?? m.HtmlBody).Equals(_message))
-                {
-                    return false;
-                }
+            if (_subjectContains.Any() && !_subjectContains.Any(s => m.Subject.Contains(s)))
+            {
+                return false;
+            }
 
-                if (_subjectContains.Any() && !_subjectContains.Any(s => m.Subject.Contains(s)))
-                {
-                    return false;
-                }
+            if (_htmlContained.Any() && _htmlContained.All(s => m.HtmlBody?.Contains(s) != true))
+            {
+                return false;
+            }
 
-                if (_htmlContained.Any() && _htmlContained.All(s => m.HtmlBody?.Contains(s) != true))
-                {
-                    return false;
-                }
+            if (_shouldHaveAttachment && !m.Attachments.Any())
+            {
+                return false;
+            }
 
-                if (_shouldHaveAttachment && !m.Attachments.Any())
-                {
-                    return false;
-                }
+            if (_shouldNotHaveAttachment && m.Attachments.Any())
+            {
+                return false;
+            }
 
-                if (_shouldNotHaveAttachment && m.Attachments.Any())
-                {
-                    return false;
-                }
-
-                return true;
-            };
+            return true;
+        };
 
 
-            _mock.Verify(s => s
-                .SendEmailAsync(
-                    It.Is<EmailModel>(m => compareFunc(m)),
-                    It.IsAny<EmailOptions>()),
-                    times.Value);
-        }
+        _mock.Verify(s => s
+            .SendEmailAsync(
+                It.Is<EmailModel>(m => compareFunc(m)),
+                It.IsAny<EmailOptions>()),
+                times.Value);
     }
 }

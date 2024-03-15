@@ -1,14 +1,14 @@
-﻿#nullable enable
+#nullable enable
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Eventuras.Domain;
 using Eventuras.WebApi.Controllers.v3.Events;
 using Eventuras.WebApi.Controllers.v3.Events.Products;
 using Eventuras.WebApi.Controllers.v3.Orders;
 using Eventuras.WebApi.Controllers.v3.Registrations;
 using Eventuras.WebApi.Controllers.v3.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests;
@@ -23,7 +23,8 @@ public static class ModelValidations
         bool checkAutoCreatedOrder = false,
         bool checkProducts = false)
     {
-        if (expected is not null) Assert.NotNull(actual);
+        if (expected is not null)
+            Assert.NotNull(actual);
         else
         {
             Assert.Null(actual);
@@ -37,15 +38,20 @@ public static class ModelValidations
         Assert.Equal(expected.Type, actual.Type);
         Assert.Equal(expected.Notes, actual.Notes);
 
-        if (checkUserInfo) CheckUserInfo(expected.User, actual.User);
-        if (checkEventInfo) CheckEventInfo(expected.EventInfo, actual.Event);
-        if (checkAutoCreatedOrder) CheckOrders(expected.Orders, actual.Orders?.ToArray());
-        if (checkProducts) CheckProducts(expected.Products, actual.Products);
+        if (checkUserInfo)
+            CheckUserInfo(expected.User, actual.User);
+        if (checkEventInfo)
+            CheckEventInfo(expected.EventInfo, actual.Event);
+        if (checkAutoCreatedOrder)
+            CheckOrders(expected.Orders, actual.Orders?.ToArray());
+        if (checkProducts)
+            CheckProducts(expected.Products, actual.Products);
     }
 
     private static void CheckProducts(ICollection<OrderDTO>? expected, IEnumerable<ProductOrderDto>? actual)
     {
-        if (expected is not null) Assert.NotNull(actual);
+        if (expected is not null)
+            Assert.NotNull(actual);
         else
         {
             Assert.Null(actual);
@@ -63,7 +69,8 @@ public static class ModelValidations
 
     public static void CheckOrders(ICollection<Order>? expected, ICollection<OrderDto>? actual)
     {
-        if (expected is not null) Assert.NotNull(actual);
+        if (expected is not null)
+            Assert.NotNull(actual);
         else
         {
             Assert.Null(actual);
@@ -85,7 +92,8 @@ public static class ModelValidations
 
     public static void CheckOrder(Order? expected, OrderDto? actual, bool checkUserInfo = false, bool checkRegistration = false, bool checkItems = false)
     {
-        if (expected is not null) Assert.NotNull(actual);
+        if (expected is not null)
+            Assert.NotNull(actual);
         else
         {
             Assert.Null(actual);
@@ -98,17 +106,21 @@ public static class ModelValidations
         Assert.Equal(expected.UserId, actual.UserId);
         Assert.Equal(expected.RegistrationId, actual.RegistrationId);
 
-        if (checkUserInfo) CheckUserInfo(expected.User, actual.User);
-        if (checkItems) CheckOrderItems(expected.OrderLines, actual.Items);
+        if (checkUserInfo)
+            CheckUserInfo(expected.User, actual.User);
+        if (checkItems)
+            CheckOrderItems(expected.OrderLines, actual.Items);
 
         // we need mapper with enabled reference handling (automapper / mapperly / mapster) + remove duplicated dtos:
         // if (checkRegistration) CheckRegistration(expected.Registration, actual.Registration);
-        if (checkRegistration) throw new NotImplementedException();
+        if (checkRegistration)
+            throw new NotImplementedException();
     }
 
     private static void CheckOrderItems(ICollection<OrderLine>? expected, IEnumerable<OrderLineDto>? actual)
     {
-        if (expected is not null) Assert.NotNull(actual);
+        if (expected is not null)
+            Assert.NotNull(actual);
         else
         {
             Assert.Null(actual);
@@ -126,7 +138,8 @@ public static class ModelValidations
 
     public static void CheckEventInfo(EventInfo? expected, EventDto? actual)
     {
-        if (expected is not null) Assert.NotNull(actual);
+        if (expected is not null)
+            Assert.NotNull(actual);
         else
         {
             Assert.Null(actual);
@@ -152,7 +165,8 @@ public static class ModelValidations
 
     public static void CheckUserInfo(ApplicationUser? expected, UserDto? actual)
     {
-        if (expected is not null) Assert.NotNull(actual);
+        if (expected is not null)
+            Assert.NotNull(actual);
         else
         {
             Assert.Null(actual);

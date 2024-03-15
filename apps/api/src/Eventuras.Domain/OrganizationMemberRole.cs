@@ -1,16 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Eventuras.Domain
+namespace Eventuras.Domain;
+
+public class OrganizationMemberRole
 {
-    public class OrganizationMemberRole
-    {
-        public int OrganizationMemberId { get; set; }
+    public int OrganizationMemberId { get; set; }
 
-        [Required]
-        public string Role { get; set; }
+    [Required]
+    public string Role { get; set; }
 
-        [ForeignKey(nameof(OrganizationMemberId))]
-        public OrganizationMember OrganizationMember { get; set; }
-    }
+    [ForeignKey(nameof(OrganizationMemberId))]
+    public OrganizationMember OrganizationMember { get; set; }
 }

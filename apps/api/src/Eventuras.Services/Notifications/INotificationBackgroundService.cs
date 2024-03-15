@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
 
-namespace Eventuras.Services.Notifications
+namespace Eventuras.Services.Notifications;
+
+public interface INotificationBackgroundService
 {
-    public interface INotificationBackgroundService
-    {
-        Task SendNotificationToRecipientAsync(int recipientId, bool accessControlDone = false);
-    }
+    Task SendNotificationToRecipientAsync(int recipientId, bool accessControlDone = false);
 }

@@ -1,13 +1,12 @@
-namespace Eventuras.Services.EventCollections
+namespace Eventuras.Services.EventCollections;
+
+public class EventCollectionListRequest : PagingRequest
 {
-    public class EventCollectionListRequest : PagingRequest
-    {
-        public EventCollectionListRequest(int offset, int limit) : base(offset, limit) { }
+    public EventCollectionListRequest(int offset, int limit) : base(offset, limit) { }
 
-        public EventCollectionFilter Filter { get; set; } = new EventCollectionFilter();
+    public EventCollectionFilter Filter { get; set; } = new EventCollectionFilter();
 
-        public EventCollectionOrder Order { get; set; } = EventCollectionOrder.Name;
+    public EventCollectionOrder Order { get; set; } = EventCollectionOrder.Name;
 
-        public bool Descending { get; set; }
-    }
+    public bool Descending { get; set; }
 }

@@ -1,12 +1,11 @@
 using Eventuras.Services.Organizations.Settings;
 
-namespace Eventuras.Services.SendGrid
+namespace Eventuras.Services.SendGrid;
+
+internal class SendGridSettingsRegistryComponent : IOrganizationSettingsRegistryComponent
 {
-    internal class SendGridSettingsRegistryComponent : IOrganizationSettingsRegistryComponent
+    public void RegisterSettings(IOrganizationSettingsRegistry registry)
     {
-        public void RegisterSettings(IOrganizationSettingsRegistry registry)
-        {
-            registry.RegisterSettings<OrganizationSendGridSettings>();
-        }
+        registry.RegisterSettings<OrganizationSendGridSettings>();
     }
 }

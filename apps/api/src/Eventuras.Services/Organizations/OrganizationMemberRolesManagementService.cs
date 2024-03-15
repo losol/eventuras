@@ -1,56 +1,55 @@
-using Eventuras.Domain;
-using Eventuras.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Domain;
+using Eventuras.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
-namespace Eventuras.Services.Organizations
+namespace Eventuras.Services.Organizations;
+
+internal class OrganizationMemberRolesManagementService : IOrganizationMemberRolesManagementService
 {
-    internal class OrganizationMemberRolesManagementService : IOrganizationMemberRolesManagementService
+    private readonly ApplicationDbContext _context;
+
+    public OrganizationMemberRolesManagementService(ApplicationDbContext context)
     {
-        private readonly ApplicationDbContext _context;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+    }
 
-        public OrganizationMemberRolesManagementService(ApplicationDbContext context)
+    public async Task UpdateOrganizationMemberRolesAsync(int memberId, string[] roles)
+    {
+        if (roles == null)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            throw new ArgumentNullException(nameof(roles));
         }
 
-        public async Task UpdateOrganizationMemberRolesAsync(int memberId, string[] roles)
+        var member = await _context.OrganizationMembers
+            .Include(m => m.Roles)
+            .SingleAsync(m => m.Id == memberId);
+
+        var oldRoles = member.Roles
+            .ToDictionary(r => r.Role);
+
+        foreach (var role in roles)
         {
-            if (roles == null)
+            if (oldRoles.ContainsKey(role))
             {
-                throw new ArgumentNullException(nameof(roles));
+                oldRoles.Remove(role);
             }
-
-            var member = await _context.OrganizationMembers
-                .Include(m => m.Roles)
-                .SingleAsync(m => m.Id == memberId);
-
-            var oldRoles = member.Roles
-                .ToDictionary(r => r.Role);
-
-            foreach (var role in roles)
+            else
             {
-                if (oldRoles.ContainsKey(role))
+                member.Roles.Add(new OrganizationMemberRole
                 {
-                    oldRoles.Remove(role);
-                }
-                else
-                {
-                    member.Roles.Add(new OrganizationMemberRole
-                    {
-                        Role = role
-                    });
-                }
+                    Role = role
+                });
             }
-
-            foreach (var role in oldRoles.Values)
-            {
-                member.Roles.Remove(role);
-            }
-
-            await _context.SaveChangesAsync();
         }
+
+        foreach (var role in oldRoles.Values)
+        {
+            member.Roles.Remove(role);
+        }
+
+        await _context.SaveChangesAsync();
     }
 }

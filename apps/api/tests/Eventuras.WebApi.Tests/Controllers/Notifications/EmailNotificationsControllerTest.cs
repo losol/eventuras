@@ -11,134 +11,133 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 
-namespace Eventuras.WebApi.Tests.Controllers.Notifications
+namespace Eventuras.WebApi.Tests.Controllers.Notifications;
+
+public class EmailNotificationsControllerTest : IClassFixture<CustomWebApiApplicationFactory<Program>>,
+    IDisposable
 {
-    public class EmailNotificationsControllerTest : IClassFixture<CustomWebApiApplicationFactory<Program>>,
-        IDisposable
+    private readonly CustomWebApiApplicationFactory<Program> _factory;
+
+    public EmailNotificationsControllerTest(CustomWebApiApplicationFactory<Program> factory)
     {
-        private readonly CustomWebApiApplicationFactory<Program> _factory;
+        _factory = factory;
+        Cleanup();
+    }
 
-        public EmailNotificationsControllerTest(CustomWebApiApplicationFactory<Program> factory)
+    public void Dispose()
+    {
+        Cleanup();
+    }
+
+    private void Cleanup()
+    {
+        _factory.EmailSenderMock.Reset();
+        using var scope = _factory.Services.NewTestScope();
+        scope.Db.Notifications.Clean();
+        scope.Db.SaveChanges();
+    }
+
+    [Fact]
+    public async Task Should_Require_Auth_To_Send_Email_Notification()
+    {
+        var client = _factory.CreateClient();
+        var response = await client.PostAsync("/v3/notifications/email", new
         {
-            _factory = factory;
-            Cleanup();
-        }
+            subject = "Test",
+            bodyMarkdown = "Test email",
+            recipients = new[] { "test@email.com" }
+        });
+        response.CheckUnauthorized();
+    }
 
-        public void Dispose()
+    [Fact]
+    public async Task Should_Require_Admin_Role_To_Send_Email_Notification()
+    {
+        var client = _factory.CreateClient().Authenticated();
+        var response = await client.PostAsync("/v3/notifications/email", new
         {
-            Cleanup();
-        }
+            subject = "Test",
+            bodyMarkdown = "Test email",
+            recipients = new[] { "test@email.com" }
+        });
+        response.CheckForbidden();
+    }
 
-        private void Cleanup()
+    [Theory]
+    [MemberData(nameof(GetInvalidBodyParams))]
+    public async Task Should_Return_BadRequest_For_Invalid_Email_Body(object body)
+    {
+        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var response = await client.PostAsync("/v3/notifications/email", body);
+        response.CheckBadRequest();
+    }
+
+
+    private void CheckEmailSentTo(string subject, string body, params ApplicationUser[] users)
+    {
+        foreach (var u in users) // should send to both users
         {
-            _factory.EmailSenderMock.Reset();
-            using var scope = _factory.Services.NewTestScope();
-            scope.Db.Notifications.Clean();
-            scope.Db.SaveChanges();
+            _factory.EmailSenderMock.Verify(s => s
+                    .SendEmailAsync(It.Is(MatchUser(u, subject, body)), It.IsAny<EmailOptions>()),
+                Times.Once, $"Should've sent message {subject} to {u.Name}");
         }
+    }
 
-        [Fact]
-        public async Task Should_Require_Auth_To_Send_Email_Notification()
+    private void CheckEmailSentTo(string subject, string body, params string[] recipients)
+    {
+        foreach (var r in recipients) // should send to both users
         {
-            var client = _factory.CreateClient();
-            var response = await client.PostAsync("/v3/notifications/email", new
-            {
-                subject = "Test",
-                bodyMarkdown = "Test email",
-                recipients = new[] { "test@email.com" }
-            });
-            response.CheckUnauthorized();
+            Assert.True(MailAddress.TryCreate(r, out var address));
+            _factory.EmailSenderMock.Verify(s => s
+                    .SendEmailAsync(It.Is(MatchUser(address.DisplayName, address.Address, subject, body)), It.IsAny<EmailOptions>()),
+                Times.Once, $"Should've sent message {subject} to {address}");
         }
+    }
 
-        [Fact]
-        public async Task Should_Require_Admin_Role_To_Send_Email_Notification()
+    private void CheckEmailNotSentTo(params ApplicationUser[] users)
+    {
+        foreach (var u in users) // should send to both users
         {
-            var client = _factory.CreateClient().Authenticated();
-            var response = await client.PostAsync("/v3/notifications/email", new
-            {
-                subject = "Test",
-                bodyMarkdown = "Test email",
-                recipients = new[] { "test@email.com" }
-            });
-            response.CheckForbidden();
+            _factory.EmailSenderMock.Verify(s => s
+                    .SendEmailAsync(It.Is(MatchUser(u)), It.IsAny<EmailOptions>()),
+                Times.Never, $"Shouldn't have sent any message to {u.Name}");
         }
+    }
 
-        [Theory]
-        [MemberData(nameof(GetInvalidBodyParams))]
-        public async Task Should_Return_BadRequest_For_Invalid_Email_Body(object body)
+    private static Expression<Func<EmailModel, bool>> MatchUser(ApplicationUser user)
+    {
+        return model => model.Recipients.Any(r => r.Name == user.Name && r.Email == user.Email);
+    }
+
+    private static Expression<Func<EmailModel, bool>> MatchUser(ApplicationUser user, string subject, string body)
+    {
+        return MatchUser(user.Name, user.Email, subject, body);
+    }
+
+    private static Expression<Func<EmailModel, bool>> MatchUser(string name, string email, string subject,
+        string body)
+    {
+        return model => model.Subject == subject &&
+                        model.HtmlBody.Contains(body) &&
+                        model.Recipients.Any(r =>
+                            r.Name == name &&
+                            r.Email == email);
+    }
+
+    public static object[][] GetInvalidBodyParams()
+    {
+        return new[]
         {
-            var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
-            var response = await client.PostAsync("/v3/notifications/email", body);
-            response.CheckBadRequest();
-        }
-
-
-        private void CheckEmailSentTo(string subject, string body, params ApplicationUser[] users)
-        {
-            foreach (var u in users) // should send to both users
-            {
-                _factory.EmailSenderMock.Verify(s => s
-                        .SendEmailAsync(It.Is(MatchUser(u, subject, body)), It.IsAny<EmailOptions>()),
-                    Times.Once, $"Should've sent message {subject} to {u.Name}");
-            }
-        }
-
-        private void CheckEmailSentTo(string subject, string body, params string[] recipients)
-        {
-            foreach (var r in recipients) // should send to both users
-            {
-                Assert.True(MailAddress.TryCreate(r, out var address));
-                _factory.EmailSenderMock.Verify(s => s
-                        .SendEmailAsync(It.Is(MatchUser(address.DisplayName, address.Address, subject, body)), It.IsAny<EmailOptions>()),
-                    Times.Once, $"Should've sent message {subject} to {address}");
-            }
-        }
-
-        private void CheckEmailNotSentTo(params ApplicationUser[] users)
-        {
-            foreach (var u in users) // should send to both users
-            {
-                _factory.EmailSenderMock.Verify(s => s
-                        .SendEmailAsync(It.Is(MatchUser(u)), It.IsAny<EmailOptions>()),
-                    Times.Never, $"Shouldn't have sent any message to {u.Name}");
-            }
-        }
-
-        private static Expression<Func<EmailModel, bool>> MatchUser(ApplicationUser user)
-        {
-            return model => model.Recipients.Any(r => r.Name == user.Name && r.Email == user.Email);
-        }
-
-        private static Expression<Func<EmailModel, bool>> MatchUser(ApplicationUser user, string subject, string body)
-        {
-            return MatchUser(user.Name, user.Email, subject, body);
-        }
-
-        private static Expression<Func<EmailModel, bool>> MatchUser(string name, string email, string subject,
-            string body)
-        {
-            return model => model.Subject == subject &&
-                            model.HtmlBody.Contains(body) &&
-                            model.Recipients.Any(r =>
-                                r.Name == name &&
-                                r.Email == email);
-        }
-
-        public static object[][] GetInvalidBodyParams()
-        {
-            return new[]
-            {
-                new object[] { new { bodyMarkdown = "Test", recipients = new[] { "test@email.com" } } },
-                new object[] { new { subject = "Test", bodyMarkdown = "", recipients = new[] { "test@email.com" } } },
-                new object[] { new { subject = "Test", bodyMarkdown = "Test", recipients = new[] { "" } } },
-                new object[] { new { subject = "Test", bodyMarkdown = "Test", recipients = new[] { "test" } } },
-                new object[] { new { subject = "Test", bodyMarkdown = "Test" } },
-                new object[] { new { subject = "Test", bodyMarkdown = "Test", eventParticipants = new { } } },
-                new object[]
-                    { new { subject = "Test", bodyMarkdown = "Test", eventParticipants = new { eventId = 0 } } },
-                new object[]
-                    { new { subject = "Test", bodyMarkdown = "Test", eventParticipants = new { eventId = -1 } } },
-            };
-        }
+            new object[] { new { bodyMarkdown = "Test", recipients = new[] { "test@email.com" } } },
+            new object[] { new { subject = "Test", bodyMarkdown = "", recipients = new[] { "test@email.com" } } },
+            new object[] { new { subject = "Test", bodyMarkdown = "Test", recipients = new[] { "" } } },
+            new object[] { new { subject = "Test", bodyMarkdown = "Test", recipients = new[] { "test" } } },
+            new object[] { new { subject = "Test", bodyMarkdown = "Test" } },
+            new object[] { new { subject = "Test", bodyMarkdown = "Test", eventParticipants = new { } } },
+            new object[]
+                { new { subject = "Test", bodyMarkdown = "Test", eventParticipants = new { eventId = 0 } } },
+            new object[]
+                { new { subject = "Test", bodyMarkdown = "Test", eventParticipants = new { eventId = -1 } } },
+        };
     }
 }

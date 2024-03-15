@@ -1,7 +1,6 @@
-namespace Eventuras.Services
+namespace Eventuras.Services;
+
+public interface IStartupService
 {
-    public interface IStartupService
-    {
-        void OnStartup();
-    }
+    void OnStartup();
 }

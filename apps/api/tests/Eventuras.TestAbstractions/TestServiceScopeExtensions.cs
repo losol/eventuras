@@ -1,10 +1,10 @@
-using Eventuras.Domain;
-using Microsoft.AspNetCore.Identity;
-using NodaTime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Domain;
+using Microsoft.AspNetCore.Identity;
+using NodaTime;
 
 namespace Eventuras.TestAbstractions;
 
@@ -404,7 +404,9 @@ public static class TestServiceScopeExtensions
 
         var externalEvent = new ExternalEvent
         {
-            EventInfo = eventInfo, ExternalServiceName = externalServiceName, ExternalEventId = externalEventId
+            EventInfo = eventInfo,
+            ExternalServiceName = externalServiceName,
+            ExternalEventId = externalEventId
         };
         await scope.Db.ExternalEvents.AddAsync(externalEvent);
         await scope.Db.SaveChangesAsync();
@@ -475,7 +477,9 @@ public static class TestServiceScopeExtensions
     {
         var setting = new OrganizationSetting
         {
-            OrganizationId = organization.OrganizationId, Name = name, Value = value
+            OrganizationId = organization.OrganizationId,
+            Name = name,
+            Value = value
         };
 
         await scope.Db.OrganizationSettings.AddAsync(setting);

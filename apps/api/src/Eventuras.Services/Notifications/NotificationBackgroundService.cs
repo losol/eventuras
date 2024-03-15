@@ -45,9 +45,11 @@ public class NotificationBackgroundService : INotificationBackgroundService
         var recipient = await _notificationRecipientRetrievalService.GetNotificationRecipientByIdAsync(recipientId, accessControlDone: true);
         var notification = await _notificationRetrievalService.GetNotificationByIdAsync(recipient.NotificationId, accessControlDone: accessControlDone);
 
-        if (notification.OrganizationId == null) throw new NotFoundException(nameof(notification.OrganizationId));
+        if (notification.OrganizationId == null)
+            throw new NotFoundException(nameof(notification.OrganizationId));
 
-        if (recipient == null) return;
+        if (recipient == null)
+            return;
 
         var message = notification.Type == NotificationType.Email
             ? Markdown.ToHtml(notification.Message)
