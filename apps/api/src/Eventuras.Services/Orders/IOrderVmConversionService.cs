@@ -1,13 +1,12 @@
-using Eventuras.Domain;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Eventuras.Domain;
 
-namespace Eventuras.Services.Orders
+namespace Eventuras.Services.Orders;
+
+[Obsolete]
+public interface IOrderVmConversionService
 {
-    [Obsolete]
-    public interface IOrderVmConversionService
-    {
-        Task<IEnumerable<OrderDTO>> OrderVmsToOrderDtos(ICollection<OrderVM> orders);
-    }
+    Task<IEnumerable<OrderDTO>> OrderVmsToOrderDtos(ICollection<OrderVM> orders);
 }

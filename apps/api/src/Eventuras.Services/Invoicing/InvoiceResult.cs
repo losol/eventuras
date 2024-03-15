@@ -1,20 +1,19 @@
 using System.Collections.Generic;
 
-namespace Eventuras.Services.Invoicing
+namespace Eventuras.Services.Invoicing;
+
+public class InvoiceResult
 {
-    public class InvoiceResult
+    public string InvoiceId { get; set; }
+
+    public List<string> LogEntries { get; } = new();
+
+    public InvoiceResult()
     {
-        public string InvoiceId { get; set; }
+    }
 
-        public List<string> LogEntries { get; } = new();
-
-        public InvoiceResult()
-        {
-        }
-
-        public InvoiceResult(string invoiceId)
-        {
-            InvoiceId = invoiceId;
-        }
+    public InvoiceResult(string invoiceId)
+    {
+        InvoiceId = invoiceId;
     }
 }

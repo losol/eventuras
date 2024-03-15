@@ -1,7 +1,7 @@
-﻿#nullable enable
+#nullable enable
 
-using Eventuras.Domain;
 using System;
+using Eventuras.Domain;
 
 namespace Eventuras.WebApi.Controllers.v3.Events.Products;
 
@@ -26,8 +26,10 @@ public record ProductOrderDto(
 
     public virtual bool Equals(ProductOrderDto? other)
     {
-        if (ReferenceEquals(null, other)) return false;
-        if (ReferenceEquals(this, other)) return true;
+        if (ReferenceEquals(null, other))
+            return false;
+        if (ReferenceEquals(this, other))
+            return true;
         return ProductId == other.ProductId
             && ProductVariantId == other.ProductVariantId
             && Quantity == other.Quantity;

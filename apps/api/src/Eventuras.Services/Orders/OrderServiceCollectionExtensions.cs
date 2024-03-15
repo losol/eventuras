@@ -1,16 +1,15 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Eventuras.Services.Orders
+namespace Eventuras.Services.Orders;
+
+internal static class OrderServiceCollectionExtensions
 {
-    internal static class OrderServiceCollectionExtensions
+    public static void AddOrderServices(this IServiceCollection services)
     {
-        public static void AddOrderServices(this IServiceCollection services)
-        {
-            services.AddScoped<IOrderService, OrderService>();
-            services.AddTransient<IOrderVmConversionService, OrderVmConversionService>();
-            services.AddTransient<IOrderRetrievalService, OrderRetrievalService>();
-            services.AddScoped<IOrderManagementService, OrderManagementService>();
-            services.AddTransient<IOrderAccessControlService, OrderAccessControlService>();
-        }
+        services.AddScoped<IOrderService, OrderService>();
+        services.AddTransient<IOrderVmConversionService, OrderVmConversionService>();
+        services.AddTransient<IOrderRetrievalService, OrderRetrievalService>();
+        services.AddScoped<IOrderManagementService, OrderManagementService>();
+        services.AddTransient<IOrderAccessControlService, OrderAccessControlService>();
     }
 }

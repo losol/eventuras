@@ -1,13 +1,12 @@
 using Newtonsoft.Json;
 
-namespace Eventuras.WebApi.Controllers.v3.Events.Certificates
-{
-    public class CertificateStatisticsDto
-    {
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public int? Issued { get; set; }
+namespace Eventuras.WebApi.Controllers.v3.Events.Certificates;
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public int? Updated { get; set; }
-    }
+public class CertificateStatisticsDto
+{
+    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    public int? Issued { get; set; }
+
+    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    public int? Updated { get; set; }
 }

@@ -1,8 +1,7 @@
-namespace Eventuras.Services.Notifications
+namespace Eventuras.Services.Notifications;
+
+public enum NotificationListOrder
 {
-    public enum NotificationListOrder
-    {
-        Created,
-        StatusUpdated
-    }
+    Created,
+    StatusUpdated
 }

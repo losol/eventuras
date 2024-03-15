@@ -1,20 +1,19 @@
 using System;
 using System.Net.Http;
 
-namespace Eventuras.TestAbstractions
+namespace Eventuras.TestAbstractions;
+
+public class SingletonHttpClientFactory : IHttpClientFactory, IDisposable
 {
-    public class SingletonHttpClientFactory : IHttpClientFactory, IDisposable
+    private readonly HttpClient _client = new HttpClient();
+
+    public void Dispose()
     {
-        private readonly HttpClient _client = new HttpClient();
+        _client.Dispose();
+    }
 
-        public void Dispose()
-        {
-            _client.Dispose();
-        }
-
-        public HttpClient CreateClient(string name)
-        {
-            return _client;
-        }
+    public HttpClient CreateClient(string name)
+    {
+        return _client;
     }
 }

@@ -1,14 +1,13 @@
-using Eventuras.Domain;
 using System.Threading.Tasks;
+using Eventuras.Domain;
 
-namespace Eventuras.Services.Invoicing
+namespace Eventuras.Services.Invoicing;
+
+public interface IInvoicingProvider
 {
-    public interface IInvoicingProvider
-    {
-        bool AcceptPaymentProvider(PaymentMethod.PaymentProvider provider);
+    bool AcceptPaymentProvider(PaymentMethod.PaymentProvider provider);
 
-        /// <exception cref="InvoicingException">Something gone wrong.</exception>
-        /// <returns>New external invoice.</returns>
-        Task<InvoiceResult> CreateInvoiceAsync(InvoiceInfo info);
-    }
+    /// <exception cref="InvoicingException">Something gone wrong.</exception>
+    /// <returns>New external invoice.</returns>
+    Task<InvoiceResult> CreateInvoiceAsync(InvoiceInfo info);
 }

@@ -1,3 +1,8 @@
+using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services.Auth;
 using Eventuras.Services.Events;
@@ -6,11 +11,6 @@ using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using NodaTime;
-using System;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Eventuras.Services.Registrations;
 
@@ -62,6 +62,7 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
                 $"Anonymous user cannot create registration for event {eventInfo.Title} with id {eventInfo.EventInfoId}. Access denied.");
             throw new NotAccessibleException($"Anonymous user cannot create registration for events.");
         }
+    }
 
         // Add possibility for organization admin to override registration policy
         if (!contextUser.IsAdmin())
@@ -209,6 +210,17 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
         if (user.IsAnonymous()) return false;
 
         if (registration.UserId == user.GetUserId()) return true;
+
+        return await CheckAdminAccessAsync(user, registration, cancellationToken);
+    }
+
+    private async Task<bool> CheckOwnerOrAdminAccessAsync(ClaimsPrincipal user, Registration registration, CancellationToken cancellationToken)
+    {
+        if (user.IsAnonymous())
+        { return false; }
+
+        if (registration.UserId == user.GetUserId())
+        { return true; }
 
         return await CheckAdminAccessAsync(user, registration, cancellationToken);
     }

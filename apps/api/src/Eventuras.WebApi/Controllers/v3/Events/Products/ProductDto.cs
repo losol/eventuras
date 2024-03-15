@@ -1,78 +1,77 @@
 #nullable enable
 
-using DocumentFormat.OpenXml.Wordprocessing;
-using Eventuras.Domain;
 using System;
 using System.Linq;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Eventuras.Domain;
 
-namespace Eventuras.WebApi.Controllers.v3.Events.Products
+namespace Eventuras.WebApi.Controllers.v3.Events.Products;
+
+public class ProductDto
 {
-    public class ProductDto
+    public int ProductId { get; set; }
+
+    public string Name { get; set; }
+
+    public string? Description { get; set; }
+
+    public decimal Price { get; set; }
+
+    public int VatPercent { get; set; }
+
+    public ProductVisibility Visibility { get; set; }
+
+    public int? Inventory { get; set; }
+    public bool? Published { get; set; }
+
+    public ProductVariantDto[] Variants { get; set; }
+
+    public int MinimumQuantity { get; set; }
+
+    public bool IsMandatory => MinimumQuantity > 0;
+
+    public bool EnableQuantity { get; set; }
+
+    [Obsolete("For JSON deserialization only, do not use manually", true)]
+    public ProductDto()
     {
-        public int ProductId { get; set; }
+        Name = null!;
+        Variants = null!;
+    }
 
-        public string Name { get; set; }
+    public ProductDto(Product product)
+    {
+        ArgumentNullException.ThrowIfNull(product);
 
-        public string? Description { get; set; }
+        ProductId = product.ProductId;
+        Name = product.Name;
+        Description = product.Description;
+        Price = product.Price;
+        VatPercent = product.VatPercent;
+        Visibility = product.Visibility;
+        Variants = product.ProductVariants?
+            .Where(v => !v.Archived)
+            .Select(v => new ProductVariantDto(v))
+            .ToArray() ?? Array.Empty<ProductVariantDto>();
+        MinimumQuantity = product.MinimumQuantity;
+        EnableQuantity = product.EnableQuantity;
+    }
 
-        public decimal Price { get; set; }
+    public void CopyTo(Product product)
+    {
+        if (product == null)
+            throw new ArgumentNullException(nameof(product));
 
-        public int VatPercent { get; set; }
+        product.Name = Name;
+        product.Description = Description;
+        product.Price = Price;
+        product.VatPercent = VatPercent;
+        product.Visibility = Visibility;
 
-        public ProductVisibility Visibility { get; set; }
+        if (Published.HasValue)
+            product.Published = Published.Value;
 
-        public int? Inventory { get; set; }
-        public bool? Published { get; set; }
-
-        public ProductVariantDto[] Variants { get; set; }
-
-        public int MinimumQuantity { get; set; }
-
-        public bool IsMandatory => MinimumQuantity > 0;
-
-        public bool EnableQuantity { get; set; }
-
-        [Obsolete("For JSON deserialization only, do not use manually", true)]
-        public ProductDto()
-        {
-            Name = null!;
-            Variants = null!;
-        }
-
-        public ProductDto(Product product)
-        {
-            ArgumentNullException.ThrowIfNull(product);
-
-            ProductId = product.ProductId;
-            Name = product.Name;
-            Description = product.Description;
-            Price = product.Price;
-            VatPercent = product.VatPercent;
-            Visibility = product.Visibility;
-            Variants = product.ProductVariants?
-                .Where(v => !v.Archived)
-                .Select(v => new ProductVariantDto(v))
-                .ToArray() ?? Array.Empty<ProductVariantDto>();
-            MinimumQuantity = product.MinimumQuantity;
-            EnableQuantity = product.EnableQuantity;
-        }
-
-        public void CopyTo(Product product)
-        {
-            if (product == null)
-                throw new ArgumentNullException(nameof(product));
-
-            product.Name = Name;
-            product.Description = Description;
-            product.Price = Price;
-            product.VatPercent = VatPercent;
-            product.Visibility = Visibility;
-
-            if (Published.HasValue)
-                product.Published = Published.Value;
-
-            if (Inventory.HasValue)
-                product.Inventory = Inventory.Value;
-        }
+        if (Inventory.HasValue)
+            product.Inventory = Inventory.Value;
     }
 }

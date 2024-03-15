@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -195,7 +195,8 @@ static async Task PreStartupRoutine(IHost host)
     var services = scope.ServiceProvider;
 
     var startupServices = services.GetServices<IStartupService>();
-    foreach (var startupService in startupServices) startupService.OnStartup();
+    foreach (var startupService in startupServices)
+        startupService.OnStartup();
 
     var initializer = services.GetRequiredService<IDbInitializer>();
     await initializer.SeedAsync();

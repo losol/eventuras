@@ -1,3 +1,7 @@
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.Auth;
@@ -5,111 +9,106 @@ using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Eventuras.Services.Users
+namespace Eventuras.Services.Users;
+
+internal class UserRetrievalService : IUserRetrievalService
 {
-    internal class UserRetrievalService : IUserRetrievalService
+    private readonly ApplicationDbContext _context;
+    private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public UserRetrievalService(
+        ApplicationDbContext context,
+        ICurrentOrganizationAccessorService currentOrganizationAccessorService,
+        IHttpContextAccessor httpContextAccessor)
     {
-        private readonly ApplicationDbContext _context;
-        private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw new ArgumentNullException(nameof(currentOrganizationAccessorService));
+        _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+    }
 
-        public UserRetrievalService(
-            ApplicationDbContext context,
-            ICurrentOrganizationAccessorService currentOrganizationAccessorService,
-            IHttpContextAccessor httpContextAccessor)
+    public async Task<ApplicationUser> GetUserByIdAsync(
+        string userId,
+        UserRetrievalOptions options,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(userId))
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw new ArgumentNullException(nameof(currentOrganizationAccessorService));
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+            throw new ArgumentException("User id argument must not be empty", nameof(userId));
         }
 
-        public async Task<ApplicationUser> GetUserByIdAsync(
-            string userId,
-            UserRetrievalOptions options,
-            CancellationToken cancellationToken)
+        var user = await _context.ApplicationUsers
+            .AsNoTracking()
+            .UseOptions(options ?? UserRetrievalOptions.Default)
+            .SingleOrDefaultAsync(u => u.Id == userId, cancellationToken: cancellationToken);
+
+        if (user == null)
         {
-            if (string.IsNullOrWhiteSpace(userId))
-            {
-                throw new ArgumentException("User id argument must not be empty", nameof(userId));
-            }
-
-            var user = await _context.ApplicationUsers
-                .AsNoTracking()
-                .UseOptions(options ?? UserRetrievalOptions.Default)
-                .SingleOrDefaultAsync(u => u.Id == userId, cancellationToken: cancellationToken);
-
-            if (user == null)
-            {
-                throw new NotFoundException($"User {userId} not found.");
-            }
-
-            return user;
+            throw new NotFoundException($"User {userId} not found.");
         }
 
-        public async Task<ApplicationUser> GetUserByEmailAsync(
-            string email,
-            UserRetrievalOptions options,
-            CancellationToken cancellationToken)
+        return user;
+    }
+
+    public async Task<ApplicationUser> GetUserByEmailAsync(
+        string email,
+        UserRetrievalOptions options,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(email))
         {
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                throw new ArgumentException("User email argument must not be empty", nameof(email));
-            }
-
-            var user = await _context.ApplicationUsers
-                .AsNoTracking()
-                .UseOptions(options ?? UserRetrievalOptions.Default)
-                .SingleOrDefaultAsync(u => u.NormalizedEmail == email.ToUpper(), cancellationToken: cancellationToken);
-
-            if (user == null)
-            {
-                throw new NotFoundException($"User with email {email} not found.");
-            }
-
-            return user;
+            throw new ArgumentException("User email argument must not be empty", nameof(email));
         }
 
-        public async Task<Paging<ApplicationUser>> ListUsers(
-            UserListRequest request,
-            UserRetrievalOptions options,
-            CancellationToken cancellationToken)
+        var user = await _context.ApplicationUsers
+            .AsNoTracking()
+            .UseOptions(options ?? UserRetrievalOptions.Default)
+            .SingleOrDefaultAsync(u => u.NormalizedEmail == email.ToUpper(), cancellationToken: cancellationToken);
+
+        if (user == null)
         {
-            options ??= UserRetrievalOptions.Default;
+            throw new NotFoundException($"User with email {email} not found.");
+        }
 
-            var query = _context.Users
-                .AsNoTracking()
-                .UseOptions(options)
-                .AddFilter(request.Filter)
-                .AddOrder(request.OrderBy, request.Descending);
+        return user;
+    }
 
-            if (request.Filter.OrganizationId.HasValue)
+    public async Task<Paging<ApplicationUser>> ListUsers(
+        UserListRequest request,
+        UserRetrievalOptions options,
+        CancellationToken cancellationToken)
+    {
+        options ??= UserRetrievalOptions.Default;
+
+        var query = _context.Users
+            .AsNoTracking()
+            .UseOptions(options)
+            .AddFilter(request.Filter)
+            .AddOrder(request.OrderBy, request.Descending);
+
+        if (request.Filter.OrganizationId.HasValue)
+        {
+            query = query.Where(u => u.OrganizationMembership.Any(om => om.OrganizationId == request.Filter.OrganizationId.Value));
+        }
+        if (request.Filter.AccessibleOnly)
+        {
+            var user = _httpContextAccessor.HttpContext.User;
+            if (!user.IsAdmin())
             {
-                query = query.Where(u => u.OrganizationMembership.Any(om => om.OrganizationId == request.Filter.OrganizationId.Value));
+                return Paging.Empty<ApplicationUser>();
             }
-            if (request.Filter.AccessibleOnly)
+
+            if (!user.IsSuperAdmin())
             {
-                var user = _httpContextAccessor.HttpContext.User;
-                if (!user.IsAdmin())
+                var organization = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(cancellationToken: cancellationToken);
+                if (!organization.IsRoot)
                 {
-                    return Paging.Empty<ApplicationUser>();
-                }
-
-                if (!user.IsSuperAdmin())
-                {
-                    var organization = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(cancellationToken: cancellationToken);
-                    if (!organization.IsRoot)
-                    {
-                        query = query.HavingOrganization(organization);
-                    }
+                    query = query.HavingOrganization(organization);
                 }
             }
-
-            return await Paging.CreateAsync(query, request, cancellationToken);
         }
+
+        return await Paging.CreateAsync(query, request, cancellationToken);
     }
 }

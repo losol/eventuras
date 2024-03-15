@@ -1,4 +1,4 @@
-﻿namespace Eventuras.Services.Registrations;
+namespace Eventuras.Services.Registrations;
 
 public class RegistrationOptions
 {

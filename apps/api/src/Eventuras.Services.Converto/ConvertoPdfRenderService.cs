@@ -1,43 +1,42 @@
-using Eventuras.Services.Pdf;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Eventuras.Services.Pdf;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Eventuras.Services.Converto.Tests")]
-namespace Eventuras.Services.Converto
+namespace Eventuras.Services.Converto;
+
+
+internal class ConvertoPdfRenderService : IPdfRenderService
 {
+    private readonly IConvertoClient _client;
+    private readonly IOptions<ConvertoConfig> _options;
+    private readonly ILogger<ConvertoPdfRenderService> _logger;
 
-    internal class ConvertoPdfRenderService : IPdfRenderService
+    public ConvertoPdfRenderService(
+        IConvertoClient client,
+        IOptions<ConvertoConfig> options,
+        ILogger<ConvertoPdfRenderService> logger)
     {
-        private readonly IConvertoClient _client;
-        private readonly IOptions<ConvertoConfig> _options;
-        private readonly ILogger<ConvertoPdfRenderService> _logger;
+        _client = client;
+        _options = options;
+        _logger = logger;
+    }
 
-        public ConvertoPdfRenderService(
-            IConvertoClient client,
-            IOptions<ConvertoConfig> options,
-            ILogger<ConvertoPdfRenderService> logger)
+    public async Task<Stream> RenderHtmlAsync(string html, PdfRenderOptions pdfRenderOptions)
+    {
+        try
         {
-            _client = client;
-            _options = options;
-            _logger = logger;
+            return await _client.Html2PdfAsync(html,
+                pdfRenderOptions.Scale ?? _options.Value.DefaultScale ?? 1,
+                pdfRenderOptions.Format ?? _options.Value.DefaultFormat ?? "A4");
         }
-
-        public async Task<Stream> RenderHtmlAsync(string html, PdfRenderOptions pdfRenderOptions)
+        catch (ConvertoClientException e)
         {
-            try
-            {
-                return await _client.Html2PdfAsync(html,
-                    pdfRenderOptions.Scale ?? _options.Value.DefaultScale ?? 1,
-                    pdfRenderOptions.Format ?? _options.Value.DefaultFormat ?? "A4");
-            }
-            catch (ConvertoClientException e)
-            {
-                _logger.LogError(e.Message, e);
-                return new MemoryStream();
-            }
+            _logger.LogError(e.Message, e);
+            return new MemoryStream();
         }
     }
 }

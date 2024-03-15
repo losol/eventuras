@@ -1,13 +1,12 @@
-using Eventuras.Domain;
 using System.Threading;
 using System.Threading.Tasks;
+using Eventuras.Domain;
 
-namespace Eventuras.Services.Notifications
+namespace Eventuras.Services.Notifications;
+
+public interface INotificationDeliveryService
 {
-    public interface INotificationDeliveryService
-    {
-        Task SendNotificationAsync(
-            Notification notification,
-            CancellationToken cancellationToken = default);
-    }
+    Task SendNotificationAsync(
+        Notification notification,
+        CancellationToken cancellationToken = default);
 }

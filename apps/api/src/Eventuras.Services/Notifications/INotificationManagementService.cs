@@ -1,40 +1,39 @@
-using Eventuras.Domain;
 using System.Threading.Tasks;
+using Eventuras.Domain;
 
-namespace Eventuras.Services.Notifications
+namespace Eventuras.Services.Notifications;
+
+public interface INotificationManagementService
 {
-    public interface INotificationManagementService
-    {
-        Task<EmailNotification> CreateEmailNotificationAsync(
-            string subject,
-            string body,
-            int orgId,
-            params string[] recipients);
-
-        Task<EmailNotification> CreateEmailNotificationForEventAsync(
-            string subject,
-            string body,
-            int eventId,
-            Registration.RegistrationStatus[] registrationStatuses = null,
-            Registration.RegistrationType[] registrationTypes = null);
-
-        Task<EmailNotification> CreateEmailNotificationForRegistrationAsync(
+    Task<EmailNotification> CreateEmailNotificationAsync(
         string subject,
         string body,
-        Registration registration);
+        int orgId,
+        params string[] recipients);
 
-        Task<SmsNotification> CreateSmsNotificationAsync(
-            string message,
-            params string[] recipients);
+    Task<EmailNotification> CreateEmailNotificationForEventAsync(
+        string subject,
+        string body,
+        int eventId,
+        Registration.RegistrationStatus[] registrationStatuses = null,
+        Registration.RegistrationType[] registrationTypes = null);
 
-        Task<SmsNotification> CreateSmsNotificationForEventAsync(
-            string message,
-            int eventId,
-            Registration.RegistrationStatus[] registrationStatuses = null,
-            Registration.RegistrationType[] registrationTypes = null);
+    Task<EmailNotification> CreateEmailNotificationForRegistrationAsync(
+    string subject,
+    string body,
+    Registration registration);
 
-        Task UpdateNotificationAsync(Notification notification);
+    Task<SmsNotification> CreateSmsNotificationAsync(
+        string message,
+        params string[] recipients);
 
-        Task UpdateNotificationRecipientAsync(NotificationRecipient recipient);
-    }
+    Task<SmsNotification> CreateSmsNotificationForEventAsync(
+        string message,
+        int eventId,
+        Registration.RegistrationStatus[] registrationStatuses = null,
+        Registration.RegistrationType[] registrationTypes = null);
+
+    Task UpdateNotificationAsync(Notification notification);
+
+    Task UpdateNotificationRecipientAsync(NotificationRecipient recipient);
 }

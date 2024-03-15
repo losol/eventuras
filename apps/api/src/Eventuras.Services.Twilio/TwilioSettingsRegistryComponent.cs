@@ -1,12 +1,11 @@
 using Eventuras.Services.Organizations.Settings;
 
-namespace Eventuras.Services.Twilio
+namespace Eventuras.Services.Twilio;
+
+internal class TwilioSettingsRegistryComponent : IOrganizationSettingsRegistryComponent
 {
-    internal class TwilioSettingsRegistryComponent : IOrganizationSettingsRegistryComponent
+    public void RegisterSettings(IOrganizationSettingsRegistry registry)
     {
-        public void RegisterSettings(IOrganizationSettingsRegistry registry)
-        {
-            registry.RegisterSettings<OrganizationTwilioSettings>();
-        }
+        registry.RegisterSettings<OrganizationTwilioSettings>();
     }
 }

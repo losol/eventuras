@@ -1,11 +1,10 @@
-namespace Eventuras.Services.Users
+namespace Eventuras.Services.Users;
+
+public class UserListRequest : PagingRequest
 {
-    public class UserListRequest : PagingRequest
-    {
-        public UserFilter Filter { get; set; } = new UserFilter();
+    public UserFilter Filter { get; set; } = new UserFilter();
 
-        public UserListOrder OrderBy { get; set; } = UserListOrder.GivenName;
+    public UserListOrder OrderBy { get; set; } = UserListOrder.GivenName;
 
-        public bool Descending { get; set; }
-    }
+    public bool Descending { get; set; }
 }

@@ -1,24 +1,23 @@
-namespace Eventuras.Services.Orders
+namespace Eventuras.Services.Orders;
+
+public class OrderRetrievalOptions
 {
-    public class OrderRetrievalOptions
+    public bool IncludeRegistration { get; set; }
+
+    public bool IncludeUser { get; set; }
+
+    public bool IncludeOrderLines { get; set; }
+
+    public bool IncludeEvent { get; set; }
+
+    public static OrderRetrievalOptions ForInvoicing()
     {
-        public bool IncludeRegistration { get; set; }
-
-        public bool IncludeUser { get; set; }
-
-        public bool IncludeOrderLines { get; set; }
-
-        public bool IncludeEvent { get; set; }
-
-        public static OrderRetrievalOptions ForInvoicing()
+        return new()
         {
-            return new()
-            {
-                IncludeRegistration = true,
-                IncludeUser = true,
-                IncludeEvent = true,
-                IncludeOrderLines = true
-            };
-        }
+            IncludeRegistration = true,
+            IncludeUser = true,
+            IncludeEvent = true,
+            IncludeOrderLines = true
+        };
     }
 }

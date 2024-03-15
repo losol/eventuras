@@ -1,10 +1,10 @@
-using Eventuras.Domain;
-using Microsoft.AspNetCore.Identity;
-using NodaTime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Domain;
+using Microsoft.AspNetCore.Identity;
+using NodaTime;
 
 namespace Eventuras.TestAbstractions;
 
