@@ -115,7 +115,6 @@ public class RegistrationAccessControlServiceTests
 
         var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService, logger);
 
-
         // Act
         await testSubject.CheckRegistrationUpdateAccessAsync(reg, CancellationToken.None);
 
@@ -154,8 +153,9 @@ public class RegistrationAccessControlServiceTests
         eiMock.VerifyNoOtherCalls();
     }
 
+    // CheckRegistrationUpdateAccessAsync_WithoutAllowedRegistrationEditHours_PassesBeforeDue
     [Fact]
-    public async Task CheckRegistrationUpdateAccessAsync_WithoutAllowedRegistrationEditHours_PassesBeforeDue()
+    public async Task Allow_RegistrationUpdate_Before_Last_reg_date()
     {
         // Arrange
         var userId = Guid.NewGuid().ToString();
@@ -163,7 +163,14 @@ public class RegistrationAccessControlServiceTests
         HttpContextAccessor.HttpContext = new DefaultHttpContext { User = user };
 
         var policy = new EventInfoOptions.EventInfoRegistrationPolicy { AllowedRegistrationEditHours = null };
-        var ei = new EventInfo { Options = new EventInfoOptions { RegistrationPolicy = policy } };
+        var ei = new EventInfo
+        {
+            LastRegistrationDate = SystemClock.Instance.Now().Plus(Duration.FromDays(2)).ToLocalDate(),
+            Options = new EventInfoOptions
+            {
+                RegistrationPolicy = policy,
+            },
+        };
         var reg = new Registration { UserId = userId, EventInfoId = ei.EventInfoId, EventInfo = ei };
 
         var eventInfoRetrievalService = ServiceMocks.MockEventInfoRetrievalService(out var eiMock, ei);
@@ -182,7 +189,7 @@ public class RegistrationAccessControlServiceTests
     }
 
     [Fact]
-    public async Task CheckRegistrationUpdateAccessAsync_WithoutAllowedRegistrationEditHours_PassesAfterDue()
+    public async Task Deny_RegistrationUpdate_After_Last_reg_date()
     {
         // Arrange
         var userId = Guid.NewGuid().ToString();
@@ -190,27 +197,24 @@ public class RegistrationAccessControlServiceTests
         HttpContextAccessor.HttpContext = new DefaultHttpContext { User = user };
 
         var policy = new EventInfoOptions.EventInfoRegistrationPolicy { AllowedRegistrationEditHours = null };
-        var ei = new EventInfo { Options = new EventInfoOptions { RegistrationPolicy = policy } };
+        var eventInfo = new EventInfo { Options = new EventInfoOptions { RegistrationPolicy = policy } };
         var registrationTime = Instant.FromDateTimeUtc(DateTime.UtcNow.AddDays(-2));
-        var reg = new Registration { UserId = userId, EventInfoId = ei.EventInfoId, EventInfo = ei, RegistrationTime = registrationTime };
+        var reg = new Registration
+            { UserId = userId, EventInfoId = eventInfo.EventInfoId, EventInfo = eventInfo, RegistrationTime = registrationTime };
 
-        var eventInfoRetrievalService = ServiceMocks.MockEventInfoRetrievalService(out var eiMock, ei);
+        var eventInfoRetrievalService = ServiceMocks.MockEventInfoRetrievalService(out var eiMock, eventInfo);
         var organizationAccessorService = Mock.Of<ICurrentOrganizationAccessorService>(MockBehavior.Strict); // should not be called
         var logger = NullLogger<RegistrationAccessControlService>.Instance;
 
         var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService, logger);
 
         // Act
-        await testSubject.CheckRegistrationUpdateAccessAsync(reg, CancellationToken.None);
-
-        // Assert
-        eiMock.Verify(s => s.GetEventInfoByIdAsync(It.IsAny<int>(), It.IsAny<EventInfoRetrievalOptions>(), It.IsAny<CancellationToken>()),
-            Times.Once);
-        eiMock.VerifyNoOtherCalls();
+        await Assert.ThrowsAsync<NotAccessibleException>(
+            async () => await testSubject.CheckRegistrationUpdateAccessAsync(reg, CancellationToken.None));
     }
 
     [Fact]
-    public async Task CheckRegistrationUpdateAccessAsync_WithLastCancellationDateLimit_PassesBeforeDue()
+    public async Task Deny_RegistrationUpdate_After_Last_cancellation_date()
     {
         // Arrange
         var userId = Guid.NewGuid().ToString();
@@ -218,9 +222,14 @@ public class RegistrationAccessControlServiceTests
         HttpContextAccessor.HttpContext = new DefaultHttpContext { User = user };
 
         var policy = new EventInfoOptions.EventInfoRegistrationPolicy { AllowModificationsAfterLastCancellationDate = false };
-        var cancellationDue = LocalDate.FromDateTime(DateTime.UtcNow.AddDays(5));
+        var cancellationDue = LocalDate.FromDateTime(DateTime.UtcNow.AddDays(-2));
         var ei = new EventInfo { Options = new EventInfoOptions { RegistrationPolicy = policy }, LastCancellationDate = cancellationDue };
-        var reg = new Registration { UserId = userId, EventInfoId = ei.EventInfoId, EventInfo = ei };
+        var now = SystemClock.Instance.GetCurrentInstant();
+        var reg = new Registration
+        {
+            UserId = userId, EventInfoId = ei.EventInfoId, EventInfo = ei,
+            RegistrationTime = now.Minus(Duration.FromDays(3)),
+        };
 
         var eventInfoRetrievalService = ServiceMocks.MockEventInfoRetrievalService(out var eiMock, ei);
         var organizationAccessorService = Mock.Of<ICurrentOrganizationAccessorService>(MockBehavior.Strict); // should not be called
@@ -228,13 +237,9 @@ public class RegistrationAccessControlServiceTests
 
         var testSubject = new RegistrationAccessControlService(HttpContextAccessor, eventInfoRetrievalService, organizationAccessorService, logger);
 
-        // Act
-        await testSubject.CheckRegistrationUpdateAccessAsync(reg, CancellationToken.None);
-
         // Assert
-        eiMock.Verify(s => s.GetEventInfoByIdAsync(It.IsAny<int>(), It.IsAny<EventInfoRetrievalOptions>(), It.IsAny<CancellationToken>()),
-            Times.Once);
-        eiMock.VerifyNoOtherCalls();
+        await Assert.ThrowsAsync<NotAccessibleException>(
+            async () => await testSubject.CheckRegistrationUpdateAccessAsync(reg, CancellationToken.None));
     }
 
     [Fact]
@@ -245,7 +250,8 @@ public class RegistrationAccessControlServiceTests
         var user = GetUser(userId);
         HttpContextAccessor.HttpContext = new DefaultHttpContext { User = user };
 
-        var policy = new EventInfoOptions.EventInfoRegistrationPolicy { AllowModificationsAfterLastCancellationDate = false };
+        var policy = new EventInfoOptions.EventInfoRegistrationPolicy
+            { AllowModificationsAfterLastCancellationDate = false, AllowedRegistrationEditHours = 0 };
         var cancellationDue = LocalDate.FromDateTime(DateTime.UtcNow.AddDays(-2));
         var ei = new EventInfo { Options = new EventInfoOptions { RegistrationPolicy = policy }, LastCancellationDate = cancellationDue };
         var reg = new Registration { UserId = userId, EventInfoId = ei.EventInfoId, EventInfo = ei };

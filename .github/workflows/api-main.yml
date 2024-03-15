@@ -1,20 +1,42 @@
-name: Backend - build & test
+name: Api project CI
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/api/**"
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize]
+    paths:
+      - "apps/api/**"
   workflow_call:
     inputs:
       dotnet-version:
         required: false
         default: "8"
         type: string
-  pull_request:
-    branches:
-      - main
-    paths:
-      - "./apps/api/src/**"
-      - "./apps/api/tests/**"
 
 jobs:
+  format:
+    name: dotnet format
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./apps/api/
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ inputs.dotnet-version }}
+      - name: Install dotnet-format
+        run: dotnet tool install -g dotnet-format
+      - name: Format code
+        run: dotnet format --verify-no-changes
+
   build:
     name: Build project
     runs-on: ubuntu-latest
@@ -53,3 +75,22 @@ jobs:
         with:
           dotnet-version: ${{ inputs.dotnet-version }}
       - run: dotnet test ${{ matrix.test_set.path }}
+
+  docker:
+    name: Docker build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run tests
+        run: |
+          if [ -f docker-compose.test.yml ]; then
+            docker-compose --file docker-compose.test.yml build
+            docker-compose --file docker-compose.test.yml run sut
+          else
+            docker build . --file Dockerfile
+          fi
