@@ -1,4 +1,4 @@
-name: Release - Deploy to production
+name: Release - Deploy
 
 on:
   push:
@@ -11,7 +11,7 @@ env:
 
 jobs:
   build-api:
-    uses: ./.github/workflows/api-main.yml
+    uses: ./.github/workflows/main-api.yml
 
   docker:
     name: API - Docker image
@@ -53,7 +53,7 @@ jobs:
           images: ${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}:${{ github.event.release.tag_name }}
 
   build-web:
-    uses: ./.github/workflows/web-main.yml
+    uses: ./.github/workflows/main-web.yml
 
   deploy-web-prod-1:
     needs: build-web
