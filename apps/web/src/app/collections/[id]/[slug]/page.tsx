@@ -45,7 +45,7 @@ export async function generateStaticParams() {
       id: collection.id?.toString(),
       slug: collection.slug,
     }));
-    Logger.info({ namespace: 'events:staticparams' }, 'Static params:', staticParams);
+    Logger.info({ namespace: 'collections:staticparams' }, 'Static params:', staticParams);
     return staticParams;
   }
 
