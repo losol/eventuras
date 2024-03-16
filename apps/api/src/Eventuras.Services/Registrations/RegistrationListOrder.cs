@@ -1,7 +1,6 @@
-namespace Eventuras.Services.Registrations
+namespace Eventuras.Services.Registrations;
+
+public enum RegistrationListOrder
 {
-    public enum RegistrationListOrder
-    {
-        RegistrationTime
-    }
+    RegistrationTime
 }

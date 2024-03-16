@@ -1,9 +1,8 @@
-namespace Eventuras.Services.Exceptions
+namespace Eventuras.Services.Exceptions;
+
+public class FeatureDisabledException : ServiceException
 {
-    public class FeatureDisabledException : ServiceException
+    public FeatureDisabledException(string message) : base(message)
     {
-        public FeatureDisabledException(string message) : base(message)
-        {
-        }
     }
 }

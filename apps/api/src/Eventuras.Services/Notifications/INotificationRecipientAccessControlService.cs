@@ -1,14 +1,13 @@
-using Eventuras.Domain;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Eventuras.Domain;
 
-namespace Eventuras.Services.Notifications
+namespace Eventuras.Services.Notifications;
+
+public interface INotificationRecipientAccessControlService
 {
-    public interface INotificationRecipientAccessControlService
-    {
-        Task<IQueryable<NotificationRecipient>> AddAccessFilterAsync(
-            IQueryable<NotificationRecipient> query,
-            CancellationToken cancellationToken = default);
-    }
+    Task<IQueryable<NotificationRecipient>> AddAccessFilterAsync(
+        IQueryable<NotificationRecipient> query,
+        CancellationToken cancellationToken = default);
 }

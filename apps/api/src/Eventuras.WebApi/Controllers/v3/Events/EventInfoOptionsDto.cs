@@ -1,7 +1,7 @@
-﻿#nullable enable
+#nullable enable
 
-using Eventuras.Domain;
 using System.ComponentModel.DataAnnotations;
+using Eventuras.Domain;
 
 namespace Eventuras.WebApi.Controllers.v3.Events;
 

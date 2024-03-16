@@ -1,11 +1,10 @@
-namespace Eventuras.Services.Organizations.Settings
+namespace Eventuras.Services.Organizations.Settings;
+
+public enum OrganizationSettingType
 {
-    public enum OrganizationSettingType
-    {
-        String = 1,
-        Number,
-        Url,
-        Email,
-        Boolean
-    }
+    String = 1,
+    Number,
+    Url,
+    Email,
+    Boolean
 }

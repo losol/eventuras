@@ -1,9 +1,9 @@
 #nullable enable
 
-using Eventuras.Domain;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Eventuras.Domain;
 
 namespace Eventuras.Services.Orders;
 

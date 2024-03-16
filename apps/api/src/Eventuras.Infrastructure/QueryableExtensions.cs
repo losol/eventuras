@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Linq;
@@ -48,7 +48,8 @@ public static class QueryableExtensions
         bool defaultOrderDescending,
         (string ColumnName, bool Descending)[] ordering)
     {
-        if (ordering.Length == 0) return defaultOrderDescending ? query.OrderByDescending(defaultOrder) : query.OrderBy(defaultOrder);
+        if (ordering.Length == 0)
+            return defaultOrderDescending ? query.OrderByDescending(defaultOrder) : query.OrderBy(defaultOrder);
 
         IOrderedQueryable<TEntity> oq = null!;
         var first = true;
@@ -60,7 +61,8 @@ public static class QueryableExtensions
                 oq = order.Descending ? query.OrderByColumnDescending(order.ColumnName) : query.OrderByColumn(order.ColumnName);
                 first = false;
             }
-            else { oq = order.Descending ? oq.ThenByColumnDescending(order.ColumnName) : oq.ThenByColumn(order.ColumnName); }
+            else
+            { oq = order.Descending ? oq.ThenByColumnDescending(order.ColumnName) : oq.ThenByColumn(order.ColumnName); }
         }
 
         return oq;
@@ -77,7 +79,7 @@ public static class QueryableExtensions
         {
             ordering[i] = SplitColumnNameAndOrderDirection(columnsAndDirections[i]);
         }
-        
+
         return OrderByColumns(query, defaultOrder, defaultOrderDescending, ordering);
     }
 
@@ -97,7 +99,8 @@ public static class QueryableExtensions
 
         // check if string has ":"
         var columnIndex = trimmed.LastIndexOf(':');
-        if (columnIndex == -1) return (columnAndDirection, false);
+        if (columnIndex == -1)
+            return (columnAndDirection, false);
 
         // check last word is ":desc" or ":descending"
         var ending = trimmed[(columnIndex + 1)..];
@@ -112,7 +115,8 @@ public static class QueryableExtensions
         var parameter = Expression.Parameter(typeof(TEntity), "entity");
         var property = typeof(TEntity).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
-        if (property == null) throw new ArgumentException($"Property with name '{propertyName}' was not found on type '{typeof(TEntity)}'.");
+        if (property == null)
+            throw new ArgumentException($"Property with name '{propertyName}' was not found on type '{typeof(TEntity)}'.");
 
         var propertyAccess = Expression.Property(parameter, property);
         var convert = Expression.Convert(propertyAccess, typeof(object));

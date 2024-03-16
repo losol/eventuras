@@ -1,13 +1,12 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Eventuras.Services.Events.Products
+namespace Eventuras.Services.Events.Products;
+
+internal static class ProductsServiceCollectionExtensions
 {
-    internal static class ProductsServiceCollectionExtensions
+    public static IServiceCollection AddEventProductServices(this IServiceCollection services)
     {
-        public static IServiceCollection AddEventProductServices(this IServiceCollection services)
-        {
-            services.AddTransient<IProductRetrievalService, ProductRetrievalService>();
-            return services;
-        }
+        services.AddTransient<IProductRetrievalService, ProductRetrievalService>();
+        return services;
     }
 }

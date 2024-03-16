@@ -1,35 +1,34 @@
-using Eventuras.Domain;
 using System;
+using Eventuras.Domain;
 
-namespace Eventuras.WebApi.Controllers.v3.Events.Products
+namespace Eventuras.WebApi.Controllers.v3.Events.Products;
+
+public class ProductVariantDto
 {
-    public class ProductVariantDto
+    public int ProductVariantId { get; set; }
+    public string Name { get; set; }
+
+    public string Description { get; set; }
+
+    public decimal Price { get; set; }
+
+    public int VatPercent { get; set; }
+
+    public ProductVariantDto()
     {
-        public int ProductVariantId { get; set; }
-        public string Name { get; set; }
+    }
 
-        public string Description { get; set; }
-
-        public decimal Price { get; set; }
-
-        public int VatPercent { get; set; }
-
-        public ProductVariantDto()
+    public ProductVariantDto(ProductVariant variant)
+    {
+        if (variant == null)
         {
+            throw new ArgumentNullException(nameof(variant));
         }
 
-        public ProductVariantDto(ProductVariant variant)
-        {
-            if (variant == null)
-            {
-                throw new ArgumentNullException(nameof(variant));
-            }
-
-            ProductVariantId = variant.ProductVariantId;
-            Name = variant.Name;
-            Description = variant.Description;
-            Price = variant.Price;
-            VatPercent = variant.VatPercent;
-        }
+        ProductVariantId = variant.ProductVariantId;
+        Name = variant.Name;
+        Description = variant.Description;
+        Price = variant.Price;
+        VatPercent = variant.VatPercent;
     }
 }

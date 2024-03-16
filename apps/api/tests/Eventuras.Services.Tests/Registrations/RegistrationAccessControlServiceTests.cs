@@ -1,5 +1,8 @@
-﻿#nullable enable
+#nullable enable
 
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services.Events;
 using Eventuras.Services.Exceptions;
@@ -10,9 +13,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NodaTime;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Xunit;
 using static Eventuras.Services.Tests.HttpContextAccessorUtils;
 
@@ -200,7 +200,7 @@ public class RegistrationAccessControlServiceTests
         var eventInfo = new EventInfo { Options = new EventInfoOptions { RegistrationPolicy = policy } };
         var registrationTime = Instant.FromDateTimeUtc(DateTime.UtcNow.AddDays(-2));
         var reg = new Registration
-            { UserId = userId, EventInfoId = eventInfo.EventInfoId, EventInfo = eventInfo, RegistrationTime = registrationTime };
+        { UserId = userId, EventInfoId = eventInfo.EventInfoId, EventInfo = eventInfo, RegistrationTime = registrationTime };
 
         var eventInfoRetrievalService = ServiceMocks.MockEventInfoRetrievalService(out var eiMock, eventInfo);
         var organizationAccessorService = Mock.Of<ICurrentOrganizationAccessorService>(MockBehavior.Strict); // should not be called
@@ -227,7 +227,9 @@ public class RegistrationAccessControlServiceTests
         var now = SystemClock.Instance.GetCurrentInstant();
         var reg = new Registration
         {
-            UserId = userId, EventInfoId = ei.EventInfoId, EventInfo = ei,
+            UserId = userId,
+            EventInfoId = ei.EventInfoId,
+            EventInfo = ei,
             RegistrationTime = now.Minus(Duration.FromDays(3)),
         };
 
@@ -251,7 +253,7 @@ public class RegistrationAccessControlServiceTests
         HttpContextAccessor.HttpContext = new DefaultHttpContext { User = user };
 
         var policy = new EventInfoOptions.EventInfoRegistrationPolicy
-            { AllowModificationsAfterLastCancellationDate = false, AllowedRegistrationEditHours = 0 };
+        { AllowModificationsAfterLastCancellationDate = false, AllowedRegistrationEditHours = 0 };
         var cancellationDue = LocalDate.FromDateTime(DateTime.UtcNow.AddDays(-2));
         var ei = new EventInfo { Options = new EventInfoOptions { RegistrationPolicy = policy }, LastCancellationDate = cancellationDue };
         var reg = new Registration { UserId = userId, EventInfoId = ei.EventInfoId, EventInfo = ei };

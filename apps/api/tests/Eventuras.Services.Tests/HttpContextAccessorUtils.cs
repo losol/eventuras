@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System.Linq;
 using System.Security.Claims;

@@ -1,20 +1,19 @@
-﻿using Eventuras.Services.Organizations.Settings;
+using Eventuras.Services.Organizations.Settings;
 using Eventuras.Services.Sms;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Eventuras.Services.Twilio
+namespace Eventuras.Services.Twilio;
+
+public static class TwilioServiceCollectionExtensions
 {
-    public static class TwilioServiceCollectionExtensions
+    public static IServiceCollection AddConfigurableTwilioServices(this IServiceCollection services)
     {
-        public static IServiceCollection AddConfigurableTwilioServices(this IServiceCollection services)
-        {
-            services.AddTransient<IOrganizationSettingsRegistryComponent,
-                TwilioSettingsRegistryComponent>();
+        services.AddTransient<IOrganizationSettingsRegistryComponent,
+            TwilioSettingsRegistryComponent>();
 
-            services.AddTransient<IConfigurableSmsSenderComponent,
-                TwilioSmsSenderComponent>();
+        services.AddTransient<IConfigurableSmsSenderComponent,
+            TwilioSmsSenderComponent>();
 
-            return services;
-        }
+        return services;
     }
 }

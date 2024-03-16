@@ -1,84 +1,83 @@
 #nullable enable
 
+using System;
+using System.Linq;
 using Eventuras.Domain;
 using Eventuras.WebApi.Controllers.v3.Registrations;
 using Eventuras.WebApi.Controllers.v3.Users;
 using Newtonsoft.Json;
-using System;
-using System.Linq;
 using static Eventuras.Domain.PaymentMethod;
 
-namespace Eventuras.WebApi.Controllers.v3.Orders
+namespace Eventuras.WebApi.Controllers.v3.Orders;
+
+public class OrderDto
 {
-    public class OrderDto
+    public int OrderId { get; set; }
+
+    public Order.OrderStatus Status { get; set; }
+
+    public DateTimeOffset Time { get; set; }
+
+    public string UserId { get; set; }
+
+    public int RegistrationId { get; set; }
+    public PaymentProvider? PaymentMethod { get; set; }
+    public string Comments { get; set; }
+    public string Log { get; set; }
+
+    public OrderLineDto[]? Items { get; set; }
+
+    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    public RegistrationDto? Registration { get; set; }
+
+    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    public UserDto? User { get; set; }
+
+
+    [Obsolete("For JSON deserialization only, do not use manually", true)]
+    public OrderDto()
     {
-        public int OrderId { get; set; }
+        UserId = null!;
+    }
 
-        public Order.OrderStatus Status { get; set; }
+    public OrderDto(Order order)
+    {
+        OrderId = order.OrderId;
+        Status = order.Status;
+        Time = order.OrderTime.ToDateTimeOffset();
+        UserId = order.UserId;
+        RegistrationId = order.RegistrationId;
+        PaymentMethod = order.PaymentMethod;
+        Comments = order.Comments;
+        Log = order.Log;
 
-        public DateTimeOffset Time { get; set; }
-
-        public string UserId { get; set; }
-
-        public int RegistrationId { get; set; }
-        public PaymentProvider? PaymentMethod { get; set; }
-        public string Comments { get; set; }
-        public string Log { get; set; }
-
-        public OrderLineDto[]? Items { get; set; }
-
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public RegistrationDto? Registration { get; set; }
-
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public UserDto? User { get; set; }
-
-
-        [Obsolete("For JSON deserialization only, do not use manually", true)]
-        public OrderDto()
+        if (order.Registration != null)
         {
-            UserId = null!;
+            Registration = new RegistrationDto(order.Registration, includeOrders: false);
         }
 
-        public OrderDto(Order order)
+        if (order.User != null)
         {
-            OrderId = order.OrderId;
-            Status = order.Status;
-            Time = order.OrderTime.ToDateTimeOffset();
-            UserId = order.UserId;
-            RegistrationId = order.RegistrationId;
-            PaymentMethod = order.PaymentMethod;
-            Comments = order.Comments;
-            Log = order.Log;
-
-            if (order.Registration != null)
-            {
-                Registration = new RegistrationDto(order.Registration, includeOrders: false);
-            }
-
-            if (order.User != null)
-            {
-                User = new UserDto(order.User);
-            }
-
-            Items = order.OrderLines?
-                .Select(l => new OrderLineDto(l))
-                .ToArray();
+            User = new UserDto(order.User);
         }
 
-        public void CopyTo(Order order)
+        Items = order.OrderLines?
+            .Select(l => new OrderLineDto(l))
+            .ToArray();
+    }
+
+    public void CopyTo(Order order)
+    {
+        if (order == null)
+            throw new ArgumentNullException(nameof(order));
+
+        // Update properties of the Order entity from the DTO
+        order.Status = this.Status;
+        order.Comments = this.Comments;
+
+        if (this.PaymentMethod.HasValue)
         {
-            if (order == null)
-                throw new ArgumentNullException(nameof(order));
-
-            // Update properties of the Order entity from the DTO
-            order.Status = this.Status;
-            order.Comments = this.Comments;
-
-            if (this.PaymentMethod.HasValue)
-            {
-                order.PaymentMethod = this.PaymentMethod.Value;
-            }
+            order.PaymentMethod = this.PaymentMethod.Value;
         }
     }
 }

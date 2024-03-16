@@ -1,12 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Eventuras.Services.Invoicing
+namespace Eventuras.Services.Invoicing;
+
+internal static class InvoicingServiceCollectionExtensions
 {
-    internal static class InvoicingServiceCollectionExtensions
+    public static void AddInvoicingServices(this IServiceCollection services)
     {
-        public static void AddInvoicingServices(this IServiceCollection services)
-        {
-            services.AddTransient<IInvoicingService, InvoicingService>();
-        }
+        services.AddTransient<IInvoicingService, InvoicingService>();
     }
 }

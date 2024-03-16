@@ -18,59 +18,58 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
 
-namespace Eventuras.WebApi.Tests
+namespace Eventuras.WebApi.Tests;
+
+public class CustomWebApiApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
 {
-    public class CustomWebApiApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
+    public readonly Mock<INotificationBackgroundService> NotificationBackgroundServiceMock = new Mock<INotificationBackgroundService>();
+
+    public readonly Mock<IEmailSender> EmailSenderMock = new();
+    public readonly Mock<ISmsSender> SmsSenderMock = new();
+
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        public readonly Mock<INotificationBackgroundService> NotificationBackgroundServiceMock = new Mock<INotificationBackgroundService>();
-
-        public readonly Mock<IEmailSender> EmailSenderMock = new();
-        public readonly Mock<ISmsSender> SmsSenderMock = new();
-
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
-            builder.UseSolutionRelativeContentRoot("src/Eventuras.WebApi")
-                .UseEnvironment("IntegrationTests")
-                .ConfigureAppConfiguration(app => app.AddInMemoryCollection(new Dictionary<string, string>
-                {
-                    { "AppSettings:UsePowerOffice", "false" },
-                    { "AppSettings:UseStripeInvoice", "false" },
-                }))
-                .ConfigureServices(services =>
-                {
-                    services.RemoveAll<INotificationBackgroundService>();
-
-                    // Override already added email sender with the true mock
-                    services.AddSingleton(EmailSenderMock.Object);
-                    services.AddSingleton(SmsSenderMock.Object);
-                    services.AddSingleton(NotificationBackgroundServiceMock.Object);
-                    services.AddTransient<IPdfRenderService, DummyPdfRenderService>();
-                    services.AddSingleton<IOrganizationSettingsRegistryComponent, OrgSettingsTestRegistryComponent>();
-
-                    // Remove previously configured DbContextOptions
-                    services.RemoveAll(typeof(DbContextOptions<ApplicationDbContext>));
-
-                    // Add ApplicationDbContext using a unique in-memory database for each test.
-                    var databaseName = $"eventuras-test-db-{Guid.NewGuid()}";
-                    services.AddDbContext<ApplicationDbContext>(options =>
-                        options.UseInMemoryDatabase(databaseName));
-
-                });
-
-            builder.ConfigureTestServices(services =>
+        builder.UseSolutionRelativeContentRoot("src/Eventuras.WebApi")
+            .UseEnvironment("IntegrationTests")
+            .ConfigureAppConfiguration(app => app.AddInMemoryCollection(new Dictionary<string, string>
             {
-                services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme,
-                    options =>
-                    {
-                        options.ConfigurationManager = null;
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            IssuerSigningKey = FakeJwtManager.SecurityKey,
-                            ValidIssuer = FakeJwtManager.Issuer,
-                            ValidAudience = FakeJwtManager.Audience,
-                        };
-                    });
+                { "AppSettings:UsePowerOffice", "false" },
+                { "AppSettings:UseStripeInvoice", "false" },
+            }))
+            .ConfigureServices(services =>
+            {
+                services.RemoveAll<INotificationBackgroundService>();
+
+                // Override already added email sender with the true mock
+                services.AddSingleton(EmailSenderMock.Object);
+                services.AddSingleton(SmsSenderMock.Object);
+                services.AddSingleton(NotificationBackgroundServiceMock.Object);
+                services.AddTransient<IPdfRenderService, DummyPdfRenderService>();
+                services.AddSingleton<IOrganizationSettingsRegistryComponent, OrgSettingsTestRegistryComponent>();
+
+                // Remove previously configured DbContextOptions
+                services.RemoveAll(typeof(DbContextOptions<ApplicationDbContext>));
+
+                // Add ApplicationDbContext using a unique in-memory database for each test.
+                var databaseName = $"eventuras-test-db-{Guid.NewGuid()}";
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseInMemoryDatabase(databaseName));
+
             });
-        }
+
+        builder.ConfigureTestServices(services =>
+        {
+            services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme,
+                options =>
+                {
+                    options.ConfigurationManager = null;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        IssuerSigningKey = FakeJwtManager.SecurityKey,
+                        ValidIssuer = FakeJwtManager.Issuer,
+                        ValidAudience = FakeJwtManager.Audience,
+                    };
+                });
+        });
     }
 }

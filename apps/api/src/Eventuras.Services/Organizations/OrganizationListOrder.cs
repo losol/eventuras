@@ -1,7 +1,6 @@
-namespace Eventuras.Services.Organizations
+namespace Eventuras.Services.Organizations;
+
+public enum OrganizationListOrder
 {
-    public enum OrganizationListOrder
-    {
-        Name
-    }
+    Name
 }

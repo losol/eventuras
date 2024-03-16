@@ -12,30 +12,29 @@ using Eventuras.Services.Users;
 using Eventuras.Services.Views;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Eventuras.Services
+namespace Eventuras.Services;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddCoreServices(this IServiceCollection services)
     {
-        public static IServiceCollection AddCoreServices(this IServiceCollection services)
-        {
-            services.AddScoped<IUserAccessControlService, UserAccessControlService>();
-            services.AddScoped<IPaymentMethodService, PaymentMethodService>();
-            services.AddScoped<IRegistrationService, RegistrationService>();
-            services.AddScoped<IProductsService, ProductsService>();
-            services.AddScoped<IMessageLogService, MessageLogService>();
-            services.AddRegistrationServices();
-            services.AddNotificationServices();
-            services.AddOrganizationServices();
-            services.AddCertificateServices();
-            services.AddUserServices();
-            services.AddAuthServices();
-            services.AddEventServices();
-            services.AddEventCollectionServices();
-            services.AddOrderServices();
-            services.AddInvoicingServices();
-            services.AddExternalSyncServices();
-            services.AddViewServices();
-            return services;
-        }
+        services.AddScoped<IUserAccessControlService, UserAccessControlService>();
+        services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+        services.AddScoped<IRegistrationService, RegistrationService>();
+        services.AddScoped<IProductsService, ProductsService>();
+        services.AddScoped<IMessageLogService, MessageLogService>();
+        services.AddRegistrationServices();
+        services.AddNotificationServices();
+        services.AddOrganizationServices();
+        services.AddCertificateServices();
+        services.AddUserServices();
+        services.AddAuthServices();
+        services.AddEventServices();
+        services.AddEventCollectionServices();
+        services.AddOrderServices();
+        services.AddInvoicingServices();
+        services.AddExternalSyncServices();
+        services.AddViewServices();
+        return services;
     }
 }
