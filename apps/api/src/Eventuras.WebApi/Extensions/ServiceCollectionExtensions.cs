@@ -41,7 +41,11 @@ public static class ServiceCollectionExtensions
             var env = sp.GetRequiredService<IHostEnvironment>();
             var isDevelopment = env.IsDevelopment() || env.IsEnvironment("IntegrationTests");
 
-            options.UseNpgsql(connectionString, o => o.UseNodaTime())
+            options.UseNpgsql(connectionString, o =>
+                {
+                    o.UseNodaTime();
+                    o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                })
                 .EnableSensitiveDataLogging(isDevelopment)
                 .EnableDetailedErrors(isDevelopment)
                 .ConfigureWarnings(warns =>
