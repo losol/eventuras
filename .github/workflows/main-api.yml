@@ -39,6 +39,7 @@ jobs:
 
   build:
     name: Build project
+    needs: format
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -80,6 +81,7 @@ jobs:
 
   docker:
     name: Docker build
+    needs: test
     runs-on: ubuntu-latest
     defaults:
       run:
