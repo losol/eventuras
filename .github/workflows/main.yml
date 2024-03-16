@@ -1,0 +1,22 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize]
+  workflow_call:
+
+jobs:
+  commitlint:
+    if: github.event_name == 'pull_request'
+    uses: ./.github/workflows/util-commitlint.yml
+    with:
+      base_sha: ${{ github.event.pull_request.base.sha }}
+      head_sha: ${{ github.event.pull_request.head.sha }}
+      node_version: "18.x"
+  api:
+    uses: ./.github/workflows/main-api.yml
+  web:
+    uses: ./.github/workflows/main-web.yml
