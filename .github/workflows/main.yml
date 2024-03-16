@@ -16,7 +16,3 @@ jobs:
       base_sha: ${{ github.event.pull_request.base.sha }}
       head_sha: ${{ github.event.pull_request.head.sha }}
       node_version: "18.x"
-  api:
-    uses: ./.github/workflows/main-api.yml
-  web:
-    uses: ./.github/workflows/main-web.yml
