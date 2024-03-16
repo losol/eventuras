@@ -1,9 +1,8 @@
 name: Release - Deploy
 
 on:
-  push:
-    tags:
-      - v*
+  release:
+    types: [published]
 
 env:
   ORGANIZATION_NAME: losolio
@@ -52,11 +51,7 @@ jobs:
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           images: ${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}:${{ github.event.release.tag_name }}
 
-  build-web:
-    uses: ./.github/workflows/main-web.yml
-
   deploy-web-prod-1:
-    needs: build-web
     uses: ./.github/workflows/util-vercel-deploy.yml
     with:
       environment: "web-prod-1"
@@ -70,7 +65,6 @@ jobs:
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
   deploy-web-prod-2:
-    needs: build-web
     uses: ./.github/workflows/util-vercel-deploy.yml
     with:
       environment: "web-prod-2"
