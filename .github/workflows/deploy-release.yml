@@ -56,7 +56,6 @@ jobs:
     with:
       environment: "web-prod-1"
       vercel_environment: "production"
-      promote: true
     secrets:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -69,7 +68,6 @@ jobs:
     with:
       environment: "web-prod-2"
       vercel_environment: "production"
-      promote: true
     secrets:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
