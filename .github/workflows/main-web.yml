@@ -1,4 +1,4 @@
-name: Web
+name: Web CI
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
@@ -23,12 +23,14 @@ on:
   push:
     branches:
       - main
-    paths-ignore: "docs/**"
+    paths:
+      - "apps/web/**"
   pull_request:
     branches:
       - main
+    paths:
+      - "apps/web/**"
     types: [opened, synchronize]
-    paths-ignore: "docs/**"
   workflow_call:
 
 jobs:
