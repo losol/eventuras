@@ -1,10 +1,10 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
-using Dapper;
 using Eventuras.Services;
 using Eventuras.Services.Constants;
 using Eventuras.Services.DbInitializers;
@@ -14,15 +14,13 @@ using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Config;
 using Eventuras.WebApi.Extensions;
 using Eventuras.WebApi.Filters;
-using Eventuras.WebApi.Handlers;
 using Hangfire;
-using Hangfire.AspNetCore;
 using Hangfire.Dashboard;
 using Hangfire.InMemory;
-using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -56,6 +54,13 @@ builder.Services.AddControllers(options =>
         j.JsonSerializerOptions.Converters.Add(new LocalDateConverter());
         j.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+
+// Configure data protection if folder is set
+if (!string.IsNullOrEmpty(appSettings.DataProtectionKeysFolder))
+{
+    builder.Services.AddDataProtection()
+        .PersistKeysToFileSystem(new DirectoryInfo(appSettings.DataProtectionKeysFolder));
+}
 
 
 builder.Services.AddRazorPages();
