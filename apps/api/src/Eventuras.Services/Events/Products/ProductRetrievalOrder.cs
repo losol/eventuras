@@ -1,7 +1,6 @@
-namespace Eventuras.Services.Events.Products
+namespace Eventuras.Services.Events.Products;
+
+public enum ProductRetrievalOrder
 {
-    public enum ProductRetrievalOrder
-    {
-        Name = 1
-    }
+    Name = 1
 }

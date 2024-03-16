@@ -1,11 +1,10 @@
-namespace Eventuras.Services.Notifications
+namespace Eventuras.Services.Notifications;
+
+public class NotificationRecipientListRequest : PagingRequest
 {
-    public class NotificationRecipientListRequest : PagingRequest
-    {
-        public NotificationRecipientFilter Filter { get; set; }
+    public NotificationRecipientFilter Filter { get; set; }
 
-        public NotificationRecipientListOrder OrderBy { get; set; } = NotificationRecipientListOrder.Created;
+    public NotificationRecipientListOrder OrderBy { get; set; } = NotificationRecipientListOrder.Created;
 
-        public bool Descending { get; set; }
-    }
+    public bool Descending { get; set; }
 }

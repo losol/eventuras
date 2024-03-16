@@ -1,63 +1,67 @@
 #nullable enable
 
+using System;
 using Eventuras.Domain;
 using Eventuras.WebApi.Controllers.v3.Events.Products;
-using System;
 
-namespace Eventuras.WebApi.Controllers.v3.Orders
+namespace Eventuras.WebApi.Controllers.v3.Orders;
+
+public class OrderLineDto : IEquatable<OrderLineDto>
 {
-    public class OrderLineDto : IEquatable<OrderLineDto>
+    public int OrderLineId { get; set; }
+
+    public ProductDto Product { get; set; }
+
+    public ProductVariantDto? ProductVariant { get; set; }
+
+    public int Quantity { get; set; }
+
+    [Obsolete("For JSON deserialization only, do not use manually", true)]
+    public OrderLineDto()
     {
-        public int OrderLineId { get; set; }
+        Product = null!;
+    }
 
-        public ProductDto Product { get; set; }
+    public OrderLineDto(OrderLine orderLine)
+    {
+        ArgumentNullException.ThrowIfNull(orderLine);
 
-        public ProductVariantDto? ProductVariant { get; set; }
+        OrderLineId = orderLine.OrderLineId;
 
-        public int Quantity { get; set; }
-
-        [Obsolete("For JSON deserialization only, do not use manually", true)]
-        public OrderLineDto()
+        Product = new ProductDto(orderLine.Product);
+        if (orderLine.ProductVariant != null)
         {
-            Product = null!;
+            ProductVariant = new ProductVariantDto(orderLine.ProductVariant);
         }
 
-        public OrderLineDto(OrderLine orderLine)
-        {
-            ArgumentNullException.ThrowIfNull(orderLine);
+        Quantity = orderLine.Quantity;
+    }
 
-            OrderLineId = orderLine.OrderLineId;
+    public bool Equals(OrderLineDto? other)
+    {
+        if (ReferenceEquals(null, other))
+            return false;
+        if (ReferenceEquals(this, other))
+            return true;
+        return OrderLineId == other.OrderLineId
+            && Equals(Product.ProductId, other.Product.ProductId)
+            && Equals(ProductVariant?.ProductVariantId, other.ProductVariant?.ProductVariantId)
+            && Quantity == other.Quantity;
+    }
 
-            Product = new ProductDto(orderLine.Product);
-            if (orderLine.ProductVariant != null)
-            {
-                ProductVariant = new ProductVariantDto(orderLine.ProductVariant);
-            }
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj))
+            return false;
+        if (ReferenceEquals(this, obj))
+            return true;
+        if (obj.GetType() != typeof(OrderLineDto))
+            return false;
+        return Equals((OrderLineDto)obj);
+    }
 
-            Quantity = orderLine.Quantity;
-        }
-
-        public bool Equals(OrderLineDto? other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return OrderLineId == other.OrderLineId
-                && Equals(Product.ProductId, other.Product.ProductId)
-                && Equals(ProductVariant?.ProductVariantId, other.ProductVariant?.ProductVariantId)
-                && Quantity == other.Quantity;
-        }
-
-        public override bool Equals(object? obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof(OrderLineDto)) return false;
-            return Equals((OrderLineDto)obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(OrderLineId, Product, ProductVariant, Quantity);
-        }
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(OrderLineId, Product, ProductVariant, Quantity);
     }
 }

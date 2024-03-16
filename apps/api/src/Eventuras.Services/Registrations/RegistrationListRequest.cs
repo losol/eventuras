@@ -1,11 +1,10 @@
-namespace Eventuras.Services.Registrations
+namespace Eventuras.Services.Registrations;
+
+public class RegistrationListRequest : PagingRequest
 {
-    public class RegistrationListRequest : PagingRequest
-    {
-        public RegistrationFilter Filter { get; set; } = new RegistrationFilter();
+    public RegistrationFilter Filter { get; set; } = new RegistrationFilter();
 
-        public RegistrationListOrder OrderBy { get; set; } = RegistrationListOrder.RegistrationTime;
+    public RegistrationListOrder OrderBy { get; set; } = RegistrationListOrder.RegistrationTime;
 
-        public bool Descending { get; set; }
-    }
+    public bool Descending { get; set; }
 }

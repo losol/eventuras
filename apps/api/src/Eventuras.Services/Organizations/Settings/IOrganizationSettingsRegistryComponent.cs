@@ -1,7 +1,6 @@
-namespace Eventuras.Services.Organizations.Settings
+namespace Eventuras.Services.Organizations.Settings;
+
+public interface IOrganizationSettingsRegistryComponent
 {
-    public interface IOrganizationSettingsRegistryComponent
-    {
-        void RegisterSettings(IOrganizationSettingsRegistry registry);
-    }
+    void RegisterSettings(IOrganizationSettingsRegistry registry);
 }

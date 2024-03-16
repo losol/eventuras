@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Security.Claims;
@@ -36,10 +36,12 @@ public class DbUserClaimTransformation : IClaimsTransformation
     public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
     {
         var userEmail = principal.GetEmail();
-        if (userEmail == null) return principal;
+        if (userEmail == null)
+            return principal;
 
         var fromDb = await GetCachedUserClaims(userEmail);
-        if (fromDb == null) return principal;
+        if (fromDb == null)
+            return principal;
 
         principal.AddIdentities(fromDb.Identities);
         return principal;
@@ -51,7 +53,8 @@ public class DbUserClaimTransformation : IClaimsTransformation
             async cacheEntry =>
             {
                 ApplicationUser dbUser;
-                try { dbUser = await _userRetrievalService.GetUserByEmailAsync(userEmail); }
+                try
+                { dbUser = await _userRetrievalService.GetUserByEmailAsync(userEmail); }
                 catch (NotFoundException)
                 {
                     cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(10);

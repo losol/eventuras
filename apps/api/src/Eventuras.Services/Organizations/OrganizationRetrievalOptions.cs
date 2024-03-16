@@ -1,11 +1,10 @@
-namespace Eventuras.Services.Organizations
+namespace Eventuras.Services.Organizations;
+
+public class OrganizationRetrievalOptions
 {
-    public class OrganizationRetrievalOptions
-    {
-        public bool LoadMembers { get; set; }
+    public bool LoadMembers { get; set; }
 
-        public bool LoadHostnames { get; set; }
+    public bool LoadHostnames { get; set; }
 
-        public bool LoadSettings { get; set; }
-    }
+    public bool LoadSettings { get; set; }
 }

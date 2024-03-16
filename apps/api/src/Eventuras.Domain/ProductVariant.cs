@@ -1,33 +1,32 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Eventuras.Domain
+namespace Eventuras.Domain;
+
+
+
+public class ProductVariant
 {
+    public int ProductVariantId { get; set; }
+    public string Name { get; set; }
 
+    [StringLength(300, ErrorMessage = "Beskrivelsen kan bare være 300 tegn.")]
+    [Display(Name = "Kort beskrivelse av varianten")]
+    [DataType(DataType.MultilineText)]
+    public string Description { get; set; }
 
-    public class ProductVariant
-    {
-        public int ProductVariantId { get; set; }
-        public string Name { get; set; }
+    public decimal Price { get; set; } = 0;
+    public int VatPercent { get; set; } = 0;
 
-        [StringLength(300, ErrorMessage = "Beskrivelsen kan bare være 300 tegn.")]
-        [Display(Name = "Kort beskrivelse av varianten")]
-        [DataType(DataType.MultilineText)]
-        public string Description { get; set; }
+    public bool AdminOnly { get; set; } = false;
 
-        public decimal Price { get; set; } = 0;
-        public int VatPercent { get; set; } = 0;
+    public int Inventory { get; set; } = 0;
+    public bool Published { get; set; } = true;
 
-        public bool AdminOnly { get; set; } = false;
+    public bool Archived { get; set; }
 
-        public int Inventory { get; set; } = 0;
-        public bool Published { get; set; } = true;
-
-        public bool Archived { get; set; }
-
-        // Navigational properties
-        public int ProductId { get; set; }
-        public Product Product { get; set; }
-        public List<OrderLine> OrderLines { get; set; }
-    }
+    // Navigational properties
+    public int ProductId { get; set; }
+    public Product Product { get; set; }
+    public List<OrderLine> OrderLines { get; set; }
 }

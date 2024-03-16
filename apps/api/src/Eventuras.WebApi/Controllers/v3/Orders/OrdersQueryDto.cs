@@ -3,22 +3,21 @@
 using Eventuras.Domain;
 using Eventuras.WebApi.Models;
 
-namespace Eventuras.WebApi.Controllers.v3.Orders
+namespace Eventuras.WebApi.Controllers.v3.Orders;
+
+public class OrdersQueryDto : PageQueryDto
 {
-    public class OrdersQueryDto : PageQueryDto
-    {
-        public string? UserId { get; set; }
+    public string? UserId { get; set; }
 
-        public int? EventId { get; set; }
+    public int? EventId { get; set; }
 
-        public int? RegistrationId { get; set; }
+    public int? RegistrationId { get; set; }
 
-        public Order.OrderStatus? Status { get; set; }
+    public Order.OrderStatus? Status { get; set; }
 
-        public bool IncludeUser { get; set; } = false;
+    public bool IncludeUser { get; set; } = false;
 
-        public bool IncludeRegistration { get; set; } = false;
+    public bool IncludeRegistration { get; set; } = false;
 
-        public int? OrganizationId { get; set; }
-    }
+    public int? OrganizationId { get; set; }
 }

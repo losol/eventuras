@@ -47,9 +47,11 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         var client = factory.CreateClient().Authenticated();
 
         var q = new List<object>();
-        if (page != null) q.Add($"page={WebUtility.UrlEncode(page.ToString())}");
+        if (page != null)
+            q.Add($"page={WebUtility.UrlEncode(page.ToString())}");
 
-        if (count != null) q.Add($"count={WebUtility.UrlEncode(count.ToString())}");
+        if (count != null)
+            q.Add($"count={WebUtility.UrlEncode(count.ToString())}");
 
         var response = await client.GetAsync("/v3/registrations?" + string.Join("&", q));
         response.CheckBadRequest();

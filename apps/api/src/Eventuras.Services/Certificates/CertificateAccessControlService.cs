@@ -1,70 +1,69 @@
-using Eventuras.Domain;
-using Eventuras.Services.Exceptions;
-using Eventuras.Services.Registrations;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Eventuras.Domain;
+using Eventuras.Services.Exceptions;
+using Eventuras.Services.Registrations;
 
-namespace Eventuras.Services.Certificates
+namespace Eventuras.Services.Certificates;
+
+internal class CertificateAccessControlService : ICertificateAccessControlService
 {
-    internal class CertificateAccessControlService : ICertificateAccessControlService
+    private readonly IRegistrationRetrievalService _registrationRetrievalService;
+    private readonly IRegistrationAccessControlService _registrationAccessControlService;
+
+    public CertificateAccessControlService(
+        IRegistrationRetrievalService registrationRetrievalService,
+        IRegistrationAccessControlService registrationAccessControlService)
     {
-        private readonly IRegistrationRetrievalService _registrationRetrievalService;
-        private readonly IRegistrationAccessControlService _registrationAccessControlService;
+        _registrationRetrievalService = registrationRetrievalService ?? throw
+            new ArgumentNullException(nameof(registrationRetrievalService));
 
-        public CertificateAccessControlService(
-            IRegistrationRetrievalService registrationRetrievalService,
-            IRegistrationAccessControlService registrationAccessControlService)
+        _registrationAccessControlService = registrationAccessControlService ?? throw
+            new ArgumentNullException(nameof(registrationAccessControlService));
+    }
+
+    public async Task CheckCertificateReadAccessAsync(
+        Certificate certificate,
+        CancellationToken cancellationToken)
+    {
+        if (certificate == null)
         {
-            _registrationRetrievalService = registrationRetrievalService ?? throw
-                new ArgumentNullException(nameof(registrationRetrievalService));
-
-            _registrationAccessControlService = registrationAccessControlService ?? throw
-                new ArgumentNullException(nameof(registrationAccessControlService));
+            throw new ArgumentNullException(nameof(certificate));
         }
 
-        public async Task CheckCertificateReadAccessAsync(
-            Certificate certificate,
-            CancellationToken cancellationToken)
+        var reg = await GetRegistrationForCertificateAsync(certificate, cancellationToken);
+
+        await _registrationAccessControlService
+            .CheckRegistrationReadAccessAsync(reg, cancellationToken);
+    }
+
+    public async Task CheckCertificateUpdateAccessAsync(
+        Certificate certificate,
+        CancellationToken cancellationToken = default)
+    {
+        if (certificate == null)
         {
-            if (certificate == null)
-            {
-                throw new ArgumentNullException(nameof(certificate));
-            }
-
-            var reg = await GetRegistrationForCertificateAsync(certificate, cancellationToken);
-
-            await _registrationAccessControlService
-                .CheckRegistrationReadAccessAsync(reg, cancellationToken);
+            throw new ArgumentNullException(nameof(certificate));
         }
 
-        public async Task CheckCertificateUpdateAccessAsync(
-            Certificate certificate,
-            CancellationToken cancellationToken = default)
-        {
-            if (certificate == null)
-            {
-                throw new ArgumentNullException(nameof(certificate));
-            }
+        var reg = await GetRegistrationForCertificateAsync(certificate, cancellationToken);
 
-            var reg = await GetRegistrationForCertificateAsync(certificate, cancellationToken);
+        await _registrationAccessControlService
+            .CheckRegistrationUpdateAccessAsync(reg, cancellationToken);
+    }
 
-            await _registrationAccessControlService
-                .CheckRegistrationUpdateAccessAsync(reg, cancellationToken);
-        }
-
-        private async Task<Registration> GetRegistrationForCertificateAsync(
-            Certificate certificate,
-            CancellationToken cancellationToken)
-        {
-            return await _registrationRetrievalService
-                       .FindRegistrationAsync(new RegistrationFilter
-                       {
-                           HavingCertificateOnly = true,
-                           CertificateId = certificate.CertificateId,
-                       }, cancellationToken: cancellationToken)
-                   ?? throw new NotFoundException(
-                       $"Registration not found for certificate {certificate.CertificateId}");
-        }
+    private async Task<Registration> GetRegistrationForCertificateAsync(
+        Certificate certificate,
+        CancellationToken cancellationToken)
+    {
+        return await _registrationRetrievalService
+                   .FindRegistrationAsync(new RegistrationFilter
+                   {
+                       HavingCertificateOnly = true,
+                       CertificateId = certificate.CertificateId,
+                   }, cancellationToken: cancellationToken)
+               ?? throw new NotFoundException(
+                   $"Registration not found for certificate {certificate.CertificateId}");
     }
 }

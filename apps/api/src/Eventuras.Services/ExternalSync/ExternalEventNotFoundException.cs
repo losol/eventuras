@@ -1,9 +1,8 @@
-namespace Eventuras.Services.ExternalSync
+namespace Eventuras.Services.ExternalSync;
+
+public class ExternalEventNotFoundException : ExternalSyncException
 {
-    public class ExternalEventNotFoundException : ExternalSyncException
+    public ExternalEventNotFoundException(string message) : base(message)
     {
-        public ExternalEventNotFoundException(string message) : base(message)
-        {
-        }
     }
 }

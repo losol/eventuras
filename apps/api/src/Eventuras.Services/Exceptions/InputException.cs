@@ -1,9 +1,8 @@
-namespace Eventuras.Services.Exceptions
+namespace Eventuras.Services.Exceptions;
+
+public class InputException : ServiceException
 {
-    public class InputException : ServiceException
+    public InputException(string message) : base(message)
     {
-        public InputException(string message) : base(message)
-        {
-        }
     }
 }

@@ -2,32 +2,31 @@ using Eventuras.Domain;
 using Xunit;
 using static Eventuras.Domain.Registration;
 
-namespace Eventuras.UnitTests.RegistrationTests
+namespace Eventuras.UnitTests.RegistrationTests;
+
+public class Register_Attendance_Should
 {
-    public class Register_Attendance_Should
+    [Fact]
+    public void Succeed_When_Not_Attended()
     {
-        [Fact]
-        public void Succeed_When_Not_Attended()
-        {
-            Registration registration = new Registration();
-            var expected = RegistrationStatus.Attended;
+        Registration registration = new Registration();
+        var expected = RegistrationStatus.Attended;
 
-            registration.MarkAsAttended();
-            var actual = registration.Status;
+        registration.MarkAsAttended();
+        var actual = registration.Status;
 
-            Assert.Equal(expected, actual);
-        }
+        Assert.Equal(expected, actual);
+    }
 
-        [Fact]
-        public void Succeed_When_Already_Attended()
-        {
-            Registration registration = new Registration { Status = RegistrationStatus.Attended };
-            var expected = RegistrationStatus.Attended;
+    [Fact]
+    public void Succeed_When_Already_Attended()
+    {
+        Registration registration = new Registration { Status = RegistrationStatus.Attended };
+        var expected = RegistrationStatus.Attended;
 
-            registration.MarkAsAttended();
-            var actual = registration.Status;
+        registration.MarkAsAttended();
+        var actual = registration.Status;
 
-            Assert.Equal(expected, actual);
-        }
+        Assert.Equal(expected, actual);
     }
 }
