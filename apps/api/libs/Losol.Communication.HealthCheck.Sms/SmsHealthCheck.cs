@@ -1,0 +1,23 @@
+﻿using Losol.Communication.HealthCheck.Abstractions;
+using Losol.Communication.Sms;
+using Microsoft.Extensions.Options;
+using System;
+
+namespace Losol.Communication.HealthCheck.Sms
+{
+    public class SmsHealthCheck : AbstractPeriodicHealthCheck
+    {
+        private readonly IOptions<SmsHealthCheckSettings> _options;
+
+        protected override string ServiceName => ISmsSender.ServiceName;
+        protected override TimeSpan CheckPeriod => _options.Value.CheckPeriod;
+
+        public SmsHealthCheck(
+            IOptions<SmsHealthCheckSettings> options,
+            IHealthCheckStorage healthCheckStorage,
+            ISmsSender smsSender) : base(healthCheckStorage, smsSender)
+        {
+            _options = options ?? throw new ArgumentNullException(nameof(options));
+        }
+    }
+}
