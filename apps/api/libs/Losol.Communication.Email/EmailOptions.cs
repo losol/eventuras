@@ -1,7 +1,6 @@
-namespace Losol.Communication.Email
+namespace Losol.Communication.Email;
+
+public class EmailOptions
 {
-  public class EmailOptions
-  {
     public int? OrganizationId { get; set; }
-  }
 }

@@ -14,9 +14,11 @@ using Eventuras.Services.Stripe;
 using Eventuras.Services.Twilio;
 using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Config;
+using Losol.Communication.Email.HealthCheck;
 using Losol.Communication.HealthCheck.Abstractions;
 using Losol.Communication.HealthCheck.Email;
 using Losol.Communication.HealthCheck.Sms;
+using Losol.Communication.Sms.HealthCheck;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -30,13 +32,14 @@ namespace Eventuras.WebApi.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static void ConfigureEf(this IServiceCollection services)
-    {
+    public static void ConfigureEf(this IServiceCollection services) =>
         services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
             var connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection");
             if (string.IsNullOrWhiteSpace(connectionString))
+            {
                 throw new ArgumentException("Connection string is not set");
+            }
 
             var env = sp.GetRequiredService<IHostEnvironment>();
             var isDevelopment = env.IsDevelopment() || env.IsEnvironment("IntegrationTests");
@@ -51,20 +54,19 @@ public static class ServiceCollectionExtensions
                 .ConfigureWarnings(warns =>
                 {
                     if (isDevelopment)
+                    {
                         warns.Ignore(CoreEventId.SensitiveDataLoggingEnabledWarning);
+                    }
                 });
         });
-    }
 
     public static void ConfigureIdentity(
-        this IServiceCollection services)
-    {
+        this IServiceCollection services) =>
         services.AddIdentity<ApplicationUser, IdentityRole>(config =>
-        {
-            config.User.RequireUniqueEmail = true;
-        }).AddEntityFrameworkStores<ApplicationDbContext>()
+            {
+                config.User.RequireUniqueEmail = true;
+            }).AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
-    }
 
     public static void ConfigureAuthorizationPolicies(
         this IServiceCollection services,
@@ -83,9 +85,9 @@ public static class ServiceCollectionExtensions
 
             Array.ForEach(apiScopes, apiScope =>
                 options.AddPolicy(apiScope,
-                policy => policy.Requirements.Add(
-                    new ScopeRequirement(config["Auth:Issuer"], apiScope)
-                )
+                    policy => policy.Requirements.Add(
+                        new ScopeRequirement(config["Auth:Issuer"], apiScope)
+                    )
                 )
             );
         });
@@ -133,7 +135,8 @@ public static class ServiceCollectionExtensions
         services.AddCoreServices();
 
         // Add Health Checks
-        services.AddApplicationHealthChecks(configuration.GetSection(Constants.HealthChecks.HealthCheckConfigurationKey));
+        services.AddApplicationHealthChecks(
+            configuration.GetSection(Constants.HealthChecks.HealthCheckConfigurationKey));
 
         // for cert PDF rendering
         services.AddHttpContextAccessor();
@@ -164,7 +167,8 @@ public static class ServiceCollectionExtensions
             .AddHealthChecksUI(settings =>
             {
                 settings
-                    .AddHealthCheckEndpoint(Constants.HealthChecks.HealthCheckName, $"{baseUri}{Constants.HealthChecks.HealthCheckUri}");
+                    .AddHealthCheckEndpoint(Constants.HealthChecks.HealthCheckName,
+                        $"{baseUri}{Constants.HealthChecks.HealthCheckUri}");
             })
             .AddInMemoryStorage();
     }

@@ -1,13 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../common.props" />
+  <PropertyGroup>
+    <RootNamespace>Losol.Communication.Email</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="../common.props"/>
 
   <ItemGroup>
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="MailKit" Version="3.0.0"/>
+    <PackageReference Include="MimeKit" Version="3.0.0"/>
+    <PackageReference Include="SendGrid" Version="9.25.1"/>
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0"/>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Losol.Communication.HealthCheck.Abstractions\Losol.Communication.HealthCheck.Abstractions.csproj" />
+    <ProjectReference Include="..\Losol.Communication.HealthCheck\Losol.Communication.HealthCheck.csproj"/>
   </ItemGroup>
 
 </Project>

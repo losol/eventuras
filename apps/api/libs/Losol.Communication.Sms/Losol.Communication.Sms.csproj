@@ -1,9 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../common.props" />
+  <PropertyGroup>
+    <RootNamespace>Losol.Communication.Sms</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="../common.props"/>
 
   <ItemGroup>
-    <ProjectReference Include="..\Losol.Communication.HealthCheck.Abstractions\Losol.Communication.HealthCheck.Abstractions.csproj" />
+    <ProjectReference Include="..\Losol.Communication.HealthCheck\Losol.Communication.HealthCheck.csproj"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Twilio" Version="5.69.0"/>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="6.0.0" />
   </ItemGroup>
 
 </Project>
