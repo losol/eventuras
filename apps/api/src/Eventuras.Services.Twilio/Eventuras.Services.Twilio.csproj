@@ -3,9 +3,9 @@
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj" />
+    <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Losol.Communication.Sms.Twilio" Version="0.7.3" />
+    <ProjectReference Include="..\..\libs\Losol.Communication.Sms\Losol.Communication.Sms.csproj"/>
   </ItemGroup>
 </Project>
