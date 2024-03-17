@@ -19,6 +19,10 @@ on:
         default: "8"
         type: string
 
+env:
+  ORGANIZATION_NAME: losolio
+  IMAGE_NAME: eventuras
+
 jobs:
   format:
     name: dotnet format
