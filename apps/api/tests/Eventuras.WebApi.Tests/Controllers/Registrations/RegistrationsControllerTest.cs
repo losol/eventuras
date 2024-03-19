@@ -213,7 +213,7 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
 
         var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
 
-        var response = await client.GetAsync("/v3/registrations?includeEventInfo=true");
+        var response = await client.GetAsync($"/v3/registrations?eventId={evt.Entity.EventInfoId}&includeEventInfo=true");
         var paging = await response.AsTokenAsync();
         paging.CheckPaging((token, r) =>
             {
