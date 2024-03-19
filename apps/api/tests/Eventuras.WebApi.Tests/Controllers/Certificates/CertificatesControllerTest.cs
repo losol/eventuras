@@ -26,9 +26,10 @@ public class CertificatesControllerTest : IClassFixture<CustomWebApiApplicationF
     [Fact]
     public async Task Should_Return_Not_Found_When_Getting_Non_Existing_Cert_Json()
     {
+        const int nonExistingId = 10000;
         var response = await _factory.CreateClient()
             .AuthenticatedAsSuperAdmin()
-            .GetAsync("/v3/certificates/1");
+            .GetAsync($"/v3/certificates/{nonExistingId}");
         response.CheckNotFound();
     }
 

@@ -1,9 +1,15 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
+using Eventuras.WebApi.Controllers.v3.Notifications;
+using Eventuras.WebApi.Models;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Notifications;
@@ -28,8 +34,9 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
     [Fact]
     public async Task Should_Return_Not_Found_When_Getting_Unknown_Notification()
     {
+        const int nonExistingId = 10000;
         var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
-        var response = await client.GetAsync("/v3/notifications/1");
+        var response = await client.GetAsync($"/v3/notifications/{nonExistingId}");
         response.CheckNotFound();
     }
 
@@ -53,10 +60,7 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
         using var notification = await scope.CreateEmailNotificationAsync();
 
         var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-        var response = await client.GetAsync($"/v3/notifications/{notification.Entity.NotificationId}", new
-        {
-            orgId = org.Entity.OrganizationId
-        });
+        var response = await client.GetAsync($"/v3/notifications/{notification.Entity.NotificationId}", new { orgId = org.Entity.OrganizationId });
         response.CheckForbidden();
     }
 
@@ -71,10 +75,7 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
         using var notification = await scope.CreateEmailNotificationAsync(organization: org2.Entity);
 
         var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-        var response = await client.GetAsync($"/v3/notifications/{notification.Entity.NotificationId}", new
-        {
-            orgId = org.Entity.OrganizationId
-        });
+        var response = await client.GetAsync($"/v3/notifications/{notification.Entity.NotificationId}", new { orgId = org.Entity.OrganizationId });
         response.CheckForbidden();
     }
 
@@ -90,10 +91,7 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
         using var notification = await scope.CreateEmailNotificationAsync(eventInfo: evt.Entity);
 
         var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-        var response = await client.GetAsync($"/v3/notifications/{notification.Entity.NotificationId}", new
-        {
-            orgId = org.Entity.OrganizationId
-        });
+        var response = await client.GetAsync($"/v3/notifications/{notification.Entity.NotificationId}", new { orgId = org.Entity.OrganizationId });
         response.CheckForbidden();
     }
 
@@ -107,10 +105,7 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
         using var notification = await scope.CreateEmailNotificationAsync(organization: org.Entity);
 
         var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-        var response = await client.GetAsync($"/v3/notifications/{notification.Entity.NotificationId}", new
-        {
-            orgId = org.Entity.OrganizationId
-        });
+        var response = await client.GetAsync($"/v3/notifications/{notification.Entity.NotificationId}", new { orgId = org.Entity.OrganizationId });
 
         var json = await response.CheckOk().AsTokenAsync();
         json.CheckNotification(notification.Entity);
@@ -127,10 +122,7 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
         using var notification = await scope.CreateEmailNotificationAsync(eventInfo: evt.Entity);
 
         var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-        var response = await client.GetAsync($"/v3/notifications/{notification.Entity.NotificationId}", new
-        {
-            orgId = org.Entity.OrganizationId
-        });
+        var response = await client.GetAsync($"/v3/notifications/{notification.Entity.NotificationId}", new { orgId = org.Entity.OrganizationId });
 
         var json = await response.CheckOk().AsTokenAsync();
         json.CheckNotification(notification.Entity);
@@ -192,10 +184,7 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
         using var n4 = await scope.CreateEmailNotificationAsync();
 
         var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-        var response = await client.GetAsync("/v3/notifications", new
-        {
-            orgId = o1.Entity.OrganizationId
-        });
+        var response = await client.GetAsync("/v3/notifications", new { orgId = o1.Entity.OrganizationId });
 
         var token = await response.CheckOk().AsTokenAsync();
         token.CheckPaging((t, n) => t.CheckNotification(n), n2.Entity, n1.Entity);
@@ -206,6 +195,7 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
     [InlineData(Roles.SystemAdmin)]
     public async Task List_Should_Not_Limit_Output_For_Power_Admin(string role)
     {
+        // Arrange
         using var scope = _factory.Services.NewTestScope();
         using var o1 = await scope.CreateOrganizationAsync();
         using var o2 = await scope.CreateOrganizationAsync();
@@ -216,12 +206,29 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
         using var n3 = await scope.CreateEmailNotificationAsync(eventInfo: e2.Entity);
         using var n4 = await scope.CreateEmailNotificationAsync();
 
+        // Act
         var client = _factory.CreateClient().Authenticated(role: role);
         var response = await client.GetAsync("/v3/notifications");
 
+        // Assert
         var token = await response.CheckOk().AsTokenAsync();
-        token.CheckPaging((t, n) => t.CheckNotification(n),
-            n4.Entity, n3.Entity, n2.Entity, n1.Entity);
+        var data = token["data"] as JArray;
+        Assert.NotNull(data);
+
+        var notificationsToFind = new Notification[] {n4.Entity, n3.Entity, n2.Entity, n1.Entity};
+        var foundNotifications = 0;
+
+        foreach (var notification in data)
+        {
+            var notificationToFind = notificationsToFind[foundNotifications];
+            if (notification.Value<int>("notificationId") != notificationToFind.NotificationId) continue;
+
+            notification.CheckNotification(notificationToFind);
+            foundNotifications++;
+            if (foundNotifications >= notificationsToFind.Length) break;
+        }
+
+        Assert.Equal(notificationsToFind.Length, foundNotifications);
     }
 
     [Theory]
@@ -239,18 +246,10 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
     {
         return new[]
         {
-            new object[] { new { page = "invalid" } },
-            new object[] { new { page = -1 } },
-            new object[] { new { page = 0 } },
-            new object[] { new { count = "invalid" } },
-            new object[] { new { count = -1 } },
-            new object[] { new { eventId = "invalid" } },
-            new object[] { new { eventId = 0 } },
-            new object[] { new { productId = "invalid" } },
-            new object[] { new { productId = 0 } },
-            new object[] { new { status = "invalid" } },
-            new object[] { new { type = "invalid" } },
-            new object[] { new { order = "invalid" } },
+            new object[] { new { page = "invalid" } }, new object[] { new { page = -1 } }, new object[] { new { page = 0 } },
+            new object[] { new { count = "invalid" } }, new object[] { new { count = -1 } }, new object[] { new { eventId = "invalid" } },
+            new object[] { new { eventId = 0 } }, new object[] { new { productId = "invalid" } }, new object[] { new { productId = 0 } },
+            new object[] { new { status = "invalid" } }, new object[] { new { type = "invalid" } }, new object[] { new { order = "invalid" } },
             new object[] { new { desc = "invalid" } }
         };
     }
@@ -318,15 +317,16 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
     public async Task List_Should_Use_Type_Query_Params()
     {
         using var scope = _factory.Services.NewTestScope();
-        using var n1 = await scope.CreateEmailNotificationAsync();
-        using var n2 = await scope.CreateSmsNotificationAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var n1 = await scope.CreateEmailNotificationAsync(eventInfo: evt.Entity);
+        using var n2 = await scope.CreateSmsNotificationAsync(eventInfo: evt.Entity);
 
         var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
-        var response = await client.GetAsync("/v3/notifications?type=email");
+        var response = await client.GetAsync($"/v3/notifications?eventId={evt.Entity.EventInfoId}&type=email");
         var token = await response.CheckOk().AsTokenAsync();
         token.CheckPaging((t, n) => t.CheckNotification(n), n1.Entity);
 
-        response = await client.GetAsync("/v3/notifications?type=sms");
+        response = await client.GetAsync($"/v3/notifications?eventId={evt.Entity.EventInfoId}&type=sms");
         token = await response.CheckOk().AsTokenAsync();
         token.CheckPaging((t, n) => t.CheckNotification(n), n2.Entity);
     }
@@ -355,17 +355,18 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
     public async Task List_Should_Use_Paging_Query_Params()
     {
         using var scope = _factory.Services.NewTestScope();
-        using var n1 = await scope.CreateEmailNotificationAsync();
-        using var n2 = await scope.CreateEmailNotificationAsync();
-        using var n3 = await scope.CreateEmailNotificationAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var n1 = await scope.CreateEmailNotificationAsync(eventInfo: evt.Entity);
+        using var n2 = await scope.CreateEmailNotificationAsync(eventInfo: evt.Entity);
+        using var n3 = await scope.CreateEmailNotificationAsync(eventInfo: evt.Entity);
 
         var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
-        var response = await client.GetAsync("/v3/notifications?page=1&count=2");
+        var response = await client.GetAsync($"/v3/notifications?eventId={evt.Entity.EventInfoId}&page=1&count=2");
         var token = await response.CheckOk().AsTokenAsync();
         token.CheckPaging(1, 3, (t, n) => t.CheckNotification(n),
             n3.Entity, n2.Entity);
 
-        response = await client.GetAsync("/v3/notifications?page=2&count=2");
+        response = await client.GetAsync($"/v3/notifications?eventId={evt.Entity.EventInfoId}&page=2&count=2");
         token = await response.CheckOk().AsTokenAsync();
         token.CheckPaging(2, 3, (t, n) => t.CheckNotification(n), n1.Entity);
     }
@@ -374,9 +375,10 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
     public async Task List_Should_Use_Sorting_Query_Params()
     {
         using var scope = _factory.Services.NewTestScope();
-        using var n1 = await scope.CreateEmailNotificationAsync();
-        using var n2 = await scope.CreateEmailNotificationAsync();
-        using var n3 = await scope.CreateEmailNotificationAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var n1 = await scope.CreateEmailNotificationAsync(eventInfo: evt.Entity);
+        using var n2 = await scope.CreateEmailNotificationAsync(eventInfo: evt.Entity);
+        using var n3 = await scope.CreateEmailNotificationAsync(eventInfo: evt.Entity);
 
         n3.Entity.Status = NotificationStatus.Cancelled;
         await scope.Db.UpdateAsync(n3.Entity);
@@ -388,32 +390,32 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
         await scope.Db.UpdateAsync(n1.Entity);
 
         var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
-        var response = await client.GetAsync("/v3/notifications?order=created");
+        var response = await client.GetAsync($"/v3/notifications?eventId={evt.Entity.EventInfoId}&order=created");
         var token = await response.CheckOk().AsTokenAsync();
         token.CheckPaging((t, n) => t.CheckNotification(n),
             n3.Entity, n2.Entity, n1.Entity);
 
-        response = await client.GetAsync("/v3/notifications?order=created&desc=true");
+        response = await client.GetAsync($"/v3/notifications?eventId={evt.Entity.EventInfoId}&order=created&desc=true");
         token = await response.CheckOk().AsTokenAsync();
         token.CheckPaging((t, n) => t.CheckNotification(n),
             n3.Entity, n2.Entity, n1.Entity);
 
-        response = await client.GetAsync("/v3/notifications?order=created&desc=false");
+        response = await client.GetAsync($"/v3/notifications?eventId={evt.Entity.EventInfoId}&order=created&desc=false");
         token = await response.CheckOk().AsTokenAsync();
         token.CheckPaging((t, n) => t.CheckNotification(n),
             n1.Entity, n2.Entity, n3.Entity);
 
-        response = await client.GetAsync("/v3/notifications?order=statusUpdated");
+        response = await client.GetAsync($"/v3/notifications?eventId={evt.Entity.EventInfoId}&order=statusUpdated");
         token = await response.CheckOk().AsTokenAsync();
         token.CheckPaging((t, n) => t.CheckNotification(n),
             n1.Entity, n2.Entity, n3.Entity);
 
-        response = await client.GetAsync("/v3/notifications?order=statusUpdated&desc=true");
+        response = await client.GetAsync($"/v3/notifications?eventId={evt.Entity.EventInfoId}&order=statusUpdated&desc=true");
         token = await response.CheckOk().AsTokenAsync();
         token.CheckPaging((t, n) => t.CheckNotification(n),
             n1.Entity, n2.Entity, n3.Entity);
 
-        response = await client.GetAsync("/v3/notifications?order=statusUpdated&desc=false");
+        response = await client.GetAsync($"/v3/notifications?eventId={evt.Entity.EventInfoId}&order=statusUpdated&desc=false");
         token = await response.CheckOk().AsTokenAsync();
         token.CheckPaging((t, n) => t.CheckNotification(n),
             n3.Entity, n2.Entity, n1.Entity);
