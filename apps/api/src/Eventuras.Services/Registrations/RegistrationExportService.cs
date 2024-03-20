@@ -77,7 +77,6 @@ public class RegistrationExportService : IRegistrationExportService
         });
 
         workbookPart.Workbook.Save();
-        spreadsheetDocument.Dispose();
     }
 
     private static void WriteHeader(SheetData sheetData)
