@@ -82,7 +82,7 @@ public abstract class AbstractExternalSyncProviderService : IExternalSyncProvide
         }
         catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
         {
-            _logger.LogWarning(e, e.Message);
+            _logger.LogWarning(e, "Database update failed because of non-unique key: {ExceptionMessage}", e.Message);
             _context.ExternalRegistrations.Remove(externalRegistration);
             return ExternalEventSyncResult.AlreadySynced;
         }
@@ -113,7 +113,7 @@ public abstract class AbstractExternalSyncProviderService : IExternalSyncProvide
         }
         catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
         {
-            _logger.LogWarning(e, e.Message);
+            _logger.LogWarning(e, "Database update failed because of non-unique key: {ExceptionMessage}", e.Message);
             _context.ExternalAccounts.Remove(externalAccount);
             return await FindExistingAccountAsync(registration);
         }

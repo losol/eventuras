@@ -45,7 +45,7 @@ internal class OrganizationManagementService : IOrganizationManagementService
         }
         catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
         {
-            _logger.LogWarning(e, e.Message);
+            _logger.LogWarning(e, "Database update failed because of non-unique key: {ExceptionMessage}", e.Message);
             _context.Remove(organization);
             throw new DuplicateException();
         }
@@ -68,7 +68,7 @@ internal class OrganizationManagementService : IOrganizationManagementService
         }
         catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
         {
-            _logger.LogWarning(e, e.Message);
+            _logger.LogWarning(e, "Database update failed because of non-unique key: {ExceptionMessage}", e.Message);
             _context.Entry(organization).State = EntityState.Detached;
             throw new DuplicateException();
         }

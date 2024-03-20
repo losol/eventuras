@@ -92,7 +92,7 @@ public class NotificationBackgroundService : INotificationBackgroundService
             recipient.Errors = e.Message;
             await _notificationManagementService.UpdateNotificationRecipientAsync(recipient);
 
-            _logger.LogError(e, "Error sending notification");
+            _logger.LogError(e, "Error sending notification: {ExceptionMessage}", e.Message);
             throw;
         }
     }

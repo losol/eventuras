@@ -30,7 +30,7 @@ internal class ConvertoHealthCheck : IHealthCheck
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Converto service health check failed: {message}", e.Message);
+            _logger.LogError(e, "Converto service health check failed: {ExceptionMessage}", e.Message);
             return HealthCheckResult.Unhealthy(e.Message);
         }
     }

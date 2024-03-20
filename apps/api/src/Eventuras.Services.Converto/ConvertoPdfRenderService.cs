@@ -35,7 +35,7 @@ internal class ConvertoPdfRenderService : IPdfRenderService
         }
         catch (ConvertoClientException e)
         {
-            _logger.LogError(e.Message, e);
+            _logger.LogError(e, "Unable to convert PDF to HTML, returning empty MemoryStream: {ExceptionMessage}", e.Message);
             return new MemoryStream();
         }
     }
