@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +18,10 @@ namespace Eventuras.TestAbstractions;
 public interface IDisposableEntity<out T> : IDisposable, IAsyncDisposable where T : class
 {
     T Entity { get; }
+    void Save();
     Task SaveAsync();
+    void Delete();
+    Task DeleteAsync();
 }
 
 public class DisposableEntity<T> : IDisposableEntity<T> where T : class
@@ -24,63 +29,46 @@ public class DisposableEntity<T> : IDisposableEntity<T> where T : class
     public T Entity { get; }
     private readonly DbContext _context;
     private readonly IDisposable[] _disposables;
-    private bool _disposed = false; // To detect redundant calls
+    private bool _disposed;
 
     public DisposableEntity(T entity, DbContext context, params IDisposable[] disposables)
     {
-        Entity = entity ?? throw new ArgumentNullException(nameof(entity));
-        _context = context ?? throw new ArgumentNullException(nameof(context));
+        Entity = entity;
+        _context = context;
         _disposables = disposables;
     }
 
-    public async Task SaveAsync()
+    public virtual async Task SaveAsync()
     {
         await _context.SaveChangesAsync();
     }
 
-    // Implement IDisposable.
-    public void Dispose()
+    public virtual void Save()
     {
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
+        _context.SaveChanges();
     }
 
-    public async ValueTask DisposeAsync()
+    public virtual void Delete()
     {
-        await DisposeAsyncCore();
-
-        Dispose(disposing: false); // Prevent double dispose.
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!_disposed)
-        {
-            if (disposing)
-            {
-                // Dispose managed state (managed objects).
-                foreach (var disposable in _disposables)
-                {
-                    disposable.Dispose();
-                }
-            }
-
-            _disposed = true;
-        }
-    }
-
-    protected virtual async ValueTask DisposeAsyncCore()
-    {
-        // Async dispose managed state (managed objects) if needed.
-        foreach (var disposable in _disposables.OfType<IAsyncDisposable>())
-        {
-            await disposable.DisposeAsync();
-        }
+        _context.Remove(Entity);
 
         try
         {
-            _context.Remove(Entity);
+            _context.SaveChanges();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            // Attempted to update or delete an entity that does not exist in the store.
+            _context.Entry(Entity).State = EntityState.Detached;
+        }
+    }
+
+    public virtual async Task DeleteAsync()
+    {
+        _context.Remove(Entity);
+
+        try
+        {
             await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
@@ -89,57 +77,70 @@ public class DisposableEntity<T> : IDisposableEntity<T> where T : class
             _context.Entry(Entity).State = EntityState.Detached;
         }
     }
-}
-
-public class DisposableUser : IDisposableEntity<ApplicationUser>
-{
-    private ApplicationUser _entity;
-    private readonly UserManager<ApplicationUser> _userManager;
-    private bool _disposed = false;
-
-    public DisposableUser(ApplicationUser entity, UserManager<ApplicationUser> userManager)
-    {
-        _entity = entity ?? throw new ArgumentNullException(nameof(entity));
-        _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-    }
-
-    public ApplicationUser Entity => _entity;
-
-    public Task SaveAsync()
-    {
-        return Task.CompletedTask;
-    }
 
     public void Dispose()
     {
-        Dispose(disposing: true);
+        if (_disposed) return;
+
+        // dispose disposables
+        foreach (var disposable in _disposables)
+        {
+            disposable.Dispose();
+        }
+
+        OnDispose();
+
+        _disposed = true;
         GC.SuppressFinalize(this);
     }
 
     public async ValueTask DisposeAsync()
     {
-        await DisposeAsyncCore();
+        if (_disposed) return;
 
-        // Perform traditional dispose operations, too, but indicate we're disposing asynchronously.
-        Dispose(disposing: false);
+        // dispose disposables in parallel
+        var disposeTasks = _disposables.Select(disposable => disposable is IAsyncDisposable asyncDisposable
+            ? asyncDisposable.DisposeAsync().AsTask()
+            : Task.Run(disposable.Dispose));
+
+        await Task.WhenAll(disposeTasks);
+        await OnDisposeAsync();
+
+        _disposed = true;
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void Dispose(bool disposing)
+    protected virtual void OnDispose()
     {
-        if (!_disposed)
-        {
-            _entity = null;
-            _disposed = true;
-        }
+        Delete();
     }
 
-    protected virtual async ValueTask DisposeAsyncCore()
+    protected virtual ValueTask OnDisposeAsync()
     {
-        if (_entity != null)
-        {
-            await _userManager.DeleteAsync(_entity);
-            _entity = null;
-        }
+        return new ValueTask(DeleteAsync());
+    }
+}
+
+public class DisposableUser : DisposableEntity<ApplicationUser>
+{
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public DisposableUser(ApplicationUser entity, UserManager<ApplicationUser> userManager) : base(entity, null!)
+    {
+        _userManager = userManager;
+    }
+
+    public override Task SaveAsync() => Task.CompletedTask;
+
+    public override void Save() { }
+
+    public override Task DeleteAsync()
+    {
+        return _userManager.DeleteAsync(Entity);
+    }
+
+    public override void Delete()
+    {
+        _userManager.DeleteAsync(Entity).Wait();
     }
 }
