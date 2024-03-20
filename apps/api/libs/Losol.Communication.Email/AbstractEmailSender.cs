@@ -49,6 +49,8 @@ public abstract class AbstractEmailSender : IEmailSender
 
     public async Task SendEmailAsync(EmailModel emailModel, EmailOptions options = null)
     {
+        emailModel.Validate();
+
         try
         {
             await SendEmailInternalAsync(emailModel);

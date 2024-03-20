@@ -28,14 +28,12 @@ public class FileEmailWriter : AbstractEmailSender
 
     protected override async Task SendEmailInternalAsync(EmailModel emailModel)
     {
-        emailModel.Validate();
-
         // filename: {datetime}-{email}-{subject}.html
         var filename = $"{DateTime.Now:yyyyMMdd-HHmmss}-{emailModel.Recipients.First().Email.GenerateSlug()}-{emailModel.Subject.GenerateSlug()}.html";
+        var filePath = Path.Combine(_options.Value.FilePath, filename);
 
         // Write the message to the file
-        await using var outputFile = new StreamWriter(Path.Combine(_options.Value.FilePath, filename));
-        await outputFile.WriteLineAsync(emailModel.TextBody);
+        await System.IO.File.AppendAllTextAsync(filePath, emailModel.TextBody);
     }
 }
 
