@@ -31,7 +31,7 @@ public abstract class AbstractPeriodicHealthCheck : IHealthCheck
         var healthStatus = await _healthCheckStorage.GetCurrentStatusAsync(ServiceName);
         if (healthStatus == null || healthStatus.DateTime + CheckPeriod < DateTime.UtcNow)
         {
-            healthStatus = await _healthCheckService.CheckHealthAsync();
+            healthStatus = await _healthCheckService.CheckHealthAsync(cancellationToken);
             await _healthCheckStorage.CheckedAsync(ServiceName, healthStatus);
         }
         return healthStatus.Status switch
