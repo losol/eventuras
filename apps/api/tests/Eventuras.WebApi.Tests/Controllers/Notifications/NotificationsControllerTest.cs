@@ -215,17 +215,19 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
         var data = token["data"] as JArray;
         Assert.NotNull(data);
 
-        var notificationsToFind = new Notification[] {n4.Entity, n3.Entity, n2.Entity, n1.Entity};
+        var notificationsToFind = new Notification[] { n4.Entity, n3.Entity, n2.Entity, n1.Entity };
         var foundNotifications = 0;
 
         foreach (var notification in data)
         {
             var notificationToFind = notificationsToFind[foundNotifications];
-            if (notification.Value<int>("notificationId") != notificationToFind.NotificationId) continue;
+            if (notification.Value<int>("notificationId") != notificationToFind.NotificationId)
+                continue;
 
             notification.CheckNotification(notificationToFind);
             foundNotifications++;
-            if (foundNotifications >= notificationsToFind.Length) break;
+            if (foundNotifications >= notificationsToFind.Length)
+                break;
         }
 
         Assert.Equal(notificationsToFind.Length, foundNotifications);

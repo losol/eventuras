@@ -80,7 +80,8 @@ public class DisposableEntity<T> : IDisposableEntity<T> where T : class
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+            return;
 
         // dispose disposables
         foreach (var disposable in _disposables)
@@ -96,7 +97,8 @@ public class DisposableEntity<T> : IDisposableEntity<T> where T : class
 
     public async ValueTask DisposeAsync()
     {
-        if (_disposed) return;
+        if (_disposed)
+            return;
 
         // dispose disposables in parallel
         var disposeTasks = _disposables.Select(disposable => disposable is IAsyncDisposable asyncDisposable
