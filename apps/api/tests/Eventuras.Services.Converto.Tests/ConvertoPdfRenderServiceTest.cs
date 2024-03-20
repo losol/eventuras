@@ -35,7 +35,7 @@ public class ConvertoPdfRenderServiceTest : IDisposable
         string apitoken = null)
     {
         var baseUri = Environment.GetEnvironmentVariable(ConvertoTestEnv.ApiBaseUri);
-        baseUri = baseUri.TrimEnd('/');
+        baseUri = baseUri?.TrimEnd('/');
         Assert.NotNull(baseUri);
         Assert.NotEmpty(baseUri);
 

@@ -36,7 +36,7 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
 
     public async Task CheckRegistrationReadAccessAsync(Registration registration, CancellationToken cancellationToken = default)
     {
-        var user = _httpContextAccessor.HttpContext.User;
+        var user = _httpContextAccessor.HttpContext!.User;
         if (!await CheckOwnerOrAdminAccessAsync(user, registration, cancellationToken))
             throw new NotAccessibleException($"User {user.GetUserId()} cannot read registration {registration.RegistrationId}");
     }
@@ -169,7 +169,7 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
 
     public async Task<IQueryable<Registration>> AddAccessFilterAsync(IQueryable<Registration> query, CancellationToken cancellationToken = default)
     {
-        var user = _httpContextAccessor.HttpContext.User;
+        var user = _httpContextAccessor.HttpContext!.User;
         if (user.IsAnonymous())
             throw new NotAccessibleException("Anonymous users are not permitted to list any registrations.");
 
