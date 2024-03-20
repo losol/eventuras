@@ -22,8 +22,8 @@ public class OrderDto
 
     public int RegistrationId { get; set; }
     public PaymentProvider? PaymentMethod { get; set; }
-    public string Comments { get; set; }
-    public string Log { get; set; }
+    public string Comments { get; set; } = string.Empty;
+    public string Log { get; set; } = string.Empty;
 
     public OrderLineDto[]? Items { get; set; }
 
