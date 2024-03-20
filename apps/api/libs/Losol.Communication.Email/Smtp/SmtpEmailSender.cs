@@ -97,7 +97,7 @@ public class SmtpEmailSender : AbstractEmailSender
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
+            _logger.LogError(ex, "An error occured while sending email: {ExceptionMessage}", ex.Message);
             throw new EmailSenderException(ex.Message, ex);
         }
     }
@@ -131,7 +131,7 @@ public class SmtpEmailSender : AbstractEmailSender
         }
         catch (Exception ex)
         {
-            _logger.LogError("Health status check failed: {ex}", ex);
+            _logger.LogError(ex, "Health status check failed: {ExceptionMessage}", ex.Message);
             return new HealthCheckStatus(HealthStatus.Unhealthy, ex.Message);
         }
     }

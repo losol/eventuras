@@ -48,7 +48,7 @@ public class OrderManagementService : IOrderManagementService
 
         if (!order.CanEdit)
         {
-            _logger.LogError($"Order {order.OrderId} cannot be updated being in {order.Status} status");
+            _logger.LogError("Order {OrderId} cannot be updated being in {OrderStatus} status", order.OrderId, order.Status);
             throw new InvalidOperationServiceException($"Order {order.OrderId} cannot be updated being in {order.Status} status");
         }
 

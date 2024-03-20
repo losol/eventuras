@@ -41,7 +41,7 @@ public class HttpResponseExceptionFilter : IExceptionFilter
         if (result is null)
         {
             context.ExceptionHandled = false;
-            _logger.LogError(ex, "Exception of type {ExceptionType} was not handled", ex.GetType());
+            _logger.LogError(ex, "Exception of type {ExceptionType} was not handled: {ExceptionMessage}", ex.GetType(), ex.Message);
         }
         else
         {

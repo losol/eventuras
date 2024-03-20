@@ -77,7 +77,7 @@ public class UserManagementService : IUserManagementService
             }
 
             var errorMessage = errorMessageBuilder.ToString();
-            _logger.LogError($"Trouble with creating user with email {email}. Error: {errorMessage}");
+            _logger.LogError("Trouble with creating user with email {email}. Error: {errorMessage}", email, errorMessage);
             throw new Exception($"Trouble with creating user with email {email}. Error: {errorMessage}");
         }
 

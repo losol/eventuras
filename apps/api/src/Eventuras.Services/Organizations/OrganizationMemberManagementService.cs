@@ -101,7 +101,7 @@ internal class OrganizationMemberManagementService : IOrganizationMemberManageme
             }
             catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
             {
-                _logger.LogWarning(e, e.Message);
+                _logger.LogWarning(e, "Database update failed because of non-unique key: {ExceptionMessage}", e.Message);
                 if (member != null)
                 {
                     _context.OrganizationMembers.Remove(member);

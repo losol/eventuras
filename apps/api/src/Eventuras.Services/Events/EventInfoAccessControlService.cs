@@ -63,9 +63,8 @@ public class EventInfoAccessControlService : IEventInfoAccessControlService
 
         if (!user.IsAdmin())
         {
-            _logger.LogWarning($"User {user.GetUserId()} is not admin and cannot manage event {eventInfo.EventInfoId}");
-            throw new NotAccessibleException(
-                $"Event {eventInfo.EventInfoId} is not accessible for update by user {user.GetUserId()}");
+            _logger.LogWarning("User {UserId} is not admin and cannot manage event {EventInfoId}", user.GetUserId(), eventInfo.EventInfoId);
+            throw new NotAccessibleException($"Event {eventInfo.EventInfoId} is not accessible for update by user {user.GetUserId()}");
         }
 
         var org = await _currentOrganizationAccessorService
