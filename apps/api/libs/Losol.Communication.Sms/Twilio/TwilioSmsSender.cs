@@ -46,7 +46,7 @@ public class TwilioSmsSender : ISmsSender
         {
             var messageResource = await MessageResource.CreateAsync(
                 new PhoneNumber(to),
-                @from: new PhoneNumber(_options.Value.From),
+                from: new PhoneNumber(_options.Value.From),
                 body: body
             );
 

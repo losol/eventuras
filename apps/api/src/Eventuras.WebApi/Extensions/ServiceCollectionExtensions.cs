@@ -161,15 +161,11 @@ public static class ServiceCollectionExtensions
             .AddCheck<EmailHealthCheck>("email")
             .AddCheck<SmsHealthCheck>("sms");
 
-        var baseUri = configuration.GetValue<string>("BaseUri")?.TrimEnd('/') ?? "";
+        var baseUri = configuration.GetValue<Uri>("BaseUri");
+        var healthEndpoint = new Uri(baseUri, Constants.HealthChecks.HealthCheckUri);
 
         services
-            .AddHealthChecksUI(settings =>
-            {
-                settings
-                    .AddHealthCheckEndpoint(Constants.HealthChecks.HealthCheckName,
-                        $"{baseUri}{Constants.HealthChecks.HealthCheckUri}");
-            })
+            .AddHealthChecksUI(settings => settings.AddHealthCheckEndpoint(Constants.HealthChecks.HealthCheckName, healthEndpoint.ToString()))
             .AddInMemoryStorage();
     }
 }
