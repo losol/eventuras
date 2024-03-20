@@ -44,7 +44,7 @@ public class NotificationsController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Failed to retrieve notification with ID {id}: {ex.Message}");
+            _logger.LogError("Failed to retrieve notification with ID {id}: {ExceptionMessage}", id, ex.Message);
             throw;
         }
     }
@@ -95,7 +95,7 @@ public class NotificationsController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Failed to list notifications: {ex.Message}");
+            _logger.LogError(ex, "Failed to list notifications: {ExceptionMessage}", ex.Message);
             throw;
         }
     }
