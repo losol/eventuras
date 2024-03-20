@@ -56,11 +56,9 @@ public class SendGridEmailSender : AbstractEmailSender
 
         var client = new SendGridClient(_config.Key);
         var response = await client.SendEmailAsync(msg);
-        if (response.StatusCode != HttpStatusCode.OK &&
-            response.StatusCode != HttpStatusCode.Accepted)
-        {
-            var responseBody = await response.Body.ReadAsStringAsync();
-            throw new EmailSenderException($"SendGrid returned {response.StatusCode} status code ({responseBody})");
-        }
+        if (response.IsSuccessStatusCode) return;
+
+        var responseBody = await response.Body.ReadAsStringAsync();
+        throw new EmailSenderException($"SendGrid returned {response.StatusCode} status code ({responseBody})");
     }
 }
