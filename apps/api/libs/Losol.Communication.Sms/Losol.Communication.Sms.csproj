@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <RootNamespace>Losol.Communication.Sms</RootNamespace>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <Import Project="../common.props"/>
