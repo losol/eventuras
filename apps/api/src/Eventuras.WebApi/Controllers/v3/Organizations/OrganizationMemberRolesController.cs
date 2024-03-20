@@ -47,7 +47,7 @@ public class OrganizationMemberRolesController : ControllerBase
                 IncludeOrgMembership = true
             }, token);
 
-        await _organizationRetrievalService.GetOrganizationByIdAsync(organizationId); // just to check its existence
+        await _organizationRetrievalService.GetOrganizationByIdAsync(organizationId, cancellationToken: token); // just to check its existence
 
         return user.OrganizationMembership
                    .FirstOrDefault(m => m.OrganizationId == organizationId)

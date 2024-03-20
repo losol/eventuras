@@ -30,7 +30,7 @@ public class ProductsController : ControllerBase
     [HttpGet("{productId:int}/summary")]
     public async Task<ActionResult<ProductDeliverySummaryDto>> GetProductDeliverySummary(int productId, CancellationToken cancellationToken = default)
     {
-        var product = await _productRetrievalService.GetProductByIdAsync(productId);
+        var product = await _productRetrievalService.GetProductByIdAsync(productId, cancellationToken: cancellationToken);
         var productDto = ProductSummaryDto.FromProduct(product);
 
         var orderSummaries = await _orderRetrievalService.GetProductOrdersSummaryAsync(productId, cancellationToken);

@@ -104,6 +104,6 @@ public class UserManagementService : IUserManagementService
             throw new DuplicateException($"User with email {user.Email} already exists.");
         }
 
-        await _context.UpdateAsync(user);
+        await _context.UpdateAsync(user, cancellationToken: cancellationToken);
     }
 }
