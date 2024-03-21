@@ -99,7 +99,7 @@ Registration registration)
         CheckSubjectAndBody(subject, body);
 
         var eventinfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId);
-        var organization = await _organizationRetrievalService.GetOrganizationByIdAsync(eventinfo.OrganizationId);
+        var organization = await _organizationRetrievalService.GetOrganizationByIdAsync(eventinfo.OrganizationId, accessControlDone: true);
         var currentUser = _httpContextAccessor.HttpContext.User;
 
         _logger.LogInformation($"Current organization: {organization?.OrganizationId}. Current user id: {currentUser.GetUserId()}");
