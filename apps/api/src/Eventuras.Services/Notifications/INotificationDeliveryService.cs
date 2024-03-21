@@ -8,6 +8,6 @@ public interface INotificationDeliveryService
 {
     Task SendNotificationAsync(
         Notification notification,
-        bool ignoreAccessControl = false,
+        bool accessControlDone = false,
         CancellationToken cancellationToken = default);
 }

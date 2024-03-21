@@ -13,34 +13,27 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Eventuras.Services.Notifications;
 
-internal class NotificationAccessControlService : INotificationAccessControlService
+internal class NotificationAccessControlService(
+    IHttpContextAccessor httpContextAccessor,
+    ICurrentOrganizationAccessorService currentOrganizationAccessorService,
+    ApplicationDbContext context)
+    : INotificationAccessControlService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
-    private readonly ApplicationDbContext _context;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor ?? throw
+        new ArgumentNullException(nameof(httpContextAccessor));
 
-    public NotificationAccessControlService(
-        IHttpContextAccessor httpContextAccessor,
-        ICurrentOrganizationAccessorService currentOrganizationAccessorService,
-        ApplicationDbContext context)
-    {
-        _httpContextAccessor = httpContextAccessor ?? throw
-            new ArgumentNullException(nameof(httpContextAccessor));
-
-        _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw
+    private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService =
+        currentOrganizationAccessorService ?? throw
             new ArgumentNullException(nameof(currentOrganizationAccessorService));
 
-        _context = context ?? throw
-            new ArgumentNullException(nameof(context));
-    }
+    private readonly ApplicationDbContext _context = context ?? throw
+        new ArgumentNullException(nameof(context));
 
     public async Task CheckNotificationReadAccessAsync(Notification notification,
         CancellationToken cancellationToken = default)
     {
-        if (notification == null)
-        {
-            throw new ArgumentNullException(nameof(notification));
-        }
+        ArgumentNullException.ThrowIfNull(notification);
+        CheckAuthenticatedUser();
 
         await PerformAccessCheckAsync(notification, cancellationToken);
     }
@@ -48,12 +41,9 @@ internal class NotificationAccessControlService : INotificationAccessControlServ
     public async Task CheckNotificationUpdateAccessAsync(Notification notification,
         CancellationToken cancellationToken = default)
     {
-        if (notification == null)
-        {
-            throw new ArgumentNullException(nameof(notification));
-        }
+        ArgumentNullException.ThrowIfNull(notification);
 
-        var user = _httpContextAccessor.HttpContext.User;
+        var user = GetContextUser();
         if (!user.IsAdmin())
         {
             throw new NotAccessibleException("Notifications can only be updated by admin");
@@ -76,11 +66,9 @@ internal class NotificationAccessControlService : INotificationAccessControlServ
     }
 
     public async Task<IQueryable<Notification>> AddAccessFilterAsync(IQueryable<Notification> query,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
-        var user = _httpContextAccessor.HttpContext.User;
-
-        ForbidForAnonymousUsers(user);
+        var user = GetContextUser();
 
         if (user.IsPowerAdmin())
         {
@@ -98,17 +86,40 @@ internal class NotificationAccessControlService : INotificationAccessControlServ
         var org = await _currentOrganizationAccessorService
             .RequireCurrentOrganizationAsync(cancellationToken: cancellationToken);
 
-        return query.Where(r => r.OrganizationId == org.OrganizationId &&
-                                r.Organization.Members.Any(m => m.UserId == userId) ||
-                                r.EventInfo.OrganizationId == org.OrganizationId &&
-                                r.EventInfo.Organization.Members.Any(m => m.UserId == userId));
+        return query.Where(r => (r.OrganizationId == org.OrganizationId &&
+                                 r.Organization.Members.Any(m => m.UserId == userId)) ||
+                                (r.EventInfo.OrganizationId == org.OrganizationId &&
+                                 r.EventInfo.Organization.Members.Any(m => m.UserId == userId)));
     }
 
-    private static void ForbidForAnonymousUsers(ClaimsPrincipal user)
+
+    private void CheckHttpContext() => ArgumentNullException.ThrowIfNull(_httpContextAccessor.HttpContext);
+
+    private void CheckAuthenticatedUser()
     {
-        if (user.IsAnonymous())
+        CheckHttpContext();
+
+        var user = _httpContextAccessor.HttpContext?.User;
+
+        if (user == null)
         {
             throw new NotAccessibleException("Anonymous users are not permitted to access any notifications.");
         }
+
+        if (user.Identity == null)
+        {
+            throw new NotAccessibleException("Anonymous users are not permitted to access any notifications.");
+        }
+
+        if (!user.Identity.IsAuthenticated)
+        {
+            throw new NotAccessibleException("Anonymous users are not permitted to access any notifications.");
+        }
+    }
+
+    private ClaimsPrincipal GetContextUser()
+    {
+        CheckAuthenticatedUser();
+        return _httpContextAccessor.HttpContext!.User;
     }
 }

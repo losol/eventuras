@@ -22,7 +22,6 @@ internal class NotificationDeliveryService : INotificationDeliveryService
         INotificationAccessControlService notificationAccessControlService,
         INotificationManagementService notificationManagementService)
     {
-
         _logger = logger ?? throw
             new ArgumentNullException(nameof(logger));
 
@@ -35,7 +34,7 @@ internal class NotificationDeliveryService : INotificationDeliveryService
 
     public async Task SendNotificationAsync(
         Notification notification,
-        bool ignoreAccessControl = false,
+        bool accessControlDone = false,
         CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Queueing {Type} notification #{Id} to {TotalRecipients} recipients",
@@ -46,8 +45,10 @@ internal class NotificationDeliveryService : INotificationDeliveryService
         notification.Status = NotificationStatus.Started;
         await _notificationManagementService.UpdateNotificationAsync(notification);
 
-        if (!ignoreAccessControl)
+        if (!accessControlDone)
+        {
             await _notificationAccessControlService.CheckNotificationUpdateAccessAsync(notification, cancellationToken);
+        }
 
         foreach (var recipient in notification.Recipients)
         {
@@ -58,7 +59,8 @@ internal class NotificationDeliveryService : INotificationDeliveryService
                 return;
             }
 
-            Hangfire.BackgroundJob.Enqueue<NotificationBackgroundService>("notifications_queue", x => x.SendNotificationToRecipientAsync(recipient.RecipientId, true));
+            Hangfire.BackgroundJob.Enqueue<NotificationBackgroundService>("notifications_queue",
+                x => x.SendNotificationToRecipientAsync(recipient.RecipientId, true));
         }
     }
 }
