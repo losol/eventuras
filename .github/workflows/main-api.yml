@@ -57,7 +57,12 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       - name: Build with dotnet
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build --configuration Release --no-restore -o ./Release
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-build
+          path: ./Release
 
   test:
     runs-on: ubuntu-latest
@@ -145,7 +150,8 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
-          name: .net-app
+          name: release-build
+          path: ./Release
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
