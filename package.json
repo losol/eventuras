@@ -4,13 +4,13 @@
   "license": "GPL-2.0+",
   "private": true,
   "devDependencies": {
-    "@commitlint/cli": "^19.0.3",
-    "@commitlint/config-conventional": "^19.0.3",
+    "@commitlint/cli": "^19.2.1",
+    "@commitlint/config-conventional": "^19.1.0",
     "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*",
     "husky": "^9.0.11",
     "prettier": "^3.2.5",
-    "turbo": "^1.12.4"
+    "turbo": "^1.13.0"
   },
   "workspaces": [
     "apps/web",
@@ -25,11 +25,12 @@
     "test": "turbo run test",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
+    "update-packages": "npx npm-check-updates --deep -u",
     "clean:node": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules",
     "prepare": "husky"
   },
   "dependencies": {
-    "next": "^14.1.1",
+    "next": "^14.1.4",
     "nextra": "^2.13.4",
     "nextra-theme-docs": "^2.13.4",
     "react": "^18.2.0",
