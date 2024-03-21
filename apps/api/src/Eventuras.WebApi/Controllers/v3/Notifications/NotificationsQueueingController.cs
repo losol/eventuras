@@ -75,7 +75,7 @@ public class NotificationsQueueingController : ControllerBase
                     eventFilter.RegistrationStatuses,
                     eventFilter.RegistrationTypes);
             await _notificationDeliveryService
-                 .SendNotificationAsync(emailNotification, cancellationToken);
+                 .SendNotificationAsync(emailNotification, cancellationToken: cancellationToken);
             return Ok(new NotificationDto(emailNotification));
         }
 
@@ -89,7 +89,7 @@ public class NotificationsQueueingController : ControllerBase
                     dto.Recipients
                     );
             await _notificationDeliveryService
-               .SendNotificationAsync(emailNotification, cancellationToken);
+               .SendNotificationAsync(emailNotification, cancellationToken: cancellationToken);
 
             return Ok(new NotificationDto(emailNotification));
         }
@@ -105,7 +105,7 @@ public class NotificationsQueueingController : ControllerBase
                     dto.BodyMarkdown,
                     registration);
             await _notificationDeliveryService
-                .SendNotificationAsync(emailNotification, cancellationToken);
+                .SendNotificationAsync(emailNotification, cancellationToken: cancellationToken);
 
             return Ok(new NotificationDto(emailNotification));
         }
@@ -119,7 +119,7 @@ public class NotificationsQueueingController : ControllerBase
                     orgId.Value,
                     dto.Recipients);
             await _notificationDeliveryService
-                .SendNotificationAsync(emailNotification, cancellationToken);
+                .SendNotificationAsync(emailNotification, cancellationToken: cancellationToken);
 
             return Ok(new NotificationDto(emailNotification));
         }
@@ -155,7 +155,7 @@ public class NotificationsQueueingController : ControllerBase
 
 
         await _notificationDeliveryService
-            .SendNotificationAsync(smsNotification, cancellationToken);
+            .SendNotificationAsync(smsNotification, cancellationToken: cancellationToken);
 
         return Ok();
     }
