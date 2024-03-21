@@ -34,8 +34,9 @@ internal class NotificationDeliveryService : INotificationDeliveryService
     }
 
     public async Task SendNotificationAsync(
- Notification notification,
- CancellationToken cancellationToken)
+        Notification notification,
+        bool ignoreAccessControl = false,
+        CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Queueing {Type} notification #{Id} to {TotalRecipients} recipients",
             notification.Type, notification.NotificationId,
@@ -45,8 +46,8 @@ internal class NotificationDeliveryService : INotificationDeliveryService
         notification.Status = NotificationStatus.Started;
         await _notificationManagementService.UpdateNotificationAsync(notification);
 
-        await _notificationAccessControlService
-             .CheckNotificationUpdateAccessAsync(notification, cancellationToken);
+        if (!ignoreAccessControl)
+            await _notificationAccessControlService.CheckNotificationUpdateAccessAsync(notification, cancellationToken);
 
         foreach (var recipient in notification.Recipients)
         {
