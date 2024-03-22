@@ -1,8 +1,7 @@
 /* eslint no-process-env: 0 */
 
+import { Logger } from '@eventuras/utils';
 import { test } from '@playwright/test';
-
-import Logger from '@/utils/Logger';
 
 import {
   checkIfLoggedIn,

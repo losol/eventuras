@@ -12,9 +12,6 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "create-random-event": "NODE_ENV=development npx ts-node ./scripts/api/createEvents.ts --ignore=false",
-    "test:playwright": "playwright test --workers=1",
-    "test:playwright:skiplogin": "playwright test --project=skip-login --workers=1",
-    "test:playwright:ui": "playwright test --ui",
     "chromatic": "npx chromatic --project-token chpt_39f4ebd3d21130e"
   },
   "lint-staged": {
@@ -63,7 +60,6 @@
     "@next/bundle-analyzer": "^14.1.4",
     "@next/eslint-plugin-next": "^14.1.4",
     "@ngneat/falso": "^7.2.0",
-    "@playwright/test": "1.42.1",
     "@storybook/addon-a11y": "^8.0.4",
     "@storybook/addon-console": "^3.0.0",
     "@storybook/addon-docs": "^8.0.4",

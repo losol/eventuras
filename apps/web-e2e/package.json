@@ -1,0 +1,24 @@
+{
+  "name": "web-e2e",
+  "version": "0.1.0",
+  "description": "End to end tests for the Eventuras frontend",
+  "main": "index.js",
+  "private": "true",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix && prettier . --write",
+    "test:playwright": "playwright test --workers=1",
+    "test:playwright:skiplogin": "playwright test --project=skip-login --workers=1",
+    "test:playwright:ui": "playwright test --ui"
+  },
+  "keywords": [
+    "e2e",
+    "playwright",
+    "eventuras"
+  ],
+  "dependencies": {
+    "@playwright/test": "1.41.1",
+    "dotenv": "^16.4.5"
+  },
+  "readme": "README.md"
+}

@@ -1,10 +1,10 @@
 const ns = { namespace: 'e2e' };
+import { Logger } from '@eventuras/utils';
 import { chromium, expect, Page, test as setup } from '@playwright/test';
 import fs from 'fs';
 
-import Logger from '@/utils/Logger';
-
 import { fetchLoginCode } from './utils';
+
 type CreatedEvent = {
   eventId: string;
 };
