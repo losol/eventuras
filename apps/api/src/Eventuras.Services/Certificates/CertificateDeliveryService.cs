@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services.Email;
+using Hangfire;
 using Losol.Communication.Email;
 using Microsoft.Extensions.Logging;
 
@@ -42,15 +43,17 @@ internal class CertificateDeliveryService : ICertificateDeliveryService
         _logger.LogInformation("Queueing certificate {Id} for delivery.",
             certificateId);
 
-        Hangfire.BackgroundJob.Enqueue<CertificateDeliveryService>(
+        BackgroundJob.Enqueue<CertificateDeliveryService>(
             "certificates_queue",
             x => x.SendCertificateAsync(certificateId, true, cancellationToken)
-            );
+        );
 
         return Task.CompletedTask;
     }
 
-    public async Task SendCertificateAsync(int certificateId, bool accessControlDone, CancellationToken cancellationToken)
+    [AutomaticRetry(Attempts = 0)]
+    public async Task SendCertificateAsync(int certificateId, bool accessControlDone,
+        CancellationToken cancellationToken)
     {
         var certificate =
             await _certificateRetrievalService.GetCertificateByIdAsync(certificateId,
@@ -74,24 +77,21 @@ internal class CertificateDeliveryService : ICertificateDeliveryService
 
         var emailModel = new EmailModel
         {
-            Recipients = new[]
-                {
-                    new Address { Email = certificate.RecipientEmail }
-                },
+            Recipients = new[] { new Address { Email = certificate.RecipientEmail } },
             Subject = $"Kursbevis for {certificate.Title}",
             TextBody = "Her er kursbeviset! Gratulere!",
             Attachments = new List<Attachment>
+            {
+                new()
                 {
-                    new Attachment
-                    {
-                        Filename = "kursbevis.pdf",
-                        ContentType = "application/pdf",
-                        Bytes = memoryStream.ToArray()
-                    }
+                    Filename = "kursbevis.pdf",
+                    ContentType = "application/pdf",
+                    Bytes = memoryStream.ToArray()
                 }
+            }
         };
 
-        await _emailSender.SendEmailAsync(emailModel, new EmailOptions { OrganizationId = certificate.IssuingOrganizationId });
-
+        await _emailSender.SendEmailAsync(emailModel,
+            new EmailOptions { OrganizationId = certificate.IssuingOrganizationId });
     }
 }

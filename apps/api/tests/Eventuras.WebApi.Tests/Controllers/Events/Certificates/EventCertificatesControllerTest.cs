@@ -1,9 +1,12 @@
 using System;
+using System.Diagnostics;
 using System.Net.Mime;
+using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
+using Hangfire;
 using Losol.Communication.Email;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -21,10 +24,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
         Cleanup();
     }
 
-    public void Dispose()
-    {
-        Cleanup();
-    }
+    public void Dispose() => Cleanup();
 
     private void Cleanup()
     {
@@ -141,17 +141,13 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
         json.CheckEmptyPaging();
     }
 
-    public static object[][] GetInvalidListQueryParams()
-    {
-        return new[]
+    public static object[][] GetInvalidListQueryParams() =>
+        new[]
         {
-            new object[] { new { page = "invalid" } },
-            new object[] { new { count = "invalid" } },
-            new object[] { new { page = -1 } },
-            new object[] { new { page = 0 } },
+            new object[] { new { page = "invalid" } }, new object[] { new { count = "invalid" } },
+            new object[] { new { page = -1 } }, new object[] { new { page = 0 } },
             new object[] { new { count = -1 } }
         };
-    }
 
     [Theory]
     [MemberData(nameof(GetInvalidListQueryParams))]
@@ -387,25 +383,25 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
     public async Task Should_Only_Issue_Certificates_For_Finished_Registrations()
     {
         using var scope = _factory.Services.NewTestScope();
-        using var org = await scope.CreateOrganizationAsync();
-        using var evt = await scope.CreateEventAsync(organization: org.Entity);
-        using var u1 = await scope.CreateUserAsync();
-        using var u2 = await scope.CreateUserAsync();
-        using var r1 =
+        await using var org = await scope.CreateOrganizationAsync();
+        await using var evt = await scope.CreateEventAsync(organization: org.Entity);
+        await using var admin = await scope.CreateUserAsync(email: "systemadmin@test.com", role: Roles.SystemAdmin);
+        await using var u1 = await scope.CreateUserAsync(email: "user1@test.com");
+        await using var u2 = await scope.CreateUserAsync(email: "user2@test.com");
+        await using var r1 =
             await scope.CreateRegistrationAsync(evt.Entity, u1.Entity, Registration.RegistrationStatus.Verified);
-        using var r2 =
+        await using var r2 =
             await scope.CreateRegistrationAsync(evt.Entity, u2.Entity, Registration.RegistrationStatus.Finished);
 
         var emailExpectation = _factory.EmailSenderMock
             .ExpectEmail()
             .SentTo(u2.Entity.Email)
             .WithSubject($"Kursbevis for {evt.Entity.Title}")
-            .ContainingHtml("Her er kursbeviset! Gratulere!")
             .HavingAttachment()
             .Setup();
 
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAs(admin.Entity, Roles.SystemAdmin)
             .PostAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates/issue");
 
         var json = await response.CheckOk().AsTokenAsync();
@@ -413,8 +409,17 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
 
         var cert = await scope.Db.Certificates.AsNoTracking().SingleAsync();
         Assert.Equal(cert.RecipientUserId, u2.Entity.Id);
-        // TODO: check other certificate props?
 
+        var jobstats = JobStorage.Current.GetMonitoringApi().GetStatistics();
+
+        var retries = 5;
+        while (jobstats.Processing > 0 && retries > 0)
+        {
+            retries--;
+            await Task.Delay(250);
+        }
+
+        Debug.WriteLine(jobstats.ToString());
         emailExpectation.VerifyEmailSent();
     }
 
@@ -600,7 +605,6 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
         var updatedCert = await scope.Db.Certificates.AsNoTracking().SingleAsync();
         Assert.Equal(updatedCert.CertificateId, cert.Entity.CertificateId);
         Assert.Equal("Updated Event Title", updatedCert.Title);
-        // TODO: check other certificate props?
     }
 
     #endregion
