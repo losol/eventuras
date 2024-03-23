@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using NodaTime;
 using static Eventuras.Domain.Order;
 using static Eventuras.Domain.PaymentMethod;
@@ -97,6 +98,8 @@ public class Registration
     [Display(Name = "Verifiseringskode")] public string VerificationCode { get; set; }
 
     public int? CertificateId { get; set; }
+
+    [JsonIgnore]
     public Certificate Certificate { get; set; }
     public string CertificateComment { get; set; }
 

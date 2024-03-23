@@ -26,6 +26,7 @@ internal class CertificateRetrievalService : ICertificateRetrievalService
 
     public async Task<Certificate> GetCertificateByIdAsync(int id,
         CertificateRetrievalOptions options = default,
+        bool accessControlDone = false,
         CancellationToken cancellationToken = default)
     {
         options ??= new CertificateRetrievalOptions();
@@ -35,15 +36,18 @@ internal class CertificateRetrievalService : ICertificateRetrievalService
             .SingleOrDefaultAsync(c => c.CertificateId == id,
                 cancellationToken) ?? throw new NotFoundException($"Certificate {id} not found");
 
-        if (options.ForUpdate)
+        if (!accessControlDone)
         {
-            await _certificateAccessControlService
-                .CheckCertificateUpdateAccessAsync(certificate, cancellationToken);
-        }
-        else
-        {
-            await _certificateAccessControlService
-                .CheckCertificateReadAccessAsync(certificate, cancellationToken);
+            if (options.ForUpdate)
+            {
+                await _certificateAccessControlService
+                    .CheckCertificateUpdateAccessAsync(certificate, cancellationToken);
+            }
+            else
+            {
+                await _certificateAccessControlService
+                    .CheckCertificateReadAccessAsync(certificate, cancellationToken);
+            }
         }
 
         return certificate;

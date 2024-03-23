@@ -11,6 +11,7 @@ using Eventuras.WebApi.Controllers.v3.Certificates;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Eventuras.WebApi.Controllers.v3.Events.Certificates;
 
@@ -26,6 +27,7 @@ public class EventCertificatesController : ControllerBase
     private readonly ICertificateIssuingService _certificateIssuingService;
     private readonly ICertificateDeliveryService _certificateDeliveryService;
     private readonly ICertificateRetrievalService _certificateRetrievalService;
+    private readonly ILogger<EventCertificatesController> _logger;
 
     public EventCertificatesController(
         IEventInfoRetrievalService eventInfoRetrievalService,
@@ -33,7 +35,8 @@ public class EventCertificatesController : ControllerBase
         ICertificateIssuingService certificateIssuingService,
         ICertificateDeliveryService certificateDeliveryService,
         IEventInfoAccessControlService eventInfoAccessControlService,
-        ICertificateRetrievalService certificateRetrievalService)
+        ICertificateRetrievalService certificateRetrievalService,
+        ILogger<EventCertificatesController> logger)
     {
         _eventInfoRetrievalService = eventInfoRetrievalService ?? throw
             new ArgumentNullException(nameof(eventInfoRetrievalService));
@@ -52,6 +55,8 @@ public class EventCertificatesController : ControllerBase
 
         _certificateRetrievalService = certificateRetrievalService ?? throw
             new ArgumentNullException(nameof(certificateRetrievalService));
+
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     [HttpGet]
@@ -107,18 +112,20 @@ public class EventCertificatesController : ControllerBase
         [FromQuery] bool send = true,
         CancellationToken cancellationToken = default)
     {
+        _logger.LogInformation("Issuing certificates for event {EventId}", id);
         var eventInfo = await _eventInfoRetrievalService
             .GetEventInfoByIdAsync(id, cancellationToken);
 
         var certificates = await _certificateIssuingService
-            .CreateCertificatesForEventAsync(eventInfo, cancellationToken);
+            .CreateCertificatesForEventAsync(eventInfo, accessControlDone: false, cancellationToken: cancellationToken);
 
         if (send)
         {
+            _logger.LogInformation("Queuing certificates for delivery");
             foreach (var certificate in certificates
                 .TakeWhile(_ => !cancellationToken.IsCancellationRequested))
             {
-                await _certificateDeliveryService.SendCertificateAsync(certificate, cancellationToken);
+                await _certificateDeliveryService.QueueCertificateForDeliveryAsync(certificate.CertificateId, cancellationToken);
             }
         }
 

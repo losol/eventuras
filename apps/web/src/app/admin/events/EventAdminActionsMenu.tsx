@@ -7,10 +7,23 @@ import ButtonGroup from '@eventuras/ui/ButtonGroup';
 import Link from '@eventuras/ui/Link';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
+import {
+  Button as AriaButton,
+  Header,
+  Keyboard,
+  Menu,
+  MenuItem,
+  MenuTrigger,
+  Popover,
+  Section,
+  Separator,
+  Text,
+} from 'react-aria-components';
 
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
 
 import AddUserToEvent from './AddUserToEvent';
+import { AdminCertificatesActionsMenu } from './AdminCertificatesActionsMenu';
 
 export interface EventAdminActionsMenuProps {
   eventinfo: EventDto;
@@ -34,6 +47,7 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
         <Link href={`/admin/events/${eventinfo.id}/products`} variant="button-outline">
           {t('common:labels.products')}
         </Link>
+        <AdminCertificatesActionsMenu eventinfo={eventinfo} />
         <Button
           variant="outline"
           onClick={() => {
@@ -49,6 +63,14 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
           }}
         >
           SMS
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            setSMSDrawerOpen(true);
+          }}
+        >
+          {t('admin:labels.sendCertificates')}
         </Button>
         <Link href={`/admin/notifications?eventId=${eventinfo.id}`} variant="button-outline">
           {t('common:labels.messagelog')}

@@ -105,6 +105,7 @@
     "all": "All",
     "allEvents": "All events",
     "cancelled": "Cancelled",
+    "communication": "Communication",
     "confirmRegistration": "Confirm registration",
     "contactUs": "Contact us",
     "createUserSuccess": "New user added:",

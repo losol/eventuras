@@ -36,13 +36,13 @@ public class RegistrationCertificateController : ControllerBase
             RegistrationRetrievalOptions.ForCertificateRendering,
             cancellationToken);
 
-        if (reg.Certificate == null)
+        if (!reg.CertificateId.HasValue)
         {
             return NotFound($"Registration {id} doesn't have certificate issued");
         }
 
         await _certificateDeliveryService
-            .SendCertificateAsync(reg.Certificate, cancellationToken);
+            .SendCertificateAsync(reg.CertificateId.Value, true, cancellationToken);
 
         return Ok();
     }

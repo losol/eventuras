@@ -72,6 +72,7 @@
     "invoice": "Faktura",
     "orders": "Ordre",
     "registrations": "Registeringer",
+    "sendCertificates": "Send kursbevis",
     "users": "Brukere"
   },
   "orders": {

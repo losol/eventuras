@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using NodaTime;
@@ -12,7 +13,9 @@ namespace Eventuras.Domain;
 
 public class ApplicationUser : IdentityUser
 {
-    public string Name => $"{GivenName} {(string.IsNullOrEmpty(MiddleName) ? "" : MiddleName + " ")}{FamilyName}".Trim();
+    public string Name =>
+        $"{GivenName} {(string.IsNullOrEmpty(MiddleName) ? "" : MiddleName + " ")}{FamilyName}".Trim();
+
     public string? GivenName { get; set; }
     public string? MiddleName { get; set; }
     public string? FamilyName { get; set; }
@@ -47,8 +50,7 @@ public class ApplicationUser : IdentityUser
     public bool Archived { get; set; }
 
     // Log property and method
-    [Column(TypeName = "jsonb")]
-    public string Log { get; set; } = "[]";
+    [Column(TypeName = "jsonb")] public string Log { get; set; } = "[]";
 
     public void AddLog(string message, string? userId = null, LogLevel level = LogLevel.Information)
     {
@@ -66,7 +68,7 @@ public class ApplicationUser : IdentityUser
     }
 
     // Relationships
-    public ICollection<Registration> Registrations { get; set; } = null!;
+    [JsonIgnore] public ICollection<Registration> Registrations { get; set; } = null!;
 
     public ICollection<OrganizationMember> OrganizationMembership { get; set; } = null!;
 }
