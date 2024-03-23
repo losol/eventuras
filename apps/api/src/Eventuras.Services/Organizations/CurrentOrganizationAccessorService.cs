@@ -8,6 +8,7 @@ using Eventuras.Services.Constants;
 using Eventuras.Services.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 
 namespace Eventuras.Services.Organizations;
@@ -18,23 +19,30 @@ internal class CurrentOrganizationAccessorService : ICurrentOrganizationAccessor
 
     private readonly ApplicationDbContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ILogger<CurrentOrganizationAccessorService> _logger;
 
     public CurrentOrganizationAccessorService(
         ApplicationDbContext context,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        ILogger<CurrentOrganizationAccessorService> logger)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task<Organization> GetCurrentOrganizationAsync(
         OrganizationRetrievalOptions options,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(_httpContextAccessor.HttpContext);
+
         // Check header first
-        if (_httpContextAccessor.HttpContext.Request.Headers.TryGetValue(Api.OrganizationHeader, out var orgIdHeaderValue)
+        if (_httpContextAccessor.HttpContext.Request.Headers.TryGetValue(Api.OrganizationHeader,
+                out var orgIdHeaderValue)
             && int.TryParse(orgIdHeaderValue, out var headerOrganizationId))
         {
+            _logger.LogDebug("Organization ID from header: {OrganizationId}", headerOrganizationId);
             return await GetOrganizationById(headerOrganizationId, options, cancellationToken);
         }
 
@@ -62,20 +70,16 @@ internal class CurrentOrganizationAccessorService : ICurrentOrganizationAccessor
     private async Task<Organization> GetOrganizationById(
         int organizationId,
         OrganizationRetrievalOptions options,
-        CancellationToken cancellationToken)
-    {
-        return await _context.Organizations
+        CancellationToken cancellationToken) =>
+        await _context.Organizations
             .AsNoTracking()
             .WithOptions(options ?? new OrganizationRetrievalOptions())
             .Where(o => o.OrganizationId == organizationId)
             .FirstOrDefaultAsync(cancellationToken);
-    }
 
     public async Task<Organization> RequireCurrentOrganizationAsync(
         OrganizationRetrievalOptions options,
-        CancellationToken cancellationToken)
-    {
-        return await GetCurrentOrganizationAsync(options, cancellationToken) ??
-               throw new OrgNotSpecifiedException(_httpContextAccessor.HttpContext.Request.Host.Value);
-    }
+        CancellationToken cancellationToken) =>
+        await GetCurrentOrganizationAsync(options, cancellationToken) ??
+        throw new OrgNotSpecifiedException(_httpContextAccessor.HttpContext.Request.Host.Value);
 }

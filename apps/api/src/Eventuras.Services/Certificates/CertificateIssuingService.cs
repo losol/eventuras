@@ -39,9 +39,10 @@ public class CertificateIssuingService : ICertificateIssuingService
         bool accessControlDone = false,
         CancellationToken cancellationToken = default)
     {
+        _logger.LogInformation("Creating certificates for event #{EventId}", eventInfo.EventInfoId);
         if (!accessControlDone)
         {
-            // Check if the user has access to manage the event (create certificates
+            _logger.LogInformation("Doing access control...", eventInfo.EventInfoId);
             await _eventInfoAccessControlService
                 .CheckEventManageAccessAsync(eventInfo, cancellationToken);
         }
@@ -52,7 +53,7 @@ public class CertificateIssuingService : ICertificateIssuingService
              await reader.HasMoreAsync(cancellationToken);)
         {
             certificates.AddRange(from registration in await reader.ReadNextAsync(cancellationToken)
-                                  select registration.CreateCertificate());
+                select registration.CreateCertificate());
 
             await _context.SaveChangesAsync(cancellationToken);
         }
@@ -74,7 +75,7 @@ public class CertificateIssuingService : ICertificateIssuingService
              await reader.HasMoreAsync(cancellationToken);)
         {
             certificates.AddRange(from registration in await reader.ReadNextAsync(cancellationToken)
-                                  select registration.UpdateCertificate());
+                select registration.UpdateCertificate());
 
             await _context.SaveChangesAsync(cancellationToken);
         }

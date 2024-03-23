@@ -48,34 +48,37 @@ public class EventInfoAccessControlService : IEventInfoAccessControlService
         return Task.CompletedTask;
     }
 
-    public async Task CheckEventManageAccessAsync(EventInfo eventInfo, CancellationToken token)
+    public async Task CheckEventManageAccessAsync(EventInfo eventInfo, CancellationToken cancellationToken = default)
     {
         if (eventInfo == null)
         {
+            _logger.LogWarning("No EventInfo provided for access control");
             throw new ArgumentNullException(nameof(eventInfo));
         }
 
         var user = _httpContextAccessor.HttpContext.User;
         if (user.IsPowerAdmin())
         {
+            _logger.LogInformation("Power admin {UserId} can manage any event", user.GetUserId());
             return;
         }
 
         if (!user.IsAdmin())
         {
-            _logger.LogWarning("User {UserId} is not admin and cannot manage event {EventInfoId}", user.GetUserId(), eventInfo.EventInfoId);
-            throw new NotAccessibleException($"Event {eventInfo.EventInfoId} is not accessible for update by user {user.GetUserId()}");
+            _logger.LogWarning("User {UserId} is not admin and cannot manage event {EventInfoId}", user.GetUserId(),
+                eventInfo.EventInfoId);
+            throw new NotAccessibleException(
+                $"Event {eventInfo.EventInfoId} is not accessible for update by user {user.GetUserId()}");
         }
 
         var org = await _currentOrganizationAccessorService
-            .RequireCurrentOrganizationAsync(new OrganizationRetrievalOptions
-            {
-                LoadMembers = true
-            }, token);
+            .RequireCurrentOrganizationAsync(new OrganizationRetrievalOptions { LoadMembers = true },
+                cancellationToken);
 
         if (eventInfo.OrganizationId != org.OrganizationId)
         {
-            _logger.LogWarning($"Event {eventInfo.EventInfoId} is not accessible from organization {org.OrganizationId}");
+            _logger.LogWarning(
+                $"Event {eventInfo.EventInfoId} is not accessible from organization {org.OrganizationId}");
             throw new NotAccessibleException(
                 $"Event {eventInfo.EventInfoId} is not accessible from organization {org.OrganizationId}");
         }

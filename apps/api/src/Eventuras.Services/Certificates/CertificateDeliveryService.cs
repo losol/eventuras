@@ -60,8 +60,22 @@ internal class CertificateDeliveryService : ICertificateDeliveryService
                 accessControlDone: accessControlDone,
                 cancellationToken: cancellationToken);
 
+        if (certificate == null)
+        {
+            _logger.LogError("Certificate {Id} not found, not sending.",
+                certificateId);
+            return;
+        }
+
         var pdfStream = await _certificateRenderer
             .RenderToPdfAsStreamAsync(new CertificateViewModel(certificate));
+
+        if (pdfStream == null)
+        {
+            _logger.LogError("Certificate {Id} could not be rendered, not sending.",
+                certificateId);
+            return;
+        }
 
         var memoryStream = new MemoryStream();
         await pdfStream.CopyToAsync(memoryStream, cancellationToken);
@@ -90,6 +104,9 @@ internal class CertificateDeliveryService : ICertificateDeliveryService
                 }
             }
         };
+
+        _logger.LogInformation("Sending certificate {Id} to user {UserId}.",
+            certificateId, certificate.RecipientUserId);
 
         await _emailSender.SendEmailAsync(emailModel,
             new EmailOptions { OrganizationId = certificate.IssuingOrganizationId });
