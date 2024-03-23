@@ -112,11 +112,19 @@ public class EventCertificatesController : ControllerBase
         CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Issuing certificates for event {EventId}", id);
+
+        // Get the event info
         var eventInfo = await _eventInfoRetrievalService
             .GetEventInfoByIdAsync(id, cancellationToken);
+        if (eventInfo == null)
+        {
+            _logger.LogWarning("Event with ID {EventId} not found.", id);
+            return NotFound($"Event with ID {id} not found.");
+        }
 
+        // Create sertificates
         var certificates = await _certificateIssuingService
-            .CreateCertificatesForEventAsync(eventInfo, accessControlDone: false, cancellationToken: cancellationToken);
+            .CreateCertificatesForEventAsync(eventInfo, false, cancellationToken);
 
         if (send)
         {
