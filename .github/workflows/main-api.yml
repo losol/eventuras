@@ -58,11 +58,6 @@ jobs:
         run: dotnet restore
       - name: Build with dotnet
         run: dotnet build --configuration Release --no-restore -o ./Release
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: release-build
-          path: ./Release
 
   test:
     runs-on: ubuntu-latest
@@ -147,11 +142,8 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v3
-        with:
-          name: release-build
-          path: ./Release
+      - name: Build with dotnet
+        run: dotnet build --configuration Release --no-restore -o ./Release
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -160,7 +152,7 @@ jobs:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
           slot-name: "Production"
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: .
+          package: ./Release
 
   deploy-docker:
     if: github.ref == 'refs/heads/main'
