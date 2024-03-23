@@ -42,7 +42,7 @@ public class CertificateIssuingService : ICertificateIssuingService
         _logger.LogInformation("Creating certificates for event #{EventId}", eventInfo.EventInfoId);
         if (!accessControlDone)
         {
-            _logger.LogInformation("Doing access control...", eventInfo.EventInfoId);
+            _logger.LogInformation("Doing access control...");
             await _eventInfoAccessControlService
                 .CheckEventManageAccessAsync(eventInfo, cancellationToken);
         }
@@ -53,7 +53,7 @@ public class CertificateIssuingService : ICertificateIssuingService
              await reader.HasMoreAsync(cancellationToken);)
         {
             certificates.AddRange(from registration in await reader.ReadNextAsync(cancellationToken)
-                select registration.CreateCertificate());
+                                  select registration.CreateCertificate());
 
             await _context.SaveChangesAsync(cancellationToken);
         }
@@ -62,7 +62,7 @@ public class CertificateIssuingService : ICertificateIssuingService
     }
 
     public async Task<ICollection<Certificate>> UpdateCertificatesForEventAsync(EventInfo eventInfo,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Updating certificates for event #{EventId}", eventInfo.EventInfoId);
 
@@ -75,7 +75,7 @@ public class CertificateIssuingService : ICertificateIssuingService
              await reader.HasMoreAsync(cancellationToken);)
         {
             certificates.AddRange(from registration in await reader.ReadNextAsync(cancellationToken)
-                select registration.UpdateCertificate());
+                                  select registration.UpdateCertificate());
 
             await _context.SaveChangesAsync(cancellationToken);
         }
