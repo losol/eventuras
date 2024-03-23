@@ -36,15 +36,20 @@ public class CertificateIssuingService : ICertificateIssuingService
     }
 
     public async Task<ICollection<Certificate>> CreateCertificatesForEventAsync(EventInfo eventInfo,
-        CancellationToken cancellationToken)
+        bool accessControlDone = false,
+        CancellationToken cancellationToken = default)
     {
-        await _eventInfoAccessControlService
-            .CheckEventManageAccessAsync(eventInfo, cancellationToken);
+        if (!accessControlDone)
+        {
+            // Check if the user has access to manage the event (create certificates
+            await _eventInfoAccessControlService
+                .CheckEventManageAccessAsync(eventInfo, cancellationToken);
+        }
 
         var certificates = new List<Certificate>();
 
-        for (var reader = ReadRegistrations(eventInfo, havingNoCertificateOnly: true);
-            await reader.HasMoreAsync(cancellationToken);)
+        for (var reader = ReadFinishedRegistrations(eventInfo, havingNoCertificateOnly: true);
+             await reader.HasMoreAsync(cancellationToken);)
         {
             certificates.AddRange(from registration in await reader.ReadNextAsync(cancellationToken)
                                   select registration.CreateCertificate());
@@ -65,8 +70,8 @@ public class CertificateIssuingService : ICertificateIssuingService
 
         var certificates = new List<Certificate>();
 
-        for (var reader = ReadRegistrations(eventInfo, havingCertificateOnly: true);
-            await reader.HasMoreAsync(cancellationToken);)
+        for (var reader = ReadFinishedRegistrations(eventInfo, true);
+             await reader.HasMoreAsync(cancellationToken);)
         {
             certificates.AddRange(from registration in await reader.ReadNextAsync(cancellationToken)
                                   select registration.UpdateCertificate());
@@ -77,12 +82,11 @@ public class CertificateIssuingService : ICertificateIssuingService
         return certificates;
     }
 
-    private PageReader<Registration> ReadRegistrations(
+    private PageReader<Registration> ReadFinishedRegistrations(
         EventInfo eventInfo,
         bool havingCertificateOnly = false,
-        bool havingNoCertificateOnly = false)
-    {
-        return new PageReader<Registration>(async (offset, limit, token) =>
+        bool havingNoCertificateOnly = false) =>
+        new(async (offset, limit, token) =>
             await _registrationRetrievalService.ListRegistrationsAsync(
                 new RegistrationListRequest
                 {
@@ -97,5 +101,4 @@ public class CertificateIssuingService : ICertificateIssuingService
                     }
                 },
                 RegistrationRetrievalOptions.ForCertificateIssuing, token));
-    }
 }

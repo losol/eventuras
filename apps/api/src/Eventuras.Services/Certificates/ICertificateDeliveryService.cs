@@ -1,12 +1,14 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Eventuras.Domain;
 
 namespace Eventuras.Services.Certificates;
 
 public interface ICertificateDeliveryService
 {
+    Task QueueCertificateForDeliveryAsync(int certificateId, CancellationToken cancellationToken = default);
+
     Task SendCertificateAsync(
-        Certificate certificate,
-        CancellationToken cancellationToken = default);
+        int certificateId,
+        bool accessControlDone,
+        CancellationToken cancellationToken);
 }

@@ -10,6 +10,7 @@ public interface ICertificateRetrievalService
     /// <exception cref="Exceptions.NotAccessibleException">Certificate not accessible</exception>
     Task<Certificate> GetCertificateByIdAsync(int id,
         CertificateRetrievalOptions options = default,
+        bool accessControlDone = false,
         CancellationToken cancellationToken = default);
 
     Task<Paging<Certificate>> ListCertificatesAsync(

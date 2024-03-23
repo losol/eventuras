@@ -50,6 +50,7 @@ builder.Services.AddControllers(options =>
     })
     .AddJsonOptions(j =>
     {
+        j.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         j.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
         j.JsonSerializerOptions.Converters.Add(new LocalDateConverter());
         j.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -77,7 +78,8 @@ builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("Auth"
 
 builder.Services.AddCors(options =>
 {
-    var origins = appSettings.AllowedOrigins.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+    var origins =
+        appSettings.AllowedOrigins.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
     options.AddDefaultPolicy(corsBuilder => corsBuilder
         .WithOrigins(origins)
@@ -103,20 +105,17 @@ apiVersioningBuilder.AddApiExplorer(o =>
 builder.Services.ConfigureIdentity();
 
 builder.Services.AddHangfire(configuration => configuration
-       .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-        .UseSimpleAssemblyNameTypeSerializer()
-        .UseRecommendedSerializerSettings()
-        .UseInMemoryStorage(new InMemoryStorageOptions
-        {
-            MaxExpirationTime = TimeSpan.FromHours(24)
-        })
-        );
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseInMemoryStorage(new InMemoryStorageOptions { MaxExpirationTime = TimeSpan.FromHours(24) })
+);
 
 
 builder.Services.AddHangfireServer(options =>
 {
-    options.WorkerCount = 1;
-    options.Queues = new[] { "notifications_queue" };
+    options.WorkerCount = 2;
+    options.Queues = new[] { "notifications_queue", "certificates_queue" };
 });
 
 builder.Services.AddScoped<NotificationBackgroundService>();
@@ -149,7 +148,10 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Integratio
     app.UseSwaggerUI(c =>
     {
         foreach (var description in apiVersions.ApiVersionDescriptions)
-            c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToLowerInvariant());
+        {
+            c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+                description.GroupName.ToLowerInvariant());
+        }
     });
 }
 
@@ -165,10 +167,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseHangfireDashboard("/jobs", new DashboardOptions
-{
-    IsReadOnlyFunc = (DashboardContext context) => true
-});
+app.UseHangfireDashboard("/jobs", new DashboardOptions { IsReadOnlyFunc = (DashboardContext context) => true });
 
 // Seed database, run OnStartup builder.Services, etc.
 await PreStartupRoutine(app);
@@ -201,13 +200,17 @@ static async Task PreStartupRoutine(IHost host)
 
     var startupServices = services.GetServices<IStartupService>();
     foreach (var startupService in startupServices)
+    {
         startupService.OnStartup();
+    }
 
     var initializer = services.GetRequiredService<IDbInitializer>();
     await initializer.SeedAsync();
 }
 
-public partial class Program { }
+public partial class Program
+{
+}
 
 public static class InputFormatter
 {
@@ -227,6 +230,3 @@ public static class InputFormatter
             .First();
     }
 }
-
-
-
