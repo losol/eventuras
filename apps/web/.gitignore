@@ -1,5 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
+test-results/
+playwright-auth/
+playwright-e2e/
 
 # vs code
 .vscode/launch.json
