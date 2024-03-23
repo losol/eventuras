@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Losol.Communication.Email;
 using Moq;
@@ -20,10 +21,7 @@ public class EmailExpectation
     private bool _shouldNotHaveAttachment;
     private bool _shouldHaveAttachment;
 
-    public EmailExpectation(Mock<IEmailSender> mock)
-    {
-        _mock = mock;
-    }
+    public EmailExpectation(Mock<IEmailSender> mock) => _mock = mock;
 
     public EmailExpectation SentTo(string email)
     {
@@ -64,7 +62,7 @@ public class EmailExpectation
 
     public EmailExpectation Setup()
     {
-        _mock.Setup(s => s.SendEmailAsync(It.IsAny<EmailModel>(), new EmailOptions() { }));
+        _mock.Setup(s => s.SendEmailAsync(It.IsAny<EmailModel>(), It.IsAny<EmailOptions>()));
         return this;
     }
 
@@ -79,36 +77,45 @@ public class EmailExpectation
         {
             if (!Placeholder.Equals(_email) && m.Recipients.All(r => r.Email != _email))
             {
+                Debug.WriteLine($"Expected email: {_email}, actual: {m.Recipients.First().Email}");
                 return false;
             }
 
             if (!Placeholder.Equals(_subject) && m.Subject != _subject)
             {
+                Debug.WriteLine($"Expected subject: {_subject}, actual: {m.Subject}");
                 return false;
             }
 
             if (!Placeholder.Equals(_message) && (m.TextBody ?? m.HtmlBody).Equals(_message))
             {
+                Debug.WriteLine($"Expected message: {_message}, actual: {m.TextBody ?? m.HtmlBody}");
                 return false;
             }
 
             if (_subjectContains.Any() && !_subjectContains.Any(s => m.Subject.Contains(s)))
             {
+                Debug.WriteLine(
+                    $"Expected subject to contain: {string.Join(", ", _subjectContains)}, actual: {m.Subject}");
                 return false;
             }
 
             if (_htmlContained.Any() && _htmlContained.All(s => m.HtmlBody?.Contains(s) != true))
             {
+                Debug.WriteLine(
+                    $"Expected html to contain: {string.Join(", ", _htmlContained)}, actual: {m.HtmlBody}");
                 return false;
             }
 
             if (_shouldHaveAttachment && !m.Attachments.Any())
             {
+                Debug.WriteLine($"Expected attachment, but none found");
                 return false;
             }
 
             if (_shouldNotHaveAttachment && m.Attachments.Any())
             {
+                Debug.WriteLine($"Expected no attachment, but found one");
                 return false;
             }
 
@@ -117,9 +124,9 @@ public class EmailExpectation
 
 
         _mock.Verify(s => s
-            .SendEmailAsync(
-                It.Is<EmailModel>(m => compareFunc(m)),
-                It.IsAny<EmailOptions>()),
-                times.Value);
+                .SendEmailAsync(
+                    It.Is<EmailModel>(m => compareFunc(m)),
+                    It.IsAny<EmailOptions>()),
+            times.Value);
     }
 }

@@ -22,11 +22,9 @@ internal class ConfigurableEmailSender : IEmailSender
 {
     private readonly IConfigurableEmailSenderComponent[] _components;
 
-    public ConfigurableEmailSender(IEnumerable<IConfigurableEmailSenderComponent> components)
-    {
+    public ConfigurableEmailSender(IEnumerable<IConfigurableEmailSenderComponent> components) =>
         _components = components?.ToArray() ?? throw
             new ArgumentNullException(nameof(components));
-    }
 
     public async Task<HealthCheckStatus> CheckHealthAsync(CancellationToken cancellationToken)
     {
@@ -41,7 +39,7 @@ internal class ConfigurableEmailSender : IEmailSender
 
     [Obsolete("Use SendEmailAsync(EmailModel emailModel, int? organizationId = null)")]
     public async Task SendEmailAsync(string address, string subject, string message, Attachment attachment = null,
-                EmailMessageType messageType = EmailMessageType.Html)
+        EmailMessageType messageType = EmailMessageType.Html)
     {
         var sender = await GetEmailSenderAsync();
         if (sender != null)
@@ -57,9 +55,14 @@ internal class ConfigurableEmailSender : IEmailSender
         {
             await sender.SendEmailAsync(emailModel);
         }
+        else
+        {
+            throw new InvalidOperationException("No email sender is enabled in organization settings");
+        }
     }
 
-    private async Task<IEmailSender> GetEmailSenderAsync(int? organizationId = null, CancellationToken cancellationToken = default)
+    private async Task<IEmailSender> GetEmailSenderAsync(int? organizationId = null,
+        CancellationToken cancellationToken = default)
     {
         foreach (var component in _components)
         {

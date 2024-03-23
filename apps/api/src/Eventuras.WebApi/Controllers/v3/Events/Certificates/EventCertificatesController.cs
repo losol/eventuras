@@ -73,20 +73,19 @@ public class EventCertificatesController : ControllerBase
         await _eventInfoAccessControlService.CheckEventManageAccessAsync(eventInfo, cancellationToken);
 
         var certificates = await _certificateRetrievalService
-            .ListCertificatesAsync(new CertificateListRequest
-            {
-                Limit = query.Limit,
-                Offset = query.Offset,
-                Filter = new CertificateFilter
+            .ListCertificatesAsync(
+                new CertificateListRequest
                 {
-                    EventId = id
-                }
-            }, new CertificateRetrievalOptions
-            {
-                LoadIssuingOrganization = true,
-                LoadIssuingUser = true,
-                LoadRecipientUser = true
-            }, cancellationToken);
+                    Limit = query.Limit,
+                    Offset = query.Offset,
+                    Filter = new CertificateFilter { EventId = id }
+                },
+                new CertificateRetrievalOptions
+                {
+                    LoadIssuingOrganization = true,
+                    LoadIssuingUser = true,
+                    LoadRecipientUser = true
+                }, cancellationToken);
 
         return Ok(PageResponseDto<EventDto>.FromPaging(
             query, certificates,
@@ -123,16 +122,14 @@ public class EventCertificatesController : ControllerBase
         {
             _logger.LogInformation("Queuing certificates for delivery");
             foreach (var certificate in certificates
-                .TakeWhile(_ => !cancellationToken.IsCancellationRequested))
+                         .TakeWhile(_ => !cancellationToken.IsCancellationRequested))
             {
-                await _certificateDeliveryService.QueueCertificateForDeliveryAsync(certificate.CertificateId, cancellationToken);
+                await _certificateDeliveryService.QueueCertificateForDeliveryAsync(certificate.CertificateId,
+                    cancellationToken);
             }
         }
 
-        return Ok(new CertificateStatisticsDto
-        {
-            Issued = certificates.Count
-        });
+        return Ok(new CertificateStatisticsDto { Issued = certificates.Count });
     }
 
     [HttpPost("update")]
@@ -143,10 +140,7 @@ public class EventCertificatesController : ControllerBase
         var certificates = await _certificateIssuingService
             .UpdateCertificatesForEventAsync(eventInfo, cancellationToken);
 
-        return Ok(new CertificateStatisticsDto
-        {
-            Updated = certificates.Count
-        });
+        return Ok(new CertificateStatisticsDto { Updated = certificates.Count });
     }
 
     private async Task<EventInfo> GetEventByIdAsync(

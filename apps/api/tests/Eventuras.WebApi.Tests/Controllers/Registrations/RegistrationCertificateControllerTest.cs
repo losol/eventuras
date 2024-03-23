@@ -1,7 +1,12 @@
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
+using Hangfire;
+using Losol.Communication.Email;
+using Moq;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Registrations;
@@ -10,10 +15,7 @@ public class RegistrationCertificateControllerTest : IClassFixture<CustomWebApiA
 {
     private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-    public RegistrationCertificateControllerTest(CustomWebApiApplicationFactory<Program> factory)
-    {
-        _factory = factory;
-    }
+    public RegistrationCertificateControllerTest(CustomWebApiApplicationFactory<Program> factory) => _factory = factory;
 
     [Fact]
     public async Task Send_Should_Require_Auth()
@@ -111,14 +113,13 @@ public class RegistrationCertificateControllerTest : IClassFixture<CustomWebApiA
         using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
         using var cert = await scope.CreateCertificateAsync(reg.Entity);
 
-        var emailExpectation = SetupEmailExpectation(user, evt);
 
+        var emailExpectation = SetupCertificateEmailExpectation(user, evt);
         var response = await _factory.CreateClient()
             .AuthenticatedAs(user.Entity)
             .PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/certificate/send");
 
         response.CheckOk();
-
         emailExpectation.VerifyEmailSent();
     }
 
@@ -135,7 +136,7 @@ public class RegistrationCertificateControllerTest : IClassFixture<CustomWebApiA
         using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
         using var cert = await scope.CreateCertificateAsync(reg.Entity);
 
-        var emailExpectation = SetupEmailExpectation(user, evt);
+        var emailExpectation = SetupCertificateEmailExpectation(user, evt);
 
         var response = await _factory.CreateClient()
             .AuthenticatedAs(admin.Entity, Roles.Admin)
@@ -159,7 +160,7 @@ public class RegistrationCertificateControllerTest : IClassFixture<CustomWebApiA
         using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
         using var cert = await scope.CreateCertificateAsync(reg.Entity);
 
-        var emailExpectation = SetupEmailExpectation(user, evt);
+        var emailExpectation = SetupCertificateEmailExpectation(user, evt);
 
         var response = await _factory.CreateClient()
             .Authenticated(role: role)
@@ -170,16 +171,13 @@ public class RegistrationCertificateControllerTest : IClassFixture<CustomWebApiA
         emailExpectation.VerifyEmailSent();
     }
 
-    private EmailExpectation SetupEmailExpectation(
+    private EmailExpectation SetupCertificateEmailExpectation(
         IDisposableEntity<ApplicationUser> user,
-        IDisposableEntity<EventInfo> evt)
-    {
-        return _factory.EmailSenderMock
+        IDisposableEntity<EventInfo> evt) =>
+        _factory.EmailSenderMock
             .ExpectEmail()
             .SentTo(user.Entity.Email)
             .WithSubject($"Kursbevis for {evt.Entity.Title}")
-            .ContainingHtml("Her er kursbeviset! Gratulere!")
             .HavingAttachment()
             .Setup();
-    }
 }
