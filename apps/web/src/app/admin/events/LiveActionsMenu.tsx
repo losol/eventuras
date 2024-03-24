@@ -2,6 +2,7 @@
 
 import { RegistrationDto, RegistrationStatus } from '@eventuras/sdk';
 import Button from '@eventuras/ui/Button';
+import Link from '@eventuras/ui/Link';
 import { IconCircleX } from '@tabler/icons-react';
 
 import { statusPatchRequest } from '../registrations/Registration';
@@ -35,6 +36,16 @@ const LiveActionsMenu = ({ registration, onStatusUpdate }: LiveActionsMenuProps)
       case 'Cancelled':
         return <IconCircleX />;
       default:
+        if (registration.certificateId) {
+          return (
+            <Link
+              href={`/admin/certificates/${registration.certificateId}`}
+              variant="button-outline"
+            >
+              🏆
+            </Link>
+          );
+        }
         return (
           <Button onClick={() => handleStatusUpdate(RegistrationStatus.FINISHED)}>Finish</Button>
         );

@@ -1,26 +1,11 @@
-import { LocalDate } from '@eventuras/sdk';
+import { CertificateDto } from '@eventuras/sdk';
 import Card from '@eventuras/ui/Card';
 import { Definition, DescriptionList, Item, Term } from '@eventuras/ui/DescriptionList';
 import Heading from '@eventuras/ui/Heading';
 import createTranslation from 'next-translate/createTranslation';
+import React from 'react';
 
 import { formatDateSpan } from '@/utils/formatDate';
-
-export type CertificateDto = {
-  readonly certificateId?: number;
-  readonly certificateGuid?: string;
-  readonly title?: string | null;
-  readonly description?: string | null;
-  readonly comment?: string | null;
-  readonly recipientName?: string | null;
-  readonly evidenceDescription?: string | null;
-  readonly issuedInCity?: string | null;
-  issuingDate?: LocalDate;
-  readonly issuerOrganizationName?: string | null;
-  readonly issuerOrganizationLogoBase64?: string | null;
-  readonly issuerPersonName?: string | null;
-  readonly issuerPersonSignatureImageBase64?: string | null;
-};
 
 type CertificateProps = {
   certificate: CertificateDto;
@@ -40,7 +25,7 @@ const Certificate: React.FC<CertificateProps> = ({ certificate }) => {
         </Item>
         <Item>
           <Term>{t('common:labels.guid')}</Term>
-          <Definition>{certificate.certificateId}</Definition>
+          <Definition>{certificate.certificateGuid}</Definition>
         </Item>
         <Item>
           <Term>{t('common:order.labels.date')}</Term>

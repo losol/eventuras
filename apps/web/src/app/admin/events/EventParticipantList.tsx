@@ -24,6 +24,7 @@ import Logger from '@/utils/Logger';
 import LiveActionsMenu from './LiveActionsMenu';
 
 const columnHelper = createColumnHelper<RegistrationDto>();
+
 interface AdminEventListProps {
   participants: RegistrationDto[];
   event: EventDto;
@@ -136,7 +137,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
    * a string or a function which will tell tanstack where to get its data from.
    */
   const columns = [
-    columnHelper.accessor('registrationId', {
+    columnHelper.display({
       header: t('common:labels.id').toString(),
       cell: info => <Badge>{info.row.original.registrationId}</Badge>,
     }),

@@ -58,6 +58,11 @@ public class RegistrationDto
         {
             Event = new EventDto(registration.EventInfo);
         }
+
+        if (registration.CertificateId != null)
+        {
+            CertificateId = registration.CertificateId;
+        }
     }
 
     public void CopyTo(Registration registration)

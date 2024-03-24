@@ -4,6 +4,7 @@ import Section from '@eventuras/ui/Section';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
+import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';
@@ -41,7 +42,7 @@ const CertificateDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
   }
 
   return (
-    <>
+    <Wrapper fluid>
       <Section className="bg-white dark:bg-black   pb-8">
         <Container>
           <Heading as="h1">Order</Heading>
@@ -52,7 +53,7 @@ const CertificateDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
           <Certificate certificate={certificate.value!} />
         </Container>
       </Section>
-    </>
+    </Wrapper>
   );
 };
 
