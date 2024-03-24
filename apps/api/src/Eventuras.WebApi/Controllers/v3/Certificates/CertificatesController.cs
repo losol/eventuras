@@ -5,6 +5,7 @@ using System.Security.Authentication;
 using System.Threading.Tasks;
 using Asp.Versioning;
 using Eventuras.Services.Certificates;
+using Eventuras.Services.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -61,17 +62,16 @@ public class CertificatesController : ControllerBase
                     await stream.CopyToAsync(memoryStream);
                     return File(memoryStream.ToArray(), MediaTypeNames.Application.Pdf);
                 }
-                catch (AuthenticationException ex)
+                catch (ServiceException ex)
                 {
-                    _logger.LogError(ex, "Error generating PDF for certificate.");
-                    return StatusCode(StatusCodes.Status503ServiceUnavailable, "Pdf generator service authentication failed.");
-                }
-                catch (Exception ex)
-                {
+                    if (ex.InnerException is AuthenticationException)
+                    {
+                        _logger.LogError(ex, "Error generating PDF for certificate.");
+                        return StatusCode(StatusCodes.Status503ServiceUnavailable, "Pdf generator service authentication failed.");
+                    }
                     _logger.LogError(ex, "Error generating PDF for certificate.");
                     return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while generating the PDF.");
                 }
-
 
             default:
                 throw new InvalidOperationException($"Unsupported cert format: {format}");
