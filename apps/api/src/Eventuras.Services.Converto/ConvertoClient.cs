@@ -1,6 +1,8 @@
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -28,15 +30,14 @@ internal class ConvertoClient : IConvertoClient
     }
 
 
-    public async Task<Stream> Html2PdfAsync(string html, float scale, string format)
+    public async Task<Stream> GeneratePdfFromHtmlAsync(string html, float scale, string format)
     {
 
         var client = _httpClientFactory.CreateClient();
         var endpointUrl = _options.Value.PdfEndpointUrl;
         var apiToken = _options.Value.ApiToken;
 
-        _logger.LogDebug($"Sending HTML to {endpointUrl}");
-        _logger.LogTrace(html);
+        _logger.LogInformation("Converting HTML to PDF using endpoint {endpointUrl}", endpointUrl);
 
         try
         {
@@ -51,15 +52,27 @@ internal class ConvertoClient : IConvertoClient
 
             if (!response.IsSuccessStatusCode)
             {
+                _logger.LogError("{endpointUrl} returned {response.StatusCode} status code", endpointUrl, response.StatusCode);
                 throw new ConvertoClientException($"{endpointUrl} returned {response.StatusCode} status code");
             }
 
             return await response.Content.ReadAsStreamAsync();
         }
-        catch (IOException e)
+        catch (HttpRequestException e)
         {
-            throw new ConvertoClientException($"Failed to authenticate using endpoint {endpointUrl}", e);
+            _logger.LogError(e, "Converto request failed: {ExceptionMessage}", e.Message);
+
+            // Authenticationn error
+            if (e.Message.Contains("401"))
+            {
+                throw new AuthenticationException("Converto request failed: Unauthorized", e);
+            }
+
+            throw new HttpRequestException("Converto request failed", e);
+        }
+        catch (Exception e)
+        {
+            throw new ConvertoClientException("Converto exception: {exception}", e);
         }
     }
-
 }

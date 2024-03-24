@@ -5,5 +5,5 @@ namespace Eventuras.Services.Converto;
 
 internal interface IConvertoClient
 {
-    Task<Stream> Html2PdfAsync(string html, float scale, string format);
+    Task<Stream> GeneratePdfFromHtmlAsync(string html, float scale, string format);
 }

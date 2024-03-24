@@ -42,7 +42,7 @@ internal class CertificateRenderer : ICertificateRenderer
         }
 
         var html = await RenderToHtmlAsStringAsync(viewModel);
-        return await _pdfRenderService.RenderHtmlAsync(html, new PdfRenderOptions
+        return await _pdfRenderService.GeneratePdfFromHtml(html, new PdfRenderOptions
         {
             Format = "A4",
             Scale = 0.8f

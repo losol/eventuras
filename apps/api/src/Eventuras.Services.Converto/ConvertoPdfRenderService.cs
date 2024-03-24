@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Eventuras.Services.Exceptions;
 using Eventuras.Services.Pdf;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -25,18 +26,18 @@ internal class ConvertoPdfRenderService : IPdfRenderService
         _logger = logger;
     }
 
-    public async Task<Stream> RenderHtmlAsync(string html, PdfRenderOptions pdfRenderOptions)
+    public async Task<Stream> GeneratePdfFromHtml(string html, PdfRenderOptions pdfRenderOptions)
     {
         try
         {
-            return await _client.Html2PdfAsync(html,
+            return await _client.GeneratePdfFromHtmlAsync(html,
                 pdfRenderOptions.Scale ?? _options.Value.DefaultScale ?? 1,
                 pdfRenderOptions.Format ?? _options.Value.DefaultFormat ?? "A4");
         }
-        catch (ConvertoClientException e)
+        catch (Exception e)
         {
-            _logger.LogError(e, "Unable to convert PDF to HTML, returning empty MemoryStream: {ExceptionMessage}", e.Message);
-            return new MemoryStream();
+            _logger.LogError(e, "Unable to convert HTML to: {ExceptionMessage}", e.Message);
+            throw new ServiceException("Unable to generate PDF fro HTML", e);
         }
     }
 }

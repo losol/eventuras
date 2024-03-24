@@ -6,7 +6,7 @@ namespace Eventuras.Services.Pdf;
 
 public interface IPdfRenderService
 {
-    Task<Stream> RenderHtmlAsync(string html, PdfRenderOptions pdfRenderOptions);
+    Task<Stream> GeneratePdfFromHtml(string html, PdfRenderOptions pdfRenderOptions);
 }
 
 public class PdfRenderOptions

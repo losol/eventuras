@@ -65,7 +65,7 @@ public class ConvertoPdfRenderServiceTest : IDisposable
     public async Task ShouldReturnEmptyPdfStreamForInvalidLoginUrl()
     {
         await using var stream = await NewService()
-            .RenderHtmlAsync("<html></html>", new PdfRenderOptions());
+            .GeneratePdfFromHtml("<html></html>", new PdfRenderOptions());
         await CheckEmptyAsync(stream);
     }
 
@@ -73,7 +73,7 @@ public class ConvertoPdfRenderServiceTest : IDisposable
     public async Task ShouldReturnEmptyPdfStreamForInvalidEndpointUrl()
     {
         await using var stream = await NewService(pdfEndpointPath: "/convert/html/to/pdf2")
-            .RenderHtmlAsync("<html></html>",
+            .GeneratePdfFromHtml("<html></html>",
                 new PdfRenderOptions());
         await CheckEmptyAsync(stream);
     }
@@ -82,7 +82,7 @@ public class ConvertoPdfRenderServiceTest : IDisposable
     public async Task ShouldReturnEmptyPdfStreamForInvalidCredentials()
     {
         await using var stream = await NewService(apitoken: "invalid")
-            .RenderHtmlAsync("<html></html>",
+            .GeneratePdfFromHtml("<html></html>",
                 new PdfRenderOptions());
         await CheckEmptyAsync(stream);
     }
@@ -90,7 +90,7 @@ public class ConvertoPdfRenderServiceTest : IDisposable
     [ConvertoEnvSpecificFact]
     public async Task ShouldCreateEmptyPdf()
     {
-        await using var stream = await NewService().RenderHtmlAsync("<html></html>", new PdfRenderOptions());
+        await using var stream = await NewService().GeneratePdfFromHtml("<html></html>", new PdfRenderOptions());
         await CheckNotEmptyAsync(stream);
     }
 
@@ -99,7 +99,7 @@ public class ConvertoPdfRenderServiceTest : IDisposable
     {
         // Initially caused "Invalid URI: The Uri string is too long."
         var html = $"<html>{new string('A', 200000)}</html>";
-        await using var stream = await NewService().RenderHtmlAsync(html, new PdfRenderOptions());
+        await using var stream = await NewService().GeneratePdfFromHtml(html, new PdfRenderOptions());
         await CheckNotEmptyAsync(stream);
     }
 
