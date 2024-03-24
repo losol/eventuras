@@ -1,12 +1,14 @@
 using System;
 using System.IO;
 using System.Net.Mime;
+using System.Security.Authentication;
 using System.Threading.Tasks;
 using Asp.Versioning;
 using Eventuras.Services.Certificates;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 
 namespace Eventuras.WebApi.Controllers.v3.Certificates;
@@ -19,20 +21,20 @@ public class CertificatesController : ControllerBase
 {
     private readonly ICertificateRetrievalService _certificateRetrievalService;
     private readonly ICertificateRenderer _certificateRenderer;
+    private readonly ILogger<CertificatesController> _logger;
 
     public CertificatesController(
         ICertificateRetrievalService certificateRetrievalService,
-        ICertificateRenderer certificateRenderer)
+        ICertificateRenderer certificateRenderer,
+        ILogger<CertificatesController> logger)
     {
-        _certificateRetrievalService = certificateRetrievalService ?? throw
-            new ArgumentNullException(nameof(certificateRetrievalService));
-
-        _certificateRenderer = certificateRenderer ?? throw
-            new ArgumentNullException(nameof(certificateRenderer));
+        _certificateRetrievalService = certificateRetrievalService ?? throw new ArgumentNullException(nameof(certificateRetrievalService));
+        _certificateRenderer = certificateRenderer ?? throw new ArgumentNullException(nameof(certificateRenderer));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     [HttpGet("{id}")]
-    [ProducesResponseType(typeof(CertificateDto), StatusCodes.Status200OK, Type = typeof(CertificateDto))] // For JSON format
+    [ProducesResponseType(typeof(CertificateDto), StatusCodes.Status200OK, Type = typeof(CertificateDto))]
     public async Task<IActionResult> Get(int id, [FromQuery] CertificateFormat? format = null)
     {
         var cert = await _certificateRetrievalService
@@ -52,12 +54,24 @@ public class CertificatesController : ControllerBase
                 return Content(html, MediaTypeNames.Text.Html);
 
             case CertificateFormat.Pdf:
-                var stream = await _certificateRenderer
-                    .RenderToPdfAsStreamAsync(new CertificateViewModel(cert));
+                try
+                {
+                    var stream = await _certificateRenderer.RenderToPdfAsStreamAsync(new CertificateViewModel(cert));
+                    var memoryStream = new MemoryStream();
+                    await stream.CopyToAsync(memoryStream);
+                    return File(memoryStream.ToArray(), MediaTypeNames.Application.Pdf);
+                }
+                catch (AuthenticationException ex)
+                {
+                    _logger.LogError(ex, "Error generating PDF for certificate.");
+                    return StatusCode(StatusCodes.Status503ServiceUnavailable, "Pdf generator service authentication failed.");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error generating PDF for certificate.");
+                    return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while generating the PDF.");
+                }
 
-                var memoryStream = new MemoryStream();
-                await stream.CopyToAsync(memoryStream);
-                return File(memoryStream.ToArray(), MediaTypeNames.Application.Pdf);
 
             default:
                 throw new InvalidOperationException($"Unsupported cert format: {format}");

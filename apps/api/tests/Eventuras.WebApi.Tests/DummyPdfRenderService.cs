@@ -10,7 +10,7 @@ namespace Eventuras.WebApi.Tests;
 
 public class DummyPdfRenderService : IPdfRenderService
 {
-    public Task<Stream> RenderHtmlAsync(string html, PdfRenderOptions pdfRenderOptions)
+    public Task<Stream> GeneratePdfFromHtml(string html, PdfRenderOptions pdfRenderOptions)
     {
         using var buffer = new MemoryStream();
         using var writer = new PdfWriter(buffer);

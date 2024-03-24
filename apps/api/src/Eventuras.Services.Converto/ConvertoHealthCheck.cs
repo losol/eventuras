@@ -24,7 +24,7 @@ internal class ConvertoHealthCheck : IHealthCheck
         try
         {
             _logger.LogInformation("Performing converto service health check");
-            await _convertoClient.Html2PdfAsync("<html><body><h1>Converto service health check</h1></body></html>", 1, "A4");
+            await _convertoClient.GeneratePdfFromHtmlAsync("<html><body><h1>Converto service health check</h1></body></html>", 1, "A4");
             _logger.LogInformation("Converto service health check was successful");
             return HealthCheckResult.Healthy();
         }
