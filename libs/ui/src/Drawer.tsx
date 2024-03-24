@@ -2,18 +2,37 @@ import { IconX } from '@tabler/icons-react';
 import React, { HTMLAttributes, ReactNode } from 'react';
 
 import { Button, Heading, Portal } from '@eventuras/ui';
+
+/**
+ * DrawerProps interface for Drawer component
+ * @property {boolean} isOpen - Determines if the Drawer is open
+ * @property {() => void} onSave - Function to be called when the Drawer is saved
+ * @property {() => void} onCancel - Function to be called when the Drawer is cancelled
+ * @property {ReactNode} children - The children nodes of the Drawer component
+ */
 export interface DrawerProps {
   isOpen: boolean;
   onSave?: () => void;
   onCancel?: () => void;
   children: ReactNode;
 }
+
+/**
+ * DrawerChildProps interface for Drawer child components
+ * @property {'Header' | 'Body' | 'Footer'} type - The type of the Drawer child component
+ * @property {ReactNode} children - The children nodes of the Drawer child component
+ * @property {string} className - The CSS class of the Drawer child component
+ */
 interface DrawerChildProps {
   type?: 'Header' | 'Body' | 'Footer';
   children: ReactNode;
   className?: string;
 }
 
+/**
+ * HeaderProps interface for Header component
+ * @property {'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'} as - The HTML tag for the Header component
+ */
 interface HeaderProps extends DrawerChildProps {
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 }
@@ -32,7 +51,7 @@ const Drawer: DrawerComponent = (props: DrawerProps) => {
   const validChildren = React.Children.toArray(props.children);
 
   const filteredChildren = validChildren
-    .map(child => {
+    .map((child) => {
       if (React.isValidElement<HeaderProps | BodyProps | FooterProps>(child)) {
         return child;
       }
@@ -80,7 +99,7 @@ const Drawer: DrawerComponent = (props: DrawerProps) => {
 };
 
 // Header component
-const Header: React.FC<HeaderProps> = props => {
+const Header: React.FC<HeaderProps> = (props) => {
   if (props.as) {
     return (
       <header>
@@ -93,14 +112,14 @@ const Header: React.FC<HeaderProps> = props => {
 };
 
 // Body component
-const Body: React.FC<BodyProps> = props => (
+const Body: React.FC<BodyProps> = (props) => (
   <div role="main" className={`flex-grow ${props.className || ''}`}>
     {props.children}
   </div>
 );
 
 // Footer component
-const Footer: React.FC<FooterProps> = props => (
+const Footer: React.FC<FooterProps> = (props) => (
   <footer className={`pt-8 ${props.className}`}>{props.children}</footer>
 );
 

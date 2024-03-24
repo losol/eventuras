@@ -64,14 +64,6 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
         >
           SMS
         </Button>
-        <Button
-          variant="outline"
-          onClick={() => {
-            setSMSDrawerOpen(true);
-          }}
-        >
-          {t('admin:labels.sendCertificates')}
-        </Button>
         <Link href={`/admin/notifications?eventId=${eventinfo.id}`} variant="button-outline">
           {t('common:labels.messagelog')}
         </Link>
