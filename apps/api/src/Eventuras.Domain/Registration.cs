@@ -140,6 +140,7 @@ public class Registration
             .ToList();
     }
 
+    [Obsolete("Use SetStatus instead")]
     public void Verify()
     {
         Status = RegistrationStatus.Verified;
@@ -147,11 +148,14 @@ public class Registration
         AddLog();
     }
 
+    [Obsolete("Use SetStatus instead")]
     public void MarkAsAttended()
     {
         Status = RegistrationStatus.Attended;
         AddLog();
     }
+
+    [Obsolete("Use SetStatus instead")]
 
     public void MarkAsNotAttended()
     {
@@ -159,11 +163,13 @@ public class Registration
         AddLog();
     }
 
+    [Obsolete("Use SetStatus instead")]
     public void MarkAsCancelled()
     {
         Status = RegistrationStatus.Cancelled;
         AddLog();
     }
+
 
     public bool HasOrder => Orders != null && Orders.Count > 0;
     public bool HasCertificate => CertificateId != null;
