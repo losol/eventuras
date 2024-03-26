@@ -3,12 +3,14 @@ import { registerAuthPlugin } from './features/auth';
 import { registerPdfFeature } from './features/pdf';
 import { registerOpenapiPlugin } from './features/openapi';
 import { registerHomepagePlugin } from './features/homepage';
+import { registerRatelimitPlugin } from './features/ratelimit';
 
 require('dotenv').config()
 
 const start = async () => {
   const fastify: FastifyInstance = Fastify({ logger: true });
 
+  await registerRatelimitPlugin(fastify);
   await registerOpenapiPlugin(fastify);
   await registerAuthPlugin(fastify);
   await registerPdfFeature(fastify);
