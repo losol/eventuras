@@ -1,0 +1,43 @@
+{
+  "name": "convertoapi",
+  "version": "0.1.0",
+  "description": "generates pdfs",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "npx tsx src/app.ts",
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Losol AS"
+  },
+  "maintainers": [
+    {
+      "name": "Ole Kristian Losvik"
+    },
+    {
+      "name": "M.A. van't Kruis (hellomeinte.com)"
+    }
+  ],
+  "dependencies": {
+    "@fastify/jwt": "^8.0.0",
+    "@fastify/rate-limit": "^9.1.0",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.26.2",
+    "playwright": "^1.42.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.3",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/jwt-decode": "^3.1.0",
+    "@types/node": "^20.11.30",
+    "fastify-tsconfig": "^2.0.0",
+    "tsx": "^4.7.1"
+  }
+}
