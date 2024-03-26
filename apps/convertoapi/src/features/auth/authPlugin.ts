@@ -10,18 +10,17 @@ declare module 'fastify' {
   }
 }
 
-
 const authPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
 
   // Add a method to verify a JWT token to be used as a preHandler in routes
   fastify.decorate('verifyJWT', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       await request.jwtVerify();
-    } catch (err) {
-      reply.status(401).send({ error: 'Authentication failed' });
-      throw new Error('Authentication failed');
-    }
-  });
+      } catch (err) {
+          reply.status(401).send({ error: 'Authentication failed' });
+          throw new Error('Authentication failed');
+        }
+    });
 
   // Autenticate a client and return a JWT token
   fastify.decorate('authenticate', async (clientId: string, clientSecret: string) => {
@@ -41,8 +40,6 @@ const authPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
   });
 
   const tokenSchema = {
-    description: 'post some data',
-  // Schema for the request body
   body: {
     type: 'object',
     required: ['client_id', 'client_secret', 'grant_type'],
@@ -52,7 +49,6 @@ const authPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
       grant_type: { type: 'string', enum: ['client_credentials'] }
     }
   },
-  // Schema for the successful response
   response: {
     200: {
       type: 'object',
@@ -62,33 +58,18 @@ const authPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
         expires_in: { type: 'number' }
       }
     },
-    // You can define additional responses for different status codes if needed
-    400: {
-      type: 'object',
-      properties: {
-        error: { type: 'string' }
-      }
-    },
     401: {
       type: 'object',
       properties: {
         error: { type: 'string' }
       }
-    }
+    },
   }
   };
 
-  // Route to get a JWT token
-  fastify.post('/token', { schema: tokenSchema }, async (request, reply) => {
+  const tokenPostHandler =  async (request: FastifyRequest, reply: FastifyReply) => {
     try {
-      const { client_id, client_secret, grant_type } = request.body as TokenRequest;
-
-      // Only client_credentials grant type is supported for now/for ever
-      if (grant_type !== 'client_credentials') {
-        reply.status(400).send({ error: 'Invalid grant type' });
-        return;
-      }
-
+      const { client_id, client_secret } = request.body as TokenRequest;
       const token = await fastify.authenticate(client_id, client_secret);
 
       reply.send({ access_token: token, token_type: 'Bearer', expires_in: 3600 });
@@ -99,7 +80,16 @@ const authPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
         reply.status(500).send({ error: 'An unknown error occurred' });
       }
     }
+  }
+
+  // Route to get a JWT token
+  fastify.route({
+    method: 'POST',
+    url: '/token',
+    schema: tokenSchema,
+    handler: tokenPostHandler
   });
+
 
   // Hjelpefunksjon for å validere klient-credentials
   async function validateClientCredentials(clientId: string, clientSecret: string) {

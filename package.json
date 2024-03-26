@@ -13,7 +13,10 @@
     "turbo": "^1.13.0"
   },
   "workspaces": [
+    "apps/docsite",
     "apps/web",
+    "apps/web-e2e",
+    "apps/convertoapi",
     "libs/**"
   ],
   "engines": {
