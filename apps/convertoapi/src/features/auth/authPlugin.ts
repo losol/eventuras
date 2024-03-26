@@ -31,6 +31,16 @@ const authPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
     return fastify.jwt.sign({ client_id: clientId }, { expiresIn: '365d' });
   });
 
+  // Well-known endpoint
+  fastify.get('/.well-known/openid-configuration', async (request, reply) => {
+    reply.send({
+      issuer: process.env.HOST,
+      token_endpoint: `${process.env.HOST}/token`,
+      token_endpoint_auth_methods_supported: ["client_secret_post"],
+    });
+  });
+
+
   // Route to get a JWT token
   fastify.post('/token', async (request, reply) => {
     try {

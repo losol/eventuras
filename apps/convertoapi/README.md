@@ -12,6 +12,8 @@ Then you may run the app with `npm run dev`.
 
 ### Get a token
 
+Token Endpoint Authentication Method is client_secret_post. Clients can authenticate to the /token endpoint using the client_secret_post method, where the client_id and client_secret are included in the request body as URL-encoded form parameters. This method is recommended for server-side clients where the client secret can be securely stored.
+
 ```bash
 curl --request POST \
   --url http://localhost:3100/token \
