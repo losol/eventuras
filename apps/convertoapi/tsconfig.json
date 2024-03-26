@@ -5,6 +5,7 @@
     "sourceMap": true
  },
  "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "src/public/*.html"
  ]
 }

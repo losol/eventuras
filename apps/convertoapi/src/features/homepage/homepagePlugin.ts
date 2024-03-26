@@ -4,8 +4,7 @@ import { FastifyPluginAsync } from 'fastify';
 
 export const homepagePlugin: FastifyPluginAsync = async (fastify, opts) => {
   fastify.register(fastifyStatic, {
-    root: path.join(__dirname, '..', '..', 'public'),
+    root: path.join(__dirname, '..', '..', '..', 'public'),
     wildcard: false,
   });
 };
-
