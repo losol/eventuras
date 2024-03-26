@@ -1,14 +1,18 @@
 import Fastify, { FastifyInstance } from 'fastify';
 import { registerAuthPlugin } from './features/auth';
 import { registerPdfFeature } from './features/pdf';
+import { registerOpenapiPlugin } from './features/openapi';
+import { registerHomepagePlugin } from './features/homepage';
 
 require('dotenv').config()
 
 const start = async () => {
   const fastify: FastifyInstance = Fastify({ logger: true });
 
+  await registerOpenapiPlugin(fastify);
   await registerAuthPlugin(fastify);
   await registerPdfFeature(fastify);
+  await registerHomepagePlugin(fastify);
 
   try {
     // Use process.env.PORT, default to 3100

@@ -40,9 +40,46 @@ const authPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
     });
   });
 
+  const tokenSchema = {
+    description: 'post some data',
+  // Schema for the request body
+  body: {
+    type: 'object',
+    required: ['client_id', 'client_secret', 'grant_type'],
+    properties: {
+      client_id: { type: 'string' },
+      client_secret: { type: 'string' },
+      grant_type: { type: 'string', enum: ['client_credentials'] }
+    }
+  },
+  // Schema for the successful response
+  response: {
+    200: {
+      type: 'object',
+      properties: {
+        access_token: { type: 'string' },
+        token_type: { type: 'string', default: 'Bearer' },
+        expires_in: { type: 'number' }
+      }
+    },
+    // You can define additional responses for different status codes if needed
+    400: {
+      type: 'object',
+      properties: {
+        error: { type: 'string' }
+      }
+    },
+    401: {
+      type: 'object',
+      properties: {
+        error: { type: 'string' }
+      }
+    }
+  }
+  };
 
   // Route to get a JWT token
-  fastify.post('/token', async (request, reply) => {
+  fastify.post('/token', { schema: tokenSchema }, async (request, reply) => {
     try {
       const { client_id, client_secret, grant_type } = request.body as TokenRequest;
 
