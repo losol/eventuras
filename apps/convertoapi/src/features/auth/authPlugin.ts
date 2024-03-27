@@ -11,16 +11,15 @@ declare module 'fastify' {
 }
 
 const authPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
-
   // Add a method to verify a JWT token to be used as a preHandler in routes
   fastify.decorate('verifyJWT', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       await request.jwtVerify();
-      } catch (err) {
-          reply.status(401).send({ error: 'Authentication failed' });
-          throw new Error('Authentication failed');
-        }
-    });
+    } catch (err) {
+      reply.status(401).send({ error: 'Authentication failed' });
+      throw new Error('Authentication failed');
+    }
+  });
 
   // Autenticate a client and return a JWT token
   fastify.decorate('authenticate', async (clientId: string, clientSecret: string) => {
@@ -33,41 +32,41 @@ const authPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
   // Well-known endpoint
   fastify.get('/.well-known/openid-configuration', async (request, reply) => {
     reply.send({
-      issuer: process.env.HOST,
-      token_endpoint: `${process.env.HOST}/token`,
-      token_endpoint_auth_methods_supported: ["client_secret_post"],
+      issuer: process.env.BASE_URL,
+      token_endpoint: `${process.env.BASE_URL}/token`,
+      token_endpoint_auth_methods_supported: ['client_secret_post'],
     });
   });
 
   const tokenSchema = {
-  body: {
-    type: 'object',
-    required: ['client_id', 'client_secret', 'grant_type'],
-    properties: {
-      client_id: { type: 'string' },
-      client_secret: { type: 'string' },
-      grant_type: { type: 'string', enum: ['client_credentials'] }
-    }
-  },
-  response: {
-    200: {
+    body: {
       type: 'object',
+      required: ['client_id', 'client_secret', 'grant_type'],
       properties: {
-        access_token: { type: 'string' },
-        token_type: { type: 'string', default: 'Bearer' },
-        expires_in: { type: 'number' }
-      }
+        client_id: { type: 'string' },
+        client_secret: { type: 'string' },
+        grant_type: { type: 'string', enum: ['client_credentials'] },
+      },
     },
-    401: {
-      type: 'object',
-      properties: {
-        error: { type: 'string' }
-      }
+    response: {
+      200: {
+        type: 'object',
+        properties: {
+          access_token: { type: 'string' },
+          token_type: { type: 'string', default: 'Bearer' },
+          expires_in: { type: 'number' },
+        },
+      },
+      401: {
+        type: 'object',
+        properties: {
+          error: { type: 'string' },
+        },
+      },
     },
-  }
   };
 
-  const tokenPostHandler =  async (request: FastifyRequest, reply: FastifyReply) => {
+  const tokenPostHandler = async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const { client_id, client_secret } = request.body as TokenRequest;
       const token = await fastify.authenticate(client_id, client_secret);
@@ -80,16 +79,15 @@ const authPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
         reply.status(500).send({ error: 'An unknown error occurred' });
       }
     }
-  }
+  };
 
   // Route to get a JWT token
   fastify.route({
     method: 'POST',
     url: '/token',
     schema: tokenSchema,
-    handler: tokenPostHandler
+    handler: tokenPostHandler,
   });
-
 
   // Hjelpefunksjon for å validere klient-credentials
   async function validateClientCredentials(clientId: string, clientSecret: string) {
