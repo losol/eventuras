@@ -9,7 +9,7 @@ WORKDIR /app
 COPY package*.json ./
 COPY apps /app/apps
 COPY libs /app/libs
-RUN npm install --omit=dev
+RUN npm install --omit=dev --ignore-scripts
 
 
 ####################################
