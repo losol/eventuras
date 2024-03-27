@@ -1,0 +1,12 @@
+version: '3.7'
+services:
+  convertoapi:
+    build:
+      context: .
+      dockerfile: Dockerfile.ConvertoApi
+    ports:
+      - "3100:3100"
+    env_file:
+      - apps/convertoapi/.env
+    security_opt:
+      - seccomp:./apps/convertoapi/seccomp_profile.json
