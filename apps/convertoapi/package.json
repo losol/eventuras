@@ -2,11 +2,12 @@
   "name": "convertoapi",
   "version": "0.1.0",
   "description": "generates pdfs",
+  "type": "module",
   "main": "dist/app.js",
   "scripts": {
     "dev": "npx tsx src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "build": "swc src -d dist && cp -R public/* dist/",
+    "build": "tsc && cp -R public dist",
     "start": "node dist/app.js"
   },
   "license": "MIT",
@@ -33,6 +34,7 @@
     "playwright": "^1.42.1",
     "swc": "^1.0.11",
     "ts-node": "^10.9.2",
+    "tsc": "^2.0.4",
     "typescript": "^5.4.3",
     "zod": "^3.22.4"
   },

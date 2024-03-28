@@ -1,7 +1,7 @@
 // authService.js
 import { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
 import fp from 'fastify-plugin';
-import TokenRequest from './TokenRequest';
+import TokenRequest from './TokenRequest.js';
 
 declare module 'fastify' {
   interface FastifyInstance {

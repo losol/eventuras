@@ -1,11 +1,12 @@
 import Fastify, { FastifyInstance } from 'fastify';
-import { registerAuthPlugin } from './features/auth';
-import { registerPdfFeature } from './features/pdf';
-import { registerOpenapiPlugin } from './features/openapi';
-import { registerHomepagePlugin } from './features/homepage';
-import { registerRatelimitPlugin } from './features/ratelimit';
+import { registerAuthPlugin } from './features/auth/index.js';
+import { registerPdfFeature } from './features/pdf/index.js';
+import { registerOpenapiPlugin } from './features/openapi/index.js';
+import { registerHomepagePlugin } from './features/homepage/index.js';
+import { registerRatelimitPlugin } from './features/ratelimit/index.js';
+import dotenv from 'dotenv';
 
-require('dotenv').config()
+dotenv.config();
 
 const start = async () => {
   const fastify: FastifyInstance = Fastify({ logger: true });

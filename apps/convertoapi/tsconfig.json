@@ -1,11 +1,9 @@
 {
- "extends": "fastify-tsconfig",
- "compilerOptions": {
-    "outDir": "dist",
-    "sourceMap": true
- },
- "include": [
-    "src/**/*.ts",
-    "src/public/*.html"
- ]
+  "extends": "@eventuras/typescript-config/node.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": ".",
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

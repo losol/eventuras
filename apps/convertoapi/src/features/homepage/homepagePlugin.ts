@@ -1,10 +1,10 @@
 import * as path from 'path';
 import fastifyStatic from '@fastify/static';
-import { FastifyPluginAsync } from 'fastify';
+import { FastifyInstance } from 'fastify';
 
-export const homepagePlugin: FastifyPluginAsync = async (fastify, opts) => {
+export const homepagePlugin = async (fastify: FastifyInstance) => {
   fastify.register(fastifyStatic, {
-    root: path.join(__dirname, '..', '..', '..', 'public'),
+    root: process.env.PUBLIC_PATH ? process.env.PUBLIC_PATH : path.join(process.cwd(), 'public'),
     wildcard: false,
   });
 };

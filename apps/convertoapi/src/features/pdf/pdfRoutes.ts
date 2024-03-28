@@ -1,7 +1,6 @@
-import { ZodIssue } from 'zod';
 import { FastifyInstance } from 'fastify';
-import { HTMLToPDFService } from './pdfService';
-import schema from './schema';
+import { HTMLToPDFService } from './pdfService.js';
+import schema from './schema.js';
 
 export const pdfRoutes = async (fastify: FastifyInstance) => {
   fastify.post('/v1/pdf', {
@@ -11,9 +10,9 @@ export const pdfRoutes = async (fastify: FastifyInstance) => {
 
       const validationResult = schema.safeParse(request.body);
       if (!validationResult.success) {
-        const message = validationResult.error.issues.map((issue: ZodIssue) => `${issue.path.join('.')}: ${issue.message}`).join(', ');
-        fastify.log.warn({ validationError: message }, 'Validation failed for HTML to PDF conversion request');
-        reply.code(400).send({ error: message });
+        // const message = validationResult.error.issues.map((issue: ZodIssue) => `${issue.path.join('.')}: ${issue.message}`).join(', ');
+        fastify.log.warn( 'Validation failed for HTML to PDF conversion request');
+        reply.code(400).send("Validation failed");
         return;
       }
 

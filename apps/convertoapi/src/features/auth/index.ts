@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import fastifyJwt from '@fastify/jwt';
-import authPlugin from './authPlugin';
+import authPlugin from './authPlugin.js';
 
 export async function registerAuthPlugin(fastify: FastifyInstance) {
   // Ensure HOST and JWT_SECRET is set

@@ -1,20 +1,24 @@
 ##################
 # Stage 1: Build #
 ##################
-FROM mcr.microsoft.com/playwright:v1.42.1-jammy as builder
+FROM mcr.microsoft.com/playwright:v1.42.1-jammy AS builder
 
 # Get the needed package files
 WORKDIR /app
-COPY package*.json ./
-COPY apps/convertoapi/package.json /app/apps/convertoapi/
-COPY libs/eslint-config/package.json /app/libs/eslint-config/
+COPY package*.json /app
+COPY apps/convertoapi/package.json /app/apps/convertoapi/package.json
+COPY libs/eslint-config/package.json /app/libs/eslint-config/package.json
+
+# Needs the typescript config
+COPY libs/typescript-config /app/libs/typescript-config
 
 # Install production dependencies, ignore scripts
 RUN npm install --omit=dev --ignore-scripts
 
 # Build the app
 COPY /apps/convertoapi /app/apps/convertoapi
-RUN cd /app/apps/convertoapi && npm run build
+WORKDIR /app/apps/convertoapi
+RUN npm run build
 
 
 ##################################
@@ -28,8 +32,8 @@ USER pwuser
 # Get generated files from the previous stage
 WORKDIR /app
 COPY --from=builder /app/node_modules /app/node_modules
-COPY --from=builder /app/apps/convertoapi/package.json /app
+COPY --from=builder /app/apps/convertoapi/package.json /app/package.json
 COPY --from=builder /app/apps/convertoapi/dist /app/dist
 
 # Start the server
-CMD ["npm", "run", "start"]
+CMD ["node", "dist/app.js"]
