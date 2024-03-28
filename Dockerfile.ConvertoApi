@@ -3,14 +3,18 @@
 ##################
 FROM mcr.microsoft.com/playwright:v1.42.1-jammy as builder
 
-# Get the files
+# Get the needed package files
 WORKDIR /app
 COPY package*.json ./
-COPY apps /app/apps
-COPY libs /app/libs
+COPY apps/convertoapi/package.json /app/apps/convertoapi/
+COPY libs/eslint-config/package.json /app/libs/eslint-config/
 
 # Install production dependencies, ignore scripts
 RUN npm install --omit=dev --ignore-scripts
+
+# Build the app
+COPY /apps/convertoapi /app/apps/convertoapi
+RUN cd /app/apps/convertoapi && npm run build
 
 
 ##################################
