@@ -39,4 +39,5 @@ jobs:
         with:
           context: .
           file: ${{ env.DOCKER_FILE }}
+          tags: ${{ env.DOCKER_TAG }}
           push: true
