@@ -1,29 +1,31 @@
-##################################
-# Stage 1: Build
-##################################
+##################
+# Stage 1: Build #
+##################
 FROM mcr.microsoft.com/playwright:v1.42.1-jammy as builder
 
+# Get the files
 WORKDIR /app
-
-# Assuming the root package.json might have scripts or dependencies needed for the build
 COPY package*.json ./
 COPY apps /app/apps
 COPY libs /app/libs
+
+# Install production dependencies, ignore scripts
 RUN npm install --omit=dev --ignore-scripts
 
 
-####################################
-# Stage 2: Run from a fresh base
-####################################
+##################################
+# Stage 2: Run from a fresh base #
+##################################
 FROM mcr.microsoft.com/playwright:v1.42.1-jammy
 
-# Use the standard non-root user
+# pwuser ist the standard non-root user
 USER pwuser
-WORKDIR /app
 
+# Get generated files from the previous stage
+WORKDIR /app
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/apps/convertoapi/package.json /app
 COPY --from=builder /app/apps/convertoapi/dist /app/dist
 
-# Your application's default start command
+# Start the server
 CMD ["npm", "run", "start"]
