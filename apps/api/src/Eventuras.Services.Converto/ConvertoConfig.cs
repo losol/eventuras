@@ -1,17 +1,25 @@
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
+using Eventuras.Domain;
 
 namespace Eventuras.Services.Converto;
 
 internal class ConvertoConfig
 {
-
     [Required]
     public string PdfEndpointUrl { get; set; }
 
     [Required]
-    public string ApiToken { get; set; }
+    public string TokenEndpointUrl { get; set; }
 
-    public float? DefaultScale { get; set; }
+    [Required]
+    public string ClientId { get; set; }
 
-    public string DefaultFormat { get; set; }
+    [Required]
+    public string ClientSecret { get; set; }
+
+    [Range(0.2, 2.0)]
+    public float? DefaultScale { get; set; } = 1.0f;
+
+    public PaperSize DefaultPaperSize { get; set; } = PaperSize.A4;
 }

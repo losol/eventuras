@@ -1,8 +1,10 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Eventuras.Domain;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Pdf;
+using Microsoft.AspNetCore.JsonPatch.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -32,7 +34,7 @@ internal class ConvertoPdfRenderService : IPdfRenderService
         {
             return await _client.GeneratePdfFromHtmlAsync(html,
                 pdfRenderOptions.Scale ?? _options.Value.DefaultScale ?? 1,
-                pdfRenderOptions.Format ?? _options.Value.DefaultFormat ?? "A4");
+                pdfRenderOptions.PaperSize ?? _options.Value.DefaultPaperSize);
         }
         catch (Exception e)
         {

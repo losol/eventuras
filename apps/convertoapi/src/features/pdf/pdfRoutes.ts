@@ -7,7 +7,7 @@ import {
 } from 'fastify';
 import { HTMLToPDFService } from './pdfService.js';
 
-const paperFormats = [
+const papersizes = [
   'Letter',
   'Legal',
   'Tabloid',
@@ -28,7 +28,7 @@ const pdfGenerateRequestSchema: FastifySchema = {
       html: { type: 'string', nullable: true },
       url: { type: 'string', format: 'uri', nullable: true },
       scale: { type: 'number', minimum: 0.1, maximum: 2, default: 1 },
-      format: { type: 'string', enum: paperFormats, default: 'A4' },
+      papersize: { type: 'string', enum: papersizes, default: 'A4' },
     },
     oneOf: [
       { required: ['html'], not: { required: ['url'] } },
@@ -62,6 +62,27 @@ const pdfGenerateRequestSchema: FastifySchema = {
         error: { type: 'string' },
       },
     },
+    422: {
+      description: 'Unprocessable',
+      type: 'object',
+      properties: {
+        error: { type: 'string' },
+      },
+    },
+    429: {
+      description: 'Rate limit exceeded',
+      type: 'object',
+      properties: {
+        error: { type: 'string' },
+      },
+    },
+    500: {
+      description: 'Internal server error',
+      type: 'object',
+      properties: {
+        error: { type: 'string' },
+      },
+    },
   },
 };
 
@@ -74,10 +95,10 @@ async function validateHtmlRequest(
   const { html, url } = request.body;
   if (html && url) {
     reply
-      .status(400)
+      .status(422)
       .send({ error: "Cannot specify both 'html' and 'url'. Please provide only one." });
   } else if (!html && !url) {
-    reply.status(400).send({ error: "Must specify either 'html' or 'url'." });
+    reply.status(422).send({ error: "Must specify either 'html' or 'url'." });
   } else {
     done();
   }
@@ -87,7 +108,7 @@ type PdfGenerateRequest = {
   html?: string;
   url?: string;
   scale?: number;
-  format?: string;
+  papersize?: string;
 };
 
 async function pdfHandler(
@@ -95,15 +116,15 @@ async function pdfHandler(
   request: FastifyRequest<{ Body: PdfGenerateRequest }>,
   reply: FastifyReply
 ) {
-  const { html, url, scale, format } = request.body;
+  const { html, url, scale, papersize } = request.body;
   try {
     let pdfBuffer;
     if (html) {
       fastify.log.info('Generating PDF from HTML');
-      pdfBuffer = await HTMLToPDFService.html2pdf(html, scale, format);
+      pdfBuffer = await HTMLToPDFService.html2pdf(html, scale, papersize);
     } else if (url) {
       fastify.log.info(`Generating PDF from URL: ${request.body.url}`);
-      pdfBuffer = await HTMLToPDFService.url2pdf(url, scale, format);
+      pdfBuffer = await HTMLToPDFService.url2pdf(url, scale, papersize);
     }
 
     reply.header('Content-Type', 'application/pdf');
