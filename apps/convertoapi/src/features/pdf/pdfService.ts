@@ -1,6 +1,10 @@
 import { chromium, Page, Browser } from 'playwright';
 
-const generatePdf = async (pageInit: (page: Page) => Promise<void>, format: string, scale: number): Promise<Buffer> => {
+const generatePdf = async (
+  pageInit: (page: Page) => Promise<void>,
+  format: string,
+  scale: number
+): Promise<Buffer> => {
   let browser: Browser | null = null;
   try {
     browser = await chromium.launch({
@@ -22,11 +26,21 @@ const generatePdf = async (pageInit: (page: Page) => Promise<void>, format: stri
 };
 
 export const HTMLToPDFService = {
-  url2pdf: async (url: string, scale = 1, format = 'A4') => generatePdf(async (page) => {
-    await page.goto(url, { waitUntil: 'networkidle' });
-  }, format, scale),
+  url2pdf: async (url: string, scale = 1, format = 'A4') =>
+    generatePdf(
+      async page => {
+        await page.goto(url, { waitUntil: 'networkidle' });
+      },
+      format,
+      scale
+    ),
 
-  html2pdf: async (html: string, scale = 1, format = 'A4') => generatePdf(async (page) => {
-    await page.setContent(html, { waitUntil: 'networkidle' });
-  }, format, scale),
+  html2pdf: async (html: string, scale = 1, format = 'A4') =>
+    generatePdf(
+      async page => {
+        await page.setContent(html, { waitUntil: 'networkidle' });
+      },
+      format,
+      scale
+    ),
 };

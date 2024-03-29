@@ -1,4 +1,3 @@
-
 import { SwaggerOptions } from '@fastify/swagger';
 
 export const swaggerOptions: SwaggerOptions = {
@@ -7,13 +6,13 @@ export const swaggerOptions: SwaggerOptions = {
     info: {
       title: 'Converto API',
       description: 'Making some pdfs...',
-      version: '0.1.0'
+      version: '0.1.0',
     },
     servers: [
       {
         url: 'http://localhost:3100',
-        description: 'Dev server'
-      }
+        description: 'Dev server',
+      },
     ],
   },
 };

@@ -6,13 +6,16 @@ export const pdfRoutes = async (fastify: FastifyInstance) => {
   fastify.post('/v1/pdf', {
     preHandler: fastify.verifyJWT,
     handler: async (request, reply) => {
-      fastify.log.info({ url: request.url, body: request.body }, 'Received HTML to PDF conversion request');
+      fastify.log.info(
+        { url: request.url, body: request.body },
+        'Received HTML to PDF conversion request'
+      );
 
       const validationResult = schema.safeParse(request.body);
       if (!validationResult.success) {
         // const message = validationResult.error.issues.map((issue: ZodIssue) => `${issue.path.join('.')}: ${issue.message}`).join(', ');
-        fastify.log.warn( 'Validation failed for HTML to PDF conversion request');
-        reply.code(400).send("Validation failed");
+        fastify.log.warn('Validation failed for HTML to PDF conversion request');
+        reply.code(400).send('Validation failed');
         return;
       }
 
@@ -28,7 +31,7 @@ export const pdfRoutes = async (fastify: FastifyInstance) => {
           pdfBuffer = await HTMLToPDFService.url2pdf(url, scale, format);
         }
 
-        reply.header("Content-Type", "application/pdf");
+        reply.header('Content-Type', 'application/pdf');
         reply.send(pdfBuffer);
       } catch (error) {
         // Log the error
@@ -37,9 +40,9 @@ export const pdfRoutes = async (fastify: FastifyInstance) => {
         if (error instanceof Error) {
           reply.code(500).send({ error: error.message });
         } else {
-          reply.code(500).send({ error: "An unknown error occurred" });
+          reply.code(500).send({ error: 'An unknown error occurred' });
         }
       }
-    }
+    },
   });
 };
