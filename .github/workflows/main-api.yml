@@ -128,32 +128,6 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: echo "Docker tag is ${{ env.DOCKER_TAG }}"
 
-  deploy-app:
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    needs: test
-
-    defaults:
-      run:
-        working-directory: ./apps/api/
-
-    environment:
-      name: api-staging-app
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
-    steps:
-      - name: Build with dotnet
-        run: dotnet build --configuration Release --no-restore -o ./Release
-
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-          slot-name: "Production"
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./Release
-
   deploy-docker:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
