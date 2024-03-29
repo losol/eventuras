@@ -2,13 +2,13 @@ import { NotificationDto } from '@eventuras/sdk';
 import { Container, Text } from '@eventuras/ui';
 import Card from '@eventuras/ui/Card';
 import Heading from '@eventuras/ui/Heading';
-import Link from '@eventuras/ui/Link';
 import Section from '@eventuras/ui/Section';
 import { Logger } from '@eventuras/utils';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
 import Wrapper from '@/components/eventuras/Wrapper';
+import Link from '@/components/Link';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 

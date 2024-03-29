@@ -3,8 +3,9 @@
 import { UserDto } from '@eventuras/sdk';
 import Card from '@eventuras/ui/Card';
 import { Definition, DescriptionList, Item, Term } from '@eventuras/ui/DescriptionList';
-import Link from '@eventuras/ui/Link';
 import createTranslation from 'next-translate/createTranslation';
+
+import Link from '@/components/Link';
 
 export type UserProfileCardProps = {
   profile: UserDto;

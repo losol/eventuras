@@ -1,11 +1,9 @@
-import NextLink from 'next/link';
 import React from 'react';
 
-import { BoxProps, spacingClassName } from '@eventuras/ui/Box';
-import { buttonStyles } from '@eventuras/ui/Button';
-import { TEST_ID_ATTRIBUTE } from '@/utils/constants';
+import { BoxProps, spacingClassName } from '@eventuras/ui';
+import { buttonStyles } from '@eventuras/ui';
 
-interface LinkProps {
+export interface LinkProps {
   href: string;
   children?: React.ReactNode;
   className?: string;
@@ -18,9 +16,7 @@ interface LinkProps {
   block?: boolean;
   bgDark?: boolean;
   stretch?: boolean;
-  legacyBehavior?: boolean;
-  passHref?: boolean;
-  [TEST_ID_ATTRIBUTE]?: string;
+  dataTestId?: string;
 }
 
 const Link = React.forwardRef<HTMLAnchorElement, LinkProps & BoxProps>((props, ref) => {
@@ -32,9 +28,7 @@ const Link = React.forwardRef<HTMLAnchorElement, LinkProps & BoxProps>((props, r
     block = false,
     variant,
     stretch,
-    legacyBehavior,
-    passHref,
-    'data-test-id': dataTestId,
+    dataTestId,
     ...boxProps
   } = props;
 
@@ -65,16 +59,14 @@ const Link = React.forwardRef<HTMLAnchorElement, LinkProps & BoxProps>((props, r
   ].join(' ');
 
   return (
-    <NextLink
+    <a
       href={href}
-      passHref={passHref}
-      legacyBehavior={legacyBehavior}
       className={classes}
       ref={ref}
       data-test-id={dataTestId}
     >
       {children}
-    </NextLink>
+    </a>
   );
 });
 

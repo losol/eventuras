@@ -2,8 +2,9 @@
 
 import { RegistrationDto, RegistrationStatus } from '@eventuras/sdk';
 import Button from '@eventuras/ui/Button';
-import Link from '@eventuras/ui/Link';
 import { IconCircleX } from '@tabler/icons-react';
+
+import Link from '@/components/Link';
 
 import { statusPatchRequest } from '../registrations/Registration';
 

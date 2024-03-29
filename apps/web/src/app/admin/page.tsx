@@ -1,8 +1,8 @@
 import { Container } from '@eventuras/ui';
 import Heading from '@eventuras/ui/Heading';
-import Link from '@eventuras/ui/Link';
 import createTranslation from 'next-translate/createTranslation';
 
+import Link from '@/components/Link';
 import withAuthorization from '@/utils/auth/withAuthorization';
 import Environment from '@/utils/Environment';
 

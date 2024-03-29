@@ -3,12 +3,12 @@
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { EventDto } from '@eventuras/sdk';
 import FatalError from '@eventuras/ui/FatalError';
-import Link from '@eventuras/ui/Link';
 import Loading from '@eventuras/ui/Loading';
 import Pagination from '@eventuras/ui/Pagination';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 
+import Link from '@/components/Link';
 import useCreateHook from '@/hooks/createHook';
 import { createSDK } from '@/utils/api/EventurasApi';
 const columnHelper = createColumnHelper<EventDto>();
