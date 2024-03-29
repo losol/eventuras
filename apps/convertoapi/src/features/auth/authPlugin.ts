@@ -1,7 +1,6 @@
 // authService.js
 import { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
 import fp from 'fastify-plugin';
-import TokenRequest from './TokenRequest.js';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -29,67 +28,7 @@ const authPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
     return fastify.jwt.sign({ client_id: clientId }, { expiresIn: '365d' });
   });
 
-  // Well-known endpoint
-  fastify.get('/.well-known/openid-configuration', async (request, reply) => {
-    reply.send({
-      issuer: process.env.BASE_URL,
-      token_endpoint: `${process.env.BASE_URL}/token`,
-      token_endpoint_auth_methods_supported: ['client_secret_post'],
-    });
-  });
-
-  const tokenSchema = {
-    body: {
-      type: 'object',
-      required: ['client_id', 'client_secret', 'grant_type'],
-      properties: {
-        client_id: { type: 'string' },
-        client_secret: { type: 'string' },
-        grant_type: { type: 'string', enum: ['client_credentials'] },
-      },
-    },
-    response: {
-      200: {
-        type: 'object',
-        properties: {
-          access_token: { type: 'string' },
-          token_type: { type: 'string', default: 'Bearer' },
-          expires_in: { type: 'number' },
-        },
-      },
-      401: {
-        type: 'object',
-        properties: {
-          error: { type: 'string' },
-        },
-      },
-    },
-  };
-
-  const tokenPostHandler = async (request: FastifyRequest, reply: FastifyReply) => {
-    try {
-      const { client_id, client_secret } = request.body as TokenRequest;
-      const token = await fastify.authenticate(client_id, client_secret);
-
-      reply.send({ access_token: token, token_type: 'Bearer', expires_in: 3600 });
-    } catch (error) {
-      if (error instanceof Error) {
-        reply.status(401).send({ error: error.message });
-      } else {
-        reply.status(500).send({ error: 'An unknown error occurred' });
-      }
-    }
-  };
-
-  // Route to get a JWT token
-  fastify.route({
-    method: 'POST',
-    url: '/token',
-    schema: tokenSchema,
-    handler: tokenPostHandler,
-  });
-
-  // Hjelpefunksjon for å validere klient-credentials
+  // Check if the client credentials are same as in env variables
   async function validateClientCredentials(clientId: string, clientSecret: string) {
     return clientId === process.env.CLIENT_ID && clientSecret === process.env.CLIENT_SECRET;
   }
