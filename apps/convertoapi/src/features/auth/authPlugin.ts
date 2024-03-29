@@ -25,7 +25,7 @@ const authPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
     const isValid = await validateClientCredentials(clientId, clientSecret);
     if (!isValid) throw new Error('Invalid client credentials');
 
-    return fastify.jwt.sign({ client_id: clientId }, { expiresIn: '365d' });
+    return fastify.jwt.sign({ client_id: clientId }, { expiresIn: '1h' });
   });
 
   // Check if the client credentials are same as in env variables

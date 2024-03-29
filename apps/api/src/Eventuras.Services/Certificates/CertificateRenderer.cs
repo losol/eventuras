@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Eventuras.Domain;
 using Eventuras.Services.Pdf;
 using Eventuras.Services.Views;
 
@@ -44,7 +45,7 @@ internal class CertificateRenderer : ICertificateRenderer
         var html = await RenderToHtmlAsStringAsync(viewModel);
         return await _pdfRenderService.GeneratePdfFromHtml(html, new PdfRenderOptions
         {
-            Format = "A4",
+            PaperSize = PaperSize.A4,
             Scale = 0.8f
         });
     }

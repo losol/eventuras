@@ -22,9 +22,13 @@ const tokenRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
       200: {
         type: 'object',
         properties: {
-          access_token: { type: 'string' },
+          access_token: { type: 'string', format: 'jwt', description: 'The JWT token' },
           token_type: { type: 'string', default: 'Bearer' },
-          expires_in: { type: 'number' },
+          expires_in: {
+            type: 'number',
+            default: 3600,
+            description: 'The token expiry time in seconds',
+          },
         },
       },
       401: {
