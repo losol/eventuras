@@ -6,6 +6,8 @@
   "main": "dist/app.js",
   "scripts": {
     "dev": "npx tsx src/app.ts",
+    "format": "eslint --fix .",
+    "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 0",
     "build": "tsc && cp -R public dist",
     "start": "node dist/app.js"
@@ -41,6 +43,9 @@
   "devDependencies": {
     "@eventuras/eslint-config": "*",
     "@types/node": "^20.11.30",
+    "@typescript-eslint/eslint-plugin": "^7.4.0",
+    "@typescript-eslint/parser": "^7.4.0",
+    "eslint": "^8.57.0",
     "fastify-tsconfig": "^2.0.0",
     "tsx": "^4.7.1"
   }
