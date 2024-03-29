@@ -128,7 +128,7 @@ async function pdfHandler(
     }
 
     reply.header('Content-Type', 'application/pdf');
-    reply.send(pdfBuffer);
+    return reply.send(pdfBuffer);
   } catch (error) {
     fastify.log.error({ err: error }, 'Failed to generate PDF');
     if (error instanceof Error) {
