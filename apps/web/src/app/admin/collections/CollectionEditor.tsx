@@ -7,7 +7,6 @@ import Button from '@eventuras/ui/Button';
 import Loading from '@eventuras/ui/Loading';
 import Section from '@eventuras/ui/Section';
 import { IconTrash } from '@tabler/icons-react';
-import { subMonths } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -154,7 +153,7 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
       Logger.error({ namespace: 'CollectionEditor' }, 'Please enter a valid event ID');
     }
   };
-  const minus3Months = subMonths(new Date(), 3);
+  const minus3Months = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
   return (
     <>
       <Section>
