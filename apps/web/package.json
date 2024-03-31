@@ -81,7 +81,6 @@
     "@typescript-eslint/parser": "^7.3.1",
     "autoprefixer": "^10.4.19",
     "chromatic": "^11.2.0",
-    "eslint": "^8.57.0",
     "eslint-config-next": "^14.1.4",
     "lint-staged": "^15.2.2",
     "next-translate-plugin": "^2.6.2",

@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
+using Eventuras.Domain;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -29,30 +30,73 @@ internal class ConvertoClient : IConvertoClient
         _httpClientFactory = httpClientFactory;
     }
 
-
-    public async Task<Stream> GeneratePdfFromHtmlAsync(string html, float scale, string format)
+    private class TokenResponse
     {
+        [JsonProperty("access_token")]
+        public string AccessToken { get; set; }
 
+        [JsonProperty("expires_in")]
+        public int ExpiresIn { get; set; }
+
+
+    }
+    private async Task<string> GetApiTokenAsync()
+    {
+        // Check if we have a cached token, and return it if it's still valid
+        var cachedToken = ConvertoTokenCache.GetToken();
+        if (cachedToken != null)
+        {
+            return cachedToken;
+        }
+
+        // Get a new token
+        var client = _httpClientFactory.CreateClient();
+        var clientCredentials = new
+        {
+            client_id = _options.Value.ClientId,
+            client_secret = _options.Value.ClientSecret,
+            grant_type = "client_credentials"
+        };
+
+        var response = await client.PostAsync(_options.Value.TokenEndpointUrl,
+            new StringContent(JsonConvert.SerializeObject(clientCredentials), Encoding.UTF8, "application/json"));
+
+        if (!response.IsSuccessStatusCode)
+        {
+            _logger.LogError("Token endpoint {tokenEndpoint} returned {StatusCode}", _options.Value.TokenEndpointUrl, response.StatusCode);
+            throw new AuthenticationException($"Failed to retrieve API token. Status code: {response.StatusCode}");
+        }
+
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
+
+        ConvertoTokenCache.SetToken(tokenResponse.AccessToken, tokenResponse.ExpiresIn);
+
+        return tokenResponse.AccessToken;
+    }
+
+    public async Task<Stream> GeneratePdfFromHtmlAsync(string html, float scale, PaperSize paperSize = PaperSize.A4)
+    {
         var client = _httpClientFactory.CreateClient();
         var endpointUrl = _options.Value.PdfEndpointUrl;
-        var apiToken = _options.Value.ApiToken;
+        var convertoAccessToken = await GetApiTokenAsync();
 
-        _logger.LogInformation("Converting HTML to PDF using endpoint {endpointUrl}", endpointUrl);
+        _logger.LogInformation("Converting HTML to PDF using endpoint {EndpointUrl}", endpointUrl);
 
         try
         {
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", convertoAccessToken);
 
             var response = await client.PostAsync(endpointUrl, new StringContent(JsonConvert.SerializeObject(new
             {
                 html,
                 scale,
-                format
+                paperSize
             }), Encoding.UTF8, "application/json"));
 
             if (!response.IsSuccessStatusCode)
             {
-                _logger.LogError("{endpointUrl} returned {response.StatusCode} status code", endpointUrl, response.StatusCode);
+                _logger.LogError("{EndpointUrl} returned {StatusCode} status code", endpointUrl, response.StatusCode);
                 throw new ConvertoClientException($"{endpointUrl} returned {response.StatusCode} status code");
             }
 
@@ -72,7 +116,10 @@ internal class ConvertoClient : IConvertoClient
         }
         catch (Exception e)
         {
-            throw new ConvertoClientException("Converto exception: {exception}", e);
+            throw new ConvertoClientException($"Converto exception: {e.Message}");
         }
     }
+
+
+
 }
