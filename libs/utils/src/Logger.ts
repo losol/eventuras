@@ -24,7 +24,7 @@
  * debug: 5,
  * silly: 6
  */
-import createDebug from 'debug-next';
+import createDebug from 'debug';
 import pino from 'pino';
 
 interface DebugCache {
@@ -47,15 +47,14 @@ class Logger {
     return Logger.debugCache[ns]!;
   }
 
-  private static wrapLogger(pinoFunction: (obj: any, msg?: string | undefined) => void) {
+  private static wrapLogger(
+    pinoFunction: (obj: any, msg?: string | undefined) => void,
+  ) {
     return (
       options: LoggerOptions = { developerOnly: false, namespace: '' },
       ...msg: any | any[]
     ) => {
-      if (
-        options.developerOnly &&
-        process.env.NODE_ENV !== 'development'
-      ) {
+      if (options.developerOnly && process.env.NODE_ENV !== 'development') {
         return;
       }
       //use pino outside of dev environment, and debug inside of it to avoid double logging locally
@@ -67,11 +66,21 @@ class Logger {
     };
   }
 
-  static error = Logger.wrapLogger(Logger.pinoLogger.error.bind(Logger.pinoLogger)).bind(Logger);
-  static warn = Logger.wrapLogger(Logger.pinoLogger.warn.bind(Logger.pinoLogger)).bind(Logger);
-  static info = Logger.wrapLogger(Logger.pinoLogger.info.bind(Logger.pinoLogger)).bind(Logger);
-  static debug = Logger.wrapLogger(Logger.pinoLogger.debug.bind(Logger.pinoLogger)).bind(Logger);
-  static fatal = Logger.wrapLogger(Logger.pinoLogger.fatal.bind(Logger.pinoLogger)).bind(Logger);
+  static error = Logger.wrapLogger(
+    Logger.pinoLogger.error.bind(Logger.pinoLogger),
+  ).bind(Logger);
+  static warn = Logger.wrapLogger(
+    Logger.pinoLogger.warn.bind(Logger.pinoLogger),
+  ).bind(Logger);
+  static info = Logger.wrapLogger(
+    Logger.pinoLogger.info.bind(Logger.pinoLogger),
+  ).bind(Logger);
+  static debug = Logger.wrapLogger(
+    Logger.pinoLogger.debug.bind(Logger.pinoLogger),
+  ).bind(Logger);
+  static fatal = Logger.wrapLogger(
+    Logger.pinoLogger.fatal.bind(Logger.pinoLogger),
+  ).bind(Logger);
 }
 
 export default Logger;

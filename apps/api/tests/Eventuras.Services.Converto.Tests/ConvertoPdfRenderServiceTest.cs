@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Eventuras.Domain;
 using Eventuras.Services.Pdf;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -29,24 +30,29 @@ public class ConvertoPdfRenderServiceTest : IDisposable
     }
 
     private ConvertoPdfRenderService NewService(
-        string pdfEndpointPath = "/api/pdfcreo",
+        string pdfEndpointPath = "/v1/pdf",
+        string tokenEndpointUrl = "/token",
         int defaultScale = 1,
-        string defaultFormat = "A4",
-        string apitoken = null)
+        string defaultPapersize = "A4",
+        string clientId = null,
+        string clientSecret = null)
     {
-        var baseUri = Environment.GetEnvironmentVariable(ConvertoTestEnv.ApiBaseUri);
+        var baseUri = Environment.GetEnvironmentVariable(ConvertoTestEnv.PdfEndpointUrl);
         baseUri = baseUri?.TrimEnd('/');
         Assert.NotNull(baseUri);
         Assert.NotEmpty(baseUri);
 
-        apitoken = Environment.GetEnvironmentVariable(ConvertoTestEnv.ApiToken);
+        clientId = clientId ?? Environment.GetEnvironmentVariable(ConvertoTestEnv.ClientId);
+        clientSecret = clientSecret ?? Environment.GetEnvironmentVariable(ConvertoTestEnv.ClientSecret);
 
         var options = Options.Create(new ConvertoConfig
         {
             PdfEndpointUrl = $"{baseUri}{pdfEndpointPath}",
+            TokenEndpointUrl = $"{baseUri}{tokenEndpointUrl}",
             DefaultScale = defaultScale,
-            DefaultFormat = defaultFormat,
-            ApiToken = apitoken
+            DefaultPaperSize = Enum.Parse<PaperSize>(defaultPapersize),
+            ClientId = clientId,
+            ClientSecret = clientSecret,
         });
 
         var loggerFactory = new LoggerFactory();
@@ -81,7 +87,7 @@ public class ConvertoPdfRenderServiceTest : IDisposable
     [ConvertoEnvSpecificFact]
     public async Task ShouldReturnEmptyPdfStreamForInvalidCredentials()
     {
-        await using var stream = await NewService(apitoken: "invalid")
+        await using var stream = await NewService(clientId: "invalid", clientSecret: "invalid")
             .GeneratePdfFromHtml("<html></html>",
                 new PdfRenderOptions());
         await CheckEmptyAsync(stream);
