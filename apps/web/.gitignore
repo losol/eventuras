@@ -3,6 +3,8 @@ test-results/
 playwright-auth/
 playwright-e2e/
 
+# local dev tests with this folder name are to be ignore
+local-tests/
 # vs code
 .vscode/launch.json
 

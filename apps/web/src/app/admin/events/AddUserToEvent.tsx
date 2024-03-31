@@ -15,10 +15,9 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import ProductSelection from '@/components/eventuras/ProductSelection';
-import { UserLookup } from '@/components/eventuras/UserLookup';
+import UserLookup from '@/components/eventuras/UserLookup';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { RegistrationProduct } from '@/types';
-import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { createEventRegistration } from '@/utils/api/functions/events';
 import { mapEventProductsToView, mapSelectedProductsToQuantity } from '@/utils/api/mappers';
 import { mapEnum } from '@/utils/enum';
@@ -166,24 +165,12 @@ const AddUserToEventDrawer: React.FC<AddUserToEventDrawerProps> = ({
   onCancel,
 }) => {
   const [usersToAdd, setUsersToAdd] = useState<UserDto[]>([]);
-  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
-  type GetUsersOptions = Parameters<typeof sdk.users.getV3Users1>[0];
-
-  const dataProvider = (options: GetUsersOptions) =>
-    apiWrapper(() => sdk.users.getV3Users1(options));
-
   return (
     <>
       <Drawer isOpen={isOpen!} onCancel={onCancel}>
         <Heading as="h2">Add users to event </Heading>
         <UserLookup
-          id="find_user"
-          placeholder="Find user"
-          dataProvider={dataProvider}
-          minimumAmountOfCharacters={3}
-          labelProperty="name"
-          resetAfterSelect={true}
-          onItemSelected={(u: UserDto) => {
+          onUserSelected={(u: UserDto) => {
             setUsersToAdd([...usersToAdd, u]);
           }}
         />
