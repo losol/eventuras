@@ -67,7 +67,6 @@ const AdminEventList: React.FC<AdminEventListProps> = ({
       cell: info => renderEventItemActions(info.row.original),
     }),
   ];
-
   if (loading) return <Loading />;
   if (!result)
     return <FatalError title="No response from admin events" description="Response is null" />;

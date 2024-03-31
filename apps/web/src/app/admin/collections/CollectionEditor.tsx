@@ -4,12 +4,16 @@ import { MarkdownInput } from '@eventuras/markdowninput';
 import { EventCollectionDto, EventDto } from '@eventuras/sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
 import Button from '@eventuras/ui/Button';
+import Loading from '@eventuras/ui/Loading';
 import Section from '@eventuras/ui/Section';
 import { IconTrash } from '@tabler/icons-react';
+import { subMonths } from 'date-fns';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { ApiState, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import EventLookup from '@/components/event/EventLookup';
+import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Logger from '@/utils/Logger';
 import slugify from '@/utils/slugify';
 
@@ -18,17 +22,20 @@ export type CollectionEditorProps = {
 };
 
 const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
-  const [apiState, setApiState] = useState<ApiState>({ error: null, loading: false });
+  const { addAppNotification } = useAppNotifications();
+
   const [eventListUpdateTrigger, setEventListUpdateTrigger] = useState(0);
   const [eventInfos, setEventInfos] = useState<EventDto[]>([]);
   const [addEventId, setAddEventId] = useState<number | null>(null);
+  const [formSubmitting, setFormSubmitting] = useState(false);
+  const [addingEvent, setAddingEvent] = useState(false);
+  const [removingEventId, setRemovingEventId] = useState(-1);
 
   const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const router = useRouter();
 
   useEffect(() => {
     const fetchEventInfos = async () => {
-      setApiState({ error: null, loading: true });
       const result = await apiWrapper(() =>
         eventuras.events.getV3Events({
           collectionId: eventCollection.id!,
@@ -37,11 +44,7 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
 
       if (result.ok) {
         setEventInfos(result.value?.data ?? []);
-      } else {
-        setApiState({ error: result.error, loading: false });
       }
-
-      setApiState({ error: null, loading: false });
     };
 
     if (eventCollection?.id) {
@@ -50,10 +53,9 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
   }, [eventCollection.id, eventListUpdateTrigger]);
 
   const onSubmitForm = async (data: EventCollectionDto) => {
-    setApiState({ error: null, loading: true });
     Logger.info({ namespace: 'CollectionEditor' }, 'Updating collection...');
     Logger.info({ namespace: 'EventEditor' }, data);
-
+    setFormSubmitting(true);
     // set slug
     const newSlug = slugify([data.name, data.id].filter(Boolean).join('-'));
     data.slug = newSlug;
@@ -65,25 +67,29 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
       })
     );
 
+    if (result.ok) {
+      addAppNotification({
+        id: Date.now(),
+        message: 'Collection succesfully updated!',
+        type: AppNotificationType.SUCCESS,
+      });
+    } else {
+      addAppNotification({
+        id: Date.now(),
+        message: 'Something went wrong, try again later',
+        type: AppNotificationType.ERROR,
+      });
+    }
+
     Logger.info({ namespace: 'eventeditor' }, result);
 
-    setApiState({ error: null, loading: false });
-
+    setFormSubmitting(false);
     router.refresh();
-  };
-
-  const handleChangeAddEventId = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const eventId = parseInt(e.target.value, 10);
-    if (!isNaN(eventId)) {
-      setAddEventId(eventId);
-    } else {
-      setAddEventId(null);
-    }
   };
 
   const handleRemoveEvent = async (eventId: number) => {
     Logger.info({ namespace: 'CollectionEditor' }, `Removing event ${eventId} from collection`);
-    setApiState({ error: null, loading: true });
+    setRemovingEventId(eventId);
     const result = await apiWrapper(() =>
       eventuras.eventCollectionMapping.deleteV3EventsCollections({
         eventId: eventId,
@@ -94,13 +100,26 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
     if (result.ok) {
       setEventListUpdateTrigger(prev => prev + 1);
     }
-    setApiState({ error: null, loading: false });
-    router.refresh();
+
+    if (result.ok) {
+      addAppNotification({
+        id: Date.now(),
+        message: 'Event succesfully removed',
+        type: AppNotificationType.SUCCESS,
+      });
+    } else {
+      addAppNotification({
+        id: Date.now(),
+        message: 'Something went wrong, try again later',
+        type: AppNotificationType.ERROR,
+      });
+    }
   };
 
   const handleAddEvent = async (eventId: number) => {
     Logger.info({ namespace: 'CollectionEditor' }, `Adding event ${eventId} to collection`);
-    setApiState({ error: null, loading: true });
+    setRemovingEventId(-1);
+    setAddingEvent(true);
     const result = await apiWrapper(() =>
       eventuras.eventCollectionMapping.putV3EventsCollections({
         eventId: eventId,
@@ -111,19 +130,31 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
     if (result.ok) {
       setEventListUpdateTrigger(prev => prev + 1);
     }
-    setApiState({ error: null, loading: false });
+    if (result.ok) {
+      addAppNotification({
+        id: Date.now(),
+        message: 'Event Succesfully Added',
+        type: AppNotificationType.SUCCESS,
+      });
+    } else {
+      addAppNotification({
+        id: Date.now(),
+        message: 'Something went wrong, try again later',
+        type: AppNotificationType.ERROR,
+      });
+    }
+    setAddingEvent(false);
     setAddEventId(null);
   };
 
   const handleAddEventClick = () => {
     if (addEventId !== null) {
       handleAddEvent(addEventId);
-      router.refresh();
     } else {
       Logger.error({ namespace: 'CollectionEditor' }, 'Please enter a valid event ID');
     }
   };
-
+  const minus3Months = subMonths(new Date(), 3);
   return (
     <>
       <Section>
@@ -149,7 +180,9 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
             placeholder="Image Caption"
           />
 
-          <Button type="submit">Submit</Button>
+          <Button type="submit" loading={formSubmitting}>
+            Submit
+          </Button>
         </Form>
       </Section>
       <Section>
@@ -158,9 +191,14 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
         {eventInfos.map(eventInfo => (
           <div key={eventInfo.id} className="flex justify-between items-center p-2">
             <span>{eventInfo.title}</span>
-            <button onClick={() => handleRemoveEvent(eventInfo.id!)} aria-label="Delete event">
-              <IconTrash size={24} />
-            </button>
+
+            {removingEventId === eventInfo.id ? (
+              <Loading />
+            ) : (
+              <button onClick={() => handleRemoveEvent(eventInfo.id!)} aria-label="Delete event">
+                <IconTrash size={24} />
+              </button>
+            )}
           </div>
         ))}
       </Section>
@@ -168,15 +206,26 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
         <h2>Add Event to Collection</h2>
         <div className="flex gap-2 items-center">
           <label htmlFor="newEventId">Event ID:</label>
-          <input
+          <EventLookup
             id="newEventId"
-            type="text"
-            placeholder="Enter Event ID"
-            value={addEventId !== null ? addEventId.toString() : ''}
-            onChange={handleChangeAddEventId}
-            className="border-2 border-gray-200 rounded dark:text-black"
+            onEventSelected={item => {
+              setAddEventId(item.id!);
+            }}
+            eventLookupConstraints={{
+              start: {
+                year: minus3Months.getFullYear(),
+                month: minus3Months.getMonth(),
+                day: minus3Months.getDate(),
+              },
+            }}
           />
-          <button onClick={handleAddEventClick}>Add Event</button>
+          <Button
+            disabled={addEventId === null}
+            loading={addingEvent}
+            onClick={handleAddEventClick}
+          >
+            Add Event
+          </Button>
         </div>
       </Section>
     </>

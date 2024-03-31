@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Loading from '@eventuras/ui/Loading';
+import Loading from './Loading';
 import { TEST_ID_ATTRIBUTE } from '@/utils/constants';
 
 import { BoxProps, spacingClassName } from './Box';
@@ -45,8 +45,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps & BoxProps>((prop
     defaultMargin: 'm-1',
   });
 
-  const buttonClassName =
+  let buttonClassName =
     props.className || [spacing, buttonStyles[variant], blockClassName, textColor].join(' ');
+
+  if (props.disabled || props.loading) {
+    buttonClassName = `${buttonClassName} pointer-events-none cursor-not-allowed opacity-75`
+  }
 
   return (
     <button
@@ -61,7 +65,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps & BoxProps>((prop
       {props.leftIcon && <span className={`mr-2 ${textColor}`}>{props.leftIcon}</span>}
       <span className={textColor}>{props.children}</span>
       {props.loading && (
-        <div>
+        <div className="inline-block scale-[0.7] align-middle">
           <Loading />
         </div>
       )}

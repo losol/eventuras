@@ -6,3 +6,4 @@ export { default as Heading } from './Heading';
 export { default as Portal } from './Portal';
 export { default as Section } from './Section';
 export { default as Text } from './Text';
+export { default as InputAutoComplete } from './InputAutoComplete'

@@ -4,6 +4,7 @@ import Section from '@eventuras/ui/Section';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
+import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import Logger from '@/utils/Logger';
@@ -43,7 +44,7 @@ const CollectionDetailPage: React.FC<EventCollectionProps> = async ({ params }) 
   }
 
   return (
-    <>
+    <Wrapper fluid>
       <Section className="bg-white dark:bg-black   pb-8">
         <Container>
           <Heading as="h1">{collection.value?.name ?? ''}</Heading>
@@ -54,7 +55,7 @@ const CollectionDetailPage: React.FC<EventCollectionProps> = async ({ params }) 
           <CollectionEditor eventCollection={collection.value!} />
         </Container>
       </Section>
-    </>
+    </Wrapper>
   );
 };
 
