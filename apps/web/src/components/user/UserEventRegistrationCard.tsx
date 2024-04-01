@@ -1,8 +1,8 @@
 import { ProductOrderDto } from '@eventuras/sdk';
-import Card from '@eventuras/ui/Card';
 import createTranslation from 'next-translate/createTranslation';
 import { ReactElement } from 'react';
 
+import Card from '@/components/Card';
 import Link from '@/components/Link';
 import Environment from '@/utils/Environment';
 import { formatDateSpan } from '@/utils/formatDate';

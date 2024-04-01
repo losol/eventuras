@@ -2,8 +2,8 @@
 
 import { EventDto, ProductDto } from '@eventuras/sdk';
 import { Drawer } from '@eventuras/ui';
-import Button from '@eventuras/ui/Button';
-import ButtonGroup from '@eventuras/ui/ButtonGroup';
+import { Button } from '@eventuras/ui';
+import { ButtonGroup } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 import {

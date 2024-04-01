@@ -3,9 +3,9 @@
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { EventCollectionDto, EventDto } from '@eventuras/sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
-import Button from '@eventuras/ui/Button';
-import Loading from '@eventuras/ui/Loading';
-import Section from '@eventuras/ui/Section';
+import { Section } from '@eventuras/ui';
+import { Button } from '@eventuras/ui';
+import { Loading } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { IconTrash } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';

@@ -1,6 +1,6 @@
 import { UserDto } from '@eventuras/sdk';
 import { Container } from '@eventuras/ui';
-import Heading from '@eventuras/ui/Heading';
+import { Heading } from '@eventuras/ui';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 

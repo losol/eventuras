@@ -1,11 +1,11 @@
 import { MarkdownContent } from '@eventuras/markdown';
 import { EventDto, RegistrationDto } from '@eventuras/sdk';
-import Button from '@eventuras/ui/Button';
-import Heading from '@eventuras/ui/Heading';
-import Tabs from '@eventuras/ui/Tabs';
+import { Heading } from '@eventuras/ui';
+import { Button } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 
 import Registration from '@/app/admin/registrations/Registration';
+import Tabs from '@/components/Tabs';
 
 export interface RegistrationViewProps {
   eventInfo: EventDto;

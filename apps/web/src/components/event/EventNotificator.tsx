@@ -1,10 +1,10 @@
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { EmailNotificationDto, RegistrationType, SmsNotificationDto } from '@eventuras/sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input, TextAreaInput } from '@eventuras/smartform';
-import { AppNotificationOptions } from '@eventuras/ui/AppNotifications';
-import Button from '@eventuras/ui/Button';
-import ButtonGroup from '@eventuras/ui/ButtonGroup';
-import Heading from '@eventuras/ui/Heading';
+import { Heading } from '@eventuras/ui';
+import { Button } from '@eventuras/ui';
+import { ButtonGroup } from '@eventuras/ui';
+import { AppNotificationOptions } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import createTranslation from 'next-translate/createTranslation';
 import { useRef } from 'react';

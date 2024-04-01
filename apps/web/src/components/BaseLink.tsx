@@ -1,25 +1,25 @@
 import React from 'react';
 
-import { BoxProps, spacingClassName } from '@eventuras/ui';
-import { buttonStyles } from '@eventuras/ui';
+import { BoxProps, spacingClassName } from '../../../../libs/ui/src/Box';
+import { buttonStyles } from '../../../../libs/ui/src/Button';
 
 export interface LinkProps {
   href: string;
   children?: React.ReactNode;
   className?: string;
   variant?:
-  | 'button-primary'
-  | 'button-secondary'
-  | 'button-light'
-  | 'button-outline'
-  | 'button-transparent';
+    | 'button-primary'
+    | 'button-secondary'
+    | 'button-light'
+    | 'button-outline'
+    | 'button-transparent';
   block?: boolean;
   bgDark?: boolean;
   stretch?: boolean;
   dataTestId?: string;
 }
 
-const Link = React.forwardRef<HTMLAnchorElement, LinkProps & BoxProps>((props, ref) => {
+export const Link = React.forwardRef<HTMLAnchorElement, LinkProps & BoxProps>((props, ref) => {
   const {
     href,
     children,
@@ -59,12 +59,7 @@ const Link = React.forwardRef<HTMLAnchorElement, LinkProps & BoxProps>((props, r
   ].join(' ');
 
   return (
-    <a
-      href={href}
-      className={classes}
-      ref={ref}
-      data-test-id={dataTestId}
-    >
+    <a href={href} className={classes} ref={ref} data-test-id={dataTestId}>
       {children}
     </a>
   );

@@ -1,5 +1,7 @@
+'use client';
 import { Button } from '@eventuras/ui';
-import Menu from '@eventuras/ui/Menu';
+
+import Menu from '@/components/Menu';
 
 export type LoggedOutLanguagePack = {
   loginLabel: string;

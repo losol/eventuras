@@ -1,10 +1,10 @@
 'use client';
 
 import { UserDto } from '@eventuras/sdk';
-import Card from '@eventuras/ui/Card';
-import { Definition, DescriptionList, Item, Term } from '@eventuras/ui/DescriptionList';
+import { Definition, DescriptionList, Item, Term } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 
+import Card from '@/components/Card';
 import Link from '@/components/Link';
 
 export type UserProfileCardProps = {

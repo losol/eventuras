@@ -1,4 +1,4 @@
-import Section from '@eventuras/ui/Section';
+import { Section } from '@eventuras/ui';
 
 import UserDrawer from './UserDrawer';
 

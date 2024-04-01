@@ -1,9 +1,8 @@
 'use client';
 import { Input } from '@eventuras/forms';
 import { ApiError, EventDto, EventInfoStatus, Eventuras } from '@eventuras/sdk';
-import Button from '@eventuras/ui/Button';
-import FatalError from '@eventuras/ui/FatalError';
-import Heading from '@eventuras/ui/Heading';
+import { Heading } from '@eventuras/ui';
+import { Button } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
@@ -11,6 +10,7 @@ import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import Wrapper from '@/components/eventuras/Wrapper';
+import FatalError from '@/components/FatalError';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';

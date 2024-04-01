@@ -2,8 +2,8 @@
 
 import type { NewProductDto, ProductDto } from '@eventuras/sdk';
 import { Form, Input, NumberInput, TextAreaInput } from '@eventuras/smartform';
-import Button from '@eventuras/ui/Button';
-import Heading from '@eventuras/ui/Heading';
+import { Heading } from '@eventuras/ui';
+import { Button } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { Dialog } from '@headlessui/react';
 import createTranslation from 'next-translate/createTranslation';

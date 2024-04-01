@@ -1,10 +1,10 @@
 import { CertificateDto } from '@eventuras/sdk';
-import Card from '@eventuras/ui/Card';
-import { Definition, DescriptionList, Item, Term } from '@eventuras/ui/DescriptionList';
-import Heading from '@eventuras/ui/Heading';
+import { Heading } from '@eventuras/ui';
+import { Definition, DescriptionList, Item, Term } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 import React from 'react';
 
+import Card from '@/components/Card';
 import { formatDateSpan } from '@/utils/formatDate';
 
 type CertificateProps = {

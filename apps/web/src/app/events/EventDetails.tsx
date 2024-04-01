@@ -3,7 +3,7 @@
 
 import { MarkdownContent } from '@eventuras/markdown';
 import { EventDto } from '@eventuras/sdk';
-import Heading from '@eventuras/ui/Heading';
+import { Heading } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 import React from 'react';
 

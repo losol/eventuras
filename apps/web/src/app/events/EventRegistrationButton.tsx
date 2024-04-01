@@ -1,5 +1,5 @@
 import { EventDto, EventInfoStatus } from '@eventuras/sdk';
-import Badge from '@eventuras/ui/Badge';
+import { Badge } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 
 import Link from '@/components/Link';

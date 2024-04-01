@@ -4,8 +4,7 @@ import {
 } from '@headlessui/react';
 import React, { FC, ReactNode } from 'react';
 
-import Link from '@eventuras/ui/Link';
-import { TEST_ID_ATTRIBUTE } from '@/utils/constants';
+import Link from './BaseLink';
 
 const styles = {
   menuWrapper: 'top-16 w-56 text-right',
@@ -35,11 +34,11 @@ const ChevronIcon: FC = () => (
 
 interface MenuTriggerProps extends HeadlessMenuButtonProps<'button'> {
   children: ReactNode;
-  [TEST_ID_ATTRIBUTE]?: string;
+  dataTestId?: string;
 }
 
 const MenuTrigger: FC<MenuTriggerProps> = props => (
-  <HeadlessMenu.Button className={styles.menuTrigger} data-test-id={props[TEST_ID_ATTRIBUTE]}>
+  <HeadlessMenu.Button className={styles.menuTrigger} data-test-id={props.dataTestId}>
     {props.children}
     <ChevronIcon />
   </HeadlessMenu.Button>
@@ -70,42 +69,40 @@ interface MenuLinkProps {
   closeOnClick?: boolean;
   href: string;
   children: ReactNode;
-  [TEST_ID_ATTRIBUTE]?: string;
+  dataTestId?: string;
 }
 const MenuLink: FC<MenuLinkProps> = props => (
   <HeadlessMenu.Item as="li">
     {({ close }) => (
-      <div onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (e.key === "ENTER" && props.closeOnClick) {
-          close()
-        }
-      }} onClick={() => {
-        if (props.closeOnClick) {
-          close()
-        }
-      }}>
-        <Link href={props.href} className={styles.menuItem} data-test-id={props[TEST_ID_ATTRIBUTE]}>
+      <div
+        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+          if (e.key === 'ENTER' && props.closeOnClick) {
+            close();
+          }
+        }}
+        onClick={() => {
+          if (props.closeOnClick) {
+            close();
+          }
+        }}
+      >
+        <Link href={props.href} className={styles.menuItem} data-test-id={props.dataTestId}>
           {props.children}
         </Link>
       </div>
     )}
-
   </HeadlessMenu.Item>
 );
 
 interface MenuButtonProps {
   children: ReactNode;
   onClick: () => void;
-  [TEST_ID_ATTRIBUTE]?: string;
+  dataTestId?: string;
 }
 
 const MenuButton: FC<MenuButtonProps> = props => (
   <HeadlessMenu.Item as="li">
-    <button
-      onClick={props.onClick}
-      className={styles.menuItem}
-      data-test-id={props[TEST_ID_ATTRIBUTE]}
-    >
+    <button onClick={props.onClick} className={styles.menuItem} data-test-id={props.dataTestId}>
       {props.children}
     </button>
   </HeadlessMenu.Item>

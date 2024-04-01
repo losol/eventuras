@@ -1,14 +1,14 @@
 import { EventInfoStatus } from '@eventuras/sdk';
 import { Container } from '@eventuras/ui';
-import Card from '@eventuras/ui/Card';
-import Heading from '@eventuras/ui/Heading';
-import Text from '@eventuras/ui/Text';
+import { Heading } from '@eventuras/ui';
+import { Text } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { redirect } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 
 import EventDetails from '@/app/events/EventDetails';
 import EventRegistrationButton from '@/app/events/EventRegistrationButton';
+import Card from '@/components/Card';
 import Wrapper from '@/components/eventuras/Wrapper';
 import Link from '@/components/Link';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';

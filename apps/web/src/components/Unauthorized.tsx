@@ -1,4 +1,4 @@
-import Link from './Link';
+import Link from './BaseLink';
 
 type UnauthorizedProps = {
   homeUrl?: string;

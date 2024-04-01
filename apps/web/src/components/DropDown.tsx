@@ -6,16 +6,9 @@
  *
  */
 
-import * as React from "react";
-import {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { createPortal } from "react-dom";
+import * as React from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 type DropDownContextType = {
   registerItem: (ref: React.RefObject<HTMLButtonElement>) => void;
@@ -41,7 +34,7 @@ export function DropDownItem({
   const dropDownContext = React.useContext(DropDownContext);
 
   if (dropDownContext === null) {
-    throw new Error("DropDownItem must be used within a DropDown");
+    throw new Error('DropDownItem must be used within a DropDown');
   }
 
   const { registerItem } = dropDownContext;
@@ -53,13 +46,7 @@ export function DropDownItem({
   }, [ref, registerItem]);
 
   return (
-    <button
-      className={className}
-      onClick={onClick}
-      ref={ref}
-      title={title}
-      type="button"
-    >
+    <button className={className} onClick={onClick} ref={ref} title={title} type="button">
       {children}
     </button>
   );
@@ -75,14 +62,13 @@ function DropDownItems({
   onClose: () => void;
 }) {
   const [items, setItems] = useState<React.RefObject<HTMLButtonElement>[]>();
-  const [highlightedItem, setHighlightedItem] =
-    useState<React.RefObject<HTMLButtonElement>>();
+  const [highlightedItem, setHighlightedItem] = useState<React.RefObject<HTMLButtonElement>>();
 
   const registerItem = useCallback(
     (itemRef: React.RefObject<HTMLButtonElement>) => {
-      setItems((prev) => (prev ? [...prev, itemRef] : [itemRef]));
+      setItems(prev => (prev ? [...prev, itemRef] : [itemRef]));
     },
-    [setItems],
+    [setItems]
   );
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -90,20 +76,20 @@ function DropDownItems({
 
     const key = event.key;
 
-    if (["Escape", "ArrowUp", "ArrowDown", "Tab"].includes(key)) {
+    if (['Escape', 'ArrowUp', 'ArrowDown', 'Tab'].includes(key)) {
       event.preventDefault();
     }
 
-    if (key === "Escape" || key === "Tab") {
+    if (key === 'Escape' || key === 'Tab') {
       onClose();
-    } else if (key === "ArrowUp") {
-      setHighlightedItem((prev) => {
+    } else if (key === 'ArrowUp') {
+      setHighlightedItem(prev => {
         if (!prev) return items[0];
         const index = items.indexOf(prev) - 1;
         return items[index === -1 ? items.length - 1 : index];
       });
-    } else if (key === "ArrowDown") {
-      setHighlightedItem((prev) => {
+    } else if (key === 'ArrowDown') {
+      setHighlightedItem(prev => {
         if (!prev) return items[0];
         return items[items.indexOf(prev) + 1];
       });
@@ -114,7 +100,7 @@ function DropDownItems({
     () => ({
       registerItem,
     }),
-    [registerItem],
+    [registerItem]
   );
 
   useEffect(() => {
@@ -171,10 +157,7 @@ export default function DropDown({
     if (showDropDown && button !== null && dropDown !== null) {
       const { top, left } = button.getBoundingClientRect();
       dropDown.style.top = `${top + button.offsetHeight + dropDownPadding}px`;
-      dropDown.style.left = `${Math.min(
-        left,
-        window.innerWidth - dropDown.offsetWidth - 20,
-      )}px`;
+      dropDown.style.left = `${Math.min(left, window.innerWidth - dropDown.offsetWidth - 20)}px`;
     }
   }, [dropDownRef, buttonRef, showDropDown]);
 
@@ -185,20 +168,16 @@ export default function DropDown({
       const handle = (event: MouseEvent) => {
         const target = event.target;
         if (stopCloseOnClickSelf) {
-          if (
-            dropDownRef.current &&
-            dropDownRef.current.contains(target as Node)
-          )
-            return;
+          if (dropDownRef.current && dropDownRef.current.contains(target as Node)) return;
         }
         if (!button.contains(target as Node)) {
           setShowDropDown(false);
         }
       };
-      document.addEventListener("click", handle);
+      document.addEventListener('click', handle);
 
       return () => {
-        document.removeEventListener("click", handle);
+        document.removeEventListener('click', handle);
       };
     }
   }, [dropDownRef, buttonRef, showDropDown, stopCloseOnClickSelf]);
@@ -218,10 +197,10 @@ export default function DropDown({
       }
     };
 
-    document.addEventListener("scroll", handleButtonPositionUpdate);
+    document.addEventListener('scroll', handleButtonPositionUpdate);
 
     return () => {
-      document.removeEventListener("scroll", handleButtonPositionUpdate);
+      document.removeEventListener('scroll', handleButtonPositionUpdate);
     };
   }, [buttonRef, dropDownRef, showDropDown]);
 
@@ -236,9 +215,7 @@ export default function DropDown({
         ref={buttonRef}
       >
         {buttonIconClassName && <span className={buttonIconClassName} />}
-        {buttonLabel && (
-          <span className="text dropdown-button-text">{buttonLabel}</span>
-        )}
+        {buttonLabel && <span className="text dropdown-button-text">{buttonLabel}</span>}
         <i className="chevron-down" />
       </button>
 
@@ -247,7 +224,7 @@ export default function DropDown({
           <DropDownItems dropDownRef={dropDownRef} onClose={handleClose}>
             {children}
           </DropDownItems>,
-          document.body,
+          document.body
         )}
     </>
   );

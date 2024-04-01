@@ -56,7 +56,7 @@ import {
 } from 'lexical';
 import { Dispatch, useCallback, useEffect, useState } from "react";
 
-import DropDown, { DropDownItem } from "../ui/DropDown";
+import DropDown, { DropDownItem } from "../../../../apps/web/src/components/DropDown";
 import { IS_APPLE } from "../utils/environment";
 import { getSelectedNode } from "../utils/getSelectedNode";
 import { sanitizeUrl } from "../utils/url";

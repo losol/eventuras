@@ -1,11 +1,11 @@
 import { OrderDto, OrderStatus } from '@eventuras/sdk';
 import { Section } from '@eventuras/ui';
-import Badge from '@eventuras/ui/Badge';
-import Card from '@eventuras/ui/Card';
-import { Definition, DescriptionList, Item, Term } from '@eventuras/ui/DescriptionList';
-import Heading from '@eventuras/ui/Heading';
+import { Heading } from '@eventuras/ui';
+import { Badge } from '@eventuras/ui';
+import { Definition, DescriptionList, Item, Term } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 
+import Card from '@/components/Card';
 import { formatDateSpan } from '@/utils/formatDate';
 
 import { OrderActionsMenu } from './OrderActionsMenu';

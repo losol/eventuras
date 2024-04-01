@@ -7,8 +7,8 @@ import {
   UserDto,
 } from '@eventuras/sdk';
 import { Drawer } from '@eventuras/ui';
-import Button from '@eventuras/ui/Button';
-import Heading from '@eventuras/ui/Heading';
+import { Heading } from '@eventuras/ui';
+import { Button } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';

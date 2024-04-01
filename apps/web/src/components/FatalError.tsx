@@ -1,10 +1,8 @@
+import { Heading } from '@eventuras/ui';
+import { Section } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
-import React from 'react';
 
 import { SiteInfo } from '@/utils/site/getSiteSettings';
-
-import Heading from './Heading';
-import Section from './Section';
 
 interface FatalErrorProps {
   title: string;
@@ -15,6 +13,8 @@ interface FatalErrorProps {
 
 /**
  * Displays a full-screen error message with a link to return to the homepage.
+ *
+ * This file should probably to be refactored to avoid importing the sitesettings type from the utils folder.
  *
  * @param {FatalErrorProps} props The properties of the FatalError component.
  * @returns {JSX.Element} The FatalError component.

@@ -1,13 +1,13 @@
 import { MarkdownContent } from '@eventuras/markdown';
 import { Container } from '@eventuras/ui';
-import Card from '@eventuras/ui/Card';
-import Heading from '@eventuras/ui/Heading';
-import Section from '@eventuras/ui/Section';
-import Text from '@eventuras/ui/Text';
+import { Heading } from '@eventuras/ui';
+import { Text } from '@eventuras/ui';
+import { Section } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { redirect } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 
+import Card from '@/components/Card';
 import EventCard from '@/components/event/EventCard';
 import Wrapper from '@/components/eventuras/Wrapper';
 import Link from '@/components/Link';
