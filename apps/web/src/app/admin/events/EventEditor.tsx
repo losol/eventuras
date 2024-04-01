@@ -14,6 +14,7 @@ import {
 } from '@eventuras/smartform';
 import Button from '@eventuras/ui/Button';
 import Tabs from '@eventuras/ui/Tabs';
+import { Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
@@ -23,7 +24,6 @@ import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifica
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { mapEnum } from '@/utils/enum';
 import Environment from '@/utils/Environment';
-import Logger from '@/utils/Logger';
 import slugify from '@/utils/slugify';
 
 export type EventEditorProps = {

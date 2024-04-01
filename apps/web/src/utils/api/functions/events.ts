@@ -7,10 +7,10 @@ import {
   RegistrationDto,
   RegistrationUpdateDto,
 } from '@eventuras/sdk';
+import { Logger } from '@eventuras/utils';
 
 import { ApiResult, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
-import Logger from '@/utils/Logger';
 
 const eventuras = new Eventuras();
 export type GetEventsOptions = Parameters<typeof eventuras.events.getV3Events>[0];

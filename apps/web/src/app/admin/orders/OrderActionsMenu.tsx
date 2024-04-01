@@ -3,13 +3,13 @@
 import { InvoiceRequestDto, OrderDto, OrderStatus, PaymentProvider } from '@eventuras/sdk';
 import { Button, Drawer, Heading } from '@eventuras/ui';
 import { Definition, DescriptionList, Term } from '@eventuras/ui/DescriptionList';
+import { Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
-import Logger from '@/utils/Logger';
 
 export type OrderActionsMenuProps = {
   order: OrderDto;

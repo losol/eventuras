@@ -1,9 +1,9 @@
+import { Logger } from '@eventuras/utils';
 import { jwtDecode } from 'jwt-decode';
 import { AuthOptions } from 'next-auth';
 import Auth0Provider from 'next-auth/providers/auth0';
 
 import Environment, { EnvironmentVariables } from './Environment';
-import Logger from './Logger';
 const loggerNamespace = { developerOnly: true, namespace: 'auth' };
 const roleKey = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
 type JWTWithRole = {

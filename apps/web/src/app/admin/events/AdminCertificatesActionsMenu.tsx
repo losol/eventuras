@@ -1,12 +1,12 @@
 import { EventDto } from '@eventuras/sdk';
 import { Button, Drawer, Heading } from '@eventuras/ui';
 import { Definition, DescriptionList, Term } from '@eventuras/ui/DescriptionList';
+import { Logger } from '@eventuras/utils';
 import createTranslation from 'next-translate/createTranslation';
 import React, { useState } from 'react';
 
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
-import Logger from '@/utils/Logger';
 
 type AdminCertificatesActionsMenuProps = {
   eventinfo: EventDto;

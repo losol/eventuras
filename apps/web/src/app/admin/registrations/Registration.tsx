@@ -12,12 +12,12 @@ import Button from '@eventuras/ui/Button';
 import { Definition, DescriptionList, Item, Term } from '@eventuras/ui/DescriptionList';
 import Heading from '@eventuras/ui/Heading';
 import Section from '@eventuras/ui/Section';
+import { Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 
 import { apiWrapper, createSDK, fetcher } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
-import Logger from '@/utils/Logger';
 
 import Order from '../orders/Order';
 

@@ -4,12 +4,12 @@ import { Fieldset } from '@eventuras/forms';
 import { UserDto, UserFormDto } from '@eventuras/sdk';
 import { Form, Input } from '@eventuras/smartform';
 import Button from '@eventuras/ui/Button';
+import { Logger } from '@eventuras/utils';
 import createTranslation from 'next-translate/createTranslation';
 import { FC, useState } from 'react';
 
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import Logger from '@/utils/Logger';
 
 interface UserEditorProps {
   user?: UserDto;

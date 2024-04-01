@@ -1,13 +1,13 @@
 import { Container } from '@eventuras/ui';
 import Heading from '@eventuras/ui/Heading';
 import Section from '@eventuras/ui/Section';
+import { Logger } from '@eventuras/utils';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
-import Logger from '@/utils/Logger';
 
 import CollectionEditor from '../CollectionEditor';
 

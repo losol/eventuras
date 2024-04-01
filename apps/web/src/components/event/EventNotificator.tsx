@@ -5,6 +5,7 @@ import { AppNotificationOptions } from '@eventuras/ui/AppNotifications';
 import Button from '@eventuras/ui/Button';
 import ButtonGroup from '@eventuras/ui/ButtonGroup';
 import Heading from '@eventuras/ui/Heading';
+import { Logger } from '@eventuras/utils';
 import createTranslation from 'next-translate/createTranslation';
 import { useRef } from 'react';
 import { SubmitHandler, useForm, UseFormRegister, UseFormReturn } from 'react-hook-form';
@@ -15,7 +16,6 @@ import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { participationMap } from '@/utils/api/mappers';
 import { mapEnum } from '@/utils/enum';
 import Environment from '@/utils/Environment';
-import Logger from '@/utils/Logger';
 
 type EventEmailerFormValues = {
   subject: string;

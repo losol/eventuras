@@ -6,6 +6,7 @@ import { Drawer } from '@eventuras/ui';
 import Badge from '@eventuras/ui/Badge';
 import Button from '@eventuras/ui/Button';
 import Loading from '@eventuras/ui/Loading';
+import { Logger } from '@eventuras/utils';
 import { IconNotes, IconShoppingCart, IconUser } from '@tabler/icons-react';
 import { ColumnFilter } from '@tanstack/react-table';
 import Link from 'next/link';
@@ -18,7 +19,6 @@ import useCreateHook from '@/hooks/createHook';
 import { ParticipationTypesKey } from '@/types';
 import { createSDK } from '@/utils/api/EventurasApi';
 import { participationMap } from '@/utils/api/mappers';
-import Logger from '@/utils/Logger';
 
 import LiveActionsMenu from './LiveActionsMenu';
 

@@ -4,6 +4,7 @@ import { ApiError, EventDto, EventInfoStatus, Eventuras } from '@eventuras/sdk';
 import Button from '@eventuras/ui/Button';
 import FatalError from '@eventuras/ui/FatalError';
 import Heading from '@eventuras/ui/Heading';
+import { Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
@@ -13,7 +14,6 @@ import Wrapper from '@/components/eventuras/Wrapper';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
-import Logger from '@/utils/Logger';
 import slugify from '@/utils/slugify';
 
 type CreateEventFormValues = {

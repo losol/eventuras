@@ -1,12 +1,12 @@
 import { Container } from '@eventuras/ui';
 import Heading from '@eventuras/ui/Heading';
 import Section from '@eventuras/ui/Section';
+import { Logger } from '@eventuras/utils';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
-import Logger from '@/utils/Logger';
 
 import Registration from '../Registration';
 
