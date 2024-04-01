@@ -1,8 +1,8 @@
+import { Logger } from '@eventuras/utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
 import Environment, { EnvironmentVariables } from '@/utils/Environment';
-import Logger from '@/utils/Logger';
 
 const eventurasAPI_URL = Environment.NEXT_PUBLIC_BACKEND_URL;
 

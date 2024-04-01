@@ -9,6 +9,7 @@ import {
 import { Drawer } from '@eventuras/ui';
 import Button from '@eventuras/ui/Button';
 import Heading from '@eventuras/ui/Heading';
+import { Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import { useEffect, useState } from 'react';
@@ -21,7 +22,6 @@ import { RegistrationProduct } from '@/types';
 import { createEventRegistration } from '@/utils/api/functions/events';
 import { mapEventProductsToView, mapSelectedProductsToQuantity } from '@/utils/api/mappers';
 import { mapEnum } from '@/utils/enum';
-import Logger from '@/utils/Logger';
 
 type AddUserToEventFormValues = {
   registrationType: string;

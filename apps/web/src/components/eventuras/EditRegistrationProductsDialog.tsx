@@ -3,6 +3,7 @@
 import { ProductDto, RegistrationDto } from '@eventuras/sdk';
 import Button from '@eventuras/ui/Button';
 import Dialog from '@eventuras/ui/Dialog';
+import { Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -12,7 +13,6 @@ import {
   addProductsToRegistration,
   productMapToOrderLineModel,
 } from '@/utils/api/functions/events';
-import Logger from '@/utils/Logger';
 
 export type EditRegistrationProductsDialogProps = {
   eventProducts: ProductDto[];

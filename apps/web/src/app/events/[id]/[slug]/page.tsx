@@ -4,6 +4,7 @@ import Card from '@eventuras/ui/Card';
 import Heading from '@eventuras/ui/Heading';
 import Link from '@eventuras/ui/Link';
 import Text from '@eventuras/ui/Text';
+import { Logger } from '@eventuras/utils';
 import { redirect } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 
@@ -13,7 +14,6 @@ import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import { formatDateSpan } from '@/utils/formatDate';
-import Logger from '@/utils/Logger';
 
 type EventInfoProps = {
   params: {

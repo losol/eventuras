@@ -1,4 +1,5 @@
 import Heading from '@eventuras/ui/Heading';
+import { Logger } from '@eventuras/utils';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
@@ -6,7 +7,6 @@ import EventEditor from '@/app/admin/events/EventEditor';
 import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
-import Logger from '@/utils/Logger';
 
 type EditEventinfoProps = {
   params: {

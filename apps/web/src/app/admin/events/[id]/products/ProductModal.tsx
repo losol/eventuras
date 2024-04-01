@@ -4,6 +4,7 @@ import type { NewProductDto, ProductDto } from '@eventuras/sdk';
 import { Form, Input, NumberInput, TextAreaInput } from '@eventuras/smartform';
 import Button from '@eventuras/ui/Button';
 import Heading from '@eventuras/ui/Heading';
+import { Logger } from '@eventuras/utils';
 import { Dialog } from '@headlessui/react';
 import createTranslation from 'next-translate/createTranslation';
 import { useEffect, useState } from 'react';
@@ -11,7 +12,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { ApiState, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import Logger from '@/utils/Logger';
 
 import ConfirmDiscardModal from './ConfirmDiscardModal';
 

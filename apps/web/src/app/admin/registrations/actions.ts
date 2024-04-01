@@ -1,8 +1,7 @@
 'use server';
 
+import { Logger } from '@eventuras/utils';
 import { revalidatePath } from 'next/cache';
-
-import Logger from '@/utils/Logger';
 
 export default async function revalidateRegistrationCache() {
   Logger.info({ namespace: 'cache' }, 'Revalidating registration cache');

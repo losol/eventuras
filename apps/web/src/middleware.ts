@@ -5,11 +5,10 @@
  * This saves individual pages to have to check for authorization.
  */
 
+import { Logger } from '@eventuras/utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { withAuth } from 'next-auth/middleware';
-
-import Logger from './utils/Logger';
 
 export async function middleware(request: NextRequest) {
   try {
