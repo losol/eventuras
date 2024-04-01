@@ -1,8 +1,6 @@
 'use client';
 import { UserDto } from '@eventuras/sdk';
-import { InputAutoComplete } from '@eventuras/ui';
-import { Loading } from '@eventuras/ui';
-import { AutoCompleteDataProvider } from '@eventuras/ui';
+import { AutoCompleteDataProvider, InputAutoComplete, Loading } from '@eventuras/ui';
 import { Combobox, Transition } from '@headlessui/react';
 import { IconArrowDown } from '@tabler/icons-react';
 import React, { Fragment, useCallback, useRef, useState } from 'react';

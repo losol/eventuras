@@ -1,8 +1,7 @@
 'use client';
 
 import { InvoiceRequestDto, OrderDto, OrderStatus, PaymentProvider } from '@eventuras/sdk';
-import { Button, Drawer, Heading } from '@eventuras/ui';
-import { Definition, DescriptionList, Term } from '@eventuras/ui';
+import { Button, Definition, DescriptionList, Drawer, Heading, Term } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';

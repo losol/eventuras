@@ -1,7 +1,5 @@
 import { NotificationDto } from '@eventuras/sdk';
-import { Container, Text } from '@eventuras/ui';
-import { Heading } from '@eventuras/ui';
-import { Section } from '@eventuras/ui';
+import { Container, Heading, Section, Text } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';

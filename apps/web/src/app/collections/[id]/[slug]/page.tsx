@@ -1,8 +1,5 @@
 import { MarkdownContent } from '@eventuras/markdown';
-import { Container } from '@eventuras/ui';
-import { Heading } from '@eventuras/ui';
-import { Text } from '@eventuras/ui';
-import { Section } from '@eventuras/ui';
+import { Container, Heading, Section, Text } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { redirect } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';

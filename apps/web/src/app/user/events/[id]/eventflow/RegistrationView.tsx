@@ -1,7 +1,6 @@
 import { MarkdownContent } from '@eventuras/markdown';
 import { EventDto, RegistrationDto } from '@eventuras/sdk';
-import { Heading } from '@eventuras/ui';
-import { Button } from '@eventuras/ui';
+import { Button, Heading } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 
 import Registration from '@/app/admin/registrations/Registration';

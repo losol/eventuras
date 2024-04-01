@@ -1,6 +1,4 @@
-import { Container } from '@eventuras/ui';
-import { Heading } from '@eventuras/ui';
-import { Section } from '@eventuras/ui';
+import { Container, Heading, Section } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';

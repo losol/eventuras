@@ -1,8 +1,5 @@
 import { OrderDto, OrderStatus } from '@eventuras/sdk';
-import { Section } from '@eventuras/ui';
-import { Heading } from '@eventuras/ui';
-import { Badge } from '@eventuras/ui';
-import { Definition, DescriptionList, Item, Term } from '@eventuras/ui';
+import { Badge, Definition, DescriptionList, Heading, Item, Section, Term } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 
 import Card from '@/components/Card';

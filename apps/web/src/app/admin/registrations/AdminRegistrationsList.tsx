@@ -2,8 +2,7 @@
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { RegistrationDto } from '@eventuras/sdk';
-import { Loading } from '@eventuras/ui';
-import { Pagination } from '@eventuras/ui';
+import { Loading, Pagination } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 

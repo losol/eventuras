@@ -1,6 +1,5 @@
 import { CertificateDto } from '@eventuras/sdk';
-import { Heading } from '@eventuras/ui';
-import { Definition, DescriptionList, Item, Term } from '@eventuras/ui';
+import { Definition, DescriptionList, Heading, Item, Term } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 import React from 'react';
 

@@ -1,6 +1,5 @@
 import { EventDto, PaymentProvider, ProductDto } from '@eventuras/sdk';
-import { Heading } from '@eventuras/ui';
-import { Button } from '@eventuras/ui';
+import { Button, Heading } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 
 import { PaymentFormValues, ProductSelected } from '@/types';

@@ -1,5 +1,4 @@
-import { Heading } from '@eventuras/ui';
-import { Section } from '@eventuras/ui';
+import { Heading, Section } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 
 import { SiteInfo } from '@/utils/site/getSiteSettings';

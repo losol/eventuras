@@ -1,8 +1,7 @@
 'use client';
 import { Input } from '@eventuras/forms';
 import { ApiError, EventDto, EventInfoStatus, Eventuras } from '@eventuras/sdk';
-import { Heading } from '@eventuras/ui';
-import { Button } from '@eventuras/ui';
+import { Button, Heading } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';

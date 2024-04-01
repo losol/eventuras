@@ -1,7 +1,5 @@
 import { EventInfoStatus } from '@eventuras/sdk';
-import { Container } from '@eventuras/ui';
-import { Heading } from '@eventuras/ui';
-import { Text } from '@eventuras/ui';
+import { Container, Heading, Text } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { redirect } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';

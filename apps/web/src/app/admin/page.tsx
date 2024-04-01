@@ -1,5 +1,4 @@
-import { Container } from '@eventuras/ui';
-import { Heading } from '@eventuras/ui';
+import { Container, Heading } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 
 import Link from '@/components/Link';
