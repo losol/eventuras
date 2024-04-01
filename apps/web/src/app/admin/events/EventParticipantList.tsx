@@ -9,7 +9,6 @@ import Loading from '@eventuras/ui/Loading';
 import { IconNotes, IconShoppingCart, IconUser } from '@tabler/icons-react';
 import { ColumnFilter } from '@tanstack/react-table';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import React, { useMemo, useState } from 'react';
 
