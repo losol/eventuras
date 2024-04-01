@@ -33,6 +33,7 @@ module.exports = {
     'simple-import-sort/exports': 'warn',
     '@typescript-eslint/no-explicit-any': 'off',
     'turbo/no-undeclared-env-vars': 'off',
+    "no-duplicate-imports": "error",
   },
   settings: {
     'import/resolver': {

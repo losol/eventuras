@@ -6,7 +6,7 @@
   "private": "true",
   "scripts": {
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix && prettier . --write",
+    "format": "eslint . --fix && prettier . --write",
     "test:playwright": "playwright test --workers=1",
     "test:playwright:skiplogin": "playwright test --project=skip-login --workers=1",
     "test:playwright:ui": "playwright test --ui"

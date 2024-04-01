@@ -7,7 +7,7 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix && prettier . --write",
+    "format": "eslint . --fix && prettier . --write",
     "start": "next start"
   },
   "lint-staged": {
