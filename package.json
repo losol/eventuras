@@ -11,7 +11,7 @@
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1",
     "prettier": "^3.2.5",
-    "turbo": "^1.13.0"
+    "turbo": "^1.13.1"
   },
   "workspaces": [
     "apps/docsite",

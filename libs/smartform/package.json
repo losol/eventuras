@@ -5,7 +5,7 @@
   "dependencies": {
     "@eventuras/ui": "*",
     "@eventuras/forms": "*",
-    "react-hook-form": "^7.51.1"
+    "react-hook-form": "^7.51.2"
   },
   "peerDependencies": {
     "react": "^18.2.0",
