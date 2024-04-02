@@ -2,11 +2,6 @@ import { Logger } from '@eventuras/utils';
 
 import Environment from '@/utils/Environment';
 
-interface FooterProps {
-  siteTitle?: string;
-  links?: FooterLink[];
-  publisher?: Publisher;
-}
 export interface FooterLink {
   text: string;
   href: string;

@@ -1,4 +1,12 @@
+import { FooterLink, Publisher } from '@/utils/site/getSiteSettings';
+
 import Link from './BaseLink';
+
+interface FooterProps {
+  siteTitle?: string;
+  links?: FooterLink[];
+  publisher?: Publisher;
+}
 
 const Footer = (props: FooterProps) => {
   return (
