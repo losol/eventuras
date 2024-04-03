@@ -2,12 +2,13 @@
 
 import { EventCollectionCreateDto } from '@eventuras/sdk';
 import { Form, HiddenInput, Input } from '@eventuras/smartform';
-import { Button, Dialog } from '@eventuras/ui';
+import { Button } from '@eventuras/ui';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import React, { useEffect, useState } from 'react';
 import { Modal } from 'react-aria-components';
 
+import Dialog from '@/components/Dialog';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import slugify from '@/utils/slugify';

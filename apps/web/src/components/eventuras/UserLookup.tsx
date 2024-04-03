@@ -1,10 +1,11 @@
 'use client';
 import { UserDto } from '@eventuras/sdk';
-import { AutoCompleteDataProvider, InputAutoComplete, Loading } from '@eventuras/ui';
+import { Loading } from '@eventuras/ui';
 import { Combobox, Transition } from '@headlessui/react';
 import { IconArrowDown } from '@tabler/icons-react';
 import React, { Fragment, useCallback, useRef, useState } from 'react';
 
+import InputAutoComplete, { AutoCompleteDataProvider } from '@/components/InputAutoComplete';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
 export type UserLookupProps = {

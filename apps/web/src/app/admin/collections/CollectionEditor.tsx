@@ -3,14 +3,14 @@
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { EventCollectionDto, EventDto } from '@eventuras/sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
-import { Button, Loading, Section } from '@eventuras/ui';
+import { AppNotificationType, Button, Loading, Section } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { IconTrash } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import EventLookup from '@/components/event/EventLookup';
-import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
+import { useAppNotifications } from '@/hooks/useAppNotifications';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import slugify from '@/utils/slugify';
 

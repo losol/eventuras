@@ -10,6 +10,8 @@
       "@eventuras/scribo": ["../../libs/scribo"],
       "@eventuras/smartform": ["../../libs/smartform"],
       "@eventuras/sdk": ["../../libs/sdk"],
+      "@eventuras/ui": ["../../libs/ui"],
+      "@eventuras/ui/*": ["../../libs/utils/*"],
       "@eventuras/utils": ["../../libs/utils"]
     },
     "plugins": [

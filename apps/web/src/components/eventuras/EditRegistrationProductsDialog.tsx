@@ -1,12 +1,13 @@
 'use client';
 
 import { ProductDto, RegistrationDto } from '@eventuras/sdk';
-import { Button, Dialog } from '@eventuras/ui';
+import { Button } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import RegistrationCustomize from '@/app/user/events/[id]/eventflow/RegistrationCustomize';
+import Dialog from '@/components/Dialog';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import {
   addProductsToRegistration,
