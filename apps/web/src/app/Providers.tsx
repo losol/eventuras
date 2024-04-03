@@ -5,7 +5,7 @@ import { useEffect, useMemo } from 'react';
 import { RecoilRoot } from 'recoil';
 import { createActor } from 'xstate';
 
-import NotificationsProvider from '@/app/NotificationsProvider';
+import NotificationsProvider from '@/components/NotificationsProvider';
 import AuthenticationFlowMachine, {
   AutheticationStateContext,
   Events,
