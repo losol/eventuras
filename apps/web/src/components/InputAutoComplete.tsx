@@ -1,9 +1,9 @@
-'use client';
-import { Combobox, Transition } from '@headlessui/react';
-import { IconArrowDown } from '@tabler/icons-react';
-import { FocusEventHandler, Fragment, ReactElement, useCallback, useRef, useState } from 'react';
+'use client'
+import { useAsyncList } from 'react-stately';
 
-import Loading from '../../../../libs/ui/src/Loading';
+import { FocusEventHandler, ReactElement, useRef, useState } from "react";
+import { Button, ComboBox, Input, Label, ListBox, ListBoxItem, Popover } from 'react-aria-components';
+import Loading from './Loading'
 
 export type AutoCompleteItem = {
   id: any;
@@ -24,149 +24,83 @@ export type InputAutoCompleteProps = {
   placeholder?: string;
   dataProvider: AutoCompleteDataProvider;
   minimumAmountOfCharacters: number;
-  comboOptionRender?: (item: AutoCompleteItem, selected: boolean, active: boolean) => ReactElement;
+  itemRenderer?: (item: AutoCompleteItem, selected?: boolean, active?: boolean) => ReactElement
   onItemSelected?: (u: { id: any }) => Promise<any> | void;
   onFocus?: FocusEventHandler<HTMLInputElement>;
   ready?: boolean;
 };
 
-const comboOption = (dataItem: AutoCompleteItem, props: InputAutoCompleteProps) => (
-  <Combobox.Option
-    key={dataItem.id}
-    className={({ active }) =>
-      `relative cursor-default select-none py-2 pl-5 pr-4 ${
-        active ? 'bg-blue-600 text-white' : 'text-gray-900'
-      }`
-    }
-    value={dataItem}
-  >
-    {({ selected, active }) => (
-      <>
-        {!props.comboOptionRender && (
-          <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
-            {dataItem.label}
-          </span>
-        )}
-        {props.comboOptionRender && props.comboOptionRender(dataItem, selected, active)}
-        {selected ? (
-          <span
-            className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-              active ? 'text-white' : 'text-teal-600'
-            }`}
-          >
-            <div className="h-5 w-5" aria-hidden="true" />
-          </span>
-        ) : null}
-      </>
-    )}
-  </Combobox.Option>
-);
-
-const InputAutoComplete = (props: InputAutoCompleteProps) => {
-  const [selected, setSelected] = useState<any | null>(null);
-  const intervalId = useRef(-1);
-  const [response, setResponse] = useState<any[] | null>(null);
-  const localCache = useRef<Map<string, any[]>>(new Map());
+export const InputAutoComplete = (props: InputAutoCompleteProps) => {
+  const createSet = (values: AutoCompleteItem[]) => ({ items: values })
+  const localCache = useRef<Map<string, AutoCompleteItem[]>>(new Map());
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleInputChanged = useCallback((searchString: string) => {
-    const cacheHit = localCache.current.get(searchString);
-
-    if (cacheHit) {
-      setResponse(cacheHit);
-      return;
-    }
-
-    if (searchString.length >= props.minimumAmountOfCharacters) {
-      setLoading(true);
-      if (intervalId.current) {
-        clearInterval(intervalId.current);
-        intervalId.current = setTimeout(async () => {
-          const response = await props.dataProvider(searchString);
-          if (response.ok) {
-            setLoading(false);
-            localCache.current.set(searchString, response.value!);
-            console.log(response.value);
-            setResponse(response.value);
+  let list = useAsyncList<AutoCompleteItem>({
+    async load({ filterText }) {
+      if ((filterText ?? '').length < props.minimumAmountOfCharacters) {
+        return createSet([
+          {
+            id: -1,
+            label: `Type at least ${props.minimumAmountOfCharacters} characters`,
+            original: null
           }
-        }, 500) as unknown as number;
+        ])
       }
-    } else {
-      setResponse(null);
+      const cacheHit = localCache.current.get(filterText!);
+
+      if (cacheHit) {
+        return createSet(cacheHit)
+      }
+      setLoading(true)
+      const res = await props.dataProvider(filterText ?? '')
+      setLoading(false)
+      if (res.ok) {
+        localCache.current.set(filterText!, res.value!)
+        return createSet(res.value!)
+      } else {
+        return createSet([])
+      }
     }
-  }, []);
+  });
+  return <div>
+    <ComboBox
+      className="group flex flex-col"
+      items={list.items}
+      inputValue={list.filterText}
+      disabledKeys={[-1]}
+      onInputChange={(value) => { list.setFilterText(value) }}
+      onSelectionChange={(key) => {
+        if (props.onItemSelected) {
+          const item = list.items.filter(i => i.id === key)[0]
+          if (item) {
+            props.onItemSelected(item.original);
 
-  const renderOptions = () => {
-    const res = response ?? [];
-    if (res.length > 0) {
-      return res.map((r: AutoCompleteItem) => comboOption(r, props));
-    }
-
-    return (
-      <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
-        Nothing found.
-      </div>
-    );
-  };
-  const optionsClassname =
-    'list-none absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm';
-
-  return (
-    <div className="w-72 relative">
-      <Combobox
-        value={selected}
-        disabled={props.ready === false}
-        onChange={async (u: any) => {
-          setSelected(u);
-          if (props.onItemSelected) {
-            const res = props.onItemSelected(u.original);
-            if (res instanceof Promise) {
-              setLoading(true);
-              await res;
-              setSelected(null);
-              setLoading(false);
-            }
           }
-        }}
-      >
-        <div className="relative mt-1">
-          <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
-            <Combobox.Input
-              id={props.id}
-              className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
-              displayValue={(item: AutoCompleteItem) => item?.label}
-              onChange={event => handleInputChanged(event.target.value)}
-              placeholder={props.placeholder}
-              onFocus={props.onFocus}
-              onBlur={() => {
-                setSelected(null);
-              }}
-            />
-            {!loading && (
-              <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
-                <IconArrowDown className="h-5 w-5 text-gray-400" aria-hidden="true" />
-              </Combobox.Button>
-            )}
-          </div>
-          <Transition
-            as={Fragment}
-            leave="transition ease-in duration-100"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div>
-              <Combobox.Options className={optionsClassname}>{renderOptions()}</Combobox.Options>
-            </div>
-          </Transition>
-        </div>
-        {loading && (
-          <div className="scale-[0.8] absolute right-0 p-2 top-[-5px]">
+        }
+        return key
+      }}
+      allowsCustomValue
+      menuTrigger='focus'
+    >
+      <Label className="text-black cursor-default">{props.placeholder}</Label>
+      <div className="flex flex-row">
+        <Input className="border-none py-2 pl-3 pr-2 text-sm leading-5 text-gray-900" />
+
+        {
+          !loading ? <Button className="text-white p-2 bg-primary-600">▼</Button> : <div className="scale-[0.8] top-[-5px]">
             <Loading />
           </div>
-        )}
-      </Combobox>
-    </div>
-  );
-};
+        }
+      </div>
+      <Popover className="ml-[-12px] max-h-60 w-[--trigger-width] overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black/5 entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out">
+        <ListBox className="outline-none">
+          {(item: AutoCompleteItem) => <ListBoxItem textValue={item.label} className="group flex items-center gap-2 cursor-default select-none py-2 pl-2 pr-4 outline-none rounded text-gray-900 focus:bg-sky-600 focus:text-white"
+            id={item.id} key={item.id}>
+            {props.itemRenderer ? props.itemRenderer(item) : item.label}
 
-export default InputAutoComplete;
+          </ListBoxItem>}
+        </ListBox>
+      </Popover>
+    </ComboBox>
+  </div >
+}

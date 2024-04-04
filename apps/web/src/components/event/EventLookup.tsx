@@ -6,7 +6,7 @@ import { createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
 let cachedEvents: EventDto[] | null = null;
-const comboRender = (item: AutoCompleteItem, selected: boolean) => {
+const comboRender = (item: AutoCompleteItem, selected?: boolean) => {
   const evt: EventDto = item.original as EventDto;
   if (evt) {
     return (
@@ -68,10 +68,10 @@ const EventLookup = (props: EventLookupProps) => {
   return (
     <InputAutoComplete
       id={props.id}
-      minimumAmountOfCharacters={3}
+      minimumAmountOfCharacters={0}
       dataProvider={dataProvider}
       placeholder="Event name"
-      comboOptionRender={comboRender}
+      itemRenderer={comboRender}
       onItemSelected={props.onEventSelected}
     />
   );

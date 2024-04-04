@@ -17,3 +17,4 @@ export { default as Pagination } from './Pagination';
 export { default as Portal } from './Portal';
 export { default as Section } from './Section';
 export { default as Text } from './Text';
+export { InputAutoComplete as InputAutoComplete } from './InputAutoComplete'
