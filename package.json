@@ -11,7 +11,7 @@
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1",
     "prettier": "^3.2.5",
-    "turbo": "^1.13.1"
+    "turbo": "^1.13.2"
   },
   "workspaces": [
     "apps/docsite",
@@ -29,8 +29,8 @@
     "test": "turbo run test",
     "lint": "turbo run lint",
     "format": "turbo run format",
-    "update-packages": "npx npm-check-updates --deep -u",
-    "clean:node": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules",
+    "npm:update": "npx npm-check-updates --deep -u",
+    "npm:clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules && npx rimraf package-lock.json",
     "prepare": "husky"
   },
   "dependencies": {
