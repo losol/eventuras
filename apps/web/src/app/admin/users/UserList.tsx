@@ -1,8 +1,9 @@
 'use client';
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { UserDto } from '@eventuras/sdk';
-import Link from '@eventuras/ui/Link';
 import createTranslation from 'next-translate/createTranslation';
+
+import Link from '@/components/Link';
 const columnHelper = createColumnHelper<UserDto>();
 interface UserListProps {
   users: UserDto[];

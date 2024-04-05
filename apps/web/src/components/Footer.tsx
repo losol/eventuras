@@ -1,22 +1,11 @@
-import Link from "./Link";
+import { FooterLink, Publisher } from '@/utils/site/getSiteSettings';
 
-// Get events from eventuras
-interface Publisher {
-  name: string;
-  address: string;
-  phone: string;
-  email: string;
-}
+import Link from './BaseLink';
+
 interface FooterProps {
   siteTitle?: string;
   links?: FooterLink[];
   publisher?: Publisher;
-}
-
-
-export interface FooterLink {
-  text: string;
-  href: string;
 }
 
 const Footer = (props: FooterProps) => {
@@ -60,4 +49,4 @@ const Footer = (props: FooterProps) => {
   );
 };
 
-export default Footer
+export default Footer;

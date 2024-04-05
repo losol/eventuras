@@ -1,7 +1,8 @@
 import { IconX } from '@tabler/icons-react';
-import React, { HTMLAttributes, ReactNode } from 'react';
+import { HTMLAttributes, ReactNode } from 'react';
 
-import { Button, Heading, Portal } from '@eventuras/ui';
+import { Button, Heading, Portal } from '.';
+import React from 'react';
 
 /**
  * DrawerProps interface for Drawer component

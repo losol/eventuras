@@ -1,6 +1,5 @@
 import { EventDto } from '@eventuras/sdk';
-import { Button, Drawer, Heading } from '@eventuras/ui';
-import { Definition, DescriptionList, Term } from '@eventuras/ui/DescriptionList';
+import { Button, Definition, DescriptionList, Drawer, Heading, Term } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import createTranslation from 'next-translate/createTranslation';
 import React, { useState } from 'react';

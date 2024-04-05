@@ -2,13 +2,12 @@
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { RegistrationDto } from '@eventuras/sdk';
-import FatalError from '@eventuras/ui/FatalError';
-import Link from '@eventuras/ui/Link';
-import Loading from '@eventuras/ui/Loading';
-import Pagination from '@eventuras/ui/Pagination';
+import { Loading, Pagination } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 
+import FatalError from '@/components/FatalError';
+import Link from '@/components/Link';
 import useCreateHook from '@/hooks/createHook';
 import { createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';

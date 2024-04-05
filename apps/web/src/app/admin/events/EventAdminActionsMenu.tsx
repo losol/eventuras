@@ -1,10 +1,7 @@
 'use client';
 
 import { EventDto, ProductDto } from '@eventuras/sdk';
-import { Drawer } from '@eventuras/ui';
-import Button from '@eventuras/ui/Button';
-import ButtonGroup from '@eventuras/ui/ButtonGroup';
-import Link from '@eventuras/ui/Link';
+import { Button, ButtonGroup, Drawer } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 import {
@@ -21,6 +18,7 @@ import {
 } from 'react-aria-components';
 
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
+import Link from '@/components/Link';
 
 import AddUserToEvent from './AddUserToEvent';
 import { AdminCertificatesActionsMenu } from './AdminCertificatesActionsMenu';

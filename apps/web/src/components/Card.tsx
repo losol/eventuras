@@ -1,9 +1,8 @@
 import { default as NextImage } from 'next/image';
 import React, { ReactNode } from 'react';
 
-import { default as TextComponent } from '@eventuras/ui/Text';
-
-import { default as HeadingComponent } from './Heading';
+import { default as HeadingComponent } from '../../../../libs/ui/src/Heading';
+import { default as TextComponent } from '../../../../libs/ui/src/Text';
 
 interface CardChildProps {
   type?: 'Heading' | 'Text' | 'Image';

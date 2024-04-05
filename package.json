@@ -9,8 +9,9 @@
     "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*",
     "eslint": "^8.57.0",
+    "eslint-plugin-import": "^2.29.1",
     "prettier": "^3.2.5",
-    "turbo": "^1.13.0"
+    "turbo": "^1.13.2"
   },
   "workspaces": [
     "apps/docsite",
@@ -27,9 +28,9 @@
     "build": "turbo run build",
     "test": "turbo run test",
     "lint": "turbo run lint",
-    "lint:fix": "turbo run lint:fix",
-    "update-packages": "npx npm-check-updates --deep -u",
-    "clean:node": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules",
+    "format": "turbo run format",
+    "npm:update": "npx npm-check-updates --deep -u",
+    "npm:clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules && npx rimraf package-lock.json",
     "prepare": "husky"
   },
   "dependencies": {

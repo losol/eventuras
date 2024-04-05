@@ -2,19 +2,20 @@
 import { Combobox, Transition } from '@headlessui/react';
 import { IconArrowDown } from '@tabler/icons-react';
 import { FocusEventHandler, Fragment, ReactElement, useCallback, useRef, useState } from 'react';
-import Loading from './Loading';
+
+import Loading from '../../../../libs/ui/src/Loading';
 
 export type AutoCompleteItem = {
-  id: any,
-  label: string,
-  original: any
-}
+  id: any;
+  label: string;
+  original: any;
+};
 
 export type AutoCompleteDataProviderResult = {
   ok: boolean;
   value: AutoCompleteItem[] | null;
-  error: Error | null
-}
+  error: Error | null;
+};
 
 export type AutoCompleteDataProvider = (input: string) => Promise<AutoCompleteDataProviderResult>;
 
@@ -23,35 +24,35 @@ export type InputAutoCompleteProps = {
   placeholder?: string;
   dataProvider: AutoCompleteDataProvider;
   minimumAmountOfCharacters: number;
-  comboOptionRender?: (item: AutoCompleteItem, selected: boolean, active: boolean) => ReactElement
+  comboOptionRender?: (item: AutoCompleteItem, selected: boolean, active: boolean) => ReactElement;
   onItemSelected?: (u: { id: any }) => Promise<any> | void;
-  onFocus?: FocusEventHandler<HTMLInputElement>
-  ready?: boolean
+  onFocus?: FocusEventHandler<HTMLInputElement>;
+  ready?: boolean;
 };
 
 const comboOption = (dataItem: AutoCompleteItem, props: InputAutoCompleteProps) => (
   <Combobox.Option
     key={dataItem.id}
     className={({ active }) =>
-      `relative cursor-default select-none py-2 pl-5 pr-4 ${active ? 'bg-blue-600 text-white' : 'text-gray-900'
+      `relative cursor-default select-none py-2 pl-5 pr-4 ${
+        active ? 'bg-blue-600 text-white' : 'text-gray-900'
       }`
     }
     value={dataItem}
   >
     {({ selected, active }) => (
       <>
-        {
-          !props.comboOptionRender && <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
+        {!props.comboOptionRender && (
+          <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
             {dataItem.label}
           </span>
-        }
-        {
-          props.comboOptionRender && props.comboOptionRender(dataItem, selected, active)
-        }
+        )}
+        {props.comboOptionRender && props.comboOptionRender(dataItem, selected, active)}
         {selected ? (
           <span
-            className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? 'text-white' : 'text-teal-600'
-              }`}
+            className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
+              active ? 'text-white' : 'text-teal-600'
+            }`}
           >
             <div className="h-5 w-5" aria-hidden="true" />
           </span>
@@ -85,7 +86,7 @@ const InputAutoComplete = (props: InputAutoCompleteProps) => {
           if (response.ok) {
             setLoading(false);
             localCache.current.set(searchString, response.value!);
-            console.log(response.value)
+            console.log(response.value);
             setResponse(response.value);
           }
         }, 500) as unknown as number;
@@ -120,10 +121,10 @@ const InputAutoComplete = (props: InputAutoCompleteProps) => {
           if (props.onItemSelected) {
             const res = props.onItemSelected(u.original);
             if (res instanceof Promise) {
-              setLoading(true)
-              await res
-              setSelected(null)
-              setLoading(false)
+              setLoading(true);
+              await res;
+              setSelected(null);
+              setLoading(false);
             }
           }
         }}
@@ -137,7 +138,9 @@ const InputAutoComplete = (props: InputAutoCompleteProps) => {
               onChange={event => handleInputChanged(event.target.value)}
               placeholder={props.placeholder}
               onFocus={props.onFocus}
-              onBlur={() => { setSelected(null) }}
+              onBlur={() => {
+                setSelected(null);
+              }}
             />
             {!loading && (
               <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
@@ -166,4 +169,4 @@ const InputAutoComplete = (props: InputAutoCompleteProps) => {
   );
 };
 
-export default InputAutoComplete
+export default InputAutoComplete;

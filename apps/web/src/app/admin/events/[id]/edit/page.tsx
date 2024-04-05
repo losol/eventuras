@@ -1,4 +1,4 @@
-import Heading from '@eventuras/ui/Heading';
+import { Heading } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';

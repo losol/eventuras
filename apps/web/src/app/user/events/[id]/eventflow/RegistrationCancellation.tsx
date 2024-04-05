@@ -1,6 +1,6 @@
 'use client';
 
-import Button from '@eventuras/ui/Button';
+import { Button } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 
 import { SiteInfo } from '@/utils/site/getSiteSettings';

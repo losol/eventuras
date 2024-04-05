@@ -1,8 +1,8 @@
 import { MarkdownContent } from '@eventuras/markdown';
 import { EventDto } from '@eventuras/sdk';
-import Card from '@eventuras/ui/Card';
 import Link from 'next/link';
 
+import Card from '@/components/Card';
 import Environment from '@/utils/Environment';
 import { formatDateSpan } from '@/utils/formatDate';
 

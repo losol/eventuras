@@ -23,6 +23,7 @@ module.exports = {
     'only-warn',
     'simple-import-sort',
     'react-hooks',
+    'import'
   ],
   rules: {
     'no-console': 'error',
@@ -33,6 +34,7 @@ module.exports = {
     'simple-import-sort/exports': 'warn',
     '@typescript-eslint/no-explicit-any': 'off',
     'turbo/no-undeclared-env-vars': 'off',
+    "import/no-duplicates": "error",
   },
   settings: {
     'import/resolver': {

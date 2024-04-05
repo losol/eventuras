@@ -12,14 +12,14 @@ import {
   NumberInput,
   Select,
 } from '@eventuras/smartform';
-import Button from '@eventuras/ui/Button';
-import Tabs from '@eventuras/ui/Tabs';
+import { Button } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import Tabs from '@/components/Tabs';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { mapEnum } from '@/utils/enum';
