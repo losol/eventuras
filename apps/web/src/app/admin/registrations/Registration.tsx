@@ -7,11 +7,16 @@ import {
   RegistrationType,
 } from '@eventuras/sdk';
 import { Form, Select } from '@eventuras/smartform';
-import Badge from '@eventuras/ui/Badge';
-import Button from '@eventuras/ui/Button';
-import { Definition, DescriptionList, Item, Term } from '@eventuras/ui/DescriptionList';
-import Heading from '@eventuras/ui/Heading';
-import Section from '@eventuras/ui/Section';
+import {
+  Badge,
+  Button,
+  Definition,
+  DescriptionList,
+  Heading,
+  Item,
+  Section,
+  Term,
+} from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';

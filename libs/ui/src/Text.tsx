@@ -1,14 +1,10 @@
-import React from 'react';
-
-import { TEST_ID_ATTRIBUTE } from '@/utils/constants';
-
 interface TextProps {
   children?: React.ReactNode;
   text?: string | null | undefined;
   as?: 'div' | 'span' | 'p';
   className?: string;
   spacingClassName?: string;
-  [TEST_ID_ATTRIBUTE]?: string;
+  dataTestId?: string;
 }
 
 const Text: React.FC<TextProps> = props => {
@@ -31,7 +27,7 @@ const Text: React.FC<TextProps> = props => {
   return (
     <Component
       className={`${className} ${spacingClassName}`.trim()}
-      data-test-id={props[TEST_ID_ATTRIBUTE]}
+      data-test-id={props.dataTestId}
     >
       {content}
     </Component>

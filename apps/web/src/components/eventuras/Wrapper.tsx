@@ -1,8 +1,8 @@
-import { Footer } from '@eventuras/ui';
-import Navbar from '@eventuras/ui/Navbar';
 import createTranslation from 'next-translate/createTranslation';
 import { ReactNode } from 'react';
 
+import Footer from '@/components/Footer';
+import Navbar from '@/components/Navbar';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 import { UserMenu } from './navigation/UserMenu';

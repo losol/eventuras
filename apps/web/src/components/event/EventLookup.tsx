@@ -1,8 +1,7 @@
 import { EventDto, LocalDate } from '@eventuras/sdk';
-import { InputAutoComplete } from '@eventuras/ui';
-import { AutoCompleteItem } from '@eventuras/ui/InputAutoComplete';
 import { useCallback } from 'react';
 
+import InputAutoComplete, { AutoCompleteItem } from '@/components/InputAutoComplete';
 import { createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);

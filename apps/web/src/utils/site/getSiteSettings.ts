@@ -1,7 +1,11 @@
-import { FooterLink } from '@eventuras/ui/Footer';
 import { Logger } from '@eventuras/utils';
 
 import Environment from '@/utils/Environment';
+
+export interface FooterLink {
+  text: string;
+  href: string;
+}
 
 export interface FeaturedImage {
   src: string;

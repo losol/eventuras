@@ -1,8 +1,6 @@
 import React from 'react';
 
 import Loading from './Loading';
-import { TEST_ID_ATTRIBUTE } from '@/utils/constants';
-
 import { BoxProps, spacingClassName } from './Box';
 
 export const buttonStyles = {
@@ -25,7 +23,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   bgDark?: boolean;
   variant?: 'primary' | 'secondary' | 'outline' | 'light' | 'transparent';
   block?: boolean;
-  [TEST_ID_ATTRIBUTE]?: string;
+  dataTestId?: string;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps & BoxProps>((props, ref) => {
@@ -60,7 +58,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps & BoxProps>((prop
       onClick={props.onClick}
       className={buttonClassName}
       type={props.type || 'button'}
-      data-test-id={props[TEST_ID_ATTRIBUTE]}
+      data-test-id={props.dataTestId}
     >
       {props.leftIcon && <span className={`mr-2 ${textColor}`}>{props.leftIcon}</span>}
       <span className={textColor}>{props.children}</span>

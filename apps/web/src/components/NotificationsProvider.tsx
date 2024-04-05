@@ -1,4 +1,6 @@
-import AppNotifications from '@eventuras/ui/AppNotifications';
+'use client';
+
+import { AppNotifications } from '@eventuras/ui';
 import React from 'react';
 import { useRecoilValue } from 'recoil';
 

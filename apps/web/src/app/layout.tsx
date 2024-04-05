@@ -1,3 +1,4 @@
+import '@eventuras/ui/style.css';
 import '@/styles/globals.css';
 
 import type { Metadata } from 'next';

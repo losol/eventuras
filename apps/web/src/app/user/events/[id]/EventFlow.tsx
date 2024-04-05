@@ -1,12 +1,12 @@
 'use client';
 
 import { EventDto, ProductDto, RegistrationDto, UserDto } from '@eventuras/sdk';
-import FatalError from '@eventuras/ui/FatalError';
-import Loading from '@eventuras/ui/Loading';
+import { Loading } from '@eventuras/ui';
 import { useActor } from '@xstate/react';
 import createTranslation from 'next-translate/createTranslation';
 
 import UserEditor from '@/app/admin/users/UserEditor';
+import FatalError from '@/components/FatalError';
 import EventFlowMachine, { Events, States } from '@/statemachines/EventFlowMachine';
 import { PaymentFormValues, ProductSelected } from '@/types';
 import { SiteInfo } from '@/utils/site/getSiteSettings';

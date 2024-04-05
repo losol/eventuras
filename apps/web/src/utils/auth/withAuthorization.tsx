@@ -1,7 +1,7 @@
-import { Unauthorized } from '@eventuras/ui/Unauthorized';
 import { NextPage } from 'next';
 import { headers } from 'next/headers';
 
+import { Unauthorized } from '@/components/Unauthorized';
 import Environment from '@/utils/Environment';
 
 import { createSDK } from '../api/EventurasApi';

@@ -3,10 +3,11 @@
 
 import { MarkdownContent } from '@eventuras/markdown';
 import { EventDto } from '@eventuras/sdk';
-import Heading from '@eventuras/ui/Heading';
-import Link from '@eventuras/ui/Link';
+import { Heading } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 import React from 'react';
+
+import Link from '@/components/Link';
 
 type EventProps = {
   eventinfo: EventDto;

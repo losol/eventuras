@@ -16,7 +16,7 @@ import { useEffect } from 'react';
 import React from 'react';
 
 import { DebouncedInput } from '@eventuras/forms';
-import Pagination from '@eventuras/ui/Pagination';
+import { Pagination } from '@eventuras/ui';
 
 type DataTableProps = {
   columns: any[];

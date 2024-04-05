@@ -2,7 +2,7 @@
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { ProductOrdersSummaryDto } from '@eventuras/sdk';
-import Badge from '@eventuras/ui/Badge';
+import { Badge } from '@eventuras/ui';
 import React from 'react';
 
 interface DeliverySummaryProps {
