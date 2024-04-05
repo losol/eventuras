@@ -1,4 +1,4 @@
-import './styles/globals.css';
+import './style.css';
 export { default as AppNotifications, AppNotificationType } from './AppNotifications';
 export type { AppNotificationOptions } from './AppNotifications';
 export { default as Badge } from './Badge';
