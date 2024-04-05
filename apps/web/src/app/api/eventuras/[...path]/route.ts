@@ -22,6 +22,7 @@ function isValidURL(str: string): boolean {
 async function forwarder(request: NextRequest) {
   const token = await getToken({ req: request });
   const accessToken = token?.access_token ?? '';
+  let isBlob = false;
 
   if (!eventurasAPI_URL) throw new Error('NEXT_PUBLIC_BACKEND_URL is not defined');
 
@@ -31,6 +32,13 @@ async function forwarder(request: NextRequest) {
   }
 
   const forwardUrl = request.url.replace(/^.*?\/api\/eventuras/, eventurasAPI_URL);
+  const acceptHeaders = request.headers.get('Accept');
+  switch (acceptHeaders) {
+    case 'application/pdf':
+      isBlob = true;
+      break;
+  }
+
   /**
    * request issue with next13, will have to run json on the request body first:
    * https://stackoverflow.com/questions/75899415/decode-readablestream-object-nextjs-13-api-route
@@ -40,25 +48,32 @@ async function forwarder(request: NextRequest) {
   const jBody = await request.json().catch(() => {
     return NextResponse.json({ error: 'Request body needs to be JSON' });
   });
+
+  let contentType = request.method === 'PATCH' ? 'application/json-patch+json' : 'application/json';
+  if (isBlob) contentType = acceptHeaders!;
   const fResponse = await fetch(forwardUrl, {
     method: request.method,
     body: request.method === 'GET' ? null : JSON.stringify(jBody),
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      'Content-Type':
-        request.method === 'PATCH' ? 'application/json-patch+json' : 'application/json',
+      'Content-Type': contentType,
       'Eventuras-Org-Id': Environment.NEXT_PUBLIC_ORGANIZATION_ID,
     },
     redirect: 'manual',
   });
+  let data = null;
 
-  let data = await fResponse.json().catch(() => {
-    return null;
-  });
-  if (!data) {
-    data = await fResponse.text().catch(() => {
+  if (!isBlob) {
+    data = await fResponse.json().catch(() => {
       return null;
     });
+    if (!data) {
+      data = await fResponse.text().catch(() => {
+        return null;
+      });
+    }
+  } else {
+    data = await fResponse.blob();
   }
 
   if (Environment.get(EnvironmentVariables.NODE_ENV) === 'development') {
@@ -69,6 +84,7 @@ async function forwarder(request: NextRequest) {
         namespace: 'api:forwarder',
       },
       {
+        isPdf: isBlob,
         forwardUrl,
         body: JSON.stringify(jBody),
         method: request.method,
@@ -84,7 +100,7 @@ async function forwarder(request: NextRequest) {
     statusText: fResponse.statusText,
     headers: fResponse.headers,
   };
-  const res: NextResponse = new NextResponse(JSON.stringify(data), init);
+  const res: NextResponse = new NextResponse(isBlob ? data : JSON.stringify(data), init);
   return res;
 }
 

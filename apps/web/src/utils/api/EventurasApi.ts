@@ -53,7 +53,7 @@ function handleApiResponse<T>(promise: Promise<T>): Promise<ApiResult<T, ApiErro
     });
 }
 
-export const apiWrapper = <T>(fetchFunction: () => CancelablePromise<T>) =>
+export const apiWrapper = <T>(fetchFunction: () => Promise<T> | CancelablePromise<T>) =>
   handleApiResponse(fetchFunction());
 
 export const fetcher = <T>(fetchFunction: () => Promise<T>) => handleApiResponse(fetchFunction());

@@ -4,7 +4,7 @@ import { DependencyList, useEffect, useState } from 'react';
 import { apiWrapper } from '@/utils/api/EventurasApi';
 
 const useCreateHook = <T>(
-  fetchFunction: () => CancelablePromise<T>,
+  fetchFunction: () => Promise<T> | CancelablePromise<T>,
   dependencies?: DependencyList | undefined,
   skipIfTrue?: () => boolean | undefined
 ) => {
