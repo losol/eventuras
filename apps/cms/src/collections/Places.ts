@@ -1,5 +1,4 @@
 import { CollectionConfig } from 'payload/types';
-import { randomUUID } from 'crypto';
 
 const Place: CollectionConfig = {
   slug: 'places',
