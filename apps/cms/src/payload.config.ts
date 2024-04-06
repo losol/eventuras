@@ -7,6 +7,7 @@ import { slateEditor } from '@payloadcms/richtext-slate'
 import { buildConfig } from 'payload/config'
 
 import Users from './collections/Users'
+import Places from './collections/Places';
 
 export default buildConfig({
   admin: {
@@ -14,7 +15,7 @@ export default buildConfig({
     bundler: webpackBundler(),
   },
   editor: slateEditor({}),
-  collections: [Users],
+  collections: [Places, Users],
   serverURL: process.env.PAYLOAD_SERVER_URL || 'http://localhost:3200',
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
@@ -24,6 +25,7 @@ export default buildConfig({
   },
   plugins: [payloadCloud()],
   db: postgresAdapter({
+    idType: "uuid",
     pool: {
       connectionString: process.env.PAYLOAD_DB_URL,
     },
