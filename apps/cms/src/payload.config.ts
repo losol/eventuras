@@ -8,6 +8,7 @@ import { buildConfig } from 'payload/config'
 
 import Users from './collections/Users'
 import Places from './collections/Places';
+import Happenings from './collections/Happenings';
 
 export default buildConfig({
   admin: {
@@ -15,7 +16,7 @@ export default buildConfig({
     bundler: webpackBundler(),
   },
   editor: slateEditor({}),
-  collections: [Places, Users],
+  collections: [Happenings, Places, Users],
   serverURL: process.env.PAYLOAD_SERVER_URL || 'http://localhost:3200',
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
