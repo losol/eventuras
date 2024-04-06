@@ -17,7 +17,7 @@ export default buildConfig({
   },
   editor: slateEditor({}),
   collections: [Happenings, Places, Users],
-  serverURL: process.env.PAYLOAD_SERVER_URL || 'http://localhost:3200',
+  serverURL: process.env.CMS_SERVER_URL || 'http://localhost:3200',
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
@@ -28,7 +28,7 @@ export default buildConfig({
   db: postgresAdapter({
     idType: "uuid",
     pool: {
-      connectionString: process.env.PAYLOAD_DB_URL,
+      connectionString: process.env.CMS_DATABASE_URL,
     },
   }),
 })

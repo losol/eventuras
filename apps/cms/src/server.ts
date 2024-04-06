@@ -12,20 +12,20 @@ app.get('/', (_, res) => {
 
 const start = async () => {
   // Validate environment variables
-  if (!process.env.PAYLOAD_SECRET) {
-    throw new Error('Please provide a PAYLOAD_SECRET in the environment variables');
+  if (!process.env.CMS_SECRET) {
+    throw new Error('Please provide a CMS_SECRET in the environment variables');
   }
-  if (!process.env.PAYLOAD_DB_URL) {
-    throw new Error('Please provide a PAYLOAD_DB_URL in the environment variables');
+  if (!process.env.CMS_DATABASE_URL) {
+    throw new Error('Please provide a CMS_DATABASE_URL in the environment variables');
   }
-  if (!process.env.PAYLOAD_SERVER_URL) {
-    console.warn('No PAYLOAD_SERVER_URL provided, using default http://localhost:3200');
+  if (!process.env.CMS_SERVER_URL) {
+    console.warn('No CMS_SERVER_URL provided, using default http://localhost:3200');
   }
 
 
   // Initialize Payload
   await payload.init({
-    secret: process.env.PAYLOAD_SECRET,
+    secret: process.env.CMS_SECRET,
     express: app,
     onInit: async () => {
       payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);
@@ -33,14 +33,14 @@ const start = async () => {
   });
 
   let port = 3200;
-  if (process.env.PAYLOAD_SERVER_URL) {
+  if (process.env.CMS_SERVER_URL) {
     try {
-      const url = new URL(process.env.PAYLOAD_SERVER_URL);
+      const url = new URL(process.env.CMS_SERVER_URL);
       if (url.port) {
         port = parseInt(url.port);
       }
     } catch (error) {
-      console.error("Error parsing PAYLOAD_SERVER_URL:", error.message);
+      console.error("Error parsing CMS_SERVER_URL:", error.message);
     }
   }
 
