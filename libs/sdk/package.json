@@ -14,7 +14,7 @@
   "devDependencies": {
     "@eventuras/typescript-config": "*",
     "node-fetch": "^3.3.2",
-    "openapi-typescript-codegen": "^0.28.0",
+    "openapi-typescript-codegen": "^0.29.0",
     "typescript": "^5.4.4",
     "vite": "^5.2.8",
     "vite-plugin-dts": "^3.8.1"
