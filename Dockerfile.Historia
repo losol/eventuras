@@ -1,0 +1,36 @@
+FROM node:20-bookworm-slim as base
+
+FROM base as builder
+
+# Give node user ownership of the app directory
+WORKDIR /app
+USER root
+RUN chown -R node:node /app
+USER node
+
+# Install dependencies
+COPY --chown=node:node package-lock.json ./
+COPY --chown=node:node apps/historia/package.json ./
+RUN npm ci
+
+## Build the app
+COPY --chown=node:node ./apps/historia/src ./src
+RUN npm run build
+
+FROM base as runtime
+
+USER node
+
+ENV NODE_ENV=production
+ENV PAYLOAD_CONFIG_PATH=/app/dist/payload.config.js
+
+WORKDIR /app
+
+COPY --chown=node:node package*.json ./
+RUN npm ci
+COPY --chown=node:node --from=builder /app/dist ./dist
+COPY --chown=node:node --from=builder /app/build ./build
+
+EXPOSE 3200
+
+CMD ["node", "dist/server.js"]
