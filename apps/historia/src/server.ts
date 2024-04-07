@@ -40,7 +40,7 @@ const start = async () => {
         port = parseInt(url.port);
       }
     } catch (error) {
-      console.error("Error parsing CMS_SERVER_URL:", error.message);
+      console.error("Error parsing CMS_SERVER_URL");
     }
   }
 
