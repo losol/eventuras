@@ -1,3 +1,4 @@
+import { CertificateFormat } from '@eventuras/sdk';
 import { Container, Heading, Section } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { headers } from 'next/headers';
@@ -8,6 +9,7 @@ import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 
 import Certificate from '../Certificate';
+import { PDFCertificate } from '../PDFCertificate';
 
 type EventInfoProps = {
   params: {
@@ -49,6 +51,7 @@ const CertificateDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
       <Section className="py-12">
         <Container>
           <Certificate certificate={certificate.value!} />
+          <PDFCertificate certificateId={params.id} />
         </Container>
       </Section>
     </Wrapper>
