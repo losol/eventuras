@@ -29,6 +29,7 @@
     "test": "turbo run test",
     "lint": "turbo run lint",
     "format": "turbo run format",
+    "npm:check-update": "npx npm-check-updates --deep",
     "npm:update": "npx npm-check-updates --deep -u",
     "npm:clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules && npx rimraf package-lock.json",
     "prepare": "husky"
