@@ -1,14 +1,13 @@
-import path from 'path'
-
-import { payloadCloud } from '@payloadcms/plugin-cloud'
-import { postgresAdapter } from '@payloadcms/db-postgres'
 import { webpackBundler } from '@payloadcms/bundler-webpack'
+import { postgresAdapter } from '@payloadcms/db-postgres'
+import { payloadCloud } from '@payloadcms/plugin-cloud'
 import { slateEditor } from '@payloadcms/richtext-slate'
+import path from 'path'
 import { buildConfig } from 'payload/config'
 
-import Users from './collections/Users'
-import Places from './collections/Places';
 import Happenings from './collections/Happenings';
+import Places from './collections/Places';
+import Users from './collections/Users'
 
 export default buildConfig({
   admin: {
