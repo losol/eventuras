@@ -1,6 +1,6 @@
 import { CollectionConfig } from 'payload/types';
 
-const Happenings:CollectionConfig = {
+const Happenings: CollectionConfig = {
   slug: 'happenings',
   access: {
     read: () => true,
