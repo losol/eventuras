@@ -9,6 +9,10 @@
 export interface Config {
   collections: {
     happenings: Happening;
+    licenses: License;
+    media: Media;
+    organizations: Organization;
+    persons: Person;
     places: Place;
     users: User;
     'payload-preferences': PayloadPreference;
@@ -48,6 +52,89 @@ export interface Place {
     country?: string | null;
   };
   parentPlace?: (string | null) | Place;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "licenses".
+ */
+export interface License {
+  id: string;
+  name: string;
+  abbreviation: string;
+  description?: string | null;
+  url?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: string;
+  name: string;
+  description?: string | null;
+  license?: (string | null) | License;
+  author?: (string | null) | Person;
+  sourceUrl?: string | null;
+  publisher?: (string | null) | Organization;
+  contentLocation?: (string | null) | Place;
+  contentPersons?: (string | Person)[] | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    standard?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "persons".
+ */
+export interface Person {
+  id: string;
+  name: string;
+  description?: string | null;
+  jobTitle?: string | null;
+  employer?: string | null;
+  image?: string | Media | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organizations".
+ */
+export interface Organization {
+  id: string;
+  name: string;
+  description?: string | null;
+  url?: string | null;
+  logo?: string | Media | null;
+  location?: (string | null) | Place;
+  parentOrganization?: (string | null) | Organization;
   updatedAt: string;
   createdAt: string;
 }

@@ -10,6 +10,8 @@ import Places from './collections/Places';
 import Users from './collections/Users';
 import Licenses from './collections/Licenses';
 import { Media } from './collections/Media';
+import Persons from './collections/Persons';
+import Organizations from './collections/Organizations';
 
 export default buildConfig({
   admin: {
@@ -17,7 +19,7 @@ export default buildConfig({
     bundler: webpackBundler(),
   },
   editor: slateEditor({}),
-  collections: [Happenings, Licenses, Places, Users],
+  collections: [Happenings, Licenses, Media, Organizations, Persons, Places, Users],
   serverURL: process.env.CMS_SERVER_URL || 'http://localhost:3200',
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
