@@ -51,7 +51,7 @@ export interface InputProps {
   label?: string;
   description?: string;
   className?: string;
-  errors?: { [key: string]: { message: string } };
+  errors?: { [key: string]: { message: string; }; };
   dataTestId?: string;
   [x: string]: any;
 }

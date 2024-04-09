@@ -39,7 +39,6 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
   const { t } = createTranslation();
   const [apiState, setApiState] = useState<ApiState>({ error: null, loading: false });
   const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
-  const { register } = useForm<EventFormDto>();
   const { addAppNotification } = useAppNotifications();
   const router = useRouter();
 
@@ -208,9 +207,11 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
               placeholder="Certificate Title"
             />
             <Input
-              {...register('certificateDescription')}
+              name="certificateDescription"
               label="Certificate Description"
               placeholder="Certificate Description"
+              multiline
+              rows={5}
             />
           </Fieldset>
         </Tabs.Item>

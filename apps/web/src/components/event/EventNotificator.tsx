@@ -1,6 +1,6 @@
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { EmailNotificationDto, RegistrationType, SmsNotificationDto } from '@eventuras/sdk';
-import { CheckboxInput, CheckboxLabel, Form, Input, TextAreaInput } from '@eventuras/smartform';
+import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
 import { AppNotificationOptions, Button, ButtonGroup, Heading } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import createTranslation from 'next-translate/createTranslation';
@@ -230,10 +230,11 @@ export default function EventNotificator({
           </div>
         )}
         {notificatorType === EventNotificatorType.SMS && (
-          <TextAreaInput
+          <Input
             name="body"
             label={t('eventNotifier.form.body.label')}
             placeholder={t('eventNotifier.form.body.label')}
+            multiline
           />
         )}
       </div>
