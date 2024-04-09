@@ -27,7 +27,7 @@ const MarkdownInput = (props: MarkdownInputProps) => {
       <Controller
         control={control}
         name={props.name}
-        shouldUnregister={true}
+        shouldUnregister={false}
         rules={{
           validate: (): boolean => {
             if (!props.maxLength) return true;
