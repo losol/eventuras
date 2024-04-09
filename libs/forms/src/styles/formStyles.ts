@@ -25,4 +25,5 @@ export const formStyles = {
   inputDescription: 'text-gray-700 dark:text-gray-300 text-sm mb-2',
   inputErrorGlow: 'border border-red-500 shadow-outline-red',
   inputWrapper: 'mb-3',
+  textarea: 'resize-y',
 };

@@ -1,11 +1,17 @@
 import React from "react";
-import { InputProps } from "./InputProps";
+import { InputProps } from "./InputProps"; // Ensure this is set up to include 'multiline'
 import { formStyles } from "../styles/formStyles";
 import { InputLabel } from "../common/InputLabel";
 import { InputError } from "../common/InputError";
 import { InputDescription } from "../common/InputDescription";
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
+interface ExtendedInputProps extends InputProps {
+  multiline?: boolean;
+  rows?: number;
+  cols?: number;
+}
+
+export const Input = React.forwardRef<HTMLElement, ExtendedInputProps>(({
   name,
   type = 'text',
   placeholder,
@@ -15,31 +21,51 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
   errors,
   disabled,
   dataTestId,
+  multiline = false,
   ...rest
-}, ref) => {
-
-  const hasError = errors && errors[name] ? true : false;
+}, forwardedRef) => {
+  const hasError = errors && errors[name];
 
   let inputClassName = `${className ?? formStyles.defaultInputStyle} ${hasError ? formStyles.inputErrorGlow : ''} ${disabled ? 'cursor-not-allowed' : ''}`;
+  if (multiline) {
+    inputClassName = `${inputClassName} ${formStyles.textarea}`;
+  }
 
   const id = rest.id ?? name;
+
+  const assignRef = (element: HTMLInputElement | HTMLTextAreaElement | null) => {
+    if (typeof forwardedRef === 'function') {
+      forwardedRef(element);
+    } else if (forwardedRef && 'current' in forwardedRef) {
+      forwardedRef.current = element;
+    }
+  };
+
+  const commonProps = {
+    id,
+    className: inputClassName,
+    placeholder,
+    disabled,
+    'aria-invalid': hasError ? true : undefined,
+    'data-test-id': dataTestId,
+    name,
+    ...rest,
+  };
+
+  if (multiline) {
+    commonProps['rows'] = rest.rows ?? 3;
+    commonProps['cols'] = rest.cols ?? undefined;
+  }
 
   return (
     <div className={formStyles.inputWrapper}>
       {label && <InputLabel htmlFor={id}>{label}</InputLabel>}
       {description && <InputDescription>{description}</InputDescription>}
-      <input
-        id={id}
-        ref={ref}
-        className={inputClassName}
-        type={type}
-        placeholder={placeholder}
-        disabled={disabled}
-        aria-invalid={hasError || undefined}
-        data-test-id={dataTestId}
-        name={name}
-        {...rest}
-      />
+      {multiline ? (
+        <textarea ref={assignRef} {...commonProps} />
+      ) : (
+        <input ref={assignRef} type={type} {...commonProps} />
+      )}
       {hasError && <InputError errors={errors} name={name} />}
     </div>
   );
