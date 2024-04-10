@@ -1,1 +1,1 @@
-turbo format
+turbo lint:fix
