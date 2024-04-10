@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Asp.Versioning;
@@ -49,7 +50,7 @@ public class EventsController : ControllerBase
         }
 
         // Log the starting point of the request.
-        _logger.LogInformation("Starting to retrieve events list.");
+        _logger.LogInformation("Starting to retrieve events list. Query: {query}", JsonSerializer.Serialize(query));
 
         var events = await _eventInfoService.ListEventsAsync(new EventListRequest(query.Offset, query.Limit)
         {

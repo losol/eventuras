@@ -1,7 +1,7 @@
 'use client';
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import { EventDto } from '@eventuras/sdk';
+import { EventDto, LocalDate, PeriodMatchingKind } from '@eventuras/sdk';
 import { Loading, Pagination } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
@@ -25,12 +25,21 @@ const AdminEventList: React.FC<AdminEventListProps> = ({
   const { t } = createTranslation();
   const [page, setPage] = useState(1);
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+
+  function aMonthAgo(): string {
+    const today = new Date();
+    const weekAgo = new Date(today.setDate(today.getDate() - 31)).toISOString().split('T')[0];
+    return weekAgo!;
+  }
+
   const { loading, result } = useCreateHook(
     () =>
       sdk.events.getV3Events({
         organizationId,
         includeDraftEvents: true,
         includePastEvents: includePastEvents,
+        start: aMonthAgo() as LocalDate,
+        period: PeriodMatchingKind.CONTAIN,
         page,
         count: pageSize,
       }),
