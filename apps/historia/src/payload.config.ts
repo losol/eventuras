@@ -1,7 +1,7 @@
 import { webpackBundler } from '@payloadcms/bundler-webpack';
 import { postgresAdapter } from '@payloadcms/db-postgres';
 import { payloadCloud } from '@payloadcms/plugin-cloud';
-import { slateEditor } from '@payloadcms/richtext-slate';
+import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import path from 'path';
 import { buildConfig } from 'payload/config';
 
@@ -18,9 +18,9 @@ export default buildConfig({
     user: Users.slug,
     bundler: webpackBundler(),
   },
-  editor: slateEditor({}),
+  editor: lexicalEditor({}),
   collections: [Happenings, Licenses, Media, Organizations, Persons, Places, Users],
-  serverURL: process.env.CMS_SERVER_URL || 'http://localhost:3200',
+  serverURL: process.env.CMS_SERVER_URL || 'http://localhost:3300',
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
