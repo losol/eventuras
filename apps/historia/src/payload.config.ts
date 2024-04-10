@@ -12,6 +12,7 @@ import Licenses from './collections/Licenses';
 import { Media } from './collections/Media';
 import Persons from './collections/Persons';
 import Organizations from './collections/Organizations';
+import Notes from './collections/Notes';
 
 export default buildConfig({
   admin: {
@@ -19,7 +20,7 @@ export default buildConfig({
     bundler: webpackBundler(),
   },
   editor: lexicalEditor({}),
-  collections: [Happenings, Licenses, Media, Organizations, Persons, Places, Users],
+  collections: [Happenings, Licenses, Media, Notes, Organizations, Persons, Places, Users],
   serverURL: process.env.CMS_SERVER_URL || 'http://localhost:3300',
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
