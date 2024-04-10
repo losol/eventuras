@@ -21,7 +21,7 @@
     "@payloadcms/bundler-webpack": "^1.0.6",
     "@payloadcms/db-postgres": "^0.7.1",
     "@payloadcms/plugin-cloud": "^3.0.0",
-    "@payloadcms/richtext-slate": "^1.5.0",
+    "@payloadcms/richtext-lexical": "^0.8.0",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
