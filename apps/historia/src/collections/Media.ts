@@ -1,6 +1,6 @@
 import path from 'path';
 import { CollectionConfig } from 'payload/types';
-import { admins } from '../access/admins';
+import { admins, anyone } from '../access';
 import { contentLocations } from '../fields/contentLocations';
 import { creators } from '../fields/creators';
 import { license } from '../fields/license';
@@ -8,7 +8,7 @@ import { license } from '../fields/license';
 export const Media: CollectionConfig = {
   slug: 'media',
   access: {
-    read: () => true,
+    read: anyone,
     create: admins,
     update: admins,
     delete: admins,

@@ -1,11 +1,11 @@
 import { CollectionConfig } from 'payload/types';
-import { admins } from '../access/admins';
+import { admins, anyone } from '../access';
 import { contentPeople } from '../fields/contentPeople';
 
-const Notes: CollectionConfig = {
+export const Notes: CollectionConfig = {
   slug: 'notes',
   access: {
-    read: () => true,
+    read: anyone,
     create: admins,
     update: admins,
     delete: admins,
@@ -38,4 +38,3 @@ const Notes: CollectionConfig = {
   ],
 };
 
-export default Notes;

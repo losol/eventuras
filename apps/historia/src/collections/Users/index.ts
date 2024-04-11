@@ -3,7 +3,7 @@ import { CollectionConfig } from 'payload/types';
 import { admins } from '../../access/admins';
 import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin';
 
-const Users: CollectionConfig = {
+export const Users: CollectionConfig = {
   slug: 'users',
   access: {
     read: admins,
@@ -38,5 +38,3 @@ const Users: CollectionConfig = {
     },
   ],
 };
-
-export default Users;

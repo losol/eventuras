@@ -1,10 +1,10 @@
 import { CollectionConfig } from 'payload/types';
-import { admins } from '../access/admins';
+import { admins, anyone } from '../access';
 
-const Place: CollectionConfig = {
+export const Places: CollectionConfig = {
   slug: 'places',
   access: {
-    read: () => true,
+    read: anyone,
     create: admins,
     update: admins,
     delete: admins,
@@ -55,4 +55,3 @@ const Place: CollectionConfig = {
   ],
 };
 
-export default Place;
