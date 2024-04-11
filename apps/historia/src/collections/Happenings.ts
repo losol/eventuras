@@ -1,10 +1,10 @@
 import { CollectionConfig } from 'payload/types';
-import { admins } from '../access/admins';
+import { admins, anyone } from '../access';
 
-const Happenings: CollectionConfig = {
+export const Happenings: CollectionConfig = {
   slug: 'happenings',
   access: {
-    read: () => true,
+    read: anyone,
     create: admins,
     update: admins,
     delete: admins,
@@ -56,5 +56,3 @@ const Happenings: CollectionConfig = {
     },
   ],
 };
-
-export default Happenings;

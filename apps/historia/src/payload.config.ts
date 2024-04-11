@@ -5,14 +5,14 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import path from 'path';
 import { buildConfig } from 'payload/config';
 
-import Happenings from './collections/Happenings';
-import Places from './collections/Places';
-import Users from './collections/Users';
-import Licenses from './collections/Licenses';
+import { Happenings } from './collections/Happenings';
+import { Places } from './collections/Places';
+import { Users } from './collections/Users';
+import { Licenses } from './collections/Licenses';
 import { Media } from './collections/Media';
 import { People } from './collections/People';
-import Organizations from './collections/Organizations';
-import Notes from './collections/Notes';
+import { Organizations } from './collections/Organizations';
+import { Notes } from './collections/Notes';
 import { Articles } from './collections/Articles';
 
 export default buildConfig({

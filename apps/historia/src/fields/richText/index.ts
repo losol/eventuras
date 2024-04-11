@@ -14,7 +14,7 @@ type RichText = (
   },
 ) => RichTextField;
 
-const richText: RichText = (
+export const richText: RichText = (
   overrides,
   additions = {
     features: [],
@@ -69,4 +69,4 @@ const richText: RichText = (
     overrides || {},
   );
 
-export default richText;
+

@@ -1,10 +1,10 @@
 import { CollectionConfig } from 'payload/types';
-import { admins } from '../access/admins';
+import { admins, anyone } from '../access';
 
 export const People: CollectionConfig = {
   slug: 'people',
   access: {
-    read: () => true,
+    read: anyone,
     create: admins,
     update: admins,
     delete: admins,

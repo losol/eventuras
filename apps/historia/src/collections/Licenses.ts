@@ -1,10 +1,10 @@
 import { CollectionConfig } from 'payload/types';
-import { admins } from '../access/admins';
+import { admins, anyone } from '../access';
 
-const Licenses: CollectionConfig = {
+export const Licenses: CollectionConfig = {
   slug: 'licenses',
   access: {
-    read: () => true,
+    read: anyone,
     create: admins,
     update: admins,
     delete: admins,
@@ -36,5 +36,3 @@ const Licenses: CollectionConfig = {
     },
   ],
 };
-
-export default Licenses;

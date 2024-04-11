@@ -1,9 +1,8 @@
 import type { CollectionConfig } from 'payload/types';
 
-import { admins } from '../access/admins';
-import { publishedOnly } from '../access/publishedOnly';
-import richText from '../fields/richText';
-import { slugField } from '../fields/slug';
+import { admins, publishedOnly } from '../access';
+import { richText } from '../fields/richText';
+import { slug } from '../fields/slug';
 import { Content } from '../blocks/content';
 import { Image } from '../blocks/image';
 import { creators } from '../fields/creators';
@@ -50,7 +49,7 @@ export const Articles: CollectionConfig = {
       blocks: [Content],
       required: true,
     },
-    slugField(),
+    slug(),
     creators,
     contentPeople,
     license,

@@ -5,7 +5,7 @@ import formatSlug from '../utilities/formatSlug';
 
 type Slug = (fieldToUse?: string, overrides?: Partial<Field>) => Field;
 
-export const slugField: Slug = (fieldToUse = 'title', overrides = {}) =>
+export const slug: Slug = (fieldToUse = 'title', overrides = {}) =>
   deepMerge<Field>(
     {
       name: 'slug',
