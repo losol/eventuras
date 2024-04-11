@@ -1,9 +1,13 @@
 import { CollectionConfig } from 'payload/types';
+import { admins } from '../access/admins';
 
 const Notes: CollectionConfig = {
   slug: 'notes',
   access: {
-    read: () => true
+    read: () => true,
+    create: admins,
+    update: admins,
+    delete: admins,
   },
   fields: [
     {

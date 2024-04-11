@@ -1,7 +1,14 @@
 import { CollectionConfig } from 'payload/types';
+import { admins } from '../access/admins';
 
 const Persons: CollectionConfig = {
   slug: 'persons',
+  access: {
+    read: () => true,
+    create: admins,
+    update: admins,
+    delete: admins,
+  },
   admin: {
     useAsTitle: 'name',
   },

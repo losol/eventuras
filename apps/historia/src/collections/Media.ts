@@ -1,10 +1,14 @@
 import path from 'path';
 import { CollectionConfig } from 'payload/types';
+import { admins } from '../access/admins';
 
 export const Media: CollectionConfig = {
   slug: 'media',
   access: {
     read: () => true,
+    create: admins,
+    update: admins,
+    delete: admins,
   },
   upload: {
     staticDir: path.resolve(__dirname, '../../../media'),
