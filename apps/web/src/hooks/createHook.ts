@@ -9,7 +9,7 @@ const useCreateHook = <T>(
   skipIfTrue?: () => boolean | undefined
 ) => {
   const [result, setResult] = useState<T | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const execute = async () => {
