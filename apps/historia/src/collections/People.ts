@@ -1,8 +1,8 @@
 import { CollectionConfig } from 'payload/types';
 import { admins } from '../access/admins';
 
-const Persons: CollectionConfig = {
-  slug: 'persons',
+export const People: CollectionConfig = {
+  slug: 'people',
   access: {
     read: () => true,
     create: admins,
@@ -53,4 +53,3 @@ const Persons: CollectionConfig = {
   ],
 };
 
-export default Persons;

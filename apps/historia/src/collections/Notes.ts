@@ -1,5 +1,6 @@
 import { CollectionConfig } from 'payload/types';
 import { admins } from '../access/admins';
+import { contentPeople } from '../fields/contentPeople';
 
 const Notes: CollectionConfig = {
   slug: 'notes',
@@ -33,15 +34,7 @@ const Notes: CollectionConfig = {
         description: 'The main content of the note.',
       },
     },
-    {
-      name: 'contentPersons',
-      type: 'relationship',
-      relationTo: 'persons',
-      hasMany: true,
-      admin: {
-        description: 'Persons related to the note.',
-      },
-    },
+    contentPeople
   ],
 };
 
