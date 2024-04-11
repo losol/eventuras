@@ -1,7 +1,14 @@
 import { CollectionConfig } from 'payload/types';
+import { admins } from '../access/admins';
 
 const Licenses: CollectionConfig = {
   slug: 'licenses',
+  access: {
+    read: () => true,
+    create: admins,
+    update: admins,
+    delete: admins,
+  },
   admin: {
     useAsTitle: 'name',
   },

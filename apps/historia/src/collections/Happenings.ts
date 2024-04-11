@@ -1,9 +1,13 @@
 import { CollectionConfig } from 'payload/types';
+import { admins } from '../access/admins';
 
 const Happenings: CollectionConfig = {
   slug: 'happenings',
   access: {
     read: () => true,
+    create: admins,
+    update: admins,
+    delete: admins,
   },
   admin: {
     useAsTitle: 'name',
