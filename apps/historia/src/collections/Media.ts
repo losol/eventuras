@@ -1,6 +1,9 @@
 import path from 'path';
 import { CollectionConfig } from 'payload/types';
 import { admins } from '../access/admins';
+import { contentLocations } from '../fields/contentLocations';
+import { creators } from '../fields/creators';
+import { license } from '../fields/license';
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -44,22 +47,8 @@ export const Media: CollectionConfig = {
         description: 'A text description of the media for accessibility and SEO.'
       },
     },
-    {
-      name: 'license',
-      type: 'relationship',
-      relationTo: 'licenses',
-      admin: {
-        description: 'The license governing the use of this media.'
-      },
-    },
-    {
-      name: 'author',
-      type: 'relationship',
-      relationTo: 'persons',
-      admin: {
-        description: 'The name of the creator or author of the media.'
-      },
-    },
+    license,
+    creators,
     {
       name: 'sourceUrl',
       type: 'text',
@@ -75,22 +64,7 @@ export const Media: CollectionConfig = {
         description: 'The entity responsible for making the media available'
       },
     },
-    {
-      name: 'contentLocation',
-      type: 'relationship',
-      relationTo: 'places',
-      admin: {
-        description: 'The location depicted or represented in the media.'
-      },
-    },
-    {
-      name: 'contentPersons',
-      type: 'relationship',
-      relationTo: 'persons',
-      hasMany: true,
-      admin: {
-        description: 'The people depicted or represented in the media.'
-      },
-    }
+    contentLocations,
+
   ],
 };

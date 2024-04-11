@@ -10,9 +10,10 @@ import Places from './collections/Places';
 import Users from './collections/Users';
 import Licenses from './collections/Licenses';
 import { Media } from './collections/Media';
-import Persons from './collections/Persons';
+import { People } from './collections/People';
 import Organizations from './collections/Organizations';
 import Notes from './collections/Notes';
+import { Articles } from './collections/Articles';
 
 export default buildConfig({
   admin: {
@@ -20,7 +21,7 @@ export default buildConfig({
     bundler: webpackBundler(),
   },
   editor: lexicalEditor({}),
-  collections: [Happenings, Licenses, Media, Notes, Organizations, Persons, Places, Users],
+  collections: [Articles, Happenings, Licenses, Media, Notes, Organizations, People, Places, Users],
   serverURL: process.env.CMS_SERVER_URL || 'http://localhost:3300',
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
