@@ -38,7 +38,7 @@ const AdminEventList: React.FC<AdminEventListProps> = ({
         organizationId,
         includeDraftEvents: true,
         includePastEvents: includePastEvents,
-        start: includePastEvents ? undefined : aMonthAgo() as LocalDate,
+        start: includePastEvents ? undefined : (aMonthAgo() as LocalDate),
         period: PeriodMatchingKind.CONTAIN,
         page,
         count: pageSize,
