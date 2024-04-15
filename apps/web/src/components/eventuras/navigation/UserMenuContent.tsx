@@ -1,5 +1,6 @@
 'use client';
 import { Button } from '@eventuras/ui';
+import { DATA_TEST_ID } from '@eventuras/utils';
 
 import Menu from '@/components/Menu';
 
@@ -21,7 +22,11 @@ export type UserMenuContentLoggedOutProps = {
 
 const UserMenuContentLoggedout = (props: UserMenuContentLoggedOutProps) => {
   return (
-    <Button onClick={() => props.onLoginRequested()} variant="primary" data-test-id="login-button">
+    <Button
+      onClick={() => props.onLoginRequested()}
+      variant="primary"
+      {...{ [DATA_TEST_ID]: 'login-button' }}
+    >
       {props.languagePack.loginLabel}
     </Button>
   );
@@ -38,9 +43,11 @@ const UserMenuContentLoggedIn = (props: UserMenuContentLoggedInProps) => {
   const { accountLabel, adminLabel, logoutButtonLabel, userLabel } = props.languagePack;
   return (
     <Menu>
-      <Menu.Trigger data-test-id="logged-in-menu-button">{props.menuLabel}</Menu.Trigger>
+      <Menu.Trigger {...{ [DATA_TEST_ID]: 'logged-in-menu-button' }}>
+        {props.menuLabel}
+      </Menu.Trigger>
       <Menu.Items>
-        <Menu.Link data-test-id="profile-link" href="/user" closeOnClick={true}>
+        <Menu.Link {...{ [DATA_TEST_ID]: 'profile-link' }} href="/user" closeOnClick={true}>
           {userLabel}
         </Menu.Link>
         <Menu.Link href="/user/account" closeOnClick={true}>
@@ -51,7 +58,10 @@ const UserMenuContentLoggedIn = (props: UserMenuContentLoggedInProps) => {
             {adminLabel}
           </Menu.Link>
         )}
-        <Menu.Button onClick={() => props.onLogoutRequested()} data-test-id="logout-button">
+        <Menu.Button
+          onClick={() => props.onLogoutRequested()}
+          {...{ [DATA_TEST_ID]: 'logout-button' }}
+        >
           {logoutButtonLabel}
         </Menu.Button>
       </Menu.Items>

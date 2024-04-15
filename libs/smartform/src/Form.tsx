@@ -1,28 +1,29 @@
 'use client';
 
-import React, { FC, ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 import { FormProvider, useForm, UseFormProps } from 'react-hook-form';
+import { DATA_TEST_ID } from '@eventuras/utils';
 
 interface FormProps extends UseFormProps {
   children: ReactNode;
   onSubmit: (data: any) => void;
   className?: string;
-  dataTestId?: string;
+  [DATA_TEST_ID]?: string;
 }
 
 const defaultFormClassName = 'px-8 pt-6 pb-8 mb-4';
 
-const Form: FC<FormProps> = ({ defaultValues, children, onSubmit, className, dataTestId }) => {
-  const methods = useForm({ defaultValues });
+const Form: FC<FormProps> = (props) => {
+  const methods = useForm({ defaultValues: props.defaultValues });
 
   return (
     <FormProvider {...methods}>
       <form
-        onSubmit={methods.handleSubmit(onSubmit)}
-        className={className ?? defaultFormClassName}
-        data-test-id={dataTestId}
+        onSubmit={methods.handleSubmit(props.onSubmit)}
+        className={props.className ?? defaultFormClassName}
+        {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}
       >
-        {children}
+        {props.children}
       </form>
     </FormProvider>
   );

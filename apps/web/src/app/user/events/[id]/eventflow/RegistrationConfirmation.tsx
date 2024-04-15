@@ -1,5 +1,6 @@
 import { EventDto, PaymentProvider, ProductDto } from '@eventuras/sdk';
 import { Button, Heading } from '@eventuras/ui';
+import { DATA_TEST_ID } from '@eventuras/utils';
 import createTranslation from 'next-translate/createTranslation';
 
 import { PaymentFormValues, ProductSelected } from '@/types';
@@ -64,7 +65,7 @@ const RegistrationConfirmation: React.FC<RegistrationConfirmationProps> = ({
           <Button
             variant="primary"
             onClick={onSubmit}
-            data-test-id="registration-confirmation-button"
+            {...{ [DATA_TEST_ID]: 'registration-confirmation-button' }}
           >
             {t('common:labels.confirmRegistration')}
           </Button>

@@ -1,4 +1,5 @@
 import { ProductOrderDto } from '@eventuras/sdk';
+import { DATA_TEST_ID } from '@eventuras/utils';
 import createTranslation from 'next-translate/createTranslation';
 import { ReactElement } from 'react';
 
@@ -48,7 +49,7 @@ const UserEventRegistrationCard = ({
           variant="button-primary"
           bgDark
           stretch
-          data-test-id={eventId}
+          {...{ [DATA_TEST_ID]: eventId }}
         >
           {t('common:buttons.user-event-page')}
         </Link>

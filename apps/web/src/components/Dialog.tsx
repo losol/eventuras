@@ -1,3 +1,4 @@
+import { DATA_TEST_ID } from '@eventuras/utils';
 import { Dialog as HeadlessDialog, Transition } from '@headlessui/react';
 import { Fragment, ReactNode } from 'react';
 
@@ -6,7 +7,7 @@ export type DialogProps = {
   onClose: () => void;
   title: string;
   children: ReactNode;
-  dataTestId?: string;
+  [DATA_TEST_ID]?: string;
 };
 
 export default function Dialog(props: DialogProps) {
@@ -26,7 +27,10 @@ export default function Dialog(props: DialogProps) {
             <div className="fixed inset-0 bg-black/25" />
           </Transition.Child>
 
-          <div className="fixed inset-0 overflow-y-auto" data-test-id={props.dataTestId}>
+          <div
+            className="fixed inset-0 overflow-y-auto"
+            {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}
+          >
             <div className="flex min-h-full items-center justify-center p-4 text-center">
               <Transition.Child
                 as={Fragment}

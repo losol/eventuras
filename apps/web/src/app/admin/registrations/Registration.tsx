@@ -17,7 +17,7 @@ import {
   Section,
   Term,
 } from '@eventuras/ui';
-import { Logger } from '@eventuras/utils';
+import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 
@@ -137,7 +137,7 @@ const Registration = ({ registration, adminMode = false }: RegistrationProps) =>
       <DescriptionList>
         <Item>
           <Term>{t('common:registrations.labels.id')}</Term>
-          <Definition dataTestId="registration-registrationId">
+          <Definition {...{ [DATA_TEST_ID]: 'registration-registrationId' }}>
             {registration.registrationId}
           </Definition>
         </Item>

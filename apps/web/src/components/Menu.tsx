@@ -1,3 +1,4 @@
+import { DATA_TEST_ID } from '@eventuras/utils';
 import {
   Menu as HeadlessMenu,
   MenuButtonProps as HeadlessMenuButtonProps,
@@ -34,11 +35,11 @@ const ChevronIcon: FC = () => (
 
 interface MenuTriggerProps extends HeadlessMenuButtonProps<'button'> {
   children: ReactNode;
-  dataTestId?: string;
+  [DATA_TEST_ID]?: string;
 }
 
 const MenuTrigger: FC<MenuTriggerProps> = props => (
-  <HeadlessMenu.Button className={styles.menuTrigger} data-test-id={props.dataTestId}>
+  <HeadlessMenu.Button className={styles.menuTrigger} {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}>
     {props.children}
     <ChevronIcon />
   </HeadlessMenu.Button>
@@ -69,7 +70,7 @@ interface MenuLinkProps {
   closeOnClick?: boolean;
   href: string;
   children: ReactNode;
-  dataTestId?: string;
+  [DATA_TEST_ID]?: string;
 }
 const MenuLink: FC<MenuLinkProps> = props => (
   <HeadlessMenu.Item as="li">
@@ -86,7 +87,11 @@ const MenuLink: FC<MenuLinkProps> = props => (
           }
         }}
       >
-        <Link href={props.href} className={styles.menuItem} data-test-id={props.dataTestId}>
+        <Link
+          href={props.href}
+          className={styles.menuItem}
+          {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}
+        >
           {props.children}
         </Link>
       </div>
@@ -97,12 +102,16 @@ const MenuLink: FC<MenuLinkProps> = props => (
 interface MenuButtonProps {
   children: ReactNode;
   onClick: () => void;
-  dataTestId?: string;
+  [DATA_TEST_ID]?: string;
 }
 
 const MenuButton: FC<MenuButtonProps> = props => (
   <HeadlessMenu.Item as="li">
-    <button onClick={props.onClick} className={styles.menuItem} data-test-id={props.dataTestId}>
+    <button
+      onClick={props.onClick}
+      className={styles.menuItem}
+      {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}
+    >
       {props.children}
     </button>
   </HeadlessMenu.Item>

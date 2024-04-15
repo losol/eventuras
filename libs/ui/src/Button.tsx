@@ -23,7 +23,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   bgDark?: boolean;
   variant?: 'primary' | 'secondary' | 'outline' | 'light' | 'transparent';
   block?: boolean;
-  dataTestId?: string;
+  ['data-test-id']?: string;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps & BoxProps>((props, ref) => {
@@ -58,7 +58,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps & BoxProps>((prop
       onClick={props.onClick}
       className={buttonClassName}
       type={props.type || 'button'}
-      data-test-id={props.dataTestId}
+      data-test-id={props['data-test-id']}
     >
       {props.leftIcon && <span className={`mr-2 ${textColor}`}>{props.leftIcon}</span>}
       <span className={textColor}>{props.children}</span>

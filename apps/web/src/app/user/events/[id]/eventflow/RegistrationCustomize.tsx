@@ -2,6 +2,7 @@
 
 import { ProductDto } from '@eventuras/sdk';
 import { Button } from '@eventuras/ui';
+import { DATA_TEST_ID } from '@eventuras/utils';
 import createTranslation from 'next-translate/createTranslation';
 import { useForm } from 'react-hook-form';
 
@@ -45,7 +46,7 @@ const RegistrationCustomize = ({
         />
         {onBack && <Button onClick={onBack}>{t('common:buttons.back')}</Button>}
 
-        <Button type="submit" data-test-id="registration-customize-submit-button">
+        <Button type="submit" {...{ [DATA_TEST_ID]: 'registration-customize-submit-button' }}>
           {t('common:buttons.continue')}
         </Button>
       </form>

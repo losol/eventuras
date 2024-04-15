@@ -3,7 +3,7 @@
 import type { NewProductDto, ProductDto } from '@eventuras/sdk';
 import { Form, Input, NumberInput } from '@eventuras/smartform';
 import { Button, Heading } from '@eventuras/ui';
-import { Logger } from '@eventuras/utils';
+import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { Dialog } from '@headlessui/react';
 import createTranslation from 'next-translate/createTranslation';
 import { useEffect, useState } from 'react';
@@ -116,28 +116,28 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 name="name"
                 label={t('common:products.labels.name')}
                 placeholder={t('common:products.labels.name')}
-                dataTestId="product-name-input"
+                {...{ [DATA_TEST_ID]: 'product-name-input' }}
                 required
               />
               <Input
                 name="description"
                 label={t('common:products.labels.description')}
                 placeholder={t('common:products.labels.description')}
-                dataTestId="product-description-input"
+                {...{ [DATA_TEST_ID]: 'product-description-input' }}
                 multiline
               />
               <NumberInput
                 name="price"
                 label={t('common:products.labels.price')}
                 placeholder="1234"
-                dataTestId="product-price-input"
+                {...{ [DATA_TEST_ID]: 'product-price-input' }}
                 required
               />
               <NumberInput
                 name="vatPercent"
                 label={t('common:products.labels.vatPercent')}
                 placeholder="0"
-                dataTestId="product-vat-input"
+                {...{ [DATA_TEST_ID]: 'product-vat-input' }}
                 defaultValue={0}
                 required
               />
@@ -145,7 +145,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 name="minimumQuantity"
                 label={t('common:products.labels.minimumQuantity')}
                 placeholder="0"
-                dataTestId="product-minimum-quantity-input"
+                {...{ [DATA_TEST_ID]: 'product-minimum-quantity-input' }}
               />
               <Button type="submit" disabled={apiState.loading}>
                 {buttonText}

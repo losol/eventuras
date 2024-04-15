@@ -2,6 +2,7 @@
 
 import type { EventDto, ProductDto } from '@eventuras/sdk';
 import { Button } from '@eventuras/ui';
+import { DATA_TEST_ID } from '@eventuras/utils';
 import createTranslation from 'next-translate/createTranslation';
 import React, { useState } from 'react';
 
@@ -49,7 +50,7 @@ const EventProductsEditor: React.FC<EventProductsEditorProps> = ({
 
   return (
     <div>
-      <Button data-test-id="add-product-button" onClick={() => openProductModal()}>
+      <Button {...{ [DATA_TEST_ID]: 'add-product-button' }} onClick={() => openProductModal()}>
         {t('admin:products.labels.addnewproduct')}
       </Button>
 

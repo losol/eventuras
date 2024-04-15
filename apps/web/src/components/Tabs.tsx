@@ -1,6 +1,6 @@
+import { DATA_TEST_ID } from '@eventuras/utils';
 import React, { ReactElement } from 'react';
 import { Tab, TabList, TabPanel, Tabs as AriaTabs } from 'react-aria-components';
-
 /**
  * Props for individual tab items.
  * @typedef {Object} TabItemProps
@@ -16,7 +16,7 @@ import { Tab, TabList, TabPanel, Tabs as AriaTabs } from 'react-aria-components'
 type TabItemProps = {
   title: string;
   children: React.ReactNode | null;
-  dataTestId?: string;
+  [DATA_TEST_ID]?: string;
 };
 
 type TabsProps = {

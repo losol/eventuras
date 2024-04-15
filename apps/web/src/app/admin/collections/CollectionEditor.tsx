@@ -4,7 +4,7 @@ import { MarkdownInput } from '@eventuras/markdowninput';
 import { EventCollectionDto, EventDto } from '@eventuras/sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
 import { AppNotificationType, Button, Loading, Section } from '@eventuras/ui';
-import { Logger } from '@eventuras/utils';
+import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { IconTrash } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -158,7 +158,7 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
         <Form
           defaultValues={eventCollection}
           onSubmit={onSubmitForm}
-          data-test-id="event-collection-edit-form"
+          {...{ [DATA_TEST_ID]: 'event-collection-edit-form' }}
         >
           <Input name="name" label="Name" placeholder="Collection Name" required />
           <MarkdownInput
