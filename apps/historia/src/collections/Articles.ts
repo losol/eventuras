@@ -6,7 +6,7 @@ import { slug } from '../fields/slug';
 import { Content } from '../blocks/content';
 import { Image } from '../blocks/image';
 import { creators } from '../fields/creators';
-import { contentPeople } from '../fields/contentPeople';
+import { contentPersons } from '../fields/contentPersons';
 import { license } from '../fields/license';
 
 export const Articles: CollectionConfig = {
@@ -51,7 +51,7 @@ export const Articles: CollectionConfig = {
     },
     slug(),
     creators,
-    contentPeople,
+    contentPersons,
     license,
     {
       name: 'publishedOn',

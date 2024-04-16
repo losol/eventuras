@@ -14,7 +14,7 @@ export interface Config {
     media: Media;
     notes: Note;
     organizations: Organization;
-    people: Person;
+    persons: Person;
     places: Place;
     users: User;
     'payload-preferences': PayloadPreference;
@@ -81,7 +81,7 @@ export interface Article {
         id?: string | null;
       }[]
     | null;
-  contentPeople?: (string | Person)[] | null;
+  contentPersons?: (string | Person)[] | null;
   license?: (string | null) | License;
   publishedOn: string;
   relatedArticles?: (string | Article)[] | null;
@@ -107,6 +107,7 @@ export interface Media {
     | null;
   sourceUrl?: string | null;
   publisher?: (string | null) | Organization;
+  contentPersons?: (string | Person)[] | null;
   contentLocations?: (string | Place)[] | null;
   updatedAt: string;
   createdAt: string;
@@ -142,7 +143,7 @@ export interface Media {
 export interface License {
   id: string;
   name: string;
-  abbreviation: string;
+  abbreviation?: string | null;
   description?: string | null;
   url?: string | null;
   updatedAt: string;
@@ -150,7 +151,7 @@ export interface License {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "people".
+ * via the `definition` "persons".
  */
 export interface Person {
   id: string;
@@ -233,7 +234,7 @@ export interface Note {
     };
     [k: string]: unknown;
   } | null;
-  contentPeople?: (string | Person)[] | null;
+  contentPersons?: (string | Person)[] | null;
   updatedAt: string;
   createdAt: string;
 }
