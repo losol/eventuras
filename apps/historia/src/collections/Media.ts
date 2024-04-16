@@ -4,6 +4,7 @@ import { admins, anyone } from '../access';
 import { contentLocations } from '../fields/contentLocations';
 import { creators } from '../fields/creators';
 import { license } from '../fields/license';
+import { contentPersons } from '../fields/contentPersons';
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -64,6 +65,7 @@ export const Media: CollectionConfig = {
         description: 'The entity responsible for making the media available'
       },
     },
+    contentPersons,
     contentLocations,
 
   ],

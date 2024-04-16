@@ -8,7 +8,7 @@ export const creators: Field = {
     {
       name: 'person',
       type: 'relationship',
-      relationTo: 'people',
+      relationTo: 'persons',
       required: true
     },
     {

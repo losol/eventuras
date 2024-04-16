@@ -1,9 +1,12 @@
 import { CollectionConfig } from 'payload/types';
 import { admins, anyone } from '../access';
-import { contentPeople } from '../fields/contentPeople';
+import { contentPersons } from '../fields/contentPersons';
 
 export const Notes: CollectionConfig = {
   slug: 'notes',
+  admin: {
+    useAsTitle: 'title',
+  },
   access: {
     read: anyone,
     create: admins,
@@ -34,7 +37,7 @@ export const Notes: CollectionConfig = {
         description: 'The main content of the note.',
       },
     },
-    contentPeople
+    contentPersons
   ],
 };
 

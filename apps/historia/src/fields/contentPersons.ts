@@ -1,9 +1,9 @@
 import { Field } from 'payload/types';
 
-export const contentPeople: Field = {
-  name: 'contentPeople',
+export const contentPersons: Field = {
+  name: 'contentPersons',
   type: 'relationship',
-  relationTo: 'people',
+  relationTo: 'persons',
   hasMany: true,
   admin: {
     description: 'The people in the content.'
