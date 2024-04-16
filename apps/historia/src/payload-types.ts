@@ -173,7 +173,6 @@ export interface Organization {
   url?: string | null;
   logo?: string | Media | null;
   location?: (string | null) | Place;
-  parentOrganization?: (string | null) | Organization;
   updatedAt: string;
   createdAt: string;
 }
@@ -193,7 +192,6 @@ export interface Place {
     postalCode?: string | null;
     country?: string | null;
   };
-  parentPlace?: (string | null) | Place;
   updatedAt: string;
   createdAt: string;
 }

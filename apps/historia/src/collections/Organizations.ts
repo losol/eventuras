@@ -51,13 +51,5 @@ export const Organizations: CollectionConfig = {
         description: 'The location of the organization.',
       },
     },
-    {
-      name: 'parentOrganization',
-      type: 'relationship',
-      relationTo: 'organizations',
-      admin: {
-        description: 'The parent organization of this organization.',
-      },
-    },
   ],
 };
