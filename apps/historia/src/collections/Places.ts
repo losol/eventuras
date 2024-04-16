@@ -43,15 +43,6 @@ export const Places: CollectionConfig = {
         { name: 'country', type: 'text' },
       ],
     },
-    {
-      name: 'parentPlace',
-      label: 'Contained In',
-      type: 'relationship',
-      relationTo: 'places',
-      admin: {
-        description: 'Select the place this one is contained in, if any.',
-      },
-    },
   ],
 };
 
