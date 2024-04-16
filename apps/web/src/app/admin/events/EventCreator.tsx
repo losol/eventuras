@@ -2,7 +2,7 @@
 import { Input } from '@eventuras/forms';
 import { ApiError, EventDto, EventInfoStatus, Eventuras } from '@eventuras/sdk';
 import { Button, Heading } from '@eventuras/ui';
-import { Logger } from '@eventuras/utils';
+import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
@@ -126,7 +126,7 @@ const EventCreator = () => {
             {...titleRegistration}
             label="Event Title"
             placeholder="Event Title"
-            data-test-id="event-title-input"
+            {...{ [DATA_TEST_ID]: 'event-title-input' }}
             errors={errors}
           />
         </fieldset>
@@ -134,7 +134,7 @@ const EventCreator = () => {
         <Button
           loading={apiState.loading}
           type="submit"
-          data-test-id="create-event-submit-button"
+          {...{ [DATA_TEST_ID]: 'create-event-submit-button' }}
           onClick={() => {
             // set guid as slug
             setValue('slug', crypto.randomUUID());

@@ -1,3 +1,4 @@
+import { DATA_TEST_ID } from '@eventuras/utils';
 import { Portal } from '.';
 
 export enum AppNotificationType {
@@ -40,9 +41,7 @@ const AppNotifications: React.FC<AppNotificationsProps> = ({ appNotifications = 
           {appNotifications.map(({ id, message, type = AppNotificationType.INFO }) => (
             <div
               key={id}
-              data-test-id={
-                type === AppNotificationType.SUCCESS ? 'notification-success' : 'notification-error'
-              }
+              {...{ [DATA_TEST_ID]: (type === AppNotificationType.SUCCESS ? 'notification-success' : 'notification-error') }}
               className={getNotificationClassName(type)}
             >
               {message}

@@ -35,7 +35,7 @@ export type LoggerOptions = {
   namespace?: string;
 };
 
-class Logger {
+export class Logger {
   private static debugCache: DebugCache = {};
   private static pinoLogger = pino();
   private static getDebug(namespace: string): createDebug.Debugger {
@@ -82,5 +82,3 @@ class Logger {
     Logger.pinoLogger.fatal.bind(Logger.pinoLogger),
   ).bind(Logger);
 }
-
-export default Logger;

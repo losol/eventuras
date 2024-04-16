@@ -1,5 +1,6 @@
 import Checkbox, { CheckBoxDescription, CheckBoxLabel } from '@eventuras/forms/src/inputs/Checkbox';
 import { ProductDto } from '@eventuras/sdk';
+import { DATA_TEST_ID } from '@eventuras/utils';
 
 import { ProductSelected } from '@/types';
 
@@ -16,7 +17,7 @@ const ProductSelection = ({ products, register, selectedProducts }: ProductSelec
           return (
             <Checkbox
               key={product.productId}
-              data-test-id="product-selection-checkbox"
+              {...{ [DATA_TEST_ID]: 'product-selection-checkbox' }}
               id={product.productId}
               title={product.name}
               description={product.description}

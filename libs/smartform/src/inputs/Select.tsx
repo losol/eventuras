@@ -4,12 +4,13 @@ import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { InputLabel } from '@eventuras/forms';
+import { DATA_TEST_ID } from '@eventuras/utils';
 
 export type SelectProps = {
   label?: string;
   name: string;
   options: { value: string; label: string }[];
-  dataTestId?: string;
+  [DATA_TEST_ID]?: string;
 };
 
 const styles = {
@@ -27,7 +28,8 @@ const styles = {
   },
 };
 
-const Select: React.FC<SelectProps> = ({ label, name, options, dataTestId }) => {
+const Select: React.FC<SelectProps> = (props) => {
+  const { label, name, options } = props
   const { control } = useFormContext();
 
   return (
@@ -41,7 +43,7 @@ const Select: React.FC<SelectProps> = ({ label, name, options, dataTestId }) => 
             <Listbox.Button
               className={styles.button.base}
               id={`${name}`}
-              data-test-id={`${dataTestId}`}
+              {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}
             >
               {options.find(option => option.value === value)?.label ?? 'Select an option'}
 

@@ -4,7 +4,7 @@ import { Fieldset } from '@eventuras/forms';
 import { UserDto, UserFormDto } from '@eventuras/sdk';
 import { Form, Input } from '@eventuras/smartform';
 import { Button } from '@eventuras/ui';
-import { Logger } from '@eventuras/utils';
+import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import createTranslation from 'next-translate/createTranslation';
 import { FC, useState } from 'react';
 
@@ -14,7 +14,7 @@ import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 interface UserEditorProps {
   user?: UserDto;
   onUserUpdated?: (updatedUser: UserDto) => void;
-  dataTestId?: string;
+  [DATA_TEST_ID]?: string;
   adminMode?: boolean;
   submitButtonLabel?: string;
 }
@@ -26,13 +26,8 @@ const regex = {
   lettersSpaceAndHyphen: /^[\p{L} -]+$/u,
 };
 
-const UserEditor: FC<UserEditorProps> = ({
-  adminMode,
-  user,
-  onUserUpdated,
-  submitButtonLabel,
-  dataTestId,
-}) => {
+const UserEditor: FC<UserEditorProps> = props => {
+  const { adminMode, user, onUserUpdated, submitButtonLabel } = props;
   const { t } = createTranslation('common');
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const [isUpdating, setIsUpdating] = useState(false);
@@ -114,7 +109,7 @@ const UserEditor: FC<UserEditorProps> = ({
   };
 
   return (
-    <Form onSubmit={onSubmit} defaultValues={user} dataTestId={dataTestId}>
+    <Form onSubmit={onSubmit} defaultValues={user} {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}>
       {/* Given Name Field */}
       <Fieldset label={t('common:account.name.legend')}>
         <Input
@@ -130,7 +125,7 @@ const UserEditor: FC<UserEditorProps> = ({
               message: t('common:account.name.validationText'),
             },
           }}
-          dataTestId="accounteditor-form-givenname"
+          {...{ [DATA_TEST_ID]: 'accounteditor-form-givenname' }}
         />
 
         <Input
@@ -145,7 +140,7 @@ const UserEditor: FC<UserEditorProps> = ({
               message: t('common:account.name.validationText'),
             },
           }}
-          dataTestId="accounteditor-form-middlename"
+          {...{ [DATA_TEST_ID]: 'accounteditor-form-middlename' }}
         />
         {/* Family Name Field */}
         <Input
@@ -160,7 +155,7 @@ const UserEditor: FC<UserEditorProps> = ({
               message: t('common:account.name.validationText'),
             },
           }}
-          dataTestId="accounteditor-form-familyname"
+          {...{ [DATA_TEST_ID]: 'accounteditor-form-familyname' }}
         />
       </Fieldset>
       <Fieldset label={t('common:account.contactInfo.legend')}>
@@ -193,7 +188,7 @@ const UserEditor: FC<UserEditorProps> = ({
               message: t('user:account.phoneNumber.invalidFormatText'),
             },
           }}
-          dataTestId="accounteditor-form-phonenumber"
+          {...{ [DATA_TEST_ID]: 'accounteditor-form-phonenumber' }}
         />
       </Fieldset>
       <Fieldset label={t('common:account.moreInfo.legend')}>
@@ -201,18 +196,18 @@ const UserEditor: FC<UserEditorProps> = ({
           name="professionalIdentityNumber"
           label={t('common:account.professionalIdentityNumber.label')}
           description={t('common:account.professionalIdentityNumber.description')}
-          dataTestId="accounteditor-form-professionalIdentityNumber"
+          {...{ [DATA_TEST_ID]: 'accounteditor-form-professionalIdentityNumber' }}
         />
         <Input
           name="supplementaryInformation"
           label={t('common:account.supplementaryInformation.label')}
           description={t('common:account.supplementaryInformation.description')}
-          dataTestId="accounteditor-form-supplementaryInformation"
+          {...{ [DATA_TEST_ID]: 'accounteditor-form-supplementaryInformation' }}
         />
       </Fieldset>
 
       {/* Submit Button */}
-      <Button type="submit" data-test-id="account-update-button" loading={isUpdating}>
+      <Button type="submit" {...{ [DATA_TEST_ID]: 'account-update-button' }} loading={isUpdating}>
         {getButtonLabel()}
       </Button>
     </Form>

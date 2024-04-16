@@ -1,4 +1,5 @@
 import { Container, Heading } from '@eventuras/ui';
+import { DATA_TEST_ID } from '@eventuras/utils';
 import createTranslation from 'next-translate/createTranslation';
 
 import Wrapper from '@/components/eventuras/Wrapper';
@@ -19,7 +20,7 @@ const AdminPage = () => {
           <Link
             href={`/admin/events/create`}
             variant="button-primary"
-            data-test-id="add-event-button"
+            {...{ [DATA_TEST_ID]: 'add-event-button' }}
           >
             {t('admin:events.labes.create')}
           </Link>

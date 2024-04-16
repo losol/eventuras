@@ -4,6 +4,7 @@ import { formStyles } from "../styles/formStyles";
 import { InputLabel } from "../common/InputLabel";
 import { InputError } from "../common/InputError";
 import { InputDescription } from "../common/InputDescription";
+import { DATA_TEST_ID } from '@eventuras/utils';
 
 interface ExtendedInputProps extends InputProps {
   multiline?: boolean;
@@ -20,7 +21,6 @@ export const Input = React.forwardRef<HTMLElement, ExtendedInputProps>(({
   className,
   errors,
   disabled,
-  dataTestId,
   multiline = false,
   ...rest
 }, forwardedRef) => {
@@ -47,7 +47,6 @@ export const Input = React.forwardRef<HTMLElement, ExtendedInputProps>(({
     placeholder,
     disabled,
     'aria-invalid': hasError ? true : undefined,
-    'data-test-id': dataTestId,
     name,
     ...rest,
   };
@@ -62,7 +61,7 @@ export const Input = React.forwardRef<HTMLElement, ExtendedInputProps>(({
       {label && <InputLabel htmlFor={id}>{label}</InputLabel>}
       {description && <InputDescription>{description}</InputDescription>}
       {multiline ? (
-        <textarea ref={assignRef} {...commonProps} />
+        <textarea ref={assignRef} {...commonProps} {...{ [DATA_TEST_ID]: commonProps[DATA_TEST_ID] }} />
       ) : (
         <input ref={assignRef} type={type} {...commonProps} />
       )}

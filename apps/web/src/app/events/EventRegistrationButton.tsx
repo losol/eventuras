@@ -1,5 +1,6 @@
 import { EventDto, EventInfoStatus } from '@eventuras/sdk';
 import { Badge } from '@eventuras/ui';
+import { DATA_TEST_ID } from '@eventuras/utils';
 import createTranslation from 'next-translate/createTranslation';
 
 import Link from '@/components/Link';
@@ -41,7 +42,7 @@ export default function EventRegistrationButton({ event }: EventRegistrationButt
         href={`/user/events/${event.id}`}
         variant="button-primary"
         block
-        data-test-id="event-registration-button"
+        {...{ [DATA_TEST_ID]: 'event-registration-button' }}
       >
         {t('common:buttons.register-cta')}
       </Link>

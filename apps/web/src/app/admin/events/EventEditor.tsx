@@ -13,11 +13,11 @@ import {
   Select,
 } from '@eventuras/smartform';
 import { Button } from '@eventuras/ui';
-import { Logger } from '@eventuras/utils';
+import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler } from 'react-hook-form';
 
 import Tabs from '@/components/Tabs';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
@@ -88,7 +88,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
     <Form
       defaultValues={eventinfo}
       onSubmit={onSubmitForm}
-      data-test-id="event-edit-form"
+      {...{ [DATA_TEST_ID]: 'event-edit-form' }}
       shouldUnregister={false}
     >
       <HiddenInput name="organizationId" value={Environment.NEXT_PUBLIC_ORGANIZATION_ID} />
@@ -128,7 +128,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
                 value: value,
                 label: value,
               }))}
-              dataTestId="event-status-select-button"
+              {...{ [DATA_TEST_ID]: 'event-status-select-button' }}
             />
             <NumberInput
               name="maxParticipants"
@@ -222,7 +222,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
               label="Id"
               placeholder="Event Id"
               disabled
-              dataTestId="eventeditor-form-eventid"
+              {...{ [DATA_TEST_ID]: 'eventeditor-form-eventid' }}
             />
             <Input name="slug" label="Slug" placeholder="Event Slug" disabled />
             <Input

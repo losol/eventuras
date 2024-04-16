@@ -1,3 +1,4 @@
+import { DATA_TEST_ID } from '@eventuras/utils';
 import React from 'react';
 
 import { BoxProps, spacingClassName } from '../../../../libs/ui/src/Box';
@@ -16,7 +17,7 @@ export interface LinkProps {
   block?: boolean;
   bgDark?: boolean;
   stretch?: boolean;
-  dataTestId?: string;
+  [DATA_TEST_ID]?: string;
 }
 
 export const Link = React.forwardRef<HTMLAnchorElement, LinkProps & BoxProps>((props, ref) => {
@@ -28,7 +29,6 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps & BoxProps>((p
     block = false,
     variant,
     stretch,
-    dataTestId,
     ...boxProps
   } = props;
 
@@ -59,7 +59,7 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps & BoxProps>((p
   ].join(' ');
 
   return (
-    <a href={href} className={classes} ref={ref} data-test-id={dataTestId}>
+    <a href={href} className={classes} ref={ref} {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}>
       {children}
     </a>
   );

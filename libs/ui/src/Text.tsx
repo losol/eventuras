@@ -1,10 +1,12 @@
+import { DATA_TEST_ID } from "@eventuras/utils";
+
 interface TextProps {
   children?: React.ReactNode;
   text?: string | null | undefined;
   as?: 'div' | 'span' | 'p';
   className?: string;
   spacingClassName?: string;
-  dataTestId?: string;
+  [DATA_TEST_ID]?: string;
 }
 
 const Text: React.FC<TextProps> = props => {
@@ -27,7 +29,7 @@ const Text: React.FC<TextProps> = props => {
   return (
     <Component
       className={`${className} ${spacingClassName}`.trim()}
-      data-test-id={props.dataTestId}
+      {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}
     >
       {content}
     </Component>

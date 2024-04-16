@@ -40,9 +40,12 @@ export type ValidInputTypes =
  * @property {string} [description] - Optional. Description of the input element, providing additional context.
  * @property {string} [className] - Optional. Additional CSS classes for styling the input element.
  * @property {{ [key: string]: { message: string } }} [errors] - Optional. Object containing error messages, keyed by input names.
- * @property {string} [dataTestId] - Optional. Attribute for identifying elements in tests.
+ * @property {string} [data-test-id] - Optional. Attribute for identifying elements in tests.
  * @property {[x: string]: any} - Optional. Allows for any other properties not explicitly defined, ensuring flexibility.
  */
+
+import { DATA_TEST_ID } from '@eventuras/utils';
+
 export interface InputProps {
   id?: string;
   name: string;
@@ -52,6 +55,6 @@ export interface InputProps {
   description?: string;
   className?: string;
   errors?: { [key: string]: { message: string; }; };
-  dataTestId?: string;
+  [DATA_TEST_ID]?: string;
   [x: string]: any;
 }
