@@ -1,4 +1,5 @@
 const ns = { namespace: 'e2e' };
+import { EventDto } from '@eventuras/sdk';
 import { Logger } from '@eventuras/utils';
 import { chromium, expect, Page, test as setup } from '@playwright/test';
 import fs from 'fs';
@@ -78,6 +79,7 @@ export const createEvent = async (page: Page, eventName: string) => {
   Logger.info(ns, 'create simple event', eventName);
   await page.goto('/admin');
   await page.waitForLoadState('load');
+  // Create event with only title before being forwarded to the edit page (automatically)
   await page.locator('[data-test-id="add-event-button"]').click();
   await page.locator('[data-test-id="event-title-input"]').click();
   await page.locator('[data-test-id="event-title-input"]').fill(eventName);
@@ -85,16 +87,98 @@ export const createEvent = async (page: Page, eventName: string) => {
   await expect(page.locator('[data-test-id="notification-success"]')).toBeVisible();
   await page.waitForURL('**/edit');
 
+  // Fill in overview details
   await page.locator('[data-test-id="event-status-select-button"]').click();
-
   await page.getByRole('option', { name: 'RegistrationsOpen' }).click();
+  await page.locator('[name="headline"]').fill(`${eventName} headline`);
+  await page.locator('[name="category"]').fill(`${eventName} category`);
+  await page.locator('[name="maxParticipants"]').fill(`20`);
+  await page.locator('[name="featuredImageUrl"]').fill(`https://picsum.photos/500/500`);
+  await page.locator('[name="featuredImageCaption"]').fill(`This is a picsum image`);
 
+  // Fill in dates and location
+  await page.getByRole('tab', { name: 'Dates And location' }).click();
+  const oneWeek = 1000 * 60 * 60 * 24 * 7;
+  const lastRegistrationDate = new Date(Date.now() + oneWeek * 2);
+  const lastCancellationDate = new Date(Date.now() + oneWeek * 3);
+  const startDate = new Date(Date.now() + oneWeek * 4);
+  const endDate = new Date(Date.now() + oneWeek * 5);
+  const formatDate = (d: Date) => {
+    const pad = (s: string) => {
+      if (s.length === 1) return `0${s}`;
+      return s;
+    };
+    const year = d.getFullYear();
+    const month = pad((d.getMonth() + 1).toString());
+    const day = pad(d.getDate().toString());
+
+    return `${year}-${month}-${day}`;
+  };
+  await page.locator('[name="dateStart"]').fill(formatDate(startDate));
+  await page.locator('[name="dateEnd"]').fill(formatDate(endDate));
+  await page.locator('[name="lastRegistrationDate"]').fill(formatDate(lastRegistrationDate));
+  await page.locator('[name="lastCancellationDate"]').fill(formatDate(lastCancellationDate));
+  await page.locator('[name="city"]').fill(`${eventName} city`);
+  await page.locator('[name="location"]').fill(`${eventName} location`);
+
+  //Fill in Descriptions
+  await page.getByRole('tab', { name: 'Descriptions' }).click();
+  await page
+    .locator('[class="editor-shell"]')
+    .filter({ hasText: 'Description' })
+    .getByRole('textbox')
+    .fill(`${eventName} description`);
+  await page
+    .locator('[class="editor-shell"]')
+    .filter({ hasText: 'Program' })
+    .getByRole('textbox')
+    .fill(`${eventName} program`);
+  await page
+    .locator('[class="editor-shell"]')
+    .filter({ hasText: 'Practical' })
+    .getByRole('textbox')
+    .fill(`${eventName} practical information`);
+  await page
+    .locator('[class="editor-shell"]')
+    .filter({ hasText: 'More Information' })
+    .getByRole('textbox')
+    .fill(`${eventName} more information`);
+  await page
+    .locator('[class="editor-shell"]')
+    .filter({ hasText: 'Welcome Letter' })
+    .getByRole('textbox')
+    .fill(`${eventName} welcome letter`);
+  await page
+    .locator('[class="editor-shell"]')
+    .filter({ hasText: 'Information Request' })
+    .getByRole('textbox')
+    .fill(`${eventName} information request`);
+
+  //Fill Certificate Details
+  await page.getByRole('tab', { name: 'Certificate' }).click();
+  await page.locator('[name="certificateTitle"]').fill(`${eventName} certificateTitle`);
+  await page.locator('[name="certificateDescription"]').fill(`${eventName} certificateDescription`);
+
+  //Fill Advanced Tab
   await page.getByRole('tab', { name: 'Advanced' }).click();
 
   const eventId = await page.locator('[data-test-id="eventeditor-form-eventid"]').inputValue();
   Logger.info(ns, `Event id from test: ${eventId}`);
-
+  const eventSubmission = page.waitForResponse(resp => resp.url().includes(`/events/${eventId}`));
   await page.locator('[type=submit]').click();
+  const jsonResponse = (await eventSubmission.then(r => r.json())) as EventDto;
+  expect(jsonResponse.description!.length).toBeGreaterThan(0);
+  expect(jsonResponse.program!.length).toBeGreaterThan(0);
+  expect(jsonResponse.practicalInformation!.length).toBeGreaterThan(0);
+  expect(jsonResponse.moreInformation!.length).toBeGreaterThan(0);
+  expect(jsonResponse.welcomeLetter!.length).toBeGreaterThan(0);
+  expect(jsonResponse.informationRequest!.length).toBeGreaterThan(0);
+  expect(jsonResponse.category!.length).toBeGreaterThan(0);
+  expect(jsonResponse.certificateDescription!.length).toBeGreaterThan(0);
+  expect(jsonResponse.city!.length).toBeGreaterThan(0);
+  expect(jsonResponse.dateEnd).toBeDefined();
+  expect(jsonResponse.dateStart).toBeDefined();
+  expect(jsonResponse.maxParticipants!).toEqual(20);
   return eventId;
 };
 
@@ -171,6 +255,7 @@ export const visitRegistrationPageForEvent = async (page: Page, eventId: string)
 export const validateRegistration = async (page: Page, eventId: string) => {
   Logger.info(ns, 'Registered for event, validating..');
   await visitRegistrationPageForEvent(page, eventId);
+  await page.getByRole('tab', { name: 'Registration' }).click();
   await expect(page.locator('[data-test-id="registration-registrationId"]')).toBeVisible();
 };
 
