@@ -29,6 +29,15 @@ export interface Config {
 export interface Article {
   id: string;
   title: string;
+  image?:
+    | {
+        image: string | Media;
+        caption?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'image';
+      }[]
+    | null;
   lead?: {
     root: {
       type: string;
@@ -44,16 +53,7 @@ export interface Article {
     };
     [k: string]: unknown;
   } | null;
-  featuredMedia?:
-    | {
-        image: string | Media;
-        caption?: string | null;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'image';
-      }[]
-    | null;
-  content: {
+  story: {
     richText: {
       root: {
         type: string;
@@ -82,6 +82,7 @@ export interface Article {
       }[]
     | null;
   contentPersons?: (string | Person)[] | null;
+  contentLocations?: (string | Place)[] | null;
   license?: (string | null) | License;
   publishedOn: string;
   relatedArticles?: (string | Article)[] | null;
@@ -156,10 +157,38 @@ export interface License {
 export interface Person {
   id: string;
   name: string;
+  image?:
+    | {
+        image: string | Media;
+        caption?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'image';
+      }[]
+    | null;
   description?: string | null;
   jobTitle?: string | null;
   employer?: string | null;
-  image?: string | Media | null;
+  story: {
+    richText: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    id?: string | null;
+    blockName?: string | null;
+    blockType: 'content';
+  }[];
   updatedAt: string;
   createdAt: string;
 }
@@ -193,6 +222,26 @@ export interface Place {
     postalCode?: string | null;
     country?: string | null;
   };
+  story: {
+    richText: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    id?: string | null;
+    blockName?: string | null;
+    blockType: 'content';
+  }[];
   updatedAt: string;
   createdAt: string;
 }
@@ -204,10 +253,39 @@ export interface Happening {
   id: string;
   name: string;
   description?: string | null;
+  image?:
+    | {
+        image: string | Media;
+        caption?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'image';
+      }[]
+    | null;
+  story: {
+    richText: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    id?: string | null;
+    blockName?: string | null;
+    blockType: 'content';
+  }[];
   type?: ('conference' | 'educational' | 'hackathon' | 'social') | null;
   startDate?: string | null;
   endDate?: string | null;
-  places?: (string | Place)[] | null;
+  contentLocations?: (string | Place)[] | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -218,7 +296,15 @@ export interface Happening {
 export interface Note {
   id: string;
   title: string;
-  image?: string | Media | null;
+  image?:
+    | {
+        image: string | Media;
+        caption?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'image';
+      }[]
+    | null;
   content?: {
     root: {
       type: string;

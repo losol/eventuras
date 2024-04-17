@@ -3,11 +3,13 @@ import type { CollectionConfig } from 'payload/types';
 import { admins, publishedOnly } from '../access';
 import { richText } from '../fields/richText';
 import { slug } from '../fields/slug';
-import { Content } from '../blocks/content';
-import { Image } from '../blocks/image';
 import { creators } from '../fields/creators';
 import { contentPersons } from '../fields/contentPersons';
 import { license } from '../fields/license';
+import { story } from '../fields/story';
+import { publishedOn } from '../fields/publishedOn';
+import { image } from '../fields/image';
+import { contentLocations } from '../fields/contentLocations';
 
 export const Articles: CollectionConfig = {
   slug: 'articles',
@@ -31,39 +33,18 @@ export const Articles: CollectionConfig = {
       type: 'text',
       required: true,
     },
+    image,
     richText({
       name: 'lead',
       required: false,
     }),
-    {
-      name: 'featuredMedia',
-      type: 'blocks',
-      blocks: [Image],
-      minRows: 0,
-      maxRows: 1,
-    },
-    {
-      name: 'content',
-      type: 'blocks',
-      // blocks: [Banner, BlogContent, Code, BlogMarkdown, MediaBlock, ReusableContent],
-      blocks: [Content],
-      required: true,
-    },
+    story,
     slug(),
     creators,
     contentPersons,
+    contentLocations,
     license,
-    {
-      name: 'publishedOn',
-      type: 'date',
-      required: true,
-      admin: {
-        date: {
-          pickerAppearance: 'dayAndTime',
-        },
-        position: 'sidebar',
-      },
-    },
+    publishedOn,
     {
       name: 'relatedArticles',
       type: 'relationship',
