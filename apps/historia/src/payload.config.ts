@@ -1,12 +1,12 @@
 import { webpackBundler } from '@payloadcms/bundler-webpack';
 import { postgresAdapter } from '@payloadcms/db-postgres';
-import { payloadCloud } from '@payloadcms/plugin-cloud';
+import redirects from '@payloadcms/plugin-redirects';
+import nestedDocs from '@payloadcms/plugin-nested-docs';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import path from 'path';
-import { Config, buildConfig, Plugin } from 'payload/config';
+import { buildConfig } from 'payload/config';
 import { cloudStorage } from '@payloadcms/plugin-cloud-storage';
 import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
-import payload from 'payload';
 
 import { Happenings } from './collections/Happenings';
 import { Places } from './collections/Places';
@@ -41,6 +41,11 @@ export default buildConfig({
   }),
   editor: lexicalEditor({}),
   collections: [Articles, Happenings, Licenses, Media, Notes, Organizations, Persons, Places, Users],
+  rateLimit: {
+    max: 5000, // limit each IP per windowMs
+    trustProxy: true,
+    window: 60 * 1000, // 1 minute
+  },
   serverURL: process.env.CMS_SERVER_URL || 'http://localhost:3300',
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
@@ -65,6 +70,13 @@ export default buildConfig({
         })
       }
     }
-  })],
+  }),
+  nestedDocs({
+    collections: ['organizations', 'places'],
+  }),
+  redirects({
+    collections: ['articles'],
+  }),
+  ],
 });
 
