@@ -28,7 +28,7 @@ export const Media: CollectionConfig = {
         name: 'standard',
         width: 1920,
         height: 1080,
-        position: 'cover',
+        position: 'center',
       },
     ]
   },

@@ -3,7 +3,10 @@ import { postgresAdapter } from '@payloadcms/db-postgres';
 import { payloadCloud } from '@payloadcms/plugin-cloud';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import path from 'path';
-import { buildConfig } from 'payload/config';
+import { Config, buildConfig, Plugin } from 'payload/config';
+import { cloudStorage } from '@payloadcms/plugin-cloud-storage';
+import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
+import payload from 'payload';
 
 import { Happenings } from './collections/Happenings';
 import { Places } from './collections/Places';
@@ -15,11 +18,27 @@ import { Organizations } from './collections/Organizations';
 import { Notes } from './collections/Notes';
 import { Articles } from './collections/Articles';
 
+const requiredS3MediaVars = [
+  'CMS_MEDIA_S3_ACCESS_KEY_ID',
+  'CMS_MEDIA_S3_ENDPOINT',
+  'CMS_MEDIA_S3_SECRET_ACCESS_KEY',
+  'CMS_MEDIA_S3_REGION',
+  'CMS_MEDIA_S3_BUCKET'
+];
+
+const areAllS3VarsPresent = requiredS3MediaVars.every(varName => process.env[varName]);
+
 export default buildConfig({
   admin: {
     user: Users.slug,
     bundler: webpackBundler(),
   },
+  db: postgresAdapter({
+    idType: "uuid",
+    pool: {
+      connectionString: process.env.CMS_DATABASE_URL,
+    },
+  }),
   editor: lexicalEditor({}),
   collections: [Articles, Happenings, Licenses, Media, Notes, Organizations, Persons, Places, Users],
   serverURL: process.env.CMS_SERVER_URL || 'http://localhost:3300',
@@ -29,11 +48,23 @@ export default buildConfig({
   graphQL: {
     schemaOutputFile: path.resolve(__dirname, 'generated-schema.graphql'),
   },
-  plugins: [payloadCloud()],
-  db: postgresAdapter({
-    idType: "uuid",
-    pool: {
-      connectionString: process.env.CMS_DATABASE_URL,
-    },
-  }),
+  plugins: [cloudStorage({
+    enabled: areAllS3VarsPresent,
+    collections: {
+      'media': {
+        adapter: s3Adapter({
+          config: {
+            credentials: {
+              accessKeyId: process.env.CMS_MEDIA_S3_ACCESS_KEY_ID!,
+              secretAccessKey: process.env.CMS_MEDIA_S3_SECRET_ACCESS_KEY!,
+            },
+            endpoint: process.env.CMS_MEDIA_S3_ENDPOINT!,
+            region: process.env.CMS_MEDIA_S3_REGION!,
+          },
+          bucket: process.env.CMS_MEDIA_S3_BUCKET!,
+        })
+      }
+    }
+  })],
 });
+
