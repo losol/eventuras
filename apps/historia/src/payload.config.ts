@@ -1,26 +1,28 @@
 import { webpackBundler } from '@payloadcms/bundler-webpack';
 import { postgresAdapter } from '@payloadcms/db-postgres';
 import { payloadCloud } from '@payloadcms/plugin-cloud';
-import { slateEditor } from '@payloadcms/richtext-slate';
+import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import path from 'path';
 import { buildConfig } from 'payload/config';
 
-import Happenings from './collections/Happenings';
-import Places from './collections/Places';
-import Users from './collections/Users';
-import Licenses from './collections/Licenses';
+import { Happenings } from './collections/Happenings';
+import { Places } from './collections/Places';
+import { Users } from './collections/Users';
+import { Licenses } from './collections/Licenses';
 import { Media } from './collections/Media';
-import Persons from './collections/Persons';
-import Organizations from './collections/Organizations';
+import { Persons } from './collections/Persons';
+import { Organizations } from './collections/Organizations';
+import { Notes } from './collections/Notes';
+import { Articles } from './collections/Articles';
 
 export default buildConfig({
   admin: {
     user: Users.slug,
     bundler: webpackBundler(),
   },
-  editor: slateEditor({}),
-  collections: [Happenings, Licenses, Media, Organizations, Persons, Places, Users],
-  serverURL: process.env.CMS_SERVER_URL || 'http://localhost:3200',
+  editor: lexicalEditor({}),
+  collections: [Articles, Happenings, Licenses, Media, Notes, Organizations, Persons, Places, Users],
+  serverURL: process.env.CMS_SERVER_URL || 'http://localhost:3300',
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },

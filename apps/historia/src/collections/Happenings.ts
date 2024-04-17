@@ -1,9 +1,16 @@
 import { CollectionConfig } from 'payload/types';
+import { admins, anyone } from '../access';
+import { image } from '../fields/image';
+import { story } from '../fields/story';
+import { contentLocations } from '../fields/contentLocations';
 
-const Happenings: CollectionConfig = {
+export const Happenings: CollectionConfig = {
   slug: 'happenings',
   access: {
-    read: () => true,
+    read: anyone,
+    create: admins,
+    update: admins,
+    delete: admins,
   },
   admin: {
     useAsTitle: 'name',
@@ -24,6 +31,8 @@ const Happenings: CollectionConfig = {
         placeholder: 'Provide a brief description of the event',
       },
     },
+    image,
+    story,
     {
       name: 'type',
       label: 'Event Type',
@@ -43,14 +52,6 @@ const Happenings: CollectionConfig = {
       name: 'endDate',
       type: 'date',
     },
-    {
-      name: 'places',
-      label: 'Places',
-      type: 'relationship',
-      relationTo: 'places',
-      hasMany: true,
-    },
+    contentLocations
   ],
 };
-
-export default Happenings;

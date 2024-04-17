@@ -8,9 +8,11 @@
 
 export interface Config {
   collections: {
+    articles: Article;
     happenings: Happening;
     licenses: License;
     media: Media;
+    notes: Note;
     organizations: Organization;
     persons: Person;
     places: Place;
@@ -22,51 +24,71 @@ export interface Config {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "happenings".
+ * via the `definition` "articles".
  */
-export interface Happening {
+export interface Article {
   id: string;
-  name: string;
-  description?: string | null;
-  type?: ('conference' | 'educational' | 'hackathon' | 'social') | null;
-  startDate?: string | null;
-  endDate?: string | null;
-  places?: (string | Place)[] | null;
+  title: string;
+  image?:
+    | {
+        image: string | Media;
+        caption?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'image';
+      }[]
+    | null;
+  lead?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  story: {
+    richText: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    id?: string | null;
+    blockName?: string | null;
+    blockType: 'content';
+  }[];
+  slug?: string | null;
+  creators?:
+    | {
+        person: string | Person;
+        role: 'ai' | 'author' | 'editor' | 'contributor' | 'illustrator' | 'photographer';
+        id?: string | null;
+      }[]
+    | null;
+  contentPersons?: (string | Person)[] | null;
+  contentLocations?: (string | Place)[] | null;
+  license?: (string | null) | License;
+  publishedOn: string;
+  relatedArticles?: (string | Article)[] | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "places".
- */
-export interface Place {
-  id: string;
-  name: string;
-  type: 'city' | 'hotel' | 'house';
-  description?: string | null;
-  postalAddress?: {
-    streetAddress?: string | null;
-    city?: string | null;
-    region?: string | null;
-    postalCode?: string | null;
-    country?: string | null;
-  };
-  parentPlace?: (string | null) | Place;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "licenses".
- */
-export interface License {
-  id: string;
-  name: string;
-  abbreviation: string;
-  description?: string | null;
-  url?: string | null;
-  updatedAt: string;
-  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -77,11 +99,17 @@ export interface Media {
   name: string;
   description?: string | null;
   license?: (string | null) | License;
-  author?: (string | null) | Person;
+  creators?:
+    | {
+        person: string | Person;
+        role: 'ai' | 'author' | 'editor' | 'contributor' | 'illustrator' | 'photographer';
+        id?: string | null;
+      }[]
+    | null;
   sourceUrl?: string | null;
   publisher?: (string | null) | Organization;
-  contentLocation?: (string | null) | Place;
   contentPersons?: (string | Person)[] | null;
+  contentLocations?: (string | Place)[] | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -111,15 +139,56 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "licenses".
+ */
+export interface License {
+  id: string;
+  name: string;
+  abbreviation?: string | null;
+  description?: string | null;
+  url?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "persons".
  */
 export interface Person {
   id: string;
   name: string;
+  image?:
+    | {
+        image: string | Media;
+        caption?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'image';
+      }[]
+    | null;
   description?: string | null;
   jobTitle?: string | null;
   employer?: string | null;
-  image?: string | Media | null;
+  story: {
+    richText: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    id?: string | null;
+    blockName?: string | null;
+    blockType: 'content';
+  }[];
   updatedAt: string;
   createdAt: string;
 }
@@ -134,7 +203,124 @@ export interface Organization {
   url?: string | null;
   logo?: string | Media | null;
   location?: (string | null) | Place;
-  parentOrganization?: (string | null) | Organization;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "places".
+ */
+export interface Place {
+  id: string;
+  name: string;
+  type: 'city' | 'hotel' | 'house';
+  description?: string | null;
+  postalAddress?: {
+    streetAddress?: string | null;
+    city?: string | null;
+    region?: string | null;
+    postalCode?: string | null;
+    country?: string | null;
+  };
+  story: {
+    richText: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    id?: string | null;
+    blockName?: string | null;
+    blockType: 'content';
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "happenings".
+ */
+export interface Happening {
+  id: string;
+  name: string;
+  description?: string | null;
+  image?:
+    | {
+        image: string | Media;
+        caption?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'image';
+      }[]
+    | null;
+  story: {
+    richText: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    id?: string | null;
+    blockName?: string | null;
+    blockType: 'content';
+  }[];
+  type?: ('conference' | 'educational' | 'hackathon' | 'social') | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  contentLocations?: (string | Place)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notes".
+ */
+export interface Note {
+  id: string;
+  title: string;
+  image?:
+    | {
+        image: string | Media;
+        caption?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'image';
+      }[]
+    | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  contentPersons?: (string | Person)[] | null;
   updatedAt: string;
   createdAt: string;
 }

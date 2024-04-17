@@ -1,9 +1,14 @@
 import { CollectionConfig } from 'payload/types';
+import { admins, anyone } from '../access';
+import { story } from '../fields/story';
 
-const Place: CollectionConfig = {
+export const Places: CollectionConfig = {
   slug: 'places',
   access: {
-    read: () => true,
+    read: anyone,
+    create: admins,
+    update: admins,
+    delete: admins,
   },
   admin: {
     useAsTitle: 'name',
@@ -39,16 +44,7 @@ const Place: CollectionConfig = {
         { name: 'country', type: 'text' },
       ],
     },
-    {
-      name: 'parentPlace',
-      label: 'Contained In',
-      type: 'relationship',
-      relationTo: 'places',
-      admin: {
-        description: 'Select the place this one is contained in, if any.',
-      },
-    },
+    story
   ],
 };
 
-export default Place;

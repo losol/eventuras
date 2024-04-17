@@ -1,7 +1,14 @@
 import { CollectionConfig } from 'payload/types';
+import { admins, anyone } from '../access';
 
-const Organizations: CollectionConfig = {
+export const Organizations: CollectionConfig = {
   slug: 'organizations',
+  access: {
+    read: anyone,
+    create: admins,
+    update: admins,
+    delete: admins,
+  },
   admin: {
     useAsTitle: 'name',
   },
@@ -44,15 +51,5 @@ const Organizations: CollectionConfig = {
         description: 'The location of the organization.',
       },
     },
-    {
-      name: 'parentOrganization',
-      type: 'relationship',
-      relationTo: 'organizations',
-      admin: {
-        description: 'The parent organization of this organization.',
-      },
-    },
   ],
 };
-
-export default Organizations;

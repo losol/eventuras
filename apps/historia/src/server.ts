@@ -1,14 +1,14 @@
-import express from 'express'
-import payload from 'payload'
+import express from 'express';
+import payload from 'payload';
 import { URL } from 'url';
 
-require('dotenv').config()
-const app = express()
+require('dotenv').config();
+const app = express();
 
 // Redirect root to Admin panel
 app.get('/', (_, res) => {
-  res.redirect('/admin')
-})
+  res.redirect('/admin');
+});
 
 const start = async () => {
   // Validate environment variables
@@ -19,7 +19,7 @@ const start = async () => {
     throw new Error('Please provide a CMS_DATABASE_URL in the environment variables');
   }
   if (!process.env.CMS_SERVER_URL) {
-    console.warn('No CMS_SERVER_URL provided, using default http://localhost:3200');
+    console.warn('No CMS_SERVER_URL provided, using default http://localhost:3300');
   }
 
 
@@ -32,7 +32,7 @@ const start = async () => {
     },
   });
 
-  let port = 3200;
+  let port = 3300;
   if (process.env.CMS_SERVER_URL) {
     try {
       const url = new URL(process.env.CMS_SERVER_URL);
@@ -47,6 +47,6 @@ const start = async () => {
   app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
   });
-}
+};
 
-start()
+start();

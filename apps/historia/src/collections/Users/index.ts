@@ -1,16 +1,22 @@
-import { CollectionConfig } from 'payload/types'
+import { CollectionConfig } from 'payload/types';
 
 import { admins } from '../../access/admins';
 import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin';
 
-const Users: CollectionConfig = {
+export const Users: CollectionConfig = {
   slug: 'users',
+  access: {
+    read: admins,
+    create: admins,
+    update: admins,
+    delete: admins,
+  },
   auth: true,
   admin: {
     useAsTitle: 'email',
   },
   fields: [
-{
+    {
       name: 'roles',
       type: 'select',
       hasMany: true,
@@ -28,13 +34,7 @@ const Users: CollectionConfig = {
       hooks: {
         beforeChange: [ensureFirstUserIsAdmin],
       },
-      access: {
-        read: admins,
-        create: admins,
-        update: admins,
-      },
+
     },
   ],
-}
-
-export default Users
+};

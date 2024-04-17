@@ -1,7 +1,16 @@
 import { CollectionConfig } from 'payload/types';
+import { admins, anyone } from '../access';
+import { image } from '../fields/image';
+import { story } from '../fields/story';
 
-const Persons: CollectionConfig = {
+export const Persons: CollectionConfig = {
   slug: 'persons',
+  access: {
+    read: anyone,
+    create: admins,
+    update: admins,
+    delete: admins,
+  },
   admin: {
     useAsTitle: 'name',
   },
@@ -14,6 +23,7 @@ const Persons: CollectionConfig = {
         description: 'The name of the person.',
       },
     },
+    image,
     {
       name: 'description',
       type: 'textarea',
@@ -35,15 +45,8 @@ const Persons: CollectionConfig = {
         description: 'The employer of the person.',
       },
     },
-    {
-      name: 'image',
-      type: 'upload',
-      relationTo: 'media',
-      admin: {
-        description: 'A photograph of the person.',
-      },
-    },
+    story
+
   ],
 };
 
-export default Persons;

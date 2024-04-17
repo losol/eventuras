@@ -1,7 +1,14 @@
 import { CollectionConfig } from 'payload/types';
+import { admins, anyone } from '../access';
 
-const Licenses: CollectionConfig = {
+export const Licenses: CollectionConfig = {
   slug: 'licenses',
+  access: {
+    read: anyone,
+    create: admins,
+    update: admins,
+    delete: admins,
+  },
   admin: {
     useAsTitle: 'name',
   },
@@ -14,7 +21,6 @@ const Licenses: CollectionConfig = {
     {
       name: 'abbreviation',
       type: 'text',
-      required: true,
       admin: {
         description: 'A short abbreviation or acronym for the license (e.g., GPL for GNU Public License)',
       }
@@ -29,5 +35,3 @@ const Licenses: CollectionConfig = {
     },
   ],
 };
-
-export default Licenses;
