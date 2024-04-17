@@ -1,5 +1,6 @@
 import { CollectionConfig } from 'payload/types';
 import { admins, anyone } from '../access';
+import { story } from '../fields/story';
 
 export const Places: CollectionConfig = {
   slug: 'places',
@@ -43,6 +44,7 @@ export const Places: CollectionConfig = {
         { name: 'country', type: 'text' },
       ],
     },
+    story
   ],
 };
 
