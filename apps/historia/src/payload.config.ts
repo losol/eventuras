@@ -17,6 +17,7 @@ import { Persons } from './collections/Persons';
 import { Organizations } from './collections/Organizations';
 import { Notes } from './collections/Notes';
 import { Articles } from './collections/Articles';
+import { Pages } from './collections/Pages';
 
 const requiredS3MediaVars = [
   'CMS_MEDIA_S3_ACCESS_KEY_ID',
@@ -40,7 +41,7 @@ export default buildConfig({
     },
   }),
   editor: lexicalEditor({}),
-  collections: [Articles, Happenings, Licenses, Media, Notes, Organizations, Persons, Places, Users],
+  collections: [Articles, Happenings, Licenses, Media, Notes, Organizations, Pages, Persons, Places, Users],
   rateLimit: {
     max: 5000, // limit each IP per windowMs
     trustProxy: true,
@@ -72,10 +73,10 @@ export default buildConfig({
     }
   }),
   nestedDocs({
-    collections: ['organizations', 'places'],
+    collections: ['organizations', 'pages', 'places'],
   }),
   redirects({
-    collections: ['articles'],
+    collections: ['articles', 'pages'],
   }),
   ],
 });
