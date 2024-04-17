@@ -3,7 +3,8 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"],
-      "@eventuras/utils": ["../../libs/utils"]
+      "@eventuras/utils": ["../../libs/utils"],
+      "@eventuras/sdk": ["../../libs/sdk"]
     },
     "plugins": [
       {
