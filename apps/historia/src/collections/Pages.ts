@@ -7,7 +7,7 @@ import { creators } from '../fields/creators';
 import { license } from '../fields/license';
 import { story } from '../fields/story';
 import { publishedOn } from '../fields/publishedOn';
-import { image } from '../fields/image';
+import { featuredImage } from '../fields/featuredImage';
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -31,7 +31,7 @@ export const Pages: CollectionConfig = {
       type: 'text',
       required: true,
     },
-    image,
+    featuredImage,
     richText({
       name: 'lead',
       required: false,
