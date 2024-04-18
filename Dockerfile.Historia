@@ -34,6 +34,6 @@ RUN npm ci
 COPY --chown=node:node --from=builder /app/apps/historia/dist ./dist
 COPY --chown=node:node --from=builder /app/apps/historia/build ./build
 
-EXPOSE 3200
+EXPOSE 3300
 
 CMD ["node", "dist/server.js"]
