@@ -22,29 +22,33 @@ jobs:
   lint:
     name: turbo lint
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./apps/historia/
     steps:
       - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
       - name: npm install
         run: npm install
       - name: Lint
-        run: turbo lint --filter=historia
+        run: npx turbo lint --filter=historia
 
   build:
     name: Build project
     needs: lint
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./apps/historia/
     steps:
       - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
       - name: npm install
         run: npm install
       - name: Build
-        run: turbo build --filter=historia
+        run: npx turbo build --filter=historia
 
   docker:
     name: Docker build
