@@ -1,6 +1,6 @@
-FROM node:20-bookworm-slim as base
+FROM node:20-bookworm-slim AS base
 
-FROM base as builder
+FROM base AS builder
 
 # Give node user ownership of the app directory
 WORKDIR /app
@@ -9,15 +9,18 @@ RUN chown -R node:node /app
 USER node
 
 # Install dependencies
-COPY --chown=node:node package-lock.json ./
-COPY --chown=node:node apps/historia/package.json ./
+COPY --chown=node:node package.json /app
+COPY --chown=node:node package-lock.json /app
+COPY --chown=node:node apps/historia/package.json /app/apps/historia/
+COPY --chown=node:node apps/historia/tsconfig.json /app/apps/historia/
 RUN npm ci
 
 ## Build the app
-COPY --chown=node:node ./apps/historia/src ./src
+COPY --chown=node:node ./apps/historia/src /app/apps/historia/src
+WORKDIR /app/apps/historia
 RUN npm run build
 
-FROM base as runtime
+FROM base AS runtime
 
 USER node
 
@@ -28,8 +31,8 @@ WORKDIR /app
 
 COPY --chown=node:node package*.json ./
 RUN npm ci
-COPY --chown=node:node --from=builder /app/dist ./dist
-COPY --chown=node:node --from=builder /app/build ./build
+COPY --chown=node:node --from=builder /app/apps/historia/dist ./dist
+COPY --chown=node:node --from=builder /app/apps/historia/build ./build
 
 EXPOSE 3200
 
