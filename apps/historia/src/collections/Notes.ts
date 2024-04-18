@@ -1,7 +1,7 @@
 import { CollectionConfig } from 'payload/types';
 import { admins, anyone } from '../access';
 import { contentPersons } from '../fields/contentPersons';
-import { image } from '../fields/image';
+import { featuredImage } from '../fields/featuredImage';
 
 export const Notes: CollectionConfig = {
   slug: 'notes',
@@ -23,7 +23,7 @@ export const Notes: CollectionConfig = {
         description: 'The title of the note.',
       },
     },
-    image,
+    featuredImage,
     {
       name: 'content',
       type: 'richText',
