@@ -1,8 +1,8 @@
 import { CollectionConfig } from 'payload/types';
 import { admins, anyone } from '../access';
-import { image } from '../fields/image';
 import { story } from '../fields/story';
 import { contentLocations } from '../fields/contentLocations';
+import { featuredImage } from '../fields/featuredImage';
 
 export const Happenings: CollectionConfig = {
   slug: 'happenings',
@@ -31,7 +31,7 @@ export const Happenings: CollectionConfig = {
         placeholder: 'Provide a brief description of the event',
       },
     },
-    image,
+    featuredImage,
     story,
     {
       name: 'type',

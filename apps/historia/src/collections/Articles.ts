@@ -8,8 +8,8 @@ import { contentPersons } from '../fields/contentPersons';
 import { license } from '../fields/license';
 import { story } from '../fields/story';
 import { publishedOn } from '../fields/publishedOn';
-import { image } from '../fields/image';
 import { contentLocations } from '../fields/contentLocations';
+import { featuredImage } from '../fields/featuredImage';
 
 export const Articles: CollectionConfig = {
   slug: 'articles',
@@ -33,7 +33,7 @@ export const Articles: CollectionConfig = {
       type: 'text',
       required: true,
     },
-    image,
+    featuredImage,
     richText({
       name: 'lead',
       required: false,

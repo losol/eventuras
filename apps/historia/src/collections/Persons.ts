@@ -1,7 +1,7 @@
 import { CollectionConfig } from 'payload/types';
 import { admins, anyone } from '../access';
-import { image } from '../fields/image';
 import { story } from '../fields/story';
+import { featuredImage } from '../fields/featuredImage';
 
 export const Persons: CollectionConfig = {
   slug: 'persons',
@@ -23,7 +23,7 @@ export const Persons: CollectionConfig = {
         description: 'The name of the person.',
       },
     },
-    image,
+    featuredImage,
     {
       name: 'description',
       type: 'textarea',
