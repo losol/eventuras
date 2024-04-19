@@ -51,7 +51,7 @@ export default buildConfig({
     trustProxy: true,
     window: 60 * 1000, // 1 minute
   },
-  serverURL: process.env.CMS_SERVER_URL || 'http://localhost:3300',
+  serverURL: process.env.CMS_SERVER_URL,
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },

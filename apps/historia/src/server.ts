@@ -19,7 +19,7 @@ const start = async () => {
     throw new Error('Please provide a CMS_DATABASE_URL in the environment variables');
   }
   if (!process.env.CMS_SERVER_URL) {
-    console.warn('No CMS_SERVER_URL provided, using default http://localhost:3300');
+    throw new Error('Please provide a CMS_SERVER_URL in the environment variables');
   }
 
 
@@ -33,16 +33,15 @@ const start = async () => {
   });
 
   let port = 3300;
-  if (process.env.CMS_SERVER_URL) {
-    try {
-      const url = new URL(process.env.CMS_SERVER_URL);
-      if (url.port) {
-        port = parseInt(url.port);
-      }
-    } catch (error) {
-      console.error("Error parsing CMS_SERVER_URL");
+  try {
+    const url = new URL(process.env.CMS_SERVER_URL);
+    if (url.port) {
+      port = parseInt(url.port);
     }
+  } catch (error) {
+    console.error("Error parsing CMS_SERVER_URL");
   }
+
 
   app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
