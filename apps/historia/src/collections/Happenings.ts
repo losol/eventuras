@@ -1,5 +1,7 @@
 import { CollectionConfig } from 'payload/types';
 import { admins, anyone } from '../access';
+import { config } from '../fields/config';
+import { dictionary } from '../fields/dictionary';
 import { story } from '../fields/story';
 import { contentLocations } from '../fields/contentLocations';
 import { featuredImage } from '../fields/featuredImage';
@@ -52,6 +54,8 @@ export const Happenings: CollectionConfig = {
       name: 'endDate',
       type: 'date',
     },
-    contentLocations
+    contentLocations,
+    config,
+    dictionary,
   ],
 };
