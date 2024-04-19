@@ -9,7 +9,7 @@ export const featuredImage: Field = {
       name: 'image',
       label: 'Image',
       type: 'upload',
-      required: true,
+      required: false,
       relationTo: 'media'
     },
     {
