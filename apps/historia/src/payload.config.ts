@@ -28,6 +28,8 @@ const requiredS3MediaVars = [
 ];
 
 const areAllS3VarsPresent = requiredS3MediaVars.every(varName => process.env[varName]);
+const allowedOrigins = process.env.CMS_ALLOWED_ORIGINS ? process.env.CMS_ALLOWED_ORIGINS.split(',') : [];
+
 
 export default buildConfig({
   admin: {
@@ -42,6 +44,8 @@ export default buildConfig({
   }),
   editor: lexicalEditor({}),
   collections: [Articles, Happenings, Licenses, Media, Notes, Organizations, Pages, Persons, Places, Users],
+  cors: allowedOrigins,
+  csrf: allowedOrigins,
   rateLimit: {
     max: 5000, // limit each IP per windowMs
     trustProxy: true,
