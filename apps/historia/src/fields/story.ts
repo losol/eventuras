@@ -6,5 +6,4 @@ export const story: Field = {
   label: 'Story',
   type: 'blocks',
   blocks: [Content],
-  required: true,
 };
