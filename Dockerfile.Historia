@@ -1,5 +1,8 @@
 FROM node:20-bookworm-slim AS base
 
+##################################
+# 1. Build the app
+##################################
 FROM base AS builder
 
 # Give node user ownership of the app directory
@@ -11,15 +14,18 @@ USER node
 # Install dependencies
 COPY --chown=node:node package.json /app
 COPY --chown=node:node package-lock.json /app
-COPY --chown=node:node apps/historia/package.json /app/apps/historia/
-COPY --chown=node:node apps/historia/tsconfig.json /app/apps/historia/
+COPY --chown=node:node apps/historia/package.json /app/apps/historia/package.json
+COPY --chown=node:node apps/historia/tsconfig.json /app/apps/historia/tsconfig.json
 RUN npm ci
 
 ## Build the app
-COPY --chown=node:node ./apps/historia/src /app/apps/historia/src
 WORKDIR /app/apps/historia
+COPY --chown=node:node apps/historia/src/ /app/apps/historia/src/
 RUN npm run build
 
+##################################
+# 2. Run the app
+##################################
 FROM base AS runtime
 
 USER node
@@ -29,11 +35,11 @@ ENV PAYLOAD_CONFIG_PATH=/app/dist/payload.config.js
 
 WORKDIR /app
 
-COPY --chown=node:node package*.json ./
+COPY --chown=node:node apps/historia/package.json /app
+COPY --chown=node:node package-lock.json /app
 RUN npm ci
-COPY --chown=node:node --from=builder /app/apps/historia/dist ./dist
-COPY --chown=node:node --from=builder /app/apps/historia/build ./build
-
+COPY --chown=node:node --from=builder /app/apps/historia/dist /app/dist
+COPY --chown=node:node --from=builder /app/apps/historia/build /app/build
 EXPOSE 3300
 
-CMD ["node", "dist/server.js"]
+CMD ["node", "/app/dist/server.js"]
