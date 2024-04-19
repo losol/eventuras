@@ -7,7 +7,7 @@
     "@eventuras/scribo": "*",
     "@eventuras/smartform": "*",
     "@eventuras/ui": "*",
-    "markdown-to-jsx": "^7.4.6"
+    "markdown-to-jsx": "^7.4.7"
   },
   "peerDependencies": {
     "react": "^18.2.0",

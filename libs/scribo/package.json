@@ -9,10 +9,10 @@
     "dev": "vite"
   },
   "dependencies": {
-    "@lexical/markdown": "^0.14.3",
-    "@lexical/react": "^0.14.3",
-    "@lexical/link": "0.14.3",
-    "lexical": "^0.14.3"
+    "@lexical/markdown": "^0.14.5",
+    "@lexical/react": "^0.14.5",
+    "@lexical/link": "0.14.5",
+    "lexical": "^0.14.5"
   },
   "peerDependencies": {
     "react": "^18.2.0",
@@ -21,17 +21,17 @@
   "devDependencies": {
     "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*",
-    "@testing-library/react": "^14.2.2",
-    "@types/react": "^18.2.74",
-    "@types/react-dom": "^18.2.24",
-    "@typescript-eslint/eslint-plugin": "^7.5.0",
-    "@typescript-eslint/parser": "^7.5.0",
+    "@testing-library/react": "^15.0.2",
+    "@types/react": "^18.2.79",
+    "@types/react-dom": "^18.2.25",
+    "@typescript-eslint/eslint-plugin": "^7.7.0",
+    "@typescript-eslint/parser": "^7.7.0",
     "@vitejs/plugin-react-swc": "^3.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "typescript": "^5.4.4",
-    "vite": "^5.2.8",
-    "vitest": "^1.4.0"
+    "typescript": "^5.4.5",
+    "vite": "^5.2.9",
+    "vitest": "^1.5.0"
   },
   "overrides": {
     "vite": {
