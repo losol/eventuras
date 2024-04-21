@@ -8,9 +8,9 @@
   <Import Project="../common.props" />
 
   <ItemGroup>
-    <PackageReference Include="MailKit" Version="4.4.0" />
-    <PackageReference Include="MimeKit" Version="4.4.0" />
-    <PackageReference Include="SendGrid" Version="9.29.2" />
+    <PackageReference Include="MailKit" Version="4.5.0" />
+    <PackageReference Include="MimeKit" Version="4.5.0" />
+    <PackageReference Include="SendGrid" Version="9.29.3" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
