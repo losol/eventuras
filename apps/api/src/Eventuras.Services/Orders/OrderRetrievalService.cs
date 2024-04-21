@@ -82,15 +82,17 @@ public class OrderRetrievalService : IOrderRetrievalService
         var organization = await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
         await _organizationAccessControlService.CheckOrganizationReadAccessAsync(organization.OrganizationId);
 
-        var orders = await _context.Orders
-            .Include(o => o.Registration)
-                .ThenInclude(r => r.User)
-            .Include(o => o.OrderLines)
-            .Where(o => o.OrderLines.Any(ol => ol.ProductId == productId))
+        // Fetch OrderLines with the specified ProductId and include necessary related data
+        var orderLines = await _context.OrderLines
+            .Include(ol => ol.Order)
+                .ThenInclude(o => o.Registration)
+                    .ThenInclude(r => r.User)
+            .Where(ol => ol.ProductId == productId)
             .ToListAsync(cancellationToken);
 
-        var groupedOrders = orders
-            .GroupBy(o => o.Registration)
+        // Group OrderLines by Registration to build summary
+        var groupedRegistrations = orderLines
+            .GroupBy(ol => ol.Order.Registration)
             .Select(group => new ProductOrdersSummaryDto
             {
                 RegistrationId = group.Key.RegistrationId,
@@ -102,15 +104,15 @@ public class OrderRetrievalService : IOrderRetrievalService
                     PhoneNumber = group.Key.User.PhoneNumber,
                     Email = group.Key.User.Email
                 },
-                OrderIds = group.Select(o => o.OrderId).Distinct().ToArray(),
-                SumQuantity = group.SelectMany(o => o.OrderLines)
-                                   .Where(ol => ol.ProductId == productId)
-                                   .Sum(ol => ol.Quantity)
+                OrderIds = group.Select(ol => ol.Order.OrderId).Distinct().ToArray(),
+                SumQuantity = group.Sum(ol => ol.Quantity)
             })
             .ToList();
 
-        return groupedOrders;
+        return groupedRegistrations;
     }
+
+
 
 
 }
