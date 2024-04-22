@@ -40,7 +40,7 @@ const DeliverySummary: React.FC<DeliverySummaryProps> = ({ deliverySummary }) =>
     }),
   ];
 
-  return <DataTable data={deliverySummary} columns={columns} />;
+  return <DataTable data={deliverySummary} columns={columns} pageSize={100} clientsidePagination />;
 };
 
 export default DeliverySummary;
