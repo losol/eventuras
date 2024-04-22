@@ -4,7 +4,7 @@ using Eventuras.Domain;
 using Eventuras.Services.Orders;
 using Eventuras.Services.Users;
 
-namespace Eventuras.WebApi.Controllers.v3.Products;
+namespace Eventuras.Services.Orders;
 
 public class ProductSummaryDto
 {
@@ -44,4 +44,5 @@ public class ProductDeliverySummaryDto
 {
     public ProductSummaryDto Product { get; set; }
     public List<ProductOrdersSummaryDto> OrderSummary { get; set; }
+    public ProductStatisticsDto Statistics { get; set; }
 }

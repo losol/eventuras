@@ -8,6 +8,8 @@ import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class EventStatisticsService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
+     * Event statistics
+     * Returns a summary of the registrations for the event.
      * @returns EventStatisticsDto Success
      * @throws ApiError
      */

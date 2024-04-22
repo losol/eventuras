@@ -1,4 +1,5 @@
 
+using Eventuras.Servcies.Registrations;
 using Eventuras.Services.Users;
 using static Eventuras.Domain.Registration;
 
