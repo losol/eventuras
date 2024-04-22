@@ -87,7 +87,8 @@ export const mapToUpdatedRegistration = (
 
 export const mapSelectedProductsToQuantity = (
   products: ProductDto[],
-  selectedProducts: any
+  selectedProducts: any,
+  isAdmin: boolean = false
 ): Map<string, number> => {
   const submissionMap = new Map<string, number>();
 
@@ -101,7 +102,7 @@ export const mapSelectedProductsToQuantity = (
     const formValue = selProds[key];
     let value = 0;
     if (!relatedProduct.enableQuantity) {
-      if (relatedProduct.isMandatory || !!formValue) {
+      if ((relatedProduct.isMandatory && !isAdmin) || !!formValue) {
         value = 1;
       }
     } else {
