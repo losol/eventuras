@@ -65,6 +65,40 @@ public class OrderAccessControlService : IOrderAccessControlService
             .CheckRegistrationUpdateAccessAsync(registration, cancellationToken);
     }
 
+    public async Task<bool> HasAdminAccessAsync(Order order, CancellationToken cancellationToken = default)
+    {
+        if (order == null)
+        {
+            throw new ArgumentNullException(nameof(order));
+        }
+
+        var user = _httpContextAccessor.HttpContext.User;
+        if (user.IsAnonymous())
+        {
+            throw new NotAccessibleException("Anonymous users are never admins.");
+        }
+
+        if (user.IsPowerAdmin())
+        {
+            return true;
+        }
+        if (!user.IsAdmin())
+        {
+            return false;
+        }
+        var org = await _currentOrganizationAccessorService
+            .RequireCurrentOrganizationAsync(new OrganizationRetrievalOptions
+            {
+                LoadMembers = true
+            }, cancellationToken);
+
+        if (org.Members.Exists(m => m.UserId == user.GetUserId() && m.HasRole(Roles.Admin)))
+        {
+            return true;
+        }
+        return false;
+    }
+
     public async Task<IQueryable<Order>> AddAccessFilterAsync(
         IQueryable<Order> query,
         CancellationToken cancellationToken = default)

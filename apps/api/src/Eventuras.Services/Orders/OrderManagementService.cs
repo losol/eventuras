@@ -113,7 +113,13 @@ public class OrderManagementService : IOrderManagementService
         }
 
         _context.Update(order);
-        await ValidateMinimumQuantityForProducts(registration, cancellationToken);
+
+        var isAdmin = await _orderAccessControlService.HasAdminAccessAsync(order, cancellationToken);
+        _logger.LogInformation("User is admin: {isAdmin}", isAdmin);
+
+        // validate minimum quantity for products if it is not an admin user
+        if (!isAdmin)
+            await ValidateMinimumQuantityForProducts(registration, cancellationToken);
 
         await _context.SaveChangesAsync(cancellationToken);
     }
@@ -170,14 +176,14 @@ public class OrderManagementService : IOrderManagementService
    IEnumerable<OrderLineModel> expectedOrderLines,
    CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation($"Auto-creating or updating order for RegistrationId {registrationId}");
+        _logger.LogInformation($"OrderManagementService.AutoCreateOrUpdateOrder: RegistrationId {registrationId}");
 
         var expectedOrderLinesSanitized = SanitizeOrderLines(expectedOrderLines);
         _logger.LogDebug("Sanitized expected order lines.");
 
         // Get order lines in registration
         var registration = await GetRegistrationForUpdate(registrationId, cancellationToken);
-        _logger.LogInformation($"Retrieved registration for update: RegistrationId {registrationId}");
+        _logger.LogInformation($"AutoCreateOrUpdateOrder: Retrieved registration for update: RegistrationId {registrationId}");
 
         var registrationOrderLines = registration.Orders
             .SelectMany(o => o.OrderLines)
@@ -189,21 +195,21 @@ public class OrderManagementService : IOrderManagementService
         var diff = GetDifferenceInOrderLines(expectedOrderLinesSanitized, registrationOrderLinesSanitized);
         if (diff.Count == 0)
         {
-            _logger.LogInformation("No difference in order lines found. Exiting early.");
+            _logger.LogInformation("AutoCreateOrUpdateOrder: No difference in order lines found. Exiting early.");
             return null;
         }
-        _logger.LogDebug($"Found differences in order lines: {diff.Count} differences");
+        _logger.LogDebug($"AutoCreateOrUpdateOrder: Found differences in order lines: {diff.Count} differences");
 
         // Find newest order viable to be updated
         var order = registration.Orders.Where(o => o.CanEdit).MaxBy(o => o.OrderTime);
         if (order != null)
         {
-            _logger.LogInformation("Found existing order viable for updating.");
+            _logger.LogInformation("AutoCreateOrUpdateOrder: Found existing order viable for updating.");
 
             var existingOrderLines = order.OrderLines.Select(OrderLineModel.FromOrderLineDomainModel);
             var combinedDiffAndOrder = SanitizeOrderLines(diff.Concat(existingOrderLines));
 
-            _logger.LogInformation($"Sanitized combined diff and order lines. {combinedDiffAndOrder.ToArray()}");
+            _logger.LogInformation($"AutoCreateOrUpdateOrder: Sanitized combined diff and order lines. {combinedDiffAndOrder.ToArray()}");
             await UpdateOrderLinesAsync(order, combinedDiffAndOrder.ToArray(), cancellationToken);
 
             _logger.LogInformation("Updated existing order lines.");
@@ -211,7 +217,7 @@ public class OrderManagementService : IOrderManagementService
         }
 
         // if no order found for update - create a new order
-        _logger.LogInformation("No existing order viable for update. Creating a new order.");
+        _logger.LogInformation("AutoCreateOrUpdateOrder: No existing order viable for update. Creating a new order.");
         order = await CreateOrderForRegistrationAsync(registrationId, diff, cancellationToken);
         return order;
 
@@ -359,8 +365,11 @@ public class OrderManagementService : IOrderManagementService
         {
             orderedProductsWithAllVariants.TryGetValue(mandatoryProduct.ProductId, out var orderedSum);
             if (orderedSum < mandatoryProduct.MinimumQuantity)
+            {
+                _logger.LogWarning($"Product with id {mandatoryProduct.ProductId} has minimum quantity {mandatoryProduct.MinimumQuantity}, but current registration has ordered only {orderedSum}");
                 throw new ArgumentServiceException($"Product with id {mandatoryProduct.ProductId} has minimum quantity "
                                                  + $"{mandatoryProduct.MinimumQuantity}, but current registration has ordered only {orderedSum}");
+            }
         }
 
         var orderedProductWithNegativeAmount = registrationOrderLines.FirstOrDefault(ol => ol.Quantity < 0);
