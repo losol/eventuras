@@ -10,6 +10,7 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { ByRegistrationStatus } from './models/ByRegistrationStatus';
 export type { ByStatus } from './models/ByStatus';
 export type { ByType } from './models/ByType';
 export type { CalendarSystem } from './models/CalendarSystem';
@@ -71,6 +72,7 @@ export type { ProductDto } from './models/ProductDto';
 export type { ProductFormDto } from './models/ProductFormDto';
 export type { ProductOrderDto } from './models/ProductOrderDto';
 export type { ProductOrdersSummaryDto } from './models/ProductOrdersSummaryDto';
+export type { ProductStatisticsDto } from './models/ProductStatisticsDto';
 export type { ProductSummaryDto } from './models/ProductSummaryDto';
 export type { ProductVariantDto } from './models/ProductVariantDto';
 export { ProductVisibility } from './models/ProductVisibility';

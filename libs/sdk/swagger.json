@@ -1382,6 +1382,8 @@
         "tags": [
           "EventStatistics"
         ],
+        "summary": "Event statistics",
+        "description": "Returns a summary of the registrations for the event.",
         "parameters": [
           {
             "name": "eventId",
@@ -4296,6 +4298,40 @@
   },
   "components": {
     "schemas": {
+      "ByRegistrationStatus": {
+        "type": "object",
+        "properties": {
+          "draft": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cancelled": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "verified": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "notAttended": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "attended": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "finished": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "waitingList": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "ByStatus": {
         "type": "object",
         "properties": {
@@ -5796,6 +5832,9 @@
               "$ref": "#/components/schemas/ProductOrdersSummaryDto"
             },
             "nullable": true
+          },
+          "statistics": {
+            "$ref": "#/components/schemas/ProductStatisticsDto"
           }
         },
         "additionalProperties": false
@@ -5946,6 +5985,15 @@
           "sumQuantity": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductStatisticsDto": {
+        "type": "object",
+        "properties": {
+          "byRegistrationStatus": {
+            "$ref": "#/components/schemas/ByRegistrationStatus"
           }
         },
         "additionalProperties": false

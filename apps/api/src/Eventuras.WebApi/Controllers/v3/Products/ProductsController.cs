@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Eventuras.WebApi.Controllers.v3.Products;
 
 [ApiVersion("3")]
-[Authorize]
+[Authorize(Policy = Constants.Auth.AdministratorRole)]
 [Route("v{version:apiVersion}/products")]
 [ApiController]
 public class ProductsController : ControllerBase
@@ -28,20 +28,18 @@ public class ProductsController : ControllerBase
 
 
     [HttpGet("{productId:int}/summary")]
+    [ProducesResponseType(typeof(ProductDeliverySummaryDto), 200)]
     public async Task<ActionResult<ProductDeliverySummaryDto>> GetProductDeliverySummary(int productId, CancellationToken cancellationToken = default)
     {
-        var product = await _productRetrievalService.GetProductByIdAsync(productId, cancellationToken: cancellationToken);
-        var productDto = ProductSummaryDto.FromProduct(product);
-
-        var orderSummaries = await _orderRetrievalService.GetProductOrdersSummaryAsync(productId, cancellationToken);
-
-        var productDeliverySummaryDto = new ProductDeliverySummaryDto
+        // check that the product exists
+        var product = await _productRetrievalService.GetProductByIdAsync(productId);
+        if (product == null)
         {
-            Product = productDto,
-            OrderSummary = orderSummaries
-        };
+            return NotFound();
+        }
 
-        return Ok(productDeliverySummaryDto);
+        var deliverySummary = await _orderRetrievalService.GetProductDeliverySummaryAsync(productId, cancellationToken);
+        return Ok(deliverySummary);
     }
 
 
