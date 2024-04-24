@@ -20,6 +20,7 @@ import {
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
 import Link from '@/components/Link';
 
+import { ExcelExportButton } from './[id]/ExcelExportButton';
 import AddUserToEvent from './AddUserToEvent';
 import { AdminCertificatesActionsMenu } from './AdminCertificatesActionsMenu';
 
@@ -65,7 +66,9 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
         <Link href={`/admin/notifications?eventId=${eventinfo.id}`} variant="button-outline">
           {t('common:labels.messagelog')}
         </Link>
+        <ExcelExportButton EventinfoId={eventinfo.id!} />
       </ButtonGroup>
+
       <AddUserToEvent eventinfo={eventinfo} eventProducts={eventProducts ?? []} />
 
       <Drawer isOpen={emailDrawerOpen} onCancel={() => setEmailDrawerOpen(false)}>
