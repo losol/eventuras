@@ -4,11 +4,11 @@ import type { NewProductDto, ProductDto } from '@eventuras/sdk';
 import { Form, Input, NumberInput } from '@eventuras/smartform';
 import { Button, Heading } from '@eventuras/ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
-import { Dialog } from '@headlessui/react';
 import createTranslation from 'next-translate/createTranslation';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import Dialog from '@/components/Dialog';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { ApiState, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
@@ -98,19 +98,13 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
   return (
     <>
-      <Dialog open={isOpen} onClose={onClose} className="fixed inset-0 z-10 overflow-y-auto">
+      <Dialog isOpen={isOpen} onClose={onClose} title={titleText}>
         {/* The backdrop first */}
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
         {/* Then the dialogue... */}
         <div className="flex items-center justify-center min-h-screen">
-          <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-slate-700 text-color-gray-100 shadow-xl rounded-2xl">
-            <Dialog.Title>
-              <Heading as="h2" spacingClassName="py-0 my-0">
-                {titleText}
-              </Heading>
-            </Dialog.Title>
-
+          <div className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-slate-700 text-color-gray-100 shadow-xl rounded-2xl">
             <Form onSubmit={submitProduct} className="mt-2 space-y-6" defaultValues={product}>
               <Input
                 name="name"
@@ -154,7 +148,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 {t('common:buttons.cancel')}
               </Button>
             </Form>
-          </Dialog.Panel>
+          </div>
         </div>
       </Dialog>
 

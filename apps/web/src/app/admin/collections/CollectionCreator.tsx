@@ -5,8 +5,7 @@ import { Form, HiddenInput, Input } from '@eventuras/smartform';
 import { Button } from '@eventuras/ui';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
-import React, { useEffect, useState } from 'react';
-import { Modal } from 'react-aria-components';
+import React, { useState } from 'react';
 
 import Dialog from '@/components/Dialog';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
@@ -16,7 +15,6 @@ import slugify from '@/utils/slugify';
 const CollectionCreator: React.FC = () => {
   const { t } = createTranslation();
   const [modalOpen, setModalOpen] = useState(false);
-  const [slug, setSlug] = useState('asdf');
   const organizationId = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
   const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const router = useRouter();
