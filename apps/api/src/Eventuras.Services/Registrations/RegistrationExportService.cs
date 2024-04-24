@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
@@ -20,9 +19,12 @@ public class RegistrationExportService : IRegistrationExportService
                                         throw new ArgumentNullException(nameof(registrationRetrievalService));
     }
 
-    public async Task ExportParticipantListToExcelAsync(Stream stream, IRegistrationExportService.Options options = null)
+    public async Task ExportParticipantListToExcelAsync(
+        Stream stream,
+        RegistrationListRequest request)
     {
-        using var spreadsheetDocument = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook);
+        using var spreadsheetDocument = SpreadsheetDocument.Create(stream,
+            SpreadsheetDocumentType.Workbook);
 
         var workbookPart = spreadsheetDocument.AddWorkbookPart();
         workbookPart.Workbook = new Workbook();
@@ -30,11 +32,10 @@ public class RegistrationExportService : IRegistrationExportService
         var worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
         var sheetData = new SheetData();
 
-        if (options?.ExportHeader == true)
-        {
-            WriteHeader(sheetData);
-        }
+        // Always write the header first
+        WriteHeader(sheetData);
 
+        // PageReader for reading data
         var reader = new PageReader<Registration>(async (offset, limit, token) =>
             await _registrationRetrievalService.ListRegistrationsAsync(
                 new RegistrationListRequest
@@ -45,16 +46,19 @@ public class RegistrationExportService : IRegistrationExportService
                     Descending = true,
                     Filter = new RegistrationFilter
                     {
-                        EventInfoId = options?.EventInfoId
+                        EventInfoId = request.Filter.EventInfoId
                     }
-                }, new RegistrationRetrievalOptions
+                },
+                new RegistrationRetrievalOptions
                 {
                     LoadUser = true,
                     LoadEventInfo = true,
                     LoadOrders = true,
                     LoadProducts = true,
-                }, token));
+                },
+                token));
 
+        // Write data rows after headers
         while (await reader.HasMoreAsync())
         {
             foreach (var registration in await reader.ReadNextAsync())
@@ -65,10 +69,9 @@ public class RegistrationExportService : IRegistrationExportService
 
         worksheetPart.Worksheet = new Worksheet(sheetData);
 
-        // Add Sheets to the Workbook.
-        var sheets = spreadsheetDocument.WorkbookPart.Workbook.AppendChild(new Sheets());
+        // Add sheets and finalize workbook
+        var sheets = workbookPart.Workbook.AppendChild(new Sheets());
 
-        // Append a new worksheet and associate it with the workbook.
         sheets.Append(new Sheet
         {
             Id = spreadsheetDocument.WorkbookPart.GetIdOfPart(worksheetPart),
@@ -82,81 +85,38 @@ public class RegistrationExportService : IRegistrationExportService
     private static void WriteHeader(SheetData sheetData)
     {
         var row = new Row();
-        foreach (var header in new[]
-        {
-            "RegistrationId",
-            "ParticipantName",
-            "ParticipantEmail",
-            "ParticipantPhone",
-            "Products",
-            "RegistrationStatus",
-            "RegistrationType"
-        })
+
+        var config = ExportColumnConfig.GetDefaultConfig(); // Get header config
+
+        foreach (var headerConfig in config)
         {
             row.Append(new Cell
             {
-                CellValue = new CellValue(header),
+                CellValue = new CellValue(headerConfig.Header),
                 DataType = new EnumValue<CellValues>(CellValues.String)
             });
         }
-        sheetData.Append(row);
+
+        sheetData.Append(row); // Append header row
     }
 
     private static void WriteRow(SheetData sheetData, Registration registration)
     {
         var row = new Row();
-        row.Append(
-            new Cell
+
+        var config = ExportColumnConfig.GetDefaultConfig(); // Get data config
+
+        foreach (var dataConfig in config)
+        {
+            var cellValue = dataConfig.DataExtractor(registration); // Get data from Registration
+
+            row.Append(new Cell
             {
-                CellValue = new CellValue(registration.RegistrationId.ToString()),
-                DataType = new EnumValue<CellValues>(CellValues.String)
-            },
-            new Cell
-            {
-                CellValue = new CellValue(registration.ParticipantName),
-                DataType = new EnumValue<CellValues>(CellValues.String)
-            },
-            new Cell
-            {
-                CellValue = new CellValue(registration.User.Email),
-                DataType = new EnumValue<CellValues>(CellValues.String)
-            },
-            new Cell
-            {
-                CellValue = new CellValue(registration.User.PhoneNumber),
-                DataType = new EnumValue<CellValues>(CellValues.String)
-            },
-            new Cell
-            {
-                CellValue = new CellValue(string.Join(", ", registration.Products.Select(p =>
-                {
-                    var str = new StringBuilder();
-                    if (p.Quantity > 1)
-                    {
-                        str.Append($"{p.Quantity} × {p.Product.Name}");
-                    }
-                    else
-                    {
-                        str.Append(p.Product.Name);
-                    }
-                    if (p.Variant != null)
-                    {
-                        str.Append($" ({p.Variant.Name})");
-                    }
-                    return str.ToString();
-                }))),
-                DataType = new EnumValue<CellValues>(CellValues.String)
-            },
-            new Cell
-            {
-                CellValue = new CellValue(registration.Status.ToString()),
-                DataType = new EnumValue<CellValues>(CellValues.String)
-            },
-            new Cell
-            {
-                CellValue = new CellValue(registration.Type.ToString()),
+                CellValue = new CellValue(cellValue),
                 DataType = new EnumValue<CellValues>(CellValues.String)
             });
-        sheetData.Append(row);
+        }
+
+        sheetData.Append(row); // Append data row
     }
 }
