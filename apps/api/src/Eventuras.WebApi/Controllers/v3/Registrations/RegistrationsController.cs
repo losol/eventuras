@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Eventuras.WebApi.Controllers.v3.Registrations;
 
@@ -23,12 +25,16 @@ public class RegistrationsController : ControllerBase
 {
     private readonly IRegistrationRetrievalService _registrationRetrievalService;
     private readonly IRegistrationManagementService _registrationManagementService;
+    private readonly IRegistrationExportService _registrationExportService;
+
+    private const string MimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     private readonly ILogger<RegistrationsController> _logger;
 
     public RegistrationsController(
         IRegistrationRetrievalService registrationRetrievalService,
         IRegistrationManagementService registrationManagementService,
+        IRegistrationExportService registrationExportService,
         ILogger<RegistrationsController> logger)
     {
         _registrationRetrievalService = registrationRetrievalService ?? throw
@@ -37,47 +43,89 @@ public class RegistrationsController : ControllerBase
         _registrationManagementService = registrationManagementService ?? throw
             new ArgumentNullException(nameof(registrationManagementService));
 
+        _registrationExportService = registrationExportService ?? throw
+            new ArgumentNullException(nameof(registrationExportService));
+
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
 
     [HttpGet]
-    public async Task<PageResponseDto<RegistrationDto>> GetRegistrations(
-  [FromQuery] RegistrationsQueryDto query,
-  CancellationToken cancellationToken)
+    [SwaggerOperation(
+       Summary = "Get registrations with optional Excel export",
+       Description = "Retrieves registrations with optional export to Excel based on the Accept header."
+   )]
+    [ProducesResponseType(typeof(PageResponseDto<RegistrationDto>), 200)]
+    [ProducesResponseType(typeof(FileContentResult), 200)]
+    [ProducesResponseType(400)]
+    public async Task<IActionResult> GetRegistrations(
+       [FromQuery] RegistrationsQueryDto query,
+       CancellationToken cancellationToken = default
+   )
     {
         if (!ModelState.IsValid)
         {
             _logger.LogWarning("GetRegistrations called with invalid query parameters: {query}", query);
             throw new BadHttpRequestException("Invalid query parameters.");
         }
-        _logger.LogInformation("GetRegistrations called with query: {query}", query);
 
+        var registrationListRequest = new RegistrationListRequest
+        {
+            Limit = query.Limit,
+            Offset = query.Offset,
+            Filter = new RegistrationFilter
+            {
+                AccessibleOnly = true,
+                EventInfoId = query.EventId,
+                UserId = query.UserId
+            },
+            OrderBy = RegistrationListOrder.RegistrationTime,
+            Descending = true
+        };
+
+        // Check for Excel export based on Accept header
+        if (Request.Headers.TryGetValue("Accept", out var accept) && accept.Contains(MimeType))
+        {
+            _logger.LogInformation("GetRegistrations called with Excel export request: {query}", query);
+
+            // Only admins can export to Excel
+            if (!User.IsAdmin())
+            {
+                return Forbid();
+            }
+
+            var stream = new MemoryStream();
+            await _registrationExportService.ExportParticipantListToExcelAsync(
+                stream,
+                registrationListRequest
+            );
+            return new FileContentResult(stream.ToArray(), MimeType)
+            {
+                FileDownloadName = "Registrations.xlsx"
+            };
+        }
+
+        // Default to a paginated response
         var paging = await _registrationRetrievalService
             .ListRegistrationsAsync(
-                new RegistrationListRequest
-                {
-                    Limit = query.Limit,
-                    Offset = query.Offset,
-                    Filter = new RegistrationFilter
-                    {
-                        AccessibleOnly = true,
-                        EventInfoId = query.EventId,
-                        UserId = query.UserId
-                    },
-                    OrderBy = RegistrationListOrder.RegistrationTime,
-                    Descending = true
-                },
+                registrationListRequest,
                 RetrievalOptions(query),
-                cancellationToken);
+                cancellationToken
+            );
 
-        return PageResponseDto<RegistrationDto>.FromPaging(
-            query, paging, r => new RegistrationDto(r));
+        var response = PageResponseDto<RegistrationDto>.FromPaging(
+            query,
+            paging,
+            r => new RegistrationDto(r)
+        );
+
+        return Ok(response);
     }
+
 
     [HttpGet("{id}")]
     public async Task<ActionResult<RegistrationDto>> GetRegistrationById(int id,
-    [FromQuery] RegistrationsQueryDto query, CancellationToken cancellationToken)
+        [FromQuery] RegistrationsQueryDto query, CancellationToken cancellationToken)
     {
         _logger.LogInformation("GetRegistrationById called with ID: {id}, and query: {query}", id, query);
 
