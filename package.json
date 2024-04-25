@@ -4,7 +4,7 @@
   "license": "GPL-2.0+",
   "private": true,
   "devDependencies": {
-    "@commitlint/cli": "^19.2.2",
+    "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
     "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*",
@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "husky": "^9.0.11",
-    "next": "^14.2.2",
+    "next": "^14.2.3",
     "nextra": "^2.13.4",
     "nextra-theme-docs": "^2.13.4",
     "piscina": "^4.4.0",
