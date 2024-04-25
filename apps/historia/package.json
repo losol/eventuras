@@ -21,7 +21,7 @@
     "@aws-sdk/client-s3": "^3.556.0",
     "@aws-sdk/lib-storage": "^3.556.0",
     "@payloadcms/bundler-webpack": "^1.0.6",
-    "@payloadcms/db-postgres": "^0.8.0",
+    "@payloadcms/db-postgres": "^0.8.1",
     "@payloadcms/plugin-cloud": "^3.0.0",
     "@payloadcms/plugin-cloud-storage": "^1.1.2",
     "@payloadcms/plugin-nested-docs": "^1.0.12",
@@ -32,7 +32,7 @@
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "payload": "^2.13.0"
+    "payload": "^2.14.0"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "*",
