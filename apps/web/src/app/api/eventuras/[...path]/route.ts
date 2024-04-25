@@ -32,6 +32,7 @@ async function forwarder(request: NextRequest) {
 
   const forwardUrl = request.url.replace(/^.*?\/api\/eventuras/, eventurasAPI_URL);
   const acceptHeaders = request.headers.get('Accept');
+  const hasAcceptHeaders = (acceptHeaders ?? '').toString().length > 0;
   const isBlob =
     acceptHeaders === 'application/pdf' ||
     acceptHeaders === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
@@ -47,7 +48,7 @@ async function forwarder(request: NextRequest) {
   });
 
   let contentType = request.method === 'PATCH' ? 'application/json-patch+json' : 'application/json';
-  if (isBlob) contentType = acceptHeaders!;
+  let forwardAccept = hasAcceptHeaders ? { Accept: acceptHeaders! } : null;
   const fResponse = await fetch(forwardUrl, {
     method: request.method,
     body: request.method === 'GET' ? null : JSON.stringify(jBody),
@@ -55,6 +56,7 @@ async function forwarder(request: NextRequest) {
       Authorization: `Bearer ${accessToken}`,
       'Content-Type': contentType,
       'Eventuras-Org-Id': Environment.NEXT_PUBLIC_ORGANIZATION_ID,
+      ...forwardAccept,
     },
     redirect: 'manual',
   });
