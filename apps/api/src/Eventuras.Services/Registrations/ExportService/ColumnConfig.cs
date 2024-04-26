@@ -2,67 +2,79 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Eventuras.Domain;
 
-namespace Eventuras.Services.Registrations;
+namespace Eventuras.Services.Registrations.ExportService;
 
-public class ExportColumnConfig
+public enum ExcelColumnType
 {
-    // Column header
-    public string Header { get; set; }
-    // Data extractor function
-    public Func<Registration, string> DataExtractor { get; set; }
+    String,
+    Number,
+    Date,
+    Boolean,
+}
 
-    public static List<ExportColumnConfig> GetDefaultConfig()
+public class ColumnConfig
+{
+    public string Header { get; set; }
+    public Func<Registration, string> DataExtractor { get; set; }
+    public ExcelColumnType ColumnType { get; set; } = ExcelColumnType.String;
+
+
+    public static List<ColumnConfig> GetDefaultConfig()
     {
-        return new List<ExportColumnConfig>
+        return new List<ColumnConfig>
         {
-            new ExportColumnConfig
+            new ColumnConfig
             {
                 Header = "RegistrationId",
-                DataExtractor = reg => reg.RegistrationId.ToString()
+                DataExtractor = reg => reg.RegistrationId.ToString(),
+                ColumnType = ExcelColumnType.Number
             },
-            new ExportColumnConfig
+            new ColumnConfig
             {
-                Header = "User.FirstName",
+                Header = "UserFirstName",
                 DataExtractor = reg => reg.User?.GivenName ?? ""
             },
-            new ExportColumnConfig
+            new ColumnConfig
             {
-                Header = "User.MiddleName",
+                Header = "UserMiddleName",
                 DataExtractor = reg => reg.User?.MiddleName ?? ""
             },
-            new ExportColumnConfig
+            new ColumnConfig
             {
-                Header = "User.LastName",
+                Header = "UserLastName",
                 DataExtractor = reg => reg.User?.FamilyName ?? ""
             },
-            new ExportColumnConfig
+            new ColumnConfig
             {
-                Header = "User.FullName",
+                Header = "UserFullName",
                 DataExtractor = reg => reg.User?.Name ?? ""
             },
-            new ExportColumnConfig
+            new ColumnConfig
             {
-                Header = "User.Email",
+                Header = "UserEmail",
                 DataExtractor = reg => reg.User?.Email ?? ""
             },
-            new ExportColumnConfig
+            new ColumnConfig
             {
-                Header = "User.Phone",
+                Header = "UserPhone",
                 DataExtractor = reg => reg.User?.PhoneNumber ?? ""
             },
-            new ExportColumnConfig
+            new ColumnConfig
             {
-                Header = "User.ProfessionalIdentityNumber",
-                DataExtractor = reg => reg.User?.ProfessionalIdentityNumber ?? ""
+                Header = "UserWorkId",
+                DataExtractor = reg => reg.User?.ProfessionalIdentityNumber ?? "",
+                ColumnType = ExcelColumnType.Number
             },
-            new ExportColumnConfig
+            new ColumnConfig
             {
                 Header = "EventName",
                 DataExtractor = reg => reg.EventInfo.Title
             },
-            new ExportColumnConfig
+            new ColumnConfig
             {
                 Header = "Products",
                 DataExtractor = reg => string.Join(", ", reg.Products.Select(p =>
@@ -83,21 +95,22 @@ public class ExportColumnConfig
                     return sb.ToString();
                 }))
             },
-            new ExportColumnConfig
+            new ColumnConfig
             {
                 Header = "RegistrationStatus",
                 DataExtractor = reg => reg.Status.ToString()
             },
-            new ExportColumnConfig
+            new ColumnConfig
             {
                 Header = "RegistrationType",
                 DataExtractor = reg => reg.Type.ToString()
             },
-            new ExportColumnConfig
+            new ColumnConfig
             {
-                Header = "Registration.Notes",
+                Header = "RegistrationNotes",
                 DataExtractor = reg => reg.Notes?.ToString()
             }
         };
     }
+
 }
