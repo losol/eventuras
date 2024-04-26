@@ -1,3 +1,4 @@
+using Eventuras.Services.Registrations.ExportService;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Eventuras.Services.Registrations;

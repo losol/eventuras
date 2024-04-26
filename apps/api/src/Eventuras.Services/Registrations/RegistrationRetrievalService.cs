@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Eventuras.Services.Registrations;
 
-internal class RegistrationRetrievalService : IRegistrationRetrievalService
+public class RegistrationRetrievalService : IRegistrationRetrievalService
 {
     private readonly ApplicationDbContext _context;
     private readonly IRegistrationAccessControlService _registrationAccessControlService;
