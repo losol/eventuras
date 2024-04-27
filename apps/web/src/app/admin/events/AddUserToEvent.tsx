@@ -1,4 +1,3 @@
-import { DropdownSelect } from '@eventuras/forms';
 import {
   EventDto,
   NewRegistrationDto,
@@ -8,10 +7,21 @@ import {
 } from '@eventuras/sdk';
 import { Button, Drawer, Heading } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
+import { IconCheck } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import {
+  Button as AriaButton,
+  Label,
+  ListBox,
+  ListBoxItem,
+  ListBoxItemProps,
+  Popover,
+  Select,
+  SelectValue,
+} from 'react-aria-components';
+import { Controller, useForm } from 'react-hook-form';
 
 import ProductSelection from '@/components/eventuras/ProductSelection';
 import UserLookup from '@/components/eventuras/UserLookup';
@@ -41,6 +51,24 @@ export const AddUserButton: React.FC = () => {
     </>
   );
 };
+
+const RegistrationListBoxItem = (props: ListBoxItemProps & { children: React.ReactNode }) => (
+  <ListBoxItem
+    {...props}
+    className="cursor-pointer group flex items-center gap-2 cursor-default select-none py-2 px-4 outline-none rounded text-gray-900 focus:bg-blue-100  focus:text-blue-900"
+  >
+    {({ isSelected }) => (
+      <>
+        <span className="flex-1 flex items-center gap-2 truncate font-normal group-selected:font-medium">
+          {props.children}
+        </span>
+        <span className="w-5 flex items-center text-black group-focus:text-white">
+          {isSelected && <IconCheck className="h-5 w-5" aria-hidden="true" />}
+        </span>
+      </>
+    )}
+  </ListBoxItem>
+);
 
 const AddUserCard: React.FC<AddUserCardProps> = ({
   user,
@@ -112,19 +140,43 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
     <form className="" onSubmit={handleSubmit(onSubmitForm)}>
       <p>Name: {user.name}</p>
       <p>Email: {user.email}</p>
-      <DropdownSelect
-        className="relative z-9"
-        label="Registration Type"
+      <Controller
         control={control}
-        rules={{ required: 'Choose at least one Registration type for this User' }}
         name="registrationType"
-        errors={errors}
-        options={mapEnum(RegistrationType, (value: any) => ({
-          id: value,
-          label: value,
-        }))}
-        multiSelect={false}
+        render={({ field: { onChange, onBlur } }) => {
+          return (
+            <Select
+              className="flex flex-col gap-1 w-[200px]"
+              defaultSelectedKey={RegistrationType.PARTICIPANT}
+              onBlur={onBlur}
+              onSelectionChange={onChange}
+            >
+              <Label className="text-white cursor-default">Registration Type</Label>
+              <AriaButton className="flex items-center cursor-default border-0 bg-white bg-opacity-90 pressed:bg-opacity-100 transition pl-5 text-base text-left leading-normal shadow-md text-gray-700 focus:outline-none focus-visible:ring-2 ring-white ring-offset-2 ring-offset-rose-700">
+                <SelectValue className="flex-1 truncate placeholder-shown:italic" />
+                <div className="text-white p-2 bg-primary-600">▼</div>
+              </AriaButton>
+              <Popover className="max-h-60 w-[--trigger-width] overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black/5 entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out">
+                <ListBox className="outline-none p-1">
+                  {mapEnum(RegistrationType, (value: any) => {
+                    return (
+                      <RegistrationListBoxItem
+                        textValue={value}
+                        value={value}
+                        id={value}
+                        key={value}
+                      >
+                        {value}
+                      </RegistrationListBoxItem>
+                    );
+                  })}
+                </ListBox>
+              </Popover>
+            </Select>
+          );
+        }}
       />
+
       {products.length > 0 && (
         <>
           <Heading as="h4">Choose Products</Heading>
@@ -166,7 +218,7 @@ const AddUserToEventDrawer: React.FC<AddUserToEventDrawerProps> = ({
   return (
     <>
       <Drawer isOpen={isOpen!} onCancel={onCancel}>
-        <Heading as="h2">Add users to event </Heading>
+        <Heading as="h2">Add users to event</Heading>
         <UserLookup
           onUserSelected={(u: UserDto) => {
             setUsersToAdd([...usersToAdd, u]);

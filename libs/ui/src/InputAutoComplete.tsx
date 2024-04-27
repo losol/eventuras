@@ -64,7 +64,7 @@ export const InputAutoComplete = (props: InputAutoCompleteProps) => {
   });
   return <div>
     <ComboBox
-      className="group flex flex-col"
+      className="group flex flex-col p-4"
       items={list.items}
       inputValue={list.filterText}
       disabledKeys={[-1]}
