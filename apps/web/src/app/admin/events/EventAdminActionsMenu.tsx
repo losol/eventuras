@@ -4,18 +4,6 @@ import { EventDto, ProductDto } from '@eventuras/sdk';
 import { Button, ButtonGroup, Drawer } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
-import {
-  Button as AriaButton,
-  Header,
-  Keyboard,
-  Menu,
-  MenuItem,
-  MenuTrigger,
-  Popover,
-  Section,
-  Separator,
-  Text,
-} from 'react-aria-components';
 
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
 import Link from '@/components/Link';

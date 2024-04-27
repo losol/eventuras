@@ -1,23 +1,25 @@
 import { DATA_TEST_ID } from '@eventuras/utils';
+import { ReactNode } from 'react';
 import {
-  Menu as HeadlessMenu,
-  MenuButtonProps as HeadlessMenuButtonProps,
-} from '@headlessui/react';
-import React, { FC, ReactNode } from 'react';
-
-import Link from './BaseLink';
+  Button,
+  Menu as AriaMenu,
+  MenuItem,
+  MenuItemProps,
+  MenuTrigger,
+  Popover,
+} from 'react-aria-components';
 
 const styles = {
   menuWrapper: 'top-16 w-56 text-right',
   menu: 'relative inline-block text-left',
   menuTrigger: 'inline-flex justify-center w-full px-4 py-2 text-sm',
   menuItemsList:
-    'absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-400 bg-white dark:bg-slate-900 shadow-lg ring-1 ring-black/5 focus:outline-none',
+    'w-56 origin-top-right divide-y divide-gray-400 bg-white dark:bg-slate-900 shadow-lg ring-1 ring-black/5 focus:outline-none',
   menuItem:
-    'group flex w-full items-center px-2 py-3 hover:bg-primary-100 dark:hover:bg-primary-900 text-gray-900 dark:text-gray-100',
+    'cursor-pointer group flex w-full items-center px-2 py-3 hover:bg-primary-100 dark:hover:bg-primary-900 text-gray-900 dark:text-gray-100',
 };
 
-const ChevronIcon: FC = () => (
+const ChevronIcon = () => (
   <svg
     className="ml-2 h-5 w-5"
     xmlns="http://www.w3.org/2000/svg"
@@ -33,108 +35,70 @@ const ChevronIcon: FC = () => (
   </svg>
 );
 
-interface MenuTriggerProps extends HeadlessMenuButtonProps<'button'> {
-  children: ReactNode;
-  [DATA_TEST_ID]?: string;
-}
-
-const MenuTrigger: FC<MenuTriggerProps> = props => (
-  <HeadlessMenu.Button className={styles.menuTrigger} {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}>
-    {props.children}
-    <ChevronIcon />
-  </HeadlessMenu.Button>
-);
-
-interface MenuItemsProps {
-  children: ReactNode;
-}
-
-const MenuItems: FC<MenuItemsProps> = ({ children }) => (
-  <HeadlessMenu.Items as="ul" className={styles.menuItemsList}>
-    {children}
-  </HeadlessMenu.Items>
-);
-
-interface MenuItemProps {
-  children: ReactNode;
-  onClick?: () => void;
-}
-
-const MenuItem: FC<MenuItemProps> = ({ children, onClick }) => (
-  <HeadlessMenu.Item as="li" className={styles.menuItem} onClick={onClick}>
-    {children}
-  </HeadlessMenu.Item>
-);
-
-interface MenuLinkProps {
-  closeOnClick?: boolean;
+export type MenuLinkProps = {
   href: string;
   children: ReactNode;
   [DATA_TEST_ID]?: string;
-}
-const MenuLink: FC<MenuLinkProps> = props => (
-  <HeadlessMenu.Item as="li">
-    {({ close }) => (
-      <div
-        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-          if (e.key === 'ENTER' && props.closeOnClick) {
-            close();
-          }
-        }}
-        onClick={() => {
-          if (props.closeOnClick) {
-            close();
-          }
-        }}
-      >
-        <Link
-          href={props.href}
-          className={styles.menuItem}
-          {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}
-        >
-          {props.children}
-        </Link>
-      </div>
-    )}
-  </HeadlessMenu.Item>
-);
+};
 
-interface MenuButtonProps {
+const MenuLink = (props: MenuLinkProps & MenuItemProps) => {
+  return (
+    <MenuItem {...props} {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }} className={styles.menuItem}>
+      {props.children}
+    </MenuItem>
+  );
+};
+
+export type MenuProps = {
+  menuLabel: string;
+  children: ReactNode;
+};
+
+export type MenuButtonProps = {
+  id: string;
   children: ReactNode;
   onClick: () => void;
   [DATA_TEST_ID]?: string;
-}
+};
 
-const MenuButton: FC<MenuButtonProps> = props => (
-  <HeadlessMenu.Item as="li">
-    <button
-      onClick={props.onClick}
-      className={styles.menuItem}
-      {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}
-    >
+/**
+ * React-Aria menu does not provide support of interactive elements within the MenuItem, we therefore
+ * create this functionMap which is then called by the Menu's onAction
+ */
+const functionMap: Map<string, () => void> = new Map();
+
+const MenuButton = (props: MenuButtonProps & MenuItemProps) => {
+  functionMap.set(props.id, props.onClick);
+  return (
+    <MenuItem {...props} className={styles.menuItem} {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}>
       {props.children}
-    </button>
-  </HeadlessMenu.Item>
-);
+    </MenuItem>
+  );
+};
 
-const Menu: FC<{ children: ReactNode }> & {
-  Trigger: FC<MenuTriggerProps>;
-  Items: FC<MenuItemsProps>;
-  Item: FC<MenuItemProps>;
-  Link: FC<MenuLinkProps>;
-  Button: FC<MenuButtonProps>;
-} = ({ children }) => (
-  <div className={styles.menuWrapper}>
-    <HeadlessMenu as="nav" className={styles.menu}>
-      {children}
-    </HeadlessMenu>
-  </div>
-);
-
-Menu.Trigger = MenuTrigger;
-Menu.Items = MenuItems;
-Menu.Item = MenuItem;
+const Menu = (props: MenuProps) => {
+  return (
+    <MenuTrigger>
+      <Button {...{ [DATA_TEST_ID]: 'logged-in-menu-button' }}>
+        <div className={styles.menuTrigger}>
+          {props.menuLabel}
+          <ChevronIcon />
+        </div>
+      </Button>
+      <Popover>
+        <AriaMenu
+          className={styles.menuItemsList}
+          onAction={key => {
+            const func = functionMap.get(key.toString());
+            if (func) func();
+          }}
+        >
+          {props.children}
+        </AriaMenu>
+      </Popover>
+    </MenuTrigger>
+  );
+};
 Menu.Link = MenuLink;
 Menu.Button = MenuButton;
-
 export default Menu;
