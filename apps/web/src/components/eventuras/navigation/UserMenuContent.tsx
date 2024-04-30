@@ -1,7 +1,6 @@
 'use client';
 import { Button } from '@eventuras/ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
-import { Separator } from 'react-aria-components';
 
 import Menu from '@/components/Menu';
 

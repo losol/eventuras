@@ -1,10 +1,8 @@
-import { Button, Heading } from '@eventuras/ui';
+import { Heading } from '@eventuras/ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
-import type { AriaModalOverlayProps } from '@react-aria/overlays';
-import { Overlay, useModalOverlay } from '@react-aria/overlays';
-import React, { ReactNode, useState } from 'react';
-import { Dialog as RaDialog, DialogTrigger, Modal, ModalOverlay } from 'react-aria-components';
-import { OverlayTriggerState, useOverlayTriggerState } from 'react-stately';
+import { Overlay } from '@react-aria/overlays';
+import React, { ReactNode } from 'react';
+import { Dialog as RaDialog } from 'react-aria-components';
 export type DialogProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -39,7 +37,7 @@ interface DialogModalProps {
   [DATA_TEST_ID]?: string;
 }
 
-function DialogModal(props: DialogModalProps) {
+function DialogModal(props: Readonly<DialogModalProps>) {
   if (!props.isOpen) {
     return null;
   }
@@ -50,12 +48,18 @@ function DialogModal(props: DialogModalProps) {
         {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}
         className="flex min-h-full min-w-full items-start justify-center p-4 text-center fixed inset-0 z-100 overflow-auto h-full bg-black/50"
         id="underlay"
+        role="button"
         style={{
           zIndex: 100,
         }}
         onClick={e => {
           const t = e.target as any;
           if (t['id'] === 'underlay') {
+            if (props.onClickOutside) props.onClickOutside();
+          }
+        }}
+        onKeyDown={e => {
+          if (e.key === 'Escape') {
             if (props.onClickOutside) props.onClickOutside();
           }
         }}

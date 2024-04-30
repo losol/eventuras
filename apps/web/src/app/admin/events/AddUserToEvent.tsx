@@ -70,6 +70,12 @@ const RegistrationListBoxItem = (props: ListBoxItemProps & { children: React.Rea
   </ListBoxItem>
 );
 
+const renderRegistrationTypeItem = (value: any) => (
+  <RegistrationListBoxItem textValue={value} value={value} id={value} key={value}>
+    {value}
+  </RegistrationListBoxItem>
+);
+
 const AddUserCard: React.FC<AddUserCardProps> = ({
   user,
   eventinfo,
@@ -80,13 +86,7 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
   const { addAppNotification } = useAppNotifications();
   const { t } = createTranslation();
 
-  const {
-    control,
-    register,
-    setValue,
-    formState: { errors },
-    handleSubmit,
-  } = useForm<AddUserToEventFormValues>();
+  const { control, register, setValue, handleSubmit } = useForm<AddUserToEventFormValues>();
 
   useEffect(() => {
     setValue('registrationType', RegistrationType.PARTICIPANT); //default to participant
@@ -158,18 +158,7 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
               </AriaButton>
               <Popover className="max-h-60 w-[--trigger-width] overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black/5 entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out">
                 <ListBox className="outline-none p-1">
-                  {mapEnum(RegistrationType, (value: any) => {
-                    return (
-                      <RegistrationListBoxItem
-                        textValue={value}
-                        value={value}
-                        id={value}
-                        key={value}
-                      >
-                        {value}
-                      </RegistrationListBoxItem>
-                    );
-                  })}
+                  {mapEnum(RegistrationType, (value: any) => renderRegistrationTypeItem(value))}
                 </ListBox>
               </Popover>
             </Select>
