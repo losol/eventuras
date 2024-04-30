@@ -42,31 +42,24 @@ export type UserMenuContentLoggedInProps = {
 const UserMenuContentLoggedIn = (props: UserMenuContentLoggedInProps) => {
   const { accountLabel, adminLabel, logoutButtonLabel, userLabel } = props.languagePack;
   return (
-    <Menu>
-      <Menu.Trigger {...{ [DATA_TEST_ID]: 'logged-in-menu-button' }}>
-        {props.menuLabel}
-      </Menu.Trigger>
-      <Menu.Items>
-        <Menu.Link {...{ [DATA_TEST_ID]: 'profile-link' }} href="/user" closeOnClick={true}>
-          {userLabel}
-        </Menu.Link>
-        <Menu.Link href="/user/account" closeOnClick={true}>
-          {accountLabel}
-        </Menu.Link>
-        {props.isAdmin && (
-          <Menu.Link href="/admin" closeOnClick={true}>
-            {adminLabel}
-          </Menu.Link>
-        )}
-        <Menu.Button
-          onClick={() => props.onLogoutRequested()}
-          {...{ [DATA_TEST_ID]: 'logout-button' }}
-        >
-          {logoutButtonLabel}
-        </Menu.Button>
-      </Menu.Items>
+    <Menu menuLabel={props.menuLabel}>
+      <Menu.Link {...{ [DATA_TEST_ID]: 'profile-link' }} href="/user">
+        {userLabel}
+      </Menu.Link>
+      <Menu.Link href="/user/account">{accountLabel}</Menu.Link>
+      {props.isAdmin && <Menu.Link href="/admin">{adminLabel}</Menu.Link>}
+      <Menu.Button
+        id="logout-button"
+        onClick={() => props.onLogoutRequested()}
+        {...{ [DATA_TEST_ID]: 'logout-button' }}
+      >
+        {logoutButtonLabel}
+      </Menu.Button>
     </Menu>
   );
 };
 
-export default { LoggedIn: UserMenuContentLoggedIn, LoggedOut: UserMenuContentLoggedout };
+export default {
+  LoggedIn: UserMenuContentLoggedIn,
+  LoggedOut: UserMenuContentLoggedout,
+};
