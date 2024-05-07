@@ -5,6 +5,7 @@ import { dictionary } from '../fields/dictionary';
 import { story } from '../fields/story';
 import { contentLocations } from '../fields/contentLocations';
 import { featuredImage } from '../fields/featuredImage';
+import { program } from '../fields/program';
 
 export const Happenings: CollectionConfig = {
   slug: 'happenings',
@@ -54,6 +55,7 @@ export const Happenings: CollectionConfig = {
       name: 'endDate',
       type: 'date',
     },
+    program,
     contentLocations,
     config,
     dictionary,
