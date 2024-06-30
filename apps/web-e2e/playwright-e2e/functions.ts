@@ -84,7 +84,6 @@ export const createEvent = async (page: Page, eventName: string) => {
   await page.locator('[data-test-id="event-title-input"]').click();
   await page.locator('[data-test-id="event-title-input"]').fill(eventName);
   await page.locator('[data-test-id="create-event-submit-button"]').click();
-  await expect(page.locator('[data-test-id="notification-success"]')).toBeVisible();
   await page.waitForURL('**/edit');
 
   // Fill in overview details

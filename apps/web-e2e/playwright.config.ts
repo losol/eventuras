@@ -65,6 +65,6 @@ export default defineConfig({
         ...devicesToTest,
       },
       dependencies: [SETUP_USER],
-    }
+    },
   ],
 });
