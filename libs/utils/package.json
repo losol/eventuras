@@ -8,6 +8,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "debug": "^4.3.4"
+    "debug": "^4.3.5"
   }
 }
