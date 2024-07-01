@@ -254,7 +254,11 @@ export const visitRegistrationPageForEvent = async (page: Page, eventId: string)
 export const validateRegistration = async (page: Page, eventId: string) => {
   Logger.info(ns, 'Registered for event, validating..');
   await visitRegistrationPageForEvent(page, eventId);
-  await page.getByRole('tab', { name: 'Registration' }).click();
+
+  // Get the registration tab
+  const tab = await page.locator('[data-key="tab-registration"]');
+  await tab.click();
+
   await expect(page.locator('[data-test-id="registration-registrationId"]')).toBeVisible();
 };
 
