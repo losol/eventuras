@@ -32,7 +32,7 @@ jobs:
       - name: npm install
         run: npm install
       - name: Lint
-        run: npx turbo lint --filter=historia
+        run: npx turbo lint --filter=@eventuras/historia
 
   build:
     name: Build project
@@ -48,7 +48,7 @@ jobs:
       - name: npm install
         run: npm install
       - name: Build
-        run: npx turbo build --filter=historia
+        run: npx turbo build --filter=@eventuras/historia
 
   docker:
     name: Docker build
