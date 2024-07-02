@@ -67,6 +67,7 @@ export { OrganizationSettingType } from './models/OrganizationSettingType';
 export type { OrganizationSettingValueDto } from './models/OrganizationSettingValueDto';
 export { PaymentProvider } from './models/PaymentProvider';
 export { PeriodMatchingKind } from './models/PeriodMatchingKind';
+export type { ProblemDetails } from './models/ProblemDetails';
 export type { ProductDeliverySummaryDto } from './models/ProductDeliverySummaryDto';
 export type { ProductDto } from './models/ProductDto';
 export type { ProductFormDto } from './models/ProductFormDto';
@@ -80,7 +81,6 @@ export type { RegistrationCustomerInfoDto } from './models/RegistrationCustomerI
 export type { RegistrationDto } from './models/RegistrationDto';
 export type { RegistrationDtoJsonPatchDocument } from './models/RegistrationDtoJsonPatchDocument';
 export type { RegistrationDtoOperation } from './models/RegistrationDtoOperation';
-export type { RegistrationDtoPageResponseDto } from './models/RegistrationDtoPageResponseDto';
 export { RegistrationStatus } from './models/RegistrationStatus';
 export { RegistrationType } from './models/RegistrationType';
 export type { RegistrationUpdateDto } from './models/RegistrationUpdateDto';

@@ -27,5 +27,4 @@ if (process.env.ANALYZE === 'true') {
   return;
 }
 
-// no sentry
 module.exports = nextTranslate(nextConfig);

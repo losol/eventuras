@@ -34,18 +34,10 @@ export enum EnvironmentVariables {
   NEXTAUTH_URL = 'NEXTAUTH_URL',
   NEXTAUTH_SECRET = 'NEXTAUTH_SECRET',
   NODE_ENV = 'NODE_ENV',
-  FEATURE_SENTRY = 'FEATURE_SENTRY',
-  NEXT_PUBLIC_SENTRY_DSN = 'NEXT_PUBLIC_SENTRY_DSN',
-  SENTRY_AUTH_TOKEN = 'SENTRY_AUTH_TOKEN',
 }
 
 // Optional Environment Variables
-export const OptionalEnvironmentVariables = [
-  EnvironmentVariables.NEXT_PUBLIC_SITE_SETTINGS_URL,
-  EnvironmentVariables.NEXT_PUBLIC_SENTRY_DSN,
-  EnvironmentVariables.FEATURE_SENTRY,
-  EnvironmentVariables.SENTRY_AUTH_TOKEN,
-];
+export const OptionalEnvironmentVariables = [EnvironmentVariables.NEXT_PUBLIC_SITE_SETTINGS_URL];
 
 // Environment Class
 class Environment {
@@ -120,9 +112,6 @@ class Environment {
   }
   static get NEXT_PUBLIC_SITE_SETTINGS_URL() {
     return process.env.NEXT_PUBLIC_SITE_SETTINGS_URL!;
-  }
-  static get NEXT_PUBLIC_SENTRY_DSN() {
-    return process.env.NEXT_PUBLIC_SENTRY_DSN!;
   }
 }
 

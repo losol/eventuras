@@ -14,6 +14,7 @@ import { Tab, TabList, TabPanel, Tabs as AriaTabs } from 'react-aria-components'
  * @property {(React.ReactElement<TabItemProps>[]|React.ReactElement<TabItemProps>)} children - Accepts a single tab item or an array of tab items.
  */
 type TabItemProps = {
+  id?: string;
   title: string;
   children: React.ReactNode | null;
   [DATA_TEST_ID]?: string;
@@ -49,8 +50,8 @@ const Tabs: TabsComponent = ({ children }) => {
         <TabList className={styles.tabList}>
           {validChildren.map(child => (
             <Tab
-              key={child.props.title}
-              id={child.props.title}
+              key={child.props.id ?? child.props.title}
+              id={child.props.id ?? child.props.title}
               className={({ isSelected }) =>
                 `${styles.tab.base} ${isSelected ? styles.tab.selected : styles.tab.notSelected}`
               }
@@ -62,7 +63,11 @@ const Tabs: TabsComponent = ({ children }) => {
 
         {/* Tab panels */}
         {validChildren.map(child => (
-          <TabPanel key={child.props.title} id={child.props.title} className={styles.panel}>
+          <TabPanel
+            key={child.props.title}
+            id={child.props.id ?? child.props.title}
+            className={styles.panel}
+          >
             {child.props.children}
           </TabPanel>
         ))}

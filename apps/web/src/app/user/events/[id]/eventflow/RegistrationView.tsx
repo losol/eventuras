@@ -25,7 +25,7 @@ const RegistrationView: React.FC<RegistrationViewProps> = ({
       <Tabs>
         {/* Welcome letter */}
         {eventInfo?.welcomeLetter ? (
-          <Tabs.Item title={t('common:labels.welcome')}>
+          <Tabs.Item title={t('common:labels.welcome')} id="tab-welcome">
             <div className="welcome-letter dark:bg-gray-700 bg-white my-10 p-3">
               <Heading as="h2">{t('user:events.welcomeLetter')}</Heading>
               <MarkdownContent markdown={eventInfo?.welcomeLetter} />
@@ -35,7 +35,7 @@ const RegistrationView: React.FC<RegistrationViewProps> = ({
 
         {/* Program */}
         {eventInfo?.program ? (
-          <Tabs.Item title={t('common:labels.program')}>
+          <Tabs.Item title={t('common:labels.program')} id="tab-program">
             <div className="welcome-letter dark:bg-gray-700 bg-white my-10 p-3">
               <Heading as="h2" spacingClassName="mb-5 mt-0 pt-0">
                 {t('common:labels.program')}
@@ -47,6 +47,7 @@ const RegistrationView: React.FC<RegistrationViewProps> = ({
 
         {/* Registration */}
         <Tabs.Item
+          id="tab-registration"
           title={t('common:labels.registration')}
           {...{ [DATA_TEST_ID]: 'registrationview-registration-tab' }}
         >
