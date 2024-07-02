@@ -3347,6 +3347,8 @@
         "tags": [
           "Registrations"
         ],
+        "summary": "Get registrations with optional Excel export",
+        "description": "Retrieves registrations with optional export to Excel based on the Accept header.",
         "parameters": [
           {
             "name": "EventId",
@@ -3455,17 +3457,40 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/RegistrationDtoPageResponseDto"
+                  "type": "string",
+                  "format": "binary"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RegistrationDtoPageResponseDto"
+                  "type": "string",
+                  "format": "binary"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RegistrationDtoPageResponseDto"
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -5820,6 +5845,33 @@
         ],
         "type": "string"
       },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
       "ProductDeliverySummaryDto": {
         "type": "object",
         "properties": {
@@ -6209,36 +6261,6 @@
             "nullable": true
           },
           "value": {
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "RegistrationDtoPageResponseDto": {
-        "type": "object",
-        "properties": {
-          "page": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "count": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "total": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pages": {
-            "type": "integer",
-            "format": "int32",
-            "readOnly": true
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RegistrationDto"
-            },
             "nullable": true
           }
         },
