@@ -1,5 +1,5 @@
 /**
- * Based on the work licensed under the MIT license below:
+ * Modified from the the work licensed under the MIT license below:
  *
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
@@ -10,11 +10,12 @@
  */
 
 import {
+  $createCodeNode,
   $isCodeNode,
   CODE_LANGUAGE_FRIENDLY_NAME_MAP,
   CODE_LANGUAGE_MAP,
   getLanguageFriendlyName,
-} from "@lexical/code";
+} from '@lexical/code';
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
 import {
   $isListNode,
@@ -62,17 +63,17 @@ import { getSelectedNode } from "../utils/getSelectedNode";
 import { sanitizeUrl } from "../utils/url";
 
 const blockTypeToBlockName = {
-  bullet: "Bulleted List",
-  check: "Check List",
-  code: "Code Block",
+  paragraph: "Normal",
   h1: "Heading 1",
   h2: "Heading 2",
   h3: "Heading 3",
+  h4: "Heading 4",
+  bullet: "Bulleted List",
+  check: "Check List",
+  code: "Code Block",
   number: "Numbered List",
-  paragraph: "Normal",
   quote: "Quote",
 };
-
 
 function getCodeLanguageOptions(): [string, string][] {
   const options: [string, string][] = [];
@@ -149,6 +150,28 @@ const formatQuote = () => {
   }
 };
 
+    const formatCode = () => {
+    if (blockType !== 'code') {
+      editor.update(() => {
+        let selection = $getSelection();
+
+        if (selection !== null) {
+          if (selection.isCollapsed()) {
+            $setBlocksType(selection, () => $createCodeNode());
+          } else {
+            const textContent = selection.getTextContent();
+            const codeNode = $createCodeNode();
+            selection.insertNodes([codeNode]);
+            selection = $getSelection();
+            if ($isRangeSelection(selection)) {
+              selection.insertRawText(textContent);
+            }
+          }
+        }
+      });
+    }
+  };
+
   return (
     <DropDown
       disabled={disabled}
@@ -186,6 +209,13 @@ const formatQuote = () => {
         <span className="text">Heading 3</span>
       </DropDownItem>
       <DropDownItem
+        className={"item " + dropDownActiveClass(blockType === "h4")}
+        onClick={() => formatHeading("h4")}
+      >
+        <i className="icon h4" />
+        <span className="text">Heading 4</span>
+      </DropDownItem>
+      <DropDownItem
         className={"item " + dropDownActiveClass(blockType === "bullet")}
         onClick={formatBulletList}
       >
@@ -205,6 +235,12 @@ const formatQuote = () => {
       >
         <i className="icon quote" />
         <span className="text">Quote</span>
+      </DropDownItem>
+      <DropDownItem
+        className={'item ' + dropDownActiveClass(blockType === 'code')}
+        onClick={formatCode}>
+        <i className="icon code" />
+        <span className="text">Code Block</span>
       </DropDownItem>
     </DropDown>
   );
@@ -226,6 +262,7 @@ export default function ToolbarPlugin({
   const [selectedElementKey, setSelectedElementKey] = useState<NodeKey | null>(
     null,
   );
+  const [isCode, setIsCode] = useState(false);
   const [isLink, setIsLink] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
@@ -254,6 +291,7 @@ export default function ToolbarPlugin({
       const elementDOM = activeEditor.getElementByKey(elementKey);
 
       // Update text format
+      setIsCode(selection.hasFormat("code"));
       setIsBold(selection.hasFormat("bold"));
       setIsItalic(selection.hasFormat("italic"));
 
@@ -288,7 +326,7 @@ export default function ToolbarPlugin({
             const language =
               element.getLanguage() as keyof typeof CODE_LANGUAGE_MAP;
             setCodeLanguage(
-              language ? CODE_LANGUAGE_MAP[language] || language : "",
+              language ? CODE_LANGUAGE_MAP[language] || language : '',
             );
             return;
           }
