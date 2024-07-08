@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Is this still in use? */
+
 @layer base {
   body {
     @apply h-full m-0 flex flex-col min-h-screen antialiased text-gray-800 dark:text-gray-200 bg-gradient-to-tr from-stone-100 via-stone-200 to-orange-50 bg-gradient-to-r dark:from-gray-800 dark:via-gray-900 dark:to-gray-800;
@@ -12,35 +14,31 @@
   }
 
   h1 {
-    @apply text-6xl pt-16 pb-6;
+    @apply text-6xl pt-16 pb-6 leading-tight tracking-tighter;
   }
 
   h2 {
-    @apply text-3xl pt-16 pb-3;
+    @apply text-3xl pt-16 pb-3 leading-tight tracking-tighter;
   }
 
   h3 {
-    @apply text-2xl pt-12 pb-6;
+    @apply text-2xl pt-12 pb-6 leading-tight tracking-tighter;
   }
 
   h4 {
-    @apply text-xl pt-3 pb-1;
+    @apply font-bold pt-3 pb-0 leading-tight tracking-tighter;
   }
 
   h5 {
-    @apply text-base pt-2 pb-1;
+    @apply text-base pt-2 pb-0 leading-tight tracking-tighter;
   }
 
   h6 {
-    @apply text-base pt-1 pb-1;
+    @apply text-base pt-1 pb-1 leading-tight tracking-tighter;
   }
 
   blockquote {
     @apply text-xl italic font-semibold text-gray-900;
-  }
-
-  .eventdetails p {
-    padding-top: 1rem;
   }
 }
 

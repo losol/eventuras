@@ -22,24 +22,25 @@ const Heading = (props: HeadingProps) => {
     case 'h3':
       textSize = 'text-2xl';
       break;
-    case 'h4':
-      textSize = 'text-xl';
-      break;
     default:
+      textSize = 'text-base';
       break;
   }
 
   // Adjust padding based on heading level
-  let defaultSpacing = 'pt-6 pb-3';
+  let defaultSpacing = 'pt-6 pb-0';
   switch (HeadingComponent) {
     case 'h1':
-      defaultSpacing = 'pt-16 pb-6';
+      defaultSpacing = 'pt-18 pb-6';
       break;
     case 'h2':
       defaultSpacing = 'pt-12 pb-3';
       break;
     case 'h3':
-      defaultSpacing = 'pt-12 pb-6';
+      defaultSpacing = 'pt-19 pb-3';
+      break;
+    case 'h4':
+      defaultSpacing = 'pt-6 pb-0';
       break;
     default:
       break;
