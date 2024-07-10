@@ -8,7 +8,7 @@
     "dev": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts nodemon",
     "build:payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload build",
     "build:server": "tsc",
-    "build": "npm run copyfiles && npm run build:payload && npm run build:server",
+    "build:historia": "npm run copyfiles && npm run build:payload && npm run build:server",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
     "serve": "cross-env PAYLOAD_CONFIG_PATH=dist/payload.config.js NODE_ENV=production node dist/server.js",
@@ -18,8 +18,8 @@
     "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.608.0",
-    "@aws-sdk/lib-storage": "^3.608.0",
+    "@aws-sdk/client-s3": "^3.613.0",
+    "@aws-sdk/lib-storage": "^3.613.0",
     "@payloadcms/bundler-webpack": "^1.0.7",
     "@payloadcms/db-postgres": "^0.8.5",
     "@payloadcms/plugin-cloud": "^3.0.1",
@@ -39,6 +39,7 @@
     "@types/express": "^4.17.21",
     "copyfiles": "^2.4.1",
     "nodemon": "^3.1.4",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
   }
 }
