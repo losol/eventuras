@@ -1,0 +1,19 @@
+{
+  "name": "@eventuras/registrations-sdk",
+  "version": "0.1.0",
+  "description": "Typescript client for eventuras registrations api.",
+  "devDependencies": {
+    "@hey-api/openapi-ts": "^0.48.2"
+  },
+  "main": "index.js",
+  "scripts": {
+    "openapi-ts": "npx openapi-ts",
+    "test": "echo \"Error: no test specified\" && exit 0"
+  },
+  "author": "Eventuras",
+  "license": "GPL-2.0-or-later",
+  "dependencies": {
+    "@hey-api/client-fetch": "^0.1.8",
+    "@eventuras/typescript-config": "*"
+  }
+}
