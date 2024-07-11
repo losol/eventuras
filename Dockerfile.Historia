@@ -21,7 +21,7 @@ RUN npm ci
 ## Build the app
 WORKDIR /app/apps/historia
 COPY --chown=node:node apps/historia/src/ /app/apps/historia/src/
-RUN npm run build
+RUN npm run build:historia
 
 ##################################
 # 2. Run the app
