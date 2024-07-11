@@ -258,7 +258,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         var content = await response.CheckOkAndGetContentAsync<PageResponseDto<OrderDto>>();
 
         Assert.NotEmpty(content.Data.Where(o => o.OrderId == o1.Entity.OrderId));
-        Assert.Empty(content.Data.Where(o => o.OrderId == o2.Entity.OrderId));
+        Assert.DoesNotContain(content.Data, o => o.OrderId == o2.Entity.OrderId);
     }
 
     [Fact]
