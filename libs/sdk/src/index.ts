@@ -81,6 +81,7 @@ export type { RegistrationCustomerInfoDto } from './models/RegistrationCustomerI
 export type { RegistrationDto } from './models/RegistrationDto';
 export type { RegistrationDtoJsonPatchDocument } from './models/RegistrationDtoJsonPatchDocument';
 export type { RegistrationDtoOperation } from './models/RegistrationDtoOperation';
+export type { RegistrationDtoPageResponseDto } from './models/RegistrationDtoPageResponseDto';
 export { RegistrationStatus } from './models/RegistrationStatus';
 export { RegistrationType } from './models/RegistrationType';
 export type { RegistrationUpdateDto } from './models/RegistrationUpdateDto';

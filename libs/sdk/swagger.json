@@ -3457,20 +3457,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "string",
-                  "format": "binary"
+                  "$ref": "#/components/schemas/RegistrationDtoPageResponseDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "string",
-                  "format": "binary"
+                  "$ref": "#/components/schemas/RegistrationDtoPageResponseDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "string",
-                  "format": "binary"
+                  "$ref": "#/components/schemas/RegistrationDtoPageResponseDto"
                 }
               }
             }
@@ -6261,6 +6258,36 @@
             "nullable": true
           },
           "value": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegistrationDtoPageResponseDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pages": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RegistrationDto"
+            },
             "nullable": true
           }
         },

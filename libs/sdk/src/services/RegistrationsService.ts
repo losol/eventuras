@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { NewRegistrationDto } from '../models/NewRegistrationDto';
 import type { RegistrationDto } from '../models/RegistrationDto';
+import type { RegistrationDtoPageResponseDto } from '../models/RegistrationDtoPageResponseDto';
 import type { RegistrationUpdateDto } from '../models/RegistrationUpdateDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
@@ -12,7 +13,7 @@ export class RegistrationsService {
     /**
      * Get registrations with optional Excel export
      * Retrieves registrations with optional export to Excel based on the Accept header.
-     * @returns binary Success
+     * @returns RegistrationDtoPageResponseDto Success
      * @throws ApiError
      */
     public getV3Registrations({
@@ -44,7 +45,7 @@ export class RegistrationsService {
          * Optional organization Id. Will be required in API version 4.
          */
         eventurasOrgId?: number,
-    }): CancelablePromise<Blob> {
+    }): CancelablePromise<RegistrationDtoPageResponseDto> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/v3/registrations',
