@@ -1,4 +1,4 @@
-import { Container, Heading, Section } from '@eventuras/ui';
+import { Container, Heading, Section, Text } from '@eventuras/ui';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
@@ -28,6 +28,19 @@ const EventProducts: React.FC<EventProductsPage> = async ({ params }) => {
     })
   );
 
+  const byRegistrationStatus = productSummary.value?.statistics?.byRegistrationStatus;
+  const totals = {
+    active:
+      (byRegistrationStatus?.draft ?? 0) +
+      (byRegistrationStatus?.verified ?? 0) +
+      (byRegistrationStatus?.waitingList ?? 0) +
+      (byRegistrationStatus?.attended ?? 0) +
+      (byRegistrationStatus?.notAttended ?? 0) +
+      (byRegistrationStatus?.finished ?? 0),
+    cancelled: byRegistrationStatus?.cancelled ?? 0,
+    waitingList: byRegistrationStatus?.waitingList ?? 0,
+  };
+
   return (
     <>
       <Section className="bg-white dark:bg-black py-10">
@@ -42,6 +55,10 @@ const EventProducts: React.FC<EventProductsPage> = async ({ params }) => {
           >
             {t('admin:products.labels.editProducts')}
           </Link>
+          <Text className="py-3">
+            Active {totals.active} &mdash; Cancelled {totals.cancelled} &mdash; Waiting list{' '}
+            {totals.waitingList}.
+          </Text>
         </Container>
       </Section>
       <Section className="py-10">

@@ -16,9 +16,9 @@ export const MarkdownContent = ({ markdown, heading }: MarkdownContentProps) => 
       component: Text as React.FC,
       props: {
         as: 'p',
-        className: 'py-3',
+        className: 'pb-3',
       },
-    },
+      },
   }};
 
   return (

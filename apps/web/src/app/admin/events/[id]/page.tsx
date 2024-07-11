@@ -5,7 +5,7 @@ import createTranslation from 'next-translate/createTranslation';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import Link from '@/components/Link';
-import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import { ApiResult, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 
 import EventAdminActionsMenu from '../EventAdminActionsMenu';

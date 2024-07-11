@@ -84,7 +84,6 @@ export const createEvent = async (page: Page, eventName: string) => {
   await page.locator('[data-test-id="event-title-input"]').click();
   await page.locator('[data-test-id="event-title-input"]').fill(eventName);
   await page.locator('[data-test-id="create-event-submit-button"]').click();
-  await expect(page.locator('[data-test-id="notification-success"]')).toBeVisible();
   await page.waitForURL('**/edit');
 
   // Fill in overview details
@@ -255,7 +254,11 @@ export const visitRegistrationPageForEvent = async (page: Page, eventId: string)
 export const validateRegistration = async (page: Page, eventId: string) => {
   Logger.info(ns, 'Registered for event, validating..');
   await visitRegistrationPageForEvent(page, eventId);
-  await page.getByRole('tab', { name: 'Registration' }).click();
+
+  // Get the registration tab
+  const tab = await page.locator('[data-key="tab-registration"]');
+  await tab.click();
+
   await expect(page.locator('[data-test-id="registration-registrationId"]')).toBeVisible();
 };
 

@@ -10,6 +10,13 @@ module.exports = {
     '../../libs/forms/src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    fontFamily: {
+      sans: ['source-sans-pro', 'sans-serif'],
+      serif: ['source-serif-pro', 'serif'],
+      mono: ['ui-monospace', 'Courier New', 'monospace'],
+      display: ['source-sans-pro', 'sans-serif'],
+      body: ['source-sans-pro', 'sans-serif'],
+    },
     extend: {
       colors: {
         primary: colors.sky,
@@ -27,5 +34,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require('tailwindcss-react-aria-components')],
+  plugins: [require('tailwindcss-react-aria-components'), require('tailwindcss-animate')],
 };

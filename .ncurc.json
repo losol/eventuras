@@ -1,7 +1,4 @@
 {
   "upgrade": true,
-  "reject": [
-    "supports-color",
-    "eslint"
-  ]
+  "reject": ["eslint"]
 }

@@ -8,7 +8,6 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix && prettier . --write",
     "test:playwright": "playwright test --workers=1",
-    "test:playwright:skiplogin": "playwright test --project=skip-login --workers=1",
     "test:playwright:ui": "playwright test --ui"
   },
   "keywords": [
@@ -17,7 +16,7 @@
     "eventuras"
   ],
   "dependencies": {
-    "@playwright/test": "1.43.1",
+    "@playwright/test": "1.45.1",
     "dotenv": "^16.4.5"
   },
   "readme": "README.md"

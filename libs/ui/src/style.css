@@ -1,8 +1,14 @@
+@import url("https://use.typekit.net/iyw4txx.css");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  html {
+    @apply font-sans;
+  }
+
   body {
     @apply h-full m-0 flex flex-col min-h-screen antialiased text-gray-800 dark:text-gray-200 bg-gradient-to-tr from-stone-100 via-stone-200 to-orange-50 bg-gradient-to-r dark:from-gray-800 dark:via-gray-900 dark:to-gray-800;
   }
@@ -11,8 +17,13 @@
     @apply flex-grow;
   }
 
+  /* Headings */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-sans
+  }
+
   h1 {
-    @apply text-6xl pt-16 pb-6;
+    @apply text-5xl pt-24 pb-6;
   }
 
   h2 {
@@ -23,24 +34,32 @@
     @apply text-2xl pt-12 pb-6;
   }
 
-  h4 {
-    @apply text-xl pt-3 pb-1;
+  h4, h5, h6 {
+    @apply font-semibold text-base pt-6 pb-0;
   }
-
-  h5 {
-    @apply text-base pt-2 pb-1;
-  }
-
-  h6 {
-    @apply text-base pt-1 pb-1;
-  }
+  /* End of Headings */
 
   blockquote {
     @apply text-xl italic font-semibold text-gray-900;
   }
 
-  .eventdetails p {
-    padding-top: 1rem;
+  pre {
+    @apply text-slate-800  bg-gray-100 border border-gray-300 rounded-md p-3 shadow-sm dark:text-primary-200 dark:bg-gray-800 dark:border-gray-600;
+  }
+}
+
+@layer components {
+  /* Adjustments for event details page */
+  #eventdetails h3 {
+    @apply text-secondary-600 dark:text-secondary-100
+  }
+  #eventdetails h3+h4 {
+    margin-top: -1rem;
+    padding-top: 0;
+  }
+  #eventdetails h3+p {
+    margin-top: -1rem;
+    padding-top: 0;
   }
 }
 

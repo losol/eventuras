@@ -7,6 +7,7 @@ import createTranslation from 'next-translate/createTranslation';
 import { useForm } from 'react-hook-form';
 
 import ProductSelection from '@/components/eventuras/ProductSelection';
+import { useAuthSelector } from '@/statemachines/AuthenticationFlowMachine';
 import { ProductSelected } from '@/types';
 import { mapSelectedProductsToQuantity } from '@/utils/api/mappers';
 
@@ -23,10 +24,11 @@ export type SelectedProducts = {
   products: ProductDto[];
 };
 
-const createFormHandler = (products: ProductDto[], onSubmit: SubmitCallback) => (data: any) => {
-  const submissionMap = mapSelectedProductsToQuantity(products, data);
-  onSubmit(submissionMap);
-};
+const createFormHandler =
+  (products: ProductDto[], onSubmit: SubmitCallback, isAdmin: boolean) => (data: any) => {
+    const submissionMap = mapSelectedProductsToQuantity(products, data, isAdmin);
+    onSubmit(submissionMap);
+  };
 
 const RegistrationCustomize = ({
   products,
@@ -34,12 +36,18 @@ const RegistrationCustomize = ({
   onBack,
   selectedProducts,
 }: RegistrationCustomizeProps) => {
+  const { isAdmin } = useAuthSelector();
+
   const { t } = createTranslation();
   const { register, handleSubmit } = useForm();
   return (
     <>
-      <form onSubmit={handleSubmit(createFormHandler(products, onSubmit))} className="py-10">
+      <form
+        onSubmit={handleSubmit(createFormHandler(products, onSubmit, isAdmin))}
+        className="py-10"
+      >
         <ProductSelection
+          isAdmin={isAdmin}
           products={products}
           register={register}
           selectedProducts={selectedProducts ?? []}

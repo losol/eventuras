@@ -22,7 +22,6 @@ function isValidURL(str: string): boolean {
 async function forwarder(request: NextRequest) {
   const token = await getToken({ req: request });
   const accessToken = token?.access_token ?? '';
-  let isBlob = false;
 
   if (!eventurasAPI_URL) throw new Error('NEXT_PUBLIC_BACKEND_URL is not defined');
 
@@ -33,11 +32,10 @@ async function forwarder(request: NextRequest) {
 
   const forwardUrl = request.url.replace(/^.*?\/api\/eventuras/, eventurasAPI_URL);
   const acceptHeaders = request.headers.get('Accept');
-  switch (acceptHeaders) {
-    case 'application/pdf':
-      isBlob = true;
-      break;
-  }
+  const hasAcceptHeaders = (acceptHeaders ?? '').toString().length > 0;
+  const isBlob =
+    acceptHeaders === 'application/pdf' ||
+    acceptHeaders === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
   /**
    * request issue with next13, will have to run json on the request body first:
@@ -50,7 +48,7 @@ async function forwarder(request: NextRequest) {
   });
 
   let contentType = request.method === 'PATCH' ? 'application/json-patch+json' : 'application/json';
-  if (isBlob) contentType = acceptHeaders!;
+  let forwardAccept = hasAcceptHeaders ? { Accept: acceptHeaders! } : null;
   const fResponse = await fetch(forwardUrl, {
     method: request.method,
     body: request.method === 'GET' ? null : JSON.stringify(jBody),
@@ -58,6 +56,7 @@ async function forwarder(request: NextRequest) {
       Authorization: `Bearer ${accessToken}`,
       'Content-Type': contentType,
       'Eventuras-Org-Id': Environment.NEXT_PUBLIC_ORGANIZATION_ID,
+      ...forwardAccept,
     },
     redirect: 'manual',
   });
@@ -77,14 +76,13 @@ async function forwarder(request: NextRequest) {
   }
 
   if (Environment.get(EnvironmentVariables.NODE_ENV) === 'development') {
-    //dev only, avoid token leaks into anything else than dev environment
     Logger.info(
       {
         developerOnly: true,
         namespace: 'api:forwarder',
       },
       {
-        isPdf: isBlob,
+        isBlob: isBlob,
         forwardUrl,
         body: JSON.stringify(jBody),
         method: request.method,

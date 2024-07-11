@@ -12,11 +12,11 @@
   "author": "Ole Kristian Losvik",
   "license": "GPL-2.0-or-later",
   "dependencies": {
-    "next": "^14.2.2",
+    "next": "^14.2.4",
     "nextra": "^2.13.4",
     "nextra-theme-docs": "^2.13.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "copyfiles": "^2.4.1"

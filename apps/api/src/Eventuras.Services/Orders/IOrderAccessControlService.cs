@@ -15,4 +15,7 @@ public interface IOrderAccessControlService
 
     Task<IQueryable<Order>> AddAccessFilterAsync(IQueryable<Order> query,
         CancellationToken cancellationToken = default);
+
+    Task<bool> HasAdminAccessAsync(Order order, CancellationToken cancellationToken = default);
+
 }

@@ -66,9 +66,5 @@ export default defineConfig({
       },
       dependencies: [SETUP_USER],
     },
-    {
-      name: 'skip-login',
-      testMatch: '/*.spec.ts',
-    },
   ],
 });

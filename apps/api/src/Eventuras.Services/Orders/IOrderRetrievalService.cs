@@ -18,7 +18,7 @@ public interface IOrderRetrievalService
         CancellationToken cancellationToken = default);
 
 
-    Task<List<ProductOrdersSummaryDto>> GetProductOrdersSummaryAsync(
+    Task<ProductDeliverySummaryDto> GetProductDeliverySummaryAsync(
         int productId,
         CancellationToken cancellationToken = default);
 

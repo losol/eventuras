@@ -1,4 +1,4 @@
-import { Dialog } from '@headlessui/react';
+import Dialog from '@/components/Dialog';
 
 interface ConfirmDiscardModalProps {
   isOpen: boolean;
@@ -16,16 +16,11 @@ const ConfirmDiscardModal: React.FC<ConfirmDiscardModalProps> = ({
   description,
 }) => {
   return (
-    <Dialog open={isOpen} onClose={onClose} className="relative z-10">
+    <Dialog isOpen={isOpen} onClose={onClose} title={title}>
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="mx-auto max-w-sm rounded bg-white p-6">
-          <Dialog.Title className="text-lg font-medium leading-6 text-gray-900">
-            {title}
-          </Dialog.Title>
-          <Dialog.Description className="mt-2 text-sm text-gray-500">
-            {description}
-          </Dialog.Description>
+        <div className="mx-auto max-w-sm rounded bg-white p-6">
+          <p className="mt-2 text-sm text-gray-500">{description}</p>
           <div className="mt-4">
             <button
               type="button"
@@ -42,7 +37,7 @@ const ConfirmDiscardModal: React.FC<ConfirmDiscardModalProps> = ({
               No, go back
             </button>
           </div>
-        </Dialog.Panel>
+        </div>
       </div>
     </Dialog>
   );

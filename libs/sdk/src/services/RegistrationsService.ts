@@ -11,6 +11,8 @@ import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class RegistrationsService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
+     * Get registrations with optional Excel export
+     * Retrieves registrations with optional export to Excel based on the Accept header.
      * @returns RegistrationDtoPageResponseDto Success
      * @throws ApiError
      */
@@ -62,6 +64,9 @@ export class RegistrationsService {
                 'Limit': limit,
                 'Offset': offset,
                 'Ordering': ordering,
+            },
+            errors: {
+                400: `Bad Request`,
             },
         });
     }

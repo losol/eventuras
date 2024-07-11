@@ -28,22 +28,36 @@
   padding-left: 16px;
 }
 .PlaygroundEditorTheme__h1 {
-  font-size: 24px;
-  color: rgb(5, 5, 5);
-  font-weight: 400;
+  font-size: 48px;
+  padding-top: 2rem;
+  padding-bottom: 0.5rem;
+  color: #406280;
+  font-weight: 700;
   margin: 0;
 }
 .PlaygroundEditorTheme__h2 {
-  font-size: 15px;
-  color: rgb(101, 103, 107);
+  font-size: 32px;
+  color: #406280;
+  padding-top: 2rem;
+    padding-bottom: 0.5rem;
   font-weight: 700;
   margin: 0;
-  text-transform: uppercase;
 }
 .PlaygroundEditorTheme__h3 {
-  font-size: 12px;
+  font-size: 24px;
+  color: #406280;
+    padding-top: 2rem;
+      padding-bottom: 0.5rem;
+  font-weight: 700;
   margin: 0;
-  text-transform: uppercase;
+}
+.PlaygroundEditorTheme__h4 {
+  font-size: 16px;
+  color: #406280;
+    padding-top: 1.5rem;
+      padding-bottom: 0rem;
+  font-weight: 700;
+  margin: 0;
 }
 .PlaygroundEditorTheme__indent {
   --lexical-indent-base-value: 40px;

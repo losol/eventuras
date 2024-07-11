@@ -979,7 +979,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
     }
 
     [Fact]
-    public async Task Update_Should_Not_Allow_To_Set_Quantity_Below_Min()
+    public async Task Update_Should_Allow_Admin_To_Set_Quantity_Below_Min()
     {
         using var scope = _factory.Services.NewTestScope();
         using var evt = await scope.CreateEventAsync();
@@ -1005,7 +1005,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
                 }
             });
 
-        await response.CheckBadRequestAsync("has minimum quantity 2, but current registration has ordered only 1");
+        response.CheckOk();
     }
 
     [Fact]

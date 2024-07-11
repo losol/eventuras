@@ -14,9 +14,11 @@ export interface Config {
     media: Media;
     notes: Note;
     organizations: Organization;
+    pages: Page;
     persons: Person;
     places: Place;
     users: User;
+    redirects: Redirect;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -29,15 +31,10 @@ export interface Config {
 export interface Article {
   id: string;
   title: string;
-  image?:
-    | {
-        image: string | Media;
-        caption?: string | null;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'image';
-      }[]
-    | null;
+  featuredImage?: {
+    image?: string | Media | null;
+    caption?: string | null;
+  };
   lead?: {
     root: {
       type: string;
@@ -53,26 +50,28 @@ export interface Article {
     };
     [k: string]: unknown;
   } | null;
-  story: {
-    richText: {
-      root: {
-        type: string;
-        children: {
-          type: string;
-          version: number;
+  story?:
+    | {
+        richText: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
           [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-    id?: string | null;
-    blockName?: string | null;
-    blockType: 'content';
-  }[];
+        };
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'content';
+      }[]
+    | null;
   slug?: string | null;
   creators?:
     | {
@@ -118,6 +117,8 @@ export interface Media {
   filesize?: number | null;
   width?: number | null;
   height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
   sizes?: {
     thumbnail?: {
       url?: string | null;
@@ -157,38 +158,35 @@ export interface License {
 export interface Person {
   id: string;
   name: string;
-  image?:
-    | {
-        image: string | Media;
-        caption?: string | null;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'image';
-      }[]
-    | null;
+  featuredImage?: {
+    image?: string | Media | null;
+    caption?: string | null;
+  };
   description?: string | null;
   jobTitle?: string | null;
   employer?: string | null;
-  story: {
-    richText: {
-      root: {
-        type: string;
-        children: {
-          type: string;
-          version: number;
+  story?:
+    | {
+        richText: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
           [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-    id?: string | null;
-    blockName?: string | null;
-    blockType: 'content';
-  }[];
+        };
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'content';
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -203,6 +201,15 @@ export interface Organization {
   url?: string | null;
   logo?: string | Media | null;
   location?: (string | null) | Place;
+  parent?: (string | null) | Organization;
+  breadcrumbs?:
+    | {
+        doc?: (string | null) | Organization;
+        url?: string | null;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -222,26 +229,37 @@ export interface Place {
     postalCode?: string | null;
     country?: string | null;
   };
-  story: {
-    richText: {
-      root: {
-        type: string;
-        children: {
-          type: string;
-          version: number;
+  story?:
+    | {
+        richText: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
           [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-    id?: string | null;
-    blockName?: string | null;
-    blockType: 'content';
-  }[];
+        };
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'content';
+      }[]
+    | null;
+  parent?: (string | null) | Place;
+  breadcrumbs?:
+    | {
+        doc?: (string | null) | Place;
+        url?: string | null;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -253,39 +271,52 @@ export interface Happening {
   id: string;
   name: string;
   description?: string | null;
-  image?:
+  featuredImage?: {
+    image?: string | Media | null;
+    caption?: string | null;
+  };
+  story?:
     | {
-        image: string | Media;
-        caption?: string | null;
+        richText: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
         id?: string | null;
         blockName?: string | null;
-        blockType: 'image';
+        blockType: 'content';
       }[]
     | null;
-  story: {
-    richText: {
-      root: {
-        type: string;
-        children: {
-          type: string;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-    id?: string | null;
-    blockName?: string | null;
-    blockType: 'content';
-  }[];
   type?: ('conference' | 'educational' | 'hackathon' | 'social') | null;
   startDate?: string | null;
   endDate?: string | null;
   contentLocations?: (string | Place)[] | null;
+  config?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  dictionary?:
+    | {
+        key: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -296,15 +327,10 @@ export interface Happening {
 export interface Note {
   id: string;
   title: string;
-  image?:
-    | {
-        image: string | Media;
-        caption?: string | null;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'image';
-      }[]
-    | null;
+  featuredImage?: {
+    image?: string | Media | null;
+    caption?: string | null;
+  };
   content?: {
     root: {
       type: string;
@@ -326,6 +352,78 @@ export interface Note {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: string;
+  title: string;
+  featuredImage?: {
+    image?: string | Media | null;
+    caption?: string | null;
+  };
+  lead?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  story?:
+    | {
+        richText: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'content';
+      }[]
+    | null;
+  slug?: string | null;
+  creators?:
+    | {
+        person: string | Person;
+        role: 'ai' | 'author' | 'editor' | 'contributor' | 'illustrator' | 'photographer';
+        id?: string | null;
+      }[]
+    | null;
+  license?: (string | null) | License;
+  publishedOn: string;
+  relatedPages?: (string | Page)[] | null;
+  parent?: (string | null) | Page;
+  breadcrumbs?:
+    | {
+        doc?: (string | null) | Page;
+        url?: string | null;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -341,6 +439,29 @@ export interface User {
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects".
+ */
+export interface Redirect {
+  id: string;
+  from: string;
+  to?: {
+    type?: ('reference' | 'custom') | null;
+    reference?:
+      | ({
+          relationTo: 'articles';
+          value: string | Article;
+        } | null)
+      | ({
+          relationTo: 'pages';
+          value: string | Page;
+        } | null);
+    url?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
