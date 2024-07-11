@@ -56,7 +56,6 @@ public class RegistrationsController : ControllerBase
        Description = "Retrieves registrations with optional export to Excel based on the Accept header."
    )]
     [ProducesResponseType(typeof(PageResponseDto<RegistrationDto>), 200)]
-    [ProducesResponseType(typeof(FileContentResult), 200)]
     [ProducesResponseType(400)]
     public async Task<IActionResult> GetRegistrations(
        [FromQuery] RegistrationsQueryDto query,
