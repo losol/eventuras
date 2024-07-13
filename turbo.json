@@ -1,28 +1,40 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": [
-    "**/.env.*local",
-    "**/.env"
+  "globalDependencies": ["**/.env.*local", "**/.env"],
+  "globalEnv": [
+    "CMS_SECRET",
+    "CMS_SERVER_URL",
+    "CMS_ALLOWED_ORIGINS",
+    "CMS_DATABASE_URL",
+    "CMS_MEDIA_S3_ACCESS_KEY_ID",
+    "CMS_MEDIA_S3_SECRET_ACCESS_KEY",
+    "CMS_MEDIA_S3_ENDPOINT",
+    "CMS_MEDIA_S3_REGION",
+    "CMS_MEDIA_S3_BUCKET",
+    "TEST_E2E_EMAIL_ADMIN",
+    "TEST_E2E_EMAIL_USER",
+    "TEST_EMAIL_APP_API_KEY",
+    "TEST_EMAIL_APP_API_URL",
+    "CI",
+    "TEST_BASE_URL"
   ],
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**"
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env.production.local",
+        ".env.local",
+        ".env.production",
+        ".env"
       ]
     },
     "lint": {
-      "dependsOn": [
-        "^lint"
-      ]
+      "dependsOn": ["^lint"]
     },
     "lint:fix": {
-      "dependsOn": [
-        "^lint:fix"
-      ]
+      "dependsOn": ["^lint:fix"]
     },
     "dev": {
       "cache": false,

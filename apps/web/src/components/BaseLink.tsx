@@ -39,7 +39,7 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps & BoxProps>((p
   let variantClasses = '';
   if (variant?.startsWith('button-')) {
     const buttonVariant = variant.replace('button-', '');
-    if (buttonStyles.hasOwnProperty(buttonVariant)) {
+    if (Object.hasOwnProperty.call(buttonStyles, buttonVariant)) {
       variantClasses = buttonStyles[buttonVariant as keyof typeof buttonStyles];
     }
   }
