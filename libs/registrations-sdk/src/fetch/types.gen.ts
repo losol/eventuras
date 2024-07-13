@@ -428,7 +428,7 @@ export type ProblemDetails = {
     status?: number | null;
     detail?: string | null;
     instance?: string | null;
-    [key: string]: (unknown | string | number) | undefined;
+    '[key: string]': (unknown | string | number) | undefined;
 };
 
 export type ProductDeliverySummaryDto = {
@@ -648,877 +648,1305 @@ export type UserSummaryDto = {
 };
 
 export type GetV3CertificatesByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    format?: CertificateFormat;
-    id: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
+    query?: {
+        format?: CertificateFormat;
+    };
 };
 
 export type GetV3CertificatesByIdResponse = CertificateDto;
 
+export type GetV3CertificatesByIdError = unknown;
+
 export type GetV3EventByIdCertificatesData = {
-    count?: number;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
-    limit?: number;
-    offset?: number;
-    ordering?: Array<(string)>;
-    page?: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
+    query?: {
+        Count?: number;
+        Limit?: number;
+        Offset?: number;
+        Ordering?: Array<(string)>;
+        Page?: number;
+    };
 };
 
 export type GetV3EventByIdCertificatesResponse = unknown;
 
+export type GetV3EventByIdCertificatesError = unknown;
+
 export type GetV3EventByIdCertificatesPreviewData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
 };
 
 export type GetV3EventByIdCertificatesPreviewResponse = unknown;
 
+export type GetV3EventByIdCertificatesPreviewError = unknown;
+
 export type PostV3EventByIdCertificatesIssueData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
-    send?: boolean;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
+    query?: {
+        send?: boolean;
+    };
 };
 
 export type PostV3EventByIdCertificatesIssueResponse = unknown;
 
+export type PostV3EventByIdCertificatesIssueError = unknown;
+
 export type PostV3EventByIdCertificatesUpdateData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
 };
 
 export type PostV3EventByIdCertificatesUpdateResponse = unknown;
 
+export type PostV3EventByIdCertificatesUpdateError = unknown;
+
 export type GetV3EventcollectionsData = {
-    count?: number;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    limit?: number;
-    offset?: number;
-    ordering?: Array<(string)>;
-    page?: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    query?: {
+        Count?: number;
+        Limit?: number;
+        Offset?: number;
+        Ordering?: Array<(string)>;
+        Page?: number;
+    };
 };
 
 export type GetV3EventcollectionsResponse = EventCollectionDtoPageResponseDto;
 
+export type GetV3EventcollectionsError = unknown;
+
 export type PostV3EventcollectionsData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    requestBody?: EventCollectionCreateDto;
+    body?: EventCollectionCreateDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
 };
 
 export type PostV3EventcollectionsResponse = EventCollectionDto;
 
+export type PostV3EventcollectionsError = unknown;
+
 export type GetV3EventcollectionsByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
 };
 
 export type GetV3EventcollectionsByIdResponse = EventCollectionDto;
 
+export type GetV3EventcollectionsByIdError = unknown;
+
 export type PutV3EventcollectionsByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
-    requestBody?: EventCollectionDto;
+    body?: EventCollectionDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
 };
 
 export type PutV3EventcollectionsByIdResponse = EventCollectionDto;
 
+export type PutV3EventcollectionsByIdError = unknown;
+
 export type DeleteV3EventcollectionsByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
 };
 
 export type DeleteV3EventcollectionsByIdResponse = unknown;
 
+export type DeleteV3EventcollectionsByIdError = unknown;
+
 export type PutV3EventsByEventIdCollectionsByCollectionIdData = {
-    collectionId: number;
-    eventId: number;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        collectionId: number;
+        eventId: number;
+    };
 };
 
 export type PutV3EventsByEventIdCollectionsByCollectionIdResponse = unknown;
 
+export type PutV3EventsByEventIdCollectionsByCollectionIdError = unknown;
+
 export type DeleteV3EventsByEventIdCollectionsByCollectionIdData = {
-    collectionId: number;
-    eventId: number;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        collectionId: number;
+        eventId: number;
+    };
 };
 
 export type DeleteV3EventsByEventIdCollectionsByCollectionIdResponse = unknown;
 
+export type DeleteV3EventsByEventIdCollectionsByCollectionIdError = unknown;
+
 export type GetV3EventsByEventIdProductsData = {
-    eventId: number;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    visibility?: ProductVisibility;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        eventId: number;
+    };
+    query?: {
+        Visibility?: ProductVisibility;
+    };
 };
 
 export type GetV3EventsByEventIdProductsResponse = Array<ProductDto>;
 
+export type GetV3EventsByEventIdProductsError = unknown;
+
 export type PostV3EventsByEventIdProductsData = {
-    eventId: number;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    requestBody?: NewProductDto;
+    body?: NewProductDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        eventId: number;
+    };
 };
 
 export type PostV3EventsByEventIdProductsResponse = unknown;
 
+export type PostV3EventsByEventIdProductsError = unknown;
+
 export type PutV3EventsByEventIdProductsByProductIdData = {
-    eventId: number;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    productId: number;
-    requestBody?: ProductFormDto;
+    body?: ProductFormDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        eventId: number;
+        productId: number;
+    };
 };
 
 export type PutV3EventsByEventIdProductsByProductIdResponse = unknown;
 
+export type PutV3EventsByEventIdProductsByProductIdError = unknown;
+
 export type DeleteV3EventsByEventIdProductsByProductIdData = {
-    eventId: number;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    productId: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        eventId: number;
+        productId: number;
+    };
 };
 
 export type DeleteV3EventsByEventIdProductsByProductIdResponse = unknown;
 
+export type DeleteV3EventsByEventIdProductsByProductIdError = unknown;
+
 export type GetV3EventsByEventIdProductsByProductIdVariantsData = {
-    eventId: number;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    productId: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        eventId: number;
+        productId: number;
+    };
 };
 
 export type GetV3EventsByEventIdProductsByProductIdVariantsResponse = Array<ProductVariantDto>;
 
+export type GetV3EventsByEventIdProductsByProductIdVariantsError = unknown;
+
 export type PostV3EventsByEventIdProductsByProductIdVariantsData = {
-    eventId: number;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    productId: number;
-    requestBody?: NewProductVariantDto;
+    body?: NewProductVariantDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        eventId: number;
+        productId: number;
+    };
 };
 
 export type PostV3EventsByEventIdProductsByProductIdVariantsResponse = unknown;
 
+export type PostV3EventsByEventIdProductsByProductIdVariantsError = unknown;
+
 export type DeleteV3EventsByEventIdProductsByProductIdVariantsByIdData = {
-    eventId: number;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
-    productId: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        eventId: number;
+        id: number;
+        productId: number;
+    };
 };
 
 export type DeleteV3EventsByEventIdProductsByProductIdVariantsByIdResponse = unknown;
 
+export type DeleteV3EventsByEventIdProductsByProductIdVariantsByIdError = unknown;
+
 export type GetV3EventsData = {
-    collectionId?: number;
-    count?: number;
-    end?: LocalDate;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    includeDraftEvents?: boolean;
-    includePastEvents?: boolean;
-    limit?: number;
-    offset?: number;
-    ordering?: Array<(string)>;
-    organizationId?: number;
-    page?: number;
-    period?: PeriodMatchingKind;
-    start?: LocalDate;
-    type?: EventInfoType;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    query?: {
+        CollectionId?: number;
+        Count?: number;
+        End?: LocalDate;
+        IncludeDraftEvents?: boolean;
+        IncludePastEvents?: boolean;
+        Limit?: number;
+        Offset?: number;
+        Ordering?: Array<(string)>;
+        OrganizationId?: number;
+        Page?: number;
+        Period?: PeriodMatchingKind;
+        Start?: LocalDate;
+        Type?: EventInfoType;
+    };
 };
 
 export type GetV3EventsResponse = EventDtoPageResponseDto;
 
+export type GetV3EventsError = unknown;
+
 export type PostV3EventsData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
     /**
      * Event information.
      */
-    requestBody?: EventFormDto;
+    body?: EventFormDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
 };
 
 export type PostV3EventsResponse = EventDto;
 
+export type PostV3EventsError = unknown;
+
 export type GetV3EventsByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    /**
-     * The ID of the event.
-     */
-    id: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        /**
+         * The ID of the event.
+         */
+        id: number;
+    };
 };
 
 export type GetV3EventsByIdResponse = EventDto;
 
+export type GetV3EventsByIdError = unknown;
+
 export type PutV3EventsByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    /**
-     * The ID of the event.
-     */
-    id: number;
     /**
      * Updated event information.
      */
-    requestBody?: EventFormDto;
+    body?: EventFormDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        /**
+         * The ID of the event.
+         */
+        id: number;
+    };
 };
 
 export type PutV3EventsByIdResponse = EventDto;
 
+export type PutV3EventsByIdError = unknown;
+
 export type PatchV3EventsByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    /**
-     * The ID of the event to update.
-     */
-    id: number;
     /**
      * The JSON Patch document with updates.
      */
-    requestBody?: EventFormDtoJsonPatchDocument;
+    body?: EventFormDtoJsonPatchDocument;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        /**
+         * The ID of the event to update.
+         */
+        id: number;
+    };
 };
 
 export type PatchV3EventsByIdResponse = unknown;
 
+export type PatchV3EventsByIdError = unknown;
+
 export type DeleteV3EventsByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    /**
-     * The ID of the event to delete.
-     */
-    id: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        /**
+         * The ID of the event to delete.
+         */
+        id: number;
+    };
 };
 
 export type DeleteV3EventsByIdResponse = unknown;
 
+export type DeleteV3EventsByIdError = unknown;
+
 export type GetV3EventsByEventIdStatisticsData = {
-    eventId: number;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        eventId: number;
+    };
 };
 
 export type GetV3EventsByEventIdStatisticsResponse = EventStatisticsDto;
 
+export type GetV3EventsByEventIdStatisticsError = unknown;
+
 export type GetV3InvoicesByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
 };
 
 export type GetV3InvoicesByIdResponse = InvoiceDto;
 
+export type GetV3InvoicesByIdError = unknown;
+
 export type PostV3InvoicesData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    requestBody?: InvoiceRequestDto;
+    body?: InvoiceRequestDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
 };
 
 export type PostV3InvoicesResponse = InvoiceDto;
 
+export type PostV3InvoicesError = unknown;
+
 export type GetV3NotificationsByIdRecipientsData = {
-    count?: number;
-    desc?: boolean;
-    errorsOnly?: boolean;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
-    limit?: number;
-    offset?: number;
-    order?: NotificationRecipientListOrder;
-    ordering?: Array<(string)>;
-    page?: number;
-    query?: string;
-    sentOnly?: boolean;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
+    query?: {
+        Count?: number;
+        Desc?: boolean;
+        ErrorsOnly?: boolean;
+        Limit?: number;
+        Offset?: number;
+        Order?: NotificationRecipientListOrder;
+        Ordering?: Array<(string)>;
+        Page?: number;
+        Query?: string;
+        SentOnly?: boolean;
+    };
 };
 
 export type GetV3NotificationsByIdRecipientsResponse = unknown;
 
+export type GetV3NotificationsByIdRecipientsError = unknown;
+
 export type GetV3NotificationsByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
-    includeStatistics?: boolean;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
+    query?: {
+        includeStatistics?: boolean;
+    };
 };
 
 export type GetV3NotificationsByIdResponse = unknown;
 
+export type GetV3NotificationsByIdError = unknown;
+
 export type GetV3NotificationsData = {
-    count?: number;
-    desc?: boolean;
-    eventId?: number;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    /**
-     * Whether to include delivery statistics into response.
-     */
-    includeStatistics?: boolean;
-    limit?: number;
-    offset?: number;
-    order?: NotificationListOrder;
-    ordering?: Array<(string)>;
-    page?: number;
-    productId?: number;
-    recipientUserId?: string;
-    status?: NotificationStatus;
-    type?: NotificationType;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    query?: {
+        Count?: number;
+        Desc?: boolean;
+        EventId?: number;
+        /**
+         * Whether to include delivery statistics into response.
+         */
+        IncludeStatistics?: boolean;
+        Limit?: number;
+        Offset?: number;
+        Order?: NotificationListOrder;
+        Ordering?: Array<(string)>;
+        Page?: number;
+        ProductId?: number;
+        RecipientUserId?: string;
+        Status?: NotificationStatus;
+        Type?: NotificationType;
+    };
 };
 
 export type GetV3NotificationsResponse = unknown;
 
+export type GetV3NotificationsError = unknown;
+
 export type PostV3NotificationsEmailData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    requestBody?: EmailNotificationDto;
+    body?: EmailNotificationDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
 };
 
 export type PostV3NotificationsEmailResponse = NotificationDto;
 
+export type PostV3NotificationsEmailError = unknown;
+
 export type PostV3NotificationsSmsData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    requestBody?: SmsNotificationDto;
+    body?: SmsNotificationDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
 };
 
 export type PostV3NotificationsSmsResponse = NotificationDto;
 
+export type PostV3NotificationsSmsError = unknown;
+
 export type GetV3OnlinecoursesData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
 };
 
 export type GetV3OnlinecoursesResponse = Array<OnlineCourseDto>;
 
+export type GetV3OnlinecoursesError = unknown;
+
 export type GetV3OnlinecoursesByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
 };
 
 export type GetV3OnlinecoursesByIdResponse = OnlineCourseDto;
 
+export type GetV3OnlinecoursesByIdError = unknown;
+
 export type GetV3OrdersByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
-    includeRegistration?: boolean;
-    includeUser?: boolean;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
+    query?: {
+        IncludeRegistration?: boolean;
+        IncludeUser?: boolean;
+    };
 };
 
 export type GetV3OrdersByIdResponse = OrderDto;
 
+export type GetV3OrdersByIdError = unknown;
+
 export type PatchV3OrdersByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
-    requestBody?: unknown;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
 };
 
 export type PatchV3OrdersByIdResponse = unknown;
 
+export type PatchV3OrdersByIdError = unknown;
+
 export type PutV3OrdersByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
-    requestBody?: OrderUpdateRequestDto;
+    body?: OrderUpdateRequestDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
 };
 
 export type PutV3OrdersByIdResponse = unknown;
 
+export type PutV3OrdersByIdError = unknown;
+
 export type DeleteV3OrdersByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
 };
 
 export type DeleteV3OrdersByIdResponse = unknown;
 
+export type DeleteV3OrdersByIdError = unknown;
+
 export type GetV3OrdersData = {
-    count?: number;
-    eventId?: number;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    includeRegistration?: boolean;
-    includeUser?: boolean;
-    limit?: number;
-    offset?: number;
-    ordering?: Array<(string)>;
-    organizationId?: number;
-    page?: number;
-    registrationId?: number;
-    status?: OrderStatus;
-    userId?: string;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    query?: {
+        Count?: number;
+        EventId?: number;
+        IncludeRegistration?: boolean;
+        IncludeUser?: boolean;
+        Limit?: number;
+        Offset?: number;
+        Ordering?: Array<(string)>;
+        OrganizationId?: number;
+        Page?: number;
+        RegistrationId?: number;
+        Status?: OrderStatus;
+        UserId?: string;
+    };
 };
 
 export type GetV3OrdersResponse = unknown;
 
+export type GetV3OrdersError = unknown;
+
 export type PostV3OrdersData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    requestBody?: NewOrderRequestDto;
+    body?: NewOrderRequestDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
 };
 
 export type PostV3OrdersResponse = unknown;
 
+export type PostV3OrdersError = unknown;
+
 export type GetV3OrganizationsByOrganizationIdMembersByUserIdRolesData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    organizationId: number;
-    userId: string;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        organizationId: number;
+        userId: string;
+    };
 };
 
 export type GetV3OrganizationsByOrganizationIdMembersByUserIdRolesResponse = Array<(string)>;
 
+export type GetV3OrganizationsByOrganizationIdMembersByUserIdRolesError = unknown;
+
 export type PostV3OrganizationsByOrganizationIdMembersByUserIdRolesData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    organizationId: number;
-    requestBody?: RoleRequestDto;
-    userId: string;
+    body?: RoleRequestDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        organizationId: number;
+        userId: string;
+    };
 };
 
 export type PostV3OrganizationsByOrganizationIdMembersByUserIdRolesResponse = Array<(string)>;
 
+export type PostV3OrganizationsByOrganizationIdMembersByUserIdRolesError = unknown;
+
 export type DeleteV3OrganizationsByOrganizationIdMembersByUserIdRolesData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    organizationId: number;
-    requestBody?: RoleRequestDto;
-    userId: string;
+    body?: RoleRequestDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        organizationId: number;
+        userId: string;
+    };
 };
 
 export type DeleteV3OrganizationsByOrganizationIdMembersByUserIdRolesResponse = Array<(string)>;
 
+export type DeleteV3OrganizationsByOrganizationIdMembersByUserIdRolesError = unknown;
+
 export type PutV3OrganizationsByOrganizationIdMembersByUserIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    organizationId: number;
-    userId: string;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        organizationId: number;
+        userId: string;
+    };
 };
 
 export type PutV3OrganizationsByOrganizationIdMembersByUserIdResponse = unknown;
 
+export type PutV3OrganizationsByOrganizationIdMembersByUserIdError = unknown;
+
 export type DeleteV3OrganizationsByOrganizationIdMembersByUserIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    organizationId: number;
-    userId: string;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        organizationId: number;
+        userId: string;
+    };
 };
 
 export type DeleteV3OrganizationsByOrganizationIdMembersByUserIdResponse = unknown;
 
+export type DeleteV3OrganizationsByOrganizationIdMembersByUserIdError = unknown;
+
 export type GetV3OrganizationsData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
 };
 
 export type GetV3OrganizationsResponse = Array<OrganizationDto>;
 
+export type GetV3OrganizationsError = unknown;
+
 export type PostV3OrganizationsData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    requestBody?: OrganizationFormDto;
+    body?: OrganizationFormDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
 };
 
 export type PostV3OrganizationsResponse = OrganizationDto;
 
+export type PostV3OrganizationsError = unknown;
+
 export type GetV3OrganizationsByOrganizationIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    organizationId: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        organizationId: number;
+    };
 };
 
 export type GetV3OrganizationsByOrganizationIdResponse = OrganizationDto;
 
+export type GetV3OrganizationsByOrganizationIdError = unknown;
+
 export type PutV3OrganizationsByOrganizationIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    organizationId: number;
-    requestBody?: OrganizationFormDto;
+    body?: OrganizationFormDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        organizationId: number;
+    };
 };
 
 export type PutV3OrganizationsByOrganizationIdResponse = OrganizationDto;
 
+export type PutV3OrganizationsByOrganizationIdError = unknown;
+
 export type DeleteV3OrganizationsByOrganizationIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    organizationId: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        organizationId: number;
+    };
 };
 
 export type DeleteV3OrganizationsByOrganizationIdResponse = unknown;
 
+export type DeleteV3OrganizationsByOrganizationIdError = unknown;
+
 export type GetV3OrganizationsByOrganizationIdSettingsData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    organizationId: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        organizationId: number;
+    };
 };
 
 export type GetV3OrganizationsByOrganizationIdSettingsResponse = Array<OrganizationSettingDto>;
 
+export type GetV3OrganizationsByOrganizationIdSettingsError = unknown;
+
 export type PutV3OrganizationsByOrganizationIdSettingsData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    organizationId: number;
-    requestBody?: OrganizationSettingValueDto;
+    body?: OrganizationSettingValueDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        organizationId: number;
+    };
 };
 
 export type PutV3OrganizationsByOrganizationIdSettingsResponse = unknown;
 
+export type PutV3OrganizationsByOrganizationIdSettingsError = unknown;
+
 export type PostV3OrganizationsByOrganizationIdSettingsData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    organizationId: number;
-    requestBody: Array<OrganizationSettingValueDto>;
+    body: Array<OrganizationSettingValueDto>;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        organizationId: number;
+    };
 };
 
 export type PostV3OrganizationsByOrganizationIdSettingsResponse = unknown;
 
+export type PostV3OrganizationsByOrganizationIdSettingsError = unknown;
+
 export type GetV3ProductsByProductIdSummaryData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    productId: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        productId: number;
+    };
 };
 
 export type GetV3ProductsByProductIdSummaryResponse = ProductDeliverySummaryDto;
 
+export type GetV3ProductsByProductIdSummaryError = unknown;
+
 export type PostV3RegistrationsByIdCertificateSendData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
 };
 
 export type PostV3RegistrationsByIdCertificateSendResponse = unknown;
 
+export type PostV3RegistrationsByIdCertificateSendError = unknown;
+
 export type GetV3RegistrationsByIdOrdersData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
 };
 
 export type GetV3RegistrationsByIdOrdersResponse = Array<OrderDto>;
 
+export type GetV3RegistrationsByIdOrdersError = unknown;
+
 export type PostV3RegistrationsByIdOrdersData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
-    requestBody?: NewRegistrationOrderDto;
+    body?: NewRegistrationOrderDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
 };
 
 export type PostV3RegistrationsByIdOrdersResponse = unknown;
 
+export type PostV3RegistrationsByIdOrdersError = unknown;
+
 export type PostV3RegistrationsByIdProductsData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
-    requestBody?: OrderUpdateRequestDto;
+    body?: OrderUpdateRequestDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
 };
 
 export type PostV3RegistrationsByIdProductsResponse = unknown;
 
+export type PostV3RegistrationsByIdProductsError = unknown;
+
 export type GetV3RegistrationsData = {
-    count?: number;
-    eventId?: number;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    includeEventInfo?: boolean;
-    includeOrders?: boolean;
-    includeProducts?: boolean;
-    includeUserInfo?: boolean;
-    limit?: number;
-    offset?: number;
-    ordering?: Array<(string)>;
-    page?: number;
-    userId?: string;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    query?: {
+        Count?: number;
+        EventId?: number;
+        IncludeEventInfo?: boolean;
+        IncludeOrders?: boolean;
+        IncludeProducts?: boolean;
+        IncludeUserInfo?: boolean;
+        Limit?: number;
+        Offset?: number;
+        Ordering?: Array<(string)>;
+        Page?: number;
+        UserId?: string;
+    };
 };
 
 export type GetV3RegistrationsResponse = RegistrationDtoPageResponseDto;
 
+export type GetV3RegistrationsError = ProblemDetails;
+
 export type PostV3RegistrationsData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    requestBody?: NewRegistrationDto;
+    body?: NewRegistrationDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
 };
 
 export type PostV3RegistrationsResponse = RegistrationDto;
 
+export type PostV3RegistrationsError = unknown;
+
 export type GetV3RegistrationsByIdData = {
-    count?: number;
-    eventId?: number;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
-    includeEventInfo?: boolean;
-    includeOrders?: boolean;
-    includeProducts?: boolean;
-    includeUserInfo?: boolean;
-    limit?: number;
-    offset?: number;
-    ordering?: Array<(string)>;
-    page?: number;
-    userId?: string;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
+    query?: {
+        Count?: number;
+        EventId?: number;
+        IncludeEventInfo?: boolean;
+        IncludeOrders?: boolean;
+        IncludeProducts?: boolean;
+        IncludeUserInfo?: boolean;
+        Limit?: number;
+        Offset?: number;
+        Ordering?: Array<(string)>;
+        Page?: number;
+        UserId?: string;
+    };
 };
 
 export type GetV3RegistrationsByIdResponse = RegistrationDto;
 
+export type GetV3RegistrationsByIdError = unknown;
+
 export type PutV3RegistrationsByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
-    requestBody?: RegistrationUpdateDto;
+    body?: RegistrationUpdateDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
 };
 
 export type PutV3RegistrationsByIdResponse = RegistrationDto;
 
+export type PutV3RegistrationsByIdError = unknown;
+
 export type PatchV3RegistrationsByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
-    requestBody?: unknown;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
 };
 
 export type PatchV3RegistrationsByIdResponse = unknown;
 
+export type PatchV3RegistrationsByIdError = unknown;
+
 export type DeleteV3RegistrationsByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: number;
+    };
 };
 
 export type DeleteV3RegistrationsByIdResponse = unknown;
 
+export type DeleteV3RegistrationsByIdError = unknown;
+
 export type PostV3RegistrationsMeByEventIdData = {
-    createOrder?: boolean;
-    eventId: number;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        eventId: number;
+    };
+    query?: {
+        createOrder?: boolean;
+    };
 };
 
 export type PostV3RegistrationsMeByEventIdResponse = RegistrationDto;
 
+export type PostV3RegistrationsMeByEventIdError = unknown;
+
 export type GetV3UserprofileData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
 };
 
 export type GetV3UserprofileResponse = UserDto;
 
+export type GetV3UserprofileError = unknown;
+
 export type PutV3UserprofileData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id?: string;
-    requestBody?: UserFormDto;
+    body?: UserFormDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    query?: {
+        id?: string;
+    };
 };
 
 export type PutV3UserprofileResponse = UserDto;
 
+export type PutV3UserprofileError = unknown;
+
 export type GetV3UsersMeData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
 };
 
 export type GetV3UsersMeResponse = UserDto;
 
+export type GetV3UsersMeError = unknown;
+
 export type GetV3UsersByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: string;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: string;
+    };
 };
 
 export type GetV3UsersByIdResponse = UserDto;
 
+export type GetV3UsersByIdError = unknown;
+
 export type PutV3UsersByIdData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    id: string;
-    requestBody?: UserFormDto;
+    body?: UserFormDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        id: string;
+    };
 };
 
 export type PutV3UsersByIdResponse = UserDto;
 
+export type PutV3UsersByIdError = unknown;
+
 export type GetV3UsersData = {
-    count?: number;
-    descending?: boolean;
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    includeOrgMembership?: boolean;
-    limit?: number;
-    offset?: number;
-    order?: UserListOrder;
-    ordering?: Array<(string)>;
-    organizationId?: number;
-    page?: number;
-    query?: string;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    query?: {
+        Count?: number;
+        Descending?: boolean;
+        IncludeOrgMembership?: boolean;
+        Limit?: number;
+        Offset?: number;
+        Order?: UserListOrder;
+        Ordering?: Array<(string)>;
+        OrganizationId?: number;
+        Page?: number;
+        Query?: string;
+    };
 };
 
 export type GetV3UsersResponse = UserDtoPageResponseDto;
 
+export type GetV3UsersError = unknown;
+
 export type PostV3UsersData = {
-    /**
-     * Optional organization Id. Will be required in API version 4.
-     */
-    eventurasOrgId?: number;
-    requestBody?: UserFormDto;
+    body?: UserFormDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
 };
 
 export type PostV3UsersResponse = UserDto;
+
+export type PostV3UsersError = unknown;
 
 export type $OpenApiTs = {
     '/v3/certificates/{id}': {
@@ -1528,7 +1956,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: CertificateDto;
+                '200': CertificateDto;
             };
         };
     };
@@ -1539,7 +1967,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -1550,7 +1978,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -1561,7 +1989,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -1572,7 +2000,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -1583,7 +2011,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: EventCollectionDtoPageResponseDto;
+                '200': EventCollectionDtoPageResponseDto;
             };
         };
         post: {
@@ -1592,7 +2020,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: EventCollectionDto;
+                '200': EventCollectionDto;
             };
         };
     };
@@ -1603,7 +2031,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: EventCollectionDto;
+                '200': EventCollectionDto;
             };
         };
         put: {
@@ -1612,7 +2040,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: EventCollectionDto;
+                '200': EventCollectionDto;
             };
         };
         delete: {
@@ -1621,7 +2049,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -1632,7 +2060,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
         delete: {
@@ -1641,7 +2069,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -1652,7 +2080,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: Array<ProductDto>;
+                '200': Array<ProductDto>;
             };
         };
         post: {
@@ -1661,7 +2089,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -1672,7 +2100,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
         delete: {
@@ -1681,7 +2109,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -1692,7 +2120,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: Array<ProductVariantDto>;
+                '200': Array<ProductVariantDto>;
             };
         };
         post: {
@@ -1701,7 +2129,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -1712,7 +2140,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -1723,7 +2151,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: EventDtoPageResponseDto;
+                '200': EventDtoPageResponseDto;
             };
         };
         post: {
@@ -1732,7 +2160,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: EventDto;
+                '200': EventDto;
             };
         };
     };
@@ -1743,7 +2171,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: EventDto;
+                '200': EventDto;
             };
         };
         put: {
@@ -1752,7 +2180,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: EventDto;
+                '200': EventDto;
             };
         };
         patch: {
@@ -1761,7 +2189,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
         delete: {
@@ -1770,7 +2198,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -1781,7 +2209,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: EventStatisticsDto;
+                '200': EventStatisticsDto;
             };
         };
     };
@@ -1792,7 +2220,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: InvoiceDto;
+                '200': InvoiceDto;
             };
         };
     };
@@ -1803,7 +2231,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: InvoiceDto;
+                '200': InvoiceDto;
             };
         };
     };
@@ -1814,7 +2242,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -1825,7 +2253,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -1836,7 +2264,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -1847,7 +2275,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: NotificationDto;
+                '200': NotificationDto;
             };
         };
     };
@@ -1858,7 +2286,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: NotificationDto;
+                '200': NotificationDto;
             };
         };
     };
@@ -1869,7 +2297,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: Array<OnlineCourseDto>;
+                '200': Array<OnlineCourseDto>;
             };
         };
     };
@@ -1880,7 +2308,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: OnlineCourseDto;
+                '200': OnlineCourseDto;
             };
         };
     };
@@ -1891,7 +2319,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: OrderDto;
+                '200': OrderDto;
             };
         };
         patch: {
@@ -1900,7 +2328,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
         put: {
@@ -1909,7 +2337,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
         delete: {
@@ -1918,7 +2346,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -1929,7 +2357,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
         post: {
@@ -1938,7 +2366,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -1949,7 +2377,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: Array<(string)>;
+                '200': Array<(string)>;
             };
         };
         post: {
@@ -1958,7 +2386,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: Array<(string)>;
+                '200': Array<(string)>;
             };
         };
         delete: {
@@ -1967,7 +2395,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: Array<(string)>;
+                '200': Array<(string)>;
             };
         };
     };
@@ -1978,7 +2406,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
         delete: {
@@ -1987,7 +2415,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -1998,7 +2426,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: Array<OrganizationDto>;
+                '200': Array<OrganizationDto>;
             };
         };
         post: {
@@ -2007,7 +2435,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: OrganizationDto;
+                '200': OrganizationDto;
             };
         };
     };
@@ -2018,7 +2446,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: OrganizationDto;
+                '200': OrganizationDto;
             };
         };
         put: {
@@ -2027,7 +2455,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: OrganizationDto;
+                '200': OrganizationDto;
             };
         };
         delete: {
@@ -2036,7 +2464,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -2047,7 +2475,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: Array<OrganizationSettingDto>;
+                '200': Array<OrganizationSettingDto>;
             };
         };
         put: {
@@ -2056,7 +2484,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
         post: {
@@ -2065,7 +2493,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -2076,7 +2504,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: ProductDeliverySummaryDto;
+                '200': ProductDeliverySummaryDto;
             };
         };
     };
@@ -2087,7 +2515,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -2098,7 +2526,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: Array<OrderDto>;
+                '200': Array<OrderDto>;
             };
         };
         post: {
@@ -2107,7 +2535,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -2118,7 +2546,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -2129,11 +2557,11 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: RegistrationDtoPageResponseDto;
+                '200': RegistrationDtoPageResponseDto;
                 /**
                  * Bad Request
                  */
-                400: ProblemDetails;
+                '400': ProblemDetails;
             };
         };
         post: {
@@ -2142,7 +2570,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: RegistrationDto;
+                '200': RegistrationDto;
             };
         };
     };
@@ -2153,7 +2581,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: RegistrationDto;
+                '200': RegistrationDto;
             };
         };
         put: {
@@ -2162,7 +2590,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: RegistrationDto;
+                '200': RegistrationDto;
             };
         };
         patch: {
@@ -2171,7 +2599,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
         delete: {
@@ -2180,7 +2608,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: unknown;
+                '200': unknown;
             };
         };
     };
@@ -2191,7 +2619,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: RegistrationDto;
+                '200': RegistrationDto;
             };
         };
     };
@@ -2202,7 +2630,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: UserDto;
+                '200': UserDto;
             };
         };
         put: {
@@ -2211,7 +2639,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: UserDto;
+                '200': UserDto;
             };
         };
     };
@@ -2222,7 +2650,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: UserDto;
+                '200': UserDto;
             };
         };
     };
@@ -2233,7 +2661,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: UserDto;
+                '200': UserDto;
             };
         };
         put: {
@@ -2242,7 +2670,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: UserDto;
+                '200': UserDto;
             };
         };
     };
@@ -2253,7 +2681,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: UserDtoPageResponseDto;
+                '200': UserDtoPageResponseDto;
             };
         };
         post: {
@@ -2262,7 +2690,7 @@ export type $OpenApiTs = {
                 /**
                  * Success
                  */
-                200: UserDto;
+                '200': UserDto;
             };
         };
     };

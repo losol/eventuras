@@ -1,10 +1,11 @@
+import { getV3Events } from '@eventuras/registrations-sdk';
 import { Container, Heading } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 
 import Card from '@/components/Card';
 import { EventGrid } from '@/components/event';
 import Wrapper from '@/components/eventuras/Wrapper';
-import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import { createEventurasClient } from '@/utils/api/EventurasClient';
 import Environment from '@/utils/Environment';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
@@ -14,13 +15,21 @@ const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID
 export default async function Homepage() {
   const site = await getSiteSettings();
   const { t } = createTranslation();
-  //We expect results to be there, the API could only throw 500s here which we do not want to catch anyway
+  /*
   const result = await apiWrapper(() =>
     createSDK({ inferUrl: true }).events.getV3Events({
       organizationId: ORGANIZATION_ID,
     })
   );
+  const result = await getV3Events({ query: { OrganizationId: ORGANIZATION_ID } });
 
+above is the old' sdk method, below the newer method through openapi-ts (@eventuras/registrations-sdk)
+  */
+  const client = createEventurasClient({ inferUrl: true });
+  const { error, data } = await getV3Events({ client, query: { OrganizationId: ORGANIZATION_ID } });
+  if (error) {
+    return <p>{error.toString()}</p>;
+  }
   return (
     <Wrapper imageNavbar bgDark fluid>
       <section>
@@ -33,11 +42,11 @@ export default async function Homepage() {
           </Card.Text>
         </Card>
       </section>
-      {result.value && result.value!.data!.length && (
+      {data && data.data!.length && (
         <section className="bg-primary-50 dark:bg-slate-950 pt-16 pb-24">
           <Container as="section">
             <Heading as="h2">{t('common:events.sectiontitle')}</Heading>
-            <EventGrid eventinfos={result.value!.data!} />
+            <EventGrid eventinfos={data.data!} />
           </Container>
         </section>
       )}

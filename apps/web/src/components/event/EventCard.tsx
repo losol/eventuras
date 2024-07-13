@@ -1,5 +1,5 @@
 import { MarkdownContent } from '@eventuras/markdown';
-import { EventDto } from '@eventuras/sdk';
+import type { EventDto } from '@eventuras/registrations-sdk';
 import Link from 'next/link';
 
 import Card from '@/components/Card';
