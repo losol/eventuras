@@ -35,6 +35,7 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     'turbo/no-undeclared-env-vars': 'off',
     "import/no-duplicates": "error",
+    
   },
   settings: {
     'import/resolver': {

@@ -21,6 +21,7 @@ import RegistrationView from './eventflow/RegistrationView';
 export interface EventFlowProps {
   eventInfo: EventDto;
   user: UserDto;
+
   availableProducts: ProductDto[];
   siteInfo: SiteInfo;
   registration?: RegistrationDto;
