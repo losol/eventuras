@@ -29,7 +29,6 @@
     "storybook:build": "storybook build"
   },
   "devDependencies": {
-    "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*",
     "@storybook/addon-a11y": "^8.2.0",
     "@storybook/addon-console": "^3.0.0",
