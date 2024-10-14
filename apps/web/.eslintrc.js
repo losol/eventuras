@@ -5,6 +5,6 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   globals: {
     RequestInit: true,
-    ResponseInit: true
-  }
+    ResponseInit: true,
+  },
 };

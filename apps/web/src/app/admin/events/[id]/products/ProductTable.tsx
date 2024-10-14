@@ -25,11 +25,14 @@ export const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit }) 
           <Link href={`./products/${info.row.original.productId}`}>
             {info.getValue()} <Badge>{`${info.row.original.productId}`}</Badge>
           </Link>
-        ) ?? 'N/A',
+        ),
     }),
     columnHelper.accessor('price', {
       header: t('common:products.labels.price').toString(),
-      cell: info => `${info.getValue()}` ?? 'N/A',
+      cell: info => {
+        const value = info.getValue();
+        return value != null ? `${value}` : 'N/A';
+      },
     }),
     columnHelper.accessor('visibility', {
       header: t('common:products.labels.visibility').toString(),
