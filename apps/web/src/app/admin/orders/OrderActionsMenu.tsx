@@ -1,11 +1,10 @@
 'use client';
-
 import { InvoiceRequestDto, OrderDto, OrderStatus, PaymentProvider } from '@eventuras/sdk';
 import { Button, Definition, DescriptionList, Drawer, Heading, Term } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
@@ -20,6 +19,17 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
   const router = useRouter();
   Logger.info({ namespace: 'invoicing:order' }, order);
   Logger.info({ namespace: 'invoicing:registration' }, order.registration);
+
+  const invoicablePaymentMethods = [
+    PaymentProvider.POWER_OFFICE_EMAIL_INVOICE,
+    PaymentProvider.POWER_OFFICE_EHFINVOICE,
+  ];
+
+  const isOrderVerified = order.status === OrderStatus.VERIFIED;
+  const hasInvoicablePaymentMethod =
+    order.paymentMethod != null && invoicablePaymentMethods.includes(order.paymentMethod);
+
+  const shouldShowInvoiceButton = isOrderVerified && hasInvoicablePaymentMethod;
 
   const verifyOrder =
     ({ order }: { order: OrderDto }) =>
@@ -95,15 +105,12 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
             <Definition>{order.log}</Definition>
           </DescriptionList>
         </div>
-        {order.status == OrderStatus.VERIFIED &&
-          order.paymentMethod ==
-            (PaymentProvider.POWER_OFFICE_EMAIL_INVOICE ||
-              PaymentProvider.POWER_OFFICE_EHFINVOICE) && (
-            <Button onClick={() => invoiceOrder(order)}>
-              Send to accounting system (
-              {order.paymentMethod == PaymentProvider.POWER_OFFICE_EMAIL_INVOICE ? 'email' : 'ehf'})
-            </Button>
-          )}
+        {shouldShowInvoiceButton && (
+          <Button onClick={() => invoiceOrder(order)}>
+            Send to accounting system (
+            {order.paymentMethod === PaymentProvider.POWER_OFFICE_EMAIL_INVOICE ? 'email' : 'ehf'})
+          </Button>
+        )}
       </Drawer>
     </>
   );
