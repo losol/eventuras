@@ -24,9 +24,12 @@ interface SubComponentProps {
   htmlFor?: string;
 }
 
-export type CheckboxProps = CheckboxComponentProps &
-  Record<string, unknown> &
-  InputHTMLAttributes<HTMLInputElement>;
+export interface CheckboxProps
+  extends CheckboxComponentProps,
+    Omit<InputHTMLAttributes<HTMLInputElement>, 'id' | 'children' | 'className'> {
+  'data-test-id'?: string;
+  children?: ReactNode;
+}
 
 type CheckboxWithSubComponents = React.ForwardRefExoticComponent<
   React.PropsWithoutRef<CheckboxProps> & React.RefAttributes<HTMLInputElement>
@@ -50,19 +53,21 @@ export const CheckBoxDescription: FC<SubComponentProps> = ({ children, className
 };
 
 const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
-  const { className, containerClassName, children, id, disabled, defaultChecked } = props;
+  const {
+    className,
+    containerClassName,
+    children,
+    id,
+    disabled,
+    defaultChecked,
+    'data-test-id': dataTestId,
+    ...rest
+  } = props;
 
   const checkboxClassName = className || checkboxStyles.checkbox;
   const containerClass = containerClassName || checkboxStyles.container;
 
-  const oProps = { ...props };
-  delete oProps.children;
-  delete oProps.type;
-  delete oProps.className;
-  delete oProps.checkboxClassName;
-  delete oProps.containerClass;
-
-  // Add the for attribute to the label
+  // Add the htmlFor attribute to the label
   const enhancedChildren = React.Children.map(children, child => {
     if (React.isValidElement<SubComponentProps>(child) && child.type === CheckBoxLabel) {
       return React.cloneElement(child, { htmlFor: id } as SubComponentProps);
@@ -70,18 +75,17 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>((props, ref) 
     return child;
   });
 
-
-
   return (
     <div key={id} className={containerClass}>
       <input
         type="checkbox"
         className={checkboxClassName}
         ref={ref}
+        id={id}
         disabled={disabled}
         defaultChecked={defaultChecked}
-        data-test-id={props[TEST_ID_ATTRIBUTE]}
-        {...oProps}
+        data-test-id={dataTestId}
+        {...rest}
       />
       {enhancedChildren}
     </div>

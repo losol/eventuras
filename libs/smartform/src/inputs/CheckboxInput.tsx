@@ -1,7 +1,7 @@
 import React, { FC, InputHTMLAttributes, ReactNode } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { TEST_ID_ATTRIBUTE } from '@/utils/constants';
+import { DATA_TEST_ID } from '@eventuras/utils';
 
 export const styles = {
   container: 'my-2',
@@ -25,9 +25,11 @@ interface SubComponentProps {
   htmlFor?: string;
 }
 
-export type CheckboxProps = CheckboxComponentProps &
-  Record<string, unknown> &
-  InputHTMLAttributes<HTMLInputElement>;
+export interface CheckboxProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'id' | 'name'>,
+    CheckboxComponentProps {
+  'data-test-id'?: string;
+}
 
 type CheckboxWithSubComponents = React.ForwardRefExoticComponent<
   React.PropsWithoutRef<CheckboxProps> & React.RefAttributes<HTMLInputElement>
@@ -51,11 +53,11 @@ export const CheckboxDescription: FC<SubComponentProps> = ({ children, className
 };
 
 const CheckboxInput = React.forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
-  const { children, id, disabled, defaultChecked } = props;
+  const { children, id, disabled, defaultChecked, name, validation, className } = props;
 
   const { register } = useFormContext();
 
-  // Add the for attribute to the label
+  // Add the htmlFor attribute to the label
   const enhancedChildren = React.Children.map(children, child => {
     if (React.isValidElement<SubComponentProps>(child) && child.type === CheckboxLabel) {
       return React.cloneElement(child, { htmlFor: id } as SubComponentProps);
@@ -67,11 +69,12 @@ const CheckboxInput = React.forwardRef<HTMLInputElement, CheckboxProps>((props, 
     <div key={id} className={styles.container}>
       <input
         type="checkbox"
-        className={styles.checkbox}
+        className={className || styles.checkbox}
+        id={id}
         disabled={disabled}
         defaultChecked={defaultChecked}
-        data-test-id={props[TEST_ID_ATTRIBUTE]}
-        {...register(props.name, props.validation)}
+        data-test-id={props['data-test-id']}
+        {...register(name, validation)}
         ref={e => {
           // Assign the ref from forwardRef
           if (typeof ref === 'function') {
@@ -81,7 +84,7 @@ const CheckboxInput = React.forwardRef<HTMLInputElement, CheckboxProps>((props, 
           }
 
           // Also call the register function
-          register(props.name, props.validation).ref(e);
+          register(name, validation).ref(e);
         }}
       />
       {enhancedChildren}
