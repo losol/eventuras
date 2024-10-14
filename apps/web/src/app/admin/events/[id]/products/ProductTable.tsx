@@ -20,12 +20,11 @@ export const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit }) 
   const columns = [
     columnHelper.accessor('name', {
       header: t('common:products.labels.name').toString(),
-      cell: info =>
-        (
-          <Link href={`./products/${info.row.original.productId}`}>
-            {info.getValue()} <Badge>{`${info.row.original.productId}`}</Badge>
-          </Link>
-        ),
+      cell: info => (
+        <Link href={`./products/${info.row.original.productId}`}>
+          {info.getValue()} <Badge>{`${info.row.original.productId}`}</Badge>
+        </Link>
+      ),
     }),
     columnHelper.accessor('price', {
       header: t('common:products.labels.price').toString(),
