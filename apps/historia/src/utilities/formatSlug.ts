@@ -1,4 +1,4 @@
-import type { FieldHook } from 'payload/types';
+import type { FieldHook } from 'payload';
 // From https://github.com/payloadcms/website-cms/blob/main/src/utilities/formatSlug.ts
 
 const format = (val: string): string =>

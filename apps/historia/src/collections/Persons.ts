@@ -1,5 +1,6 @@
-import { CollectionConfig } from 'payload/types';
-import { admins, anyone } from '../access';
+import { CollectionConfig } from 'payload';
+import { admins } from '../access/admins';
+import { anyone } from '../access/anyone';
 import { story } from '../fields/story';
 import { featuredImage } from '../fields/featuredImage';
 

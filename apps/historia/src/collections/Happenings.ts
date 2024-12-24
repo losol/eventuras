@@ -1,11 +1,12 @@
-import { CollectionConfig } from 'payload/types';
-import { admins, anyone } from '../access';
-import { config } from '../fields/config';
-import { dictionary } from '../fields/dictionary';
-import { story } from '../fields/story';
-import { contentLocations } from '../fields/contentLocations';
-import { featuredImage } from '../fields/featuredImage';
-import { program } from '../fields/program';
+import { CollectionConfig } from 'payload';
+import { admins } from '@/access/admins';
+import { anyone } from '@/access/anyone';
+import { config } from '@/fields/config';
+import { dictionary } from '@/fields/dictionary';
+import { story } from '@/fields/story';
+import { contentLocations } from '@/fields/contentLocations';
+import { featuredImage } from '@/fields/featuredImage';
+import { program } from '@/fields/program';
 
 export const Happenings: CollectionConfig = {
   slug: 'happenings',
