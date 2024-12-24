@@ -1,21 +1,67 @@
-import { CollectionConfig } from 'payload/types';
+import type { CollectionConfig } from 'payload';
 
-import { admins } from '../../access/admins';
+import { authenticated } from '../../access/authenticated';
+
+import { admins, adminsFieldLevel } from '../../access/admins';
 import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin';
 
 export const Users: CollectionConfig = {
   slug: 'users',
   access: {
-    read: admins,
     create: admins,
-    update: admins,
     delete: admins,
+    read: admins,
+    update: admins,
   },
-  auth: true,
   admin: {
+    defaultColumns: ['given_name', 'family_name', 'email'],
     useAsTitle: 'email',
   },
+  auth: true,
   fields: [
+    {
+      name: 'given_name',
+      label: 'Given Name',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'middle_name',
+      label: 'Middle Name',
+      type: 'text'
+    },
+    {
+      name: 'family_name',
+      label: 'Family Name',
+      type: 'text',
+    },
+    {
+      name: 'email',
+      type: 'email',
+      required: true,
+      unique: true,
+    },
+    {
+      name: 'email_verified', type: 'checkbox', access: {
+        create: adminsFieldLevel,
+        read: authenticated,
+        update: adminsFieldLevel
+      }
+    },
+    // phone number
+    {
+      name: 'phone_number',
+      type: 'text',
+    },
+    {
+      name: 'phone_number_verified',
+      type: 'checkbox',
+      access: {
+        create: adminsFieldLevel,
+        read: authenticated,
+        update: adminsFieldLevel,
+      },
+    },
     {
       name: 'roles',
       type: 'select',
@@ -34,7 +80,7 @@ export const Users: CollectionConfig = {
       hooks: {
         beforeChange: [ensureFirstUserIsAdmin],
       },
-
     },
   ],
+  timestamps: true,
 };

@@ -1,44 +1,34 @@
-// Based on https://github.com/payloadcms/website-cms/blob/main/src/utilities/deepMerge.ts
+// @ts-nocheck
 
 /**
- * Checks if the given item is an object.
- * @param item - The item to check.
- * @returns True if the item is an object, false otherwise.
+ * Simple object check.
+ * @param item
+ * @returns {boolean}
  */
-export function isObject<T>(item: T): boolean {
-  return !!item && typeof item === 'object' && !Array.isArray(item);
+export function isObject(item: unknown): boolean {
+  return item && typeof item === 'object' && !Array.isArray(item)
 }
 
 /**
- * Deeply merges multiple objects into a single object.
- * @param target - The target object to merge into.
- * @param sources - The source objects to merge from.
- * @returns The merged object.
+ * Deep merge two objects.
+ * @param target
+ * @param ...sources
  */
-export function deepMerge<T extends object>(target: T, ...sources: Partial<T>[]): T {
-  const output: T = { ...target };
-  for (const source of sources) {
-    if (isObject(target) && isObject(source)) {
-      Object.keys(source).forEach((key) => {
-        // @ts-ignore
-        const srcVal = source[key];
-        if (isObject(srcVal)) {
-          // @ts-ignore
-          if (!(key in target) || !isObject(target[key])) {
-            // @ts-ignore
-            output[key] = srcVal;
-          } else {
-            // @ts-ignore
-            output[key] = deepMerge(target[key] as any, srcVal);
-          }
+export default function deepMerge<T, R>(target: T, source: R): T {
+  const output = { ...target }
+  if (isObject(target) && isObject(source)) {
+    Object.keys(source).forEach((key) => {
+      if (isObject(source[key])) {
+        if (!(key in target)) {
+          Object.assign(output, { [key]: source[key] })
         } else {
-          // @ts-ignore
-          output[key] = srcVal;
+          output[key] = deepMerge(target[key], source[key])
         }
-      });
-    }
+      } else {
+        Object.assign(output, { [key]: source[key] })
+      }
+    })
   }
-  return output;
+
+  return output
 }
-
-

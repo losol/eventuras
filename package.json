@@ -20,7 +20,6 @@
   },
   "workspaces": [
     "apps/docsite",
-    "apps/historia",
     "apps/web",
     "apps/web-e2e",
     "apps/convertoapi",

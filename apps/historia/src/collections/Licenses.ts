@@ -1,5 +1,6 @@
-import { CollectionConfig } from 'payload/types';
-import { admins, anyone } from '../access';
+import { CollectionConfig } from 'payload';
+import { admins } from '../access/admins';
+import { anyone } from '../access/anyone';
 
 export const Licenses: CollectionConfig = {
   slug: 'licenses',
