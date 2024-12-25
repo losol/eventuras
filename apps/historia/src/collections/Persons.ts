@@ -2,7 +2,7 @@ import type { CollectionConfig } from 'payload';
 import { admins } from '../access/admins';
 import { anyone } from '../access/anyone';
 import { story } from '../fields/story';
-import { featuredImage } from '../fields/featuredImage';
+import { image } from '../fields/image';
 
 export const Persons: CollectionConfig = {
   slug: 'persons',
@@ -20,11 +20,9 @@ export const Persons: CollectionConfig = {
       name: 'name',
       type: 'text',
       required: true,
-      admin: {
-        description: 'The name of the person.',
-      },
+      label: 'Name',
     },
-    featuredImage,
+    image,
     {
       name: 'description',
       type: 'textarea',
@@ -46,8 +44,6 @@ export const Persons: CollectionConfig = {
         description: 'The employer of the person.',
       },
     },
-    story
-
+    story,
   ],
 };
-

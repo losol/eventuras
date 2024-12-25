@@ -1,13 +1,13 @@
-import { Field } from "payload/types";
+import type { Field } from 'payload';
 
-export const featuredImage: Field = {
+export const image: Field = {
 
-  name: 'featuredImage',
+  name: 'image',
   type: 'group',
   fields: [
     {
-      name: 'image',
-      label: 'Image',
+      name: 'media',
+      label: 'Media',
       type: 'upload',
       required: false,
       relationTo: 'media'

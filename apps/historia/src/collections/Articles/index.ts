@@ -7,7 +7,7 @@ import { revalidateArticle } from './hooks/revalidateArticle';
 
 import { slugField } from '@/fields/slug';
 import { story } from '@/fields/story';
-import { featuredImage } from '@/fields/featuredImage';
+import { image } from '@/fields/image';
 import { contributors } from '@/fields/contributor';
 import { license } from '@/fields/license';
 import { topics } from '@/fields/topics';
@@ -58,7 +58,7 @@ export const Articles: CollectionConfig = {
               type: 'text',
               required: true,
             },
-            featuredImage,
+            image,
             lead,
             story,
 

@@ -2,7 +2,7 @@ import type { CollectionConfig } from 'payload';
 import { admins } from '../access/admins';
 import { anyone } from '../access/anyone';
 import { contentPersons } from '../fields/contentPersons';
-import { featuredImage } from '../fields/featuredImage';
+import { image } from '../fields/image';
 
 export const Notes: CollectionConfig = {
   slug: 'notes',
@@ -21,7 +21,7 @@ export const Notes: CollectionConfig = {
       type: 'text',
       required: true,
     },
-    featuredImage,
+    image,
     {
       name: 'content',
       type: 'richText',

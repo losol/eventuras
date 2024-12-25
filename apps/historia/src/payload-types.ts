@@ -108,8 +108,8 @@ export interface UserAuthOperations {
 export interface Article {
   id: string;
   title: string;
-  featuredImage?: {
-    image?: (string | null) | Media;
+  image?: {
+    media?: (string | null) | Media;
     caption?: string | null;
   };
   lead?: string | null;
@@ -218,12 +218,9 @@ export interface License {
  */
 export interface Person {
   id: string;
-  /**
-   * The name of the person.
-   */
   name: string;
-  featuredImage?: {
-    image?: (string | null) | Media;
+  image?: {
+    media?: (string | null) | Media;
     caption?: string | null;
   };
   /**
@@ -333,8 +330,8 @@ export interface Happening {
   id: string;
   name: string;
   description?: string | null;
-  featuredImage?: {
-    image?: (string | null) | Media;
+  image?: {
+    media?: (string | null) | Media;
     caption?: string | null;
   };
   story?: ContentBlock[] | null;
@@ -401,8 +398,8 @@ export interface Happening {
 export interface Note {
   id: string;
   title: string;
-  featuredImage?: {
-    image?: (string | null) | Media;
+  image?: {
+    media?: (string | null) | Media;
     caption?: string | null;
   };
   /**
@@ -437,8 +434,8 @@ export interface Note {
 export interface Page {
   id: string;
   title: string;
-  featuredImage?: {
-    image?: (string | null) | Media;
+  image?: {
+    media?: (string | null) | Media;
     caption?: string | null;
   };
   story?: ContentBlock[] | null;
@@ -877,10 +874,10 @@ export interface PayloadMigration {
  */
 export interface ArticlesSelect<T extends boolean = true> {
   title?: T;
-  featuredImage?:
+  image?:
     | T
     | {
-        image?: T;
+        media?: T;
         caption?: T;
       };
   lead?: T;
@@ -925,10 +922,10 @@ export interface ContributorSelect<T extends boolean = true> {
 export interface HappeningsSelect<T extends boolean = true> {
   name?: T;
   description?: T;
-  featuredImage?:
+  image?:
     | T
     | {
-        image?: T;
+        media?: T;
         caption?: T;
       };
   story?:
@@ -1049,10 +1046,10 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface NotesSelect<T extends boolean = true> {
   title?: T;
-  featuredImage?:
+  image?:
     | T
     | {
-        image?: T;
+        media?: T;
         caption?: T;
       };
   content?: T;
@@ -1079,10 +1076,10 @@ export interface OrganizationsSelect<T extends boolean = true> {
  */
 export interface PagesSelect<T extends boolean = true> {
   title?: T;
-  featuredImage?:
+  image?:
     | T
     | {
-        image?: T;
+        media?: T;
         caption?: T;
       };
   story?:
@@ -1120,10 +1117,10 @@ export interface PagesSelect<T extends boolean = true> {
  */
 export interface PersonsSelect<T extends boolean = true> {
   name?: T;
-  featuredImage?:
+  image?:
     | T
     | {
-        image?: T;
+        media?: T;
         caption?: T;
       };
   description?: T;
