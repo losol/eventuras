@@ -14,7 +14,6 @@ import { Footer } from './Footer/config';
 import { Header } from './Header/config';
 import { plugins } from './plugins';
 import { defaultLexical } from '@/fields/defaultLexical';
-import { getServerSideURL } from './utilities/getURL';
 import { Articles } from './collections/Articles';
 import { Happenings } from './collections/Happenings';
 import { Licenses } from './collections/Licenses';
@@ -24,7 +23,7 @@ import { Persons } from './collections/Persons';
 import { Places } from './collections/Places';
 import { Topics } from './collections/Topics';
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs';
-import redirects from '@payloadcms/plugin-redirects';
+import { redirectsPlugin } from '@payloadcms/plugin-redirects';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -116,7 +115,7 @@ export default buildConfig({
       generateLabel: (_, doc) => doc.title as string,
       generateURL: (docs) => docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
     }),
-    redirects({
+    redirectsPlugin({
       collections: ['articles', 'pages'],
     }),
   ],
