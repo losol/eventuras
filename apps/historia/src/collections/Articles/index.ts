@@ -33,7 +33,7 @@ export const Articles: CollectionConfig = {
           collection: 'articles',
         });
 
-        return `${process.env.NEXT_PUBLIC_SERVER_URL}${path}`;
+        return `${process.env.NEXT_PUBLIC_CMS_URL}${path}`;
       },
     },
     preview: (data) => {
@@ -42,7 +42,7 @@ export const Articles: CollectionConfig = {
         collection: 'articles',
       });
 
-      return `${process.env.NEXT_PUBLIC_SERVER_URL}${path}`;
+      return `${process.env.NEXT_PUBLIC_CMS_URL}${path}`;
     },
     useAsTitle: 'title',
   },
