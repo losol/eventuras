@@ -66,14 +66,8 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
-  globals: {
-    header: Header;
-    footer: Footer;
-  };
-  globalsSelect: {
-    header: HeaderSelect<false> | HeaderSelect<true>;
-    footer: FooterSelect<false> | FooterSelect<true>;
-  };
+  globals: {};
+  globalsSelect: {};
   locale: null;
   user: User & {
     collection: 'users';
@@ -339,7 +333,21 @@ export interface Topic {
   title: string;
   slug?: string | null;
   slugLock?: boolean | null;
-  description?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   image?: {
     media?: (string | null) | Media;
     caption?: string | null;
@@ -427,10 +435,7 @@ export interface Note {
     media?: (string | null) | Media;
     caption?: string | null;
   };
-  /**
-   * The main content of the note.
-   */
-  content?: {
+  richText?: {
     root: {
       type: string;
       children: {
@@ -1062,7 +1067,7 @@ export interface NotesSelect<T extends boolean = true> {
         media?: T;
         caption?: T;
       };
-  content?: T;
+  richText?: T;
   contentPersons?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1428,100 +1433,6 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "header".
- */
-export interface Header {
-  id: string;
-  navItems?:
-    | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?: {
-            relationTo: 'pages';
-            value: string | Page;
-          } | null;
-          url?: string | null;
-          label: string;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "footer".
- */
-export interface Footer {
-  id: string;
-  navItems?:
-    | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?: {
-            relationTo: 'pages';
-            value: string | Page;
-          } | null;
-          url?: string | null;
-          label: string;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "header_select".
- */
-export interface HeaderSelect<T extends boolean = true> {
-  navItems?:
-    | T
-    | {
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-            };
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "footer_select".
- */
-export interface FooterSelect<T extends boolean = true> {
-  navItems?:
-    | T
-    | {
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-            };
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

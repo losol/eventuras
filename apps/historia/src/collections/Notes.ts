@@ -3,6 +3,7 @@ import { admins } from '../access/admins';
 import { anyone } from '../access/anyone';
 import { contentPersons } from '../fields/contentPersons';
 import { image } from '../fields/image';
+import { richText } from '@/fields/richText';
 
 export const Notes: CollectionConfig = {
   slug: 'notes',
@@ -22,13 +23,7 @@ export const Notes: CollectionConfig = {
       required: true,
     },
     image,
-    {
-      name: 'content',
-      type: 'richText',
-      admin: {
-        description: 'The main content of the note.',
-      },
-    },
+    richText(),
     contentPersons
   ],
 };
