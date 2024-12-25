@@ -10,8 +10,7 @@ import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types';
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical';
 import { searchFields } from '@/search/fieldOverrides';
 import { beforeSyncWithSearch } from '@/search/beforeSync';
-import { cloudStoragePlugin } from '@payloadcms/plugin-cloud-storage';
-import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
+import { s3Storage } from '@payloadcms/storage-s3';
 
 import { Article, Note, Page } from '@/payload-types';
 import { getServerSideURL } from '@/utilities/getURL';
@@ -37,24 +36,22 @@ const requiredS3MediaVars = [
 const areAllS3VarsPresent = requiredS3MediaVars.every(varName => process.env[varName]);
 
 export const plugins: Plugin[] = [
-  cloudStoragePlugin({
+  s3Storage({
     enabled: areAllS3VarsPresent,
     collections: {
-      'media': {
-        adapter: s3Adapter({
-          config: {
-            credentials: {
-              accessKeyId: process.env.CMS_MEDIA_S3_ACCESS_KEY_ID!,
-              secretAccessKey: process.env.CMS_MEDIA_S3_SECRET_ACCESS_KEY!,
-            },
-            endpoint: process.env.CMS_MEDIA_S3_ENDPOINT!,
-            region: process.env.CMS_MEDIA_S3_REGION!,
-          },
-          bucket: process.env.CMS_MEDIA_S3_BUCKET!,
-        })
-      }
-    }
-  }),
+      media: true,
+    },
+    bucket: process.env.CMS_MEDIA_S3_BUCKET!,
+    config: {
+      credentials: {
+        accessKeyId: process.env.CMS_MEDIA_S3_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.CMS_MEDIA_S3_SECRET_ACCESS_KEY!,
+      },
+      endpoint: process.env.CMS_MEDIA_S3_ENDPOINT!,
+      region: process.env.CMS_MEDIA_S3_REGION!,
+    },
+  })
+  ,
   redirectsPlugin({
     collections: ['articles', 'notes', 'pages'],
     overrides: {
