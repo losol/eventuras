@@ -1,6 +1,5 @@
 import { postgresAdapter } from '@payloadcms/db-postgres';
-import { cloudStorage } from '@payloadcms/plugin-cloud-storage';
-import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
+
 
 import sharp from 'sharp';
 import path from 'path';
@@ -22,21 +21,11 @@ import { Organizations } from './collections/Organizations';
 import { Persons } from './collections/Persons';
 import { Places } from './collections/Places';
 import { Topics } from './collections/Topics';
-import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs';
-import { redirectsPlugin } from '@payloadcms/plugin-redirects';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
-const requiredS3MediaVars = [
-  'CMS_MEDIA_S3_ACCESS_KEY_ID',
-  'CMS_MEDIA_S3_ENDPOINT',
-  'CMS_MEDIA_S3_SECRET_ACCESS_KEY',
-  'CMS_MEDIA_S3_REGION',
-  'CMS_MEDIA_S3_BUCKET'
-];
 
-const areAllS3VarsPresent = requiredS3MediaVars.every(varName => process.env[varName]);
 const allowedOrigins = process.env.CMS_ALLOWED_ORIGINS ? process.env.CMS_ALLOWED_ORIGINS.split(',') : [];
 
 export default buildConfig({
@@ -89,35 +78,7 @@ export default buildConfig({
   csrf: allowedOrigins,
   globals: [Header, Footer],
   plugins: [
-    ...plugins,
-    cloudStorage({
-      enabled: areAllS3VarsPresent,
-      collections: {
-        'media': {
-          adapter: s3Adapter({
-            config: {
-              credentials: {
-                accessKeyId: process.env.CMS_MEDIA_S3_ACCESS_KEY_ID!,
-                secretAccessKey: process.env.CMS_MEDIA_S3_SECRET_ACCESS_KEY!,
-              },
-              endpoint: process.env.CMS_MEDIA_S3_ENDPOINT!,
-              region: process.env.CMS_MEDIA_S3_REGION!,
-            },
-            bucket: process.env.CMS_MEDIA_S3_BUCKET!,
-          })
-        }
-      }
-    }),
-    nestedDocsPlugin({
-      collections: ['pages'],
-      parentFieldSlug: 'parent',
-      breadcrumbsFieldSlug: 'breadcrumbs',
-      generateLabel: (_, doc) => doc.title as string,
-      generateURL: (docs) => docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
-    }),
-    redirectsPlugin({
-      collections: ['articles', 'pages'],
-    }),
+    ...plugins // add more plugins to src/plugins/index.ts,
   ],
   rateLimit: {
     max: 5000, // limit each IP per windowMs

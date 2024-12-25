@@ -400,9 +400,6 @@ export interface Happening {
  */
 export interface Note {
   id: string;
-  /**
-   * The title of the note.
-   */
   title: string;
   featuredImage?: {
     image?: (string | null) | Media;
@@ -473,15 +470,12 @@ export interface Page {
         )[]
       | null;
   };
-  parent?: (string | null) | Page;
-  breadcrumbs?:
-    | {
-        doc?: (string | null) | Page;
-        url?: string | null;
-        label?: string | null;
-        id?: string | null;
-      }[]
-    | null;
+  parent?: {};
+  breadcrumbs?: {
+    doc?: (string | null) | Page;
+    url?: string | null;
+    label?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -523,12 +517,16 @@ export interface Redirect {
     type?: ('reference' | 'custom') | null;
     reference?:
       | ({
-          relationTo: 'pages';
-          value: string | Page;
-        } | null)
-      | ({
           relationTo: 'articles';
           value: string | Article;
+        } | null)
+      | ({
+          relationTo: 'notes';
+          value: string | Note;
+        } | null)
+      | ({
+          relationTo: 'pages';
+          value: string | Page;
         } | null);
     url?: string | null;
   };
@@ -1105,14 +1103,13 @@ export interface PagesSelect<T extends boolean = true> {
         description?: T;
         relatedContent?: T;
       };
-  parent?: T;
+  parent?: T | {};
   breadcrumbs?:
     | T
     | {
         doc?: T;
         url?: T;
         label?: T;
-        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;
