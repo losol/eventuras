@@ -125,6 +125,14 @@ export interface Article {
    * What is this about?.
    */
   topics?: (string | Topic)[] | null;
+  /**
+   * The people in the content.
+   */
+  contentPersons?: (string | Person)[] | null;
+  /**
+   * The location depicted or represented in the media.
+   */
+  contentLocations?: (string | Place)[] | null;
   publishedAt?: string | null;
   relatedArticles?: (string | Article)[] | null;
   updatedAt: string;
@@ -299,14 +307,24 @@ export interface Organization {
 export interface Place {
   id: string;
   name: string;
-  type: 'city' | 'hotel' | 'house';
   description?: string | null;
+  type: 'building' | 'business' | 'city' | 'hotel' | 'residence' | 'other';
   postalAddress?: {
     streetAddress?: string | null;
-    city?: string | null;
     region?: string | null;
     postalCode?: string | null;
+    city?: string | null;
     country?: string | null;
+  };
+  geoPoint?: {
+    /**
+     * Latitude must be between -90 and 90
+     */
+    latitude?: number | null;
+    /**
+     * Longitude must be between -180 and 180
+     */
+    longitude?: number | null;
   };
   story?: ContentBlock[] | null;
   updatedAt: string;
@@ -319,6 +337,13 @@ export interface Place {
 export interface Topic {
   id: string;
   title: string;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  description?: string | null;
+  image?: {
+    media?: (string | null) | Media;
+    caption?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -454,27 +479,10 @@ export interface Page {
      */
     image?: (string | null) | Media;
     description?: string | null;
-    relatedContent?:
-      | (
-          | {
-              relationTo: 'articles';
-              value: string | Article;
-            }
-          | {
-              relationTo: 'pages';
-              value: string | Page;
-            }
-        )[]
-      | null;
-  };
-  parent?: {};
-  breadcrumbs?: {
-    doc?: (string | null) | Page;
-    url?: string | null;
-    label?: string | null;
   };
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -891,6 +899,8 @@ export interface ArticlesSelect<T extends boolean = true> {
   contributors?: T | ContributorSelect<T>;
   license?: T;
   topics?: T;
+  contentPersons?: T;
+  contentLocations?: T;
   publishedAt?: T;
   relatedArticles?: T;
   updatedAt?: T;
@@ -1098,18 +1108,10 @@ export interface PagesSelect<T extends boolean = true> {
         title?: T;
         image?: T;
         description?: T;
-        relatedContent?: T;
-      };
-  parent?: T | {};
-  breadcrumbs?:
-    | T
-    | {
-        doc?: T;
-        url?: T;
-        label?: T;
       };
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1140,16 +1142,22 @@ export interface PersonsSelect<T extends boolean = true> {
  */
 export interface PlacesSelect<T extends boolean = true> {
   name?: T;
-  type?: T;
   description?: T;
+  type?: T;
   postalAddress?:
     | T
     | {
         streetAddress?: T;
-        city?: T;
         region?: T;
         postalCode?: T;
+        city?: T;
         country?: T;
+      };
+  geoPoint?:
+    | T
+    | {
+        latitude?: T;
+        longitude?: T;
       };
   story?:
     | T
@@ -1165,6 +1173,15 @@ export interface PlacesSelect<T extends boolean = true> {
  */
 export interface TopicsSelect<T extends boolean = true> {
   title?: T;
+  slug?: T;
+  slugLock?: T;
+  description?: T;
+  image?:
+    | T
+    | {
+        media?: T;
+        caption?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
