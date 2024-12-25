@@ -6,7 +6,7 @@ import { revalidateDelete } from './hooks/revalidatePage';
 import { admins } from '@/access/admins';
 import { publishedOnly } from '@/access/publishedOnly';
 import { slugField } from '@/fields/slug';
-import { featuredImage } from '@/fields/featuredImage';
+import { image } from '@/fields/image';
 import { story } from '@/fields/story';
 import { contributors } from '@/fields/contributor';
 import { license } from '@/fields/license';
@@ -64,7 +64,7 @@ export const Pages: CollectionConfig<'pages'> = {
               type: 'text',
               required: true,
             },
-            featuredImage,
+            image,
             story
           ],
         },
@@ -108,21 +108,21 @@ export const Pages: CollectionConfig<'pages'> = {
             },
           ],
         },
-          createParentField('pages',
-              {
-                admin: {
-                  position: undefined,
-                },
-              },
-            ),
-            createBreadcrumbsField('pages',
-              {
-                admin: {
-                  position: undefined,
-                  initCollapsed: true,
-                },
-              },
-            )
+        createParentField('pages',
+          {
+            admin: {
+              position: undefined,
+            },
+          },
+        ),
+        createBreadcrumbsField('pages',
+          {
+            admin: {
+              position: undefined,
+              initCollapsed: true,
+            },
+          },
+        )
 
       ],
       defaultPopulate: {

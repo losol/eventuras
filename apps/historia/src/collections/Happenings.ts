@@ -5,7 +5,7 @@ import { config } from '@/fields/config';
 import { dictionary } from '@/fields/dictionary';
 import { story } from '@/fields/story';
 import { contentLocations } from '@/fields/contentLocations';
-import { featuredImage } from '@/fields/featuredImage';
+import { image } from '@/fields/image';
 import { program } from '@/fields/program';
 
 export const Happenings: CollectionConfig = {
@@ -35,7 +35,7 @@ export const Happenings: CollectionConfig = {
         placeholder: 'Provide a brief description of the event',
       },
     },
-    featuredImage,
+    image,
     story,
     {
       name: 'type',
