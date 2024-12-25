@@ -2,7 +2,7 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       CMS_SECRET: string;
-      DATABASE_URI: string;
+      CMS_DATABASE_URL: string;
       NEXT_PUBLIC_CMS_URL: string;
       VERCEL_PROJECT_PRODUCTION_URL: string;
     }

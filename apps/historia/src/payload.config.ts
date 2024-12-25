@@ -70,7 +70,7 @@ export default buildConfig({
   db: postgresAdapter({
     idType: "uuid",
     pool: {
-      connectionString: process.env.DATABASE_URI || '',
+      connectionString: process.env.CMS_DATABASE_URL || '',
     },
   }),
   collections: [Articles, Happenings, Licenses, Media, Notes, Organizations, Pages, Persons, Places, Topics, Users],
