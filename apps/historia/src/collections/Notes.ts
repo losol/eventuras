@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload';
+import type { CollectionConfig } from 'payload';
 import { admins } from '../access/admins';
 import { anyone } from '../access/anyone';
 import { contentPersons } from '../fields/contentPersons';
@@ -20,9 +20,6 @@ export const Notes: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
-      admin: {
-        description: 'The title of the note.',
-      },
     },
     featuredImage,
     {

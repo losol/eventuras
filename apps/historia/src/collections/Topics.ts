@@ -3,7 +3,7 @@ import type { CollectionConfig } from 'payload';
 import { anyone } from '../access/anyone';
 import { admins } from '@/access/admins';
 
-const Topics: CollectionConfig = {
+export const Topics: CollectionConfig = {
   slug: 'topics',
   access: {
     create: admins,
@@ -23,4 +23,3 @@ const Topics: CollectionConfig = {
   ],
 };
 
-export default Topics;
