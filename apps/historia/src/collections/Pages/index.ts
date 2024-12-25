@@ -1,17 +1,13 @@
 import type { CollectionConfig } from 'payload';
 import { populatePublishedAt } from '../../hooks/populatePublishedAt';
 import { generatePreviewPath } from '../../utilities/generatePreviewPath';
-import { revalidatePage } from './hooks/revalidatePage';
-import { revalidateDelete } from './hooks/revalidatePage';
+import { revalidateDelete, revalidatePage } from './hooks/revalidatePage';
 import { admins } from '@/access/admins';
-import { publishedOnly } from '@/access/publishedOnly';
 import { slugField } from '@/fields/slug';
 import { image } from '@/fields/image';
 import { story } from '@/fields/story';
 import { contributors } from '@/fields/contributor';
 import { license } from '@/fields/license';
-import { createParentField } from '@payloadcms/plugin-nested-docs';
-import { createBreadcrumbsField } from '@payloadcms/plugin-nested-docs';
 
 import {
   MetaDescriptionField,
@@ -26,7 +22,7 @@ export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
   access: {
     create: admins,
-    read: anyone, // publishedOnly,
+    read: anyone,
     readVersions: admins,
     update: admins,
     delete: admins,
@@ -97,56 +93,30 @@ export const Pages: CollectionConfig<'pages'> = {
               titlePath: 'meta.title',
               descriptionPath: 'meta.description',
             }),
-            {
-              name: 'relatedContent',
-              type: 'relationship',
-              relationTo: ['articles', 'pages'],
-              hasMany: true,
-              filterOptions: ({ id }) => ({
-                id: { not_in: [id] },
-              }),
-            },
           ],
         },
-        createParentField('pages',
-          {
-            admin: {
-              position: undefined,
-            },
-          },
-        ),
-        createBreadcrumbsField('pages',
-          {
-            admin: {
-              position: undefined,
-              initCollapsed: true,
-            },
-          },
-        )
-
       ],
-      defaultPopulate: {
-        title: true,
-        slug: true,
-        meta: {
-          title: true,
-          description: true,
-          image: true,
-        },
+    }],
+  defaultPopulate: {
+    title: true,
+    slug: true,
+    meta: {
+      title: true,
+      description: true,
+      image: true,
+    },
+  },
+  hooks: {
+    afterChange: [revalidatePage],
+    beforeChange: [populatePublishedAt],
+    afterDelete: [revalidateDelete],
+  },
+  versions: {
+    drafts: {
+      autosave: {
+        interval: 100,
       },
-      hooks: {
-        afterChange: [revalidatePage],
-        beforeChange: [populatePublishedAt],
-        beforeDelete: [revalidateDelete],
-      },
-      versions: {
-        drafts: {
-          autosave: {
-            interval: 100,
-          },
-        },
-        maxPerDoc: 50,
-      },
-    }
-  ],
+    },
+    maxPerDoc: 50,
+  },
 };
