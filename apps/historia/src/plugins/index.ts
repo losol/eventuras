@@ -10,7 +10,7 @@ import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types';
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical';
 import { searchFields } from '@/search/fieldOverrides';
 import { beforeSyncWithSearch } from '@/search/beforeSync';
-import { cloudStorage } from '@payloadcms/plugin-cloud-storage';
+import { cloudStoragePlugin } from '@payloadcms/plugin-cloud-storage';
 import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
 
 import { Article, Note, Page } from '@/payload-types';
@@ -37,7 +37,7 @@ const requiredS3MediaVars = [
 const areAllS3VarsPresent = requiredS3MediaVars.every(varName => process.env[varName]);
 
 export const plugins: Plugin[] = [
-  cloudStorage({
+  cloudStoragePlugin({
     enabled: areAllS3VarsPresent,
     collections: {
       'media': {
