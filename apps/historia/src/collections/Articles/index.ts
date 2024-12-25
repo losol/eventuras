@@ -14,6 +14,8 @@ import { topics } from '@/fields/topics';
 import { lead } from '@/fields/lead';
 import { publishedOnly } from '@/access/publishedOnly';
 import { admins } from '@/access/admins';
+import { contentPersons } from '@/contentPersons';
+import { contentLocations } from '@/contentLocations';
 
 export const Articles: CollectionConfig = {
   slug: 'articles',
@@ -71,6 +73,8 @@ export const Articles: CollectionConfig = {
             contributors,
             license,
             topics,
+            contentPersons,
+            contentLocations,
             {
               name: 'publishedAt',
               type: 'date',

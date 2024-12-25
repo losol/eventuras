@@ -65,8 +65,6 @@ export default buildConfig({
       ],
     },
   },
-  // This config helps us configure global or default features that the other editors can inherit
-  editor: defaultLexical,
   db: postgresAdapter({
     idType: "uuid",
     pool: {
@@ -76,15 +74,10 @@ export default buildConfig({
   collections: [Articles, Happenings, Licenses, Media, Notes, Organizations, Pages, Persons, Places, Topics, Users],
   cors: allowedOrigins,
   csrf: allowedOrigins,
-  globals: [Header, Footer],
+  editor: defaultLexical,
   plugins: [
     ...plugins // add more plugins to src/plugins/index.ts,
   ],
-  rateLimit: {
-    max: 5000, // limit each IP per windowMs
-    trustProxy: true,
-    window: 60 * 1000, // 1 minute
-  },
   secret: process.env.CMS_SECRET,
   sharp,
   typescript: {
