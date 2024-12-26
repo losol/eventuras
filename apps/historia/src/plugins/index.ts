@@ -76,8 +76,6 @@ export const plugins: Plugin[] = [
   }),
   nestedDocsPlugin({
     collections: ['pages'],
-    parentFieldSlug: 'parent',
-    breadcrumbsFieldSlug: 'breadcrumbs',
     generateLabel: (_, doc) => doc.title as string,
     generateURL: (docs) => docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
   }),
