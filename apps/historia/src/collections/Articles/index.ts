@@ -71,11 +71,11 @@ export const Articles: CollectionConfig = {
           fields: [
             publishedAt,
             ...slugField(),
+            license,
             contributors,
+            topics,
             contentPersons,
             contentLocations,
-            license,
-            topics,
             relatedContent,
           ],
         },

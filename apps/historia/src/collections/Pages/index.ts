@@ -59,8 +59,8 @@ export const Pages: CollectionConfig<'pages'> = {
           label: 'Meta',
           fields: [
             ...slugField(),
-            contributors,
             license,
+            contributors,
             publishedAt
           ]
         },

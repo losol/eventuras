@@ -1,5 +1,5 @@
 import { Field } from "payload";
-import { Content } from "../blocks/content/config";
+import { Content } from "../blocks/Content/config";
 import { Session } from "../blocks/session";
 
 export const program: Field = {

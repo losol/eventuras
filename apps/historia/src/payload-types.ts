@@ -114,7 +114,15 @@ export interface Article {
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
+  /**
+   * The license governing the use of this media.
+   */
+  license?: (string | null) | License;
   contributors?: Contributor;
+  /**
+   * What is this about?.
+   */
+  topics?: (string | Topic)[] | null;
   /**
    * The people in the content.
    */
@@ -123,14 +131,6 @@ export interface Article {
    * The location depicted or represented in the media.
    */
   contentLocations?: (string | Place)[] | null;
-  /**
-   * The license governing the use of this media.
-   */
-  license?: (string | null) | License;
-  /**
-   * What is this about?.
-   */
-  topics?: (string | Topic)[] | null;
   /**
    * Relate to persons, places, articles, notes, and pages.
    */
@@ -439,11 +439,11 @@ export interface Page {
   story?: ContentBlock[] | null;
   slug?: string | null;
   slugLock?: boolean | null;
-  contributors?: Contributor;
   /**
    * The license governing the use of this media.
    */
   license?: (string | null) | License;
+  contributors?: Contributor;
   publishedAt: string;
   parent?: (string | null) | Page;
   breadcrumbs?:
@@ -940,11 +940,11 @@ export interface ArticlesSelect<T extends boolean = true> {
   publishedAt?: T;
   slug?: T;
   slugLock?: T;
+  license?: T;
   contributors?: T | ContributorSelect<T>;
+  topics?: T;
   contentPersons?: T;
   contentLocations?: T;
-  license?: T;
-  topics?: T;
   relatedContent?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1146,8 +1146,8 @@ export interface PagesSelect<T extends boolean = true> {
       };
   slug?: T;
   slugLock?: T;
-  contributors?: T | ContributorSelect<T>;
   license?: T;
+  contributors?: T | ContributorSelect<T>;
   publishedAt?: T;
   parent?: T;
   breadcrumbs?:
