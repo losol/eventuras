@@ -101,6 +101,9 @@ export interface UserAuthOperations {
  */
 export interface Article {
   id: string;
+  /**
+   * The title of the entry.
+   */
   title: string;
   image?: {
     media?: (string | null) | Media;
@@ -108,9 +111,18 @@ export interface Article {
   };
   lead?: string | null;
   story?: ContentBlock[] | null;
+  publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
   contributors?: Contributor;
+  /**
+   * The people in the content.
+   */
+  contentPersons?: (string | Person)[] | null;
+  /**
+   * The location depicted or represented in the media.
+   */
+  contentLocations?: (string | Place)[] | null;
   /**
    * The license governing the use of this media.
    */
@@ -120,15 +132,24 @@ export interface Article {
    */
   topics?: (string | Topic)[] | null;
   /**
-   * The people in the content.
+   * Relate to persons, places, articles, notes, and pages.
    */
-  contentPersons?: (string | Person)[] | null;
-  /**
-   * The location depicted or represented in the media.
-   */
-  contentLocations?: (string | Place)[] | null;
-  publishedAt?: string | null;
-  relatedArticles?: (string | Article)[] | null;
+  relatedContent?:
+    | (
+        | {
+            relationTo: 'articles';
+            value: string | Article;
+          }
+        | {
+            relationTo: 'notes';
+            value: string | Note;
+          }
+        | {
+            relationTo: 'pages';
+            value: string | Page;
+          }
+      )[]
+    | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -357,6 +378,79 @@ export interface Topic {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notes".
+ */
+export interface Note {
+  id: string;
+  /**
+   * The title of the entry.
+   */
+  title: string;
+  image?: {
+    media?: (string | null) | Media;
+    caption?: string | null;
+  };
+  richText?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * What is this about?.
+   */
+  topics?: (string | Topic)[] | null;
+  /**
+   * The people in the content.
+   */
+  contentPersons?: (string | Person)[] | null;
+  /**
+   * The location depicted or represented in the media.
+   */
+  contentLocations?: (string | Place)[] | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: string;
+  /**
+   * The title of the entry.
+   */
+  title: string;
+  image?: {
+    media?: (string | null) | Media;
+    caption?: string | null;
+  };
+  story?: ContentBlock[] | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  contributors?: Contributor;
+  /**
+   * The license governing the use of this media.
+   */
+  license?: (string | null) | License;
+  publishedAt: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "happenings".
  */
 export interface Happening {
@@ -423,71 +517,6 @@ export interface Happening {
     | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "notes".
- */
-export interface Note {
-  id: string;
-  title: string;
-  image?: {
-    media?: (string | null) | Media;
-    caption?: string | null;
-  };
-  richText?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  /**
-   * The people in the content.
-   */
-  contentPersons?: (string | Person)[] | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pages".
- */
-export interface Page {
-  id: string;
-  title: string;
-  image?: {
-    media?: (string | null) | Media;
-    caption?: string | null;
-  };
-  story?: ContentBlock[] | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  contributors?: Contributor;
-  /**
-   * The license governing the use of this media.
-   */
-  license?: (string | null) | License;
-  publishedAt?: string | null;
-  seo?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (string | null) | Media;
-    description?: string | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -899,15 +928,15 @@ export interface ArticlesSelect<T extends boolean = true> {
     | {
         content?: T | ContentBlockSelect<T>;
       };
+  publishedAt?: T;
   slug?: T;
   slugLock?: T;
   contributors?: T | ContributorSelect<T>;
-  license?: T;
-  topics?: T;
   contentPersons?: T;
   contentLocations?: T;
-  publishedAt?: T;
-  relatedArticles?: T;
+  license?: T;
+  topics?: T;
+  relatedContent?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1068,7 +1097,11 @@ export interface NotesSelect<T extends boolean = true> {
         caption?: T;
       };
   richText?: T;
+  topics?: T;
   contentPersons?: T;
+  contentLocations?: T;
+  slug?: T;
+  slugLock?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1107,13 +1140,6 @@ export interface PagesSelect<T extends boolean = true> {
   contributors?: T | ContributorSelect<T>;
   license?: T;
   publishedAt?: T;
-  seo?:
-    | T
-    | {
-        title?: T;
-        image?: T;
-        description?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
