@@ -9,14 +9,9 @@ import { story } from '@/fields/story';
 import { contributors } from '@/fields/contributor';
 import { license } from '@/fields/license';
 
-import {
-  MetaDescriptionField,
-  MetaImageField,
-  MetaTitleField,
-  OverviewField,
-  PreviewField,
-} from '@payloadcms/plugin-seo/fields';
 import { anyone } from '@/access/anyone';
+import { publishedAt } from '@/publishedOn';
+import { title } from '@/fields/title';
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -55,11 +50,7 @@ export const Pages: CollectionConfig<'pages'> = {
         {
           label: 'Content',
           fields: [
-            {
-              name: 'title',
-              type: 'text',
-              required: true,
-            },
+            title,
             image,
             story
           ],
@@ -70,41 +61,14 @@ export const Pages: CollectionConfig<'pages'> = {
             ...slugField(),
             contributors,
             license,
-            {
-              name: 'publishedAt',
-              type: 'date',
-            },
+            publishedAt
           ]
-        },
-        {
-          label: 'Seo',
-          name: 'seo',
-          fields: [
-            OverviewField({
-              titlePath: 'meta.title',
-              descriptionPath: 'meta.description',
-              imagePath: 'meta.image',
-            }),
-            MetaTitleField({ hasGenerateFn: true }),
-            MetaImageField({ relationTo: 'media' }),
-            MetaDescriptionField({}),
-            PreviewField({
-              hasGenerateFn: true,
-              titlePath: 'meta.title',
-              descriptionPath: 'meta.description',
-            }),
-          ],
         },
       ],
     }],
   defaultPopulate: {
     title: true,
     slug: true,
-    meta: {
-      title: true,
-      description: true,
-      image: true,
-    },
   },
   hooks: {
     afterChange: [revalidatePage],
@@ -114,9 +78,8 @@ export const Pages: CollectionConfig<'pages'> = {
   versions: {
     drafts: {
       autosave: {
-        interval: 100,
+        interval: 1000,
       },
     },
-    maxPerDoc: 50,
   },
 };

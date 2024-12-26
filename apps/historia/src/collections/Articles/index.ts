@@ -1,7 +1,6 @@
 import type { CollectionConfig } from 'payload';
 
 import { authenticated } from '../../access/authenticated';
-import { authenticatedOrPublished } from '../../access/authenticatedOrPublished';
 import { generatePreviewPath } from '../../utilities/generatePreviewPath';
 import { revalidateArticle } from './hooks/revalidateArticle';
 
@@ -16,6 +15,9 @@ import { publishedOnly } from '@/access/publishedOnly';
 import { admins } from '@/access/admins';
 import { contentPersons } from '@/contentPersons';
 import { contentLocations } from '@/contentLocations';
+import { relatedContent } from '@/fields/relatedContent';
+import { publishedAt } from '@/fields/publishedAt';
+import { title } from '@/fields/title';
 
 export const Articles: CollectionConfig = {
   slug: 'articles',
@@ -29,19 +31,21 @@ export const Articles: CollectionConfig = {
   admin: {
     defaultColumns: ['title', 'slug', 'updatedAt'],
     livePreview: {
-      url: ({ data }) => {
+      url: ({ data, req }) => {
         const path = generatePreviewPath({
           slug: typeof data?.slug === 'string' ? data.slug : '',
           collection: 'articles',
+          req,
         });
 
         return `${process.env.NEXT_PUBLIC_CMS_URL}${path}`;
       },
     },
-    preview: (data) => {
+    preview: (data, { req }) => {
       const path = generatePreviewPath({
         slug: typeof data?.slug === 'string' ? data.slug : '',
         collection: 'articles',
+        req
       });
 
       return `${process.env.NEXT_PUBLIC_CMS_URL}${path}`;
@@ -55,11 +59,7 @@ export const Articles: CollectionConfig = {
         {
           label: 'Content',
           fields: [
-            {
-              name: 'title',
-              type: 'text',
-              required: true,
-            },
+            title,
             image,
             lead,
             story,
@@ -69,34 +69,14 @@ export const Articles: CollectionConfig = {
         {
           label: 'Meta',
           fields: [
+            publishedAt,
             ...slugField(),
             contributors,
-            license,
-            topics,
             contentPersons,
             contentLocations,
-            {
-              name: 'publishedAt',
-              type: 'date',
-              admin: {
-                date: {
-                  pickerAppearance: 'dayAndTime',
-                },
-              },
-            },
-            {
-              name: 'relatedArticles',
-              type: 'relationship',
-              filterOptions: ({ id }) => {
-                return {
-                  id: {
-                    not_in: [id],
-                  },
-                };
-              },
-              hasMany: true,
-              relationTo: 'articles',
-            },
+            license,
+            topics,
+            relatedContent,
           ],
         },
       ],
@@ -108,7 +88,7 @@ export const Articles: CollectionConfig = {
   versions: {
     drafts: {
       autosave: {
-        interval: 100,
+        interval: 1000,
       },
     }
   }
