@@ -69,6 +69,7 @@ export const Pages: CollectionConfig<'pages'> = {
   defaultPopulate: {
     title: true,
     slug: true,
+    breadcrumbs: true,
   },
   hooks: {
     afterChange: [revalidatePage],
