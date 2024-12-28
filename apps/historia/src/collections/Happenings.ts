@@ -7,6 +7,8 @@ import { story } from '@/fields/story';
 import { contentLocations } from '@/fields/contentLocations';
 import { image } from '@/fields/image';
 import { program } from '@/fields/program';
+import { startDate } from '@/fields/startDate';
+import { endDate } from '@/fields/endDate';
 
 export const Happenings: CollectionConfig = {
   slug: 'happenings',
@@ -48,14 +50,8 @@ export const Happenings: CollectionConfig = {
         { label: 'Social Event', value: 'social' },
       ],
     },
-    {
-      name: 'startDate',
-      type: 'date',
-    },
-    {
-      name: 'endDate',
-      type: 'date',
-    },
+    startDate,
+    endDate,
     program,
     contentLocations,
     config,
