@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload';
 import { admins } from '../access/admins';
 import { anyone } from '../access/anyone';
-import { contentPersons } from '../fields/contentPersons';
+import { contentPersons } from '@/fields/contentPersons';
 import { image } from '../fields/image';
 import { richText } from '@/fields/richText';
 import { contentLocations } from '@/fields/contentLocations';

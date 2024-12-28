@@ -6,7 +6,7 @@ import { admins } from '@/access/admins';
 import { slugField } from '@/fields/slug';
 import { image } from '@/fields/image';
 import { story } from '@/fields/story';
-import { contributors } from '@/fields/contributor';
+import { contributors } from '@/fields/contributors';
 import { license } from '@/fields/license';
 
 import { anyone } from '@/access/anyone';

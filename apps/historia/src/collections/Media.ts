@@ -6,10 +6,11 @@ import { fileURLToPath } from 'url';
 import { anyone } from '@/access/anyone';
 import { admins } from '@/access/admins';
 import { license } from '@/fields/license';
-import { contributors } from '@/fields/contributor';
+import { contributors } from '@/fields/contributors';
 import { contentPersons } from '@/fields/contentPersons';
 import { contentLocations } from '@/fields/contentLocations';
-import { relatedContent } from '@/fields/relatedContent';
+import { name } from '@/fields/name';
+import { description } from '@/fields/description';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -23,21 +24,8 @@ export const Media: CollectionConfig = {
     delete: admins,
   },
   fields: [
-    {
-      name: 'name',
-      type: 'text',
-      required: true,
-      admin: {
-        description: 'The title or name of the media.'
-      },
-    },
-    {
-      name: 'description',
-      type: 'textarea',
-      admin: {
-        description: 'A text description of the media for accessibility and SEO.'
-      },
-    },
+    name,
+    description,
     license,
     contributors,
     {
