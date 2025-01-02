@@ -1,4 +1,3 @@
-import type { Metadata } from 'next';
 import configPromise from '@payload-config';
 import { getPayload } from 'payload';
 import { draftMode } from 'next/headers';
@@ -58,25 +57,25 @@ export default async function Page({ params: paramsPromise }: Args) {
       <LivePreviewListener />
       <article className="pt-16 pb-24">
         <section className="container">
-          {breadcrumbs && breadcrumbs.length > 0 && (
-            <nav aria-label="breadcrumb" className="mb-4">
-              <ol className="breadcrumb flex gap-2">
-                <li className="breadcrumb-item">
-                  <a href="/">Home</a>
-                </li>
-                {breadcrumbs.map((breadcrumb, index) => (
-                  <li key={breadcrumb.id} className="breadcrumb-item flex items-center">
-                    <span className="mx-2">/</span>
-                    {index === breadcrumbs.length - 1 ? (
-                      <span>{breadcrumb.label}</span>
-                    ) : (
-                      <a href={breadcrumb.url}>{breadcrumb.label}</a>
-                    )}
-                  </li>
-                ))}
-              </ol>
-            </nav>
-          )}
+                {breadcrumbs && Array.isArray(breadcrumbs) && breadcrumbs.length > 0 && (
+                  <nav aria-label="breadcrumb" className="mb-4">
+                    <ol className="breadcrumb flex gap-2">
+                      <li className="breadcrumb-item">
+                        <a href="/">Home</a>
+                      </li>
+                      {breadcrumbs.map((breadcrumb, index) => (
+                        <li key={breadcrumb.id || index} className="breadcrumb-item flex items-center">
+                          <span className="mx-2">/</span>
+                          {index === breadcrumbs.length - 1 ? (
+                            <span>{breadcrumb.label}</span>
+                          ) : (
+                            <a href={breadcrumb.url}>{breadcrumb.label}</a>
+                          )}
+                        </li>
+                      ))}
+                    </ol>
+                  </nav>
+                )}
           <Hero title={title} image={image} />
           <RenderBlocks blocks={story} />
         </section>

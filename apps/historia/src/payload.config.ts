@@ -19,6 +19,7 @@ import { Organizations } from './collections/Organizations';
 import { Persons } from './collections/Persons';
 import { Places } from './collections/Places';
 import { Topics } from './collections/Topics';
+import { Projects } from './collections/Projects';
 
 const locales = process.env.CMS_LOCALES ? process.env.CMS_LOCALES.split(',') : ['en'];
 const defaultLocale = process.env.CMS_DEFAULT_LOCALE ?? 'en';
@@ -70,7 +71,7 @@ export default buildConfig({
       connectionString: process.env.CMS_DATABASE_URL || '',
     },
   }),
-  collections: [Articles, Happenings, Licenses, Media, Notes, Organizations, Pages, Persons, Places, Topics, Users],
+  collections: [Articles, Happenings, Licenses, Media, Notes, Organizations, Pages, Persons, Places, Projects, Topics, Users],
   cors: allowedOrigins,
   csrf: allowedOrigins,
   editor: defaultLexical,
