@@ -16,12 +16,12 @@ export const contributors: Field = {
       name: 'role',
       type: 'select',
       options: [
-        { label: 'Artificial Intelligence', value: 'ai' },
         { label: 'Author', value: 'author' },
         { label: 'Editor', value: 'editor' },
         { label: 'Contributor', value: 'contributor' },
         { label: 'Illustrator', value: 'illustrator' },
         { label: 'Photographer', value: 'photographer' },
+        { label: 'Other', value: 'other' },
       ],
       required: true,
       defaultValue: 'author'

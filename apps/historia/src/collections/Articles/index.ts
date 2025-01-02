@@ -74,8 +74,6 @@ export const Articles: CollectionConfig = {
             license,
             contributors,
             topics,
-            contentPersons,
-            contentLocations,
             relatedContent,
           ],
         },
