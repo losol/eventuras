@@ -10,7 +10,7 @@ import { contributors } from '@/fields/contributors';
 import { license } from '@/fields/license';
 
 import { anyone } from '@/access/anyone';
-import { publishedAt } from '@/publishedOn';
+import { publishedAt } from '@/fields/publishedAt';
 import { title } from '@/fields/title';
 
 export const Pages: CollectionConfig<'pages'> = {

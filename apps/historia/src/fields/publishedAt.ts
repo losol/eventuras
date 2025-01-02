@@ -1,4 +1,4 @@
-import { Field } from 'payload/types';
+import { Field } from 'payload';
 
 export const publishedAt: Field = {
   name: 'publishedAt',
@@ -8,4 +8,5 @@ export const publishedAt: Field = {
       pickerAppearance: 'dayAndTime',
     },
   },
+  defaultValue: () => new Date(),
 };
