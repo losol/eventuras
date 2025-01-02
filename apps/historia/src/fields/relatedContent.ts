@@ -1,23 +1,19 @@
-
-import { Field } from 'payload';
+import { Field, Where } from 'payload';
 
 export const relatedContent: Field = {
   name: 'relatedContent',
   type: 'relationship',
-  relationTo: ['articles', 'notes', 'pages'],
+  relationTo: ['articles', 'notes', 'pages', 'projects'],
   hasMany: true,
   filterOptions: ({ id, relationTo }) => {
     // Prevent self-referencing if needed
-    if (relationTo === 'articles' || relationTo === 'pages' || relationTo === 'notes') {
+    if (relationTo === 'articles' || relationTo === 'pages' || relationTo === 'notes' || relationTo === 'projects') {
       return {
         id: {
           not_in: [id],
         },
-      };
+      } as Where;
     }
-    return {};
-  },
-  admin: {
-    description: 'Relate to persons, places, articles, notes, and pages.',
+    return true;
   },
 };

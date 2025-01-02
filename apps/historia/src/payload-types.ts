@@ -32,6 +32,7 @@ export interface Config {
     pages: Page;
     persons: Person;
     places: Place;
+    projects: Project;
     topics: Topic;
     users: User;
     redirects: Redirect;
@@ -53,6 +54,7 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     persons: PersonsSelect<false> | PersonsSelect<true>;
     places: PlacesSelect<false> | PlacesSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
     topics: TopicsSelect<false> | TopicsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -131,9 +133,6 @@ export interface Article {
    * The location depicted or represented in the media.
    */
   contentLocations?: (string | Place)[] | null;
-  /**
-   * Relate to persons, places, articles, notes, and pages.
-   */
   relatedContent?:
     | (
         | {
@@ -148,6 +147,10 @@ export interface Article {
             relationTo: 'pages';
             value: string | Page;
           }
+        | {
+            relationTo: 'projects';
+            value: string | Project;
+          }
       )[]
     | null;
   updatedAt: string;
@@ -160,13 +163,7 @@ export interface Article {
  */
 export interface Media {
   id: string;
-  /**
-   * The title or name of the media.
-   */
-  name: string;
-  /**
-   * A text description of the media for accessibility and SEO.
-   */
+  name?: string | null;
   description?: string | null;
   /**
    * The license governing the use of this media.
@@ -409,14 +406,26 @@ export interface Note {
    * What is this about?.
    */
   topics?: (string | Topic)[] | null;
-  /**
-   * The people in the content.
-   */
-  contentPersons?: (string | Person)[] | null;
-  /**
-   * The location depicted or represented in the media.
-   */
-  contentLocations?: (string | Place)[] | null;
+  relatedContent?:
+    | (
+        | {
+            relationTo: 'articles';
+            value: string | Article;
+          }
+        | {
+            relationTo: 'notes';
+            value: string | Note;
+          }
+        | {
+            relationTo: 'pages';
+            value: string | Page;
+          }
+        | {
+            relationTo: 'projects';
+            value: string | Project;
+          }
+      )[]
+    | null;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
@@ -444,7 +453,7 @@ export interface Page {
    */
   license?: (string | null) | License;
   contributors?: Contributor;
-  publishedAt: string;
+  publishedAt?: string | null;
   parent?: (string | null) | Page;
   breadcrumbs?:
     | {
@@ -454,6 +463,64 @@ export interface Page {
         id?: string | null;
       }[]
     | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: string;
+  /**
+   * The title of the entry.
+   */
+  title: string;
+  description?: string | null;
+  image?: {
+    media?: (string | null) | Media;
+    caption?: string | null;
+  };
+  story?: ContentBlock[] | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  /**
+   * Use this field to define a list of partners, assign their roles, and add any necessary details.
+   */
+  partners?:
+    | {
+        entity:
+          | {
+              relationTo: 'persons';
+              value: string | Person;
+            }
+          | {
+              relationTo: 'organizations';
+              value: string | Organization;
+            };
+        role?: string | null;
+        details?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  publishedAt?: string | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -854,6 +921,10 @@ export interface PayloadLockedDocument {
         value: string | Place;
       } | null)
     | ({
+        relationTo: 'projects';
+        value: string | Project;
+      } | null)
+    | ({
         relationTo: 'topics';
         value: string | Topic;
       } | null)
@@ -1107,8 +1178,7 @@ export interface NotesSelect<T extends boolean = true> {
       };
   richText?: T;
   topics?: T;
-  contentPersons?: T;
-  contentLocations?: T;
+  relatedContent?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;
@@ -1215,6 +1285,41 @@ export interface PlacesSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  image?:
+    | T
+    | {
+        media?: T;
+        caption?: T;
+      };
+  story?:
+    | T
+    | {
+        content?: T | ContentBlockSelect<T>;
+      };
+  startDate?: T;
+  endDate?: T;
+  partners?:
+    | T
+    | {
+        entity?: T;
+        role?: T;
+        details?: T;
+        id?: T;
+      };
+  slug?: T;
+  slugLock?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

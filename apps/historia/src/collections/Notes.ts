@@ -1,13 +1,12 @@
 import type { CollectionConfig } from 'payload';
 import { admins } from '../access/admins';
 import { anyone } from '../access/anyone';
-import { contentPersons } from '@/fields/contentPersons';
 import { image } from '../fields/image';
 import { richText } from '@/fields/richText';
-import { contentLocations } from '@/fields/contentLocations';
 import { slugField } from '@/slug';
 import { topics } from '@/fields/topics';
 import { title } from '@/fields/title';
+import { relatedContent } from '@/fields/relatedContent';
 
 export const Notes: CollectionConfig = {
   slug: 'notes',
@@ -45,8 +44,7 @@ export const Notes: CollectionConfig = {
           label: 'Meta',
           fields: [
             topics,
-            contentPersons,
-            contentLocations,
+            relatedContent,
             ...slugField(),
           ]
         }
