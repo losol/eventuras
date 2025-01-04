@@ -14,17 +14,11 @@ export const Contributors: React.FC<ContributorsProps> = ({ contributors }) => {
     <div className="mt-4 text-sm">
       <p>Contributors:</p>
       <ul className="mt-2 space-y-1">
-        {contributors.map(({ person, role, id }, index) => {
-          const name =
-            typeof person === 'object' && person !== null
-              ? person.name
-              : `Person ${person}`;
-          const roleCapitalized = role.charAt(0).toUpperCase() + role.slice(1);
-
+        {contributors.map((contributor, index) => {
           return (
-            <li key={id || index} className="flex items-center gap-2">
-              <span className="font-semibold">{name}</span>
-              <span className="text-gray-400">({roleCapitalized})</span>
+            <li key={contributor.id || index} className="flex items-center gap-2">
+              <span className="font-semibold">{contributor.person.toString()}</span>
+              <span className="text-gray-400">({contributor.role})</span>
             </li>
           );
         })}
