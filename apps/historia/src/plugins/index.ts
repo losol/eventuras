@@ -16,7 +16,7 @@ import { Article, Note, Page } from '@/payload-types';
 import { getServerSideURL } from '@/utilities/getURL';
 
 const generateTitle: GenerateTitle<Article | Note | Page> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Payload Website Template` : 'Payload Website Template';
+  return doc?.title ? `${doc.title} | Historia` : 'Historia';
 };
 
 const generateURL: GenerateURL<Article | Note | Page> = ({ doc }) => {
