@@ -13,7 +13,7 @@
 export type Contributors =
   | {
       person: string | Person;
-      role: 'author' | 'editor' | 'contributor' | 'illustrator' | 'photographer' | 'other';
+      role?: string | null;
       id?: string | null;
     }[]
   | null;

@@ -14,17 +14,8 @@ export const contributors: Field = {
     },
     {
       name: 'role',
-      type: 'select',
-      options: [
-        { label: 'Author', value: 'author' },
-        { label: 'Editor', value: 'editor' },
-        { label: 'Contributor', value: 'contributor' },
-        { label: 'Illustrator', value: 'illustrator' },
-        { label: 'Photographer', value: 'photographer' },
-        { label: 'Other', value: 'other' },
-      ],
-      required: true,
-      defaultValue: 'author'
+      type: 'text',
+      required: false,
     }
   ]
 };
