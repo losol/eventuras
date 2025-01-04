@@ -139,26 +139,31 @@ export const FormBlock: React.FC<
           {!hasSubmitted && (
             <form id={formID} onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-4 last:mb-0">
-                {formFromProps &&
-                  formFromProps.fields &&
-                  formFromProps.fields?.map((field, index) => {
-                    const Field: React.FC<any> = fields?.[field.blockType]
-                    if (Field) {
-                      return (
-                        <div className="mb-6 last:mb-0" key={index}>
-                          <Field
-                            form={formFromProps}
-                            {...field}
-                            {...formMethods}
-                            control={control}
-                            errors={errors}
-                            register={register}
-                          />
-                        </div>
-                      )
-                    }
-                    return null
-                  })}
+              {formFromProps &&
+              formFromProps.fields &&
+              formFromProps.fields?.map((field, index) => {
+                const blockType = field.blockType as keyof typeof fields;
+
+                if (!fields[blockType]) {
+                  console.error(`Unsupported block type: ${field.blockType}`);
+                  return null;
+                }
+
+                const Field: React.FC<any> = fields[blockType];
+
+                return (
+                  <div className="mb-6 last:mb-0" key={index}>
+                    <Field
+                      form={formFromProps}
+                      {...field}
+                      {...formMethods}
+                      control={control}
+                      errors={errors}
+                      register={register}
+                    />
+                  </div>
+                );
+              })}
               </div>
 
               <Button form={formID} type="submit" variant="default">

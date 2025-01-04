@@ -44,7 +44,7 @@ export const Users: CollectionConfig = {
     {
       name: 'email_verified', type: 'checkbox', access: {
         create: adminsFieldLevel,
-        read: authenticated,
+        read: adminsFieldLevel,
         update: adminsFieldLevel
       }
     },
@@ -58,7 +58,7 @@ export const Users: CollectionConfig = {
       type: 'checkbox',
       access: {
         create: adminsFieldLevel,
-        read: authenticated,
+        read: adminsFieldLevel,
         update: adminsFieldLevel,
       },
     },

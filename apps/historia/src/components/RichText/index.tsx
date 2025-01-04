@@ -1,53 +1,58 @@
-import { MediaBlock } from '@/blocks/MediaBlock/Component'
-import { DefaultNodeTypes, SerializedBlockNode } from '@payloadcms/richtext-lexical'
-import { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
+import React from 'react';
+import { DefaultNodeTypes, SerializedBlockNode } from '@payloadcms/richtext-lexical';
+import { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical';
 import {
   JSXConvertersFunction,
   RichText as RichTextWithoutBlocks,
-} from '@payloadcms/richtext-lexical/react'
+} from '@payloadcms/richtext-lexical/react';
 
-import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component'
+// import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component';
+// import { BannerBlock, BannerBlockProps } from '@/blocks/Banner/Component';
+// import { CallToActionBlock, CallToActionBlockProps } from '@/blocks/CallToAction/Component';
+// import { MediaBlock, MediaBlockProps } from '@/blocks/MediaBlock/Component';
+import { cn } from '@/utilities/cn';
 
-import type {
-  BannerBlock as BannerBlockProps,
-  CallToActionBlock as CTABlockProps,
-  MediaBlock as MediaBlockProps,
-} from '@/payload-types'
-import { BannerBlock } from '@/blocks/Banner/Component'
-import { CallToActionBlock } from '@/blocks/CallToAction/Component'
-import { cn } from '@/utilities/cn'
 
 type NodeTypes =
   | DefaultNodeTypes
-  | SerializedBlockNode<CTABlockProps | MediaBlockProps | BannerBlockProps | CodeBlockProps>
+  // | SerializedBlockNode<CodeBlockProps>
+  // | SerializedBlockNode<BannerBlockProps>
+  // | SerializedBlockNode<MediaBlockProps>
+  // | SerializedBlockNode<CallToActionBlockProps>;
 
-const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => ({
+  const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => ({
   ...defaultConverters,
   blocks: {
-    banner: ({ node }) => <BannerBlock className="col-start-2 mb-4" {...node.fields} />,
-    mediaBlock: ({ node }) => (
-      <MediaBlock
-        className="col-start-1 col-span-3"
-        imgClassName="m-0"
-        {...node.fields}
-        captionClassName="mx-auto max-w-[48rem]"
-        enableGutter={false}
-        disableInnerContainer={true}
-      />
-    ),
-    code: ({ node }) => <CodeBlock className="col-start-2" {...node.fields} />,
-    cta: ({ node }) => <CallToActionBlock {...node.fields} />,
+    // banner: ({ node }: { node: SerializedBlockNode<BannerBlockProps> }) => (
+    //   <BannerBlock className="col-start-2 mb-4" {...node.fields} />
+    // ),
+    // cta: ({ node }: { node: SerializedBlockNode<CallToActionBlockProps> }) => (
+    //   <CallToActionBlock {...node.fields} />
+    // ),
+    // mediaBlock: ({ node }: { node: SerializedBlockNode<MediaBlockProps> }) => (
+    //   <MediaBlock
+    //     className="col-start-1 col-span-3"
+    //     imgClassName="m-0"
+    //     {...node.fields}
+    //     captionClassName="mx-auto max-w-[48rem]"
+    //     enableGutter={false}
+    //     disableInnerContainer={true}
+    //   />
+    // ),
+    // code: ({ node }: { node: SerializedBlockNode<CodeBlockProps> }) => (
+    //   <CodeBlock className="col-start-2" {...node.fields} />
+    // ),
   },
-})
+});
 
 type Props = {
-  data: SerializedEditorState
-  enableGutter?: boolean
-  enableProse?: boolean
-} & React.HTMLAttributes<HTMLDivElement>
+  data: SerializedEditorState;
+  enableGutter?: boolean;
+  enableProse?: boolean;
+} & React.HTMLAttributes<HTMLDivElement>;
 
 export default function RichText(props: Props) {
-  const { className, enableProse = true, enableGutter = true, ...rest } = props
+  const { className, enableProse = true, enableGutter = true, ...rest } = props;
   return (
     <RichTextWithoutBlocks
       converters={jsxConverters}
@@ -61,5 +66,5 @@ export default function RichText(props: Props) {
       )}
       {...rest}
     />
-  )
+  );
 }

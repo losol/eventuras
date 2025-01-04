@@ -1,6 +1,6 @@
 'use client'
 
-import type { PayloadAdminBarProps } from 'payload-admin-bar'
+import type { PayloadAdminBarProps, PayloadMeUser } from 'payload-admin-bar'
 
 import { cn } from '@/utilities/cn'
 import { useSelectedLayoutSegments } from 'next/navigation'
@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation'
 import './index.scss'
 
 import { getClientSideURL } from '@/utilities/getURL'
+import { User } from '@/payload-types';
 
 const baseClass = 'admin-bar'
 
@@ -37,11 +38,17 @@ export const AdminBar: React.FC<{
   const { adminBarProps } = props || {}
   const segments = useSelectedLayoutSegments()
   const [show, setShow] = useState(false)
-  const collection = collectionLabels?.[segments?.[1]] ? segments?.[1] : 'pages'
+  const collectionKeys = ['pages', 'articles', 'projects'] as const;
+  type CollectionKey = typeof collectionKeys[number];
+
+  const collection = collectionKeys.includes(segments?.[1] as CollectionKey)
+    ? (segments?.[1] as CollectionKey)
+    : 'pages';
+
   const router = useRouter()
 
-  const onAuthChange = React.useCallback((user) => {
-    setShow(user?.id)
+  const onAuthChange = React.useCallback((user: PayloadMeUser) => {
+    setShow(!!user?.id)
   }, [])
 
   return (

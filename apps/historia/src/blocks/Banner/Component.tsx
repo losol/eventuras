@@ -1,14 +1,14 @@
-import type { BannerBlock as BannerBlockProps } from 'src/payload-types'
+import type { BannerBlock as BannerBlockPropsFromTypes } from 'src/payload-types';
 
-import { cn } from 'src/utilities/cn'
-import React from 'react'
-import RichText from '@/components/RichText'
+import { cn } from 'src/utilities/cn';
+import React from 'react';
+import RichText from '@/components/RichText';
 
-type Props = {
-  className?: string
-} & BannerBlockProps
+export type BannerBlockProps = {
+  className?: string;
+} & BannerBlockPropsFromTypes;
 
-export const BannerBlock: React.FC<Props> = ({ className, content, style }) => {
+export const BannerBlock: React.FC<BannerBlockProps> = ({ className, content, style }) => {
   return (
     <div className={cn('mx-auto my-8 w-full', className)}>
       <div
@@ -22,5 +22,5 @@ export const BannerBlock: React.FC<Props> = ({ className, content, style }) => {
         <RichText data={content} enableGutter={false} enableProse={false} />
       </div>
     </div>
-  )
-}
+  );
+};

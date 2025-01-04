@@ -4,11 +4,12 @@ import { cn } from 'src/utilities/cn'
 import React from 'react'
 import RichText from '@/components/RichText'
 
-import type { MediaBlock as MediaBlockProps } from '@/payload-types'
+import type { MediaBlock as MediaBlockPropsFromCollection } from '@/payload-types'
 
 import { Media } from '../../components/Media'
+import { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical';
 
-type Props = MediaBlockProps & {
+export type MediaBlockProps = MediaBlockPropsFromCollection & {
   breakout?: boolean
   captionClassName?: string
   className?: string
@@ -18,7 +19,7 @@ type Props = MediaBlockProps & {
   disableInnerContainer?: boolean
 }
 
-export const MediaBlock: React.FC<Props> = (props) => {
+export const MediaBlock: React.FC<MediaBlockProps> = (props) => {
   const {
     captionClassName,
     className,
@@ -29,8 +30,9 @@ export const MediaBlock: React.FC<Props> = (props) => {
     disableInnerContainer,
   } = props
 
-  let caption
-  if (media && typeof media === 'object') caption = media.caption
+  const caption = (media && typeof media === 'object' && 'caption' in media)
+    ? (media as { caption?: SerializedEditorState }).caption
+    : undefined
 
   return (
     <div
@@ -57,7 +59,7 @@ export const MediaBlock: React.FC<Props> = (props) => {
             captionClassName,
           )}
         >
-          <RichText data={caption} enableGutter={false} />
+          <RichText data={caption as SerializedEditorState} enableGutter={false} />
         </div>
       )}
     </div>

@@ -5,12 +5,12 @@ const defaultLabels = {
   singular: 'Doc',
 }
 
-const defaultCollectionLabels = {
+const defaultCollectionLabels: Record<string, { plural: string; singular: string }> = {
   articles: {
     plural: 'Articles',
     singular: 'Article',
   },
-}
+};
 
 export const PageRange: React.FC<{
   className?: string
@@ -39,7 +39,9 @@ export const PageRange: React.FC<{
   if (totalDocs && indexEnd > totalDocs) indexEnd = totalDocs
 
   const { plural, singular } =
-    collectionLabelsFromProps || defaultCollectionLabels[collection || ''] || defaultLabels || {}
+    collectionLabelsFromProps ||
+    (collection && defaultCollectionLabels[collection] ? defaultCollectionLabels[collection] : defaultLabels) ||
+    defaultLabels;
 
   return (
     <div className={[className, 'font-semibold'].filter(Boolean).join(' ')}>

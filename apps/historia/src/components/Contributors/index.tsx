@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { Contributor } from '@/payload-types';
+import { Contributors as ContributorsType } from '@/payload-types';
 
 interface ContributorsProps {
-  contributors: Contributor[];
+  contributors: ContributorsType | null;
 }
 
 export const Contributors: React.FC<ContributorsProps> = ({ contributors }) => {
@@ -16,7 +16,9 @@ export const Contributors: React.FC<ContributorsProps> = ({ contributors }) => {
       <ul className="mt-2 space-y-1">
         {contributors.map(({ person, role, id }, index) => {
           const name =
-            typeof person === 'object' && person !== null ? person.name : `Person ${person}`;
+            typeof person === 'object' && person !== null
+              ? person.name
+              : `Person ${person}`;
           const roleCapitalized = role.charAt(0).toUpperCase() + role.slice(1);
 
           return (

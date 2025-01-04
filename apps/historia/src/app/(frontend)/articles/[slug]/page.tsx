@@ -61,7 +61,7 @@ export default async function Article({ params: paramsPromise }: Args) {
 
       <div className="flex flex-col items-center gap-4 pt-8">
         <section className="container" id="article-story">
-          <RenderBlocks blocks={article.story} />
+          {article.story ? <RenderBlocks blocks={article.story} /> : null}
         </section>
       </div>
       </article>

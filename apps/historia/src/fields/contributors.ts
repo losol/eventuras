@@ -3,7 +3,7 @@ import { Field } from 'payload';
 export const contributors: Field = {
   name: 'contributors',
   label: 'Contributors',
-  interfaceName: 'Contributor',
+  interfaceName: 'Contributors',
   type: 'array',
   fields: [
     {

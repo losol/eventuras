@@ -1,4 +1,3 @@
-import { cn } from 'src/utilities/cn'
 import React, { Fragment } from 'react'
 
 import type { Page } from '@/payload-types'
@@ -9,7 +8,10 @@ import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 
-const blockComponents = {
+// Extend block components to include `disableInnerContainer`
+const blockComponents: {
+  [key: string]: React.FC<any & { disableInnerContainer?: boolean }>
+} = {
   archive: ArchiveBlock,
   content: ContentBlock,
   cta: CallToActionBlock,
@@ -17,27 +19,33 @@ const blockComponents = {
   mediaBlock: MediaBlock,
 }
 
+// Define the type for block keys
+type BlockType = keyof typeof blockComponents
+
+// Define the type for individual blocks
+type Block = {
+  blockType: BlockType
+  disableInnerContainer?: boolean // Include this as an optional property
+} & Record<string, any>
+
 export const RenderBlocks: React.FC<{
-  blocks: Page['story'][0][]
+  blocks: Block[] // Enforce that blocks is an array of Block
 }> = (props) => {
   const { blocks } = props
 
-  const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
-
-  if (hasBlocks) {
+  if (blocks && blocks.length > 0) {
     return (
       <Fragment>
         {blocks.map((block, index) => {
           const { blockType } = block
 
-          if (blockType && blockType in blockComponents) {
-            const Block = blockComponents[blockType]
+          if (blockType in blockComponents) {
+            const BlockComponent = blockComponents[blockType as BlockType]
 
-            if (Block) {
+            if (BlockComponent) {
               return (
                 <div className="my-16" key={index}>
-                  {/* @ts-expect-error there may be some mismatch between the expected types here */}
-                  <Block {...block} disableInnerContainer />
+                  <BlockComponent {...block} disableInnerContainer={true} />
                 </div>
               )
             }
