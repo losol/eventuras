@@ -55,11 +55,13 @@ export default async function Page({ params: paramsPromise }: Args) {
     <>
       <PageClient />
       <LivePreviewListener />
+
+      {/* Breadcrumbs */}
+
       <article className="pt-16 pb-24">
-        <section className="container">
           {breadcrumbs && Array.isArray(breadcrumbs) && breadcrumbs.length > 0 && (
-            <nav aria-label="breadcrumb" className="mb-4">
-              <ol className="breadcrumb flex gap-2">
+            <nav aria-label="breadcrumb" className="container mb-4 ">
+              <ol className="breadcrumb flex">
                 <li className="breadcrumb-item">
                   <a href="/">Home</a>
                 </li>
@@ -78,7 +80,6 @@ export default async function Page({ params: paramsPromise }: Args) {
           )}
           <Hero title={title} image={image} />
           {story && story.length > 0 && <RenderBlocks blocks={story} />}
-        </section>
       </article>
     </>
   );
