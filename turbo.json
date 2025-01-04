@@ -18,6 +18,17 @@
     "CI",
     "TEST_BASE_URL"
   ],
+  "globalPassThroughEnv": [
+    "CMS_SECRET",
+    "CMS_SERVER_URL",
+    "CMS_ALLOWED_ORIGINS",
+    "CMS_DATABASE_URL",
+    "CMS_MEDIA_S3_ACCESS_KEY_ID",
+    "CMS_MEDIA_S3_SECRET_ACCESS_KEY",
+    "CMS_MEDIA_S3_ENDPOINT",
+    "CMS_MEDIA_S3_REGION",
+    "CMS_MEDIA_S3_BUCKET"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
