@@ -53,17 +53,17 @@ export const SlugComponent: React.FC<SlugComponentProps> = ({
   }, [targetFieldValue, checkboxValue, setValue, value])
 
   const handleLock = useCallback(
-    (e) => {
-      e.preventDefault()
+    (e: React.MouseEvent<Element>) => {
+      e.preventDefault();
 
       dispatchFields({
         type: 'UPDATE',
         path: checkboxFieldPath,
         value: !checkboxValue,
-      })
+      });
     },
     [checkboxValue, checkboxFieldPath, dispatchFields],
-  )
+  );
 
   const readOnly = readOnlyFromProps || checkboxValue
 

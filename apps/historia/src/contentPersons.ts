@@ -1,4 +1,4 @@
-import { Field } from 'payload/types';
+import { Field } from 'payload';
 
 export const contentPersons: Field = {
   name: 'contentPersons',

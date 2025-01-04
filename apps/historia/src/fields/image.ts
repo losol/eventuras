@@ -4,6 +4,7 @@ export const image: Field = {
 
   name: 'image',
   type: 'group',
+  interfaceName: 'Image',
   fields: [
     {
       name: 'media',

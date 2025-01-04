@@ -25,31 +25,31 @@ export async function generateStaticParams() {
   });
 
   return pages.docs.map((page) => ({
-    slug: [page.slug]
+    slug: page.slug ? [page.slug] : undefined,
   }));
 }
 
 type Args = {
-  params: {
+  params: Promise<{
     slug?: string[];
-  };
+  }>;
 };
 
 export default async function Page({ params: paramsPromise }: Args) {
-  const { isEnabled: draft } = await draftMode();
+  const draftModeResult = await draftMode();
+  const draft = draftModeResult.isEnabled;
   const params = await paramsPromise;
 
   // Get the last segment of the URL or 'home' for root
   const currentSlug = params.slug?.length ? params.slug[params.slug.length - 1] : 'home';
 
-  const page = await queryPageBySlug({ slug: currentSlug });
+  const page = await queryPageBySlug({ slug: currentSlug, draft });
 
   if (!page) {
     notFound();
   }
 
   const { title, image, breadcrumbs, story } = page;
-  console.log('page', page.breadcrumbs);
 
   return (
     <>
@@ -57,36 +57,34 @@ export default async function Page({ params: paramsPromise }: Args) {
       <LivePreviewListener />
       <article className="pt-16 pb-24">
         <section className="container">
-                {breadcrumbs && Array.isArray(breadcrumbs) && breadcrumbs.length > 0 && (
-                  <nav aria-label="breadcrumb" className="mb-4">
-                    <ol className="breadcrumb flex gap-2">
-                      <li className="breadcrumb-item">
-                        <a href="/">Home</a>
-                      </li>
-                      {breadcrumbs.map((breadcrumb, index) => (
-                        <li key={breadcrumb.id || index} className="breadcrumb-item flex items-center">
-                          <span className="mx-2">/</span>
-                          {index === breadcrumbs.length - 1 ? (
-                            <span>{breadcrumb.label}</span>
-                          ) : (
-                            <a href={breadcrumb.url}>{breadcrumb.label}</a>
-                          )}
-                        </li>
-                      ))}
-                    </ol>
-                  </nav>
-                )}
+          {breadcrumbs && Array.isArray(breadcrumbs) && breadcrumbs.length > 0 && (
+            <nav aria-label="breadcrumb" className="mb-4">
+              <ol className="breadcrumb flex gap-2">
+                <li className="breadcrumb-item">
+                  <a href="/">Home</a>
+                </li>
+                {breadcrumbs.map((breadcrumb, index) => (
+                  <li key={breadcrumb.id || index} className="breadcrumb-item flex items-center">
+                    <span className="mx-2">/</span>
+                    {index === breadcrumbs.length - 1 ? (
+                      <span>{breadcrumb.label}</span>
+                    ) : (
+                      <a href={breadcrumb.url!}>{breadcrumb.label}</a>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )}
           <Hero title={title} image={image} />
-          <RenderBlocks blocks={story} />
+          {story && story.length > 0 && <RenderBlocks blocks={story} />}
         </section>
       </article>
     </>
   );
 }
 
-const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
-  const { isEnabled: draft } = await draftMode();
-
+const queryPageBySlug = cache(async ({ slug, draft }: { slug: string; draft: boolean }) => {
   const payload = await getPayload({ config: configPromise });
 
   const result = await payload.find({
@@ -97,8 +95,8 @@ const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
     overrideAccess: draft,
     where: {
       slug: {
-        equals: slug
-      }
+        equals: slug,
+      },
     },
     select: {
       title: true,

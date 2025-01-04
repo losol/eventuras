@@ -1,28 +1,18 @@
-'use client'
+'use client';
 
-import { useHeaderTheme } from '@/providers/HeaderTheme'
-import React, { useEffect } from 'react'
+import { useHeaderTheme } from '@/providers/HeaderTheme';
+import React, { useEffect } from 'react';
 
-import { Media } from '@/components/Media'
-import { Contributor } from '@/payload-types';
-import { Contributors } from '@/components/Contributors';
+import { Contributors, Image } from '@/payload-types';
+import { Contributors as ContributersComponent } from '@/components/Contributors';
 
 interface HeroProps {
-  title?: string | null
-  lead?: string | null
-  image?: {
-    media?: {
-      sizes?: {
-        standard?: {
-          url: string;
-        };
-      };
-    };
-    caption?: string | null;
-  } | null;
-  contributors?: Contributor[]
-  publishedAt?: string | null
-  topics?: { title?: string }[]
+  title?: string | null;
+  lead?: string | null;
+  image?: Image | null;
+  contributors?: Contributors;
+  publishedAt?: string | null;
+  topics?: { title?: string }[];
 }
 
 export const Hero: React.FC<HeroProps> = ({
@@ -33,17 +23,20 @@ export const Hero: React.FC<HeroProps> = ({
   publishedAt,
   topics,
 }) => {
-  const { setHeaderTheme } = useHeaderTheme()
+  const { setHeaderTheme } = useHeaderTheme();
 
   useEffect(() => {
-    setHeaderTheme('dark')
-  }, [setHeaderTheme])
+    setHeaderTheme('dark');
+  }, [setHeaderTheme]);
 
-  const standardImageUrl = image?.media?.sizes?.standard?.url;
+const standardImageUrl =
+  typeof image?.media === 'object' && image.media && 'sizes' in image.media
+    ? image.media.sizes?.standard?.url
+    : undefined;
   const caption = image?.caption;
 
   return (
-    <section className='container'>
+    <section className="container">
       {title && <h1 className="text-4xl md:text-5xl font-bold mb-4">{title}</h1>}
       {lead && <p className="text-lg mb-6">{lead}</p>}
 
@@ -60,10 +53,10 @@ export const Hero: React.FC<HeroProps> = ({
         </div>
       )}
 
-      {contributors && <Contributors contributors={contributors} />}
+      {contributors && <ContributersComponent contributors={contributors} />}
       {publishedAt && (
         <p className="mt-2 text-sm">Published: {new Date(publishedAt).toLocaleDateString()}</p>
       )}
     </section>
-  )
-}
+  );
+};

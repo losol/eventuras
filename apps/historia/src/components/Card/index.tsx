@@ -8,7 +8,7 @@ import type { Article } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 
-export type CardArticleData = Pick<Article, 'slug' | 'topics' | 'meta' | 'title'>
+export type CardArticleData = Pick<Article, 'slug' | 'topics' | 'title' | 'lead' | 'image'>
 
 export const Card: React.FC<{
   alignItems?: 'center'
@@ -21,12 +21,11 @@ export const Card: React.FC<{
   const { card, link } = useClickableCard({})
   const { className, doc, relationTo, showTopics, title: titleFromProps } = props
 
-  const { slug, topics, meta, title } = doc || {}
-  const { description, image: metaImage } = meta || {}
+  const { slug, topics, title, lead, image } = doc || {}
 
   const hasTopics = topics && Array.isArray(topics) && topics.length > 0
   const titleToUse = titleFromProps || title
-  const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
+  const sanitizedDescription = lead?.replace(/\s/g, ' ') // replace non-breaking space with white space
   const href = `/${relationTo}/${slug}`
 
   return (
@@ -38,8 +37,8 @@ export const Card: React.FC<{
       ref={card.ref}
     >
       <div className="relative w-full ">
-        {!metaImage && <div className="">No image</div>}
-        {metaImage && typeof metaImage !== 'string' && <Media resource={metaImage} size="33vw" />}
+        {!image && <div className="">No image</div>}
+        {image && typeof image !== 'string' && <Media resource={image.media!} size="33vw" />}
       </div>
       <div className="p-4">
         {showTopics && hasTopics && (
@@ -77,7 +76,7 @@ export const Card: React.FC<{
             </h3>
           </div>
         )}
-        {description && <div className="mt-2">{description && <p>{sanitizedDescription}</p>}</div>}
+        {lead && <div className="mt-2">{lead && <p>{sanitizedDescription}</p>}</div>}
       </div>
     </article>
   )
