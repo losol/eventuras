@@ -36,9 +36,9 @@ const standardImageUrl =
   const caption = image?.caption;
 
   return (
-    <section className="container">
+    <section className="container hero">
       {title && <h1 className="text-4xl md:text-5xl font-bold mb-4">{title}</h1>}
-      {lead && <p className="text-lg mb-6">{lead}</p>}
+      {lead && <p className="text-lg mb-6 lead">{lead}</p>}
 
       {standardImageUrl && (
         <div className="relative">
