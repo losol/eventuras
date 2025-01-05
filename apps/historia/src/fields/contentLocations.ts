@@ -5,7 +5,4 @@ export const contentLocations: Field = {
   type: 'relationship',
   relationTo: 'places',
   hasMany: true,
-  admin: {
-    description: 'The location depicted or represented in the media.'
-  },
 };

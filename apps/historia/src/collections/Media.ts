@@ -11,6 +11,8 @@ import { contentPersons } from '@/fields/contentPersons';
 import { contentLocations } from '@/fields/contentLocations';
 import { name } from '@/fields/name';
 import { description } from '@/fields/description';
+import { relatedContent } from '@/fields/relatedContent';
+import { title } from '@/fields/title';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -24,27 +26,18 @@ export const Media: CollectionConfig = {
     delete: admins,
   },
   fields: [
-    name,
+    title,
     description,
     license,
     contributors,
     {
-      name: 'sourceUrl',
+      name: 'attributionUrl',
       type: 'text',
       admin: {
         description: 'A URL to the original source of the media.'
       },
     },
-    {
-      name: 'publisher',
-      type: 'relationship',
-      relationTo: 'organizations',
-      admin: {
-        description: 'The entity responsible for making the media available'
-      },
-    },
-    contentPersons,
-    contentLocations
+    relatedContent
   ],
   upload: {
     // Upload to the public/media directory in Next.js making them publicly accessible even outside of Payload

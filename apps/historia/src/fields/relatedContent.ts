@@ -1,13 +1,15 @@
 import { Field, Where } from 'payload';
 
+const relatedCollections: CollectionSlug[] = ['articles', 'notes', 'pages', 'persons', 'places', 'projects'];
+
 export const relatedContent: Field = {
   name: 'relatedContent',
   type: 'relationship',
-  relationTo: ['articles', 'notes', 'pages', 'projects'],
+  relationTo: relatedCollections,
   hasMany: true,
   filterOptions: ({ id, relationTo }) => {
-    // Prevent self-referencing if needed
-    if (relationTo === 'articles' || relationTo === 'pages' || relationTo === 'notes' || relationTo === 'projects') {
+    // Prevent self-referencing
+    if (relatedCollections.includes(relationTo)) {
       return {
         id: {
           not_in: [id],
