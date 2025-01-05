@@ -109,7 +109,7 @@ export interface Article {
   title: string;
   image?: Image;
   lead?: string | null;
-  story?: (ArchiveBlock | BannerBlock | CallToActionBlock | CodeBlock | ContentBlock | MediaBlock)[] | null;
+  story?: ContentBlock[] | null;
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -270,195 +270,10 @@ export interface Person {
   middle_name?: string | null;
   family_name?: string | null;
   image?: Image;
-  /**
-   * A brief description of the person.
-   */
-  description?: string | null;
-  /**
-   * The job title of the person.
-   */
-  jobTitle?: string | null;
-  /**
-   * The employer of the person.
-   */
-  employer?: string | null;
-  story?: (ArchiveBlock | BannerBlock | CallToActionBlock | CodeBlock | ContentBlock | MediaBlock)[] | null;
+  bio?: string | null;
+  story?: ContentBlock[] | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ArchiveBlock".
- */
-export interface ArchiveBlock {
-  introContent?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  populateBy?: ('collection' | 'selection') | null;
-  relationTo?: 'articles' | null;
-  topics?: (string | Topic)[] | null;
-  limit?: number | null;
-  selectedDocs?:
-    | {
-        relationTo: 'articles';
-        value: string | Article;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'archive';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "topics".
- */
-export interface Topic {
-  id: string;
-  title: string;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  image?: Image;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BannerBlock".
- */
-export interface BannerBlock {
-  style: 'info' | 'warning' | 'error' | 'success';
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'banner';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CallToActionBlock".
- */
-export interface CallToActionBlock {
-  richText?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  links?:
-    | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?: {
-            relationTo: 'pages';
-            value: string | Page;
-          } | null;
-          url?: string | null;
-          label: string;
-          /**
-           * Choose how the link should be rendered.
-           */
-          appearance?: ('default' | 'outline') | null;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'cta';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pages".
- */
-export interface Page {
-  id: string;
-  /**
-   * The title of the entry.
-   */
-  title: string;
-  image?: Image;
-  story?: (ArchiveBlock | BannerBlock | CallToActionBlock | CodeBlock | ContentBlock | MediaBlock)[] | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  /**
-   * The license governing the use of this media.
-   */
-  license?: (string | null) | License;
-  contributors?: Contributors;
-  publishedAt?: string | null;
-  parent?: (string | null) | Page;
-  breadcrumbs?:
-    | {
-        doc?: (string | null) | Page;
-        url?: string | null;
-        label?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CodeBlock".
- */
-export interface CodeBlock {
-  language?: ('typescript' | 'javascript' | 'css') | null;
-  code: string;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'code';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -483,16 +298,6 @@ export interface ContentBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'content';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MediaBlock".
- */
-export interface MediaBlock {
-  media: string | Media;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'mediaBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -559,6 +364,67 @@ export interface Note {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "topics".
+ */
+export interface Topic {
+  id: string;
+  title: string;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  image?: Image;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: string;
+  /**
+   * The title of the entry.
+   */
+  title: string;
+  image?: Image;
+  story?: ContentBlock[] | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  /**
+   * The license governing the use of this media.
+   */
+  license?: (string | null) | License;
+  contributors?: Contributors;
+  publishedAt?: string | null;
+  parent?: (string | null) | Page;
+  breadcrumbs?:
+    | {
+        doc?: (string | null) | Page;
+        url?: string | null;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "places".
  */
 export interface Place {
@@ -583,7 +449,7 @@ export interface Place {
      */
     longitude?: number | null;
   };
-  story?: (ArchiveBlock | BannerBlock | CallToActionBlock | CodeBlock | ContentBlock | MediaBlock)[] | null;
+  story?: ContentBlock[] | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -599,7 +465,7 @@ export interface Project {
   title: string;
   lead?: string | null;
   image?: Image;
-  story?: (ArchiveBlock | BannerBlock | CallToActionBlock | CodeBlock | ContentBlock | MediaBlock)[] | null;
+  story?: ContentBlock[] | null;
   startDate?: string | null;
   endDate?: string | null;
   /**
@@ -649,19 +515,12 @@ export interface Project {
 export interface Organization {
   id: string;
   name: string;
-  /**
-   * A description of the organization.
-   */
   description?: string | null;
   url?: string | null;
   /**
    * The logo of the organization.
    */
   logo?: (string | null) | Media;
-  /**
-   * The location depicted or represented in the media.
-   */
-  contentLocations?: (string | Place)[] | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -677,7 +536,7 @@ export interface Happening {
   title: string;
   lead?: string | null;
   image?: Image;
-  story?: (ArchiveBlock | BannerBlock | CallToActionBlock | CodeBlock | ContentBlock | MediaBlock)[] | null;
+  story?: ContentBlock[] | null;
   startDate?: string | null;
   endDate?: string | null;
   program?:
@@ -1132,12 +991,7 @@ export interface ArticlesSelect<T extends boolean = true> {
   story?:
     | T
     | {
-        archive?: T | ArchiveBlockSelect<T>;
-        banner?: T | BannerBlockSelect<T>;
-        cta?: T | CallToActionBlockSelect<T>;
-        code?: T | CodeBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
-        mediaBlock?: T | MediaBlockSelect<T>;
       };
   publishedAt?: T;
   slug?: T;
@@ -1160,77 +1014,10 @@ export interface ImageSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ArchiveBlock_select".
- */
-export interface ArchiveBlockSelect<T extends boolean = true> {
-  introContent?: T;
-  populateBy?: T;
-  relationTo?: T;
-  topics?: T;
-  limit?: T;
-  selectedDocs?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BannerBlock_select".
- */
-export interface BannerBlockSelect<T extends boolean = true> {
-  style?: T;
-  content?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CallToActionBlock_select".
- */
-export interface CallToActionBlockSelect<T extends boolean = true> {
-  richText?: T;
-  links?:
-    | T
-    | {
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-              appearance?: T;
-            };
-        id?: T;
-      };
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CodeBlock_select".
- */
-export interface CodeBlockSelect<T extends boolean = true> {
-  language?: T;
-  code?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ContentBlock_select".
  */
 export interface ContentBlockSelect<T extends boolean = true> {
   richText?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MediaBlock_select".
- */
-export interface MediaBlockSelect<T extends boolean = true> {
-  media?: T;
   id?: T;
   blockName?: T;
 }
@@ -1254,12 +1041,7 @@ export interface HappeningsSelect<T extends boolean = true> {
   story?:
     | T
     | {
-        archive?: T | ArchiveBlockSelect<T>;
-        banner?: T | BannerBlockSelect<T>;
-        cta?: T | CallToActionBlockSelect<T>;
-        code?: T | CodeBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
-        mediaBlock?: T | MediaBlockSelect<T>;
       };
   startDate?: T;
   endDate?: T;
@@ -1384,7 +1166,6 @@ export interface OrganizationsSelect<T extends boolean = true> {
   description?: T;
   url?: T;
   logo?: T;
-  contentLocations?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1398,12 +1179,7 @@ export interface PagesSelect<T extends boolean = true> {
   story?:
     | T
     | {
-        archive?: T | ArchiveBlockSelect<T>;
-        banner?: T | BannerBlockSelect<T>;
-        cta?: T | CallToActionBlockSelect<T>;
-        code?: T | CodeBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
-        mediaBlock?: T | MediaBlockSelect<T>;
       };
   slug?: T;
   slugLock?: T;
@@ -1433,18 +1209,11 @@ export interface PersonsSelect<T extends boolean = true> {
   middle_name?: T;
   family_name?: T;
   image?: T | ImageSelect<T>;
-  description?: T;
-  jobTitle?: T;
-  employer?: T;
+  bio?: T;
   story?:
     | T
     | {
-        archive?: T | ArchiveBlockSelect<T>;
-        banner?: T | BannerBlockSelect<T>;
-        cta?: T | CallToActionBlockSelect<T>;
-        code?: T | CodeBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
-        mediaBlock?: T | MediaBlockSelect<T>;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1475,12 +1244,7 @@ export interface PlacesSelect<T extends boolean = true> {
   story?:
     | T
     | {
-        archive?: T | ArchiveBlockSelect<T>;
-        banner?: T | BannerBlockSelect<T>;
-        cta?: T | CallToActionBlockSelect<T>;
-        code?: T | CodeBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
-        mediaBlock?: T | MediaBlockSelect<T>;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1496,12 +1260,7 @@ export interface ProjectsSelect<T extends boolean = true> {
   story?:
     | T
     | {
-        archive?: T | ArchiveBlockSelect<T>;
-        banner?: T | BannerBlockSelect<T>;
-        cta?: T | CallToActionBlockSelect<T>;
-        code?: T | CodeBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
-        mediaBlock?: T | MediaBlockSelect<T>;
       };
   startDate?: T;
   endDate?: T;

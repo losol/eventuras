@@ -1,4 +1,4 @@
-import { Field, Where } from 'payload';
+import { CollectionSlug, Field, Where } from 'payload';
 
 const relatedCollections: CollectionSlug[] = ['articles', 'notes', 'pages', 'persons', 'places', 'projects'];
 

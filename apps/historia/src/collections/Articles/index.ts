@@ -13,8 +13,6 @@ import { topics } from '@/fields/topics';
 import { lead } from '@/fields/lead';
 import { publishedOnly } from '@/access/publishedOnly';
 import { admins } from '@/access/admins';
-import { contentPersons } from '@/fields/contentPersons';
-import { contentLocations } from '@/contentLocations';
 import { relatedContent } from '@/fields/relatedContent';
 import { publishedAt } from '@/fields/publishedAt';
 import { title } from '@/fields/title';
