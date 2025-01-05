@@ -4,6 +4,7 @@ import { anyone } from '../access/anyone';
 import { story } from '../fields/story';
 import { image } from '../fields/image';
 import { summary } from '@/fields/summary';
+import { bio } from '@/fields/bio';
 
 export const Persons: CollectionConfig = {
   slug: 'persons',
@@ -63,7 +64,7 @@ export const Persons: CollectionConfig = {
       ],
     },
     image,
-    summary,
+    bio,
     story,
   ],
 };
