@@ -12,7 +12,7 @@ import { title } from '@/fields/title';
 import { startDate } from '@/fields/startDate';
 import { endDate } from '@/fields/endDate';
 import { partners } from '@/fields/partners';
-import { description } from '@/fields/description';
+import { lead } from '@/fields/lead';
 
 export const Projects: CollectionConfig<'projects'> = {
   slug: 'projects',
@@ -29,7 +29,7 @@ export const Projects: CollectionConfig<'projects'> = {
   },
   fields: [
     title,
-    description,
+    lead,
     image,
     story,
     startDate,

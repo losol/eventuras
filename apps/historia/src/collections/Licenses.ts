@@ -1,6 +1,9 @@
 import type { CollectionConfig } from 'payload';
-import { admins } from '../access/admins';
-import { anyone } from '../access/anyone';
+import { admins } from '@/access/admins';
+import { anyone } from '@/access/anyone';
+import { name } from '@/fields/name';
+import { description } from '@/fields/description';
+import { url } from '@/fields/url';
 
 export const Licenses: CollectionConfig = {
   slug: 'licenses',
@@ -14,11 +17,7 @@ export const Licenses: CollectionConfig = {
     useAsTitle: 'name',
   },
   fields: [
-    {
-      name: 'name',
-      type: 'text',
-      required: true,
-    },
+    name,
     {
       name: 'abbreviation',
       type: 'text',
@@ -26,13 +25,7 @@ export const Licenses: CollectionConfig = {
         description: 'A short abbreviation or acronym for the license (e.g., GPL for GNU Public License)',
       }
     },
-    {
-      name: 'description',
-      type: 'textarea',
-    },
-    {
-      name: 'url',
-      type: 'text',
-    },
+    description,
+    url,
   ],
 };

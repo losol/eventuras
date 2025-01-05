@@ -3,6 +3,7 @@ import { admins } from '../access/admins';
 import { anyone } from '../access/anyone';
 import { story } from '../fields/story';
 import { image } from '../fields/image';
+import { summary } from '@/fields/summary';
 
 export const Persons: CollectionConfig = {
   slug: 'persons',
@@ -15,35 +16,54 @@ export const Persons: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
   },
+  hooks: {
+    beforeChange: [
+      ({ data, originalDoc }) => {
+        if (data.given_name || data.middle_name || data.family_name) {
+          const givenName = data.given_name || originalDoc?.given_name || '';
+          const middleName = data.middle_name || originalDoc?.middle_name || '';
+          const familyName = data.family_name || originalDoc?.family_name || '';
+          data.name = [givenName, middleName, familyName].filter(Boolean).join(' ');
+        }
+        return data;
+      },
+    ],
+  },
   fields: [
     {
       name: 'name',
       type: 'text',
       required: true,
       label: 'Name',
+      admin: {
+        description: 'The name of the person.',
+        hidden: true,
+      },
+    },
+    {
+      label: 'Name',
+      type: 'collapsible',
+      fields: [
+        {
+          name: 'given_name',
+          label: 'Given Name',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'middle_name',
+          label: 'Middle Name',
+          type: 'text',
+        },
+        {
+          name: 'family_name',
+          label: 'Family Name',
+          type: 'text',
+        },
+      ],
     },
     image,
-    {
-      name: 'description',
-      type: 'textarea',
-      admin: {
-        description: 'A brief description of the person.',
-      },
-    },
-    {
-      name: 'jobTitle',
-      type: 'text',
-      admin: {
-        description: 'The job title of the person.',
-      },
-    },
-    {
-      name: 'employer',
-      type: 'text',
-      admin: {
-        description: 'The employer of the person.',
-      },
-    },
+    summary,
     story,
   ],
 };

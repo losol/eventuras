@@ -137,6 +137,14 @@ export interface Article {
             value: string | Page;
           }
         | {
+            relationTo: 'persons';
+            value: string | Person;
+          }
+        | {
+            relationTo: 'places';
+            value: string | Place;
+          }
+        | {
             relationTo: 'projects';
             value: string | Project;
           }
@@ -160,7 +168,10 @@ export interface Image {
  */
 export interface Media {
   id: string;
-  name?: string | null;
+  /**
+   * The title of the entry.
+   */
+  title: string;
   description?: string | null;
   /**
    * The license governing the use of this media.
@@ -170,19 +181,35 @@ export interface Media {
   /**
    * A URL to the original source of the media.
    */
-  sourceUrl?: string | null;
-  /**
-   * The entity responsible for making the media available
-   */
-  publisher?: (string | null) | Organization;
-  /**
-   * The people in the content.
-   */
-  contentPersons?: (string | Person)[] | null;
-  /**
-   * The location depicted or represented in the media.
-   */
-  contentLocations?: (string | Place)[] | null;
+  attributionUrl?: string | null;
+  relatedContent?:
+    | (
+        | {
+            relationTo: 'articles';
+            value: string | Article;
+          }
+        | {
+            relationTo: 'notes';
+            value: string | Note;
+          }
+        | {
+            relationTo: 'pages';
+            value: string | Page;
+          }
+        | {
+            relationTo: 'persons';
+            value: string | Person;
+          }
+        | {
+            relationTo: 'places';
+            value: string | Place;
+          }
+        | {
+            relationTo: 'projects';
+            value: string | Project;
+          }
+      )[]
+    | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -235,7 +262,13 @@ export interface License {
  */
 export interface Person {
   id: string;
+  /**
+   * The name of the person.
+   */
   name: string;
+  given_name: string;
+  middle_name?: string | null;
+  family_name?: string | null;
   image?: Image;
   /**
    * A brief description of the person.
@@ -463,65 +496,6 @@ export interface MediaBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "organizations".
- */
-export interface Organization {
-  id: string;
-  /**
-   * The name of the organization.
-   */
-  name: string;
-  /**
-   * A description of the organization.
-   */
-  description?: string | null;
-  /**
-   * The URL of the organization's official website.
-   */
-  url?: string | null;
-  /**
-   * The logo of the organization.
-   */
-  logo?: (string | null) | Media;
-  /**
-   * The location of the organization.
-   */
-  location?: (string | null) | Place;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "places".
- */
-export interface Place {
-  id: string;
-  name: string;
-  description?: string | null;
-  type: 'building' | 'business' | 'city' | 'hotel' | 'residence' | 'other';
-  postalAddress?: {
-    streetAddress?: string | null;
-    region?: string | null;
-    postalCode?: string | null;
-    city?: string | null;
-    country?: string | null;
-  };
-  geoPoint?: {
-    /**
-     * Latitude must be between -90 and 90
-     */
-    latitude?: number | null;
-    /**
-     * Longitude must be between -180 and 180
-     */
-    longitude?: number | null;
-  };
-  story?: (ArchiveBlock | BannerBlock | CallToActionBlock | CodeBlock | ContentBlock | MediaBlock)[] | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "notes".
  */
 export interface Note {
@@ -565,6 +539,14 @@ export interface Note {
             value: string | Page;
           }
         | {
+            relationTo: 'persons';
+            value: string | Person;
+          }
+        | {
+            relationTo: 'places';
+            value: string | Place;
+          }
+        | {
             relationTo: 'projects';
             value: string | Project;
           }
@@ -572,6 +554,36 @@ export interface Note {
     | null;
   slug?: string | null;
   slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "places".
+ */
+export interface Place {
+  id: string;
+  name: string;
+  description?: string | null;
+  type: 'building' | 'business' | 'city' | 'hotel' | 'residence' | 'other';
+  postalAddress?: {
+    streetAddress?: string | null;
+    region?: string | null;
+    postalCode?: string | null;
+    city?: string | null;
+    country?: string | null;
+  };
+  geoPoint?: {
+    /**
+     * Latitude must be between -90 and 90
+     */
+    latitude?: number | null;
+    /**
+     * Longitude must be between -180 and 180
+     */
+    longitude?: number | null;
+  };
+  story?: (ArchiveBlock | BannerBlock | CallToActionBlock | CodeBlock | ContentBlock | MediaBlock)[] | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -585,7 +597,7 @@ export interface Project {
    * The title of the entry.
    */
   title: string;
-  description?: string | null;
+  lead?: string | null;
   image?: Image;
   story?: (ArchiveBlock | BannerBlock | CallToActionBlock | CodeBlock | ContentBlock | MediaBlock)[] | null;
   startDate?: string | null;
@@ -632,15 +644,40 @@ export interface Project {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organizations".
+ */
+export interface Organization {
+  id: string;
+  name: string;
+  /**
+   * A description of the organization.
+   */
+  description?: string | null;
+  url?: string | null;
+  /**
+   * The logo of the organization.
+   */
+  logo?: (string | null) | Media;
+  /**
+   * The location depicted or represented in the media.
+   */
+  contentLocations?: (string | Place)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "happenings".
  */
 export interface Happening {
   id: string;
-  name: string;
-  description?: string | null;
+  /**
+   * The title of the entry.
+   */
+  title: string;
+  lead?: string | null;
   image?: Image;
   story?: (ArchiveBlock | BannerBlock | CallToActionBlock | CodeBlock | ContentBlock | MediaBlock)[] | null;
-  type?: ('conference' | 'educational' | 'hackathon' | 'social') | null;
   startDate?: string | null;
   endDate?: string | null;
   program?:
@@ -673,10 +710,9 @@ export interface Happening {
           }
       )[]
     | null;
-  /**
-   * The location depicted or represented in the media.
-   */
   contentLocations?: (string | Place)[] | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
   config?:
     | {
         [k: string]: unknown;
@@ -685,13 +721,6 @@ export interface Happening {
     | string
     | number
     | boolean
-    | null;
-  dictionary?:
-    | {
-        key: string;
-        value: string;
-        id?: string | null;
-      }[]
     | null;
   updatedAt: string;
   createdAt: string;
@@ -1219,8 +1248,8 @@ export interface ContributorsSelect<T extends boolean = true> {
  * via the `definition` "happenings_select".
  */
 export interface HappeningsSelect<T extends boolean = true> {
-  name?: T;
-  description?: T;
+  title?: T;
+  lead?: T;
   image?: T | ImageSelect<T>;
   story?:
     | T
@@ -1232,7 +1261,6 @@ export interface HappeningsSelect<T extends boolean = true> {
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
       };
-  type?: T;
   startDate?: T;
   endDate?: T;
   program?:
@@ -1267,14 +1295,9 @@ export interface HappeningsSelect<T extends boolean = true> {
             };
       };
   contentLocations?: T;
+  slug?: T;
+  slugLock?: T;
   config?: T;
-  dictionary?:
-    | T
-    | {
-        key?: T;
-        value?: T;
-        id?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1295,14 +1318,12 @@ export interface LicensesSelect<T extends boolean = true> {
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
-  name?: T;
+  title?: T;
   description?: T;
   license?: T;
   contributors?: T | ContributorsSelect<T>;
-  sourceUrl?: T;
-  publisher?: T;
-  contentPersons?: T;
-  contentLocations?: T;
+  attributionUrl?: T;
+  relatedContent?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -1363,7 +1384,7 @@ export interface OrganizationsSelect<T extends boolean = true> {
   description?: T;
   url?: T;
   logo?: T;
-  location?: T;
+  contentLocations?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1408,6 +1429,9 @@ export interface PagesSelect<T extends boolean = true> {
  */
 export interface PersonsSelect<T extends boolean = true> {
   name?: T;
+  given_name?: T;
+  middle_name?: T;
+  family_name?: T;
   image?: T | ImageSelect<T>;
   description?: T;
   jobTitle?: T;
@@ -1467,7 +1491,7 @@ export interface PlacesSelect<T extends boolean = true> {
  */
 export interface ProjectsSelect<T extends boolean = true> {
   title?: T;
-  description?: T;
+  lead?: T;
   image?: T | ImageSelect<T>;
   story?:
     | T

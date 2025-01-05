@@ -20,36 +20,12 @@ export const Notes: CollectionConfig = {
     delete: admins,
   },
   fields: [
-
-    {
-      type: 'tabs',
-      tabs: [
-        {
-          label: 'Content',
-          fields: [
-            title,
-            {
-              type: 'collapsible',
-              label: 'Image',
-              fields: [
-                image
-              ],
-              admin: {
-                initCollapsed: true,
-              },
-            },
-            richText(),
-          ]
-        }, {
-          label: 'Meta',
-          fields: [
-            topics,
-            relatedContent,
-            ...slugField(),
-          ]
-        }
-      ]
-    }
+    title,
+    image,
+    richText(),
+    topics,
+    relatedContent,
+    ...slugField(),
   ],
 };
 

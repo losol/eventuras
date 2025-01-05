@@ -63,7 +63,6 @@ export const Articles: CollectionConfig = {
             image,
             lead,
             story,
-
           ]
         },
         {
