@@ -3,7 +3,6 @@ import { admins } from '../access/admins';
 import { anyone } from '../access/anyone';
 import { story } from '../fields/story';
 import { image } from '../fields/image';
-import { summary } from '@/fields/summary';
 import { bio } from '@/fields/bio';
 
 export const Persons: CollectionConfig = {
@@ -36,10 +35,6 @@ export const Persons: CollectionConfig = {
       type: 'text',
       required: true,
       label: 'Name',
-      admin: {
-        description: 'The name of the person.',
-        hidden: true,
-      },
     },
     {
       label: 'Name',
