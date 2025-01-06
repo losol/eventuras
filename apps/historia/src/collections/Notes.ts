@@ -3,7 +3,7 @@ import { admins } from '../access/admins';
 import { anyone } from '../access/anyone';
 import { image } from '../fields/image';
 import { richText } from '@/fields/richText';
-import { slugField } from '@/slug';
+import { slugField } from '@/fields/slug';
 import { topics } from '@/fields/topics';
 import { title } from '@/fields/title';
 import { relatedContent } from '@/fields/relatedContent';

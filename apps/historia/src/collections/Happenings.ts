@@ -10,7 +10,7 @@ import { startDate } from '@/fields/startDate';
 import { endDate } from '@/fields/endDate';
 import { title } from '@/fields/title';
 import { lead } from '@/fields/lead';
-import { slugField } from '@/slug';
+import { slugField } from '@/fields/slug';
 
 
 export const Happenings: CollectionConfig = {
