@@ -1,7 +1,5 @@
 import type { CollectionConfig } from 'payload';
 
-import { authenticated } from '../../access/authenticated';
-
 import { admins, adminsFieldLevel } from '../../access/admins';
 import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin';
 
@@ -14,26 +12,31 @@ export const Users: CollectionConfig = {
     update: admins,
   },
   admin: {
-    defaultColumns: ['given_name', 'family_name', 'email'],
+    defaultColumns: ['email'],
     useAsTitle: 'email',
   },
   auth: true,
   fields: [
     {
-      name: 'given_name',
-      label: 'Given Name',
-      type: 'text',
-      required: true,
-    },
-    {
-      name: 'middle_name',
-      label: 'Middle Name',
-      type: 'text'
-    },
-    {
-      name: 'family_name',
-      label: 'Family Name',
-      type: 'text',
+      label: 'Name',
+      type: 'collapsible',
+      fields: [
+        {
+          name: 'given_name',
+          label: 'Given Name',
+          type: 'text',
+        },
+        {
+          name: 'middle_name',
+          label: 'Middle Name',
+          type: 'text',
+        },
+        {
+          name: 'family_name',
+          label: 'Family Name',
+          type: 'text',
+        },
+      ],
     },
     {
       name: 'email',
