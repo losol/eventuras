@@ -3,7 +3,6 @@ import { admins } from '@/access/admins';
 import { anyone } from '@/access/anyone';
 import { name } from '@/fields/name';
 import { url } from '@/fields/url';
-import { contentLocations } from '@/contentLocations';
 import { description } from '@/fields/description';
 
 export const Organizations: CollectionConfig = {
