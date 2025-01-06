@@ -27,17 +27,8 @@ export const Places: CollectionConfig = {
     },
     {
       name: 'type',
-      type: 'select',
-      options: [
-        { label: 'Building', value: 'building' },
-        { label: 'Business', value: 'business' },
-        { label: 'City', value: 'city' },
-        { label: 'Hotel', value: 'hotel' },
-        { label: 'Residence', value: 'residence' },
-        { label: 'Other', value: 'other' }
-      ],
-      defaultValue: 'other',
-      required: true,
+      type: 'text',
+      required: false,
     },
     {
       label: 'Postal Address',
