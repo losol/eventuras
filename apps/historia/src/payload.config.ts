@@ -73,6 +73,7 @@ export default buildConfig({
   localization: {
     locales: locales,
     defaultLocale: defaultLocale,
+    fallback: true,
   },
   plugins: [
     ...plugins // add more plugins to src/plugins/index.ts,

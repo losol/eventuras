@@ -10,7 +10,7 @@ const NEXT_PUBLIC_CMS_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
 const nextConfig = {
   images: {
     remotePatterns: [
-      ...[NEXT_PUBLIC_CMS_URL /* 'https://example.com' */].map((item) => {
+      ...[NEXT_PUBLIC_CMS_URL].map((item) => {
         const url = new URL(item)
 
         return {
@@ -22,6 +22,12 @@ const nextConfig = {
   },
   reactStrictMode: true,
   redirects,
+
+  i18n: {
+    locales: ['en', 'no'],
+    defaultLocale: 'no',
+    localeDetection: false,
+  },
 }
 
 export default withPayload(nextConfig)
