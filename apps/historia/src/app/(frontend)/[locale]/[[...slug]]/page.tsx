@@ -9,6 +9,10 @@ import { Hero } from '@/heros/Hero';
 import PageClient from './page.client';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
 
+// Read locales and default locale from environment variables
+const locales = process.env.CMS_LOCALES?.split(',') || ['en']; // Fallback to ['en'] if not defined
+const defaultLocale = process.env.CMS_DEFAULT_LOCALE || 'en'; // Fallback to 'en'
+
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise });
 
@@ -24,13 +28,18 @@ export async function generateStaticParams() {
     },
   });
 
-  return pages.docs.map((page) => ({
-    slug: page.slug ? [page.slug] : undefined,
-  }));
+  // Generate paths for all locales dynamically
+  return locales.flatMap((locale) =>
+    pages.docs.map((page) => ({
+      locale,
+      slug: page.slug ? [page.slug] : undefined,
+    }))
+  );
 }
 
 type Args = {
   params: Promise<{
+    locale: string;
     slug?: string[];
   }>;
 };
@@ -40,10 +49,14 @@ export default async function Page({ params: paramsPromise }: Args) {
   const draft = draftModeResult.isEnabled;
   const params = await paramsPromise;
 
-  // Get the last segment of the URL or 'home' for root
-  const currentSlug = params.slug?.length ? params.slug[params.slug.length - 1] : 'home';
+  // Extract locale and slug
+  const { locale = defaultLocale, slug } = params;
 
-  const page = await queryPageBySlug({ slug: currentSlug, draft });
+  // Get the last segment of the URL or 'home' for root
+  const currentSlug = slug?.length ? slug[slug.length - 1] : 'home';
+
+  // Fetch the page data for the current locale
+  const page = await queryPageBySlug({ slug: currentSlug, locale, draft });
 
   if (!page) {
     notFound();
@@ -56,36 +69,34 @@ export default async function Page({ params: paramsPromise }: Args) {
       <PageClient />
       <LivePreviewListener />
 
-      {/* Breadcrumbs */}
-
       <article className="pt-16 pb-24">
-          {breadcrumbs && Array.isArray(breadcrumbs) && breadcrumbs.length > 0 && (
-            <nav aria-label="breadcrumb" className="container mb-4 ">
-              <ol className="breadcrumb flex">
-                <li className="breadcrumb-item">
-                  <a href="/">Home</a>
+        {breadcrumbs && Array.isArray(breadcrumbs) && breadcrumbs.length > 0 && (
+          <nav aria-label="breadcrumb" className="container mb-4">
+            <ol className="breadcrumb flex">
+              <li className="breadcrumb-item">
+                <a href="/">Home</a>
+              </li>
+              {breadcrumbs.map((breadcrumb, index) => (
+                <li key={breadcrumb.id || index} className="breadcrumb-item flex items-center">
+                  <span className="mx-2">/</span>
+                  {index === breadcrumbs.length - 1 ? (
+                    <span>{breadcrumb.label}</span>
+                  ) : (
+                    <a href={breadcrumb.url!}>{breadcrumb.label}</a>
+                  )}
                 </li>
-                {breadcrumbs.map((breadcrumb, index) => (
-                  <li key={breadcrumb.id || index} className="breadcrumb-item flex items-center">
-                    <span className="mx-2">/</span>
-                    {index === breadcrumbs.length - 1 ? (
-                      <span>{breadcrumb.label}</span>
-                    ) : (
-                      <a href={breadcrumb.url!}>{breadcrumb.label}</a>
-                    )}
-                  </li>
-                ))}
-              </ol>
-            </nav>
-          )}
-          <Hero title={title} image={image} />
-          {story && story.length > 0 && <RenderBlocks blocks={story} />}
+              ))}
+            </ol>
+          </nav>
+        )}
+        <Hero title={title} image={image} />
+        {story && story.length > 0 && <RenderBlocks blocks={story} />}
       </article>
     </>
   );
 }
 
-const queryPageBySlug = cache(async ({ slug, draft }: { slug: string; draft: boolean }) => {
+const queryPageBySlug = cache(async ({ slug, locale, draft }: { slug: string; locale: string; draft: boolean }) => {
   const payload = await getPayload({ config: configPromise });
 
   const result = await payload.find({
@@ -97,6 +108,9 @@ const queryPageBySlug = cache(async ({ slug, draft }: { slug: string; draft: boo
     where: {
       slug: {
         equals: slug,
+      },
+      locale: {
+        equals: locale, // Add locale filtering
       },
     },
     select: {
