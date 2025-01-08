@@ -29,7 +29,6 @@ export const slugField: Slug = (fieldToUse = 'title', overrides = {}) => {
     name: 'slug',
     type: 'text',
     index: true,
-    localized: true,
     label: 'Slug',
     ...(slugOverrides || {}),
     hooks: {

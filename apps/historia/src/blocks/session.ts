@@ -2,6 +2,7 @@ import type { Block, Field } from 'payload';
 import { richText } from '../fields/richText';
 
 export const Session: Block = {
+  interfaceName: 'SessionBlock',
   fields: [
     {
       name: 'title',

@@ -22,12 +22,6 @@ const nextConfig = {
   },
   reactStrictMode: true,
   redirects,
-
-  i18n: {
-    locales: ['en', 'no'],
-    defaultLocale: 'no',
-    localeDetection: false,
-  },
 }
 
 export default withPayload(nextConfig)

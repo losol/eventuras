@@ -5,6 +5,5 @@ export const story: Field = {
   name: 'story',
   label: 'Story',
   type: 'blocks',
-  localized: true,
   blocks: [Content],
 };
