@@ -9,9 +9,9 @@ import { Hero } from '@/heros/Hero';
 import PageClient from './page.client';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
 
-// Read locales and default locale from environment variables
-const locales = process.env.CMS_LOCALES?.split(',') || ['en']; // Fallback to ['en'] if not defined
-const defaultLocale = process.env.CMS_DEFAULT_LOCALE || 'en'; // Fallback to 'en'
+// Read locales and default locale from environment variables, fallback to en
+const locales = process.env.CMS_LOCALES?.split(',') || ['en'];
+const defaultLocale = process.env.CMS_DEFAULT_LOCALE || 'en';
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise });
@@ -29,12 +29,15 @@ export async function generateStaticParams() {
   });
 
   // Generate paths for all locales dynamically
-  return locales.flatMap((locale) =>
+  const paths = locales.flatMap((locale) =>
     pages.docs.map((page) => ({
       locale,
       slug: page.slug ? [page.slug] : undefined,
     }))
   );
+
+  console.log('Generated paths:', paths);
+  return paths;
 }
 
 type Args = {
@@ -49,6 +52,8 @@ export default async function Page({ params: paramsPromise }: Args) {
   const draft = draftModeResult.isEnabled;
   const params = await paramsPromise;
 
+  console.log('Page params:', params);
+
   // Extract locale and slug
   const { locale = defaultLocale, slug } = params;
 
@@ -57,6 +62,7 @@ export default async function Page({ params: paramsPromise }: Args) {
 
   // Fetch the page data for the current locale
   const page = await queryPageBySlug({ slug: currentSlug, locale, draft });
+
 
   if (!page) {
     notFound();
@@ -105,12 +111,10 @@ const queryPageBySlug = cache(async ({ slug, locale, draft }: { slug: string; lo
     limit: 1,
     pagination: false,
     overrideAccess: draft,
+    locale: locale,
     where: {
       slug: {
         equals: slug,
-      },
-      locale: {
-        equals: locale, // Add locale filtering
       },
     },
     select: {

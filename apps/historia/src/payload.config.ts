@@ -75,6 +75,9 @@ export default buildConfig({
     defaultLocale: defaultLocale,
     fallback: true,
   },
+  i18n: {
+    fallbackLanguage: 'en',
+  },
   plugins: [
     ...plugins // add more plugins to src/plugins/index.ts,
   ],
