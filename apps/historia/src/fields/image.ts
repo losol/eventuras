@@ -17,7 +17,8 @@ export const image: Field = {
       name: 'caption',
       label: 'Caption',
       type: 'text',
-      required: false
+      required: false,
+      localized: true
     }
   ]
 };

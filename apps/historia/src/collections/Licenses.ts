@@ -21,6 +21,7 @@ export const Licenses: CollectionConfig = {
     {
       name: 'abbreviation',
       type: 'text',
+      localized: true,
       admin: {
         description: 'A short abbreviation or acronym for the license (e.g., GPL for GNU Public License)',
       }

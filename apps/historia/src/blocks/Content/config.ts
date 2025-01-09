@@ -13,6 +13,7 @@ export const Content: Block = {
     {
       name: 'richText',
       type: 'richText',
+      localized: true,
       editor: lexicalEditor({
         features: ({ rootFeatures }) => {
           return [

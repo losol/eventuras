@@ -70,7 +70,7 @@ export interface Config {
   };
   globals: {};
   globalsSelect: {};
-  locale: 'nb' | 'en';
+  locale: 'no' | 'en';
   user: User & {
     collection: 'users';
   };
@@ -172,7 +172,21 @@ export interface Media {
    * The title of the entry.
    */
   title: string;
-  description?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   /**
    * The license governing the use of this media.
    */
@@ -251,7 +265,21 @@ export interface License {
    * A short abbreviation or acronym for the license (e.g., GPL for GNU Public License)
    */
   abbreviation?: string | null;
-  description?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   url?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -262,9 +290,6 @@ export interface License {
  */
 export interface Person {
   id: string;
-  /**
-   * The name of the person.
-   */
   name: string;
   given_name: string;
   middle_name?: string | null;
@@ -400,6 +425,7 @@ export interface Page {
    * The title of the entry.
    */
   title: string;
+  lead?: string | null;
   image?: Image;
   story?: ContentBlock[] | null;
   slug?: string | null;
@@ -431,7 +457,7 @@ export interface Place {
   id: string;
   name: string;
   description?: string | null;
-  type: 'building' | 'business' | 'city' | 'hotel' | 'residence' | 'other';
+  type?: string | null;
   postalAddress?: {
     streetAddress?: string | null;
     region?: string | null;
@@ -483,21 +509,6 @@ export interface Project {
               value: string | Organization;
             };
         role?: string | null;
-        details?: {
-          root: {
-            type: string;
-            children: {
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
         id?: string | null;
       }[]
     | null;
@@ -515,7 +526,21 @@ export interface Project {
 export interface Organization {
   id: string;
   name: string;
-  description?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   url?: string | null;
   /**
    * The logo of the organization.
@@ -539,36 +564,7 @@ export interface Happening {
   story?: ContentBlock[] | null;
   startDate?: string | null;
   endDate?: string | null;
-  program?:
-    | (
-        | ContentBlock
-        | {
-            title?: string | null;
-            description?: string | null;
-            startTime?: string | null;
-            endTime?: string | null;
-            schedule?:
-              | {
-                  name?: string | null;
-                  startTime?: string | null;
-                  duration?: number | null;
-                  contributors?:
-                    | {
-                        person?: (string | null) | Person;
-                        role?: string | null;
-                        employer?: string | null;
-                        id?: string | null;
-                      }[]
-                    | null;
-                  id?: string | null;
-                }[]
-              | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'session';
-          }
-      )[]
-    | null;
+  program?: (ContentBlock | SessionBlock)[] | null;
   contentLocations?: (string | Place)[] | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -586,11 +582,55 @@ export interface Happening {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SessionBlock".
+ */
+export interface SessionBlock {
+  /**
+   * The title of the entry.
+   */
+  title: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  startTime?: string | null;
+  endTime?: string | null;
+  schedule?:
+    | {
+        title?: string | null;
+        duration?: number | null;
+        contributors?:
+          | {
+              person?: (string | null) | Person;
+              text?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'session';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
   id: string;
-  given_name: string;
+  given_name?: string | null;
   middle_name?: string | null;
   family_name?: string | null;
   email_verified?: boolean | null;
@@ -1049,32 +1089,7 @@ export interface HappeningsSelect<T extends boolean = true> {
     | T
     | {
         content?: T | ContentBlockSelect<T>;
-        session?:
-          | T
-          | {
-              title?: T;
-              description?: T;
-              startTime?: T;
-              endTime?: T;
-              schedule?:
-                | T
-                | {
-                    name?: T;
-                    startTime?: T;
-                    duration?: T;
-                    contributors?:
-                      | T
-                      | {
-                          person?: T;
-                          role?: T;
-                          employer?: T;
-                          id?: T;
-                        };
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
+        session?: T | SessionBlockSelect<T>;
       };
   contentLocations?: T;
   slug?: T;
@@ -1082,6 +1097,32 @@ export interface HappeningsSelect<T extends boolean = true> {
   config?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SessionBlock_select".
+ */
+export interface SessionBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  startTime?: T;
+  endTime?: T;
+  schedule?:
+    | T
+    | {
+        title?: T;
+        duration?: T;
+        contributors?:
+          | T
+          | {
+              person?: T;
+              text?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1175,6 +1216,7 @@ export interface OrganizationsSelect<T extends boolean = true> {
  */
 export interface PagesSelect<T extends boolean = true> {
   title?: T;
+  lead?: T;
   image?: T | ImageSelect<T>;
   story?:
     | T
@@ -1269,7 +1311,6 @@ export interface ProjectsSelect<T extends boolean = true> {
     | {
         entity?: T;
         role?: T;
-        details?: T;
         id?: T;
       };
   slug?: T;

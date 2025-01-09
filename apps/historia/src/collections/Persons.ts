@@ -35,6 +35,9 @@ export const Persons: CollectionConfig = {
       type: 'text',
       required: true,
       label: 'Name',
+      admin: {
+        hidden: true,
+      },
     },
     {
       label: 'Name',

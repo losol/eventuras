@@ -14,10 +14,7 @@ export const partners: Field = {
     {
       name: 'role',
       type: 'text',
-    },
-    {
-      name: 'details',
-      type: 'richText',
+      localized: true,
     },
   ],
   admin: {
