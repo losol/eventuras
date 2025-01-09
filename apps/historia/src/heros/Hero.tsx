@@ -44,11 +44,11 @@ const standardImageUrl =
         <div className="relative">
           <img
             src={standardImageUrl}
-            alt={caption || title || 'Hero image'}
+            alt={caption?.root.children.toString() || title || ''}
             className="-z-10 object-cover w-full h-auto"
           />
           {caption && (
-            <p className="text-sm mt-2 text-gray-500 text-center italic">{caption}</p>
+            <p className="text-sm mt-2 text-gray-500 text-center italic">{caption?.root.children.toString()}</p>
           )}
         </div>
       )}

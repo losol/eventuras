@@ -16,7 +16,7 @@ export const image: Field = {
     {
       name: 'caption',
       label: 'Caption',
-      type: 'text',
+      type: 'richText',
       required: false,
       localized: true
     }
