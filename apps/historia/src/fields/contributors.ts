@@ -16,6 +16,7 @@ export const contributors: Field = {
       name: 'role',
       type: 'text',
       required: false,
+      localized: true
     }
   ]
 };

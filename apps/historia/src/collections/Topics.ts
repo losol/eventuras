@@ -4,7 +4,8 @@ import { anyone } from '../access/anyone';
 import { admins } from '@/access/admins';
 import { slugField } from '@/fields/slug';
 import { image } from '@/fields/image';
-import { richText } from '@/fields/richText';
+import { title } from '@/fields/title';
+import { description } from '@/fields/description';
 
 export const Topics: CollectionConfig = {
   slug: 'topics',
@@ -18,15 +19,10 @@ export const Topics: CollectionConfig = {
     useAsTitle: 'title',
   },
   fields: [
-    {
-      name: 'title',
-      type: 'text',
-      required: true,
-    },
+    title,
     ...slugField(),
-    richText({ name: 'description' }),
+    description,
     image,
-
   ],
 };
 

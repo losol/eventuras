@@ -2,7 +2,6 @@ import type { CollectionConfig } from 'payload';
 import { admins } from '@/access/admins';
 import { anyone } from '@/access/anyone';
 import { name } from '@/fields/name';
-import { url } from '@/fields/url';
 import { description } from '@/fields/description';
 
 export const Organizations: CollectionConfig = {
@@ -19,7 +18,6 @@ export const Organizations: CollectionConfig = {
   fields: [
     name,
     description,
-    url,
     {
       name: 'logo',
       type: 'upload',

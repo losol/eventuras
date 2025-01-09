@@ -274,7 +274,10 @@ export interface Media {
  */
 export interface License {
   id: string;
-  name: string;
+  /**
+   * The title of the entry.
+   */
+  title: string;
   /**
    * A short abbreviation or acronym for the license (e.g., GPL for GNU Public License)
    */
@@ -407,6 +410,9 @@ export interface Note {
  */
 export interface Topic {
   id: string;
+  /**
+   * The title of the entry.
+   */
   title: string;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -470,8 +476,21 @@ export interface Page {
 export interface Place {
   id: string;
   name: string;
-  description?: string | null;
-  type?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   postalAddress?: {
     streetAddress?: string | null;
     region?: string | null;
@@ -555,7 +574,6 @@ export interface Organization {
     };
     [k: string]: unknown;
   } | null;
-  url?: string | null;
   /**
    * The logo of the organization.
    */
@@ -1143,7 +1161,7 @@ export interface SessionBlockSelect<T extends boolean = true> {
  * via the `definition` "licenses_select".
  */
 export interface LicensesSelect<T extends boolean = true> {
-  name?: T;
+  title?: T;
   abbreviation?: T;
   description?: T;
   url?: T;
@@ -1219,7 +1237,6 @@ export interface NotesSelect<T extends boolean = true> {
 export interface OrganizationsSelect<T extends boolean = true> {
   name?: T;
   description?: T;
-  url?: T;
   logo?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1281,7 +1298,6 @@ export interface PersonsSelect<T extends boolean = true> {
 export interface PlacesSelect<T extends boolean = true> {
   name?: T;
   description?: T;
-  type?: T;
   postalAddress?:
     | T
     | {
