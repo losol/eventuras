@@ -7,13 +7,11 @@ type RichText = (
 ) => RichTextField;
 
 export const richText: RichText = (overrides = {}): RichTextField => {
-  const overridesToMerge = overrides ? overrides : {};
-
   return {
     name: 'richText',
     type: 'richText',
     required: false,
-    ...overridesToMerge,
+    ...overrides,
   };
 };
 

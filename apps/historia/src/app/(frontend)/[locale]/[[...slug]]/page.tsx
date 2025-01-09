@@ -8,6 +8,7 @@ import { RenderBlocks } from '@/blocks/RenderBlocks';
 import { Hero } from '@/heros/Hero';
 import PageClient from './page.client';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
+import exp from 'constants';
 
 // Read locales and default locale from environment variables, fallback to en
 const locales = process.env.CMS_LOCALES?.split(',') || ['en'];
@@ -57,12 +58,17 @@ export default async function Page({ params: paramsPromise }: Args) {
   // Extract locale and slug
   const { locale = defaultLocale, slug } = params;
 
+  // Return 404 for invalid locale
+  if (!locales.includes(locale)) {
+    console.warn(`Invalid locale: ${locale}`);
+    notFound();
+  }
+
   // Get the last segment of the URL or 'home' for root
   const currentSlug = slug?.length ? slug[slug.length - 1] : 'home';
 
   // Fetch the page data for the current locale
   const page = await queryPageBySlug({ slug: currentSlug, locale, draft });
-
 
   if (!page) {
     notFound();
@@ -111,6 +117,7 @@ const queryPageBySlug = cache(async ({ slug, locale, draft }: { slug: string; lo
     limit: 1,
     pagination: false,
     overrideAccess: draft,
+    // @ts-expect-error
     locale: locale,
     where: {
       slug: {

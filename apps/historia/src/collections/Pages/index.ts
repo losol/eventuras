@@ -12,6 +12,7 @@ import { license } from '@/fields/license';
 import { anyone } from '@/access/anyone';
 import { publishedAt } from '@/fields/publishedAt';
 import { title } from '@/fields/title';
+import { lead } from '@/fields/lead';
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -51,6 +52,7 @@ export const Pages: CollectionConfig<'pages'> = {
           label: 'Content',
           fields: [
             title,
+            lead,
             image,
             story
           ],

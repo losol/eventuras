@@ -1,19 +1,12 @@
-import type { Block, Field } from 'payload';
-import { richText } from '../fields/richText';
+import { description } from '@/fields/description';
+import { title } from '@/fields/title';
+import type { Block } from 'payload';
 
 export const Session: Block = {
   interfaceName: 'SessionBlock',
   fields: [
-    {
-      name: 'title',
-      type: 'text',
-      label: 'Session Title',
-    },
-    {
-      name: 'description',
-      type: 'textarea',
-      label: 'Session Description',
-    },
+    title,
+    description,
     {
       name: 'startTime',
       label: 'Session Start time',
@@ -42,26 +35,15 @@ export const Session: Block = {
       label: 'Schedule',
       fields: [
         {
-          name: 'name',
+          name: 'title',
           type: 'text',
-          label: 'Segment name',
-        },
-        {
-          name: 'startTime',
-          label: 'Segment Start time',
-          type: 'date',
-          admin: {
-            date: {
-              pickerAppearance: 'timeOnly',
-              displayFormat: 'h:mm',
-              timeIntervals: 5,
-            },
-          },
+          label: 'Segment title',
+          localized: true,
         },
         {
           name: 'duration',
           type: 'number',
-          label: 'Session Duration (minutes)',
+          label: 'Segment Duration (minutes)',
           admin: {
             step: 5,
           },
@@ -77,15 +59,11 @@ export const Session: Block = {
               relationTo: 'persons',
             },
             {
-              name: 'role',
+              name: 'text',
               type: 'text',
-              label: 'Speaker Role',
-            },
-            {
-              name: 'employer',
-              type: 'text',
-              label: 'Speaker Employer',
-            },
+              label: 'Speaker text',
+              localized: true,
+            }
           ],
         },
       ],
