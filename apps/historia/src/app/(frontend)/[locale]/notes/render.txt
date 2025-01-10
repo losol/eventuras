@@ -1,1 +1,0 @@
-<RichText className="max-w-[48rem] mx-auto" data={article.story} enableGutter={false} />

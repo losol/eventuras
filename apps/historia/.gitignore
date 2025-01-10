@@ -2,6 +2,9 @@ build
 dist / media
 dist
 node_modules
+supabase
+public/robots.txt
+public/sitemap.xml
 .DS_Store
 .env
 .next
