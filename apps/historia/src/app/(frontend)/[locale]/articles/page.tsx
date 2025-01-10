@@ -7,7 +7,6 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
-import { CardArticleData } from '@/components/Card';
 
 export const dynamic = 'force-static'
 export const revalidate = 600
@@ -45,7 +44,7 @@ export default async function Page() {
         />
       </div>
 
-      <CollectionArchive articles={articles.docs} />
+      <CollectionArchive docs={articles.docs} relationTo='articles'/>
 
       <div className="container">
         {articles.totalPages > 1 && articles.page && (

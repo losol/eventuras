@@ -25,14 +25,24 @@ export const Card: React.FC<{
   const { card, link } = useClickableCard({})
   const { className, doc, relationTo, showTopics, title: titleFromProps } = props
 
-  const { slug, title } = doc || {};
-  const topics = 'topics' in (doc ?? {}) ? doc.topics : undefined;
-  const lead = 'lead' in (doc ?? {}) ? doc.lead : undefined;
-  const image = 'image' in (doc ?? {}) ? doc.image : undefined;
+  const { slug, title } = doc || {}
 
-  const hasTopics = topics && Array.isArray(topics) && topics.length > 0
+  // Type guards for properties
+  const hasTopicsProperty = (doc: CardDoc): doc is Pick<Article, 'slug' | 'topics' | 'title' | 'lead' | 'image'> | Pick<Note, 'slug' | 'topics' | 'title' | 'image'> => {
+    return doc && 'topics' in doc
+  }
+
+  const hasLeadProperty = (doc: CardDoc): doc is Pick<Article, 'slug' | 'topics' | 'title' | 'lead' | 'image'> | Pick<Page, 'slug' | 'title' | 'lead' | 'image'> | Pick<Project, 'slug' | 'title' | 'lead' | 'image'> => {
+    return doc && 'lead' in doc
+  }
+
+  const topics = doc && hasTopicsProperty(doc) && Array.isArray(doc.topics) ? doc.topics : undefined
+  const lead = doc && hasLeadProperty(doc) ? doc.lead : undefined
+  const image = doc && 'image' in doc ? doc.image : undefined
+
+  const hasTopics = topics && topics.length > 0
   const titleToUse = titleFromProps || title
-  const sanitizedDescription = lead?.replace(/\s/g, ' '); // replace non-breaking space with white space
+  const sanitizedDescription = lead?.replace(/\s/g, ' ') // replace non-breaking space with white space
   const href = `${relationTo}/${slug}`
 
   return (
@@ -49,28 +59,24 @@ export const Card: React.FC<{
       <div className="p-4">
         {showTopics && hasTopics && (
           <div className="uppercase text-sm mb-4">
-            {showTopics && hasTopics && (
-              <div>
-                {topics?.map((topic, index) => {
-                  if (typeof topic === 'object') {
-                    const { title: titleFromTopic } = topic
+            {topics?.map((topic, index) => {
+              if (typeof topic === 'object') {
+                const { title: titleFromTopic } = topic
 
-                    const topicTitle = titleFromTopic || 'Untitled topic'
+                const topicTitle = titleFromTopic || 'Untitled topic'
 
-                    const isLast = index === topics.length - 1
+                const isLast = index === topics.length - 1
 
-                    return (
-                      <Fragment key={index}>
-                        {topicTitle}
-                        {!isLast && <Fragment>, &nbsp;</Fragment>}
-                      </Fragment>
-                    )
-                  }
+                return (
+                  <Fragment key={index}>
+                    {topicTitle}
+                    {!isLast && <Fragment>, &nbsp;</Fragment>}
+                  </Fragment>
+                )
+              }
 
-                  return null
-                })}
-              </div>
-            )}
+              return null
+            })}
           </div>
         )}
         {titleToUse && (

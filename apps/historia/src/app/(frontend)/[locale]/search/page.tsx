@@ -6,13 +6,14 @@ import { getPayload } from 'payload'
 import React from 'react'
 import { Search } from '@/search/Component'
 import PageClient from './page.client'
-import { CardArticleData } from '@/components/Card'
+import type { CardDoc } from '@/components/Card'
 
 type Args = {
   searchParams: Promise<{
     q: string
   }>
 }
+
 export default async function Page({ searchParams: searchParamsPromise }: Args) {
   const { q: query } = await searchParamsPromise
   const payload = await getPayload({ config: configPromise })
@@ -26,7 +27,6 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
       slug: true,
       meta: true,
     },
-    // pagination: false reduces overhead if you don't need totalDocs
     pagination: false,
     ...(query
       ? {
@@ -58,6 +58,13 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
       : {}),
   })
 
+  // Transform articles.docs into CardDoc[]
+  const docs: CardDoc[] = articles.docs.map((doc) => ({
+    slug: doc.slug || '', // Provide default value
+    title: doc.title || 'Untitled', // Ensure title is a string
+    topics: [], // Add empty topics if not applicable
+  }))
+
   return (
     <div className="pt-24 pb-24">
       <PageClient />
@@ -71,8 +78,8 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
         </div>
       </div>
 
-      {articles.totalDocs > 0 ? (
-        <CollectionArchive articles={articles.docs as CardArticleData[]} />
+      {docs.length > 0 ? (
+        <CollectionArchive docs={docs} relationTo="articles" />
       ) : (
         <div className="container">No results found.</div>
       )}
