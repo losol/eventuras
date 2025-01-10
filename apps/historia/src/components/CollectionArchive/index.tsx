@@ -2,13 +2,14 @@ import { cn } from 'src/utilities/cn'
 import React from 'react'
 
 import { Card } from '@/components/Card'
+import type { CardDoc } from '@/components/Card'
 
-type CollectionArchiveProps<T> = {
+type CollectionArchiveProps<T extends CardDoc> = {
   docs: T[];
-  relationTo: string;
+  relationTo: "articles" | "pages" | "projects" | "notes";
 };
 
-export const CollectionArchive = <T extends object>(props: CollectionArchiveProps<T>) => {
+export const CollectionArchive = <T extends CardDoc>(props: CollectionArchiveProps<T>) => {
   const { docs: items, relationTo } = props;
 
   return (
