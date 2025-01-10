@@ -8,7 +8,6 @@ import { RenderBlocks } from '@/blocks/RenderBlocks';
 import { Hero } from '@/heros/Hero';
 import PageClient from './page.client';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
-import exp from 'constants';
 
 // Read locales and default locale from environment variables, fallback to en
 const locales = process.env.CMS_LOCALES?.split(',') || ['en'];
@@ -33,7 +32,8 @@ export async function generateStaticParams() {
   const paths = locales.flatMap((locale) =>
     pages.docs.map((page) => ({
       locale,
-      slug: page.slug ? [page.slug] : undefined,
+      // Set slug to undefined if it's 'home'
+      slug: page.slug === 'home' ? undefined : [page.slug],
     }))
   );
 
