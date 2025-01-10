@@ -17,7 +17,7 @@ type BlockType = keyof typeof blockComponents
 // Define the type for individual blocks
 type Block = {
   blockType: BlockType
-  disableInnerContainer?: boolean // Include this as an optional property
+  disableInnerContainer?: boolean
 } & Record<string, any>
 
 export const RenderBlocks: React.FC<{

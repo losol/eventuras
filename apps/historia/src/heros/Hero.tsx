@@ -5,6 +5,7 @@ import React, { useEffect } from 'react';
 
 import { Contributors, Image } from '@/payload-types';
 import { Contributors as ContributersComponent } from '@/components/Contributors';
+import RichText from '@/components/RichText';
 
 interface HeroProps {
   title?: string | null;
@@ -36,7 +37,7 @@ const standardImageUrl =
   const caption = image?.caption;
 
   return (
-    <section className="container hero">
+    <section className="hero">
       {title && <h1 className="text-4xl md:text-5xl font-bold mb-4">{title}</h1>}
       {lead && <p className="text-lg mb-6 lead">{lead}</p>}
 
@@ -48,7 +49,9 @@ const standardImageUrl =
             className="-z-10 object-cover w-full h-auto"
           />
           {caption && (
-            <p className="text-sm mt-2 text-gray-500 text-center italic">{caption?.root.children.toString()}</p>
+            <>
+              <RichText data={caption} className="text-xs mt-2 text-gray-300 text-center mb-4" />
+              </>
           )}
         </div>
       )}
