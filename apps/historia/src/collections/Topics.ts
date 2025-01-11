@@ -6,6 +6,7 @@ import { slugField } from '@/fields/slug';
 import { image } from '@/fields/image';
 import { title } from '@/fields/title';
 import { description } from '@/fields/description';
+import resourceId from '@/fields/resourceId';
 
 export const Topics: CollectionConfig = {
   slug: 'topics',
@@ -23,6 +24,7 @@ export const Topics: CollectionConfig = {
     ...slugField(),
     description,
     image,
+    resourceId
   ],
 };
 

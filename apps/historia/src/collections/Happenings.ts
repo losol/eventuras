@@ -11,6 +11,7 @@ import { endDate } from '@/fields/endDate';
 import { title } from '@/fields/title';
 import { lead } from '@/fields/lead';
 import { slugField } from '@/fields/slug';
+import resourceId from '@/fields/resourceId';
 
 
 export const Happenings: CollectionConfig = {
@@ -34,6 +35,7 @@ export const Happenings: CollectionConfig = {
     program,
     contentLocations,
     ...slugField(),
+    resourceId,
     config,
   ],
 };

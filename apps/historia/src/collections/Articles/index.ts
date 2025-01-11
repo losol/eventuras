@@ -16,6 +16,7 @@ import { admins } from '@/access/admins';
 import { relatedContent } from '@/fields/relatedContent';
 import { publishedAt } from '@/fields/publishedAt';
 import { title } from '@/fields/title';
+import resourceId from '@/fields/resourceId';
 
 export const Articles: CollectionConfig = {
   slug: 'articles',
@@ -68,6 +69,7 @@ export const Articles: CollectionConfig = {
           fields: [
             publishedAt,
             ...slugField(),
+            resourceId,
             license,
             contributors,
             topics,

@@ -4,6 +4,8 @@ import { anyone } from '../access/anyone';
 import { story } from '../fields/story';
 import { image } from '../fields/image';
 import { bio } from '@/fields/bio';
+import { slugField } from '@/fields/slug';
+import resourceId from '@/fields/resourceId';
 
 export const Persons: CollectionConfig = {
   slug: 'persons',
@@ -64,5 +66,7 @@ export const Persons: CollectionConfig = {
     image,
     bio,
     story,
+    // ...slugField(['given_name', 'middle_name', 'family_name']),
+    resourceId
   ],
 };

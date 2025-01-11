@@ -3,6 +3,8 @@ import { admins } from '@/access/admins';
 import { anyone } from '@/access/anyone';
 import { name } from '@/fields/name';
 import { description } from '@/fields/description';
+import { slugField } from '@/fields/slug';
+import resourceId from '@/fields/resourceId';
 
 export const Organizations: CollectionConfig = {
   slug: 'organizations',
@@ -26,5 +28,7 @@ export const Organizations: CollectionConfig = {
         description: 'The logo of the organization.',
       },
     },
+    ...slugField(),
+    resourceId
   ],
 };
