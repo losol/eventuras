@@ -13,6 +13,7 @@ import { startDate } from '@/fields/startDate';
 import { endDate } from '@/fields/endDate';
 import { partners } from '@/fields/partners';
 import { lead } from '@/fields/lead';
+import resourceId from '@/fields/resourceId';
 
 export const Projects: CollectionConfig<'projects'> = {
   slug: 'projects',
@@ -36,6 +37,7 @@ export const Projects: CollectionConfig<'projects'> = {
     endDate,
     partners,
     ...slugField(),
+    resourceId,
     publishedAt,
   ],
   defaultPopulate: {

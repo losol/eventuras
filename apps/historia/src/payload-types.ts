@@ -111,8 +111,9 @@ export interface Article {
   lead?: string | null;
   story?: ContentBlock[] | null;
   publishedAt?: string | null;
-  slug?: string | null;
+  slug: string;
   slugLock?: boolean | null;
+  resourceId: string;
   /**
    * The license governing the use of this media.
    */
@@ -314,6 +315,9 @@ export interface Person {
   image?: Image;
   bio?: string | null;
   story?: ContentBlock[] | null;
+  slug: string;
+  slugLock?: boolean | null;
+  resourceId: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -399,8 +403,9 @@ export interface Note {
           }
       )[]
     | null;
-  slug?: string | null;
+  slug: string;
   slugLock?: boolean | null;
+  resourceId: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -414,7 +419,7 @@ export interface Topic {
    * The title of the entry.
    */
   title: string;
-  slug?: string | null;
+  slug: string;
   slugLock?: boolean | null;
   description?: {
     root: {
@@ -432,6 +437,7 @@ export interface Topic {
     [k: string]: unknown;
   } | null;
   image?: Image;
+  resourceId: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -448,8 +454,9 @@ export interface Page {
   lead?: string | null;
   image?: Image;
   story?: ContentBlock[] | null;
-  slug?: string | null;
+  slug: string;
   slugLock?: boolean | null;
+  resourceId: string;
   /**
    * The license governing the use of this media.
    */
@@ -509,6 +516,9 @@ export interface Place {
     longitude?: number | null;
   };
   story?: ContentBlock[] | null;
+  slug: string;
+  slugLock?: boolean | null;
+  resourceId: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -545,8 +555,9 @@ export interface Project {
         id?: string | null;
       }[]
     | null;
-  slug?: string | null;
+  slug: string;
   slugLock?: boolean | null;
+  resourceId: string;
   publishedAt?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -578,6 +589,9 @@ export interface Organization {
    * The logo of the organization.
    */
   logo?: (string | null) | Media;
+  slug: string;
+  slugLock?: boolean | null;
+  resourceId: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -598,8 +612,9 @@ export interface Happening {
   endDate?: string | null;
   program?: (ContentBlock | SessionBlock)[] | null;
   contentLocations?: (string | Place)[] | null;
-  slug?: string | null;
+  slug: string;
   slugLock?: boolean | null;
+  resourceId: string;
   config?:
     | {
         [k: string]: unknown;
@@ -1068,6 +1083,7 @@ export interface ArticlesSelect<T extends boolean = true> {
   publishedAt?: T;
   slug?: T;
   slugLock?: T;
+  resourceId?: T;
   license?: T;
   contributors?: T | ContributorsSelect<T>;
   topics?: T;
@@ -1126,6 +1142,7 @@ export interface HappeningsSelect<T extends boolean = true> {
   contentLocations?: T;
   slug?: T;
   slugLock?: T;
+  resourceId?: T;
   config?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1227,6 +1244,7 @@ export interface NotesSelect<T extends boolean = true> {
   relatedContent?: T;
   slug?: T;
   slugLock?: T;
+  resourceId?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1238,6 +1256,9 @@ export interface OrganizationsSelect<T extends boolean = true> {
   name?: T;
   description?: T;
   logo?: T;
+  slug?: T;
+  slugLock?: T;
+  resourceId?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1256,6 +1277,7 @@ export interface PagesSelect<T extends boolean = true> {
       };
   slug?: T;
   slugLock?: T;
+  resourceId?: T;
   license?: T;
   contributors?: T | ContributorsSelect<T>;
   publishedAt?: T;
@@ -1288,6 +1310,9 @@ export interface PersonsSelect<T extends boolean = true> {
     | {
         content?: T | ContentBlockSelect<T>;
       };
+  slug?: T;
+  slugLock?: T;
+  resourceId?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1318,6 +1343,9 @@ export interface PlacesSelect<T extends boolean = true> {
     | {
         content?: T | ContentBlockSelect<T>;
       };
+  slug?: T;
+  slugLock?: T;
+  resourceId?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1345,6 +1373,7 @@ export interface ProjectsSelect<T extends boolean = true> {
       };
   slug?: T;
   slugLock?: T;
+  resourceId?: T;
   publishedAt?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1360,6 +1389,7 @@ export interface TopicsSelect<T extends boolean = true> {
   slugLock?: T;
   description?: T;
   image?: T | ImageSelect<T>;
+  resourceId?: T;
   updatedAt?: T;
   createdAt?: T;
 }

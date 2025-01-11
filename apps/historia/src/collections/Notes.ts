@@ -7,6 +7,7 @@ import { slugField } from '@/fields/slug';
 import { topics } from '@/fields/topics';
 import { title } from '@/fields/title';
 import { relatedContent } from '@/fields/relatedContent';
+import resourceId from '@/fields/resourceId';
 
 export const Notes: CollectionConfig = {
   slug: 'notes',
@@ -26,6 +27,7 @@ export const Notes: CollectionConfig = {
     topics,
     relatedContent,
     ...slugField(),
+    resourceId
   ],
 };
 

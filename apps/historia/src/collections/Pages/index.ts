@@ -13,6 +13,8 @@ import { anyone } from '@/access/anyone';
 import { publishedAt } from '@/fields/publishedAt';
 import { title } from '@/fields/title';
 import { lead } from '@/fields/lead';
+import { name } from '@/fields/name';
+import resourceId from '@/fields/resourceId';
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -42,7 +44,7 @@ export const Pages: CollectionConfig<'pages'> = {
         collection: 'pages',
         req,
       }),
-    useAsTitle: 'title',
+    useAsTitle: 'name',
   },
   fields: [
     {
@@ -51,6 +53,7 @@ export const Pages: CollectionConfig<'pages'> = {
         {
           label: 'Content',
           fields: [
+            name,
             title,
             lead,
             image,
@@ -60,7 +63,8 @@ export const Pages: CollectionConfig<'pages'> = {
         {
           label: 'Meta',
           fields: [
-            ...slugField(),
+            ...slugField("name"),
+            resourceId,
             license,
             contributors,
             publishedAt

@@ -4,12 +4,13 @@ import useClickableCard from '@/utilities/useClickableCard'
 import Link from 'next/link'
 import React, { Fragment } from 'react'
 
-import type { Article, Page, Project, Note } from '@/payload-types'
+import type { Article, Page, Project, Note, Happening } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 
 export type CardDoc =
   | Pick<Article, 'slug' | 'topics' | 'title' | 'lead' | 'image'>
+  | Pick<Happening, 'slug' | 'title' | 'lead' | 'image'>
   | Pick<Page, 'slug' | 'title' | 'lead' | 'image'>
   | Pick<Project, 'slug' | 'title' | 'lead' | 'image'>
   | Pick<Note, 'slug' | 'topics' | 'title' | 'image'>
@@ -18,7 +19,7 @@ export const Card: React.FC<{
   alignItems?: 'center'
   className?: string
   doc?: CardDoc
-  relationTo?: 'articles' | 'pages' | 'projects' | 'notes'
+  relationTo?: 'articles' | 'happenings' | 'pages' | 'projects' | 'notes'
   showTopics?: boolean
   title?: string
 }> = (props) => {
@@ -39,11 +40,12 @@ export const Card: React.FC<{
   const topics = doc && hasTopicsProperty(doc) && Array.isArray(doc.topics) ? doc.topics : undefined
   const lead = doc && hasLeadProperty(doc) ? doc.lead : undefined
   const image = doc && 'image' in doc ? doc.image : undefined
+  const resourceId = doc && 'resourceId' in doc ? doc.resourceId : undefined
 
   const hasTopics = topics && topics.length > 0
   const titleToUse = titleFromProps || title
   const sanitizedDescription = lead?.replace(/\s/g, ' ') // replace non-breaking space with white space
-  const href = `${relationTo}/${slug}`
+  const href = `${relationTo}/${resourceId}/${slug}`
 
   return (
     <article

@@ -4,6 +4,8 @@ import { anyone } from '../access/anyone';
 import { story } from '@/fields/story';
 import { geoPoint } from '@/fields/geopoint';
 import { description } from '@/fields/description';
+import { slugField } from '@/fields/slug';
+import resourceId from '@/fields/resourceId';
 
 export const Places: CollectionConfig = {
   slug: 'places',
@@ -44,7 +46,9 @@ export const Places: CollectionConfig = {
       type: 'collapsible',
       fields: [geoPoint],
     },
-    story
+    story,
+    ...slugField(),
+    resourceId
   ],
 };
 
