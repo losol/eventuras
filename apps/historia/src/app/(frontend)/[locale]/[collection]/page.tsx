@@ -1,3 +1,4 @@
+// src/app/(frontend)/[locale]/[collection]/page.tsx
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next/types';
 import { CollectionArchive } from '@/components/CollectionArchive';
@@ -5,42 +6,31 @@ import { PageRange } from '@/components/PageRange';
 import { Pagination } from '@/components/Pagination';
 import configPromise from '@payload-config';
 import { getPayload } from 'payload';
-import { Config } from '@/payload-types';
-
-// Centralized collection definitions with strict typing
-export const pageCollections = ['articles', 'happenings', 'notes', 'projects'] as const;
-type ValidCollection = typeof pageCollections[number];
-type Collections = Config['collections'];
-export type PageCollectionsType = Extract<keyof Collections, ValidCollection>;
-
-// Type for the response from payload.find()
-type PaginatedDocs<T extends PageCollectionsType> = {
-  docs: Collections[T][];
-  page: number;
-  totalPages: number;
-  totalDocs: number;
-};
+import { pageCollections, PageCollectionsType } from './pageCollections';
 
 export const dynamic = 'force-static';
 export const revalidate = 600;
 
-export default async function Page({
-  params: { collection, locale }
-}: {
-  params: { collection: string; locale: string }
-}) {
-  const payload = await getPayload({ config: configPromise });
+type Props = {
+  params: Promise<{
+    locale: string;
+    collection: string;
+  }>;
+};
 
-  function isValidCollection(collection: string): collection is PageCollectionsType {
-    return pageCollections.includes(collection as ValidCollection);
-  }
+function isValidCollection(collection: string): collection is PageCollectionsType {
+  return pageCollections.includes(collection as any);
+}
+
+export default async function Page({ params: paramsPromise }: Props) {
+  const payload = await getPayload({ config: configPromise });
+  const { collection } = await paramsPromise;
 
   if (!isValidCollection(collection)) {
     notFound();
   }
 
   try {
-    // Use the specific collection type
     const docsPage = await payload.find({
       collection,
       depth: 1,
@@ -66,6 +56,7 @@ export default async function Page({
         <h1>{capitalizedCollection}</h1>
 
         <CollectionArchive
+          // @ts-expect-error
           docs={docsPage.docs}
           relationTo={collection}
         />
@@ -92,11 +83,15 @@ export default async function Page({
   }
 }
 
-export function generateMetadata({
-  params: { collection }
+export async function generateMetadata({
+  params: paramsPromise,
 }: {
-  params: { collection: string }
-}): Metadata {
+  params: Promise<{
+    locale: string;
+    collection: string;
+  }>;
+}): Promise<Metadata> {
+  const { collection } = await paramsPromise;
 
   const capitalizedCollection =
     collection.charAt(0).toUpperCase() + collection.slice(1);

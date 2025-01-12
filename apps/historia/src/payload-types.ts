@@ -111,7 +111,7 @@ export interface Article {
   lead?: string | null;
   story?: ContentBlock[] | null;
   publishedAt?: string | null;
-  slug: string;
+  slug?: string | null;
   slugLock?: boolean | null;
   resourceId: string;
   /**
@@ -315,7 +315,7 @@ export interface Person {
   image?: Image;
   bio?: string | null;
   story?: ContentBlock[] | null;
-  slug: string;
+  slug?: string | null;
   slugLock?: boolean | null;
   resourceId: string;
   updatedAt: string;
@@ -356,7 +356,7 @@ export interface Note {
    */
   title: string;
   image?: Image;
-  richText?: {
+  content?: {
     root: {
       type: string;
       children: {
@@ -403,7 +403,7 @@ export interface Note {
           }
       )[]
     | null;
-  slug: string;
+  slug?: string | null;
   slugLock?: boolean | null;
   resourceId: string;
   updatedAt: string;
@@ -419,7 +419,7 @@ export interface Topic {
    * The title of the entry.
    */
   title: string;
-  slug: string;
+  slug?: string | null;
   slugLock?: boolean | null;
   description?: {
     root: {
@@ -447,6 +447,7 @@ export interface Topic {
  */
 export interface Page {
   id: string;
+  name: string;
   /**
    * The title of the entry.
    */
@@ -454,7 +455,7 @@ export interface Page {
   lead?: string | null;
   image?: Image;
   story?: ContentBlock[] | null;
-  slug: string;
+  slug?: string | null;
   slugLock?: boolean | null;
   resourceId: string;
   /**
@@ -498,6 +499,7 @@ export interface Place {
     };
     [k: string]: unknown;
   } | null;
+  image?: Image;
   postalAddress?: {
     streetAddress?: string | null;
     region?: string | null;
@@ -516,7 +518,7 @@ export interface Place {
     longitude?: number | null;
   };
   story?: ContentBlock[] | null;
-  slug: string;
+  slug?: string | null;
   slugLock?: boolean | null;
   resourceId: string;
   updatedAt: string;
@@ -555,7 +557,7 @@ export interface Project {
         id?: string | null;
       }[]
     | null;
-  slug: string;
+  slug?: string | null;
   slugLock?: boolean | null;
   resourceId: string;
   publishedAt?: string | null;
@@ -585,11 +587,8 @@ export interface Organization {
     };
     [k: string]: unknown;
   } | null;
-  /**
-   * The logo of the organization.
-   */
-  logo?: (string | null) | Media;
-  slug: string;
+  image?: Image;
+  slug?: string | null;
   slugLock?: boolean | null;
   resourceId: string;
   updatedAt: string;
@@ -612,7 +611,7 @@ export interface Happening {
   endDate?: string | null;
   program?: (ContentBlock | SessionBlock)[] | null;
   contentLocations?: (string | Place)[] | null;
-  slug: string;
+  slug?: string | null;
   slugLock?: boolean | null;
   resourceId: string;
   config?:
@@ -1239,7 +1238,7 @@ export interface MediaSelect<T extends boolean = true> {
 export interface NotesSelect<T extends boolean = true> {
   title?: T;
   image?: T | ImageSelect<T>;
-  richText?: T;
+  content?: T;
   topics?: T;
   relatedContent?: T;
   slug?: T;
@@ -1255,7 +1254,7 @@ export interface NotesSelect<T extends boolean = true> {
 export interface OrganizationsSelect<T extends boolean = true> {
   name?: T;
   description?: T;
-  logo?: T;
+  image?: T | ImageSelect<T>;
   slug?: T;
   slugLock?: T;
   resourceId?: T;
@@ -1267,6 +1266,7 @@ export interface OrganizationsSelect<T extends boolean = true> {
  * via the `definition` "pages_select".
  */
 export interface PagesSelect<T extends boolean = true> {
+  name?: T;
   title?: T;
   lead?: T;
   image?: T | ImageSelect<T>;
@@ -1323,6 +1323,7 @@ export interface PersonsSelect<T extends boolean = true> {
 export interface PlacesSelect<T extends boolean = true> {
   name?: T;
   description?: T;
+  image?: T | ImageSelect<T>;
   postalAddress?:
     | T
     | {

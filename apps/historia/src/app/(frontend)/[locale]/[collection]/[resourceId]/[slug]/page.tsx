@@ -5,12 +5,13 @@ import { getPayload } from 'payload';
 import { draftMode } from 'next/headers';
 import React, { cache } from 'react';
 
-import { pageCollections, PageCollectionsType } from '../../page';
+import { pageCollections, PageCollectionsType } from '../../pageCollections';
 import { Hero } from '@/heros/Hero';
 import { generateMeta } from '@/utilities/generateMeta';
 import PageClient from './page.client';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
 import { RenderBlocks } from '@/blocks/RenderBlocks';
+import RichText from '@/components/RichText';
 
 // Generate static params for all valid collections
 export async function generateStaticParams() {
@@ -35,12 +36,14 @@ export async function generateStaticParams() {
 
       docs.docs.forEach(({ slug, resourceId }) => {
         console.log(`Generating static params for ${locale}/${collection}/${resourceId}/${slug}`);
-        params.push({
-          locale,
-          collection,
-          resourceId,
-          slug,
-        });
+        if (slug) {
+          params.push({
+            locale,
+            collection,
+            resourceId,
+            slug,
+          });
+        }
       });
     }
   }
@@ -49,19 +52,18 @@ export async function generateStaticParams() {
 }
 
 type Args = {
-  params: {
+  params: Promise<{
     locale: string;
     collection: string;
     resourceId: string;
     slug: string;
-  };
+  }>;
 };
 
-export default async function Page(propsPromise: Args) {
-  // Resolve the params promise
+export default async function Page({ params: paramsPromise }: Args) {
 
   const { isEnabled: draft } = await draftMode();
-  const props = await propsPromise.params;
+  const props = await paramsPromise;
   const { locale, collection, resourceId, slug } = props;
 
   // Validate the collection
@@ -69,55 +71,57 @@ export default async function Page(propsPromise: Args) {
     return <PayloadRedirects url={`/${locale}/${collection}/${resourceId}/${slug}`} />;
   }
 
-  const document = await queryDocumentBySlugAndId({
+  const document = await queryDocumentByResourceId({
     collection: collection as PageCollectionsType,
     resourceId,
-    slug,
   });
+
+  const titleToUse = 'title' in document ? document.title : document.name;
+
 
   if (!document) {
     return <PayloadRedirects url={`/${locale}/${collection}/${resourceId}/${slug}`} />;
   }
 
   return (
-    <article className="pt-16 pb-16">
+    <article className="container pt-16 pb-16 prose dark:prose-invert px-0">
       <PageClient />
 
-      {/* Allows redirects for valid pages too */}
       <PayloadRedirects disableNotFound url={`/${locale}/${collection}/${resourceId}/${slug}`} />
 
       {draft && <LivePreviewListener />}
 
-      <Hero title={document.title} image={document.image} />
+      {'lead' in document && document.lead
+        ? <Hero title={titleToUse} image={document.image} lead={document.lead} />
+        : <Hero title={titleToUse} image={document.image} />}
+      <Hero title={titleToUse} image={document.image} />
 
-      <div className="flex flex-col items-center gap-4 pt-8">
-        {/* <section className="container" id="story-section">
-          {document.story ? <RenderBlocks blocks={document.story} /> : null}
-        </section> */}
-      </div>
+      {'content' in document && document.content ? <RichText data={document.content} /> : null}
+      {'story' in document && document.story ? <RenderBlocks blocks={document.story} /> : null}
+
+
     </article>
   );
 }
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
-  const { collection, resourceId, slug } = params;
+  const { collection, resourceId } = await params;
 
   if (!pageCollections.includes(collection as PageCollectionsType)) {
     return {};
   }
 
-  const document = await queryDocumentBySlugAndId({
+  const document = await queryDocumentByResourceId({
     collection: collection as PageCollectionsType,
     resourceId,
-    slug,
   });
 
   return generateMeta({ doc: document });
 }
 
 // Query document by collection, resourceId, and slug
-const queryDocumentBySlugAndId = cache(
-  async ({ collection, resourceId, slug }: { collection: PageCollectionsType; resourceId: string; slug: string }) => {
+const queryDocumentByResourceId = cache(
+  async ({ collection, resourceId }: { collection: PageCollectionsType; resourceId: string; }) => {
     const { isEnabled: draft } = await draftMode();
     const payload = await getPayload({ config: configPromise });
 
@@ -131,12 +135,9 @@ const queryDocumentBySlugAndId = cache(
         resourceId: {
           equals: resourceId,
         },
-        slug: {
-          equals: slug,
-        },
       },
     });
 
-    return result.docs?.[0] || null;
+    return result.docs?.[0] ?? null;
   }
 );

@@ -6,6 +6,7 @@ import { geoPoint } from '@/fields/geopoint';
 import { description } from '@/fields/description';
 import { slugField } from '@/fields/slug';
 import resourceId from '@/fields/resourceId';
+import { image } from '@/fields/image';
 
 export const Places: CollectionConfig = {
   slug: 'places',
@@ -25,6 +26,7 @@ export const Places: CollectionConfig = {
       required: true,
     },
     description,
+    image,
     {
       label: 'Postal Address',
       type: 'collapsible',

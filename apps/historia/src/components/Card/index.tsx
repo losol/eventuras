@@ -4,48 +4,23 @@ import useClickableCard from '@/utilities/useClickableCard'
 import Link from 'next/link'
 import React, { Fragment } from 'react'
 
-import type { Article, Page, Project, Note, Happening } from '@/payload-types'
+import type { Article, Page, Project, Note, Happening, Person, Organization } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 
-export type CardDoc =
-  | Pick<Article, 'slug' | 'topics' | 'title' | 'lead' | 'image'>
-  | Pick<Happening, 'slug' | 'title' | 'lead' | 'image'>
-  | Pick<Page, 'slug' | 'title' | 'lead' | 'image'>
-  | Pick<Project, 'slug' | 'title' | 'lead' | 'image'>
-  | Pick<Note, 'slug' | 'topics' | 'title' | 'image'>
-
 export const Card: React.FC<{
-  alignItems?: 'center'
   className?: string
-  doc?: CardDoc
-  relationTo?: 'articles' | 'happenings' | 'pages' | 'projects' | 'notes'
+  doc?: Article | Happening | Page | Person | Organization | Project | Note
+  relationTo?: 'articles' | 'happenings' | 'pages' | 'persons' | 'organizations' | 'projects' | 'notes'
   showTopics?: boolean
   title?: string
 }> = (props) => {
   const { card, link } = useClickableCard({})
-  const { className, doc, relationTo, showTopics, title: titleFromProps } = props
+  const { className, doc, relationTo } = props
 
-  const { slug, title } = doc || {}
+  const { slug } = doc || {}
 
-  // Type guards for properties
-  const hasTopicsProperty = (doc: CardDoc): doc is Pick<Article, 'slug' | 'topics' | 'title' | 'lead' | 'image'> | Pick<Note, 'slug' | 'topics' | 'title' | 'image'> => {
-    return doc && 'topics' in doc
-  }
-
-  const hasLeadProperty = (doc: CardDoc): doc is Pick<Article, 'slug' | 'topics' | 'title' | 'lead' | 'image'> | Pick<Page, 'slug' | 'title' | 'lead' | 'image'> | Pick<Project, 'slug' | 'title' | 'lead' | 'image'> => {
-    return doc && 'lead' in doc
-  }
-
-  const topics = doc && hasTopicsProperty(doc) && Array.isArray(doc.topics) ? doc.topics : undefined
-  const lead = doc && hasLeadProperty(doc) ? doc.lead : undefined
-  const image = doc && 'image' in doc ? doc.image : undefined
-  const resourceId = doc && 'resourceId' in doc ? doc.resourceId : undefined
-
-  const hasTopics = topics && topics.length > 0
-  const titleToUse = titleFromProps || title
-  const sanitizedDescription = lead?.replace(/\s/g, ' ') // replace non-breaking space with white space
-  const href = `${relationTo}/${resourceId}/${slug}`
+  const href = `${relationTo}/${doc?.resourceId}/${slug}`
 
   return (
     <article
@@ -55,42 +30,23 @@ export const Card: React.FC<{
       )}
       ref={card.ref}
     >
+      {doc?.image && typeof doc.image === 'object' &&
       <div className="relative w-full ">
-        {image && typeof image !== 'string' && <Media resource={image.media!} size="33vw" />}
+        <Media resource={doc.image.media!} size="33vw" />
       </div>
+      }
+
       <div className="p-4">
-        {showTopics && hasTopics && (
-          <div className="uppercase text-sm mb-4">
-            {topics?.map((topic, index) => {
-              if (typeof topic === 'object') {
-                const { title: titleFromTopic } = topic
 
-                const topicTitle = titleFromTopic || 'Untitled topic'
-
-                const isLast = index === topics.length - 1
-
-                return (
-                  <Fragment key={index}>
-                    {topicTitle}
-                    {!isLast && <Fragment>, &nbsp;</Fragment>}
-                  </Fragment>
-                )
-              }
-
-              return null
-            })}
-          </div>
-        )}
-        {titleToUse && (
           <div className="prose">
             <h3>
               <Link className="not-prose" href={href} ref={link.ref}>
-                {titleToUse}
+                {'title' in doc! ? doc.title : doc?.name}
               </Link>
             </h3>
           </div>
-        )}
-        {lead && <div className="mt-2">{lead && <p>{sanitizedDescription}</p>}</div>}
+
+        {doc && 'lead' in doc && doc.lead && <div className="mt-2">{doc.lead}</div>}
       </div>
     </article>
   )
