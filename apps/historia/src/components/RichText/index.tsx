@@ -52,7 +52,7 @@ type Props = {
 } & React.HTMLAttributes<HTMLDivElement>;
 
 export default function RichText(props: Props) {
-  const { className, enableProse = true, enableGutter = true, ...rest } = props;
+  const { className, enableProse = false, enableGutter = false, ...rest } = props;
   return (
     <RichTextWithoutBlocks
       converters={jsxConverters}

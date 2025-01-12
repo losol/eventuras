@@ -23,7 +23,7 @@ export const Notes: CollectionConfig = {
   fields: [
     title,
     image,
-    richText({ localized: true }),
+    richText({ name: 'content', localized: true }),
     topics,
     relatedContent,
     ...slugField(),

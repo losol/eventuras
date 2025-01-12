@@ -5,6 +5,7 @@ import { name } from '@/fields/name';
 import { description } from '@/fields/description';
 import { slugField } from '@/fields/slug';
 import resourceId from '@/fields/resourceId';
+import { image } from '@/fields/image';
 
 export const Organizations: CollectionConfig = {
   slug: 'organizations',
@@ -20,15 +21,8 @@ export const Organizations: CollectionConfig = {
   fields: [
     name,
     description,
-    {
-      name: 'logo',
-      type: 'upload',
-      relationTo: 'media',
-      admin: {
-        description: 'The logo of the organization.',
-      },
-    },
-    ...slugField(),
+    image,
+    ...slugField("name"),
     resourceId
   ],
 };

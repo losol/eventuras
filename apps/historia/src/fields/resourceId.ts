@@ -1,5 +1,8 @@
-import { nanoid } from 'nanoid';
+import { customAlphabet } from 'nanoid';
 import { Field } from 'payload';
+
+// Define the custom alphabet
+const generateId = customAlphabet('123456789abcdefghijkmnpqrstuvwxyz', 6);
 
 // Define the field
 const resourceId: Field = {
@@ -10,7 +13,7 @@ const resourceId: Field = {
     readOnly: true,
   },
   unique: true,
-  defaultValue: () => nanoid(8),
+  defaultValue: () => generateId(),
 };
 
 export default resourceId;
