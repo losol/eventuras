@@ -3,6 +3,8 @@ import type { FieldHook } from 'payload';
 export const formatSlug = (val: string): string => {
   if (!val) return '';
 
+  val = val.toLowerCase();
+
   // Define character conversions
   const conversions: { [key: string]: string; } = {
     e: 'æ|ä',

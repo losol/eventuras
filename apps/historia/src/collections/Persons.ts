@@ -4,8 +4,8 @@ import { anyone } from '../access/anyone';
 import { story } from '../fields/story';
 import { image } from '../fields/image';
 import { bio } from '@/fields/bio';
-import { slugField } from '@/fields/slug';
 import resourceId from '@/fields/resourceId';
+import { slugField } from '@/fields/slug';
 
 export const Persons: CollectionConfig = {
   slug: 'persons',
@@ -18,19 +18,6 @@ export const Persons: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
   },
-  hooks: {
-    beforeChange: [
-      ({ data, originalDoc }) => {
-        if (data.given_name || data.middle_name || data.family_name) {
-          const givenName = data.given_name || originalDoc?.given_name || '';
-          const middleName = data.middle_name || originalDoc?.middle_name || '';
-          const familyName = data.family_name || originalDoc?.family_name || '';
-          data.name = [givenName, middleName, familyName].filter(Boolean).join(' ');
-        }
-        return data;
-      },
-    ],
-  },
   fields: [
     {
       name: 'name',
@@ -39,6 +26,11 @@ export const Persons: CollectionConfig = {
       label: 'Name',
       admin: {
         hidden: true,
+        components: {
+          Field: {
+            path: '@/fields/PersonNameComponent#PersonNameComponent',
+          },
+        },
       },
     },
     {
@@ -66,7 +58,7 @@ export const Persons: CollectionConfig = {
     image,
     bio,
     story,
-    // ...slugField(['given_name', 'middle_name', 'family_name']),
+    ...slugField("name"),
     resourceId
   ],
 };
