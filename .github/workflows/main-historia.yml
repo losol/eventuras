@@ -29,7 +29,6 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Run tests
-        working-directory: apps/historia
         run: |
           if [ -f docker-compose.test.yml ]; then
             docker-compose --file docker-compose.test.yml build
