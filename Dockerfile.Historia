@@ -24,8 +24,8 @@ WORKDIR /app
 ARG CMS_SECRET=secret
 ENV CMS_SECRET=${CMS_SECRET}
 
-ARG DEFAULT_LOCALE=no
-ENV DEFAULT_LOCALE=${DEFAULT_LOCALE}
+ARG CMS_DEFAULT_LOCALE=no
+ENV CMS_DEFAULT_LOCALE=${CMS_DEFAULT_LOCALE}
 
 COPY --from=deps /home/node/app/node_modules ./node_modules
 COPY apps/historia/ .
