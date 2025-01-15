@@ -39,6 +39,7 @@ jobs:
           fi
 
       - name: Set Docker Tag
+        working-directory: /
         id: set-docker-tag
         run: |
           GIT_COMMIT=${{ github.sha }}
