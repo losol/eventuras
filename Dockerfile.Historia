@@ -1,45 +1,60 @@
-FROM node:20-bookworm-slim AS base
+# Base image
+FROM node:22-bookworm-slim AS base
 
-##################################
-# 1. Build the app
-##################################
+##########################
+# Dependencies           #
+##########################
+FROM base AS deps
+
+# Add libc6-compat for compatibility
+RUN apt-get update && apt-get install -y --no-install-recommends libc6 && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /home/node/app
+
+COPY apps/historia/package*.json ./
+RUN npm ci --ignore-scripts --legacy-peer-deps
+
+##########################
+# Build                  #
+##########################
 FROM base AS builder
 
-# Give node user ownership of the app directory
 WORKDIR /app
-USER root
-RUN chown -R node:node /app
-USER node
 
-# Install dependencies
-COPY --chown=node:node package.json /app
-COPY --chown=node:node package-lock.json /app
-COPY --chown=node:node apps/historia/package.json /app/apps/historia/package.json
-COPY --chown=node:node apps/historia/tsconfig.json /app/apps/historia/tsconfig.json
-RUN npm ci
+ARG CMS_SECRET=secret
+ENV CMS_SECRET=${CMS_SECRET}
 
-## Build the app
-WORKDIR /app/apps/historia
-COPY --chown=node:node apps/historia/src/ /app/apps/historia/src/
-RUN npm run build:historia
+ARG CMS_DEFAULT_LOCALE=no
+ENV CMS_DEFAULT_LOCALE=${CMS_DEFAULT_LOCALE}
 
-##################################
-# 2. Run the app
-##################################
+COPY --from=deps /home/node/app/node_modules ./node_modules
+COPY apps/historia/ .
+
+# Use the variable in build commands if needed
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN npx payload migrate && npm run build
+
+##########################
+# Runtime                #
+##########################
 FROM base AS runtime
 
-USER node
-
-ENV NODE_ENV=production
-ENV PAYLOAD_CONFIG_PATH=/app/dist/payload.config.js
-
 WORKDIR /app
 
-COPY --chown=node:node apps/historia/package.json /app
-COPY --chown=node:node package-lock.json /app
-RUN npm ci
-COPY --chown=node:node --from=builder /app/apps/historia/dist /app/dist
-COPY --chown=node:node --from=builder /app/apps/historia/build /app/build
-EXPOSE 3300
+# Set runtime environment variables
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
-CMD ["node", "/app/dist/server.js"]
+RUN addgroup --system --gid 1001 nodejs \
+  && adduser --system --uid 1001 --gid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
+USER nextjs
+
+EXPOSE 3000
+
+# Final command
+CMD ["node", "server.js"]

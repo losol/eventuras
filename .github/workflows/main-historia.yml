@@ -12,50 +12,18 @@ on:
     types: [opened, synchronize]
     paths:
       - "apps/historia/**"
-  workflow_call:
 
 env:
   ORGANIZATION_NAME: losolio
   IMAGE_NAME: historia
 
 jobs:
-  # lint:
-  #   name: turbo lint
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Setup Node.js
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 20
-  #         cache: "npm"
-  #     - name: npm install
-  #       run: npm install
-  #     - name: Lint
-  #       run: npx turbo lint --filter=@eventuras/historia
-
-  build:
-    name: Build project
-    needs: lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
-      - name: npm install
-        run: npm install
-      - name: Build
-        run: npx turbo build --filter=@eventuras/historia
-
   docker:
     name: Docker build
-    needs: build
     runs-on: ubuntu-latest
+
     outputs:
-      docker_tag: ${{ env.DOCKER_TAG }}
+      docker_tag: ${{ steps.set-docker-tag.outputs.docker_tag }}
 
     steps:
       - uses: actions/checkout@v4
@@ -70,40 +38,28 @@ jobs:
           fi
 
       - name: Set Docker Tag
-        if: github.ref == 'refs/heads/main'
-        run: echo "DOCKER_TAG=${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}:$(date +'%Y%m%d-%H%M%S')-${{ github.run_id }}" >> $GITHUB_ENV
-
+        working-directory: /
+        id: set-docker-tag
+        run: |
+          GIT_COMMIT=${{ github.sha }}
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "docker_tag=${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}:main-$(date +'%Y%m%d-%H%M%S')-${GIT_COMMIT::8}" >> $GITHUB_ENV
+          else
+            echo "docker_tag=${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}:canary-$(date +'%Y%m%d-%H%M%S')-${GIT_COMMIT::8}" >> $GITHUB_ENV
+          fi
       - name: Login to Docker Hub
-        if: github.ref == 'refs/heads/main'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Docker image
-        if: github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile.Historia
           push: true
-          tags: ${{ env.DOCKER_TAG }}
+          tags: ${{ env.docker_tag }}
 
       - name: Output Docker tag
-        if: github.ref == 'refs/heads/main'
-        run: echo "Docker tag is ${{ env.DOCKER_TAG }}"
-
-  deploy-docker:
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    needs: docker
-    environment: historia-staging
-
-    steps:
-      - name: Deploy to Azure
-        id: deploy-to-azure
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          images: ${{ needs.docker.outputs.docker_tag }}
+        run: echo "Docker tag is ${{ env.docker_tag }}"

@@ -1,0 +1,42 @@
+# Node.js dependencies
+node_modules
+npm-debug.log
+yarn-debug.log*
+yarn-error.log*
+
+# Local environment files
+.env
+.env.local
+.env.*.local
+
+# Supabase
+supabase
+
+# Output directories
+.next
+out
+dist
+
+# Test and development
+coverage
+*.log
+*.lock
+__tests__/
+__mocks__/
+.vscode/
+.idea/
+.DS_Store
+
+# Git
+.git
+.gitignore
+
+# Docker
+.dockerignore
+Dockerfile
+
+# Temporary files and OS-specific files
+*.swp
+*.tmp
+*.bak
+Thumbs.db
