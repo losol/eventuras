@@ -5,10 +5,12 @@ services:
       dockerfile: Dockerfile.Historia
       args:
         CMS_SECRET: ${CMS_SECRET}
+        DEFAULT_LOCALE: ${DEFAULT_LOCALE}
     container_name: historia_app
     environment:
       - CMS_SECRET=secret
       - DATABASE_URL=file:./historia.db
+      - DEFAULT_LOCALE=no
       - NODE_ENV=production
     ports:
       - "3000:3000"
