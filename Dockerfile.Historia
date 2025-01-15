@@ -21,16 +21,13 @@ FROM base AS builder
 
 WORKDIR /app
 
-# Pass build-time variables as ARG
-ARG CMS_SECRET
-
-# Use these variables during the build
+ARG CMS_SECRET=secret
 ENV CMS_SECRET=${CMS_SECRET}
 
 COPY --from=deps /home/node/app/node_modules ./node_modules
 COPY apps/historia/ .
 
-# Use the variables in build commands if necessary
+# Use the variable in build commands if needed
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npx payload migrate && npm run build
 

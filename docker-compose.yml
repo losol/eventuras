@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile.Historia
       args:
-        CMS_SECRET: secret
+        CMS_SECRET: ${CMS_SECRET}
     container_name: historia_app
     environment:
       - CMS_SECRET=secret
