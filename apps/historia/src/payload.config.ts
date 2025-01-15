@@ -1,11 +1,9 @@
 import { postgresAdapter } from '@payloadcms/db-postgres';
-
-
+import { sqliteAdapter } from '@payloadcms/db-sqlite';
 import sharp from 'sharp';
 import path from 'path';
 import { buildConfig } from 'payload';
 import { fileURLToPath } from 'url';
-
 import { Media } from './collections/Media';
 import { Pages } from './collections/Pages';
 import { Users } from './collections/Users';
@@ -27,6 +25,9 @@ const allowedOrigins = process.env.CMS_ALLOWED_ORIGINS ? process.env.CMS_ALLOWED
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
+
+const cmsDatabaseUrl = process.env.CMS_DATABASE_URL || 'file:./historia.db';
+const isPostgres = cmsDatabaseUrl.startsWith('postgres://');
 
 export default buildConfig({
   admin: {
@@ -60,12 +61,19 @@ export default buildConfig({
       ],
     },
   },
-  db: postgresAdapter({
-    idType: "uuid",
-    pool: {
-      connectionString: process.env.CMS_DATABASE_URL || '',
-    },
-  }),
+  db: isPostgres
+    ? postgresAdapter({
+      idType: 'uuid',
+      pool: {
+        connectionString: cmsDatabaseUrl,
+      },
+    })
+    : sqliteAdapter({
+      idType: 'uuid',
+      client: {
+        url: cmsDatabaseUrl
+      }
+    }),
   collections: [Articles, Happenings, Licenses, Media, Notes, Organizations, Pages, Persons, Places, Projects, Topics, Users],
   cors: allowedOrigins,
   csrf: allowedOrigins,
@@ -79,7 +87,7 @@ export default buildConfig({
     fallbackLanguage: 'en',
   },
   plugins: [
-    ...plugins // add more plugins to src/plugins/index.ts,
+    ...plugins, // Additional plugins
   ],
   secret: process.env.CMS_SECRET,
   sharp,

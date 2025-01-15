@@ -1,24 +1,60 @@
-FROM node:18.8-alpine as base
+# Base image
+FROM node:22-bookworm-slim AS base
 
-FROM base as builder
+##########################
+# Dependencies           #
+##########################
+FROM base AS deps
+
+# Add libc6-compat for compatibility
+RUN apt-get update && apt-get install -y --no-install-recommends libc6 && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home/node/app
+
 COPY package*.json ./
+RUN npm ci --legacy-peer-deps
 
+##########################
+# Build                  #
+##########################
+FROM base AS builder
+
+WORKDIR /app
+
+# Pass build-time variables as ARG
+ARG CMS_SECRET
+
+# Use these variables during the build
+ENV CMS_SECRET=${CMS_SECRET}
+
+COPY --from=deps /home/node/app/node_modules ./node_modules
 COPY . .
-RUN yarn install
-RUN yarn build
 
-FROM base as runtime
+# Use the variables in build commands if necessary
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN npx payload migrate && npm run build
 
+##########################
+# Runtime                #
+##########################
+FROM base AS runtime
+
+WORKDIR /app
+
+# Set runtime environment variables
 ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
-WORKDIR /home/node/app
-COPY package*.json  ./
-COPY yarn.lock ./
+RUN addgroup --system --gid 1001 nodejs \
+  && adduser --system --uid 1001 --gid 1001 nextjs
 
-RUN yarn install --production
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
+USER nextjs
 
 EXPOSE 3000
 
-CMD ["node", "dist/server.js"]
+# Final command
+CMD ["node", "server.js"]

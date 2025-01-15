@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.15.1",
+    "@payloadcms/db-sqlite": "^3.17.1",
     "@payloadcms/live-preview-react": "3.15.1",
     "@payloadcms/next": "3.15.1",
     "@payloadcms/payload-cloud": "3.15.1",

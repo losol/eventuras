@@ -1,31 +1,30 @@
-version: '3'
-
 services:
-  payload:
-    image: node:18-alpine
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        CMS_SECRET: secret
+    container_name: historia_app
+    environment:
+      - CMS_SECRET=secret
+      - DATABASE_URL=file:./historia.db
+      - NODE_ENV=production
     ports:
       - '3000:3000'
-    volumes:
-      - .:/home/node/app
-      - node_modules:/home/node/app/node_modules
-    working_dir: /home/node/app/
-    command: sh -c "yarn install && yarn dev"
-    depends_on:
-      - mongo
-    env_file:
-      - .env
+    depends_on: [db]
 
-  mongo:
-    image: mongo:latest
+  db:
+    image: postgres:15
+    container_name: historia_db
+    environment:
+      POSTGRES_USER: historia
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: historia
     ports:
-      - '27017:27017'
-    command:
-      - --storageEngine=wiredTiger
+      - '5432:5432'
     volumes:
-      - data:/data/db
-    logging:
-      driver: none
+      - db_data:/var/lib/postgresql/data
 
 volumes:
-  data:
-  node_modules:
+  db_data:
