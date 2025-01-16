@@ -11,3 +11,34 @@ export type PaginatedDocs<T extends PageCollectionsType> = {
   totalPages: number;
   totalDocs: number;
 };
+
+export const collectionTranslations: Record<string, Record<string, string>> = {
+  en: {
+    articles: 'articles',
+    happenings: 'happenings',
+    notes: 'notes',
+    organizations: 'organizations',
+    persons: 'people',
+    projects: 'projects',
+  },
+  no: {
+    articles: 'les',
+    happenings: 'opplev',
+    notes: 'notert',
+    organizations: 'organisasjoner',
+    persons: 'folk',
+    projects: 'prosjekt',
+  },
+};
+
+export const getLocalizedCollectionName = (collection: string, locale: string): string => {
+  const translations = collectionTranslations[locale] || collectionTranslations['en'];
+  return translations[collection] || collection;
+};
+
+export const getOriginalCollectionName = (localizedCollection: string, locale: string): string => {
+  const translations = collectionTranslations[locale];
+  return Object.keys(translations).find(
+    (key) => translations[key] === localizedCollection
+  ) || localizedCollection;
+};
