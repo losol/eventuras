@@ -100,7 +100,6 @@ export default async function Page({ params: paramsPromise }: Args) {
       {'lead' in document && document.lead
         ? <Hero title={titleToUse} image={document.image} lead={document.lead} />
         : <Hero title={titleToUse} image={document.image} />}
-      <Hero title={titleToUse} image={document.image} />
 
       {'content' in document && document.content ? <RichText data={document.content} /> : null}
       {'story' in document && document.story ? <RenderBlocks blocks={document.story} /> : null}
