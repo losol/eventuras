@@ -12,6 +12,7 @@ import PageClient from './page.client';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
 import { RenderBlocks } from '@/blocks/RenderBlocks';
 import RichText from '@/components/RichText';
+import { redirect } from 'next/navigation';
 
 // Generate static params for all valid collections
 export async function generateStaticParams() {
@@ -76,6 +77,11 @@ export default async function Page({ params: paramsPromise }: Args) {
     resourceId,
   });
 
+   // Check for slug mismatch and redirect if necessary
+  if (document.slug !== slug) {
+    redirect(`/${locale}/${collection}/${resourceId}/${document.slug}`);
+  }
+
   const titleToUse = 'title' in document ? document.title : document.name;
 
 
@@ -94,7 +100,6 @@ export default async function Page({ params: paramsPromise }: Args) {
       {'lead' in document && document.lead
         ? <Hero title={titleToUse} image={document.image} lead={document.lead} />
         : <Hero title={titleToUse} image={document.image} />}
-      <Hero title={titleToUse} image={document.image} />
 
       {'content' in document && document.content ? <RichText data={document.content} /> : null}
       {'story' in document && document.story ? <RenderBlocks blocks={document.story} /> : null}
