@@ -50,12 +50,14 @@ export const Media: CollectionConfig = {
         width: 400,
         height: 400,
         position: 'center',
+        withoutEnlargement: false
       },
       {
         name: 'standard',
         width: 1920,
         height: 1080,
         position: 'center',
+        withoutEnlargement: false
       },
     ],
   },
