@@ -2,15 +2,14 @@ import type { Metadata } from 'next';
 
 import type { Article, Media, Page, Config } from '../payload-types';
 
-import { mergeOpenGraph } from './mergeOpenGraph';
 import { getServerSideURL } from './getURL';
 
 const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
   const serverUrl = getServerSideURL();
 
-  let url = serverUrl + '/website-template-OG.webp';
+  let url = serverUrl + '/images/historia.png';
 
-  if (image && typeof image === 'object' && 'url' in image) {
+  if (image && typeof image === 'object') {
     const ogUrl = image.sizes?.standard?.url;
 
     url = ogUrl ? serverUrl + ogUrl : serverUrl + image.url;
@@ -24,24 +23,18 @@ export const generateMeta = async (args: {
 }): Promise<Metadata> => {
   const { doc } = args || {};
 
+  const title = doc?.title ?? 'Historia';
+  const description = doc?.lead ?? undefined;
+
   const ogImage = getImageURL(doc?.image?.media);
 
-  const title = doc?.title;
-
   return {
-    // description: doc?.description || doc?.lead || '',
-    openGraph: mergeOpenGraph({
-      // description: doc?.description || '',
-      images: ogImage
-        ? [
-          {
-            url: ogImage,
-          },
-        ]
-        : undefined,
-      title,
-      url: Array.isArray(doc?.slug) ? doc?.slug.join('/') : '/',
-    }),
     title,
+    description: description,
+    openGraph: {
+      title,
+      description: description,
+      images: ogImage,
+    }
   };
 };
