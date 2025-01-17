@@ -50,7 +50,7 @@ export async function generateStaticParams() {
         documents.forEach(({ slug, resourceId }) => {
           if (slug && resourceId) {
             console.log(
-              `Generating localized static params for ${locale}/${localizedCollectionName}/${resourceId}/${slug}`
+              `Generating static params for ${locale}/${localizedCollectionName}/${resourceId}/${slug}`
             );
 
             params.push({
@@ -109,7 +109,7 @@ export default async function Page({ params: paramsPromise }: Args) {
   const titleToUse = 'title' in document ? document.title : document.name;
 
   return (
-    <article className="container pt-16 pb-16 prose dark:prose-invert px-0">
+    <article className="container pt-16 pb-16 prose dark:prose-invert">
       <PageClient />
 
       <PayloadRedirects
