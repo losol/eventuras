@@ -17,6 +17,7 @@ import { relatedContent } from '@/fields/relatedContent';
 import { publishedAt } from '@/fields/publishedAt';
 import { title } from '@/fields/title';
 import resourceId from '@/fields/resourceId';
+import { channels } from '@/fields/channels';
 
 export const Articles: CollectionConfig = {
   slug: 'articles',
@@ -67,6 +68,7 @@ export const Articles: CollectionConfig = {
         {
           label: 'Meta',
           fields: [
+            channels,
             publishedAt,
             ...slugField(),
             resourceId,

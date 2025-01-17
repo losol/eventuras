@@ -35,6 +35,7 @@ export interface Config {
     projects: Project;
     topics: Topic;
     users: User;
+    websites: Website;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -57,6 +58,7 @@ export interface Config {
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     topics: TopicsSelect<false> | TopicsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    websites: WebsitesSelect<false> | WebsitesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -110,6 +112,10 @@ export interface Article {
   image?: Image;
   lead?: string | null;
   story?: ContentBlock[] | null;
+  /**
+   * Select the websites or platforms where this article will be published.
+   */
+  channels?: (string | Website)[] | null;
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -405,6 +411,10 @@ export interface Note {
     | null;
   slug?: string | null;
   slugLock?: boolean | null;
+  /**
+   * Select the websites or platforms where this article will be published.
+   */
+  channels?: (string | Website)[] | null;
   resourceId: string;
   updatedAt: string;
   createdAt: string;
@@ -561,6 +571,10 @@ export interface Project {
   slugLock?: boolean | null;
   resourceId: string;
   publishedAt?: string | null;
+  /**
+   * Select the websites or platforms where this article will be published.
+   */
+  channels?: (string | Website)[] | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -596,6 +610,28 @@ export interface Organization {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "websites".
+ */
+export interface Website {
+  id: string;
+  name: string;
+  /**
+   * The title of the entry.
+   */
+  title: string;
+  summary?: string | null;
+  domains?: string[] | null;
+  homePage?: (string | null) | Page;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    image?: (string | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "happenings".
  */
 export interface Happening {
@@ -613,6 +649,10 @@ export interface Happening {
   contentLocations?: (string | Place)[] | null;
   slug?: string | null;
   slugLock?: boolean | null;
+  /**
+   * Select the websites or platforms where this article will be published.
+   */
+  channels?: (string | Website)[] | null;
   resourceId: string;
   config?:
     | {
@@ -1009,6 +1049,10 @@ export interface PayloadLockedDocument {
         value: string | User;
       } | null)
     | ({
+        relationTo: 'websites';
+        value: string | Website;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: string | Redirect;
       } | null)
@@ -1079,6 +1123,7 @@ export interface ArticlesSelect<T extends boolean = true> {
     | {
         content?: T | ContentBlockSelect<T>;
       };
+  channels?: T;
   publishedAt?: T;
   slug?: T;
   slugLock?: T;
@@ -1141,6 +1186,7 @@ export interface HappeningsSelect<T extends boolean = true> {
   contentLocations?: T;
   slug?: T;
   slugLock?: T;
+  channels?: T;
   resourceId?: T;
   config?: T;
   updatedAt?: T;
@@ -1243,6 +1289,7 @@ export interface NotesSelect<T extends boolean = true> {
   relatedContent?: T;
   slug?: T;
   slugLock?: T;
+  channels?: T;
   resourceId?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1376,6 +1423,7 @@ export interface ProjectsSelect<T extends boolean = true> {
   slugLock?: T;
   resourceId?: T;
   publishedAt?: T;
+  channels?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1415,6 +1463,26 @@ export interface UsersSelect<T extends boolean = true> {
   hash?: T;
   loginAttempts?: T;
   lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "websites_select".
+ */
+export interface WebsitesSelect<T extends boolean = true> {
+  name?: T;
+  title?: T;
+  summary?: T;
+  domains?: T;
+  homePage?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
