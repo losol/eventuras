@@ -129,15 +129,15 @@ export default async function Page({ params: paramsPromise }: Args) {
   );
 }
 
-export async function generateMetadata({ params }: Args): Promise<Metadata> {
-  const { collection, resourceId } = await params;
 
-  if (!pageCollections.includes(collection as PageCollectionsType)) {
-    return {};
-  }
+export async function generateMetadata({ params }: Args): Promise<Metadata> {
+  const { collection, locale,resourceId } = await params;
+
+  const originalCollectionName = getOriginalCollectionName(collection, locale);
+
 
   const document = await queryDocumentByResourceId({
-    collection: collection as PageCollectionsType,
+    collection: originalCollectionName as PageCollectionsType,
     resourceId,
   });
 

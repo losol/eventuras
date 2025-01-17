@@ -1,17 +1,8 @@
+import { getLocalizedCollectionName, getOriginalCollectionName } from '@/app/(frontend)/[locale]/[collection]/pageCollections';
 import canUseDOM from './canUseDOM';
 
 export const getServerSideURL = () => {
-  let url = process.env.NEXT_PUBLIC_CMS_URL;
-
-  if (!url && process.env.VERCEL_PROJECT_PRODUCTION_URL) {
-    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
-  }
-
-  if (!url) {
-    url = 'http://localhost:3000';
-  }
-
-  return url;
+  return process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3000';;
 };
 
 export const getClientSideURL = () => {
@@ -23,9 +14,43 @@ export const getClientSideURL = () => {
     return `${protocol}//${domain}${port ? `:${port}` : ''}`;
   }
 
-  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
-    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  return process.env.NEXT_PUBLIC_CMS_URL || '';
+};
+
+
+export interface ResourceDoc {
+  locale: string;
+  collection: string;
+  resourceId: string;
+  slug: string;
+}
+/**
+ * Generates the full URL to the page displaying a resource.
+ *
+ * @param {object} doc - The document containing `locale`, `collection`, `resourceId`, and `slug`.
+ * @param {boolean} absolute - Whether to generate an absolute or relative URL. Defaults to `false` (relative).
+ * @returns {string} The URL to the resource page.
+ */
+export const getResourceUrl = (doc: ResourceDoc, absolute = false) => {
+  if (!doc || typeof doc !== 'object') {
+    return '';
   }
 
-  return process.env.NEXT_PUBLIC_CMS_URL || '';
+  const { locale, collection, resourceId, slug } = doc;
+
+  if (!locale || !collection || !resourceId || !slug) {
+    return '';
+  }
+
+  const originalCollectionName = getOriginalCollectionName(collection, locale);
+  const localizedCollectionName = getLocalizedCollectionName(originalCollectionName, locale);
+
+  const basePath = `/${locale}/${localizedCollectionName}/${resourceId}/${slug}`;
+
+  if (absolute) {
+    const baseUrl = canUseDOM ? getClientSideURL() : getServerSideURL();
+    return `${baseUrl}${basePath}`;
+  }
+
+  return basePath;
 };

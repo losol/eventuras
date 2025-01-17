@@ -50,7 +50,7 @@ const standardImageUrl =
           />
           {caption && (
             <>
-              <RichText data={caption} className="text-xs mt-2 text-gray-300 text-center mb-4" />
+              <RichText data={caption} className="text-xs mt-1 text-gray-300 text-center mb-4" />
               </>
           )}
         </div>
