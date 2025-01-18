@@ -59,7 +59,8 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
         .map(([, value]) => `(max-width: ${value}px) ${value * 2}w`)
         .join(', ')
 
-  return (
+  // only return the image if the src is a string
+  if (src) return (
     <picture>
       <NextImage
         alt={alt || ''}
@@ -77,4 +78,5 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
       />
     </picture>
   )
+  return
 }

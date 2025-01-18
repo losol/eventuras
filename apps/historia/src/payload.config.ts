@@ -65,7 +65,6 @@ export default buildConfig({
   db: isPostgres
     ? postgresAdapter({
       idType: 'uuid',
-      push: false,
       pool: {
         connectionString: cmsDatabaseUrl,
       },

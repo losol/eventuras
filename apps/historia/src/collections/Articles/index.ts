@@ -5,7 +5,7 @@ import { generatePreviewPath } from '../../utilities/generatePreviewPath';
 import { revalidateArticle } from './hooks/revalidateArticle';
 
 import { slugField } from '@/fields/slug';
-import { story } from '@/fields/story';
+import { storyField } from '@/fields/story';
 import { image } from '@/fields/image';
 import { contributors } from '@/fields/contributors';
 import { license } from '@/fields/license';
@@ -62,7 +62,7 @@ export const Articles: CollectionConfig = {
             title,
             image,
             lead,
-            story,
+            storyField(),
           ]
         },
         {

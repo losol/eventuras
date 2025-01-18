@@ -7,20 +7,25 @@ import React, { Fragment } from 'react'
 import type { Article, Page, Project, Note, Happening, Person, Organization } from '@/payload-types'
 
 import { Media } from '@/components/Media'
+import { usePathname } from "next/navigation";
 
 export const Card: React.FC<{
   className?: string
   doc?: Article | Happening | Page | Person | Organization | Project | Note
   relationTo?: 'articles' | 'happenings' | 'pages' | 'persons' | 'organizations' | 'projects' | 'notes'
   showTopics?: boolean
+  showImages?: boolean
   title?: string
 }> = (props) => {
   const { card, link } = useClickableCard({})
-  const { className, doc, relationTo } = props
+  const { className, doc, relationTo, showImages = true } = props
 
   const { slug } = doc || {}
 
-  const href = `${relationTo}/${doc?.resourceId}/${slug}`
+  // the first part of the pathname is the locale
+  const locale = usePathname().split('/')[1]
+
+  const href = `${locale}/${relationTo}/${doc?.resourceId}/${slug}`
 
   return (
     <article
@@ -30,9 +35,9 @@ export const Card: React.FC<{
       )}
       ref={card.ref}
     >
-      {doc?.image && typeof doc.image === 'object' &&
+      {showImages && doc?.image && typeof doc.image === 'object' && doc.image.media &&
       <div className="relative w-full ">
-        <Media resource={doc.image.media!} size="33vw" />
+        <Media resource={doc.image.media} size="33vw" />
       </div>
       }
 

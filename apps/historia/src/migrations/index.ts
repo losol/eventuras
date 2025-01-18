@@ -1,5 +1,6 @@
 import * as migration_20250113_214501_initial from './20250113_214501_initial';
 import * as migration_20250117_230439_channels from './20250117_230439_channels';
+import * as migration_20250118_225211_archiveblock from './20250118_225211_archiveblock';
 
 export const migrations = [
   {
@@ -10,6 +11,11 @@ export const migrations = [
   {
     up: migration_20250117_230439_channels.up,
     down: migration_20250117_230439_channels.down,
-    name: '20250117_230439_channels'
+    name: '20250117_230439_channels',
+  },
+  {
+    up: migration_20250118_225211_archiveblock.up,
+    down: migration_20250118_225211_archiveblock.down,
+    name: '20250118_225211_archiveblock'
   },
 ];

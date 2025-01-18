@@ -2,7 +2,7 @@ import type { CollectionConfig } from 'payload';
 import { admins } from '@/access/admins';
 import { anyone } from '@/access/anyone';
 import { config } from '@/fields/config';
-import { story } from '@/fields/story';
+import { storyField} from '@/fields/story';
 import { contentLocations } from '@/fields/contentLocations';
 import { image } from '@/fields/image';
 import { program } from '@/fields/program';
@@ -30,7 +30,7 @@ export const Happenings: CollectionConfig = {
     title,
     lead,
     image,
-    story,
+    storyField(),
     startDate,
     endDate,
     program,

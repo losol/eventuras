@@ -53,8 +53,6 @@ export default async function Page({ params: paramsPromise }: Args) {
   const draft = draftModeResult.isEnabled;
   const params = await paramsPromise;
 
-  console.log('Page params:', params);
-
   // Extract locale and slug
   const { locale = defaultLocale, slug } = params;
 
@@ -82,7 +80,7 @@ export default async function Page({ params: paramsPromise }: Args) {
       <LivePreviewListener />
 
       <article className="pt-16 pb-24 container">
-        {breadcrumbs && Array.isArray(breadcrumbs) && breadcrumbs.length > 0 && (
+        {breadcrumbs && Array.isArray(breadcrumbs) && breadcrumbs.length > 1 && (
           <nav aria-label="breadcrumb" className="mb-4">
             <ol className="breadcrumb flex">
               <li className="breadcrumb-item">
@@ -115,6 +113,7 @@ const queryPageBySlug = cache(async ({ slug, locale, draft }: { slug: string; lo
     collection: 'pages',
     draft,
     limit: 1,
+    depth: 3,
     pagination: false,
     overrideAccess: draft,
     // @ts-expect-error
@@ -133,9 +132,21 @@ const queryPageBySlug = cache(async ({ slug, locale, draft }: { slug: string; lo
       publishedAt: true,
       parent: true,
       breadcrumbs: true,
-      story: true,
+      story: {
+        archive:
+          {
+            description: true,
+            relationTo: true,
+            topics: true,
+            showImages: true,
+            limit: true
+          },
+        content: true
+      },
     },
   });
+
+  console.log('Query result:', result.docs?.[0] || null);
 
   return result.docs?.[0] || null;
 });

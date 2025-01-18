@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload';
 import { admins } from '../access/admins';
 import { anyone } from '../access/anyone';
-import { story } from '../fields/story';
+import { storyField} from '../fields/story';
 import { image } from '../fields/image';
 import { bio } from '@/fields/bio';
 import resourceId from '@/fields/resourceId';
@@ -57,7 +57,7 @@ export const Persons: CollectionConfig = {
     },
     image,
     bio,
-    story,
+    storyField(),
     ...slugField("name"),
     resourceId
   ],

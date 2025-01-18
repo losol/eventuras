@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload';
 import { admins } from '../access/admins';
 import { anyone } from '../access/anyone';
-import { story } from '@/fields/story';
+import { storyField } from '@/fields/story';
 import { geoPoint } from '@/fields/geopoint';
 import { description } from '@/fields/description';
 import { slugField } from '@/fields/slug';
@@ -48,7 +48,7 @@ export const Places: CollectionConfig = {
       type: 'collapsible',
       fields: [geoPoint],
     },
-    story,
+    storyField(),
     ...slugField(),
     resourceId
   ],
