@@ -4,7 +4,7 @@ import { revalidateDelete, revalidatePage } from './hooks/revalidateProject';
 import { admins } from '@/access/admins';
 import { slugField } from '@/fields/slug';
 import { image } from '@/fields/image';
-import { story } from '@/fields/story';
+import { storyField} from '@/fields/story';
 
 import { anyone } from '@/access/anyone';
 import { publishedAt } from '@/fields/publishedAt';
@@ -33,7 +33,7 @@ export const Projects: CollectionConfig<'projects'> = {
     title,
     lead,
     image,
-    story,
+    storyField(),
     startDate,
     endDate,
     partners,

@@ -5,7 +5,7 @@ import { revalidateDelete, revalidatePage } from './hooks/revalidatePage';
 import { admins } from '@/access/admins';
 import { slugField } from '@/fields/slug';
 import { image } from '@/fields/image';
-import { story } from '@/fields/story';
+import { storyField } from '@/fields/story';
 import { contributors } from '@/fields/contributors';
 import { license } from '@/fields/license';
 
@@ -15,6 +15,8 @@ import { title } from '@/fields/title';
 import { lead } from '@/fields/lead';
 import { name } from '@/fields/name';
 import resourceId from '@/fields/resourceId';
+import { Content } from "@/blocks/Content/config";
+import { Archive } from "@/blocks/ArchiveBlock/config";
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -57,7 +59,7 @@ export const Pages: CollectionConfig<'pages'> = {
             title,
             lead,
             image,
-            story
+            storyField([Archive, Content])
           ],
         },
         {

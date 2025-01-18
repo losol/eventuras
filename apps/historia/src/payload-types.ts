@@ -464,7 +464,7 @@ export interface Page {
   title: string;
   lead?: string | null;
   image?: Image;
-  story?: ContentBlock[] | null;
+  story?: (ArchiveBlock | ContentBlock)[] | null;
   slug?: string | null;
   slugLock?: boolean | null;
   resourceId: string;
@@ -486,6 +486,34 @@ export interface Page {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ArchiveBlock".
+ */
+export interface ArchiveBlock {
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  relationTo?: ('articles' | 'happenings' | 'notes' | 'projects') | null;
+  topics?: (string | Topic)[] | null;
+  showImages?: boolean | null;
+  limit?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'archive';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1320,6 +1348,7 @@ export interface PagesSelect<T extends boolean = true> {
   story?:
     | T
     | {
+        archive?: T | ArchiveBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
       };
   slug?: T;
@@ -1340,6 +1369,19 @@ export interface PagesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ArchiveBlock_select".
+ */
+export interface ArchiveBlockSelect<T extends boolean = true> {
+  description?: T;
+  relationTo?: T;
+  topics?: T;
+  showImages?: T;
+  limit?: T;
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

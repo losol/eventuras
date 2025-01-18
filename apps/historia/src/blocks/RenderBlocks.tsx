@@ -1,12 +1,14 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
+import { ArchiveBlock } from "@/blocks/ArchiveBlock/Component";
 
 // Extend block components to include `disableInnerContainer`
 const blockComponents: {
   [key: string]: React.FC<any & { disableInnerContainer?: boolean }>
 } = {
+  archive: ArchiveBlock,
   content: ContentBlock,
   formBlock: FormBlock,
 }
@@ -21,13 +23,13 @@ type Block = {
 } & Record<string, any>
 
 export const RenderBlocks: React.FC<{
-  blocks: Block[] // Enforce that blocks is an array of Block
+  blocks: Block[]
 }> = (props) => {
   const { blocks } = props
 
   if (blocks && blocks.length > 0) {
     return (
-      <Fragment>
+      <>
         {blocks.map((block, index) => {
           const { blockType } = block
 
@@ -37,16 +39,15 @@ export const RenderBlocks: React.FC<{
             if (BlockComponent) {
               return (
                 <div className="my-16" key={index}>
-                  <BlockComponent {...block} disableInnerContainer={true} />
+                  <BlockComponent {...block} disableInnerContainer={true}/>
                 </div>
               )
             }
           }
           return null
         })}
-      </Fragment>
+      </>
     )
   }
-
   return null
 }
