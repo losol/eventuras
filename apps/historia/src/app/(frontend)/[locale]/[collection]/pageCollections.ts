@@ -22,23 +22,23 @@ export const collectionTranslations: Record<string, Record<string, string>> = {
     projects: 'projects',
   },
   no: {
-    articles: 'les',
-    happenings: 'opplev',
-    notes: 'notert',
+    articles: 'artikler',
+    happenings: 'arrangement',
+    notes: 'notiser',
     organizations: 'organisasjoner',
     persons: 'folk',
-    projects: 'prosjekt',
+    projects: 'prosjekter',
   },
 };
 
 export const getLocalizedCollectionName = (collection: string, locale: string): string => {
   const translations = collectionTranslations[locale] || collectionTranslations['en'];
-  return translations[collection] || collection;
+  return translations[collection] ?? collection;
 };
 
 export const getOriginalCollectionName = (localizedCollection: string, locale: string): string => {
   const translations = collectionTranslations[locale];
   return Object.keys(translations).find(
     (key) => translations[key] === localizedCollection
-  ) || localizedCollection;
+  ) ?? localizedCollection;
 };
