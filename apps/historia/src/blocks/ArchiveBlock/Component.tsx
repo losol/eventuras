@@ -9,7 +9,8 @@ import { ArchiveDocument, CollectionArchive } from '@/components/CollectionArchi
 
 export const ArchiveBlock: React.FC<
   ArchiveBlockProps & {
-  id?: string
+    id?: string
+    showImages?: boolean
 }
 > = async (props) => {
   const { id, description, limit: limitFromProps, relationTo, showImages, topics } = props;
@@ -18,16 +19,12 @@ export const ArchiveBlock: React.FC<
 
   let docs: ArchiveDocument[] = [];
 
-  console.log(topics)
-
   const flattenedTopics = topics?.map((topic) =>
     typeof topic === "object" ? topic.id : topic
   ) ?? [];
 
   if (relationTo) {
     const payload = await getPayload({ config: configPromise });
-
-    console.log("Flattened Topics:", flattenedTopics);
 
     // Fetch documents based on the collection type
     const fetchedDocs = await payload.find({

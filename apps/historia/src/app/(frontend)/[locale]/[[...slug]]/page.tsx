@@ -3,11 +3,14 @@ import { getPayload } from 'payload';
 import { draftMode } from 'next/headers';
 import React, { cache } from 'react';
 import { notFound } from 'next/navigation';
+import { headers } from 'next/headers';
 
 import { RenderBlocks } from '@/blocks/RenderBlocks';
 import { Hero } from '@/heros/Hero';
 import PageClient from './page.client';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
+import { PagesSelect } from '@/payload-types';
+import { getHost } from '@/utilities/getHost';
 
 // Read locales and default locale from environment variables, fallback to en
 const locales = process.env.CMS_LOCALES?.split(',') || ['en'];
@@ -49,6 +52,7 @@ type Args = {
 };
 
 export default async function Page({ params: paramsPromise }: Args) {
+  const payload = await getPayload({ config: configPromise });
   const draftModeResult = await draftMode();
   const draft = draftModeResult.isEnabled;
   const params = await paramsPromise;
@@ -62,11 +66,47 @@ export default async function Page({ params: paramsPromise }: Args) {
     notFound();
   }
 
-  // Get the last segment of the URL or 'home' for root
-  const currentSlug = slug?.length ? slug[slug.length - 1] : 'home';
+  const getHomePage = async (): Promise<string | null> => {
+  const domain = await getHost(); // Use your `getHost` utility to fetch the current domain
+  const payload = await getPayload({ config: configPromise });
 
-  // Fetch the page data for the current locale
-  const page = await queryPageBySlug({ slug: currentSlug, locale, draft });
+  const website = await payload.find({
+    collection: 'websites',
+    pagination: false,
+    limit: 1,
+    where: {
+      domains: {
+        contains: domain, // Match the current domain
+      },
+    },
+  });
+
+  if (website.docs.length && website.docs[0]?.homePage) {
+    return website.docs[0]?.homePage?.id || null;
+  }
+
+  console.warn(`No website configuration found for domain: ${domain}`);
+  return null;
+};
+
+  // Get the last segment of the URL or use `undefined` for root
+  let currentSlug = slug?.length ? slug[slug.length - 1] : undefined;
+
+  let page;
+  if (!currentSlug) {
+    // Fetch the homepage if slug is undefined
+    const homePageId = await getHomePage();
+    if (!homePageId) {
+      console.warn('No homepage found for the current domain.');
+      notFound();
+    }
+
+    // Query the page using the homepage ID
+    page = await queryPage({ id: homePageId, locale, draft });
+  } else {
+    // Query the page using the slug
+    page = await queryPage({ slug: currentSlug, locale, draft });
+  }
 
   if (!page) {
     notFound();
@@ -106,8 +146,41 @@ export default async function Page({ params: paramsPromise }: Args) {
   );
 }
 
-const queryPageBySlug = cache(async ({ slug, locale, draft }: { slug: string; locale: string; draft: boolean }) => {
+const queryPage = cache(async ({
+  id,
+  slug,
+  locale,
+  draft,
+  channel,
+}: {
+  id?: string;
+  slug?: string;
+  locale: string;
+  draft: boolean;
+  channel?: string;
+}) => {
   const payload = await getPayload({ config: configPromise });
+
+  // Dynamically build the `where` clause
+  const where: Record<string, any> = {};
+
+  if (id) {
+    where.id = { equals: id };
+  }
+  if (slug) {
+    where.slug = { equals: slug };
+  }
+  if (channel) {
+    where.channels = {
+      in: [channel], // Match if the `channel` ID exists in the `channels` array
+    };
+  }
+
+  // Ensure at least one filter is applied
+  if (Object.keys(where).length === 0) {
+    console.warn('No valid filter provided for queryPage.');
+    return null;
+  }
 
   const result = await payload.find({
     collection: 'pages',
@@ -116,37 +189,31 @@ const queryPageBySlug = cache(async ({ slug, locale, draft }: { slug: string; lo
     depth: 3,
     pagination: false,
     overrideAccess: draft,
-    // @ts-expect-error
-    locale: locale,
-    where: {
-      slug: {
-        equals: slug,
-      },
-    },
-    select: {
-      title: true,
-      slug: true,
-      image: true,
-      contributors: true,
-      license: true,
-      publishedAt: true,
-      parent: true,
-      breadcrumbs: true,
-      story: {
-        archive:
-          {
-            description: true,
-            relationTo: true,
-            topics: true,
-            showImages: true,
-            limit: true
-          },
-        content: true
-      },
-    },
+    locale,
+    where,
+    select: contentSelection,
   });
-
-  console.log('Query result:', result.docs?.[0] || null);
 
   return result.docs?.[0] || null;
 });
+
+export const contentSelection: PagesSelect= {
+  title: true,
+  slug: true,
+  image: true,
+  contributors: true,
+  license: true,
+  publishedAt: true,
+  parent: true,
+  breadcrumbs: true,
+  story: {
+    archive: {
+      description: true,
+      relationTo: true,
+      topics: true,
+      showImages: true,
+      limit: true,
+    },
+    content: true,
+  },
+};
