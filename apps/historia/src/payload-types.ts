@@ -469,6 +469,10 @@ export interface Page {
   slugLock?: boolean | null;
   resourceId: string;
   /**
+   * Select the websites or platforms where this article will be published.
+   */
+  channels?: (string | Website)[] | null;
+  /**
    * The license governing the use of this media.
    */
   license?: (string | null) | License;
@@ -514,6 +518,28 @@ export interface ArchiveBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'archive';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "websites".
+ */
+export interface Website {
+  id: string;
+  name: string;
+  /**
+   * The title of the entry.
+   */
+  title: string;
+  summary?: string | null;
+  domains?: string[] | null;
+  homePage?: (string | null) | Page;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    image?: (string | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -633,28 +659,6 @@ export interface Organization {
   slug?: string | null;
   slugLock?: boolean | null;
   resourceId: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "websites".
- */
-export interface Website {
-  id: string;
-  name: string;
-  /**
-   * The title of the entry.
-   */
-  title: string;
-  summary?: string | null;
-  domains?: string[] | null;
-  homePage?: (string | null) | Page;
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    image?: (string | null) | Media;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -1354,6 +1358,7 @@ export interface PagesSelect<T extends boolean = true> {
   slug?: T;
   slugLock?: T;
   resourceId?: T;
+  channels?: T;
   license?: T;
   contributors?: T | ContributorsSelect<T>;
   publishedAt?: T;
