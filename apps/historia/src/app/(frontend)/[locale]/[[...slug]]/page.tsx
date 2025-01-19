@@ -19,6 +19,8 @@ const defaultLocale = process.env.CMS_DEFAULT_LOCALE || 'en';
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise });
 
+  const locales = process.env.CMS_LOCALES?.split(',') || ['en'];
+
   const pages = await payload.find({
     collection: 'pages',
     draft: false,
@@ -27,18 +29,48 @@ export async function generateStaticParams() {
     pagination: false,
     select: {
       slug: true,
-      breadcrumbs: true,
+      resourceId: true,
     },
   });
 
-  // Generate paths for all locales dynamically
-  const paths = locales.flatMap((locale) =>
-    pages.docs.map((page) => ({
-      locale,
-      // Set slug to undefined if it's 'home'
-      slug: page.slug === 'home' ? undefined : [page.slug],
-    }))
-  );
+  const websites = await payload.find({
+    collection: 'websites',
+    draft: false,
+    limit: 1000,
+    overrideAccess: false,
+    pagination: false,
+    select: {
+      domains: true,
+      homePage: true,
+    },
+  });
+
+  const paths: Array<{
+    locale: string;
+    slug: string[]; // Always an array
+  }> = [];
+
+  // Generate paths for all documents in `pages`
+  for (const locale of locales) {
+    for (const page of pages.docs) {
+      const { slug } = page;
+      const slugArray = slug ? [slug] : []; // Convert slug to an array
+      paths.push({ locale, slug: slugArray });
+    }
+  }
+
+  // Generate paths for homepages of each website
+  for (const website of websites.docs) {
+    const { homePage } = website;
+    if (homePage) {
+      for (const locale of locales) {
+        paths.push({
+          locale,
+          slug: [], // Empty array for homepage
+        });
+      }
+    }
+  }
 
   console.log('Generated paths:', paths);
   return paths;

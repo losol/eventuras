@@ -42,3 +42,29 @@ export const getOriginalCollectionName = (localizedCollection: string, locale: s
     (key) => translations[key] === localizedCollection
   ) ?? localizedCollection;
 };
+
+/**
+ * Generates a localized URL for a given collection, resourceId, and slug.
+ * @param locale - The locale (e.g., 'en', 'no').
+ * @param collection - The original collection name (e.g., 'articles').
+ * @param resourceId - The unique resource ID of the document.
+ * @param slug - The slug of the document.
+ * @returns A string representing the localized URL.
+ */
+export const getDocUrl = ({
+  locale,
+  collection,
+  resourceId,
+  slug,
+}: {
+  locale: string;
+  collection: string;
+  resourceId: string;
+  slug: string;
+}): string => {
+  // Get the localized collection name based on the locale
+  const localizedCollectionName = getLocalizedCollectionName(collection, locale);
+
+  // Construct the URL
+  return `/${locale}/${localizedCollectionName}/${resourceId}/${slug}`;
+};

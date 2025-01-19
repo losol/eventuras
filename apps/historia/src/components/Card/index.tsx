@@ -8,6 +8,7 @@ import type { Article, Page, Project, Note, Happening, Person, Organization } fr
 
 import { Media } from '@/components/Media'
 import { usePathname } from "next/navigation";
+import { getDocUrl } from '@/app/(frontend)/[locale]/[collection]/pageCollections';
 
 export const Card: React.FC<{
   className?: string
@@ -20,12 +21,15 @@ export const Card: React.FC<{
   const { card, link } = useClickableCard({})
   const { className, doc, relationTo, showImages = true } = props
 
-  const { slug } = doc || {}
-
   // the first part of the pathname is the locale
   const locale = usePathname().split('/')[1]
 
-  const href = `${locale}/${relationTo}/${doc?.resourceId}/${slug}`
+  const href = getDocUrl({
+    locale,
+    collection: relationTo!,
+    resourceId: doc?.resourceId!,
+    slug: doc?.slug!,
+  });
 
   return (
     <article
