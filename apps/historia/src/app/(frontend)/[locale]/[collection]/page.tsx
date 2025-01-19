@@ -30,10 +30,11 @@ export default async function Page({ params: paramsPromise }: Props) {
   const payload = await getPayload({ config: configPromise });
   const { locale, collection } = await paramsPromise;
 
-  // Map the localized collection name to the original collection name
   const originalCollectionName = getOriginalCollectionName(collection, locale);
+  console.log('Mapped Collection:', { collection, originalCollectionName, locale });
 
   if (!isValidCollection(originalCollectionName)) {
+    console.warn(`Invalid collection: ${originalCollectionName}`);
     notFound();
   }
 
@@ -52,6 +53,7 @@ export default async function Page({ params: paramsPromise }: Props) {
     });
 
     if (!docsPage.docs?.length) {
+      console.warn(`No documents found for collection: ${originalCollectionName}`);
       notFound();
     }
 
@@ -65,6 +67,7 @@ export default async function Page({ params: paramsPromise }: Props) {
         <CollectionArchive
           // @ts-expect-error
           docs={docsPage.docs}
+          // @ts-expect-error
           relationTo={originalCollectionName}
         />
 
@@ -97,9 +100,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { collection, locale } = await paramsPromise;
 
-  // Map the localized collection name to the original collection name
   const originalCollectionName = getOriginalCollectionName(collection, locale);
-
   const capitalizedCollection =
     originalCollectionName.charAt(0).toUpperCase() + originalCollectionName.slice(1);
 
@@ -114,43 +115,35 @@ export async function generateStaticParams() {
 
   const params: Array<{ locale: string; collection: string }> = [];
 
-  // Helper to fetch all documents for a given collection
   const fetchCollectionDocs = async (collection: string) => {
-    const result = await payload.find({
-      collection: collection as CollectionSlug,
-      depth: 1,
-      limit: 1000,
-      overrideAccess: false,
-      pagination: false,
-      select: {
-        slug: true,
-      },
-    });
-    return result.docs || [];
+    try {
+      const result = await payload.find({
+        collection: collection as CollectionSlug,
+        depth: 1,
+        limit: 1000,
+        overrideAccess: false,
+        pagination: false,
+        select: {
+          slug: true,
+        },
+      });
+      return result.docs || [];
+    } catch (error) {
+      console.error(`Error fetching documents for collection "${collection}":`, error);
+      return [];
+    }
   };
 
-  // Iterate over locales and collections to generate params
   for (const locale of locales) {
     for (const collection of pageCollections) {
-      try {
-        const documents = await fetchCollectionDocs(collection);
-
-        // Get the localized collection name for the current locale
+      const documents = await fetchCollectionDocs(collection);
+      if (documents.length) {
         const localizedCollectionName = getLocalizedCollectionName(collection, locale);
-
-        // Push the localized collection name into params
-        params.push({
-          locale,
-          collection: localizedCollectionName,
-        });
-      } catch (error) {
-        console.error(
-          `Failed to fetch documents for collection "${collection}" in locale "${locale}":`,
-          error
-        );
+        params.push({ locale, collection: localizedCollectionName });
       }
     }
   }
 
+  console.log('Generated Static Params:', params);
   return params;
 }
