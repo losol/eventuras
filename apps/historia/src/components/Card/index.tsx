@@ -2,7 +2,7 @@
 import { cn } from '@/utilities/cn'
 import useClickableCard from '@/utilities/useClickableCard'
 import Link from 'next/link'
-import React, { Fragment } from 'react'
+import React from 'react'
 
 import type { Article, Page, Project, Note, Happening, Person, Organization } from '@/payload-types'
 
@@ -13,7 +13,7 @@ import { getDocUrl } from '@/app/(frontend)/[locale]/[collection]/pageCollection
 export const Card: React.FC<{
   className?: string
   doc?: Article | Happening | Page | Person | Organization | Project | Note
-  relationTo?: 'articles' | 'happenings' | 'pages' | 'persons' | 'organizations' | 'projects' | 'notes'
+  relationTo?: 'articles' | 'happenings' | 'pages' | 'persons' | 'projects' | 'notes'
   showTopics?: boolean
   showImages?: boolean
   title?: string

@@ -3,23 +3,22 @@ import { getPayload } from 'payload';
 import { draftMode } from 'next/headers';
 import React, { cache } from 'react';
 import { notFound } from 'next/navigation';
-import { headers } from 'next/headers';
 
 import { RenderBlocks } from '@/blocks/RenderBlocks';
 import { Hero } from '@/heros/Hero';
 import PageClient from './page.client';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
 import { PagesSelect } from '@/payload-types';
-import { getHost } from '@/utilities/getHost';
 
-// Read locales and default locale from environment variables, fallback to en
+// Read locales and default locale from environment variables, fallback to 'en'
 const locales = process.env.CMS_LOCALES?.split(',') || ['en'];
 const defaultLocale = process.env.CMS_DEFAULT_LOCALE || 'en';
 
+// Read domain from environment variable
+const serverDomain = process.env.NEXT_PUBLIC_CMS_URL;
+
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise });
-
-  const locales = process.env.CMS_LOCALES?.split(',') || ['en'];
 
   const pages = await payload.find({
     collection: 'pages',
@@ -33,43 +32,27 @@ export async function generateStaticParams() {
     },
   });
 
-  const websites = await payload.find({
-    collection: 'websites',
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-    pagination: false,
-    select: {
-      domains: true,
-      homePage: true,
-    },
-  });
+  if (!pages.docs?.length) {
+    console.log('No pages found.');
+    return [];
+  }
 
-  const paths: Array<{
-    locale: string;
-    slug: string[]; // Always an array
-  }> = [];
+  const paths: Array<{ locale: string; slug: string[] }> = [];
 
-  // Generate paths for all documents in `pages`
+  // Add paths for pages
   for (const locale of locales) {
     for (const page of pages.docs) {
-      const { slug } = page;
-      const slugArray = slug ? [slug] : []; // Convert slug to an array
+      const slugArray = page.slug ? [page.slug] : [];
       paths.push({ locale, slug: slugArray });
     }
   }
 
-  // Generate paths for homepages of each website
-  for (const website of websites.docs) {
-    const { homePage } = website;
-    if (homePage) {
-      for (const locale of locales) {
-        paths.push({
-          locale,
-          slug: [], // Empty array for homepage
-        });
-      }
-    }
+  // Add paths for the homepage
+  for (const locale of locales) {
+    paths.push({
+      locale,
+      slug: [],
+    });
   }
 
   console.log('Generated paths:', paths);
@@ -83,8 +66,8 @@ type Args = {
   }>;
 };
 
+// Page component
 export default async function Page({ params: paramsPromise }: Args) {
-  const payload = await getPayload({ config: configPromise });
   const draftModeResult = await draftMode();
   const draft = draftModeResult.isEnabled;
   const params = await paramsPromise;
@@ -98,38 +81,15 @@ export default async function Page({ params: paramsPromise }: Args) {
     notFound();
   }
 
-  const getHomePage = async (): Promise<string | null> => {
-  const domain = await getHost(); // Use your `getHost` utility to fetch the current domain
-  const payload = await getPayload({ config: configPromise });
-
-  const website = await payload.find({
-    collection: 'websites',
-    pagination: false,
-    limit: 1,
-    where: {
-      domains: {
-        contains: domain, // Match the current domain
-      },
-    },
-  });
-
-  if (website.docs.length && website.docs[0]?.homePage) {
-    return website.docs[0]?.homePage?.id || null;
-  }
-
-  console.warn(`No website configuration found for domain: ${domain}`);
-  return null;
-};
-
   // Get the last segment of the URL or use `undefined` for root
-  let currentSlug = slug?.length ? slug[slug.length - 1] : undefined;
+  const currentSlug = slug?.length ? slug[slug.length - 1] : undefined;
 
   let page;
   if (!currentSlug) {
-    // Fetch the homepage if slug is undefined
-    const homePageId = await getHomePage();
+    // Handle the homepage logic
+    const homePageId = await getHomePageId();
     if (!homePageId) {
-      console.warn('No homepage found for the current domain.');
+      console.warn('No homepage found.');
       notFound();
     }
 
@@ -150,7 +110,6 @@ export default async function Page({ params: paramsPromise }: Args) {
     <>
       <PageClient />
       <LivePreviewListener />
-
       <article className="pt-16 pb-24 container">
         {breadcrumbs && Array.isArray(breadcrumbs) && breadcrumbs.length > 1 && (
           <nav aria-label="breadcrumb" className="mb-4">
@@ -178,6 +137,34 @@ export default async function Page({ params: paramsPromise }: Args) {
   );
 }
 
+// Get the homepage ID from the environment
+const getHomePageId = cache(async (): Promise<string | null> => {
+  const payload = await getPayload({ config: configPromise });
+
+  const website = await payload.find({
+    collection: 'websites',
+    pagination: false,
+    limit: 1,
+    where: {
+      domains: {
+        contains: serverDomain,
+      },
+    },
+  });
+
+  if (
+    website.docs.length &&
+    website.docs[0]?.homePage &&
+    typeof website.docs[0].homePage === 'object'
+  ) {
+    return 'id' in website.docs[0].homePage ? website.docs[0].homePage.id : null;
+  }
+
+  console.warn(`No website configuration found for domain: ${serverDomain}`);
+  return null;
+});
+
+// Query a page dynamically based on ID, slug, or channel
 const queryPage = cache(async ({
   id,
   slug,
@@ -193,43 +180,45 @@ const queryPage = cache(async ({
 }) => {
   const payload = await getPayload({ config: configPromise });
 
-  // Dynamically build the `where` clause
   const where: Record<string, any> = {};
 
-  if (id) {
-    where.id = { equals: id };
-  }
-  if (slug) {
-    where.slug = { equals: slug };
-  }
-  if (channel) {
-    where.channels = {
-      in: [channel], // Match if the `channel` ID exists in the `channels` array
-    };
-  }
+  if (id) where.id = { equals: id };
+  if (slug) where.slug = { equals: slug };
+  if (channel) where.channels = { in: [channel] };
 
-  // Ensure at least one filter is applied
   if (Object.keys(where).length === 0) {
     console.warn('No valid filter provided for queryPage.');
     return null;
   }
 
-  const result = await payload.find({
-    collection: 'pages',
-    draft,
-    limit: 1,
-    depth: 3,
-    pagination: false,
-    overrideAccess: draft,
-    locale,
-    where,
-    select: contentSelection,
-  });
+  try {
+    const result = await payload.find({
+      collection: 'pages',
+      draft,
+      limit: 1,
+      depth: 3,
+      pagination: false,
+      overrideAccess: draft,
+      //@ts-expect-error
+      locale,
+      where,
+      select: contentSelection,
+    });
 
-  return result.docs?.[0] || null;
+    if (!result.docs?.length) {
+      console.warn(`No document found for query: ${JSON.stringify(where)}`);
+      return null;
+    }
+
+    return result.docs[0];
+  } catch (error) {
+    console.error(`Error querying page: ${error}`, error);
+    return null;
+  }
 });
 
-export const contentSelection: PagesSelect= {
+// Fields to select when querying pages
+const contentSelection: PagesSelect = {
   title: true,
   slug: true,
   image: true,
