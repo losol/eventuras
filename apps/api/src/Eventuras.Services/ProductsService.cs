@@ -21,55 +21,55 @@ public class ProductsService : IProductsService
         _logger = logger;
     }
 
-    public Task<List<Product>> GetAsync()
-    {
-        return _db.Products
-                  .Include(p => p.ProductVariants)
-                  .AsNoTracking()
-                  .ToListAsync();
-    }
+    // Get all products
+    public Task<List<Product>> GetAsync() =>
+        _db.Products
+            .Include(p => p.ProductVariants)
+            .AsNoTracking()
+            .ToListAsync();
 
-    public Task<Product> GetAsync(int id)
-    {
-        return _db.Products
-                  .Where(p => p.ProductId == id)
-                  .Include(p => p.ProductVariants)
-                  .Include(p => p.EventInfo)
-                  .AsNoTracking()
-                  .SingleOrDefaultAsync();
-    }
+    // Get a product by ID
+    public Task<Product> GetAsync(int id) =>
+        _db.Products
+            .Where(p => p.ProductId == id)
+            .Include(p => p.ProductVariants)
+            .Include(p => p.EventInfo)
+            .AsNoTracking()
+            .SingleOrDefaultAsync();
 
-    public Task<List<Product>> GetProductsForEventAsync(int eventId)
-    {
-        return _db.Products
-                  .Where(p => p.EventInfoId == eventId)
-                  .Include(p => p.ProductVariants)
-                  .OrderBy(p => p.DisplayOrder)
-                  .AsNoTracking()
-                  .ToListAsync();
-    }
+    // Get products for a specific event
+    public Task<List<Product>> GetProductsForEventAsync(int eventId) =>
+        _db.Products
+            .Where(p => p.EventInfoId == eventId)
+            .Include(p => p.ProductVariants)
+            .OrderBy(p => p.DisplayOrder)
+            .AsNoTracking()
+            .ToListAsync();
 
+    // Get registrations for a product
     public async Task<List<Registration>> GetRegistrationsForProductAsync(int productId)
     {
+        _logger.LogInformation("Getting registrations for product {ProductId}", productId);
         var registrationIds = await _db.OrderLines
             .Where(l => l.Order.Status != OrderStatus.Cancelled && l.ProductId == productId)
             .GroupBy(l => l.Order.RegistrationId)
-            .Where(g => g.Sum(l => l.Quantity) > 0)
+            .Where(g => g.Sum(l => l.Quantity) > 0) // Exclude net quantity = 0
             .Select(g => g.Key)
             .ToListAsync();
 
-        List<Registration> registrations = new List<Registration>();
+        var registrations = new List<Registration>();
+
         foreach (var id in registrationIds)
         {
             var reg = await _db.Registrations
                 .Where(m => m.RegistrationId == id)
                 .Include(m => m.User)
                 .Include(m => m.Orders)
-                    .ThenInclude(ml => ml.OrderLines)
+                .ThenInclude(o => o.OrderLines)
                 .FirstOrDefaultAsync();
 
             // Only add if registration is not cancelled
-            if (reg.Status != RegistrationStatus.Cancelled)
+            if (reg?.Status != RegistrationStatus.Cancelled)
             {
                 registrations.Add(reg);
             }
@@ -78,17 +78,17 @@ public class ProductsService : IProductsService
         return registrations;
     }
 
-
+    // Get registrations for a product variant
     public async Task<List<Registration>> GetRegistrationsForProductVariantAsync(int productVariantId)
     {
         var registrationIds = await _db.OrderLines
             .Where(l => l.Order.Status != OrderStatus.Cancelled && l.ProductVariantId == productVariantId)
             .GroupBy(l => l.Order.RegistrationId)
-            .Where(g => g.Sum(l => l.Quantity) > 0)
+            .Where(g => g.Sum(l => l.Quantity) > 0) // Exclude net quantity = 0
             .Select(g => g.Key)
             .ToListAsync();
 
-        List<Registration> registrations = new List<Registration>();
+        var registrations = new List<Registration>();
 
         foreach (var id in registrationIds)
         {
@@ -96,50 +96,47 @@ public class ProductsService : IProductsService
                 .Where(m => m.RegistrationId == id)
                 .Include(m => m.User)
                 .Include(m => m.Orders)
-                    .ThenInclude(ml => ml.OrderLines)
+                .ThenInclude(o => o.OrderLines)
                 .FirstOrDefaultAsync();
 
-
             // Only add if registration is not cancelled
-            if (reg.Status != RegistrationStatus.Cancelled)
+            if (reg?.Status != RegistrationStatus.Cancelled)
             {
                 registrations.Add(reg);
             }
         }
 
-        /* 
-        foreach(var id in registrationIds)
-        {
-            var registration = await _db.Registrations.FindAsync(id);
-            var task1 = _db.Entry(registration).Reference(r => r.User).LoadAsync();
-            var task2 = _db.Entry(registration).Collection(r => r.Orders).LoadAsync();
-            var task3 = _db.OrderLines.Where(l => l.Order.RegistrationId == id).LoadAsync();
-            await Task.WhenAll(task1, task2, task3); // DON'T DO THIS, it will cause 'A second operation started on this context before a previous operation completed.'
-
-            registrations.Add(registration);
-        }
-			*/
-
         return registrations;
     }
 
-
+    // Update a product's published status
     public async Task<bool> UpdateProductAsync(int productId, bool published)
     {
         var product = await _db.Products
             .Where(m => m.ProductId == productId)
             .FirstOrDefaultAsync();
 
+        if (product == null)
+        {
+            return false;
+        }
+
         product.Published = published;
         _db.Update(product);
         return await _db.SaveChangesAsync() > 0;
     }
 
+    // Update a product variant's published status
     public async Task<bool> UpdateProductVariantAsync(int productVariantId, bool published)
     {
         var productVariant = await _db.ProductVariants
             .Where(m => m.ProductVariantId == productVariantId)
             .FirstOrDefaultAsync();
+
+        if (productVariant == null)
+        {
+            return false;
+        }
 
         productVariant.Published = published;
         _db.Update(productVariant);
