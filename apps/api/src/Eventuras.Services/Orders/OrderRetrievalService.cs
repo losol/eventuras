@@ -48,8 +48,8 @@ public class OrderRetrievalService : IOrderRetrievalService
     }
 
     public async Task<Order> GetOrderByIdAsync(int id,
-        OrderRetrievalOptions options,
-        CancellationToken cancellationToken)
+        OrderRetrievalOptions options = null,
+        CancellationToken cancellationToken = default)
     {
         var order = await _context.Orders
             .WithOptions(options ?? new OrderRetrievalOptions())
@@ -63,8 +63,8 @@ public class OrderRetrievalService : IOrderRetrievalService
 
     public async Task<Paging<Order>> ListOrdersAsync(
         OrderListRequest request,
-        OrderRetrievalOptions options,
-        CancellationToken cancellationToken)
+        OrderRetrievalOptions options = default,
+        CancellationToken cancellationToken = default)
     {
         var filter = request.Filter ?? new OrderListFilter();
 
@@ -83,87 +83,84 @@ public class OrderRetrievalService : IOrderRetrievalService
         return await Paging.CreateAsync(query, request, cancellationToken);
     }
 
-
-    public async Task<ProductDeliverySummaryDto> GetProductDeliverySummaryAsync(int productId, CancellationToken cancellationToken)
+    public async Task<ProductDeliverySummaryDto> GetProductDeliverySummaryAsync(int productId,
+        CancellationToken cancellationToken = default)
     {
+        // Validate the product
+        var product = await _productRetrievalService.GetProductByIdAsync(productId);
+        if (product == null)
+        {
+            throw new NotFoundException($"Product with ID {productId} not found.");
+        }
+
+        // Validate organization
         var organization = await _currentOrganizationAccessorService.GetCurrentOrganizationAsync();
+        if (organization == null)
+        {
+            throw new NotFoundException("No valid organization context found.");
+        }
+
         await _organizationAccessControlService.CheckOrganizationReadAccessAsync(organization.OrganizationId);
 
-        // Fetch orders and related data
+        // Step 1: Load necessary OrderLine data
         var orderLines = await _context.OrderLines
             .Include(ol => ol.Order)
-                .ThenInclude(o => o.Registration)
-                    .ThenInclude(r => r.User)
+            .ThenInclude(o => o.Registration)
+            .ThenInclude(r => r.User)
             .Where(ol => ol.ProductId == productId)
             .ToListAsync(cancellationToken);
 
-        // Calculate ByStatus counts
-        var byStatus = orderLines
-            .GroupBy(ol => ol.Order.Registration.Status)
-            .Aggregate(new ByRegistrationStatus(), (acc, group) =>
+        // Step 2: Group by RegistrationId and calculate SumQuantity
+        var groupedRegistrations = orderLines
+            .GroupBy(ol => new
             {
-                var status = group.Key;
-
-                switch (status)
+                RegistrationId = ol.Order.Registration.RegistrationId,
+                RegistrationStatus = ol.Order.Registration.Status,
+                User = ol.Order.Registration.User
+            })
+            .Select(group => new ProductOrdersSummaryDto
+            {
+                RegistrationId = group.Key.RegistrationId,
+                RegistrationStatus = group.Key.RegistrationStatus,
+                User = new UserSummaryDto
                 {
-                    case RegistrationStatus.Draft:
-                        acc.Draft += group.Count();
-                        break;
-                    case RegistrationStatus.Cancelled:
-                        acc.Cancelled += group.Count();
-                        break;
-                    case RegistrationStatus.Verified:
-                        acc.Verified += group.Count();
-                        break;
-                    case RegistrationStatus.NotAttended:
-                        acc.NotAttended += group.Count();
-                        break;
-                    case RegistrationStatus.Attended:
-                        acc.Attended += group.Count();
-                        break;
-                    case RegistrationStatus.Finished:
-                        acc.Finished += group.Count();
-                        break;
-                    case RegistrationStatus.WaitingList:
-                        acc.WaitingList += group.Count();
-                        break;
-                }
+                    UserId = group.Key.User.Id,
+                    Name = group.Key.User.Name,
+                    PhoneNumber = group.Key.User.PhoneNumber,
+                    Email = group.Key.User.Email
+                },
+                OrderIds = group.Select(ol => ol.Order.OrderId).Distinct().ToArray(),
+                SumQuantity = group.Sum(ol => ol.Quantity)
+            })
+            .Where(summary => summary.SumQuantity > 0) // Filter out registrations with net zero quantity
+            .ToList();
 
-                return acc;
-            });
+        // Step 3: Calculate statistics by registration status
+        var byStatus = groupedRegistrations
+            .GroupBy(r => r.RegistrationStatus)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Count()
+            );
 
-        // Create ProductDeliverySummaryDto with statistics
-        var product = await _productRetrievalService.GetProductByIdAsync(productId);
-        var productDeliverySummary = new ProductDeliverySummaryDto
+        // Return the final summary
+        return new ProductDeliverySummaryDto
         {
             Product = ProductSummaryDto.FromProduct(product),
-            OrderSummary = orderLines
-                .GroupBy(ol => ol.Order.Registration)
-                .Select(group => new ProductOrdersSummaryDto
-                {
-                    RegistrationId = group.Key.RegistrationId,
-                    RegistrationStatus = group.Key.Status,
-                    User = new UserSummaryDto
-                    {
-                        UserId = group.Key.User.Id,
-                        Name = group.Key.User.Name,
-                        PhoneNumber = group.Key.User.PhoneNumber,
-                        Email = group.Key.User.Email
-                    },
-                    OrderIds = group.Select(ol => ol.Order.OrderId).Distinct().ToArray(),
-                    SumQuantity = group.Sum(ol => ol.Quantity)
-                })
-                .ToList(),
+            OrderSummary = groupedRegistrations,
             Statistics = new ProductStatisticsDto
             {
-                ByRegistrationStatus = byStatus
+                ByRegistrationStatus = new ByRegistrationStatus
+                {
+                    Draft = byStatus.GetValueOrDefault(RegistrationStatus.Draft, 0),
+                    Cancelled = byStatus.GetValueOrDefault(RegistrationStatus.Cancelled, 0),
+                    Verified = byStatus.GetValueOrDefault(RegistrationStatus.Verified, 0),
+                    NotAttended = byStatus.GetValueOrDefault(RegistrationStatus.NotAttended, 0),
+                    Attended = byStatus.GetValueOrDefault(RegistrationStatus.Attended, 0),
+                    Finished = byStatus.GetValueOrDefault(RegistrationStatus.Finished, 0),
+                    WaitingList = byStatus.GetValueOrDefault(RegistrationStatus.WaitingList, 0)
+                }
             }
         };
-
-        return productDeliverySummary;
     }
-
-
-
-
 }
