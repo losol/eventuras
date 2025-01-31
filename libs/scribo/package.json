@@ -9,9 +9,9 @@
     "dev": "vite"
   },
   "dependencies": {
+    "@lexical/link": "0.18.0",
     "@lexical/markdown": "^0.18.0",
     "@lexical/react": "^0.18.0",
-    "@lexical/link": "0.18.0",
     "lexical": "^0.18.0"
   },
   "peerDependencies": {
@@ -21,6 +21,7 @@
   "devDependencies": {
     "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*",
+    "@swc/core": "^1.10.12",
     "@testing-library/react": "^16.0.1",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
