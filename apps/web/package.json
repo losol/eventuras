@@ -73,6 +73,9 @@
     "typescript": "5.7.3",
     "webpack": "5.97.1"
   },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.32.1"
+  },
   "engines": {
     "npm": ">=9.0.0",
     "node": ">=18.0.0 <21.0.0"
