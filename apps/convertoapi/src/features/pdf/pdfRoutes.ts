@@ -1,10 +1,4 @@
-import {
-  FastifyInstance,
-  FastifyRequest,
-  FastifyReply,
-  FastifySchema,
-  HookHandlerDoneFunction,
-} from 'fastify';
+import { FastifyInstance, FastifyRequest, FastifyReply, FastifySchema } from 'fastify';
 import { HTMLToPDFService } from './pdfService.js';
 
 const papersizes = [
@@ -31,8 +25,8 @@ const pdfGenerateRequestSchema: FastifySchema = {
       papersize: { type: 'string', enum: papersizes, default: 'A4' },
     },
     oneOf: [
-      { required: ['html'], not: { required: ['url'] } },
-      { required: ['url'], not: { required: ['html'] } },
+      { required: ['html'], properties: { url: { type: 'null' } } },
+      { required: ['url'], properties: { html: { type: 'null' } } },
     ],
   },
   response: {
@@ -41,47 +35,34 @@ const pdfGenerateRequestSchema: FastifySchema = {
       type: 'object',
       content: {
         'application/pdf': {
-          schema: {
-            type: 'string',
-            format: 'binary',
-          },
+          schema: { type: 'string', format: 'binary' },
         },
       },
     },
     400: {
       description: 'Bad request',
       type: 'object',
-      properties: {
-        error: { type: 'string' },
-      },
+      properties: { error: { type: 'string' } },
     },
     401: {
       description: 'Unauthorized',
       type: 'object',
-      properties: {
-        error: { type: 'string' },
-      },
+      properties: { error: { type: 'string' } },
     },
     422: {
       description: 'Unprocessable',
       type: 'object',
-      properties: {
-        error: { type: 'string' },
-      },
+      properties: { error: { type: 'string' } },
     },
     429: {
       description: 'Rate limit exceeded',
       type: 'object',
-      properties: {
-        error: { type: 'string' },
-      },
+      properties: { error: { type: 'string' } },
     },
     500: {
       description: 'Internal server error',
       type: 'object',
-      properties: {
-        error: { type: 'string' },
-      },
+      properties: { error: { type: 'string' } },
     },
   },
 };
@@ -89,8 +70,7 @@ const pdfGenerateRequestSchema: FastifySchema = {
 // This function gives a proper error message when both 'html' and 'url' are provided
 async function validateHtmlRequest(
   request: FastifyRequest<{ Body: PdfGenerateRequest }>,
-  reply: FastifyReply,
-  done: HookHandlerDoneFunction
+  reply: FastifyReply
 ) {
   const { html, url } = request.body;
   if (html && url) {
@@ -99,8 +79,6 @@ async function validateHtmlRequest(
       .send({ error: "Cannot specify both 'html' and 'url'. Please provide only one." });
   } else if (!html && !url) {
     reply.status(422).send({ error: "Must specify either 'html' or 'url'." });
-  } else {
-    done();
   }
 }
 
@@ -143,8 +121,8 @@ export const pdfRoutes = async (fastify: FastifyInstance) => {
   fastify.route({
     method: 'POST',
     url: '/v1/pdf',
-    preValidation: validateHtmlRequest,
-    preHandler: fastify.verifyJWT,
+    preValidation: [validateHtmlRequest],
+    preHandler: [fastify.verifyJWT],
     handler: (request, reply) => pdfHandler(fastify, request, reply),
     schema: pdfGenerateRequestSchema,
   });
