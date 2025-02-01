@@ -25,27 +25,27 @@
     }
   ],
   "dependencies": {
-    "@fastify/jwt": "^8.0.1",
-    "@fastify/rate-limit": "^9.1.0",
-    "@fastify/static": "^7.0.4",
-    "@fastify/swagger": "^8.14.0",
-    "@scalar/fastify-api-reference": "^1.24.39",
-    "@swc/cli": "^0.4.0",
-    "dotenv": "^16.4.5",
-    "fastify": "^4.28.1",
-    "playwright": "^1.45.1",
+    "@fastify/jwt": "^9.0.3",
+    "@fastify/rate-limit": "^10.2.2",
+    "@fastify/static": "^8.0.4",
+    "@fastify/swagger": "^9.4.2",
+    "@scalar/fastify-api-reference": "^1.25.113",
+    "@swc/cli": "^0.6.0",
+    "dotenv": "^16.4.7",
+    "fastify": "^5.2.1",
+    "playwright": "^1.50.1",
     "swc": "^1.0.11",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.3",
-    "zod": "^3.23.8"
+    "typescript": "^5.7.3",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "*",
-    "@types/node": "^20.14.10",
-    "@typescript-eslint/eslint-plugin": "^7.16.0",
-    "@typescript-eslint/parser": "^7.16.0",
+    "@types/node": "^22.13.0",
+    "@typescript-eslint/eslint-plugin": "^8.22.0",
+    "@typescript-eslint/parser": "^8.22.0",
     "eslint": "^8.57.0",
-    "fastify-tsconfig": "^2.0.0",
-    "tsx": "^4.16.2"
+    "fastify-tsconfig": "^3.0.0",
+    "tsx": "^4.19.2"
   }
 }
