@@ -17,12 +17,11 @@ Token Endpoint Authentication Method is client_secret_post. Clients can authenti
 ```bash
 curl --request POST \
   --url http://localhost:3100/token \
-  --header 'Content-Type: application/json' \
+  --header "Authorization: Basic $(echo -n 'client_id:client_secret' | base64)" \
+  --header "Content-Type: application/json" \
   --data '{
-  "grant_type": "client_credentials",
-  "client_id": "id",
-  "client_secret": "secret"
-}'
+    "grant_type": "client_credentials"
+  }'
 ```
 
 ### Generate a PDF
