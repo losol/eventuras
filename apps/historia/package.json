@@ -51,14 +51,13 @@
     "next-sitemap": "^4.2.3",
     "payload": "3.20.0",
     "payload-admin-bar": "^1.0.6",
-    "postcss": "^8.5.1",
     "prism-react-renderer": "^2.4.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "7.54.2",
     "sharp": "0.33.5",
     "tailwind-merge": "^3.0.1",
-    "tailwindcss": "^4.0.3",
+    "tailwindcss": "^3.4.16",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
