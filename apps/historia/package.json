@@ -72,6 +72,7 @@
   },
   "optionalDependencies": {
     "@esbuild/linux-x64": "0.24.2",
-    "@libsql/linux-x64-gnu": "0.4.7"
+    "@libsql/linux-x64-gnu": "0.4.7",
+    "sharp": "0.33.5"
   }
 }
