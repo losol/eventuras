@@ -7,7 +7,7 @@
     "dev": "next -p 3200",
     "build": "next build",
     "start": "next start",
-    "pre:build": "copyfiles -u 3 ../../docs/**/* ./pages"
+    "pre:build": "copyfiles -u 3 ../../docs/**/* ./content"
   },
   "author": "Ole Kristian Losvik",
   "license": "GPL-2.0-or-later",
