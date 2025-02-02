@@ -16,8 +16,8 @@
     "eventuras"
   ],
   "dependencies": {
-    "@playwright/test": "1.48.0",
-    "dotenv": "^16.4.5"
+    "@playwright/test": "1.50.1",
+    "dotenv": "16.4.7"
   },
   "readme": "README.md"
 }
