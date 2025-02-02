@@ -27,7 +27,7 @@
   ],
   "engines": {
     "npm": ">=10.0.0 <11.0.0",
-    "node": ">=20.0.0 <21.0.0"
+    "node": ">=20.0.0 <23.0.0"
   },
   "scripts": {
     "build": "turbo run build",
@@ -35,6 +35,7 @@
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "npm:check-update": "npx npm-check-updates --deep",
+    "npm:reinstall": "npm run npm:clean && npm install --legacy-peer-deps",
     "npm:update": "npx npm-check-updates --deep -u",
     "npm:clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules && npx rimraf package-lock.json",
     "prepare": "husky"
