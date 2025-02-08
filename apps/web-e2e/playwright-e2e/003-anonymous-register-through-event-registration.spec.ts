@@ -1,5 +1,3 @@
-/* eslint no-process-env: 0 */
-
 import { expect, test } from '@playwright/test';
 import dotenv from 'dotenv';
 
@@ -9,28 +7,36 @@ import {
   validateRegistration,
   visitAndClickEventRegistrationButton,
 } from './functions';
-import { fetchLoginCode, getTagAndNamespaceFromEmail } from './utils';
+import { fetchLoginCode, parseEmailAlias } from './utils';
 
 dotenv.config();
 
 test.describe.configure({ mode: 'serial' });
-const adminTestMail = process.env.TEST_E2E_EMAIL_ADMIN;
-const tagAndNs = getTagAndNamespaceFromEmail(adminTestMail!);
-const userName = `${tagAndNs.nameSpace}.newuser-${Math.floor(
-  Date.now() / 1000 / 10
-)}@inbox.testmail.app`;
+
+const adminTestMail = process.env.TEST_EMAIL_ADMIN_USER!;
+const tagAndNs = parseEmailAlias(adminTestMail);
+if (!tagAndNs) {
+  throw new Error('Could not extract namespace from email');
+}
+
+// Extract the domain from the admin email
+const [, domain] = adminTestMail.split('@');
+
+// Use plus addressing for the new user email
+const userName = `${tagAndNs.nameSpace}+newuser-${Math.floor(Date.now() / 1000 / 10)}@${domain}`;
+
 test.describe('should be able to register as an anonymous user when hitting the event registration page', () => {
   const createdEvent = readCreatedEvent();
+
   test('registration button should be visible for anonymous users', async ({ page }) => {
     await visitAndClickEventRegistrationButton(page, createdEvent.eventId);
-    ///api/auth/signin?callbackUrl=%2Fuser%2Fevents%2F6%2Fregistration
     const url = `/user/events/${createdEvent.eventId}`;
     const location = `/api/auth/signin?callbackUrl=${encodeURIComponent(url)}`;
     await page.waitForLoadState('networkidle');
     await expect(page).toHaveURL(location);
   });
 
-  test('should be able to register user through the even registration page', async ({ page }) => {
+  test('should be able to register user through the event registration page', async ({ page }) => {
     await visitAndClickEventRegistrationButton(page, createdEvent.eventId);
     await page.locator('[type="submit"]').click();
     await page.waitForLoadState();

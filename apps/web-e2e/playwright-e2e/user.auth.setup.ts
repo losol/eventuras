@@ -5,7 +5,12 @@ import { authenticate } from './functions';
 
 dotenv.config();
 
-const userName = process.env.TEST_E2E_EMAIL_USER!;
+const userName = process.env.TEST_EMAIL_STANDARD_USER;
+
+if (!userName) {
+  throw new Error('Missing TEST_EMAIL_STANDARD_USER environment variable');
+}
+
 const authFile = 'playwright-auth/user.json';
 
 authenticate(userName, authFile);
