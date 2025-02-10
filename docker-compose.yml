@@ -1,31 +1,62 @@
 services:
-  app:
+  api:
     build:
-      context: .
-      dockerfile: Dockerfile.Historia
-      args:
-        CMS_SECRET: ${CMS_SECRET}
-        DEFAULT_LOCALE: ${DEFAULT_LOCALE}
-    container_name: historia_app
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: eventuras_api
     environment:
-      - CMS_SECRET=secret
-      - DATABASE_URL=file:./historia.db
-      - DEFAULT_LOCALE=no
-      - NODE_ENV=production
+      ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection:-"Host=db;Database=eventuras_api;Username=eventuras;Password=eventuras"}
+      Auth__Issuer: ${Auth__Issuer:?Please set Auth__Issuer}
+      Auth__ClientSecret: ${Auth__ClientSecret:?Please set Auth__ClientSecret}
+      Auth__ClientId: ${Auth__ClientId:?Please set Auth__ClientId}
+      Auth__ApiIdentifier: ${Auth__ApiIdentifier:?Please set Auth__ApiIdentifier}
+      URLS: ${URLS:-"http://localhost:8080"}
     ports:
-      - "3000:3000"
+      - "8080:8080"
     depends_on: [db]
 
-  db:
-    image: postgres:15
-    container_name: historia_db
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.Web
+    container_name: eventuras_web
     environment:
-      POSTGRES_USER: historia
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: historia
+      NEXTAUTH_URL: http://localhost:3000
+      NEXT_PUBLIC_APPLICATION_URL: http://localhost:3000
+      NEXT_PUBLIC_LOGOUT_URL_REDIRECT: http://localhost:3000
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:3000/api/eventuras
+      NEXT_PUBLIC_DEFAULT_LOCALE: nb-NO
+      NEXT_PUBLIC_BACKEND_URL: http://localhost:8080
+      NEXT_PUBLIC_AUTH0_DOMAIN: ${NEXT_PUBLIC_AUTH0_DOMAIN:?Please set Auth__Domain}
+      AUTH0_CLIENT_ID: ${AUTH0_CLIENT_ID:?Please set AUTH0_DOMAIN}
+      AUTH0_CLIENT_SECRET: ${AUTH0_CLIENT_SECRET:?Please set AUTH0_CLIENT_SECRET}
+      AUTH0_API_AUDIENCE: ${AUTH0_API_AUDIENCE:-"https://eventuras/api"}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:?Please set NEXTAUTH_SECRET}
+      NEXT_PUBLIC_ORGANIZATION_ID: ${NEXT_PUBLIC_ORGANIZATION_ID:-1}
+      NEXT_PUBLIC_API_VERSION: ${NEXT_PUBLIC_API_VERSION:-"v3"}
+      NEXT_PUBLIC_SITE_SETTINGS_URL: ${NEXT_PUBLIC_SITE_SETTINGS_URL:-"https://kursinord-json.pages.dev/kursinord.json"}
+
+    ports:
+      - "3000:3000"
+    depends_on: [api, db]
+
+  db:
+    container_name: eventuras_db
+    image: postgres
+    restart: always
+    volumes:
+      - eventuras_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    volumes:
-      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: eventuras
+      POSTGRES_PASSWORD: "eventuras"
+      POSTGRES_DB: eventuras_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready --dbname=eventuras --username=eventuras"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
 volumes:
-  db_data:
+  eventuras_data:

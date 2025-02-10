@@ -1,3 +1,10 @@
-import withNextra from "nextra";
+import nextra from "nextra";
 
-export default withNextra({});
+const withNextra = nextra({
+  // Nextra options
+  theme: "nextra-theme-docs",
+});
+
+export default withNextra({
+  //  Next.js config options
+});
