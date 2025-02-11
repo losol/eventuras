@@ -160,9 +160,23 @@ public class PowerOfficeService : IInvoicingProvider
             return existingCustomer;
         }
 
+        _logger.LogInformation("Creating new customer");
+
+        if (string.IsNullOrWhiteSpace(info.CustomerName))
+        {
+            throw new InvoicingException("Customer name is required");
+        }
+
         // If not, create the customer
         var customer = new Customer
         {
+            // split name parts from info.CustomerName
+            FirstName = info.CustomerName.Split(' ')[0],
+            // if there are more than one part, use all the remaining parts as last name
+            LastName = info.CustomerName.Split(' ').Length > 1
+                ? info.CustomerName.Split(' ')[1..].Aggregate((a, b) => $"{a} {b}")
+                : null,
+            Name = info.CustomerName,
             EmailAddress = customerEmail,
             VatNumber = vatNumber,
             InvoiceEmailAddress = customerEmail,
@@ -176,7 +190,9 @@ public class PowerOfficeService : IInvoicingProvider
             }
         };
 
-        customer.Name = info.CustomerName;
+        // Log the initials of the customer
+        _logger.LogInformation("Customer name: {CustomerName}", customer.Name);
+
 
         if (info.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice && !string.IsNullOrWhiteSpace(vatNumber))
         {
