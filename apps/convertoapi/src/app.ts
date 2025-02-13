@@ -17,6 +17,8 @@ const start = async () => {
   await registerPdfFeature(fastify);
   await registerHomepagePlugin(fastify);
 
+  console.log('Fastify routes registered:', fastify.printRoutes());
+
   try {
     // Use process.env.PORT, default to 3100
     const port = process.env.PORT ? parseInt(process.env.PORT) : 3100;

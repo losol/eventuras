@@ -8,6 +8,22 @@ Copy `.env.template` to `.env` and fill in the values.
 
 Then you may run the app with `npm run dev`.
 
+## Run local
+
+To run converto api locally with docker, you can use the following command:
+
+```bash
+docker run -d --name converto_api \
+  -e HOST=0.0.0.0 \
+  -e BASE_URL=http://localhost \
+  -e PORT=3100 \
+  -e JWT_SECRET=jwt_secret \
+  -e CLIENT_ID=client_id \
+  -e CLIENT_SECRET=client_secret \
+  -p 3100:3100 \
+  losolio/converto-api
+```
+
 ## Usage
 
 ### Get a token
@@ -35,7 +51,8 @@ curl --request POST \
   --header 'Authorization: Bearer {TOKEN_HERE}' \
   --data '{
     "url": "https://www.google.com"
-  }'
+  }' \
+  --output generated.pdf
 ```
 
 ## Acknowledgements
