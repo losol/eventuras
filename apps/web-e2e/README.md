@@ -9,9 +9,48 @@ Each test flow, in principle, runs in its own file, which is a suite of tests bu
 A filename then is build up like this
 `{number in order},{admin | user | anonymous}-{testscenario name}.spec.ts`
 
-# OTP fetching
+# Gmail setup for OTP testing
 
-Testmail.app is used through their API to fetch one time codes for admin and user login and for the anonymous user to register. The api key in use could be a free one - in that case there is a limit of 100 emails per month.
+# Setting Up an OAuth Client for Gmail
+
+You can set up an OAuth client for Gmail through the [Google Cloud Console](https://console.cloud.google.com/). Follow these steps:
+
+1. **Create or Select a Google Cloud Project:**
+
+   - Go to [Google Cloud Console](https://console.cloud.google.com/).
+   - Create a new project or select an existing one.
+
+2. **Enable the Gmail API:**
+
+   - In the Cloud Console, navigate to **APIs & Services > Library**.
+   - Search for “Gmail API” and click **Enable**.
+
+3. **Configure the OAuth Consent Screen:**
+
+   - Go to **APIs & Services > OAuth consent screen**.
+   - Choose an appropriate User Type (Internal for G Suite/Workspace accounts or External for public users).
+   - Fill in the required fields (app name, support email, etc.).  
+     _This step is necessary for the OAuth flow, even if you're just using it for testing._
+
+4. **Create OAuth Client Credentials:**
+
+   - Go to **APIs & Services > Credentials**.
+   - Click on **Create Credentials > OAuth client ID**.
+   - Select the appropriate **Application Type** (e.g., Web application, Desktop app).
+   - Provide a name and specify the **Authorized redirect URIs**.  
+     For example, if you're using a testing tool like the OAuth 2.0 Playground, you might use its default redirect URI, or set one that your app will use.
+   - Click **Create**.
+   - A dialog will display your new **Client ID** and **Client Secret**. Copy these for later use.
+
+5. **Store Your Credentials Securely:**
+   - Use the Client ID and Client Secret in your application by storing them in environment variables (for example, using [dotenv](https://www.npmjs.com/package/dotenv) or [dotenv-safe](https://www.npmjs.com/package/dotenv-safe)).
+
+For more details, refer to:
+
+- [Gmail API Quickstart for Node.js](https://developers.google.com/gmail/api/quickstart/nodejs)
+- [Google Cloud Documentation on Creating OAuth Client IDs](https://cloud.google.com/docs/authentication/getting-started)
+
+This setup will allow your application to perform OAuth2 flows with Gmail, enabling you to obtain access and refresh tokens for API calls.
 
 # Authentication
 

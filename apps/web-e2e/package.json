@@ -17,7 +17,9 @@
   ],
   "dependencies": {
     "@playwright/test": "1.50.1",
-    "dotenv": "16.4.7"
+    "dotenv": "16.4.7",
+    "google-auth-library": "^9.15.1",
+    "googleapis": "^144.0.0"
   },
   "readme": "README.md"
 }
