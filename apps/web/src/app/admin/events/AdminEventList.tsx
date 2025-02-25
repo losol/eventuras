@@ -1,7 +1,9 @@
 'use client';
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import {  PeriodMatchingKind } from '@eventuras/sdk';
+import { PeriodMatchingKind } from '@eventuras/sdk';
+import { EventDto } from '@eventuras/sdkv2/models/components/eventdto';
+import { RFCDate } from '@eventuras/sdkv2/types/rfcdate';
 import { Loading, Pagination } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
@@ -10,8 +12,6 @@ import FatalError from '@/components/FatalError';
 import Link from '@/components/Link';
 import useCreateHook from '@/hooks/createHook';
 import { createSDKV2 } from '@/utils/api/EventurasApi';
-import { RFCDate } from '@eventuras/sdkv2/types/rfcdate';
-import { EventDto } from '@eventuras/sdkv2/models/components/eventdto';
 const columnHelper = createColumnHelper<EventDto>();
 interface AdminEventListProps {
   organizationId: number;
@@ -19,10 +19,10 @@ interface AdminEventListProps {
   pageSize?: number;
 }
 
-const parseDate = (date?:RFCDate| null) :string=>{
-  if(!date) return '-'
-  return `${date.toString()}`
-}
+const parseDate = (date?: RFCDate | null): string => {
+  if (!date) return '-';
+  return `${date.toString()}`;
+};
 
 const AdminEventList: React.FC<AdminEventListProps> = ({
   organizationId,
@@ -31,7 +31,7 @@ const AdminEventList: React.FC<AdminEventListProps> = ({
 }) => {
   const { t } = createTranslation();
   const [page, setPage] = useState(1);
-  const sdk = createSDKV2({ inferUrl: { enabled: true, requiresToken: true } })
+  const sdk = createSDKV2({ inferUrl: { enabled: true, requiresToken: true } });
   function aMonthAgo(): string {
     const today = new Date();
     const weekAgo = new Date(today.setDate(today.getDate() - 31)).toISOString().split('T')[0];
@@ -51,7 +51,6 @@ const AdminEventList: React.FC<AdminEventListProps> = ({
       }),
     [page]
   );
-  
 
   const renderEventItemActions = (info: EventDto) => {
     return (
@@ -62,7 +61,6 @@ const AdminEventList: React.FC<AdminEventListProps> = ({
       </div>
     );
   };
-  
 
   const columns = [
     columnHelper.accessor('title', {

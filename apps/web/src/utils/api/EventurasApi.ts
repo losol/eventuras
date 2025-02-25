@@ -1,7 +1,7 @@
 import { ApiError, ApiError as SDKError, CancelablePromise, Eventuras } from '@eventuras/sdk';
+import { EventurasSDK } from '@eventuras/sdkv2';
 
 import Environment from '../Environment';
-import { EventurasSDK } from '@eventuras/sdkv2';
 type Headers = Record<string, string>;
 
 type UrlInfer = {
@@ -59,15 +59,14 @@ export const apiWrapper = <T>(fetchFunction: () => Promise<T> | CancelablePromis
 
 export const fetcher = <T>(fetchFunction: () => Promise<T>) => handleApiResponse(fetchFunction());
 
-
-type SDKConfig={
-  baseUrl:string
-  bareToken:string | null | undefined
-  headers:Headers
-  apiVersion:string
-}
-const createSDKConfig=(options:SDKOptions):SDKConfig=>{
-  const {baseUrl,authHeader,inferUrl} = options
+type SDKConfig = {
+  baseUrl: string;
+  bareToken: string | null | undefined;
+  headers: Headers;
+  apiVersion: string;
+};
+const createSDKConfig = (options: SDKOptions): SDKConfig => {
+  const { baseUrl, authHeader, inferUrl } = options;
   const orgId: string = Environment.NEXT_PUBLIC_ORGANIZATION_ID;
   const apiVersion = Environment.NEXT_PUBLIC_API_VERSION;
   let token: string | undefined | null;
@@ -97,30 +96,27 @@ const createSDKConfig=(options:SDKOptions):SDKConfig=>{
   return {
     apiVersion,
     headers,
-    bareToken:token,
-    baseUrl:apiBaseUrl
-  }
-
-
-}
+    bareToken: token,
+    baseUrl: apiBaseUrl,
+  };
+};
 
 export const createSDK = (options: SDKOptions = {}): Eventuras => {
-  const sdkConfig = createSDKConfig(options)
+  const sdkConfig = createSDKConfig(options);
 
   return new Eventuras({
-    BASE:sdkConfig.baseUrl,
-    TOKEN:sdkConfig.bareToken?sdkConfig.bareToken:undefined,
-    HEADERS:sdkConfig.headers,
-    VERSION:sdkConfig.apiVersion
+    BASE: sdkConfig.baseUrl,
+    TOKEN: sdkConfig.bareToken ? sdkConfig.bareToken : undefined,
+    HEADERS: sdkConfig.headers,
+    VERSION: sdkConfig.apiVersion,
   });
 };
 
-export const createSDKV2=(options:SDKOptions={}):EventurasSDK=>{
-  const sdkConfig = createSDKConfig(options)
+export const createSDKV2 = (options: SDKOptions = {}): EventurasSDK => {
+  const sdkConfig = createSDKConfig(options);
 
   return new EventurasSDK({
-    bearer:sdkConfig.bareToken?`Bearer ${sdkConfig.bareToken}`:undefined,
-    serverURL:sdkConfig.baseUrl
-  })
-
-}
+    bearer: sdkConfig.bareToken ? `Bearer ${sdkConfig.bareToken}` : undefined,
+    serverURL: sdkConfig.baseUrl,
+  });
+};
