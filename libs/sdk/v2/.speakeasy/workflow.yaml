@@ -1,0 +1,18 @@
+workflowVersion: 1.0.0
+speakeasyVersion: latest
+sources:
+    Eventuras API 3:
+        inputs:
+            - location: ../swagger.json
+        registry:
+            location: registry.speakeasyapi.dev/eventuras/eventurasdev/eventuras-api-3
+targets:
+    eventuras-sdk:
+        target: typescript
+        source: Eventuras API 3
+        codeSamples:
+            registry:
+                location: registry.speakeasyapi.dev/eventuras/eventurasdev/eventuras-api-3-typescript-code-samples
+            labelOverride:
+                fixedValue: Typescript (SDK)
+            blocking: false
