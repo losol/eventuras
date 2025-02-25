@@ -1,4 +1,5 @@
 import { ApiError, ApiError as SDKError, CancelablePromise, Eventuras } from '@eventuras/sdk';
+import { EnrollmentsSDK } from "enrollments-sdk";
 
 import Environment from '../Environment';
 type Headers = Record<string, string>;
@@ -58,7 +59,14 @@ export const apiWrapper = <T>(fetchFunction: () => Promise<T> | CancelablePromis
 
 export const fetcher = <T>(fetchFunction: () => Promise<T>) => handleApiResponse(fetchFunction());
 
-export const createSDK = ({ baseUrl, authHeader, inferUrl }: SDKOptions = {}): Eventuras => {
+type SDKConfig = {
+  baseUrl: string;
+  bareToken: string | null | undefined;
+  headers: Headers;
+  apiVersion: string;
+};
+const createSDKConfig = (options: SDKOptions): SDKConfig => {
+  const { baseUrl, authHeader, inferUrl } = options;
   const orgId: string = Environment.NEXT_PUBLIC_ORGANIZATION_ID;
   const apiVersion = Environment.NEXT_PUBLIC_API_VERSION;
   let token: string | undefined | null;
@@ -85,20 +93,30 @@ export const createSDK = ({ baseUrl, authHeader, inferUrl }: SDKOptions = {}): E
     'Eventuras-Org-Id': orgId,
   };
 
-  const config: {
-    BASE: string;
-    TOKEN?: string;
-    HEADERS?: Headers | undefined;
-    VERSION: string;
-  } = {
-    BASE: apiBaseUrl,
-    TOKEN: token ?? undefined,
-    HEADERS: headers,
-    VERSION: apiVersion,
+  return {
+    apiVersion,
+    headers,
+    bareToken: token,
+    baseUrl: apiBaseUrl,
   };
-  if (token) {
-    config.TOKEN = token;
-  }
+};
 
-  return new Eventuras(config);
+export const createSDK = (options: SDKOptions = {}): Eventuras => {
+  const sdkConfig = createSDKConfig(options);
+
+  return new Eventuras({
+    BASE: sdkConfig.baseUrl,
+    TOKEN: sdkConfig.bareToken ? sdkConfig.bareToken : undefined,
+    HEADERS: sdkConfig.headers,
+    VERSION: sdkConfig.apiVersion,
+  });
+};
+
+export const createEnrollmentsSDK = (options: SDKOptions = {}): EnrollmentsSDK => {
+  const sdkConfig = createSDKConfig(options);
+
+  return new EnrollmentsSDK({
+    bearer: sdkConfig.bareToken ? `Bearer ${sdkConfig.bareToken}` : undefined,
+    serverURL: sdkConfig.baseUrl,
+  });
 };

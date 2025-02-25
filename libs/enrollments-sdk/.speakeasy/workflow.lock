@@ -1,0 +1,36 @@
+speakeasyVersion: 1.498.0
+sources:
+    Eventuras API 3:
+        sourceNamespace: eventuras-api-3
+        sourceRevisionDigest: sha256:949ca5d647493e97ee0cbf4606f98cd497f8e5c268021cebfba0119ecb715987
+        sourceBlobDigest: sha256:ceb00179df7b2fe90cda20a5e9be1386ef3386e587dcd46bf53f19b7782d872e
+        tags:
+            - latest
+            - "3"
+targets:
+    enrollments-sdk:
+        source: Eventuras API 3
+        sourceNamespace: eventuras-api-3
+        sourceRevisionDigest: sha256:949ca5d647493e97ee0cbf4606f98cd497f8e5c268021cebfba0119ecb715987
+        sourceBlobDigest: sha256:ceb00179df7b2fe90cda20a5e9be1386ef3386e587dcd46bf53f19b7782d872e
+        codeSamplesNamespace: eventuras-api-3-typescript-code-samples
+        codeSamplesRevisionDigest: sha256:2ad9ca8f5cfc0381e9ea23c83020deb6ea78aa72c5c1cd49a68bdf8f195ec468
+workflow:
+    workflowVersion: 1.0.0
+    speakeasyVersion: latest
+    sources:
+        Eventuras API 3:
+            inputs:
+                - location: swagger.json
+            registry:
+                location: registry.speakeasyapi.dev/eventuras/eventurasdev/eventuras-api-3
+    targets:
+        enrollments-sdk:
+            target: typescript
+            source: Eventuras API 3
+            codeSamples:
+                registry:
+                    location: registry.speakeasyapi.dev/eventuras/eventurasdev/eventuras-api-3-typescript-code-samples
+                labelOverride:
+                    fixedValue: Typescript (SDK)
+                blocking: false
