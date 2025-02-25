@@ -12,7 +12,7 @@
       "@eventuras/sdk": ["../../libs/sdk"],
       "@eventuras/ui": ["../../libs/ui/src"],
       "@eventuras/ui/*": ["../../libs/ui/src/*"],
-      "@eventuras/utils": ["../../libs/utils"],
+      "@eventuras/utils": ["../../libs/utils"]
     },
     "plugins": [
       {

@@ -1,5 +1,5 @@
 import { ApiError, ApiError as SDKError, CancelablePromise, Eventuras } from '@eventuras/sdk';
-import { EnrollmentsSDK } from "enrollments-sdk";
+import { EnrollmentsSDK } from 'enrollments-sdk';
 
 import Environment from '../Environment';
 type Headers = Record<string, string>;
