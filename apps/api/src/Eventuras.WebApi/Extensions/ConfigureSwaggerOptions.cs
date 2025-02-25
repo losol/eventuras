@@ -71,11 +71,16 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
 
         options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
 
+        // Ensure LocalDate is treated as a string with "date" format
+        options.MapType<NodaTime.LocalDate>(() => new OpenApiSchema
+        {
+            Type = "string",
+            Format = "date"
+        });
+
         var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
         options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
     }
-
-
 }
 
 public class RemoveJsonPatchContentTypeFilter : IOperationFilter

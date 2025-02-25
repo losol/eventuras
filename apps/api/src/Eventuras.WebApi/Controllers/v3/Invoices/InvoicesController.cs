@@ -67,6 +67,15 @@ public class InvoicesController : ControllerBase
         var invoiceInfo = InvoiceInfo.CreateFromOrderList(orders);
         _logger.LogInformation($"Invoice info {invoiceInfo}");
 
+        // Loop through the orders and ensure orders have a customer name, use user name if not set
+        foreach (var order in orders)
+        {
+            if (string.IsNullOrWhiteSpace(order.CustomerName))
+            {
+                order.CustomerName = order.User?.Name;
+            }
+        }
+
         var invoice = await _invoicingService.CreateInvoiceAsync(orders.ToArray(), invoiceInfo);
 
         return new InvoiceDto(invoice);
