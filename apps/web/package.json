@@ -39,7 +39,7 @@
     "html-react-parser": "^5.2.2",
     "i18n": "^0.15.1",
     "jwt-decode": "^4.0.0",
-    "next": "14.2.23",
+    "next": "14.2.26",
     "next-auth": "4.24.11",
     "next-translate": "^2.6.2",
     "pino": "^9.6.0",
@@ -79,7 +79,7 @@
   },
   "engines": {
     "npm": ">=9.0.0",
-    "node": ">=18.0.0 <23.0.0"
+    "node": ">=20.0.0 <23.0.0"
   },
   "readme": "ERROR: No README data found!"
 }
