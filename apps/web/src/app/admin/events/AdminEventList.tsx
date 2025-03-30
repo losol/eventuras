@@ -1,10 +1,10 @@
 'use client';
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
+import { EventDto } from '@eventuras/enrollments-sdk/models/components/eventdto';
+import { PeriodMatchingKind } from '@eventuras/enrollments-sdk/models/components/periodmatchingkind';
+import { RFCDate } from '@eventuras/enrollments-sdk/types/rfcdate';
 import { Loading, Pagination } from '@eventuras/ui';
-import { PeriodMatchingKind } from 'enrollments-sdk/models/components';
-import { EventDto } from 'enrollments-sdk/models/components/eventdto';
-import { RFCDate } from 'enrollments-sdk/types/rfcdate';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
 

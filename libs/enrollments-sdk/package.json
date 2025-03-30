@@ -1,5 +1,5 @@
 {
-  "name": "enrollments-sdk",
+  "name": "@eventuras/enrollments-sdk",
   "version": "0.0.1",
   "author": "Speakeasy",
   "type": "module",
