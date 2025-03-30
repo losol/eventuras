@@ -1,9 +1,7 @@
 'use client';
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import { EventDto } from '@eventuras/enrollments-sdk/models/components/eventdto';
-import { PeriodMatchingKind } from '@eventuras/enrollments-sdk/models/components/periodmatchingkind';
-import { RFCDate } from '@eventuras/enrollments-sdk/types/rfcdate';
+import { EventDto, LocalDate, PeriodMatchingKind } from '@eventuras/sdk';
 import { Loading, Pagination } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 import { useState } from 'react';
@@ -11,18 +9,13 @@ import { useState } from 'react';
 import FatalError from '@/components/FatalError';
 import Link from '@/components/Link';
 import useCreateHook from '@/hooks/createHook';
-import { createEnrollmentsSDK } from '@/utils/api/EventurasApi';
+import { createSDK } from '@/utils/api/EventurasApi';
 const columnHelper = createColumnHelper<EventDto>();
 interface AdminEventListProps {
   organizationId: number;
   includePastEvents?: boolean;
   pageSize?: number;
 }
-
-const parseDate = (date?: RFCDate | null): string => {
-  if (!date) return '-';
-  return `${date.toString()}`;
-};
 
 const AdminEventList: React.FC<AdminEventListProps> = ({
   organizationId,
@@ -31,7 +24,8 @@ const AdminEventList: React.FC<AdminEventListProps> = ({
 }) => {
   const { t } = createTranslation();
   const [page, setPage] = useState(1);
-  const sdk = createEnrollmentsSDK({ inferUrl: { enabled: true, requiresToken: true } });
+  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+
   function aMonthAgo(): string {
     const today = new Date();
     const weekAgo = new Date(today.setDate(today.getDate() - 31)).toISOString().split('T')[0];
@@ -44,8 +38,8 @@ const AdminEventList: React.FC<AdminEventListProps> = ({
         organizationId,
         includeDraftEvents: true,
         includePastEvents: includePastEvents,
-        start: includePastEvents ? undefined : new RFCDate(aMonthAgo()),
-        period: PeriodMatchingKind.Contain,
+        start: includePastEvents ? undefined : (aMonthAgo() as LocalDate),
+        period: PeriodMatchingKind.CONTAIN,
         page,
         count: pageSize,
       }),
@@ -73,7 +67,7 @@ const AdminEventList: React.FC<AdminEventListProps> = ({
     }),
     columnHelper.accessor('dateStart', {
       header: t('admin:eventColumns.when').toString(),
-      cell: info => parseDate(info.getValue()),
+      cell: info => info.getValue(),
       enableSorting: true,
     }),
     columnHelper.accessor('id', {
@@ -93,7 +87,6 @@ const AdminEventList: React.FC<AdminEventListProps> = ({
         onPreviousPageClick={() => setPage(page - 1)}
         onNextPageClick={() => setPage(page + 1)}
       />
-      <p>{result.data?.length}</p>
     </>
   );
 };

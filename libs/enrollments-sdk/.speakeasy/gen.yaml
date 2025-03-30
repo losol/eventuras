@@ -24,7 +24,7 @@ typescript:
     devDependencies: {}
     peerDependencies: {}
   additionalPackageJSON: {}
-  author: Speakeasy
+  author: Eventuras
   clientServerStatusCodesAsErrors: true
   defaultErrorName: APIError
   enableCustomCodeRegions: false
@@ -45,9 +45,9 @@ typescript:
   inputModelSuffix: input
   maxMethodParams: 0
   methodArguments: require-security-and-request
-  moduleFormat: dual
+  moduleFormat: esm
   outputModelSuffix: output
-  packageName: enrollments-sdk
+  packageName: '@eventuras/enrollments-sdk'
   responseFormat: flat
   templateVersion: v2
   useIndexModules: true

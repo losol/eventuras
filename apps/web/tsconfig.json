@@ -4,6 +4,7 @@
     "paths": {
       "@/*": ["./src/*", "./public/*"],
       "@eventuras/datatable": ["../../libs/datatable/src/*"],
+      "@eventuras/enrollments-sdk": ["../../libs/enrollments-sdk"],
       "@eventuras/forms*": ["../../libs/forms/src*"],
       "@eventuras/markdown": ["../../libs/markdown/src/*"],
       "@eventuras/markdowninput": ["../../libs/markdowninput"],
