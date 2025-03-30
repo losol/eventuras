@@ -1,3 +1,5 @@
+import { UserDtoPageResponseDto } from '@eventuras/enrollments-sdk/models/components';
+import { UserDto } from '@eventuras/enrollments-sdk/models/components/userdto';
 import { Container, Heading } from '@eventuras/ui';
 import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
@@ -9,8 +11,6 @@ import Environment from '@/utils/Environment';
 
 import UserList from './UserList';
 import UsersActionMenu from './UsersActionMenu';
-import { UserDto } from 'enrollments-sdk/models/components/userdto';
-import { UserDtoPageResponseDto } from 'enrollments-sdk/models/components';
 
 const AdminUserPage = async () => {
   const { t } = createTranslation();
@@ -29,7 +29,7 @@ const AdminUserPage = async () => {
   let data: UserDto[] = [];
 
   if (userFetchResult.ok) {
-    data = (userFetchResult.value as UserDtoPageResponseDto).data!
+    data = (userFetchResult.value as UserDtoPageResponseDto).data!;
   }
   return (
     <Wrapper>
