@@ -36,6 +36,7 @@ export enum EnvironmentVariables {
   NEXTAUTH_SECRET = 'NEXTAUTH_SECRET',
   NODE_ENV = 'NODE_ENV',
   SESSION_DATABASE_URL = 'SESSION_DATABASE_URL',
+  SESSION_SECRET = 'SESSION_SECRET',
 }
 
 // Optional Environment Variables
