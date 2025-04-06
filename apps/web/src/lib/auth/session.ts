@@ -4,7 +4,7 @@ import { cache } from 'react';
 
 import type { Session, User } from './db';
 import { db, sessionTable, userTable } from './db';
-import { encrypt, generateToken, sha512 } from './utils';
+import { decrypt, encrypt, generateToken, sha512 } from './utils';
 
 // Session token generation and validation
 export function generateSessionToken(): string {
@@ -85,6 +85,19 @@ export async function validateSessionToken(token: string): Promise<SessionValida
       })
       .where(eq(sessionTable.id, session.id));
   }
+
+  // decrypt accessToken/refreshToken if they exist
+  if (session.accessToken) {
+    session.accessToken = decrypt(session.accessToken);
+  }
+  if (session.refreshToken) {
+    session.refreshToken = decrypt(session.refreshToken);
+  }
+  // Log the session for debugging
+  // eslint-disable-next-line no-console
+  console.log('Session:', session);
+
+  console.log(session);
 
   return { session, user };
 }
