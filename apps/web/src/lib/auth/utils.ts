@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import crypto, { createHash } from 'crypto';
 
 import Environment, { EnvironmentVariables } from '@/utils/Environment';
 
@@ -42,4 +42,30 @@ export function decrypt(data: string): string {
   decipher.setAuthTag(tag);
   const decrypted = Buffer.concat([decipher.update(encryptedText), decipher.final()]);
   return decrypted.toString('utf8');
+}
+
+export function sha512(data: string | Buffer): string {
+  return createHash('sha512').update(data).digest('hex');
+}
+
+/**
+ * Converts a Uint8Array to a lowercase hexadecimal string.
+ */
+export function toHex(bytes: Uint8Array): string {
+  return Array.from(bytes)
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+/**
+ * Generates a random token of the given byte length and returns it as a hex string.
+ * Default token length is 20 bytes (160 bits).
+ *
+ * @param tokenLength - The number of random bytes to generate (default is 20).
+ * @returns A hex string representing the token.
+ */
+export function generateToken(tokenLength: number = 32): string {
+  const bytes = new Uint8Array(tokenLength);
+  crypto.getRandomValues(bytes);
+  return toHex(bytes);
 }

@@ -19,13 +19,17 @@ export const authUserTable = pgTable('authUser', {
 
 export const sessionTable = pgTable('session', {
   id: text('id').primaryKey(),
+
   userId: integer('user_id')
     .notNull()
     .references(() => authUserTable.id),
-  expiresAt: timestamp('expires_at', {
-    withTimezone: true,
-    mode: 'date',
-  }).notNull(),
+
+  expiresAt: timestamp('expires_at').notNull(),
+
+  accessTokenCipher: text('access_token_cipher'),
+  accessTokenExpiresAt: timestamp('access_token_expires_at'),
+  refreshTokenCipher: text('refresh_token_cipher'),
+  refreshTokenExpiresAt: timestamp('refresh_token_expires_at'),
 });
 
 export type User = InferSelectModel<typeof authUserTable>;

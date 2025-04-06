@@ -1,28 +1,57 @@
-import { sha256 } from '@oslojs/crypto/sha2';
-import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
 import { eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
 import { cache } from 'react';
 
 import type { Session, User } from './db';
 import { authUserTable, db, sessionTable } from './db';
+import { encrypt, generateToken, sha512 } from './utils';
 
 // Session token generation and validation
 export function generateSessionToken(): string {
-  const bytes = new Uint8Array(20);
-  crypto.getRandomValues(bytes);
-  const token = encodeBase32LowerCaseNoPadding(bytes);
-  return token;
+  return generateToken();
 }
 
-export async function createSession(token: string, userId: number): Promise<Session> {
-  const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+interface CreateSessionOptions {
+  accessToken?: string; // Optional
+  accessTokenExpiresAt?: Date; // Optional
+  refreshToken?: string; // Optional
+  refreshTokenExpiresAt?: Date; // Optional
+  sessionDurationDays?: number; // If not provided, default to 30
+}
+
+export async function createSession(
+  token: string,
+  userId: number,
+  {
+    accessToken,
+    accessTokenExpiresAt,
+    refreshToken,
+    refreshTokenExpiresAt,
+    sessionDurationDays = 30,
+  }: CreateSessionOptions = {}
+): Promise<Session> {
+  // Hash the token to create a unique session ID.
+  const sessionIdHash = sha512(token);
+
+  // Encrypt accessToken/refreshToken if provided.
+  const accessTokenCipher = accessToken ? encrypt(accessToken) : null;
+  const refreshTokenCipher = refreshToken ? encrypt(refreshToken) : null;
+
+  // Default session expiry (defaults to 30 days).
+  const sessionExpiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * sessionDurationDays);
+
   const session: Session = {
-    id: sessionId,
+    id: sessionIdHash,
     userId,
-    expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+    expiresAt: sessionExpiresAt,
+    accessTokenCipher,
+    accessTokenExpiresAt: accessTokenExpiresAt ?? null,
+    refreshTokenCipher,
+    refreshTokenExpiresAt: refreshTokenExpiresAt ?? null,
   };
+
   await db.insert(sessionTable).values(session);
+
   return session;
 }
 
@@ -36,7 +65,7 @@ export const getCurrentSession = cache(async (): Promise<SessionValidationResult
 });
 
 export async function validateSessionToken(token: string): Promise<SessionValidationResult> {
-  const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+  const sessionId = sha512(token);
   const result = await db
     .select({ user: authUserTable, session: sessionTable })
     .from(sessionTable)
