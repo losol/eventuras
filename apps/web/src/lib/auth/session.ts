@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { cache } from 'react';
 
 import type { Session, User } from './db';
-import { authUserTable, db, sessionTable } from './db';
+import { db, sessionTable, userTable } from './db';
 import { encrypt, generateToken, sha512 } from './utils';
 
 // Session token generation and validation
@@ -12,23 +12,15 @@ export function generateSessionToken(): string {
 }
 
 interface CreateSessionOptions {
-  accessToken?: string; // Optional
-  accessTokenExpiresAt?: Date; // Optional
-  refreshToken?: string; // Optional
-  refreshTokenExpiresAt?: Date; // Optional
-  sessionDurationDays?: number; // If not provided, default to 30
+  accessToken?: string;
+  refreshToken?: string;
+  sessionDurationDays?: number;
 }
 
 export async function createSession(
   token: string,
   userId: number,
-  {
-    accessToken,
-    accessTokenExpiresAt,
-    refreshToken,
-    refreshTokenExpiresAt,
-    sessionDurationDays = 30,
-  }: CreateSessionOptions = {}
+  { accessToken, refreshToken, sessionDurationDays = 30 }: CreateSessionOptions = {}
 ): Promise<Session> {
   // Hash the token to create a unique session ID.
   const sessionIdHash = sha512(token);
@@ -44,14 +36,11 @@ export async function createSession(
     id: sessionIdHash,
     userId,
     expiresAt: sessionExpiresAt,
-    accessTokenCipher,
-    accessTokenExpiresAt: accessTokenExpiresAt ?? null,
-    refreshTokenCipher,
-    refreshTokenExpiresAt: refreshTokenExpiresAt ?? null,
+    accessToken: accessTokenCipher,
+    refreshToken: refreshTokenCipher,
   };
 
   await db.insert(sessionTable).values(session);
-
   return session;
 }
 
@@ -67,9 +56,9 @@ export const getCurrentSession = cache(async (): Promise<SessionValidationResult
 export async function validateSessionToken(token: string): Promise<SessionValidationResult> {
   const sessionId = sha512(token);
   const result = await db
-    .select({ user: authUserTable, session: sessionTable })
+    .select({ user: userTable, session: sessionTable })
     .from(sessionTable)
-    .innerJoin(authUserTable, eq(sessionTable.userId, authUserTable.id))
+    .innerJoin(userTable, eq(sessionTable.userId, userTable.id))
     .where(eq(sessionTable.id, sessionId));
 
   if (result.length === 0) {
@@ -80,11 +69,13 @@ export async function validateSessionToken(token: string): Promise<SessionValida
   const user = sessionData.user as User;
   const session = sessionData.session as Session;
 
+  // Check if the session is expired
   if (Date.now() >= session.expiresAt.getTime()) {
     await db.delete(sessionTable).where(eq(sessionTable.id, session.id));
     return { session: null, user: null };
   }
 
+  // Renew session if it's within 15 days of expiring
   if (Date.now() >= session.expiresAt.getTime() - 1000 * 60 * 60 * 24 * 15) {
     session.expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
     await db

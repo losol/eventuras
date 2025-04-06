@@ -5,7 +5,7 @@ import * as openid from 'openid-client';
 import { auth0, AuthProviders, getAuth0ClientConfig } from '@/lib/auth/oauth';
 import { globalGETRateLimit } from '@/lib/auth/request';
 import { createSession, generateSessionToken, setSessionTokenCookie } from '@/lib/auth/session';
-import { createUser, getUser } from '@/lib/auth/user';
+import { createUser, getUser, updateUser } from '@/lib/auth/user';
 import Environment from '@/utils/Environment';
 
 export async function GET(request: Request): Promise<Response> {
@@ -94,20 +94,36 @@ export async function GET(request: Request): Promise<Response> {
       });
     }
 
-    // Lookup existing user or create a new one
+    // Extract additional user data from the id token or user info response.
+    const userData = {
+      email: userResult.email,
+      givenName: userResult.given_name,
+      familyName: userResult.family_name,
+      nickname: userResult.nickname,
+      fullName: userResult.name,
+      picture: userResult.picture,
+      emailVerified: userResult.email_verified,
+      roles: userResult['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'],
+    };
+
+    // Lookup existing user or create a new one.
     const existingUser = await getUser(AuthProviders.Auth0, providerUserId);
     let user;
     if (existingUser !== null) {
       Logger.info({ namespace: 'login:auth0' }, `Found existing user: ${existingUser.id}`);
-      user = existingUser;
+      // Update the existing user with the latest info.
+      user = await updateUser(AuthProviders.Auth0, providerUserId, userData);
     } else {
       Logger.info({ namespace: 'login:auth0' }, 'Creating new user');
-      user = await createUser(AuthProviders.Auth0, providerUserId, userResult.email);
+      user = await createUser(AuthProviders.Auth0, providerUserId, userData);
     }
 
     // Create a new session and set the session token cookie
     const sessionToken = generateSessionToken();
-    const session = await createSession(sessionToken, user.id);
+    const session = await createSession(sessionToken, user.id, {
+      accessToken: tokens.access_token,
+      refreshToken: tokens.refresh_token,
+    });
     setSessionTokenCookie(sessionToken, session.expiresAt);
 
     Logger.info({ namespace: 'login:auth0' }, 'Redirect to home page');

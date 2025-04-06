@@ -44,6 +44,10 @@ export function decrypt(data: string): string {
   return decrypted.toString('utf8');
 }
 
+export function sha256(data: string | Buffer): string {
+  return createHash('sha256').update(data).digest('hex');
+}
+
 export function sha512(data: string | Buffer): string {
   return createHash('sha512').update(data).digest('hex');
 }
