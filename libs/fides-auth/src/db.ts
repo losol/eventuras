@@ -3,10 +3,8 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { boolean, integer, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
 import pg from 'pg';
 
-import Environment, { EnvironmentVariables } from '@/utils/Environment';
-
 const pool = new pg.Pool({
-  connectionString: Environment.get(EnvironmentVariables.SESSION_DATABASE_URL),
+  connectionString: process.env.SESSION_DATABASE_URL,
 });
 export const db = drizzle(pool);
 

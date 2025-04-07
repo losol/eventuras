@@ -1,7 +1,6 @@
+import { globalGETRateLimit } from '@eventuras/fides-auth/request';
+import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { redirect } from 'next/navigation';
-
-import { globalGETRateLimit } from '@/lib/auth/request';
-import { getCurrentSession } from '@/lib/auth/session';
 
 export default async function Page() {
   if (!globalGETRateLimit()) {

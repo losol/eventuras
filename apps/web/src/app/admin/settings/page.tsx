@@ -1,9 +1,9 @@
+import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { Container, Heading } from '@eventuras/ui';
 import { redirect } from 'next/navigation';
 import createTranslation from 'next-translate/createTranslation';
 
 import Wrapper from '@/components/eventuras/Wrapper';
-import { getCurrentSession } from '@/lib/auth/session';
 import { createEnrollmentsSDK } from '@/utils/api/EventurasApi';
 import withAuthorization from '@/utils/auth/withAuthorization';
 import Environment from '@/utils/Environment';

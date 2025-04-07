@@ -1,18 +1,21 @@
+import { AuthProviders } from '@eventuras/fides-auth/oauth';
+import { globalGETRateLimit } from '@eventuras/fides-auth/request';
+import {
+  createSession,
+  generateSessionToken,
+  setSessionTokenCookie,
+} from '@eventuras/fides-auth/session';
+import { createUser, getUser, updateUser } from '@eventuras/fides-auth/user';
 import { Logger } from '@eventuras/utils';
 import { cookies } from 'next/headers';
 import * as openid from 'openid-client';
 
-import { auth0, AuthProviders, getAuth0ClientConfig } from '@/lib/auth/oauth';
-import { globalGETRateLimit } from '@/lib/auth/request';
-import { createSession, generateSessionToken, setSessionTokenCookie } from '@/lib/auth/session';
-import { createUser, getUser, updateUser } from '@/lib/auth/user';
 import Environment from '@/utils/Environment';
 
+import { auth0callbackUrl, auth0config } from '../config';
+
 export async function GET(request: Request): Promise<Response> {
-  const config: openid.Configuration = await getAuth0ClientConfig();
-
-  Logger.debug({ namespace: 'login:auth0' }, 'Starting Auth0 callback processing');
-
+  // Rate limit the request to avoid abuse
   if (!globalGETRateLimit()) {
     Logger.warn({ namespace: 'login:auth0' }, 'Rate limit exceeded');
     return new Response('Too many requests', { status: 429 });
@@ -32,12 +35,12 @@ export async function GET(request: Request): Promise<Response> {
   }
 
   const tokenEndpointParameters: Record<string, string> = {
-    redirect_uri: auth0.callback_url,
+    redirect_uri: auth0callbackUrl,
   };
 
   Logger.debug({ namespace: 'login:auth0' }, `Requesting tokens.`);
   const tokens: openid.TokenEndpointResponse = await openid.authorizationCodeGrant(
-    config,
+    auth0config,
     public_url,
     {
       pkceCodeVerifier: storedCodeVerifier.toString(),

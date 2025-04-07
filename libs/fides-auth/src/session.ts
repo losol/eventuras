@@ -25,9 +25,11 @@ export async function createSession(
   // Hash the token to create a unique session ID.
   const sessionIdHash = sha512(token);
 
-  // Encrypt accessToken/refreshToken if provided.
-  const accessTokenCipher = accessToken ? encrypt(accessToken) : null;
-  const refreshTokenCipher = refreshToken ? encrypt(refreshToken) : null;
+  const secret = process.env.SESSION_SECRET;
+
+  // Encrypt accessToken/refreshToken only if secret is provided.
+  const accessTokenCipher = accessToken && secret ? encrypt(accessToken) : null;
+  const refreshTokenCipher = refreshToken && secret ? encrypt(refreshToken) : null;
 
   // Default session expiry (defaults to 30 days).
   const sessionExpiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * sessionDurationDays);
@@ -45,6 +47,8 @@ export async function createSession(
 }
 
 export const getCurrentSession = cache(async (): Promise<SessionValidationResult> => {
+  const secret = process.env.SESSION_SECRET;
+
   const token = cookies().get('session')?.value ?? null;
   if (token === null) {
     return { session: null, user: null };
@@ -54,6 +58,7 @@ export const getCurrentSession = cache(async (): Promise<SessionValidationResult
 });
 
 export async function validateSessionToken(token: string): Promise<SessionValidationResult> {
+  const secret = process.env.SESSION_SECRET;
   const sessionId = sha512(token);
   const result = await db
     .select({ user: userTable, session: sessionTable })
@@ -97,8 +102,6 @@ export async function validateSessionToken(token: string): Promise<SessionValida
   // eslint-disable-next-line no-console
   console.log('Session:', session);
 
-  console.log(session);
-
   return { session, user };
 }
 
@@ -132,5 +135,5 @@ export function deleteSessionTokenCookie(): void {
 }
 
 export type SessionValidationResult =
-  | { session: Session; user: User }
-  | { session: null; user: null };
+  | { session: Session; user: User; }
+  | { session: null; user: null; };

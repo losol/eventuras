@@ -1,15 +1,15 @@
+import { globalGETRateLimit } from '@eventuras/fides-auth/request';
 import { cookies } from 'next/headers';
 import * as openid from 'openid-client';
 
-import { auth0, getAuth0ClientConfig } from '@/lib/auth/oauth';
-import { globalGETRateLimit } from '@/lib/auth/request';
+import Environment, { EnvironmentVariables } from '@/utils/Environment';
+
+import { auth0callbackUrl, auth0config } from './config';
 
 export async function GET(): Promise<Response> {
   if (!globalGETRateLimit()) {
     return new Response('Too many requests', { status: 429 });
   }
-
-  const config: openid.Configuration = await getAuth0ClientConfig();
 
   // Generate state and PKCE parameters using openid-client's generators
   let code_verifier: string = openid.randomPKCECodeVerifier();
@@ -17,7 +17,7 @@ export async function GET(): Promise<Response> {
   let state: string = openid.randomState();
 
   const parameters: Record<string, string> = {
-    redirect_uri: auth0.callback_url,
+    redirect_uri: auth0callbackUrl,
     scope: 'openid profile email offline_access',
     code_challenge,
     code_challenge_method: 'S256',
@@ -25,7 +25,7 @@ export async function GET(): Promise<Response> {
   };
 
   // Build the authorization URL using the client
-  const authorizationUrl = await openid.buildAuthorizationUrl(config, parameters);
+  const authorizationUrl = await openid.buildAuthorizationUrl(auth0config, parameters);
   console.log('Authorization URL:', authorizationUrl);
 
   // Store state and code verifier in cookies for later validation

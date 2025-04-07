@@ -1,9 +1,12 @@
 'use server';
 
+import { globalPOSTRateLimit } from '@eventuras/fides-auth/request';
+import {
+  deleteSessionTokenCookie,
+  getCurrentSession,
+  invalidateSession,
+} from '@eventuras/fides-auth/session';
 import { redirect } from 'next/navigation';
-
-import { globalPOSTRateLimit } from '@/lib/auth/request';
-import { deleteSessionTokenCookie, getCurrentSession, invalidateSession } from '@/lib/auth/session';
 
 export async function logoutAction(): Promise<ActionResult> {
   if (!globalPOSTRateLimit()) {

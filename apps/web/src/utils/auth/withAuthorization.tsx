@@ -1,9 +1,7 @@
-import { get } from 'http';
+import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { NextPage } from 'next';
-import { headers } from 'next/headers';
 
 import { Unauthorized } from '@/components/Unauthorized';
-import { getCurrentSession } from '@/lib/auth/session';
 import Environment from '@/utils/Environment';
 
 import { createSDK } from '../api/EventurasApi';
@@ -12,7 +10,7 @@ const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID
 
 const withAuthorization = (WrappedComponent: NextPage, role: string): NextPage => {
   const WithAuthorizationWrapper: NextPage = async props => {
-    const { user, session } = await getCurrentSession();
+    const { session } = await getCurrentSession();
 
     const eventuras = createSDK({
       inferUrl: { enabled: true },
