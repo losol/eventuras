@@ -52,6 +52,20 @@ export function sha512(data: string | Buffer): string {
 }
 
 /**
+ * Retrieves the session secret from environment variables.
+ * Throws an error if the SESSION_SECRET is not defined.
+ *
+ * @returns {string} The session secret.
+ */
+export function getSessionSecret(): string {
+  const secret = process.env.SESSION_SECRET;
+  if (!secret) {
+    throw new Error('SESSION_SECRET is not defined');
+  }
+  return secret;
+}
+
+/**
  * Converts a Uint8Array to a lowercase hexadecimal string.
  */
 export function toHex(bytes: Uint8Array): string {

@@ -1,12 +1,13 @@
 import { globalGETRateLimit } from '@eventuras/fides-auth/request';
+import { Logger } from '@eventuras/utils/src';
 import { cookies } from 'next/headers';
 import * as openid from 'openid-client';
-
-import Environment, { EnvironmentVariables } from '@/utils/Environment';
 
 import { auth0callbackUrl, auth0config } from './config';
 
 export async function GET(): Promise<Response> {
+  Logger.debug({ namespace: 'login:auth0' }, 'Starting Auth0 login process');
+  Logger.debug({ namespace: 'login:auth0' }, `Auth0 settings: ${auth0config}`);
   if (!globalGETRateLimit()) {
     return new Response('Too many requests', { status: 429 });
   }

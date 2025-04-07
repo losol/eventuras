@@ -1,11 +1,7 @@
 'use server';
 
 import { globalPOSTRateLimit } from '@eventuras/fides-auth/request';
-import {
-  deleteSessionTokenCookie,
-  getCurrentSession,
-  invalidateSession,
-} from '@eventuras/fides-auth/session';
+import { deleteSessionCookie, getCurrentSession } from '@eventuras/fides-auth/session';
 import { redirect } from 'next/navigation';
 
 export async function logoutAction(): Promise<ActionResult> {
@@ -20,8 +16,8 @@ export async function logoutAction(): Promise<ActionResult> {
       message: 'Not authenticated',
     };
   }
-  invalidateSession(session.id);
-  deleteSessionTokenCookie();
+
+  deleteSessionCookie();
   return redirect('/login');
 }
 

@@ -6,10 +6,13 @@ export default async function Page() {
   if (!globalGETRateLimit()) {
     return 'Too many requests';
   }
-  const { user } = await getCurrentSession();
-  if (user !== null) {
-    return redirect('/');
+
+  const { session } = await getCurrentSession();
+  if (session !== null) {
+    // If a session exists, redirect to home.
+    redirect('/');
   }
+
   return (
     <>
       <h1>Sign in</h1>
