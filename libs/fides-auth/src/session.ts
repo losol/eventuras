@@ -43,7 +43,7 @@ export async function createSession(
 
   // Build the JWT payload
   const payload: jose.JWTPayload = {
-    session,
+    ...session,
   };
 
   // Generate an encrypted JWT (JWE) with jose
@@ -71,23 +71,40 @@ export async function createSession(
  * @param token - The encrypted JWT (JWE) string.
  * @returns A SessionValidationResult with the session or null if invalid.
  */
-export async function validateSessionTokenCookie(token: string): Promise<SessionValidationResult> {
+export async function validateSessionCookie(jwt: string): Promise<Session | null> {
   const secret = Buffer.from(getSessionSecret(), "hex");
 
   try {
-    const { payload } = await jose.jwtDecrypt(token, secret);
-    const session = payload.session as Session;
+    const { payload } = await jose.jwtDecrypt(jwt, secret);
 
-    // Check expiresAt in the session payload
-    if (session?.expiresAt && new Date(session.expiresAt).getTime() < Date.now()) {
-      return { session: null };
+    // Cast payload to unknown first, then validate its structure
+    const sessionPayload = payload as unknown;
+
+    // Validate that the payload contains the required properties
+    if (
+      typeof sessionPayload === 'object' &&
+      sessionPayload !== null &&
+      typeof (sessionPayload as any).expiresAt === 'string' &&
+      (!('accessToken' in sessionPayload) || typeof (sessionPayload as any).accessToken === 'string') &&
+      (!('refreshToken' in sessionPayload) || typeof (sessionPayload as any).refreshToken === 'string')
+    ) {
+      // Check if the session has expired
+      if (new Date((sessionPayload as any).expiresAt).getTime() < Date.now()) {
+        deleteSessionCookie(); // Delete the cookie if the session has expired
+        return null;
+      }
+
+      // Cast the validated payload to the Session type
+      return sessionPayload as Session;
+    } else {
+      console.error('Invalid session payload structure:', payload);
+      deleteSessionCookie(); // Delete the cookie if the structure is invalid
+      return null;
     }
-
-    // If valid, return the session
-    return { session };
   } catch (error) {
     console.error('Cookie token validation failed:', error);
-    return { session: null };
+    deleteSessionCookie(); // Delete the cookie if decryption fails
+    return null;
   }
 }
 
@@ -95,12 +112,14 @@ export async function validateSessionTokenCookie(token: string): Promise<Session
  * Retrieves the current session from the "session" cookie, if any.
  * Uses React server components' cache for performance.
  */
-export const getCurrentSession = cache(async (): Promise<SessionValidationResult> => {
-  const token = cookies().get('session')?.value ?? null;
-  if (!token) {
-    return { session: null };
+export const getCurrentSession = cache(async (): Promise<Session | null> => {
+  const sessionCookie = cookies().get('session')?.value ?? null;
+
+  if (!sessionCookie) {
+    return null;
   }
-  return await validateSessionTokenCookie(token);
+
+  return await validateSessionCookie(sessionCookie);
 });
 
 /**

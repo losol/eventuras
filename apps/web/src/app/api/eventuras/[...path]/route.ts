@@ -1,6 +1,6 @@
+import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { Logger } from '@eventuras/utils';
 import { NextRequest, NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
 
 import Environment, { EnvironmentVariables } from '@/utils/Environment';
 
@@ -20,8 +20,8 @@ function isValidURL(str: string): boolean {
  */
 
 async function forwarder(request: NextRequest) {
-  const token = await getToken({ req: request });
-  const accessToken = token?.access_token ?? '';
+  const session = await getCurrentSession();
+  const accessToken = session?.accessToken ?? '';
 
   if (!eventurasAPI_URL) throw new Error('NEXT_PUBLIC_BACKEND_URL is not defined');
 

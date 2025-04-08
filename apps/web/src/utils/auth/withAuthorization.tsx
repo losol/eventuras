@@ -10,7 +10,7 @@ const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID
 
 const withAuthorization = (WrappedComponent: NextPage, role: string): NextPage => {
   const WithAuthorizationWrapper: NextPage = async props => {
-    const { session } = await getCurrentSession();
+    const session = await getCurrentSession();
 
     const eventuras = createSDK({
       inferUrl: { enabled: true },

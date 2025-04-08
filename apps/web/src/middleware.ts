@@ -5,10 +5,8 @@
  * This saves individual pages to have to check for authorization.
  */
 
-import { Logger } from '@eventuras/utils';
+import { Logger } from '@eventuras/utils/src/Logger';
 import { NextRequest, NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
-import { withAuth } from 'next-auth/middleware';
 
 export async function middleware(request: NextRequest) {
   if (request.method === 'GET') {
@@ -42,6 +40,7 @@ export async function middleware(request: NextRequest) {
   try {
     origin = new URL(originHeader);
   } catch {
+    Logger.error({ namespace: 'eventuras:midddleware' }, 'Invalid Origin header:', originHeader);
     return new NextResponse(null, { status: 403 });
   }
 
@@ -49,39 +48,7 @@ export async function middleware(request: NextRequest) {
   if (hostHeader !== origin.host && forwardedHost !== origin.host) {
     return new NextResponse(null, { status: 403 });
   }
-
-  try {
-    const token = await getToken({ req: request });
-    const requestHeaders = new Headers(request.headers);
-
-    // If the token exists, set it as an Authorization header.
-    if (token?.access_token) {
-      requestHeaders.set('Authorization', `Bearer ${token.access_token}`);
-    } else {
-      const loginUrl = new URL('/api/auth/signin', request.url);
-      loginUrl.searchParams.set('callbackUrl', request.nextUrl.pathname);
-      return NextResponse.redirect(loginUrl);
-    }
-
-    // Return the original request with the new headers.
-    return NextResponse.next({
-      request: {
-        headers: requestHeaders,
-      },
-    });
-  } catch (error) {
-    Logger.error({ namespace: 'auth' }, 'Error in middleware: ' + error);
-    // Optionally, you could return a response here if desired.
-  }
 }
-
-export default withAuth({
-  pages: {
-    signIn: '/api/auth/signin',
-    signOut: '/api/auth/signout',
-    error: '/api/auth/error',
-  },
-});
 
 export const config = {
   matcher: ['/admin/:path*', '/user/:path*', '/user/(events | account)/:path*/'],
