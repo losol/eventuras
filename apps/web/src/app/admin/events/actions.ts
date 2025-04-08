@@ -1,13 +1,11 @@
 'use server';
 
+import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { EventFormDto } from '@eventuras/sdk';
 import { Logger } from '@eventuras/utils';
-import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { getServerSession } from 'next-auth';
 
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import { authOptions } from '@/utils/authOptions';
 import Environment from '@/utils/Environment';
 
 export async function createEvent(formData: FormData) {
@@ -17,12 +15,12 @@ export async function createEvent(formData: FormData) {
   );
   const title = formData.get('title')?.toString() ?? 'New event';
 
-  const session = await getServerSession(authOptions);
+  const session = await getCurrentSession();
   if (!session) throw Error('No session. Unauthorized');
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
-    authHeader: headers().get('Authorization'),
+    authHeader: session.tokens?.accessToken ?? '',
   });
 
   const newEvent: EventFormDto = {

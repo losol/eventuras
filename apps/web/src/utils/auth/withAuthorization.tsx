@@ -14,7 +14,7 @@ const withAuthorization = (WrappedComponent: NextPage, role: string): NextPage =
 
     const eventuras = createSDK({
       inferUrl: { enabled: true },
-      authHeader: session?.accessToken,
+      authHeader: session?.tokens?.accessToken,
     });
 
     // Check if user is logged in

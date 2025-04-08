@@ -1,8 +1,7 @@
-import { AuthProviders } from '@eventuras/fides-auth/oauth';
 import { globalGETRateLimit } from '@eventuras/fides-auth/request';
 import { createSession } from '@eventuras/fides-auth/session';
-import { createUser, getUser, updateUser } from '@eventuras/fides-auth/user';
 import { Logger } from '@eventuras/utils';
+import { decodeJwt } from 'jose';
 import { cookies } from 'next/headers';
 import * as openid from 'openid-client';
 
@@ -46,11 +45,25 @@ export async function GET(request: Request): Promise<Response> {
       tokenEndpointParameters
     );
 
-    const jwt = await createSession(
+    const decodedIdToken = decodeJwt(tokens.id_token ?? '');
+
+    await createSession(
       {
         expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toISOString(), // 7 days from now
-        accessToken: tokens.access_token,
-        refreshToken: tokens.refresh_token,
+        tokens: {
+          accessToken: tokens.access_token,
+          refreshToken: tokens.refresh_token,
+        },
+        user: {
+          name: decodedIdToken.name as string,
+          email: decodedIdToken.email as string,
+          roles:
+            Array.from(
+              decodedIdToken[
+                'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+              ] as string
+            ) ?? [],
+        },
       },
       { sessionDurationDays: 7 }
     );

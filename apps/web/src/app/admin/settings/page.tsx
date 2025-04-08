@@ -11,14 +11,14 @@ import Environment from '@/utils/Environment';
 const AdminSettingsPage = async () => {
   const { t } = createTranslation();
 
-  const { user, session } = await getCurrentSession();
-  if (user === null) {
+  const session = await getCurrentSession();
+  if (session === null) {
     return redirect('/login');
   }
 
   const enrollmentSdk = createEnrollmentsSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
-    authHeader: session?.accessToken,
+    authHeader: session?.tokens?.accessToken,
   });
 
   const settings =
@@ -30,7 +30,7 @@ const AdminSettingsPage = async () => {
     <Wrapper>
       <Container>
         <Heading as="h1">{t('admin:settings.page.title')}</Heading>
-        <p>{JSON.stringify(user, null, 2)}</p>
+        <p>{JSON.stringify(session.user, null, 2)}</p>
       </Container>
     </Wrapper>
   );

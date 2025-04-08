@@ -21,7 +21,7 @@ function isValidURL(str: string): boolean {
 
 async function forwarder(request: NextRequest) {
   const session = await getCurrentSession();
-  const accessToken = session?.accessToken ?? '';
+  const accessToken = session?.tokens?.accessToken ?? '';
 
   if (!eventurasAPI_URL) throw new Error('NEXT_PUBLIC_BACKEND_URL is not defined');
 

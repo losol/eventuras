@@ -10,7 +10,7 @@ export async function logoutAction(): Promise<ActionResult> {
       message: 'Too many requests',
     };
   }
-  const { session } = await getCurrentSession();
+  const session = await getCurrentSession();
   if (session === null) {
     return {
       message: 'Not authenticated',

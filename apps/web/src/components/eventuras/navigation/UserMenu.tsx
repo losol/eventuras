@@ -1,39 +1,28 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { signIn, signOut } from 'next-auth/react';
-
-import { useAuthSelector } from '@/statemachines/AuthenticationFlowMachine';
-import Environment from '@/utils/Environment';
 
 import UserMenuContent, { LoggedOutLanguagePack, LogginInLanguagePack } from './UserMenuContent';
 
 interface UserMenuProps {
   loggedInContent: LogginInLanguagePack;
   LoggedOutContent: LoggedOutLanguagePack;
+  isLoggedIn?: boolean;
+  isAdmin?: boolean;
+  userName?: string;
 }
 export const UserMenu = (props: UserMenuProps) => {
+  console.log('UserMenu', props);
   const router = useRouter();
 
-  const { idToken, isAuthenticated, isAdmin, userProfile } = useAuthSelector();
-
   const handleLogin = async () => {
-    await signIn('auth0');
-    //fetchUserProfile();
+    router.push('/login');
   };
 
-  const handleLogout = async () => {
-    await signOut({ redirect: false });
-    const returnUrl = encodeURI(Environment.NEXT_PUBLIC_LOGOUT_URL_REDIRECT);
-    const logOutUrl = `https://${Environment.NEXT_PUBLIC_AUTH0_DOMAIN}/oidc/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${returnUrl}`;
-    router.push(logOutUrl);
-  };
-
-  if (isAuthenticated) {
+  if (props.isLoggedIn) {
     return (
       <UserMenuContent.LoggedIn
-        isAdmin={isAdmin}
-        menuLabel={userProfile?.name ?? ''}
-        onLogoutRequested={handleLogout}
+        isAdmin={props.isAdmin ?? false}
+        menuLabel={props.userName ?? ''}
         languagePack={props.loggedInContent}
       />
     );

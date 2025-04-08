@@ -3,11 +3,19 @@ import * as jose from 'jose';
 import { cache } from 'react';
 
 import { getSessionSecret } from './utils';
+export interface Tokens {
+  accessToken?: string;
+  refreshToken?: string;
+}
 
 export interface Session {
   expiresAt: Date | string;
-  accessToken?: string;
-  refreshToken?: string;
+  tokens?: Tokens;
+  user?: {
+    name: string;
+    email: string;
+    roles?: string[];
+  };
 }
 
 export interface CreateSessionOptions {
@@ -32,9 +40,8 @@ export async function createSession(
   options: CreateSessionOptions = {}
 ): Promise<string> {
   const { sessionDurationDays = 7 } = options;
-  const secret = Buffer.from(getSessionSecret(), "hex");
+  const secret = Buffer.from(getSessionSecret(), 'hex');
 
-  // Calculate an expiration if the caller hasn't already set it
   const now = Date.now();
   const expiresAt = new Date(now + 1000 * 60 * 60 * 24 * sessionDurationDays);
   if (!session.expiresAt) {
@@ -72,7 +79,7 @@ export async function createSession(
  * @returns A SessionValidationResult with the session or null if invalid.
  */
 export async function validateSessionCookie(jwt: string): Promise<Session | null> {
-  const secret = Buffer.from(getSessionSecret(), "hex");
+  const secret = Buffer.from(getSessionSecret(), 'hex');
 
   try {
     const { payload } = await jose.jwtDecrypt(jwt, secret);
@@ -85,25 +92,30 @@ export async function validateSessionCookie(jwt: string): Promise<Session | null
       typeof sessionPayload === 'object' &&
       sessionPayload !== null &&
       typeof (sessionPayload as any).expiresAt === 'string' &&
-      (!('accessToken' in sessionPayload) || typeof (sessionPayload as any).accessToken === 'string') &&
-      (!('refreshToken' in sessionPayload) || typeof (sessionPayload as any).refreshToken === 'string')
+      (!('tokens' in sessionPayload) || typeof (sessionPayload as any).tokens === 'object') &&
+      (!('userProfile' in sessionPayload) || typeof (sessionPayload as any).userProfile === 'object')
     ) {
       // Check if the session has expired
       if (new Date((sessionPayload as any).expiresAt).getTime() < Date.now()) {
-        deleteSessionCookie(); // Delete the cookie if the session has expired
+        // Delete the cookie if the session has expired
+        deleteSessionCookie();
         return null;
       }
 
       // Cast the validated payload to the Session type
+      console.log('Session payload:', sessionPayload);
       return sessionPayload as Session;
+
     } else {
       console.error('Invalid session payload structure:', payload);
-      deleteSessionCookie(); // Delete the cookie if the structure is invalid
+      // Just delete the cookie since it is invalid
+      deleteSessionCookie();
       return null;
     }
   } catch (error) {
     console.error('Cookie token validation failed:', error);
-    deleteSessionCookie(); // Delete the cookie if decryption fails
+    // Delete the cookie if decryption fails
+    deleteSessionCookie();
     return null;
   }
 }
