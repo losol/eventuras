@@ -5,11 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
-using Eventuras.Servcies.Registrations;
-using Eventuras.Services.Events;
 using Eventuras.Services.Events.Products;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Organizations;
+using Eventuras.Services.Registrations;
 using Eventuras.Services.Users;
 using Microsoft.EntityFrameworkCore;
 using static Eventuras.Domain.Registration;
@@ -22,6 +21,7 @@ public class OrderRetrievalService : IOrderRetrievalService
     private readonly IOrderAccessControlService _orderAccessControlService;
     private readonly IOrganizationAccessControlService _organizationAccessControlService;
     private readonly IProductRetrievalService _productRetrievalService;
+    private readonly IRegistrationRetrievalService _registrationRetrievalService;
     private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
 
     public OrderRetrievalService(
@@ -29,6 +29,7 @@ public class OrderRetrievalService : IOrderRetrievalService
         IOrderAccessControlService orderAccessControlService,
         IOrganizationAccessControlService organizationAccessControlService,
         IProductRetrievalService productRetrievalService,
+        IRegistrationRetrievalService registrationRetrievalService,
         ICurrentOrganizationAccessorService currentOrganizationAccessorService)
     {
         _context = context ?? throw
@@ -42,6 +43,9 @@ public class OrderRetrievalService : IOrderRetrievalService
 
         _productRetrievalService = productRetrievalService ?? throw
             new ArgumentNullException(nameof(productRetrievalService));
+
+        _registrationRetrievalService = registrationRetrievalService ?? throw
+            new ArgumentException(nameof(registrationRetrievalService));
 
         _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw
             new ArgumentNullException(nameof(currentOrganizationAccessorService));
@@ -162,5 +166,43 @@ public class OrderRetrievalService : IOrderRetrievalService
                 }
             }
         };
+    }
+
+    public async Task<List<Order>> GetOrdersPopulatedByRegistrationAsync(IEnumerable<int> orderIds, CancellationToken cancellationToken)
+    {
+        var orders = new List<Order>();
+
+        foreach (var orderId in orderIds)
+        {
+            var order = await GetOrderByIdAsync(orderId, new OrderRetrievalOptions()
+            {
+                IncludeRegistration = true,
+                IncludeUser = true,
+                IncludeOrderLines = true,
+                IncludeEvent = true
+            }, cancellationToken);
+
+            if (order != null)
+            {
+                await PopulateOrderFieldsAsync(order, cancellationToken);
+                orders.Add(order);
+            }
+        }
+
+        return orders;
+    }
+
+    private async Task PopulateOrderFieldsAsync(Order order, CancellationToken cancellationToken)
+    {
+        var registration = await _registrationRetrievalService.GetRegistrationByIdAsync(order.RegistrationId, null, cancellationToken);
+        if (registration != null)
+        {
+            order.CustomerName = ValidationHelper.GetValueIfEmpty(order.CustomerName, registration.CustomerName ?? registration.ParticipantName);
+            order.CustomerEmail = ValidationHelper.GetValueIfEmpty(order.CustomerEmail, registration.CustomerEmail);
+            order.CustomerVatNumber = ValidationHelper.GetValueIfEmpty(order.CustomerVatNumber, registration.CustomerVatNumber);
+            order.CustomerInvoiceReference = ValidationHelper.GetValueIfEmpty(order.CustomerInvoiceReference, registration.CustomerInvoiceReference);
+            order.PaymentMethod = ValidationHelper.GetValueIfDefault(order.PaymentMethod, registration.PaymentMethod);
+            order.Log = ValidationHelper.GetValueIfEmpty(order.Log, registration.Log);
+        }
     }
 }

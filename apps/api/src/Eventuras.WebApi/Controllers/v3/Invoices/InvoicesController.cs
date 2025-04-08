@@ -1,14 +1,9 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asp.Versioning;
-using Eventuras.Domain;
 using Eventuras.Services.Invoicing;
 using Eventuras.Services.Orders;
-using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -23,7 +18,6 @@ public class InvoicesController : ControllerBase
     private readonly IInvoicingService _invoicingService;
     private readonly IOrderRetrievalService _orderRetrievalService;
     private readonly ILogger<InvoicesController> _logger;
-
 
     public InvoicesController(
         IInvoicingService invoicingService,
@@ -44,41 +38,16 @@ public class InvoicesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<InvoiceDto>> CreateInvoice([FromBody] InvoiceRequestDto request, CancellationToken cancellationToken = default)
+    public async Task<ActionResult<InvoiceDto>> CreateInvoice([FromBody] InvoiceRequestDto request, CancellationToken cancellationToken)
     {
-        var orders = new List<Order>();
+        var orders = await _orderRetrievalService.GetOrdersPopulatedByRegistrationAsync(request.OrderIds, cancellationToken);
 
-        foreach (var orderId in request.OrderIds)
-        {
-            var order = await _orderRetrievalService.GetOrderByIdAsync(orderId, new OrderRetrievalOptions()
-            {
-                IncludeRegistration = true,
-                IncludeUser = true,
-                IncludeOrderLines = true,
-                IncludeEvent = true
-            }, cancellationToken);
-            if (order != null)
-            {
-                orders.Add(order);
-            }
-        }
         _logger.LogInformation($"Creating invoice for orders {orders}");
-
         var invoiceInfo = InvoiceInfo.CreateFromOrderList(orders);
         _logger.LogInformation($"Invoice info {invoiceInfo}");
-
-        // Loop through the orders and ensure orders have a customer name, use user name if not set
-        foreach (var order in orders)
-        {
-            if (string.IsNullOrWhiteSpace(order.CustomerName))
-            {
-                order.CustomerName = order.User?.Name;
-            }
-        }
 
         var invoice = await _invoicingService.CreateInvoiceAsync(orders.ToArray(), invoiceInfo);
 
         return new InvoiceDto(invoice);
     }
-
 }
