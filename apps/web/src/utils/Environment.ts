@@ -33,6 +33,7 @@ export enum EnvironmentVariables {
   AUTH0_CLIENT_SECRET = 'AUTH0_CLIENT_SECRET',
   AUTH0_API_AUDIENCE = 'AUTH0_API_AUDIENCE',
   NODE_ENV = 'NODE_ENV',
+  SESSION_SECRET = 'SESSION_SECRET',
 }
 
 // Optional Environment Variables

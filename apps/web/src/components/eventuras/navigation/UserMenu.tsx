@@ -15,7 +15,7 @@ export const UserMenu = (props: UserMenuProps) => {
   const router = useRouter();
 
   const handleLogin = async () => {
-    router.push('/login');
+    router.push('/api/login');
   };
 
   if (props.isLoggedIn) {

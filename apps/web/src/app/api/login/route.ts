@@ -14,5 +14,7 @@ export async function GET() {
   }
 
   // If no session exists, redirect to the Auth0 login page
-  return NextResponse.redirect(new URL('/login/auth0', process.env.NEXT_PUBLIC_APPLICATION_URL));
+  return NextResponse.redirect(
+    new URL('/api/login/auth0', process.env.NEXT_PUBLIC_APPLICATION_URL)
+  );
 }
