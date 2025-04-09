@@ -1,7 +1,7 @@
+import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { NotificationDto } from '@eventuras/sdk';
 import { Container, Heading, Section, Text } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
-import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
 import Card from '@/components/Card';
@@ -19,7 +19,7 @@ const NotificationsPage: React.FC<NotificationPageProps> = async props => {
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
-    authHeader: headers().get('Authorization'),
+    authHeader: (await getCurrentSession())?.tokens?.accessToken,
   });
 
   const notifications = await apiWrapper(() => {

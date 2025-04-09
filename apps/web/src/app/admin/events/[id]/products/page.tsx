@@ -1,5 +1,5 @@
+import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { Container, Heading, Section } from '@eventuras/ui';
-import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
 import Wrapper from '@/components/eventuras/Wrapper';
@@ -17,7 +17,7 @@ const EventProducts: React.FC<EventProductsPage> = async ({ params }) => {
   const eventId = parseInt(params.id, 10);
   const { t } = createTranslation();
 
-  const eventuras = createSDK({ authHeader: headers().get('Authorization') });
+  const eventuras = createSDK({ authHeader: (await getCurrentSession())?.tokens?.accessToken });
 
   const eventInfo = await eventuras.events.getV3Events1({ id: eventId });
   const products = await eventuras.eventProducts.getV3EventsProducts({ eventId });

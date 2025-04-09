@@ -1,5 +1,5 @@
+import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { Heading } from '@eventuras/ui';
-import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 import React from 'react';
 
@@ -16,7 +16,7 @@ type UserEventPageProps = {
 };
 
 const UserEventPage: React.FC<UserEventPageProps> = async ({ params }) => {
-  const eventuras = createSDK({ authHeader: headers().get('Authorization') });
+  const eventuras = createSDK({ authHeader: (await getCurrentSession())?.tokens?.accessToken });
   const { t } = createTranslation();
   const siteInfo = await getSiteSettings();
 

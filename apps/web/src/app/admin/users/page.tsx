@@ -1,7 +1,7 @@
 import { UserDtoPageResponseDto } from '@eventuras/enrollments-sdk/models/components';
 import { UserDto } from '@eventuras/enrollments-sdk/models/components/userdto';
+import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { Container, Heading } from '@eventuras/ui';
-import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
 import Wrapper from '@/components/eventuras/Wrapper';
@@ -16,7 +16,7 @@ const AdminUserPage = async () => {
   const { t } = createTranslation();
   const enrollmentSdk = createEnrollmentsSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
-    authHeader: headers().get('Authorization'),
+    authHeader: (await getCurrentSession())?.tokens?.accessToken,
   });
   /**
    * TODO - in case of the apiWrapper, whilst it does play nicely with the new enrollment sdk, it does beg the question of it makes optimal use of the new sdk

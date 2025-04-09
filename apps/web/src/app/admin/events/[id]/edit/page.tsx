@@ -1,6 +1,6 @@
+import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { Heading } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
-import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
 import EventEditor from '@/app/admin/events/EventEditor';
@@ -20,7 +20,7 @@ const EditEventinfo: React.FC<EditEventinfoProps> = async ({ params }) => {
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
-    authHeader: headers().get('Authorization'),
+    authHeader: (await getCurrentSession())?.tokens?.accessToken,
   });
 
   const eventinfo = await apiWrapper(() =>

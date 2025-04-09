@@ -1,5 +1,5 @@
+import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { Heading } from '@eventuras/ui';
-import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
 import Wrapper from '@/components/eventuras/Wrapper';
@@ -8,7 +8,7 @@ import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import UserEditor from '../../admin/users/UserEditor';
 
 const UserAccountPage = async () => {
-  const eventuras = createSDK({ authHeader: headers().get('Authorization') });
+  const eventuras = createSDK({ authHeader: (await getCurrentSession())?.tokens?.accessToken });
   const { t } = createTranslation();
 
   const result = await apiWrapper(() => eventuras.users.getV3UsersMe({}));
