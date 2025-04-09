@@ -7,7 +7,7 @@ export const auth0callbackUrl = Environment.NEXT_PUBLIC_APPLICATION_URL + 'login
 
 export const auth0config: openid.Configuration = await getAuth0ClientConfig({
   issuer: 'https://' + Environment.NEXT_PUBLIC_AUTH0_DOMAIN,
-  clientId: Environment.get(EnvironmentVariables.AUTH0_CLIENT_ID),
-  clientSecret: Environment.get(EnvironmentVariables.AUTH0_CLIENT_SECRET),
+  clientId: Environment.get(EnvironmentVariables.AUTH0_CLIENT_ID ?? 'id'),
+  clientSecret: Environment.get(EnvironmentVariables.AUTH0_CLIENT_SECRET ?? 'secret'),
   callbackUrl: auth0callbackUrl,
 });
