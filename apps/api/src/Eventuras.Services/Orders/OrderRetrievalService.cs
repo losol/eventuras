@@ -11,6 +11,7 @@ using Eventuras.Services.Organizations;
 using Eventuras.Services.Registrations;
 using Eventuras.Services.Users;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using static Eventuras.Domain.Registration;
 
 namespace Eventuras.Services.Orders;
@@ -23,6 +24,8 @@ public class OrderRetrievalService : IOrderRetrievalService
     private readonly IProductRetrievalService _productRetrievalService;
     private readonly IRegistrationRetrievalService _registrationRetrievalService;
     private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
+    // logger
+    private readonly ILogger<OrderRetrievalService> _logger;
 
     public OrderRetrievalService(
         ApplicationDbContext context,
@@ -30,7 +33,8 @@ public class OrderRetrievalService : IOrderRetrievalService
         IOrganizationAccessControlService organizationAccessControlService,
         IProductRetrievalService productRetrievalService,
         IRegistrationRetrievalService registrationRetrievalService,
-        ICurrentOrganizationAccessorService currentOrganizationAccessorService)
+        ICurrentOrganizationAccessorService currentOrganizationAccessorService,
+        ILogger<OrderRetrievalService> logger)
     {
         _context = context ?? throw
             new ArgumentNullException(nameof(context));
@@ -49,6 +53,9 @@ public class OrderRetrievalService : IOrderRetrievalService
 
         _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw
             new ArgumentNullException(nameof(currentOrganizationAccessorService));
+
+        _logger = logger ?? throw
+            new ArgumentNullException(nameof(logger));
     }
 
     public async Task<Order> GetOrderByIdAsync(int id,
@@ -61,6 +68,9 @@ public class OrderRetrievalService : IOrderRetrievalService
             new NotFoundException($"Order {id} not found");
 
         await _orderAccessControlService.CheckOrderReadAccessAsync(order, cancellationToken);
+
+        // log the complete order
+        _logger.LogInformation("Order retrieved: {@Order}", order);
 
         return order;
     }
@@ -182,6 +192,8 @@ public class OrderRetrievalService : IOrderRetrievalService
                 IncludeEvent = true
             }, cancellationToken);
 
+            _logger.LogDebug("GetOrdersPopulatedByRegistrationAsync - Order: {@Registration}", order);
+
             if (order != null)
             {
                 await PopulateOrderFieldsAsync(order, cancellationToken);
@@ -197,12 +209,18 @@ public class OrderRetrievalService : IOrderRetrievalService
         var registration = await _registrationRetrievalService.GetRegistrationByIdAsync(order.RegistrationId, null, cancellationToken);
         if (registration != null)
         {
-            order.CustomerName = ValidationHelper.GetValueIfEmpty(order.CustomerName, registration.CustomerName ?? registration.ParticipantName);
-            order.CustomerEmail = ValidationHelper.GetValueIfEmpty(order.CustomerEmail, registration.CustomerEmail);
+            _logger.LogDebug("PopulateOrderFieldsAsync - Registration: {@Registration}", registration);
+
+            order.CustomerName = ValidationHelper.GetValueIfEmpty(order.CustomerName, registration.User?.Name);
+            order.CustomerEmail = ValidationHelper.GetValueIfEmpty(order.CustomerEmail, registration.User?.Email);
             order.CustomerVatNumber = ValidationHelper.GetValueIfEmpty(order.CustomerVatNumber, registration.CustomerVatNumber);
             order.CustomerInvoiceReference = ValidationHelper.GetValueIfEmpty(order.CustomerInvoiceReference, registration.CustomerInvoiceReference);
             order.PaymentMethod = ValidationHelper.GetValueIfDefault(order.PaymentMethod, registration.PaymentMethod);
             order.Log = ValidationHelper.GetValueIfEmpty(order.Log, registration.Log);
+        }
+        else
+        {
+            _logger.LogWarning("PopulateOrderFieldsAsync - Registration not found for OrderId: {OrderId}", order.OrderId);
         }
     }
 }
