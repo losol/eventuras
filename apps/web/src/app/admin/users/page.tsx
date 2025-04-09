@@ -1,11 +1,10 @@
-import { UserDtoPageResponseDto } from '@eventuras/enrollments-sdk/models/components';
-import { UserDto } from '@eventuras/enrollments-sdk/models/components/userdto';
 import { getCurrentSession } from '@eventuras/fides-auth/session';
+import { UserDto, UserDtoPageResponseDto } from '@eventuras/sdk';
 import { Container, Heading } from '@eventuras/ui';
 import createTranslation from 'next-translate/createTranslation';
 
 import Wrapper from '@/components/eventuras/Wrapper';
-import { apiWrapper, createEnrollmentsSDK } from '@/utils/api/EventurasApi';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import withAuthorization from '@/utils/auth/withAuthorization';
 import Environment from '@/utils/Environment';
 
@@ -14,7 +13,7 @@ import UsersActionMenu from './UsersActionMenu';
 
 const AdminUserPage = async () => {
   const { t } = createTranslation();
-  const enrollmentSdk = createEnrollmentsSDK({
+  const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
     authHeader: (await getCurrentSession())?.tokens?.accessToken,
   });
@@ -22,7 +21,7 @@ const AdminUserPage = async () => {
    * TODO - in case of the apiWrapper, whilst it does play nicely with the new enrollment sdk, it does beg the question of it makes optimal use of the new sdk
    */
   const userFetchResult = await apiWrapper(() =>
-    enrollmentSdk.users.getV3Users({
+    eventuras.users.getV3Users1({
       eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
     })
   );

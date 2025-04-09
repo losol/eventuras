@@ -1,4 +1,3 @@
-import { EnrollmentsSDK } from '@eventuras/enrollments-sdk';
 import { ApiError, ApiError as SDKError, CancelablePromise, Eventuras } from '@eventuras/sdk';
 
 import Environment from '../Environment';
@@ -59,14 +58,7 @@ export const apiWrapper = <T>(fetchFunction: () => Promise<T> | CancelablePromis
 
 export const fetcher = <T>(fetchFunction: () => Promise<T>) => handleApiResponse(fetchFunction());
 
-type SDKConfig = {
-  baseUrl: string;
-  bareToken: string | null | undefined;
-  headers: Headers;
-  apiVersion: string;
-};
-const createSDKConfig = (options: SDKOptions): SDKConfig => {
-  const { baseUrl, authHeader, inferUrl } = options;
+export const createSDK = ({ baseUrl, authHeader, inferUrl }: SDKOptions = {}): Eventuras => {
   const orgId: string = Environment.NEXT_PUBLIC_ORGANIZATION_ID;
   const apiVersion = Environment.NEXT_PUBLIC_API_VERSION;
   let token: string | undefined | null;
@@ -93,30 +85,20 @@ const createSDKConfig = (options: SDKOptions): SDKConfig => {
     'Eventuras-Org-Id': orgId,
   };
 
-  return {
-    apiVersion,
-    headers,
-    bareToken: token,
-    baseUrl: apiBaseUrl,
+  const config: {
+    BASE: string;
+    TOKEN?: string;
+    HEADERS?: Headers | undefined;
+    VERSION: string;
+  } = {
+    BASE: apiBaseUrl,
+    TOKEN: token ?? undefined,
+    HEADERS: headers,
+    VERSION: apiVersion,
   };
-};
+  if (token) {
+    config.TOKEN = token;
+  }
 
-export const createSDK = (options: SDKOptions = {}): Eventuras => {
-  const sdkConfig = createSDKConfig(options);
-
-  return new Eventuras({
-    BASE: sdkConfig.baseUrl,
-    TOKEN: sdkConfig.bareToken ? sdkConfig.bareToken : undefined,
-    HEADERS: sdkConfig.headers,
-    VERSION: sdkConfig.apiVersion,
-  });
-};
-
-export const createEnrollmentsSDK = (options: SDKOptions = {}): EnrollmentsSDK => {
-  const sdkConfig = createSDKConfig(options);
-
-  return new EnrollmentsSDK({
-    bearer: sdkConfig.bareToken ? `Bearer ${sdkConfig.bareToken}` : undefined,
-    serverURL: sdkConfig.baseUrl,
-  });
+  return new Eventuras(config);
 };
