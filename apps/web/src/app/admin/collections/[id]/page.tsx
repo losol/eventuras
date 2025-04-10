@@ -1,11 +1,12 @@
-import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { Container, Heading, Section } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import createTranslation from 'next-translate/createTranslation';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import { authConfig } from '@/utils/authconfig';
 import Environment from '@/utils/Environment';
+import { getAccessToken } from '@/utils/getAccesstoken';
 
 import CollectionEditor from '../CollectionEditor';
 
@@ -21,7 +22,7 @@ const CollectionDetailPage: React.FC<EventCollectionProps> = async ({ params }) 
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
-    authHeader: (await getCurrentSession())?.tokens?.accessToken,
+    authHeader: await getAccessToken(),
   });
 
   const collection = await apiWrapper(() =>

@@ -1,4 +1,3 @@
-import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { NotificationDto } from '@eventuras/sdk';
 import { Container, Heading, Section, Text } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
@@ -8,7 +7,9 @@ import Card from '@/components/Card';
 import Wrapper from '@/components/eventuras/Wrapper';
 import Link from '@/components/Link';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import { authConfig } from '@/utils/authconfig';
 import Environment from '@/utils/Environment';
+import { getAccessToken } from '@/utils/getAccesstoken';
 
 type NotificationPageProps = {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -19,7 +20,7 @@ const NotificationsPage: React.FC<NotificationPageProps> = async props => {
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
-    authHeader: (await getCurrentSession())?.tokens?.accessToken,
+    authHeader: await getAccessToken(),
   });
 
   const notifications = await apiWrapper(() => {

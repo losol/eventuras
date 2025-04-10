@@ -7,7 +7,7 @@ import * as openid from 'openid-client';
 
 import Environment from '@/utils/Environment';
 
-import { auth0callbackUrl, auth0config } from '../config';
+import { auth0callbackUrl, auth0config } from '../../../../../utils/authconfig';
 
 export async function GET(request: Request): Promise<Response> {
   // Rate limit the request to avoid abuse
@@ -45,6 +45,8 @@ export async function GET(request: Request): Promise<Response> {
       tokenEndpointParameters
     );
 
+    console.log('tokens', tokens);
+
     const decodedIdToken = decodeJwt(tokens.id_token ?? '');
 
     await createSession(
@@ -52,6 +54,10 @@ export async function GET(request: Request): Promise<Response> {
         expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toISOString(), // 7 days from now
         tokens: {
           accessToken: tokens.access_token,
+          // if tokens.expires_in exists, set the access token expiration time
+          accessTokenExpiresAt: tokens.expires_in
+            ? new Date(Date.now() + tokens.expires_in * 1000)
+            : undefined,
           refreshToken: tokens.refresh_token,
         },
         user: {

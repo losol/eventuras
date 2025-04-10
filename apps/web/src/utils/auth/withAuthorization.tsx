@@ -1,8 +1,8 @@
-import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { NextPage } from 'next';
 
 import { Unauthorized } from '@/components/Unauthorized';
 import Environment from '@/utils/Environment';
+import { getAccessToken } from '@/utils/getAccesstoken';
 
 import { createSDK } from '../api/EventurasApi';
 
@@ -10,11 +10,9 @@ const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID
 
 const withAuthorization = (WrappedComponent: NextPage, role: string): NextPage => {
   const WithAuthorizationWrapper: NextPage = async props => {
-    const session = await getCurrentSession();
-
     const eventuras = createSDK({
       inferUrl: { enabled: true },
-      authHeader: session?.tokens?.accessToken,
+      authHeader: await getAccessToken(),
     });
 
     // Check if user is logged in

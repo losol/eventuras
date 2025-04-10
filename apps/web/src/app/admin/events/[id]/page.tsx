@@ -1,4 +1,3 @@
-import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { Badge, Container, Heading, Section } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import createTranslation from 'next-translate/createTranslation';
@@ -6,7 +5,9 @@ import createTranslation from 'next-translate/createTranslation';
 import Wrapper from '@/components/eventuras/Wrapper';
 import Link from '@/components/Link';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import { authConfig } from '@/utils/authconfig';
 import Environment from '@/utils/Environment';
+import { getAccessToken } from '@/utils/getAccesstoken';
 
 import EventAdminActionsMenu from '../EventAdminActionsMenu';
 import ParticipantsSection from './ParticipantsSection';
@@ -23,7 +24,7 @@ const EventDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
-    authHeader: (await getCurrentSession())?.tokens?.accessToken,
+    authHeader: await getAccessToken(),
   });
 
   const eventinfo = await apiWrapper(() =>

@@ -3,7 +3,7 @@ import { Logger } from '@eventuras/utils/src';
 import { cookies } from 'next/headers';
 import * as openid from 'openid-client';
 
-import { auth0callbackUrl, auth0config } from './config';
+import { auth0callbackUrl, auth0config } from '../../../../utils/authconfig';
 
 export async function GET(): Promise<Response> {
   Logger.debug({ namespace: 'login:auth0' }, 'Starting Auth0 login process');

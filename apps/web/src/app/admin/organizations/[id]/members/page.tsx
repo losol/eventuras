@@ -1,10 +1,11 @@
-import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { Container, Heading, Section } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import createTranslation from 'next-translate/createTranslation';
 
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import { authConfig } from '@/utils/authconfig';
 import Environment from '@/utils/Environment';
+import { getAccessToken } from '@/utils/getAccesstoken';
 
 type EventInfoProps = {
   params: {
@@ -17,7 +18,7 @@ const OrganizationDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
-    authHeader: (await getCurrentSession())?.tokens?.accessToken,
+    authHeader: await getAccessToken(),
   });
 
   const organization = await apiWrapper(() =>

@@ -1,6 +1,25 @@
 import crypto, { createHash } from 'crypto';
+import * as jose from 'jose';
 
 const algorithm = 'aes-256-gcm';
+
+
+/**
+ * Encrypts a payload into a JWT using the specified secret.
+ *
+ * @param payload - The payload to encrypt (can be any JSON-serializable value)
+ * @returns A promise that resolves to the encrypted JWT as a string.
+ */
+export async function createEncryptedJWT(
+  payload: unknown,
+): Promise<string> {
+  const secret = Buffer.from(await getSessionSecret(), 'hex');
+  return new jose.EncryptJWT(payload as jose.JWTPayload)
+    .setProtectedHeader({ alg: 'dir', enc: 'A256GCM' })
+    .setIssuedAt()
+    .encrypt(secret);
+}
+
 
 /**
  * Encrypts the given text using AES-256-GCM.
