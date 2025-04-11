@@ -51,7 +51,7 @@ export async function GET(request: Request): Promise<Response> {
 
     const decodedIdToken = decodeJwt(tokens.id_token ?? '');
 
-    await createSession(
+    const jwt = await createSession(
       {
         expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toISOString(), // 7 days from now
         tokens: {
@@ -76,7 +76,15 @@ export async function GET(request: Request): Promise<Response> {
       { sessionDurationDays: 7 }
     );
 
-    Logger.info({ namespace: 'login:auth0' }, 'Redirect to home page');
+    // Set the session cookie
+    cookies().set('session', jwt, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 30,
+      sameSite: 'lax',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+    });
+
     return new Response(null, {
       status: 302,
       headers: { Location: '/' },
