@@ -33,6 +33,7 @@ on:
       - "apps/web/**"
     types: [opened, synchronize]
   workflow_call:
+  workflow_dispatch:
 
 jobs:
   lint:
@@ -76,6 +77,7 @@ jobs:
   deploy-preview:
     name: Deploy Preview
     if: >
+      github.event_name == 'workflow_dispatch' ||
       github.event_name == 'pull_request' &&
       github.event.pull_request.base.ref == 'main' &&
       !github.event.pull_request.draft
