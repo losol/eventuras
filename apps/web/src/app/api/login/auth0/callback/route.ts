@@ -7,7 +7,7 @@ import * as openid from 'openid-client';
 
 import Environment from '@/utils/Environment';
 
-import { auth0callbackUrl, auth0config } from '../../../../../utils/authconfig';
+import { auth0callbackUrl, authConfig } from '../../../../../utils/authconfig';
 
 export async function GET(request: Request): Promise<Response> {
   // Rate limit the request to avoid abuse
@@ -34,6 +34,11 @@ export async function GET(request: Request): Promise<Response> {
   };
 
   Logger.debug({ namespace: 'login:auth0' }, `Requesting tokens.`);
+  const auth0config = await openid.discovery(
+    new URL(authConfig.issuer),
+    authConfig.clientId,
+    authConfig.clientSecret
+  );
   try {
     const tokens: openid.TokenEndpointResponse = await openid.authorizationCodeGrant(
       auth0config,

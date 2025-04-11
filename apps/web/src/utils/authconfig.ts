@@ -13,5 +13,3 @@ export const authConfig: OAuthConfig = {
   callbackUrl: auth0callbackUrl,
   scope: 'openid profile email offline_access',
 };
-
-export const auth0config: openid.Configuration = await getAuth0ClientConfig(authConfig);

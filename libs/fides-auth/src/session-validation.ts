@@ -1,7 +1,7 @@
 // session-validation.ts
 
 import { jwtDecrypt } from 'jose';
-import { getSessionSecret } from './utils';
+import { getSessionSecretUint8Array } from './utils';
 import { Session } from './session';
 
 export interface SessionValidationResult {
@@ -22,11 +22,9 @@ export async function validateSessionJwt(
   encryptedJwt: string,
 ): Promise<SessionValidationResult> {
 
-  const secret = Buffer.from(getSessionSecret(), 'hex');
-
   let payload: unknown;
   try {
-    ({ payload } = await jwtDecrypt(encryptedJwt, secret));
+    ({ payload } = await jwtDecrypt(encryptedJwt, getSessionSecretUint8Array()));
   } catch (error) {
     return {
       status: 'INVALID',

@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 import * as jose from 'jose';
 import { cache } from 'react';
 
-import { createEncryptedJWT, getSessionSecret } from './utils';
+import { createEncryptedJWT } from './utils';
 import { OAuthConfig, refreshAccesstoken } from './oauth';
 import { validateSessionJwt } from './session-validation';
 export interface Tokens {
@@ -40,7 +40,6 @@ export async function createSession(
   options: CreateSessionOptions = {}
 ): Promise<string> {
   const { sessionDurationDays = 7, setCookie = true } = options;
-  const secret = Buffer.from(getSessionSecret(), 'hex');
 
   const now = Date.now();
   const expiresAt = new Date(now + 1000 * 60 * 60 * 24 * sessionDurationDays);

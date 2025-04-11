@@ -3,7 +3,8 @@ import { Logger } from '@eventuras/utils/src';
 import { cookies } from 'next/headers';
 import * as openid from 'openid-client';
 
-import { auth0callbackUrl, auth0config } from '../../../../utils/authconfig';
+import { auth0callbackUrl, authConfig } from '@/utils/authconfig';
+import Environment from '@/utils/Environment';
 
 export async function GET(): Promise<Response> {
   Logger.debug({ namespace: 'login:auth0' }, 'Starting Auth0 login process');
@@ -25,6 +26,12 @@ export async function GET(): Promise<Response> {
   };
 
   // Build the authorization URL using the client
+  const auth0config = await openid.discovery(
+    new URL(authConfig.issuer),
+    authConfig.clientId,
+    authConfig.clientSecret
+  );
+
   const authorizationUrl = await openid.buildAuthorizationUrl(auth0config, parameters);
   console.log('Authorization URL:', authorizationUrl);
 
