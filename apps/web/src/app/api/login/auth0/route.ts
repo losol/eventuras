@@ -1,49 +1,25 @@
+import { buildAuthorizationUrl, buildPKCEOptions } from '@eventuras/fides-auth/oauth';
 import { globalGETRateLimit } from '@eventuras/fides-auth/request';
-import { Logger } from '@eventuras/utils/src';
 import { cookies } from 'next/headers';
-import * as openid from 'openid-client';
 
-import { auth0callbackUrl, authConfig } from '@/utils/authconfig';
-import Environment from '@/utils/Environment';
+import { oauthConfig } from '@/utils/oauthConfig';
 
 export async function GET(): Promise<Response> {
-  Logger.debug({ namespace: 'login:auth0' }, 'Starting Auth0 login process');
   if (!globalGETRateLimit()) {
     return new Response('Too many requests', { status: 429 });
   }
-
-  // Generate state and PKCE parameters using openid-client's generators
-  let code_verifier: string = openid.randomPKCECodeVerifier();
-  let code_challenge = await openid.calculatePKCECodeChallenge(code_verifier);
-  let state: string = openid.randomState();
-
-  const parameters: Record<string, string> = {
-    redirect_uri: auth0callbackUrl,
-    scope: 'openid profile email offline_access',
-    code_challenge,
-    code_challenge_method: 'S256',
-    state,
-  };
-
-  // Build the authorization URL using the client
-  const auth0config = await openid.discovery(
-    new URL(authConfig.issuer),
-    authConfig.clientId,
-    authConfig.clientSecret
-  );
-
-  const authorizationUrl = await openid.buildAuthorizationUrl(auth0config, parameters);
-  console.log('Authorization URL:', authorizationUrl);
+  const pkce = await buildPKCEOptions(oauthConfig);
+  const authorizationUrl = await buildAuthorizationUrl(oauthConfig, pkce);
 
   // Store state and code verifier in cookies for later validation
-  cookies().set('oauth_state', state, {
+  cookies().set('oauth_state', pkce.state, {
     path: '/',
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     maxAge: 60 * 10,
     sameSite: 'lax',
   });
-  cookies().set('oauth_code_verifier', code_verifier, {
+  cookies().set('oauth_code_verifier', pkce.code_verifier, {
     path: '/',
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,

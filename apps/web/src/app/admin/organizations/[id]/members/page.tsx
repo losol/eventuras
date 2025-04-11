@@ -3,9 +3,9 @@ import { Logger } from '@eventuras/utils';
 import createTranslation from 'next-translate/createTranslation';
 
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import { authConfig } from '@/utils/authconfig';
 import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
+import { oauthConfig } from '@/utils/oauthConfig';
 
 type EventInfoProps = {
   params: {

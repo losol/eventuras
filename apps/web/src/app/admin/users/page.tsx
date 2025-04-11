@@ -5,9 +5,9 @@ import createTranslation from 'next-translate/createTranslation';
 import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import withAuthorization from '@/utils/auth/withAuthorization';
-import { authConfig } from '@/utils/authconfig';
 import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
+import { oauthConfig } from '@/utils/oauthConfig';
 
 import UserList from './UserList';
 import UsersActionMenu from './UsersActionMenu';

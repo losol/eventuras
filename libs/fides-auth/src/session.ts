@@ -24,10 +24,7 @@ export interface Session {
 
 export interface CreateSessionOptions {
   sessionDurationDays?: number;
-  setCookie?: boolean;
 }
-
-
 
 /**
  * Creates an encrypted JWT containing session data and saves it as a cookie.
@@ -39,7 +36,7 @@ export async function createSession(
   session: Session,
   options: CreateSessionOptions = {}
 ): Promise<string> {
-  const { sessionDurationDays = 7, setCookie = true } = options;
+  const { sessionDurationDays = 7 } = options;
 
   const now = Date.now();
   const expiresAt = new Date(now + 1000 * 60 * 60 * 24 * sessionDurationDays);
@@ -54,17 +51,6 @@ export async function createSession(
 
   // Generate an encrypted JWT (JWE) with jose
   const jwt = await createEncryptedJWT(payload);
-
-  // Store the encrypted JWT (JWE) in an HTTP-only cookie
-  if (setCookie) {
-    cookies().set('session', jwt, {
-      httpOnly: true,
-      path: '/',
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      expires: expiresAt,
-    });
-  }
 
   return jwt;
 }
@@ -103,50 +89,3 @@ export const getCurrentSession = cache(async (config?: OAuthConfig): Promise<Ses
   return null;
 });
 
-/**
- * Deletes the session cookie (stateless invalidation).
- */
-export function deleteSessionCookie(): void {
-  cookies().set('session', '', {
-    httpOnly: true,
-    path: '/',
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 0,
-  });
-}
-
-export const refreshSession = async (current_session: Session, config: OAuthConfig, options: CreateSessionOptions = {}): Promise<Session | null> => {
-  const { sessionDurationDays = 7, setCookie = true } = options;
-
-  const newtokens = await refreshAccesstoken(config.issuer,
-    current_session.tokens?.refreshToken ?? '',
-    config.clientId,
-    config.clientSecret
-  );
-  console.log('newtokens', newtokens);
-
-  const updatedSession = {
-    ...current_session,
-    tokens: {
-      ...current_session.tokens,
-      accessToken: newtokens.access_token,
-      accessTokenExpiresAt: newtokens.expires_in
-        ? new Date(Date.now() + newtokens.expires_in * 1000)
-        : undefined,
-      refreshToken: newtokens.refresh_token ?? current_session.tokens?.refreshToken,
-    },
-  };
-
-  console.log('updatedSession', updatedSession);
-
-  if (setCookie) {
-    deleteSessionCookie();
-    await createSession(updatedSession, {
-      sessionDurationDays,
-      setCookie,
-    });
-  }
-
-  return updatedSession;
-};

@@ -4,8 +4,8 @@ import { ReactNode } from 'react';
 
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
-import { authConfig } from '@/utils/authconfig';
 import { getAccessToken } from '@/utils/getAccesstoken';
+import { oauthConfig } from '@/utils/oauthConfig';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 import { UserMenu } from './navigation/UserMenu';

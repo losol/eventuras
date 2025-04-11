@@ -6,8 +6,7 @@ import { cookies } from 'next/headers';
 import * as openid from 'openid-client';
 
 import Environment from '@/utils/Environment';
-
-import { auth0callbackUrl, authConfig } from '../../../../../utils/authconfig';
+import { oauthConfig, redirect_uri } from '@/utils/oauthConfig';
 
 export async function GET(request: Request): Promise<Response> {
   // Rate limit the request to avoid abuse
@@ -30,14 +29,14 @@ export async function GET(request: Request): Promise<Response> {
   }
 
   const tokenEndpointParameters: Record<string, string> = {
-    redirect_uri: auth0callbackUrl,
+    redirect_uri: redirect_uri,
   };
 
   Logger.debug({ namespace: 'login:auth0' }, `Requesting tokens.`);
   const auth0config = await openid.discovery(
-    new URL(authConfig.issuer),
-    authConfig.clientId,
-    authConfig.clientSecret
+    new URL(oauthConfig.issuer),
+    oauthConfig.clientId,
+    oauthConfig.clientSecret
   );
   try {
     const tokens: openid.TokenEndpointResponse = await openid.authorizationCodeGrant(
@@ -49,8 +48,6 @@ export async function GET(request: Request): Promise<Response> {
       },
       tokenEndpointParameters
     );
-
-    console.log('tokens', tokens);
 
     const decodedIdToken = decodeJwt(tokens.id_token ?? '');
 

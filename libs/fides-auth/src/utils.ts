@@ -238,3 +238,37 @@ export function generateToken(tokenLength: number = 32): string {
   crypto.getRandomValues(bytes);
   return toHex(bytes);
 }
+
+
+/**
+ * Determines if the access token of a session will expire in less than the given threshold.
+ *
+ * It decodes the access token (assumed to be a JWT) and reads the `exp` claim.
+ * The expiration (`exp`) claim is the UNIX timestamp (in seconds) when the token expires.
+ *
+ * @param session - The session object containing token information.
+ * @param seconds - The threshold (in seconds) for checking expiration (default is 10 seconds).
+ * @returns True if the access token expires within the threshold; otherwise, false.
+ */
+export const accessTokenExpires = (
+  accessToken: string,
+  seconds: number = 10
+): boolean => {
+  try {
+    // Decode the JWT without verifying the signature.
+    const payload = jose.decodeJwt(accessToken) as { exp?: number; };
+
+    // If there is no exp claim, assume the token does not expire
+    if (!payload.exp) {
+      return false;
+    }
+
+    const nowInSeconds = Date.now() / 1000;
+    const remainingSeconds = payload.exp - nowInSeconds;
+
+    return remainingSeconds < seconds;
+  } catch (error) {
+    // If decoding fails, treat the token as invalid so no refresh is triggered.
+    return false;
+  }
+};

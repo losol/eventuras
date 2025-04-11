@@ -3,7 +3,7 @@
 import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { cookies } from 'next/headers';
 
-import { authConfig } from '@/utils/authconfig';
+import { oauthConfig } from '@/utils/oauthConfig';
 
 import Environment from './Environment';
 
@@ -22,7 +22,7 @@ export async function getAccessToken(): Promise<string | null> {
   }
 
   // Get the current session using our helper. This function only reads cookies.
-  let session = await getCurrentSession(authConfig);
+  let session = await getCurrentSession(oauthConfig);
   if (!session || !session.tokens?.accessToken) {
     return null;
   }

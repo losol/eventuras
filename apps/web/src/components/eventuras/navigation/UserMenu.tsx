@@ -11,7 +11,6 @@ interface UserMenuProps {
   userName?: string;
 }
 export const UserMenu = (props: UserMenuProps) => {
-  console.log('UserMenu', props);
   const router = useRouter();
 
   const handleLogin = async () => {

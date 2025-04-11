@@ -49,19 +49,10 @@ export async function validateSessionJwt(
     };
   }
 
-  // Compute how many seconds remain for the access token
-  let accessTokenExpiresIn = 0;
-  if (payload.tokens?.accessTokenExpiresAt) {
-    const msRemaining =
-      new Date(payload.tokens.accessTokenExpiresAt).getTime() - Date.now();
-    accessTokenExpiresIn = Math.max(0, Math.floor(msRemaining / 1000));
-  }
-
   // It's valid, return how many seconds remain
   return {
     session: payload,
     status: 'VALID',
-    accessTokenExpiresIn
   };
 }
 

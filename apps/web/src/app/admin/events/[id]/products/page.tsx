@@ -3,8 +3,8 @@ import createTranslation from 'next-translate/createTranslation';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import { createSDK } from '@/utils/api/EventurasApi';
-import { authConfig } from '@/utils/authconfig';
 import { getAccessToken } from '@/utils/getAccesstoken';
+import { oauthConfig } from '@/utils/oauthConfig';
 
 import EventProductsEditor from './EventProductsEditor';
 

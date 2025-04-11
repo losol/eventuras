@@ -1,10 +1,11 @@
-import { refreshAccesstoken } from '@eventuras/fides-auth/oauth';
+import { refreshSession } from '@eventuras/fides-auth/session-refresh';
 import { validateSessionJwt } from '@eventuras/fides-auth/session-validation';
-import { createEncryptedJWT } from '@eventuras/fides-auth/utils';
+import { accessTokenExpires, createEncryptedJWT } from '@eventuras/fides-auth/utils';
 import { Logger } from '@eventuras/utils/src/Logger';
+import { create } from 'domain';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { authConfig } from './utils/authconfig';
+import { oauthConfig } from './utils/oauthConfig';
 
 export async function middleware(request: NextRequest) {
   if (request.method === 'GET') {
@@ -12,76 +13,35 @@ export async function middleware(request: NextRequest) {
     const sessioncookie = request.cookies.get('session')?.value ?? null;
 
     if (sessioncookie !== null) {
-      let session;
-      try {
-        session = await validateSessionJwt(sessioncookie);
-      } catch (error) {
-        Logger.error(
-          { namespace: 'eventuras:middleware' },
-          'Error during session validation:',
-          error
-        );
-        return response;
-      }
+      const session = await validateSessionJwt(sessioncookie);
 
       if (session.status === 'INVALID') {
         response.cookies.delete('session');
         return response;
       }
 
-      if (session.session?.tokens?.accessTokenExpiresAt) {
-        console.log('mw-checking expiration', session.session.tokens.accessTokenExpiresAt);
-        const accessTokenExpiresAt =
-          session.session.tokens.accessTokenExpiresAt instanceof Date
-            ? session.session.tokens.accessTokenExpiresAt
-            : new Date(session.session.tokens.accessTokenExpiresAt);
+      const accessToken = session.session?.tokens?.accessToken;
+      if (session.session && accessToken) {
+        if (accessTokenExpires(accessToken)) {
+          Logger.info(
+            { namespace: 'eventuras:middleware' },
+            'Access token expiring soon, refreshing session...'
+          );
+          const updated_session = await refreshSession(session.session, oauthConfig);
 
-        const remainingSeconds = (accessTokenExpiresAt.getTime() - Date.now()) / 1000;
-        const refreshThresholdSeconds = 300;
-
-        if (remainingSeconds < refreshThresholdSeconds && session.session.tokens?.refreshToken) {
-          try {
-            const newtokens = await refreshAccesstoken(
-              authConfig.issuer,
-              session.session.tokens.refreshToken,
-              authConfig.clientId,
-              authConfig.clientSecret
-            );
-
-            const updatedSession = {
-              ...session.session,
-              tokens: {
-                ...session.session.tokens,
-                accessToken: newtokens.access_token,
-                accessTokenExpiresAt: newtokens.expires_in
-                  ? new Date(Date.now() + newtokens.expires_in * 1000)
-                  : undefined,
-                refreshToken: newtokens.refresh_token,
-              },
-            };
-
-            console.log('MW updatedSession', updatedSession);
-
-            const jwt = await createEncryptedJWT(updatedSession);
-            response.cookies.set('session', jwt, {
-              path: '/',
-              maxAge: 60 * 60 * 24 * 30,
-              sameSite: 'lax',
-              httpOnly: true,
-              secure: process.env.NODE_ENV === 'production',
-            });
-          } catch (error) {
-            Logger.error(
-              { namespace: 'eventuras:middleware' },
-              'Error during token refresh:',
-              error
-            );
-            response.cookies.delete('session');
-          }
+          const encrypted_jwt = await createEncryptedJWT(updated_session);
+          response.cookies.set('session', encrypted_jwt, {
+            path: '/',
+            maxAge: 60 * 60 * 24 * 30,
+            sameSite: 'lax',
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+          });
+          console.log('Updated session:', updated_session);
         }
       }
+      return response;
     }
-    return response;
   }
 
   // For non-GET requests, validate headers
