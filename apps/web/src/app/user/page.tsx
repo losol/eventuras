@@ -1,15 +1,15 @@
 import { Heading } from '@eventuras/ui';
-import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import { getAccessToken } from '@/utils/getAccesstoken';
 
 import UserEventRegistrations from '../../components/user/UserEventRegistrations';
 import UserProfileCard from '../../components/user/UserProfileCard';
 
 const UserPage = async () => {
-  const eventuras = createSDK({ authHeader: headers().get('Authorization') });
+  const eventuras = createSDK({ authHeader: await getAccessToken() });
   const { t } = createTranslation();
 
   const profile = await apiWrapper(() => eventuras.users.getV3UsersMe({}));

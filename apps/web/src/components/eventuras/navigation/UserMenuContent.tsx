@@ -33,14 +33,13 @@ const UserMenuContentLoggedout = (props: UserMenuContentLoggedOutProps) => {
 };
 
 export type UserMenuContentLoggedInProps = {
-  onLogoutRequested: () => void;
   menuLabel: string;
   isAdmin: boolean;
   languagePack: LogginInLanguagePack;
 };
 
 const UserMenuContentLoggedIn = (props: UserMenuContentLoggedInProps) => {
-  const { accountLabel, adminLabel, logoutButtonLabel, userLabel } = props.languagePack;
+  const { accountLabel, adminLabel, userLabel } = props.languagePack;
   return (
     <Menu menuLabel={props.menuLabel}>
       <Menu.Link {...{ [DATA_TEST_ID]: 'profile-link' }} href="/user">
@@ -48,13 +47,6 @@ const UserMenuContentLoggedIn = (props: UserMenuContentLoggedInProps) => {
       </Menu.Link>
       <Menu.Link href="/user/account">{accountLabel}</Menu.Link>
       {props.isAdmin && <Menu.Link href="/admin">{adminLabel}</Menu.Link>}
-      <Menu.Button
-        id="logout-button"
-        onClick={() => props.onLogoutRequested()}
-        {...{ [DATA_TEST_ID]: 'logout-button' }}
-      >
-        {logoutButtonLabel}
-      </Menu.Button>
     </Menu>
   );
 };

@@ -23,6 +23,8 @@ const Order: React.FC<OrderProps> = ({ admin, order }) => {
     Refunded: t('common:order.status.labels.refunded'),
   };
 
+  console.log('Order:', order);
+
   return (
     <Card>
       <DescriptionList>
@@ -54,6 +56,8 @@ const Order: React.FC<OrderProps> = ({ admin, order }) => {
               <th>{t('common:order.labels.product')}</th>
               <th>{t('common:order.labels.variant')}</th>
               <th>{t('common:order.labels.quantity')}</th>
+              <th>{t('common:order.labels.price')}</th>
+              <th>{t('common:order.labels.total')}</th>
             </tr>
           </thead>
           <tbody>
@@ -63,6 +67,8 @@ const Order: React.FC<OrderProps> = ({ admin, order }) => {
                 <td>{item.product?.name}</td>
                 <td>{item.productVariant?.name}</td>
                 <td>{item.quantity}</td>
+                <td>{item.product?.price}</td>
+                <td>{(item.quantity ?? 0) * (item.product?.price ?? 0)}</td>
               </tr>
             ))}
           </tbody>

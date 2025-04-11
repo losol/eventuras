@@ -1,0 +1,40 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "env": [
+        "NEXT_PUBLIC_API_BASE_URL",
+        "NEXT_PUBLIC_API_VERSION",
+        "NEXT_PUBLIC_APPLICATION_URL",
+        "NEXT_PUBLIC_LOGOUT_URL_REDIRECT",
+        "NEXT_PUBLIC_DEFAULT_LOCALE",
+        "NEXT_PUBLIC_AUTH0_DOMAIN",
+        "NEXT_PUBLIC_ORGANIZATION_ID",
+        "NEXT_PUBLIC_SITE_SETTINGS_URL",
+        "NEXT_PUBLIC_BACKEND_URL",
+        "AUTH0_CLIENT_ID",
+        "AUTH0_CLIENT_SECRET",
+        "AUTH0_API_AUDIENCE",
+        "SESSION_SECRET"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env.production.local",
+        ".env.local",
+        ".env.production",
+        ".env"
+      ],
+      "outputs": [".next/**", "!.next/cache/**"]
+    },
+    "dev": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env.development.local",
+        ".env.local",
+        ".env.development",
+        ".env"
+      ]
+    },
+    "test": {}
+  }
+}

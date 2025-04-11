@@ -153,9 +153,11 @@
       "id": "Id",
       "items": "Items",
       "orderId": "Order id",
+      "price": "Price",
       "product": "Product",
       "quantity": "Quantity",
       "status": "Status",
+      "total": "Total",
       "variant": "Variant"
     },
     "status": {

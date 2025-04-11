@@ -30,14 +30,20 @@ import pino from 'pino';
 interface DebugCache {
   [key: string]: createDebug.Debugger;
 }
+
 export type LoggerOptions = {
   developerOnly?: boolean;
   namespace?: string;
 };
 
+export type ErrorLoggerOptions = LoggerOptions & {
+  error?: unknown;
+};
+
 export class Logger {
   private static debugCache: DebugCache = {};
   private static pinoLogger = pino();
+
   private static getDebug(namespace: string): createDebug.Debugger {
     const ns = `eventuras:${namespace}`;
     const exists = ns in Logger.debugCache;
@@ -45,6 +51,13 @@ export class Logger {
       Logger.debugCache[ns] = createDebug(ns);
     }
     return Logger.debugCache[ns]!;
+  }
+
+  private static formatError(error: unknown): string {
+    if (error instanceof Error) {
+      return `${error.name}: ${error.message}\nStack: ${error.stack}`;
+    }
+    return String(error);
   }
 
   private static wrapLogger(
@@ -66,19 +79,54 @@ export class Logger {
     };
   }
 
-  static error = Logger.wrapLogger(
-    Logger.pinoLogger.error.bind(Logger.pinoLogger),
-  ).bind(Logger);
-  static warn = Logger.wrapLogger(
-    Logger.pinoLogger.warn.bind(Logger.pinoLogger),
-  ).bind(Logger);
+  private static wrapErrorLogger(
+    pinoFunction: (obj: any, msg?: string | undefined) => void,
+  ) {
+    return (
+      options: ErrorLoggerOptions = { developerOnly: false, namespace: '' },
+      ...msg: any | any[]
+    ) => {
+      if (options.developerOnly && process.env.NODE_ENV !== 'development') {
+        return;
+      }
+
+      const errorInfo = options.error ? { error: Logger.formatError(options.error) } : {};
+
+      //use pino outside of dev environment, and debug inside of it to avoid double logging locally
+      if (process.env.NODE_ENV !== 'development') {
+        pinoFunction({
+          namespace: options.namespace,
+          ...errorInfo,
+          msg: msg
+        });
+      } else {
+        const debugInstance = Logger.getDebug(options.namespace ?? '');
+        if (options.error) {
+          debugInstance(`${msg} - Error: ${Logger.formatError(options.error)}`);
+        } else {
+          debugInstance(msg);
+        }
+      }
+    };
+  }
+
   static info = Logger.wrapLogger(
     Logger.pinoLogger.info.bind(Logger.pinoLogger),
   ).bind(Logger);
+
   static debug = Logger.wrapLogger(
     Logger.pinoLogger.debug.bind(Logger.pinoLogger),
   ).bind(Logger);
-  static fatal = Logger.wrapLogger(
+
+  static warn = Logger.wrapLogger(
+    Logger.pinoLogger.warn.bind(Logger.pinoLogger),
+  ).bind(Logger);
+
+  static error = Logger.wrapErrorLogger(
+    Logger.pinoLogger.error.bind(Logger.pinoLogger),
+  ).bind(Logger);
+
+  static fatal = Logger.wrapErrorLogger(
     Logger.pinoLogger.fatal.bind(Logger.pinoLogger),
   ).bind(Logger);
 }

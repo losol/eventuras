@@ -10,6 +10,7 @@ import FatalError from '@/components/FatalError';
 import Link from '@/components/Link';
 import useCreateHook from '@/hooks/createHook';
 import { createSDK } from '@/utils/api/EventurasApi';
+
 const columnHelper = createColumnHelper<EventDto>();
 interface AdminEventListProps {
   organizationId: number;
