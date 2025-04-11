@@ -1,7 +1,8 @@
 'use server';
 
 import { globalPOSTRateLimit } from '@eventuras/fides-auth/request';
-import { deleteSessionCookie, getCurrentSession } from '@eventuras/fides-auth/session';
+import { getCurrentSession } from '@eventuras/fides-auth/session';
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { oauthConfig } from '@/utils/oauthConfig';
@@ -19,7 +20,8 @@ export async function logoutAction(): Promise<ActionResult> {
     };
   }
 
-  deleteSessionCookie();
+  cookies().delete('session');
+
   return redirect('/');
 }
 
