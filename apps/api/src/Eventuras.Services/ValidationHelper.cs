@@ -24,4 +24,14 @@ public static class ValidationHelper
             .Select(v => v.ErrorMessage));
         throw new ValidationException($"Validation failed: {summary}");
     }
+
+    public static string GetValueIfEmpty(string field, string newValue)
+    {
+        return string.IsNullOrWhiteSpace(field) ? newValue : field;
+    }
+
+    public static T GetValueIfDefault<T>(T field, T newValue) where T : struct
+    {
+        return EqualityComparer<T>.Default.Equals(field, default(T)) ? newValue : field;
+    }
 }
