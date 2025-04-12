@@ -1,5 +1,5 @@
 import { Heading } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 import React from 'react';
 
 import Wrapper from '@/components/eventuras/Wrapper';
@@ -18,12 +18,12 @@ type UserEventPageProps = {
 
 const UserEventPage: React.FC<UserEventPageProps> = async ({ params }) => {
   const eventuras = createSDK({ authHeader: await getAccessToken() });
-  const { t } = createTranslation();
+  const t = await getTranslations();
   const siteInfo = await getSiteSettings();
 
   const user = await apiWrapper(() => eventuras.userProfile.getV3Userprofile({}));
   if (!user.value) {
-    return <div>{t('user:loginRequired')}</div>;
+    return <div>{t('user.loginRequired')}</div>;
   }
 
   const eventInfo = await apiWrapper(() =>
@@ -32,7 +32,7 @@ const UserEventPage: React.FC<UserEventPageProps> = async ({ params }) => {
     })
   );
   if (!eventInfo.value) {
-    return <div>{t('user:events.eventNotFound')}</div>;
+    return <div>{t('user.events.eventNotFound')}</div>;
   }
 
   const availableProducts = await apiWrapper(() =>
@@ -45,7 +45,7 @@ const UserEventPage: React.FC<UserEventPageProps> = async ({ params }) => {
     <Wrapper>
       {eventInfo.value.title && (
         <>
-          <p className="pt-16">{t('user:events.registration.titleLabel')}</p>
+          <p className="pt-16">{t('user.events.registration.titleLabel')}</p>
           <Heading as="h1" spacingClassName="pt-0 my-5">
             {eventInfo.value.title}
           </Heading>

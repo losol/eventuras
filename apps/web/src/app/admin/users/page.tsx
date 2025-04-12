@@ -1,6 +1,6 @@
 import { UserDto, UserDtoPageResponseDto } from '@eventuras/sdk';
 import { Container, Heading } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
@@ -13,7 +13,7 @@ import UserList from './UserList';
 import UsersActionMenu from './UsersActionMenu';
 
 const AdminUserPage = async () => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
     authHeader: await getAccessToken(),
@@ -34,7 +34,7 @@ const AdminUserPage = async () => {
   return (
     <Wrapper>
       <Container>
-        <Heading as="h1">{t('admin:users.page.title')}</Heading>
+        <Heading as="h1">{t('admin.users.page.title')}</Heading>
         <UsersActionMenu />
         <UserList users={data} />
       </Container>

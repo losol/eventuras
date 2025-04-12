@@ -1,6 +1,6 @@
 import { CertificateDto } from '@eventuras/sdk';
 import { Definition, DescriptionList, Heading, Item, Term } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 import React from 'react';
 
 import Card from '@/components/Card';
@@ -11,7 +11,7 @@ type CertificateProps = {
 };
 
 const Certificate: React.FC<CertificateProps> = ({ certificate }) => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
 
   return (
     <Card>
@@ -19,19 +19,19 @@ const Certificate: React.FC<CertificateProps> = ({ certificate }) => {
       <Heading as="h2">Event title</Heading>
       <DescriptionList>
         <Item>
-          <Term>{t('common:labels.id')}</Term>
+          <Term>{t('common.labels.id')}</Term>
           <Definition>{certificate.certificateId}</Definition>
         </Item>
         <Item>
-          <Term>{t('common:labels.guid')}</Term>
+          <Term>{t('common.labels.guid')}</Term>
           <Definition>{certificate.certificateGuid}</Definition>
         </Item>
         <Item>
-          <Term>{t('common:order.labels.date')}</Term>
+          <Term>{t('common.order.labels.date')}</Term>
           <Definition>{formatDateSpan(certificate.issuingDate!.toString())}</Definition>
         </Item>
         <Item>
-          <Term>{t('common:labels.name')}</Term>
+          <Term>{t('common.labels.name')}</Term>
           <Definition>{certificate.recipientName}</Definition>
         </Item>
       </DescriptionList>

@@ -7,7 +7,7 @@ import { Logger } from '@eventuras/utils';
 import { IconNotes, IconShoppingCart, IconUser } from '@tabler/icons-react';
 import { ColumnFilter } from '@tanstack/react-table';
 import Link from 'next/link';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 import React, { useMemo, useState } from 'react';
 
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
@@ -50,7 +50,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
   eventProducts = [],
   filteredStatus,
 }) => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
 
   const [participants, setParticipants] = useState<RegistrationDto[]>(initialParticipants);
@@ -134,25 +134,25 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
    */
   const columns = [
     columnHelper.display({
-      header: t('common:labels.id').toString(),
+      header: t('common.labels.id').toString(),
       cell: info => <Badge>{info.row.original.registrationId}</Badge>,
     }),
     columnHelper.accessor('user.name', {
-      header: t('admin:participantColumns.name').toString(),
+      header: t('admin.participantColumns.name').toString(),
     }),
 
     columnHelper.accessor('user.phoneNumber', {
-      header: t('admin:participantColumns.telephone').toString(),
+      header: t('admin.participantColumns.telephone').toString(),
     }),
     columnHelper.accessor('user.email', {
-      header: t('admin:participantColumns.email').toString(),
+      header: t('admin.participantColumns.email').toString(),
     }),
     columnHelper.accessor('products', {
-      header: t('admin:participantColumns.products').toString(),
+      header: t('admin.participantColumns.products').toString(),
       cell: info => renderProducts(info.row.original),
     }),
     columnHelper.accessor('status', {
-      header: t('admin:participantColumns.status').toString(),
+      header: t('admin.participantColumns.status').toString(),
       filterFn: (row, _columnId, value) => {
         /*
           This filters out participants based on status. The filter assumes values of 'participant,waitinglist,cancelled'
@@ -180,12 +180,12 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
     }),
     columnHelper.display({
       id: 'live',
-      header: t('admin:participantColumns.live'),
+      header: t('admin.participantColumns.live'),
       cell: info => renderLiveActions(info.row.original),
     }),
     columnHelper.display({
       id: 'actions',
-      header: t('admin:participantColumns.actions').toString(),
+      header: t('admin.participantColumns.actions').toString(),
       cell: info => renderEventItemActions(info.row.original),
     }),
   ];

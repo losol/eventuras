@@ -4,7 +4,7 @@ import { EventDto, ProductDto, RegistrationDto, UserDto } from '@eventuras/sdk';
 import { Loading } from '@eventuras/ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
 import { useActor } from '@xstate/react';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import UserEditor from '@/app/admin/users/UserEditor';
 import FatalError from '@/components/FatalError';
@@ -28,7 +28,7 @@ export interface EventFlowProps {
 }
 
 const EventFlow: React.FC<EventFlowProps> = ({ eventInfo, user, availableProducts, siteInfo }) => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
 
   const [xState, send] = useActor(EventFlowMachine, {
     input: {
@@ -71,7 +71,7 @@ const EventFlow: React.FC<EventFlowProps> = ({ eventInfo, user, availableProduct
               user: updatedUser,
             });
           }}
-          submitButtonLabel={t('common:labels.next')}
+          submitButtonLabel={t('common.labels.next')}
           {...{ [DATA_TEST_ID]: 'registration-account-step' }}
         />
       );
@@ -143,8 +143,8 @@ const EventFlow: React.FC<EventFlowProps> = ({ eventInfo, user, availableProduct
     case xState.matches('error'):
       return (
         <FatalError
-          title={t('common:errorpage.title')}
-          description={t('common:errorpage.description')}
+          title={t('common.errorpage.title')}
+          description={t('common.errorpage.description')}
           siteInfo={siteInfo}
         />
       );

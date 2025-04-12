@@ -3,7 +3,7 @@ import { EmailNotificationDto, RegistrationType, SmsNotificationDto } from '@eve
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
 import { AppNotificationOptions, Button, ButtonGroup, Heading } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 import { useRef } from 'react';
 import { SubmitHandler, useForm, UseFormRegister, UseFormReturn } from 'react-hook-form';
 

@@ -1,5 +1,5 @@
 import { getCurrentSession } from '@eventuras/fides-auth/session';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
 import Footer from '@/components/Footer';
@@ -29,7 +29,7 @@ const styles = {
 };
 
 const Wrapper = async (props: WrapperProps) => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
   const site = await getSiteSettings();
   const session = await getCurrentSession();
   const bgClass = props.imageNavbar
@@ -43,13 +43,13 @@ const Wrapper = async (props: WrapperProps) => {
       <Navbar title={site?.name ?? 'Eventuras'} bgColor={bgClass} bgDark={props.bgDark}>
         <UserMenu
           loggedInContent={{
-            accountLabel: t('common:labels.account'),
-            adminLabel: t('common:labels.admin'),
-            logoutButtonLabel: t('common:labels.logout'),
-            userLabel: t('common:labels.user'),
+            accountLabel: t('common.labels.account'),
+            adminLabel: t('common.labels.admin'),
+            logoutButtonLabel: t('common.labels.logout'),
+            userLabel: t('common.labels.user'),
           }}
           LoggedOutContent={{
-            loginLabel: t('common:labels.login'),
+            loginLabel: t('common.labels.login'),
           }}
           isLoggedIn={session !== null}
           isAdmin={session?.user?.roles?.includes('Admin')}

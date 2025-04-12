@@ -1,6 +1,6 @@
 import { ProductOrderDto } from '@eventuras/sdk';
 import { DATA_TEST_ID } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 import { ReactElement } from 'react';
 
 import Card from '@/components/Card';
@@ -25,7 +25,7 @@ const UserEventRegistrationCard = ({
   dateEnd,
   products,
 }: UserEventRegistrationCardProps): ReactElement => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
   return (
     <Card>
       <Card.Heading as="h3" spacingClassName="pt-2">
@@ -51,7 +51,7 @@ const UserEventRegistrationCard = ({
           stretch
           {...{ [DATA_TEST_ID]: eventId }}
         >
-          {t('common:buttons.user-event-page')}
+          {t('common.buttons.user-event-page')}
         </Link>
       </Card.Text>
     </Card>

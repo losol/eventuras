@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { RecoilRoot } from 'recoil';
 import { createActor } from 'xstate';
 
-import NotificationsProvider from '@/components/NotificationsProvider';
+// import NotificationsProvider from '@/components/NotificationsProvider';
 import AuthenticationFlowMachine, {
   AuthenticationStateContext,
 } from '@/statemachines/AuthenticationFlowMachine';
@@ -18,7 +18,7 @@ export default function Providers({ children }: ProvidersProps) {
 
   return (
     <RecoilRoot>
-      <NotificationsProvider />
+      {/* <NotificationsProvider /> */}
       <AuthenticationStateContext.Provider value={{ auth }}>
         {children}
       </AuthenticationStateContext.Provider>

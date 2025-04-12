@@ -4,7 +4,7 @@
 import { MarkdownContent } from '@eventuras/markdown';
 import { EventDto } from '@eventuras/sdk';
 import { Heading } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import Link from '@/components/Link';
@@ -15,24 +15,24 @@ type EventProps = {
 };
 
 const EventDetails: React.FC<EventProps> = ({ eventinfo }) => {
-  const { t } = createTranslation();
+  const t = useTranslations();
 
-  if (!eventinfo) return <div>{t('common:events.event-not-found')}</div>;
+  if (!eventinfo) return <div>{t('common.events.event-not-found')}</div>;
 
   const sections = [
     {
       id: 'more-information',
-      title: t('common:events.moreinformation'),
+      title: t('common.events.moreinformation'),
       content: eventinfo.moreInformation,
     },
     {
       id: 'program',
-      title: t('common:events.program'),
+      title: t('common.events.program'),
       content: eventinfo.program,
     },
     {
       id: 'practical-information',
-      title: t('common:events.practicalinformation'),
+      title: t('common.events.practicalinformation'),
       content: eventinfo.practicalInformation,
     },
   ].filter(section => section.content);

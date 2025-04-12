@@ -4,7 +4,7 @@ import type { NewProductDto, ProductDto } from '@eventuras/sdk';
 import { Form, Input, NumberInput } from '@eventuras/smartform';
 import { Button, Heading } from '@eventuras/ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
@@ -35,17 +35,17 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
   const [confirmDiscardChanges, setConfirmDiscardChanges] = useState(false);
   const { reset } = useForm<ProductDto>({ defaultValues: product || {} });
-  const { t } = createTranslation();
+  const t = await getTranslations();
 
   useEffect(() => {
     reset(product || {});
   }, [product, reset]);
 
   const isEditMode = Boolean(product);
-  const buttonText = isEditMode ? t('common:labels.edit') : t('common:labels.save');
+  const buttonText = isEditMode ? t('common.labels.edit') : t('common.labels.save');
   const titleText = isEditMode
-    ? t('admin:products.modal.title.edit')
-    : t('admin:products.modal.title.add-product');
+    ? t('admin.products.modal.title.edit')
+    : t('admin.products.modal.title.add-product');
 
   // Product modal submit handler
   const submitProduct: SubmitHandler<ProductDto> = async (data: ProductDto) => {
@@ -108,28 +108,28 @@ const ProductModal: React.FC<ProductModalProps> = ({
             <Form onSubmit={submitProduct} className="mt-2 space-y-6" defaultValues={product}>
               <Input
                 name="name"
-                label={t('common:products.labels.name')}
-                placeholder={t('common:products.labels.name')}
+                label={t('common.products.labels.name')}
+                placeholder={t('common.products.labels.name')}
                 {...{ [DATA_TEST_ID]: 'product-name-input' }}
                 required
               />
               <Input
                 name="description"
-                label={t('common:products.labels.description')}
-                placeholder={t('common:products.labels.description')}
+                label={t('common.products.labels.description')}
+                placeholder={t('common.products.labels.description')}
                 {...{ [DATA_TEST_ID]: 'product-description-input' }}
                 multiline
               />
               <NumberInput
                 name="price"
-                label={t('common:products.labels.price')}
+                label={t('common.products.labels.price')}
                 placeholder="1234"
                 {...{ [DATA_TEST_ID]: 'product-price-input' }}
                 required
               />
               <NumberInput
                 name="vatPercent"
-                label={t('common:products.labels.vatPercent')}
+                label={t('common.products.labels.vatPercent')}
                 placeholder="0"
                 {...{ [DATA_TEST_ID]: 'product-vat-input' }}
                 defaultValue={0}
@@ -137,7 +137,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
               />
               <NumberInput
                 name="minimumQuantity"
-                label={t('common:products.labels.minimumQuantity')}
+                label={t('common.products.labels.minimumQuantity')}
                 placeholder="0"
                 {...{ [DATA_TEST_ID]: 'product-minimum-quantity-input' }}
               />
@@ -145,7 +145,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 {buttonText}
               </Button>
               <Button type="reset" variant="secondary" onClick={onClose}>
-                {t('common:buttons.cancel')}
+                {t('common.buttons.cancel')}
               </Button>
             </Form>
           </div>

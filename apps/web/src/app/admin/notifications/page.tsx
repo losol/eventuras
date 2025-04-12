@@ -1,7 +1,7 @@
 import { NotificationDto } from '@eventuras/sdk';
 import { Container, Heading, Section, Text } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import Card from '@/components/Card';
 import Wrapper from '@/components/eventuras/Wrapper';
@@ -16,7 +16,7 @@ type NotificationPageProps = {
 };
 
 const NotificationsPage: React.FC<NotificationPageProps> = async props => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,

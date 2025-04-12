@@ -1,6 +1,6 @@
 import { Container, Heading, Section } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
@@ -18,7 +18,7 @@ type EventCollectionProps = {
 const CollectionDetailPage: React.FC<EventCollectionProps> = async ({ params }) => {
   const eventId = params.id;
 
-  const { t } = createTranslation();
+  const t = await getTranslations();
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
@@ -39,7 +39,7 @@ const CollectionDetailPage: React.FC<EventCollectionProps> = async ({ params }) 
   }
 
   if (!collection.ok) {
-    return <div>{t('common:event-not-found')}</div>;
+    return <div>{t('common.event-not-found')}</div>;
   }
 
   return (

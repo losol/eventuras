@@ -2,7 +2,7 @@
 
 import { UserDto } from '@eventuras/sdk';
 import { Definition, DescriptionList, Item, Term } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import Card from '@/components/Card';
 import Link from '@/components/Link';
@@ -12,34 +12,34 @@ export type UserProfileCardProps = {
 };
 
 const UserProfileCard = ({ profile }: UserProfileCardProps) => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
   return (
     <Card>
       <DescriptionList>
         {profile.name && (
           <Item>
-            <Term>{t('common:labels.name')}</Term>
+            <Term>{t('common.labels.name')}</Term>
             <Definition>{profile.name}</Definition>
           </Item>
         )}
 
         {profile.email && (
           <Item>
-            <Term>{t('common:labels.email')}</Term>
+            <Term>{t('common.labels.email')}</Term>
             <Definition>{profile.email}</Definition>
           </Item>
         )}
 
         {profile.phoneNumber && (
           <Item>
-            <Term>{t('common:labels.phoneNumber')}</Term>
+            <Term>{t('common.labels.phoneNumber')}</Term>
             <Definition>{profile.phoneNumber}</Definition>
           </Item>
         )}
       </DescriptionList>
       <Card.Text className="my-2">
         <Link href="/user/account" variant="button-outline" margin="my-3">
-          {t('common:labels.editProfile')}
+          {t('common.labels.editProfile')}
         </Link>
       </Card.Text>
     </Card>

@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import { SiteInfo } from '@/utils/site/getSiteSettings';
 
@@ -14,11 +14,11 @@ const RegistrationCancellation: React.FC<RegistrationCancellationProps> = ({
   onBack,
   siteInfo,
 }) => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
 
   return (
     <>
-      <p>{t('user:events.cancellationpage.description')}</p>
+      <p>{t('user.events.cancellationpage.description')}</p>
 
       {siteInfo && siteInfo.contactInformation && (
         <p>
@@ -26,7 +26,7 @@ const RegistrationCancellation: React.FC<RegistrationCancellationProps> = ({
         </p>
       )}
 
-      {onBack && <Button onClick={onBack}>{t('common:buttons.back')}</Button>}
+      {onBack && <Button onClick={onBack}>{t('common.buttons.back')}</Button>}
     </>
   );
 };

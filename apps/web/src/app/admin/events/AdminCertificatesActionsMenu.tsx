@@ -1,7 +1,7 @@
 import { EventDto } from '@eventuras/sdk';
 import { Button, Definition, DescriptionList, Drawer, Heading, Term } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 import React, { useState } from 'react';
 
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
@@ -17,7 +17,7 @@ export const AdminCertificatesActionsMenu: React.FC<AdminCertificatesActionsMenu
   onCertificatesSent,
 }) => {
   const [certificateDrawerOpen, setCertificateDrawerOpen] = useState<boolean>(false);
-  const { t } = createTranslation();
+  const t = await getTranslations();
   const loggerOptions = { namespace: 'admin:certificates' };
 
   const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
@@ -43,7 +43,7 @@ export const AdminCertificatesActionsMenu: React.FC<AdminCertificatesActionsMenu
   return (
     <>
       <Button onClick={() => setCertificateDrawerOpen(!certificateDrawerOpen)} variant="outline">
-        {t('admin:labels.sendCertificates')}
+        {t('admin.labels.sendCertificates')}
       </Button>
       <Drawer isOpen={certificateDrawerOpen} onCancel={() => onClose()}>
         <Drawer.Header>

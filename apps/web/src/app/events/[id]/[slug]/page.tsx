@@ -2,7 +2,7 @@ import { EventInfoStatus } from '@eventuras/sdk';
 import { Container, Heading, Text } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { redirect } from 'next/navigation';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import EventDetails from '@/app/events/EventDetails';
 import EventRegistrationButton from '@/app/events/EventRegistrationButton';
@@ -52,7 +52,7 @@ export async function generateStaticParams() {
 }
 
 const Page: React.FC<EventInfoProps> = async ({ params }) => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
   const result = await apiWrapper(() =>
     createSDK({ inferUrl: true }).events.getV3Events1({ id: params.id })
   );
@@ -66,10 +66,10 @@ const Page: React.FC<EventInfoProps> = async ({ params }) => {
   if (notFound)
     return (
       <>
-        <Heading>{t('common:events.detailspage.notfound.title')}</Heading>
-        <Text className="py-6">{t('common:events.detailspage.notfound.description')}</Text>
+        <Heading>{t('common.events.detailspage.notfound.title')}</Heading>
+        <Text className="py-6">{t('common.events.detailspage.notfound.description')}</Text>
         <Link href="/" variant="button-primary">
-          {t('common:events.detailspage.notfound.back')}
+          {t('common.events.detailspage.notfound.back')}
         </Link>
       </>
     );

@@ -1,6 +1,6 @@
 import { Container, Heading, Section } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
@@ -14,7 +14,7 @@ type EventInfoProps = {
 };
 
 const OrganizationDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
@@ -42,7 +42,7 @@ const OrganizationDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
   }
 
   if (!organization.ok) {
-    return <div>{t('admin:organizations.labels.notFound')}</div>;
+    return <div>{t('admin.organizations.labels.notFound')}</div>;
   }
 
   return (

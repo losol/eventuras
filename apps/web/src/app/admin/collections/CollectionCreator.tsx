@@ -4,7 +4,7 @@ import { EventCollectionCreateDto } from '@eventuras/sdk';
 import { Form, HiddenInput, Input } from '@eventuras/smartform';
 import { Button } from '@eventuras/ui';
 import { useRouter } from 'next/navigation';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 import React, { useState } from 'react';
 
 import Dialog from '@/components/Dialog';
@@ -13,7 +13,7 @@ import Environment from '@/utils/Environment';
 import slugify from '@/utils/slugify';
 
 const CollectionCreator: React.FC = () => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
   const [modalOpen, setModalOpen] = useState(false);
   const organizationId = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
   const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
@@ -36,13 +36,13 @@ const CollectionCreator: React.FC = () => {
   return (
     <>
       <Button onClick={() => setModalOpen(!modalOpen)}>
-        {t('admin:collection.labels.create')}
+        {t('admin.collection.labels.create')}
       </Button>
       <Dialog isOpen={modalOpen} onClose={() => setModalOpen(false)} title={'Add collection'}>
         <Form onSubmit={data => createCollection(data)}>
           <HiddenInput name="organizationId" value={organizationId.toString()} />
-          <Input name="name" label={t('common:labels.name')} />
-          <Button type="submit">{t('admin:collection.labels.create')}</Button>
+          <Input name="name" label={t('common.labels.name')} />
+          <Button type="submit">{t('admin.collection.labels.create')}</Button>
         </Form>
       </Dialog>
     </>
