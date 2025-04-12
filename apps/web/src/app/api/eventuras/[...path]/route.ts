@@ -1,8 +1,8 @@
 import { Logger } from '@eventuras/utils';
 import { NextRequest, NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
 
 import Environment, { EnvironmentVariables } from '@/utils/Environment';
+import { getAccessToken } from '@/utils/getAccesstoken';
 
 const eventurasAPI_URL = Environment.NEXT_PUBLIC_BACKEND_URL;
 
@@ -20,9 +20,6 @@ function isValidURL(str: string): boolean {
  */
 
 async function forwarder(request: NextRequest) {
-  const token = await getToken({ req: request });
-  const accessToken = token?.access_token ?? '';
-
   if (!eventurasAPI_URL) throw new Error('NEXT_PUBLIC_BACKEND_URL is not defined');
 
   // validate URL
@@ -49,11 +46,12 @@ async function forwarder(request: NextRequest) {
 
   let contentType = request.method === 'PATCH' ? 'application/json-patch+json' : 'application/json';
   let forwardAccept = hasAcceptHeaders ? { Accept: acceptHeaders! } : null;
+  const token = await getAccessToken();
   const fResponse = await fetch(forwardUrl, {
     method: request.method,
     body: request.method === 'GET' ? null : JSON.stringify(jBody),
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
       'Content-Type': contentType,
       'Eventuras-Org-Id': Environment.NEXT_PUBLIC_ORGANIZATION_ID,
       ...forwardAccept,
@@ -88,7 +86,7 @@ async function forwarder(request: NextRequest) {
         method: request.method,
         status: fResponse.status,
         data: JSON.stringify(data),
-        accessToken,
+        token,
       }
     );
   }

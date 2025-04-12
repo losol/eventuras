@@ -153,9 +153,11 @@
       "id": "Id",
       "items": "Ordrelinjer",
       "orderId": "Ordre id",
+      "price": "Pris",
       "product": "Produkt",
       "quantity": "Antall",
       "status": "Status",
+      "total": "Totalt",
       "variant": "Variant"
     },
     "status": {

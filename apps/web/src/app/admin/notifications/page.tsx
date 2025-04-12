@@ -1,7 +1,6 @@
 import { NotificationDto } from '@eventuras/sdk';
 import { Container, Heading, Section, Text } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
-import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
 import Card from '@/components/Card';
@@ -9,6 +8,8 @@ import Wrapper from '@/components/eventuras/Wrapper';
 import Link from '@/components/Link';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
+import { getAccessToken } from '@/utils/getAccesstoken';
+import { oauthConfig } from '@/utils/oauthConfig';
 
 type NotificationPageProps = {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -19,7 +20,7 @@ const NotificationsPage: React.FC<NotificationPageProps> = async props => {
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
-    authHeader: headers().get('Authorization'),
+    authHeader: await getAccessToken(),
   });
 
   const notifications = await apiWrapper(() => {

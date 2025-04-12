@@ -1,8 +1,11 @@
+import { getCurrentSession } from '@eventuras/fides-auth/session';
 import createTranslation from 'next-translate/createTranslation';
 import { ReactNode } from 'react';
 
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
+import { getAccessToken } from '@/utils/getAccesstoken';
+import { oauthConfig } from '@/utils/oauthConfig';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 import { UserMenu } from './navigation/UserMenu';
@@ -11,9 +14,6 @@ import { UserMenu } from './navigation/UserMenu';
  * Layout component wrapping main content with Header and Footer.
  * @param {{ children: ReactNode }} props - Layout properties.
  * @returns {JSX.Element} The rendered Layout component.
- *
- *
- *
  */
 
 type WrapperProps = {
@@ -31,6 +31,7 @@ const styles = {
 const Wrapper = async (props: WrapperProps) => {
   const { t } = createTranslation();
   const site = await getSiteSettings();
+  const session = await getCurrentSession();
   const bgClass = props.imageNavbar
     ? 'bg-transparent z-10 absolute w-full py-1'
     : 'bg-transparent w-full py-1';
@@ -50,6 +51,9 @@ const Wrapper = async (props: WrapperProps) => {
           LoggedOutContent={{
             loginLabel: t('common:labels.login'),
           }}
+          isLoggedIn={session !== null}
+          isAdmin={session?.user?.roles?.includes('Admin')}
+          userName={session?.user?.name}
         />
       </Navbar>
       <main id="main-content" className={mainClassName}>

@@ -1,10 +1,10 @@
 import { Container, Heading, Section, Text } from '@eventuras/ui';
-import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
 import Link from '@/components/Link';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
+import { getAccessToken } from '@/utils/getAccesstoken';
 
 import DeliverySummary from '../DeliverySummary';
 
@@ -20,7 +20,7 @@ const EventProducts: React.FC<EventProductsPage> = async ({ params }) => {
   const productId = parseInt(params.productId);
   const { t } = createTranslation();
 
-  const eventuras = createSDK({ authHeader: headers().get('Authorization') });
+  const eventuras = createSDK({ authHeader: await getAccessToken() });
   const productSummary = await apiWrapper(() =>
     eventuras.products.getV3ProductsSummary({
       productId: productId,

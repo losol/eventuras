@@ -90,13 +90,13 @@ const AuthenticationFlowMachine = createMachine({
   },
 });
 
-export const AutheticationStateContext = createContext({
+export const AuthenticationStateContext = createContext({
   auth: {} as Actor<typeof AuthenticationFlowMachine>,
 });
 export const useAuthSelector = (): AuthenticationFlowMachineContext & {
   isAuthenticated: boolean;
 } => {
-  const { auth } = useContext(AutheticationStateContext);
+  const { auth } = useContext(AuthenticationStateContext);
   return useSelector(auth, snapshot => {
     const { idToken, isAdmin, sessionUser, userProfile } = snapshot.context;
     return {

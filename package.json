@@ -34,7 +34,7 @@
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "npm:check-update": "npx npm-check-updates --deep",
-    "npm:reinstall": "npm run npm:clean && npm install --legacy-peer-deps",
+    "npm:reinstall": "npm run npm:clean && npm install",
     "npm:update": "npx npm-check-updates --deep -u",
     "npm:clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules && npx rimraf package-lock.json",
     "prepare": "husky"

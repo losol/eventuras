@@ -1,6 +1,6 @@
 'use client';
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import { UserDto } from '@eventuras/enrollments-sdk/models/components';
+import { UserDto } from '@eventuras/sdk';
 import createTranslation from 'next-translate/createTranslation';
 
 import Link from '@/components/Link';

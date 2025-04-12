@@ -1,42 +1,27 @@
 'use client';
-import { Session } from 'next-auth';
-import { SessionProvider } from 'next-auth/react';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { RecoilRoot } from 'recoil';
 import { createActor } from 'xstate';
 
 import NotificationsProvider from '@/components/NotificationsProvider';
 import AuthenticationFlowMachine, {
-  AutheticationStateContext,
-  Events,
+  AuthenticationStateContext,
 } from '@/statemachines/AuthenticationFlowMachine';
 
 type ProvidersProps = {
-  session: Session | null;
   children: React.ReactNode;
 };
 
-export default function Providers({ children, session }: ProvidersProps) {
+export default function Providers({ children }: ProvidersProps) {
   const auth = useMemo(() => createActor(AuthenticationFlowMachine), []);
   auth.start();
-
-  const sessionExists = session !== null && session !== undefined;
-  useEffect(() => {
-    if (sessionExists) {
-      auth.send({ type: Events.ON_LOGGED_IN_SUCCESS, session });
-    } else {
-      auth.send({ type: Events.ON_LOGGED_OUT });
-    }
-  }, [sessionExists]);
 
   return (
     <RecoilRoot>
       <NotificationsProvider />
-      <SessionProvider session={session}>
-        <AutheticationStateContext.Provider value={{ auth }}>
-          {children}
-        </AutheticationStateContext.Provider>
-      </SessionProvider>
+      <AuthenticationStateContext.Provider value={{ auth }}>
+        {children}
+      </AuthenticationStateContext.Provider>
     </RecoilRoot>
   );
 }

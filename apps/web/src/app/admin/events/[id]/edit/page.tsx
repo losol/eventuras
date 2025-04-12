@@ -1,12 +1,13 @@
 import { Heading } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
-import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
 import EventEditor from '@/app/admin/events/EventEditor';
 import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
+import { getAccessToken } from '@/utils/getAccesstoken';
+import { oauthConfig } from '@/utils/oauthConfig';
 
 type EditEventinfoProps = {
   params: {
@@ -20,7 +21,7 @@ const EditEventinfo: React.FC<EditEventinfoProps> = async ({ params }) => {
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
-    authHeader: headers().get('Authorization'),
+    authHeader: await getAccessToken(),
   });
 
   const eventinfo = await apiWrapper(() =>

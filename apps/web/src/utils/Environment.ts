@@ -22,6 +22,7 @@ const defaults = {
 export enum EnvironmentVariables {
   NEXT_PUBLIC_API_BASE_URL = 'NEXT_PUBLIC_API_BASE_URL',
   NEXT_PUBLIC_API_VERSION = 'NEXT_PUBLIC_API_VERSION',
+  NEXT_PUBLIC_APPLICATION_URL = 'NEXT_PUBLIC_APPLICATION_URL',
   NEXT_PUBLIC_LOGOUT_URL_REDIRECT = 'NEXT_PUBLIC_LOGOUT_URL_REDIRECT',
   NEXT_PUBLIC_DEFAULT_LOCALE = 'NEXT_PUBLIC_DEFAULT_LOCALE',
   NEXT_PUBLIC_AUTH0_DOMAIN = 'NEXT_PUBLIC_AUTH0_DOMAIN',
@@ -31,9 +32,8 @@ export enum EnvironmentVariables {
   AUTH0_CLIENT_ID = 'AUTH0_CLIENT_ID',
   AUTH0_CLIENT_SECRET = 'AUTH0_CLIENT_SECRET',
   AUTH0_API_AUDIENCE = 'AUTH0_API_AUDIENCE',
-  NEXTAUTH_URL = 'NEXTAUTH_URL',
-  NEXTAUTH_SECRET = 'NEXTAUTH_SECRET',
   NODE_ENV = 'NODE_ENV',
+  SESSION_SECRET = 'SESSION_SECRET',
 }
 
 // Optional Environment Variables
@@ -82,7 +82,7 @@ class Environment {
     return process.env.NEXT_PHASE === PHASE_PRODUCTION_BUILD;
   }
 
-  // Explicit getters for NEXT_PUBLIC_BACKEND_URL andNEXT_PUBLIC variables
+  // Explicit getters for NEXT_PUBLIC variables
   static get NEXT_PUBLIC_BACKEND_URL() {
     return process.env.NEXT_PUBLIC_BACKEND_URL!;
   }
@@ -93,6 +93,10 @@ class Environment {
 
   static get NEXT_PUBLIC_API_VERSION() {
     return process.env.NEXT_PUBLIC_API_VERSION!;
+  }
+
+  static get NEXT_PUBLIC_APPLICATION_URL() {
+    return process.env.NEXT_PUBLIC_APPLICATION_URL!;
   }
 
   static get NEXT_PUBLIC_DEFAULT_LOCALE() {

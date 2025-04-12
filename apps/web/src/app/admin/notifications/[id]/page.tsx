@@ -1,11 +1,11 @@
 import { Container, Heading, Section } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
-import { headers } from 'next/headers';
 import createTranslation from 'next-translate/createTranslation';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
+import { getAccessToken } from '@/utils/getAccesstoken';
 
 type EventInfoProps = {
   params: {
@@ -18,7 +18,7 @@ const OrganizationDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
-    authHeader: headers().get('Authorization'),
+    authHeader: await getAccessToken(),
   });
 
   const notification = await apiWrapper(() =>
