@@ -1,6 +1,5 @@
+import { useActionState } from "react";
 'use client';
-
-import { useFormState } from 'react-dom';
 
 import { logoutAction } from './actions';
 
@@ -9,7 +8,7 @@ const initialState = {
 };
 
 export function LogoutButton() {
-  const [, action] = useFormState(logoutAction, initialState);
+  const [, action] = useActionState(logoutAction, initialState);
   return (
     <form action={action}>
       <button>Sign out</button>
