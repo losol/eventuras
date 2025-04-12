@@ -14,7 +14,8 @@ type EventInfoProps = {
   };
 };
 
-const OrganizationDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
+const OrganizationDetailPage: React.FC<EventInfoProps> = async props => {
+  const params = await props.params;
   const t = await getTranslations();
 
   const eventuras = createSDK({

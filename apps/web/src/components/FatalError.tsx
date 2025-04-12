@@ -18,7 +18,12 @@ interface FatalErrorProps {
  * @param {FatalErrorProps} props The properties of the FatalError component.
  * @returns {JSX.Element} The FatalError component.
  */
-const FatalError: React.FC<FatalErrorProps> = ({ title, description, additional, siteInfo }) => {
+const FatalError: React.FC<FatalErrorProps> = async ({
+  title,
+  description,
+  additional,
+  siteInfo,
+}) => {
   const t = await getTranslations();
 
   return (

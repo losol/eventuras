@@ -20,8 +20,8 @@ export async function GET(request: Request): Promise<Response> {
   const public_url = new URL(Environment.NEXT_PUBLIC_APPLICATION_URL);
   public_url.search = current_url.search;
 
-  const storedState = cookies().get('oauth_state')?.value ?? null;
-  const storedCodeVerifier = cookies().get('oauth_code_verifier')?.value ?? null;
+  const storedState = (await cookies()).get('oauth_state')?.value ?? null;
+  const storedCodeVerifier = (await cookies()).get('oauth_code_verifier')?.value ?? null;
 
   if (!storedState || !storedCodeVerifier) {
     Logger.warn({ namespace: 'login:auth0' }, 'Missing stored state or code verifier');
@@ -77,7 +77,7 @@ export async function GET(request: Request): Promise<Response> {
     );
 
     // Set the session cookie
-    cookies().set('session', jwt, {
+    (await cookies()).set('session', jwt, {
       path: '/',
       maxAge: 60 * 60 * 24 * 30,
       sameSite: 'lax',

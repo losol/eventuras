@@ -1,7 +1,7 @@
 'use client';
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { UserDto } from '@eventuras/sdk';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 
 import Link from '@/components/Link';
 const columnHelper = createColumnHelper<UserDto>();
@@ -10,7 +10,7 @@ interface UserListProps {
 }
 
 const UserList: React.FC<UserListProps> = ({ users = [] }) => {
-  const t = await getTranslations();
+  const t = useTranslations();
   const renderUserActions = (u: UserDto) => {
     return (
       <div className="flex flex-row">

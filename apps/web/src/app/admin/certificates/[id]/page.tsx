@@ -16,7 +16,8 @@ type EventInfoProps = {
     id: number;
   };
 };
-const CertificateDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
+const CertificateDetailPage: React.FC<EventInfoProps> = async props => {
+  const params = await props.params;
   const t = await getTranslations();
 
   const eventuras = createSDK({

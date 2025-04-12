@@ -12,14 +12,14 @@ export async function GET(): Promise<Response> {
   const authorizationUrl = await buildAuthorizationUrl(oauthConfig, pkce);
 
   // Store state and code verifier in cookies for later validation
-  cookies().set('oauth_state', pkce.state, {
+  (await cookies()).set('oauth_state', pkce.state, {
     path: '/',
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     maxAge: 60 * 10,
     sameSite: 'lax',
   });
-  cookies().set('oauth_code_verifier', pkce.code_verifier, {
+  (await cookies()).set('oauth_code_verifier', pkce.code_verifier, {
     path: '/',
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,

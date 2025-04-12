@@ -24,9 +24,15 @@ const NotificationsPage: React.FC<NotificationPageProps> = async props => {
   });
 
   const notifications = await apiWrapper(() => {
-    if (props.searchParams.eventId) {
+    if (
+      /* @next-codemod-error 'props.searchParams' is accessed without awaiting.*/
+      props.searchParams.eventId
+    ) {
       return eventuras.notifications.getV3Notifications1({
-        eventId: parseInt(props.searchParams.eventId as string),
+        eventId: parseInt(
+          /* @next-codemod-error 'props.searchParams' is accessed without awaiting.*/
+          props.searchParams.eventId as string
+        ),
         eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID),
       });
     } else {
@@ -50,8 +56,11 @@ const NotificationsPage: React.FC<NotificationPageProps> = async props => {
       <Section className="bg-white dark:bg-black   pb-8">
         <Container>
           <Heading as="h1">Notifications</Heading>
-          {props.searchParams.eventId && (
-            <Link href={`/admin/events/${props.searchParams.eventId}`} variant="button-primary">
+          {(await props.searchParams).eventId && (
+            <Link
+              href={`/admin/events/${(await props.searchParams).eventId}`}
+              variant="button-primary"
+            >
               Event page
             </Link>
           )}

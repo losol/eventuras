@@ -4,8 +4,6 @@ import { ReactNode } from 'react';
 
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
-import { getAccessToken } from '@/utils/getAccesstoken';
-import { oauthConfig } from '@/utils/oauthConfig';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 import { UserMenu } from './navigation/UserMenu';
@@ -36,7 +34,7 @@ const Wrapper = async (props: WrapperProps) => {
     ? 'bg-transparent z-10 absolute w-full py-1'
     : 'bg-transparent w-full py-1';
 
-  const mainClassName = props.fluid ? styles.fluidMainClassName : styles.mainClassName;
+  const mainClassName = (await props.fluid) ? styles.fluidMainClassName : styles.mainClassName;
 
   return (
     <>

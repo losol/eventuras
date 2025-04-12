@@ -16,7 +16,8 @@ type UserEventPageProps = {
   };
 };
 
-const UserEventPage: React.FC<UserEventPageProps> = async ({ params }) => {
+const UserEventPage: React.FC<UserEventPageProps> = async props => {
+  const params = await props.params;
   const eventuras = createSDK({ authHeader: await getAccessToken() });
   const t = await getTranslations();
   const siteInfo = await getSiteSettings();

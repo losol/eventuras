@@ -15,7 +15,8 @@ type EditEventinfoProps = {
   };
 };
 
-const EditEventinfo: React.FC<EditEventinfoProps> = async ({ params }) => {
+const EditEventinfo: React.FC<EditEventinfoProps> = async props => {
+  const params = await props.params;
   const eventId = parseInt(params.id);
   const t = await getTranslations();
 

@@ -10,7 +10,7 @@ import Wrapper from '../../components/eventuras/Wrapper';
 import AdminEventList from './events/AdminEventList';
 
 const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
-const AdminPage = () => {
+const AdminPage = async () => {
   const t = await getTranslations();
   return (
     <Wrapper>

@@ -20,7 +20,7 @@ export async function logoutAction(): Promise<ActionResult> {
     };
   }
 
-  cookies().delete('session');
+  (await cookies()).delete('session');
 
   return redirect('/');
 }

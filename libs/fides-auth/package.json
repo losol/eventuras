@@ -8,6 +8,6 @@
     "@eventuras/utils": "*",
     "@eventuras/typescript-config": "*",
     "jose": "6.0.10",
-    "openid-client": "^6.4.1"
+    "openid-client": "^6.4.2"
   }
 }

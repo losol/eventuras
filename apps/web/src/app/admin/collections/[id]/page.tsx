@@ -15,7 +15,8 @@ type EventCollectionProps = {
     id: number;
   };
 };
-const CollectionDetailPage: React.FC<EventCollectionProps> = async ({ params }) => {
+const CollectionDetailPage: React.FC<EventCollectionProps> = async props => {
+  const params = await props.params;
   const eventId = params.id;
 
   const t = await getTranslations();

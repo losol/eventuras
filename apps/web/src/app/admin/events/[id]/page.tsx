@@ -17,7 +17,8 @@ type EventInfoProps = {
     id: number;
   };
 };
-const EventDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
+const EventDetailPage: React.FC<EventInfoProps> = async props => {
+  const params = await props.params;
   const eventId = params.id;
 
   const t = await getTranslations();
