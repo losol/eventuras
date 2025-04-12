@@ -17,7 +17,7 @@ const withAuthorization = (WrappedComponent: NextPage, role: string): NextPage =
 
     // Check if user is logged in
     const appUser = await eventuras.users.getV3UsersMe({}).catch(() => null);
-    console.log('appUser', appUser);
+
     if (!appUser) {
       return <Unauthorized />;
     }

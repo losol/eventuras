@@ -23,8 +23,6 @@ const Order: React.FC<OrderProps> = ({ admin, order }) => {
     Refunded: t('common:order.status.labels.refunded'),
   };
 
-  console.log('Order:', order);
-
   return (
     <Card>
       <DescriptionList>

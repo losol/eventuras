@@ -69,13 +69,9 @@ export const getCurrentSession = cache(async (config?: OAuthConfig): Promise<Ses
 
   const sessionjwt = await validateSessionJwt(sessionCookie);
 
-  console.log('sessionvalidation', sessionjwt);
-
   if (sessionjwt.status !== 'VALID') {
     return null;
   }
-
-  console.log(sessionjwt.accessTokenExpiresIn);
 
   if (sessionjwt.accessTokenExpiresIn !== undefined && sessionjwt.accessTokenExpiresIn < 300) {
     console.warn('Access token will expire soon – consider refreshing. Seconds left:', sessionjwt.accessTokenExpiresIn);

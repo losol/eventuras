@@ -5,7 +5,6 @@ import { NextResponse } from 'next/server';
 import { oauthConfig } from '@/utils/oauthConfig';
 
 export async function GET() {
-  console.log('Starting Auth0 login process...');
   if (!globalGETRateLimit()) {
     return NextResponse.redirect(new URL('/rate-limited', process.env.NEXT_PUBLIC_APPLICATION_URL));
   }

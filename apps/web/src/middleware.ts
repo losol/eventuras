@@ -37,7 +37,6 @@ export async function middleware(request: NextRequest) {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
           });
-          console.log('Updated session:', updated_session);
         }
       }
       return response;

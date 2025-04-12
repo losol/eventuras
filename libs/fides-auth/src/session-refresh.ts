@@ -5,8 +5,6 @@ export const refreshSession = async (current_session: Session, config: OAuthConf
 
   const newtokens = await refreshAccesstoken(config, current_session.tokens?.refreshToken ?? '');
 
-  console.log('refreshsession-newtokens', newtokens);
-
   const updatedSession = {
     ...current_session,
     tokens: {
@@ -18,8 +16,6 @@ export const refreshSession = async (current_session: Session, config: OAuthConf
       refreshToken: newtokens.refresh_token ?? current_session.tokens?.refreshToken,
     },
   };
-
-  console.log('updatedSession', updatedSession);
 
   return updatedSession;
 };
