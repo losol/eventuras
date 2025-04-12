@@ -3,7 +3,7 @@ import type { ProductDto } from '@eventuras/sdk';
 import { Badge } from '@eventuras/ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
 import { IconEye, IconPencil } from '@tabler/icons-react';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import Link from '@/components/Link';
 
@@ -15,11 +15,11 @@ interface ProductTableProps {
 }
 
 export const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit }) => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
 
   const columns = [
     columnHelper.accessor('name', {
-      header: t('common:products.labels.name').toString(),
+      header: t('common.products.labels.name').toString(),
       cell: info => (
         <Link href={`./products/${info.row.original.productId}`}>
           {info.getValue()} <Badge>{`${info.row.original.productId}`}</Badge>
@@ -27,22 +27,22 @@ export const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit }) 
       ),
     }),
     columnHelper.accessor('price', {
-      header: t('common:products.labels.price').toString(),
+      header: t('common.products.labels.price').toString(),
       cell: info => {
         const value = info.getValue();
         return value != null ? `${value}` : 'N/A';
       },
     }),
     columnHelper.accessor('visibility', {
-      header: t('common:products.labels.visibility').toString(),
+      header: t('common.products.labels.visibility').toString(),
       cell: info => info.getValue()?.toString() ?? 'N/A',
     }),
     columnHelper.accessor('minimumQuantity', {
-      header: t('common:products.labels.minimum').toString(),
+      header: t('common.products.labels.minimum').toString(),
       cell: info => info.getValue()?.toString() ?? 'N/A',
     }),
     columnHelper.accessor('productId', {
-      header: t('common:labels.menu').toString(),
+      header: t('common.labels.menu').toString(),
       cell: info => (
         <div className="flex justify-center items-center">
           <Link

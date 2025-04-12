@@ -1,6 +1,6 @@
 import { Container, Heading, Section } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
@@ -15,7 +15,7 @@ type EventInfoProps = {
   };
 };
 const AdminUserDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
@@ -36,14 +36,14 @@ const AdminUserDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
   }
 
   if (!user.ok) {
-    return <div>{t('admin:users.labels.userNotFound')}</div>;
+    return <div>{t('admin.users.labels.userNotFound')}</div>;
   }
 
   return (
     <>
       <Section className="bg-white dark:bg-black pb-8">
         <Container>
-          <Heading as="h1">{t('admin:users.detailspage.title')}</Heading>
+          <Heading as="h1">{t('admin.users.detailspage.title')}</Heading>
         </Container>
       </Section>
       <Section className="py-12">

@@ -1,6 +1,6 @@
 import { MarkdownContent } from '@eventuras/markdown';
 import { Heading, Section, Text } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import Card from '@/components/Card';
 import Wrapper from '@/components/eventuras/Wrapper';
@@ -9,7 +9,7 @@ import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 
 const CollectionIndexPage: React.FC = async () => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
   const result = await apiWrapper(() =>
     createSDK({ inferUrl: true }).eventCollection.getV3Eventcollections({
       eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID),
@@ -21,10 +21,10 @@ const CollectionIndexPage: React.FC = async () => {
   if (notFound)
     return (
       <Wrapper>
-        <Heading>{t('common:events.detailspage.notfound.title')}</Heading>
-        <Text className="py-6">{t('common:events.detailspage.notfound.description')}</Text>
+        <Heading>{t('common.events.detailspage.notfound.title')}</Heading>
+        <Text className="py-6">{t('common.events.detailspage.notfound.description')}</Text>
         <Link href="/" variant="button-primary">
-          {t('common:events.detailspage.notfound.back')}
+          {t('common.events.detailspage.notfound.back')}
         </Link>
       </Wrapper>
     );
@@ -51,7 +51,7 @@ const CollectionIndexPage: React.FC = async () => {
                 href={`/collections/${collection.id}/${collection.slug}`}
                 variant="button-primary"
               >
-                {t('common:labels.view')}
+                {t('common.labels.view')}
               </Link>
             </Card>
           ))}

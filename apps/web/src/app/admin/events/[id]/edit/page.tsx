@@ -1,6 +1,6 @@
 import { Heading } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import EventEditor from '@/app/admin/events/EventEditor';
 import Wrapper from '@/components/eventuras/Wrapper';
@@ -17,7 +17,7 @@ type EditEventinfoProps = {
 
 const EditEventinfo: React.FC<EditEventinfoProps> = async ({ params }) => {
   const eventId = parseInt(params.id);
-  const { t } = createTranslation();
+  const t = await getTranslations();
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
@@ -38,7 +38,7 @@ const EditEventinfo: React.FC<EditEventinfoProps> = async ({ params }) => {
   }
 
   if (!eventinfo.ok) {
-    return <div>{t('common:event-not-found')}</div>;
+    return <div>{t('common.event-not-found')}</div>;
   }
 
   return (

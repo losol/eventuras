@@ -1,6 +1,6 @@
 import { Container, Heading, Section } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
@@ -17,7 +17,7 @@ type EventInfoProps = {
   };
 };
 const CertificateDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
@@ -38,7 +38,7 @@ const CertificateDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
   }
 
   if (!certificate.ok) {
-    return <div>{t('admin:certificates.labels.notFound')}</div>;
+    return <div>{t('admin.certificates.labels.notFound')}</div>;
   }
 
   return (

@@ -2,6 +2,8 @@ import '@eventuras/ui/style.css';
 import '@/styles/globals.css';
 
 import type { Metadata } from 'next';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale } from 'next-intl/server';
 
 import Environment from '@/utils/Environment';
 import getSiteSettings from '@/utils/site/getSiteSettings';
@@ -19,11 +21,14 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   Environment.validate();
+  const locale = await getLocale();
 
   return (
-    <html lang={Environment.NEXT_PUBLIC_DEFAULT_LOCALE}>
+    <html lang={locale}>
       <body>
-        <Providers>{children}</Providers>
+        <NextIntlClientProvider>
+          <Providers>{children}</Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

@@ -2,7 +2,6 @@ import { refreshSession } from '@eventuras/fides-auth/session-refresh';
 import { validateSessionJwt } from '@eventuras/fides-auth/session-validation';
 import { accessTokenExpires, createEncryptedJWT } from '@eventuras/fides-auth/utils';
 import { Logger } from '@eventuras/utils/src/Logger';
-import { create } from 'domain';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { oauthConfig } from './utils/oauthConfig';

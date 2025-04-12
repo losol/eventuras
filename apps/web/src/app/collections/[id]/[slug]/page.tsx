@@ -2,7 +2,7 @@ import { MarkdownContent } from '@eventuras/markdown';
 import { Container, Heading, Section, Text } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { redirect } from 'next/navigation';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import Card from '@/components/Card';
 import EventCard from '@/components/event/EventCard';
@@ -50,7 +50,7 @@ export async function generateStaticParams() {
 }
 
 const CollectionPage: React.FC<EventInfoProps> = async ({ params }) => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
   const eventuras = createSDK({ inferUrl: true });
   const result = await apiWrapper(() =>
     eventuras.eventCollection.getV3Eventcollections1({ id: params.id })
@@ -61,10 +61,10 @@ const CollectionPage: React.FC<EventInfoProps> = async ({ params }) => {
   if (notFound)
     return (
       <>
-        <Heading>{t('common:events.detailspage.notfound.title')}</Heading>
-        <Text className="py-6">{t('common:events.detailspage.notfound.description')}</Text>
+        <Heading>{t('common.events.detailspage.notfound.title')}</Heading>
+        <Text className="py-6">{t('common.events.detailspage.notfound.description')}</Text>
         <Link href="/" variant="button-primary">
-          {t('common:events.detailspage.notfound.back')}
+          {t('common.events.detailspage.notfound.back')}
         </Link>
       </>
     );
@@ -101,7 +101,7 @@ const CollectionPage: React.FC<EventInfoProps> = async ({ params }) => {
         {eventinfos.value?.data && eventinfos.value.data.length > 0 ? (
           <Container>
             <Heading as="h2" spacingClassName="pt-6 pb-3">
-              {t('common:collections.detailspage.eventstitle')}
+              {t('common.collections.detailspage.eventstitle')}
             </Heading>
             {eventinfos.value.data.map(eventinfo => (
               <EventCard key={eventinfo.id} eventinfo={eventinfo} />
@@ -109,7 +109,7 @@ const CollectionPage: React.FC<EventInfoProps> = async ({ params }) => {
           </Container>
         ) : (
           <Container>
-            <Text className="py-6">{t('common:labels.noevents')}</Text>
+            <Text className="py-6">{t('common.labels.noevents')}</Text>
           </Container>
         )}
       </Section>

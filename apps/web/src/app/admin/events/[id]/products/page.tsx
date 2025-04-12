@@ -1,5 +1,5 @@
 import { Container, Heading, Section } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import { createSDK } from '@/utils/api/EventurasApi';
@@ -16,7 +16,7 @@ type EventProductsPage = {
 
 const EventProducts: React.FC<EventProductsPage> = async ({ params }) => {
   const eventId = parseInt(params.id, 10);
-  const { t } = createTranslation();
+  const t = await getTranslations();
 
   const eventuras = createSDK({ authHeader: await getAccessToken() });
 
@@ -28,7 +28,7 @@ const EventProducts: React.FC<EventProductsPage> = async ({ params }) => {
       <Section className="bg-white dark:bg-black py-10">
         <Container>
           <Heading as="h1" spacingClassName="pt-6 mb-3">
-            {t('admin:products.labels.productsFor')} {eventInfo.title}
+            {t('admin.products.labels.productsFor')} {eventInfo.title}
           </Heading>
         </Container>
       </Section>

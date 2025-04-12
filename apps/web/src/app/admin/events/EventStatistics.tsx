@@ -1,7 +1,7 @@
 'use client';
 import { EventStatisticsDto } from '@eventuras/sdk';
 import { NumberCard } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import { ParticipationTypes, ParticipationTypesKey } from '@/types';
 
@@ -16,7 +16,7 @@ const EventStatistics: React.FC<EventStatisticsProps> = ({
   onSelectionChanged,
   highlightedSelection,
 }) => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
   const byStatus = statistics ? statistics.byStatus : null;
   const counts = {
     [ParticipationTypes.active]:

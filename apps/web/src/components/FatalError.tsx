@@ -1,5 +1,5 @@
 import { Heading, Section } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import { SiteInfo } from '@/utils/site/getSiteSettings';
 
@@ -19,7 +19,7 @@ interface FatalErrorProps {
  * @returns {JSX.Element} The FatalError component.
  */
 const FatalError: React.FC<FatalErrorProps> = ({ title, description, additional, siteInfo }) => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
 
   return (
     <div className="fixed w-full h-full top-0 left-0 right-0 bg-black flex p-10">
@@ -32,9 +32,9 @@ const FatalError: React.FC<FatalErrorProps> = ({ title, description, additional,
         {additional && <p>{additional}</p>}
         {siteInfo && siteInfo.contactInformation && (
           <Section>
-            <Heading as="h2">{t('common:labels.contactUs')}</Heading>
+            <Heading as="h2">{t('common.labels.contactUs')}</Heading>
             <div>
-              <p>{t('common:errorpage.contactUs')}</p>
+              <p>{t('common.errorpage.contactUs')}</p>
               <p>{siteInfo.contactInformation.support.name}</p>
               <p>{siteInfo.contactInformation.support.email}</p>
             </div>

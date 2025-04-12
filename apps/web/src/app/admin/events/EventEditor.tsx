@@ -15,7 +15,7 @@ import {
 import { Button } from '@eventuras/ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 import { useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 
@@ -36,7 +36,7 @@ type ApiState = {
 };
 
 const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
   const [apiState, setApiState] = useState<ApiState>({ error: null, loading: false });
   const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const { addAppNotification } = useAppNotifications();
@@ -240,7 +240,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
       </Tabs>
 
       <Button loading={apiState.loading} type="submit">
-        {t('common:buttons.submit')}
+        {t('common.buttons.submit')}
       </Button>
     </Form>
   );

@@ -1,6 +1,6 @@
 import { Badge, Container, Heading, Section } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import Link from '@/components/Link';
@@ -20,7 +20,7 @@ type EventInfoProps = {
 const EventDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
   const eventId = params.id;
 
-  const { t } = createTranslation();
+  const t = await getTranslations();
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
@@ -61,7 +61,7 @@ const EventDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
   }
 
   if (!eventinfo.ok) {
-    return <div>{t('common:event-not-found')}</div>;
+    return <div>{t('common.event-not-found')}</div>;
   }
 
   return (

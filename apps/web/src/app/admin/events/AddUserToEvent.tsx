@@ -9,7 +9,7 @@ import { Button, Drawer, Heading } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { IconCheck } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 import { useEffect, useState } from 'react';
 import {
   Button as AriaButton,
@@ -84,7 +84,7 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
   onUseradded,
 }) => {
   const { addAppNotification } = useAppNotifications();
-  const { t } = createTranslation();
+  const t = await getTranslations();
 
   const { control, register, setValue, handleSubmit } = useForm<AddUserToEventFormValues>();
 
@@ -129,7 +129,7 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
       }
       addAppNotification({
         id: Date.now(),
-        message: t('common:errors.fatalError.title'),
+        message: t('common.errors.fatalError.title'),
         type: AppNotificationType.ERROR,
       });
       throw new Error('Failed to add user to event');

@@ -3,7 +3,7 @@
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { RegistrationDto } from '@eventuras/sdk';
 import { Loading, Pagination } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 import { useState } from 'react';
 
 import FatalError from '@/components/FatalError';
@@ -16,7 +16,7 @@ const columnHelper = createColumnHelper<RegistrationDto>();
 
 const AdminRegistrationsList: React.FC = () => {
   const organizationId = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
-  const { t } = createTranslation();
+  const t = await getTranslations();
   const [page, setPage] = useState(1);
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const pageSize = 50;
@@ -37,7 +37,7 @@ const AdminRegistrationsList: React.FC = () => {
     return (
       <div className="flex flex-row">
         <Link variant="button-outline" href={`/admin/registrations/${registration.registrationId}`}>
-          {t('common:labels.view')}
+          {t('common.labels.view')}
         </Link>
       </div>
     );
@@ -45,7 +45,7 @@ const AdminRegistrationsList: React.FC = () => {
 
   const columns = [
     columnHelper.accessor('registrationId', {
-      header: t('common:orders.labels.id').toString(),
+      header: t('common.orders.labels.id').toString(),
       cell: info => (
         <Link href={`/admin/registrations/${info.row.original.registrationId}`}>
           {info.getValue()}
@@ -53,15 +53,15 @@ const AdminRegistrationsList: React.FC = () => {
       ),
     }),
     columnHelper.accessor('user.name', {
-      header: t('common:labels.name').toString(),
+      header: t('common.labels.name').toString(),
       cell: info => info.getValue(),
     }),
     columnHelper.accessor('event.title', {
-      header: t('common:orders.labels.time').toString(),
+      header: t('common.orders.labels.time').toString(),
       cell: info => info.getValue(),
     }),
     columnHelper.accessor('status', {
-      header: t('admin:eventColumns.actions').toString(),
+      header: t('admin.eventColumns.actions').toString(),
       cell: info => renderRegistrationActions(info.row.original),
     }),
   ];
