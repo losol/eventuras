@@ -16,7 +16,7 @@ import Environment from './Environment';
  */
 export async function getAccessToken(): Promise<string | null> {
   // Retrieve the session cookie.
-  const sessionCookie = cookies().get('session')?.value;
+  const sessionCookie = (await cookies()).get('session')?.value;
   if (!sessionCookie) {
     return null;
   }

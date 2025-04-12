@@ -49,7 +49,8 @@ export async function generateStaticParams() {
   return [];
 }
 
-const CollectionPage: React.FC<EventInfoProps> = async ({ params }) => {
+const CollectionPage: React.FC<EventInfoProps> = async props => {
+  const params = await props.params;
   const t = await getTranslations();
   const eventuras = createSDK({ inferUrl: true });
   const result = await apiWrapper(() =>

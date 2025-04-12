@@ -1,13 +1,13 @@
 'use client';
 
 import { Button, Drawer } from '@eventuras/ui';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import UserEditor from '@/app/admin/users/UserEditor';
 
 const UserDrawer: React.FC = () => {
-  const t = await getTranslations();
+  const t = useTranslations();
   const [visible, setVisible] = useState(false);
 
   const showDrawer = () => setVisible(true);

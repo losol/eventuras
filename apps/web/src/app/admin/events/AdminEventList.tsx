@@ -3,7 +3,7 @@
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { EventDto, LocalDate, PeriodMatchingKind } from '@eventuras/sdk';
 import { Loading, Pagination } from '@eventuras/ui';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import FatalError from '@/components/FatalError';
@@ -23,7 +23,7 @@ const AdminEventList: React.FC<AdminEventListProps> = ({
   includePastEvents = false,
   pageSize = 25,
 }) => {
-  const t = await getTranslations();
+  const t = useTranslations();
   const [page, setPage] = useState(1);
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
 

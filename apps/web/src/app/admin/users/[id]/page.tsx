@@ -14,7 +14,8 @@ type EventInfoProps = {
     id: string;
   };
 };
-const AdminUserDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
+const AdminUserDetailPage: React.FC<EventInfoProps> = async props => {
+  const params = await props.params;
   const t = await getTranslations();
 
   const eventuras = createSDK({

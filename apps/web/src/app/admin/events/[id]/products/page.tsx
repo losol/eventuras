@@ -14,7 +14,8 @@ type EventProductsPage = {
   };
 };
 
-const EventProducts: React.FC<EventProductsPage> = async ({ params }) => {
+const EventProducts: React.FC<EventProductsPage> = async props => {
+  const params = await props.params;
   const eventId = parseInt(params.id, 10);
   const t = await getTranslations();
 

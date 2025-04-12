@@ -5,7 +5,7 @@ import { UserDto, UserFormDto } from '@eventuras/sdk';
 import { Form, Input } from '@eventuras/smartform';
 import { Button } from '@eventuras/ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { FC, useState } from 'react';
 
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
@@ -28,7 +28,7 @@ const regex = {
 
 const UserEditor: FC<UserEditorProps> = props => {
   const { adminMode, user, onUserUpdated, submitButtonLabel } = props;
-  const { t } = createTranslation('common');
+  const { t } = useTranslations();
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const [isUpdating, setIsUpdating] = useState(false);
   const log_namespace = 'user.account';

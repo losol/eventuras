@@ -61,7 +61,7 @@ export async function createSession(
  * Uses React server components' cache for performance.
  */
 export const getCurrentSession = cache(async (config?: OAuthConfig): Promise<Session | null> => {
-  const sessionCookie = cookies().get('session')?.value ?? null;
+  const sessionCookie = (await cookies()).get('session')?.value ?? null;
 
   if (!sessionCookie) {
     return null;
