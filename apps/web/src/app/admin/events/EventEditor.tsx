@@ -15,7 +15,7 @@ import {
 import { Button } from '@eventuras/ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 
@@ -36,7 +36,7 @@ type ApiState = {
 };
 
 const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
-  const t = await getTranslations();
+  const t = useTranslations();
   const [apiState, setApiState] = useState<ApiState>({ error: null, loading: false });
   const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const { addAppNotification } = useAppNotifications();
@@ -66,13 +66,11 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
 
     if (result.ok) {
       addAppNotification({
-        id: Date.now(),
         message: 'Event information was updated!',
         type: AppNotificationType.SUCCESS,
       });
     } else {
       addAppNotification({
-        id: Date.now(),
         message: `Something bad happended: ${result.error}!`,
         type: AppNotificationType.ERROR,
       });

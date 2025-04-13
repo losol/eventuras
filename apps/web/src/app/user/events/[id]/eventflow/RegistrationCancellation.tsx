@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@eventuras/ui';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 
 import { SiteInfo } from '@/utils/site/getSiteSettings';
 
@@ -14,7 +14,7 @@ const RegistrationCancellation: React.FC<RegistrationCancellationProps> = ({
   onBack,
   siteInfo,
 }) => {
-  const t = await getTranslations();
+  const t = useTranslations();
 
   return (
     <>

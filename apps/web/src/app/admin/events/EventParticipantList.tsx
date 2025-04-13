@@ -7,7 +7,7 @@ import { Logger } from '@eventuras/utils';
 import { IconNotes, IconShoppingCart, IconUser } from '@tabler/icons-react';
 import { ColumnFilter } from '@tanstack/react-table';
 import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import React, { useMemo, useState } from 'react';
 
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
@@ -50,7 +50,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
   eventProducts = [],
   filteredStatus,
 }) => {
-  const t = await getTranslations();
+  const t = useTranslations();
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
 
   const [participants, setParticipants] = useState<RegistrationDto[]>(initialParticipants);

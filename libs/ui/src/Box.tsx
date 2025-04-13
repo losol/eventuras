@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode, ElementType } from 'react';
 
 /**
  * BoxOptions interface for defining default padding and margin.
@@ -21,7 +21,7 @@ export interface BoxProps {
  * BoxComponentProps extends BoxProps with additional properties for component customization.
  */
 interface BoxComponentProps extends BoxProps {
-  as?: keyof JSX.IntrinsicElements;
+  as?: ElementType; // Use React.ElementType for polymorphic 'as' prop
   options?: BoxOptions;
   children?: ReactNode;
   className?: string;

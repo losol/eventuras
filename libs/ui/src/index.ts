@@ -1,6 +1,6 @@
 import './style.css';
 export { default as AppNotifications, AppNotificationType } from './AppNotifications';
-export type { AppNotificationOptions } from './AppNotifications';
+export type { AppNotification } from './AppNotifications';
 export { default as Badge } from './Badge';
 export { default as Button, buttonStyles } from './Button';
 export { default as ButtonGroup } from './ButtonGroup';
@@ -17,4 +17,4 @@ export { default as Pagination } from './Pagination';
 export { default as Portal } from './Portal';
 export { default as Section } from './Section';
 export { default as Text } from './Text';
-export { InputAutoComplete as InputAutoComplete } from './InputAutoComplete'
+export { InputAutoComplete as InputAutoComplete } from './InputAutoComplete';

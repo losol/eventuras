@@ -1,7 +1,7 @@
 import { EventDto, PaymentProvider, ProductDto } from '@eventuras/sdk';
 import { Button, Heading } from '@eventuras/ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 
 import { PaymentFormValues, ProductSelected } from '@/types';
 
@@ -20,7 +20,7 @@ const RegistrationConfirmation: React.FC<RegistrationConfirmationProps> = ({
   selectedProducts,
   paymentDetails,
 }) => {
-  const t = await getTranslations();
+  const t = useTranslations();
 
   return (
     <div>

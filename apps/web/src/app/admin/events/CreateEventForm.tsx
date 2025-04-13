@@ -3,14 +3,14 @@
 import { Fieldset, Form, Input } from '@eventuras/forms';
 import { Button } from '@eventuras/ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 
 import Environment from '@/utils/Environment';
 
 import { createEvent } from './actions';
 
 export const CreateEventForm = () => {
-  const t = await getTranslations();
+  const t = useTranslations();
 
   return (
     <Form action={createEvent}>

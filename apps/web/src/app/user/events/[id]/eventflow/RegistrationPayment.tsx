@@ -4,7 +4,7 @@ import { Input } from '@eventuras/forms';
 import { PaymentProvider, UserDto } from '@eventuras/sdk';
 import { Button } from '@eventuras/ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
@@ -57,7 +57,7 @@ const RegistrationPayment = ({
   const onSubmitForm: SubmitHandler<PaymentFormValues> = (data: PaymentFormValues) => {
     onSubmit(data);
   };
-  const t = await getTranslations();
+  const t = useTranslations();
 
   const formClassName = 'px-8 pt-6 pb-8 mb-4';
   const fieldsetClassName = 'text-lg pt-3 pb-6';

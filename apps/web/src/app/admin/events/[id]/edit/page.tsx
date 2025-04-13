@@ -7,7 +7,6 @@ import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
-import { oauthConfig } from '@/utils/oauthConfig';
 
 type EditEventinfoProps = {
   params: {
@@ -44,7 +43,7 @@ const EditEventinfo: React.FC<EditEventinfoProps> = async props => {
 
   return (
     <Wrapper>
-      <Heading>{t(`admin:editEvent.content.title`)}</Heading>
+      <Heading>{t(`admin.editEvent.content.title`)}</Heading>
       <EventEditor eventinfo={eventinfo.value!} />
     </Wrapper>
   );

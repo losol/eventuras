@@ -43,7 +43,6 @@ const UserEditor: FC<UserEditorProps> = props => {
     Logger.info({ namespace: log_namespace }, 'Created new user with id', user.value?.id);
     if (user.error) {
       addAppNotification({
-        id: Date.now(),
         type: AppNotificationType.ERROR,
         message: t('common.labels.error') + ': ' + user.error.message,
       });
@@ -51,8 +50,7 @@ const UserEditor: FC<UserEditorProps> = props => {
     }
 
     addAppNotification({
-      id: Date.now(),
-      type: AppNotificationType.SUCCESS,
+      type: AppNotification.SUCCESS,
       message: t('common.labels.createUserSuccess') + ': ' + user.value?.name,
     });
 
@@ -75,7 +73,6 @@ const UserEditor: FC<UserEditorProps> = props => {
 
     if (updatedUser.error) {
       addAppNotification({
-        id: Date.now(),
         type: AppNotificationType.ERROR,
         message: t('common.labels.error') + ': ' + updatedUser.error.message,
       });

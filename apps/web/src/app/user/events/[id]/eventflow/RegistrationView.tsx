@@ -2,7 +2,7 @@ import { MarkdownContent } from '@eventuras/markdown';
 import { EventDto, RegistrationDto } from '@eventuras/sdk';
 import { Button, Heading } from '@eventuras/ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 
 import Registration from '@/app/admin/registrations/Registration';
 import Tabs from '@/components/Tabs';
@@ -18,7 +18,7 @@ const RegistrationView: React.FC<RegistrationViewProps> = ({
   registration,
   onCancel,
 }) => {
-  const t = await getTranslations();
+  const t = useTranslations();
 
   return (
     <div>

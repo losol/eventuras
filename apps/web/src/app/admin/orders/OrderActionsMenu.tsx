@@ -3,7 +3,7 @@ import { InvoiceRequestDto, OrderDto, OrderStatus, PaymentProvider } from '@even
 import { Button, Definition, DescriptionList, Drawer, Heading, Term } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
@@ -14,7 +14,7 @@ export type OrderActionsMenuProps = {
 };
 
 export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
-  const t = await getTranslations();
+  const t = useTranslations();
   const [invoiceDrawerOpen, setInvoiceDrawerOpen] = useState(false);
   const router = useRouter();
   Logger.info({ namespace: 'invoicing:order' }, order);

@@ -1,6 +1,6 @@
 import { OrderDto, OrderStatus } from '@eventuras/sdk';
 import { Badge, Definition, DescriptionList, Heading, Item, Section, Term } from '@eventuras/ui';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 
 import Card from '@/components/Card';
 import { formatDateSpan } from '@/utils/formatDate';
@@ -13,7 +13,7 @@ type OrderProps = {
 };
 
 const Order: React.FC<OrderProps> = ({ admin, order }) => {
-  const t = await getTranslations();
+  const t = useTranslations();
 
   const statusDescriptions = {
     Draft: t('common.order.status.labels.draft'),
