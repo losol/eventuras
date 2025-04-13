@@ -79,13 +79,11 @@ const ProductModal: React.FC<ProductModalProps> = ({
     if (result.ok) {
       onSubmit(result.value);
       addAppNotification({
-        id: Date.now(),
         message: 'Product was updated!',
         type: AppNotificationType.SUCCESS,
       });
     } else {
       addAppNotification({
-        id: Date.now(),
         message: `Something bad happended: ${result.error}!`,
         type: AppNotificationType.ERROR,
       });

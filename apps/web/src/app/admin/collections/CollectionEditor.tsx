@@ -66,13 +66,11 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
 
     if (result.ok) {
       addAppNotification({
-        id: Date.now(),
         message: 'Collection succesfully updated!',
         type: AppNotificationType.SUCCESS,
       });
     } else {
       addAppNotification({
-        id: Date.now(),
         message: 'Something went wrong, try again later',
         type: AppNotificationType.ERROR,
       });
@@ -100,13 +98,11 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
 
     if (result.ok) {
       addAppNotification({
-        id: Date.now(),
         message: 'Event succesfully removed',
         type: AppNotificationType.SUCCESS,
       });
     } else {
       addAppNotification({
-        id: Date.now(),
         message: 'Something went wrong, try again later',
         type: AppNotificationType.ERROR,
       });
@@ -129,13 +125,11 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
     }
     if (result.ok) {
       addAppNotification({
-        id: Date.now(),
         message: 'Event Succesfully Added',
         type: AppNotificationType.SUCCESS,
       });
     } else {
       addAppNotification({
-        id: Date.now(),
         message: 'Something went wrong, try again later',
         type: AppNotificationType.ERROR,
       });

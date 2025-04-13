@@ -7,15 +7,15 @@ export enum AppNotificationType {
   INFO = 'info',
 }
 
-export interface AppNotificationOptions {
-  id: number;
+export interface AppNotification {
+  id: string;
   message: string;
   type?: AppNotificationType;
   expiresAfter?: number;
 }
 
 interface AppNotificationsProps {
-  appNotifications?: AppNotificationOptions[];
+  appNotifications?: AppNotification[];
 }
 
 const getNotificationClassName = (type: AppNotificationType) => {
@@ -38,7 +38,9 @@ const AppNotifications: React.FC<AppNotificationsProps> = ({ appNotifications = 
     <div>
       <Portal isOpen={appNotifications.length > 0}>
         <div className="fixed bottom-0 right-0 z-50 p-4">
-          {appNotifications.map(({ id, message, type = AppNotificationType.INFO }) => (
+        {appNotifications
+          .filter((notification) => notification != null)
+          .map(({ id, message, type = AppNotificationType.INFO }) => (
             <div
               key={id}
               {...{ [DATA_TEST_ID]: (type === AppNotificationType.SUCCESS ? 'notification-success' : 'notification-error') }}

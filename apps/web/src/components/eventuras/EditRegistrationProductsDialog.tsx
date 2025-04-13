@@ -40,14 +40,12 @@ const EditRegistrationProductsDialog = (props: EditRegistrationProductsDialogPro
     });
     if (updateProductResult.ok) {
       addAppNotification({
-        id: Date.now(),
         message: 'Registration edited succesfully!',
         type: AppNotificationType.SUCCESS,
       });
       router.refresh();
     } else {
       addAppNotification({
-        id: Date.now(),
         message: 'Something went wrong, please try again later',
         type: AppNotificationType.ERROR,
       });
