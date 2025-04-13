@@ -1,5 +1,6 @@
+'use client';
+
 import { useActionState } from 'react';
-('use client');
 
 import { logoutAction } from './actions';
 

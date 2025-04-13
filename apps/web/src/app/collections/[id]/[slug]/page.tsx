@@ -12,10 +12,10 @@ import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 
 type EventInfoProps = {
-  params: {
+  params: Promise<{
     id: number;
     slug: string;
-  };
+  }>;
 };
 
 export const revalidate = 300;

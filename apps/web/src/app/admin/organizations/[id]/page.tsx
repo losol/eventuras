@@ -9,9 +9,9 @@ import { getAccessToken } from '@/utils/getAccesstoken';
 import { oauthConfig } from '@/utils/oauthConfig';
 
 type EventInfoProps = {
-  params: {
+  params: Promise<{
     id: number;
-  };
+  }>;
 };
 
 const OrganizationDetailPage: React.FC<EventInfoProps> = async props => {

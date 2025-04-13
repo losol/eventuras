@@ -3,9 +3,9 @@ import { redirect } from 'next/navigation';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
 type EventInfoProps = {
-  params: {
+  params: Promise<{
     id: number;
-  };
+  }>;
 };
 
 const Page: React.FC<EventInfoProps> = async props => {

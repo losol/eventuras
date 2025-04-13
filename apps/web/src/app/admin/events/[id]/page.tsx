@@ -7,19 +7,18 @@ import Link from '@/components/Link';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
-import { oauthConfig } from '@/utils/oauthConfig';
 
 import EventAdminActionsMenu from '../EventAdminActionsMenu';
 import ParticipantsSection from './ParticipantsSection';
 
 type EventInfoProps = {
-  params: {
+  params: Promise<{
     id: number;
-  };
+  }>;
 };
-const EventDetailPage: React.FC<EventInfoProps> = async props => {
-  const params = await props.params;
-  const eventId = params.id;
+
+export default async function EventAdminPage({ params }: Readonly<EventInfoProps>) {
+  const { id } = await params;
 
   const t = await getTranslations();
 
@@ -30,13 +29,13 @@ const EventDetailPage: React.FC<EventInfoProps> = async props => {
 
   const eventinfo = await apiWrapper(() =>
     eventuras.events.getV3Events1({
-      id: eventId,
+      id: id,
     })
   );
 
   const registrations = await apiWrapper(() =>
     eventuras.registrations.getV3Registrations({
-      eventId: eventId,
+      eventId: id,
       includeUserInfo: true,
       includeProducts: true,
     })
@@ -44,20 +43,20 @@ const EventDetailPage: React.FC<EventInfoProps> = async props => {
 
   const eventProducts = await apiWrapper(() =>
     eventuras.eventProducts.getV3EventsProducts({
-      eventId: eventId,
+      eventId: id,
     })
   );
 
   const statistics = await apiWrapper(() =>
     eventuras.eventStatistics.getV3EventsStatistics({
-      eventId: eventId,
+      eventId: id,
     })
   );
 
   if (!eventinfo.ok) {
     Logger.error(
       { namespace: 'EditEventinfo' },
-      `Failed to fetch eventinfo ${eventId}, error: ${eventinfo.error}`
+      `Failed to fetch eventinfo ${id}, error: ${eventinfo.error}`
     );
   }
 
@@ -75,7 +74,7 @@ const EventDetailPage: React.FC<EventInfoProps> = async props => {
             {eventProducts.value?.map(product => (
               <>
                 <Link
-                  href={`/admin/events/${eventId}/products/${product.productId}`}
+                  href={`/admin/events/${id}/products/${product.productId}`}
                   key={product.productId}
                 >
                   {product.name} <Badge>Id: {product.productId}</Badge>
@@ -93,6 +92,4 @@ const EventDetailPage: React.FC<EventInfoProps> = async props => {
       />
     </Wrapper>
   );
-};
-
-export default EventDetailPage;
+}

@@ -5,14 +5,13 @@ import { getTranslations } from 'next-intl/server';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
-import { oauthConfig } from '@/utils/oauthConfig';
 
 import UserEditor from '../UserEditor';
 
 type EventInfoProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 const AdminUserDetailPage: React.FC<EventInfoProps> = async props => {
   const params = await props.params;

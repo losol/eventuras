@@ -40,7 +40,10 @@ export type RegistrationUpdateDto = {
   paymentMethod?: PaymentProvider;
 };
 
-type TranslationFunction = (key: string, options?: object) => string;
+type TranslationFunction = (
+  key: string,
+  options?: Record<string, string | number | Date>
+) => string;
 const logger_namespace = 'Registration';
 
 /**

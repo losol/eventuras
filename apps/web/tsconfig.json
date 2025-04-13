@@ -31,7 +31,8 @@
     "next.config.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "../../libs/scribo/src/ui/DropDown.tsx"
   ],
   "exclude": ["node_modules"]
 }

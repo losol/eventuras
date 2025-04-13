@@ -7,7 +7,6 @@ import { redirect } from 'next/navigation';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
-import { oauthConfig } from '@/utils/oauthConfig';
 
 export async function createEvent(formData: FormData) {
   if (formData.get('organizationId') == null) return;

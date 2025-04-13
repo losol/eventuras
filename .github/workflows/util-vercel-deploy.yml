@@ -110,7 +110,7 @@ jobs:
           echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
 
       - name: Set Custom URL
-        if: ${{ inputs.custom_url }}
+        if: ${{ inputs.url }}
         run: vercel alias --token=${{ secrets.vercel_token }} set "$url" ${{ inputs.url }}
 
       - name: Promote

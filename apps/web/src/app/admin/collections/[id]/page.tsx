@@ -6,18 +6,17 @@ import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
-import { oauthConfig } from '@/utils/oauthConfig';
 
 import CollectionEditor from '../CollectionEditor';
 
 type EventCollectionProps = {
-  params: {
+  params: Promise<{
     id: number;
-  };
+  }>;
 };
-const CollectionDetailPage: React.FC<EventCollectionProps> = async props => {
-  const params = await props.params;
-  const eventId = params.id;
+
+export default async function CollectionDetailPage({ params }: Readonly<EventCollectionProps>) {
+  const { id } = await params;
 
   const t = await getTranslations();
 
@@ -28,14 +27,14 @@ const CollectionDetailPage: React.FC<EventCollectionProps> = async props => {
 
   const collection = await apiWrapper(() =>
     eventuras.eventCollection.getV3Eventcollections1({
-      id: eventId,
+      id: id,
     })
   );
 
   if (!collection.ok) {
     Logger.error(
       { namespace: 'collections' },
-      `Failed to fetch collection ${eventId}, error: ${collection.error}`
+      `Failed to fetch collection ${id}, error: ${collection.error}`
     );
   }
 
@@ -57,6 +56,4 @@ const CollectionDetailPage: React.FC<EventCollectionProps> = async props => {
       </Section>
     </Wrapper>
   );
-};
-
-export default CollectionDetailPage;
+}

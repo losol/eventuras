@@ -7,7 +7,6 @@ import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import withAuthorization from '@/utils/auth/withAuthorization';
 import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
-import { oauthConfig } from '@/utils/oauthConfig';
 
 import UserList from './UserList';
 import UsersActionMenu from './UsersActionMenu';
@@ -18,9 +17,6 @@ const AdminUserPage = async () => {
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
     authHeader: await getAccessToken(),
   });
-  /**
-   * TODO - in case of the apiWrapper, whilst it does play nicely with the new enrollment sdk, it does beg the question of it makes optimal use of the new sdk
-   */
   const userFetchResult = await apiWrapper(() =>
     eventuras.users.getV3Users1({
       eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),

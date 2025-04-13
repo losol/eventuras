@@ -33,6 +33,7 @@
     "test": "turbo run test",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
+    "next:clean": "rimraf \"**/{.next,.turbo,.vercel}\"",
     "npm:check-update": "npx npm-check-updates --deep",
     "npm:reinstall": "npm run npm:clean && npm install",
     "npm:update": "npx npm-check-updates --deep -u",

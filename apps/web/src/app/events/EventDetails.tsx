@@ -1,4 +1,3 @@
-// EventDetails.tsx
 'use client';
 
 import { MarkdownContent } from '@eventuras/markdown';

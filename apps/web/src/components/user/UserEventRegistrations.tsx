@@ -1,6 +1,6 @@
 import { RegistrationDto } from '@eventuras/sdk';
 import { Grid, Heading } from '@eventuras/ui';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { ReactElement } from 'react';
 
 import UserEventRegistrationCard from './UserEventRegistrationCard';
@@ -15,7 +15,7 @@ export type UserEventRegistrationsProps = {
  * @return {ReactElement}  Returns a list of event registrations
  */
 const UserEventRegistrations = ({ registrations }: UserEventRegistrationsProps): ReactElement => {
-  const t = await getTranslations();
+  const t = useTranslations();
 
   return (
     <div>

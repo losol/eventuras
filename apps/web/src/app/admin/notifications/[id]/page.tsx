@@ -8,9 +8,9 @@ import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
 type EventInfoProps = {
-  params: {
+  params: Promise<{
     id: number;
-  };
+  }>;
 };
 
 const OrganizationDetailPage: React.FC<EventInfoProps> = async props => {
