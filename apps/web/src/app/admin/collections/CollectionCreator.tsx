@@ -4,7 +4,7 @@ import { EventCollectionCreateDto } from '@eventuras/sdk';
 import { Form, HiddenInput, Input } from '@eventuras/smartform';
 import { Button } from '@eventuras/ui';
 import { useRouter } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
 import Dialog from '@/components/Dialog';
@@ -13,7 +13,7 @@ import Environment from '@/utils/Environment';
 import slugify from '@/utils/slugify';
 
 const CollectionCreator: React.FC = () => {
-  const t = await getTranslations();
+  const t = useTranslations();
   const [modalOpen, setModalOpen] = useState(false);
   const organizationId = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
   const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });

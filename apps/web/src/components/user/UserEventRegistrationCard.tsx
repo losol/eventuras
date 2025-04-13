@@ -1,6 +1,6 @@
 import { ProductOrderDto } from '@eventuras/sdk';
 import { DATA_TEST_ID } from '@eventuras/utils';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { ReactElement } from 'react';
 
 import Card from '@/components/Card';
@@ -25,7 +25,7 @@ const UserEventRegistrationCard = ({
   dateEnd,
   products,
 }: UserEventRegistrationCardProps): ReactElement => {
-  const t = await getTranslations();
+  const t = useTranslations();
   return (
     <Card>
       <Card.Heading as="h3" spacingClassName="pt-2">

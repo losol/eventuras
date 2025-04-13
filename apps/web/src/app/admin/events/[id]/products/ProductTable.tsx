@@ -3,7 +3,7 @@ import type { ProductDto } from '@eventuras/sdk';
 import { Badge } from '@eventuras/ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
 import { IconEye, IconPencil } from '@tabler/icons-react';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 
 import Link from '@/components/Link';
 
@@ -15,7 +15,7 @@ interface ProductTableProps {
 }
 
 export const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit }) => {
-  const t = await getTranslations();
+  const t = useTranslations();
 
   const columns = [
     columnHelper.accessor('name', {

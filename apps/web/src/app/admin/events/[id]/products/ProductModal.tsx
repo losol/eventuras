@@ -4,7 +4,7 @@ import type { NewProductDto, ProductDto } from '@eventuras/sdk';
 import { Form, Input, NumberInput } from '@eventuras/smartform';
 import { Button, Heading } from '@eventuras/ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
@@ -35,7 +35,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
   const [confirmDiscardChanges, setConfirmDiscardChanges] = useState(false);
   const { reset } = useForm<ProductDto>({ defaultValues: product || {} });
-  const t = await getTranslations();
+  const t = useTranslations();
 
   useEffect(() => {
     reset(product || {});

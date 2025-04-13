@@ -5,12 +5,11 @@ import { getTranslations } from 'next-intl/server';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
-import { oauthConfig } from '@/utils/oauthConfig';
 
 type EventInfoProps = {
-  params: {
+  params: Promise<{
     id: number;
-  };
+  }>;
 };
 
 const OrganizationDetailPage: React.FC<EventInfoProps> = async props => {

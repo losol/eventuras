@@ -9,14 +9,13 @@ import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
 type EditEventinfoProps = {
-  params: {
-    id: string;
-  };
+  params: Promise<{
+    id: number;
+  }>;
 };
 
-const EditEventinfo: React.FC<EditEventinfoProps> = async props => {
-  const params = await props.params;
-  const eventId = parseInt(params.id);
+export default async function EditEventinfo({ params }: Readonly<EditEventinfoProps>) {
+  const { id } = await params;
   const t = await getTranslations();
 
   const eventuras = createSDK({
@@ -26,14 +25,14 @@ const EditEventinfo: React.FC<EditEventinfoProps> = async props => {
 
   const eventinfo = await apiWrapper(() =>
     eventuras.events.getV3Events1({
-      id: eventId,
+      id: id,
     })
   );
 
   if (!eventinfo.ok) {
     Logger.error(
       { namespace: 'EditEventinfo' },
-      `Failed to fetch eventinfo ${eventId}, error: ${eventinfo.error}`
+      `Failed to fetch eventinfocollection ${id}, error: ${eventinfo.error}`
     );
   }
 
@@ -47,6 +46,4 @@ const EditEventinfo: React.FC<EditEventinfoProps> = async props => {
       <EventEditor eventinfo={eventinfo.value!} />
     </Wrapper>
   );
-};
-
-export default EditEventinfo;
+}

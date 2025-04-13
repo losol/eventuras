@@ -1,7 +1,6 @@
 import { NotificationDto } from '@eventuras/sdk';
 import { Container, Heading, Section, Text } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
-import { getTranslations } from 'next-intl/server';
 
 import Card from '@/components/Card';
 import Wrapper from '@/components/eventuras/Wrapper';
@@ -9,14 +8,13 @@ import Link from '@/components/Link';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
-import { oauthConfig } from '@/utils/oauthConfig';
 
 type NotificationPageProps = {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-const NotificationsPage: React.FC<NotificationPageProps> = async props => {
-  const t = await getTranslations();
+export default async function NotificationsPage({ searchParams }: NotificationPageProps) {
+  const { id } = await searchParams;
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
@@ -24,15 +22,9 @@ const NotificationsPage: React.FC<NotificationPageProps> = async props => {
   });
 
   const notifications = await apiWrapper(() => {
-    if (
-      /* @next-codemod-error 'props.searchParams' is accessed without awaiting.*/
-      props.searchParams.eventId
-    ) {
+    if (id) {
       return eventuras.notifications.getV3Notifications1({
-        eventId: parseInt(
-          /* @next-codemod-error 'props.searchParams' is accessed without awaiting.*/
-          props.searchParams.eventId as string
-        ),
+        eventId: parseInt(id as string),
         eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID),
       });
     } else {
@@ -56,11 +48,8 @@ const NotificationsPage: React.FC<NotificationPageProps> = async props => {
       <Section className="bg-white dark:bg-black   pb-8">
         <Container>
           <Heading as="h1">Notifications</Heading>
-          {(await props.searchParams).eventId && (
-            <Link
-              href={`/admin/events/${(await props.searchParams).eventId}`}
-              variant="button-primary"
-            >
+          {id && (
+            <Link href={`/admin/events/${id}`} variant="button-primary">
               Event page
             </Link>
           )}
@@ -83,6 +72,4 @@ const NotificationsPage: React.FC<NotificationPageProps> = async props => {
       </Section>
     </Wrapper>
   );
-};
-
-export default NotificationsPage;
+}

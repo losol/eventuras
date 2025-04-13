@@ -6,9 +6,19 @@
  *
  */
 
+import type {JSX} from 'react';
+
+import {isDOMNode} from 'lexical';
 import * as React from 'react';
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import {createPortal} from 'react-dom';
 
 type DropDownContextType = {
   registerItem: (ref: React.RefObject<HTMLButtonElement>) => void;
@@ -23,12 +33,12 @@ export function DropDownItem({
   className,
   onClick,
   title,
-}: {
+}: Readonly<{
   children: React.ReactNode;
   className: string;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   title?: string;
-}) {
+}>) {
   const ref = useRef<HTMLButtonElement>(null);
 
   const dropDownContext = React.useContext(DropDownContext);
@@ -37,16 +47,21 @@ export function DropDownItem({
     throw new Error('DropDownItem must be used within a DropDown');
   }
 
-  const { registerItem } = dropDownContext;
+  const {registerItem} = dropDownContext;
 
   useEffect(() => {
     if (ref && ref.current) {
-      registerItem(ref);
+      registerItem(ref as React.RefObject<HTMLButtonElement>);
     }
   }, [ref, registerItem]);
 
   return (
-    <button className={className} onClick={onClick} ref={ref} title={title} type="button">
+    <button
+      className={className}
+      onClick={onClick}
+      ref={ref}
+      title={title}
+      type="button">
       {children}
     </button>
   );
@@ -62,17 +77,20 @@ function DropDownItems({
   onClose: () => void;
 }) {
   const [items, setItems] = useState<React.RefObject<HTMLButtonElement>[]>();
-  const [highlightedItem, setHighlightedItem] = useState<React.RefObject<HTMLButtonElement>>();
+  const [highlightedItem, setHighlightedItem] =
+    useState<React.RefObject<HTMLButtonElement>>();
 
   const registerItem = useCallback(
     (itemRef: React.RefObject<HTMLButtonElement>) => {
-      setItems(prev => (prev ? [...prev, itemRef] : [itemRef]));
+      setItems((prev) => (prev ? [...prev, itemRef] : [itemRef]));
     },
-    [setItems]
+    [setItems],
   );
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (!items) return;
+    if (!items) {
+      return;
+    }
 
     const key = event.key;
 
@@ -83,14 +101,18 @@ function DropDownItems({
     if (key === 'Escape' || key === 'Tab') {
       onClose();
     } else if (key === 'ArrowUp') {
-      setHighlightedItem(prev => {
-        if (!prev) return items[0];
+      setHighlightedItem((prev) => {
+        if (!prev) {
+          return items[0];
+        }
         const index = items.indexOf(prev) - 1;
         return items[index === -1 ? items.length - 1 : index];
       });
     } else if (key === 'ArrowDown') {
-      setHighlightedItem(prev => {
-        if (!prev) return items[0];
+      setHighlightedItem((prev) => {
+        if (!prev) {
+          return items[0];
+        }
         return items[items.indexOf(prev) + 1];
       });
     }
@@ -100,7 +122,7 @@ function DropDownItems({
     () => ({
       registerItem,
     }),
-    [registerItem]
+    [registerItem],
   );
 
   useEffect(() => {
@@ -130,7 +152,7 @@ export default function DropDown({
   buttonIconClassName,
   children,
   stopCloseOnClickSelf,
-}: {
+}: Readonly<{
   disabled?: boolean;
   buttonAriaLabel?: string;
   buttonClassName: string;
@@ -138,7 +160,7 @@ export default function DropDown({
   buttonLabel?: string;
   children: ReactNode;
   stopCloseOnClickSelf?: boolean;
-}): JSX.Element {
+}>): JSX.Element {
   const dropDownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [showDropDown, setShowDropDown] = useState(false);
@@ -155,9 +177,12 @@ export default function DropDown({
     const dropDown = dropDownRef.current;
 
     if (showDropDown && button !== null && dropDown !== null) {
-      const { top, left } = button.getBoundingClientRect();
+      const {top, left} = button.getBoundingClientRect();
       dropDown.style.top = `${top + button.offsetHeight + dropDownPadding}px`;
-      dropDown.style.left = `${Math.min(left, window.innerWidth - dropDown.offsetWidth - 20)}px`;
+      dropDown.style.left = `${Math.min(
+        left,
+        window.innerWidth - dropDown.offsetWidth - 20,
+      )}px`;
     }
   }, [dropDownRef, buttonRef, showDropDown]);
 
@@ -167,10 +192,15 @@ export default function DropDown({
     if (button !== null && showDropDown) {
       const handle = (event: MouseEvent) => {
         const target = event.target;
-        if (stopCloseOnClickSelf) {
-          if (dropDownRef.current && dropDownRef.current.contains(target as Node)) return;
+        if (!isDOMNode(target)) {
+          return;
         }
-        if (!button.contains(target as Node)) {
+        if (stopCloseOnClickSelf) {
+          if (dropDownRef.current && dropDownRef.current.contains(target)) {
+            return;
+          }
+        }
+        if (!button.contains(target)) {
           setShowDropDown(false);
         }
       };
@@ -188,7 +218,7 @@ export default function DropDown({
         const button = buttonRef.current;
         const dropDown = dropDownRef.current;
         if (button !== null && dropDown !== null) {
-          const { top } = button.getBoundingClientRect();
+          const {top} = button.getBoundingClientRect();
           const newPosition = top + button.offsetHeight + dropDownPadding;
           if (newPosition !== dropDown.getBoundingClientRect().top) {
             dropDown.style.top = `${newPosition}px`;
@@ -212,10 +242,11 @@ export default function DropDown({
         aria-label={buttonAriaLabel || buttonLabel}
         className={buttonClassName}
         onClick={() => setShowDropDown(!showDropDown)}
-        ref={buttonRef}
-      >
+        ref={buttonRef}>
         {buttonIconClassName && <span className={buttonIconClassName} />}
-        {buttonLabel && <span className="text dropdown-button-text">{buttonLabel}</span>}
+        {buttonLabel && (
+          <span className="text dropdown-button-text">{buttonLabel}</span>
+        )}
         <i className="chevron-down" />
       </button>
 
@@ -224,7 +255,7 @@ export default function DropDown({
           <DropDownItems dropDownRef={dropDownRef} onClose={handleClose}>
             {children}
           </DropDownItems>,
-          document.body
+          document.body,
         )}
     </>
   );

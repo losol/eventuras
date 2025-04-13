@@ -4,14 +4,13 @@ import { getTranslations } from 'next-intl/server';
 import Wrapper from '@/components/eventuras/Wrapper';
 import { createSDK } from '@/utils/api/EventurasApi';
 import { getAccessToken } from '@/utils/getAccesstoken';
-import { oauthConfig } from '@/utils/oauthConfig';
 
 import EventProductsEditor from './EventProductsEditor';
 
 type EventProductsPage = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 const EventProducts: React.FC<EventProductsPage> = async props => {

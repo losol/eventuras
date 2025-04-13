@@ -3,7 +3,7 @@
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { OrderDto } from '@eventuras/sdk';
 import { Loading, Pagination } from '@eventuras/ui';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import FatalError from '@/components/FatalError';
@@ -17,7 +17,7 @@ const columnHelper = createColumnHelper<OrderDto>();
 
 const AdminOrdersList: React.FC = () => {
   const organizationId = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
-  const t = await getTranslations();
+  const t = useTranslations();
   const [page, setPage] = useState(1);
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const pageSize = 50;

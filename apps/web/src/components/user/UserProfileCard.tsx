@@ -2,7 +2,7 @@
 
 import { UserDto } from '@eventuras/sdk';
 import { Definition, DescriptionList, Item, Term } from '@eventuras/ui';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 
 import Card from '@/components/Card';
 import Link from '@/components/Link';
@@ -12,7 +12,7 @@ export type UserProfileCardProps = {
 };
 
 const UserProfileCard = ({ profile }: UserProfileCardProps) => {
-  const t = await getTranslations();
+  const t = useTranslations();
   return (
     <Card>
       <DescriptionList>

@@ -55,7 +55,7 @@ export const AddUserButton: React.FC = () => {
 const RegistrationListBoxItem = (props: ListBoxItemProps & { children: React.ReactNode }) => (
   <ListBoxItem
     {...props}
-    className="cursor-pointer group flex items-center gap-2 cursor-default select-none py-2 px-4 outline-none rounded text-gray-900 focus:bg-blue-100  focus:text-blue-900"
+    className="cursor-pointer group flex items-center gap-2 select-none py-2 px-4 outline-none rounded text-gray-900 focus:bg-blue-100  focus:text-blue-900"
   >
     {({ isSelected }) => (
       <>

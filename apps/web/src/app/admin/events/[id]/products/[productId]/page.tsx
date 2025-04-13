@@ -9,10 +9,10 @@ import { getAccessToken } from '@/utils/getAccesstoken';
 import DeliverySummary from '../DeliverySummary';
 
 type EventProductsPage = {
-  params: {
+  params: Promise<{
     id: string;
     productId: string;
-  };
+  }>;
 };
 
 const EventProducts: React.FC<EventProductsPage> = async props => {

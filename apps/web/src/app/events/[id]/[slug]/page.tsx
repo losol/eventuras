@@ -2,27 +2,27 @@ import { EventInfoStatus } from '@eventuras/sdk';
 import { Container, Heading, Text } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { redirect } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { Suspense } from 'react';
 
 import EventDetails from '@/app/events/EventDetails';
 import EventRegistrationButton from '@/app/events/EventRegistrationButton';
 import Card from '@/components/Card';
 import Wrapper from '@/components/eventuras/Wrapper';
-import Link from '@/components/Link';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import { formatDateSpan } from '@/utils/formatDate';
 
-type EventInfoProps = {
-  params: {
+import EventNotFound from '../../EventNotFound';
+
+type EventDetailsPageProps = {
+  params: Promise<{
     id: number;
     slug: string;
-  };
+  }>;
 };
 
 export const revalidate = 300;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const dynamicParams = true;
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const orgId = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
@@ -32,69 +32,63 @@ export async function generateStaticParams() {
     `Api Base url: ${Environment.NEXT_PUBLIC_BACKEND_URL}, orgId: ${orgId})`
   );
 
-  const eventuras = createSDK({ inferUrl: true });
-  const eventInfos = await eventuras.events.getV3Events({
-    organizationId: orgId,
-  });
+  try {
+    const eventuras = createSDK({ inferUrl: true });
+    const eventInfos = await eventuras.events.getV3Events({
+      organizationId: orgId,
+    });
 
-  if (!eventInfos) return [];
+    if (!eventInfos?.data) return [];
 
-  if (eventInfos.data) {
-    const staticParams = eventInfos.data.map(eventInfo => ({
-      id: eventInfo.id?.toString(),
-      slug: eventInfo.slug,
-    }));
+    const staticParams = eventInfos.data
+      .filter(event => event.id !== undefined && event.slug !== undefined)
+      .map(eventInfo => ({
+        id: eventInfo.id!.toString(),
+        slug: eventInfo.slug!,
+      }));
+
     Logger.info({ namespace: 'events:staticparams' }, 'Static params:', staticParams);
     return staticParams;
+  } catch (error) {
+    Logger.error({ namespace: 'events:staticparams' }, 'Error generating static params:', error);
+    return [];
   }
-
-  return [];
 }
 
-const Page: React.FC<EventInfoProps> = async props => {
-  const params = await props.params;
-  const t = await getTranslations();
-  const result = await apiWrapper(() =>
-    createSDK({ inferUrl: true }).events.getV3Events1({ id: params.id })
-  );
+export default async function EventDetailsPage({ params }: Readonly<EventDetailsPageProps>) {
+  const { id, slug } = await params;
 
-  let notFound = !result.ok || !result.value;
-  // Also show the not found page, if EventInfoStatus is Draft
-  if (result.value?.status === EventInfoStatus.DRAFT) {
-    notFound = true;
+  if (isNaN(id)) {
+    return <EventNotFound />;
   }
 
-  if (notFound)
-    return (
-      <>
-        <Heading>{t('common.events.detailspage.notfound.title')}</Heading>
-        <Text className="py-6">{t('common.events.detailspage.notfound.description')}</Text>
-        <Link href="/" variant="button-primary">
-          {t('common.events.detailspage.notfound.back')}
-        </Link>
-      </>
-    );
+  const result = await apiWrapper(() => createSDK({ inferUrl: true }).events.getV3Events1({ id }));
 
-  const eventinfo = result.value!;
-  if (params.slug !== eventinfo.slug) {
-    redirect(`/events/${eventinfo.id!}/${eventinfo.slug!}`);
+  // Handle not found or draft events
+  if (!result.ok || !result.value || result.value.status === EventInfoStatus.DRAFT) {
+    return <EventNotFound />;
   }
 
-  const hasFeaturedImage = eventinfo.featuredImageUrl ? true : false;
+  const eventinfo = result.value;
+
+  // Redirect if slug doesn't match
+  if (slug !== eventinfo.slug && eventinfo.slug) {
+    redirect(`/events/${eventinfo.id}/${eventinfo.slug}`);
+  }
+
+  const hasFeaturedImage = Boolean(eventinfo.featuredImageUrl);
 
   return (
     <Wrapper imageNavbar={hasFeaturedImage} bgDark={hasFeaturedImage} fluid>
-      {eventinfo?.featuredImageUrl && (
-        <Card
-          className="mx-auto min-h-[33vh]"
-          {...(eventinfo?.featuredImageUrl && { backgroundImage: eventinfo.featuredImageUrl })}
-        ></Card>
+      {eventinfo.featuredImageUrl && (
+        <Card className="mx-auto min-h-[33vh]" backgroundImage={eventinfo.featuredImageUrl} />
       )}
       <section className="py-16">
         <Container>
           <Heading as="h1" spacingClassName="pt-6 pb-3">
-            {eventinfo?.title ?? 'Mysterious Event'}
+            {eventinfo.title ?? 'Mysterious Event'}
           </Heading>
+
           {eventinfo.headline && (
             <Heading
               as="h2"
@@ -105,22 +99,27 @@ const Page: React.FC<EventInfoProps> = async props => {
             </Heading>
           )}
 
-          <Text text={eventinfo.description} className="py-3" />
-          <Text
-            text={formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, {
-              locale: Environment.NEXT_PUBLIC_DEFAULT_LOCALE,
-            })}
-            className="py-3"
-          />
+          <Text text={eventinfo.description ?? ''} className="py-3" />
 
-          {eventinfo?.city}
-          <EventRegistrationButton event={eventinfo!} />
+          {eventinfo.dateStart && (
+            <div className="py-3">
+              {formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, {
+                locale: Environment.NEXT_PUBLIC_DEFAULT_LOCALE,
+              })}
+            </div>
+          )}
+
+          {eventinfo.city && <div className="py-2">{eventinfo.city}</div>}
+
+          <Suspense fallback={<div>Loading registration options...</div>}>
+            <EventRegistrationButton event={eventinfo} />
+          </Suspense>
         </Container>
       </section>
 
-      <EventDetails eventinfo={eventinfo} />
+      <Suspense fallback={<div>Loading event details...</div>}>
+        <EventDetails eventinfo={eventinfo} />
+      </Suspense>
     </Wrapper>
   );
-};
-
-export default Page;
+}

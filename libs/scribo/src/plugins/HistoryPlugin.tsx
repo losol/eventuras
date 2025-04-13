@@ -140,7 +140,7 @@ function getChangeType(
   }
 
   const nextDirtyNode = dirtyNodes[0];
-
+  
   const prevDirtyNode = prevEditorState._nodeMap.get(nextDirtyNode.__key);
 
   if (

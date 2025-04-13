@@ -1,6 +1,6 @@
 import { CertificateDto } from '@eventuras/sdk';
 import { Definition, DescriptionList, Heading, Item, Term } from '@eventuras/ui';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import Card from '@/components/Card';
@@ -11,7 +11,7 @@ type CertificateProps = {
 };
 
 const Certificate: React.FC<CertificateProps> = ({ certificate }) => {
-  const t = await getTranslations();
+  const t = useTranslations();
 
   return (
     <Card>

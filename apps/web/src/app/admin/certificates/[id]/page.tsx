@@ -6,18 +6,18 @@ import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
-import { oauthConfig } from '@/utils/oauthConfig';
 
 import Certificate from '../Certificate';
 import { PDFCertificate } from '../PDFCertificate';
 
-type EventInfoProps = {
-  params: {
+type CertificateInfoProps = {
+  params: Promise<{
     id: number;
-  };
+  }>;
 };
-const CertificateDetailPage: React.FC<EventInfoProps> = async props => {
-  const params = await props.params;
+
+export default async function CertificateDetailPage({ params }: Readonly<CertificateInfoProps>) {
+  const { id } = await params;
   const t = await getTranslations();
 
   const eventuras = createSDK({
@@ -27,14 +27,14 @@ const CertificateDetailPage: React.FC<EventInfoProps> = async props => {
 
   const certificate = await apiWrapper(() =>
     eventuras.certificates.getV3Certificates({
-      id: params.id,
+      id: id,
     })
   );
 
   if (!certificate.ok) {
     Logger.error(
-      { namespace: 'EditEventinfo' },
-      `Failed to fetch order id ${params.id}, error: ${certificate.error}`
+      { namespace: 'Certifcatedetailpage' },
+      `Failed to fetch certificate with id ${id}, error: ${certificate.error}`
     );
   }
 
@@ -52,11 +52,9 @@ const CertificateDetailPage: React.FC<EventInfoProps> = async props => {
       <Section className="py-12">
         <Container>
           <Certificate certificate={certificate.value!} />
-          <PDFCertificate certificateId={params.id} />
+          <PDFCertificate certificateId={id} />
         </Container>
       </Section>
     </Wrapper>
   );
-};
-
-export default CertificateDetailPage;
+}

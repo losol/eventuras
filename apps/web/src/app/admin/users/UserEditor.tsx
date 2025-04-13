@@ -28,7 +28,7 @@ const regex = {
 
 const UserEditor: FC<UserEditorProps> = props => {
   const { adminMode, user, onUserUpdated, submitButtonLabel } = props;
-  const { t } = useTranslations();
+  const t = useTranslations();
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const [isUpdating, setIsUpdating] = useState(false);
   const log_namespace = 'user.account';
@@ -50,7 +50,7 @@ const UserEditor: FC<UserEditorProps> = props => {
     }
 
     addAppNotification({
-      type: AppNotification.SUCCESS,
+      type: AppNotificationType.SUCCESS,
       message: t('common.labels.createUserSuccess') + ': ' + user.value?.name,
     });
 

@@ -14,12 +14,12 @@ import { UserMenu } from './navigation/UserMenu';
  * @returns {JSX.Element} The rendered Layout component.
  */
 
-type WrapperProps = {
+type WrapperProps = Promise<{
   children: ReactNode;
   imageNavbar?: boolean;
   bgDark?: boolean;
   fluid?: boolean;
-};
+}>;
 
 const styles = {
   mainClassName: 'container mx-auto pb-20',
@@ -30,7 +30,7 @@ const Wrapper = async (props: WrapperProps) => {
   const t = await getTranslations();
   const site = await getSiteSettings();
   const session = await getCurrentSession();
-  const bgClass = props.imageNavbar
+  const bgClass = (await props.imageNavbar)
     ? 'bg-transparent z-10 absolute w-full py-1'
     : 'bg-transparent w-full py-1';
 
@@ -38,7 +38,7 @@ const Wrapper = async (props: WrapperProps) => {
 
   return (
     <>
-      <Navbar title={site?.name ?? 'Eventuras'} bgColor={bgClass} bgDark={props.bgDark}>
+      <Navbar title={site?.name ?? 'Eventuras'} bgColor={bgClass} bgDark={await props.bgDark}>
         <UserMenu
           loggedInContent={{
             accountLabel: t('common.labels.account'),
@@ -55,7 +55,7 @@ const Wrapper = async (props: WrapperProps) => {
         />
       </Navbar>
       <main id="main-content" className={mainClassName}>
-        {props.children}
+        {await props.children}
       </main>
       <Footer siteTitle={site?.name} links={site?.footerLinks} publisher={site?.publisher} />
     </>

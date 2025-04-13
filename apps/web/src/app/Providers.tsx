@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 import { createActor } from 'xstate';
 
 import NotificationsProvider from '@/components/NotificationsProvider';
-// import NotificationsProvider from '@/components/NotificationsProvider';
 import AuthenticationFlowMachine, {
   AuthenticationStateContext,
 } from '@/statemachines/AuthenticationFlowMachine';
