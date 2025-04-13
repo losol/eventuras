@@ -3,7 +3,7 @@
 import { ProductDto } from '@eventuras/sdk';
 import { Button } from '@eventuras/ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 
 import ProductSelection from '@/components/eventuras/ProductSelection';
@@ -38,7 +38,7 @@ const RegistrationCustomize = ({
 }: RegistrationCustomizeProps) => {
   const { isAdmin } = useAuthSelector();
 
-  const t = await getTranslations();
+  const t = useTranslations();
   const { register, handleSubmit } = useForm();
   return (
     <>

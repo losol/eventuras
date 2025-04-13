@@ -2,7 +2,7 @@
 
 import { EventDto, ProductDto } from '@eventuras/sdk';
 import { Button, ButtonGroup, Drawer } from '@eventuras/ui';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
@@ -23,7 +23,7 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
 }) => {
   const [emailDrawerOpen, setEmailDrawerOpen] = useState<boolean>(false);
   const [SMSDrawerOpen, setSMSDrawerOpen] = useState<boolean>(false);
-  const t = await getTranslations();
+  const t = useTranslations();
 
   return (
     <>

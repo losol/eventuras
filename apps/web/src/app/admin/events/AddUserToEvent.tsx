@@ -9,7 +9,7 @@ import { Button, Drawer, Heading } from '@eventuras/ui';
 import { Logger } from '@eventuras/utils';
 import { IconCheck } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import {
   Button as AriaButton,
@@ -84,7 +84,7 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
   onUseradded,
 }) => {
   const { addAppNotification } = useAppNotifications();
-  const t = await getTranslations();
+  const t = useTranslations();
 
   const { control, register, setValue, handleSubmit } = useForm<AddUserToEventFormValues>();
 
@@ -112,7 +112,6 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
     if (result.ok) {
       Logger.info({ namespace: 'AddUserToEvent' }, 'User succesfully added to the event!');
       addAppNotification({
-        id: Date.now(),
         message: 'User succesfully added to the event!',
         type: AppNotificationType.SUCCESS,
       });
@@ -121,14 +120,12 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
       Logger.error({ namespace: 'AddUserToEvent' }, result.error);
       if (result.error!.status === 409) {
         addAppNotification({
-          id: Date.now(),
           message: 'That user is already registered to the event',
           type: AppNotificationType.ERROR,
         });
         return;
       }
       addAppNotification({
-        id: Date.now(),
         message: t('common.errors.fatalError.title'),
         type: AppNotificationType.ERROR,
       });

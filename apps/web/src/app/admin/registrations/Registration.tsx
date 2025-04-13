@@ -19,7 +19,7 @@ import {
 } from '@eventuras/ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 
 import { apiWrapper, createSDK, fetcher } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
@@ -124,7 +124,7 @@ export const statusPatchRequest = async (registrationId: number, status: Registr
 
 const Registration = ({ registration, adminMode = false }: RegistrationProps) => {
   const router = useRouter();
-  const t = await getTranslations();
+  const t = useTranslations();
 
   if (!registration) {
     return <p>{t('common.registrations.labels.noRegistration')}</p>;

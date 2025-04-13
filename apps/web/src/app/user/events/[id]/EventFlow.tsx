@@ -4,7 +4,7 @@ import { EventDto, ProductDto, RegistrationDto, UserDto } from '@eventuras/sdk';
 import { Loading } from '@eventuras/ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
 import { useActor } from '@xstate/react';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 
 import UserEditor from '@/app/admin/users/UserEditor';
 import FatalError from '@/components/FatalError';
@@ -28,7 +28,7 @@ export interface EventFlowProps {
 }
 
 const EventFlow: React.FC<EventFlowProps> = ({ eventInfo, user, availableProducts, siteInfo }) => {
-  const t = await getTranslations();
+  const t = useTranslations();
 
   const [xState, send] = useActor(EventFlowMachine, {
     input: {
