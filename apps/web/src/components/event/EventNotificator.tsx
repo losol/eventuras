@@ -118,7 +118,6 @@ const createFormHandler = (
         `Failed to send ${notificatorType} notification. Error: ${result.error}`
       );
       addAppNotification({
-        id: Date.now(),
         message: `${common('errors.fatalError.title')}: ${result.error?.body.errors.BodyMarkdown[0]}`,
         type: AppNotificationType.ERROR,
       });
@@ -129,7 +128,6 @@ const createFormHandler = (
         `Successfully sent ${notificatorType} notification. `
       );
       addAppNotification({
-        id: Date.now(),
         message:
           notificatorType === EventNotificatorType.EMAIL
             ? t('eventNotifier.form.successFeedbackEmail')

@@ -1,7 +1,7 @@
 import { Meta } from '@storybook/react';
 import React, { useState } from 'react';
 
-import AppNotifications, { AppNotificationOptions, AppNotificationType } from './AppNotifications';
+import AppNotifications, { AppNotification, AppNotificationType } from './AppNotifications';
 
 const meta: Meta = {
   component: AppNotifications,
@@ -11,10 +11,10 @@ const meta: Meta = {
 export default meta;
 
 const InteractiveWrapper: React.FC = () => {
-  const [notifications, setNotifications] = useState<AppNotificationOptions[]>([]);
+  const [notifications, setNotifications] = useState<AppNotification[]>([]);
 
-  const addNotification = (notification: Omit<AppNotificationOptions, 'id'>) => {
-    const id = Date.now();
+  const addNotification = (notification: Omit<AppNotification, 'id'>) => {
+    const id = Date.now().toString();
     const newNotification = { ...notification, id };
     setNotifications([...notifications, newNotification]);
 

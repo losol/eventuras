@@ -2,12 +2,11 @@
 
 import { AppNotifications } from '@eventuras/ui';
 import React from 'react';
-import { useRecoilValue } from 'recoil';
 
-import { appNotificationState } from '@/atoms/RecoilState';
+import { NotificationsContext } from '@/statemachines/NotificationsMachine';
 
 const NotificationsProvider: React.FC = () => {
-  const appNotifications = useRecoilValue(appNotificationState);
+  const appNotifications = NotificationsContext.useSelector(state => state.context.notifications);
 
   return <AppNotifications appNotifications={appNotifications} />;
 };
