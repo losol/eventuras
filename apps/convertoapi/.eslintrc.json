@@ -1,4 +1,4 @@
 {
   "root": true,
-  "extends": ["@eventuras/eslint-config/node.json"]
+  "extends": ["@eventuras/eslint-config/library.js"]
 }

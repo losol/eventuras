@@ -1,16 +1,85 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@source "@eventuras/ui";
+@source inline("md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4");
+
+@plugin 'tailwindcss-react-aria-components';
+
+@custom-variant dark (@media (prefers-color-scheme: dark));
+
+@theme {
+  --font-*: initial;
+  --font-sans: source-sans-pro, sans-serif;
+  --font-serif: source-serif-pro, serif;
+  --font-mono: ui-monospace, Courier New, monospace;
+  --font-display: source-sans-pro, sans-serif;
+  --font-body: source-sans-pro, sans-serif;
+
+  --color-primary-50: #f0f9ff;
+  --color-primary-100: #e0f2fe;
+  --color-primary-200: #bae6fd;
+  --color-primary-300: #7dd3fc;
+  --color-primary-400: #38bdf8;
+  --color-primary-500: #0ea5e9;
+  --color-primary-600: #0284c7;
+  --color-primary-700: #0369a1;
+  --color-primary-800: #075985;
+  --color-primary-900: #0c4a6e;
+  --color-primary-950: #082f49;
+
+  --color-secondary-50: #fff1f2;
+  --color-secondary-100: #ffe4e6;
+  --color-secondary-200: #fecdd3;
+  --color-secondary-300: #fda4af;
+  --color-secondary-400: #fb7185;
+  --color-secondary-500: #f43f5e;
+  --color-secondary-600: #e11d48;
+  --color-secondary-700: #be123c;
+  --color-secondary-800: #9f1239;
+  --color-secondary-900: #881337;
+  --color-secondary-950: #4c0519;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility stretched-link {
+  &::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    pointer-events: auto;
+    content: '';
+    background-color: rgba(0, 0, 0, 0);
+  }
+}
 
 /* Is this still in use? */
 
 @layer base {
   body {
-    @apply h-full m-0 flex flex-col min-h-screen antialiased text-gray-800 dark:text-gray-200 bg-gradient-to-tr from-stone-100 via-stone-200 to-orange-50 bg-gradient-to-r dark:from-gray-800 dark:via-gray-900 dark:to-gray-800;
+    @apply h-full m-0 flex flex-col min-h-screen antialiased text-gray-800 dark:text-gray-200 bg-linear-to-tr from-stone-100 via-stone-200 to-orange-50 bg-linear-to-r dark:from-gray-800 dark:via-gray-900 dark:to-gray-800;
   }
 
   main {
-    @apply flex-grow;
+    @apply grow;
   }
 
   h1 {
@@ -39,19 +108,5 @@
 
   blockquote {
     @apply text-xl italic font-semibold text-gray-900;
-  }
-}
-
-@layer utilities {
-  .stretched-link::after {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1;
-    pointer-events: auto;
-    content: '';
-    background-color: rgba(0, 0, 0, 0);
   }
 }

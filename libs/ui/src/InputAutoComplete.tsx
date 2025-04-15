@@ -92,9 +92,9 @@ export const InputAutoComplete = (props: InputAutoCompleteProps) => {
           </div>
         }
       </div>
-      <Popover className="ml-[-12px] max-h-60 w-[--trigger-width] overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black/5 entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out">
-        <ListBox className="outline-none">
-          {(item: AutoCompleteItem) => <ListBoxItem textValue={item.label} className="group flex items-center gap-2 cursor-default select-none py-2 pl-2 pr-4 outline-none rounded text-gray-900 focus:bg-sky-600 focus:text-white"
+      <Popover className="ml-[-12px] max-h-60 w-(--trigger-width) overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black/5 entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out">
+        <ListBox className="outline-hidden">
+          {(item: AutoCompleteItem) => <ListBoxItem textValue={item.label} className="group flex items-center gap-2 cursor-default select-none py-2 pl-2 pr-4 outline-hidden rounded-xs text-gray-900 focus:bg-sky-600 focus:text-white"
             id={item.id} key={item.id}>
             {props.itemRenderer ? props.itemRenderer(item) : item.label}
 

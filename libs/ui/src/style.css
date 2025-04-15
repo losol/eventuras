@@ -1,8 +1,75 @@
-@import url("https://use.typekit.net/iyw4txx.css");
+@import url('https://use.typekit.net/iyw4txx.css') layer(base);
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@custom-variant dark (@media (prefers-color-scheme: dark));
+
+@theme {
+  --font-*: initial;
+  --font-sans: 'source-sans-pro', sans-serif;
+  --font-serif: 'source-serif-pro', serif;
+  --font-mono: ui-monospace, Courier New, monospace;
+  --font-display: 'source-sans-pro', sans-serif;
+  --font-body: 'source-sans-pro', sans-serif;
+
+  --color-primary-50: #f5f7fa;
+  --color-primary-100: #eaeff4;
+  --color-primary-200: #d0dce7;
+  --color-primary-300: #a7bed2;
+  --color-primary-400: #779db9;
+  --color-primary-500: #5680a1;
+  --color-primary-600: #406280;
+  --color-primary-700: #37536d;
+  --color-primary-800: #31475b;
+  --color-primary-900: #2c3d4e;
+  --color-primary-950: #1d2834;
+  --color-primary: #406280;
+
+  --color-secondary-50: #fef2f3;
+  --color-secondary-100: #fde6e8;
+  --color-secondary-200: #fad1d6;
+  --color-secondary-300: #f7aab4;
+  --color-secondary-400: #f17b8b;
+  --color-secondary-500: #e74c66;
+  --color-secondary-600: #d63759;
+  --color-secondary-700: #b21e41;
+  --color-secondary-800: #951c3d;
+  --color-secondary-900: #801b39;
+  --color-secondary-950: #470a1b;
+  --color-secondary: d63759;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility stretched-link {
+  &::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    pointer-events: auto;
+    content: '';
+    background-color: rgba(0, 0, 0, 0);
+  }
+}
 
 @layer base {
   html {
@@ -10,11 +77,11 @@
   }
 
   body {
-    @apply h-full m-0 flex flex-col min-h-screen antialiased text-gray-800 dark:text-gray-200 bg-gradient-to-tr from-stone-100 via-stone-200 to-orange-50 bg-gradient-to-r dark:from-gray-800 dark:via-gray-900 dark:to-gray-800;
+    @apply h-full m-0 flex flex-col min-h-screen antialiased text-gray-800 dark:text-gray-200 bg-linear-to-tr from-stone-100 via-stone-200 to-orange-50 bg-linear-to-r dark:from-gray-800 dark:via-gray-900 dark:to-gray-800;
   }
 
   main {
-    @apply flex-grow;
+    @apply grow;
   }
 
   /* Headings */
@@ -44,7 +111,7 @@
   }
 
   pre {
-    @apply text-slate-800  bg-gray-100 border border-gray-300 rounded-md p-3 shadow-sm dark:text-primary-200 dark:bg-gray-800 dark:border-gray-600;
+    @apply text-slate-800  bg-gray-100 border border-gray-300 rounded-md p-3 shadow-xs dark:text-primary-200 dark:bg-gray-800 dark:border-gray-600;
   }
 }
 
@@ -60,19 +127,5 @@
   #eventdetails h3+p {
     margin-top: -1rem;
     padding-top: 0;
-  }
-}
-
-@layer utilities {
-  .stretched-link::after {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1;
-    pointer-events: auto;
-    content: '';
-    background-color: rgba(0, 0, 0, 0);
   }
 }

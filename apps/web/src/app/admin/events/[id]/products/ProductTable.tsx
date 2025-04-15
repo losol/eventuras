@@ -47,7 +47,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit }) 
         <div className="flex justify-center items-center">
           <Link
             href={`./products/${info.getValue()}`}
-            className="text-white bg-blue-500 hover:bg-blue-700 rounded  "
+            className="text-white bg-blue-500 hover:bg-blue-700 rounded-sm  "
             aria-label="View"
             {...{ [DATA_TEST_ID]: 'view-product-button' }}
           >
@@ -55,7 +55,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit }) 
           </Link>
           <button
             onClick={() => onEdit(info.row.original)}
-            className="text-white bg-blue-500 hover:bg-blue-700 rounded p-2"
+            className="text-white bg-blue-500 hover:bg-blue-700 rounded-sm p-2"
             aria-label="Edit"
             {...{ [DATA_TEST_ID]: 'edit-product-button' }}
           >

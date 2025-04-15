@@ -14,7 +14,7 @@ const styles = {
   menu: 'relative inline-block text-left',
   menuTrigger: 'inline-flex justify-center w-full px-4 py-2 text-sm',
   menuItemsList:
-    'w-56 origin-top-right divide-y divide-gray-400 bg-white dark:bg-slate-900 shadow-lg ring-1 ring-black/5 focus:outline-none',
+    'w-56 origin-top-right divide-y divide-gray-400 bg-white dark:bg-slate-900 shadow-lg ring-1 ring-black/5 focus:outline-hidden',
   menuItem:
     'cursor-pointer group flex w-full items-center px-2 py-3 hover:bg-primary-100 dark:hover:bg-primary-900 text-gray-900 dark:text-gray-100',
 };

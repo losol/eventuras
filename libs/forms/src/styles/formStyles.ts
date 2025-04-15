@@ -10,7 +10,7 @@ export const formStyles = {
         border-2
         dark:border-gray-700
         leading-tight
-        focus:outline-none
+        focus:outline-hidden
         focus:shadow-outline`,
   lightInputStyle: `
         appearance-none
@@ -20,7 +20,7 @@ export const formStyles = {
         text-black
         border-2
         dark:border-gray-400
-        focus:outline-none
+        focus:outline-hidden
         focus:shadow-outline`,
   inputDescription: 'text-gray-700 dark:text-gray-300 text-sm mb-2',
   inputErrorGlow: 'border border-red-500 shadow-outline-red',
