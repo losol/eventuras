@@ -11,7 +11,7 @@ interface FooterProps {
 const Footer = (props: FooterProps) => {
   return (
     <>
-      <footer className=" bg-white dark:bg-gray-900">
+      <footer className="p-3 bg-white dark:bg-gray-900">
         <div className="container py-8">
           <div className="md:flex md:justify-between">
             {props.siteTitle && (

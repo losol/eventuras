@@ -50,7 +50,7 @@ const EventDetails: React.FC<EventProps> = ({ eventinfo }) => {
           ))}
         </div>
 
-        <div className="flex-grow md:w-3/4">
+        <div className="grow md:w-3/4">
           {sections.map((section, index) => (
             <section key={index} id={section.id} className="mb-8">
               <Heading as="h2">{section.title}</Heading>

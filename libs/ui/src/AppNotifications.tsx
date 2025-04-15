@@ -30,7 +30,7 @@ const getNotificationClassName = (type: AppNotificationType) => {
     default:
       colorClass = 'bg-blue-500 text-white';
   }
-  return `m-2 p-4 rounded shadow-lg ${colorClass}`;
+  return `m-2 p-4 rounded-xs shadow-lg ${colorClass}`;
 };
 
 const AppNotifications: React.FC<AppNotificationsProps> = ({ appNotifications = [] }) => {

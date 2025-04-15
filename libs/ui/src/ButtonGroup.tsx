@@ -7,7 +7,7 @@ interface ButtonGroupProps {
 }
 
 const ButtonGroup: React.FC<ButtonGroupProps & BoxProps> = ({ children, ...spacingProps }) => {
-  const baseClassName = 'inline-flex rounded-md shadow-sm';
+  const baseClassName = 'inline-flex rounded-md shadow-2xs';
   const className = [baseClassName, spacingClassName(spacingProps)].join(' ');
 
   return (

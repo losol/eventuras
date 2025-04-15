@@ -31,7 +31,7 @@ interface TabsComponent extends React.FC<TabsProps> {
 const styles = {
   tabList: 'flex space-x-5 list-none overflow-x-auto border-b border-primary-500',
   tab: {
-    base: 'font-bold py-2 px-1 cursor-pointer focus:outline-none',
+    base: 'font-bold py-2 px-1 cursor-pointer focus:outline-hidden',
     selected: 'text-primary-500 dark:text-primary-400 border-b-4 border-primary-800',
     notSelected: 'text-gray-500 dark:text-gray-400',
   },

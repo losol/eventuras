@@ -24,7 +24,7 @@ const Badge: React.FC<BadgeProps> = ({
 
   return (
     <span
-      className={`${blockClass} px-2 py-1 text-xs font-semibold leading-none text-white rounded ${variantClasses[variant]} ${className}`}
+      className={`${blockClass} px-2 py-1 text-xs font-semibold leading-none text-white rounded-xs ${variantClasses[variant]} ${className}`}
     >
       {children}
     </span>

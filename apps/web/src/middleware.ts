@@ -38,11 +38,7 @@ export async function middleware(request: NextRequest) {
               secure: process.env.NODE_ENV === 'production',
             });
           } catch (error) {
-            Logger.error(
-              { namespace: 'eventuras:middleware' },
-              'Error refreshing session:',
-              error
-            );
+            Logger.error({ namespace: 'eventuras:middleware' }, 'Error refreshing session:', error);
             response.cookies.delete('session');
           }
         }

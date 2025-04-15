@@ -76,7 +76,7 @@ const Drawer: DrawerComponent = (props: DrawerProps) => {
     <Portal isOpen={props.isOpen} clickOutside={props.onCancel}>
       <div
         id="backdrop"
-        className="fixed top-0 left-0 bg-cover z-10 w-screen h-screen backdrop-blur-sm"
+        className="fixed top-0 left-0 bg-cover z-10 w-screen h-screen backdrop-blur-xs"
       />
       <section
         {...ariaHiddenProps}
@@ -114,7 +114,7 @@ const Header: React.FC<HeaderProps> = (props) => {
 
 // Body component
 const Body: React.FC<BodyProps> = (props) => (
-  <div role="main" className={`flex-grow ${props.className || ''}`}>
+  <div role="main" className={`grow ${props.className || ''}`}>
     {props.children}
   </div>
 );
