@@ -10,10 +10,9 @@
       "import": "./dist/eventuras-ui.es.js",
       "types": "./dist/index.d.ts"
     },
-    "./style.css": {
-      "import": "./dist/style.css"
-    }
+    "./ui.css": "./dist/ui.css"
   },
+  "style": "dist/ui.css",
   "files": [
     "dist"
   ],
@@ -24,7 +23,6 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build:css": "tailwindcss -i ./src/styles/tailwind.css -o ./dist/styles.css",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build"
   },

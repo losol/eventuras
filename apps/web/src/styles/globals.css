@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@source "@eventuras/ui";
+@import '@eventuras/ui/ui.css';
 @source inline("md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4");
 
 @plugin 'tailwindcss-react-aria-components';
@@ -37,24 +37,6 @@
   --color-secondary-800: #9f1239;
   --color-secondary-900: #881337;
   --color-secondary-950: #4c0519;
-}
-
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
-@layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentcolor);
-  }
 }
 
 @utility stretched-link {
