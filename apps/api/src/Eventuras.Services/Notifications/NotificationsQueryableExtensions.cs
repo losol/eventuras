@@ -70,8 +70,7 @@ internal static class NotificationsQueryableExtensions
 
         if (options.LoadRecipients)
         {
-            query = query.Include(n => n.Recipients)
-                .ThenInclude(r => r.RecipientUser);
+            query = query.Include(n => n.Recipients);
         }
 
         if (options.LoadSender)

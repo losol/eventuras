@@ -1,15 +1,9 @@
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
-using Losol.Communication.Email;
-using Losol.Communication.Sms;
-using Markdig;
+using Eventuras.Services.Notifications;
 using Microsoft.Extensions.Logging;
-using NodaTime;
-
-namespace Eventuras.Services.Notifications;
 
 internal class NotificationDeliveryService : INotificationDeliveryService
 {
@@ -32,7 +26,7 @@ internal class NotificationDeliveryService : INotificationDeliveryService
             new ArgumentNullException(nameof(notificationManagementService));
     }
 
-    public async Task SendNotificationAsync(
+    public async Task QueueNotificationAsync(
         Notification notification,
         bool accessControlDone = false,
         CancellationToken cancellationToken = default)
@@ -41,26 +35,12 @@ internal class NotificationDeliveryService : INotificationDeliveryService
             notification.Type, notification.NotificationId,
             notification.Recipients.Count);
 
-
-        notification.Status = NotificationStatus.Started;
-        await _notificationManagementService.UpdateNotificationAsync(notification);
-
         if (!accessControlDone)
         {
             await _notificationAccessControlService.CheckNotificationUpdateAccessAsync(notification, cancellationToken);
         }
 
-        foreach (var recipient in notification.Recipients)
-        {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                notification.Status = NotificationStatus.Cancelled;
-                await _notificationManagementService.UpdateNotificationAsync(notification);
-                return;
-            }
-
-            Hangfire.BackgroundJob.Enqueue<NotificationBackgroundService>("notifications_queue",
-                x => x.SendNotificationToRecipientAsync(recipient.RecipientId, true));
-        }
+        notification.Status = NotificationStatus.Queued;
+        await _notificationManagementService.UpdateNotificationAsync(notification);
     }
 }

@@ -12,8 +12,9 @@ internal static class NotificationsServiceCollectionExtensions
         services.AddTransient<INotificationAccessControlService, NotificationAccessControlService>();
         services.AddTransient<INotificationStatisticsService, NotificationStatisticsService>();
         services.AddTransient<INotificationRecipientRetrievalService, NotificationRecipientRetrievalService>();
-        services.AddTransient<INotificationRecipientAccessControlService,
-            NotificationRecipientAccessControlService>();
+        services.AddTransient<INotificationRecipientAccessControlService, NotificationRecipientAccessControlService>();
+        services.AddTransient<INotificationBackgroundService, NotificationBackgroundService>();
+
         return services;
     }
 }

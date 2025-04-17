@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,7 +37,6 @@ internal class NotificationRetrievalService : INotificationRetrievalService
                                .FirstOrDefaultAsync(cancellationToken) ??
                            throw new NotFoundException($"Notification {id} not found");
 
-
         if (!accessControlDone)
         {
             if (options?.ForUpdate == true)
@@ -52,6 +52,45 @@ internal class NotificationRetrievalService : INotificationRetrievalService
         }
 
         return notification;
+    }
+
+    public async Task<List<Notification>> GetNotificationsByStatusAsync(IEnumerable<NotificationStatus> statuses,
+        NotificationRetrievalOptions options = null,
+        bool accessControlDone = false,
+        CancellationToken cancellationToken = default)
+    {
+        var notifications = await _context.Notifications
+                                .WithOptions(options ?? new NotificationRetrievalOptions())
+                                .Where(n => statuses.Contains(n.Status))
+                                .ToListAsync(cancellationToken);
+
+        if (notifications?.Count == 0)
+        {
+            throw new NotFoundException($"Notifications with statuses [{string.Join(", ", statuses)}] not found");
+        }
+
+        if (!accessControlDone)
+        {
+            try
+            {
+                if (options?.ForUpdate == true)
+                {
+                    await _notificationAccessControlService
+                        .CheckNotificationsUpdateAccessAsync(notifications, cancellationToken);
+                }
+                else
+                {
+                    await _notificationAccessControlService
+                        .CheckNotificationsReadAccessAsync(notifications, cancellationToken);
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                throw new NotFoundException($"Notifications with statuses [{string.Join(", ", statuses)}] not found");
+            }
+        }
+
+        return notifications;
     }
 
     public async Task<Paging<Notification>> ListNotificationsAsync(

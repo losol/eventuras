@@ -11,7 +11,6 @@ using Eventuras.Services.Events.Products;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Notifications;
 using Eventuras.Services.Registrations;
-using Eventuras.Services.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -20,7 +19,7 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications;
 
 [ApiController]
 [ApiVersion("3")]
-[Authorize(Policy = Constants.Auth.AdministratorRole)]
+
 [Route("v{version:apiVersion}/notifications")]
 public class NotificationsQueueingController : ControllerBase
 {
@@ -46,8 +45,8 @@ public class NotificationsQueueingController : ControllerBase
 
     [HttpPost("email")]
     public async Task<ActionResult<NotificationDto>> SendEmail(
-  EmailNotificationDto dto,
-  CancellationToken cancellationToken)
+          EmailNotificationDto dto,
+          CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Starting to process email notification. Subject: {dto.Subject}, Number of Recipients: {dto.Recipients?.Length ?? 0}");
         _logger.LogInformation(JsonSerializer.Serialize(dto));
@@ -75,7 +74,7 @@ public class NotificationsQueueingController : ControllerBase
                     eventFilter.RegistrationStatuses,
                     eventFilter.RegistrationTypes);
             await _notificationDeliveryService
-                 .SendNotificationAsync(emailNotification, cancellationToken: cancellationToken);
+                 .QueueNotificationAsync(emailNotification, cancellationToken: cancellationToken);
             return Ok(new NotificationDto(emailNotification));
         }
 
@@ -86,10 +85,9 @@ public class NotificationsQueueingController : ControllerBase
                     dto.Subject,
                     dto.BodyMarkdown,
                     orgId.Value,
-                    dto.Recipients
-                    );
+                    dto.Recipients);
             await _notificationDeliveryService
-               .SendNotificationAsync(emailNotification, cancellationToken: cancellationToken);
+                .QueueNotificationAsync(emailNotification, cancellationToken: cancellationToken);
 
             return Ok(new NotificationDto(emailNotification));
         }
@@ -105,21 +103,7 @@ public class NotificationsQueueingController : ControllerBase
                     dto.BodyMarkdown,
                     registration);
             await _notificationDeliveryService
-                .SendNotificationAsync(emailNotification, cancellationToken: cancellationToken);
-
-            return Ok(new NotificationDto(emailNotification));
-        }
-
-        if (dto.Recipients != null && dto.Recipients.Any())
-        {
-            emailNotification = await _notificationManagementService
-                .CreateEmailNotificationAsync(
-                    dto.Subject,
-                    dto.BodyMarkdown,
-                    orgId.Value,
-                    dto.Recipients);
-            await _notificationDeliveryService
-                .SendNotificationAsync(emailNotification, cancellationToken: cancellationToken);
+                .QueueNotificationAsync(emailNotification, cancellationToken: cancellationToken);
 
             return Ok(new NotificationDto(emailNotification));
         }
@@ -155,7 +139,7 @@ public class NotificationsQueueingController : ControllerBase
 
 
         await _notificationDeliveryService
-            .SendNotificationAsync(smsNotification, cancellationToken: cancellationToken);
+            .QueueNotificationAsync(smsNotification, cancellationToken: cancellationToken);
 
         return Ok();
     }

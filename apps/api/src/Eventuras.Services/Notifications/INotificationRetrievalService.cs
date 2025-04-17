@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
@@ -9,6 +10,13 @@ public interface INotificationRetrievalService
     /// <exception cref="Exceptions.NotFoundException">Notification not found by its id</exception>
     /// <exception cref="Exceptions.NotAccessibleException">Cannot access notification by id</exception>
     Task<Notification> GetNotificationByIdAsync(int id,
+        NotificationRetrievalOptions options = default,
+        bool accessControlDone = false,
+        CancellationToken cancellationToken = default);
+
+    /// <exception cref="Exceptions.NotFoundException">Notifications not found by its status</exception>
+    /// <exception cref="Exceptions.NotAccessibleException">Cannot access some notification by status</exception>
+    Task<List<Notification>> GetNotificationsByStatusAsync(IEnumerable<NotificationStatus> status,
         NotificationRetrievalOptions options = default,
         bool accessControlDone = false,
         CancellationToken cancellationToken = default);

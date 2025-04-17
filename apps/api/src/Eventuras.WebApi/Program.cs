@@ -17,6 +17,7 @@ using Eventuras.WebApi.Filters;
 using Hangfire;
 using Hangfire.Dashboard;
 using Hangfire.InMemory;
+using Humanizer.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -31,6 +32,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
+using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -101,7 +103,6 @@ apiVersioningBuilder.AddApiExplorer(o =>
     o.SubstituteApiVersionInUrl = true;
 });
 
-
 builder.Services.ConfigureIdentity();
 
 builder.Services.AddHangfire(configuration => configuration
@@ -111,11 +112,31 @@ builder.Services.AddHangfire(configuration => configuration
     .UseInMemoryStorage(new InMemoryStorageOptions { MaxExpirationTime = TimeSpan.FromHours(24) })
 );
 
-
 builder.Services.AddHangfireServer(options =>
 {
-    options.WorkerCount = 2;
-    options.Queues = new[] { "notifications_queue", "certificates_queue" };
+    options.WorkerCount = 1;
+    options.Queues = ["certificates_queue"];
+});
+
+builder.Services.AddQuartz(config =>
+{
+    config.SchedulerName = "EventurasScheduler";
+    config.UseInMemoryStore();
+
+    var interval = builder.Configuration.GetSection($"Quartz:Jobs:{nameof(NotificationJob)}:IntervalInMinutes").Get<int>();
+
+    var jobKey = new JobKey(nameof(NotificationJob));
+    config.AddJob<NotificationJob>(opts => opts.WithIdentity(jobKey));
+
+    config.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity($"{nameof(NotificationJob)}Trigger")
+        .WithSimpleSchedule(x => x.WithIntervalInSeconds(interval).RepeatForever()));
+});
+
+builder.Services.AddQuartzHostedService(options =>
+{
+    options.WaitForJobsToComplete = true;
 });
 
 builder.Services.AddScoped<NotificationBackgroundService>();
