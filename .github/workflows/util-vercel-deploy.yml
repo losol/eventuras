@@ -46,6 +46,12 @@ on:
         required: false
       TURBO_TEAM:
         required: false
+      AUTH0_CLIENT_ID:
+        required: false
+      AUTH0_CLIENT_SECRET:
+        required: false
+      SESSION_SECRET:
+        required: false
 
 jobs:
   deploy:
