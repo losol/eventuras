@@ -117,7 +117,7 @@ jobs:
 
       - name: Set Custom URL
         if: ${{ inputs.url }}
-        run: vercel alias --token=${{ secrets.vercel_token }} set "$url" ${{ inputs.url }}
+        run: vercel alias --token=${{ secrets.vercel_token }} --scope=${{ secrets.VERCEL_ORG_ID }} set "$url" ${{ inputs.url }}
 
       - name: Promote
         if: ${{ inputs.promote }}
