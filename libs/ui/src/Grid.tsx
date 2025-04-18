@@ -1,3 +1,5 @@
+import React from 'react';
+
 interface GridProps {
   cols?: {
     sm?: number;
@@ -10,17 +12,33 @@ interface GridProps {
   children: React.ReactNode;
 }
 
-const Grid: React.FC<GridProps> = ({ paddingClassName, wrapperClassName, container, children }) => {
-  const containerClass = container ? 'container ' : '';
-  const additionalClasses = paddingClassName || '';
+const getGridCols = (cols?: GridProps['cols']) => {
+  if (!cols) return '';
+  return [
+    cols.sm ? `sm:grid-cols-${cols.sm}` : '',
+    cols.md ? `md:grid-cols-${cols.md}` : '',
+    cols.lg ? `lg:grid-cols-${cols.lg}` : '',
+  ].join(' ');
+};
 
-  return wrapperClassName ? (
-    <div className={wrapperClassName}>
-      <div className={`grid md:grid-cols-2 lg:grid-cols-3 gap-2 ${containerClass} ${additionalClasses}`}>{children}</div>
+const Grid: React.FC<GridProps> = ({
+  cols = { md: 2, lg: 3 },
+  paddingClassName,
+  wrapperClassName,
+  container,
+  children
+}) => {
+  const containerClass = container ? 'container' : '';
+  const additionalClasses = paddingClassName || '';
+  const gridCols = getGridCols(cols);
+
+  const content = (
+    <div className={`grid ${gridCols} gap-2 ${containerClass} ${additionalClasses}`}>
+      {children}
     </div>
-  ) : (
-    <div className={`grid md:grid-cols-2 lg:grid-cols-3 gap-2   ${containerClass} ${additionalClasses}`}>{children}</div>
   );
+
+  return wrapperClassName ? <div className={wrapperClassName}>{content}</div> : content;
 };
 
 export default Grid;

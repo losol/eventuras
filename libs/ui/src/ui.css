@@ -1,18 +1,24 @@
 @import 'tailwindcss';
-@import '@eventuras/ui/ui.css';
-@source inline("md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4");
-
 @plugin 'tailwindcss-react-aria-components';
+@source inline("md:grid-cols-2 lg:grid-cols-3 gap-2");
+@import url('https://use.typekit.net/iyw4txx.css') layer(base);
 
 @custom-variant dark (@media (prefers-color-scheme: dark));
 
+
 @theme {
   --font-*: initial;
-  --font-sans: source-sans-pro, sans-serif;
-  --font-serif: source-serif-pro, serif;
-  --font-mono: ui-monospace, Courier New, monospace;
-  --font-display: source-sans-pro, sans-serif;
-  --font-body: source-sans-pro, sans-serif;
+  --font-sans: source-sans-pro,
+  sans-serif;
+  --font-serif: source-serif-pro,
+  serif;
+  --font-mono: ui-monospace,
+  Courier New,
+  monospace;
+  --font-display: source-sans-pro,
+  sans-serif;
+  --font-body: source-sans-pro,
+  sans-serif;
 
   --color-primary-50: #f0f9ff;
   --color-primary-100: #e0f2fe;
