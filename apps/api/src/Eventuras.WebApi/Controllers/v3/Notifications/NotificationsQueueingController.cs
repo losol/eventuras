@@ -19,7 +19,7 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications;
 
 [ApiController]
 [ApiVersion("3")]
-
+[Authorize(Policy = Constants.Auth.AdministratorRole)]
 [Route("v{version:apiVersion}/notifications")]
 public class NotificationsQueueingController : ControllerBase
 {

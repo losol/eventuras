@@ -120,7 +120,7 @@ builder.Services.AddHangfireServer(options =>
 
 builder.Services.AddQuartz(config =>
 {
-    config.SchedulerName = "EventurasScheduler";
+    config.SchedulerName = "Eventuras.NotificationScheduler";
     config.UseInMemoryStore();
 
     var interval = builder.Configuration.GetSection($"Quartz:Jobs:{nameof(NotificationJob)}:IntervalInMinutes").Get<int>();
