@@ -131,7 +131,7 @@ builder.Services.AddQuartz(config =>
     config.AddTrigger(opts => opts
         .ForJob(jobKey)
         .WithIdentity($"{nameof(NotificationJob)}Trigger")
-        .WithSimpleSchedule(x => x.WithIntervalInSeconds(interval).RepeatForever()));
+        .WithSimpleSchedule(x => x.WithIntervalInMinutes(interval).RepeatForever()));
 });
 
 builder.Services.AddQuartzHostedService(options =>
