@@ -1,5 +1,4 @@
-import '@eventuras/ui/style.css';
-import '@/styles/globals.css';
+import '@eventuras/ui/ui.css';
 
 import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
