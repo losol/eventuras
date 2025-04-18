@@ -22,7 +22,7 @@ export async function getAccessToken(): Promise<string | null> {
   }
 
   // Get the current session using our helper. This function only reads cookies.
-  let session = await getCurrentSession(oauthConfig);
+  const session = await getCurrentSession(oauthConfig);
   if (!session || !session.tokens?.accessToken) {
     return null;
   }

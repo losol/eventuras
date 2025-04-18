@@ -57,7 +57,7 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
     eventuras.eventCollection.getV3Eventcollections1({ id: params.id })
   );
 
-  let notFound = !result.ok || !result.value;
+  const notFound = !result.ok || !result.value;
 
   if (notFound)
     return (

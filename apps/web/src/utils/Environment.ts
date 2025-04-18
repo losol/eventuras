@@ -1,5 +1,3 @@
-/* eslint-disable no-process-env */
-
 import { PHASE_PRODUCTION_BUILD } from 'next/dist/shared/lib/constants';
 
 /**
