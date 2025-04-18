@@ -44,8 +44,9 @@ async function forwarder(request: NextRequest) {
     return NextResponse.json({ error: 'Request body needs to be JSON' });
   });
 
-  let contentType = request.method === 'PATCH' ? 'application/json-patch+json' : 'application/json';
-  let forwardAccept = hasAcceptHeaders ? { Accept: acceptHeaders! } : null;
+  const contentType =
+    request.method === 'PATCH' ? 'application/json-patch+json' : 'application/json';
+  const forwardAccept = hasAcceptHeaders ? { Accept: acceptHeaders! } : null;
   const token = await getAccessToken();
   const fResponse = await fetch(forwardUrl, {
     method: request.method,

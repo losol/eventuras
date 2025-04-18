@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "End to end tests for the Eventuras frontend",
   "main": "index.js",
+  "type": "module",
   "private": "true",
   "scripts": {
     "lint": "eslint .",
@@ -16,7 +17,7 @@
     "eventuras"
   ],
   "dependencies": {
-    "@playwright/test": "1.51.1",
+    "@playwright/test": "1.52.0",
     "dotenv": "16.5.0"
   },
   "readme": "README.md"

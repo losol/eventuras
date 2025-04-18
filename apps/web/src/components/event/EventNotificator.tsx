@@ -44,9 +44,9 @@ const getBodyDto = (
   data: EventEmailerFormValues | EventSMSFormValues
 ): EmailNotificationDto | SmsNotificationDto => {
   //type juggling... Converts { Status:true, Status2:true, Status3:false} to [Status,Status2]
-  const statuses = data.registrationStatus as Object;
+  const statuses = data.registrationStatus as object;
   const regStatusList = Object.keys(statuses).filter(
-    (key: string) => statuses[key as keyof Object] as any
+    (key: string) => statuses[key as keyof object] as any
   );
 
   const registrationStatuses = regStatusList.reduce(
@@ -58,9 +58,9 @@ const getBodyDto = (
     []
   );
   //type juggling... Converts { Status:true, Status2:true, Status3:false} to [Status,Status2]
-  const tps = data.registrationTypes as Object;
+  const tps = data.registrationTypes as object;
   const registrationTypes = Object.keys(tps).filter(
-    (key: string) => tps[key as keyof Object] as any
+    (key: string) => tps[key as keyof object] as any
   );
 
   if ('subject' in data) {
@@ -151,7 +151,7 @@ export default function EventNotificator({
   onClose,
   notificatorType,
 }: EventNotificatorProps) {
-  let formHook:
+  const formHook:
     | UseFormReturn<EventSMSFormValues, any, EventSMSFormValues>
     | UseFormReturn<EventEmailerFormValues, any, EventEmailerFormValues> = useForm();
 

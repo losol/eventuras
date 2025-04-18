@@ -1,5 +1,3 @@
-/* eslint-disable no-process-env */
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 

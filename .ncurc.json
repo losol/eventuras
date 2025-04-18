@@ -1,4 +1,3 @@
 {
-  "upgrade": true,
-  "reject": ["eslint, lexical"]
+  "reject": ["lexical", "@lexical/link", "@lexical/markdown", "@lexical/react"]
 }

@@ -6,7 +6,7 @@
     "@eventuras/forms": "*",
     "@eventuras/ui": "*",
     "@tanstack/match-sorter-utils": "^8.19.4",
-    "@tanstack/react-table": "^8.21.2"
+    "@tanstack/react-table": "^8.21.3"
   },
   "peerDependencies": {
     "react": "^19.1.0",
