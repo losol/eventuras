@@ -9,6 +9,7 @@ import { Hero } from '@/heros/Hero';
 import PageClient from './page.client';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
 import { PagesSelect } from '@/payload-types';
+import Link from 'next/link';
 
 // Read locales and default locale from environment variables, fallback to 'en'
 const locales = process.env.CMS_LOCALES?.split(',') || ['en'];
@@ -115,7 +116,7 @@ export default async function Page({ params: paramsPromise }: Args) {
           <nav aria-label="breadcrumb" className="mb-4">
             <ol className="breadcrumb flex">
               <li className="breadcrumb-item">
-                <a href="/">Home</a>
+                <Link href="/">Home</Link>
               </li>
               {breadcrumbs.map((breadcrumb, index) => (
                 <li key={breadcrumb.id || index} className="breadcrumb-item flex items-center">
@@ -123,7 +124,7 @@ export default async function Page({ params: paramsPromise }: Args) {
                   {index === breadcrumbs.length - 1 ? (
                     <span>{breadcrumb.label}</span>
                   ) : (
-                    <a href={breadcrumb.url!}>{breadcrumb.label}</a>
+                    <Link href={breadcrumb.url!}>{breadcrumb.label}</Link>
                   )}
                 </li>
               ))}

@@ -24,11 +24,15 @@ export const Card: React.FC<{
   // the first part of the pathname is the locale
   const locale = usePathname().split('/')[1]
 
+  if (!doc || !doc?.slug) {
+    return null
+  }
+
   const href = getDocUrl({
     locale,
     collection: relationTo!,
-    resourceId: doc?.resourceId!,
-    slug: doc?.slug!,
+    resourceId: doc?.resourceId,
+    slug: doc?.slug,
   });
 
   return (
