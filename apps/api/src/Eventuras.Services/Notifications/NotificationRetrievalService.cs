@@ -64,11 +64,6 @@ internal class NotificationRetrievalService : INotificationRetrievalService
                                 .Where(n => statuses.Contains(n.Status))
                                 .ToListAsync(cancellationToken);
 
-        if (notifications?.Count == 0)
-        {
-            throw new NotFoundException($"Notifications with statuses [{string.Join(", ", statuses)}] not found");
-        }
-
         if (!accessControlDone)
         {
             try

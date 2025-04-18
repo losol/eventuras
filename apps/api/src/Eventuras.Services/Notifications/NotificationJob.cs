@@ -68,6 +68,7 @@ public class NotificationJob : IJob
             }
             else
             {
+                _logger.LogInformation("Notification #{NotificationId} has no recipients", notification.NotificationId);
                 notification.Status = NotificationStatus.Failed;
             }
 
