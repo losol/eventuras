@@ -23,9 +23,9 @@
   },
   "sideEffects": false,
   "scripts": {
-    "lint": "eslint --cache --max-warnings=0 src",
-    "build:mcp": "bun src/mcp-server/build.mts",
-    "build": "npm run build:mcp && tshy",
+    "linter": "eslint --cache --max-warnings=0 src",
+    "builder:mcp": "bun src/mcp-server/build.mts",
+    "builder": "npm run builder:mcp && tshy",
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
