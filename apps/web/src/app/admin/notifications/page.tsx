@@ -1,5 +1,5 @@
 import { NotificationDto } from '@eventuras/sdk';
-import { Container, Heading, Section, Text } from '@eventuras/ui';
+import { Container, Heading, Section, Text } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/utils';
 
 import Card from '@/components/Card';

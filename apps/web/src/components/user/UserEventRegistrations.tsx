@@ -1,5 +1,5 @@
 import { RegistrationDto } from '@eventuras/sdk';
-import { Grid, Heading } from '@eventuras/ui';
+import { Grid, Heading } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 import { ReactElement } from 'react';
 

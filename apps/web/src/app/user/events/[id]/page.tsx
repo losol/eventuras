@@ -1,4 +1,4 @@
-import { Heading } from '@eventuras/ui';
+import { Heading } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
 import React from 'react';
 

@@ -6,7 +6,7 @@
     "@eventuras/forms": "*",
     "@eventuras/scribo": "*",
     "@eventuras/smartform": "*",
-    "@eventuras/ui": "*"
+    "@eventuras/ratio-ui": "*"
   },
   "peerDependencies": {
     "react": "^19.1.0",

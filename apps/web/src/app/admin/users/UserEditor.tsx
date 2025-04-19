@@ -3,7 +3,7 @@
 import { Fieldset } from '@eventuras/forms';
 import { UserDto, UserFormDto } from '@eventuras/sdk';
 import { Form, Input } from '@eventuras/smartform';
-import { Button } from '@eventuras/ui';
+import { Button } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 import { FC, useState } from 'react';

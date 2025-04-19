@@ -2,7 +2,7 @@
 
 import { EventCollectionCreateDto } from '@eventuras/sdk';
 import { Form, HiddenInput, Input } from '@eventuras/smartform';
-import { Button } from '@eventuras/ui';
+import { Button } from '@eventuras/ratio-ui';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';

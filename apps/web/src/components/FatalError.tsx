@@ -1,4 +1,4 @@
-import { Heading, Section } from '@eventuras/ui';
+import { Heading, Section } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
 
 import { SiteInfo } from '@/utils/site/getSiteSettings';

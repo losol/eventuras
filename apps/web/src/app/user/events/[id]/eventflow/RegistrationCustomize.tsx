@@ -1,7 +1,7 @@
 'use client';
 
 import { ProductDto } from '@eventuras/sdk';
-import { Button } from '@eventuras/ui';
+import { Button } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';

@@ -1,5 +1,13 @@
 import { OrderDto, OrderStatus } from '@eventuras/sdk';
-import { Badge, Definition, DescriptionList, Heading, Item, Section, Term } from '@eventuras/ui';
+import {
+  Badge,
+  Definition,
+  DescriptionList,
+  Heading,
+  Item,
+  Section,
+  Term,
+} from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 
 import Card from '@/components/Card';

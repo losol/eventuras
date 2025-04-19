@@ -3,8 +3,8 @@
     "compilerOptions": {
     "paths": {
       "@/utils/*":["../../apps/web/src/utils/*"],
-      "@eventuras/ui":["../../libs/ui/src"],
-      "@eventuras/ui/*":["../../libs/ui/src/*"],
+      "@eventuras/ratio-ui":["../../libs/ratio-ui/src"],
+      "@eventuras/ratio-uitio-ui/*":["../../libs/ratio-ui/src/*"],
     },
   },
   "include": ["src", "../../apps/web/src/components/eventuras/UserLookup.tsx"],

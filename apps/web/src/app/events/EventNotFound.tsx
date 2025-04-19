@@ -1,6 +1,6 @@
 'use client';
 
-import { Heading, Text } from '@eventuras/ui';
+import { Heading, Text } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 
 import Link from '@/components/Link';

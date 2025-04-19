@@ -1,5 +1,5 @@
 import { EventDto, EventInfoStatus } from '@eventuras/sdk';
-import { Badge } from '@eventuras/ui';
+import { Badge } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
 import { getTranslations } from 'next-intl/server';
 

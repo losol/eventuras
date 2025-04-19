@@ -1,6 +1,6 @@
 import Markdown from 'markdown-to-jsx';
 
-import { Heading, Text} from '@eventuras/ui';
+import { Heading, Text} from '@eventuras/ratio-ui';
 
 export type MarkdownContentProps = {
   markdown?: string | null | undefined;

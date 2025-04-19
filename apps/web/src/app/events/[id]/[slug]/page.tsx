@@ -1,5 +1,5 @@
 import { EventInfoStatus } from '@eventuras/sdk';
-import { Container, Heading, Text } from '@eventuras/ui';
+import { Container, Heading, Text } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/utils';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';

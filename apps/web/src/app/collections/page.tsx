@@ -1,5 +1,5 @@
 import { MarkdownContent } from '@eventuras/markdown';
-import { Heading, Section, Text } from '@eventuras/ui';
+import { Heading, Section, Text } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
 
 import Card from '@/components/Card';

@@ -1,7 +1,7 @@
 'use client';
 
 import { ProductDto, RegistrationDto } from '@eventuras/sdk';
-import { Button } from '@eventuras/ui';
+import { Button } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';

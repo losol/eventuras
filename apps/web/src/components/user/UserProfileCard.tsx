@@ -1,7 +1,7 @@
 'use client';
 
 import { UserDto } from '@eventuras/sdk';
-import { Definition, DescriptionList, Item, Term } from '@eventuras/ui';
+import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 
 import Card from '@/components/Card';

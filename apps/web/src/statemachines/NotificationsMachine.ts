@@ -1,5 +1,5 @@
 // notificationsMachine.ts
-import { AppNotification } from '@eventuras/ui';
+import { AppNotification } from '@eventuras/ratio-ui';
 import { createActorContext } from '@xstate/react';
 import { assign, setup } from 'xstate';
 

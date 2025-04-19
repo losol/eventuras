@@ -1,4 +1,4 @@
-import { Heading } from '@eventuras/ui';
+import { Heading } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
 import { Overlay } from '@react-aria/overlays';
 import React, { ReactNode } from 'react';

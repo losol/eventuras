@@ -1,4 +1,4 @@
-import { Container, Heading } from '@eventuras/ui';
+import { Container, Heading } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
 
 import Card from '@/components/Card';

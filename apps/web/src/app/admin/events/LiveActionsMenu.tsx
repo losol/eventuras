@@ -1,7 +1,7 @@
 'use client';
 
 import { ApiError, RegistrationDto, RegistrationStatus } from '@eventuras/sdk';
-import { Button } from '@eventuras/ui';
+import { Button } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/utils';
 import { IconCircleX } from '@tabler/icons-react';
 import { useState } from 'react';

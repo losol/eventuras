@@ -1,6 +1,6 @@
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import type { ProductDto } from '@eventuras/sdk';
-import { Badge } from '@eventuras/ui';
+import { Badge } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
 import { IconEye, IconPencil } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';

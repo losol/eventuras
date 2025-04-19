@@ -16,7 +16,7 @@ import {
   Item,
   Section,
   Term,
-} from '@eventuras/ui';
+} from '@eventuras/ratio-ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';

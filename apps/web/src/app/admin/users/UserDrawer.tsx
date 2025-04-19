@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Drawer } from '@eventuras/ui';
+import { Button, Drawer } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 

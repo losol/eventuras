@@ -4,8 +4,8 @@
     "paths": {
       "@eventuras/forms":["../forms/src/*"],
       "@eventuras/forms/*":["../forms/src/*"],
-      "@eventuras/ui":["../ui/src"],
-      "@eventuras/ui/*":["../ui/src/*"],
+      "@eventuras/ratio-ui":["../ui/src"],
+      "@eventuras/ratio-uitio-ui/*":["../ui/src/*"],
     },
   },
   "include": ["src", "../forms/src/Fieldset.tsx", "../forms/src/formStyles.ts", "../forms/src/Label.tsx", "../forms/src/inputs/InputProps.ts", "../markdown/src/MarkdownInput.tsx"],
