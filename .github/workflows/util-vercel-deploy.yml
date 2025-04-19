@@ -117,7 +117,13 @@ jobs:
 
       - name: Set Custom URL
         if: ${{ inputs.url }}
-        run: vercel alias --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ secrets.VERCEL_ORG_ID }} set "$url" ${{ inputs.url }}
+        run: |
+          if [ -z "$DEPLOY_URL" ]; then
+            echo "Missing DEPLOY_URL – cannot alias."
+            exit 1
+          fi
+          echo "Alias from $DEPLOY_URL to ${{ inputs.url }}"
+          vercel alias --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ secrets.VERCEL_ORG_ID }} set "$DEPLOY_URL" "${{ inputs.url }}"
 
       - name: Promote
         if: ${{ inputs.promote }}
