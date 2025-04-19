@@ -1,5 +1,5 @@
 import { DATA_TEST_ID } from '@eventuras/utils';
-import { Portal } from '.';
+import { Portal } from '../..';
 
 export enum AppNotificationType {
   SUCCESS = 'success',

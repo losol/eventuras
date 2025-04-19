@@ -1,4 +1,4 @@
-import '@eventuras/ratio-ui/ui.css';
+import '@eventuras/ratio-ui/ratio-ui.css';
 
 import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';

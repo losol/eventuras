@@ -1,8 +1,8 @@
 import { DATA_TEST_ID } from '@eventuras/utils';
 import React from 'react';
 
-import { BoxProps, spacingClassName } from '../../../../libs/ratio-ui/src/Box';
-import { buttonStyles } from '../../../../libs/ratio-ui/src/Button';
+import { BoxProps, spacingClassName } from '../../../../libs/ratio-ui/src/layout/Box/Box';
+import { buttonStyles } from '../../../../libs/ratio-ui/src/core/Button/Button';
 
 export interface LinkProps {
   href: string;

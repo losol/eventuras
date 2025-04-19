@@ -1,5 +1,5 @@
 /**
- * Vite configuration for Eventuras UI library.
+ * Vite configuration for Eventuras UI library (ES-only build).
  */
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
@@ -9,44 +9,37 @@ import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
-// With lots of inspiration from https://dev.to/receter/how-to-create-a-react-component-library-using-vites-library-mode-4lma
 export default defineConfig({
   plugins: [
     react(),
+    tailwindcss(),
     dts({
       entryRoot: 'src',
+      outDir: 'dist',
+      include: ['src'],
+      copyDtsFiles: true,
+      rollupTypes: true,
     }),
-    tailwindcss(),
   ],
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src'),
+    },
+  },
   build: {
     lib: {
       entry: 'src/index.ts',
       formats: ['es'],
-      name: 'EventurasUI',
-      fileName: (format) => `eventuras-ui.${format}.js`
+      fileName: () => 'ratio-ui.es.js',
     },
     rollupOptions: {
       external: ['react', 'react-dom', 'react/jsx-runtime'],
-
       input: Object.fromEntries(
         glob.sync('src/**/*.{ts,tsx}').map(file => [
-          // The name of the entry point
-          // src/nested/foo.ts becomes nested/foo
-          relative(
-            'src',
-            file.slice(0, file.length - extname(file).length)
-          ),
-          // The absolute path to the entry file
-          // lib/nested/foo.ts becomes /project/lib/nested/foo.ts
+          relative('src', file.slice(0, file.length - extname(file).length)),
           fileURLToPath(new URL(file, import.meta.url))
         ])
       ),
-      output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM'
-        }
-      }
-    }
-  }
+    },
+  },
 });

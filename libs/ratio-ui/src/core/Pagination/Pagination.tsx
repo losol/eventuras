@@ -1,7 +1,7 @@
 import { IconChevronsLeft, IconChevronsRight } from '@tabler/icons-react';
 
-import Button from './Button';
-import Text from './Text';
+import Button from '../Button/Button';
+import Text from '../Text/Text';
 
 export type PaginationProps = {
   onPreviousPageClick: () => void;
