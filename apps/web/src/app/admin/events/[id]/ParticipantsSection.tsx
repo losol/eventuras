@@ -1,6 +1,6 @@
 'use client';
 import { EventDto, EventStatisticsDto, ProductDto, RegistrationDto } from '@eventuras/sdk';
-import { Container, Section } from '@eventuras/ui';
+import { Container, Section } from '@eventuras/ratio-ui';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 

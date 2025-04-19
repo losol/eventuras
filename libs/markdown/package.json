@@ -6,7 +6,7 @@
     "@eventuras/forms": "*",
     "@eventuras/scribo": "*",
     "@eventuras/smartform": "*",
-    "@eventuras/ui": "*",
+    "@eventuras/ratio-ui": "*",
     "markdown-to-jsx": "^7.7.4"
   },
   "peerDependencies": {

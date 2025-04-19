@@ -1,5 +1,5 @@
 {
-  "name": "@eventuras/ui",
+  "name": "@eventuras/ratio-ui",
   "version": "0.1.0",
   "type": "module",
   "main": "dist/eventuras-ui.umd.js",

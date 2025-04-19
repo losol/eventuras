@@ -4,7 +4,7 @@
   "main": "src/index.ts",
   "dependencies": {
     "@eventuras/forms": "*",
-    "@eventuras/ui": "*",
+    "@eventuras/ratio-ui": "*",
     "@tanstack/match-sorter-utils": "^8.19.4",
     "@tanstack/react-table": "^8.21.3"
   },

@@ -3,7 +3,7 @@
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { EventCollectionDto, EventDto } from '@eventuras/sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
-import { AppNotificationType, Button, Loading, Section } from '@eventuras/ui';
+import { AppNotificationType, Button, Loading, Section } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { IconTrash } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';

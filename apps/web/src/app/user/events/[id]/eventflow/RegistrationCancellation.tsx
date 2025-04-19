@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@eventuras/ui';
+import { Button } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 
 import { SiteInfo } from '@/utils/site/getSiteSettings';

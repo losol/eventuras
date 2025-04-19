@@ -5,7 +5,7 @@ import {
   RegistrationType,
   UserDto,
 } from '@eventuras/sdk';
-import { Button, Drawer, Heading } from '@eventuras/ui';
+import { Button, Drawer, Heading } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/utils';
 import { IconCheck } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';

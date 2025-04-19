@@ -1,4 +1,4 @@
-import { Badge, Container, Heading, Section } from '@eventuras/ui';
+import { Badge, Container, Heading, Section } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/utils';
 import { getTranslations } from 'next-intl/server';
 

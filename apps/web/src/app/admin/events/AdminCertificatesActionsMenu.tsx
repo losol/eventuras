@@ -1,5 +1,5 @@
 import { EventDto } from '@eventuras/sdk';
-import { Button, Definition, DescriptionList, Drawer, Heading, Term } from '@eventuras/ui';
+import { Button, Definition, DescriptionList, Drawer, Heading, Term } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';

@@ -2,7 +2,7 @@
 
 import { MarkdownContent } from '@eventuras/markdown';
 import { EventDto } from '@eventuras/sdk';
-import { Heading } from '@eventuras/ui';
+import { Heading } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 import React from 'react';
 

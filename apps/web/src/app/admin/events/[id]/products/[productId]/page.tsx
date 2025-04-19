@@ -1,4 +1,4 @@
-import { Container, Heading, Section, Text } from '@eventuras/ui';
+import { Container, Heading, Section, Text } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
 
 import Link from '@/components/Link';

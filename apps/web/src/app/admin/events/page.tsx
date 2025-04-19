@@ -1,4 +1,4 @@
-import { Container, Heading } from '@eventuras/ui';
+import { Container, Heading } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 

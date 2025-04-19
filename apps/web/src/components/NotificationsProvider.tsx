@@ -1,6 +1,6 @@
 'use client';
 
-import { AppNotifications } from '@eventuras/ui';
+import { AppNotifications } from '@eventuras/ratio-ui';
 import React from 'react';
 
 import { NotificationsContext } from '@/statemachines/NotificationsMachine';

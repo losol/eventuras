@@ -1,7 +1,7 @@
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { EmailNotificationDto, RegistrationType, SmsNotificationDto } from '@eventuras/sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
-import { Button, ButtonGroup, Heading } from '@eventuras/ui';
+import { Button, ButtonGroup, Heading } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 import { useRef } from 'react';

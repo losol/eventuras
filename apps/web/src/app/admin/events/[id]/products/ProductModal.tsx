@@ -2,7 +2,7 @@
 
 import type { NewProductDto, ProductDto } from '@eventuras/sdk';
 import { Form, Input, NumberInput } from '@eventuras/smartform';
-import { Button, Heading } from '@eventuras/ui';
+import { Button, Heading } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';

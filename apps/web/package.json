@@ -28,7 +28,7 @@
     "@eventuras/scribo": "*",
     "@eventuras/sdk": "*",
     "@eventuras/smartform": "*",
-    "@eventuras/ui": "*",
+    "@eventuras/ratio-ui": "*",
     "@tabler/icons-react": "^3.31.0",
     "@tailwindcss/postcss": "^4.1.4",
     "@types/debug": "^4.1.12",

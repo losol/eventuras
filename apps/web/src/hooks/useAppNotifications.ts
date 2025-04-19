@@ -1,9 +1,9 @@
-import { AppNotificationType } from '@eventuras/ui';
+import { AppNotificationType } from '@eventuras/ratio-ui';
 import { v4 as uuidv4 } from 'uuid';
 
 import { NotificationsContext } from '@/statemachines/NotificationsMachine';
 
-export { AppNotificationType } from '@eventuras/ui';
+export { AppNotificationType } from '@eventuras/ratio-uitio-ui';
 
 export interface AppNotification {
   id?: string;

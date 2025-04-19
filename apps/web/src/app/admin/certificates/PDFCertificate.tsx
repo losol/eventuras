@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@eventuras/ui';
+import { Button } from '@eventuras/ratio-ui';
 import { useState } from 'react';
 
 import Environment from '@/utils/Environment';

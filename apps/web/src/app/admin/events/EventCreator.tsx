@@ -1,4 +1,4 @@
-import { Heading } from '@eventuras/ui';
+import { Heading } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 
 import Wrapper from '@/components/eventuras/Wrapper';

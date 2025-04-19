@@ -1,6 +1,6 @@
 'use client';
 import { EventStatisticsDto } from '@eventuras/sdk';
-import { NumberCard } from '@eventuras/ui';
+import { NumberCard } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 
 import { ParticipationTypes, ParticipationTypesKey } from '@/types';

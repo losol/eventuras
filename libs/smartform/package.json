@@ -3,7 +3,7 @@
   "main": "src/index.ts",
   "version": "0.1.0",
   "dependencies": {
-    "@eventuras/ui": "*",
+    "@eventuras/ratio-ui": "*",
     "@eventuras/forms": "*",
     "react-hook-form": "^7.55.0"
   },

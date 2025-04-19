@@ -1,6 +1,6 @@
 'use client';
 
-import type { BoxProps } from '@eventuras/ui';
+import type { BoxProps } from '@eventuras/ratio-ui';
 import NextLink from 'next/link';
 import React from 'react';
 

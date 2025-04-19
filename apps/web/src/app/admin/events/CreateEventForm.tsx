@@ -1,7 +1,7 @@
 'use client';
 
 import { Fieldset, Form, Input } from '@eventuras/forms';
-import { Button } from '@eventuras/ui';
+import { Button } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 
