@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { BoxProps, spacingClassName } from './Box';
+import { BoxProps, spacingClassName } from '../../layout/Box/Box';
 
 interface ButtonGroupProps {
   children: React.ReactNode;

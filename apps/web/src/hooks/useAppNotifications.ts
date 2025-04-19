@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { NotificationsContext } from '@/statemachines/NotificationsMachine';
 
-export { AppNotificationType } from '@eventuras/ratio-uitio-ui';
+export { AppNotificationType } from '@eventuras/ratio-ui';
 
 export interface AppNotification {
   id?: string;

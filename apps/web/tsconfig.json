@@ -13,7 +13,7 @@
       "@eventuras/smartform": ["../../libs/smartform"],
       "@eventuras/sdk": ["../../libs/sdk"],
       "@eventuras/ratio-ui": ["../../libs/ratio-ui/src"],
-      "@eventuras/ratio-uitio-ui/*": ["../../libs/ratio-ui/src/*"],
+      "@eventuras/ratio-ui/*": ["../../libs/ratio-ui/src/*"],
       "@eventuras/utils": ["../../libs/utils"],
       "@eventuras/utils/*": ["../../libs/utils/*"]
     },

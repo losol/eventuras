@@ -1,8 +1,8 @@
 import { default as NextImage } from 'next/image';
 import React, { ReactNode } from 'react';
 
-import { default as HeadingComponent } from '../../../../libs/ratio-ui/src/Heading';
-import { default as TextComponent } from '../../../../libs/ratio-ui/src/Text';
+import { default as HeadingComponent } from '../../../../libs/ratio-ui/src/core/Heading/Heading';
+import { default as TextComponent } from '../../../../libs/ratio-ui/src/core/Text/Text';
 
 interface CardChildProps {
   type?: 'Heading' | 'Text' | 'Image';

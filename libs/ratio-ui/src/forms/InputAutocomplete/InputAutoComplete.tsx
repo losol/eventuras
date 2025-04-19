@@ -3,7 +3,7 @@ import { useAsyncList } from 'react-stately';
 
 import { FocusEventHandler, ReactElement, useRef, useState } from "react";
 import { Button, ComboBox, Input, Label, ListBox, ListBoxItem, Popover } from 'react-aria-components';
-import Loading from './Loading'
+import Loading from '../../core/Loading/Loading'
 
 export type AutoCompleteItem = {
   id: any;

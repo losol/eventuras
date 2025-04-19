@@ -1,7 +1,7 @@
 import React from 'react';
 
-import Loading from './Loading';
-import { BoxProps, spacingClassName } from './Box';
+import Loading from '../Loading/Loading';
+import { BoxProps, spacingClassName } from '../../layout/Box/Box';
 
 export const buttonStyles = {
   defaultPadding: 'px-4 py-2',
