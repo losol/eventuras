@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends libc6 && apt-ge
 
 WORKDIR /home/node/app
 
-COPY apps/historia/package*.json ./
+COPY apps/historia/package*.json package-lock.json ./
 RUN npm ci --ignore-scripts --legacy-peer-deps
 
 ##########################
