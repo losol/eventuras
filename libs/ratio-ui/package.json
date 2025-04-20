@@ -21,7 +21,7 @@
     "react-dom": "^19.1.0"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "npm run storybook",
     "build": "tsc && vite build",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build"
@@ -35,21 +35,20 @@
   "devDependencies": {
     "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*",
-    "@storybook/addon-a11y": "8.6.12",
-    "@storybook/addon-console": "3.0.0",
-    "@storybook/addon-docs": "8.6.12",
-    "@storybook/addon-essentials": "8.6.12",
+    "@storybook/addon-essentials": "^8.6.12",
     "@storybook/addon-interactions": "^8.6.12",
-    "@storybook/addon-links": "8.6.12",
-    "@storybook/addon-postcss": "2.0.0",
+    "@storybook/addon-onboarding": "^8.6.12",
+    "@storybook/addon-styling-webpack": "^1.0.1",
     "@storybook/blocks": "^8.6.12",
-    "@storybook/react": "8.6.12",
+    "@storybook/react": "^8.6.12",
+    "@storybook/react-vite": "^8.6.12",
+    "@storybook/test": "^8.6.12",
     "@types/react": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.0",
     "autoprefixer": "10.4.21",
     "glob": "11.0.1",
     "postcss": "^8.5.3",
-    "storybook": "8.6.12",
+    "storybook": "^8.6.12",
     "tailwindcss": "^4.1.4",
     "typescript": "5.8.3",
     "vite-plugin-dts": "4.5.3"

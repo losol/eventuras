@@ -1,9 +1,10 @@
+@import url('https://use.typekit.net/iyw4txx.css') layer(base);
 @import 'tailwindcss';
 @plugin 'tailwindcss-react-aria-components';
 @source '../../forms/src';
 @source '../../datatable/src';
 @source inline("md:grid-cols-2 lg:grid-cols-3 gap-2 bg-gray-500 dark:bg-gray-700");
-@import url('https://use.typekit.net/iyw4txx.css') layer(base);
+
 
 @custom-variant dark (@media (prefers-color-scheme: dark));
 

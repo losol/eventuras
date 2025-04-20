@@ -4,10 +4,9 @@ import React from 'react';
 import Portal from './Portal'; // Update the import path based on your project structure
 
 const meta: Meta<typeof Portal> = {
-  title: 'Components/Portal',
   component: Portal,
   parameters: {
-    tags: ['autodocs'], // Assuming you want to use tags
+    tags: ['autodocs'],
     docs: {
       description: {
         component: 'A Portal component for rendering content outside the current DOM hierarchy.',
