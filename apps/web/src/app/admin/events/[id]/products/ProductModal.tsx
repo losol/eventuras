@@ -97,12 +97,10 @@ const ProductModal: React.FC<ProductModalProps> = ({
   return (
     <>
       <Dialog isOpen={isOpen} onClose={onClose} title={titleText}>
-        {/* The backdrop first */}
-        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+        <div className="fixed inset-0 z-40 bg-blue/30" aria-hidden="true" />
 
-        {/* Then the dialogue... */}
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-slate-700 text-color-gray-100 shadow-xl rounded-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center min-h-screen">
+          <div className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
             <Form onSubmit={submitProduct} className="mt-2 space-y-6" defaultValues={product}>
               <Input
                 name="name"

@@ -2,6 +2,7 @@
   "name": "@eventuras/utils",
   "private": "true",
   "version": "0.1.0",
+  "type": "module",
   "description": "utility functions for eventuras",
   "main": "src/index.ts",
   "scripts": {
