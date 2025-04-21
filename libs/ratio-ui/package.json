@@ -30,11 +30,15 @@
     "@tailwindcss/postcss": "^4.1.4",
     "@tailwindcss/vite": "^4.1.4",
     "ajv": "^8.17.1",
-    "react-aria-components": "^1.8.0"
+    "lucide-react": "^0.503.0",
+    "react-aria-components": "^1.8.0",
+    "tailwindcss-react-aria-components": "^2.0.0"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*",
+    "@storybook/addon-a11y": "^8.6.12",
+    "@storybook/addon-docs": "^8.6.12",
     "@storybook/addon-essentials": "^8.6.12",
     "@storybook/addon-interactions": "^8.6.12",
     "@storybook/addon-onboarding": "^8.6.12",

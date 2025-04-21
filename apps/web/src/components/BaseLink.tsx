@@ -13,7 +13,7 @@ export interface LinkProps {
     | 'button-secondary'
     | 'button-light'
     | 'button-outline'
-    | 'button-transparent';
+    | 'button-text';
   block?: boolean;
   bgDark?: boolean;
   stretch?: boolean;

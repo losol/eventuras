@@ -1,75 +1,120 @@
-import React from 'react';
-
-import Loading from '../Loading/Loading';
+import React, { forwardRef } from 'react';
+import { LoaderCircle } from 'lucide-react';
 import { BoxProps, spacingClassName } from '../../layout/Box/Box';
 
+// Animation and style constants
+const ANIMATION_DURATION = 'duration-500';
+const ANIMATION_TIMING = 'ease-in-out';
+const HOVER_SHADOW = 'hover:shadow-sm';
+const ACTIVE_SCALE = 'active:scale-120';
+
+// Combined animation constants
+const ANIMATION_CLASSES = `transition-all ${ANIMATION_DURATION} ${ANIMATION_TIMING} ${ACTIVE_SCALE} ${HOVER_SHADOW}`;
+
 export const buttonStyles = {
-  defaultPadding: 'px-4 py-2',
-  primary: 'border font-bold bg-primary-600 dark:bg-primary-950 hover:bg-primary-700',
-  secondary: 'border border-secondary-300 text-gray-700 hover:bg-secondary-100/10',
-  light: 'bg-primary-100 text-gray-800 hover:bg-primary-200',
-  transparent: 'bg-transparent hover:bg-primary-200 hover:bg-opacity-20',
+  defaultPadding: 'px-4 py-1',
+  primary:
+    `border font-bold bg-primary-700 dark:bg-primary-950 hover:bg-primary-700 text-white rounded-full ${ANIMATION_CLASSES}`,
+  secondary:
+    `border border-gray-300 text-gray-700 bg-white hover:bg-gray-100 hover:border-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:border-gray-500 rounded-full ${ANIMATION_CLASSES}`,
+  light:
+    `bg-primary-100 text-gray-800 hover:bg-primary-200 dark:bg-primary-800 dark:text-white dark:hover:bg-primary-700 rounded-full ${ANIMATION_CLASSES}`,
+  text:
+    `bg-transparent hover:bg-primary-200 hover:bg-opacity-20 rounded-full ${ANIMATION_CLASSES}`,
   outline:
-    'border border-gray-700 text-primary-900 hover:border-primary-500 hover:bg-primary-100/10 dark:hover:bg-primary-900 transition duration-500',
+    `border border-gray-700 hover:border-primary-500 hover:bg-primary-100/10 dark:hover:bg-primary-900 dark:text-white rounded-full ${ANIMATION_CLASSES}`,
 };
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    BoxProps {
   ariaLabel?: string;
-  children?: React.ReactNode;
-  disabled?: boolean;
-  leftIcon?: React.ReactNode;
-  className?: string;
+  icon?: React.ReactNode;
   loading?: boolean;
-  bgDark?: boolean;
-  variant?: 'primary' | 'secondary' | 'outline' | 'light' | 'transparent';
+  onDark?: boolean;
+  variant?: 'primary' | 'secondary' | 'outline' | 'light' | 'text';
   block?: boolean;
   ['data-test-id']?: string;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps & BoxProps>((props, ref) => {
-  const { variant = 'primary', bgDark = false, block = false, ...boxProps } = props;
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      variant = 'primary',
+      onDark = false,
+      block = false,
+      disabled,
+      loading,
+      icon,
+      children,
+      ariaLabel,
+      className,
+      type = 'button',
+      ['data-test-id']: dataTestId,
+      ...boxProps
+    },
+    ref
+  ) => {
+    const baseStyle = buttonStyles[variant];
+    const spacing = spacingClassName(boxProps, {
+      defaultPadding: buttonStyles.defaultPadding,
+      defaultMargin: 'm-1',
+    });
 
-  let textColor;
-  if (variant == 'primary' || bgDark) {
-    textColor = 'text-white';
-  } else {
-    textColor = 'text-black dark:text-white';
+    const display = block
+      ? 'flex w-full items-center justify-center'
+      : 'inline-flex items-center justify-center';
+
+    const textColorClass = (variant === 'text' || variant === 'outline') && (onDark
+      ? 'text-white'
+      : 'text-black dark:text-white');
+
+    // Add padding for icon or loader
+    const contentPadding = (loading || icon) ? 'pl-8' : '';
+
+    const classes = [
+      display,
+      spacing,
+      baseStyle,
+      textColorClass,
+      'font-medium',
+      'relative',
+      'transform',
+      block && 'block',
+      (disabled || loading) && 'opacity-75',
+      (disabled || loading) && 'cursor-not-allowed',
+      (disabled || loading) && '!transition-none !transform-none !active:scale-100',
+      className,
+    ]
+      .filter(Boolean)
+      .join(' ');
+
+    return (
+      <button
+        ref={ref}
+        disabled={disabled || loading}
+        aria-label={ariaLabel}
+        className={classes}
+        type={type}
+        data-test-id={dataTestId}
+      >
+        {loading && (
+          <LoaderCircle
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 animate-spin"
+            aria-hidden="true"
+          />
+        )}
+        {!loading && icon && (
+          <span className={`absolute left-4 top-1/2 transform -translate-y-1/2 transition-transform ${ANIMATION_DURATION} group-hover:scale-110`}>
+            {icon}
+          </span>
+        )}
+        <span className={`${contentPadding} transition-all ${ANIMATION_DURATION}`}>{children}</span>
+      </button>
+    );
   }
+);
 
-  const blockClassName = block ? 'block' : '';
-
-  const spacing: string = spacingClassName(boxProps, {
-    defaultPadding: buttonStyles.defaultPadding,
-    defaultMargin: 'm-1',
-  });
-
-  let buttonClassName =
-    props.className || [spacing, buttonStyles[variant], blockClassName, textColor].join(' ');
-
-  if (props.disabled || props.loading) {
-    buttonClassName = `${buttonClassName} pointer-events-none cursor-not-allowed opacity-75`
-  }
-
-  return (
-    <button
-      ref={ref}
-      disabled={props.disabled || props.loading}
-      aria-label={props.ariaLabel}
-      onClick={props.onClick}
-      className={buttonClassName}
-      type={props.type || 'button'}
-      data-test-id={props['data-test-id']}
-    >
-      {props.leftIcon && <span className={`mr-2 ${textColor}`}>{props.leftIcon}</span>}
-      <span className={textColor}>{props.children}</span>
-      {props.loading && (
-        <div className="inline-block scale-[0.7] align-middle">
-          <Loading />
-        </div>
-      )}
-    </button>
-  );
-});
 Button.displayName = 'Button';
 
 export default Button;
