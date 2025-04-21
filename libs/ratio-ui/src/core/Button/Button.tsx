@@ -2,7 +2,6 @@ import React, { forwardRef } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { BoxProps, spacingClassName } from '../../layout/Box/Box';
 
-// Animation and style constants
 const ANIMATION_DURATION = 'duration-500';
 const ANIMATION_TIMING = 'ease-in-out';
 const HOVER_SHADOW = 'hover:shadow-sm';
@@ -105,11 +104,11 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           />
         )}
         {!loading && icon && (
-          <span className={`absolute left-4 top-1/2 transform -translate-y-1/2 transition-transform ${ANIMATION_DURATION} group-hover:scale-110`}>
+          <span className={`absolute left-4 top-1/2 transform -translate-y-1/2 transition-transform`}>
             {icon}
           </span>
         )}
-        <span className={`${contentPadding} transition-all ${ANIMATION_DURATION}`}>{children}</span>
+        {children}
       </button>
     );
   }

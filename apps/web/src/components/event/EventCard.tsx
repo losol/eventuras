@@ -1,10 +1,10 @@
 import { MarkdownContent } from '@eventuras/markdown';
 import { EventDto } from '@eventuras/sdk';
-import Link from 'next/link';
 
 import Card from '@/components/Card';
 import Environment from '@/utils/Environment';
 import { formatDateSpan } from '@/utils/formatDate';
+import Link from '../BaseLink';
 
 interface EventCardProps {
   eventinfo: EventDto;
@@ -12,10 +12,10 @@ interface EventCardProps {
 
 const EventCard: React.FC<EventCardProps> = ({ eventinfo }) => {
   return (
-    <Card className="p-3 bg-white dark:bg-slate-900 hover:bg-primary-100  dark:hover:bg-primary-900 transform transition duration-300 ease-in-out">
+    <Card className="p-3 relative bg-white dark:bg-slate-900 hover:bg-primary-100  dark:hover:bg-primary-900 transform transition duration-300 ease-in-out">
       {eventinfo.title && (
-        <Card.Heading spacingClassName="py-3">
-          <Link href={`/events/${eventinfo.id}/${eventinfo.slug}`} className="stretched-link">
+        <Card.Heading spacingClassName="py-3 ">
+          <Link href={`/events/${eventinfo.id}/${eventinfo.slug}`} linkOverlay>
             {eventinfo.title}
           </Link>
         </Card.Heading>

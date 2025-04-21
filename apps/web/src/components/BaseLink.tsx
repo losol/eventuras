@@ -16,7 +16,7 @@ export interface LinkProps {
     | 'button-text';
   block?: boolean;
   bgDark?: boolean;
-  stretch?: boolean;
+  linkOverlay?: boolean;
   [DATA_TEST_ID]?: string;
 }
 
@@ -28,7 +28,7 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps & BoxProps>((p
     bgDark = false,
     block = false,
     variant,
-    stretch,
+    linkOverlay = false,
     ...boxProps
   } = props;
 
@@ -55,7 +55,7 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps & BoxProps>((p
     blockClasses,
     className,
     spacing,
-    stretch ? 'stretched-link' : '',
+    linkOverlay ? 'link-overlay' : '',
   ].join(' ');
 
   return (

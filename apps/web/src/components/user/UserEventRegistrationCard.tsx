@@ -48,7 +48,7 @@ const UserEventRegistrationCard = ({
           href={`/user/events/${eventId}`}
           variant="button-primary"
           bgDark
-          stretch
+          linkOverlay
           {...{ [DATA_TEST_ID]: eventId }}
         >
           {t('common.buttons.user-event-page')}

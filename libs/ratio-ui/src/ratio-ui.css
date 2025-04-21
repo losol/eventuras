@@ -46,21 +46,7 @@
   --color-secondary-950: #4c0519;
 }
 
-@utility stretched-link {
-  &::after {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1;
-    pointer-events: auto;
-    content: '';
-    background-color: rgba(0, 0, 0, 0);
-  }
-}
 
-/* Is this still in use? */
 
 @layer base {
   body {
@@ -98,4 +84,15 @@
   blockquote {
     @apply text-xl italic font-semibold text-gray-900;
   }
+
+     .link-overlay {
+      /* parent must be relative */
+       &::after {
+         position: absolute;
+         inset: 0;
+         z-index: 1;
+         pointer-events: auto;
+         content: '';
+       }
+     }
 }
