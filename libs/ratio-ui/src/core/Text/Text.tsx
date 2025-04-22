@@ -5,12 +5,12 @@ interface TextProps {
   text?: string | null | undefined;
   as?: 'div' | 'span' | 'p';
   className?: string;
-  spacingClassName?: string;
+  padding?: string;
   [DATA_TEST_ID]?: string;
 }
 
 const Text: React.FC<TextProps> = props => {
-  const { as: Component = 'div', className = '', spacingClassName = '', children, text } = props;
+  const { as: Component = 'div', className = '', padding = '', children, text } = props;
   // Throw an error if both text and children are provided
   if (text !== undefined && children !== undefined) {
     throw new Error(
@@ -28,7 +28,7 @@ const Text: React.FC<TextProps> = props => {
 
   return (
     <Component
-      className={`${className} ${spacingClassName}`.trim()}
+      className={`${className} ${padding}`.trim()}
       {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}
     >
       {content}

@@ -37,7 +37,7 @@ const RegistrationView: React.FC<RegistrationViewProps> = ({
         {eventInfo?.program ? (
           <Tabs.Item title={t('common.labels.program')} id="tab-program">
             <div className="welcome-letter dark:bg-gray-700 bg-white my-10 p-3">
-              <Heading as="h2" spacingClassName="mb-5 mt-0 pt-0">
+              <Heading as="h2" padding="mb-5 mt-0 pt-0">
                 {t('common.labels.program')}
               </Heading>
               <MarkdownContent markdown={eventInfo?.program} />

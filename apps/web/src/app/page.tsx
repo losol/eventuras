@@ -26,18 +26,16 @@ export default async function Homepage() {
         className="text-white"
         container
       >
-        <Heading as="h1" spacingClassName="pb-4" onDark>
+        <Heading as="h1" padding="pb-4" onDark>
           {site?.frontpage.title ?? 'Eventuras'}
         </Heading>
-        <Text spacingClassName="pb-2">
-          {site?.frontpage.introduction ?? 'Eventuras for your life!'}
-        </Text>
+        <Text padding="pb-2">{site?.frontpage.introduction ?? 'Eventuras for your life!'}</Text>
       </Section>
 
       {/* Events section */}
       {result.value?.data?.length ? (
         <Section bgColorClass="bg-primary-50 dark:bg-slate-950" padding="pt-16 pb-24" container>
-          <Heading as="h2" spacingClassName="pb-6">
+          <Heading as="h2" padding="pb-6">
             {t('common.events.sectiontitle')}
           </Heading>
           <EventGrid eventinfos={result.value.data} />

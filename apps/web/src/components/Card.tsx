@@ -7,7 +7,7 @@ import { default as TextComponent } from '../../../../libs/ratio-ui/src/core/Tex
 interface CardChildProps {
   type?: 'Heading' | 'Text' | 'Image';
   className?: string;
-  spacingClassName?: string;
+  padding?: string;
   dark?: boolean;
 }
 
@@ -85,17 +85,17 @@ const Heading: React.FC<HeadingProps> = ({
   as = 'h4',
   children,
   className,
-  spacingClassName = 'pt-2 pb-1',
+  padding = 'pt-2 pb-1',
   dark,
 }) => (
-  <HeadingComponent as={as} onDark={dark} className={className} spacingClassName={spacingClassName}>
+  <HeadingComponent as={as} onDark={dark} className={className} padding={padding}>
     {children}
   </HeadingComponent>
 );
 
 // Text component
-const Text: React.FC<TextProps> = ({ as, children, className, spacingClassName = 'py-1' }) => (
-  <TextComponent as={as} className={className} spacingClassName={spacingClassName}>
+const Text: React.FC<TextProps> = ({ as, children, className, padding }) => (
+  <TextComponent as={as} className={className} padding={padding}>
     {children}
   </TextComponent>
 );

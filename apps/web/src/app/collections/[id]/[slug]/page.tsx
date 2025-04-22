@@ -92,7 +92,7 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
       )}
       <Section className="py-16">
         <Container>
-          <Heading as="h1" spacingClassName="pt-6 pb-3">
+          <Heading as="h1" padding="pt-6 pb-3">
             {collection?.name ?? 'Mysterious Collection'}
           </Heading>
           <MarkdownContent markdown={collection.description} />
@@ -101,7 +101,7 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
       <Section>
         {eventinfos.value?.data && eventinfos.value.data.length > 0 ? (
           <Container>
-            <Heading as="h2" spacingClassName="pt-6 pb-3">
+            <Heading as="h2" padding="pt-6 pb-3">
               {t('common.collections.detailspage.eventstitle')}
             </Heading>
             {eventinfos.value.data.map(eventinfo => (

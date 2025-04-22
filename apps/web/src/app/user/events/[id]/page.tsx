@@ -61,7 +61,7 @@ export default async function UserEventPage({ params }: Readonly<UserEventPagePr
         {eventInfoResult.value.title && (
           <>
             <p className="text-sm text-gray-600">{t('user.events.registration.titleLabel')}</p>
-            <Heading as="h1" spacingClassName="pt-0 my-5">
+            <Heading as="h1" padding="pt-0 my-5">
               {eventInfoResult.value.title}
             </Heading>
           </>

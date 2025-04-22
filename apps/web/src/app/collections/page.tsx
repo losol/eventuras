@@ -34,7 +34,7 @@ const CollectionIndexPage: React.FC = async () => {
   return (
     <Wrapper>
       <Section className="py-16">
-        <Heading as="h1" spacingClassName="pt-6 pb-3">
+        <Heading as="h1" padding="pt-6 pb-3">
           Collections
         </Heading>
       </Section>
