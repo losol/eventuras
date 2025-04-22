@@ -10,7 +10,7 @@ import {
 } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 
-import Card from '@/components/Card';
+import { Card } from '@eventuras/ratio-ui/core/Card';
 import { formatDateSpan } from '@/utils/formatDate';
 
 import { OrderActionsMenu } from './OrderActionsMenu';

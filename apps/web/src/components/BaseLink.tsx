@@ -42,7 +42,7 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
     ref
   ) => {
     const spacingClasses = buildSpacingClasses({
-      padding: 'px-4 py-2',
+      padding,
       margin,
       border,
       width,
@@ -58,7 +58,7 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
     if (variant?.startsWith('button-')) {
       const key = variant.replace('button-', '') as keyof typeof buttonStyles;
       if (buttonStyles[key]) {
-        variantClasses = buttonStyles[key];
+        variantClasses = 'px-4 py-2 ' + buttonStyles[key];
       }
     }
 

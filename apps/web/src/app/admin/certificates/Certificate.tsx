@@ -3,7 +3,7 @@ import { Definition, DescriptionList, Heading, Item, Term } from '@eventuras/rat
 import { useTranslations } from 'next-intl';
 import React from 'react';
 
-import Card from '@/components/Card';
+import { Card } from '@eventuras/ratio-ui/core/Card';
 import { formatDateSpan } from '@/utils/formatDate';
 
 type CertificateProps = {

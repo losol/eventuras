@@ -26,7 +26,7 @@ const Section: React.FC<SectionProps> = ({
   width,
   height,
   // background props
-  bgColorClass,
+  backgroundColorClass,
   backgroundImageUrl,
   // section‑specific
   container = false,
@@ -36,7 +36,7 @@ const Section: React.FC<SectionProps> = ({
   const spacingClasses = buildSpacingClasses({ padding, margin, border, width, height });
   const style = getBackgroundStyle(backgroundImageUrl, undefined);
 
-  const classes = [spacingClasses, bgColorClass, className]
+  const classes = [spacingClasses, backgroundColorClass, className]
     .filter(Boolean)
     .join(' ');
 

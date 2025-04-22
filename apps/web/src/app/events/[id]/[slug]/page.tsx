@@ -6,7 +6,7 @@ import { Suspense } from 'react';
 
 import EventDetails from '@/app/events/EventDetails';
 import EventRegistrationButton from '@/app/events/EventRegistrationButton';
-import Card from '@/components/Card';
+import { Card } from '@eventuras/ratio-ui/core/Card';
 import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
@@ -81,7 +81,7 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
   return (
     <Wrapper imageNavbar={hasFeaturedImage} bgDark={hasFeaturedImage} fluid>
       {eventinfo.featuredImageUrl && (
-        <Card className="mx-auto min-h-[33vh]" backgroundImage={eventinfo.featuredImageUrl} />
+        <Card className="mx-auto min-h-[33vh]" backgroundImageUrl={eventinfo.featuredImageUrl} />
       )}
       <section className="py-16">
         <Container>
