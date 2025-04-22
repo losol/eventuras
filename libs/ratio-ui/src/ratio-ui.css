@@ -1,6 +1,7 @@
 @import url('https://use.typekit.net/iyw4txx.css') layer(base);
 @import 'tailwindcss';
 @plugin 'tailwindcss-react-aria-components';
+@source '**/*.tsx';
 @source '../../forms/src';
 @source '../../datatable/src';
 @source inline("md:grid-cols-2 lg:grid-cols-3 gap-2 bg-gray-500 dark:bg-gray-700");
@@ -46,21 +47,7 @@
   --color-secondary-950: #4c0519;
 }
 
-@utility stretched-link {
-  &::after {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1;
-    pointer-events: auto;
-    content: '';
-    background-color: rgba(0, 0, 0, 0);
-  }
-}
 
-/* Is this still in use? */
 
 @layer base {
   body {
@@ -98,4 +85,15 @@
   blockquote {
     @apply text-xl italic font-semibold text-gray-900;
   }
+
+     .link-overlay {
+      /* parent must be relative */
+       &::after {
+         position: absolute;
+         inset: 0;
+         z-index: 1;
+         pointer-events: auto;
+         content: '';
+       }
+     }
 }

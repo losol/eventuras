@@ -44,7 +44,7 @@ const EventDetails: React.FC<EventProps> = ({ eventinfo }) => {
       <div className="flex flex-col md:flex-row container mx-auto">
         <div className="mb-8 md:mb-0 md:sticky md:top-20 md:flex md:flex-col md:mr-8 md:w-1/4 mt-10">
           {sections.map((section, index) => (
-            <Link key={index} href={`#${section.id}`} variant="button-transparent">
+            <Link key={index} href={`#${section.id}`} variant="button-outline">
               {section.title}
             </Link>
           ))}
