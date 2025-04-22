@@ -135,10 +135,52 @@ export const AllCombinations = () => {
 };
 AllCombinations.storyName = 'All Variants & States';
 
+
+// Tests
+// Module‑scoped spies so play() can see them
+let enabledSpy: ReturnType<typeof fn>;
+let disabledSpy: ReturnType<typeof fn>;
+let loadingSpy: ReturnType<typeof fn>;
+
 export const ButtonTest = {
-  play: async ({ args, canvasElement }) => {
+  // Custom render that sets up three buttons
+  render: () => {
+    enabledSpy  = fn();
+    disabledSpy = fn();
+    loadingSpy  = fn();
+
+    return (
+      <div className="flex flex-col gap-2">
+        <Button variant="primary" onClick={enabledSpy}>
+          Default
+        </Button>
+        <Button variant="primary" disabled onClick={disabledSpy}>
+          Disabled
+        </Button>
+        <Button variant="primary" loading onClick={loadingSpy}>
+          Loading
+        </Button>
+      </div>
+    );
+  },
+  // @ts-ignore
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole('button'));
-    await expect(args.onClick).toHaveBeenCalled();
+
+    const btnDefault  = canvas.getByRole('button', { name: 'Default' });
+    const btnDisabled = canvas.getByRole('button', { name: 'Disabled' });
+    const btnLoading  = canvas.getByRole('button', { name: 'Loading' });
+
+    // 1) Default button calls its spy
+    await userEvent.click(btnDefault);
+    await expect(enabledSpy).toHaveBeenCalled();
+
+    // 2) Disabled button does *not* call its spy
+    await userEvent.click(btnDisabled);
+    await expect(disabledSpy).not.toHaveBeenCalled();
+
+    // 3) Loading button does *not* call its spy
+    await userEvent.click(btnLoading);
+    await expect(loadingSpy).not.toHaveBeenCalled();
   },
 };

@@ -1,5 +1,5 @@
 'use client';
-import { Button } from '@eventuras/ratio-ui';
+import { Button } from '@eventuras/ratio-ui/core/Button';
 import { DATA_TEST_ID } from '@eventuras/utils';
 
 import Menu from '@/components/Menu';
