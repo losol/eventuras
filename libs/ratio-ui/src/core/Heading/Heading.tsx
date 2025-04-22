@@ -3,12 +3,12 @@ export type HeadingProps = {
   children: React.ReactNode;
   className?: string;
   spacingClassName?: string;
-  bgDark?: boolean;
+  onDark?: boolean;
 };
 
 const Heading = (props: HeadingProps) => {
   const HeadingComponent = props.as ?? 'h1';
-  const bgDark = props.bgDark ?? false;
+  const bgDark = props.onDark ?? false;
 
   // Adjust font size based on heading level
   let textSize = 'text-base';
@@ -38,9 +38,6 @@ const Heading = (props: HeadingProps) => {
       break;
     case 'h3':
       defaultSpacing = 'pt-19 pb-3';
-      break;
-    case 'h4':
-      defaultSpacing = 'pt-6 pb-0';
       break;
     default:
       break;

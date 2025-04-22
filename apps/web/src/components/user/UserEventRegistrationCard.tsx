@@ -47,7 +47,7 @@ const UserEventRegistrationCard = ({
         <Link
           href={`/user/events/${eventId}`}
           variant="button-primary"
-          bgDark
+          onDark
           linkOverlay
           {...{ [DATA_TEST_ID]: eventId }}
         >

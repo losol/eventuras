@@ -88,7 +88,7 @@ const Heading: React.FC<HeadingProps> = ({
   spacingClassName = 'pt-2 pb-1',
   dark,
 }) => (
-  <HeadingComponent as={as} bgDark={dark} className={className} spacingClassName={spacingClassName}>
+  <HeadingComponent as={as} onDark={dark} className={className} spacingClassName={spacingClassName}>
     {children}
   </HeadingComponent>
 );
