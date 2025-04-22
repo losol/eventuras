@@ -4,7 +4,7 @@ import { Logger } from '@eventuras/utils';
 import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import Card from '@/components/Card';
+import { Card } from '@eventuras/ratio-ui/core/Card';
 import EventCard from '@/components/event/EventCard';
 import Wrapper from '@/components/eventuras/Wrapper';
 import Link from '@/components/Link';

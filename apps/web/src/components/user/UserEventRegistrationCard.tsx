@@ -3,10 +3,12 @@ import { DATA_TEST_ID } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 import { ReactElement } from 'react';
 
-import Card from '@/components/Card';
+import { Card } from '@eventuras/ratio-ui/core/Card';
+import { Text } from '@eventuras/ratio-ui/core/Text/Text';
 import Link from '@/components/Link';
 import Environment from '@/utils/Environment';
 import { formatDateSpan } from '@/utils/formatDate';
+import Heading from '@eventuras/ratio-ui/core/Heading/Heading';
 
 export type UserEventRegistrationCardProps = {
   eventId: string;
@@ -28,22 +30,22 @@ const UserEventRegistrationCard = ({
   const t = useTranslations();
   return (
     <Card>
-      <Card.Heading as="h3" padding="pt-2">
+      <Heading as="h3" padding="pt-2">
         {eventTitle}
-      </Card.Heading>
-      <Card.Text>
+      </Heading>
+      <Text>
         {formatDateSpan(dateStart, dateEnd, { locale: Environment.NEXT_PUBLIC_DEFAULT_LOCALE })}
-      </Card.Text>
+      </Text>
       {products.length > 0 && (
-        <Card.Text as="div">
+        <Text as="div">
           <ul>
             {products.map(product => (
               <li key={product.productId}>{product.product?.name}</li>
             ))}
           </ul>
-        </Card.Text>
+        </Text>
       )}
-      <Card.Text className="py-5">
+      <Text className="py-5">
         <Link
           href={`/user/events/${eventId}`}
           variant="button-primary"
@@ -53,7 +55,7 @@ const UserEventRegistrationCard = ({
         >
           {t('common.buttons.user-event-page')}
         </Link>
-      </Card.Text>
+      </Text>
     </Card>
   );
 };

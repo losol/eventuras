@@ -34,7 +34,7 @@ export default async function Homepage() {
 
       {/* Events section */}
       {result.value?.data?.length ? (
-        <Section bgColorClass="bg-primary-50 dark:bg-slate-950" padding="pt-16 pb-24" container>
+        <Section backgroundColorClass="bg-primary-50 dark:bg-slate-950" padding="py-8" container>
           <Heading as="h2" padding="pb-6">
             {t('common.events.sectiontitle')}
           </Heading>

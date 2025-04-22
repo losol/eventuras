@@ -2,7 +2,7 @@ import { MarkdownContent } from '@eventuras/markdown';
 import { Heading, Section, Text } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
 
-import Card from '@/components/Card';
+import { Card } from '@eventuras/ratio-ui/core/Card';
 import Wrapper from '@/components/eventuras/Wrapper';
 import Link from '@/components/Link';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
@@ -43,10 +43,10 @@ const CollectionIndexPage: React.FC = async () => {
           collections.data &&
           collections.data.map(collection => (
             <Card key={collection.id} className="my-4">
-              <Card.Heading as="h2">{collection.name}</Card.Heading>
-              <Card.Text className="pb-4">
+              <Heading as="h2">{collection.name}</Heading>
+              <Text className="pb-4">
                 <MarkdownContent markdown={collection.description} />
-              </Card.Text>
+              </Text>
               <Link
                 href={`/collections/${collection.id}/${collection.slug}`}
                 variant="button-primary"

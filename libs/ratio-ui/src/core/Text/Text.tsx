@@ -1,36 +1,58 @@
+import React from 'react';
 import { DATA_TEST_ID } from "@eventuras/utils";
+import {
+  BoxSpacingProps,
+  buildSpacingClasses,
+} from '../../layout/Box/Box';
 
-interface TextProps {
+export interface TextProps extends BoxSpacingProps {
+  text?: string | null;
   children?: React.ReactNode;
-  text?: string | null | undefined;
   as?: 'div' | 'span' | 'p';
   className?: string;
-  padding?: string;
+  icon?: React.ReactNode;
   [DATA_TEST_ID]?: string;
 }
 
-const Text: React.FC<TextProps> = props => {
-  const { as: Component = 'div', className = '', padding = '', children, text } = props;
-  // Throw an error if both text and children are provided
-  if (text !== undefined && children !== undefined) {
+export const Text: React.FC<TextProps> = ({
+  text,
+  children,
+  as: Component = 'div',
+  className = '',
+  icon,
+  padding,
+  margin,
+  border,
+  width,
+  height,
+  [DATA_TEST_ID]: testId,
+  ...restHtmlProps
+}) => {
+  // 1) Only one of text/children
+  if (text != null && children != null) {
     throw new Error(
-      'Text component cannot take both `text` and `children` props. Please provide only one.'
+      "Text component cannot take both `text` and `children`. Please provide only one."
     );
   }
-
-  // Return null if neither text nor children is provided
-  if (text === undefined && children === undefined) {
+  // 2) Nothing to render?
+  if (text == null && children == null) {
     return null;
   }
+  const content = text != null ? text : children;
 
-  // Decide what to render, text prop or children
-  const content = text ?? children;
+  // 3) Compute spacing
+  const spacingCls = buildSpacingClasses({ padding, margin, border, width, height });
+
+  // 4) Final class list
+  const classes = [spacingCls, className].filter(Boolean).join(' ');
 
   return (
     <Component
-      className={`${className} ${padding}`.trim()}
-      {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}
+      className={classes}
+      {...(testId ? { [DATA_TEST_ID]: testId } : {})}
+      {...restHtmlProps}
     >
+      {icon && <span className="mr-2 inline-flex items-center">{icon}</span>}
       {content}
     </Component>
   );
