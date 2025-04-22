@@ -85,16 +85,12 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
       )}
       <section className="py-16">
         <Container>
-          <Heading as="h1" spacingClassName="pt-6 pb-3">
+          <Heading as="h1" padding="pt-6 pb-3">
             {eventinfo.title ?? 'Mysterious Event'}
           </Heading>
 
           {eventinfo.headline && (
-            <Heading
-              as="h2"
-              className="text-xl font-semibold text-gray-700"
-              spacingClassName="py-3"
-            >
+            <Heading as="h2" className="text-xl font-semibold text-gray-700" padding="py-3">
               &mdash; {eventinfo.headline}
             </Heading>
           )}

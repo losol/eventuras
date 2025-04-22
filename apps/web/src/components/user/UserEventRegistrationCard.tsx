@@ -28,7 +28,7 @@ const UserEventRegistrationCard = ({
   const t = useTranslations();
   return (
     <Card>
-      <Card.Heading as="h3" spacingClassName="pt-2">
+      <Card.Heading as="h3" padding="pt-2">
         {eventTitle}
       </Card.Heading>
       <Card.Text>
@@ -47,7 +47,7 @@ const UserEventRegistrationCard = ({
         <Link
           href={`/user/events/${eventId}`}
           variant="button-primary"
-          bgDark
+          onDark
           linkOverlay
           {...{ [DATA_TEST_ID]: eventId }}
         >

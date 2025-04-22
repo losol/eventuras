@@ -5,7 +5,6 @@ export type { AppNotification } from './core/AppNotifications/AppNotifications';
 export { default as Badge } from './core/Badge/Badge';
 export { default as Button, buttonStyles } from './core/Button/Button';
 export { default as ButtonGroup } from './core/Button/ButtonGroup';
-export { spacingClassName } from './layout/Box/Box';
 export type { BoxProps } from './layout/Box/Box';
 export { default as Container } from './layout/Container/Container';
 export { Definition, DescriptionList, Item, Term } from './core/DescriptionList/DescriptionList';

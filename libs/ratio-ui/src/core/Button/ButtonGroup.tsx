@@ -1,14 +1,14 @@
 import React from 'react';
 
-import { BoxProps, spacingClassName } from '../../layout/Box/Box';
+import { BoxProps, BoxSpacingProps, buildSpacingClasses } from '../../layout/Box/Box';
 
-export interface ButtonGroupProps {
+export interface ButtonGroupProps extends BoxSpacingProps {
   children: React.ReactNode;
 }
 
 const ButtonGroup: React.FC<ButtonGroupProps & BoxProps> = ({ children, ...spacingProps }) => {
-  const baseClassName = 'inline-flex rounded-md shadow-2xs';
-  const className = [baseClassName, spacingClassName(spacingProps)].join(' ');
+  const baseClassName = 'inline-flex';
+  const className = [baseClassName, buildSpacingClasses(spacingProps)].join(' ');
 
   return (
     <div className={className} role="group">

@@ -1,69 +1,109 @@
-import React, { ReactNode, ElementType } from 'react';
+import React, { ReactNode, ElementType, CSSProperties } from 'react';
 
-/**
- * BoxOptions interface for defining default padding and margin.
- */
-interface BoxOptions {
-  defaultPadding?: string;
-  defaultMargin?: string;
+export interface BoxSpacingProps {
+  padding?: string;      // e.g. 'px-4 py-2'
+  margin?: string;       // e.g. 'm-1'
+  border?: string;       // e.g. 'border border-gray-200'
+  width?: string;        // e.g. 'w-full'
+  height?: string;       // e.g. 'h-64'
 }
 
-/**
- * BoxProps interface for specifying padding, margin, and gap properties.
- */
-export interface BoxProps {
-  padding?: string;
-  margin?: string;
-  gap?: string;
-}
-
-/**
- * BoxComponentProps extends BoxProps with additional properties for component customization.
- */
-interface BoxComponentProps extends BoxProps {
-  as?: ElementType; // Use React.ElementType for polymorphic 'as' prop
-  options?: BoxOptions;
-  children?: ReactNode;
+export interface BoxContentProps {
+  as?: ElementType;      // e.g. 'div' | 'section' | 'button'
+  id?: string;
   className?: string;
+  style?: CSSProperties;
+  children?: ReactNode;
+}
+
+export interface BoxBackgroundProps {
+  backgroundColorClass?: string; // e.g. 'bg-white dark:bg-gray-800'
+  backgroundImageUrl?: string; // e.g. '/foo.jpg'
+}
+
+export type BoxProps =
+  & BoxSpacingProps
+  & BoxContentProps
+  & BoxBackgroundProps;
+
+/** Helper to build the spacing/size/border classes */
+export function buildSpacingClasses({
+  padding,
+  margin,
+  border,
+  width,
+  height,
+}: BoxSpacingProps) {
+  return [
+    padding,
+    margin,
+    border,
+    width,
+    height,
+  ]
+    .filter(Boolean)
+    .join(' ');
 }
 
 /**
- * Generates a string of spacing-related class names based on provided BoxProps and BoxOptions.
- * @param {BoxProps} boxProps - The Box properties.
- * @param {BoxOptions} [options={}] - Optional BoxOptions for default values.
- * @returns {string} - A string of class names for spacing.
+ * Build the inline style object for a background image,
+ * merging in any existing `style` passed by the consumer.
  */
-export function spacingClassName(boxProps: BoxProps, options: BoxOptions = {}): string {
-  const classes = [];
+export function getBackgroundStyle(
+  backgroundImage?: string,
+  existingStyle?: CSSProperties,
+  backgroundImageOverlay: boolean = true
+): CSSProperties | undefined {
+  if (!backgroundImage) return existingStyle;
 
-  if (!boxProps.padding && options.defaultPadding) {
-    classes.push(options.defaultPadding);
-  }
+  const imageValue = backgroundImageOverlay
+    ? `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.3)), url(${backgroundImage})`
+    : `url(${backgroundImage})`;
 
-  if (!boxProps.margin && options.defaultMargin) {
-    classes.push(options.defaultMargin);
-  }
-
-  if (boxProps.gap) {
-    classes.push(boxProps.gap);
-  }
-
-  return classes.join(' ');
+  return {
+    backgroundImage:    imageValue,
+    backgroundSize:     'cover',
+    backgroundPosition: 'center',
+    ...existingStyle,
+  };
 }
 
-/**
- * Box component for consistent application of padding, margin, and gap styles.
- * @param {BoxComponentProps} props - The Box component properties.
- * @returns {JSX.Element} - The rendered Box component.
- */
-export const Box: React.FC<BoxComponentProps> = ({
+export const Box: React.FC<BoxProps> = ({
   as: Component = 'div',
-  className,
-  options,
-  ...props
+  padding, margin, border, width, height,
+  backgroundColorClass, backgroundImageUrl,
+  id, className = '', style, children,
+  ...rest
 }) => {
-  className = className
-    ? `${className} ${spacingClassName(props, options)}`
-    : spacingClassName(props, options);
-  return <Component className={className} {...props} />;
+  const spacingClasses = buildSpacingClasses({ padding, margin, border, width, height });
+
+  const bgStyle = backgroundImageUrl
+    ? {
+        backgroundImage:    `url(${backgroundImageUrl})`,
+        backgroundSize:     'cover',
+        backgroundPosition: 'center',
+        ...style,
+      }
+    : style;
+
+  const finalClassName = [
+    spacingClasses,
+    backgroundColorClass,
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  return (
+    <Component
+      id={id}
+      className={finalClassName}
+      style={bgStyle}
+      {...rest}
+    >
+      {children}
+    </Component>
+  );
 };
+
+Box.displayName = 'Box';
