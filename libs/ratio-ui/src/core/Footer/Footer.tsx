@@ -1,18 +1,20 @@
-import { FooterLink, Publisher } from '@/utils/site/getSiteSettings';
-
-import Link from './BaseLink';
+export interface Publisher {
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+}
 
 interface FooterProps {
   siteTitle?: string;
-  links?: FooterLink[];
   publisher?: Publisher;
+  children?: React.ReactNode;
 }
 
-const Footer = (props: FooterProps) => {
+export const Footer = (props: FooterProps) => {
   return (
-    <>
-      <footer className="p-3 bg-white dark:bg-gray-900">
-        <div className="container py-8">
+      <footer className="p-3 pt-10 bg-white dark:bg-gray-900">
+        <div className="container p-3 mx-auto">
           <div className="md:flex md:justify-between">
             {props.siteTitle && (
               <div className="mb-6 md:mb-0">
@@ -20,33 +22,22 @@ const Footer = (props: FooterProps) => {
                   {props.siteTitle}
                 </span>
                 {props.publisher && (
-                  <>
                     <div className="mt-2 font-light">
                       <p>{props.publisher.name}</p>
                       <p>{props.publisher.address}</p>
                       <p>{props.publisher.phone}</p>
                       <p>{props.publisher.email}</p>
                     </div>
-                  </>
                 )}
               </div>
             )}
-            {props.links && (
+            {props.children && (
               <div>
-                <ul className="text-gray-800 dark:text-gray-300 font-medium list-none">
-                  {props.links?.map((link, index) => (
-                    <li key={index} className="mb-4">
-                      <Link href={link.href}>{link.text}</Link>
-                    </li>
-                  ))}
-                </ul>
+                {props.children}
               </div>
             )}
           </div>
         </div>
       </footer>
-    </>
   );
 };
-
-export default Footer;
