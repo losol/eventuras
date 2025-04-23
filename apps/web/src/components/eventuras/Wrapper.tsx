@@ -2,11 +2,13 @@ import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
-import Footer from '@/components/Footer';
-import Navbar from '@/components/Navbar';
+import { Footer } from '@eventuras/ratio-ui/core/Footer/Footer';
+import { Navbar } from '@eventuras/ratio-ui/core/Navbar/Navbar';
+import { List } from '@eventuras/ratio-ui/core/List/List';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 import { UserMenu } from './navigation/UserMenu';
+import Link from 'next/link';
 
 /**
  * Layout component wrapping main content with Header and Footer.
@@ -22,8 +24,8 @@ type WrapperProps = {
 };
 
 const styles = {
-  mainClassName: 'container mx-auto pb-20',
-  fluidMainClassName: 'm-0 pb-20',
+  mainClassName: 'container mx-auto',
+  fluidMainClassName: 'm-0',
 };
 
 const Wrapper = async (props: WrapperProps) => {
@@ -57,7 +59,15 @@ const Wrapper = async (props: WrapperProps) => {
       <main id="main-content" className={mainClassName}>
         {props.children}
       </main>
-      <Footer siteTitle={site?.name} links={site?.footerLinks} publisher={site?.publisher} />
+      <Footer siteTitle={site?.name} publisher={site?.publisher}>
+        <List className="list-none text-gray-800 dark:text-gray-300 font-medium">
+          {site?.footerLinks?.map((link, idx) => (
+            <List.Item key={link.href ?? idx} className="mb-4">
+              <Link href={link.href}>{link.text}</Link>
+            </List.Item>
+          ))}
+        </List>
+      </Footer>
     </>
   );
 };

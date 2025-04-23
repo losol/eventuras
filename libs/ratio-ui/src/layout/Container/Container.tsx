@@ -13,7 +13,7 @@ const Container: React.FC<ContainerProps> = ({
   ...rest
 }) => {
   return (
-    <Component className={`container mx-auto ${className}`} {...rest}>
+    <Component className={`p-3 container mx-auto ${className}`} {...rest}>
       {children}
     </Component>
   );
