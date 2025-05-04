@@ -19,7 +19,7 @@ const EventCard: React.FC<EventCardProps> = ({ eventinfo }) => {
       {eventinfo.title && (
         <Heading as="h4" padding="pt-3">
           <Link href={`/events/${eventinfo.id}/${eventinfo.slug}`} linkOverlay>
-            {eventinfo.title}a asdf
+            {eventinfo.title}
           </Link>
         </Heading>
       )}
