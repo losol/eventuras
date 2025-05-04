@@ -1,0 +1,93 @@
+name: "Ratio UI - Build & Deploy Storybook"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "libs/ratio-ui/**"
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "libs/ratio-ui/**"
+      - ".github/workflows/main-ratio-ui.yml"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    name: Build & Deploy Storybook
+    environment: ratio-ui
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Storybook
+        working-directory: libs/ratio-ui
+        run: npm run storybook:build -- --output-dir ../../storybook-static
+
+      - name: Install Wrangler CLI
+        run: npm install -g wrangler
+
+      - name: Deploy to Cloudflare Pages (Production)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy storybook-static --project-name=${{ secrets.CLOUDFLARE_PAGES_PROJECT }} --branch=main --commit-dirty=true
+
+      - name: Deploy to Cloudflare Pages (Preview)
+        id: preview-deploy
+        if: github.event_name == 'pull_request'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy storybook-static --project-name=${{ secrets.CLOUDFLARE_PAGES_PROJECT }} --branch=preview-${{ github.event.pull_request.number }} --commit-dirty=true
+
+      - name: Save Preview URL
+        if: github.event_name == 'pull_request'
+        run: |
+          # Extract and save the preview URL from wrangler output
+          echo "PREVIEW_URL=https://preview-${{ github.event.pull_request.number }}.${{ secrets.CLOUDFLARE_PAGES_PROJECT }}.pages.dev" >> $GITHUB_ENV
+
+      - name: Manage Preview Comment
+        if: github.event_name == 'pull_request' && github.event.action == 'synchronize'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const body = `🚀 Storybook preview!
+            📖 **Preview URL:** ${{ env.PREVIEW_URL }}`;
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+            const existing = comments.data.find(c => c.body.startsWith('🚀 Storybook preview!'));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body
+              });
+            }
