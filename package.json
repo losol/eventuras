@@ -21,7 +21,8 @@
     "apps/web",
     "apps/web-e2e",
     "apps/convertoapi",
-    "libs/**"
+    "libs/**",
+    "lab/**"
   ],
   "engines": {
     "npm": ">=10.0.0 <11.0.0",
