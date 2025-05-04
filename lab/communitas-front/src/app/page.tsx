@@ -1,6 +1,6 @@
 import React from 'react';
 import MunicipalityDoctorsTable from './components/municipality-doctors.ts/MunicipalityDoctorsTable';
-import { MunicipalityDoctors } from './components/municipality-doctors.ts/route';
+import { MunicipalityDoctors } from './components/municipality-doctors.ts/MunicipalityDoctorsTable';
 
 export const revalidate = 5; // later 60 * 60 * 24;
 
