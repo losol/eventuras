@@ -9,11 +9,11 @@
     "@commitlint/config-conventional": "^19.8.0",
     "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*",
-    "eslint": "^9.24.0",
+    "eslint": "^9.26.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.1",
     "prettier": "^3.5.3",
-    "turbo": "^2.5.0",
+    "turbo": "^2.5.2",
     "typescript": "^5.8.3"
   },
   "workspaces": [
