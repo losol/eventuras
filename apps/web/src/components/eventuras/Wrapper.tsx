@@ -40,7 +40,12 @@ const Wrapper = async (props: WrapperProps) => {
 
   return (
     <>
-      <Navbar title={site?.name ?? 'Eventuras'} bgColor={bgClass} bgDark={props.bgDark}>
+      <Navbar
+        title={site?.name ?? 'Eventuras'}
+        bgColor={bgClass}
+        bgDark={props.bgDark}
+        LinkComponent={Link}
+      >
         <UserMenu
           loggedInContent={{
             accountLabel: t('common.labels.account'),
