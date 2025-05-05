@@ -17,5 +17,5 @@ export default async function EventPage({ params }: Readonly<EventInfoProps>) {
   if (!eventInfoQuery.ok || !eventInfoQuery.value) return <div>Event not found</div>;
 
   const eventinfo = eventInfoQuery.value;
-  redirect(`/events/${eventinfo.id!}/${eventinfo.slug!}`);
+  redirect(`/events/${eventinfo.id!}/${encodeURI(eventinfo.slug!)}`);
 }

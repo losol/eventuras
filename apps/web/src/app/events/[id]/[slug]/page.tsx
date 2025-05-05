@@ -73,7 +73,7 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
 
   // Redirect if slug doesn't match
   if (slug !== eventinfo.slug && eventinfo.slug) {
-    redirect(`/events/${eventinfo.id}/${eventinfo.slug}`);
+    redirect(`/events/${eventinfo.id}/${encodeURI(eventinfo.slug)}`);
   }
 
   const hasFeaturedImage = Boolean(eventinfo.featuredImageUrl);
