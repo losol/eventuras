@@ -17,7 +17,7 @@ const Page: React.FC<EventInfoProps> = async props => {
   if (!eventInfoQuery.ok || !eventInfoQuery.value) return <div>Event not found</div>;
 
   const eventinfo = eventInfoQuery.value;
-  redirect(`/events/${eventinfo.id!}/${eventinfo.slug!}`);
+  redirect(`/events/${eventinfo.id!}/${encodeURI(eventinfo.slug!)}`);
 };
 
 export default Page;
