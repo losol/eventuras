@@ -1,9 +1,9 @@
 {
   "extends": "@eventuras/typescript-config/library.json",
-    "compilerOptions": {
+  "compilerOptions": {
     "paths": {
-      "@eventuras/utils/*":["../../libs/utils/src/*"],
-    },
+      "@eventuras/utils/*": ["../../libs/utils/src/*"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

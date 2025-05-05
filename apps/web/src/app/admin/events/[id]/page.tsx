@@ -1,6 +1,5 @@
 import { Badge, Container, Heading, Section } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/utils';
-import { getTranslations } from 'next-intl/server';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import Link from '@/components/Link';
@@ -10,6 +9,7 @@ import { getAccessToken } from '@/utils/getAccesstoken';
 
 import EventAdminActionsMenu from '../EventAdminActionsMenu';
 import ParticipantsSection from './ParticipantsSection';
+import { notFound } from 'next/navigation';
 
 type EventInfoProps = {
   params: Promise<{
@@ -20,75 +20,61 @@ type EventInfoProps = {
 export default async function EventAdminPage({ params }: Readonly<EventInfoProps>) {
   const { id } = await params;
 
-  const t = await getTranslations();
-
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
     authHeader: await getAccessToken(),
   });
 
-  const eventinfo = await apiWrapper(() =>
-    eventuras.events.getV3Events1({
-      id: id,
-    })
-  );
+  const [eventinfo, registrations, eventProducts, statistics] = await Promise.all([
+    apiWrapper(() => eventuras.events.getV3Events1({ id })),
+    apiWrapper(() =>
+      eventuras.registrations.getV3Registrations({
+        eventId: id,
+        includeUserInfo: true,
+        includeProducts: true,
+      })
+    ),
+    apiWrapper(() => eventuras.eventProducts.getV3EventsProducts({ eventId: id })),
+    apiWrapper(() => eventuras.eventStatistics.getV3EventsStatistics({ eventId: id })),
+  ]);
 
-  const registrations = await apiWrapper(() =>
-    eventuras.registrations.getV3Registrations({
-      eventId: id,
-      includeUserInfo: true,
-      includeProducts: true,
-    })
-  );
-
-  const eventProducts = await apiWrapper(() =>
-    eventuras.eventProducts.getV3EventsProducts({
-      eventId: id,
-    })
-  );
-
-  const statistics = await apiWrapper(() =>
-    eventuras.eventStatistics.getV3EventsStatistics({
-      eventId: id,
-    })
-  );
-
-  if (!eventinfo.ok) {
-    Logger.error(
-      { namespace: 'EditEventinfo' },
-      `Failed to fetch eventinfo ${id}, error: ${eventinfo.error}`
-    );
+  if (!eventinfo.ok || !eventinfo.value) {
+    Logger.error({ namespace: 'EditEventinfo' }, `Event ${id} not found`);
+    notFound();
   }
 
-  if (!eventinfo.ok) {
-    return <div>{t('common.event-not-found')}</div>;
+  if (!registrations.ok) {
+    Logger.warn({ namespace: 'EventAdminPage' }, 'registrations call failed', registrations.error);
+  }
+  if (!eventProducts.ok) {
+    Logger.warn({ namespace: 'EventAdminPage' }, 'products call failed', eventProducts.error);
+  }
+  if (!statistics.ok) {
+    Logger.warn({ namespace: 'EventAdminPage' }, 'statistics call failed', statistics.error);
   }
 
   return (
     <Wrapper fluid>
-      <Section className="bg-white dark:bg-black   pb-8">
+      <Section className="bg-white dark:bg-black pb-8">
         <Container>
-          <Heading as="h1">{eventinfo.value?.title ?? ''}</Heading>
+          <Heading as="h1">{eventinfo.value!.title}</Heading>
           <EventAdminActionsMenu eventinfo={eventinfo.value!} />
+
           <div className="flex flex-row flex-wrap">
-            {eventProducts.value?.map(product => (
-              <>
-                <Link
-                  href={`/admin/events/${id}/products/${product.productId}`}
-                  key={product.productId}
-                >
-                  {product.name} <Badge>Id: {product.productId}</Badge>
-                </Link>
-              </>
+            {(eventProducts.value ?? []).map(p => (
+              <Link href={`/admin/events/${id}/products/${p.productId}`} key={p.productId}>
+                {p.name} <Badge>Id: {p.productId}</Badge>
+              </Link>
             ))}
           </div>
         </Container>
       </Section>
+
       <ParticipantsSection
         eventInfo={eventinfo.value!}
-        participants={registrations.value!.data!}
-        statistics={statistics.value!}
-        eventProducts={eventProducts.value!}
+        participants={registrations.value?.data ?? []}
+        statistics={statistics.value ?? {}}
+        eventProducts={eventProducts.value ?? []}
       />
     </Wrapper>
   );

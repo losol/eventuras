@@ -5,8 +5,6 @@ import { cookies } from 'next/headers';
 
 import { oauthConfig } from '@/utils/oauthConfig';
 
-import Environment from './Environment';
-
 /**
  * Returns a valid access token for the current session.
  * If the access token is nearing expiration (less than 300 seconds remaining),

@@ -83,12 +83,15 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // ─── 3) No valid session → redirect to login ─────────────────────────────────
-  {
-    const loginUrl = new URL('/api/login/auth0', originUrl);
-    loginUrl.searchParams.set('returnTo', pathname + search);
-    return NextResponse.redirect(loginUrl.toString());
-  }
+  // ─── 3) No valid session → redirect to login ────────────────────────────
+  /* build the return‑to URL */
+  const loginUrl = new URL('/api/login/auth0', originUrl);
+  loginUrl.searchParams.set('returnTo', pathname + search);
+
+  /* redirect + delete the cookie */
+  const res = NextResponse.redirect(loginUrl.toString());
+  res.cookies.delete('session');
+  return res;
 }
 
 export const config = {
