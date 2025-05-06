@@ -16,7 +16,7 @@ export interface SectionProps
   [key: string]: any;
 }
 
-const Section: React.FC<SectionProps> = ({
+export const Section: React.FC<SectionProps> = ({
   children,
   className = '',
   // spacing props
@@ -34,7 +34,7 @@ const Section: React.FC<SectionProps> = ({
 }) => {
 
   const spacingClasses = buildSpacingClasses({ padding, margin, border, width, height });
-  const style = getBackgroundStyle(backgroundImageUrl, undefined);
+  const style = getBackgroundStyle(backgroundImageUrl);
 
   const classes = [spacingClasses, backgroundColorClass, className]
     .filter(Boolean)
