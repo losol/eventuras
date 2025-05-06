@@ -6,6 +6,8 @@ interface ContainerProps {
   className?: string;
 }
 
+export const CONTAINER_CLASSES = 'p-3 container mx-auto';
+
 const Container: React.FC<ContainerProps> = ({
   children,
   as: Component = 'div',
@@ -13,7 +15,7 @@ const Container: React.FC<ContainerProps> = ({
   ...rest
 }) => {
   return (
-    <Component className={`p-3 container mx-auto ${className}`} {...rest}>
+    <Component className={`${CONTAINER_CLASSES} ${className}`} {...rest}>
       {children}
     </Component>
   );

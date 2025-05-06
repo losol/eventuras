@@ -1,18 +1,21 @@
-'use client';
-
+import React from 'react';
 import { MarkdownContent } from '@eventuras/markdown';
 import { EventDto } from '@eventuras/sdk';
 import { Heading } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
-import React from 'react';
-
 import Link from '@/components/Link';
+import { NavList } from '@eventuras/ratio-ui/core/NavList';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
 
 type EventProps = {
   eventinfo: EventDto;
   bgClassNames?: string;
 };
 
+/**
+ * Renders event details with top sticky navigation for sections.
+ * @param props - See {@link EventProps}.
+ */
 const EventDetails: React.FC<EventProps> = ({ eventinfo }) => {
   const t = useTranslations();
 
@@ -20,46 +23,36 @@ const EventDetails: React.FC<EventProps> = ({ eventinfo }) => {
 
   const sections = [
     {
-      id: 'more-information',
+      id: 'information',
+      href: '#more-information',
       title: t('common.events.moreinformation'),
       content: eventinfo.moreInformation,
     },
     {
       id: 'program',
+      href: '#program',
       title: t('common.events.program'),
       content: eventinfo.program,
     },
     {
       id: 'practical-information',
+      href: '#practical-information',
       title: t('common.events.practicalinformation'),
       content: eventinfo.practicalInformation,
     },
-  ].filter(section => section.content);
+  ];
 
   return (
-    <section
-      id="eventdetails"
-      className="eventdetails bg-primary-100/30 dark:bg-primary-900 py-10 min-h-screen"
-    >
-      <div className="flex flex-col md:flex-row container mx-auto">
-        <div className="mb-8 md:mb-0 md:sticky md:top-20 md:flex md:flex-col md:mr-8 md:w-1/4 mt-10">
-          {sections.map((section, index) => (
-            <Link key={index} href={`#${section.id}`} variant="button-text">
-              {section.title}
-            </Link>
-          ))}
-        </div>
+    <Section className="pb-24">
+      <NavList items={sections} LinkComponent={Link} sticky />
 
-        <div className="grow md:w-3/4">
-          {sections.map((section, index) => (
-            <section key={index} id={section.id} className="mb-8">
-              <Heading as="h2">{section.title}</Heading>
-              <MarkdownContent markdown={section.content} />
-            </section>
-          ))}
-        </div>
-      </div>
-    </section>
+      {sections.map(section => (
+        <Section key={section.id} id={section.id} container>
+          <Heading as="h2">{section.title}</Heading>
+          <MarkdownContent markdown={section.content!} />
+        </Section>
+      ))}
+    </Section>
   );
 };
 
