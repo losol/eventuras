@@ -1,6 +1,6 @@
 'use client';
 
-import { Fieldset } from '@eventuras/forms';
+import { Fieldset } from '@eventuras/ratio-ui/forms';
 import { UserDto, UserFormDto } from '@eventuras/sdk';
 import { Form, Input } from '@eventuras/smartform';
 import { Button } from '@eventuras/ratio-ui';

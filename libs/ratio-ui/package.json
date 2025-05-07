@@ -14,6 +14,7 @@
       "import": "./dist/eventuras-ui.es.js",
       "types": "./dist/index.d.ts"
     },
+    "./forms/*": "./forms/*",
     "./ratio-ui.css": "./dist/ratio-ui.css"
   },
   "peerDependencies": {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { formStyles, InputLabel, InputProps } from '@eventuras/forms';
+import { formStyles, InputLabel, InputProps } from '@eventuras/ratio-ui/forms';
 import { DATA_TEST_ID } from '@eventuras/utils';
 
 export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {

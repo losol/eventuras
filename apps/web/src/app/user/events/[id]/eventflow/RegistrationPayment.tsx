@@ -1,6 +1,6 @@
 'use client';
 
-import { Input } from '@eventuras/forms';
+import { Input } from '@eventuras/ratio-ui/forms';
 import { PaymentProvider, UserDto } from '@eventuras/sdk';
 import { Button } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
