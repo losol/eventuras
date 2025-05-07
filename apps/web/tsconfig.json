@@ -6,7 +6,6 @@
       "@eventuras/datatable": ["../../libs/datatable/src/*"],
       "@eventuras/enrollments-sdk": ["../../libs/enrollments-sdk"],
       "@eventuras/fides-auth/*": ["../../libs/fides-auth/src/*"],
-      "@eventuras/forms*": ["../../libs/forms/src*"],
       "@eventuras/markdown": ["../../libs/markdown/src/*"],
       "@eventuras/markdowninput": ["../../libs/markdowninput"],
       "@eventuras/scribo": ["../../libs/scribo"],

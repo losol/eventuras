@@ -1,6 +1,6 @@
 'use client';
 
-import { Fieldset } from '@eventuras/forms';
+import { Fieldset } from '@eventuras/ratio-ui/forms';
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { ApiError, EventDto, EventFormDto, EventInfoStatus, EventInfoType } from '@eventuras/sdk';
 import {

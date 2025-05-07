@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "main": "src/index.ts",
   "dependencies": {
-    "@eventuras/forms": "*",
     "@eventuras/ratio-ui": "*",
     "@tanstack/match-sorter-utils": "^8.19.4",
     "@tanstack/react-table": "^8.21.3"

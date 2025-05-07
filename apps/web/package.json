@@ -23,7 +23,6 @@
   ],
   "dependencies": {
     "@eventuras/fides-auth": "*",
-    "@eventuras/forms": "*",
     "@eventuras/markdown": "*",
     "@eventuras/ratio-ui": "*",
     "@eventuras/scribo": "*",

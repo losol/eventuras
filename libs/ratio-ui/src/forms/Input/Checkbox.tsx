@@ -1,7 +1,5 @@
 import React, { FC, InputHTMLAttributes, ReactNode } from 'react';
 
-import { TEST_ID_ATTRIBUTE } from '@/utils/constants';
-
 export const checkboxStyles = {
   container: 'my-2',
   checkbox:

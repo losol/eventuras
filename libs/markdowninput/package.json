@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "main": "src/index.tsx",
   "dependencies": {
-    "@eventuras/forms": "*",
     "@eventuras/scribo": "*",
     "@eventuras/smartform": "*",
     "@eventuras/ratio-ui": "*"

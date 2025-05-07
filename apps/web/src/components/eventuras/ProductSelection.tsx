@@ -1,4 +1,4 @@
-import Checkbox, { CheckBoxDescription, CheckBoxLabel } from '@eventuras/forms/src/inputs/Checkbox';
+import { Checkbox, CheckBoxDescription, CheckBoxLabel } from '@eventuras/ratio-ui/forms';
 import { ProductDto } from '@eventuras/sdk';
 import { DATA_TEST_ID } from '@eventuras/utils';
 
