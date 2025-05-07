@@ -26,6 +26,10 @@ const config: StorybookConfig = {
   "framework": {
     "name": getAbsolutePath('@storybook/react-vite'),
     "options": {}
-  }
+  },
+  core: {
+    disableTelemetry: true,
+    disableWhatsNewNotifications: true,
+  },
 };
 export default config;
