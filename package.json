@@ -5,15 +5,15 @@
   "private": true,
   "packageManager": "npm@11.3.0",
   "devDependencies": {
-    "@commitlint/cli": "^19.8.0",
-    "@commitlint/config-conventional": "^19.8.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*",
     "eslint": "^9.26.0",
     "husky": "^9.1.7",
-    "lint-staged": "^15.5.1",
+    "lint-staged": "^15.5.2",
     "prettier": "^3.5.3",
-    "turbo": "^2.5.2",
+    "turbo": "^2.5.3",
     "typescript": "^5.8.3"
   },
   "workspaces": [
