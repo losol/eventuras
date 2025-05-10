@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "dependencies": {
     "@eventuras/ratio-ui": "*",
-    "react-hook-form": "^7.55.0"
+    "react-hook-form": "^7.56.3"
   },
   "peerDependencies": {
     "react": "^19.1.0",

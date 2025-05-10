@@ -7,7 +7,7 @@
   "dependencies": {
     "@eventuras/utils": "*",
     "@eventuras/typescript-config": "*",
-    "jose": "6.0.10",
-    "openid-client": "^6.4.2"
+    "jose": "6.0.11",
+    "openid-client": "^6.5.0"
   }
 }
