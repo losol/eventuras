@@ -111,6 +111,11 @@
       }
     }
   },
+  "system": {
+    "page": {
+      "title": "System settings"
+    }
+  },
   "title": "Admin",
   "users": {
     "detailspage": {

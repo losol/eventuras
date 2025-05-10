@@ -1,0 +1,17 @@
+{
+  "name": "@eventuras/event-sdk",
+  "version": "0.0.1",
+  "description": "Event api sdk",
+  "main": "index.js",
+  "exports": {
+    ".": "./src/client/index.ts"
+  },
+  "scripts": {
+    "build": "openapi-ts"
+  },
+  "author": "Ole Kristian Losvik",
+  "license": "GPL-2.0-or-later",
+  "dependencies": {
+    "@hey-api/client-next": "^0.3.0"
+  }
+}
