@@ -4,7 +4,6 @@
   "description": "Website template for Payload",
   "license": "MIT",
   "type": "module",
-  "packageManager": "npm@11.3.0",
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
     "postbuild": "next-sitemap --config next-sitemap.config.cjs",
