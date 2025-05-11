@@ -1,4 +1,4 @@
-import { getLocalizedCollectionName, getOriginalCollectionName } from '@/app/(frontend)/[locale]/[collection]/pageCollections';
+import { getLocalizedCollectionName, getOriginalCollectionName } from '@/app/(frontend)/[locale]/c/[collection]/pageCollections';
 import canUseDOM from './canUseDOM';
 
 export const getServerSideURL = () => {

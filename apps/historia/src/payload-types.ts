@@ -160,6 +160,7 @@ export interface UserAuthOperations {
  */
 export interface Article {
   id: string;
+  tenant?: (string | null) | Website;
   /**
    * The title of the entry.
    */
@@ -167,10 +168,6 @@ export interface Article {
   image?: Image;
   lead?: string | null;
   story?: ContentBlock[] | null;
-  /**
-   * Select the websites or platforms where this article will be published.
-   */
-  channels?: (string | Website)[] | null;
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -211,6 +208,65 @@ export interface Article {
             value: string | Project;
           }
       )[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "websites".
+ */
+export interface Website {
+  id: string;
+  name: string;
+  /**
+   * The title of the entry.
+   */
+  title: string;
+  summary?: string | null;
+  domains?: string[] | null;
+  homePage?: (string | null) | Page;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    image?: (string | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: string;
+  tenant?: (string | null) | Website;
+  name: string;
+  /**
+   * The title of the entry.
+   */
+  title: string;
+  lead?: string | null;
+  image?: Image;
+  story?: (ArchiveBlock | ContentBlock)[] | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  resourceId: string;
+  /**
+   * The license governing the use of this media.
+   */
+  license?: (string | null) | License;
+  contributors?: Contributors;
+  publishedAt?: string | null;
+  parent?: (string | null) | Page;
+  breadcrumbs?:
+    | {
+        doc?: (string | null) | Page;
+        url?: string | null;
+        label?: string | null;
+        id?: string | null;
+      }[]
     | null;
   updatedAt: string;
   createdAt: string;
@@ -412,6 +468,7 @@ export interface ContentBlock {
  */
 export interface Note {
   id: string;
+  tenant?: (string | null) | Website;
   /**
    * The title of the entry.
    */
@@ -466,10 +523,6 @@ export interface Note {
     | null;
   slug?: string | null;
   slugLock?: boolean | null;
-  /**
-   * Select the websites or platforms where this article will be published.
-   */
-  channels?: (string | Website)[] | null;
   resourceId: string;
   updatedAt: string;
   createdAt: string;
@@ -480,6 +533,7 @@ export interface Note {
  */
 export interface Topic {
   id: string;
+  tenant?: (string | null) | Website;
   /**
    * The title of the entry.
    */
@@ -503,96 +557,6 @@ export interface Topic {
   } | null;
   image?: Image;
   resourceId: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pages".
- */
-export interface Page {
-  id: string;
-  name: string;
-  /**
-   * The title of the entry.
-   */
-  title: string;
-  lead?: string | null;
-  image?: Image;
-  story?: (ArchiveBlock | ContentBlock)[] | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  resourceId: string;
-  /**
-   * Select the websites or platforms where this article will be published.
-   */
-  channels?: (string | Website)[] | null;
-  /**
-   * The license governing the use of this media.
-   */
-  license?: (string | null) | License;
-  contributors?: Contributors;
-  publishedAt?: string | null;
-  parent?: (string | null) | Page;
-  breadcrumbs?:
-    | {
-        doc?: (string | null) | Page;
-        url?: string | null;
-        label?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ArchiveBlock".
- */
-export interface ArchiveBlock {
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  relationTo?: ('articles' | 'happenings' | 'notes' | 'projects') | null;
-  topics?: (string | Topic)[] | null;
-  showImages?: boolean | null;
-  limit?: number | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'archive';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "websites".
- */
-export interface Website {
-  id: string;
-  name: string;
-  /**
-   * The title of the entry.
-   */
-  title: string;
-  summary?: string | null;
-  domains?: string[] | null;
-  homePage?: (string | null) | Page;
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    image?: (string | null) | Media;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -602,6 +566,7 @@ export interface Website {
  */
 export interface Place {
   id: string;
+  tenant?: (string | null) | Website;
   name: string;
   description?: {
     root: {
@@ -649,6 +614,7 @@ export interface Place {
  */
 export interface Project {
   id: string;
+  tenant?: (string | null) | Website;
   /**
    * The title of the entry.
    */
@@ -680,10 +646,6 @@ export interface Project {
   slugLock?: boolean | null;
   resourceId: string;
   publishedAt?: string | null;
-  /**
-   * Select the websites or platforms where this article will be published.
-   */
-  channels?: (string | Website)[] | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -719,10 +681,39 @@ export interface Organization {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ArchiveBlock".
+ */
+export interface ArchiveBlock {
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  relationTo?: ('articles' | 'happenings' | 'notes' | 'projects') | null;
+  topics?: (string | Topic)[] | null;
+  showImages?: boolean | null;
+  limit?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'archive';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "happenings".
  */
 export interface Happening {
   id: string;
+  tenant?: (string | null) | Website;
   /**
    * The title of the entry.
    */
@@ -736,10 +727,6 @@ export interface Happening {
   contentLocations?: (string | Place)[] | null;
   slug?: string | null;
   slugLock?: boolean | null;
-  /**
-   * Select the websites or platforms where this article will be published.
-   */
-  channels?: (string | Website)[] | null;
   resourceId: string;
   config?:
     | {
@@ -809,7 +796,14 @@ export interface User {
   email_verified?: boolean | null;
   phone_number?: string | null;
   phone_number_verified?: boolean | null;
-  roles?: ('admin' | 'user')[] | null;
+  roles?: ('admin' | 'system-admin' | 'user')[] | null;
+  tenants?:
+    | {
+        tenant: string | Website;
+        roles: ('site-admin' | 'site-member')[];
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -1203,6 +1197,7 @@ export interface PayloadMigration {
  * via the `definition` "articles_select".
  */
 export interface ArticlesSelect<T extends boolean = true> {
+  tenant?: T;
   title?: T;
   image?: T | ImageSelect<T>;
   lead?: T;
@@ -1211,7 +1206,6 @@ export interface ArticlesSelect<T extends boolean = true> {
     | {
         content?: T | ContentBlockSelect<T>;
       };
-  channels?: T;
   publishedAt?: T;
   slug?: T;
   slugLock?: T;
@@ -1255,6 +1249,7 @@ export interface ContributorsSelect<T extends boolean = true> {
  * via the `definition` "happenings_select".
  */
 export interface HappeningsSelect<T extends boolean = true> {
+  tenant?: T;
   title?: T;
   lead?: T;
   image?: T | ImageSelect<T>;
@@ -1274,7 +1269,6 @@ export interface HappeningsSelect<T extends boolean = true> {
   contentLocations?: T;
   slug?: T;
   slugLock?: T;
-  channels?: T;
   resourceId?: T;
   config?: T;
   updatedAt?: T;
@@ -1370,6 +1364,7 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "notes_select".
  */
 export interface NotesSelect<T extends boolean = true> {
+  tenant?: T;
   title?: T;
   image?: T | ImageSelect<T>;
   content?: T;
@@ -1377,7 +1372,6 @@ export interface NotesSelect<T extends boolean = true> {
   relatedContent?: T;
   slug?: T;
   slugLock?: T;
-  channels?: T;
   resourceId?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1401,6 +1395,7 @@ export interface OrganizationsSelect<T extends boolean = true> {
  * via the `definition` "pages_select".
  */
 export interface PagesSelect<T extends boolean = true> {
+  tenant?: T;
   name?: T;
   title?: T;
   lead?: T;
@@ -1414,7 +1409,6 @@ export interface PagesSelect<T extends boolean = true> {
   slug?: T;
   slugLock?: T;
   resourceId?: T;
-  channels?: T;
   license?: T;
   contributors?: T | ContributorsSelect<T>;
   publishedAt?: T;
@@ -1471,6 +1465,7 @@ export interface PersonsSelect<T extends boolean = true> {
  * via the `definition` "places_select".
  */
 export interface PlacesSelect<T extends boolean = true> {
+  tenant?: T;
   name?: T;
   description?: T;
   image?: T | ImageSelect<T>;
@@ -1505,6 +1500,7 @@ export interface PlacesSelect<T extends boolean = true> {
  * via the `definition` "projects_select".
  */
 export interface ProjectsSelect<T extends boolean = true> {
+  tenant?: T;
   title?: T;
   lead?: T;
   image?: T | ImageSelect<T>;
@@ -1526,7 +1522,6 @@ export interface ProjectsSelect<T extends boolean = true> {
   slugLock?: T;
   resourceId?: T;
   publishedAt?: T;
-  channels?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1536,6 +1531,7 @@ export interface ProjectsSelect<T extends boolean = true> {
  * via the `definition` "topics_select".
  */
 export interface TopicsSelect<T extends boolean = true> {
+  tenant?: T;
   title?: T;
   slug?: T;
   slugLock?: T;
@@ -1557,6 +1553,13 @@ export interface UsersSelect<T extends boolean = true> {
   phone_number?: T;
   phone_number_verified?: T;
   roles?: T;
+  tenants?:
+    | T
+    | {
+        tenant?: T;
+        roles?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   email?: T;
