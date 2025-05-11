@@ -17,7 +17,7 @@ import { name } from '@/fields/name';
 import resourceId from '@/fields/resourceId';
 import { Content } from "@/blocks/Content/config";
 import { Archive } from "@/blocks/ArchiveBlock/config";
-import { channels } from '@/fields/channels';
+
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -68,7 +68,6 @@ export const Pages: CollectionConfig<'pages'> = {
           fields: [
             ...slugField("name"),
             resourceId,
-            channels,
             license,
             contributors,
             publishedAt

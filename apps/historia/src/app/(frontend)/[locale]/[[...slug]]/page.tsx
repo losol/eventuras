@@ -139,8 +139,16 @@ export default async function Page({ params: paramsPromise }: Args) {
 }
 
 // Get the homepage ID from the environment
+import { headers } from 'next/headers';
+
 const getHomePageId = cache(async (): Promise<string | null> => {
   const payload = await getPayload({ config: configPromise });
+  const host = (await headers()).get('host');
+
+  if (!host) {
+    console.warn('No host header found.');
+    return null;
+  }
 
   const website = await payload.find({
     collection: 'websites',
@@ -148,7 +156,7 @@ const getHomePageId = cache(async (): Promise<string | null> => {
     limit: 1,
     where: {
       domains: {
-        contains: serverDomain,
+        contains: host,
       },
     },
   });
@@ -161,7 +169,7 @@ const getHomePageId = cache(async (): Promise<string | null> => {
     return 'id' in website.docs[0].homePage ? website.docs[0].homePage.id : null;
   }
 
-  console.warn(`No website configuration found for domain: ${serverDomain}`);
+  console.warn(`No website configuration found for host: ${host}`);
   return null;
 });
 
