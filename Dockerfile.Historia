@@ -2,40 +2,18 @@
 FROM node:22-bookworm-slim AS base
 
 ##########################
-# Turbo Prune + Install  #
+# Dependencies           #
 ##########################
 FROM base AS deps
 
-# Install required system packages
+# Add libc6-compat for compatibility
 RUN apt-get update && apt-get install -y --no-install-recommends libc6 && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
+WORKDIR /home/node/app
 
-# Copy only what is needed for turbo to determine the dependency graph
-COPY package.json package-lock.json turbo.json tsconfig.json ./
-
-# Copy source for relevant apps and libs only (historia and its deps)
-COPY apps/historia ./apps/historia
-COPY libs ./libs
-
-# Install all dependencies needed for historia and its deps
-RUN npm install -g turbo
-RUN turbo prune --scope=@eventuras/historia --docker
-
-##########################
-# Rehydrate dependencies #
-##########################
-FROM base AS install
-
-WORKDIR /app
-
-# Copy pruned files from previous stage
-COPY --from=deps /app/out/json/ ./
-COPY --from=deps /app/out/package-lock.json ./package-lock.json
-COPY --from=deps /app/out/full/ ./
-
-# Install production deps only (omit=dev)
-RUN npm install --omit=dev
+COPY package.json package-lock.json ./
+COPY apps/historia/package.json apps/historia/package.json
+RUN npm ci
 
 ##########################
 # Build                  #
@@ -49,11 +27,12 @@ ENV CMS_SECRET=${CMS_SECRET}
 
 ARG CMS_DEFAULT_LOCALE=no
 ENV CMS_DEFAULT_LOCALE=${CMS_DEFAULT_LOCALE}
+
+COPY --from=deps /home/node/app/node_modules ./node_modules
+COPY apps/historia/ .
+
+# Use the variable in build commands if needed
 ENV NEXT_TELEMETRY_DISABLED=1
-
-COPY --from=install /app ./
-
-WORKDIR /app/apps/historia
 RUN npx payload migrate && npm run build
 
 ##########################
@@ -63,18 +42,20 @@ FROM base AS runtime
 
 WORKDIR /app
 
+# Set runtime environment variables
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 --gid 1001 nextjs
 
-# Copy runtime output only
-COPY --from=builder /app/apps/historia/public ./public
-COPY --from=builder /app/apps/historia/.next/standalone ./
-COPY --from=builder /app/apps/historia/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
 USER nextjs
 
 EXPOSE 3000
+
+# Final command
 CMD ["node", "server.js"]
