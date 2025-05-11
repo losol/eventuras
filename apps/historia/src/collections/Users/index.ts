@@ -2,14 +2,37 @@ import type { CollectionConfig } from 'payload';
 
 import { admins, adminsFieldLevel } from '../../access/admins';
 import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin';
+import { tenantsArrayField } from '@payloadcms/plugin-multi-tenant/fields';
+import { setCookieBasedOnDomain } from './hooks/setCookieBasedOnDomain';
+import { createAccess } from './access/create';
+import { updateAndDeleteAccess } from './access/updateAndDelete';
+import { readAccess } from './access/read';
+
+const defaultTenantArrayField = tenantsArrayField({
+  tenantsArrayFieldName: 'tenants',
+  tenantsArrayTenantFieldName: 'tenant',
+  tenantsCollectionSlug: 'websites',
+  arrayFieldAccess: {},
+  tenantFieldAccess: {},
+  rowFields: [
+    {
+      name: 'roles',
+      type: 'select',
+      defaultValue: ['site-member'],
+      hasMany: true,
+      options: ['site-admin', 'site-member'],
+      required: true,
+    },
+  ],
+});
 
 export const Users: CollectionConfig = {
   slug: 'users',
   access: {
-    create: admins,
-    delete: admins,
-    read: admins,
-    update: admins,
+    create: createAccess,
+    delete: () => false,
+    read: readAccess,
+    update: updateAndDeleteAccess,
   },
   admin: {
     defaultColumns: ['email'],
@@ -76,6 +99,10 @@ export const Users: CollectionConfig = {
           value: 'admin',
         },
         {
+          label: 'system-admin',
+          value: 'system-admin',
+        },
+        {
           label: 'user',
           value: 'user',
         },
@@ -84,6 +111,20 @@ export const Users: CollectionConfig = {
         beforeChange: [ensureFirstUserIsAdmin],
       },
     },
+    {
+      ...defaultTenantArrayField,
+      admin: {
+        ...(defaultTenantArrayField?.admin ?? {}),
+        position: 'sidebar',
+      },
+    },
   ],
   timestamps: true,
+  // The following hook sets a cookie based on the domain a user logs in from.
+  // It checks the domain and matches it to a tenant in the system, then sets
+  // a 'payload-tenant' cookie for that tenant.
+
+  hooks: {
+    afterLogin: [setCookieBasedOnDomain],
+  },
 };
