@@ -4,16 +4,18 @@
   "license": "GPL-2.0+",
   "private": true,
   "packageManager": "npm@11.3.0",
+  "dependencies": {
+    "husky": "^9.1.7",
+    "turbo": "^2.5.3"
+  },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*",
     "eslint": "^9.26.0",
-    "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
     "prettier": "^3.5.3",
-    "turbo": "^2.5.3",
     "typescript": "^5.8.3"
   },
   "workspaces": [
@@ -39,6 +41,5 @@
     "npm:update": "npx npm-check-updates --deep -u",
     "npm:clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules && npx rimraf package-lock.json",
     "prepare": "husky"
-  },
-  "dependencies": {}
+  }
 }
