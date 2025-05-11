@@ -91,7 +91,9 @@ export default buildConfig({
     ...plugins, // Additional plugins
   ],
   secret: process.env.CMS_SECRET,
+  serverURL: process.env.NEXT_PUBLIC_CMS_URL,
   sharp,
+  telemetry: false,
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
