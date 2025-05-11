@@ -8,7 +8,7 @@ import type { Article, Page, Project, Note, Happening, Person, Organization } fr
 
 import { Media } from '@/components/Media'
 import { usePathname } from "next/navigation";
-import { getDocUrl } from '@/app/(frontend)/[locale]/[collection]/pageCollections';
+import { getDocUrl } from '@/app/(frontend)/[locale]/c/[collection]/pageCollections';
 
 export const Card: React.FC<{
   className?: string

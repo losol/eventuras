@@ -10,9 +10,12 @@ import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/
 import { searchFields } from '@/search/fieldOverrides';
 import { beforeSyncWithSearch } from '@/search/beforeSync';
 import { s3Storage } from '@payloadcms/storage-s3';
+import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant';
 
-import { Article, Note, Page } from '@/payload-types';
+import { Article, Config, Note, Page } from '@/payload-types';
 import { getServerSideURL } from '@/utilities/getURL';
+import { isSystemAdmin } from '@/access/isSystemAdmin';
+import { getUserTenantIDs } from '@/utilities/getUserTenantIDs';
 
 const generateTitle: GenerateTitle<Article | Note | Page> = ({ doc }) => {
   return doc?.title ? `${doc.title} | Historia` : 'Historia';
@@ -72,6 +75,34 @@ export const plugins: Plugin[] = [
         afterChange: [revalidateRedirects],
       },
     },
+  }),
+  multiTenantPlugin<Config>({
+    tenantsSlug: 'websites',
+    cleanupAfterTenantDelete: false,
+    collections: {
+      articles: {},
+      pages: {},
+      projects: {},
+      happenings: {},
+      notes: {},
+      places: {},
+      topics: {},
+    },
+    tenantField: {
+      access: {
+        read: () => true,
+        update: ({ req }) => {
+          if (isSystemAdmin(req.user)) {
+            return true;
+          }
+          return getUserTenantIDs(req.user).length > 0;
+        },
+      },
+    },
+    tenantsArrayField: {
+      includeDefaultField: false,
+    },
+    userHasAccessToAllTenants: (user) => isSystemAdmin(user),
   }),
   nestedDocsPlugin({
     collections: ['pages'],
