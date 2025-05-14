@@ -1,32 +1,34 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
-using Eventuras.Domain;
-using Eventuras.Services.Email;
-using Hangfire;
 using Losol.Communication.Email;
 using Microsoft.Extensions.Logging;
+using static Eventuras.Domain.Certificate;
 
 namespace Eventuras.Services.Certificates;
 
 internal class CertificateDeliveryService : ICertificateDeliveryService
 {
     private readonly ICertificateRetrievalService _certificateRetrievalService;
+    private readonly ICertificateManagementService _certificateManagementService;
     private readonly ICertificateRenderer _certificateRenderer;
     private readonly IEmailSender _emailSender;
     private readonly ILogger<CertificateDeliveryService> _logger;
 
     public CertificateDeliveryService(
         ICertificateRetrievalService certificateRetrievalService,
+        ICertificateManagementService certificateManagementService,
         ICertificateRenderer certificateRenderer,
         IEmailSender emailSender,
         ILogger<CertificateDeliveryService> logger)
     {
         _certificateRetrievalService = certificateRetrievalService ?? throw
             new ArgumentNullException(nameof(certificateRetrievalService));
+
+        _certificateManagementService = certificateManagementService ?? throw
+            new ArgumentNullException(nameof(certificateManagementService));
 
         _certificateRenderer = certificateRenderer ?? throw
             new ArgumentNullException(nameof(certificateRenderer));
@@ -38,20 +40,26 @@ internal class CertificateDeliveryService : ICertificateDeliveryService
             new ArgumentNullException(nameof(logger));
     }
 
-    public Task QueueCertificateForDeliveryAsync(int certificateId, CancellationToken cancellationToken = default)
+    public async Task QueueCertificateForDeliveryAsync(int certificateId, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Queueing certificate {Id} for delivery.",
             certificateId);
 
-        BackgroundJob.Enqueue<CertificateDeliveryService>(
-            "certificates_queue",
-            x => x.SendCertificateAsync(certificateId, true, cancellationToken)
-        );
+        var certificate = await _certificateRetrievalService.GetCertificateByIdAsync(certificateId,
+            accessControlDone: true,
+            cancellationToken: cancellationToken);
 
-        return Task.CompletedTask;
+        if (certificate == null)
+        {
+            _logger.LogError("Certificate {Id} not found, not sending.", certificateId);
+            return;
+        }
+
+        certificate.DeliveryStatus = CertificateDeliveryStatus.Queued;
+
+        await _certificateManagementService.UpdateCertificateAsync(certificate);
     }
 
-    [AutomaticRetry(Attempts = 0)]
     public async Task SendCertificateAsync(int certificateId, bool accessControlDone,
         CancellationToken cancellationToken)
     {

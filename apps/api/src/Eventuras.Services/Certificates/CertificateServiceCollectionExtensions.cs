@@ -11,6 +11,7 @@ public static class CertificateServiceCollectionExtensions
         services.AddTransient<ICertificateRetrievalService, CertificateRetrievalService>();
         services.AddTransient<ICertificateRenderer, CertificateRenderer>();
         services.AddTransient<ICertificateDeliveryService, CertificateDeliveryService>();
+        services.AddTransient<ICertificateManagementService, CertificateManagementService>();
         return services;
     }
 }

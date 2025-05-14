@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using Eventuras.Services;
+using Eventuras.Services.Certificates;
 using Eventuras.Services.Constants;
 using Eventuras.Services.DbInitializers;
 using Eventuras.Services.Notifications;
@@ -112,27 +113,40 @@ builder.Services.AddHangfire(configuration => configuration
     .UseInMemoryStorage(new InMemoryStorageOptions { MaxExpirationTime = TimeSpan.FromHours(24) })
 );
 
-builder.Services.AddHangfireServer(options =>
-{
-    options.WorkerCount = 1;
-    options.Queues = ["certificates_queue"];
-});
-
 builder.Services.AddQuartz(config =>
 {
     config.SchedulerName = "Eventuras.NotificationScheduler";
     config.UseInMemoryStore();
 
-    var interval = builder.Configuration.GetSection($"Quartz:Jobs:{nameof(NotificationJob)}:IntervalInMinutes").Get<int>();
+    AddNotificationJob(config);
+    AddCertificatesDeliveryJob(config);
+});
+
+void AddNotificationJob(IServiceCollectionQuartzConfigurator config)
+{
+    var notificationsInterval = builder.Configuration
+        .GetSection($"Quartz:Jobs:{nameof(NotificationJob)}:IntervalInMinutes").Get<int>();
 
     var jobKey = new JobKey(nameof(NotificationJob));
     config.AddJob<NotificationJob>(opts => opts.WithIdentity(jobKey));
-
     config.AddTrigger(opts => opts
         .ForJob(jobKey)
         .WithIdentity($"{nameof(NotificationJob)}Trigger")
-        .WithSimpleSchedule(x => x.WithIntervalInMinutes(interval).RepeatForever()));
-});
+        .WithSimpleSchedule(x => x.WithIntervalInMinutes(notificationsInterval).RepeatForever()));
+}
+
+void AddCertificatesDeliveryJob(IServiceCollectionQuartzConfigurator config)
+{
+    var certificatesInterval = builder.Configuration
+        .GetSection($"Quartz:Jobs:{nameof(CertificatesDeliveryJob)}:IntervalInMinutes").Get<int>();
+
+    var jobKey = new JobKey(nameof(CertificatesDeliveryJob));
+    config.AddJob<CertificatesDeliveryJob>(opts => opts.WithIdentity(jobKey));
+    config.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity($"{nameof(CertificatesDeliveryJob)}Trigger")
+        .WithSimpleSchedule(x => x.WithIntervalInMinutes(certificatesInterval).RepeatForever()));
+}
 
 builder.Services.AddQuartzHostedService(options =>
 {

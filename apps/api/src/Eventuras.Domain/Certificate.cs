@@ -7,12 +7,21 @@ namespace Eventuras.Domain;
 
 public class Certificate
 {
-
     public enum CertificateStatus
     {
         Draft = 0,
         Issued = 1,
         Revoked = 2,
+    }
+
+    public enum CertificateDeliveryStatus
+    {
+        New,
+        Queued,
+        Started,
+        Cancelled,
+        Failed,
+        Sent
     }
 
     [Key]
@@ -21,6 +30,7 @@ public class Certificate
     public Guid Auth { get; set; } = Guid.NewGuid();
     public CertificateStatus Status { get; set; } = CertificateStatus.Issued;
     public string StatusComment { get; set; }
+    public CertificateDeliveryStatus DeliveryStatus { get; set; } = CertificateDeliveryStatus.Queued;
 
     [Required]
     public string Title { get; set; }

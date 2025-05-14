@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
@@ -38,6 +39,21 @@ internal class CertificateAccessControlService : ICertificateAccessControlServic
             .CheckRegistrationReadAccessAsync(reg, cancellationToken);
     }
 
+    public async Task CheckCertificatesReadAccessAsync(
+        List<Certificate> certificates,
+        CancellationToken cancellationToken = default)
+    {
+        if (certificates == null || certificates.Count == 0)
+        {
+            throw new InvalidOperationException("Certificates is null or empty");
+        }
+
+        foreach (var certificate in certificates)
+        {
+            await CheckCertificateReadAccessAsync(certificate, cancellationToken);
+        }
+    }
+
     public async Task CheckCertificateUpdateAccessAsync(
         Certificate certificate,
         CancellationToken cancellationToken = default)
@@ -51,6 +67,21 @@ internal class CertificateAccessControlService : ICertificateAccessControlServic
 
         await _registrationAccessControlService
             .CheckRegistrationUpdateAccessAsync(reg, cancellationToken);
+    }
+
+    public async Task CheckCertificatesUpdateAccessAsync(
+        List<Certificate> certificates,
+        CancellationToken cancellationToken = default)
+    {
+        if (certificates == null || certificates.Count == 0)
+        {
+            throw new InvalidOperationException("Certificates is null or empty");
+        }
+
+        foreach (var certificate in certificates)
+        {
+            await CheckCertificateUpdateAccessAsync(certificate, cancellationToken);
+        }
     }
 
     private async Task<Registration> GetRegistrationForCertificateAsync(
