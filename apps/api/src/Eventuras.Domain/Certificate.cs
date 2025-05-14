@@ -30,7 +30,7 @@ public class Certificate
     public Guid Auth { get; set; } = Guid.NewGuid();
     public CertificateStatus Status { get; set; } = CertificateStatus.Issued;
     public string StatusComment { get; set; }
-    public CertificateDeliveryStatus DeliveryStatus { get; set; } = CertificateDeliveryStatus.Queued;
+    public CertificateDeliveryStatus DeliveryStatus { get; set; } = CertificateDeliveryStatus.New;
 
     [Required]
     public string Title { get; set; }

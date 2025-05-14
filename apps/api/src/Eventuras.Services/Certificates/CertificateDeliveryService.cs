@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Eventuras.Domain;
 using Losol.Communication.Email;
 using Microsoft.Extensions.Logging;
 using static Eventuras.Domain.Certificate;
@@ -55,68 +56,84 @@ internal class CertificateDeliveryService : ICertificateDeliveryService
             return;
         }
 
-        certificate.DeliveryStatus = CertificateDeliveryStatus.Queued;
-
-        await _certificateManagementService.UpdateCertificateAsync(certificate);
+        await UpdateCertificateStatusAsync(certificate, CertificateDeliveryStatus.Queued);
     }
 
-    public async Task SendCertificateAsync(int certificateId, bool accessControlDone,
-        CancellationToken cancellationToken)
+    public async Task SendCertificateAsync(Certificate certificate, CancellationToken cancellationToken) =>
+        await SendCertificateInternalAsync(certificate, cancellationToken);
+
+    public async Task SendCertificateAsync(int certificateId, bool accessControlDone, CancellationToken cancellationToken)
     {
-        var certificate =
-            await _certificateRetrievalService.GetCertificateByIdAsync(certificateId,
-                accessControlDone: accessControlDone,
-                cancellationToken: cancellationToken);
+        var certificate = await _certificateRetrievalService.GetCertificateByIdAsync(certificateId,
+            accessControlDone: accessControlDone,
+            cancellationToken: cancellationToken);
 
         if (certificate == null)
         {
-            _logger.LogError("Certificate {Id} not found, not sending.",
-                certificateId);
+            _logger.LogError("Certificate with ID {Id} not found.", certificateId);
             return;
         }
 
-        var pdfStream = await _certificateRenderer
-            .RenderToPdfAsStreamAsync(new CertificateViewModel(certificate));
+        await SendCertificateInternalAsync(certificate, cancellationToken);
+    }
 
+    private async Task SendCertificateInternalAsync(Certificate certificate, CancellationToken cancellationToken)
+    {
+        await UpdateCertificateStatusAsync(certificate, CertificateDeliveryStatus.Started);
+
+        var pdfStream = await _certificateRenderer.RenderToPdfAsStreamAsync(new CertificateViewModel(certificate));
         if (pdfStream == null)
         {
-            _logger.LogError("Certificate {Id} could not be rendered, not sending.",
-                certificateId);
+            _logger.LogError("Certificate {Id} could not be rendered, not sending.", certificate.CertificateId);
+            await UpdateCertificateStatusAsync(certificate, CertificateDeliveryStatus.Failed);
             return;
         }
 
-        var memoryStream = new MemoryStream();
-        await pdfStream.CopyToAsync(memoryStream, cancellationToken);
+        byte[] pdfBytes;
 
-        if (memoryStream.Length == 0)
+        using (pdfStream)
+        using (var memoryStream = new MemoryStream())
         {
-            _logger.LogError("Certificate {Id} was empty, not sending.",
-                certificateId);
-            return;
+            await pdfStream.CopyToAsync(memoryStream, cancellationToken);
+            if (memoryStream.Length == 0)
+            {
+                _logger.LogError("Certificate {Id} was empty, not sending.", certificate.CertificateId);
+                await UpdateCertificateStatusAsync(certificate, CertificateDeliveryStatus.Failed);
+                return;
+            }
+            pdfBytes = memoryStream.ToArray();
         }
-
-        memoryStream.Position = 0;
 
         var emailModel = new EmailModel
         {
-            Recipients = new[] { new Address { Email = certificate.RecipientEmail } },
+            Recipients = [new Address { Email = certificate.RecipientEmail }],
             Subject = $"Kursbevis for {certificate.Title}",
             TextBody = "Her er kursbeviset! Gratulere!",
-            Attachments = new List<Attachment>
+            Attachments = [new()
             {
-                new()
-                {
-                    Filename = "kursbevis.pdf",
-                    ContentType = "application/pdf",
-                    Bytes = memoryStream.ToArray()
-                }
-            }
+                Filename = "kursbevis.pdf",
+                ContentType = "application/pdf",
+                Bytes = pdfBytes
+            }]
         };
 
-        _logger.LogInformation("Sending certificate {Id} to user {UserId}.",
-            certificateId, certificate.RecipientUserId);
+        _logger.LogInformation("Sending certificate {Id} to user {UserId}.", certificate.CertificateId, certificate.RecipientUserId);
 
-        await _emailSender.SendEmailAsync(emailModel,
-            new EmailOptions { OrganizationId = certificate.IssuingOrganizationId });
+        try
+        {
+            await _emailSender.SendEmailAsync(emailModel, new EmailOptions { OrganizationId = certificate.IssuingOrganizationId });
+            await UpdateCertificateStatusAsync(certificate, CertificateDeliveryStatus.Sent);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Failed to send certificate {Id} to user {UserId}. Exception message: {Exception}", certificate.CertificateId, certificate.RecipientUserId, ex.Message);
+            await UpdateCertificateStatusAsync(certificate, CertificateDeliveryStatus.Failed);
+        }
+    }
+
+    private async Task UpdateCertificateStatusAsync(Certificate certificate, CertificateDeliveryStatus status)
+    {
+        certificate.DeliveryStatus = status;
+        await _certificateManagementService.UpdateCertificateAsync(certificate);
     }
 }
