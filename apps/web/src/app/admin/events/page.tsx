@@ -1,6 +1,6 @@
-import { Container, Heading } from '@eventuras/ui';
+import { Container, Heading } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { useTranslations } from 'next-intl';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import Link from '@/components/Link';
@@ -10,22 +10,23 @@ import Environment from '@/utils/Environment';
 import AdminEventList from './AdminEventList';
 
 const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
+
 const AdminPage = () => {
-  const { t } = createTranslation();
+  const t = useTranslations();
   return (
     <Wrapper>
       <Container>
-        <Heading as="h1">{t('admin:title')}</Heading>
+        <Heading as="h1">{t('admin.title')}</Heading>
         <section className="py-10">
           <Link
             href={`/admin/events/create`}
             variant="button-primary"
             {...{ [DATA_TEST_ID]: 'add-event-button' }}
           >
-            {t('admin:events.labes.create')}
+            {t('admin.events.labes.create')}
           </Link>
         </section>
-        <Heading as="h2">{t('common:events.sectiontitle')}</Heading>
+        <Heading as="h2">{t('common.events.sectiontitle')}</Heading>
         <AdminEventList organizationId={ORGANIZATION_ID} includePastEvents />
       </Container>
     </Wrapper>

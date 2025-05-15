@@ -1,5 +1,5 @@
-import { Container, Heading, Section } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import { Container, Heading, Section } from '@eventuras/ratio-ui';
+import { getTranslations } from 'next-intl/server';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import withAuthorization from '@/utils/auth/withAuthorization';
@@ -7,13 +7,13 @@ import withAuthorization from '@/utils/auth/withAuthorization';
 import AdminRegistrationsList from './AdminRegistrationsList';
 
 const AdminRegistrationsPage = async () => {
-  const { t } = createTranslation();
+  const t = await getTranslations();
 
   return (
     <Wrapper>
       <Section className="py-8">
         <Container>
-          <Heading as="h1">{t('common:registrations.page.title')}</Heading>
+          <Heading as="h1">{t('common.registrations.page.title')}</Heading>
         </Container>
       </Section>
       <Section>

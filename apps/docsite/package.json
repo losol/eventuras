@@ -12,7 +12,7 @@
   "author": "Ole Kristian Losvik",
   "license": "GPL-2.0-or-later",
   "dependencies": {
-    "next": "15.2.4",
+    "next": "15.3.2",
     "nextra": "^4.2.17",
     "nextra-theme-docs": "^4.2.17",
     "nextra-theme-blog": "^4.2.17",
@@ -20,6 +20,7 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "copyfiles": "^2.4.1"
+    "copyfiles": "^2.4.1",
+    "@eventuras/eslint-config": "*"
   }
 }

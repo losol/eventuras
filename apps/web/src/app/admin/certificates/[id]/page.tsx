@@ -1,23 +1,24 @@
-import { Container, Heading, Section } from '@eventuras/ui';
+import { Container, Heading, Section } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
-import { oauthConfig } from '@/utils/oauthConfig';
 
 import Certificate from '../Certificate';
 import { PDFCertificate } from '../PDFCertificate';
 
-type EventInfoProps = {
-  params: {
+type CertificateInfoProps = {
+  params: Promise<{
     id: number;
-  };
+  }>;
 };
-const CertificateDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
-  const { t } = createTranslation();
+
+export default async function CertificateDetailPage({ params }: Readonly<CertificateInfoProps>) {
+  const { id } = await params;
+  const t = await getTranslations();
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
@@ -26,19 +27,19 @@ const CertificateDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
 
   const certificate = await apiWrapper(() =>
     eventuras.certificates.getV3Certificates({
-      id: params.id,
+      id: id,
     })
   );
 
   if (!certificate.ok) {
     Logger.error(
-      { namespace: 'EditEventinfo' },
-      `Failed to fetch order id ${params.id}, error: ${certificate.error}`
+      { namespace: 'Certifcatedetailpage' },
+      `Failed to fetch certificate with id ${id}, error: ${certificate.error}`
     );
   }
 
   if (!certificate.ok) {
-    return <div>{t('admin:certificates.labels.notFound')}</div>;
+    return <div>{t('admin.certificates.labels.notFound')}</div>;
   }
 
   return (
@@ -51,11 +52,9 @@ const CertificateDetailPage: React.FC<EventInfoProps> = async ({ params }) => {
       <Section className="py-12">
         <Container>
           <Certificate certificate={certificate.value!} />
-          <PDFCertificate certificateId={params.id} />
+          <PDFCertificate certificateId={id} />
         </Container>
       </Section>
     </Wrapper>
   );
-};
-
-export default CertificateDetailPage;
+}

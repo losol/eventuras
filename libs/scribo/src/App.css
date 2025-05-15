@@ -16,6 +16,7 @@ h1 {
 
 .markdown-output {
   white-space: pre-wrap;
+  overflow: auto;
 }
 
 @media (min-width: 768px) {

@@ -1,10 +1,10 @@
 'use client';
 
-import { Input } from '@eventuras/forms';
+import { Input } from '@eventuras/ratio-ui/forms';
 import { PaymentProvider, UserDto } from '@eventuras/sdk';
-import { Button } from '@eventuras/ui';
+import { Button } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
@@ -57,7 +57,7 @@ const RegistrationPayment = ({
   const onSubmitForm: SubmitHandler<PaymentFormValues> = (data: PaymentFormValues) => {
     onSubmit(data);
   };
-  const { t } = createTranslation();
+  const t = useTranslations();
 
   const formClassName = 'px-8 pt-6 pb-8 mb-4';
   const fieldsetClassName = 'text-lg pt-3 pb-6';
@@ -68,7 +68,7 @@ const RegistrationPayment = ({
       <form onSubmit={handleSubmit(onSubmitForm)} className={formClassName}>
         <fieldset className={fieldsetClassName}>
           <legend className={fieldsetLegendClassName}>
-            {t('user:registration.customertype.legend')}
+            {t('user.registration.customertype.legend')}
           </legend>
           <ul className="flex flex-col">
             <li>
@@ -80,7 +80,7 @@ const RegistrationPayment = ({
                 defaultChecked={true}
                 {...register('paymentMethod')}
               />
-              <label htmlFor="emailinvoice">{t('user:registration.customertype.private')}</label>
+              <label htmlFor="emailinvoice">{t('user.registration.customertype.private')}</label>
             </li>
             <li>
               <input
@@ -90,18 +90,18 @@ const RegistrationPayment = ({
                 value={PaymentProvider.POWER_OFFICE_EHFINVOICE}
                 {...register('paymentMethod')}
               />
-              <label htmlFor="ehfInvoice">{t('user:registration.customertype.business')}</label>
+              <label htmlFor="ehfInvoice">{t('user.registration.customertype.business')}</label>
             </li>
           </ul>
         </fieldset>
 
         <fieldset className={fieldsetClassName}>
           <legend className={fieldsetLegendClassName} hidden>
-            {t('user:registration.user.legend')}
+            {t('user.registration.user.legend')}
           </legend>
           <Input
             {...register('username', { value: userProfile.name! })}
-            label={t('user:registration.user.name')}
+            label={t('user.registration.user.name')}
             defaultValue={userProfile.name}
             disabled
             errors={errors}
@@ -109,7 +109,7 @@ const RegistrationPayment = ({
           />
           <Input
             {...register('email', { value: userProfile.email! })}
-            label={t('user:registration.user.email')}
+            label={t('user.registration.user.email')}
             defaultValue={userProfile.email}
             disabled
             errors={errors}
@@ -117,7 +117,7 @@ const RegistrationPayment = ({
           />
           <Input
             {...register('phoneNumber', { value: userProfile.phoneNumber! })}
-            label={t('user:registration.user.phoneNumber')}
+            label={t('user.registration.user.phoneNumber')}
             defaultValue={userProfile.phoneNumber}
             disabled
             errors={errors}
@@ -126,13 +126,13 @@ const RegistrationPayment = ({
         </fieldset>
         <fieldset className={fieldsetClassName}>
           <legend className={fieldsetLegendClassName}>
-            {t('user:registration.address.legend')}
+            {t('user.registration.address.legend')}
           </legend>
           <Input
             {...register('zip', {
               required: 'Zip code is Required',
             })}
-            label={t('user:registration.address.zip')}
+            label={t('user.registration.address.zip')}
             {...{ [DATA_TEST_ID]: 'registration-zipcode-input' }}
             placeholder="Zip Code"
             errors={errors}
@@ -141,7 +141,7 @@ const RegistrationPayment = ({
             {...register('city', {
               required: 'City is required',
             })}
-            label={t('user:registration.address.city')}
+            label={t('user.registration.address.city')}
             {...{ [DATA_TEST_ID]: 'registration-city-input' }}
             placeholder="City"
             errors={errors}
@@ -150,7 +150,7 @@ const RegistrationPayment = ({
             {...register('country', {
               required: 'Country is required',
             })}
-            label={t('user:registration.address.country')}
+            label={t('user.registration.address.country')}
             {...{ [DATA_TEST_ID]: 'registration-country-input' }}
             default="Norway"
             placeholder="Country"
@@ -161,20 +161,20 @@ const RegistrationPayment = ({
         {showBusinessFieldset && (
           <fieldset className={fieldsetClassName}>
             <legend className={fieldsetLegendClassName}>
-              {t('user:registration.businessinfo.legend')}
+              {t('user.registration.businessinfo.legend')}
             </legend>
             <Input
               {...register('vatNumber', {
                 required: 'Vat Number is required for business customers',
               })}
-              label={t('user:registration.businessinfo.vatNumber')}
+              label={t('user.registration.businessinfo.vatNumber')}
               {...{ [DATA_TEST_ID]: 'registration-vat-input' }}
               placeholder="Vat Number"
               errors={errors}
             />
             <Input
               {...register('invoiceReference')}
-              label={t('user:registration.businessinfo.invoiceReference')}
+              label={t('user.registration.businessinfo.invoiceReference')}
               placeholder="Invoice Reference"
               errors={errors}
             />
@@ -182,7 +182,7 @@ const RegistrationPayment = ({
         )}
         {onBack && (
           <Button type="button" onClick={onBack} variant="outline">
-            {t('common:buttons.back')}
+            {t('common.buttons.back')}
           </Button>
         )}
         <Button
@@ -190,7 +190,7 @@ const RegistrationPayment = ({
           type="submit"
           variant="primary"
         >
-          {t('common:buttons.continue')}
+          {t('common.buttons.continue')}
         </Button>
       </form>
     </>

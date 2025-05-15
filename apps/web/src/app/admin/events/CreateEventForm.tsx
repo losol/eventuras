@@ -1,16 +1,16 @@
 'use client';
 
-import { Fieldset, Form, Input } from '@eventuras/forms';
-import { Button } from '@eventuras/ui';
+import { Fieldset, Form, Input } from '@eventuras/ratio-ui/forms';
+import { Button } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { useTranslations } from 'next-intl';
 
 import Environment from '@/utils/Environment';
 
 import { createEvent } from './actions';
 
 export const CreateEventForm = () => {
-  const { t } = createTranslation();
+  const t = useTranslations();
 
   return (
     <Form action={createEvent}>
@@ -28,7 +28,7 @@ export const CreateEventForm = () => {
       </Fieldset>
 
       <Button type="submit" {...{ [DATA_TEST_ID]: 'create-event-submit-button' }}>
-        {t('common:buttons.submit')}
+        {t('common.buttons.submit')}
       </Button>
     </Form>
   );

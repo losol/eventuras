@@ -1,8 +1,16 @@
 import { OrderDto, OrderStatus } from '@eventuras/sdk';
-import { Badge, Definition, DescriptionList, Heading, Item, Section, Term } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import {
+  Badge,
+  Definition,
+  DescriptionList,
+  Heading,
+  Item,
+  Section,
+  Term,
+} from '@eventuras/ratio-ui';
+import { useTranslations } from 'next-intl';
 
-import Card from '@/components/Card';
+import { Card } from '@eventuras/ratio-ui/core/Card';
 import { formatDateSpan } from '@/utils/formatDate';
 
 import { OrderActionsMenu } from './OrderActionsMenu';
@@ -13,49 +21,49 @@ type OrderProps = {
 };
 
 const Order: React.FC<OrderProps> = ({ admin, order }) => {
-  const { t } = createTranslation();
+  const t = useTranslations();
 
   const statusDescriptions = {
-    Draft: t('common:order.status.labels.draft'),
-    Verified: t('common:order.status.labels.verified'),
-    Invoiced: t('common:order.status.labels.invoiced'),
-    Cancelled: t('common:order.status.labels.cancelled'),
-    Refunded: t('common:order.status.labels.refunded'),
+    Draft: t('common.order.status.labels.draft'),
+    Verified: t('common.order.status.labels.verified'),
+    Invoiced: t('common.order.status.labels.invoiced'),
+    Cancelled: t('common.order.status.labels.cancelled'),
+    Refunded: t('common.order.status.labels.refunded'),
   };
 
   return (
     <Card>
       <DescriptionList>
         <Item>
-          <Term>{t('common:order.labels.id')}</Term>
+          <Term>{t('common.order.labels.id')}</Term>
           <Definition>{order.orderId}</Definition>
         </Item>
         <Item>
-          <Term>{t('common:order.labels.status')}</Term>
+          <Term>{t('common.order.labels.status')}</Term>
           <Definition>
             <Badge>
               {order.status
                 ? statusDescriptions[order.status]
-                : t('common:order.status.labels.unknown')}
+                : t('common.order.status.labels.unknown')}
             </Badge>
           </Definition>
         </Item>
         <Item>
-          <Term>{t('common:order.labels.date')}</Term>
+          <Term>{t('common.order.labels.date')}</Term>
           <Definition>{formatDateSpan(order.time!)}</Definition>
         </Item>
       </DescriptionList>
       <div>
-        <Heading as="h4">{t('common:order.labels.items')}</Heading>
+        <Heading as="h4">{t('common.order.labels.items')}</Heading>
         <table className="min-w-full table-auto">
           <thead>
             <tr>
-              <th>{t('common:order.labels.id')}</th>
-              <th>{t('common:order.labels.product')}</th>
-              <th>{t('common:order.labels.variant')}</th>
-              <th>{t('common:order.labels.quantity')}</th>
-              <th>{t('common:order.labels.price')}</th>
-              <th>{t('common:order.labels.total')}</th>
+              <th>{t('common.order.labels.id')}</th>
+              <th>{t('common.order.labels.product')}</th>
+              <th>{t('common.order.labels.variant')}</th>
+              <th>{t('common.order.labels.quantity')}</th>
+              <th>{t('common.order.labels.price')}</th>
+              <th>{t('common.order.labels.total')}</th>
             </tr>
           </thead>
           <tbody>

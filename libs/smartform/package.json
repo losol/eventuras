@@ -3,13 +3,12 @@
   "main": "src/index.ts",
   "version": "0.1.0",
   "dependencies": {
-    "@eventuras/ui": "*",
-    "@eventuras/forms": "*",
-    "react-hook-form": "^7.54.2"
+    "@eventuras/ratio-ui": "*",
+    "react-hook-form": "^7.56.3"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "*",

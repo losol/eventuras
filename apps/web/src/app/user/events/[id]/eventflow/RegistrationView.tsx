@@ -1,8 +1,8 @@
 import { MarkdownContent } from '@eventuras/markdown';
 import { EventDto, RegistrationDto } from '@eventuras/sdk';
-import { Button, Heading } from '@eventuras/ui';
+import { Button, Heading } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { useTranslations } from 'next-intl';
 
 import Registration from '@/app/admin/registrations/Registration';
 import Tabs from '@/components/Tabs';
@@ -18,16 +18,16 @@ const RegistrationView: React.FC<RegistrationViewProps> = ({
   registration,
   onCancel,
 }) => {
-  const { t } = createTranslation();
+  const t = useTranslations();
 
   return (
     <div>
       <Tabs>
         {/* Welcome letter */}
         {eventInfo?.welcomeLetter ? (
-          <Tabs.Item title={t('common:labels.welcome')} id="tab-welcome">
+          <Tabs.Item title={t('common.labels.welcome')} id="tab-welcome">
             <div className="welcome-letter dark:bg-gray-700 bg-white my-10 p-3">
-              <Heading as="h2">{t('user:events.welcomeLetter')}</Heading>
+              <Heading as="h2">{t('user.events.welcomeLetter')}</Heading>
               <MarkdownContent markdown={eventInfo?.welcomeLetter} />
             </div>
           </Tabs.Item>
@@ -35,10 +35,10 @@ const RegistrationView: React.FC<RegistrationViewProps> = ({
 
         {/* Program */}
         {eventInfo?.program ? (
-          <Tabs.Item title={t('common:labels.program')} id="tab-program">
+          <Tabs.Item title={t('common.labels.program')} id="tab-program">
             <div className="welcome-letter dark:bg-gray-700 bg-white my-10 p-3">
-              <Heading as="h2" spacingClassName="mb-5 mt-0 pt-0">
-                {t('common:labels.program')}
+              <Heading as="h2" padding="mb-5 mt-0 pt-0">
+                {t('common.labels.program')}
               </Heading>
               <MarkdownContent markdown={eventInfo?.program} />
             </div>
@@ -48,17 +48,17 @@ const RegistrationView: React.FC<RegistrationViewProps> = ({
         {/* Registration */}
         <Tabs.Item
           id="tab-registration"
-          title={t('common:labels.registration')}
+          title={t('common.labels.registration')}
           {...{ [DATA_TEST_ID]: 'registrationview-registration-tab' }}
         >
           <Registration registration={registration} />
-          {onCancel && <Button onClick={onCancel}>{t('common:buttons.cancel')}</Button>}
+          {onCancel && <Button onClick={onCancel}>{t('common.buttons.cancel')}</Button>}
         </Tabs.Item>
 
         {/* Practical info */}
         {eventInfo?.practicalInformation ? (
-          <Tabs.Item title={t('common:labels.practicalInfo')}>
-            <Heading as="h2">{t('common:labels.practicalInfo')}</Heading>
+          <Tabs.Item title={t('common.labels.practicalInfo')}>
+            <Heading as="h2">{t('common.labels.practicalInfo')}</Heading>
             <MarkdownContent markdown={eventInfo?.practicalInformation} />
           </Tabs.Item>
         ) : null}

@@ -1,8 +1,8 @@
 'use client';
 
 import { EventDto, ProductDto } from '@eventuras/sdk';
-import { Button, ButtonGroup, Drawer } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import { Button, ButtonGroup, Drawer } from '@eventuras/ratio-ui';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
@@ -23,16 +23,16 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
 }) => {
   const [emailDrawerOpen, setEmailDrawerOpen] = useState<boolean>(false);
   const [SMSDrawerOpen, setSMSDrawerOpen] = useState<boolean>(false);
-  const { t } = createTranslation();
+  const t = useTranslations();
 
   return (
     <>
       <ButtonGroup>
         <Link href={`/admin/events/${eventinfo.id}/edit`} variant="button-outline">
-          {t('common:labels.edit')}
+          {t('common.labels.edit')}
         </Link>
         <Link href={`/admin/events/${eventinfo.id}/products`} variant="button-outline">
-          {t('common:labels.products')}
+          {t('common.labels.products')}
         </Link>
         <AdminCertificatesActionsMenu eventinfo={eventinfo} />
         <Button
@@ -41,7 +41,7 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
             setEmailDrawerOpen(true);
           }}
         >
-          {t('admin:eventNotifier.title')}
+          {t('admin.eventNotifier.title')}
         </Button>
         <Button
           variant="outline"
@@ -52,7 +52,7 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
           SMS
         </Button>
         <Link href={`/admin/notifications?eventId=${eventinfo.id}`} variant="button-outline">
-          {t('common:labels.messagelog')}
+          {t('common.labels.messagelog')}
         </Link>
         <ExcelExportButton EventinfoId={eventinfo.id!} />
       </ButtonGroup>
@@ -61,7 +61,7 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
 
       <Drawer isOpen={emailDrawerOpen} onCancel={() => setEmailDrawerOpen(false)}>
         <Drawer.Header as="h3" className="text-black">
-          {t('admin:eventNotifier.title')}
+          {t('admin.eventNotifier.title')}
         </Drawer.Header>
         <Drawer.Body>
           <EventNotificator

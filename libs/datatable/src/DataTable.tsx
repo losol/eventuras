@@ -15,8 +15,8 @@ import {
 import { useEffect } from 'react';
 import React from 'react';
 
-import { DebouncedInput } from '@eventuras/forms';
-import { Pagination } from '@eventuras/ui';
+import { DebouncedInput } from '@eventuras/ratio-ui/forms';
+import { Pagination } from '@eventuras/ratio-ui';
 
 type DataTableProps = {
   columns: any[];
@@ -145,5 +145,5 @@ const DataTable = (props: DataTableProps) => {
 };
 
 export default DataTable;
-export type { ColumnSort, TableState } from '@tanstack/react-table';
+export type { ColumnFilter, ColumnSort, TableState } from '@tanstack/react-table';
 export { createColumnHelper } from '@tanstack/react-table';

@@ -1,7 +1,7 @@
 'use client';
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { UserDto } from '@eventuras/sdk';
-import createTranslation from 'next-translate/createTranslation';
+import { useTranslations } from 'next-intl';
 
 import Link from '@/components/Link';
 const columnHelper = createColumnHelper<UserDto>();
@@ -10,12 +10,12 @@ interface UserListProps {
 }
 
 const UserList: React.FC<UserListProps> = ({ users = [] }) => {
-  const { t } = createTranslation();
+  const t = useTranslations();
   const renderUserActions = (u: UserDto) => {
     return (
       <div className="flex flex-row">
         <Link variant="button-outline" href={`/admin/users/${u.id}`}>
-          {t('common:labels.view')}
+          {t('common.labels.view')}
         </Link>
       </div>
     );
@@ -35,7 +35,7 @@ const UserList: React.FC<UserListProps> = ({ users = [] }) => {
     }),
     columnHelper.display({
       id: 'actions',
-      header: t('admin:participantColumns.actions').toString(),
+      header: t('admin.participantColumns.actions').toString(),
       cell: info => renderUserActions(info.row.original),
     }),
   ];

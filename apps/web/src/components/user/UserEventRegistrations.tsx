@@ -1,6 +1,6 @@
 import { RegistrationDto } from '@eventuras/sdk';
-import { Grid, Heading } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import { Grid, Heading } from '@eventuras/ratio-ui';
+import { useTranslations } from 'next-intl';
 import { ReactElement } from 'react';
 
 import UserEventRegistrationCard from './UserEventRegistrationCard';
@@ -15,11 +15,11 @@ export type UserEventRegistrationsProps = {
  * @return {ReactElement}  Returns a list of event registrations
  */
 const UserEventRegistrations = ({ registrations }: UserEventRegistrationsProps): ReactElement => {
-  const { t } = createTranslation();
+  const t = useTranslations();
 
   return (
     <div>
-      <Heading>{t('common:labels.registrations')}</Heading>
+      <Heading>{t('common.labels.registrations')}</Heading>
       <Grid>
         {registrations.map(registration => {
           const event = registration.event!;

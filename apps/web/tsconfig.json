@@ -5,15 +5,16 @@
       "@/*": ["./src/*", "./public/*"],
       "@eventuras/datatable": ["../../libs/datatable/src/*"],
       "@eventuras/enrollments-sdk": ["../../libs/enrollments-sdk"],
+      "@eventuras/event-sdk": ["../../libs/event-sdk/src/client"],
+      "@eventuras/event-sdk/*": ["../../libs/event-sdk/src/client/*"],
       "@eventuras/fides-auth/*": ["../../libs/fides-auth/src/*"],
-      "@eventuras/forms*": ["../../libs/forms/src*"],
       "@eventuras/markdown": ["../../libs/markdown/src/*"],
       "@eventuras/markdowninput": ["../../libs/markdowninput"],
       "@eventuras/scribo": ["../../libs/scribo"],
       "@eventuras/smartform": ["../../libs/smartform"],
       "@eventuras/sdk": ["../../libs/sdk"],
-      "@eventuras/ui": ["../../libs/ui/src"],
-      "@eventuras/ui/*": ["../../libs/ui/src/*"],
+      "@eventuras/ratio-ui": ["../../libs/ratio-ui/src"],
+      "@eventuras/ratio-ui/*": ["../../libs/ratio-ui/src/*"],
       "@eventuras/utils": ["../../libs/utils"],
       "@eventuras/utils/*": ["../../libs/utils/*"]
     },
@@ -28,10 +29,12 @@
     "tailwind.config.js",
     "postcss.config.js",
     "next-env.d.ts",
-    "next.config.js",
+    "next.config.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "../../libs/scribo/src/ui/DropDown.tsx",
+    "../../libs/ratio-ui/src/core/Footer/Footer.tsx"
   ],
   "exclude": ["node_modules"]
 }

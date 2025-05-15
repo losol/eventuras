@@ -6,9 +6,7 @@ import React, { useEffect, useState } from 'react'
 
 import { Logo } from '@/components/Logo/Logo'
 
-interface HeaderClientProps {}
-
-export const HeaderClient: React.FC<HeaderClientProps> = () => {
+export const HeaderClient: React.FC = () => {
   const [theme, setTheme] = useState<string | null>(null);
   const { headerTheme, setHeaderTheme } = useHeaderTheme();
   const pathname = usePathname();

@@ -111,6 +111,11 @@
       }
     }
   },
+  "system": {
+    "page": {
+      "title": "Innstillinger"
+    }
+  },
   "title": "Admin",
   "users": {
     "detailspage": {

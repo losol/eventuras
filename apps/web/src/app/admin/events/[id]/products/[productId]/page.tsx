@@ -1,5 +1,5 @@
-import { Container, Heading, Section, Text } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import { Container, Heading, Section, Text } from '@eventuras/ratio-ui';
+import { getTranslations } from 'next-intl/server';
 
 import Link from '@/components/Link';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
@@ -9,16 +9,17 @@ import { getAccessToken } from '@/utils/getAccesstoken';
 import DeliverySummary from '../DeliverySummary';
 
 type EventProductsPage = {
-  params: {
+  params: Promise<{
     id: string;
     productId: string;
-  };
+  }>;
 };
 
-const EventProducts: React.FC<EventProductsPage> = async ({ params }) => {
+const EventProducts: React.FC<EventProductsPage> = async props => {
+  const params = await props.params;
   const eventId = parseInt(params.id);
   const productId = parseInt(params.productId);
-  const { t } = createTranslation();
+  const t = await getTranslations();
 
   const eventuras = createSDK({ authHeader: await getAccessToken() });
   const productSummary = await apiWrapper(() =>
@@ -45,7 +46,7 @@ const EventProducts: React.FC<EventProductsPage> = async ({ params }) => {
     <>
       <Section className="bg-white dark:bg-black py-10">
         <Container>
-          <Heading as="h1" spacingClassName="pt-6 mb-3">
+          <Heading as="h1" padding="pt-6 mb-3">
             {productSummary.value?.product?.name}
           </Heading>
           <Link
@@ -53,7 +54,7 @@ const EventProducts: React.FC<EventProductsPage> = async ({ params }) => {
             variant="button-primary"
             margin="my-5"
           >
-            {t('admin:products.labels.editProducts')}
+            {t('admin.products.labels.editProducts')}
           </Link>
           <Text className="py-3">
             Active {totals.active} &mdash; Cancelled {totals.cancelled} &mdash; Waiting list{' '}

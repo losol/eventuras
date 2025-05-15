@@ -1,7 +1,7 @@
 'use client';
 import { EventStatisticsDto } from '@eventuras/sdk';
-import { NumberCard } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import { NumberCard } from '@eventuras/ratio-ui';
+import { useTranslations } from 'next-intl';
 
 import { ParticipationTypes, ParticipationTypesKey } from '@/types';
 
@@ -16,7 +16,7 @@ const EventStatistics: React.FC<EventStatisticsProps> = ({
   onSelectionChanged,
   highlightedSelection,
 }) => {
-  const { t } = createTranslation();
+  const t = useTranslations();
   const byStatus = statistics ? statistics.byStatus : null;
   const counts = {
     [ParticipationTypes.active]:
@@ -40,12 +40,12 @@ const EventStatistics: React.FC<EventStatisticsProps> = ({
         const className = highlightedSelection === key ? 'font-bold border' : '';
         return (
           <button
-            title={t(`common:labels.${key}`)}
+            title={t(`common.labels.${key}`)}
             key={key}
             onClick={() => toggleSelection(ParticipationTypes[k])}
             className={className}
           >
-            <NumberCard number={counts[k]} label={t(`common:labels.${key}`)} />
+            <NumberCard number={counts[k]} label={t(`common.labels.${key}`)} />
           </button>
         );
       })}

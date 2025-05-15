@@ -1,6 +1,6 @@
 'use client';
 
-import { Fieldset } from '@eventuras/forms';
+import { Fieldset } from '@eventuras/ratio-ui/forms';
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { ApiError, EventDto, EventFormDto, EventInfoStatus, EventInfoType } from '@eventuras/sdk';
 import {
@@ -12,10 +12,10 @@ import {
   NumberInput,
   Select,
 } from '@eventuras/smartform';
-import { Button } from '@eventuras/ui';
+import { Button } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
-import createTranslation from 'next-translate/createTranslation';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 
@@ -36,7 +36,7 @@ type ApiState = {
 };
 
 const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
-  const { t } = createTranslation();
+  const t = useTranslations();
   const [apiState, setApiState] = useState<ApiState>({ error: null, loading: false });
   const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const { addAppNotification } = useAppNotifications();
@@ -66,13 +66,11 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
 
     if (result.ok) {
       addAppNotification({
-        id: Date.now(),
         message: 'Event information was updated!',
         type: AppNotificationType.SUCCESS,
       });
     } else {
       addAppNotification({
-        id: Date.now(),
         message: `Something bad happended: ${result.error}!`,
         type: AppNotificationType.ERROR,
       });
@@ -240,7 +238,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
       </Tabs>
 
       <Button loading={apiState.loading} type="submit">
-        {t('common:buttons.submit')}
+        {t('common.buttons.submit')}
       </Button>
     </Form>
   );

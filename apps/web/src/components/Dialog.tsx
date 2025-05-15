@@ -1,4 +1,4 @@
-import { Heading } from '@eventuras/ui';
+import { Heading } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
 import { Overlay } from '@react-aria/overlays';
 import React, { ReactNode } from 'react';
@@ -19,7 +19,7 @@ const Dialog = (props: DialogProps) => {
       onClickOutside={props.onClose}
     >
       <RaDialog className="relative z-10">
-        <Heading as="h3" spacingClassName="pt-0 pb-3">
+        <Heading as="h3" padding="pt-0 pb-3">
           {props.title}
         </Heading>
         {props.children}

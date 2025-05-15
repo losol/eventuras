@@ -1,24 +1,24 @@
-import { Container, Heading, Section } from '@eventuras/ui';
+import { Container, Heading, Section } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
-import { oauthConfig } from '@/utils/oauthConfig';
 
 import CollectionEditor from '../CollectionEditor';
 
 type EventCollectionProps = {
-  params: {
+  params: Promise<{
     id: number;
-  };
+  }>;
 };
-const CollectionDetailPage: React.FC<EventCollectionProps> = async ({ params }) => {
-  const eventId = params.id;
 
-  const { t } = createTranslation();
+export default async function CollectionDetailPage({ params }: Readonly<EventCollectionProps>) {
+  const { id } = await params;
+
+  const t = await getTranslations();
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
@@ -27,19 +27,19 @@ const CollectionDetailPage: React.FC<EventCollectionProps> = async ({ params }) 
 
   const collection = await apiWrapper(() =>
     eventuras.eventCollection.getV3Eventcollections1({
-      id: eventId,
+      id: id,
     })
   );
 
   if (!collection.ok) {
     Logger.error(
       { namespace: 'collections' },
-      `Failed to fetch collection ${eventId}, error: ${collection.error}`
+      `Failed to fetch collection ${id}, error: ${collection.error}`
     );
   }
 
   if (!collection.ok) {
-    return <div>{t('common:event-not-found')}</div>;
+    return <div>{t('common.event-not-found')}</div>;
   }
 
   return (
@@ -56,6 +56,4 @@ const CollectionDetailPage: React.FC<EventCollectionProps> = async ({ params }) 
       </Section>
     </Wrapper>
   );
-};
-
-export default CollectionDetailPage;
+}

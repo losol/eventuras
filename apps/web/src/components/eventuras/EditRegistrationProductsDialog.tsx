@@ -1,7 +1,7 @@
 'use client';
 
 import { ProductDto, RegistrationDto } from '@eventuras/sdk';
-import { Button } from '@eventuras/ui';
+import { Button } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -40,14 +40,12 @@ const EditRegistrationProductsDialog = (props: EditRegistrationProductsDialogPro
     });
     if (updateProductResult.ok) {
       addAppNotification({
-        id: Date.now(),
         message: 'Registration edited succesfully!',
         type: AppNotificationType.SUCCESS,
       });
       router.refresh();
     } else {
       addAppNotification({
-        id: Date.now(),
         message: 'Something went wrong, please try again later',
         type: AppNotificationType.ERROR,
       });

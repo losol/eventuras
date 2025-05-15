@@ -2,8 +2,8 @@
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { EventDto, LocalDate, PeriodMatchingKind } from '@eventuras/sdk';
-import { Loading, Pagination } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import { Loading, Pagination } from '@eventuras/ratio-ui';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import FatalError from '@/components/FatalError';
@@ -23,7 +23,7 @@ const AdminEventList: React.FC<AdminEventListProps> = ({
   includePastEvents = false,
   pageSize = 25,
 }) => {
-  const { t } = createTranslation();
+  const t = useTranslations();
   const [page, setPage] = useState(1);
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
 
@@ -51,7 +51,7 @@ const AdminEventList: React.FC<AdminEventListProps> = ({
     return (
       <div className="flex flex-row">
         <Link variant="button-outline" href={`/admin/events/${info.id}`}>
-          {t('common:labels.view')}
+          {t('common.labels.view')}
         </Link>
       </div>
     );
@@ -59,20 +59,20 @@ const AdminEventList: React.FC<AdminEventListProps> = ({
 
   const columns = [
     columnHelper.accessor('title', {
-      header: t('admin:eventColumns.title').toString(),
+      header: t('admin.eventColumns.title').toString(),
       cell: info => <Link href={`/admin/events/${info.row.original.id}`}> {info.getValue()}</Link>,
     }),
     columnHelper.accessor('location', {
-      header: t('admin:eventColumns.location').toString(),
+      header: t('admin.eventColumns.location').toString(),
       cell: info => info.getValue(),
     }),
     columnHelper.accessor('dateStart', {
-      header: t('admin:eventColumns.when').toString(),
+      header: t('admin.eventColumns.when').toString(),
       cell: info => info.getValue(),
       enableSorting: true,
     }),
     columnHelper.accessor('id', {
-      header: t('admin:eventColumns.actions').toString(),
+      header: t('admin.eventColumns.actions').toString(),
       cell: info => renderEventItemActions(info.row.original),
     }),
   ];

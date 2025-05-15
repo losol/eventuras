@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { Input as BaseInput, InputProps } from '@eventuras/forms';
+import { Input as BaseInput, InputProps } from '@eventuras/ratio-ui/forms';
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const { name, validation, ...restProps } = props;
@@ -29,7 +29,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref)
     errors: hasError ? errors[name] : undefined,
   };
 
-  // Use CoreTextInput from @eventuras/forms with the prepared props
+  // Use CoreTextInput from @eventuras/ratio-ui/forms with the prepared props
   return <BaseInput {...inputProps} />;
 });
 

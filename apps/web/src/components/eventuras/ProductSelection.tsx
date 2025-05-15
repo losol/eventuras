@@ -1,4 +1,4 @@
-import Checkbox, { CheckBoxDescription, CheckBoxLabel } from '@eventuras/forms/src/inputs/Checkbox';
+import { Checkbox, CheckBoxDescription, CheckBoxLabel } from '@eventuras/ratio-ui/forms';
 import { ProductDto } from '@eventuras/sdk';
 import { DATA_TEST_ID } from '@eventuras/utils';
 
@@ -45,7 +45,7 @@ const ProductSelection = ({
           <div key={product.productId}>
             <input
               type="number"
-              className="w-16 mb-3 appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="w-16 mb-3 appearance-none border rounded-sm py-2 px-3 text-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
               defaultValue={product.minimumQuantity}
               min={isAdmin ? 0 : product.minimumQuantity}
               value={product.productId}

@@ -2,9 +2,9 @@
 
 import type { NewProductDto, ProductDto } from '@eventuras/sdk';
 import { Form, Input, NumberInput } from '@eventuras/smartform';
-import { Button, Heading } from '@eventuras/ui';
+import { Button, Heading } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
@@ -35,17 +35,17 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
   const [confirmDiscardChanges, setConfirmDiscardChanges] = useState(false);
   const { reset } = useForm<ProductDto>({ defaultValues: product || {} });
-  const { t } = createTranslation();
+  const t = useTranslations();
 
   useEffect(() => {
     reset(product || {});
   }, [product, reset]);
 
   const isEditMode = Boolean(product);
-  const buttonText = isEditMode ? t('common:labels.edit') : t('common:labels.save');
+  const buttonText = isEditMode ? t('common.labels.edit') : t('common.labels.save');
   const titleText = isEditMode
-    ? t('admin:products.modal.title.edit')
-    : t('admin:products.modal.title.add-product');
+    ? t('admin.products.modal.title.edit')
+    : t('admin.products.modal.title.add-product');
 
   // Product modal submit handler
   const submitProduct: SubmitHandler<ProductDto> = async (data: ProductDto) => {
@@ -79,13 +79,11 @@ const ProductModal: React.FC<ProductModalProps> = ({
     if (result.ok) {
       onSubmit(result.value);
       addAppNotification({
-        id: Date.now(),
         message: 'Product was updated!',
         type: AppNotificationType.SUCCESS,
       });
     } else {
       addAppNotification({
-        id: Date.now(),
         message: `Something bad happended: ${result.error}!`,
         type: AppNotificationType.ERROR,
       });
@@ -99,37 +97,35 @@ const ProductModal: React.FC<ProductModalProps> = ({
   return (
     <>
       <Dialog isOpen={isOpen} onClose={onClose} title={titleText}>
-        {/* The backdrop first */}
-        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+        <div className="fixed inset-0 z-40 bg-blue/30" aria-hidden="true" />
 
-        {/* Then the dialogue... */}
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-slate-700 text-color-gray-100 shadow-xl rounded-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center min-h-screen">
+          <div className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
             <Form onSubmit={submitProduct} className="mt-2 space-y-6" defaultValues={product}>
               <Input
                 name="name"
-                label={t('common:products.labels.name')}
-                placeholder={t('common:products.labels.name')}
+                label={t('common.products.labels.name')}
+                placeholder={t('common.products.labels.name')}
                 {...{ [DATA_TEST_ID]: 'product-name-input' }}
                 required
               />
               <Input
                 name="description"
-                label={t('common:products.labels.description')}
-                placeholder={t('common:products.labels.description')}
+                label={t('common.products.labels.description')}
+                placeholder={t('common.products.labels.description')}
                 {...{ [DATA_TEST_ID]: 'product-description-input' }}
                 multiline
               />
               <NumberInput
                 name="price"
-                label={t('common:products.labels.price')}
+                label={t('common.products.labels.price')}
                 placeholder="1234"
                 {...{ [DATA_TEST_ID]: 'product-price-input' }}
                 required
               />
               <NumberInput
                 name="vatPercent"
-                label={t('common:products.labels.vatPercent')}
+                label={t('common.products.labels.vatPercent')}
                 placeholder="0"
                 {...{ [DATA_TEST_ID]: 'product-vat-input' }}
                 defaultValue={0}
@@ -137,7 +133,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
               />
               <NumberInput
                 name="minimumQuantity"
-                label={t('common:products.labels.minimumQuantity')}
+                label={t('common.products.labels.minimumQuantity')}
                 placeholder="0"
                 {...{ [DATA_TEST_ID]: 'product-minimum-quantity-input' }}
               />
@@ -145,7 +141,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 {buttonText}
               </Button>
               <Button type="reset" variant="secondary" onClick={onClose}>
-                {t('common:buttons.cancel')}
+                {t('common.buttons.cancel')}
               </Button>
             </Form>
           </div>

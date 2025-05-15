@@ -1,11 +1,11 @@
 'use client';
 
-import { Fieldset } from '@eventuras/forms';
+import { Fieldset } from '@eventuras/ratio-ui/forms';
 import { UserDto, UserFormDto } from '@eventuras/sdk';
 import { Form, Input } from '@eventuras/smartform';
-import { Button } from '@eventuras/ui';
+import { Button } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { useTranslations } from 'next-intl';
 import { FC, useState } from 'react';
 
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
@@ -28,7 +28,7 @@ const regex = {
 
 const UserEditor: FC<UserEditorProps> = props => {
   const { adminMode, user, onUserUpdated, submitButtonLabel } = props;
-  const { t } = createTranslation('common');
+  const t = useTranslations();
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const [isUpdating, setIsUpdating] = useState(false);
   const log_namespace = 'user.account';
@@ -43,17 +43,15 @@ const UserEditor: FC<UserEditorProps> = props => {
     Logger.info({ namespace: log_namespace }, 'Created new user with id', user.value?.id);
     if (user.error) {
       addAppNotification({
-        id: Date.now(),
         type: AppNotificationType.ERROR,
-        message: t('common:labels.error') + ': ' + user.error.message,
+        message: t('common.labels.error') + ': ' + user.error.message,
       });
       Logger.error({ namespace: log_namespace }, 'Failed to create new user', user.error);
     }
 
     addAppNotification({
-      id: Date.now(),
       type: AppNotificationType.SUCCESS,
-      message: t('common:labels.createUserSuccess') + ': ' + user.value?.name,
+      message: t('common.labels.createUserSuccess') + ': ' + user.value?.name,
     });
 
     return user;
@@ -75,9 +73,8 @@ const UserEditor: FC<UserEditorProps> = props => {
 
     if (updatedUser.error) {
       addAppNotification({
-        id: Date.now(),
         type: AppNotificationType.ERROR,
-        message: t('common:labels.error') + ': ' + updatedUser.error.message,
+        message: t('common.labels.error') + ': ' + updatedUser.error.message,
       });
       Logger.error({ namespace: log_namespace }, 'Failed to update user', updatedUser.error);
       return;
@@ -105,24 +102,24 @@ const UserEditor: FC<UserEditorProps> = props => {
     if (submitButtonLabel) {
       return submitButtonLabel;
     }
-    return editMode ? t('user:account.update.label') : t('user:account.create.label');
+    return editMode ? t('user.account.update.label') : t('user.account.create.label');
   };
 
   return (
     <Form onSubmit={onSubmit} defaultValues={user} {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}>
       {/* Given Name Field */}
-      <Fieldset label={t('common:account.name.legend')}>
+      <Fieldset label={t('common.account.name.legend')}>
         <Input
           name="givenName"
-          label={t('common:labels.givenName')}
-          description={t('user:account.name.description')}
+          label={t('common.labels.givenName')}
+          description={t('user.account.name.description')}
           placeholder="Gerhard"
           // Only allow letters, including accentuated characters
           validation={{
-            required: t('user:account.name.requiredText'),
+            required: t('user.account.name.requiredText'),
             pattern: {
               value: regex.lettersSpaceAndHyphen,
-              message: t('common:account.name.validationText'),
+              message: t('common.account.name.validationText'),
             },
           }}
           {...{ [DATA_TEST_ID]: 'accounteditor-form-givenname' }}
@@ -130,14 +127,14 @@ const UserEditor: FC<UserEditorProps> = props => {
 
         <Input
           name="middleName"
-          label={t('common:labels.middleName')}
-          description={t('user:account.name.description')}
+          label={t('common.labels.middleName')}
+          description={t('user.account.name.description')}
           placeholder="Armauer"
           // Only allow letters, including accentuated characters
           validation={{
             pattern: {
               value: regex.lettersSpaceAndHyphen,
-              message: t('common:account.name.validationText'),
+              message: t('common.account.name.validationText'),
             },
           }}
           {...{ [DATA_TEST_ID]: 'accounteditor-form-middlename' }}
@@ -145,63 +142,63 @@ const UserEditor: FC<UserEditorProps> = props => {
         {/* Family Name Field */}
         <Input
           name="familyName"
-          label={t('common:labels.familyName')}
-          description={t('user:account.name.description')}
+          label={t('common.labels.familyName')}
+          description={t('user.account.name.description')}
           placeholder="Hansen"
           validation={{
-            required: t('user:account.name.requiredText'),
+            required: t('user.account.name.requiredText'),
             pattern: {
               value: regex.lettersSpaceAndHyphen,
-              message: t('common:account.name.validationText'),
+              message: t('common.account.name.validationText'),
             },
           }}
           {...{ [DATA_TEST_ID]: 'accounteditor-form-familyname' }}
         />
       </Fieldset>
-      <Fieldset label={t('common:account.contactInfo.legend')}>
+      <Fieldset label={t('common.account.contactInfo.legend')}>
         {/* Email Field */}
         <Input
           name="email"
-          label={t('user:account.email.label')}
+          label={t('user.account.email.label')}
           description={
             editMode
-              ? t('user:account.email.existingDescription')
-              : t('user:account.email.description')
+              ? t('user.account.email.existingDescription')
+              : t('user.account.email.description')
           }
           type="email"
-          placeholder={t('user:account.email.placeholder')}
-          validation={{ required: t('user:account.email.requiredText') }}
+          placeholder={t('user.account.email.placeholder')}
+          validation={{ required: t('user.account.email.requiredText') }}
           disabled={editMode} // Disable editing email field for existing users
         />
 
         {/* Phone Field */}
         <Input
           name="phoneNumber"
-          label={t('user:account.phoneNumber.label')}
-          description={t('user:account.phoneNumber.description')}
+          label={t('user.account.phoneNumber.label')}
+          description={t('user.account.phoneNumber.description')}
           type="tel"
-          placeholder={t('user:account.phoneNumber.placeholder')}
+          placeholder={t('user.account.phoneNumber.placeholder')}
           validation={{
-            required: adminMode ? false : t('user:account.phoneNumber.requiredText'),
+            required: adminMode ? false : t('user.account.phoneNumber.requiredText'),
             pattern: {
               value: regex.internationalPhoneNumber,
-              message: t('user:account.phoneNumber.invalidFormatText'),
+              message: t('user.account.phoneNumber.invalidFormatText'),
             },
           }}
           {...{ [DATA_TEST_ID]: 'accounteditor-form-phonenumber' }}
         />
       </Fieldset>
-      <Fieldset label={t('common:account.moreInfo.legend')}>
+      <Fieldset label={t('common.account.moreInfo.legend')}>
         <Input
           name="professionalIdentityNumber"
-          label={t('common:account.professionalIdentityNumber.label')}
-          description={t('common:account.professionalIdentityNumber.description')}
+          label={t('common.account.professionalIdentityNumber.label')}
+          description={t('common.account.professionalIdentityNumber.description')}
           {...{ [DATA_TEST_ID]: 'accounteditor-form-professionalIdentityNumber' }}
         />
         <Input
           name="supplementaryInformation"
-          label={t('common:account.supplementaryInformation.label')}
-          description={t('common:account.supplementaryInformation.description')}
+          label={t('common.account.supplementaryInformation.label')}
+          description={t('common.account.supplementaryInformation.description')}
           {...{ [DATA_TEST_ID]: 'accounteditor-form-supplementaryInformation' }}
         />
       </Fieldset>

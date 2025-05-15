@@ -1,27 +1,27 @@
 'use client';
 import { useMemo } from 'react';
-import { RecoilRoot } from 'recoil';
 import { createActor } from 'xstate';
 
 import NotificationsProvider from '@/components/NotificationsProvider';
 import AuthenticationFlowMachine, {
   AuthenticationStateContext,
 } from '@/statemachines/AuthenticationFlowMachine';
+import { NotificationsContext } from '@/statemachines/NotificationsMachine';
 
 type ProvidersProps = {
   children: React.ReactNode;
 };
 
 export default function Providers({ children }: ProvidersProps) {
-  const auth = useMemo(() => createActor(AuthenticationFlowMachine), []);
-  auth.start();
+  const authService = useMemo(() => createActor(AuthenticationFlowMachine), []);
+  authService.start();
 
   return (
-    <RecoilRoot>
+    <NotificationsContext.Provider>
       <NotificationsProvider />
-      <AuthenticationStateContext.Provider value={{ auth }}>
+      <AuthenticationStateContext.Provider value={{ auth: authService }}>
         {children}
       </AuthenticationStateContext.Provider>
-    </RecoilRoot>
+    </NotificationsContext.Provider>
   );
 }

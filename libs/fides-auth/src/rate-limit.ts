@@ -7,7 +7,7 @@ export class TokenBucket<_Key> {
     this.refillIntervalSeconds = refillIntervalSeconds;
   }
 
-  private storage = new Map<_Key, Bucket>();
+  private readonly storage = new Map<_Key, Bucket>();
 
   public check(key: _Key, cost: number): boolean {
     const bucket = this.storage.get(key) ?? null;

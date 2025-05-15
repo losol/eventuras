@@ -1,8 +1,6 @@
 # Scribo markdown editor
 
-Markdown editor built on [Lexical framework](https://lexical.dev/). Intended to be used as part of eventuras, but also packed as a standalone component.
-
-Scribo is a WYSIWYG markdown editor, which means that it shows the markdown text as it will be rendered.
+Markdown editor built on [Lexical framework](https://lexical.dev/). Intended to be used as part of eventuras, but also packed as a standalone component. Scribo is a WYSIWYG edito with markdown export.
 
 The editor should provide simple and intuitive editing of markdown text, with a focus on the most common use cases.
 

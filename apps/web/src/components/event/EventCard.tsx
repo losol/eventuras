@@ -1,10 +1,13 @@
 import { MarkdownContent } from '@eventuras/markdown';
 import { EventDto } from '@eventuras/sdk';
-import Link from 'next/link';
 
-import Card from '@/components/Card';
+import { Card } from '@eventuras/ratio-ui/core/Card';
 import Environment from '@/utils/Environment';
 import { formatDateSpan } from '@/utils/formatDate';
+import Link from '../BaseLink';
+import Heading from '@eventuras/ratio-ui/core/Heading/Heading';
+import Text from '@eventuras/ratio-ui/core/Text/Text';
+import { Calendar, MapPin } from 'lucide-react';
 
 interface EventCardProps {
   eventinfo: EventDto;
@@ -12,25 +15,29 @@ interface EventCardProps {
 
 const EventCard: React.FC<EventCardProps> = ({ eventinfo }) => {
   return (
-    <Card className="p-3 bg-white dark:bg-slate-900 hover:bg-primary-100  dark:hover:bg-primary-900 transform transition duration-300 ease-in-out">
+    <Card>
       {eventinfo.title && (
-        <Card.Heading spacingClassName="py-3">
-          <Link href={`/events/${eventinfo.id}/${eventinfo.slug}`} className="stretched-link">
+        <Heading as="h4" padding="pt-3">
+          <Link href={`/events/${eventinfo.id}/${eventinfo.slug}`} linkOverlay>
             {eventinfo.title}
           </Link>
-        </Card.Heading>
+        </Heading>
       )}
       {eventinfo.description && (
-        <Card.Text>
+        <Text padding="py-3">
           <MarkdownContent markdown={eventinfo.description} />
-        </Card.Text>
+        </Text>
       )}
-      {eventinfo.location && <Card.Text>{eventinfo.location}</Card.Text>}
-      <Card.Text>
+      {eventinfo.location && (
+        <Text icon={<MapPin size={16} />} padding="pt-1">
+          {eventinfo.location}
+        </Text>
+      )}
+      <Text icon={<Calendar size={16} />} padding="pt-1">
         {formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, {
           locale: Environment.NEXT_PUBLIC_DEFAULT_LOCALE,
         })}
-      </Card.Text>
+      </Text>
     </Card>
   );
 };

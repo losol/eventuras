@@ -1,4 +1,4 @@
-import { Section } from '@eventuras/ui';
+import { Section } from '@eventuras/ratio-ui';
 
 import UserDrawer from './UserDrawer';
 

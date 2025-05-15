@@ -5,11 +5,11 @@ import {
   RegistrationType,
   UserDto,
 } from '@eventuras/sdk';
-import { Button, Drawer, Heading } from '@eventuras/ui';
+import { Button, Drawer, Heading } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/utils';
 import { IconCheck } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-import createTranslation from 'next-translate/createTranslation';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import {
   Button as AriaButton,
@@ -55,7 +55,7 @@ export const AddUserButton: React.FC = () => {
 const RegistrationListBoxItem = (props: ListBoxItemProps & { children: React.ReactNode }) => (
   <ListBoxItem
     {...props}
-    className="cursor-pointer group flex items-center gap-2 cursor-default select-none py-2 px-4 outline-none rounded text-gray-900 focus:bg-blue-100  focus:text-blue-900"
+    className="cursor-pointer group flex items-center gap-2 select-none py-2 px-4 outline-hidden rounded-sm text-gray-900 focus:bg-blue-100  focus:text-blue-900"
   >
     {({ isSelected }) => (
       <>
@@ -84,7 +84,7 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
   onUseradded,
 }) => {
   const { addAppNotification } = useAppNotifications();
-  const { t } = createTranslation();
+  const t = useTranslations();
 
   const { control, register, setValue, handleSubmit } = useForm<AddUserToEventFormValues>();
 
@@ -112,7 +112,6 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
     if (result.ok) {
       Logger.info({ namespace: 'AddUserToEvent' }, 'User succesfully added to the event!');
       addAppNotification({
-        id: Date.now(),
         message: 'User succesfully added to the event!',
         type: AppNotificationType.SUCCESS,
       });
@@ -121,15 +120,13 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
       Logger.error({ namespace: 'AddUserToEvent' }, result.error);
       if (result.error!.status === 409) {
         addAppNotification({
-          id: Date.now(),
           message: 'That user is already registered to the event',
           type: AppNotificationType.ERROR,
         });
         return;
       }
       addAppNotification({
-        id: Date.now(),
-        message: t('common:errors.fatalError.title'),
+        message: t('common.errors.fatalError.title'),
         type: AppNotificationType.ERROR,
       });
       throw new Error('Failed to add user to event');
@@ -152,12 +149,12 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
               onSelectionChange={onChange}
             >
               <Label className="text-white cursor-default">Registration Type</Label>
-              <AriaButton className="flex items-center cursor-default border-0 bg-white bg-opacity-90 pressed:bg-opacity-100 transition pl-5 text-base text-left leading-normal shadow-md text-gray-700 focus:outline-none focus-visible:ring-2 ring-white ring-offset-2 ring-offset-rose-700">
+              <AriaButton className="flex items-center cursor-default border-0 bg-white bg-opacity-90 pressed:bg-opacity-100 transition pl-5 text-base text-left leading-normal shadow-md text-gray-700 focus:outline-hidden focus-visible:ring-2 ring-white ring-offset-2 ring-offset-rose-700">
                 <SelectValue className="flex-1 truncate placeholder-shown:italic" />
                 <div className="text-white p-2 bg-primary-600">▼</div>
               </AriaButton>
-              <Popover className="max-h-60 w-[--trigger-width] overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black/5 entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out">
-                <ListBox className="outline-none p-1">
+              <Popover className="max-h-60 w-(--trigger-width) overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black/5 entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out">
+                <ListBox className="outline-hidden p-1">
                   {mapEnum(RegistrationType, (value: any) => renderRegistrationTypeItem(value))}
                 </ListBox>
               </Popover>

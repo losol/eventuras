@@ -16,10 +16,10 @@ import {
   Item,
   Section,
   Term,
-} from '@eventuras/ui';
+} from '@eventuras/ratio-ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
-import createTranslation from 'next-translate/createTranslation';
+import { useTranslations } from 'next-intl';
 
 import { apiWrapper, createSDK, fetcher } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
@@ -40,7 +40,10 @@ export type RegistrationUpdateDto = {
   paymentMethod?: PaymentProvider;
 };
 
-type TranslationFunction = (key: string, options?: object) => string;
+type TranslationFunction = (
+  key: string,
+  options?: Record<string, string | number | Date>
+) => string;
 const logger_namespace = 'Registration';
 
 /**
@@ -49,13 +52,13 @@ const logger_namespace = 'Registration';
  * @returns {Array<Object>} An array of objects containing value and label pairs for statuses.
  */
 export const getStatusLabels = (t: TranslationFunction) => [
-  { value: RegistrationStatus.DRAFT, label: t('common:registrations.labels.draft') },
-  { value: RegistrationStatus.CANCELLED, label: t('common:registrations.labels.cancelled') },
-  { value: RegistrationStatus.VERIFIED, label: t('common:registrations.labels.verified') },
-  { value: RegistrationStatus.NOT_ATTENDED, label: t('common:registrations.labels.notAttended') },
-  { value: RegistrationStatus.ATTENDED, label: t('common:registrations.labels.attended') },
-  { value: RegistrationStatus.FINISHED, label: t('common:registrations.labels.finished') },
-  { value: RegistrationStatus.WAITING_LIST, label: t('common:registrations.labels.waitingList') },
+  { value: RegistrationStatus.DRAFT, label: t('common.registrations.labels.draft') },
+  { value: RegistrationStatus.CANCELLED, label: t('common.registrations.labels.cancelled') },
+  { value: RegistrationStatus.VERIFIED, label: t('common.registrations.labels.verified') },
+  { value: RegistrationStatus.NOT_ATTENDED, label: t('common.registrations.labels.notAttended') },
+  { value: RegistrationStatus.ATTENDED, label: t('common.registrations.labels.attended') },
+  { value: RegistrationStatus.FINISHED, label: t('common.registrations.labels.finished') },
+  { value: RegistrationStatus.WAITING_LIST, label: t('common.registrations.labels.waitingList') },
 ];
 
 /**
@@ -64,11 +67,11 @@ export const getStatusLabels = (t: TranslationFunction) => [
  * @returns {Array<Object>} An array of objects containing value and label pairs for types.
  */
 export const getTypeLabels = (t: TranslationFunction) => [
-  { value: RegistrationType.PARTICIPANT, label: t('common:registrations.labels.participant') },
-  { value: RegistrationType.STUDENT, label: t('common:registrations.labels.student') },
-  { value: RegistrationType.LECTURER, label: t('common:registrations.labels.lecturer') },
-  { value: RegistrationType.STAFF, label: t('common:registrations.labels.staff') },
-  { value: RegistrationType.ARTIST, label: t('common:registrations.labels.artist') },
+  { value: RegistrationType.PARTICIPANT, label: t('common.registrations.labels.participant') },
+  { value: RegistrationType.STUDENT, label: t('common.registrations.labels.student') },
+  { value: RegistrationType.LECTURER, label: t('common.registrations.labels.lecturer') },
+  { value: RegistrationType.STAFF, label: t('common.registrations.labels.staff') },
+  { value: RegistrationType.ARTIST, label: t('common.registrations.labels.artist') },
 ];
 
 export const updateRegistration = async (
@@ -124,10 +127,10 @@ export const statusPatchRequest = async (registrationId: number, status: Registr
 
 const Registration = ({ registration, adminMode = false }: RegistrationProps) => {
   const router = useRouter();
-  const { t } = createTranslation();
+  const t = useTranslations();
 
   if (!registration) {
-    return <p>{t('common:registrations.labels.noRegistration')}</p>;
+    return <p>{t('common.registrations.labels.noRegistration')}</p>;
   }
   const statusLabel = getStatusLabels(t).find(label => label.value === registration.status)?.label;
   const typeLabel = getTypeLabels(t).find(label => label.value === registration.type)?.label;
@@ -136,30 +139,30 @@ const Registration = ({ registration, adminMode = false }: RegistrationProps) =>
     <>
       <DescriptionList>
         <Item>
-          <Term>{t('common:registrations.labels.id')}</Term>
+          <Term>{t('common.registrations.labels.id')}</Term>
           <Definition {...{ [DATA_TEST_ID]: 'registration-registrationId' }}>
             {registration.registrationId}
           </Definition>
         </Item>
         <Item>
-          <Term>{t('common:registrations.labels.userName')}</Term>
+          <Term>{t('common.registrations.labels.userName')}</Term>
           <Definition>{registration.user?.name}</Definition>
         </Item>
 
         <Item>
-          <Term>{t('common:registrations.labels.eventTitle')}</Term>
+          <Term>{t('common.registrations.labels.eventTitle')}</Term>
           <Definition>{registration.event?.title}</Definition>
         </Item>
         {!adminMode && (
           <>
             <Item>
-              <Term>{t('common:registrations.labels.status')}</Term>
+              <Term>{t('common.registrations.labels.status')}</Term>
               <Definition>
                 <Badge>{statusLabel}</Badge>
               </Definition>
             </Item>
             <Item>
-              <Term>{t('common:registrations.labels.type')}</Term>
+              <Term>{t('common.registrations.labels.type')}</Term>
               <Definition>
                 <Badge>{typeLabel}</Badge>
               </Definition>
@@ -177,14 +180,14 @@ const Registration = ({ registration, adminMode = false }: RegistrationProps) =>
             <Select name="type" options={getTypeLabels(t)} label="Type" />
             <Select name="status" options={getStatusLabels(t)} label="Status" />
 
-            <Button type="submit">{t('common:labels.save')}</Button>
+            <Button type="submit">{t('common.labels.save')}</Button>
           </Form>
         )}
       </DescriptionList>
 
       {registration.products && (
         <Section>
-          <Heading as="h2">{t('common:registrations.labels.products')}</Heading>
+          <Heading as="h2">{t('common.registrations.labels.products')}</Heading>
           <ul>
             {registration.products.map(product => (
               <li key={product.productId}>{product.product?.name}</li>
@@ -194,13 +197,13 @@ const Registration = ({ registration, adminMode = false }: RegistrationProps) =>
       )}
 
       <Section>
-        <Heading as="h2">{t('common:registrations.labels.notes')}</Heading>
-        <p>{registration.notes ?? t('common:registrations.labels.notesEmpty')}</p>
+        <Heading as="h2">{t('common.registrations.labels.notes')}</Heading>
+        <p>{registration.notes ?? t('common.registrations.labels.notesEmpty')}</p>
       </Section>
 
       {registration.orders && (
         <Section>
-          <Heading as="h2">{t('common:registrations.labels.orders')}</Heading>
+          <Heading as="h2">{t('common.registrations.labels.orders')}</Heading>
           <ul>
             {registration.orders.map(order => (
               <Order order={order} key={order.orderId} admin={adminMode} />

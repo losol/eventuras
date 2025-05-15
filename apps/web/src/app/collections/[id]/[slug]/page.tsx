@@ -1,10 +1,10 @@
 import { MarkdownContent } from '@eventuras/markdown';
-import { Container, Heading, Section, Text } from '@eventuras/ui';
+import { Container, Heading, Section, Text } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/utils';
 import { redirect } from 'next/navigation';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
-import Card from '@/components/Card';
+import { Card } from '@eventuras/ratio-ui/core/Card';
 import EventCard from '@/components/event/EventCard';
 import Wrapper from '@/components/eventuras/Wrapper';
 import Link from '@/components/Link';
@@ -12,10 +12,10 @@ import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 
 type EventInfoProps = {
-  params: {
+  params: Promise<{
     id: number;
     slug: string;
-  };
+  }>;
 };
 
 export const revalidate = 300;
@@ -49,22 +49,23 @@ export async function generateStaticParams() {
   return [];
 }
 
-const CollectionPage: React.FC<EventInfoProps> = async ({ params }) => {
-  const { t } = createTranslation();
+const CollectionPage: React.FC<EventInfoProps> = async props => {
+  const params = await props.params;
+  const t = await getTranslations();
   const eventuras = createSDK({ inferUrl: true });
   const result = await apiWrapper(() =>
     eventuras.eventCollection.getV3Eventcollections1({ id: params.id })
   );
 
-  let notFound = !result.ok || !result.value;
+  const notFound = !result.ok || !result.value;
 
   if (notFound)
     return (
       <>
-        <Heading>{t('common:events.detailspage.notfound.title')}</Heading>
-        <Text className="py-6">{t('common:events.detailspage.notfound.description')}</Text>
+        <Heading>{t('common.events.detailspage.notfound.title')}</Heading>
+        <Text className="py-6">{t('common.events.detailspage.notfound.description')}</Text>
         <Link href="/" variant="button-primary">
-          {t('common:events.detailspage.notfound.back')}
+          {t('common.events.detailspage.notfound.back')}
         </Link>
       </>
     );
@@ -91,7 +92,7 @@ const CollectionPage: React.FC<EventInfoProps> = async ({ params }) => {
       )}
       <Section className="py-16">
         <Container>
-          <Heading as="h1" spacingClassName="pt-6 pb-3">
+          <Heading as="h1" padding="pt-6 pb-3">
             {collection?.name ?? 'Mysterious Collection'}
           </Heading>
           <MarkdownContent markdown={collection.description} />
@@ -100,8 +101,8 @@ const CollectionPage: React.FC<EventInfoProps> = async ({ params }) => {
       <Section>
         {eventinfos.value?.data && eventinfos.value.data.length > 0 ? (
           <Container>
-            <Heading as="h2" spacingClassName="pt-6 pb-3">
-              {t('common:collections.detailspage.eventstitle')}
+            <Heading as="h2" padding="pt-6 pb-3">
+              {t('common.collections.detailspage.eventstitle')}
             </Heading>
             {eventinfos.value.data.map(eventinfo => (
               <EventCard key={eventinfo.id} eventinfo={eventinfo} />
@@ -109,7 +110,7 @@ const CollectionPage: React.FC<EventInfoProps> = async ({ params }) => {
           </Container>
         ) : (
           <Container>
-            <Text className="py-6">{t('common:labels.noevents')}</Text>
+            <Text className="py-6">{t('common.labels.noevents')}</Text>
           </Container>
         )}
       </Section>

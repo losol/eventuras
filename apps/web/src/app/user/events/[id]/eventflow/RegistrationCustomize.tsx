@@ -1,9 +1,9 @@
 'use client';
 
 import { ProductDto } from '@eventuras/sdk';
-import { Button } from '@eventuras/ui';
+import { Button } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 
 import ProductSelection from '@/components/eventuras/ProductSelection';
@@ -38,7 +38,7 @@ const RegistrationCustomize = ({
 }: RegistrationCustomizeProps) => {
   const { isAdmin } = useAuthSelector();
 
-  const { t } = createTranslation();
+  const t = useTranslations();
   const { register, handleSubmit } = useForm();
   return (
     <>
@@ -52,10 +52,10 @@ const RegistrationCustomize = ({
           register={register}
           selectedProducts={selectedProducts ?? []}
         />
-        {onBack && <Button onClick={onBack}>{t('common:buttons.back')}</Button>}
+        {onBack && <Button onClick={onBack}>{t('common.buttons.back')}</Button>}
 
         <Button type="submit" {...{ [DATA_TEST_ID]: 'registration-customize-submit-button' }}>
-          {t('common:buttons.continue')}
+          {t('common.buttons.continue')}
         </Button>
       </form>
     </>

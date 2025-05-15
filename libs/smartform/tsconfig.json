@@ -2,12 +2,17 @@
   "extends": "@eventuras/typescript-config/react-library.json",
   "compilerOptions": {
     "paths": {
-      "@eventuras/forms":["../forms/src/*"],
-      "@eventuras/forms/*":["../forms/src/*"],
-      "@eventuras/ui":["../ui/src"],
-      "@eventuras/ui/*":["../ui/src/*"],
-    },
+      "@eventuras/ratio-ui": ["../ui/src"],
+      "@eventuras/ratio-ui/*": ["../ui/src/*"]
+    }
   },
-  "include": ["src", "../forms/src/Fieldset.tsx", "../forms/src/formStyles.ts", "../forms/src/Label.tsx", "../forms/src/inputs/InputProps.ts", "../markdown/src/MarkdownInput.tsx"],
+  "include": [
+    "src",
+    "../forms/src/Fieldset.tsx",
+    "../forms/src/formStyles.ts",
+    "../forms/src/Label.tsx",
+    "../forms/src/inputs/InputProps.ts",
+    "../markdown/src/MarkdownInput.tsx"
+  ],
   "exclude": ["node_modules", "dist"]
 }

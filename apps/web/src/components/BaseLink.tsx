@@ -1,10 +1,11 @@
+// src/components/BaseLink.tsx
 import { DATA_TEST_ID } from '@eventuras/utils';
-import React from 'react';
+import React, { forwardRef } from 'react';
 
-import { BoxProps, spacingClassName } from '../../../../libs/ui/src/Box';
-import { buttonStyles } from '../../../../libs/ui/src/Button';
+import { BoxSpacingProps, buildSpacingClasses } from '../../../../libs/ratio-ui/src/layout/Box/Box';
+import { buttonStyles } from '../../../../libs/ratio-ui/src/core/Button/Button';
 
-export interface LinkProps {
+export interface LinkProps extends BoxSpacingProps {
   href: string;
   children?: React.ReactNode;
   className?: string;
@@ -13,58 +14,72 @@ export interface LinkProps {
     | 'button-secondary'
     | 'button-light'
     | 'button-outline'
-    | 'button-transparent';
+    | 'button-text';
   block?: boolean;
-  bgDark?: boolean;
-  stretch?: boolean;
+  onDark?: boolean;
+  linkOverlay?: boolean;
   [DATA_TEST_ID]?: string;
 }
 
-export const Link = React.forwardRef<HTMLAnchorElement, LinkProps & BoxProps>((props, ref) => {
-  const {
-    href,
-    children,
-    className,
-    bgDark = false,
-    block = false,
-    variant,
-    stretch,
-    ...boxProps
-  } = props;
+export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
+  (
+    {
+      href,
+      children,
+      className = '',
+      onDark = false,
+      block = false,
+      variant,
+      linkOverlay = false,
+      // BoxSpacingProps:
+      padding,
+      margin,
+      border,
+      width,
+      height,
+      [DATA_TEST_ID]: testId,
+    },
+    ref
+  ) => {
+    const spacingClasses = buildSpacingClasses({
+      padding,
+      margin,
+      border,
+      width,
+      height,
+    });
 
-  const textColor =
-    bgDark || variant === 'button-primary' ? 'text-gray-200' : 'text-gray-800 dark:text-gray-200';
-  const blockClasses = block ? 'block' : '';
+    const textColor =
+      onDark || variant === 'button-primary' ? 'text-gray-200' : 'text-gray-800 dark:text-gray-200';
 
-  let variantClasses = '';
-  if (variant?.startsWith('button-')) {
-    const buttonVariant = variant.replace('button-', '');
-    if (Object.hasOwnProperty.call(buttonStyles, buttonVariant)) {
-      variantClasses = buttonStyles[buttonVariant as keyof typeof buttonStyles];
+    const blockClass = block ? 'block' : '';
+
+    let variantClasses = '';
+    if (variant?.startsWith('button-')) {
+      const key = variant.replace('button-', '') as keyof typeof buttonStyles;
+      if (buttonStyles[key]) {
+        variantClasses = 'px-4 py-2 ' + buttonStyles[key];
+      }
     }
+
+    const classes = [
+      spacingClasses,
+      variantClasses,
+      textColor,
+      blockClass,
+      linkOverlay && 'link-overlay',
+      className,
+    ]
+      .filter(Boolean)
+      .join(' ');
+
+    return (
+      <a href={href} className={classes} ref={ref} {...(testId ? { [DATA_TEST_ID]: testId } : {})}>
+        {children}
+      </a>
+    );
   }
-
-  const spacing: string = spacingClassName(boxProps, {
-    defaultPadding: buttonStyles.defaultPadding,
-    defaultMargin: 'm-1',
-  });
-
-  const classes = [
-    variantClasses,
-    textColor,
-    blockClasses,
-    className,
-    spacing,
-    stretch ? 'stretched-link' : '',
-  ].join(' ');
-
-  return (
-    <a href={href} className={classes} ref={ref} {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}>
-      {children}
-    </a>
-  );
-});
+);
 
 Link.displayName = 'Link';
-
 export default Link;

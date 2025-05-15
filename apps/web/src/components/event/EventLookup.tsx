@@ -1,5 +1,5 @@
 import { EventDto, LocalDate } from '@eventuras/sdk';
-import { AutoCompleteItem, InputAutoComplete } from '@eventuras/ui/InputAutoComplete';
+import { AutoCompleteItem, InputAutoComplete } from '@eventuras/ratio-ui';
 import { useCallback } from 'react';
 
 import { createSDK } from '@/utils/api/EventurasApi';

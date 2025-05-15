@@ -1,10 +1,11 @@
 'use client';
 
 import { UserDto } from '@eventuras/sdk';
-import { Definition, DescriptionList, Item, Term } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui';
+import { useTranslations } from 'next-intl';
 
-import Card from '@/components/Card';
+import { Card } from '@eventuras/ratio-ui/core/Card';
+import Text from '@eventuras/ratio-ui/core/Text/Text';
 import Link from '@/components/Link';
 
 export type UserProfileCardProps = {
@@ -12,36 +13,36 @@ export type UserProfileCardProps = {
 };
 
 const UserProfileCard = ({ profile }: UserProfileCardProps) => {
-  const { t } = createTranslation();
+  const t = useTranslations();
   return (
     <Card>
       <DescriptionList>
         {profile.name && (
           <Item>
-            <Term>{t('common:labels.name')}</Term>
+            <Term>{t('common.labels.name')}</Term>
             <Definition>{profile.name}</Definition>
           </Item>
         )}
 
         {profile.email && (
           <Item>
-            <Term>{t('common:labels.email')}</Term>
+            <Term>{t('common.labels.email')}</Term>
             <Definition>{profile.email}</Definition>
           </Item>
         )}
 
         {profile.phoneNumber && (
           <Item>
-            <Term>{t('common:labels.phoneNumber')}</Term>
+            <Term>{t('common.labels.phoneNumber')}</Term>
             <Definition>{profile.phoneNumber}</Definition>
           </Item>
         )}
       </DescriptionList>
-      <Card.Text className="my-2">
+      <Text className="my-2">
         <Link href="/user/account" variant="button-outline" margin="my-3">
-          {t('common:labels.editProfile')}
+          {t('common.labels.editProfile')}
         </Link>
-      </Card.Text>
+      </Text>
     </Card>
   );
 };

@@ -1,3 +1,4 @@
+import { Logger } from '@eventuras/utils';
 import * as jose from 'jose';
 
 const algorithm = 'aes-256-gcm';
@@ -269,6 +270,11 @@ export const accessTokenExpires = (
     return remainingSeconds < seconds;
   } catch (error) {
     // If decoding fails, treat the token as invalid so no refresh is triggered.
-    return false;
+    Logger.error(
+      { namespace: 'eventuras:accessTokenExpires' },
+      'Error decoding access token',
+      error
+    );
+    return true;
   }
 };

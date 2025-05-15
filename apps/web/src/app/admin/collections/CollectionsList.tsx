@@ -2,8 +2,8 @@
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { EventCollectionDto, OrderDto } from '@eventuras/sdk';
-import { Loading, Pagination } from '@eventuras/ui';
-import createTranslation from 'next-translate/createTranslation';
+import { Loading, Pagination } from '@eventuras/ratio-ui';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import FatalError from '@/components/FatalError';
@@ -17,7 +17,7 @@ const columnHelper = createColumnHelper<EventCollectionDto>();
 
 const CollectionsList: React.FC = () => {
   const organizationId = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
-  const { t } = createTranslation();
+  const t = useTranslations();
   const [page, setPage] = useState(1);
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const pageSize = 100;
@@ -35,7 +35,7 @@ const CollectionsList: React.FC = () => {
     return (
       <div className="flex flex-row">
         <Link variant="button-outline" href={`/admin/collections/${collection.id}`}>
-          {t('common:labels.view')}
+          {t('common.labels.view')}
         </Link>
       </div>
     );
@@ -43,17 +43,17 @@ const CollectionsList: React.FC = () => {
 
   const columns = [
     columnHelper.accessor('id', {
-      header: t('common:labels.id').toString(),
+      header: t('common.labels.id').toString(),
       cell: info => (
         <Link href={`/admin/collections/${info.row.original.id}`}>{info.getValue()}</Link>
       ),
     }),
     columnHelper.accessor('name', {
-      header: t('common:labels.name').toString(),
+      header: t('common.labels.name').toString(),
       cell: info => info.getValue(),
     }),
     columnHelper.display({
-      header: t('admin:eventColumns.actions').toString(),
+      header: t('admin.eventColumns.actions').toString(),
       cell: info => renderCollectionActions(info.row.original),
     }),
   ];

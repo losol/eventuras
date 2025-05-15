@@ -1,7 +1,7 @@
 import { EventDto, EventInfoStatus } from '@eventuras/sdk';
-import { Badge } from '@eventuras/ui';
+import { Badge } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { getTranslations } from 'next-intl/server';
 
 import Link from '@/components/Link';
 
@@ -9,30 +9,30 @@ export type EventRegistrationButtonProps = {
   event: EventDto;
 };
 
-export default function EventRegistrationButton({ event }: EventRegistrationButtonProps) {
-  const { t } = createTranslation();
+export default async function EventRegistrationButton({ event }: EventRegistrationButtonProps) {
+  const t = await getTranslations();
   const canRegister = event.status === EventInfoStatus.REGISTRATIONS_OPEN;
 
   const getStatusText = (status: EventInfoStatus): string => {
     switch (status) {
       case EventInfoStatus.DRAFT:
-        return t('common:events.labels.status.draft');
+        return t('common.events.labels.status.draft');
       case EventInfoStatus.PLANNED:
-        return t('common:events.labels.status.planned');
+        return t('common.events.labels.status.planned');
       case EventInfoStatus.REGISTRATIONS_OPEN:
-        return t('common:events.labels.status.registrationsOpen');
+        return t('common.events.labels.status.registrationsOpen');
       case EventInfoStatus.WAITING_LIST:
-        return t('common:events.labels.status.waitingList');
+        return t('common.events.labels.status.waitingList');
       case EventInfoStatus.REGISTRATIONS_CLOSED:
-        return t('common:events.labels.status.registrationsClosed');
+        return t('common.events.labels.status.registrationsClosed');
       case EventInfoStatus.FINISHED:
-        return t('common:events.labels.status.finished');
+        return t('common.events.labels.status.finished');
       case EventInfoStatus.ARCHIVED:
-        return t('common:events.labels.status.archived');
+        return t('common.events.labels.status.archived');
       case EventInfoStatus.CANCELLED:
-        return t('common:events.labels.status.cancelled');
+        return t('common.events.labels.status.cancelled');
       default:
-        return t('common:events.labels.status.unknown');
+        return t('common.events.labels.status.unknown');
     }
   };
 
@@ -44,7 +44,7 @@ export default function EventRegistrationButton({ event }: EventRegistrationButt
         block
         {...{ [DATA_TEST_ID]: 'event-registration-button' }}
       >
-        {t('common:buttons.register-cta')}
+        {t('common.buttons.register-cta')}
       </Link>
     );
   } else {

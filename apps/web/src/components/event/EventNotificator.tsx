@@ -1,13 +1,17 @@
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { EmailNotificationDto, RegistrationType, SmsNotificationDto } from '@eventuras/sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
-import { AppNotificationOptions, Button, ButtonGroup, Heading } from '@eventuras/ui';
+import { Button, ButtonGroup, Heading } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { useTranslations } from 'next-intl';
 import { useRef } from 'react';
 import { SubmitHandler, useForm, UseFormRegister, UseFormReturn } from 'react-hook-form';
 
-import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
+import {
+  AppNotification,
+  AppNotificationType,
+  useAppNotifications,
+} from '@/hooks/useAppNotifications';
 import { ParticipationTypes } from '@/types';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { participationMap } from '@/utils/api/mappers';
@@ -40,9 +44,9 @@ const getBodyDto = (
   data: EventEmailerFormValues | EventSMSFormValues
 ): EmailNotificationDto | SmsNotificationDto => {
   //type juggling... Converts { Status:true, Status2:true, Status3:false} to [Status,Status2]
-  const statuses = data.registrationStatus as Object;
+  const statuses = data.registrationStatus as object;
   const regStatusList = Object.keys(statuses).filter(
-    (key: string) => statuses[key as keyof Object] as any
+    (key: string) => statuses[key as keyof object] as any
   );
 
   const registrationStatuses = regStatusList.reduce(
@@ -54,9 +58,9 @@ const getBodyDto = (
     []
   );
   //type juggling... Converts { Status:true, Status2:true, Status3:false} to [Status,Status2]
-  const tps = data.registrationTypes as Object;
+  const tps = data.registrationTypes as object;
   const registrationTypes = Object.keys(tps).filter(
-    (key: string) => tps[key as keyof Object] as any
+    (key: string) => tps[key as keyof object] as any
   );
 
   if ('subject' in data) {
@@ -84,14 +88,13 @@ const getBodyDto = (
 const createFormHandler = (
   eventId: number,
   notificatorType: EventNotificatorType,
-  addAppNotification: (options: AppNotificationOptions) => void,
+  addAppNotification: (options: AppNotification) => void,
   onClose: () => void
 ) => {
   const onSubmitForm: SubmitHandler<EventEmailerFormValues | EventSMSFormValues> = async (
     data: EventEmailerFormValues | EventSMSFormValues
   ) => {
-    const { t } = createTranslation('admin');
-    const { t: common } = createTranslation('common');
+    const t = useTranslations();
     const body = getBodyDto(eventId, data);
     const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
     Logger.info(
@@ -118,8 +121,7 @@ const createFormHandler = (
         `Failed to send ${notificatorType} notification. Error: ${result.error}`
       );
       addAppNotification({
-        id: Date.now(),
-        message: `${common('errors.fatalError.title')}: ${result.error?.body.errors.BodyMarkdown[0]}`,
+        message: `${'common.errors.fatalError.title'}: ${result.error?.body.errors.BodyMarkdown[0]}`,
         type: AppNotificationType.ERROR,
       });
       throw new Error('Failed to send');
@@ -129,7 +131,6 @@ const createFormHandler = (
         `Successfully sent ${notificatorType} notification. `
       );
       addAppNotification({
-        id: Date.now(),
         message:
           notificatorType === EventNotificatorType.EMAIL
             ? t('eventNotifier.form.successFeedbackEmail')
@@ -150,7 +151,7 @@ export default function EventNotificator({
   onClose,
   notificatorType,
 }: EventNotificatorProps) {
-  let formHook:
+  const formHook:
     | UseFormReturn<EventSMSFormValues, any, EventSMSFormValues>
     | UseFormReturn<EventEmailerFormValues, any, EventEmailerFormValues> = useForm();
 
@@ -160,8 +161,7 @@ export default function EventNotificator({
     handleSubmit,
   } = formHook;
   const { addAppNotification } = useAppNotifications();
-  const { t } = createTranslation('admin');
-  const { t: common } = createTranslation('common');
+  const t = useTranslations();
 
   const emailRegister = register as unknown as UseFormRegister<EventEmailerFormValues>;
   const smsRegister = register as unknown as UseFormRegister<EventSMSFormValues>;
@@ -176,7 +176,7 @@ export default function EventNotificator({
   return (
     <Form onSubmit={onSubmitForm} className="text-black w-72">
       <div>
-        <Heading as="h4">{common('events.event')}</Heading>
+        <Heading as="h4">t('common.events.event')</Heading>
         <p>{eventTitle}</p>
       </div>
       <p>{t('eventNotifier.form.status.label')}</p>
@@ -241,7 +241,7 @@ export default function EventNotificator({
 
       <ButtonGroup margin="my-4">
         <Button type="submit" variant="primary">
-          {common('buttons.send')}
+          t('common.buttons.send')
         </Button>
         <Button
           onClick={e => {
@@ -250,7 +250,7 @@ export default function EventNotificator({
           }}
           variant="secondary"
         >
-          {common('buttons.cancel')}
+          t('common.buttons.cancel')
         </Button>
       </ButtonGroup>
     </Form>

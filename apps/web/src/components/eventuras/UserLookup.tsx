@@ -1,6 +1,6 @@
 'use client';
 import { UserDto } from '@eventuras/sdk';
-import { AutoCompleteDataProvider, InputAutoComplete } from '@eventuras/ui/InputAutoComplete';
+import { AutoCompleteDataProvider, InputAutoComplete } from '@eventuras/ratio-ui';
 
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 

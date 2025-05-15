@@ -46,6 +46,12 @@ on:
         required: false
       TURBO_TEAM:
         required: false
+      AUTH0_CLIENT_ID:
+        required: false
+      AUTH0_CLIENT_SECRET:
+        required: false
+      SESSION_SECRET:
+        required: false
 
 jobs:
   deploy:
@@ -100,19 +106,25 @@ jobs:
       - name: Deploy Project Artifacts to Vercel (Dev)
         if: ${{ inputs.vercel_environment != 'production' }}
         run: |
-          DEPLOY_URL=$(vercel deploy --prebuilt --token=${{ secrets.vercel_token }} | grep "https://" | xargs)
+          DEPLOY_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} | grep "https://" | xargs)
           echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
 
       - name: Deploy Project Artifacts to Vercel (Production)
         if: ${{ inputs.vercel_environment == 'production' }}
         run: |
-          DEPLOY_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.vercel_token }} | grep "https://" | xargs)
+          DEPLOY_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }} | grep "https://" | xargs)
           echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
 
       - name: Set Custom URL
-        if: ${{ inputs.custom_url }}
-        run: vercel alias --token=${{ secrets.vercel_token }} set "$url" ${{ inputs.url }}
+        if: ${{ inputs.url }}
+        run: |
+          if [ -z "$DEPLOY_URL" ]; then
+            echo "Missing DEPLOY_URL – cannot alias."
+            exit 1
+          fi
+          echo "Alias from $DEPLOY_URL to ${{ inputs.url }}"
+          vercel alias --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ secrets.VERCEL_ORG_ID }} set "$DEPLOY_URL" "${{ inputs.url }}"
 
       - name: Promote
         if: ${{ inputs.promote }}
-        run: vercel promote --token=${{ secrets.vercel_token }} --scope=${{ secrets.VERCEL_ORG_ID }} --yes $DEPLOY_URL
+        run: vercel promote --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ secrets.VERCEL_ORG_ID }} --yes $DEPLOY_URL

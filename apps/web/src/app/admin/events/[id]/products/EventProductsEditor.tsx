@@ -1,9 +1,9 @@
 'use client';
 
 import type { EventDto, ProductDto } from '@eventuras/sdk';
-import { Button } from '@eventuras/ui';
+import { Button } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
-import createTranslation from 'next-translate/createTranslation';
+import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
 import { createSDK } from '@/utils/api/EventurasApi';
@@ -24,7 +24,7 @@ const EventProductsEditor: React.FC<EventProductsEditorProps> = ({
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [products, setProducts] = useState<ProductDto[]>(initialProducts);
   const [currentProduct, setCurrentProduct] = useState<ProductDto | undefined>();
-  const { t } = createTranslation();
+  const t = useTranslations();
   const eventuras = createSDK({ baseUrl: Environment.NEXT_PUBLIC_API_BASE_URL });
 
   const onSubmit = async () => {
@@ -51,7 +51,7 @@ const EventProductsEditor: React.FC<EventProductsEditorProps> = ({
   return (
     <div>
       <Button {...{ [DATA_TEST_ID]: 'add-product-button' }} onClick={() => openProductModal()}>
-        {t('admin:products.labels.addnewproduct')}
+        {t('admin.products.labels.addnewproduct')}
       </Button>
 
       <ProductModal
