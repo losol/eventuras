@@ -1,9 +1,7 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services.Exceptions;
-using Hangfire;
 using Losol.Communication.Email;
 using Losol.Communication.Sms;
 using Markdig;
@@ -11,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using NodaTime;
 
 namespace Eventuras.Services.Notifications;
-
 
 public class NotificationBackgroundService : INotificationBackgroundService
 {
@@ -39,8 +36,7 @@ public class NotificationBackgroundService : INotificationBackgroundService
         _logger = logger;
     }
 
-    [AutomaticRetry(Attempts = 0)]
-    public async Task SendNotificationToRecipientAsync(int recipientId, bool accessControlDone = false)
+    public async Task SendNotificationToRecipientAsync(int recipientId, bool accessControlDone)
     {
         var recipient = await _notificationRecipientRetrievalService.GetNotificationRecipientByIdAsync(recipientId, accessControlDone: true);
         var notification = await _notificationRetrievalService.GetNotificationByIdAsync(recipient.NotificationId, accessControlDone: accessControlDone);
@@ -84,7 +80,6 @@ public class NotificationBackgroundService : INotificationBackgroundService
                 recipient.Sent = SystemClock.Instance.GetCurrentInstant();
                 await _notificationManagementService.UpdateNotificationRecipientAsync(recipient);
             }
-
         }
         catch (Exception e)
         {
