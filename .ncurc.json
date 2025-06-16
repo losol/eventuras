@@ -1,3 +1,9 @@
 {
-  "reject": ["lexical", "@lexical/link", "@lexical/markdown", "@lexical/react"]
+  "reject": [
+    "lexical",
+    "@lexical/link",
+    "@lexical/markdown",
+    "@lexical/react",
+    "@types/node"
+  ]
 }

@@ -3,18 +3,18 @@
   "version": "0.1.1",
   "license": "GPL-2.0+",
   "private": true,
-  "packageManager": "npm@11.3.0",
+  "packageManager": "npm@11.4.2",
   "dependencies": {
     "husky": "^9.1.7",
-    "turbo": "^2.5.3"
+    "turbo": "^2.5.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*",
-    "eslint": "^9.26.0",
-    "lint-staged": "^15.5.2",
+    "eslint": "^9.29.0",
+    "lint-staged": "^16.1.2",
     "prettier": "^3.5.3",
     "typescript": "^5.8.3"
   },
