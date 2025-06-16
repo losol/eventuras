@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { NavList, NavListProps, NavListItem } from './NavList';
 
 const sampleItems: NavListItem[] = [

@@ -1,7 +1,7 @@
 
 
 import React from 'react';
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 import { Card, CardProps } from './Card';
 
 const meta: Meta<typeof Card> = {
