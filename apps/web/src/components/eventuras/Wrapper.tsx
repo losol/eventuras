@@ -1,4 +1,3 @@
-import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
@@ -7,7 +6,7 @@ import { Navbar } from '@eventuras/ratio-ui/core/Navbar/Navbar';
 import { List } from '@eventuras/ratio-ui/core/List/List';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
-import { UserMenu } from './navigation/UserMenu';
+import UserMenu from './UserMenu';
 import Link from 'next/link';
 
 /**
@@ -31,7 +30,6 @@ const styles = {
 const Wrapper = async (props: WrapperProps) => {
   const t = await getTranslations();
   const site = await getSiteSettings();
-  const session = await getCurrentSession();
   const bgClass = props.imageNavbar
     ? 'bg-transparent z-10 absolute w-full py-1'
     : 'bg-transparent w-full py-1';
@@ -56,9 +54,6 @@ const Wrapper = async (props: WrapperProps) => {
           LoggedOutContent={{
             loginLabel: t('common.labels.login'),
           }}
-          isLoggedIn={session !== null}
-          isAdmin={session?.user?.roles?.includes('Admin')}
-          userName={session?.user?.name}
         />
       </Navbar>
       <main id="main-content" className={mainClassName}>

@@ -34,7 +34,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "../../libs/scribo/src/ui/DropDown.tsx",
-    "../../libs/ratio-ui/src/core/Footer/Footer.tsx"
+    "../../libs/ratio-ui/src/core/Footer/Footer.tsx",
+    "../../libs/ratio-ui/src/core/Menu/Menu.tsx"
   ],
   "exclude": ["node_modules"]
 }
