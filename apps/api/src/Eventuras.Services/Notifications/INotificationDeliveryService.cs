@@ -6,7 +6,7 @@ namespace Eventuras.Services.Notifications;
 
 public interface INotificationDeliveryService
 {
-    Task SendNotificationAsync(
+    Task QueueNotificationAsync(
         Notification notification,
         bool accessControlDone = false,
         CancellationToken cancellationToken = default);

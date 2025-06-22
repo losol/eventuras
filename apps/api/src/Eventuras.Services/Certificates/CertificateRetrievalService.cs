@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using static Eventuras.Domain.Certificate;
 
 namespace Eventuras.Services.Certificates;
 
@@ -51,6 +54,37 @@ internal class CertificateRetrievalService : ICertificateRetrievalService
         }
 
         return certificate;
+    }
+
+    public async Task<List<Certificate>> GetCertificatesByDeliveryStatusAsync(
+        IEnumerable<CertificateDeliveryStatus> deliveryStatuses,
+        CertificateRetrievalOptions options = null,
+        bool accessControlDone = false,
+        CancellationToken cancellationToken = default)
+    {
+        options ??= new CertificateRetrievalOptions();
+
+        var certificates = await _context.Certificates
+            .WithOptions(options)
+            .Where(c => deliveryStatuses.Contains(c.DeliveryStatus))
+            .ToListAsync(cancellationToken) ?? throw new NotFoundException(
+                $"Certificates with delivery statuses [{string.Join(", ", deliveryStatuses)}] not found");
+
+        if (!accessControlDone)
+        {
+            if (options.ForUpdate)
+            {
+                await _certificateAccessControlService
+                    .CheckCertificatesUpdateAccessAsync(certificates, cancellationToken);
+            }
+            else
+            {
+                await _certificateAccessControlService
+                    .CheckCertificatesReadAccessAsync(certificates, cancellationToken);
+            }
+        }
+
+        return certificates;
     }
 
     public async Task<Paging<Certificate>> ListCertificatesAsync(
