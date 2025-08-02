@@ -12,6 +12,6 @@
   "author": "Ole Kristian Losvik",
   "license": "GPL-2.0-or-later",
   "dependencies": {
-    "@hey-api/openapi-ts": "^0.73.0"
+    "@hey-api/openapi-ts": "^0.80.1"
   }
 }

@@ -27,14 +27,14 @@
     "@fastify/rate-limit": "^10.3.0",
     "@fastify/static": "^8.2.0",
     "@fastify/swagger": "^9.5.1",
-    "@scalar/fastify-api-reference": "^1.31.12",
-    "@swc/cli": "^0.7.7",
-    "dotenv": "^16.5.0",
+    "@scalar/fastify-api-reference": "^1.34.0",
+    "@swc/cli": "^0.7.8",
+    "dotenv": "^17.2.1",
     "fastify": "^5.4.0",
-    "playwright": "^1.53.0",
+    "playwright": "^1.54.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3",
-    "zod": "^3.25.65"
+    "typescript": "^5.9.2",
+    "zod": "^4.0.14"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "*",
