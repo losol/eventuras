@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ComboBox,
   Input as ComboBoxInput,
@@ -14,6 +14,7 @@ import { formStyles, textStyles, componentStyles } from '../styles/formStyles';
 import { InputLabel } from '../common/InputLabel';
 import { InputDescription } from '../common/InputDescription';
 import { InputError } from '../common/InputError';
+import { COUNTRY_CODES } from './PhoneInputCountryCodes';
 
 export interface CountryCode {
   name: string;
@@ -33,6 +34,8 @@ export interface PhoneInputProps {
   description?: string;
   defaultCode?: string;
   countries?: CountryCode[];
+  /** Full international phone number, e.g. +4712345678 */
+  value?: string;
   errors?: Record<string, { message: string } | undefined>;
   disabled?: boolean;
   onChange?: (value: PhoneInputChange) => void;
@@ -43,16 +46,12 @@ export function PhoneInput({
   label = 'Phone Number',
   description,
   defaultCode = '+47',
-  countries = [
-    { name: 'Norway', code: '+47', flag: '🇳🇴' },
-    { name: 'Sweden', code: '+46', flag: '🇸🇪' },
-    { name: 'Denmark', code: '+45', flag: '🇩🇰' },
-  ],
+  countries = COUNTRY_CODES,
+  value,
   errors,
   disabled,
   onChange,
 }: PhoneInputProps) {
-  // Determine initial country
   const defaultCountry =
     countries.find((c) => c.code === defaultCode) ??
     countries[0] ??
@@ -70,17 +69,30 @@ export function PhoneInput({
     onChange?.({ fullNumber, localNumber: number, country: c });
   };
 
-  // Handle typing in local number (clean to only digits, clear digit error)
+  // 🔹 Split existing full number on mount or when `value` changes
+  useEffect(() => {
+    if (!value) return;
+
+    const match = countries.find((c) => value.startsWith(c.code));
+    if (match) {
+      setCountry(match);
+      setLocalNumber(value.slice(match.code.length));
+    } else {
+      // fallback: unknown prefix
+      setLocalNumber(value.replace(/^\+/, ''));
+    }
+  }, [value]);
+
+  // Handle typing in local number (digits only)
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
     const cleanedValue = rawValue.replace(/\D/g, ''); // Only digits
-
     setLocalNumber(cleanedValue);
-    setLocalError(null); // Clear digit error while typing
+    setLocalError(null); // Clear while typing
     emitChange(country, cleanedValue);
   };
 
-  // Validation rules per country code
+  // Simple validation per country on blur
   const phoneValidationRules: Record<
     string,
     { min?: number; max?: number; exact?: number; message: string }
@@ -90,10 +102,10 @@ export function PhoneInput({
     '+45': { exact: 8, message: 'Danish phone numbers must be exactly 8 digits' },
   };
 
-  // Validate min/max length on blur
   const handleNumberBlur = () => {
     let error: string | null = null;
     const rule = phoneValidationRules[country.code];
+
     if (rule) {
       if (rule.exact !== undefined && localNumber.length !== rule.exact) {
         error = rule.message;
@@ -110,10 +122,11 @@ export function PhoneInput({
         error = 'Phone number must be at most 15 digits';
       }
     }
+
     setLocalError(error);
   };
 
-  // Handle selection in ComboBox
+  // Handle country selection
   const handleCountryChange = (key: React.Key | null) => {
     if (!key) return;
     const selected = countries.find((c) => c.name === key);
@@ -123,12 +136,12 @@ export function PhoneInput({
     }
   };
 
-  // Update ComboBox filter value
+  // ComboBox filter value
   const handleInputChange = (value: string) => {
     setComboInputValue(value);
   };
 
-  // Filter countries based on ComboBox input
+  // Filter countries in dropdown
   const filteredCountries = countries.filter((c) => {
     if (!comboInputValue) return true;
     const searchTerm = comboInputValue.toLowerCase();
@@ -138,12 +151,6 @@ export function PhoneInput({
       c.flag.includes(searchTerm)
     );
   });
-
-  // Merge form errors and local validation error
-  const mergedErrors = {
-    ...errors,
-    ...(localError ? { [name]: { message: localError } } : {}),
-  };
 
   return (
     <div className={formStyles.inputWrapper}>
@@ -197,7 +204,7 @@ export function PhoneInput({
           name={name}
           type="tel"
           inputMode="numeric"
-          pattern="[0-9\s-]*"
+          pattern="[0-9]*"
           value={localNumber}
           onChange={handleNumberChange}
           onBlur={handleNumberBlur}
@@ -207,15 +214,15 @@ export function PhoneInput({
           noWrapper
         />
       </div>
-              {(localError || errors?.[name]?.message) && (
-          <InputError
-            errors={{
-              [name]: { message: localError ?? errors?.[name]?.message ?? '' }
-            }}
-            name={name}
-          />
-        )}
+
+      {(localError || errors?.[name]?.message) && (
+        <InputError
+          errors={{
+            [name]: { message: localError ?? errors?.[name]?.message ?? '' },
+          }}
+          name={name}
+        />
+      )}
     </div>
   );
 }
-

@@ -94,7 +94,7 @@ export const componentStyles = {
   listBoxItem: `px-3 py-2 ${layoutStyles.flexStart} ${layoutStyles.gapMd} cursor-pointer ${interactionStyles.listBoxItemHover} ${interactionStyles.listBoxItemFocused} ${interactionStyles.listBoxItemSelected}`,
 
   // Phone input container
-  phoneInputContainer: `flex items-stretch ${layoutStyles.flexStart} ${layoutStyles.widthFull} overflow-hidden border-2 dark:border-gray-700 ${interactionStyles.inputFocused} ${interactionStyles.transition}`,
+  phoneInputContainer: `bg-gray-100 flex items-stretch ${layoutStyles.flexStart} ${layoutStyles.widthFull} overflow-hidden border-2 dark:border-gray-700 ${interactionStyles.inputFocused} ${interactionStyles.transition}`,
 };
 
 // Updated formStyles with extracted text styles
