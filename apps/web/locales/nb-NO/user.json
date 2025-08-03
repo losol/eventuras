@@ -59,6 +59,9 @@
   "feedback": {
     "alreadyRegistered": "Du er allerede registrert for denne hendelsen, vi sees snart!"
   },
+  "labels": {
+    "updateUserSuccess": "Bruker oppdatert. "
+  },
   "loginRequired": "Logg på for å se siden",
   "page": {
     "errors": {
