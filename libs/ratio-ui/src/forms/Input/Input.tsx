@@ -3,7 +3,7 @@ import React, {
   InputHTMLAttributes,
   TextareaHTMLAttributes,
 } from 'react';
-import { InputProps } from './InputProps'; // Ensure this includes 'multiline', 'rows', 'cols'
+import { InputProps } from './InputProps';
 import { formStyles } from '../styles/formStyles';
 import { InputLabel } from '../common/InputLabel';
 import { InputError } from '../common/InputError';
@@ -36,6 +36,8 @@ export const Input = forwardRef<HTMLElement, ExtendedInputProps>(
       multiline = false,
       rows,
       cols,
+      noMargin = false,
+      noWrapper = false,
       ...rest
     },
     forwardedRef
@@ -74,33 +76,36 @@ export const Input = forwardRef<HTMLElement, ExtendedInputProps>(
       ...rest,
     };
 
-    if (multiline) {
-      commonProps.rows = rows ?? 3;
-      if (cols !== undefined) {
-        commonProps.cols = cols;
-      }
-    }
+    const inputElement = multiline ? (
+      <textarea
+        ref={assignRef as React.Ref<HTMLTextAreaElement>}
+        rows={rows ?? 3} // ✅ keep rows for initial height
+        {...commonProps}
+        {...{ [DATA_TEST_ID]: commonProps[DATA_TEST_ID] }}
+      />
+    ) : (
+      <input
+        ref={assignRef as React.Ref<HTMLInputElement>}
+        type={type}
+        {...commonProps}
+      />
+    );
 
-    return (
-      <div className={formStyles.inputWrapper}>
+    const content = (
+      <>
         {label && <InputLabel htmlFor={id}>{label}</InputLabel>}
         {description && <InputDescription>{description}</InputDescription>}
-        {multiline ? (
-          <textarea
-            ref={assignRef as React.Ref<HTMLTextAreaElement>}
-            {...commonProps}
-            {...{ [DATA_TEST_ID]: commonProps[DATA_TEST_ID] }}
-          />
-        ) : (
-          <input
-            ref={assignRef as React.Ref<HTMLInputElement>}
-            type={type}
-            {...commonProps}
-          />
-        )}
+        {inputElement}
         {hasError && <InputError errors={errors} name={name} />}
-      </div>
+      </>
     );
+
+
+    if (noWrapper) {
+      return content;
+    }
+
+    return <div className={formStyles.inputWrapper}>{content}</div>;
   }
 );
 

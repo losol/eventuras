@@ -1,0 +1,221 @@
+'use client';
+
+import React, { useState } from 'react';
+import {
+  ComboBox,
+  Input as ComboBoxInput,
+  ListBox,
+  ListBoxItem,
+  Button as ComboBoxButton,
+  Popover,
+} from 'react-aria-components';
+import { Input } from './Input';
+import { formStyles, textStyles, componentStyles } from '../styles/formStyles';
+import { InputLabel } from '../common/InputLabel';
+import { InputDescription } from '../common/InputDescription';
+import { InputError } from '../common/InputError';
+
+export interface CountryCode {
+  name: string;
+  code: string;
+  flag: string;
+}
+
+export interface PhoneInputChange {
+  fullNumber: string;
+  localNumber: string;
+  country: CountryCode | null;
+}
+
+export interface PhoneInputProps {
+  name?: string;
+  label?: string;
+  description?: string;
+  defaultCode?: string;
+  countries?: CountryCode[];
+  errors?: Record<string, { message: string } | undefined>;
+  disabled?: boolean;
+  onChange?: (value: PhoneInputChange) => void;
+}
+
+export function PhoneInput({
+  name = 'phone',
+  label = 'Phone Number',
+  description,
+  defaultCode = '+47',
+  countries = [
+    { name: 'Norway', code: '+47', flag: '🇳🇴' },
+    { name: 'Sweden', code: '+46', flag: '🇸🇪' },
+    { name: 'Denmark', code: '+45', flag: '🇩🇰' },
+  ],
+  errors,
+  disabled,
+  onChange,
+}: PhoneInputProps) {
+  // Determine initial country
+  const defaultCountry =
+    countries.find((c) => c.code === defaultCode) ??
+    countries[0] ??
+    { name: '', code: '', flag: '' };
+
+  const [country, setCountry] = useState<CountryCode>(defaultCountry);
+  const [localNumber, setLocalNumber] = useState('');
+  const [comboInputValue, setComboInputValue] = useState('');
+  const [localError, setLocalError] = useState<string | null>(null);
+
+  // Emit combined number to parent
+  const emitChange = (c: CountryCode | null, number: string) => {
+    const code = c?.code ?? '';
+    const fullNumber = `${code}${number}`.trim();
+    onChange?.({ fullNumber, localNumber: number, country: c });
+  };
+
+  // Handle typing in local number (clean to only digits, clear digit error)
+  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value;
+    const cleanedValue = rawValue.replace(/\D/g, ''); // Only digits
+
+    setLocalNumber(cleanedValue);
+    setLocalError(null); // Clear digit error while typing
+    emitChange(country, cleanedValue);
+  };
+
+  // Validation rules per country code
+  const phoneValidationRules: Record<
+    string,
+    { min?: number; max?: number; exact?: number; message: string }
+  > = {
+    '+47': { exact: 8, message: 'Norwegian phone numbers must be exactly 8 digits' },
+    '+46': { min: 7, max: 13, message: 'Swedish phone numbers must be 7 to 13 digits' },
+    '+45': { exact: 8, message: 'Danish phone numbers must be exactly 8 digits' },
+  };
+
+  // Validate min/max length on blur
+  const handleNumberBlur = () => {
+    let error: string | null = null;
+    const rule = phoneValidationRules[country.code];
+    if (rule) {
+      if (rule.exact !== undefined && localNumber.length !== rule.exact) {
+        error = rule.message;
+      } else if (
+        (rule.min !== undefined && localNumber.length < rule.min) ||
+        (rule.max !== undefined && localNumber.length > rule.max)
+      ) {
+        error = rule.message;
+      }
+    } else {
+      if (localNumber && localNumber.length < 6) {
+        error = 'Phone number must be at least 6 digits';
+      } else if (localNumber.length > 15) {
+        error = 'Phone number must be at most 15 digits';
+      }
+    }
+    setLocalError(error);
+  };
+
+  // Handle selection in ComboBox
+  const handleCountryChange = (key: React.Key | null) => {
+    if (!key) return;
+    const selected = countries.find((c) => c.name === key);
+    if (selected) {
+      setCountry(selected);
+      emitChange(selected, localNumber);
+    }
+  };
+
+  // Update ComboBox filter value
+  const handleInputChange = (value: string) => {
+    setComboInputValue(value);
+  };
+
+  // Filter countries based on ComboBox input
+  const filteredCountries = countries.filter((c) => {
+    if (!comboInputValue) return true;
+    const searchTerm = comboInputValue.toLowerCase();
+    return (
+      c.name.toLowerCase().includes(searchTerm) ||
+      c.code.includes(searchTerm) ||
+      c.flag.includes(searchTerm)
+    );
+  });
+
+  // Merge form errors and local validation error
+  const mergedErrors = {
+    ...errors,
+    ...(localError ? { [name]: { message: localError } } : {}),
+  };
+
+  return (
+    <div className={formStyles.inputWrapper}>
+      {label && <InputLabel>{label}</InputLabel>}
+      {description && <InputDescription>{description}</InputDescription>}
+
+      <div className={`${componentStyles.phoneInputContainer} flex items-stretch`}>
+        {/* Left: Country selector */}
+        <ComboBox
+          selectedKey={country.name}
+          inputValue={comboInputValue}
+          onSelectionChange={handleCountryChange}
+          onInputChange={handleInputChange}
+          className={componentStyles.integratedComboBoxContainer}
+          allowsCustomValue={false}
+        >
+          <div className={componentStyles.comboBoxInputWrapper}>
+            <ComboBoxInput
+              className={componentStyles.comboBoxInputField}
+              placeholder={`${country.flag} ${country.code}`}
+            />
+            <ComboBoxButton className={`px-2 ${textStyles.dropdownButton}`}>
+              ▾
+            </ComboBoxButton>
+          </div>
+          <Popover className={componentStyles.popover}>
+            <ListBox>
+              {filteredCountries.map((c) => (
+                <ListBoxItem
+                  key={c.name}
+                  id={c.name}
+                  textValue={`${c.flag} ${c.code} ${c.name}`}
+                  className={componentStyles.listBoxItem}
+                >
+                  <span className="text-lg">{c.flag}</span>
+                  <span className={textStyles.listBoxItemPrimary}>{c.code}</span>
+                  <span className={textStyles.listBoxItemSecondary}>{c.name}</span>
+                </ListBoxItem>
+              ))}
+              {filteredCountries.length === 0 && (
+                <div className={`px-3 py-2 ${textStyles.emptyStateText}`}>
+                  No countries found
+                </div>
+              )}
+            </ListBox>
+          </Popover>
+        </ComboBox>
+
+        {/* Right: local number input */}
+        <Input
+          name={name}
+          type="tel"
+          inputMode="numeric"
+          pattern="[0-9\s-]*"
+          value={localNumber}
+          onChange={handleNumberChange}
+          onBlur={handleNumberBlur}
+          disabled={disabled}
+          placeholder="Enter phone number"
+          className="p-2 border-0 rounded-none focus:ring-0 flex-1 w-full"
+          noWrapper
+        />
+      </div>
+              {(localError || errors?.[name]?.message) && (
+          <InputError
+            errors={{
+              [name]: { message: localError ?? errors?.[name]?.message ?? '' }
+            }}
+            name={name}
+          />
+        )}
+    </div>
+  );
+}
+
