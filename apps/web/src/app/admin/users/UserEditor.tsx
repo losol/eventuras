@@ -2,7 +2,7 @@
 
 import { Fieldset } from '@eventuras/ratio-ui/forms';
 import { UserDto, UserFormDto } from '@eventuras/sdk';
-import { Form, Input } from '@eventuras/smartform';
+import { Form, Input, PhoneInput } from '@eventuras/smartform';
 import { Button } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
@@ -47,6 +47,7 @@ const UserEditor: FC<UserEditorProps> = props => {
         message: t('common.labels.error') + ': ' + user.error.message,
       });
       Logger.error({ namespace: log_namespace }, 'Failed to create new user', user.error);
+      return user;
     }
 
     addAppNotification({
@@ -77,16 +78,26 @@ const UserEditor: FC<UserEditorProps> = props => {
         message: t('common.labels.error') + ': ' + updatedUser.error.message,
       });
       Logger.error({ namespace: log_namespace }, 'Failed to update user', updatedUser.error);
-      return;
+      return updatedUser;
     }
 
     Logger.info({ namespace: log_namespace }, 'Updated user with id', updatedUser.value?.id);
+
+    addAppNotification({
+      type: AppNotificationType.SUCCESS,
+      message: t('user.labels.updateUserSuccess') + ': ' + updatedUser.value?.name,
+    });
+
     return updatedUser;
   };
 
   const editMode = !!user;
 
-  const onSubmit = async (form: UserDto) => {
+  const onSubmit = async (form: UserDto, event?: React.BaseSyntheticEvent) => {
+    // Prevent default form submission to avoid page refresh
+    if (event && typeof event.preventDefault === 'function') {
+      event.preventDefault();
+    }
     let result;
     if (editMode) {
       result = await updateUser(user, form, adminMode || false);
@@ -172,12 +183,10 @@ const UserEditor: FC<UserEditorProps> = props => {
         />
 
         {/* Phone Field */}
-        <Input
+        <PhoneInput
           name="phoneNumber"
           label={t('user.account.phoneNumber.label')}
           description={t('user.account.phoneNumber.description')}
-          type="tel"
-          placeholder={t('user.account.phoneNumber.placeholder')}
           validation={{
             required: adminMode ? false : t('user.account.phoneNumber.requiredText'),
             pattern: {
