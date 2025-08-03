@@ -61,6 +61,9 @@
   "feedback": {
     "alreadyRegistered": "You are already registered for this event, see you soon!"
   },
+  "labels": {
+    "updateUserSuccess": "User updated."
+  },
   "loginRequired": "Log in to see this page",
   "page": {
     "errors": {
