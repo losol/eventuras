@@ -109,12 +109,10 @@ export async function decrypt(data: string): Promise<string> {
   }
 
   // Split the incoming data. We expect exactly three parts.
-
   const [ivHex, tagHex, ciphertextHex] = data.split(':');
   if (!ivHex || !tagHex || !ciphertextHex) {
     throw new Error('Invalid encrypted data format');
   }
-
 
   // Convert each hex-encoded part to a Uint8Array
   const iv = hexToUint8Array(ivHex);
@@ -128,9 +126,15 @@ export async function decrypt(data: string): Promise<string> {
 
   // Convert the secret into a Uint8Array and import it as a CryptoKey for AES-GCM decryption.
   const keyData = hexToUint8Array(secret);
+  // Ensure keyData is backed by a real ArrayBuffer (not SharedArrayBuffer)
+  const keyDataArrayBuffer = new Uint8Array([...keyData]);
+
+  // Ensure iv is backed by a real ArrayBuffer (not SharedArrayBuffer)
+  const ivArrayBuffer = new Uint8Array([...iv]);
+
   const key = await crypto.subtle.importKey(
     'raw',
-    keyData,
+    keyDataArrayBuffer,
     { name: 'AES-GCM' },
     false,
     ['decrypt']
@@ -138,7 +142,7 @@ export async function decrypt(data: string): Promise<string> {
 
   // Decrypt the combined ciphertext+tag using the IV.
   const decryptedBuffer = await crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv, tagLength: 128 },
+    { name: 'AES-GCM', iv: ivArrayBuffer, tagLength: 128 },
     key,
     combined.buffer
   );
@@ -161,15 +165,20 @@ function bufferToHex(buffer: ArrayBuffer): string {
 
 /**
  * Converts input data (string or Buffer) to a Uint8Array.
+ * Ensures the returned Uint8Array is backed by an ArrayBuffer (not SharedArrayBuffer).
  * @param data - The input data.
  * @returns A Uint8Array representing the input data.
  */
 function toUint8Array(data: string | Buffer): Uint8Array {
   if (typeof data === 'string') {
-    return new TextEncoder().encode(data);
+    const encoded = new TextEncoder().encode(data);
+    // Ensure it's backed by a regular ArrayBuffer
+    return new Uint8Array([...encoded]);
   }
   // Assuming Node.js Buffer; in Edge or browser environments, use appropriate conversion.
-  return new Uint8Array(data);
+  const bufferArray = new Uint8Array(data);
+  // Ensure it's backed by a regular ArrayBuffer
+  return new Uint8Array([...bufferArray]);
 }
 
 /**
@@ -179,7 +188,11 @@ function toUint8Array(data: string | Buffer): Uint8Array {
  */
 export async function sha256(data: string | Buffer): Promise<string> {
   const buffer = toUint8Array(data);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+  // Create a new ArrayBuffer and copy the data to ensure proper typing
+  const arrayBuffer = new ArrayBuffer(buffer.length);
+  const safeBuffer = new Uint8Array(arrayBuffer);
+  safeBuffer.set(buffer);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', safeBuffer);
   return bufferToHex(hashBuffer);
 }
 
@@ -190,7 +203,11 @@ export async function sha256(data: string | Buffer): Promise<string> {
  */
 export async function sha512(data: string | Buffer): Promise<string> {
   const buffer = toUint8Array(data);
-  const hashBuffer = await crypto.subtle.digest('SHA-512', buffer);
+  // Create a new ArrayBuffer and copy the data to ensure proper typing
+  const arrayBuffer = new ArrayBuffer(buffer.length);
+  const safeBuffer = new Uint8Array(arrayBuffer);
+  safeBuffer.set(buffer);
+  const hashBuffer = await crypto.subtle.digest('SHA-512', safeBuffer);
   return bufferToHex(hashBuffer);
 }
 
@@ -212,10 +229,13 @@ export function getSessionSecret(): string {
  * Retrieves the session secret from environment variables as Uint8Array .
  * Throws an error if the SESSION_SECRET is not defined.
  *
- * @returns {string} The session secret.
+ * @returns {Uint8Array} The session secret as Uint8Array.
  */
 export function getSessionSecretUint8Array(): Uint8Array {
-  return hexToUint8Array(getSessionSecret());
+  const secret = getSessionSecret();
+  const keyData = hexToUint8Array(secret);
+  // Ensure it's backed by a regular ArrayBuffer (not SharedArrayBuffer)
+  return new Uint8Array([...keyData]);
 }
 
 /**
@@ -247,7 +267,7 @@ export function generateToken(tokenLength: number = 32): string {
  * It decodes the access token (assumed to be a JWT) and reads the `exp` claim.
  * The expiration (`exp`) claim is the UNIX timestamp (in seconds) when the token expires.
  *
- * @param session - The session object containing token information.
+ * @param accessToken - The access token string.
  * @param seconds - The threshold (in seconds) for checking expiration (default is 10 seconds).
  * @returns True if the access token expires within the threshold; otherwise, false.
  */
