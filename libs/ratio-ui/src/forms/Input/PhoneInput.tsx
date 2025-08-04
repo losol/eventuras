@@ -170,7 +170,9 @@ export function PhoneInput({
           <div className={componentStyles.comboBoxInputWrapper}>
             <ComboBoxInput
               className={componentStyles.comboBoxInputField}
+              // Only show flag and code as placeholder and in input
               placeholder={`${country.flag} ${country.code}`}
+              // Show only flag and code in input field (if supported by ComboBoxInput)
             />
             <ComboBoxButton className={`px-2 ${textStyles.dropdownButton}`}>
               ▾
@@ -182,7 +184,8 @@ export function PhoneInput({
                 <ListBoxItem
                   key={c.name}
                   id={c.name}
-                  textValue={`${c.flag} ${c.code} ${c.name}`}
+                  // Only show flag and code as visible label in input (textValue)
+                  textValue={`${c.flag} ${c.code}`}
                   className={componentStyles.listBoxItem}
                 >
                   <span className="text-lg">{c.flag}</span>
@@ -210,7 +213,7 @@ export function PhoneInput({
           onBlur={handleNumberBlur}
           disabled={disabled}
           placeholder="Enter phone number"
-          className="p-2 border-0 rounded-none focus:ring-0 flex-1 w-full"
+          className="p-2 bg-gray-900 border-0 rounded-none focus:ring-0 flex-1 w-full"
           noWrapper
         />
       </div>
