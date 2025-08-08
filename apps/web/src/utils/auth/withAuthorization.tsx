@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 
-import { Unauthorized } from '@/components/Unauthorized';
+import { Unauthorized } from '@eventuras/ratio-ui/blocks/Unauthorized';
 import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
 

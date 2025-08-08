@@ -1,5 +1,3 @@
-import { Link } from '@eventuras/ratio-ui/next/Link';
-
 type UnauthorizedProps = {
   homeUrl?: string;
   variant?: 'small' | 'large';
@@ -33,9 +31,6 @@ export function Unauthorized({ homeUrl = '/', variant = 'large' }: UnauthorizedP
       {!isSmall && (
         <p className="text-md my-6">If you believe this is an error, please contact support.</p>
       )}
-      <Link href={homeUrl} variant="button-primary">
-        Return to Home
-      </Link>
     </div>
   );
 }
