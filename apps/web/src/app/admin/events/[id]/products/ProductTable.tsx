@@ -5,7 +5,7 @@ import { DATA_TEST_ID } from '@eventuras/utils';
 import { IconEye, IconPencil } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 
-import Link from '@/components/Link';
+import { Link } from '@eventuras/ratio-ui/next/Link';
 
 const columnHelper = createColumnHelper<ProductDto>();
 

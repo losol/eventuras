@@ -2,7 +2,7 @@ import { Badge, Container, Heading, Section } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/utils';
 
 import Wrapper from '@/components/eventuras/Wrapper';
-import Link from '@/components/Link';
+import { Link } from '@eventuras/ratio-ui/next/Link';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';

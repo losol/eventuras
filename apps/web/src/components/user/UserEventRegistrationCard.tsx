@@ -5,7 +5,7 @@ import { ReactElement } from 'react';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Text } from '@eventuras/ratio-ui/core/Text/Text';
-import Link from '@/components/Link';
+import { Link } from '@eventuras/ratio-ui/next/Link';
 import Environment from '@/utils/Environment';
 import { formatDateSpan } from '@/utils/formatDate';
 import Heading from '@eventuras/ratio-ui/core/Heading/Heading';

@@ -2,7 +2,7 @@ import { Container, Heading } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
 import { getTranslations } from 'next-intl/server';
 
-import Link from '@/components/Link';
+import { Link } from '@eventuras/ratio-ui/next/Link';
 import withAuthorization from '@/utils/auth/withAuthorization';
 import Environment from '@/utils/Environment';
 

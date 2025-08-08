@@ -3,7 +3,7 @@ import { Badge } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
 import { getTranslations } from 'next-intl/server';
 
-import Link from '@/components/Link';
+import { Link } from '@eventuras/ratio-ui/next/Link';
 
 export type EventRegistrationButtonProps = {
   event: EventDto;
