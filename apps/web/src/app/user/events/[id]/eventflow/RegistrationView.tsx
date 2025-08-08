@@ -5,7 +5,7 @@ import { DATA_TEST_ID } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 
 import Registration from '@/app/admin/registrations/Registration';
-import Tabs from '@/components/Tabs';
+import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
 
 export interface RegistrationViewProps {
   eventInfo: EventDto;

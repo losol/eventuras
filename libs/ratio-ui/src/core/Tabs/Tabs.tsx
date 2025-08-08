@@ -38,7 +38,7 @@ const styles = {
   panel: '',
 };
 
-const Tabs: TabsComponent = ({ children }) => {
+export const Tabs: TabsComponent = ({ children }) => {
   // Filter out non-valid elements (like null or undefined)
   const validChildren = React.Children.toArray(children).filter(child =>
     React.isValidElement(child)
@@ -82,4 +82,3 @@ const TabItem: React.FC<TabItemProps> = ({ children }) => {
 
 Tabs.Item = TabItem;
 
-export default Tabs;

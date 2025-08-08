@@ -19,7 +19,8 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 
-import Tabs from '@/components/Tabs';
+
+import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { mapEnum } from '@/utils/enum';
