@@ -32,10 +32,7 @@
     "next.config.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
-    "../../libs/scribo/src/ui/DropDown.tsx",
-    "../../libs/ratio-ui/src/core/Footer/Footer.tsx",
-    "../../libs/ratio-ui/src/core/Menu/Menu.tsx"
+    ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }

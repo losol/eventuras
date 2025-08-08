@@ -8,7 +8,7 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import Dialog from '@/components/Dialog';
+import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import { ApiState, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 

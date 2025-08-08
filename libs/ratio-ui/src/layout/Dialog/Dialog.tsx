@@ -1,8 +1,8 @@
-import { Heading } from '@eventuras/ratio-ui';
+import { Heading } from '../../core/Heading';
 import { DATA_TEST_ID } from '@eventuras/utils';
 import { Overlay } from '@react-aria/overlays';
 import React, { ReactNode } from 'react';
-import { Dialog as RaDialog } from 'react-aria-components';
+import { Dialog as AriaDialog } from 'react-aria-components';
 export type DialogProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -11,26 +11,24 @@ export type DialogProps = {
   [DATA_TEST_ID]?: string;
 };
 
-const Dialog = (props: DialogProps) => {
+export const Dialog = (props: DialogProps) => {
   return (
     <DialogModal
       isOpen={props.isOpen}
       {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}
       onClickOutside={props.onClose}
     >
-      <RaDialog className="relative z-10">
+      <AriaDialog className="relative z-10">
         <Heading as="h3" padding="pt-0 pb-3">
           {props.title}
         </Heading>
         {props.children}
-      </RaDialog>
+      </AriaDialog>
     </DialogModal>
   );
 };
 
-export default Dialog;
-
-interface DialogModalProps {
+export interface DialogModalProps {
   children: React.ReactNode;
   isOpen: boolean;
   onClickOutside?: () => void;

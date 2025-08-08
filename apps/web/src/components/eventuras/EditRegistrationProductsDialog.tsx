@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import RegistrationCustomize from '@/app/user/events/[id]/eventflow/RegistrationCustomize';
-import Dialog from '@/components/Dialog';
+import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
 import {
   addProductsToRegistration,
