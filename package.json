@@ -5,7 +5,6 @@
   "private": true,
   "packageManager": "npm@11.5.2",
   "dependencies": {
-    "husky": "^9.1.7",
     "turbo": "^2.5.5"
   },
   "devDependencies": {
@@ -14,6 +13,7 @@
     "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*",
     "eslint": "^9.32.0",
+    "husky": "^9.1.7",
     "lint-staged": "^16.1.4",
     "prettier": "^3.6.2",
     "typescript": "^5.9.2"
@@ -40,6 +40,6 @@
     "npm:reinstall": "npm run npm:clean && npm install --force",
     "npm:update": "npx npm-check-updates --deep -u",
     "npm:clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules && npx rimraf package-lock.json",
-    "prepare": "husky"
+    "prepare": "node -e \"if (process.env.CI !== 'true') { require('husky').install() }\""
   }
 }
