@@ -1,4 +1,4 @@
-import Link from './BaseLink';
+import { Link } from '@eventuras/ratio-ui/next/Link';
 
 type UnauthorizedProps = {
   homeUrl?: string;
