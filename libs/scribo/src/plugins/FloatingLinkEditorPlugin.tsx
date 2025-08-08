@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+// https://github.com/facebook/lexical/blob/main/packages/lexical-playground/src/plugins/FloatingLinkEditorPlugin/index.tsx
 import type {JSX} from 'react';
 
 import './FloatingLinkEditorPlugin.css';
@@ -30,7 +31,6 @@ import {
   getDOMSelection,
   KEY_ESCAPE_COMMAND,
   LexicalEditor,
-  NodeSelection,
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
 import {Dispatch, useCallback, useEffect, useRef, useState} from 'react';
@@ -90,9 +90,6 @@ function FloatingLinkEditor({
       const nodes = selection.getNodes();
       if (nodes.length > 0) {
         const node = nodes[0];
-        if (!node) {
-          return;
-        }
         const parent = node.getParent();
         if ($isLinkNode(parent)) {
           setLinkUrl(parent.getURL());
@@ -123,13 +120,17 @@ function FloatingLinkEditor({
       if ($isNodeSelection(selection)) {
         const nodes = selection.getNodes();
         if (nodes.length > 0) {
-          // Using the non-null assertion operator to let TypeScript know nodes[0] is not undefined.
-          const firstNode = nodes[0]!;
-          const element = editor.getElementByKey(firstNode.getKey());
+          const element = editor.getElementByKey(nodes[0].getKey());
           if (element) {
             domRect = element.getBoundingClientRect();
           }
         }
+      } else if (
+        nativeSelection !== null &&
+        rootElement.contains(nativeSelection.anchorNode)
+      ) {
+        domRect =
+          nativeSelection.focusNode?.parentElement?.getBoundingClientRect();
       }
 
       if (domRect) {
@@ -214,6 +215,23 @@ function FloatingLinkEditor({
       inputRef.current.focus();
     }
   }, [isLinkEditMode, isLink]);
+
+  useEffect(() => {
+    const editorElement = editorRef.current;
+    if (editorElement === null) {
+      return;
+    }
+    const handleBlur = (event: FocusEvent) => {
+      if (!editorElement.contains(event.relatedTarget as Element) && isLink) {
+        setIsLink(false);
+        setIsLinkEditMode(false);
+      }
+    };
+    editorElement.addEventListener('focusout', handleBlur);
+    return () => {
+      editorElement.removeEventListener('focusout', handleBlur);
+    };
+  }, [editorRef, setIsLink, setIsLinkEditMode, isLink]);
 
   const monitorInputInteraction = (
     event: React.KeyboardEvent<HTMLInputElement>,
@@ -376,7 +394,7 @@ function useFloatingLinkEditorToolbar(
           setIsLink(false);
           return;
         }
-        const node = nodes[0]!;
+        const node = nodes[0];
         const parent = node.getParent();
         if ($isLinkNode(parent) || $isLinkNode(node)) {
           setIsLink(true);
