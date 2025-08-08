@@ -12,7 +12,7 @@
   "author": "Ole Kristian Losvik",
   "license": "GPL-2.0-or-later",
   "dependencies": {
-    "next": "15.4.5",
+    "next": "15.4.6",
     "nextra": "^4.3.0",
     "nextra-theme-docs": "^4.3.0",
     "nextra-theme-blog": "^4.3.0",
