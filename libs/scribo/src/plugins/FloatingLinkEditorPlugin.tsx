@@ -1,3 +1,5 @@
+// @ts-nocheck
+// https://github.com/facebook/lexical/blob/main/packages/lexical-playground/src/plugins/FloatingLinkEditorPlugin/index.tsx
 /**
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
@@ -5,7 +7,6 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-// https://github.com/facebook/lexical/blob/main/packages/lexical-playground/src/plugins/FloatingLinkEditorPlugin/index.tsx
 import type {JSX} from 'react';
 
 import './FloatingLinkEditorPlugin.css';

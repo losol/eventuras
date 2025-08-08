@@ -1,4 +1,4 @@
-import Dialog from '@/components/Dialog';
+import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 
 export type EditUserRegistrationDialogProps = {
   editorOpen: boolean;

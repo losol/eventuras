@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
-import Dialog from '@/components/Dialog';
+import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import slugify from '@/utils/slugify';
