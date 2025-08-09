@@ -8,7 +8,7 @@ import { useState } from 'react';
 
 import RegistrationCustomize from '@/app/user/events/[id]/eventflow/RegistrationCustomize';
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
-import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
+import { useToast } from '@eventuras/toast/src/useToast';
 import {
   addProductsToRegistration,
   productMapToOrderLineModel,
@@ -26,7 +26,7 @@ export type EditRegistrationProductsDialogProps = {
 
 const EditRegistrationProductsDialog = (props: EditRegistrationProductsDialogProps) => {
   const [editorOpen, setEditorOpen] = useState<boolean>(props.startOpened ?? false);
-  const { addAppNotification } = useAppNotifications();
+  const toast = useToast();
   const router = useRouter();
 
   const onSubmit = async (selected: Map<string, number>) => {
@@ -39,18 +39,12 @@ const EditRegistrationProductsDialog = (props: EditRegistrationProductsDialogPro
       return { ok: false };
     });
     if (updateProductResult.ok) {
-      addAppNotification({
-        message: 'Registration edited succesfully!',
-        type: AppNotificationType.SUCCESS,
-      });
+      toast.success('Registration edited successfully!');
       router.refresh();
     } else {
-      addAppNotification({
-        message: 'Something went wrong, please try again later',
-        type: AppNotificationType.ERROR,
-      });
-      router.refresh();
+      toast.error('Something went wrong, please try again later');
     }
+    router.refresh();
 
     setEditorOpen(false);
     if (props.onClose) props.onClose(updateProductResult.ok);

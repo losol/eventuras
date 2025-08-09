@@ -25,7 +25,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import ProductSelection from '@/components/eventuras/ProductSelection';
 import UserLookup from '@/components/eventuras/UserLookup';
-import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
+import { useToast } from '@eventuras/toast/src/useToast';
 import { RegistrationProduct } from '@/types';
 import { createEventRegistration } from '@/utils/api/functions/events';
 import { mapEventProductsToView, mapSelectedProductsToQuantity } from '@/utils/api/mappers';
@@ -83,7 +83,7 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
   onRemove,
   onUseradded,
 }) => {
-  const { addAppNotification } = useAppNotifications();
+  const toast = useToast();
   const t = useTranslations();
 
   const { control, register, setValue, handleSubmit } = useForm<AddUserToEventFormValues>();
@@ -111,24 +111,15 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
 
     if (result.ok) {
       Logger.info({ namespace: 'AddUserToEvent' }, 'User succesfully added to the event!');
-      addAppNotification({
-        message: 'User succesfully added to the event!',
-        type: AppNotificationType.SUCCESS,
-      });
+      toast.success('User successfully added to the event!');
       onUseradded(user);
     } else {
       Logger.error({ namespace: 'AddUserToEvent' }, result.error);
       if (result.error!.status === 409) {
-        addAppNotification({
-          message: 'That user is already registered to the event',
-          type: AppNotificationType.ERROR,
-        });
+        toast.error('That user is already registered to the event');
         return;
       }
-      addAppNotification({
-        message: t('common.errors.fatalError.title'),
-        type: AppNotificationType.ERROR,
-      });
+      toast.error(t('common.errors.fatalError.title'));
       throw new Error('Failed to add user to event');
     }
   };

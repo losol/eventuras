@@ -8,7 +8,7 @@ import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 import { FC, useState } from 'react';
 
-import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
+import { useToast } from '@eventuras/toast/src/useToast';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
 interface UserEditorProps {
@@ -32,7 +32,7 @@ const UserEditor: FC<UserEditorProps> = props => {
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const [isUpdating, setIsUpdating] = useState(false);
   const log_namespace = 'user.account';
-  const { addAppNotification } = useAppNotifications();
+  const toast = useToast();
 
   Logger.info({ namespace: log_namespace }, 'UserEditor rendering, user:', user);
 
@@ -42,19 +42,12 @@ const UserEditor: FC<UserEditorProps> = props => {
     );
     Logger.info({ namespace: log_namespace }, 'Created new user with id', user.value?.id);
     if (user.error) {
-      addAppNotification({
-        type: AppNotificationType.ERROR,
-        message: t('common.labels.error') + ': ' + user.error.message,
-      });
+      toast.error(t('common.labels.error') + ': ' + user.error.message);
       Logger.error({ namespace: log_namespace }, 'Failed to create new user', user.error);
       return user;
     }
 
-    addAppNotification({
-      type: AppNotificationType.SUCCESS,
-      message: t('common.labels.createUserSuccess') + ': ' + user.value?.name,
-    });
-
+    toast.success('User created successfully');
     return user;
   };
 
@@ -73,20 +66,14 @@ const UserEditor: FC<UserEditorProps> = props => {
     setIsUpdating(false);
 
     if (updatedUser.error) {
-      addAppNotification({
-        type: AppNotificationType.ERROR,
-        message: t('common.labels.error') + ': ' + updatedUser.error.message,
-      });
+      toast.error(t('common.labels.error') + ': ' + updatedUser.error.message);
       Logger.error({ namespace: log_namespace }, 'Failed to update user', updatedUser.error);
       return updatedUser;
     }
 
     Logger.info({ namespace: log_namespace }, 'Updated user with id', updatedUser.value?.id);
 
-    addAppNotification({
-      type: AppNotificationType.SUCCESS,
-      message: t('user.labels.updateUserSuccess') + ': ' + updatedUser.value?.name,
-    });
+    toast.success(t('user.labels.updateUserSuccess') + ': ' + updatedUser.value?.name);
 
     return updatedUser;
   };

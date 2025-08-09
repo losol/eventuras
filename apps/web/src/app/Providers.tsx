@@ -1,12 +1,10 @@
 'use client';
 import { useMemo } from 'react';
 import { createActor } from 'xstate';
-
-import NotificationsProvider from '@/components/NotificationsProvider';
 import AuthenticationFlowMachine, {
   AuthenticationStateContext,
 } from '@/statemachines/AuthenticationFlowMachine';
-import { NotificationsContext } from '@/statemachines/NotificationsMachine';
+import { ToastRenderer, ToastsContext } from '@eventuras/toast';
 
 type ProvidersProps = {
   children: React.ReactNode;
@@ -17,11 +15,11 @@ export default function Providers({ children }: ProvidersProps) {
   authService.start();
 
   return (
-    <NotificationsContext.Provider>
-      <NotificationsProvider />
+    <ToastsContext.Provider>
+      <ToastRenderer />
       <AuthenticationStateContext.Provider value={{ auth: authService }}>
         {children}
       </AuthenticationStateContext.Provider>
-    </NotificationsContext.Provider>
+    </ToastsContext.Provider>
   );
 }

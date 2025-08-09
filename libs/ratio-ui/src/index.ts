@@ -1,7 +1,5 @@
 import './ratio-ui.css';
 // This file is deprecated. No new exports should be added here, and it will be removed in the future.
-export { default as AppNotifications, AppNotificationType } from './core/AppNotifications/AppNotifications';
-export type { AppNotification } from './core/AppNotifications/AppNotifications';
 export { default as Badge } from './core/Badge/Badge';
 export { default as Button, buttonStyles } from './core/Button/Button';
 export { default as ButtonGroup } from './core/Button/ButtonGroup';

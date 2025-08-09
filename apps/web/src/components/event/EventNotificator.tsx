@@ -7,11 +7,7 @@ import { useTranslations } from 'next-intl';
 import { useRef } from 'react';
 import { SubmitHandler, useForm, UseFormRegister, UseFormReturn } from 'react-hook-form';
 
-import {
-  AppNotification,
-  AppNotificationType,
-  useAppNotifications,
-} from '@/hooks/useAppNotifications';
+import { useToast } from '@eventuras/toast/src/useToast';
 import { ParticipationTypes } from '@/types';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { participationMap } from '@/utils/api/mappers';
@@ -88,13 +84,14 @@ const getBodyDto = (
 const createFormHandler = (
   eventId: number,
   notificatorType: EventNotificatorType,
-  addAppNotification: (options: AppNotification) => void,
+  // toast: Toast () => void,
   onClose: () => void
 ) => {
   const onSubmitForm: SubmitHandler<EventEmailerFormValues | EventSMSFormValues> = async (
     data: EventEmailerFormValues | EventSMSFormValues
   ) => {
     const t = useTranslations();
+    const toast = useToast();
     const body = getBodyDto(eventId, data);
     const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
     Logger.info(
@@ -120,24 +117,20 @@ const createFormHandler = (
         { namespace: 'EventNotificator' },
         `Failed to send ${notificatorType} notification. Error: ${result.error}`
       );
-      addAppNotification({
-        message: `${'common.errors.fatalError.title'}: ${result.error?.body.errors.BodyMarkdown[0]}`,
-        type: AppNotificationType.ERROR,
-      });
+      toast.error(
+        `${'common.errors.fatalError.title'}: ${result.error?.body.errors.BodyMarkdown[0]}`
+      );
       throw new Error('Failed to send');
     } else {
       Logger.info(
         { namespace: 'EventNotificator' },
         `Successfully sent ${notificatorType} notification. `
       );
-      addAppNotification({
-        message:
-          notificatorType === EventNotificatorType.EMAIL
-            ? t('eventNotifier.form.successFeedbackEmail')
-            : t('eventNotifier.form.successFeedbackSMS'),
-        type: AppNotificationType.SUCCESS,
-        expiresAfter: 0,
-      });
+      toast.success(
+        notificatorType === EventNotificatorType.EMAIL
+          ? t('eventNotifier.form.successFeedbackEmail')
+          : t('eventNotifier.form.successFeedbackSMS')
+      );
       //we are done, lets request a close
       onClose();
     }
@@ -160,16 +153,14 @@ export default function EventNotificator({
     formState: { errors },
     handleSubmit,
   } = formHook;
-  const { addAppNotification } = useAppNotifications();
+  const toast = useToast();
   const t = useTranslations();
 
   const emailRegister = register as unknown as UseFormRegister<EventEmailerFormValues>;
   const smsRegister = register as unknown as UseFormRegister<EventSMSFormValues>;
   const defaultSelectedStatus = [ParticipationTypes.active];
   const defaultSelectedType = [RegistrationType.PARTICIPANT];
-  const onSubmitForm = useRef(
-    createFormHandler(eventId, notificatorType, addAppNotification, onClose)
-  ).current;
+  const onSubmitForm = useRef(createFormHandler(eventId, notificatorType, onClose)).current;
 
   const formValues = formHook.getValues();
 

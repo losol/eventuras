@@ -3,14 +3,14 @@
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { EventCollectionDto, EventDto } from '@eventuras/sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
-import { AppNotificationType, Button, Loading, Section } from '@eventuras/ratio-ui';
+import { Button, Loading, Section } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { IconTrash } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import EventLookup from '@/components/event/EventLookup';
-import { useAppNotifications } from '@/hooks/useAppNotifications';
+import { useToast } from '@eventuras/toast/src/useToast';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import slugify from '@/utils/slugify';
 
@@ -19,7 +19,7 @@ export type CollectionEditorProps = {
 };
 
 const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
-  const { addAppNotification } = useAppNotifications();
+  const toast = useToast();
 
   const [eventListUpdateTrigger, setEventListUpdateTrigger] = useState(0);
   const [eventInfos, setEventInfos] = useState<EventDto[]>([]);
@@ -65,15 +65,9 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
     );
 
     if (result.ok) {
-      addAppNotification({
-        message: 'Collection succesfully updated!',
-        type: AppNotificationType.SUCCESS,
-      });
+      toast.success('Collection successfully updated!');
     } else {
-      addAppNotification({
-        message: 'Something went wrong, try again later',
-        type: AppNotificationType.ERROR,
-      });
+      toast.error('Something went wrong, try again later');
     }
 
     Logger.info({ namespace: 'eventeditor' }, result);
@@ -97,15 +91,9 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
     }
 
     if (result.ok) {
-      addAppNotification({
-        message: 'Event succesfully removed',
-        type: AppNotificationType.SUCCESS,
-      });
+      toast.success('Event successfully removed');
     } else {
-      addAppNotification({
-        message: 'Something went wrong, try again later',
-        type: AppNotificationType.ERROR,
-      });
+      toast.error('Something went wrong, try again later');
     }
   };
 
@@ -124,15 +112,9 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
       setEventListUpdateTrigger(prev => prev + 1);
     }
     if (result.ok) {
-      addAppNotification({
-        message: 'Event Succesfully Added',
-        type: AppNotificationType.SUCCESS,
-      });
+      toast.success('Event Successfully Added');
     } else {
-      addAppNotification({
-        message: 'Something went wrong, try again later',
-        type: AppNotificationType.ERROR,
-      });
+      toast.error('Something went wrong, try again later');
     }
     setAddingEvent(false);
     setAddEventId(null);

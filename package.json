@@ -39,7 +39,6 @@
     "npm:check-update": "npx npm-check-updates --deep",
     "npm:reinstall": "npm run npm:clean && npm install --force",
     "npm:update": "npx npm-check-updates --deep -u",
-    "npm:clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules && npx rimraf package-lock.json",
-    "prepare": "node -e \"if (process.env.CI !== 'true') { require('husky').install() }\""
+    "npm:clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules && npx rimraf package-lock.json"
   }
 }

@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
-import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
+import { useToast } from '@eventuras/toast/src/useToast';
 import { ApiState, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
 import ConfirmDiscardModal from './ConfirmDiscardModal';
@@ -31,7 +31,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
 }) => {
   const [apiState, setApiState] = useState<ApiState>({ error: null, loading: false });
   const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
-  const { addAppNotification } = useAppNotifications();
+  const toast = useToast();
 
   const [confirmDiscardChanges, setConfirmDiscardChanges] = useState(false);
   const { reset } = useForm<ProductDto>({ defaultValues: product || {} });
@@ -78,15 +78,9 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
     if (result.ok) {
       onSubmit(result.value);
-      addAppNotification({
-        message: 'Product was updated!',
-        type: AppNotificationType.SUCCESS,
-      });
+      toast.success('Product was updated!');
     } else {
-      addAppNotification({
-        message: `Something bad happended: ${result.error}!`,
-        type: AppNotificationType.ERROR,
-      });
+      toast.error(`Something bad happended: ${result.error}!`);
     }
 
     // Close the modal
