@@ -93,8 +93,8 @@ export function PhoneInput({
   onChange,
 }: PhoneInputProps) {
   // Memoize default country calculation
-  const defaultCountry = useMemo(() =>
-    countries.find((c) => c.code === defaultCode) || countries[0] || { name: '', code: '', flag: '' },
+  const defaultCountry = useMemo(
+    () => countries.find((c) => c.code === defaultCode) || countries[0] || { name: '', code: '', flag: '' },
     [countries, defaultCode]
   );
 
@@ -104,14 +104,17 @@ export function PhoneInput({
   const [localError, setLocalError] = useState<string | null>(null);
 
   // Memoize emit change function
-  const emitChange = useCallback((selectedCountry: CountryCode | null, number: string) => {
-    const fullNumber = selectedCountry ? `${selectedCountry.code}${number}` : number;
-    onChange?.({
-      fullNumber,
-      localNumber: number,
-      country: selectedCountry
-    });
-  }, [onChange]);
+  const emitChange = useCallback(
+    (selectedCountry: CountryCode | null, number: string) => {
+      const fullNumber = selectedCountry ? `${selectedCountry.code}${number}` : number;
+      onChange?.({
+        fullNumber,
+        localNumber: number,
+        country: selectedCountry,
+      });
+    },
+    [onChange]
+  );
 
   // Parse incoming value
   useEffect(() => {
@@ -130,13 +133,21 @@ export function PhoneInput({
     }
   }, [value, countries, defaultCountry]);
 
-  // Memoize event handlers
-  const handleNumberChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const cleaned = e.target.value.replace(/\D/g, '');
-    setLocalNumber(cleaned);
-    setLocalError(null);
-    emitChange(country, cleaned);
-  }, [country, emitChange]);
+  // Update ComboBox input value when country changes
+  useEffect(() => {
+    setComboInputValue(country.code);
+  }, [country]);
+
+  // Change handlers
+  const handleNumberChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const cleaned = e.target.value.replace(/\D/g, '');
+      setLocalNumber(cleaned);
+      setLocalError(null);
+      emitChange(country, cleaned);
+    },
+    [country, emitChange]
+  );
 
   const handleNumberBlur = useCallback(() => {
     if (!localNumber) {
@@ -168,50 +179,89 @@ export function PhoneInput({
     setLocalError(error);
   }, [country.code, localNumber]);
 
-  const handleCountryChange = useCallback((key: React.Key | null) => {
-    if (!key || key === 'no-results') {
-      emitChange(null, localNumber);
-      return;
-    }
+  const handleCountryChange = useCallback(
+    (key: React.Key | null) => {
+      if (!key || key === 'no-results') {
+        emitChange(null, localNumber);
+        return;
+      }
+      // Parse stable ID format: "code:country_name"
+      const keyStr = String(key);
+      const [code, encodedName] = keyStr.split(':');
+      const name = encodedName?.replace(/_/g, ' ');
+      const selectedCountry = countries.find((c) => c.code === code && c.name === name) || null;
 
-    // Parse stable ID format: "code:country_name"
-    const keyStr = String(key);
-    const [code, encodedName] = keyStr.split(':');
-    const name = encodedName?.replace(/_/g, ' ');
-
-    // Find the country by both code and name
-    const selectedCountry = countries.find(c => c.code === code && c.name === name) || null;
-
-    if (selectedCountry) {
-      setCountry(selectedCountry);
-    }
-    emitChange(selectedCountry, localNumber);
-  }, [countries, emitChange, localNumber]);
+      if (selectedCountry) {
+        setCountry(selectedCountry);
+      }
+      emitChange(selectedCountry, localNumber);
+    },
+    [countries, emitChange, localNumber]
+  );
 
   const handleInputChange = useCallback((val: string) => {
+    // Allow free typing for filtering; we reset later if needed
     setComboInputValue(val);
   }, []);
 
-  // Memoize filtered countries and rendered items
+  const handleOpenChange = useCallback(
+    (isOpen: boolean) => {
+      if (!isOpen) {
+        // When dropdown closes, reset to show only country code
+        setComboInputValue(country.code);
+      }
+    },
+    [country]
+  );
+
+  // --- NEW: helper to commit typed codes like "+47" or "47" ---
+  const commitTypedCountryCode = useCallback(
+    (raw: string): boolean => {
+      const typed = raw.trim();
+      if (!typed) return false;
+
+      // Normalize "47" -> "+47"
+      const normalized = typed.startsWith('+') ? typed : `+${typed}`;
+
+      const matched = countries.find((c) => c.code.toLowerCase() === normalized.toLowerCase());
+      if (matched) {
+        if (matched.code !== country.code) {
+          setCountry(matched);
+          emitChange(matched, localNumber);
+        }
+        // Ensure input shows the canonical code
+        setComboInputValue(matched.code);
+        return true;
+      }
+      return false;
+    },
+    [countries, country.code, emitChange, localNumber]
+  );
+
+  // Commit on blur; otherwise snap back to current code
+  const handleInputBlur = useCallback(() => {
+    if (!commitTypedCountryCode(comboInputValue)) {
+      setComboInputValue(country.code);
+    }
+  }, [commitTypedCountryCode, comboInputValue, country.code]);
+
+  // Filter countries list based on typed query
   const filteredCountries = useMemo(() => {
     const query = comboInputValue.trim().toLowerCase();
-    if (!query) return countries;
-
+    if (!query || query === country.code.toLowerCase()) {
+      return countries;
+    }
     return countries.filter(
-      (c) =>
-        c.name.toLowerCase().includes(query) ||
-        c.code.toLowerCase().includes(query)
+      (c) => c.name.toLowerCase().includes(query) || c.code.toLowerCase().includes(query)
     );
-  }, [countries, comboInputValue]);
+  }, [countries, comboInputValue, country.code]);
 
-  // Memoize the selected key calculation
+  // Stable selected key for ComboBox
   const selectedKey = useMemo(() => {
-    return country.code && country.name
-      ? `${country.code}:${country.name.replace(/\s+/g, '_')}`
-      : null;
+    return country.code && country.name ? `${country.code}:${country.name.replace(/\s+/g, '_')}` : null;
   }, [country.code, country.name]);
 
-  // Memoize rendered country items
+  // Render countries
   const renderedCountries = useMemo(() => {
     return filteredCountries.map((countryItem) => {
       const stableId = `${countryItem.code}:${countryItem.name.replace(/\s+/g, '_')}`;
@@ -231,19 +281,28 @@ export function PhoneInput({
           inputValue={comboInputValue}
           onSelectionChange={handleCountryChange}
           onInputChange={handleInputChange}
-          className={componentStyles.integratedComboBoxContainer}
+          onOpenChange={handleOpenChange}
+          className={`${componentStyles.integratedComboBoxContainer} min-w-16 max-w-24`}
           allowsCustomValue={false}
           isDisabled={disabled}
           aria-label="Select country code"
+          menuTrigger="input"
         >
           <div className={componentStyles.comboBoxInputWrapper}>
             <ComboBoxInput
               className={componentStyles.comboBoxInputField}
-              placeholder={`${country.flag || '🏳️'} ${country.code || 'Select country'}`}
+              placeholder="Select country"
+              onBlur={handleInputBlur}
+              onKeyDown={(e) => {
+                // Commit typed code on Tab or Enter before focus leaves/selection changes
+                if (e.key === 'Tab' || e.key === 'Enter') {
+                  const val = (e.target as HTMLInputElement).value;
+                  commitTypedCountryCode(val);
+                  // Do not prevent default; we just ensure state is updated in time.
+                }
+              }}
             />
-            <ComboBoxButton className={`px-2 ${textStyles.dropdownButton}`}>
-              ▾
-            </ComboBoxButton>
+            <ComboBoxButton className={`px-2 ${textStyles.dropdownButton}`}>▾</ComboBoxButton>
           </div>
 
           <Popover className={`${componentStyles.popover} max-h-60 overflow-hidden`}>
@@ -281,10 +340,7 @@ export function PhoneInput({
 
       {/* Error Display */}
       {(localError || errors?.[name]?.message) && (
-        <InputError
-          errors={{ [name]: { message: localError || errors?.[name]?.message || '' } }}
-          name={name}
-        />
+        <InputError errors={{ [name]: { message: localError || errors?.[name]?.message || '' } }} name={name} />
       )}
     </div>
   );
