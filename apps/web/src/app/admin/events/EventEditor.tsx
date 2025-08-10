@@ -20,7 +20,7 @@ import { useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
-import { AppNotificationType, useAppNotifications } from '@/hooks/useAppNotifications';
+import { useToast } from '@eventuras/toast/src/useToast';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { mapEnum } from '@/utils/enum';
 import Environment from '@/utils/Environment';
@@ -39,7 +39,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
   const t = useTranslations();
   const [apiState, setApiState] = useState<ApiState>({ error: null, loading: false });
   const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
-  const { addAppNotification } = useAppNotifications();
+  const toast = useToast();
   const router = useRouter();
 
   // Form submit handler
@@ -65,15 +65,9 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
     );
 
     if (result.ok) {
-      addAppNotification({
-        message: 'Event information was updated!',
-        type: AppNotificationType.SUCCESS,
-      });
+      toast.success('Event information was updated!');
     } else {
-      addAppNotification({
-        message: `Something bad happended: ${result.error}!`,
-        type: AppNotificationType.ERROR,
-      });
+      toast.error(`Something bad happended: ${result.error}!`);
     }
     Logger.info({ namespace: 'eventeditor' }, result);
 
