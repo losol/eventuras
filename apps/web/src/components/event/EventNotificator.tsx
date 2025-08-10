@@ -84,14 +84,13 @@ const getBodyDto = (
 const createFormHandler = (
   eventId: number,
   notificatorType: EventNotificatorType,
-  // toast: Toast () => void,
-  onClose: () => void
+  onClose: () => void,
+  toast: ReturnType<typeof useToast>, // Add toast parameter
+  t: any // Add translations parameter
 ) => {
   const onSubmitForm: SubmitHandler<EventEmailerFormValues | EventSMSFormValues> = async (
     data: EventEmailerFormValues | EventSMSFormValues
   ) => {
-    const t = useTranslations();
-    const toast = useToast();
     const body = getBodyDto(eventId, data);
     const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
     Logger.info(
@@ -144,6 +143,10 @@ export default function EventNotificator({
   onClose,
   notificatorType,
 }: EventNotificatorProps) {
+  // Move useToast to component level
+  const toast = useToast();
+  const t = useTranslations();
+
   const formHook:
     | UseFormReturn<EventSMSFormValues, any, EventSMSFormValues>
     | UseFormReturn<EventEmailerFormValues, any, EventEmailerFormValues> = useForm();
@@ -153,21 +156,23 @@ export default function EventNotificator({
     formState: { errors },
     handleSubmit,
   } = formHook;
-  const toast = useToast();
-  const t = useTranslations();
 
   const emailRegister = register as unknown as UseFormRegister<EventEmailerFormValues>;
   const smsRegister = register as unknown as UseFormRegister<EventSMSFormValues>;
   const defaultSelectedStatus = [ParticipationTypes.active];
   const defaultSelectedType = [RegistrationType.PARTICIPANT];
-  const onSubmitForm = useRef(createFormHandler(eventId, notificatorType, onClose)).current;
+
+  // Pass toast and t to the form handler
+  const onSubmitForm = useRef(
+    createFormHandler(eventId, notificatorType, onClose, toast, t)
+  ).current;
 
   const formValues = formHook.getValues();
 
   return (
-    <Form onSubmit={onSubmitForm} className="text-black w-72">
+    <Form onSubmit={handleSubmit(onSubmitForm)} className="text-black w-72">
       <div>
-        <Heading as="h4">t('common.events.event')</Heading>
+        <Heading as="h4">{t('common.events.event')}</Heading>
         <p>{eventTitle}</p>
       </div>
       <p>{t('eventNotifier.form.status.label')}</p>
@@ -204,9 +209,9 @@ export default function EventNotificator({
       {notificatorType === EventNotificatorType.EMAIL && (
         <div>
           <Input
-            name="subject"
             label={t('eventNotifier.form.subject.label')}
             placeholder={t('eventNotifier.form.subject.label')}
+            {...emailRegister('subject')}
           />
         </div>
       )}
@@ -214,25 +219,25 @@ export default function EventNotificator({
         {notificatorType === EventNotificatorType.EMAIL && (
           <div id="bodyEditor">
             <MarkdownInput
-              name="body"
               label={t('eventNotifier.form.body.label')}
               placeholder={t('eventNotifier.form.body.label')}
+              {...emailRegister('body')}
             />
           </div>
         )}
         {notificatorType === EventNotificatorType.SMS && (
           <Input
-            name="body"
             label={t('eventNotifier.form.body.label')}
             placeholder={t('eventNotifier.form.body.label')}
             multiline
+            {...smsRegister('body')}
           />
         )}
       </div>
 
       <ButtonGroup margin="my-4">
         <Button type="submit" variant="primary">
-          t('common.buttons.send')
+          {t('common.buttons.send')}
         </Button>
         <Button
           onClick={e => {
@@ -241,7 +246,7 @@ export default function EventNotificator({
           }}
           variant="secondary"
         >
-          t('common.buttons.cancel')
+          {t('common.buttons.cancel')}
         </Button>
       </ButtonGroup>
     </Form>
