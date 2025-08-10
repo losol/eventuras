@@ -1,5 +1,11 @@
 import { MarkdownInput } from '@eventuras/markdowninput';
-import { EmailNotificationDto, RegistrationType, RegistrationStatus, SmsNotificationDto, EventParticipantsFilterDto } from '@eventuras/sdk';
+import {
+  EmailNotificationDto,
+  RegistrationType,
+  RegistrationStatus,
+  SmsNotificationDto,
+  EventParticipantsFilterDto,
+} from '@eventuras/sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
 import { Button, ButtonGroup, Heading } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/utils';
@@ -32,7 +38,11 @@ export type EventNotificatorProps = {
   onClose: () => void;
 };
 
-interface ApiErrorDetails { field?: string; message: string; code?: string; }
+interface ApiErrorDetails {
+  field?: string;
+  message: string;
+  code?: string;
+}
 interface FormattedError {
   type: 'validation' | 'network' | 'authentication' | 'server' | 'client' | 'unknown';
   message: string;
@@ -42,10 +52,18 @@ interface FormattedError {
 
 const parseApiError = (error: any): FormattedError => {
   if (!error?.body && (error?.message?.includes('fetch') || error?.message?.includes('network'))) {
-    return { type: 'network', message: 'Network connection failed. Please try again.', originalError: error };
+    return {
+      type: 'network',
+      message: 'Network connection failed. Please try again.',
+      originalError: error,
+    };
   }
   if (error?.status === 401 || error?.status === 403) {
-    return { type: 'authentication', message: 'Not authorized. Please log in again.', originalError: error };
+    return {
+      type: 'authentication',
+      message: 'Not authorized. Please log in again.',
+      originalError: error,
+    };
   }
   if (error?.status === 400 && error?.body?.errors) {
     const details: ApiErrorDetails[] = [];
@@ -58,7 +76,12 @@ const parseApiError = (error: any): FormattedError => {
       const fieldMessages = details
         .map(d => `• ${d.field?.replace(/([A-Z])/g, ' $1').toLowerCase()}: ${d.message}`)
         .join('\n');
-      return { type: 'validation', message: `Validation failed:\n${fieldMessages}`, details, originalError: error };
+      return {
+        type: 'validation',
+        message: `Validation failed:\n${fieldMessages}`,
+        details,
+        originalError: error,
+      };
     }
   }
   if (error?.status >= 500) {
@@ -73,10 +96,16 @@ const parseApiError = (error: any): FormattedError => {
 
 const validateFormData = (data: FormValues, type: EventNotificatorType): string[] => {
   const errs: string[] = [];
-  if (!data.body?.trim()) errs.push(type === EventNotificatorType.EMAIL ? 'Email body is required' : 'SMS body is required');
-  if (type === EventNotificatorType.EMAIL && !data.subject?.trim()) errs.push('Email subject is required');
-  if (!Object.values(data.registrationStatus || {}).some(Boolean)) errs.push('Select at least one registration status');
-  if (!Object.values(data.registrationTypes || {}).some(Boolean)) errs.push('Select at least one registration type');
+  if (!data.body?.trim())
+    errs.push(
+      type === EventNotificatorType.EMAIL ? 'Email body is required' : 'SMS body is required'
+    );
+  if (type === EventNotificatorType.EMAIL && !data.subject?.trim())
+    errs.push('Email subject is required');
+  if (!Object.values(data.registrationStatus || {}).some(Boolean))
+    errs.push('Select at least one registration status');
+  if (!Object.values(data.registrationTypes || {}).some(Boolean))
+    errs.push('Select at least one registration type');
   return errs;
 };
 
@@ -86,25 +115,29 @@ const getBodyDto = (
   type: EventNotificatorType
 ): EmailNotificationDto | SmsNotificationDto => {
   // Convert checkbox maps -> arrays with correct enum types
-  const regStatusKeys = Object.keys(data.registrationStatus || {}).filter((k) => data.registrationStatus[k]);
+  const regStatusKeys = Object.keys(data.registrationStatus || {}).filter(
+    k => data.registrationStatus[k]
+  );
 
-  const registrationStatuses: RegistrationStatus[] = regStatusKeys.flatMap((key) => {
+  const registrationStatuses: RegistrationStatus[] = regStatusKeys.flatMap(key => {
     const k = key as keyof typeof participationMap;
     // `participationMap[k]` may be an array of strings; coerce each to RegistrationStatus
     const values = (participationMap[k] as unknown as string[]) || [];
-    return values.map((v) => {
+    return values.map(v => {
       // Try enum lookup by key/name first
       const fromEnum = (RegistrationStatus as any)[v];
       if (fromEnum !== undefined) return fromEnum as RegistrationStatus;
       // Fallback: numeric-like string to number (for numeric enums)
       const num = Number(v);
-      return (!Number.isNaN(num) ? (num as unknown as RegistrationStatus) : (v as unknown as RegistrationStatus));
+      return !Number.isNaN(num)
+        ? (num as unknown as RegistrationStatus)
+        : (v as unknown as RegistrationStatus);
     });
   });
 
   const registrationTypes: RegistrationType[] = Object.keys(data.registrationTypes || {})
-    .filter((k) => data.registrationTypes[k])
-    .map((k) => {
+    .filter(k => data.registrationTypes[k])
+    .map(k => {
       // If enum is numeric, keys will be numeric-like strings
       const num = Number(k);
       if (!Number.isNaN(num) && Object.values(RegistrationType as any).includes(num as any)) {
@@ -115,7 +148,11 @@ const getBodyDto = (
     })
     .filter((v): v is RegistrationType => v !== undefined);
 
-  const eventParticipants: EventParticipantsFilterDto = { eventId, registrationStatuses, registrationTypes };
+  const eventParticipants: EventParticipantsFilterDto = {
+    eventId,
+    registrationStatuses,
+    registrationTypes,
+  };
 
   return type === EventNotificatorType.EMAIL
     ? { subject: data.subject, bodyMarkdown: data.body, eventParticipants }
@@ -132,7 +169,10 @@ export default function EventNotificator({
   const toast = useToast();
   const t = useTranslations();
 
-  const { register, formState: { isSubmitting } } = useForm<FormValues>({
+  const {
+    register,
+    formState: { isSubmitting },
+  } = useForm<FormValues>({
     defaultValues: {
       subject: '',
       body: '',
@@ -141,11 +181,14 @@ export default function EventNotificator({
     },
   });
 
-  const onSubmitForm: SubmitHandler<FormValues> = async (data) => {
+  const onSubmitForm: SubmitHandler<FormValues> = async data => {
     try {
       const validationErrors = validateFormData(data, notificatorType);
       if (validationErrors.length > 0) {
-        Logger.warn({ namespace: 'EventNotificator' }, `Form validation failed: ${JSON.stringify(validationErrors)}`);
+        Logger.warn(
+          { namespace: 'EventNotificator' },
+          `Form validation failed: ${JSON.stringify(validationErrors)}`
+        );
         toast.error(validationErrors.join('\n'));
         return;
       }
@@ -153,37 +196,50 @@ export default function EventNotificator({
       const body = getBodyDto(eventId, data, notificatorType);
       const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
 
-      Logger.info({ namespace: 'EventNotificator' }, `Sending ${notificatorType} notification for event ${eventId}`, {
-        recipientCriteria: {
-          statuses: Object.keys(data.registrationStatus || {}).filter(k => data.registrationStatus[k]),
-          types: Object.keys(data.registrationTypes || {}).filter(k => data.registrationTypes[k]),
-        },
-      });
+      Logger.info(
+        { namespace: 'EventNotificator' },
+        `Sending ${notificatorType} notification for event ${eventId}`,
+        {
+          recipientCriteria: {
+            statuses: Object.keys(data.registrationStatus || {}).filter(
+              k => data.registrationStatus[k]
+            ),
+            types: Object.keys(data.registrationTypes || {}).filter(k => data.registrationTypes[k]),
+          },
+        }
+      );
 
-      const result = notificatorType === EventNotificatorType.EMAIL
-        ? await apiWrapper(() =>
-            sdk.notificationsQueueing.postV3NotificationsEmail({
-              eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
-              requestBody: body as EmailNotificationDto,
-            })
-          )
-        : await apiWrapper(() =>
-            sdk.notificationsQueueing.postV3NotificationsSms({
-              eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
-              requestBody: body as SmsNotificationDto,
-            })
-          );
+      const result =
+        notificatorType === EventNotificatorType.EMAIL
+          ? await apiWrapper(() =>
+              sdk.notificationsQueueing.postV3NotificationsEmail({
+                eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
+                requestBody: body as EmailNotificationDto,
+              })
+            )
+          : await apiWrapper(() =>
+              sdk.notificationsQueueing.postV3NotificationsSms({
+                eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
+                requestBody: body as SmsNotificationDto,
+              })
+            );
 
       if (!result.ok) {
         const formatted = parseApiError(result.error);
         Logger.error({ namespace: 'EventNotificator' }, `Failed to send ${notificatorType}`, {
-          errorType: formatted.type, errorMessage: formatted.message, originalError: formatted.originalError, requestBody: body,
+          errorType: formatted.type,
+          errorMessage: formatted.message,
+          originalError: formatted.originalError,
+          requestBody: body,
         });
         toast.error(formatted.message);
         return;
       }
 
-      Logger.info({ namespace: 'EventNotificator' }, `Successfully sent ${notificatorType} notification for event ${eventId}`);
+      Logger.info(
+        { namespace: 'EventNotificator' },
+        `Successfully sent ${notificatorType} notification for event ${eventId}`
+      );
       toast.success(
         notificatorType === EventNotificatorType.EMAIL
           ? t('admin.eventNotifier.form.successFeedbackEmail')
@@ -191,7 +247,11 @@ export default function EventNotificator({
       );
       onClose();
     } catch (error) {
-      Logger.error({ namespace: 'EventNotificator' }, `Unexpected error in ${notificatorType} handler`, { error, eventId, notificatorType, data });
+      Logger.error(
+        { namespace: 'EventNotificator' },
+        `Unexpected error in ${notificatorType} handler`,
+        { error, eventId, notificatorType, data }
+      );
       toast.error('An unexpected error occurred. Please try again.');
     }
   };
@@ -206,7 +266,7 @@ export default function EventNotificator({
       {/* Registration Status Selection */}
       <div>
         <p>{t('admin.eventNotifier.form.status.label')}</p>
-        {Object.keys(participationMap).map((status) => (
+        {Object.keys(participationMap).map(status => (
           <CheckboxInput
             key={status}
             className="relative z-10"
@@ -222,7 +282,7 @@ export default function EventNotificator({
       {/* Registration Type Selection */}
       <div>
         <p>{t('admin.eventNotifier.form.type.label')}</p>
-        {mapEnum(RegistrationType, (type) => (
+        {mapEnum(RegistrationType, type => (
           <CheckboxInput
             key={type}
             className="relative z-10"
@@ -273,7 +333,7 @@ export default function EventNotificator({
         </Button>
         <Button
           type="button"
-          onClick={(e) => {
+          onClick={e => {
             e.preventDefault();
             onClose();
           }}
