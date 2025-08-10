@@ -59,17 +59,8 @@ export default async function EventAdminPage({ params }: Readonly<EventInfoProps
         <Container>
           <Heading as="h1">{eventinfo.value!.title}</Heading>
           <EventAdminActionsMenu eventinfo={eventinfo.value!} />
-
-          <div className="flex flex-row flex-wrap">
-            {(eventProducts.value ?? []).map(p => (
-              <Link href={`/admin/events/${id}/products/${p.productId}`} key={p.productId}>
-                {p.name} <Badge>Id: {p.productId}</Badge>
-              </Link>
-            ))}
-          </div>
         </Container>
       </Section>
-
       <ParticipantsSection
         eventInfo={eventinfo.value!}
         participants={registrations.value?.data ?? []}
