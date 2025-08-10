@@ -38,7 +38,7 @@ const ParticipantsSection: React.FC<ParticipantsSectionProps> = props => {
   );
   return (
     <>
-      <Section className="py-12">
+      <Section className="py-2">
         <Container>
           <EventStatistics
             highlightedSelection={highlightedSelection}
@@ -53,7 +53,7 @@ const ParticipantsSection: React.FC<ParticipantsSectionProps> = props => {
           />
         </Container>
       </Section>
-      <Section className="py-12">
+      <Section className="pb-12">
         <Container>
           {props.participants && (
             <EventParticipantList
