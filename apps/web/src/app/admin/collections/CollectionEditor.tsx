@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import EventLookup from '@/components/event/EventLookup';
-import { useToast } from '@eventuras/toast/src/useToast';
+import { useToast } from '@eventuras/toast';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import slugify from '@/utils/slugify';
 

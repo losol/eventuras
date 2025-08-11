@@ -8,7 +8,7 @@ import { useState } from 'react';
 
 import RegistrationCustomize from '@/app/user/events/[id]/eventflow/RegistrationCustomize';
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
-import { useToast } from '@eventuras/toast/src/useToast';
+import { useToast } from '@eventuras/toast';
 import {
   addProductsToRegistration,
   productMapToOrderLineModel,

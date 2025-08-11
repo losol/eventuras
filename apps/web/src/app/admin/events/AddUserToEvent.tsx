@@ -25,7 +25,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import ProductSelection from '@/components/eventuras/ProductSelection';
 import UserLookup from '@/components/eventuras/UserLookup';
-import { useToast } from '@eventuras/toast/src/useToast';
+import { useToast } from '@eventuras/toast';
 import { RegistrationProduct } from '@/types';
 import { createEventRegistration } from '@/utils/api/functions/events';
 import { mapEventProductsToView, mapSelectedProductsToQuantity } from '@/utils/api/mappers';

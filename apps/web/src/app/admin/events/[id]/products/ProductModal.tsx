@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
-import { useToast } from '@eventuras/toast/src/useToast';
+import { useToast } from '@eventuras/toast';
 import { ApiState, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
 import ConfirmDiscardModal from './ConfirmDiscardModal';
