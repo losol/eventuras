@@ -6,6 +6,7 @@ import { createClient } from '@/utils/apiClient';
 import { getV3OrganizationsByOrganizationId, getV3Users } from '@eventuras/event-sdk';
 import MemberProfile from './MemberProfile';
 import { OrganizationDetails } from './OrganizationDetails';
+import OrganizationMemberships from './OrganizationMemberships';
 
 type EventInfoProps = {
   params: Promise<{ id: number }>;
@@ -63,7 +64,11 @@ const OrganizationDetailPage: React.FC<EventInfoProps> = async props => {
         <Heading as="h2" padding="py-3">
           Organization members
         </Heading>
-        {members && members.data?.data?.map(user => <MemberProfile key={user.id} user={user} />)}
+        <OrganizationMemberships
+          organizationId={organization.data?.organizationId!}
+          organizationName={organization.data?.name!}
+          members={members.data?.data}
+        />
       </Section>
     </Wrapper>
   );
