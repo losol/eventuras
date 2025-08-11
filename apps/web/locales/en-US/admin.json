@@ -83,6 +83,11 @@
       "title": "Orders"
     }
   },
+  "organizations": {
+    "page": {
+      "title": "Organizations"
+    }
+  },
   "participantColumns": {
     "actions": "Actions",
     "email": "E mail",

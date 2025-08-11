@@ -1,56 +1,69 @@
 import { Container, Heading, Section } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/utils';
 import { getTranslations } from 'next-intl/server';
 
 import Wrapper from '@/components/eventuras/Wrapper';
-import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import Environment from '@/utils/Environment';
-import { getAccessToken } from '@/utils/getAccesstoken';
-import { oauthConfig } from '@/utils/oauthConfig';
+import { createClient } from '@/utils/apiClient';
+import { getV3OrganizationsByOrganizationId, getV3Users } from '@eventuras/event-sdk';
+import MemberProfile from './MemberProfile';
+import { OrganizationDetails } from './OrganizationDetails';
 
 type EventInfoProps = {
-  params: Promise<{
-    id: number;
-  }>;
+  params: Promise<{ id: number }>;
 };
 
+/** Shape from backend (selected fields) */
+interface Organization {
+  organizationId: number;
+  name: string;
+  description?: string | null;
+  url?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  logoUrl?: string | null;
+  logoBase64?: string | null;
+}
+
+/** Server page for /admin/organizations/[id] */
 const OrganizationDetailPage: React.FC<EventInfoProps> = async props => {
+  // read route params
   const params = await props.params;
+  // i18n
   const t = await getTranslations();
 
-  const eventuras = createSDK({
-    baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
-    authHeader: await getAccessToken(),
+  // fetch org
+  const client = await createClient();
+  const organization = await getV3OrganizationsByOrganizationId({
+    path: {
+      organizationId: params.id,
+    },
+    client,
   });
 
-  const organization = await apiWrapper(() =>
-    eventuras.organizations.getV3Organizations1({
-      organizationId: params.id,
-    })
-  );
+  // fetch org member
+  const members = await getV3Users({
+    query: {
+      OrganizationId: params.id,
+      IncludeOrgMembership: true,
+    },
+    client,
+  });
 
-  if (!organization.ok) {
-    Logger.error(
-      { namespace: 'EditEventinfo' },
-      `Failed to fetch order id ${params.id}, error: ${organization.error}`
-    );
-  }
-
-  if (!organization.ok) {
-    return <div>{t('admin.organizations.labels.notFound')}</div>;
-  }
-
+  // render
   return (
     <Wrapper>
-      <Section className="bg-white dark:bg-black   pb-8">
-        <Container>
-          <Heading as="h1">{organization.value?.name}</Heading>
-        </Container>
+      <Section container>
+        <Heading as="h1">{organization.data?.name}</Heading>
       </Section>
-      <Section className="py-12">
-        <Container>
-          <pre>{JSON.stringify(organization.value!, null, 4)}</pre>
-        </Container>
+
+      <Section className="py-12" container>
+        <OrganizationDetails org={organization.data as Organization} />
+      </Section>
+
+      <Section container>
+        <Heading as="h2" padding="py-3">
+          Organization members
+        </Heading>
+        {members && members.data?.data?.map(user => <MemberProfile key={user.id} user={user} />)}
       </Section>
     </Wrapper>
   );
