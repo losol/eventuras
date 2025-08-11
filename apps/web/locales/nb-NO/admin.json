@@ -83,6 +83,11 @@
       "title": "Ordre"
     }
   },
+  "organizations": {
+    "page": {
+      "title": "Organisasjoner"
+    }
+  },
   "participantColumns": {
     "actions": "Actions",
     "email": "E-post",
