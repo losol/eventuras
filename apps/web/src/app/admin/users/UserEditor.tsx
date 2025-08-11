@@ -8,7 +8,7 @@ import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 import { FC, useState } from 'react';
 
-import { useToast } from '@eventuras/toast/src/useToast';
+import { useToast } from '@eventuras/toast';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
 interface UserEditorProps {

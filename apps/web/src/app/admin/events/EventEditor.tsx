@@ -20,7 +20,7 @@ import { useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
-import { useToast } from '@eventuras/toast/src/useToast';
+import { useToast } from '@eventuras/toast';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { mapEnum } from '@/utils/enum';
 import Environment from '@/utils/Environment';
