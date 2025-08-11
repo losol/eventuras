@@ -17,7 +17,8 @@ public class RegistrationExportService : IRegistrationExportService
     private readonly IRegistrationRetrievalService _registrationRetrievalService;
     private readonly ILogger<RegistrationExportService> _logger;
 
-    public RegistrationExportService(IRegistrationRetrievalService registrationRetrievalService, ILogger<RegistrationExportService> logger)
+    public RegistrationExportService(IRegistrationRetrievalService registrationRetrievalService,
+        ILogger<RegistrationExportService> logger)
     {
         _registrationRetrievalService = registrationRetrievalService ??
                                         throw new ArgumentNullException(nameof(registrationRetrievalService));
@@ -25,8 +26,8 @@ public class RegistrationExportService : IRegistrationExportService
     }
 
     public async Task ExportParticipantListToExcelAsync(
-     Stream stream,
-     RegistrationListRequest request)
+        Stream stream,
+        RegistrationListRequest request)
     {
         if (stream == null)
         {
@@ -51,7 +52,11 @@ public class RegistrationExportService : IRegistrationExportService
             workbookPart.Workbook = new Workbook();
 
             var worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+
+            // Create worksheet FIRST, before adding data
+            worksheetPart.Worksheet = new Worksheet();
             var sheetData = new SheetData();
+            worksheetPart.Worksheet.AppendChild(sheetData);
 
             var columnConfig = ColumnConfig.GetDefaultConfig();
             WriteHeaderRow(sheetData, columnConfig);
@@ -62,7 +67,7 @@ public class RegistrationExportService : IRegistrationExportService
                 request
             );
 
-            int dataRowCount = 0;
+            var dataRowCount = 0;
             while (await reader.HasMoreAsync())
             {
                 var registrations = await reader.ReadNextAsync();
@@ -73,14 +78,22 @@ public class RegistrationExportService : IRegistrationExportService
                 }
             }
 
-            // Set the worksheet for the worksheet part
-            worksheetPart.Worksheet = new Worksheet(sheetData);
-
-            // Use the helper to add a unique sheet
+            // Add unique sheet BEFORE creating table
             ExcelSheetHelper.AddUniqueSheet(workbookPart, worksheetPart, "Participants");
 
-            // Define the Excel table
-            ExcelTableBuilder.DefineExcelTable(worksheetPart, columnConfig, dataRowCount);
+            // Only create table if we have data
+            if (dataRowCount > 0)
+            {
+                try
+                {
+                    ExcelTableBuilder.DefineExcelTable(workbookPart, worksheetPart, columnConfig, dataRowCount);
+                }
+                catch (Exception tableEx)
+                {
+                    _logger.LogWarning(tableEx, "Failed to create Excel table, continuing without table formatting");
+                    // Continue without table - the data will still be there
+                }
+            }
 
             // Save the workbook
             workbookPart.Workbook.Save();
@@ -91,7 +104,6 @@ public class RegistrationExportService : IRegistrationExportService
             throw;
         }
     }
-
 
     private static void ValidateSheetData(SheetData sheetData)
     {
@@ -119,7 +131,7 @@ public class RegistrationExportService : IRegistrationExportService
         {
             row.Append(new Cell
             {
-                CellValue = new CellValue(string.IsNullOrWhiteSpace(value) ? "a" : value),
+                CellValue = new CellValue(string.IsNullOrWhiteSpace(value) ? "" : value),
                 DataType = CellValues.String
             });
         }
@@ -151,5 +163,4 @@ public class RegistrationExportService : IRegistrationExportService
 
         AppendRowToSheet(sheetData, dataValues);
     }
-
 }
