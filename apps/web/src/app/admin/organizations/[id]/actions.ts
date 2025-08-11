@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { createClient } from '@/utils/apiClient';
 import {
   postV3OrganizationsByOrganizationIdMembersByUserIdRoles,
+  deleteV3OrganizationsByOrganizationIdMembersByUserIdRoles,
   putV3OrganizationsByOrganizationIdMembersByUserId,
 } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/utils/src/Logger';
@@ -56,65 +57,51 @@ export async function addMember(orgId: number, userId: string) {
   }
 }
 
-export async function updateMemberRoles(orgId: number, userId: string, roles: string) {
+export async function setAdmin(orgId: number, userId: string, makeAdmin: boolean) {
   const logContext = {
-    namespace: 'organizations',
+    namespace: 'organizations:set-admin',
     orgId,
     userId,
+    makeAdmin,
   };
 
   try {
-    Logger.info(logContext, `Starting to add user ${userId} as admin to organization ${orgId}`, {
-      organizationId: orgId,
-      userId: userId,
-      roles: roles,
-    });
-
     const client = await createClient();
-
-    const apiPayload = {
-      body: { role: roles },
-      headers: {
-        'Eventuras-Org-Id': orgId,
-      },
-      path: {
-        organizationId: orgId,
-        userId: userId,
-      },
+    const common = {
+      headers: { 'Eventuras-Org-Id': orgId },
+      path: { organizationId: orgId, userId },
       client,
-    };
+    } as const;
 
-    // Actually call the API to add the member
-    const result = await postV3OrganizationsByOrganizationIdMembersByUserIdRoles(apiPayload);
-    Logger.info(logContext, result.response);
+    if (makeAdmin) {
+      Logger.info(logContext, `Granting Admin to ${userId} in org ${orgId}`);
+      await postV3OrganizationsByOrganizationIdMembersByUserIdRoles({
+        ...common,
+        body: { role: 'Admin' },
+      });
+    } else {
+      Logger.info(logContext, `Revoking Admin from ${userId} in org ${orgId}`);
+      await deleteV3OrganizationsByOrganizationIdMembersByUserIdRoles({
+        ...common,
+        body: { role: 'Admin' },
+      });
+    }
 
-    Logger.debug(logContext, `Revalidating path for organization ${orgId}`, {
-      path: `/admin/organizations/${orgId}`,
-    });
-
-    // revalidate the path
     revalidatePath(`/admin/organizations/${orgId}`);
-
     return { success: true };
   } catch (error) {
     Logger.error(
       logContext,
-      `Failed to add user ${userId} to organization ${orgId}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      `Failed to ${makeAdmin ? 'grant' : 'revoke'} Admin: ${error instanceof Error ? error.message : 'Unknown error'}`,
       {
         error:
           error instanceof Error
-            ? {
-                name: error.name,
-                message: error.message,
-                stack: error.stack,
-              }
+            ? { name: error.name, message: error.message, stack: error.stack }
             : error,
         organizationId: orgId,
-        userId: userId,
+        userId,
       }
     );
-
-    // Re-throw the error so the client can handle it
     throw error;
   }
 }

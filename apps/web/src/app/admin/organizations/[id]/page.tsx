@@ -1,10 +1,9 @@
-import { Container, Heading, Section } from '@eventuras/ratio-ui';
+import { Heading, Section } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import { createClient } from '@/utils/apiClient';
 import { getV3OrganizationsByOrganizationId, getV3Users } from '@eventuras/event-sdk';
-import MemberProfile from './MemberProfile';
 import { OrganizationDetails } from './OrganizationDetails';
 import OrganizationMemberships from './OrganizationMemberships';
 
@@ -66,8 +65,8 @@ const OrganizationDetailPage: React.FC<EventInfoProps> = async props => {
         </Heading>
         <OrganizationMemberships
           organizationId={organization.data?.organizationId!}
-          organizationName={organization.data?.name!}
-          members={members.data?.data}
+          organizationName={organization.data?.name ?? ''}
+          members={members.data?.data ?? []}
         />
       </Section>
     </Wrapper>

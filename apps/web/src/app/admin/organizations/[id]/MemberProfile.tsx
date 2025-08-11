@@ -18,6 +18,10 @@ import { Card } from '@eventuras/ratio-ui/core/Card';
 export interface MemberProfileProps {
   /** User data to render */
   user: UserDto;
+  /** Organization ID for role checking */
+  organizationId?: number;
+  /** Callback for admin toggle */
+  onToggleAdmin?: (userId: string, makeAdmin: boolean) => void;
 }
 
 /** Simple value guard */
@@ -30,9 +34,29 @@ const yesno = (b?: boolean) => (b ? 'Yes' : 'No');
  * Member profile using DescriptionList.
  * See {@link MemberProfileProps}.
  */
-export const MemberProfile: React.FC<MemberProfileProps> = ({ user }) => {
+export const MemberProfile: React.FC<MemberProfileProps> = ({
+  user,
+  organizationId,
+  onToggleAdmin,
+}) => {
   // archived badge?
   const archivedBadge = user.archived ? <Badge>Archived</Badge> : null;
+
+  // check if user is Admin in this organization
+  const isAdminInOrg = () => {
+    if (!organizationId) return false;
+    const membership = (user as any)?.organizationMembership?.find(
+      (mm: any) => mm.organizationId === organizationId
+    );
+    return !!membership?.roles?.some((r: any) => r.role === 'Admin');
+  };
+
+  // handle admin toggle
+  const handleAdminToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onToggleAdmin && (user as any).id) {
+      onToggleAdmin((user as any).id, e.target.checked);
+    }
+  };
 
   return (
     <Card margin="my-1">
@@ -86,10 +110,17 @@ export const MemberProfile: React.FC<MemberProfileProps> = ({ user }) => {
           <Item>
             <Term>Roles</Term>
             <Definition>
-              {user.organizationMembership.map(membership =>
-                membership.roles?.map((roleObj, roleIndex) => (
-                  <Badge key={`${membership.id}-${roleIndex}`}>{roleObj.role}</Badge>
-                ))
+              {/* Admin toggle - only show if we have the required props */}
+              {organizationId && onToggleAdmin && (
+                <label className="inline-flex items-center gap-2 ml-4">
+                  <input
+                    type="checkbox"
+                    checked={isAdminInOrg()}
+                    onChange={handleAdminToggle}
+                    className="rounded"
+                  />
+                  <span className="text-sm font-medium">Admin</span>
+                </label>
               )}
             </Definition>
           </Item>
