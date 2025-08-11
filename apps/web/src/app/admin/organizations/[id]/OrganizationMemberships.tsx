@@ -83,7 +83,6 @@ export default function OrganizationMemberships({
   // close + reset
   const handleCloseDrawer = () => {
     setIsDrawerOpen(false);
-    toast.info('Add member cancelled');
   };
 
   // toggle Admin for a single user
