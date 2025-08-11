@@ -1,4 +1,4 @@
-import { createClient as heyCreateClient } from '@eventuras/event-sdk/client/client';
+import { createClient as heyCreateClient } from '@eventuras/event-sdk/client';
 import { getAccessToken } from './getAccesstoken';
 
 export const createClient = async () => {

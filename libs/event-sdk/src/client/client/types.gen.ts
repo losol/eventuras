@@ -1,9 +1,9 @@
-import type { Auth } from '../core/auth';
+import type { Auth } from '../core/auth.gen';
 import type {
   Client as CoreClient,
   Config as CoreConfig,
-} from '../core/types';
-import type { Middleware } from './utils';
+} from '../core/types.gen';
+import type { Middleware } from './utils.gen';
 
 export interface Config<T extends ClientOptions = ClientOptions>
   extends Omit<RequestInit, 'body' | 'headers' | 'method'>,
@@ -62,6 +62,13 @@ export interface RequestOptions<
    */
   security?: ReadonlyArray<Auth>;
   url: Url;
+}
+
+export interface ResolvedRequestOptions<
+  ThrowOnError extends boolean = boolean,
+  Url extends string = string,
+> extends RequestOptions<ThrowOnError, Url> {
+  serializedBody?: string;
 }
 
 export type RequestResult<
@@ -126,7 +133,7 @@ type BuildUrlFn = <
 ) => string;
 
 export type Client = CoreClient<RequestFn, Config, MethodFn, BuildUrlFn> & {
-  interceptors: Middleware<Response, unknown, RequestOptions>;
+  interceptors: Middleware<Response, unknown, ResolvedRequestOptions>;
 };
 
 /**
