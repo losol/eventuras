@@ -23,7 +23,7 @@
     "@eventuras/typescript-config": "*",
     "@swc/core": "^1.13.3",
     "@testing-library/react": "^16.3.0",
-    "@types/react": "^19.1.9",
+    "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react-swc": "^4.0.0",
     "lightningcss": "^1.30.1",
