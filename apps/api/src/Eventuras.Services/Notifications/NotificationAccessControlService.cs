@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading;
@@ -38,6 +39,12 @@ internal class NotificationAccessControlService(
         await PerformAccessCheckAsync(notification, cancellationToken);
     }
 
+    public async Task CheckNotificationsReadAccessAsync(List<Notification> notifications,
+        CancellationToken cancellationToken = default)
+    {
+        await ValidateAccess(notifications, cancellationToken, "read");
+    }
+
     public async Task CheckNotificationUpdateAccessAsync(Notification notification,
         CancellationToken cancellationToken = default)
     {
@@ -50,6 +57,18 @@ internal class NotificationAccessControlService(
         }
 
         await PerformAccessCheckAsync(notification, cancellationToken);
+    }
+
+    public async Task CheckNotificationsUpdateAccessAsync(List<Notification> notifications,
+        CancellationToken cancellationToken = default)
+    {
+        var user = GetContextUser();
+        if (!user.IsAdmin())
+        {
+            throw new NotAccessibleException("Notifications can only be updated by admin");
+        }
+
+        await ValidateAccess(notifications, cancellationToken, "update");
     }
 
     private async Task PerformAccessCheckAsync(Notification notification, CancellationToken cancellationToken)
@@ -121,5 +140,30 @@ internal class NotificationAccessControlService(
     {
         CheckAuthenticatedUser();
         return _httpContextAccessor.HttpContext!.User;
+    }
+
+    private async Task ValidateAccess(List<Notification> notifications,
+        CancellationToken cancellationToken,
+        string accessType)
+    {
+        if (notifications is null || notifications.Count == 0)
+        {
+            throw new InvalidOperationException("Notifications list cannot be null or empty");
+        }
+
+        CheckAuthenticatedUser();
+
+        var notificationIds = notifications.Select(n => n.NotificationId).ToList();
+        var query = await AddAccessFilterAsync(_context.Notifications.AsNoTracking(), cancellationToken);
+
+        var accessibleCount = await query
+            .Where(n => notificationIds.Contains(n.NotificationId))
+            .CountAsync(cancellationToken);
+
+        if (accessibleCount != notificationIds.Count)
+        {
+            throw new NotAccessibleException(
+                $"Some notifications are not accessible for {accessType}. Total: {notificationIds.Count}, Accessible: {accessibleCount}");
+        }
     }
 }

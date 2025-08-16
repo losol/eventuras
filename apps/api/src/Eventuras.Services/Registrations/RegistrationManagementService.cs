@@ -191,7 +191,7 @@ internal class RegistrationManagementService : IRegistrationManagementService
 
         // Create email notification
         var email = await _notificationsManagementService.CreateEmailNotificationForRegistrationAsync(subject, body, registration);
-        await _notificationDeliveryService.SendNotificationAsync(email, true, cancellationToken: cancellationToken);
+        await _notificationDeliveryService.QueueNotificationAsync(email, true, cancellationToken: cancellationToken);
 
         _logger.LogInformation($"Successfully sent a welcome letter for RegistrationId {registration.RegistrationId}, EventInfoId {registration.EventInfoId}");
     }

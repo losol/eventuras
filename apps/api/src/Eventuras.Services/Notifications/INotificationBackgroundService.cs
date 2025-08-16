@@ -4,5 +4,5 @@ namespace Eventuras.Services.Notifications;
 
 public interface INotificationBackgroundService
 {
-    Task SendNotificationToRecipientAsync(int recipientId, bool accessControlDone = false);
+    Task SendNotificationToRecipientAsync(int recipientId, bool accessControlDone);
 }
