@@ -4,6 +4,8 @@ Markdown editor built on [Lexical framework](https://lexical.dev/). Intended to 
 
 The editor should provide simple and intuitive editing of markdown text, with a focus on the most common use cases.
 
+**Lexical version**: we are keeping the lexical version in sync with the lexical version used in Payload CMS, to prevent multiple versions making trouble. 
+
 ## Develop
 
 To start developing Scribo, run the following commands:
