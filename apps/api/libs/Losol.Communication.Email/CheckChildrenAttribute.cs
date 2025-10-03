@@ -43,7 +43,8 @@ public class CheckChildrenAttribute : ValidationAttribute
                     ErrorMessage = $"Error occured at {validationContext.DisplayName}",
                     NestedResults = nestedResultList
                 };
-            };
+            }
+            ;
         }
 
         return ValidationResult.Success;
