@@ -9,10 +9,12 @@
     "dev": "vite"
   },
   "dependencies": {
-    "@lexical/link": "0.28.0",
-    "@lexical/markdown": "^0.28.0",
-    "@lexical/react": "^0.28.0",
-    "lexical": "^0.28.0"
+    "@lexical/hashtag": "0.35.0",
+    "@lexical/link": "0.35.0",
+    "@lexical/markdown": "0.35.0",
+    "@lexical/overflow": "0.35.0",
+    "@lexical/react": "^0.35.0",
+    "lexical": "^0.35.0"
   },
   "peerDependencies": {
     "react": "^19.1.0",
