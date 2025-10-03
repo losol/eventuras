@@ -226,7 +226,8 @@ export const registerForEvent = async (
   Logger.info(ns, 'Confirm current account details');
   await page.locator('[data-test-id="accounteditor-form-givenname"]').fill('Test');
   await page.locator('[data-test-id="accounteditor-form-familyname"]').fill('Test');
-  await page.locator('[data-test-id="accounteditor-form-phonenumber"]').fill('+4712345678');
+  // getByRole('textbox', { name: 'Enter phone number' })
+  await page.getByRole('textbox', { name: 'Enter phone number' }).fill('12345678');
   await Promise.all([
     page.waitForResponse(resp => resp.url().includes('userprofile') && resp.status() === 200),
     page.locator('[data-test-id="account-update-button"]').click(),
