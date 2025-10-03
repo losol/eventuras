@@ -1,39 +1,142 @@
-# Eventuras - Event and Course Management Solution
+# Eventuras knowledge management system
 
-![.NET Core CI](https://github.com/losol/eventuras/workflows/.NET%20Core%20CI/badge.svg)
-![Docker Image CI](https://github.com/losol/eventuras/workflows/Docker%20Image%20CI/badge.svg)
+** Open Source Knowledge Stack and Event Management **
 
-Event and Course management solution.
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 
+**Eventuras** is a complete open-source platform for content, knowledge, event and course management, built with modern technologies and best practices. The project provides a robust backend API, a responsive Next.js frontend, and a set of reusable libraries — all brought together in a modern monorepo architecture.
 
-## Get started
+---
 
-### Docker
+## ✨ Key Features
 
-**Prerequisites:** [Docker](https://docs.docker.com/get-docker/).
+### 🚀 **Apps: Core Products**
+
+- **`apps/api`** — .NET Core REST API for event management
+  - Complete event and registration system
+  - User management with roles and access control
+  - Payment integration and certificate generation
+  - OpenAPI/Swagger documentation
+- **`apps/web`** — Next.js frontend for customers and administrators
+  - Modern React-based user interface
+  - Server-side rendering (SSR) for optimal performance
+  - Separate interfaces for participants and organizers
+  - Internationalization with next-intl
+- **`apps/historia`** — Upcoming knowledge focuses cms. 
+- **`apps/convertoapi`** — PDF generator - converts html to pdf
+- **`apps/docsite`** — Documentation website
+
+### 📚 **Libs: Reusable Libraries**
+
+A powerful collection of shared libraries powering the Eventuras ecosystem:
+
+- **`@eventuras/sdk`** — TypeScript SDK for API integration
+- **`@eventuras/smartform`** — Intelligent form system with validation
+- **`@eventuras/ratio-ui`** — UI components and design system
+- **`@eventuras/fides-auth`** — Authentication and authorization
+- **`@eventuras/scribo`** — Markdown editor
+- **`@eventuras/markdown`** — Markdown processing and rendering
+- And more…
+
+---
+
+## 🏗️ Architecture
+
+Eventuras is built as a **monorepo** with Turborepo and npm workspaces:
+
+```
+eventuras/
+├── apps/               # Main applications
+│   ├── api/            # .NET Core backend
+│   ├── web/            # Next.js frontend
+│   ├── historia/       # Historical data
+│   └── convertoapi/    # PDF generator
+├── libs/               # Shared libraries
+│   ├── sdk/            # TypeScript API client
+│   ├── smartform/      # Form system
+│   ├── ratio-ui/       # UI components
+│   └── ...             # More reusable packages
+└── docs/               # Documentation
+```
+
+**Technology stack:**
+- **Backend:** Node, .NET Core, C#, Entity Framework Core, PostgreSQL
+- **Frontend:** Next.js 15, React 19, TypeScript 5.9
+- **Styling:** Tailwind CSS 4, React Aria Components
+- **State Management:** XState 5
+- **Testing:** Playwright, Storybook
+- **CI/CD:** GitHub Actions, Docker
+
+---
+
+## 🚀 Getting Started
+
+### Docker (Quickest Path)
+
+**Prerequisites:** [Docker](https://docs.docker.com/get-docker/)
 
 ```bash
 # Clone the repository
 git clone https://github.com/losol/eventuras.git
 cd eventuras
 
-# Build and run the application
+# Build and start the application
 docker-compose up
 ```
 
-The application will now be live at `localhost:5100`.  
-Use the following credentials to login:
+The application will be available at `http://localhost:5100`.
 
-```text
+**Default login credentials:**
+```
 Username: admin@email.com
 Password: Str0ng!PaSsw0rd
 ```
-## AI Development Agents
 
-This project uses specialized AI agent instructions for different parts of the codebase. When working with AI assistants, please refer to the appropriate agent:
+## 📖 Documentation
+- **Docs**: Take a look at the `docs` folder
+- **API Documentation:** Available at `/swagger` when the backend is running
+- **AI Agent Guides:** Specialized instructions for AI-assisted development
+  - [Backend Agent](.ai/agents/backend-agent.md) — for `apps/api`
+  - [Frontend Agent](.ai/agents/frontend-agent.md) — for `apps/web` and `libs/*`
+  - [Converto Agent](.ai/agents/converto-agent.md) — for `apps/convertoapi`
+  - [Complete AI Guide](.ai/README.md)
 
-- **Backend** (`apps/api`): [.ai/agents/backend-agent.md](.ai/agents/backend-agent.md)
-- **Frontend** (`apps/web`, `apps/historia`, `libs/*`): [.ai/agents/frontend-agent.md](.ai/agents/frontend-agent.md)
-- **Converto** (`apps/convertoapi`): [.ai/agents/converto-agent.md](.ai/agents/converto-agent.md)
+---
 
-See [.ai/README.md](.ai/README.md) for more details.
+## 🤝 Contributing
+
+Contributions are welcome! Eventuras is open source, and we appreciate all forms of contributions — from bug fixes to new features.
+
+See our [Contributing Guide](CONTRIBUTING.md) for detailed guidelines.
+
+---
+
+## 📜 License
+
+This project is licensed under the [GNU General Public License v3.0](LICENSE).
+
+**In short:**
+- ✅ You may use, modify, and distribute the code
+- ✅ Commercial use is permitted
+- ⚠️ Changes must also be open source under GPL-3.0
+- ⚠️ You must include the license and copyright notices
+
+---
+
+## 🙏 Acknowledgments
+
+Eventuras is developed and maintained by [Losol AS](https://losol.no) and a dedicated community of contributors.
+
+**Built with:** .NET, Next.js, PostgreSQL, React, TypeScript, Tailwind CSS, and many fantastic open-source libraries.
+
+---
+
+## 📬 Contact & Support
+
+- **Issues:** [GitHub Issues](https://github.com/losol/eventuras/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/losol/eventuras/discussions)
+
+---
+
+Made with ❤️ to knowledge sharing. 
+
