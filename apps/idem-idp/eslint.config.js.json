@@ -1,0 +1,4 @@
+{
+  "root": true,
+  "extends": ["@eventuras/eslint-config/base.js"]
+}
