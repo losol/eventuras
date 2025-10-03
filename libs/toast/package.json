@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "dependencies": {
     "@eventuras/ratio-ui": "*",
-    "xstate": "5.20.2",
+    "xstate": "5.22.1",
     "@xstate/react": "6.0.0"
   },
   "peerDependencies": {
