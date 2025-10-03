@@ -1,6 +1,14 @@
-# Overview
+# Frontend e2e-testing
 
 Tests are defined in 3 seperate scopes: Admin, User and Anonmous. The first two already are registered and their email adresses need to be defined in the env file. The latter are run with randomly generated usernames each time. Tests are run in serial and therefore require quite some time to finish (over 5 minutes). They do not run in parallel because event registration and editing requires the event to be created first, which are done in the admin tests.
+
+
+## Get started
+
+1. Make sure playwright and browsers are installed by running `npx playwright install`. 
+2. Take a look on the .env variables needed
+3. test away!
+
 
 # Creating new tests
 
