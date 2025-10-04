@@ -4,17 +4,18 @@
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,
-    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "noUncheckedIndexedAccess": true,
     "incremental": false,
     "isolatedModules": true,
-    "lib": ["es2019", "DOM", "DOM.Iterable"],
-    "module": "esnext",
-    "moduleResolution": "node",
-    "noUncheckedIndexedAccess": true,
+    "esModuleInterop": true,
     "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "target": "ES2019"
+    "types": ["node"],
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler"
   }
 }
