@@ -3,13 +3,10 @@ name: idem-idp • docker build & push (Docker Hub)
 on:
   push:
     branches: [ main, feature/**, feat/**, fix/**, bugfix/**, chore/**, release/** ]
-    paths:
-      - "apps/idem-idp/**"
+    paths: [ "apps/idem-idp/**" ]
   pull_request:
     branches: [ main ]
-    paths:
-      - "apps/idem-idp/**"
-
+    paths: [ "apps/idem-idp/**" ]
 
 env:
   ORG: losolio
@@ -19,8 +16,7 @@ env:
 jobs:
   docker:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
+    permissions: { contents: read }
     strategy:
       matrix: { platform: [ linux/amd64, linux/arm64 ] }
 
@@ -41,16 +37,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Compute version: tag -> strip "v"; else read package.json
-      - name: Compute version
+      # ✅ Robust version extraction without Node/CJS
+      - name: Read package version
         id: ver
-        shell: bash
         run: |
-          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
-            V="${GITHUB_REF#refs/tags/v}"
-          else
-            V=$(node -p "require('./apps/idem-idp/package.json').version")
-          fi
+          V=$(jq -r .version apps/idem-idp/package.json)
           echo "version=$V" >> "$GITHUB_OUTPUT"
           echo "sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
@@ -62,10 +53,9 @@ jobs:
           tags: |
             type=ref,event=branch
             type=sha
-            type=ref,event=tag
           labels: |
-            org.opencontainers.image.version=${{ steps.ver.outputs.version }}
             org.opencontainers.image.revision=${{ steps.ver.outputs.sha }}
+            org.opencontainers.image.version=${{ steps.ver.outputs.version }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 
       - name: Build & push
@@ -77,8 +67,8 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           build-args: |
             TURBO_VERSION=${{ env.TURBO_VERSION }}
-            APP_VERSION=${{ steps.ver.outputs.version }}
             GIT_SHA=${{ steps.ver.outputs.sha }}
+            APP_VERSION=${{ steps.ver.outputs.version }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
