@@ -2,7 +2,7 @@
   "extends": "@eventuras/typescript-config/node.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "baseUrl": "."
+    "baseUrl": ".",
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
