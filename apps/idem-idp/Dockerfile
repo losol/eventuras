@@ -42,17 +42,29 @@ RUN npm run build --workspace=@eventuras/idem-idp
 FROM node:22-alpine AS runtime
 WORKDIR /srv
 
-# Minimal runtime payload
+# Build args propagated as labels/env
+ARG APP_VERSION=dev
+ARG GIT_SHA=unknown
+
+# OCI labels
+LABEL org.opencontainers.image.title="idem-idp" \
+      org.opencontainers.image.version="${APP_VERSION}" \
+      org.opencontainers.image.revision="${GIT_SHA}" \
+      org.opencontainers.image.source="https://github.com/losolio/eventuras"
+
+# Also expose in env (handy for / and /health)
+ENV NODE_ENV=production \
+    APP_VERSION=${APP_VERSION} \
+    GIT_SHA=${GIT_SHA} \
+    PORT=3001
+
+# Copy artifacts
 COPY --from=build /srv/apps/idem-idp/package.json ./
 COPY --from=build /srv/apps/idem-idp/dist ./dist
 COPY --from=build /srv/node_modules ./node_modules
 
-ENV NODE_ENV=production
-ENV PORT=3200
-EXPOSE 3200
-
-# Optional healthcheck
+# (rest unchanged)
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s \
   CMD wget -qO- http://127.0.0.1:${PORT}/health || exit 1
-
+EXPOSE 3001
 CMD ["node", "--enable-source-maps", "dist/main.js"]
