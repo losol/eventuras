@@ -37,11 +37,23 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # ✅ Robust version extraction without Node/CJS
       - name: Read package version
         id: ver
+        shell: bash
         run: |
-          V=$(jq -r .version apps/idem-idp/package.json)
+          # Debug: show layout (helpful if path is wrong)
+          ls -la "$GITHUB_WORKSPACE/apps" || true
+          ls -la "$GITHUB_WORKSPACE/apps/idem-idp" || true
+
+          # Read version robustly
+          PKG="$GITHUB_WORKSPACE/apps/idem-idp/package.json"
+          if [[ -f "$PKG" ]]; then
+            V=$(jq -r '.version' "$PKG")
+          else
+            echo "warn: $PKG not found, using fallback"
+            V="0.0.0-local"
+          fi
+
           echo "version=$V" >> "$GITHUB_OUTPUT"
           echo "sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
@@ -54,8 +66,8 @@ jobs:
             type=ref,event=branch
             type=sha
           labels: |
-            org.opencontainers.image.revision=${{ steps.ver.outputs.sha }}
             org.opencontainers.image.version=${{ steps.ver.outputs.version }}
+            org.opencontainers.image.revision=${{ steps.ver.outputs.sha }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 
       - name: Build & push
@@ -67,8 +79,8 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           build-args: |
             TURBO_VERSION=${{ env.TURBO_VERSION }}
-            GIT_SHA=${{ steps.ver.outputs.sha }}
             APP_VERSION=${{ steps.ver.outputs.version }}
+            GIT_SHA=${{ steps.ver.outputs.sha }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
