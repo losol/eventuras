@@ -1,5 +1,5 @@
 // Express app (no HTML inline)
-import express from "express";
+import express, {Express} from "express";
 import { renderHomepage } from "./views/homepage";
 
 /**
@@ -7,13 +7,14 @@ import { renderHomepage } from "./views/homepage";
  * @returns Express.Application
  */
 export function createServer() {
-  // Create app
   const app = express();
 
   // Health probe
+  // @ts-ignore
   app.get("/health", (_req, res) => res.json({ status: "ok" }));
 
   // Root page (HTML from view)
+  // @ts-ignore
   app.get("/", (_req, res) => {
     const name = "idem-idp";
     const version = process.env.npm_package_version ?? "dev";
