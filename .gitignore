@@ -6,6 +6,7 @@
 .turbo
 build/**
 dist/**
+dist
 .next/**
 
 ### ASPNETCore ###
