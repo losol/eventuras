@@ -1,12 +1,18 @@
-name: idem-idp • docker build & push (Docker Hub)
+name: idem-idp - docker build & push
 
 on:
   push:
-    branches: [ main, feature/**, feat/**, fix/**, bugfix/**, chore/**, release/** ]
-    paths: [ "apps/idem-idp/**" ]
+    branches:
+      [main, feature/**, feat/**, fix/**, bugfix/**, chore/**, release/**]
+    paths: ["apps/idem-idp/**"]
   pull_request:
-    branches: [ main ]
-    paths: [ "apps/idem-idp/**" ]
+    branches: [main]
+    paths: ["apps/idem-idp/**"]
+
+# avoid parallel runs fighting over tags
+concurrency:
+  group: idem-idp-docker-${{ github.ref }}
+  cancel-in-progress: false
 
 env:
   ORG: losolio
@@ -16,9 +22,8 @@ env:
 jobs:
   docker:
     runs-on: ubuntu-latest
-    permissions: { contents: read }
-    strategy:
-      matrix: { platform: [ linux/amd64, linux/arm64 ] }
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout
@@ -37,51 +42,56 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # read version from app package.json
       - name: Read package version
         id: ver
         shell: bash
         run: |
-          # Debug: show layout (helpful if path is wrong)
-          ls -la "$GITHUB_WORKSPACE/apps" || true
-          ls -la "$GITHUB_WORKSPACE/apps/idem-idp" || true
-
-          # Read version robustly
-          PKG="$GITHUB_WORKSPACE/apps/idem-idp/package.json"
-          if [[ -f "$PKG" ]]; then
-            V=$(jq -r '.version' "$PKG")
-          else
-            echo "warn: $PKG not found, using fallback"
-            V="0.0.0-local"
-          fi
-
+          PKG="apps/idem-idp/package.json"
+          V="$(jq -r '.version' "$PKG" 2>/dev/null || echo '0.0.0')"
           echo "version=$V" >> "$GITHUB_OUTPUT"
           echo "sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
+      # generate tags/labels (adds :latest on main, semver tags, branch, sha)
       - name: Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.ORG }}/${{ env.IMAGE_NAME }}
           tags: |
+            # branch tag (e.g., main)
             type=ref,event=branch
-            type=sha
+            # short sha
+            type=sha,format=short
+            # semver from package.json (vX.Y.Z, vX.Y, vX)
+            type=semver,pattern={{version}},value=${{ steps.ver.outputs.version }}
+            # latest on main only
+            type=raw,value=latest,enable={{is_default_branch}}
           labels: |
             org.opencontainers.image.version=${{ steps.ver.outputs.version }}
             org.opencontainers.image.revision=${{ steps.ver.outputs.sha }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 
-      - name: Build & push
+      - name: Build & push (multi-arch)
         uses: docker/build-push-action@v6
         with:
+          # repo root for turbo prune Dockerfile path
           context: .
+          # your Dockerfile path
           file: apps/idem-idp/Dockerfile
-          platforms: ${{ matrix.platform }}
+          platforms: linux/amd64,linux/arm64
+          # push only on non-PR events
           push: ${{ github.event_name != 'pull_request' }}
+          # pass build args
           build-args: |
             TURBO_VERSION=${{ env.TURBO_VERSION }}
             APP_VERSION=${{ steps.ver.outputs.version }}
             GIT_SHA=${{ steps.ver.outputs.sha }}
+          # tags/labels from metadata action
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          # gha cache speeds up rebuilds
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          # optional: disable provenance attestation if Hub/tooling complains
+          provenance: false
