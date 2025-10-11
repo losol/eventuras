@@ -4,7 +4,6 @@
     "paths": {
       "@/*": ["./src/*", "./public/*"],
       "@eventuras/datatable": ["../../libs/datatable/src/*"],
-      "@eventuras/enrollments-sdk": ["../../libs/enrollments-sdk"],
       "@eventuras/event-sdk": ["../../libs/event-sdk/src/client"],
       "@eventuras/event-sdk/*": ["../../libs/event-sdk/src/client/*"],
       "@eventuras/fides-auth/*": ["../../libs/fides-auth/src/*"],

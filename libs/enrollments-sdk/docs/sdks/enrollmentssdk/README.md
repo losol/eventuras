@@ -1,5 +1,0 @@
-# EnrollmentsSDK
-
-## Overview
-
-### Available Operations
