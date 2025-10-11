@@ -8,7 +8,7 @@ import {
   MenuTrigger,
   Popover,
 } from 'react-aria-components';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown } from '../icons';
 
 const styles = {
   menuWrapper: 'top-16 w-56 text-right',

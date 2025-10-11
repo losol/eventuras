@@ -1,4 +1,4 @@
-import { ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { ChevronsLeft, ChevronsRight } from '../icons';
 
 import Button from '../Button/Button';
 import Text from '../Text/Text';

@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { AlertCircle, AlertTriangle, Info, Check } from 'lucide-react';
+import { AlertCircle, AlertTriangle, Info, Check } from '../icons';
 
 /** See: {@link ErrorPageProps} */
 export type ErrorTone = 'fatal' | 'warning' | 'info' | 'success';

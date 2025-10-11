@@ -1,4 +1,4 @@
-import { ShieldX } from 'lucide-react';
+import { ShieldX } from '../icons';
 
 type UnauthorizedProps = {
   homeUrl?: string;

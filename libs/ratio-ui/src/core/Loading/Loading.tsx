@@ -1,4 +1,4 @@
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle } from '../icons';
 
 // Source: https://flowbite.com/docs/@/components/spinner/
 const Loading = () => {

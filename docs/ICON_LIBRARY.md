@@ -4,6 +4,8 @@
 
 **Eventuras uses [lucide-react](https://lucide.dev/) as the standard icon library across the monorepo.**
 
+All icons are re-exported from `@eventuras/ratio-ui/icons` to provide a centralized place for icon management in the design system.
+
 ### Why lucide-react?
 
 - ✅ **Consistent Design**: Stroke-based icons with uniform styling
@@ -16,25 +18,21 @@
 
 ### Installation
 
-lucide-react is already installed in the following packages:
+The icon library is available through `@eventuras/ratio-ui` which already includes `lucide-react` as a dependency.
 
-- `apps/web`
-- `apps/historia`
-- `libs/ratio-ui`
-- `libs/smartform`
-
-For new packages, add it as a dependency:
+For packages using ratio-ui, icons are available through the `/icons` export:
 
 ```bash
-npm install lucide-react
+# ratio-ui is already installed in most packages
+npm install @eventuras/ratio-ui
 ```
 
 ### Usage
 
-Import icons from lucide-react:
+**Recommended**: Import icons from the ratio-ui design system:
 
 ```tsx
-import { Calendar, MapPin, User, Settings } from 'lucide-react';
+import { Calendar, MapPin, User, Settings } from '@eventuras/ratio-ui/icons';
 
 function MyComponent() {
   return (
@@ -47,6 +45,14 @@ function MyComponent() {
   );
 }
 ```
+
+**Alternative** (for icons not yet exported from ratio-ui):
+
+```tsx
+import { ArrowRight } from 'lucide-react';
+```
+
+> **Note**: When using an icon not yet exported from `@eventuras/ratio-ui/icons`, please add it to `libs/ratio-ui/src/icons/index.ts` for future use.
 
 ### Common Icon Props
 
@@ -65,28 +71,52 @@ lucide-react uses PascalCase naming:
 - **Good**: `Check`, `ChevronDown`, `AlertCircle`
 - **Bad**: `check`, `chevron-down`, `alert-circle`
 
+### Available Icons in ratio-ui
+
+The following icons are currently exported from `@eventuras/ratio-ui/icons`:
+
+**Navigation & UI Controls:**
+- ChevronDown, ChevronUp, ChevronLeft, ChevronRight
+- ChevronsLeft, ChevronsRight
+- MoreHorizontal, X
+
+**Status & Feedback:**
+- Check, CircleX
+- AlertCircle, AlertTriangle, Info
+- ShieldX
+
+**Actions & Content:**
+- Eye, Pencil, Trash2
+- User, FileText, ShoppingCart
+- Calendar, MapPin, Home
+
+**Loading & System:**
+- LoaderCircle
+
+> To add more icons, update `libs/ratio-ui/src/icons/index.ts`
+
 ### Migration from @tabler/icons-react
 
 If you're migrating from @tabler/icons-react, here's the mapping:
 
-| Tabler Icon | Lucide Icon | Notes |
-|------------|-------------|-------|
-| IconCheck | Check | Direct replacement |
-| IconX | X | Direct replacement |
-| IconCircleX | CircleX | Direct replacement |
-| IconUser | User | Direct replacement |
-| IconTrash | Trash2 | Use Trash2 for consistency |
-| IconEye | Eye | Direct replacement |
-| IconPencil | Pencil | Direct replacement |
-| IconNotes | FileText | Notes → FileText |
-| IconShoppingCart | ShoppingCart | Direct replacement |
-| IconChevronsLeft | ChevronsLeft | Direct replacement |
-| IconChevronsRight | ChevronsRight | Direct replacement |
-| IconChevronDown | ChevronDown | Direct replacement |
+| Tabler Icon | Lucide Icon | Available in ratio-ui/icons |
+|------------|-------------|----------------------------|
+| IconCheck | Check | ✅ |
+| IconX | X | ✅ |
+| IconCircleX | CircleX | ✅ |
+| IconUser | User | ✅ |
+| IconTrash | Trash2 | ✅ |
+| IconEye | Eye | ✅ |
+| IconPencil | Pencil | ✅ |
+| IconNotes | FileText | ✅ |
+| IconShoppingCart | ShoppingCart | ✅ |
+| IconChevronsLeft | ChevronsLeft | ✅ |
+| IconChevronsRight | ChevronsRight | ✅ |
+| IconChevronDown | ChevronDown | ✅ |
 
 ### Replacing Inline SVG Icons
 
-Instead of inline SVG code, use lucide-react icons:
+Instead of inline SVG code, use icons from the design system:
 
 **❌ Before (Inline SVG):**
 ```tsx
@@ -95,12 +125,34 @@ Instead of inline SVG code, use lucide-react icons:
 </svg>
 ```
 
-**✅ After (lucide-react):**
+**✅ After (ratio-ui icons):**
 ```tsx
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown } from '@eventuras/ratio-ui/icons';
 
 <ChevronDown className="h-5 w-5" />
 ```
+
+### Adding New Icons to the Design System
+
+When you need an icon not yet exported from `@eventuras/ratio-ui/icons`:
+
+1. **Check if it exists** in lucide-react: https://lucide.dev/icons
+2. **Add it to the design system** in `libs/ratio-ui/src/icons/index.ts`:
+   ```tsx
+   export {
+     // ... existing icons
+     ArrowRight,  // Add your icon here
+   } from 'lucide-react';
+   ```
+3. **Use it** in your component:
+   ```tsx
+   import { ArrowRight } from '@eventuras/ratio-ui/icons';
+   ```
+
+This approach ensures:
+- All icons used in the design system are centralized
+- Future custom icons can be added alongside lucide icons
+- Consistent icon usage across all apps
 
 ### Finding Icons
 
@@ -117,16 +169,23 @@ Search by:
 
 ### Best Practices
 
-1. **Import only what you need** to keep bundle size small:
+1. **Use the design system exports** for consistency:
    ```tsx
-   // ✅ Good
-   import { Calendar } from 'lucide-react';
+   // ✅ Good - uses design system
+   import { Calendar } from '@eventuras/ratio-ui/icons';
    
-   // ❌ Bad
+   // ⚠️ Acceptable - for icons not yet in design system
+   import { Smartphone } from 'lucide-react';
+   
+   // ❌ Bad - bypasses design system
    import * as Icons from 'lucide-react';
    ```
 
-2. **Use consistent sizing** across your application:
+2. **Add new icons to the design system** when using them:
+   - Update `libs/ratio-ui/src/icons/index.ts`
+   - This makes them available for all apps
+
+3. **Use consistent sizing** across your application:
    ```tsx
    // Define common sizes
    const iconSizes = {
@@ -136,12 +195,12 @@ Search by:
    };
    ```
 
-3. **Apply accessibility** attributes when needed:
+4. **Apply accessibility** attributes when needed:
    ```tsx
    <Settings aria-label="Open settings" role="img" />
    ```
 
-4. **Style with Tailwind** classes for consistency:
+5. **Style with Tailwind** classes for consistency:
    ```tsx
    <User className="h-5 w-5 text-gray-600 dark:text-gray-300" />
    ```
@@ -150,9 +209,15 @@ Search by:
 
 When adding new features that require icons:
 
-1. ✅ **Always use lucide-react**
-2. ❌ **Do not add new icon libraries**
-3. ❌ **Do not use inline SVG for icons** (unless absolutely necessary)
-4. 📝 **Document any special icon usage** in your PR
+1. ✅ **First choice: Use icons from `@eventuras/ratio-ui/icons`**
+2. ✅ **Second choice: Import from lucide-react and add to ratio-ui/icons**
+3. ❌ **Do not add new icon libraries**
+4. ❌ **Do not use inline SVG for icons** (unless absolutely necessary)
+5. 📝 **Document any special icon usage** in your PR
+
+**Adding a new icon to the design system:**
+1. Check it exists in lucide-react: https://lucide.dev/icons
+2. Add to `libs/ratio-ui/src/icons/index.ts`
+3. Submit PR with the icon addition
 
 If you can't find an appropriate icon in lucide-react, discuss alternatives with the team before adding a new dependency.

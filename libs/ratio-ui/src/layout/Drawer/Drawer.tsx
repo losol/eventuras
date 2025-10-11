@@ -1,4 +1,4 @@
-import { X } from 'lucide-react';
+import { X } from '../icons';
 import { HTMLAttributes, ReactNode } from 'react';
 
 import { Button, Heading, Portal } from '../..';

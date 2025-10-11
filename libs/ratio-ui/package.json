@@ -7,6 +7,10 @@
       "import": "./dist/eventuras-ui.es.js",
       "types": "./dist/index.d.ts"
     },
+    "./icons": {
+      "import": "./dist/icons/index.js",
+      "types": "./dist/icons/index.d.ts"
+    },
     "./forms/*": "./forms/*",
     "./ratio-ui.css": "./dist/ratio-ui.css"
   },
