@@ -1,18 +1,18 @@
 {
   "name": "@eventuras/toast",
-  "main": "src/index.ts",
   "version": "0.1.0",
+  "main": "src/index.ts",
   "dependencies": {
     "@eventuras/ratio-ui": "*",
-    "xstate": "5.22.1",
-    "@xstate/react": "6.0.0"
-  },
-  "peerDependencies": {
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "@xstate/react": "6.0.0",
+    "xstate": "5.23.0"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*"
+  },
+  "peerDependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   }
 }

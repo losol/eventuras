@@ -2,14 +2,16 @@
   "name": "@eventuras/idem-idp",
   "version": "0.0.2",
   "description": "Eventuras identity provider",
-  "main": "./dist/main.js",
+  "license": "GPL-3.0-or-later",
+  "author": "Eventuras team",
   "type": "module",
+  "main": "./dist/main.js",
   "files": [
     "dist/**"
   ],
   "scripts": {
-    "dev": "tsx watch src/main.ts",
     "build": "tsup",
+    "dev": "tsx watch src/main.ts",
     "start": "node --enable-source-maps dist/main.js",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
@@ -22,16 +24,14 @@
     "@types/express": "5.0.3",
     "tsup": "8.5.0",
     "tsx": "^4",
-    "typescript": "^5.6.3"
-  },
-  "engines": {
-    "node": ">=20.11"
+    "typescript": "^5.9.3"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-arm64-gnu": "4.52.4",
     "@rollup/rollup-linux-arm64-musl": "4.52.4",
     "@rollup/rollup-linux-x64-gnu": "4.52.4"
   },
-  "license": "GPL-3.0-or-later",
-  "author": "Eventuras team"
+  "engines": {
+    "node": ">=20.11"
+  }
 }
