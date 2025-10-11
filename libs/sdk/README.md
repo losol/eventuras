@@ -1,8 +1,9 @@
 # Deprecated
 
-This SDK is deprecated and frozen, anything inside should no longer be updated(including swagger.json). If any API shape changes occur which is no longer compatible then those should be implemented using the new client sdk, lib/enrollments-sdk.
+This SDK is deprecated and frozen, anything inside should no longer be updated(including swagger.json).
 
 # Customize swagger json
+
 To customize the url (it defaults to localhost) create a .env file with the following:
 
 SWAGGER_URL=https://api.eventuras.losol.io/swagger/v3/swagger.json
