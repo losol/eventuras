@@ -4,11 +4,13 @@
   "private": true,
   "license": "GPL-2.0+",
   "workspaces": [
+    "apps/docsite",
     "apps/historia",
     "apps/idem-idp",
     "apps/web",
     "apps/web-e2e",
     "apps/convertoapi",
+    "docs",
     "libs/**",
     "lab/**"
   ],
