@@ -1,1 +1,28 @@
-content/
+# Synced documentation files from @eventuras/docs
+/content/
+/public/_pagefind
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+.env*.local
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+*.swp
+*.swo
+*~
