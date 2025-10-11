@@ -1,12 +1,53 @@
-# Eventuras documentation - Event and Course Management Solution
+# Eventuras Documentation
 
-Event and Course management solution.
+Complete documentation for the Eventuras platform - an open-source event and course management solution.
 
-## Get started
+## 📚 Documentation Structure
 
-### Docker
+### For Developers
 
-**Prerequisites:** [Docker](https://docs.docker.com/get-docker/).
+- **[Getting Started](./developer/Getting_started.md)** - Set up your development environment
+- **[Architecture Overview](./developer/Architecture_overview.md)** - Understand the system design
+- **[Development Setup](./developer/Development_setup.md)** - Detailed setup instructions
+- **[Configuration](./developer/Configuration.md)** - Configuration options
+- **[Testing Guide](./developer/Testing_guide.md)** - Testing strategies and tools
+- **[Security Best Practices](./developer/Security_best_practices.md)** - Security guidelines
+- **[Libraries Overview](./developer/Libraries_overview.md)** - Shared libraries documentation
+- **[Troubleshooting](./developer/Troubleshooting.md)** - Common issues and solutions
+- **[Email Setup](./developer/Email.md)** - Email configuration
+- **[PDF Generation](./developer/Pdf_generation.md)** - PDF service setup
+- **[Migrations](./developer/Migrations.md)** - Database migrations
+- **[Deploy to Vercel](./developer/Deploy_to_Vercel.md)** - Vercel deployment guide
+
+#### Business Logic Documentation
+- **[Event Registration Flow](./developer/Business_logic/Event_registration_flow.md)**
+- **[Order Management](./developer/Business_logic/Order_management.md)**
+- **[Products](./developer/Business_logic/Products.md)**
+- **[Registration Products Test Cases](./developer/Business_logic/Registration_products_test_case.md)**
+
+### For Administrators
+
+- **[Configure Email](./administrator/Configure_email.md)** - Email service configuration
+- **[Configure SMS](./administrator/Configure_sms.md)** - SMS service configuration
+- **[Sentry Error Tracking](./administrator/Sentry_error_tracking.md)** - Error monitoring setup
+- **[Demo Site](./administrator/Demo_site.md)** - Demo environment access
+
+### For Deployment
+
+- **[Production Deployment](./deployment/Production_deployment.md)** - Complete deployment guide
+- **[Environment Variables](./deployment/Environment_variables.md)** - Required configuration
+- **[PDF Service](./deployment/Pdf_service.md)** - PDF service deployment
+- **[Key Protection](./deployment/KeyProtection.md)** - Secret management
+
+### Business Documentation
+
+- **[Registrations Access Control](./business/Registrations_access_control.md)** - Access control policies
+
+## 🚀 Quick Start
+
+### Using Docker (Recommended)
+
+**Prerequisites:** [Docker](https://docs.docker.com/get-docker/)
 
 ```bash
 # Clone the repository
@@ -16,3 +57,65 @@ cd eventuras
 # Build and run the application
 docker-compose up
 ```
+
+The application will be available at `http://localhost:5100`.
+
+**Default login credentials:**
+```
+Email: admin@email.com
+Password: Str0ng!PaSsw0rd
+```
+
+### Manual Setup
+
+See the [Getting Started Guide](./developer/Getting_started.md) for detailed instructions on:
+- Installing prerequisites
+- Setting up the database
+- Configuring environment variables
+- Running the applications locally
+
+## 🏗️ Architecture
+
+Eventuras is built as a **monorepo** with:
+
+- **Backend:** .NET Core API with PostgreSQL
+- **Frontend:** Next.js applications with React and TypeScript
+- **Libraries:** Shared TypeScript/React libraries
+- **Infrastructure:** Docker, Turborepo, npm workspaces
+
+For a complete architectural overview, see [Architecture Overview](./developer/Architecture_overview.md).
+
+## 📖 Key Resources
+
+- **Main Repository:** [github.com/losol/eventuras](https://github.com/losol/eventuras)
+- **API Documentation:** Available at `/swagger` when running the backend in development mode
+- **Contributing Guide:** [CONTRIBUTING.md](../CONTRIBUTING.md)
+- **License:** [GNU General Public License v3.0](../LICENSE)
+
+## 🔗 Related Documentation
+
+- **Apps Documentation:**
+  - [API README](../apps/api/README.md) - Backend API documentation
+  - [Web README](../apps/web/README.md) - Frontend application documentation
+  
+- **AI Agent Guides:**
+  - [Backend Agent](../.ai/agents/backend-agent.md) - for `apps/api`
+  - [Frontend Agent](../.ai/agents/frontend-agent.md) - for `apps/web` and `libs/*`
+  - [Converto Agent](../.ai/agents/converto-agent.md) - for `apps/convertoapi`
+
+## 🆘 Getting Help
+
+- **GitHub Issues:** [Report bugs or request features](https://github.com/losol/eventuras/issues)
+- **GitHub Discussions:** [Ask questions and share ideas](https://github.com/losol/eventuras/discussions)
+- **Troubleshooting:** See the [Troubleshooting Guide](./developer/Troubleshooting.md)
+
+## 🤝 Contributing
+
+We welcome contributions! Please see:
+- [Contributing Guide](../CONTRIBUTING.md) - How to contribute
+- [Getting Started](./developer/Getting_started.md) - Set up your development environment
+- [Testing Guide](./developer/Testing_guide.md) - How to write and run tests
+
+---
+
+**Made with ❤️ for knowledge sharing.**
