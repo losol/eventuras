@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "next build",
+    "build": "cross-env next build",
     "dev": "next dev --port 3100",
     "dev:prod": "rm -rf .next && npm run build && npm run start",
     "generate:types": "payload generate:types",
@@ -62,7 +62,6 @@
   "devDependencies": {
     "@types/node": "24.0.3",
     "@types/react": "19.2.2",
-    "copyfiles": "^2.4.1",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"

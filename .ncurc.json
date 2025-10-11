@@ -1,9 +1,11 @@
 {
   "reject": [
     "lexical",
+    "@lexical/hashtag",
     "@lexical/link",
     "@lexical/markdown",
     "@lexical/react",
+    "@lexical/overflow",
     "@types/node"
   ]
 }

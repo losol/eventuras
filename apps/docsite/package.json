@@ -4,16 +4,16 @@
   "description": "",
   "license": "GPL-2.0-or-later",
   "author": "Ole Kristian Losvik",
-  "main": "index.js",
   "type": "module",
+  "main": "index.js",
   "scripts": {
-    "sync:docs": "tsx scripts/sync-docs.ts",
     "prebuild": "npm run sync:docs",
     "build": "next build",
     "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind",
     "predev": "npm run sync:docs",
-    "dev": "next -p 3200",
-    "start": "next start"
+    "dev": "next -p 3210",
+    "start": "next start",
+    "sync:docs": "tsx scripts/sync-docs.ts"
   },
   "dependencies": {
     "@eventuras/docs": "*",

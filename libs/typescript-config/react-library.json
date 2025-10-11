@@ -4,7 +4,7 @@
   "extends": "./base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "allowImportingTsExtensions": true,
+    "lib": ["ES2022", "DOM"],
     "downlevelIteration": true,
     "noEmit": true,
     "outDir": "dist"
