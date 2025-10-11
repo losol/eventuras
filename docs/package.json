@@ -2,16 +2,16 @@
   "name": "@eventuras/docs",
   "version": "0.0.1",
   "description": "Eventuras docs",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "files": [
-    "**/*"
-  ],
+  "license": "ISC",
+  "author": "",
   "exports": {
     "./*": "./*"
   },
-  "author": "",
-  "license": "ISC"
+  "main": "index.js",
+  "files": [
+    "**/*"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
 }
