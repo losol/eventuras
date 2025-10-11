@@ -1,3 +1,6 @@
 dist/
 storybook-static
 *storybook.log
+**/*.js
+!*.config.js
+!*.stories.js
