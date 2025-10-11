@@ -2,7 +2,7 @@ import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import type { ProductDto } from '@eventuras/sdk';
 import { Badge } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
-import { IconEye, IconPencil } from '@tabler/icons-react';
+import { Eye, Pencil } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import { Link } from '@eventuras/ratio-ui/next/Link';
@@ -51,7 +51,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit }) 
             aria-label="View"
             {...{ [DATA_TEST_ID]: 'view-product-button' }}
           >
-            <IconEye />
+            <Eye />
           </Link>
           <button
             onClick={() => onEdit(info.row.original)}
@@ -59,7 +59,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit }) 
             aria-label="Edit"
             {...{ [DATA_TEST_ID]: 'edit-product-button' }}
           >
-            <IconPencil />
+            <Pencil />
           </button>
         </div>
       ),

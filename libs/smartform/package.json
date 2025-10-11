@@ -4,6 +4,7 @@
   "main": "src/index.ts",
   "dependencies": {
     "@eventuras/ratio-ui": "*",
+    "lucide-react": "^0.545.0",
     "react-hook-form": "^7.65.0"
   },
   "devDependencies": {
