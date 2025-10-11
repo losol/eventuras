@@ -1,9 +1,9 @@
 {
   "name": "@eventuras/utils",
-  "private": "true",
   "version": "0.1.0",
-  "type": "module",
+  "private": "true",
   "description": "utility functions for eventuras",
+  "type": "module",
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

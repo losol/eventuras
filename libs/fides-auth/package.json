@@ -1,12 +1,12 @@
 {
   "name": "@eventuras/fides-auth",
-  "private": "true",
   "version": "0.1.0",
+  "private": "true",
   "description": "auth library eventuras",
   "main": "src/index.ts",
   "dependencies": {
-    "@eventuras/utils": "*",
     "@eventuras/typescript-config": "*",
+    "@eventuras/utils": "*",
     "jose": "6.1.0",
     "openid-client": "^6.8.1"
   }

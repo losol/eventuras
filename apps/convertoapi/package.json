@@ -2,14 +2,6 @@
   "name": "convertoapi",
   "version": "0.1.0",
   "description": "generates pdfs",
-  "type": "module",
-  "main": "dist/app.js",
-  "scripts": {
-    "dev": "npx tsx src/app.ts",
-    "test": "echo \"Error: no test specified\" && exit 0",
-    "build": "tsc && cp -R public dist",
-    "start": "node dist/app.js"
-  },
   "license": "MIT",
   "author": {
     "name": "Losol AS"
@@ -22,19 +14,27 @@
       "name": "M.A. van't Kruis (hellomeinte.com)"
     }
   ],
+  "type": "module",
+  "main": "dist/app.js",
+  "scripts": {
+    "build": "tsc && cp -R public dist",
+    "dev": "npx tsx src/app.ts",
+    "start": "node dist/app.js",
+    "test": "echo \"Error: no test specified\" && exit 0"
+  },
   "dependencies": {
     "@fastify/jwt": "^10.0.0",
     "@fastify/rate-limit": "^10.3.0",
     "@fastify/static": "^8.2.0",
     "@fastify/swagger": "^9.5.2",
-    "@scalar/fastify-api-reference": "^1.37.0",
+    "@scalar/fastify-api-reference": "^1.38.0",
     "@swc/cli": "^0.7.8",
     "dotenv": "^17.2.3",
     "fastify": "^5.6.1",
-    "playwright": "^1.55.1",
+    "playwright": "^1.56.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
-    "zod": "^4.1.11"
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "*",

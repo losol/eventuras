@@ -2,6 +2,8 @@
   "name": "@eventuras/sdk",
   "version": "0.8.3",
   "description": "Eventuras Typescript SDK",
+  "license": "GPL-3.0-or-later",
+  "author": "Ole Kristian Losvik",
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
@@ -9,8 +11,9 @@
     "generate": "npx openapi-typescript-codegen --input swagger.json --output ./src --useOptions --name Eventuras",
     "update:swagger": "node --loader ts-node/esm downloadSwagger.ts"
   },
-  "author": "Ole Kristian Losvik",
-  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "dotenv": "^17.2.3"
+  },
   "devDependencies": {
     "@eventuras/typescript-config": "*",
     "node-fetch": "^3.3.2",
@@ -18,8 +21,5 @@
     "typescript": "^5.9.3",
     "vite": "^7.1.9",
     "vite-plugin-dts": "^4.5.4"
-  },
-  "dependencies": {
-    "dotenv": "^17.2.3"
   }
 }

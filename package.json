@@ -1,23 +1,8 @@
 {
   "name": "eventuras",
   "version": "0.1.1",
-  "license": "GPL-2.0+",
   "private": true,
-  "packageManager": "npm@11.6.1",
-  "dependencies": {
-    "turbo": "^2.5.8"
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^20.1.0",
-    "@commitlint/config-conventional": "^20.0.0",
-    "@eventuras/eslint-config": "*",
-    "@eventuras/typescript-config": "*",
-    "eslint": "^9.36.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.2.3",
-    "prettier": "^3.6.2",
-    "typescript": "^5.9.3"
-  },
+  "license": "GPL-2.0+",
   "workspaces": [
     "apps/historia",
     "apps/idem-idp",
@@ -27,19 +12,35 @@
     "libs/**",
     "lab/**"
   ],
-  "engines": {
-    "npm": ">=10.0.0 <11.0.0",
-    "node": ">=20.0.0 <23.0.0"
-  },
   "scripts": {
     "build": "turbo run build",
-    "test": "turbo run test",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "next:clean": "rimraf \"**/{.next,.turbo,.vercel}\"",
     "npm:check-update": "npx npm-check-updates --deep",
-    "npm:reinstall": "npm run npm:clean && npm install --force",
+    "npm:clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules && npx rimraf package-lock.json",
+    "npm:reinstall": "npm run npm:clean && npm run npm:sort && npm install",
+    "npm:sort": "npx sort-package-json '**/package.json' '!**/node_modules/**'",
     "npm:update": "npx npm-check-updates --deep -u",
-    "npm:clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules && npx rimraf package-lock.json"
+    "test": "turbo run test"
+  },
+  "dependencies": {
+    "turbo": "^2.5.8"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
+    "@eventuras/eslint-config": "*",
+    "@eventuras/typescript-config": "*",
+    "eslint": "^9.37.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.4",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.3"
+  },
+  "packageManager": "npm@11.6.2",
+  "engines": {
+    "node": ">=20.0.0 <23.0.0",
+    "npm": ">=10.0.0 <11.0.0"
   }
 }

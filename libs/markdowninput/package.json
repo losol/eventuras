@@ -3,16 +3,16 @@
   "version": "0.1.0",
   "main": "src/index.tsx",
   "dependencies": {
+    "@eventuras/ratio-ui": "*",
     "@eventuras/scribo": "*",
-    "@eventuras/smartform": "*",
-    "@eventuras/ratio-ui": "*"
-  },
-  "peerDependencies": {
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "@eventuras/smartform": "*"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*"
+  },
+  "peerDependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   }
 }

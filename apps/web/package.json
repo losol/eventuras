@@ -32,24 +32,24 @@
     "@tailwindcss/postcss": "^4.1.14",
     "@types/debug": "^4.1.12",
     "@xstate/react": "^6.0.0",
-    "lucide-react": "^0.544.0",
+    "lucide-react": "^0.545.0",
     "next": "15.5.4",
-    "next-intl": "^4.3.9",
+    "next-intl": "^4.3.12",
     "pino": "^10.0.0",
     "react": "^19.2.0",
     "react-aria-components": "^1.13.0",
     "react-dom": "^19.2.0",
     "tailwindcss-react-aria-components": "^2.0.1",
-    "xstate": "^5.22.1"
+    "xstate": "^5.23.0"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "*",
     "@next/bundle-analyzer": "15.5.4",
     "@types/node": "24.0.3",
-    "@types/react": "19.2.0",
-    "@types/react-dom": "^19.2.0",
-    "@typescript-eslint/eslint-plugin": "^8.45.0",
-    "@typescript-eslint/parser": "^8.45.0",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "^19.2.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.0",
+    "@typescript-eslint/parser": "^8.46.0",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
@@ -60,7 +60,7 @@
     "@rollup/rollup-linux-x64-gnu": "4.52.4"
   },
   "engines": {
-    "npm": ">=9.0.0",
-    "node": ">=22.0.0 <23.0.0"
+    "node": ">=22.0.0 <23.0.0",
+    "npm": ">=9.0.0"
   }
 }

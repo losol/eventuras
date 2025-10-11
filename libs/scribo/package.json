@@ -1,32 +1,33 @@
 {
   "name": "@eventuras/scribo",
   "version": "0.4.2",
-  "main": "src/main.tsx",
   "type": "module",
+  "main": "src/main.tsx",
   "scripts": {
     "build": "vite build",
     "build:site": "BUILD_SITE=true vite build",
     "dev": "vite"
   },
+  "overrides": {
+    "vite": {
+      "rollup": "npm:@rollup/wasm-node"
+    }
+  },
   "dependencies": {
-    "@lexical/hashtag": "0.35.0",
+    "@lexical/hashtag": "0.36.2",
     "@lexical/link": "0.35.0",
     "@lexical/markdown": "0.35.0",
-    "@lexical/overflow": "0.35.0",
+    "@lexical/overflow": "0.36.2",
     "@lexical/react": "^0.35.0",
     "lexical": "^0.35.0"
-  },
-  "peerDependencies": {
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*",
     "@swc/core": "^1.13.5",
     "@testing-library/react": "^16.3.0",
-    "@types/react": "^19.2.0",
-    "@types/react-dom": "^19.2.0",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.1",
     "@vitejs/plugin-react-swc": "^4.1.0",
     "lightningcss": "^1.30.2",
     "react": "19.2.0",
@@ -35,9 +36,8 @@
     "vite": "^7.1.9",
     "vitest": "^3.2.4"
   },
-  "overrides": {
-    "vite": {
-      "rollup": "npm:@rollup/wasm-node"
-    }
+  "peerDependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   }
 }

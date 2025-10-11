@@ -1,17 +1,17 @@
 {
   "name": "@eventuras/smartform",
-  "main": "src/index.ts",
   "version": "0.1.0",
+  "main": "src/index.ts",
   "dependencies": {
     "@eventuras/ratio-ui": "*",
-    "react-hook-form": "^7.63.0"
-  },
-  "peerDependencies": {
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-hook-form": "^7.65.0"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "*",
     "@eventuras/typescript-config": "*"
+  },
+  "peerDependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   }
 }
