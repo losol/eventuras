@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/idem-idp",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Eventuras identity provider",
   "main": "./dist/main.js",
   "type": "module",
