@@ -10,22 +10,14 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  plugins: [
-    react(),
-    tailwindcss(),
-    dts({
-      entryRoot: 'src',
-      outDir: 'dist',
-      include: ['src'],
-      copyDtsFiles: true,
-      rollupTypes: true,
-    }),
-  ],
-  resolve: {
-    alias: {
-      '@': resolve(__dirname, './src'),
-    },
-  },
+  plugins: [react(), tailwindcss(), dts({
+    entryRoot: 'src',
+    outDir: 'dist',
+    include: ['src/**/*'],
+    copyDtsFiles: true,
+    rollupTypes: true,
+  })],
+  resolve: { alias: { '@': resolve(__dirname, './src') } },
   build: {
     lib: {
       entry: 'src/index.ts',
@@ -34,12 +26,14 @@ export default defineConfig({
     },
     rollupOptions: {
       external: ['react', 'react-dom', 'react/jsx-runtime'],
-      input: Object.fromEntries(
-        glob.sync('src/**/*.{ts,tsx}').map(file => [
-          relative('src', file.slice(0, file.length - extname(file).length)),
-          fileURLToPath(new URL(file, import.meta.url))
-        ])
-      ),
+      output: {
+        // mirror src structure in dist
+        preserveModules: true,
+        preserveModulesRoot: 'src',
+        // nice file names (no hashes)
+        entryFileNames: '[name].js',
+        assetFileNames: 'assets/[name][extname]',
+      },
     },
   },
-});
+})

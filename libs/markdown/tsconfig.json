@@ -1,5 +1,12 @@
 {
   "extends": "@eventuras/typescript-config/react-library.json",
+  "compilerOptions": {
+    "paths": {
+      "@eventuras/ratio-ui/*": [
+        "../../libs/ratio-ui/src/*"
+      ]
+    }
+},
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,3 +1,6 @@
 {
-  "extends": "@eventuras/typescript-config/base.json"
+  "extends": "@eventuras/typescript-config/base.json",
+  "compilerOptions": {
+    "jsx": "react"
+  }
 }

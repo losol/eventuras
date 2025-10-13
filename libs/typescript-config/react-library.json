@@ -6,7 +6,7 @@
     "jsx": "react-jsx",
     "lib": ["ES2022", "DOM"],
     "downlevelIteration": true,
-    "noEmit": true,
+    "noEmit": false,
     "outDir": "dist"
   }
 }

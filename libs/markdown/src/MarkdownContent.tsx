@@ -1,5 +1,6 @@
 import Markdown from 'markdown-to-jsx'
-import { Heading, Text } from '@eventuras/ratio-ui'
+import { Heading } from '@eventuras/ratio-ui/core/Heading'
+import { Text } from '@eventuras/ratio-ui/core/Text'
 import { sanitizeMarkdown } from './sanitizeMarkdown'
 import { SafeLink, SafeImg } from './SafePrimitives'
 
