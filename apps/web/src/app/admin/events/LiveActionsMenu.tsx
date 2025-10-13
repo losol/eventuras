@@ -3,7 +3,7 @@
 import { ApiError, RegistrationDto, RegistrationStatus } from '@eventuras/sdk';
 import { Button } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/utils';
-import { IconCircleX } from '@tabler/icons-react';
+import { CircleX } from '@eventuras/ratio-ui/icons';
 import { useState } from 'react';
 
 import { Link } from '@eventuras/ratio-ui/next/Link';
@@ -83,7 +83,7 @@ const LiveActionsMenu = ({ registration, onStatusUpdate }: LiveActionsMenuProps)
           <Button onClick={() => handleStatusUpdate(RegistrationStatus.ATTENDED)}>Checkin</Button>
         );
       case 'Cancelled':
-        return <IconCircleX />;
+        return <CircleX />;
       default:
         if (registration.certificateId) {
           return (

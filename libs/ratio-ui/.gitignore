@@ -1,3 +1,7 @@
 dist/
 storybook-static
 *storybook.log
+# Ignore compiled JavaScript files in src/
+src/**/*.js
+# But keep config and story files
+!src/**/*.config.js

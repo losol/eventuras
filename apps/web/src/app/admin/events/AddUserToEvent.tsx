@@ -7,7 +7,7 @@ import {
 } from '@eventuras/sdk';
 import { Button, Drawer, Heading } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/utils';
-import { IconCheck } from '@tabler/icons-react';
+import { Check } from '@eventuras/ratio-ui/icons';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
@@ -63,7 +63,7 @@ const RegistrationListBoxItem = (props: ListBoxItemProps & { children: React.Rea
           {props.children}
         </span>
         <span className="w-5 flex items-center text-black group-focus:text-white">
-          {isSelected && <IconCheck className="h-5 w-5" aria-hidden="true" />}
+          {isSelected && <Check className="h-5 w-5" aria-hidden="true" />}
         </span>
       </>
     )}

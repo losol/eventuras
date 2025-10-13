@@ -1,5 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
+import { AlertCircle, AlertTriangle, Info, Check } from '../icons';
 
 /** See: {@link ErrorPageProps} */
 export type ErrorTone = 'fatal' | 'warning' | 'info' | 'success';
@@ -26,28 +27,18 @@ const toneCls: Record<ErrorTone, string> = {
 
 /** Minimal icon per tone */
 function ToneIcon({ tone }: { tone: ErrorTone }) {
-  // ➜ Pick size + pulse for emphasis
-  return (
-    <svg aria-hidden viewBox="0 0 24 24" className="h-7 w-7 mr-2">
-      {/* ➜ Simple stroke icon */}
-      {tone === 'fatal' && (
-        <path d="M12 9v4m0 4h.01M12 2a10 10 0 110 20 10 10 0 010-20z"
-              stroke="currentColor" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      )}
-      {tone === 'warning' && (
-        <path d="M12 9v4m0 4h.01M10.29 3.86l-8.48 14.7a1.5 1.5 0 001.29 2.24h16.18a1.5 1.5 0 001.29-2.24l-8.48-14.7a1.5 1.5 0 00-2.58 0z"
-              stroke="currentColor" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      )}
-      {tone === 'info' && (
-        <path d="M12 8h.01M11 12h2v4h-2z M12 2a10 10 0 110 20 10 10 0 010-20z"
-              stroke="currentColor" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      )}
-      {tone === 'success' && (
-        <path d="M20 6l-11 11-5-5"
-              stroke="currentColor" strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      )}
-    </svg>
-  );
+  const iconProps = { className: "h-7 w-7 mr-2", strokeWidth: 2 };
+  
+  switch (tone) {
+    case 'fatal':
+      return <AlertCircle {...iconProps} />;
+    case 'warning':
+      return <AlertTriangle {...iconProps} />;
+    case 'info':
+      return <Info {...iconProps} />;
+    case 'success':
+      return <Check {...iconProps} />;
+  }
 }
 
 /** See: {@link ErrorPageProps} */

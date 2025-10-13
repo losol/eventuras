@@ -1,5 +1,5 @@
 import { Meta, StoryFn } from '@storybook/react-vite';
-import { Home } from 'lucide-react';
+import { Home } from '../icons';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
 import Button, { ButtonProps } from './Button';
