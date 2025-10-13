@@ -2,7 +2,7 @@ import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import type { ProductDto } from '@eventuras/sdk';
 import { Badge } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
-import { Eye, Pencil } from 'lucide-react';
+import { Eye, Pencil } from '@eventuras/ratio-ui/icons';
 import { useTranslations } from 'next-intl';
 
 import { Link } from '@eventuras/ratio-ui/next/Link';

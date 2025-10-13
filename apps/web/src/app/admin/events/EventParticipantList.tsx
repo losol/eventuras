@@ -4,7 +4,7 @@ import { ColumnFilter, createColumnHelper, DataTable } from '@eventuras/datatabl
 import { EventDto, ProductDto, RegistrationDto } from '@eventuras/sdk';
 import { Badge, Button, Drawer, Loading } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/utils';
-import { FileText, ShoppingCart, User } from 'lucide-react';
+import { FileText, ShoppingCart, User } from '@eventuras/ratio-ui/icons';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import React, { useMemo, useState } from 'react';

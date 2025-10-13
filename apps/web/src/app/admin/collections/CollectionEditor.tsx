@@ -5,7 +5,7 @@ import { EventCollectionDto, EventDto } from '@eventuras/sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
 import { Button, Loading, Section } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID, Logger } from '@eventuras/utils';
-import { Trash2 } from 'lucide-react';
+import { Trash2 } from '@eventuras/ratio-ui/icons';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 

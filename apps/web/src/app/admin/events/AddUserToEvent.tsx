@@ -7,7 +7,7 @@ import {
 } from '@eventuras/sdk';
 import { Button, Drawer, Heading } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/utils';
-import { Check } from 'lucide-react';
+import { Check } from '@eventuras/ratio-ui/icons';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
