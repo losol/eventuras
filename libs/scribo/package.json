@@ -8,6 +8,11 @@
     "build:site": "BUILD_SITE=true vite build",
     "dev": "vite"
   },
+  "overrides": {
+    "vite": {
+      "rollup": "npm:@rollup/wasm-node"
+    }
+  },
   "dependencies": {
     "@lexical/hashtag": "0.35.0",
     "@lexical/link": "0.35.0",
@@ -34,10 +39,5 @@
   "peerDependencies": {
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
-  },
-  "overrides": {
-    "vite": {
-      "rollup": "npm:@rollup/wasm-node"
-    }
   }
 }

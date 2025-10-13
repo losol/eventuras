@@ -11,8 +11,12 @@
       "import": "./dist/core/*.js",
       "types": "./dist/core/*.d.ts"
     },
-    "./core/Heading": { "import": "./dist/core/Heading/Heading.js" },
-    "./core/Text":    { "import": "./dist/core/Text/Text.js" },
+    "./core/Heading": {
+      "import": "./dist/core/Heading/Heading.js"
+    },
+    "./core/Text": {
+      "import": "./dist/core/Text/Text.js"
+    },
     "./forms/*": "./forms/*",
     "./ratio-ui.css": "./dist/ratio-ui.css"
   },

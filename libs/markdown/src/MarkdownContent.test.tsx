@@ -30,9 +30,9 @@ describe('MarkdownContent', () => {
   })
 
   // allows turning off sanitation
-  it('respects stripInvisible = false', () => {
+  it('respects keepInvisibleCharacters = true', () => {
     const md = '\uFEFFStart'
-    render(<MarkdownContent markdown={md} stripInvisible={false} />)
+    render(<MarkdownContent markdown={md} keepInvisibleCharacters={true}/>)
     // BOM may still render as empty, assert literal node presence
     expect(screen.getByText('Start')).toBeInTheDocument()
   })
@@ -44,8 +44,8 @@ describe('MarkdownContent', () => {
   })
 
   // permits raw HTML only when explicitly enabled
-  it('can allow raw HTML when disableRawHtml = false', () => {
-    render(<MarkdownContent markdown={'<div>X</div>'} disableRawHtml={false} />)
+  it('can allow raw HTML when enableRawHtml = true', () => {
+    render(<MarkdownContent markdown={'<div>X</div>'} enableRawHtml={true}/>)
     expect(screen.getByText('X')).toBeInTheDocument()
   })
 
