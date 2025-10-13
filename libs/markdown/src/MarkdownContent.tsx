@@ -7,26 +7,25 @@ import { SafeLink, SafeImg } from './SafePrimitives'
 export type MarkdownContentProps = {
   markdown?: string | null
   heading?: string
-  /** Strip invisibles + controls + normalize. Default: true */
-  stripInvisible?: boolean
-  /** Disable raw HTML in markdown. Default: true */
-  disableRawHtml?: boolean
+  /** Keep invisible/control characters instead of stripping them. Default: false */
+  keepInvisibleCharacters?: boolean
+  /** Allow raw HTML in markdown (unsafe). Default: false */
+  enableRawHtml?: boolean
 }
 
 export const MarkdownContent = ({
                                   markdown,
                                   heading,
-                                  stripInvisible = true,
-                                  disableRawHtml = true,
+                                  keepInvisibleCharacters = false,
+                                  enableRawHtml = false,
                                 }: MarkdownContentProps) => {
   if (!markdown) return null
 
-  const source = stripInvisible ? sanitizeMarkdown(markdown) : markdown
+  const source = keepInvisibleCharacters ? markdown : sanitizeMarkdown(markdown)
 
   const options = {
-    // block raw HTML passthrough
-    disableParsingRawHTML: disableRawHtml,
-    // replace anchors/images with safe components
+    // only parse HTML when enabled
+    disableParsingRawHTML: !enableRawHtml,
     overrides: {
       a: { component: SafeLink as React.FC },
       img: { component: SafeImg as React.FC },

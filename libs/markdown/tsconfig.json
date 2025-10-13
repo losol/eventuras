@@ -4,6 +4,9 @@
     "paths": {
       "@eventuras/ratio-ui/*": [
         "../../libs/ratio-ui/src/*"
+      ],
+      "@eventuras/typescript-config/*": [
+        "../../libs/typescript-config/src/*"
       ]
     }
 },
