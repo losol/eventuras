@@ -1,0 +1,14 @@
+{
+  "web": "@eventuras/web",
+  "docsite": "@eventuras/docsite",
+  "event-sdk": "@eventuras/event-sdk",
+  "markdown": "@eventuras/markdown",
+  "api": "@eventuras/api",
+  "sdk": "@eventuras/sdk",
+  "ui": "@eventuras/ratio-ui",
+  "ratio": "@eventuras/ratio-ui",
+  "ratio-ui": "@eventuras/ratio-ui",
+  "cms": "@eventuras/historia",
+  "idem": "@eventuras/idem-idp",
+  "idem-idp": "@eventuras/idem-idp"
+}
