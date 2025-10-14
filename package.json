@@ -19,7 +19,7 @@
     "build": "turbo run build",
     "changeset": "changeset",
     "changeset:release": "changeset publish",
-    "changeset:suggest": "tsx scripts/changeset-suggest.ts --since origin/main",
+    "changeset:suggest": "tsx scripts/changeset-suggest.ts --since origin/main --write",
     "changeset:version": "changeset version",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
