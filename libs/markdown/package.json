@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/markdown",
-  "version": "0.1.0",
+  "version": "5.0.0",
   "description": "Markdown renderer for React using markdown-to-jsx and Eventuras Ratio UI components.",
   "keywords": [
     "markdown",
@@ -50,7 +50,7 @@
     "vitest": "3.2.4"
   },
   "peerDependencies": {
-    "@eventuras/ratio-ui": ">=0.1.0",
+    "@eventuras/ratio-ui": ">=0.6.0",
     "markdown-to-jsx": "^7",
     "react": ">=18 <20",
     "react-dom": ">=18 <20"

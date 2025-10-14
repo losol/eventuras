@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/sdk",
-  "version": "0.8.3",
+  "version": "0.13.0",
   "description": "Eventuras Typescript SDK",
   "license": "GPL-3.0-or-later",
   "author": "Ole Kristian Losvik",

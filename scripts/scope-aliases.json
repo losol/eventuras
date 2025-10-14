@@ -1,14 +1,27 @@
 {
+  "datatable": "@eventuras/datatable",
+  "fides-auth": "@eventuras/fides-auth",
   "web": "@eventuras/web",
+  "web-e2e": "@eventuras/web",
+  "converto": "@eventuras/convertoapi",
+  "converto-api": "@eventuras/convertoapi",
+  "convertoapi": "@eventuras/convertoapi",
   "docsite": "@eventuras/docsite",
   "event-sdk": "@eventuras/event-sdk",
   "markdown": "@eventuras/markdown",
+  "markdowninput": "@eventuras/markdowninput",
   "api": "@eventuras/api",
   "sdk": "@eventuras/sdk",
+  "scribo": "@eventuras/scribo",
+  "smartform": "@eventuras/smartform",
   "ui": "@eventuras/ratio-ui",
   "ratio": "@eventuras/ratio-ui",
   "ratio-ui": "@eventuras/ratio-ui",
+  "historia": "@eventuras/historia",
+  "historia-cms": "@eventuras/historia",
+  "toast": "@eventuras/toast",
   "cms": "@eventuras/historia",
   "idem": "@eventuras/idem-idp",
-  "idem-idp": "@eventuras/idem-idp"
+  "idem-idp": "@eventuras/idem-idp",
+  "utils": "@eventuras/utils"
 }
