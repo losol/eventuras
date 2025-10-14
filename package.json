@@ -18,9 +18,9 @@
   "scripts": {
     "build": "turbo run build",
     "changeset": "changeset",
+    "changeset:release": "changeset publish",
     "changeset:suggest": "tsx scripts/changeset-suggest.ts --since origin/main",
     "changeset:version": "changeset version",
-    "changeset:release": "changeset publish",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "next:clean": "rimraf \"**/{.next,.turbo,.vercel}\"",
