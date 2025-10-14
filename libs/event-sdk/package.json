@@ -12,6 +12,6 @@
     "build": "openapi-ts"
   },
   "dependencies": {
-    "@hey-api/openapi-ts": "^0.85.1"
+    "@hey-api/openapi-ts": "^0.85.2"
   }
 }
