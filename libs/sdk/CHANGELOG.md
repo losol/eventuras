@@ -1,5 +1,11 @@
 # @eventuras/sdk
 
+## 0.13.1
+
+### Patch Changes
+
+- - 🧹 chore(convertoapi,docsite,web,markdown,scribo,sdk): upgrade deps (51e931b) [@eventuras/sdk]
+
 ## 0.13.0
 
 ### Minor Changes

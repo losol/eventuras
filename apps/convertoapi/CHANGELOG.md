@@ -1,5 +1,11 @@
 # @eventuras/convertoapi
 
+## 0.4.1
+
+### Patch Changes
+
+- - 🧹 chore(convertoapi,docsite,web,markdown,scribo,sdk): upgrade deps (51e931b) [@eventuras/convertoapi]
+
 ## 0.4.0
 
 ### Minor Changes

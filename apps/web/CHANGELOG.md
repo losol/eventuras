@@ -1,5 +1,17 @@
 # @eventuras/web
 
+## 0.6.1
+
+### Patch Changes
+
+- - 🧹 chore(convertoapi,docsite,web,markdown,scribo,sdk): upgrade deps (51e931b) [@eventuras/web]
+- Updated dependencies
+- Updated dependencies
+- Updated dependencies
+  - @eventuras/markdown@5.0.1
+  - @eventuras/scribo@0.7.1
+  - @eventuras/sdk@0.13.1
+
 ## 0.6.0
 
 ### Minor Changes
