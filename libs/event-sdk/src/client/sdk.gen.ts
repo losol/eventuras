@@ -395,6 +395,7 @@ export const putV3EventsById = <ThrowOnError extends boolean = false>(options: O
 
 /**
  * Event statistics
+ *
  * Returns a summary of the registrations for the event.
  */
 export const getV3EventsByEventIdStatistics = <ThrowOnError extends boolean = false>(options: Options<GetV3EventsByEventIdStatisticsData, ThrowOnError>) => {
@@ -893,6 +894,7 @@ export const postV3RegistrationsByIdProducts = <ThrowOnError extends boolean = f
 
 /**
  * Get registrations with optional Excel export
+ *
  * Retrieves registrations with optional export to Excel based on the Accept header.
  */
 export const getV3Registrations = <ThrowOnError extends boolean = false>(options?: Options<GetV3RegistrationsData, ThrowOnError>) => {
@@ -1032,6 +1034,7 @@ export const putV3Userprofile = <ThrowOnError extends boolean = false>(options?:
 
 /**
  * Gets information about the current user. Creates a new user if no user with the email exists.
+ *
  * @deprecated
  */
 export const getV3UsersMe = <ThrowOnError extends boolean = false>(options?: Options<GetV3UsersMeData, ThrowOnError>) => {
