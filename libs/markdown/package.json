@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/markdown",
-  "version": "5.0.1",
+  "version": "0.1.1",
   "description": "Markdown renderer for React using markdown-to-jsx and Eventuras Ratio UI components.",
   "keywords": [
     "markdown",
@@ -17,10 +17,10 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/markdown.es.js"
+      "import": "./dist/index.js"
     }
   },
-  "main": "src/index.tsx",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
@@ -50,15 +50,10 @@
     "vitest": "3.2.4"
   },
   "peerDependencies": {
-    "@eventuras/ratio-ui": ">=0.6.0",
+    "@eventuras/ratio-ui": "*",
     "markdown-to-jsx": "^7",
     "react": ">=18 <20",
     "react-dom": ">=18 <20"
-  },
-  "peerDependenciesMeta": {
-    "@eventuras/ratio-ui": {
-      "optional": true
-    }
   },
   "engines": {
     "node": ">=18"

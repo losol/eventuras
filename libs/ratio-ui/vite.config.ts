@@ -1,6 +1,3 @@
-/**
- * Vite configuration for Eventuras UI library (ES-only build).
- */
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import { glob } from 'glob';
@@ -10,30 +7,33 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), dts({
-    entryRoot: 'src',
-    outDir: 'dist',
-    include: ['src/**/*'],
-    copyDtsFiles: true,
-    rollupTypes: true,
-  })],
+  plugins: [
+    react(),
+    tailwindcss(),
+    dts({
+      entryRoot: 'src',
+      outDir: 'dist',
+      include: ['src/**/*.ts', 'src/**/*.tsx'],  // Be explicit about what to include
+      exclude: ['src/**/*.test.ts', 'src/**/*.test.tsx', 'src/**/*.stories.tsx'],
+      copyDtsFiles: false,  // Don't just copy, generate them
+      rollupTypes: false,   // Keep individual .d.ts files to match your structure
+      insertTypesEntry: true,  // Add types field to package.json
+    })
+  ],
   resolve: { alias: { '@': resolve(__dirname, './src') } },
   build: {
     lib: {
-      entry: 'src/index.ts',
+      entry: glob.sync(resolve(__dirname, 'src/**/index.ts')),
       formats: ['es'],
-      fileName: () => 'ratio-ui.es.js',
     },
     rollupOptions: {
       external: ['react', 'react-dom', 'react/jsx-runtime'],
       output: {
-        // mirror src structure in dist
         preserveModules: true,
         preserveModulesRoot: 'src',
-        // nice file names (no hashes)
         entryFileNames: '[name].js',
         assetFileNames: 'assets/[name][extname]',
       },
     },
   },
-})
+});
